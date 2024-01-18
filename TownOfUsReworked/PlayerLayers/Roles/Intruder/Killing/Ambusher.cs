@@ -5,7 +5,7 @@ public class Ambusher : Intruder
     public PlayerControl AmbushedPlayer { get; set; }
     public CustomButton AmbushButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Ambusher : CustomColorManager.Intruder;
     public override string Name => "Ambusher";
     public override LayerEnum Type => LayerEnum.Ambusher;
     public override Func<string> StartText => () => "Spook The <color=#8CFFFFFF>Crew</color>";
@@ -15,25 +15,23 @@ public class Ambusher : Intruder
     {
         Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
-        AmbushButton = new(this, "Ambush", AbilityTypes.Target, "Secondary", Ambush, CustomGameOptions.AmbushCd, CustomGameOptions.AmbushDur, UnAmbush, Exception1);
+        AmbushButton = new(this, "Ambush", AbilityTypes.Alive, "Secondary", Ambush, CustomGameOptions.AmbushCd, CustomGameOptions.AmbushDur, UnAmbush, Exception1);
     }
 
     public void UnAmbush() => AmbushedPlayer = null;
 
     public void Ambush()
     {
-        var interact = Interact(Player, AmbushButton.TargetPlayer);
+        var cooldown = Interact(Player, AmbushButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             AmbushedPlayer = AmbushButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, AmbushButton, AmbushedPlayer);
             AmbushButton.Begin();
         }
-        else if (interact.Reset)
-            AmbushButton.StartCooldown();
-        else if (interact.Protected)
-            AmbushButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            AmbushButton.StartCooldown(cooldown);
     }
 
     public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !CustomGameOptions.AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) ||

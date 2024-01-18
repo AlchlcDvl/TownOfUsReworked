@@ -42,7 +42,7 @@ public static class ShowRolePatch
             status += " <color=#575657FF>Recruited</color>";
 
         if (status.Length != 0)
-            statusString = $"\n<color=#{Colors.Status.ToHtmlStringRGBA()}>Status</color>:{status}";
+            statusString = $"\n<color=#{CustomColorManager.Status.ToHtmlStringRGBA()}>Status</color>:{status}";
 
         __instance.__4__this.RoleText.text = role.Name;
         __instance.__4__this.RoleText.color = role.Color;

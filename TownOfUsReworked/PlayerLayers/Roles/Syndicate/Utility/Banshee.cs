@@ -7,7 +7,7 @@ public class Banshee : Syndicate
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Banshee : CustomColorManager.Syndicate;
     public override string Name => "Banshee";
     public override LayerEnum Type => LayerEnum.Banshee;
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
@@ -56,7 +56,7 @@ public class Banshee : Syndicate
 
         Faded = true;
         Player.Visible = true;
-        var color = new Color(1f, 1f, 1f, 0f);
+        var color = new UColor(1f, 1f, 1f, 0f);
 
         var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
         var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;

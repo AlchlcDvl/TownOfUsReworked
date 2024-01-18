@@ -21,8 +21,6 @@ public static class ExtraRegions
         var custom = new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, TownOfUsReworked.Ip.Value, new(new[] { new ServerInfo("Custom", TownOfUsReworked.Ip.Value,
             TownOfUsReworked.Port.Value, false) })).Cast<IRegionInfo>();
 
-        //play.scumscyb.org
-
         var iregionInfoArray = new IRegionInfo[] { mna, meu, mas, custom };
         var iregionInfo1 = ServerManager.Instance.CurrentRegion;
 
@@ -98,11 +96,8 @@ public static class ExtraRegions
         }
     }
 
-    private static void RemoveRegions(string[] regionNames)
-    {
-        var newRegions = ServerManager.Instance.AvailableRegions.Where(r => Array.FindIndex(regionNames, name => name.Equals(r.Name, StringComparison.OrdinalIgnoreCase)) == -1);
-        ServerManager.Instance.AvailableRegions = newRegions.ToArray();
-    }
+    private static void RemoveRegions(string[] regionNames) => ServerManager.Instance.AvailableRegions = ServerManager.Instance.AvailableRegions.Where(r => Array.FindIndex(regionNames, name
+        => name.Equals(r.Name, StringComparison.OrdinalIgnoreCase)) == -1).ToArray();
 
     private static IRegionInfo[] ParseRegions(string regions)
     {

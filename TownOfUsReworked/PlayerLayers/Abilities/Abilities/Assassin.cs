@@ -34,18 +34,20 @@ public class SyndicateAssassin : Assassin
 
 public abstract class Assassin : Ability
 {
-    private Dictionary<string, Color> ColorMapping { get; set; }
-    private Dictionary<string, Color> SortedColorMapping { get; set; }
+    private Dictionary<string, UColor> ColorMapping { get; set; }
+    private Dictionary<string, UColor> SortedColorMapping { get; set; }
     public static int RemainingKills { get; set; }
     public GameObject Phone { get; set; }
     private Transform SelectedButton { get; set; }
     private int Page { get; set; }
     private int MaxPage { get; set; }
     private Dictionary<int, List<Transform>> Buttons { get; set; }
-    private Dictionary<int, KeyValuePair<string, Color>> Sorted { get; set; }
+    private Dictionary<int, KeyValuePair<string, UColor>> Sorted { get; set; }
     public CustomMeeting AssassinMenu { get; set; }
+    private Transform Next;
+    private Transform Back;
 
-    public override Color Color => ClientGameOptions.CustomAbColors ? Colors.Assassin : Colors.Ability;
+    public override UColor Color => ClientGameOptions.CustomAbColors ? CustomColorManager.Assassin : CustomColorManager.Ability;
     public override Func<string> Description => () => "- You can guess players mid-meetings";
 
     protected Assassin(PlayerControl player) : base(player)
@@ -69,198 +71,198 @@ public abstract class Assassin : Ability
         //Adds all the roles that have a non-zero chance of being in the game
         if (!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None))
         {
-            ColorMapping.Add("Crewmate", Colors.Crew);
+            ColorMapping.Add("Crewmate", CustomColorManager.Crew);
 
             if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
             {
-                if (CustomGameOptions.MayorOn > 0) ColorMapping.Add("Mayor", Colors.Mayor);
-                if (CustomGameOptions.EngineerOn > 0) ColorMapping.Add("Engineer", Colors.Engineer);
-                if (CustomGameOptions.MedicOn > 0) ColorMapping.Add("Medic", Colors.Medic);
-                if (CustomGameOptions.AltruistOn > 0) ColorMapping.Add("Altruist", Colors.Altruist);
-                if (CustomGameOptions.VeteranOn > 0) ColorMapping.Add("Veteran", Colors.Veteran);
-                if (CustomGameOptions.TransporterOn > 0) ColorMapping.Add("Transporter", Colors.Transporter);
-                if (CustomGameOptions.ShifterOn > 0) ColorMapping.Add("Shifter", Colors.Shifter);
-                if (CustomGameOptions.EscortOn > 0) ColorMapping.Add("Escort", Colors.Escort);
-                if ((CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) || CustomGameOptions.VigilanteOn > 0) ColorMapping.Add("Vigilante", Colors.Vigilante);
-                if (CustomGameOptions.RetributionistOn > 0) ColorMapping.Add("Retributionist", Colors.Retributionist);
-                if (CustomGameOptions.ChameleonOn > 0) ColorMapping.Add("Chameleon", Colors.Chameleon);
-                if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.JackalOn > 0 || CustomGameOptions.WhispererOn > 0 || CustomGameOptions.NecromancerOn > 0)) ColorMapping.Add("Mystic", Colors.Mystic);
-                if (CustomGameOptions.MonarchOn > 0) ColorMapping.Add("Monarch", Colors.Monarch);
-                if (CustomGameOptions.DictatorOn > 0) ColorMapping.Add("Dictator", Colors.Dictator);
-                if (CustomGameOptions.BastionOn > 0) ColorMapping.Add("Bastion", Colors.Bastion);
-                if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) ColorMapping.Add("Vampire Hunter", Colors.VampireHunter);
+                if (CustomGameOptions.MayorOn > 0) ColorMapping.Add("Mayor", CustomColorManager.Mayor);
+                if (CustomGameOptions.EngineerOn > 0) ColorMapping.Add("Engineer", CustomColorManager.Engineer);
+                if (CustomGameOptions.MedicOn > 0) ColorMapping.Add("Medic", CustomColorManager.Medic);
+                if (CustomGameOptions.AltruistOn > 0) ColorMapping.Add("Altruist", CustomColorManager.Altruist);
+                if (CustomGameOptions.VeteranOn > 0) ColorMapping.Add("Veteran", CustomColorManager.Veteran);
+                if (CustomGameOptions.TransporterOn > 0) ColorMapping.Add("Transporter", CustomColorManager.Transporter);
+                if (CustomGameOptions.ShifterOn > 0) ColorMapping.Add("Shifter", CustomColorManager.Shifter);
+                if (CustomGameOptions.EscortOn > 0) ColorMapping.Add("Escort", CustomColorManager.Escort);
+                if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) ColorMapping.Add("Vampire Hunter", CustomColorManager.VampireHunter);
+                if (ColorMapping.ContainsKey("Vampire Hunter") || CustomGameOptions.VigilanteOn > 0) ColorMapping.Add("Vigilante", CustomColorManager.Vigilante);
+                if (CustomGameOptions.RetributionistOn > 0) ColorMapping.Add("Retributionist", CustomColorManager.Retributionist);
+                if (CustomGameOptions.ChameleonOn > 0) ColorMapping.Add("Chameleon", CustomColorManager.Chameleon);
+                if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.JackalOn > 0 || CustomGameOptions.WhispererOn > 0 || CustomGameOptions.NecromancerOn > 0)) ColorMapping.Add("Mystic", CustomColorManager.Mystic);
+                if (CustomGameOptions.MonarchOn > 0) ColorMapping.Add("Monarch", CustomColorManager.Monarch);
+                if (CustomGameOptions.DictatorOn > 0) ColorMapping.Add("Dictator", CustomColorManager.Dictator);
+                if (CustomGameOptions.BastionOn > 0) ColorMapping.Add("Bastion", CustomColorManager.Bastion);
 
                 if (CustomGameOptions.AssassinGuessInvestigative)
                 {
-                    if (CustomGameOptions.SeerOn > 0 || CustomGameOptions.SheriffOn > 0) ColorMapping.Add("Sheriff", Colors.Sheriff);
-                    if (CustomGameOptions.TrackerOn > 0) ColorMapping.Add("Tracker", Colors.Tracker);
-                    if (CustomGameOptions.OperativeOn > 0) ColorMapping.Add("Operative", Colors.Operative);
-                    if (CustomGameOptions.MediumOn > 0) ColorMapping.Add("Medium", Colors.Medium);
-                    if (CustomGameOptions.CoronerOn > 0) ColorMapping.Add("Coroner", Colors.Coroner);
-                    if (CustomGameOptions.DetectiveOn > 0) ColorMapping.Add("Detective", Colors.Detective);
-                    if (CustomGameOptions.SeerOn > 0 || ColorMapping.ContainsKey("Mystic")) ColorMapping.Add("Seer", Colors.Seer);
+                    if (CustomGameOptions.SeerOn > 0 || ColorMapping.ContainsKey("Mystic")) ColorMapping.Add("Seer", CustomColorManager.Seer);
+                    if (ColorMapping.ContainsKey("Seer") || CustomGameOptions.SheriffOn > 0) ColorMapping.Add("Sheriff", CustomColorManager.Sheriff);
+                    if (CustomGameOptions.TrackerOn > 0) ColorMapping.Add("Tracker", CustomColorManager.Tracker);
+                    if (CustomGameOptions.OperativeOn > 0) ColorMapping.Add("Operative", CustomColorManager.Operative);
+                    if (CustomGameOptions.MediumOn > 0) ColorMapping.Add("Medium", CustomColorManager.Medium);
+                    if (CustomGameOptions.CoronerOn > 0) ColorMapping.Add("Coroner", CustomColorManager.Coroner);
+                    if (CustomGameOptions.DetectiveOn > 0) ColorMapping.Add("Detective", CustomColorManager.Detective);
                 }
             }
         }
 
         if (!(Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)) && !CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
         {
-            ColorMapping.Add("Impostor", Colors.Intruder);
+            ColorMapping.Add("Impostor", CustomColorManager.Intruder);
 
             if (CustomGameOptions.IntruderMax > 0 && CustomGameOptions.IntruderMin > 0)
             {
-                if (CustomGameOptions.JanitorOn > 0) ColorMapping.Add("Janitor", Colors.Janitor);
-                if (CustomGameOptions.MorphlingOn > 0) ColorMapping.Add("Morphling", Colors.Morphling);
-                if (CustomGameOptions.MinerOn > 0) ColorMapping.Add("Miner", Colors.Miner);
-                if (CustomGameOptions.WraithOn > 0) ColorMapping.Add("Wraith", Colors.Wraith);
-                if (CustomGameOptions.GrenadierOn > 0) ColorMapping.Add("Grenadier", Colors.Grenadier);
-                if (CustomGameOptions.BlackmailerOn > 0) ColorMapping.Add("Blackmailer", Colors.Blackmailer);
-                if (CustomGameOptions.CamouflagerOn > 0) ColorMapping.Add("Camouflager", Colors.Camouflager);
-                if (CustomGameOptions.DisguiserOn > 0) ColorMapping.Add("Disguiser", Colors.Disguiser);
-                if (CustomGameOptions.EnforcerOn > 0) ColorMapping.Add("Enforcer", Colors.Enforcer);
-                if (CustomGameOptions.ConsigliereOn > 0) ColorMapping.Add("Consigliere", Colors.Consigliere);
-                if (CustomGameOptions.ConsortOn > 0) ColorMapping.Add("Consort", Colors.Consort);
+                if (CustomGameOptions.JanitorOn > 0) ColorMapping.Add("Janitor", CustomColorManager.Janitor);
+                if (CustomGameOptions.MorphlingOn > 0) ColorMapping.Add("Morphling", CustomColorManager.Morphling);
+                if (CustomGameOptions.MinerOn > 0) ColorMapping.Add("Miner", CustomColorManager.Miner);
+                if (CustomGameOptions.WraithOn > 0) ColorMapping.Add("Wraith", CustomColorManager.Wraith);
+                if (CustomGameOptions.GrenadierOn > 0) ColorMapping.Add("Grenadier", CustomColorManager.Grenadier);
+                if (CustomGameOptions.BlackmailerOn > 0) ColorMapping.Add("Blackmailer", CustomColorManager.Blackmailer);
+                if (CustomGameOptions.CamouflagerOn > 0) ColorMapping.Add("Camouflager", CustomColorManager.Camouflager);
+                if (CustomGameOptions.DisguiserOn > 0) ColorMapping.Add("Disguiser", CustomColorManager.Disguiser);
+                if (CustomGameOptions.EnforcerOn > 0) ColorMapping.Add("Enforcer", CustomColorManager.Enforcer);
+                if (CustomGameOptions.ConsigliereOn > 0) ColorMapping.Add("Consigliere", CustomColorManager.Consigliere);
+                if (CustomGameOptions.ConsortOn > 0) ColorMapping.Add("Consort", CustomColorManager.Consort);
 
                 if (CustomGameOptions.GodfatherOn > 0)
                 {
-                    ColorMapping.Add("Godfather", Colors.Godfather);
-                    ColorMapping.Add("Mafioso", Colors.Mafioso);
+                    ColorMapping.Add("Godfather", CustomColorManager.Godfather);
+                    ColorMapping.Add("Mafioso", CustomColorManager.Mafioso);
                 }
             }
         }
 
         if ((!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None)) && CustomGameOptions.SyndicateCount > 0)
         {
-            ColorMapping.Add("Anarchist", Colors.Syndicate);
+            ColorMapping.Add("Anarchist", CustomColorManager.Syndicate);
 
             if (CustomGameOptions.SyndicateMax > 0 && CustomGameOptions.SyndicateMin > 0)
             {
-                if (CustomGameOptions.WarperOn > 0) ColorMapping.Add("Warper", Colors.Warper);
-                if (CustomGameOptions.ConcealerOn > 0) ColorMapping.Add("Concealer", Colors.Concealer);
-                if (CustomGameOptions.ShapeshifterOn > 0) ColorMapping.Add("Shapeshifter", Colors.Shapeshifter);
-                if (CustomGameOptions.FramerOn > 0) ColorMapping.Add("Framer", Colors.Framer);
-                if (CustomGameOptions.BomberOn > 0) ColorMapping.Add("Bomber", Colors.Bomber);
-                if (CustomGameOptions.PoisonerOn > 0) ColorMapping.Add("Poisoner", Colors.Poisoner);
-                if (CustomGameOptions.CrusaderOn > 0) ColorMapping.Add("Crusader", Colors.Crusader);
-                if (CustomGameOptions.StalkerOn > 0) ColorMapping.Add("Stalker", Colors.Stalker);
-                if (CustomGameOptions.ColliderOn > 0) ColorMapping.Add("Collider", Colors.Collider);
-                if (CustomGameOptions.SpellslingerOn > 0) ColorMapping.Add("Spellslinger", Colors.Spellslinger);
-                if (CustomGameOptions.TimekeeperOn > 0) ColorMapping.Add("Timekeeper", Colors.Timekeeper);
-                if (CustomGameOptions.SilencerOn > 0) ColorMapping.Add("Silencer", Colors.Silencer);
+                if (CustomGameOptions.WarperOn > 0) ColorMapping.Add("Warper", CustomColorManager.Warper);
+                if (CustomGameOptions.ConcealerOn > 0) ColorMapping.Add("Concealer", CustomColorManager.Concealer);
+                if (CustomGameOptions.ShapeshifterOn > 0) ColorMapping.Add("Shapeshifter", CustomColorManager.Shapeshifter);
+                if (CustomGameOptions.FramerOn > 0) ColorMapping.Add("Framer", CustomColorManager.Framer);
+                if (CustomGameOptions.BomberOn > 0) ColorMapping.Add("Bomber", CustomColorManager.Bomber);
+                if (CustomGameOptions.PoisonerOn > 0) ColorMapping.Add("Poisoner", CustomColorManager.Poisoner);
+                if (CustomGameOptions.CrusaderOn > 0) ColorMapping.Add("Crusader", CustomColorManager.Crusader);
+                if (CustomGameOptions.StalkerOn > 0) ColorMapping.Add("Stalker", CustomColorManager.Stalker);
+                if (CustomGameOptions.ColliderOn > 0) ColorMapping.Add("Collider", CustomColorManager.Collider);
+                if (CustomGameOptions.SpellslingerOn > 0) ColorMapping.Add("Spellslinger", CustomColorManager.Spellslinger);
+                if (CustomGameOptions.TimekeeperOn > 0) ColorMapping.Add("Timekeeper", CustomColorManager.Timekeeper);
+                if (CustomGameOptions.SilencerOn > 0) ColorMapping.Add("Silencer", CustomColorManager.Silencer);
 
                 if (CustomGameOptions.RebelOn > 0)
                 {
-                    ColorMapping.Add("Rebel", Colors.Rebel);
-                    ColorMapping.Add("Sidekick", Colors.Sidekick);
+                    ColorMapping.Add("Rebel", CustomColorManager.Rebel);
+                    ColorMapping.Add("Sidekick", CustomColorManager.Sidekick);
                 }
             }
         }
 
         if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
         {
-            if (CustomGameOptions.ArsonistOn > 0 && !Player.Is(LayerEnum.Arsonist)) ColorMapping.Add("Arsonist", Colors.Arsonist);
-            if (CustomGameOptions.GlitchOn > 0 && !Player.Is(LayerEnum.Glitch)) ColorMapping.Add("Glitch", Colors.Glitch);
-            if (CustomGameOptions.SerialKillerOn > 0 && !Player.Is(LayerEnum.SerialKiller)) ColorMapping.Add("Serial Killer", Colors.SerialKiller);
-            if (CustomGameOptions.JuggernautOn > 0 && !Player.Is(LayerEnum.Juggernaut)) ColorMapping.Add("Juggernaut", Colors.Juggernaut);
-            if (CustomGameOptions.MurdererOn > 0 && !Player.Is(LayerEnum.Murderer)) ColorMapping.Add("Murderer", Colors.Murderer);
-            if (CustomGameOptions.CryomaniacOn > 0 && !Player.Is(LayerEnum.Murderer)) ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
-            if (CustomGameOptions.WerewolfOn > 0 && !Player.Is(LayerEnum.Werewolf)) ColorMapping.Add("Werewolf", Colors.Werewolf);
+            if (CustomGameOptions.ArsonistOn > 0 && !Player.Is(LayerEnum.Arsonist)) ColorMapping.Add("Arsonist", CustomColorManager.Arsonist);
+            if (CustomGameOptions.GlitchOn > 0 && !Player.Is(LayerEnum.Glitch)) ColorMapping.Add("Glitch", CustomColorManager.Glitch);
+            if (CustomGameOptions.SerialKillerOn > 0 && !Player.Is(LayerEnum.SerialKiller)) ColorMapping.Add("Serial Killer", CustomColorManager.SerialKiller);
+            if (CustomGameOptions.JuggernautOn > 0 && !Player.Is(LayerEnum.Juggernaut)) ColorMapping.Add("Juggernaut", CustomColorManager.Juggernaut);
+            if (CustomGameOptions.MurdererOn > 0 && !Player.Is(LayerEnum.Murderer)) ColorMapping.Add("Murderer", CustomColorManager.Murderer);
+            if (CustomGameOptions.CryomaniacOn > 0 && !Player.Is(LayerEnum.Murderer)) ColorMapping.Add("Cryomaniac", CustomColorManager.Cryomaniac);
+            if (CustomGameOptions.WerewolfOn > 0 && !Player.Is(LayerEnum.Werewolf)) ColorMapping.Add("Werewolf", CustomColorManager.Werewolf);
 
             if (CustomGameOptions.PlaguebearerOn > 0 && !Player.Is(Alignment.NeutralHarb) && !Player.Is(Alignment.NeutralApoc))
             {
-                ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
+                ColorMapping.Add("Plaguebearer", CustomColorManager.Plaguebearer);
 
                 if (CustomGameOptions.AssassinGuessPest)
-                    ColorMapping.Add("Pestilence", Colors.Pestilence);
+                    ColorMapping.Add("Pestilence", CustomColorManager.Pestilence);
             }
 
             if (CustomGameOptions.DraculaOn > 0 && !Player.Is(SubFaction.Undead))
             {
-                ColorMapping.Add("Dracula", Colors.Dracula);
-                ColorMapping.Add("Bitten", Colors.Undead);
+                ColorMapping.Add("Dracula", CustomColorManager.Dracula);
+                ColorMapping.Add("Bitten", CustomColorManager.Undead);
             }
 
             if (CustomGameOptions.JackalOn > 0 && !Player.Is(SubFaction.Cabal))
             {
-                ColorMapping.Add("Jackal", Colors.Jackal);
-                ColorMapping.Add("Recruit", Colors.Cabal);
+                ColorMapping.Add("Jackal", CustomColorManager.Jackal);
+                ColorMapping.Add("Recruit", CustomColorManager.Cabal);
             }
 
             if (CustomGameOptions.NecromancerOn > 0 && !Player.Is(SubFaction.Reanimated))
             {
-                ColorMapping.Add("Necromancer", Colors.Necromancer);
-                ColorMapping.Add("Resurrected", Colors.Reanimated);
+                ColorMapping.Add("Necromancer", CustomColorManager.Necromancer);
+                ColorMapping.Add("Resurrected", CustomColorManager.Reanimated);
             }
 
             if (CustomGameOptions.WhispererOn > 0 && !Player.Is(SubFaction.Sect))
             {
-                ColorMapping.Add("Whisperer", Colors.Whisperer);
-                ColorMapping.Add("Persuaded", Colors.Sect);
+                ColorMapping.Add("Whisperer", CustomColorManager.Whisperer);
+                ColorMapping.Add("Persuaded", CustomColorManager.Sect);
             }
 
             //Add certain Neutral roles if enabled
             if (CustomGameOptions.AssassinGuessNeutralBenign)
             {
-                if (CustomGameOptions.AmnesiacOn > 0) ColorMapping.Add("Amnesiac", Colors.Amnesiac);
-                if (CustomGameOptions.SurvivorOn > 0 || CustomGameOptions.GuardianAngelOn > 0) ColorMapping.Add("Survivor", Colors.Survivor);
-                if (CustomGameOptions.GuardianAngelOn > 0) ColorMapping.Add("Guardian Angel", Colors.GuardianAngel);
-                if (CustomGameOptions.ThiefOn > 0 || CustomGameOptions.AmnesiacOn > 0) ColorMapping.Add("Thief", Colors.Thief);
+                if (CustomGameOptions.AmnesiacOn > 0) ColorMapping.Add("Amnesiac", CustomColorManager.Amnesiac);
+                if (CustomGameOptions.SurvivorOn > 0 || CustomGameOptions.GuardianAngelOn > 0) ColorMapping.Add("Survivor", CustomColorManager.Survivor);
+                if (CustomGameOptions.GuardianAngelOn > 0) ColorMapping.Add("Guardian Angel", CustomColorManager.GuardianAngel);
+                if (CustomGameOptions.ThiefOn > 0 || CustomGameOptions.AmnesiacOn > 0) ColorMapping.Add("Thief", CustomColorManager.Thief);
             }
 
             if (CustomGameOptions.AssassinGuessNeutralEvil)
             {
-                if (CustomGameOptions.CannibalOn > 0) ColorMapping.Add("Cannibal", Colors.Cannibal);
-                if (CustomGameOptions.ExecutionerOn > 0) ColorMapping.Add("Executioner", Colors.Executioner);
-                if (CustomGameOptions.GuesserOn > 0) ColorMapping.Add("Guesser", Colors.Guesser);
-                if (CustomGameOptions.BountyHunterOn > 0) ColorMapping.Add("Bounty Hunter", Colors.BountyHunter);
-                if (CustomGameOptions.TrollOn > 0 || CustomGameOptions.BountyHunterOn > 0) ColorMapping.Add("Troll", Colors.Troll);
-                if (CustomGameOptions.ActorOn > 0 || CustomGameOptions.GuesserOn > 0) ColorMapping.Add("Actor", Colors.Actor);
-                if (CustomGameOptions.JesterOn > 0 || CustomGameOptions.ExecutionerOn > 0) ColorMapping.Add("Jester", Colors.Jester);
+                if (CustomGameOptions.CannibalOn > 0) ColorMapping.Add("Cannibal", CustomColorManager.Cannibal);
+                if (CustomGameOptions.ExecutionerOn > 0) ColorMapping.Add("Executioner", CustomColorManager.Executioner);
+                if (CustomGameOptions.GuesserOn > 0) ColorMapping.Add("Guesser", CustomColorManager.Guesser);
+                if (CustomGameOptions.BountyHunterOn > 0) ColorMapping.Add("Bounty Hunter", CustomColorManager.BountyHunter);
+                if (CustomGameOptions.TrollOn > 0 || CustomGameOptions.BountyHunterOn > 0) ColorMapping.Add("Troll", CustomColorManager.Troll);
+                if (CustomGameOptions.ActorOn > 0 || CustomGameOptions.GuesserOn > 0) ColorMapping.Add("Actor", CustomColorManager.Actor);
+                if (CustomGameOptions.JesterOn > 0 || CustomGameOptions.ExecutionerOn > 0) ColorMapping.Add("Jester", CustomColorManager.Jester);
             }
         }
 
         //Add Modifiers if enabled
         if (CustomGameOptions.AssassinGuessModifiers)
         {
-            if (CustomGameOptions.BaitOn > 0) ColorMapping.Add("Bait", Colors.Bait);
-            if (CustomGameOptions.DiseasedOn > 0) ColorMapping.Add("Diseased", Colors.Diseased);
-            if (CustomGameOptions.ProfessionalOn > 0) ColorMapping.Add("Professional", Colors.Professional);
-            if (CustomGameOptions.VIPOn > 0) ColorMapping.Add("VIP", Colors.VIP);
+            if (CustomGameOptions.BaitOn > 0) ColorMapping.Add("Bait", CustomColorManager.Bait);
+            if (CustomGameOptions.DiseasedOn > 0) ColorMapping.Add("Diseased", CustomColorManager.Diseased);
+            if (CustomGameOptions.ProfessionalOn > 0) ColorMapping.Add("Professional", CustomColorManager.Professional);
+            if (CustomGameOptions.VIPOn > 0) ColorMapping.Add("VIP", CustomColorManager.VIP);
         }
 
         //Add Objectifiers if enabled
         if (CustomGameOptions.AssassinGuessObjectifiers)
         {
-            if (CustomGameOptions.LoversOn > 0 && !Player.Is(LayerEnum.Lovers)) ColorMapping.Add("Lover", Colors.Lovers);
-            if (CustomGameOptions.TaskmasterOn > 0) ColorMapping.Add("Taskmaster", Colors.Taskmaster);
-            if (CustomGameOptions.CorruptedOn > 0) ColorMapping.Add("Corrupted", Colors.Corrupted);
-            if (CustomGameOptions.TraitorOn > 0) ColorMapping.Add("Traitor", Colors.Traitor);
-            if (CustomGameOptions.FanaticOn > 0) ColorMapping.Add("Fanatic", Colors.Fanatic);
-            if (CustomGameOptions.RivalsOn > 0 && !Player.Is(LayerEnum.Rivals)) ColorMapping.Add("Rival", Colors.Rivals);
-            if (CustomGameOptions.OverlordOn > 0) ColorMapping.Add("Overlord", Colors.Overlord);
-            if (CustomGameOptions.AlliedOn > 0) ColorMapping.Add("Allied", Colors.Allied);
-            if (CustomGameOptions.LinkedOn > 0 && !Player.Is(LayerEnum.Linked)) ColorMapping.Add("Linked", Colors.Linked);
-            if (CustomGameOptions.MafiaOn > 0 && !Player.Is(LayerEnum.Mafia)) ColorMapping.Add("Mafia", Colors.Mafia);
-            if (CustomGameOptions.DefectorOn > 0) ColorMapping.Add("Defector", Colors.Defector);
+            if (CustomGameOptions.LoversOn > 0 && !Player.Is(LayerEnum.Lovers)) ColorMapping.Add("Lover", CustomColorManager.Lovers);
+            if (CustomGameOptions.TaskmasterOn > 0) ColorMapping.Add("Taskmaster", CustomColorManager.Taskmaster);
+            if (CustomGameOptions.CorruptedOn > 0) ColorMapping.Add("Corrupted", CustomColorManager.Corrupted);
+            if (CustomGameOptions.TraitorOn > 0) ColorMapping.Add("Traitor", CustomColorManager.Traitor);
+            if (CustomGameOptions.FanaticOn > 0) ColorMapping.Add("Fanatic", CustomColorManager.Fanatic);
+            if (CustomGameOptions.RivalsOn > 0 && !Player.Is(LayerEnum.Rivals)) ColorMapping.Add("Rival", CustomColorManager.Rivals);
+            if (CustomGameOptions.OverlordOn > 0) ColorMapping.Add("Overlord", CustomColorManager.Overlord);
+            if (CustomGameOptions.AlliedOn > 0) ColorMapping.Add("Allied", CustomColorManager.Allied);
+            if (CustomGameOptions.LinkedOn > 0 && !Player.Is(LayerEnum.Linked)) ColorMapping.Add("Linked", CustomColorManager.Linked);
+            if (CustomGameOptions.MafiaOn > 0 && !Player.Is(LayerEnum.Mafia)) ColorMapping.Add("Mafia", CustomColorManager.Mafia);
+            if (CustomGameOptions.DefectorOn > 0) ColorMapping.Add("Defector", CustomColorManager.Defector);
         }
 
         //Add Abilities if enabled
         if (CustomGameOptions.AssassinGuessAbilities)
         {
-            if (CustomGameOptions.CrewAssassinOn > 0) ColorMapping.Add("Bullseye", Colors.Assassin);
-            if (CustomGameOptions.IntruderAssassinOn > 0) ColorMapping.Add("Assassin", Colors.Assassin);
-            if (CustomGameOptions.SyndicateAssassinOn > 0) ColorMapping.Add("Sniper", Colors.Assassin);
-            if (CustomGameOptions.NeutralAssassinOn > 0) ColorMapping.Add("Slayer", Colors.Assassin);
-            if (CustomGameOptions.TorchOn > 0) ColorMapping.Add("Torch", Colors.Torch);
-            if (CustomGameOptions.UnderdogOn > 0) ColorMapping.Add("Underdog", Colors.Underdog);
-            if (CustomGameOptions.RadarOn > 0) ColorMapping.Add("Radar", Colors.Radar);
-            if (CustomGameOptions.TiebreakerOn > 0) ColorMapping.Add("Tiebreaker", Colors.Tiebreaker);
-            if (CustomGameOptions.MultitaskerOn > 0) ColorMapping.Add("Multitasker", Colors.Multitasker);
-            if (CustomGameOptions.SnitchOn > 0 && !Player.Is(Faction.Crew)) ColorMapping.Add("Snitch", Colors.Snitch);
-            if (CustomGameOptions.TunnelerOn > 0) ColorMapping.Add("Tunneler", Colors.Tunneler);
-            if (CustomGameOptions.ButtonBarryOn > 0) ColorMapping.Add("Button Barry", Colors.ButtonBarry);
-            if (CustomGameOptions.SwapperOn > 0) ColorMapping.Add("Swapper", Colors.Swapper);
-            if (CustomGameOptions.PoliticianOn > 0) ColorMapping.Add("Politician", Colors.Politician);
+            if (CustomGameOptions.CrewAssassinOn > 0) ColorMapping.Add("Bullseye", CustomColorManager.Assassin);
+            if (CustomGameOptions.IntruderAssassinOn > 0) ColorMapping.Add("Assassin", CustomColorManager.Assassin);
+            if (CustomGameOptions.SyndicateAssassinOn > 0) ColorMapping.Add("Sniper", CustomColorManager.Assassin);
+            if (CustomGameOptions.NeutralAssassinOn > 0) ColorMapping.Add("Slayer", CustomColorManager.Assassin);
+            if (CustomGameOptions.TorchOn > 0) ColorMapping.Add("Torch", CustomColorManager.Torch);
+            if (CustomGameOptions.UnderdogOn > 0) ColorMapping.Add("Underdog", CustomColorManager.Underdog);
+            if (CustomGameOptions.RadarOn > 0) ColorMapping.Add("Radar", CustomColorManager.Radar);
+            if (CustomGameOptions.TiebreakerOn > 0) ColorMapping.Add("Tiebreaker", CustomColorManager.Tiebreaker);
+            if (CustomGameOptions.MultitaskerOn > 0) ColorMapping.Add("Multitasker", CustomColorManager.Multitasker);
+            if (CustomGameOptions.SnitchOn > 0 && !Player.Is(Faction.Crew)) ColorMapping.Add("Snitch", CustomColorManager.Snitch);
+            if (CustomGameOptions.TunnelerOn > 0) ColorMapping.Add("Tunneler", CustomColorManager.Tunneler);
+            if (CustomGameOptions.ButtonBarryOn > 0) ColorMapping.Add("Button Barry", CustomColorManager.ButtonBarry);
+            if (CustomGameOptions.SwapperOn > 0) ColorMapping.Add("Swapper", CustomColorManager.Swapper);
+            if (CustomGameOptions.PoliticianOn > 0) ColorMapping.Add("Politician", CustomColorManager.Politician);
         }
 
         //Sorts the list alphabetically.
@@ -289,40 +291,22 @@ public abstract class Assassin : Ability
     private void SetButtons(MeetingHud __instance, PlayerVoteArea voteArea)
     {
         var buttonTemplate = voteArea.transform.FindChild("votePlayerBase");
-        var maskTemplate = voteArea.transform.FindChild("MaskArea");
-        var textTemplate = voteArea.NameText;
         SelectedButton = null;
         var i = 0;
         var j = 0;
 
         for (var k = 0; k < SortedColorMapping.Count; k++)
         {
-            var buttonParent = new GameObject("Guess").transform;
-            buttonParent.SetParent(Phone.transform);
-            var button = UObject.Instantiate(buttonTemplate, buttonParent);
-            UObject.Instantiate(maskTemplate, buttonParent);
-            var label = UObject.Instantiate(textTemplate, button);
-            button.GetComponent<SpriteRenderer>().sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
-
             if (!Buttons.ContainsKey(i))
                 Buttons.Add(i, new());
 
             var row = j / 5;
             var col = j % 5;
-            buttonParent.localPosition = new(-3.47f + (1.75f * col), 1.5f - (0.45f * row), -5f);
-            buttonParent.localScale = new(0.55f, 0.55f, 1f);
-            label.alignment = TextAlignmentOptions.Center;
-            label.transform.localPosition = new(0f, 0f, label.transform.localPosition.z);
-            label.transform.localScale *= 1.7f;
-            label.text = Sorted[k].Key;
-            label.color = Sorted[k].Value;
-            var passive = button.GetComponent<PassiveButton>();
-            passive.OnMouseOver = new();
-            passive.OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UColor.green));
-            passive.OnMouseOut = new();
-            passive.OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UColor.red : UColor.white));
-            passive.OnClick = new();
-            passive.OnClick.AddListener((Action)(() =>
+            var guess = Sorted[k].Key;
+            var buttonParent = new GameObject($"Guess{guess}").transform;
+            buttonParent.SetParent(Phone.transform);
+            var button = UObject.Instantiate(buttonTemplate, buttonParent);
+            MakeTheButton(button, buttonParent, voteArea, new(-3.47f + (1.75f * col), 1.5f - (0.45f * row), -5f), guess, Sorted[k].Value, () =>
             {
                 if (IsDead)
                     return;
@@ -333,16 +317,16 @@ public abstract class Assassin : Ability
                         SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
 
                     SelectedButton = button;
+                    SelectedButton.GetComponent<SpriteRenderer>().color = UColor.red;
                 }
                 else
                 {
                     var focusedTarget = PlayerByVoteArea(voteArea);
 
-                    if (__instance.state == MeetingHud.VoteStates.Discussion || focusedTarget == null || RemainingKills <= 0 )
+                    if (__instance.state == MeetingHud.VoteStates.Discussion || focusedTarget == null || RemainingKills <= 0)
                         return;
 
                     var targetId = voteArea.TargetPlayerId;
-                    var currentGuess = label.text;
                     var targetPlayer = PlayerById(targetId);
 
                     var playerRole = Role.GetRole(voteArea);
@@ -350,37 +334,33 @@ public abstract class Assassin : Ability
                     var playerModifier = Modifier.GetModifier(voteArea);
                     var playerObjectifier = Objectifier.GetObjectifier(voteArea);
 
-                    var roleflag = playerRole?.Name == currentGuess;
-                    var modifierflag = playerModifier?.Name == currentGuess && CustomGameOptions.AssassinGuessModifiers;
-                    var abilityflag = playerAbility?.Name == currentGuess && CustomGameOptions.AssassinGuessAbilities;
-                    var objectifierflag = playerObjectifier?.Name == currentGuess && CustomGameOptions.AssassinGuessObjectifiers;
-                    var recruitflag = targetPlayer.IsRecruit() && currentGuess == "Recruit";
-                    var sectflag = targetPlayer.IsPersuaded() && currentGuess == "Persuaded";
-                    var reanimatedflag = targetPlayer.IsResurrected() && currentGuess == "Resurrected";
-                    var undeadflag = targetPlayer.IsBitten() && currentGuess == "Bitten";
+                    var roleflag = playerRole?.Name == guess;
+                    var modifierflag = playerModifier?.Name == guess && CustomGameOptions.AssassinGuessModifiers;
+                    var abilityflag = playerAbility?.Name == guess && CustomGameOptions.AssassinGuessAbilities;
+                    var objectifierflag = playerObjectifier?.Name == guess && CustomGameOptions.AssassinGuessObjectifiers;
+                    var recruitflag = targetPlayer.IsRecruit() && guess == "Recruit";
+                    var sectflag = targetPlayer.IsPersuaded() && guess == "Persuaded";
+                    var reanimatedflag = targetPlayer.IsResurrected() && guess == "Resurrected";
+                    var undeadflag = targetPlayer.IsBitten() && guess == "Bitten";
                     var framedflag = targetPlayer.IsFramed();
 
-                    var actGuessed = false;
-
-                    if (targetPlayer.Is(LayerEnum.Actor) && currentGuess != "Actor")
+                    if (targetPlayer.Is(LayerEnum.Actor) && guess != "Actor")
                     {
                         var actor = Role.GetRole<Actor>(targetPlayer);
 
-                        if (actor.PretendRoles.Any(x => x.Name == currentGuess))
+                        if (actor.PretendRoles.Any(x => x.Name == guess))
                         {
                             actor.Guessed = true;
-                            actGuessed = true;
                             CallRpc(CustomRPC.WinLose, WinLoseRPC.ActorWin, actor);
+
+                            if (!CustomGameOptions.AvoidNeutralKingmakers)
+                                RpcMurderPlayer(Player, guess, targetPlayer);
                         }
                     }
 
-                    var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag || undeadflag || framedflag || actGuessed;
+                    var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag || undeadflag || framedflag;
                     var toDie = flag ? targetPlayer : Player;
-                    RpcMurderPlayer(toDie, currentGuess, targetPlayer);
-
-                    if (actGuessed && !CustomGameOptions.AvoidNeutralKingmakers)
-                        RpcMurderPlayer(Player, currentGuess, targetPlayer);
-
+                    RpcMurderPlayer(toDie, guess, targetPlayer);
                     Exit(__instance);
 
                     if (RemainingKills <= 0 || !CustomGameOptions.AssassinMultiKill)
@@ -388,7 +368,7 @@ public abstract class Assassin : Ability
                     else
                         AssassinMenu.HideSingle(targetId);
                 }
-            }));
+            });
 
             Buttons[i].Add(button);
             j++;
@@ -399,6 +379,42 @@ public abstract class Assassin : Ability
                 j -= 40;
             }
         }
+
+        if (MaxPage > 0)
+        {
+            var nextParent = new GameObject("GuessNext").transform;
+            nextParent.SetParent(Phone.transform);
+            Next = UObject.Instantiate(buttonTemplate, nextParent);
+            MakeTheButton(Next, nextParent, voteArea, new(3.53f, -2.13f, -5f), "Next Page", UColor.white, () => Page = CycleInt(MaxPage, 0, Page, true));
+
+            var backParent = new GameObject("GuessBack").transform;
+            backParent.SetParent(Phone.transform);
+            Back = UObject.Instantiate(buttonTemplate, backParent);
+            MakeTheButton(Back, backParent, voteArea, new(-3.47f, -2.13f, -5f), "Back Page", UColor.white, () => Page = CycleInt(MaxPage, 0, Page, false));
+        }
+    }
+
+    private void MakeTheButton(Transform button, Transform buttonParent, PlayerVoteArea voteArea, Vector3 position, string title, UColor color, Action onClick)
+    {
+        UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), buttonParent);
+        var label = UObject.Instantiate(voteArea.NameText, button);
+        var rend = button.GetComponent<SpriteRenderer>();
+        rend.sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+        buttonParent.localPosition = position;
+        buttonParent.localScale = new(0.55f, 0.55f, 1f);
+        label.transform.localPosition = new(0f, 0f, label.transform.localPosition.z);
+        label.transform.localScale *= 1.7f;
+        label.text = title;
+        label.color = color;
+        var passive = button.GetComponent<PassiveButton>();
+        passive.OnMouseOver = new();
+        passive.OnMouseOver.AddListener((Action)(() => rend.color = UColor.green));
+        passive.OnMouseOut = new();
+        passive.OnMouseOut.AddListener((Action)(() => rend.color = SelectedButton == button ? UColor.red : UColor.white));
+        passive.OnClick = new();
+        passive.OnClick.AddListener(onClick);
+        passive.ClickSound = SoundEffects["Click"];
+        passive.HoverSound = SoundEffects["Hover"];
     }
 
     private bool IsExempt(PlayerVoteArea voteArea)
@@ -424,7 +440,7 @@ public abstract class Assassin : Ability
         var exitButtonParent = new GameObject("CustomExitButton").transform;
         exitButtonParent.SetParent(container);
         var exitButton = UObject.Instantiate(voteArea.transform.FindChild("votePlayerBase").transform, exitButtonParent);
-        var exitButtonMask = UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), exitButtonParent);
+        UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), exitButtonParent);
         exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = voteArea.Buttons.transform.Find("CancelButton").GetComponent<SpriteRenderer>().sprite;
         exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
         exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
@@ -449,6 +465,9 @@ public abstract class Assassin : Ability
         {
             foreach (var item in pair.Value)
             {
+                if (!item)
+                    continue;
+
                 item.GetComponent<PassiveButton>().OnClick = new();
                 item.GetComponent<PassiveButton>().OnMouseOut = new();
                 item.GetComponent<PassiveButton>().OnMouseOver = new();
@@ -459,6 +478,23 @@ public abstract class Assassin : Ability
         }
 
         Buttons.Clear();
+
+        if (MaxPage > 0)
+        {
+            Next.GetComponent<PassiveButton>().OnClick = new();
+            Next.GetComponent<PassiveButton>().OnMouseOut = new();
+            Next.GetComponent<PassiveButton>().OnMouseOver = new();
+            Next.gameObject.SetActive(false);
+            Next.gameObject.Destroy();
+            Next.Destroy();
+
+            Back.GetComponent<PassiveButton>().OnClick = new();
+            Back.GetComponent<PassiveButton>().OnMouseOut = new();
+            Back.GetComponent<PassiveButton>().OnMouseOver = new();
+            Back.gameObject.SetActive(false);
+            Back.gameObject.Destroy();
+            Back.Destroy();
+        }
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -470,14 +506,17 @@ public abstract class Assassin : Ability
     public override void UpdateMeeting(MeetingHud __instance)
     {
         base.UpdateMeeting(__instance);
-        AssassinMenu.Update();
+        AssassinMenu.Update(__instance);
 
-        if (Phone != null)
+        if (Phone)
         {
-            if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f) && MaxPage != 0)
-                Page = CycleInt(MaxPage, 0, Page, true);
-            else if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f) && MaxPage != 0)
-                Page = CycleInt(MaxPage, 0, Page, false);
+            if (MaxPage > 0)
+            {
+                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
+                    Page = CycleInt(MaxPage, 0, Page, true);
+                else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
+                    Page = CycleInt(MaxPage, 0, Page, false);
+            }
 
             foreach (var pair in Buttons)
             {
@@ -497,14 +536,17 @@ public abstract class Assassin : Ability
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
+        if (Local && player == Player)
+            AssassinMenu.HideButtons();
+
         if (player.Is(LayerEnum.Indomitable) && player != Player)
         {
             if (Local)
-                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
             else if (player == CustomPlayer.Local)
-                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
 
-            Flash(Colors.Indomitable);
+            Flash(CustomColorManager.Indomitable);
             Modifier.GetModifier<Indomitable>(player).AttemptedGuess = true;
         }
 
@@ -515,14 +557,15 @@ public abstract class Assassin : Ability
             if (!modifier.LifeUsed)
             {
                 modifier.LifeUsed = true;
+                AssassinMenu.HideSingle(guessTarget.PlayerId);
 
                 if (Local)
                 {
                     Flash(modifier.Color);
-                    Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
                 }
                 else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything)
-                    Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
 
                 return;
             }
@@ -542,21 +585,21 @@ public abstract class Assassin : Ability
         if (Local)
         {
             if (Player != player)
-                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
             else
-                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
         else if (Player != player && CustomPlayer.Local == player)
-            Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
+            Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
         else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything)
         {
             if (Player != player)
-                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
             else
-                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and died!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
         else
-            Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
+            Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
     }
 
     public override void VoteComplete(MeetingHud __instance)

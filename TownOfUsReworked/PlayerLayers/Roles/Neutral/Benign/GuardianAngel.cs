@@ -10,7 +10,7 @@ public class GuardianAngel : Neutral
     public CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer == null && Rounds > 2;
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.GuardianAngel : CustomColorManager.Neutral;
     public override string Name => "Guardian Angel";
     public override LayerEnum Type => LayerEnum.GuardianAngel;
     public override Func<string> StartText => () => "Find Someone To Protect";
@@ -25,7 +25,7 @@ public class GuardianAngel : Neutral
         ProtectButton = new(this, "Protect", AbilityTypes.Targetless, "ActionSecondary", HitProtect, CustomGameOptions.ProtectCd, CustomGameOptions.ProtectDur, CustomGameOptions.MaxProtects);
         GraveProtectButton = new(this, "GraveProtect", AbilityTypes.Targetless, "ActionSecondary", HitProtect, CustomGameOptions.ProtectCd, CustomGameOptions.ProtectDur,
             CustomGameOptions.MaxProtects, true);
-        TargetButton = new(this, "GATarget", AbilityTypes.Target, "ActionSecondary", SelectTarget);
+        TargetButton = new(this, "GATarget", AbilityTypes.Alive, "ActionSecondary", SelectTarget);
         Rounds = 0;
     }
 
@@ -42,12 +42,6 @@ public class GuardianAngel : Neutral
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ProtectButton);
         ProtectButton.Begin();
     }
-
-    public bool Usable1() => TargetPlayer == null;
-
-    public bool Usable2() => !Failed && TargetPlayer != null && TargetAlive;
-
-    public bool Usable3() => Usable2() && CustomGameOptions.ProtectBeyondTheGrave;
 
     public override void UpdateHud(HudManager __instance)
     {

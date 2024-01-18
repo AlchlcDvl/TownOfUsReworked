@@ -8,15 +8,16 @@ public abstract class Syndicate : Role
     public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive) || GetLayers<PromotedRebel>().Any(x => x.HoldsDrive && IsPromoted);
     public bool IsPromoted;
 
-    public override Color Color => Colors.Syndicate;
+    public override UColor Color => CustomColorManager.Syndicate;
     public override Faction BaseFaction => Faction.Syndicate;
+    public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.Basic;
 
     protected Syndicate(PlayerControl player) : base(player)
     {
         Faction = Faction.Syndicate;
-        FactionColor = Colors.Syndicate;
+        FactionColor = CustomColorManager.Syndicate;
         Objectives = () => SyndicateWinCon;
-        KillButton = new(this, "SyndicateKill", AbilityTypes.Target, "ActionSecondary", Kill, CustomGameOptions.CDKillCd, Exception);
+        KillButton = new(this, "SyndicateKill", AbilityTypes.Alive, "ActionSecondary", Kill, CustomGameOptions.CDKillCd, Exception);
         Data.SetImpostor(true);
         IsPromoted = false;
     }
@@ -54,17 +55,7 @@ public abstract class Syndicate : Role
         return team;
     }
 
-    public void Kill()
-    {
-        var interact = Interact(Player, KillButton.TargetPlayer, true);
-
-        if (interact.AbilityUsed || interact.Reset)
-            KillButton.StartCooldown();
-        else if (interact.Protected)
-            KillButton.StartCooldown(CooldownType.GuardianAngel);
-        else if (interact.Vested)
-            KillButton.StartCooldown(CooldownType.Survivor);
-    }
+    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
 

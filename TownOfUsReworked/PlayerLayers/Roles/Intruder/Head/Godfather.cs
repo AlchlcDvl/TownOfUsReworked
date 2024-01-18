@@ -5,7 +5,7 @@ public class Godfather : Intruder
     public bool HasDeclared { get; set; }
     public CustomButton DeclareButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Godfather : CustomColorManager.Intruder;
     public override string Name => "Godfather";
     public override LayerEnum Type => LayerEnum.Godfather;
     public override Func<string> StartText => () => "Promote Your Fellow <color=#FF1919FF>Intruder</color> To Do Better";
@@ -16,7 +16,7 @@ public class Godfather : Intruder
     public Godfather(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderHead;
-        DeclareButton = new(this, "Promote", AbilityTypes.Target, "Secondary", Declare);
+        DeclareButton = new(this, "Promote", AbilityTypes.Alive, "Secondary", Declare);
     }
 
     public void Declare(PlayerControl target)
@@ -32,9 +32,7 @@ public class Godfather : Intruder
 
     public void Declare()
     {
-        var interact = Interact(Player, DeclareButton.TargetPlayer);
-
-        if (interact.AbilityUsed)
+        if (Interact(Player, DeclareButton.TargetPlayer) != CooldownType.Fail)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, DeclareButton.TargetPlayer);
             Declare(DeclareButton.TargetPlayer);

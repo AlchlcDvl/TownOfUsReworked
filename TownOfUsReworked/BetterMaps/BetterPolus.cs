@@ -316,7 +316,13 @@ public static class NormalPlayerTaskPatches
         if (flag)
             sb.Append(__instance.IsComplete ? "<color=#00DD00FF>" : "<color=#FFFF00FF>");
 
-        var room = GetUpdatedRoom(__instance);
+        var room = __instance.TaskType switch
+        {
+            TaskTypes.RecordTemperature => SystemTypes.Outside,
+            TaskTypes.RebootWifi => SystemTypes.Dropship,
+            TaskTypes.ChartCourse => SystemTypes.Comms,
+            _ => __instance.StartAt
+        };
         sb.Append(TranslationController.Instance.GetString(room));
         sb.Append(": ");
         sb.Append(TranslationController.Instance.GetString(__instance.TaskType));
@@ -342,12 +348,4 @@ public static class NormalPlayerTaskPatches
         sb.AppendLine();
         return false;
     }
-
-    private static SystemTypes GetUpdatedRoom(NormalPlayerTask task) => task.TaskType switch
-    {
-        TaskTypes.RecordTemperature => SystemTypes.Outside,
-        TaskTypes.RebootWifi => SystemTypes.Dropship,
-        TaskTypes.ChartCourse => SystemTypes.Comms,
-        _ => task.StartAt
-    };
 }

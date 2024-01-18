@@ -4,7 +4,7 @@ public class Sheriff : Crew
 {
     public CustomButton InterrogateButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Sheriff : CustomColorManager.Crew;
     public override string Name => "Sheriff";
     public override LayerEnum Type => LayerEnum.Sheriff;
     public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";
@@ -13,19 +13,15 @@ public class Sheriff : Crew
     public Sheriff(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewKill;
-        InterrogateButton = new(this, "Interrogate", AbilityTypes.Target, "ActionSecondary", Interrogate, CustomGameOptions.InterrogateCd, Exception);
+        InterrogateButton = new(this, "Interrogate", AbilityTypes.Alive, "ActionSecondary", Interrogate, CustomGameOptions.InterrogateCd, Exception);
     }
 
     public void Interrogate()
     {
-        var interact = Interact(Player, InterrogateButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, InterrogateButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Flash(InterrogateButton.TargetPlayer.SeemsEvil() ? UColor.red : UColor.green);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         InterrogateButton.StartCooldown(cooldown);
     }

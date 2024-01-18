@@ -1,64 +1,58 @@
+using Cpp2IL.Core.Extensions;
+
 namespace TownOfUsReworked.Classes;
 
 public static class RPC
 {
-    public static void SendOptionRPC(CustomOption optionn = null)
+    public static void SendOptionRPC(CustomOption setting = null)
     {
         List<CustomOption> options;
 
-        if (optionn != null)
-            options = new() { optionn };
+        if (setting != null)
+            options = new() { setting };
         else
-            options = CustomOption.AllOptions;
+            options = CustomOption.AllOptions.Clone();
 
-        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
-        writer.Write((byte)CustomRPC.Misc);
-        writer.Write((byte)MiscRPC.SyncCustomSettings);
+        options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Button);
+        var split = options.Split(50);
+        LogMessage($"Split options to {split.Count} sets");
 
-        foreach (var option in options)
+        foreach (var list in split)
         {
-            if (writer.Position > 1000)
+            var writer = CallOpenRpc(CustomRPC.Misc, MiscRPC.SyncCustomSettings, list.Count);
+
+            foreach (var option in list)
             {
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
-                writer.Write((byte)CustomRPC.Misc);
-                writer.Write((byte)MiscRPC.SyncCustomSettings);
+                writer.Write(option.ID);
+
+                if (option.Type == CustomOptionType.Toggle)
+                    writer.Write((bool)option.Value);
+                else if (option.Type == CustomOptionType.Number)
+                    writer.Write((float)option.Value);
+                else if (option.Type is CustomOptionType.String or CustomOptionType.Entry)
+                    writer.Write((int)option.Value);
+                else if (option.Type == CustomOptionType.Layers)
+                {
+                    writer.Write((int)option.Value);
+                    writer.Write((int)option.OtherValue);
+                }
             }
 
-            if (option.Type is CustomOptionType.Header or CustomOptionType.Button)
-                continue;
-
-            writer.Write(option.ID);
-
-            if (option.Type == CustomOptionType.Toggle)
-                writer.Write((bool)option.Value);
-            else if (option.Type == CustomOptionType.Number)
-                writer.Write((float)option.Value);
-            else if (option.Type is CustomOptionType.String or CustomOptionType.Entry)
-                writer.Write((int)option.Value);
-            else if (option.Type == CustomOptionType.Layers)
-            {
-                writer.Write((int)option.Value);
-                writer.Write((int)option.OtherValue);
-            }
+            writer.EndRpc();
         }
 
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
-        CustomOption.SaveSettings("LastUsedSettings");
+        CustomOption.SaveSettings("Last Used");
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)
     {
-        LogInfo("Options received:");
+        var count = reader.ReadInt32();
+        LogInfo($"{count} Options received:");
 
-        while (reader.BytesRemaining > 0)
+        for (var i = 0; i < count; i++)
         {
             var id = reader.ReadInt32();
             var customOption = CustomOption.AllOptions.Find(option => option.ID == id);
-
-            if (customOption == null)
-                continue;
-
             object value = null;
             object val = null;
 
@@ -80,27 +74,22 @@ public static class RPC
             LogInfo(customOption);
         }
 
-        CustomOption.SaveSettings("LastUsedSettings");
+        CustomOption.SaveSettings("Last Used");
     }
 
     public static void ShareGameVersion()
     {
-        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
-        writer.Write((byte)CustomRPC.Misc);
-        writer.Write((byte)MiscRPC.VersionHandshake);
-        writer.Write((byte)TownOfUsReworked.Version.Major);
-        writer.Write((byte)TownOfUsReworked.Version.Minor);
-        writer.Write((byte)TownOfUsReworked.Version.Build);
-        writer.Write((byte)TownOfUsReworked.Version.Revision);
-        writer.WriteBytesAndSize(TownOfUsReworked.Core.ManifestModule.ModuleVersionId.ToByteArray());
+        var writer = CallOpenRpc(CustomRPC.Misc, MiscRPC.VersionHandshake, TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build,
+            TownOfUsReworked.Version.Revision, TownOfUsReworked.IsDev, TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream,
+            TownOfUsReworked.Core.ManifestModule.ModuleVersionId.ToByteArray());
         writer.WritePacked(AmongUsClient.Instance.ClientId);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
-        VersionHandshake(TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build, TownOfUsReworked.Version.Revision,
-            TownOfUsReworked.Core.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
+        writer.EndRpc();
+        VersionHandshake(TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build, TownOfUsReworked.Version.Revision, TownOfUsReworked.IsDev,
+            TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream, TownOfUsReworked.Core.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
     }
 
-    public static void VersionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId) => GameStartManagerPatch.PlayerVersions.TryAdd(clientId, new(new(major, minor,
-        build, revision), guid));
+    public static void VersionHandshake(int major, int minor, int build, int revision, bool dev, int devBuild, bool stream, Guid guid, int clientId) =>
+        GameStartManagerPatch.PlayerVersions.TryAdd(clientId, new(new(major, minor, build, revision), dev, devBuild, stream, guid));
 
     public static PlayerControl ReadPlayer(this MessageReader reader) => PlayerById(reader.ReadByte());
 
@@ -149,6 +138,12 @@ public static class RPC
         return list;
     }
 
+    public static void Write(this MessageWriter writer, PlayerLayer layer)
+    {
+        writer.Write(layer.PlayerId);
+        writer.Write((byte)layer.Type);
+    }
+
     public static void Write(this MessageWriter writer, object item, object[] data)
     {
         if (item == null)
@@ -164,10 +159,7 @@ public static class RPC
         else if (item is Vent vent)
             writer.Write(vent.Id);
         else if (item is PlayerLayer layer2)
-        {
-            writer.Write(layer2.PlayerId);
-            writer.Write((byte)layer2.Type);
-        }
+            writer.Write(layer: layer2);
         else if (item is bool boolean)
             writer.Write(boolean);
         else if (item is int integer)
@@ -234,15 +226,15 @@ public static class RPC
             writer.Write((byte)misc);
         else if (item is CustomButton button)
             writer.Write(button.ID);
-        else if (item is List<PlayerLayer> layers)
-        {
-            writer.Write(layers.Count);
-            layers.ForEach(x => writer.Write(x));
-        }
         else if (item is List<Role> roles)
         {
             writer.Write(roles.Count);
-            roles.ForEach(x => writer.Write(x));
+            roles.ForEach(x => writer.Write(layer: x));
+        }
+        else if (item is List<PlayerLayer> layers)
+        {
+            writer.Write(layers.Count);
+            layers.ForEach(x => writer.Write(layer: x));
         }
         else
             LogError($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
@@ -250,14 +242,35 @@ public static class RPC
 
     public static void CallRpc(params object[] data)
     {
+        //Just to be safe
+        if (data[0] is object[])
+            data = data[0] as object[];
+
         if (data[0] is not CustomRPC)
         {
             LogError("The first parameter must be CustomRPC");
             return;
         }
 
+        CallOpenRpc(data)?.EndRpc();
+    }
+
+    public static MessageWriter CallOpenRpc(params object[] data)
+    {
+        //Just to be safe
+        if (data[0] is object[])
+            data = data[0] as object[];
+
+        if (data[0] is not CustomRPC)
+        {
+            LogError("The first parameter must be CustomRPC");
+            return null;
+        }
+
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
         data.ForEach(x => writer.Write(x, data));
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
+        return writer;
     }
+
+    public static void EndRpc(this MessageWriter writer) => AmongUsClient.Instance.FinishRpcImmediately(writer);
 }

@@ -1,56 +1,199 @@
+using System.Text.Json.Serialization;
+
 namespace TownOfUsReworked.Modules;
 
-public class HatExtension
+public abstract class CustomCosmetic
+{
+    [JsonPropertyName("artist")]
+    public string Artist { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("id")]
+    public string ID { get; set; }
+
+    [JsonPropertyName("condition")]
+    public string Condition { get; set; }
+
+    [JsonPropertyName("stream")]
+    public bool StreamOnly { get; set; }
+
+    [JsonPropertyName("test")]
+    public bool TestOnly { get; set; }
+
+    [JsonIgnore]
+    public CosmeticExtension Extension { get; set; }
+
+    [JsonIgnore]
+    public CosmeticData Data { get; set; }
+
+    [JsonIgnore]
+    public ScriptableObject ViewData { get; set; }
+}
+
+public abstract class CosmeticExtension
 {
     public string Artist { get; set; }
     public string Condition { get; set; }
+    public bool StreamOnly { get; set; }
+    public bool TestOnly { get; set; }
+}
+
+//Idk why i did it, but ig i just really wanted it for consistency's sake
+public abstract class CosmeticsJSON {}
+
+public class CustomHat : CustomCosmetic
+{
+    [JsonPropertyName("flipid")]
+    public string FlipID { get; set; }
+
+    [JsonPropertyName("backid")]
+    public string BackID { get; set; }
+
+    [JsonPropertyName("backflipid")]
+    public string BackFlipID { get; set; }
+
+    [JsonPropertyName("climbid")]
+    public string ClimbID { get; set; }
+
+    [JsonPropertyName("climbflipid")]
+    public string ClimbFlipID { get; set; }
+
+    [JsonPropertyName("floorid")]
+    public string FloorID { get; set; }
+
+    [JsonPropertyName("floorflipid")]
+    public string FloorFlipID { get; set; }
+
+    [JsonPropertyName("nobounce")]
+    public bool NoBounce { get; set; }
+
+    [JsonPropertyName("adaptive")]
+    public bool Adaptive { get; set; }
+
+    [JsonPropertyName("behind")]
+    public bool Behind { get; set; }
+}
+
+public class HatExtension : CosmeticExtension
+{
     public Sprite FlipImage { get; set; }
     public Sprite BackFlipImage { get; set; }
 }
 
-public class CustomHat
+public class HatsJSON : CosmeticsJSON
 {
-    public string Artist { get; set; }
-    public string Condition { get; set; }
-    public string Name { get; set; }
-    public string ID { get; set; }
-    public string FlipID { get; set; }
-    public string BackID { get; set; }
-    public string BackFlipID { get; set; }
-    public string ClimbID { get; set; }
-    public string ClimbFlipID { get; set; }
-    public string FloorID { get; set; }
-    public string FloorFlipID { get; set; }
-    public bool NoBouce { get; set; }
-    public bool Adaptive { get; set; }
-    public bool Behind { get; set; }
+    [JsonPropertyName("hats")]
+    public List<CustomHat> Hats { get; set; }
 }
 
-public class VisorExtension
+public class CustomVisor : CustomCosmetic
 {
-    public string Artist { get; set; }
-}
-
-public class CustomVisor
-{
-    public string Artist { get; set; }
-    public string Name { get; set; }
-    public string ID { get; set; }
+    [JsonPropertyName("flipid")]
     public string FlipID { get; set; }
+
+    [JsonPropertyName("floorid")]
     public string FloorID { get; set; }
+
+    [JsonPropertyName("climbid")]
     public string ClimbID { get; set; }
+
+    [JsonPropertyName("adaptive")]
     public bool Adaptive { get; set; }
+
+    [JsonPropertyName("infront")]
     public bool InFront { get; set; }
 }
 
-public class NameplateExtension
+public class VisorExtension : CosmeticExtension {}
+
+public class VisorsJSON : CosmeticsJSON
 {
-    public string Artist { get; set; }
+    [JsonPropertyName("visors")]
+    public List<CustomVisor> Visors { get; set; }
 }
 
-public class CustomNameplate
+public class CustomNameplate : CustomCosmetic {}
+
+public class NameplateExtension : CosmeticExtension {}
+
+public class NameplatesJSON : CosmeticsJSON
 {
-    public string Artist { get; set; }
-    public string Name { get; set; }
-    public string ID { get; set; }
+    [JsonPropertyName("nameplates")]
+    public List<CustomNameplate> Nameplates { get; set; }
+}
+
+public class CustomColor : CustomCosmetic
+{
+    [JsonPropertyName("stringid")]
+    public int StringID { get; set; }
+
+    [JsonPropertyName("rgbmain")]
+    public string RGBMain { get; set; }
+
+    [JsonPropertyName("rgbshadow")]
+    public string RGBShadow { get; set; }
+
+    [JsonPropertyName("hsbmain")]
+    public string HSBMain { get; set; }
+
+    [JsonPropertyName("hsbshadow")]
+    public string HSBShadow { get; set; }
+
+    [JsonPropertyName("default")]
+    public bool Default { get; set; }
+
+    [JsonPropertyName("contrasting")]
+    public bool Contrasting { get; set; }
+
+    [JsonPropertyName("lighter")]
+    public bool Lighter { get; set; }
+
+    [JsonPropertyName("noshadow")]
+    public bool NoShadow { get; set; }
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; }
+
+    [JsonIgnore]
+    public int ColorID { get; set; }
+
+    [JsonIgnore]
+    public bool Changing => HSBMain != null;
+
+    [JsonIgnore]
+    public bool ChangingShadow => HSBShadow != null;
+
+    [JsonIgnore]
+    public bool Shadow => RGBShadow != null;
+
+    [JsonIgnore]
+    public bool OverrideShadow => ChangingShadow || Shadow;
+
+    [JsonIgnore]
+    public Color32 MainColor => Changing ? HSBColor.Parse(HSBMain).ToColor() : CustomColorManager.ParseToColor(RGBMain);
+
+    [JsonIgnore]
+    public Color32 ShadowColor
+    {
+        get
+        {
+            if (NoShadow)
+                return MainColor;
+            else if (OverrideShadow)
+                return ChangingShadow ? HSBColor.Parse(HSBShadow).ToColor() : CustomColorManager.ParseToColor(RGBShadow);
+            else
+                return MainColor.Shadow();
+        }
+    }
+}
+
+//Idk why i did it, but ig i just really wanted it for consistency's sake part 2
+public class ColorExtention : CosmeticExtension {}
+
+public class ColorsJSON : CosmeticsJSON
+{
+    [JsonPropertyName("colors")]
+    public List<CustomColor> Colors { get; set; }
 }

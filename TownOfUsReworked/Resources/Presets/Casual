@@ -26,6 +26,10 @@ Enable Meeting End Cooldowns
 True
 Meeting End Cooldown
 15
+Enable Ability Failure Cooldowns
+True
+Ability Failure Cooldown
+5
 Player Report Distance
 5
 Chat Cooldown
@@ -38,6 +42,12 @@ Game Mode
 0
 Enable Uniques
 False
+Ignore <color=#1D7CF2FF>Alignment</color> Caps
+True
+Ignore <color=#00E66DFF>Faction</color> Caps
+True
+Ignore Non-<color=#FFD700FF>Role</color> Layer Caps
+True
 <color=#B3B3B3FF>Neutrals</color> Count
 3
 Add <color=#EE7600FF>Arsonist</color>
@@ -157,7 +167,7 @@ Large Maps Decreased Short Tasks
 Large Maps Decreased Long Tasks
 0
 Random Player Spawns
-True
+2
 Camouflaged Comms
 False
 Camouflaged Meetings
@@ -170,18 +180,24 @@ Oxygen Sabotage Slows Down Players
 True
 Reactor Sabotage Shakes The Screen By
 50
+Enable Better Skeld Changes
+True
 Changed Skeld Vent Layout
 True
 Skeld Reactor Meltdown Countdown
 60
 Skeld Oxygen Depletion Countdown
 60
+Enable Better Mira HQ Changes
+True
 Changed Mira HQ Vent Layout
 True
 Mira HQ Reactor Meltdown Countdown
 60
 Mira HQ Oxygen Depletion Countdown
 60
+Enable Better Polus Changes
+True
 Changed Polus Vent Layout
 True
 Vitals Moved To Lab
@@ -192,6 +208,8 @@ Reboot Wifi And Chart Course Swapped
 False
 Seimic Stabliser Malfunction Countdown
 60
+Enable Better Airship Changes
+True
 Spawn Type
 0
 Move Vitals
@@ -208,6 +226,8 @@ Min Time For Door Swipe
 0.4
 Heli Crash Countdown
 90
+Enable Better Fungle Changes
+True
 Fungle Reactor Meltdown Countdown
 60
 Fungle Mushroom Mixup Timer
@@ -272,6 +292,9 @@ True
 <color=#006600FF>Medic</color>
 50
 1
+<color=#BE1C8CFF>Trapper</color>
+0
+0
 <color=#00CB97FF>Dictator</color>
 30
 1
@@ -447,6 +470,16 @@ Who Gets Murder Attempt Indicator
 1
 Shield Breaks On Murder Attempt
 True
+<color=#BE1C8CFF>Trapper</color> Is Unique
+False
+Max Traps
+5
+Build Cooldown
+25
+Build Duration
+10
+Trap Cooldown
+25
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereigns</color>
 1
 <color=#00CB97FF>Dictator</color> Is Unique
@@ -651,8 +684,6 @@ Protect Cooldown
 25
 Protect Duration
 15
-Cooldown Reset When Protected
-2.5
 Max Protects
 5
 Show Protected Player
@@ -673,8 +704,6 @@ Vest Cooldown
 25
 Vest Duration
 15
-Cooldown Reset When Vested
-2.5
 Max Vests
 5
 <color=#DDDD00FF>Survivor</color> Can Hide In Vents
@@ -1307,8 +1336,6 @@ Bomb Radius
 0.25
 Chaos Drive Bomb Radius Increase
 0.1
-Bomb Detonation Kills Members Of The <color=#008000FF>Syndicate</color>
-True
 <color=#B345FFFF>Collider</color> Is Unique
 False
 Set Charges Cooldown

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
-//The code is from The Other Roles: Community Edition with modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
+//The code is from The Other Roles: Community Edition with some modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
 public static class SpawnPatches
 {
     public static bool CachedChoice;
@@ -24,6 +24,9 @@ public static class SpawnPatches
         DataManager.Settings.Gameplay.ScreenShake = true;
         HUD?.Chat?.SetVisible(CustomPlayer.Local.CanChat());
         PlayerLayer.LocalLayers.ForEach(x => x?.OnIntroEnd());
+        CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
+        AllBodies.ForEach(x => x?.gameObject?.Destroy());
+        ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);
     }
 
@@ -37,6 +40,7 @@ public static class SpawnPatches
 
         var allLocations = new List<Vector2>();
         AllMapVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
+        AllConsoles.ForEach(x => allLocations.Add(GetConsolePosition(x)));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,

@@ -4,28 +4,22 @@ public class Bug : Range
 {
     private readonly Dictionary<byte, float> Players = new();
     private List<PlayerControl> Closest { get; set; }
-    private readonly Dictionary<PlayerControl, LayerEnum> Results = new();
+    private readonly Dictionary<byte, LayerEnum> Results = new();
 
-    public Bug(PlayerControl owner) : base(owner, Colors.Operative, CustomGameOptions.BugRange, "Bug")
+    public Bug(PlayerControl owner) : base(owner, CustomColorManager.Operative, CustomGameOptions.BugRange, "Bug")
     {
         Results = new();
         Closest = new();
         Players = new();
-        Coroutines.Start(Timer());
-    }
-
-    public override IEnumerator Timer()
-    {
-        while (Transform)
-        {
-            yield return 0;
-            Update();
-        }
     }
 
     public override void Update()
     {
         base.Update();
+
+        if (!Transform)
+            return;
+
         Closest = GetClosestPlayers(Transform.position, Size);
         var remove = new List<byte>();
 
@@ -44,10 +38,10 @@ public class Bug : Range
 
             Players[player.PlayerId] += Time.deltaTime;
 
-            if (Players[player.PlayerId] >= CustomGameOptions.MinAmountOfTimeInBug && player != Owner && !Results.ContainsKey(player))
+            if (Players[player.PlayerId] >= CustomGameOptions.MinAmountOfTimeInBug && player != Owner && !Results.ContainsKey(player.PlayerId))
             {
                 var type = Role.GetRole(player).Type;
-                Results.Add(player, type);
+                Results[player.PlayerId] = type;
 
                 if (Owner.Is(LayerEnum.Operative))
                     Role.GetRole<Operative>(Owner).BuggedPlayers.Add(type);
@@ -71,11 +65,5 @@ public class Bug : Range
         Results.Clear();
         Players.Clear();
         return result;
-    }
-
-    public static void Clear(List<Bug> obj)
-    {
-        obj.ForEach(b => b.Destroy());
-        obj.Clear();
     }
 }

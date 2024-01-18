@@ -18,7 +18,7 @@ public class Ash
 
     public void Destroy()
     {
-        if (Pile == null)
+        if (!Pile)
             return;
 
         Pile.SetActive(false);

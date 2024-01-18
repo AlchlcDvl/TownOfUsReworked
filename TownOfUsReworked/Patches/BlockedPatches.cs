@@ -11,7 +11,7 @@ public static class PerformVent
         if (!CustomPlayer.Local.CanVent())
             return false;
 
-        if (__instance.currentTarget.IsBombed())
+        if (__instance.currentTarget.IsBombed() && !CustomPlayer.Local.IsPostmortal())
         {
             RpcMurderPlayer(CustomPlayer.Local);
             Role.BastionBomb(__instance.currentTarget, CustomGameOptions.BombRemovedOnKill);
@@ -143,6 +143,8 @@ public static class Blocked
             UseBlock.transform.localScale *= 0.75f;
             UseBlock.transform.localPosition = new(0f, 0f, 5f);
             UseBlock.transform.SetParent(__instance.UseButton.transform);
+            __instance.UseButton.GetComponent<PassiveButton>().HoverSound = SoundEffects["Hover"];
+            __instance.UseButton.GetComponent<PassiveButton>().ClickSound = SoundEffects["Click"];
         }
 
         if (UseBlock)
@@ -160,6 +162,8 @@ public static class Blocked
             PetBlock.transform.localScale *= 0.75f;
             PetBlock.transform.localPosition = new(0f, 0f, 5f);
             PetBlock.transform.SetParent(__instance.PetButton.transform);
+            __instance.PetButton.GetComponent<PassiveButton>().HoverSound = SoundEffects["Hover"];
+            __instance.PetButton.GetComponent<PassiveButton>().ClickSound = SoundEffects["Click"];
         }
 
         if (PetBlock)
@@ -177,6 +181,8 @@ public static class Blocked
             SaboBlock.transform.localScale *= 0.75f;
             SaboBlock.transform.localPosition = new(0f, 0f, 5f);
             SaboBlock.transform.SetParent(__instance.SabotageButton.transform);
+            __instance.SabotageButton.GetComponent<PassiveButton>().HoverSound = SoundEffects["Hover"];
+            __instance.SabotageButton.GetComponent<PassiveButton>().ClickSound = SoundEffects["Click"];
         }
 
         if (SaboBlock)
@@ -194,6 +200,8 @@ public static class Blocked
             VentBlock.transform.localScale *= 0.75f;
             VentBlock.transform.localPosition = new(0f, 0f, 5f);
             VentBlock.transform.SetParent(__instance.ImpostorVentButton.transform);
+            __instance.ImpostorVentButton.GetComponent<PassiveButton>().HoverSound = SoundEffects["Hover"];
+            __instance.ImpostorVentButton.GetComponent<PassiveButton>().ClickSound = SoundEffects["Click"];
         }
 
         if (VentBlock)
@@ -211,6 +219,8 @@ public static class Blocked
             ReportBlock.transform.localScale *= 0.75f;
             ReportBlock.transform.localPosition = new(0f, 0f, 5f);
             ReportBlock.transform.SetParent(__instance.ReportButton.transform);
+            __instance.ReportButton.GetComponent<PassiveButton>().HoverSound = SoundEffects["Hover"];
+            __instance.ReportButton.GetComponent<PassiveButton>().ClickSound = SoundEffects["Click"];
         }
 
         if (ReportBlock)

@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Role : PlayerLayer
 {
     public static readonly List<Role> AllRoles = new();
-    public static readonly List<PlayerControl> Cleaned = new();
+    public static readonly List<byte> Cleaned = new();
 
     public static Role LocalRole => GetRole(CustomPlayer.Local);
 
-    public override Color Color => Colors.Role;
+    public override UColor Color => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
 
     public virtual Faction BaseFaction => Faction.None;
@@ -69,8 +69,8 @@ public abstract class Role : PlayerLayer
     public static bool SyndicateHasChaosDrive { get; set; }
     public static PlayerControl DriveHolder { get; set; }
 
-    public Color FactionColor { get; set; } = Colors.Faction;
-    public Color SubFactionColor { get; set; } = Colors.SubFaction;
+    public UColor FactionColor { get; set; } = CustomColorManager.Faction;
+    public UColor SubFactionColor { get; set; } = CustomColorManager.SubFaction;
     public Faction Faction { get; set; } = Faction.None;
     public Alignment Alignment { get; set; } = Alignment.None;
     public SubFaction SubFaction { get; set; } = SubFaction.None;
@@ -151,10 +151,10 @@ public abstract class Role : PlayerLayer
         if (!IsCustomHnS && !IsTaskRace)
         {
             if (CustomGameOptions.EnforcerOn > 0)
-                BombKillButton = new(this, "BombKill", AbilityTypes.Target, "Quarternary", BombKill);
+                BombKillButton = new(this, "BombKill", AbilityTypes.Alive, "Quarternary", BombKill);
 
             if (CustomGameOptions.BountyHunterOn > 0 && CustomGameOptions.BountyHunterCanPickTargets)
-                PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Target, "Quarternary", PlaceHit);
+                PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Alive, "Quarternary", PlaceHit);
         }
     }
 
@@ -184,9 +184,9 @@ public abstract class Role : PlayerLayer
                 if (!yeller.IsDead)
                 {
                     if (!YellerArrows.ContainsKey(yeller.PlayerId))
-                        YellerArrows.Add(yeller.PlayerId, new(Player, Colors.Yeller));
+                        YellerArrows.Add(yeller.PlayerId, new(Player, CustomColorManager.Yeller));
                     else
-                        YellerArrows[yeller.PlayerId].Update(yeller.Player.transform.position, Colors.Yeller);
+                        YellerArrows[yeller.PlayerId].Update(yeller.Player.transform.position, CustomColorManager.Yeller);
                 }
                 else
                     DestroyArrowY(yeller.PlayerId);
@@ -369,21 +369,28 @@ public abstract class Role : PlayerLayer
 
     public void GenText(PlayerVoteArea voteArea)
     {
-        if (PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText))
+        try
         {
-            nameText?.gameObject?.SetActive(false);
-            nameText?.gameObject?.Destroy();
-            PlayerNumbers.Remove(voteArea.TargetPlayerId);
-        }
+            if (PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText) && nameText)
+            {
+                nameText?.gameObject?.SetActive(false);
+                nameText?.gameObject?.Destroy();
+                PlayerNumbers.Remove(voteArea.TargetPlayerId);
+            }
 
-        nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
-        nameText.transform.localPosition = new(-0.911f, -0.18f, -0.1f);
-        nameText.text = "";
-        nameText.name = "SubTextLabel";
-        nameText.color = UColor.white;
-        PlayerNumbers.Add(voteArea.TargetPlayerId, nameText);
-        GenNumbers(voteArea);
-        GenLighterDarker(voteArea);
+            nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
+            nameText.transform.localPosition = new(-0.911f, -0.18f, -0.1f);
+            nameText.text = "";
+            nameText.name = "SubTextLabel";
+            nameText.color = UColor.white;
+            PlayerNumbers[voteArea.TargetPlayerId] = nameText;
+            GenNumbers(voteArea);
+            GenLighterDarker(voteArea);
+        }
+        catch (Exception e)
+        {
+            LogError(e);
+        }
     }
 
     public void GenNumbers(PlayerVoteArea voteArea)
@@ -403,7 +410,11 @@ public abstract class Role : PlayerLayer
             return;
 
         var playerControl = PlayerByVoteArea(voteArea);
-        var ld = CustomColors.LightDarkColors[playerControl.Data.DefaultOutfit.ColorId] == "Lighter" ? "L" : "D";
+
+        if (!playerControl)
+            return;
+
+        var ld = playerControl.Data.DefaultOutfit.ColorId.IsLighter() ? "L" : "D";
 
         if (ClientGameOptions.LighterDarker)
             nameText.text += $"({ld})";
@@ -449,7 +460,7 @@ public abstract class Role : PlayerLayer
 
                 //Ensures only the Bounty Hunter sees this
                 if (HUD && bh.Local)
-                    Run(Chat, "<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
+                    Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
             }
         }
     }
@@ -493,6 +504,9 @@ public abstract class Role : PlayerLayer
             if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || (int)CustomGameOptions.NotificationShield == 3 ||
                 (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
             {
+                var roleEffectAnimation = UObject.Instantiate(RoleManager.Instance.protectAnim, player.gameObject.transform);
+                roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
+                roleEffectAnimation.Play(player, null, player.cosmetics.FlipX, RoleEffectAnimation.SoundType.Local);
                 Flash(role2.Color);
             }
         }
@@ -505,6 +519,9 @@ public abstract class Role : PlayerLayer
             if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || (int)CustomGameOptions.NotificationShield == 3 ||
                 (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
             {
+                var roleEffectAnimation = UObject.Instantiate(RoleManager.Instance.protectAnim, player.gameObject.transform);
+                roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
+                roleEffectAnimation.Play(player, null, player.cosmetics.FlipX, RoleEffectAnimation.SoundType.Local);
                 Flash(role2.Color);
             }
         }
@@ -581,7 +598,7 @@ public abstract class Role : PlayerLayer
 
     public void BombKill()
     {
-        var success = Interact(Player, BombKillButton.TargetPlayer, true).AbilityUsed;
+        var success = Interact(Player, BombKillButton.TargetPlayer, true) != CooldownType.Fail;
         GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);

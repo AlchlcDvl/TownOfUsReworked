@@ -7,7 +7,7 @@ public class Medium : Crew
     //public CustomButton SeanceButton { get; set; }
     public List<byte> MediatedPlayers { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Medium : CustomColorManager.Crew;
     public override string Name => "Medium";
     public override LayerEnum Type => LayerEnum.Medium;
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
@@ -23,7 +23,7 @@ public class Medium : Crew
         //SeanceButton = new(this, "Seance", AbilityTypes.Targetless, "ActionSecondary", Seance, CustomGameOptions.SeanceCd, true);
     }
 
-    //private static void Seance() { Currently blank, gonna work on this later }
+    //private void Seance() { Currently blank, gonna work on this later }
 
     public override void OnLobby()
     {

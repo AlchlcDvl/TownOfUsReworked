@@ -4,11 +4,10 @@ public class Revealer : Crew
 {
     public bool Caught { get; set; }
     public bool Revealed { get; set; }
-    public bool CompletedTasks { get; set; }
     public bool Faded { get; set; }
     public Role FormerRole { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Revealer : CustomColorManager.Crew;
     public override string Name => "Revealer";
     public override LayerEnum Type => LayerEnum.Revealer;
     public override Func<string> StartText => () => "OOOOOOO";

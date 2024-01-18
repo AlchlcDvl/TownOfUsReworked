@@ -5,7 +5,7 @@ public class Altruist : Crew
     public CustomButton ReviveButton { get; set; }
     public DeadBody RevivingBody { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Altruist : CustomColorManager.Crew;
     public override string Name => "Altruist";
     public override LayerEnum Type => LayerEnum.Altruist;
     public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
@@ -81,7 +81,7 @@ public class Altruist : Crew
         RevivingBody = reader.ReadBody();
 
         if (CustomPlayer.Local.PlayerId == RevivingBody.ParentId)
-            Flash(Colors.Altruist, CustomGameOptions.ReviveDur);
+            Flash(CustomColorManager.Altruist, CustomGameOptions.ReviveDur);
 
         if (CustomGameOptions.AltruistTargetBody)
             RevivingBody.gameObject.Destroy();

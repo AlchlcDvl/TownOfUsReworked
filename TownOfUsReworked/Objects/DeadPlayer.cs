@@ -45,7 +45,7 @@ public class DeadPlayer
                 else if (Killer.Is(Faction.Syndicate))
                     report += "The killer is from the Syndicate!\n";
 
-                report += $"The killer is a {CustomColors.LightDarkColors[Killer.CurrentOutfit.ColorId].ToLower()} color!\n";
+                report += $"The killer is a {(Killer.Data.DefaultOutfit.ColorId.IsLighter() ? "lighter" : "darker")} color!\n";
 
                 if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(KillAge / 1000))
                     report += $"They were killed by {Killer.name}!";

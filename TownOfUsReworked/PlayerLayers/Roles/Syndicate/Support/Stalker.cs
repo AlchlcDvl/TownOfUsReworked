@@ -5,7 +5,7 @@ public class Stalker : Syndicate
     public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
     public CustomButton StalkButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Stalker : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Stalker : CustomColorManager.Syndicate;
     public override string Name => "Stalker";
     public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
@@ -16,7 +16,7 @@ public class Stalker : Syndicate
     {
         StalkerArrows = new();
         Alignment = Alignment.SyndicateSupport;
-        StalkButton = new(this, "Stalk", AbilityTypes.Target, "ActionSecondary", Stalk, CustomGameOptions.StalkCd, Exception1);
+        StalkButton = new(this, "Stalk", AbilityTypes.Alive, "ActionSecondary", Stalk, CustomGameOptions.StalkCd, Exception1);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -34,14 +34,10 @@ public class Stalker : Syndicate
 
     public void Stalk()
     {
-        var interact = Interact(Player, StalkButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, StalkButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             StalkerArrows.Add(StalkButton.TargetPlayer.PlayerId, new(Player, StalkButton.TargetPlayer.GetPlayerColor(!HoldsDrive)));
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         StalkButton.StartCooldown(cooldown);
     }

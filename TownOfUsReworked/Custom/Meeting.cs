@@ -36,17 +36,13 @@ public class CustomMeeting
         ActiveSprite = active;
         DisabledSprite = disabled;
         Type = type;
-        Parallel = parallel ?? Blank;
-        IsExempt = isExempt ?? BlankBool;
+        Parallel = parallel ?? BlankVoid;
+        IsExempt = isExempt ?? BlankFalse;
         Position = position ?? BasePosition;
         Actives = new();
         Buttons = new();
         AllCustomMeetings.Add(this);
     }
-
-    private static bool BlankBool(PlayerVoteArea voteArea) => false;
-
-    private static void Blank() {}
 
     public void HideButtons()
     {
@@ -59,7 +55,7 @@ public class CustomMeeting
     {
         Actives[targetId] = false;
 
-        if (!Buttons.TryGetValue(targetId, out var button) || button == null)
+        if (!Buttons.TryGetValue(targetId, out var button) || !button)
             return;
 
         button.GetComponent<PassiveButton>().OnClick = new();
@@ -70,14 +66,8 @@ public class CustomMeeting
         Buttons[targetId] = null;
     }
 
-    private void GenButton(PlayerVoteArea voteArea, MeetingHud __instance, bool usable = true)
+    private void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
     {
-        Actives.Clear();
-        Buttons.Clear();
-
-        if (!usable || Owner != CustomPlayer.Local)
-            return;
-
         Actives.Add(voteArea.TargetPlayerId, false);
 
         if (IsExempt(voteArea))
@@ -98,6 +88,8 @@ public class CustomMeeting
         button.OnMouseOver.AddListener((Action)(() => renderer.color = UColor.red));
         button.OnMouseOut = new();
         button.OnMouseOut.AddListener((Action)(() => renderer.color = Type == MeetingTypes.Toggle && Actives[voteArea.TargetPlayerId] ? UColor.green : UColor.white));
+        button.ClickSound = SoundEffects["Click"];
+        button.HoverSound = SoundEffects["Hover"];
         var collider = targetBox.GetComponent<BoxCollider2D>();
         collider.size = renderer.sprite.bounds.size;
         collider.offset = Vector2.zero;
@@ -107,11 +99,16 @@ public class CustomMeeting
 
     public void GenButtons(MeetingHud __instance, bool usable = true)
     {
+        if (!usable || Owner != CustomPlayer.Local)
+            return;
+
         Parallel();
-        AllVoteAreas.ForEach(x => GenButton(x, __instance, usable));
+        Actives.Clear();
+        Buttons.Clear();
+        AllVoteAreas.ForEach(x => GenButton(x, __instance));
     }
 
-    public void Update()
+    public void Update(MeetingHud __instance)
     {
         if (Type == MeetingTypes.Toggle)
         {

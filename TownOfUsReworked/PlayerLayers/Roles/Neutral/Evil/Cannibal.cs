@@ -9,7 +9,7 @@ public class Cannibal : Neutral
     public bool EatWin => EatNeed == 0;
     public bool CanEat => !Eaten || (Eaten && !CustomGameOptions.AvoidNeutralKingmakers);
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Cannibal : CustomColorManager.Neutral;
     public override string Name => "Cannibal";
     public override LayerEnum Type => LayerEnum.Cannibal;
     public override Func<string> StartText => () => "Eat The Bodies Of The Dead";

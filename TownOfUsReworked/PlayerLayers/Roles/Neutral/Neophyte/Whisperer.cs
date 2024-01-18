@@ -9,7 +9,7 @@ public class Whisperer : Neutral
     public int WhisperConversion { get; set; }
     public List<byte> Persuaded { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Whisperer : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Whisperer : CustomColorManager.Neutral;
     public override string Name => "Whisperer";
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";
@@ -21,19 +21,20 @@ public class Whisperer : Neutral
         Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
         Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Sect;
-        SubFactionColor = Colors.Sect;
+        SubFactionColor = CustomColorManager.Sect;
         WhisperConversion = CustomGameOptions.WhisperRate;
         Persuaded = new() { Player.PlayerId };
         WhisperButton = new(this, "Whisper", AbilityTypes.Targetless, "ActionSecondary", Whisper, CustomGameOptions.WhisperCd);
         SubFactionSymbol = "Λ";
         PlayerConversion = new();
         CustomPlayer.AllPlayers.ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
+        Persuaded.ForEach(x => PlayerConversion.Remove(x));
     }
 
     public void Whisper()
     {
         var closestPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.WhisperRadius);
-        closestPlayers.Remove(Player);
+        closestPlayers.RemoveAll(x => x == Player || Persuaded.Contains(x.PlayerId));
 
         foreach (var player in closestPlayers)
         {
@@ -65,11 +66,30 @@ public class Whisperer : Neutral
         Persuaded.ForEach(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
         WhisperButton.StartCooldown();
+        var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, PlayerConversion.Count);
+
+        foreach (var (id, perc) in PlayerConversion)
+        {
+            writer.Write(id);
+            writer.Write(perc);
+        }
+
+        writer.EndRpc();
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
         WhisperButton.Update2("WHISPER", difference: CustomGameOptions.WhisperCdIncreases ? (CustomGameOptions.WhisperCdIncrease * WhisperCount) : 0);
+    }
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        var count = reader.ReadInt32();
+
+        for (var i = 0; i <= count; i++)
+            PlayerConversion[reader.ReadByte()] = reader.ReadInt32();
+
+        Persuaded.ForEach(x => PlayerConversion.Remove(x));
     }
 }

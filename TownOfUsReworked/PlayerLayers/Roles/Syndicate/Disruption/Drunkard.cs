@@ -7,7 +7,7 @@ public class Drunkard : Syndicate
     public PlayerControl ConfusedPlayer { get; set; }
     public CustomMenu ConfuseMenu { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Drunkard : CustomColorManager.Syndicate;
     public override string Name => "Drunkard";
     public override LayerEnum Type => LayerEnum.Drunkard;
     public override Func<string> StartText => () => "<i>Burp</i>";
@@ -25,21 +25,19 @@ public class Drunkard : Syndicate
     public void StartConfusion()
     {
         if (CustomPlayer.Local == ConfusedPlayer || HoldsDrive)
-            Flash(Colors.Drunkard);
+            Flash(CustomColorManager.Drunkard);
     }
 
     public void UnConfuse() => ConfusedPlayer = null;
 
     public void Click(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             ConfusedPlayer = player;
-        else if (interact.Reset)
-            ConfuseButton.StartCooldown();
-        else if (interact.Protected)
-            ConfuseButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            ConfuseButton.StartCooldown(cooldown);
     }
 
     public void HitConfuse()
@@ -71,7 +69,7 @@ public class Drunkard : Syndicate
             if (ConfusedPlayer != null && !HoldsDrive && !ConfuseButton.EffectActive)
                 ConfusedPlayer = null;
 
-            LogInfo("Removed a target");
+            LogMessage("Removed a target");
         }
     }
 

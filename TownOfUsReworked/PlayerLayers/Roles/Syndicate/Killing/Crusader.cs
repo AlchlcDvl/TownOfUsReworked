@@ -5,7 +5,7 @@ public class Crusader : Syndicate
     public PlayerControl CrusadedPlayer { get; set; }
     public CustomButton CrusadeButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Crusader : CustomColorManager.Syndicate;
     public override string Name => "Crusader";
     public override LayerEnum Type => LayerEnum.Crusader;
     public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
@@ -16,25 +16,23 @@ public class Crusader : Syndicate
     {
         Alignment = Alignment.SyndicateKill;
         CrusadedPlayer = null;
-        CrusadeButton = new(this, "Crusade", AbilityTypes.Target, "Secondary", Crusade, CustomGameOptions.CrusadeCd, CustomGameOptions.CrusadeDur, UnCrusade, Exception1);
+        CrusadeButton = new(this, "Crusade", AbilityTypes.Alive, "Secondary", Crusade, CustomGameOptions.CrusadeCd, CustomGameOptions.CrusadeDur, UnCrusade, Exception1);
     }
 
     public void UnCrusade() => CrusadedPlayer = null;
 
     public void Crusade()
     {
-        var interact = Interact(Player, CrusadeButton.TargetPlayer);
+        var cooldown = Interact(Player, CrusadeButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             CrusadedPlayer = CrusadeButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, CrusadeButton, CrusadedPlayer);
             CrusadeButton.Begin();
         }
-        else if (interact.Reset)
-            CrusadeButton.StartCooldown();
-        else if (interact.Protected)
-            CrusadeButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            CrusadeButton.StartCooldown(cooldown);
     }
 
     public static void RadialCrusade(PlayerControl player2)

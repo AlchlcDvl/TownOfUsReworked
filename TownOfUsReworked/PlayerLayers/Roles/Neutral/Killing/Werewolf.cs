@@ -6,17 +6,19 @@ public class Werewolf : Neutral
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Werewolf : CustomColorManager.Neutral;
     public override string Name => "Werewolf";
     public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText => () => "AWOOOOOOOOOO";
     public override Func<string> Description => () => $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
+    public override AttackEnum AttackVal => AttackEnum.Powerful;
+    public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
 
     public Werewolf(PlayerControl player) : base(player)
     {
         Objectives = () => "- Maul anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        MaulButton = new(this, "Maul", AbilityTypes.Target, "ActionSecondary", HitMaul, CustomGameOptions.MaulCd, Exception);
+        MaulButton = new(this, "Maul", AbilityTypes.Alive, "ActionSecondary", HitMaul, CustomGameOptions.MaulCd, Exception);
         player.Data.Role.IntroSound = GetAudio("WerewolfIntro");
     }
 
@@ -26,41 +28,17 @@ public class Werewolf : Neutral
         {
             Spread(Player, player);
 
-            if (player.IsVesting() || player.IsProtected() || Player.IsLinkedTo(player) || Player == player || MaulButton.TargetPlayer == player || player.IsShielded() ||
-                player.IsProtectedMonarch())
-            {
-                continue;
-            }
-
-            if (!player.Is(LayerEnum.Pestilence))
+            if (CanAttack(AttackVal, player.GetDefenseValue()))
                 RpcMurderPlayer(Player, player, DeathReasonEnum.Mauled, false);
-
-            if (player.IsOnAlert() || player.Is(LayerEnum.Pestilence))
-                RpcMurderPlayer(player, Player);
-            else if (player.IsAmbushed())
-                RpcMurderPlayer(player, Player, DeathReasonEnum.Ambushed);
-            else if (player.IsCrusaded())
-            {
-                if (player.CrusadeActive())
-                    Crusader.RadialCrusade(player);
-                else
-                    RpcMurderPlayer(player, Player, DeathReasonEnum.Crusaded, true);
-            }
         }
     }
 
     public void HitMaul()
     {
-        var interact = Interact(Player, MaulButton.TargetPlayer, true);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, MaulButton.TargetPlayer, true);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Maul();
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
 
         MaulButton.StartCooldown(cooldown);
     }

@@ -1,42 +1,40 @@
 namespace TownOfUsReworked;
 
-public static class Reworked
+public partial class TownOfUsReworked
 {
-    public static void SetUpConfigs()
+    private void SetUpConfigs()
     {
-        TownOfUsReworked.Ip = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
-        TownOfUsReworked.Port = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
-        TownOfUsReworked.LighterDarker = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Lighter Darker Colors", true, "Adds smaller descriptions of colors as lighter or darker for body"
-            + " report purposes");
-        TownOfUsReworked.WhiteNameplates = TownOfUsReworked.ModInstance.Config.Bind("Custom", "White Nameplates", false, "Enables custom nameplates");
-        TownOfUsReworked.NoLevels = TownOfUsReworked.ModInstance.Config.Bind("Custom", "No Levels", false, "Enables the little level icon during meetings");
-        TownOfUsReworked.CustomCrewColors = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Crew Colors", true, "Enables custom colors for Crew roles");
-        TownOfUsReworked.CustomNeutColors = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
-        TownOfUsReworked.CustomIntColors = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
-        TownOfUsReworked.CustomSynColors = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
-        TownOfUsReworked.CustomModColors = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
-        TownOfUsReworked.CustomObjColors = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Objectifier Colors", true, "Enables custom colors for Objectifiers");
-        TownOfUsReworked.CustomAbColors = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Ability Colors", true, "Enables custom colors for Abilities");
-        TownOfUsReworked.CustomEjects = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected" +
-            "\"");
-        TownOfUsReworked.Regions = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Regions", "{\"CurrentRegionIdx\":0,\"Regions\":[]}",
+        Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
+        Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
+        LighterDarker = Config.Bind("Custom", "Lighter Darker Colors", true, "Adds smaller descriptions of colors as lighter or darker for body report purposes");
+        WhiteNameplates = Config.Bind("Custom", "White Nameplates", false, "Enables custom nameplates");
+        NoLevels = Config.Bind("Custom", "No Levels", false, "Enables the little level icon during meetings");
+        CustomCrewColors = Config.Bind("Custom", "Custom Crew Colors", true, "Enables custom colors for Crew roles");
+        CustomNeutColors = Config.Bind("Custom", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
+        CustomIntColors = Config.Bind("Custom", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
+        CustomSynColors = Config.Bind("Custom", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
+        CustomModColors = Config.Bind("Custom", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
+        CustomObjColors = Config.Bind("Custom", "Custom Objectifier Colors", true, "Enables custom colors for Objectifiers");
+        CustomAbColors = Config.Bind("Custom", "Custom Ability Colors", true, "Enables custom colors for Abilities");
+        CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
+        OptimisationMode = Config.Bind("Custom", "Optimisation Mode", false, "Disables things that would be considered resource heavy");
+        Regions = Config.Bind("Custom", "Regions", "{\"CurrentRegionIdx\":0,\"Regions\":[]}",
             "Create an array of Regions you want to add/update. To create this array, go to https://impostor.github.io/Impostor/ and put the Regions array from the server file in here");
-        TownOfUsReworked.RegionsToRemove = TownOfUsReworked.ModInstance.Config.Bind("Custom", "Remove Regions", "", "Comma-seperated list of region names that should be removed");
+        RegionsToRemove = Config.Bind("Custom", "Remove Regions", "", "Comma-seperated list of region names that should be removed");
     }
 
-    public static void LoadComponents()
+    public void LoadComponents()
     {
-        if (!File.Exists($"{TownOfUsReworked.DataPath}steam_appid.txt"))
-            File.WriteAllText($"{TownOfUsReworked.DataPath}steam_appid.txt", "945360");
+        var text = Path.Combine(DataPath, "steam_appid.txt");
 
-        TownOfUsReworked.ModInstance.Harmony.PatchAll();
-        SetUpConfigs();
+        if (!File.Exists(text))
+            File.WriteAllText(text, "945360");
+
+        Harmony.PatchAll();
         AllMonos.RegisterMonos();
-        CustomColors.LoadColors();
-        AssetLoader.LoadAssets();
-        ExtraRegions.UpdateRegions();
-        Info.SetAllInfo();
         AllMonos.AddComponents();
+        SetUpConfigs();
+        LoadAssets();
         DataManager.Player.Onboarding.ViewedHideAndSeekHowToPlay = true;
     }
 }

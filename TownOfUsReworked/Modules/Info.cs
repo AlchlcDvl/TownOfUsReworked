@@ -5,28 +5,26 @@ public class Info
     public readonly string Name;
     public string Short { get; set; }
     public string Description { get; set; }
-    public Color Color { get; set; }
+    public UColor Color { get; set; }
     public readonly InfoType Type;
+    public readonly bool Header;
 
     public static readonly List<Info> AllInfo = new();
 
-    public Info(string name, string shortF, string description, Color color, InfoType type)
+    public Info(string name, string shortF, string description, UColor color, InfoType type, bool header = false)
     {
         Name = name;
         Short = shortF;
         Description = description;
         Color = color;
         Type = type;
+        Header = header;
     }
 
-    public static void SetAllInfo()
-    {
-        AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllObjectifiers, LayerInfo.AllFactions, LayerInfo.AllSubFactions, LayerInfo.AllModes,
-            LayerInfo.AllOthers);
-        AllInfo.OrderBy(x => x.Name);
-    }
+    public static void SetAllInfo() => AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllObjectifiers, LayerInfo.AllFactions,
+        LayerInfo.AllSubFactions, LayerInfo.AllModes, LayerInfo.AllOthers);
 
-    public static string ColorIt(string result)
+    public static string ColorIt(string result, bool bold = true)
     {
         foreach (var info in AllInfo.Where(x => x.Type is not (InfoType.Alignment or InfoType.Lore)))
             result = result.Replace(info.Name, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Name}</color></b>");
@@ -37,10 +35,17 @@ public class Info
         foreach (var info in LayerInfo.AllSubFactions)
             result = result.Replace(info.Symbol, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
 
-        for (var i = 0; i < 52; i++)
+        for (var i = 0; i < 56; i++)
             result = result.Replace(((Alignment)i).AlignmentName(), $"<b>{((Alignment)i).AlignmentName(true)}</b>");
 
-        return result.Replace("<b><color=#758000FF>Drunk</color></b>ard", "Drunkard").Replace("<b><color=#FFD700FF>Role</color></b> List", "Role List");
+        result = result.Replace($"<b><color=#758000FF>Drunk</color></b>ard", "Drunkard")
+            .Replace($"<b><color=#FFD700FF>Role</color></b> List", "Role List")
+            .Replace($"Vampire <b><color=#FF004EFF>Hunter</color></b>", "Vampire Hunter");
+
+        if (!bold)
+            result = result.Replace("<b>", "").Replace("</b>", "");
+
+        return result;
     }
 
     public virtual void WikiEntry(out string result) => result = "";
@@ -59,8 +64,8 @@ public class RoleInfo : Info
     private const string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, Crew and opposing Neutrals.";
     private const string CrewObjective = "Finish tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, and opposing Neutrals.";
 
-    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, Color color, LayerEnum role, string wincon = "") : base(name,
-        shortF, description, color, InfoType.Role)
+    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, UColor color, LayerEnum role, string wincon = "", bool header =
+        false) : base(name, shortF, description, color, InfoType.Role, header)
     {
         Faction = faction;
         Role = role;
@@ -110,17 +115,17 @@ public class FactionInfo : Info
 
     public readonly Faction Faction;
 
-    public FactionInfo(Faction faction) : base($"{faction}", "", "", default, InfoType.Faction)
+    public FactionInfo(Faction faction, bool header = false) : base($"{faction}", "", "", default, InfoType.Faction, header)
     {
         Faction = faction;
         (Description, Short, Color) = faction switch
         {
-            Faction.Syndicate => (SyndicateDescription, "Syn", Colors.Syndicate),
-            Faction.Crew => (CrewDescription, "Crew", Colors.Crew),
-            Faction.Intruder => (IntruderDescription, "Int", Colors.Intruder),
-            Faction.Neutral => (NeutralDescription, "Neut", Colors.Neutral),
-            Faction.GameMode => (GameModeDescription, "GM", Colors.GameMode),
-            _ => ("Invalid", "Invalid", Colors.Faction)
+            Faction.Syndicate => (SyndicateDescription, "Syn", CustomColorManager.Syndicate),
+            Faction.Crew => (CrewDescription, "Crew", CustomColorManager.Crew),
+            Faction.Intruder => (IntruderDescription, "Int", CustomColorManager.Intruder),
+            Faction.Neutral => (NeutralDescription, "Neut", CustomColorManager.Neutral),
+            Faction.GameMode => (GameModeDescription, "GM", CustomColorManager.GameMode),
+            _ => ("Invalid", "Invalid", CustomColorManager.Faction)
         };
     }
 
@@ -148,16 +153,16 @@ public class SubFactionInfo : Info
     public readonly string Symbol;
     public readonly SubFaction SubFaction;
 
-    public SubFactionInfo(SubFaction sub) : base($"{sub}", "", "", default, InfoType.SubFaction)
+    public SubFactionInfo(SubFaction sub, bool header = false) : base($"{sub}", "", "", default, InfoType.SubFaction, header)
     {
         SubFaction = sub;
         (Description, Short, Color, Symbol) = sub switch
         {
-            SubFaction.Undead => (UndeadDescription, "Und", Colors.Undead, "γ"),
-            SubFaction.Reanimated => (ReanimatedDescription, "RA", Colors.Reanimated, "Σ"),
-            SubFaction.Cabal => (CabalDescription, "Cab", Colors.Cabal, "$"),
-            SubFaction.Sect => (SectDescription, "Sect", Colors.Sect, "Λ"),
-            _ => ("Invalid", "Invalid", Colors.SubFaction, "φ")
+            SubFaction.Undead => (UndeadDescription, "Und", CustomColorManager.Undead, "γ"),
+            SubFaction.Reanimated => (ReanimatedDescription, "RA", CustomColorManager.Reanimated, "Σ"),
+            SubFaction.Cabal => (CabalDescription, "Cab", CustomColorManager.Cabal, "$"),
+            SubFaction.Sect => (SectDescription, "Sect", CustomColorManager.Sect, "Λ"),
+            _ => ("Invalid", "Invalid", CustomColorManager.SubFaction, "φ")
         };
     }
 
@@ -250,7 +255,7 @@ public class AlignmentInfo : Info
     public readonly string AlignmentName;
     public readonly Alignment Alignment;
 
-    public AlignmentInfo(Alignment alignmentEnum) : base(alignmentEnum.AlignmentName(), "", "", Colors.Alignment, InfoType.Alignment)
+    public AlignmentInfo(Alignment alignmentEnum, bool header = false) : base(alignmentEnum.AlignmentName(), "", "", CustomColorManager.Alignment, InfoType.Alignment, header)
     {
         Alignment = alignmentEnum;
         (Short, Description, AlignmentName) = Alignment switch
@@ -329,7 +334,8 @@ public class ModifierInfo : Info
     public readonly string AppliesTo;
     public readonly LayerEnum Modifier;
 
-    public ModifierInfo(string name, string shortF, string description, string applies, Color color, LayerEnum modifier) : base(name, shortF, description, color, InfoType.Modifier)
+    public ModifierInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum modifier, bool header = false) : base(name, shortF, description, color,
+        InfoType.Modifier, header)
     {
         AppliesTo = applies;
         Modifier = modifier;
@@ -352,8 +358,8 @@ public class ObjectifierInfo : Info
     public readonly string Symbol;
     public readonly LayerEnum Objectifier;
 
-    public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, Color color, LayerEnum objectifier) : base(name, shortF, description,
-        color, InfoType.Objectifier)
+    public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum objectifier, bool header = false) : base(name,
+        shortF, description, color, InfoType.Objectifier, header)
     {
         AppliesTo = applies;
         WinCon = wincon;
@@ -378,7 +384,8 @@ public class AbilityInfo : Info
     public readonly string AppliesTo;
     public readonly LayerEnum Ability;
 
-    public AbilityInfo(string name, string shortF, string description, string applies, Color color, LayerEnum ability) : base(name, shortF, description, color, InfoType.Ability)
+    public AbilityInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum ability, bool header = false) : base(name, shortF, description, color,
+        InfoType.Ability, header)
     {
         AppliesTo = applies;
         Ability = ability;
@@ -396,7 +403,7 @@ public class AbilityInfo : Info
 
 public class Lore : Info
 {
-    public Lore(string name, string story, string shortF, Color color) : base(name, shortF, story, color, InfoType.Lore) {}
+    public Lore(string name, string story, string shortF, UColor color) : base(name, shortF, story, color, InfoType.Lore) {}
 
     public override void WikiEntry(out string result)
     {
@@ -409,7 +416,8 @@ public class OtherInfo : Info
 {
     public readonly string OtherNotes;
 
-    public OtherInfo(string name, string shortF, string description, Color color, string otherNotes = "") : base(name, shortF, description, color, InfoType.Other) => OtherNotes = otherNotes;
+    public OtherInfo(string name, string shortF, string description, UColor color, string otherNotes = "", bool header = false) : base(name, shortF, description, color, InfoType.Other,
+        header) => OtherNotes = otherNotes;
 
     public override void WikiEntry(out string result)
     {
@@ -440,20 +448,20 @@ public class GameModeInfo : Info
 
     public readonly GameMode Mode;
 
-    public GameModeInfo(GameMode mode) : base(mode.GameModeName(), "", "", default, InfoType.GameMode)
+    public GameModeInfo(GameMode mode, bool header = false) : base(mode.GameModeName(), "", "", default, InfoType.GameMode, header)
     {
         Mode = mode;
         (Description, Short, Color) = mode switch
         {
-            GameMode.Vanilla => (VanillaDescription, "Vanilla", Color.white),
-            GameMode.Classic => (ClassicDescription, "Classic", Colors.Classic),
-            GameMode.KillingOnly => (KODescription, "KO", Colors.KillingOnly),
-            GameMode.AllAny => (AADescription, "AA", Colors.AllAny),
-            GameMode.RoleList => (RLDescription, "RL", Colors.RoleList),
-            GameMode.Custom => (CustomDescription, "Custom", Colors.Custom),
-            GameMode.HideAndSeek => (HnSDescription, "HnS", Colors.HideAndSeek),
-            GameMode.TaskRace => (TRDescription, "TR", Colors.TaskRace),
-            _ => ("Invalid", "Invalid", Colors.GameMode)
+            GameMode.Vanilla => (VanillaDescription, "Vanilla", UColor.white),
+            GameMode.Classic => (ClassicDescription, "Classic", CustomColorManager.Classic),
+            GameMode.KillingOnly => (KODescription, "KO", CustomColorManager.KillingOnly),
+            GameMode.AllAny => (AADescription, "AA", CustomColorManager.AllAny),
+            GameMode.RoleList => (RLDescription, "RL", CustomColorManager.RoleList),
+            GameMode.Custom => (CustomDescription, "Custom", CustomColorManager.Custom),
+            GameMode.HideAndSeek => (HnSDescription, "HnS", CustomColorManager.HideAndSeek),
+            GameMode.TaskRace => (TRDescription, "TR", CustomColorManager.TaskRace),
+            _ => ("Invalid", "Invalid", CustomColorManager.GameMode)
         };
     }
 

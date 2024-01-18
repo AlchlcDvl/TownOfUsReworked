@@ -6,7 +6,7 @@ public class Concealer : Syndicate
     public PlayerControl ConcealedPlayer { get; set; }
     public CustomMenu ConcealMenu { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Concealer : CustomColorManager.Syndicate;
     public override string Name => "Concealer";
     public override LayerEnum Type => LayerEnum.Concealer;
     public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
@@ -41,14 +41,12 @@ public class Concealer : Syndicate
 
     public void Click(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             ConcealedPlayer = player;
-        else if (interact.Reset)
-            ConcealButton.StartCooldown();
-        else if (interact.Protected)
-            ConcealButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            ConcealButton.StartCooldown(cooldown);
     }
 
     public void HitConceal()
@@ -80,7 +78,7 @@ public class Concealer : Syndicate
             if (ConcealedPlayer != null && !HoldsDrive && !ConcealButton.EffectActive)
                 ConcealedPlayer = null;
 
-            LogInfo("Removed a target");
+            LogMessage("Removed a target");
         }
     }
 

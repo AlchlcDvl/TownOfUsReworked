@@ -9,7 +9,9 @@ public static class HauntUpdatePatch
 
         if (button != null)
         {
-            button.Update1();
+            if (!button.Disabled)
+                button.Update1();
+
             return false;
         }
 

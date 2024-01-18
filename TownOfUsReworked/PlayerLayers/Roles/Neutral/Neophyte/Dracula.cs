@@ -6,7 +6,7 @@ public class Dracula : Neutral
     public List<byte> Converted { get; set; }
     public static int AliveCount => CustomPlayer.AllPlayers.Count(x => !x.HasDied());
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Dracula : CustomColorManager.Neutral;
     public override string Name => "Dracula";
     public override LayerEnum Type => LayerEnum.Dracula;
     public override Func<string> StartText => () => "Lead The <color=#7B8968FF>Undead</color> To Victory";
@@ -19,24 +19,18 @@ public class Dracula : Neutral
         Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
         Alignment = Alignment.NeutralNeo;
-        SubFactionColor = Colors.Undead;
+        SubFactionColor = CustomColorManager.Undead;
         Converted = new() { Player.PlayerId };
-        BiteButton = new(this, "Bite", AbilityTypes.Target, "ActionSecondary", Convert, CustomGameOptions.BiteCd, Exception);
+        BiteButton = new(this, "Bite", AbilityTypes.Alive, "ActionSecondary", Convert, CustomGameOptions.BiteCd, Exception);
         SubFactionSymbol = "γ";
     }
 
     public void Convert()
     {
-        var interact = Interact(Player, BiteButton.TargetPlayer, false, true);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, BiteButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             RoleGen.RpcConvert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= CustomGameOptions.AliveVampCount);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
 
         BiteButton.StartCooldown(cooldown);
     }

@@ -6,7 +6,7 @@ public class Mafioso : Intruder
     public Godfather Godfather { get; set; }
     public bool CanPromote => (Godfather.IsDead || Godfather.Disconnected) && !IsDead;
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Mafioso : CustomColorManager.Intruder;
     public override string Name => "Mafioso";
     public override LayerEnum Type => LayerEnum.Mafioso;
     public override Func<string> StartText => () => "Succeed The <color=#404C08FF>Godfather</color>";

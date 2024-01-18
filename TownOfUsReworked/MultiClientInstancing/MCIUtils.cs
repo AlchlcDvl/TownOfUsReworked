@@ -85,6 +85,9 @@ public static class MCIUtils
         if (!TownOfUsReworked.MCIActive)
             return;
 
+        if (ActiveTask)
+            ActiveTask.Close();
+
         if (Meeting)
         {
             PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingEnd(Meeting));
@@ -113,37 +116,44 @@ public static class MCIUtils
             return;
 
         PlayerControl.LocalPlayer = newPlayer;
-        CustomPlayer.Local.lightSource = light;
-        CustomPlayer.Local.moveable = true;
+        newPlayer.lightSource = light;
+        newPlayer.moveable = true;
 
-        AmongUsClient.Instance.ClientId = CustomPlayer.Local.OwnerId;
-        AmongUsClient.Instance.HostId = CustomPlayer.Local.OwnerId;
+        AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
+        AmongUsClient.Instance.HostId = newPlayer.OwnerId;
 
         HUD.SetHudActive(true);
-        HUD.ShadowQuad.gameObject.SetActive(!CustomPlayer.Local.Data.IsDead);
+        HUD.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
 
-        light.transform.SetParent(CustomPlayer.LocalCustom.Transform);
-        light.transform.localPosition = CustomPlayer.Local.Collider.offset;
+        light.transform.SetParent(CustomPlayer.LocalCustom.Transform, false);
+        light.transform.localPosition = newPlayer.Collider.offset;
 
-        Camera.main.GetComponent<FollowerCamera>().SetTarget(CustomPlayer.Local);
-        CustomPlayer.Local.MyPhysics.ResetMoveState(true);
-        KillAnimation.SetMovement(CustomPlayer.Local, true);
-        CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
+        Camera.main.GetComponent<FollowerCamera>().SetTarget(newPlayer);
+        newPlayer.MyPhysics.ResetMoveState(true);
+        KillAnimation.SetMovement(newPlayer, true);
+        newPlayer.MyPhysics.inputHandler.enabled = true;
 
         if (Meeting)
+        {
             PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingStart(Meeting));
+
+            if (newPlayer.Data.IsDead)
+                Meeting.SetForegroundForDead();
+            else
+                Meeting.SetForegroundForAlive();
+        }
         else
         {
-            CustomPlayer.Local.EnableButtons();
-            CustomPlayer.Local.EnableArrows();
+            newPlayer.EnableButtons();
+            newPlayer.EnableArrows();
         }
 
         PlayerLayer.LocalLayers.ForEach(x => x.EnteringLayer());
 
-        Chat.SetVisible(CustomPlayer.Local.CanChat());
+        Chat.SetVisible(newPlayer.CanChat());
 
         if (SavedPositions.TryGetValue(playerId, out var pos))
-            CustomPlayer.Local.NetTransform.RpcSnapTo(pos);
+            newPlayer.NetTransform.RpcSnapTo(pos);
 
         if (SavedPositions.TryGetValue(savedId, out var pos2))
             PlayerById(savedId).NetTransform.RpcSnapTo(pos2);
@@ -154,6 +164,8 @@ public static class MCIUtils
         __instance.amDead = false;
         __instance.SkipVoteButton.gameObject.SetActive(true);
         __instance.SkipVoteButton.AmDead = false;
-        __instance.Glass.gameObject.SetActive(false);
+
+        if (CacheGlassSprite.Cache)
+            __instance.Glass.sprite = CacheGlassSprite.Cache;
     }
 }

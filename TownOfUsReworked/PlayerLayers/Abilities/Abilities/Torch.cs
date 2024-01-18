@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public class Torch : Ability
 {
-    public override Color Color => ClientGameOptions.CustomAbColors ? Colors.Torch : Colors.Ability;
+    public override UColor Color => ClientGameOptions.CustomAbColors ? CustomColorManager.Torch : CustomColorManager.Ability;
     public override string Name => "Torch";
     public override LayerEnum Type => LayerEnum.Torch;
     public override Func<string> Description => () => "- You see more than the others";

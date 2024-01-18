@@ -6,15 +6,16 @@ public abstract class Intruder : Role
     public string CommonAbilities => "<color=#FF1919FF>- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can " +
         "call sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "") + "</color>";
 
-    public override Color Color => Colors.Intruder;
+    public override UColor Color => CustomColorManager.Intruder;
     public override Faction BaseFaction => Faction.Intruder;
+    public override AttackEnum AttackVal => AttackEnum.Basic;
 
     protected Intruder(PlayerControl player) : base(player)
     {
         Faction = Faction.Intruder;
-        FactionColor = Colors.Intruder;
+        FactionColor = CustomColorManager.Intruder;
         Objectives = () => IntrudersWinCon;
-        KillButton = new(this, "IntruderKill", AbilityTypes.Target, "ActionSecondary", Kill, CustomGameOptions.IntKillCd, Exception);
+        KillButton = new(this, "IntruderKill", AbilityTypes.Alive, "ActionSecondary", Kill, CustomGameOptions.IntKillCd, Exception);
         Data.SetImpostor(true);
     }
 
@@ -53,43 +54,20 @@ public abstract class Intruder : Role
 
     public void Kill()
     {
-        var interact = Interact(Player, KillButton.TargetPlayer, true);
+        var cooldown = Interact(Player, KillButton.TargetPlayer, true);
 
-        if (Player.Is(LayerEnum.Janitor))
+        if (this is Janitor jani)
         {
-            var jani = (Janitor)this;
-
             if (CustomGameOptions.JaniCooldownsLinked)
-            {
-                if (interact.AbilityUsed || interact.Reset)
-                    jani.CleanButton.StartCooldown(CooldownType.Start);
-                else if (interact.Protected)
-                    jani.CleanButton.StartCooldown(CooldownType.GuardianAngel);
-                else if (interact.Vested)
-                    jani.CleanButton.StartCooldown(CooldownType.Survivor);
-            }
+                jani.CleanButton.StartCooldown(cooldown);
         }
-        else if (Player.Is(LayerEnum.PromotedGodfather))
+        else if (this is PromotedGodfather gf)
         {
-            var gf = (PromotedGodfather)this;
-
             if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
-            {
-                if (interact.AbilityUsed || interact.Reset)
-                    gf.CleanButton.StartCooldown(CooldownType.Start);
-                else if (interact.Protected)
-                    gf.CleanButton.StartCooldown(CooldownType.GuardianAngel);
-                else if (interact.Vested)
-                    gf.CleanButton.StartCooldown(CooldownType.Survivor);
-            }
+                gf.CleanButton.StartCooldown(cooldown);
         }
 
-        if (interact.AbilityUsed || interact.Reset)
-            KillButton.StartCooldown();
-        else if (interact.Protected)
-            KillButton.StartCooldown(CooldownType.GuardianAngel);
-        else if (interact.Vested)
-            KillButton.StartCooldown(CooldownType.Survivor);
+        KillButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player) =>  (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||  Player.IsLinkedTo(player);

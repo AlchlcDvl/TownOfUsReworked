@@ -8,7 +8,7 @@ public class Coroner : Crew
     public List<DeadPlayer> ReferenceBodies { get; set; }
     public CustomButton AutopsyButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Coroner : CustomColorManager.Crew;
     public override string Name => "Coroner";
     public override LayerEnum Type => LayerEnum.Coroner;
     public override Func<string> StartText => () => "Examine The Dead For Information";
@@ -22,7 +22,7 @@ public class Coroner : Crew
         Reported = new();
         ReferenceBodies = new();
         AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy, CustomGameOptions.AutopsyCd);
-        CompareButton = new(this, "Compare", AbilityTypes.Target, "Secondary", Compare, CustomGameOptions.CompareCd);
+        CompareButton = new(this, "Compare", AbilityTypes.Alive, "Secondary", Compare, CustomGameOptions.CompareCd);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -76,14 +76,10 @@ public class Coroner : Crew
 
     public void Compare()
     {
-        var interact = Interact(Player, CompareButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, CompareButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Flash(ReferenceBodies.Any(x => CompareButton.TargetPlayer.PlayerId == x.KillerId) ? UColor.red : UColor.green);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         CompareButton.StartCooldown(cooldown);
     }
@@ -110,6 +106,6 @@ public class Coroner : Crew
 
         //Only Coroner can see this
         if (HUD)
-            Run(Chat, "<color=#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
+            Run("<color=#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
     }
 }

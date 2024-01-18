@@ -4,7 +4,7 @@ public class Professional : Modifier
 {
     public bool LifeUsed { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomModColors ? Colors.Professional : Colors.Modifier;
+    public override UColor Color => ClientGameOptions.CustomModColors ? CustomColorManager.Professional : CustomColorManager.Modifier;
     public override string Name => "Professional";
     public override LayerEnum Type => LayerEnum.Professional;
     public override Func<string> Description => () => "- You have an extra life when assassinating";

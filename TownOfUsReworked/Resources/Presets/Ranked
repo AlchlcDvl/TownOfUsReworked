@@ -26,6 +26,10 @@ Enable Meeting End Cooldowns
 True
 Meeting End Cooldown
 20
+Enable Ability Failure Cooldowns
+True
+Ability Failure Cooldown
+5
 Player Report Distance
 2.5
 Chat Cooldown
@@ -38,6 +42,12 @@ Game Mode
 0
 Enable Uniques
 True
+Ignore <color=#1D7CF2FF>Alignment</color> Caps
+False
+Ignore <color=#00E66DFF>Faction</color> Caps
+False
+Ignore Non-<color=#FFD700FF>Role</color> Layer Caps
+False
 <color=#B3B3B3FF>Neutrals</color> Count
 1
 Add <color=#EE7600FF>Arsonist</color>
@@ -157,18 +167,20 @@ Large Maps Decreased Short Tasks
 Large Maps Decreased Long Tasks
 1
 Random Player Spawns
-True
+3
 Camouflaged Comms
 True
 Camouflaged Meetings
 False
+Night Vision Cameras
+True
+Evils Ignore Night Vision
+True
 Oxygen Sabotage Slows Down Players
 True
 Reactor Sabotage Shakes The Screen By
 50
-Night Vision Cameras
-True
-Evils Ignore Night Vision
+Enable Better Skeld Changes
 True
 Changed Skeld Vent Layout
 True
@@ -176,12 +188,16 @@ Skeld Reactor Meltdown Countdown
 45
 Skeld Oxygen Depletion Countdown
 45
+Enable Better Mira HQ Changes
+True
 Changed Mira HQ Vent Layout
 True
 Mira HQ Reactor Meltdown Countdown
 45
 Mira HQ Oxygen Depletion Countdown
 45
+Enable Better Polus Changes
+True
 Changed Polus Vent Layout
 True
 Vitals Moved To Lab
@@ -192,6 +208,8 @@ Reboot Wifi And Chart Course Swapped
 True
 Seimic Stabliser Malfunction Countdown
 60
+Enable Better Airship Changes
+True
 Spawn Type
 2
 Move Vitals
@@ -208,6 +226,8 @@ Min Time For Door Swipe
 0.4
 Heli Crash Countdown
 90
+Enable Better Fungle Changes
+True
 Fungle Reactor Meltdown Countdown
 60
 Fungle Mushroom Mixup Timer
@@ -272,6 +292,9 @@ False
 <color=#006600FF>Medic</color>
 90
 1
+<color=#BE1C8CFF>Trapper</color>
+0
+0
 <color=#00CB97FF>Dictator</color>
 30
 1
@@ -405,12 +428,12 @@ Bombs Are Removed Upon Kills
 True
 <color=#998040FF>Veteran</color> Is Unique
 False
+Max Alerts
+5
 Alert Cooldown
 25
 Alert Duration
 10
-Max Alerts
-5
 <color=#FFFF00FF>Vigilante</color> Is Unique
 False
 Misfire Kills The Target
@@ -423,10 +446,10 @@ How Does <color=#FFFF00FF>Vigilante</color> Die
 0
 How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence
 2
-Shoot Cooldown
-25
 Max Bullets
 5
+Shoot Cooldown
+25
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protectives</color>
 1
 <color=#660000FF>Altruist</color> Is Unique
@@ -447,6 +470,16 @@ Who Gets Murder Attempt Indicator
 0
 Shield Breaks On Murder Attempt
 True
+<color=#BE1C8CFF>Trapper</color> Is Unique
+False
+Max Traps
+5
+Build Cooldown
+25
+Build Duration
+10
+Trap Cooldown
+25
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereigns</color>
 1
 <color=#00CB97FF>Dictator</color> Is Unique
@@ -483,18 +516,18 @@ Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Supporters</color>
 3
 <color=#5411F8FF>Chameleon</color> Is Unique
 False
+Max Swoops
+5
 Swoop Cooldown
 25
 Swoop Duration
 5
-Max Swoops
-5
 <color=#FFA60AFF>Engineer</color> Is Unique
 False
-Fix Cooldown
-25
 Max Fixes
 5
+Fix Cooldown
+25
 <color=#803333FF>Escort</color> Is Unique
 False
 <color=#803333FF>Escort</color> Roleblock Cooldown
@@ -513,11 +546,11 @@ Shifted Becomes
 0
 <color=#00EEFFFF>Transporter</color> Is Unique
 False
+Max Transports
+5
 Transport Cooldown
 25
 Transport Duration
-5
-Max Transports
 5
 <color=#00EEFFFF>Transporter</color> Can Transport Themselves
 True
@@ -651,8 +684,6 @@ Protect Cooldown
 25
 Protect Duration
 15
-Cooldown Reset When Protected
-2.5
 Max Protects
 5
 Show Protected Player
@@ -673,8 +704,6 @@ Vest Cooldown
 25
 Vest Duration
 10
-Cooldown Reset When Vested
-2.5
 Max Vests
 5
 <color=#DDDD00FF>Survivor</color> Can Hide In Vents
@@ -715,10 +744,10 @@ True
 False
 <color=#B51E39FF>Bounty Hunter</color> Can Indirectly Pick Their Own Target
 False
-Guess Cooldown
-25
 Max Target Guesses
 5
+Guess Cooldown
+25
 <color=#B51E39FF>Bounty Hunter</color> Can Vent
 False
 <color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>
@@ -1307,8 +1336,6 @@ Bomb Radius
 2
 Chaos Drive Bomb Radius Increase
 0.5
-Bomb Detonation Kills Members Of The <color=#008000FF>Syndicate</color>
-True
 <color=#B345FFFF>Collider</color> Is Unique
 False
 Set Charges Cooldown
@@ -1509,14 +1536,14 @@ False
 <color=#D4AF37FF>Snitch</color>
 50
 1
+<color=#66E666FF>Swapper</color>
+40
+1
 <color=#B3B3B3FF>Slayer</color>
 100
 1
 <color=#008000FF>Sniper</color>
 100
-1
-<color=#66E666FF>Swapper</color>
-40
 1
 <color=#99E699FF>Tiebreaker</color>
 50
@@ -1640,10 +1667,10 @@ False
 <color=#678D36FF>Fanatic</color>
 20
 1
-<color=#FF351FFF>Linked</color>
+<color=#FF351FFF>Linked</color> Pairs
 30
 1
-<color=#FF66CCFF>Lovers</color>
+<color=#FF66CCFF>Lovers</color> Pairs
 50
 1
 <color=#00EEFFFF>Mafia</color>
@@ -1652,7 +1679,7 @@ False
 <color=#008080FF>Overlord</color>
 5
 1
-<color=#3D2D2CFF>Rivals</color>
+<color=#3D2D2CFF>Rivals</color> Pairs
 40
 1
 <color=#ABABFFFF>Taskmaster</color>

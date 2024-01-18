@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Patches;
 
 public static class IntroSplash
 {
-    private static readonly List<string> Splashes = new()
+    private static readonly string[] Splashes =
     {
         "Oh boy, here I go killing again",
         "Screwed up since 2069",
@@ -14,6 +14,11 @@ public static class IntroSplash
         "bous",
         "My life be like",
         "Man I'm ded",
+        "gaming",
+        "WHO LET BRO COOK?",
+        "",
+        "Let me introduce you to our sponsor, Raid-",
+        "Push to production is my motto. Bugs? meh public release go brrrr",
         "LET. HIM. COOK."
     };
     public static TextMeshPro Intro;
@@ -29,10 +34,11 @@ public static class IntroSplash
             {
                 Intro = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
                 Intro.transform.localPosition = new(0, -1.5f, 0);
-                Intro.text = $"<size=175%><b><color=#9FDA81FF>{Splashes.Random()}</color></b></size>";
+                Intro.text = $"<size=175%><b><color=#9FDA81FF>{Splashes.Random(x => x != "")}</color></b></size>";
                 Intro.alignment = TextAlignmentOptions.Center;
                 Intro.fontStyle = FontStyles.Bold;
                 Intro.name = "ModIntroText";
+                Intro.font = UpdateSplashPatch.Font;
             }
         }
     }

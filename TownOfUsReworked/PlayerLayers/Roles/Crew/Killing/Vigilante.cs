@@ -9,26 +9,29 @@ public class Vigilante : Crew
     public CustomButton ShootButton { get; set; }
     public bool RoundOne { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Vigilante : CustomColorManager.Crew;
     public override string Name => "Vigilante";
     public override LayerEnum Type => LayerEnum.Vigilante;
     public override Func<string> StartText => () => "Shoot The <color=#FF0000FF>Evildoers</color>";
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
+    public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public Vigilante(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewKill;
-        ShootButton = new(this, "Shoot", AbilityTypes.Target, "ActionSecondary", Shoot, CustomGameOptions.ShootCd, Exception, CustomGameOptions.MaxBullets);
+        ShootButton = new(this, "Shoot", AbilityTypes.Alive, "ActionSecondary", Shoot, CustomGameOptions.ShootCd, Exception, CustomGameOptions.MaxBullets);
+        RoundOne = CustomGameOptions.RoundOneNoShot;
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
+        RoundOne = false;
 
         if (PreMeetingDie)
             RpcMurderPlayer(Player);
         else if (InnoMessage)
-            Run(Chat, "<color=#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
+            Run("<color=#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
@@ -48,10 +51,9 @@ public class Vigilante : Crew
             CustomGameOptions.VigiKillsExecutioner) || (target.Is(LayerEnum.Cannibal) && CustomGameOptions.VigiKillsCannibal) || target.IsFramed() || (target.Is(Alignment.NeutralBen) &&
             CustomGameOptions.VigiKillsNB) || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.Is(LayerEnum.Corrupted) || (target.Is(LayerEnum.Actor) &&
             CustomGameOptions.VigiKillsActor) || (target.Is(LayerEnum.BountyHunter) && CustomGameOptions.VigiKillsBH);
-        var interact = Interact(Player, target, flag4);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, target, flag4);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             if (flag4 && !Player.IsFramed())
                 KilledInno = false;
@@ -72,11 +74,6 @@ public class Vigilante : Crew
                     RpcMurderPlayer(Player);
             }
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
 
         ShootButton.StartCooldown(cooldown);
     }

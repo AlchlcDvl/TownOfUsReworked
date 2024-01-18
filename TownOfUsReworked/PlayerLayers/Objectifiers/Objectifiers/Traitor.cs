@@ -7,21 +7,21 @@ public class Traitor : Objectifier
     public Faction Side { get; set; }
     private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
-    public override Color Color
+    public override UColor Color
     {
         get
         {
             if (Turned)
             {
                 if (Side == Faction.Syndicate)
-                    return Colors.Syndicate;
+                    return CustomColorManager.Syndicate;
                 else if (Side == Faction.Intruder)
-                    return Colors.Intruder;
+                    return CustomColorManager.Intruder;
                 else
-                    return ClientGameOptions.CustomObjColors ? Colors.Traitor : Colors.Objectifier;
+                    return ClientGameOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Objectifier;
             }
             else
-                return ClientGameOptions.CustomObjColors ? Colors.Traitor : Colors.Objectifier;
+                return ClientGameOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Objectifier;
         }
     }
     public override string Name => "Traitor";
@@ -86,14 +86,14 @@ public class Traitor : Objectifier
         {
             traitorRole.Faction = Faction.Intruder;
             traitorRole.IsIntTraitor = true;
-            traitorRole.FactionColor = Colors.Intruder;
+            traitorRole.FactionColor = CustomColorManager.Intruder;
             traitorRole.Objectives = () => Role.IntrudersWinCon;
         }
         else if (turnSyndicate)
         {
             traitorRole.Faction = Faction.Syndicate;
             traitorRole.IsSynTraitor = true;
-            traitorRole.FactionColor = Colors.Syndicate;
+            traitorRole.FactionColor = CustomColorManager.Syndicate;
             traitorRole.Objectives = () => Role.SyndicateWinCon;
         }
 
@@ -106,9 +106,9 @@ public class Traitor : Objectifier
             if (CustomGameOptions.SnitchSeesTraitor)
             {
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == Player)
-                    Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch));
+                    Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
-                    Role.GetRole(snitch.Player).AllArrows.Add(Player.PlayerId, new(snitch.Player, Colors.Snitch));
+                    Role.GetRole(snitch.Player).AllArrows.Add(Player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
         }
 
@@ -119,10 +119,10 @@ public class Traitor : Objectifier
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Mystic) && !Local)
-            Flash(Colors.Mystic);
+            Flash(CustomColorManager.Mystic);
 
         if (Local || CustomPlayer.Local.Is(traitorRole.Faction))
-            Flash(Colors.Traitor);
+            Flash(CustomColorManager.Traitor);
     }
 
     public override void UpdateHud(HudManager __instance)

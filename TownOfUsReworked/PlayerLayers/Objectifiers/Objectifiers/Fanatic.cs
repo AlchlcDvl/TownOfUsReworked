@@ -7,21 +7,21 @@ public class Fanatic : Objectifier
     public Faction Side { get; set; }
     private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
-    public override Color Color
+    public override UColor Color
     {
         get
         {
             if (Turned)
             {
                 if (Side == Faction.Syndicate)
-                    return Colors.Syndicate;
+                    return CustomColorManager.Syndicate;
                 else if (Side == Faction.Intruder)
-                    return Colors.Intruder;
+                    return CustomColorManager.Intruder;
                 else
-                    return ClientGameOptions.CustomObjColors ? Colors.Fanatic : Colors.Objectifier;
+                    return ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier;
             }
             else
-                return ClientGameOptions.CustomObjColors ? Colors.Fanatic : Colors.Objectifier;
+                return ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier;
         }
     }
     public override string Name => "Fanatic";
@@ -40,18 +40,18 @@ public class Fanatic : Objectifier
         Turned = true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Mystic) || CustomPlayer.Local.Is(faction))
-            Flash(Colors.Mystic);
+            Flash(CustomColorManager.Mystic);
 
         if (faction == Faction.Syndicate)
         {
             fanaticRole.IsSynFanatic = true;
-            fanaticRole.FactionColor = Colors.Syndicate;
+            fanaticRole.FactionColor = CustomColorManager.Syndicate;
             fanaticRole.Objectives = () => Role.SyndicateWinCon;
         }
         else if (faction == Faction.Intruder)
         {
             fanaticRole.IsIntFanatic = true;
-            fanaticRole.FactionColor = Colors.Intruder;
+            fanaticRole.FactionColor = CustomColorManager.Intruder;
             fanaticRole.Objectives = () => Role.IntrudersWinCon;
         }
 
@@ -63,9 +63,9 @@ public class Fanatic : Objectifier
             if (CustomGameOptions.SnitchSeesFanatic)
             {
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && Local)
-                    Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch));
+                    Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
-                    Role.GetRole(snitch.Player).AllArrows.Add(PlayerId, new(snitch.Player, Colors.Snitch));
+                    Role.GetRole(snitch.Player).AllArrows.Add(PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
         }
 
@@ -76,10 +76,10 @@ public class Fanatic : Objectifier
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Mystic) && !Local)
-            Flash(Colors.Mystic);
+            Flash(CustomColorManager.Mystic);
 
         if (Local || CustomPlayer.Local.Is(faction))
-            Flash(Colors.Fanatic);
+            Flash(CustomColorManager.Fanatic);
     }
 
     public void TurnBetrayer()

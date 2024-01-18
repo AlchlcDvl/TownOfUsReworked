@@ -5,7 +5,7 @@ public class Troll : Neutral
     public bool Killed { get; set; }
     public CustomButton InteractButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Troll : CustomColorManager.Neutral;
     public override string Name => "Troll";
     public override LayerEnum Type => LayerEnum.Troll;
     public override Func<string> StartText => () => "Troll Everyone With Your Death";
@@ -16,19 +16,10 @@ public class Troll : Neutral
     {
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
-        InteractButton = new(this, "Placeholder", AbilityTypes.Target, "ActionSecondary", Interact, CustomGameOptions.InteractCd);
+        InteractButton = new(this, "Placeholder", AbilityTypes.Alive, "ActionSecondary", Interact, CustomGameOptions.InteractCd);
     }
 
-    public void Interact()
-    {
-        var interact = InteractionData.Interact(Player, InteractButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-
-        InteractButton.StartCooldown(cooldown);
-    }
+    public void Interact() => InteractButton.StartCooldown(Interactions.Interact(Player, InteractButton.TargetPlayer));
 
     public override void UpdateHud(HudManager __instance)
     {

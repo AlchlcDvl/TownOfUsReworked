@@ -5,11 +5,12 @@ public class Bastion : Crew
     public CustomButton BombButton { get; set; }
     public List<int> BombedIDs { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Bastion : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Bastion : CustomColorManager.Crew;
     public override string Name => "Bastion";
     public override LayerEnum Type => LayerEnum.Bastion;
     public override Func<string> StartText => () => "Place Traps To Deter Venters";
     public override Func<string> Description => () => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";
+    public override AttackEnum AttackVal => AttackEnum.Powerful;
 
     public Bastion(PlayerControl player) : base(player)
     {
@@ -29,17 +30,13 @@ public class Bastion : Crew
 
     public void Bomb()
     {
-        var interact = Interact(Player, BombButton.TargetVent);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, BombButton.TargetVent);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             BombedIDs.Add(BombButton.TargetVent.Id);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, BombButton.TargetVent);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         BombButton.StartCooldown(cooldown);
     }

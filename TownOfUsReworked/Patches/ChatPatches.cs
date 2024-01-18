@@ -174,7 +174,7 @@ public static class MeetingStart
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
 public static class ChatCommands
 {
-    private readonly static Dictionary<byte, SpriteRenderer> Notifs = new();
+    private static readonly Dictionary<byte, SpriteRenderer> Notifs = new();
 
     public static bool Prefix(ChatController __instance)
     {
@@ -189,22 +189,22 @@ public static class ChatCommands
         {
             chatHandled = true;
             var args = __instance.freeChatField.Text.Split(' ');
-            Execute(Find(args), __instance, args);
+            Execute(Find(args), args);
         }
         else if (CustomPlayer.Local.IsBlackmailed() && text != "i am blackmailed.")
         {
             chatHandled = true;
-            Run(__instance, "<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
+            Run("<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
         }
-        else if (!CustomPlayer.Local.SilenceActive() && text != "i am silenced.")
+        else if (CustomPlayer.Local.SilenceActive() && text != "i am silenced.")
         {
             chatHandled = true;
-            Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
+            Run("<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         }
         else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.LocalCustom.IsDead)
         {
             chatHandled = true;
-            Run(__instance, "<color=#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
+            Run("<color=#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
         }
         else if (!CustomPlayer.LocalCustom.IsDead && !IsNullEmptyOrWhiteSpace(text))
         {

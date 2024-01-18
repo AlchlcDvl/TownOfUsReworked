@@ -160,15 +160,10 @@ public static class GameStartManagerPatch
                 //Send version as soon as CustomPlayer.Local exists
                 foreach (var client in AmongUsClient.Instance.allClients)
                 {
-                    if (client.Character == null)
+                    if (!client.Character)
                         continue;
 
-                    if (!PlayerVersions.ContainsKey(client.Id))
-                    {
-                        versionMismatch = true;
-                        message += $"{client.PlayerName} does not have Town Of Us Reworked\n";
-                    }
-                    else
+                    if (PlayerVersions.ContainsKey(client.Id))
                     {
                         var pv = PlayerVersions[client.Id];
                         var diff = TownOfUsReworked.Version.CompareTo(pv.Version);
@@ -183,11 +178,17 @@ public static class GameStartManagerPatch
                             versionMismatch = true;
                             message += $"{client.PlayerName} has a newer version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n";
                         }
+                        else if (!pv.DevMatches || !pv.StreamMatches || !pv.DevBuildMatches)
+                        {
+                            //Version presumably matches, check if Dev/Stream matches
+                            versionMismatch = true;
+                            message += $"You or {client.PlayerName} have mismatching non-public versions of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n";
+                        }
                         else if (!pv.GuidMatches)
                         {
                             //Version presumably matches, check if Guid matches
                             versionMismatch = true;
-                            message += $"{client.PlayerName} has a modified version of Town Of Us Reworked v{PlayerVersions[client.Id].Version} ({pv.Guid})\n";
+                            message += $"{client.PlayerName} has a modified version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version} ({pv.Guid}))\n";
                         }
                     }
                 }

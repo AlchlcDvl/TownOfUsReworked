@@ -7,28 +7,47 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Update: Updated Among Us to 2023.11.28 and BepInEx to 6.0.0-be.679
-- Return: Trapper has returned with a new set of skills!
-- Buff: Medic can now change who the shield is applied to
-- Improvement: You can now view all active settings by pressing Left Shift + Tab
-- Change: The dead body being dragged now changes sides depending on your movement
-- Change: Enforcers can no longer cancel their effects (to avoid them just blowing up their targets)
-- Role Fix: Fixed Monarchs being immune to interactions (alerts, infections and such)
-- Role Fix: Fixed Retributionist-Medics being able to shield revealed Dictators and Mayors
-- Role Fix: Fixed Retributionists being able to copy non-Crew roles (although it did nothing)
-- Bug Fix: Fixed the desync caused by teleportation
-- Bug Fix: Fixed several cases of log spams and general lag
-- Bug Fix: Fixed morphed players having the wrong speeds
-- Bug Fix: Fixed MCI sometimes randomly switching to unintended bots
-- Bug Fix: Fixed sabotages sometimes behaving weirdly
-- Bug Fix: Fixed being unable to open the minimap using the map button
-- Visual Fix: Fixed the start button appearing disabled in lobby
-- Visual Fix: Fixed fading bodies turning into solid colors while fading
-- Visual Fix: Fixed target outline not working properly
-- Vanilla Fix: Fixed task snapping
+- Update: Updated BepInEx to 6.0.0-be.682
+- Addition: Added Attack and Defense values to roles, for simpler actions and explanations
+- Addition: Added a loading screen
+- Addition: Added next/back page buttons to guessing menus
+- Addition: Added some countermeasures for the hacks that have been going around lately
+- Rework: Pestilence has been reworked to work similar to Plaguebearer
+- Recode: Interactions and Cosmetics have been fully recoded
+- Recode: Saving and loading custom options have been recoded to be simpler to manage including being able to name your own presets (and no more slot limits!)
+- Improvement: The hud buttons are a little more interactive
+- Improvement: Improved the mod updater/downloader
+- Improvement: LevelImpostor can now also be downloaded from the main menu
+- Improvement: Bugs and bombs are now handled a little better to avoid any errors
+- Improvement: Setting the "Max Fixes" setting to 0 will turn Engineers into regular venting crewmates
+- Improvement: Reduced the load the mod puts for smoother gameplay
+- Improvement: Scaled up the Grenadier flash range options
+- Change: Ambushers and Crusaders now protect their targets too, making them double edged swords
+- Critical Fix: Fixed settings being duplicated
+- Critical Fix: Fixed postmortal roles not spawning in correctly
+- Critical Fix: Fixed dead bodies not showing up on the meeting screen for non-hosts
+- Critical Fix: Fixed the games not starting with 8 and byond players in the lobby
+- Critical Fix: Fixed the "Fatal Error In GC" issue that has been plaguing us for months
+- Role Fix: Fixed Whisperer conversions not syncing for persuaded players
+- Role Fix: Fixed Engineer not fixing the mushroom mixup sabotage on Fungle
+- Role Fix: Fixed Actor role lists not syncing correctly
+- Role Fix: Fixed sometimes being unable to drag bodies as Janitor
+- Bug Fix: Fixed the log spams that slowed the game down
+- Bug Fix: Reduced the lobby load in times by a lot
+- Bug Fix: Fixed not being able to zoom in
+- Bug Fix: Fixed guess buttons not disappearing correctly
+- Bug Fix: Fixed being able to lag role generation in Role List mode by setting a role list and ban list value the same
+- Bug Fix: Fixed some more log spams
+- Bug Fix: Fixed several desync issues
+- General Fix: Fixed a couple of oversights in the code
+- Visual Fix: Fixed the report button showing even when dead
+- Visual Fix: Fixed the "Player does not have Town Of Us Reworked" appearing when someone is joining
+- Visual Fix: Fixed the glass cracks not disappearing when switching between dead and alive players during a meeting
+- Visual Fix: Fixed a small visual bug with flashlights
+- Temporary Removal: Removed Submerged compatibility for now as it is really buggy, it will return next update
 
 Credits-
-Reworked Creator - AlchlcDvl
+Reworked Creator - AlchlcSystm
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
 Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, HalloweenApple, Dave, Nerdy
 Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces, Det (their work can be found in %assets%)

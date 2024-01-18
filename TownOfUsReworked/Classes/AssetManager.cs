@@ -7,48 +7,28 @@ public static class AssetManager
     public static readonly Dictionary<string, float> Sizes = new();
     public static readonly Dictionary<string, int> Frequencies = new();
     public static readonly Sprite[] PortalAnimation = new Sprite[205];
-    public static readonly Dictionary<string, string> Presets = new()
-    {
-        { "Casual", CreateText("Casual", "Presets") },
-        { "Chaos", CreateText("Chaos", "Presets") },
-        { "Default", ReadText("DefaultSettings") },
-        { "Last Used", ReadText("LastUsedSettings") },
-        { "Ranked", CreateText("Ranked", "Presets") }
-    };
-    public static readonly Dictionary<int, string> Slots = new()
-    {
-        { 1, ReadText("GameSettings-Slot1-ToU-Rew") },
-        { 2, ReadText("GameSettings-Slot2-ToU-Rew") },
-        { 3, ReadText("GameSettings-Slot3-ToU-Rew") },
-        { 4, ReadText("GameSettings-Slot4-ToU-Rew") },
-        { 5, ReadText("GameSettings-Slot5-ToU-Rew") },
-        { 6, ReadText("GameSettings-Slot6-ToU-Rew") },
-        { 7, ReadText("GameSettings-Slot7-ToU-Rew") },
-        { 8, ReadText("GameSettings-Slot8-ToU-Rew") },
-        { 9, ReadText("GameSettings-Slot9-ToU-Rew") },
-        { 10, ReadText("GameSettings-Slot10-ToU-Rew") }
-    };
+    public static readonly string[] Presets = { "Casual", "Chaos", "Ranked" };
 
     public static AudioClip GetAudio(string path)
     {
-        if (!SoundEffects.ContainsKey(path))
+        if (!SoundEffects.TryGetValue(path, out var sound))
         {
             LogError($"{path} does not exist");
             return null;
         }
 
-        return SoundEffects[path];
+        return sound;
     }
 
     public static Sprite GetSprite(string path)
     {
-        if (!Sprites.ContainsKey(path))
+        if (!Sprites.TryGetValue(path, out var sprite))
         {
             //LogError($"{path} does not exist");
             return Meeting ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"];
         }
 
-        return Sprites[path];
+        return sprite ?? Sprites["Placeholder"];
     }
 
     public static void Play(string path, bool loop = false, float volume = 1f)
@@ -83,20 +63,12 @@ public static class AssetManager
 
     public static Texture2D LoadDiskTexture(string path)
     {
-        try
-        {
-            var texture = EmptyTexture();
-            _ = ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
-            texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
-            texture.name = path;
-            _ = texture.DontDestroy();
-            return texture;
-        }
-        catch
-        {
-            LogError($"Error loading {path} from disk");
-            return null;
-        }
+        var texture = EmptyTexture();
+        _ = ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
+        texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
+        texture.name = path;
+        _ = texture.DontDestroy();
+        return texture;
     }
 
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
@@ -136,9 +108,9 @@ public static class AssetManager
             _ = sprite.DontDestroy();
             return sprite;
         }
-        catch
+        catch (Exception e)
         {
-            LogError($"Error loading {name} as a sprite");
+            LogError($"Error loading {name} as a sprite\n{e}");
             return null;
         }
     }
@@ -162,14 +134,14 @@ public static class AssetManager
             _ = audioClip.DontDestroy();
             return audioClip;
         }
-        catch
+        catch (Exception e)
         {
-            LogError($"Error loading {path} from resources");
+            LogError($"Error loading {path} from resources\n{e}");
             return null;
         }
     }
 
-    public static string CreateText(string itemName, string folder = "")
+    public static string ReadResourceText(string itemName, string folder = "")
     {
         try
         {
@@ -180,9 +152,9 @@ public static class AssetManager
             KeyWords.ForEach(x => text = text.Replace(x.Key, x.Value));
             return text;
         }
-        catch
+        catch (Exception e)
         {
-            LogError($"Error loading {itemName} from resources");
+            LogError($"Error loading {itemName} from resources\n{e}");
             return "";
         }
     }
@@ -193,7 +165,7 @@ public static class AssetManager
     {
         try
         {
-            File.WriteAllText(Path.Combine(diskLocation ?? Application.persistentDataPath, fileName), (overrideText ? "" : ReadText(fileName)) + textToSave);
+            File.WriteAllText(Path.Combine(diskLocation ?? Application.persistentDataPath, fileName), (overrideText ? "" : ReadDiskText(fileName)) + textToSave);
         }
         catch
         {
@@ -201,7 +173,7 @@ public static class AssetManager
         }
     }
 
-    public static string ReadText(string fileName, string diskLocation = null)
+    public static string ReadDiskText(string fileName, string diskLocation = null)
     {
         try
         {
@@ -212,5 +184,70 @@ public static class AssetManager
             LogError($"Error reading {fileName}{(diskLocation != null ? $" from {diskLocation}" : "")}");
             return "";
         }
+    }
+
+    public static void LoadAssets()
+    {
+        SoundEffects.Clear();
+        Sizes.Clear();
+        Sprites.Clear();
+        Frequencies.Clear();
+        Array.Clear(PortalAnimation, 0, 205);
+
+        foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
+        {
+            if (resourceName.EndsWith(".png"))
+            {
+                var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
+
+                if (name is "CurrentSettings" or "Help" or "Plus" or "Minus" or "Wiki")
+                    Sizes.Add(name, 180);
+                else if (name == "Phone")
+                    Sizes.Add(name, 200);
+                else if (name == "Cursor")
+                    Sizes.Add(name, 115);
+                else if (name == "NightVision")
+                    Sizes.Add(name, 350);
+                else
+                    Sizes.Add(name, 100);
+            }
+            else if (resourceName.EndsWith(".raw"))
+            {
+                var name = resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
+
+                if (name.Contains("Intro"))
+                    Frequencies.Add(name, 36000);
+                else
+                    Frequencies.Add(name, 48000);
+            }
+        }
+
+        var position = 0;
+
+        foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
+        {
+            if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
+                Sprites.Add(resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, ""), CreateSprite(resourceName));
+            else if (resourceName.StartsWith(TownOfUsReworked.Sounds) && resourceName.EndsWith(".raw"))
+                SoundEffects.Add(resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, ""), CreateAudio(resourceName));
+            else if (resourceName.StartsWith(TownOfUsReworked.Portal) && resourceName.EndsWith(".png"))
+            {
+                if (PortalAnimation[position] == null)
+                    PortalAnimation[position] = CreateSprite(resourceName);
+
+                position++;
+            }
+        }
+
+        Cursor.SetCursor(GetSprite("Cursor").texture, Vector2.zero, CursorMode.Auto);
+    }
+
+    public static void LoadVanillaSounds()
+    {
+        SoundEffects.TryAdd("EngineerIntro", GetIntroSound(RoleTypes.Engineer));
+        SoundEffects.TryAdd("MorphlingIntro", GetIntroSound(RoleTypes.Shapeshifter));
+        SoundEffects.TryAdd("MedicIntro", GetIntroSound(RoleTypes.Scientist));
+        SoundEffects.TryAdd("CrewmateIntro", GetIntroSound(RoleTypes.Crewmate));
+        SoundEffects.TryAdd("ImpostorIntro", GetIntroSound(RoleTypes.Impostor));
     }
 }

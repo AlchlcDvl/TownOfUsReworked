@@ -4,7 +4,7 @@ public class Chameleon : Crew
 {
     public CustomButton SwoopButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Chameleon : CustomColorManager.Crew;
     public override string Name => "Chameleon";
     public override LayerEnum Type => LayerEnum.Chameleon;
     public override Func<string> StartText => () => "Go Invisible To Stalk Players";

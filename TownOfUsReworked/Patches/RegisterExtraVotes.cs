@@ -24,8 +24,8 @@ public static class HandleDisconnect
         }
 
         CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || x.Player == null);
-        DisconnectHandler.Disconnected.Add(pc);
-        ReassignPostmortals(pc);
+        DisconnectHandler.Disconnected.Add(pc.PlayerId);
+        SetPostmortals.RemoveFromPostmortals(pc);
         MarkMeetingDead(pc, false, true);
         OnGameEndPatch.AddSummaryInfo(pc, true);
 

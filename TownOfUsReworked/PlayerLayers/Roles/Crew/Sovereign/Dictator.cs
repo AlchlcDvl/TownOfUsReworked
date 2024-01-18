@@ -10,7 +10,7 @@ public class Dictator : Crew
     public bool ToDie { get; set; }
     public CustomMeeting DictMenu { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Dictator : CustomColorManager.Crew;
     public override string Name => "Dictator";
     public override LayerEnum Type => LayerEnum.Dictator;
     public override Func<string> StartText => () => "You Have The Final Say";
@@ -102,7 +102,7 @@ public class Dictator : Crew
     public override void UpdateMeeting(MeetingHud __instance)
     {
         base.UpdateMeeting(__instance);
-        DictMenu.Update();
+        DictMenu.Update(__instance);
     }
 
     public override void ReadRPC(MessageReader reader)

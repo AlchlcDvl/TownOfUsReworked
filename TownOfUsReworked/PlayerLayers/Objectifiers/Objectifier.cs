@@ -5,7 +5,7 @@ public abstract class Objectifier : PlayerLayer
     public static readonly List<Objectifier> AllObjectifiers = new();
     public static Objectifier LocalObjectifier => GetObjectifier(CustomPlayer.Local);
 
-    public override Color Color => Colors.Objectifier;
+    public override UColor Color => CustomColorManager.Objectifier;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Objectifier;
 
     public virtual string Symbol => "φ";

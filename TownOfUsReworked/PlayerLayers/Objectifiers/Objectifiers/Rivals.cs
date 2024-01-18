@@ -7,7 +7,7 @@ public class Rivals : Objectifier
     private bool IsDeadRival => Player == null || Player.HasDied();
     public bool IsWinningRival =>  RivalDead && !IsDeadRival;
 
-    public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Rivals : Colors.Objectifier;
+    public override UColor Color => ClientGameOptions.CustomObjColors ? CustomColorManager.Rivals : CustomColorManager.Objectifier;
     public override string Name => "Rivals";
     public override string Symbol => "α";
     public override LayerEnum Type => LayerEnum.Rivals;

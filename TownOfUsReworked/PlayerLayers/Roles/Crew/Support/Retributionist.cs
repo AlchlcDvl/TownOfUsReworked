@@ -40,29 +40,29 @@ public class Retributionist : Crew
         Transport2.SetActive(true);
         TransportMenu1 = new(Player, Click1, TransException1);
         TransportMenu2 = new(Player, Click2, TransException2);
-        RevealButton = new(this, "MysticReveal", AbilityTypes.Target, "ActionSecondary", Reveal, CustomGameOptions.MysticRevealCd, MysticException);
-        StakeButton = new(this, "Stake", AbilityTypes.Target, "ActionSecondary", Stake, CustomGameOptions.StakeCd);
+        RevealButton = new(this, "MysticReveal", AbilityTypes.Alive, "ActionSecondary", Reveal, CustomGameOptions.MysticRevealCd, MysticException);
+        StakeButton = new(this, "Stake", AbilityTypes.Alive, "ActionSecondary", Stake, CustomGameOptions.StakeCd);
         AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy, CustomGameOptions.AutopsyCd);
-        CompareButton = new(this, "Compare", AbilityTypes.Target, "Secondary", Compare, CustomGameOptions.CompareCd);
-        ExamineButton = new(this, "Examine", AbilityTypes.Target, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
+        CompareButton = new(this, "Compare", AbilityTypes.Alive, "Secondary", Compare, CustomGameOptions.CompareCd);
+        ExamineButton = new(this, "Examine", AbilityTypes.Alive, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
         MediateButton = new(this, "Mediate", AbilityTypes.Targetless, "ActionSecondary", Mediate, CustomGameOptions.MediateCd);
         BugButton = new(this, "Bug", AbilityTypes.Targetless, "ActionSecondary", PlaceBug, CustomGameOptions.BugCd, CustomGameOptions.MaxBugs);
-        SeerButton = new(this, "Seer", AbilityTypes.Target, "ActionSecondary", See, CustomGameOptions.SeerCd);
-        InterrogateButton = new(this, "Interrogate", AbilityTypes.Target, "ActionSecondary", Interrogate, CustomGameOptions.InterrogateCd, SherException);
-        TrackButton = new(this, "Track", AbilityTypes.Target, "ActionSecondary", Track, CustomGameOptions.TrackCd, TrackException, CustomGameOptions.MaxTracks);
+        SeerButton = new(this, "Seer", AbilityTypes.Alive, "ActionSecondary", See, CustomGameOptions.SeerCd);
+        InterrogateButton = new(this, "Interrogate", AbilityTypes.Alive, "ActionSecondary", Interrogate, CustomGameOptions.InterrogateCd, SherException);
+        TrackButton = new(this, "Track", AbilityTypes.Alive, "ActionSecondary", Track, CustomGameOptions.TrackCd, TrackException, CustomGameOptions.MaxTracks);
         AlertButton = new(this, "Alert", AbilityTypes.Targetless, "ActionSecondary", Alert, CustomGameOptions.AlertCd, CustomGameOptions.AlertDur, CustomGameOptions.MaxAlerts);
-        ShootButton = new(this, "Shoot", AbilityTypes.Target, "ActionSecondary", Shoot, CustomGameOptions.ShootCd, VigiException, CustomGameOptions.MaxBullets);
+        ShootButton = new(this, "Shoot", AbilityTypes.Alive, "ActionSecondary", Shoot, CustomGameOptions.ShootCd, VigiException, CustomGameOptions.MaxBullets);
         ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", Revive, CustomGameOptions.ReviveCd, CustomGameOptions.ReviveDur, UponEnd, CustomGameOptions.MaxRevives);
-        ShieldButton = new(this, "Shield", AbilityTypes.Target, "ActionSecondary", Protect, MedicException);
+        ShieldButton = new(this, "Shield", AbilityTypes.Alive, "ActionSecondary", Protect, MedicException);
         SwoopButton = new(this, "Swoop", AbilityTypes.Targetless, "ActionSecondary", Swoop, CustomGameOptions.SwoopCd, CustomGameOptions.SwoopDur, Invis, UnInvis,
             CustomGameOptions.MaxSwoops);
         FixButton = new(this, "Fix", AbilityTypes.Targetless, "ActionSecondary", Fix, CustomGameOptions.FixCd, CustomGameOptions.MaxFixes);
-        BlockButton = new(this, "EscortRoleblock", AbilityTypes.Target, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur,
+        BlockButton = new(this, "EscortRoleblock", AbilityTypes.Alive, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur,
             (CustomButton.EffectVoid)Block, UnBlock);
         TransportButton = new(this, "Transport", AbilityTypes.Targetless, "ActionSecondary", Transport, CustomGameOptions.TransportCd, CustomGameOptions.MaxTransports);
         BombButton = new(this, $"{Bastion.SpriteName}VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, BastException);
         BuildButton = new(this, "Build", AbilityTypes.Targetless, "Secondary", StartBuildling, CustomGameOptions.BuildCd, CustomGameOptions.BuildDur, EndBuildling, canClickAgain: false);
-        TrapButton = new(this, "Trap", AbilityTypes.Target, "ActionSecondary", SetTrap, CustomGameOptions.TrapCd, TrapException, CustomGameOptions.MaxTraps);
+        TrapButton = new(this, "Trap", AbilityTypes.Alive, "ActionSecondary", SetTrap, CustomGameOptions.TrapCd, TrapException, CustomGameOptions.MaxTraps);
         RetMenu = new(Player, "RetActive", "RetDisabled", CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
         TrapsMade = 0;
         TrapButton.Uses = 0;
@@ -74,22 +74,44 @@ public class Retributionist : Crew
     public Role RevivedRole => Revived == null ? null : (Revived.Is(LayerEnum.Revealer) ? GetRole<Revealer>(Revived).FormerRole : GetRole(Revived));
     public CustomMeeting RetMenu { get; set; }
 
-    public override Color Color
+    public override UColor Color
     {
         get
         {
             if (!ClientGameOptions.CustomCrewColors)
-                return Colors.Crew;
+                return CustomColorManager.Crew;
             else if (RevivedRole != null)
                 return RevivedRole.Color;
             else
-                return Colors.Retributionist;
+                return CustomColorManager.Retributionist;
         }
     }
     public override string Name => "Retributionist";
     public override LayerEnum Type => LayerEnum.Retributionist;
     public override Func<string> StartText => () => "Mimic the Dead";
     public override Func<string> Description => () => "- You can mimic the abilities of dead <color=#8CFFFFFF>Crew</color>" + (RevivedRole == null ? "" : $"\n{RevivedRole.Description()}");
+    public override AttackEnum AttackVal
+    {
+        get
+        {
+            if (IsBast || (IsVet && AlertButton.EffectActive))
+                return AttackEnum.Powerful;
+            else if (IsVig)
+                return AttackEnum.Basic;
+            else
+                return AttackEnum.None;
+        }
+    }
+    public override DefenseEnum DefenseVal
+    {
+        get
+        {
+            if (IsVet && AlertButton.EffectActive)
+                return DefenseEnum.Basic;
+            else
+                return DefenseEnum.None;
+        }
+    }
 
     public override void OnLobby()
     {
@@ -105,7 +127,7 @@ public class Retributionist : Crew
         TrackerArrows.Values.ToList().DestroyAll();
         TrackerArrows.Clear();
 
-        Bug.Clear(Bugs);
+        Bugs.ForEach(x => x.Destroy());
         Bugs.Clear();
 
         ClearFootprints();
@@ -143,7 +165,7 @@ public class Retributionist : Crew
     {
         base.UpdateHud(__instance);
         TransportButton.Update2(TransportPlayer1 == null ? "FIRST TARGET" : (TransportPlayer2 == null ? "SECOND TARGET" : "TRANSPORT"), IsTrans);
-        FixButton.Update2("FIX SABOTAGE", IsEngi, Condition());
+        FixButton.Update2("FIX SABOTAGE", IsEngi && CustomGameOptions.MaxFixes > 0, Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive);
         ShieldButton.Update2("SHIELD", ExShielded == null && IsMedic);
         RevealButton.Update2("REVEAL", IsMys);
         StakeButton.Update2("STAKE", IsVH);
@@ -258,7 +280,7 @@ public class Retributionist : Crew
                         TransportPlayer1 = null;
                 }
 
-                LogInfo("Removed a target");
+                LogMessage("Removed a target");
             }
         }
     }
@@ -330,7 +352,7 @@ public class Retributionist : Crew
     public override void UpdateMeeting(MeetingHud __instance)
     {
         base.UpdateMeeting(__instance);
-        RetMenu.Update();
+        RetMenu.Update(__instance);
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -381,7 +403,7 @@ public class Retributionist : Crew
 
             //Only Retributionist-Operative can see this
             if (HUD)
-                Run(Chat, "<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
+                Run("<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
         }
         else if (IsDet)
             ClearFootprints();
@@ -399,10 +421,10 @@ public class Retributionist : Crew
 
                 //Only Retributionist-Trapper can see this
                 if (HUD)
-                    Run(Chat, "<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
+                    Run("<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
             }
             else if (AttackedSomeone && HUD)
-                Run(Chat, "<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
+                Run("<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
 
             TriggeredRoles.Clear();
         }
@@ -434,7 +456,7 @@ public class Retributionist : Crew
 
             //Only Retributionist-Coroner can see this
             if (HUD)
-                Run(Chat, "<color=#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
+                Run("<color=#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
         }
     }
 
@@ -456,14 +478,10 @@ public class Retributionist : Crew
 
     public void Compare()
     {
-        var interact = Interact(Player, CompareButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, CompareButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Flash(ReferenceBodies.Any(x => CompareButton.TargetPlayer.PlayerId == x.KillerId) ? UColor.red : UColor.green);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         CompareButton.StartCooldown(cooldown);
     }
@@ -481,18 +499,14 @@ public class Retributionist : Crew
 
     public void Examine()
     {
-        var interact = Interact(Player, ExamineButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, ExamineButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
                 CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
             Investigated.Add(ExamineButton.TargetPlayer.PlayerId);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         ExamineButton.StartCooldown(cooldown);
     }
@@ -568,14 +582,10 @@ public class Retributionist : Crew
 
     public void Interrogate()
     {
-        var interact = Interact(Player, InterrogateButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, InterrogateButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Flash(InterrogateButton.TargetPlayer.SeemsEvil() ? UColor.red : UColor.green);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         InterrogateButton.StartCooldown(cooldown);
     }
@@ -592,14 +602,10 @@ public class Retributionist : Crew
 
     public void Track()
     {
-        var interact = Interact(Player, TrackButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, TrackButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), CustomGameOptions.UpdateInterval));
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         TrackButton.StartCooldown(cooldown);
     }
@@ -612,13 +618,7 @@ public class Retributionist : Crew
 
     public void Shoot()
     {
-        var interact = Interact(Player, ShootButton.TargetPlayer, true);
-        var cooldown = CooldownType.Reset;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
+        var cooldown = Interact(Player, ShootButton.TargetPlayer, true);
 
         ShootButton.StartCooldown(cooldown);
     }
@@ -632,13 +632,7 @@ public class Retributionist : Crew
 
     public void Stake()
     {
-        var interact = Interact(Player, StakeButton.TargetPlayer, StakeButton.TargetPlayer.Is(SubFaction.Undead) || StakeButton.TargetPlayer.IsFramed());
-        var cooldown = CooldownType.Reset;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
+        var cooldown = Interact(Player, StakeButton.TargetPlayer, StakeButton.TargetPlayer.Is(SubFaction.Undead) || StakeButton.TargetPlayer.IsFramed());
 
         StakeButton.StartCooldown(cooldown);
     }
@@ -703,7 +697,7 @@ public class Retributionist : Crew
     {
         RevivingBody = ReviveButton.TargetBody;
         Spread(Player, PlayerByBody(RevivingBody));
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ReviveButton, RevivingBody);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ReviveButton, RetActionsRPC.Revive, RevivingBody);
         ReviveButton.Begin();
         Flash(Color, CustomGameOptions.ReviveDur);
 
@@ -719,9 +713,9 @@ public class Retributionist : Crew
 
     public void Protect()
     {
-        var interact = Interact(Player, ShieldButton.TargetPlayer);
+        var cooldown = Interact(Player, ShieldButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             if (ShieldedPlayer == null)
             {
@@ -764,8 +758,6 @@ public class Retributionist : Crew
     public CustomButton FixButton { get; set; }
     public bool IsEngi => RevivedRole?.Type == LayerEnum.Engineer;
 
-    public bool Condition() => Ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
-
     public void Fix()
     {
         FixExtentions.Fix();
@@ -778,17 +770,13 @@ public class Retributionist : Crew
 
     public void Reveal()
     {
-        var interact = Interact(Player, RevealButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, RevealButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             Flash((!RevealButton.TargetPlayer.Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.TargetPlayer.Is(Alignment.NeutralNeo)) || RevealButton.TargetPlayer.IsFramed()
                 ? UColor.red : UColor.green);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         RevealButton.StartCooldown(cooldown);
     }
@@ -801,14 +789,10 @@ public class Retributionist : Crew
 
     public void See()
     {
-        var interact = Interact(Player, SeerButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, SeerButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Flash(GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         SeerButton.StartCooldown(cooldown);
     }
@@ -828,18 +812,16 @@ public class Retributionist : Crew
 
     public void Roleblock()
     {
-        var interact = Interact(Player, BlockButton.TargetPlayer);
+        var cooldown = Interact(Player, BlockButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             BlockTarget = BlockButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, BlockButton, BlockTarget);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, BlockButton, RetActionsRPC.Roleblock, BlockTarget);
             BlockButton.Begin();
         }
-        else if (interact.Reset)
-            BlockButton.StartCooldown();
-        else if (interact.Protected)
-            BlockButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            BlockButton.StartCooldown(cooldown);
     }
 
     public bool BlockEnd() => IsDead || BlockTarget.HasDied();
@@ -897,7 +879,7 @@ public class Retributionist : Crew
         if (TransportPlayer1.inVent)
         {
             while (GetInTransition())
-                yield return null;
+                yield return new WaitForEndOfFrame();
 
             TransportPlayer1.MyPhysics.ExitAllVents();
             Vent1 = TransportPlayer1.GetClosestVent();
@@ -907,7 +889,7 @@ public class Retributionist : Crew
         if (TransportPlayer2.inVent)
         {
             while (GetInTransition())
-                yield return null;
+                yield return new WaitForEndOfFrame();
 
             TransportPlayer2.MyPhysics.ExitAllVents();
             Vent2 = TransportPlayer2.GetClosestVent();
@@ -944,7 +926,7 @@ public class Retributionist : Crew
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.TransportDur)
-                yield return null;
+                yield return new WaitForEndOfFrame();
             else
                 break;
 
@@ -1074,26 +1056,22 @@ public class Retributionist : Crew
 
     public void Click1(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             TransportPlayer1 = player;
-        else if (interact.Reset)
-            TransportButton.StartCooldown();
-        else if (interact.Protected)
-            TransportButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            TransportButton.StartCooldown(cooldown);
     }
 
     public void Click2(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             TransportPlayer2 = player;
-        else if (interact.Reset)
-            TransportButton.StartCooldown();
-        else if (interact.Protected)
-            TransportButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            TransportButton.StartCooldown(cooldown);
     }
 
     public void Transport()
@@ -1119,17 +1097,13 @@ public class Retributionist : Crew
 
     public void Bomb()
     {
-        var interact = Interact(Player, BombButton.TargetVent);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, BombButton.TargetVent);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             BombedIDs.Add(BombButton.TargetVent.Id);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Bomb, BombButton.TargetVent);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         BombButton.StartCooldown(cooldown);
     }
@@ -1159,17 +1133,13 @@ public class Retributionist : Crew
 
     private void SetTrap()
     {
-        var interact = Interact(Player, TrapButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, TrapButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Place, TrapButton.TargetPlayer.PlayerId);
             Trapped.Add(TrapButton.TargetPlayer.PlayerId);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         TrapButton.StartCooldown(cooldown);
     }

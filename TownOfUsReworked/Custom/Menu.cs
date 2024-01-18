@@ -32,16 +32,11 @@ public class CustomMenu
             Menu.name = Menu.gameObject.name = $"{Owner.name}AbilityMenu";
         }
 
-        Menu.transform.SetParent(Camera.main.transform, false);
         Menu.transform.localPosition = new(0f, 0f, -50f);
         Menu.Begin(null);
     }
 
-    private static ShapeshifterMinigame GetShapeshifterMenu()
-    {
-        var rolePrefab = RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
-        return UObject.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
-    }
+    private static ShapeshifterMinigame GetShapeshifterMenu() => RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter)?.TryCast<ShapeshifterRole>()?.ShapeshifterMenu;
 
     public void Clicked(PlayerControl player)
     {
@@ -51,6 +46,9 @@ public class CustomMenu
 
     public void Destroy()
     {
+        if (!Menu)
+            return;
+
         Menu?.Destroy();
         Menu = null;
     }

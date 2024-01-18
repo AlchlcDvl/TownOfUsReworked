@@ -2,35 +2,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Pestilence : Neutral
 {
-    public CustomButton ObliterateButton { get; set; }
+    private CustomButton ObliterateButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Pestilence : CustomColorManager.Neutral;
     public override string Name => "Pestilence";
     public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> StartText => () => "THE APOCALYPSE IS NIGH";
-    public override Func<string> Description => () => "- Anyone who interacts with you will be killed";
+    public override Func<string> Description => () => "- You can spread a deadly disease to kill everyone";
+    public override DefenseEnum DefenseVal => DefenseEnum.Invincible;
+
+    public static readonly Dictionary<byte, int> Infected = new();
 
     public Pestilence(PlayerControl player) : base(player)
     {
         Objectives = () => "- Obliterate anyone who can oppose you";
         Alignment = Alignment.NeutralApoc;
-        ObliterateButton = new(this, "Obliterate", AbilityTypes.Target, "ActionSecondary", Obliterate, CustomGameOptions.ObliterateCd, Exception);
+        ObliterateButton = new(this, "Obliterate", AbilityTypes.Alive, "ActionSecondary", Obliterate, CustomGameOptions.ObliterateCd, Exception);
     }
 
-    public void Obliterate()
+    private void Obliterate()
     {
-        var interact = Interact(Player, ObliterateButton.TargetPlayer, true);
-        var cooldown = CooldownType.Reset;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
-
-        ObliterateButton.StartCooldown(cooldown);
+        Interact(Player, ObliterateButton.TargetPlayer);
+        ObliterateButton.StartCooldown();
     }
 
-    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 
     public override void UpdateHud(HudManager __instance)

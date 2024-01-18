@@ -1,4 +1,5 @@
 using Assets.InnerNet;
+using BepInEx.Unity.IL2CPP.Utils;
 
 namespace TownOfUsReworked.Patches;
 
@@ -16,16 +17,13 @@ public static class MainMenuStartPatch
         SubTitle = "",
         PinState = false,
         Date = "16.07.2023",
-        Text = $"<size=75%>{CreateText("ModInfo")}</size>"
+        Text = $"<size=75%>{ReadResourceText("ModInfo")}</size>"
     };
     public static GameObject Logo;
 
     public static void Prefix(MainMenuManager __instance)
     {
-        ModCompatibility.Init();
-        Generate.GenerateAll();
-        ModUpdater.LaunchUpdater();
-        AssetLoader.LaunchFetchers(ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate);
+        LoadVanillaSounds();
         var rightPanel = GameObject.Find("RightPanel");
 
         if (!Logo && rightPanel)
@@ -36,25 +34,31 @@ public static class MainMenuStartPatch
             Logo.transform.SetParent(rightPanel.transform);
         }
 
-        var template = GameObject.Find("ExitGameButton");
+        var y = -0.5f;
+        var pos = 0.75f;
 
-        if (template == null)
-            return;
-
-        var y = 0f;
         //If there's a possible download, create and show the buttons for it
 
         if (ModUpdater.ReworkedUpdate)
         {
             LogInfo("Reworked can be updated");
-            CreatDownloadButton(__instance, "Reworked", y, 0.75f, "UpdateReworked");
-            y += 0.6f;
+            CreatDownloadButton(__instance, "Reworked", y, pos, "UpdateReworked");
+            y += 0.5f;
+            pos += 0.5f;
         }
 
         if (ModUpdater.SubmergedUpdate || ModUpdater.CanDownloadSubmerged)
         {
             LogInfo($"Submerged can be {(ModUpdater.SubmergedUpdate ? "updated" : "downloaded")}");
-            CreatDownloadButton(__instance, "Submerged", y, 1.25f, $"{(SubLoaded ? "Update" : "Download")}Submerged");
+            CreatDownloadButton(__instance, "Submerged", y, pos, $"{(SubLoaded ? "Update" : "Download")}Submerged");
+            y += 0.5f;
+            pos += 0.5f;
+        }
+
+        if (ModUpdater.CanDownloadLevelImpostor)
+        {
+            LogInfo("LevelImpostor can be downloaded");
+            CreatDownloadButton(__instance, "LevelImpostor", y, pos, "DownloadLevelImpostor");
         }
     }
 
@@ -80,7 +84,7 @@ public static class MainMenuStartPatch
         passiveButton.OnClick = new();
         passiveButton.OnClick.AddListener((Action)(() =>
         {
-            ModUpdater.ExecuteUpdate(downloadType);
+            __instance.StartCoroutine(ModUpdater.DownloadUpdate(downloadType));
             button.SetActive(false);
         }));
 
@@ -109,15 +113,15 @@ public static class MainMenuStartPatch
         __instance.myAccountButton.transform.position = pos;
         pos.y = __instance.newsButton.transform.localPosition.y;
         pos.x = __instance.quitButton.transform.localPosition.x;
-        GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
-        GameObject.Find("NewsButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        GameObject.Find("NewsButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z); //WHY THE FUCK IS IT ACOUNT AND NOT ACCOUNT
-        GameObject.Find("AcountButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        GameObject.Find("AcountButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
-        GameObject.Find("SettingsButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        GameObject.Find("SettingsButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.newsButton.transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
+        __instance.newsButton.transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.newsButton.transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.myAccountButton.transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z); //WHY THE FUCK IS IT ACOUNT AND NOT ACCOUNT
+        __instance.myAccountButton.transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.myAccountButton.transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.settingsButton.transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
+        __instance.settingsButton.transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.settingsButton.transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
 
         var ghObj = UObject.Instantiate(__instance.newsButton, __instance.newsButton.transform.parent);
         ghObj.gameObject.name = "ReworkedGitHub";
@@ -161,7 +165,7 @@ public static class MainMenuStartPatch
                     var copy = DataManager.Player.Announcements.allAnnouncements;
                     PopUp.CreateAnnouncementList();
                     PopUp.UpdateAnnouncementText(ModInfo.Number);
-                    PopUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
+                    PopUp.visibleAnnouncements._items[0].PassiveButton.OnClick = new();
                     DataManager.Player.Announcements.allAnnouncements = backup;
                 }
             })));
@@ -170,10 +174,13 @@ public static class MainMenuStartPatch
 
         __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
         {
-            GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Discord");
-            GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod GitHub");
-            GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
+            discObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Discord");
+            ghObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod GitHub");
+            credObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
         })));
+
+        SoundEffects.TryAdd("Hover", __instance.playButton.HoverSound);
+        SoundEffects.TryAdd("Click", __instance.playButton.ClickSound);
     }
 }
 
@@ -184,15 +191,15 @@ public static class MainMenuUpdatePatch
     {
         try
         {
-            var pos = GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.position;
+            var pos = __instance.newsButton.transform.GetChild(0).GetChild(0).transform.position;
             pos.x -= 0.1f;
-            GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.position = pos;
-            var pos2 = GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.position;
+            __instance.newsButton.transform.GetChild(0).GetChild(0).transform.position = pos;
+            var pos2 = __instance.myAccountButton.transform.GetChild(0).GetChild(0).transform.position;
             pos2.x -= 0.1f;
-            GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.position = pos2;
-            var pos3 = GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.position;
+            __instance.myAccountButton.transform.GetChild(0).GetChild(0).transform.position = pos2;
+            var pos3 = __instance.settingsButton.transform.GetChild(0).GetChild(0).transform.position;
             pos3.x -= 0.1f;
-            GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.position = pos3;
+            __instance.settingsButton.transform.GetChild(0).GetChild(0).transform.position = pos3;
             var pos4 = GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).transform.position;
             pos4.x -= 0.1f;
             GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).transform.position = pos4;

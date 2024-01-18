@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Data;
 public enum ActionsRPC
 {
     Mine,
-    BarryButton,
+    CallMeeting,
     Drop,
     BaitReport,
     Convert,
@@ -17,6 +17,7 @@ public enum ActionsRPC
     LayerAction2,
     Cancel,
     PublicReveal,
+    Infect,
 
     None
 }
@@ -41,7 +42,7 @@ public enum ThiefActionsRPC
 
 public enum AbilityTypes
 {
-    Target,
+    Alive,
     Dead,
     Vent,
     Targetless,
@@ -258,7 +259,8 @@ public enum GameMode
     HideAndSeek,
     TaskRace,
     Custom,
-    Vanilla
+    Vanilla,
+    None
 }
 
 public enum HnSMode
@@ -334,19 +336,11 @@ public enum TargetRPC
 public enum MiscRPC
 {
     SetLayer,
-    SetPhantom,
-    CatchPhantom,
-    SetRevealer,
-    CatchRevealer,
-    SetGhoul,
-    CatchGhoul,
-    SetBanshee,
-    CatchBanshee,
+    Catch,
     AttemptSound,
     Start,
     SyncCustomSettings,
     SetSettings,
-    MeetingStart,
     Notify,
     SubmergedFixOxygen,
     Whisper,
@@ -356,12 +350,14 @@ public enum MiscRPC
     VersionHandshake,
     ChaosDrive,
     FixLights,
+    FixMixup,
     SetFirstKilled,
     SyncPureCrew,
     SyncSummary,
     BodyLocation,
     BastionBomb,
     MoveBody,
+    LoadPreset,
 
     None
 }
@@ -599,6 +595,8 @@ public enum DeathReasonEnum
     Collided,
     Escaped,
     Converted,
+    Infected,
+    Clicked,
 
     None
 }
@@ -826,10 +824,9 @@ public enum CooldownType
 {
     Start,
     Meeting,
-    Survivor,
-    GuardianAngel,
-    Reset,
-    Custom
+    Fail,
+    Custom,
+    Reset
 }
 
 public enum AnonVotes
@@ -856,13 +853,12 @@ public enum RandomSpawning
     Both
 }
 
-/*public enum AttackEnum
+public enum AttackEnum
 {
     None,
     Basic,
     Powerful,
-    Unstoppable,
-    Debug
+    Unstoppable
 }
 
 public enum DefenseEnum
@@ -870,9 +866,8 @@ public enum DefenseEnum
     None,
     Basic,
     Powerful,
-    Invincible,
-    Debug
-}*/
+    Invincible
+}
 
 public enum MedicActionsRPC
 {
@@ -884,4 +879,11 @@ public enum TrapperActionsRPC
 {
     Place,
     Trigger
+}
+
+public enum CosmeticTypeEnum
+{
+    Hat,
+    Visor,
+    Nameplate
 }

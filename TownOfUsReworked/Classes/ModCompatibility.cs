@@ -12,11 +12,12 @@ public static class ModCompatibility
     public static Type[] SubTypes { get; private set; }
     public static Dictionary<string, Type> SubInjectedTypes { get; private set; }
 
-    public static bool IsSubmerged() => SubLoaded && Ship && Ship.Type == SUBMERGED_MAP_TYPE;
+    public static bool IsSubmerged() => SubLoaded && Ship && Ship.Type == SUBMERGED_MAP_TYPE && MapPatches.CurrentMap == 6;
 
     private static Type SubmarineStatusType;
 
     private static MethodInfo RpcRequestChangeFloorMethod;
+    private static MethodInfo RegisterFloorOverrideMethod;
     private static Type FloorHandlerType;
     private static MethodInfo GetFloorHandlerMethod;
 
@@ -55,7 +56,7 @@ public static class ModCompatibility
     private static Type SubSpawnSystemType;
     private static MethodInfo GetReadyPlayerAmountMethod;
 
-    public static bool InitializeSubmerged()
+    private static bool InitializeSubmerged()
     {
         if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin) || subPlugin == null)
             return false;
@@ -64,11 +65,11 @@ public static class ModCompatibility
 
         try
         {
-            SubPlugin = subPlugin!.Instance as BasePlugin;
+            SubPlugin = subPlugin.Instance as BasePlugin;
             SubVersion = subPlugin.Metadata.Version;
-            LogInfo(SubVersion);
+            LogMessage(SubVersion);
 
-            SubAssembly = SubPlugin!.GetType().Assembly;
+            SubAssembly = SubPlugin.GetType().Assembly;
             SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly);
 
             SubInjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Array.Find(SubTypes, t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null, null);
@@ -80,6 +81,7 @@ public static class ModCompatibility
             FloorHandlerType = SubTypes.First(t => t.Name == "FloorHandler");
             GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", new[] { typeof(PlayerControl) });
             RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
+            RegisterFloorOverrideMethod = AccessTools.Method(FloorHandlerType, "RegisterFloorOverride");
 
             VentPatchDataType = SubTypes.First(t => t.Name == "VentPatchData");
             InTrasntionProperty = AccessTools.Property(VentPatchDataType, "InTransition");
@@ -184,19 +186,18 @@ public static class ModCompatibility
     public static void ExileRoleChangePostfix()
     {
         Coroutines.Start(WaitMeeting(() => ButtonUtils.Reset(CooldownType.Meeting)));
-        Coroutines.Start(WaitMeeting(GhostRoleBegin));
         SetPostmortals.ExileControllerPostfix(Ejection);
     }
 
     public static IEnumerator WaitStart(Action next)
     {
         while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
-            yield return null;
+            yield return new WaitForEndOfFrame();
 
         yield return Wait(0.5f);
 
         while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
-            yield return null;
+            yield return new WaitForEndOfFrame();
 
         next();
         yield break;
@@ -205,41 +206,18 @@ public static class ModCompatibility
     public static IEnumerator WaitMeeting(Action next)
     {
         while (!CustomPlayer.Local.moveable)
-            yield return null;
+            yield return new WaitForEndOfFrame();
 
         yield return Wait(0.5f);
 
         while (HUD.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
-            yield return null;
+            yield return new WaitForEndOfFrame();
 
         next();
         yield break;
     }
 
-    public static void GhostRoleBegin()
-    {
-        if (!IsSubmerged() || !CustomPlayer.LocalCustom.IsDead || !CustomPlayer.Local.IsPostmortal() || (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught()))
-            return;
-
-        var vents = AllMapVents;
-
-        if (Ship.Systems.TryGetValue(SystemTypes.Ventilation, out var systemType))
-        {
-            var ventilationSystem = systemType.Cast<VentilationSystem>();
-            vents = AllMapVents.Where(x => ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id)).ToList();
-        }
-
-        var startingVent = vents[URandom.RandomRangeInt(0, vents.Count)];
-
-        while (AllMapVents.IndexOf(startingVent) is 0 or 14)
-            startingVent = vents[URandom.RandomRangeInt(0, vents.Count)];
-
-        ChangeFloor(startingVent.transform.position.y > -7f);
-        CustomPlayer.Local.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
-        CustomPlayer.Local.MyPhysics.RpcEnterVent(startingVent.Id);
-    }
-
-    public static void Ghostrolefix(PlayerPhysics __instance)
+    public static void GhostRoleFix(PlayerPhysics __instance)
     {
         if (IsSubmerged() && __instance.myPlayer.Data.IsDead)
         {
@@ -277,7 +255,9 @@ public static class ModCompatibility
             return;
 
         var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new[] { CustomPlayer.Local })).TryCast(FloorHandlerType) as MonoBehaviour;
-        RpcRequestChangeFloorMethod.Invoke(_floorHandler, new object[] { toUpper });
+        var args = new object[] { toUpper };
+        RpcRequestChangeFloorMethod.Invoke(_floorHandler, args);
+        RegisterFloorOverrideMethod.Invoke(_floorHandler, args);
     }
 
     public static bool GetInTransition()
@@ -333,18 +313,9 @@ public static class ModCompatibility
     public static Assembly LIAssembly { get; private set; }
     public static Type[] LITypes { get; private set; }
 
-    public static bool IsLevelImpostor() => LILoaded && Ship && Ship.Type == LI_MAP_TYPE;
+    public static bool IsLevelImpostor() => LILoaded && Ship && Ship.Type == LI_MAP_TYPE && MapPatches.CurrentMap == 7;
 
-    private static Type LIShipStatusType;
-
-    private static Type MapLoaderType;
-    private static Type LIMapType;
-    private static MethodInfo LoadMapMethod;
-    private static MethodInfo UnloadMapMethod;
-
-    public static string CurrentLIMap;
-
-    public static bool InitializeLevelImpostor()
+    private static bool InitializeLevelImpostor()
     {
         if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(LI_GUID, out var liPlugin) || liPlugin == null)
             return false;
@@ -353,22 +324,12 @@ public static class ModCompatibility
 
         try
         {
-            LIPlugin = liPlugin!.Instance as BasePlugin;
+            LIPlugin = liPlugin.Instance as BasePlugin;
             LIVersion = liPlugin.Metadata.Version;
-            LogInfo(LIVersion);
+            LogMessage(LIVersion);
 
-            LIAssembly = LIPlugin!.GetType().Assembly;
+            LIAssembly = LIPlugin.GetType().Assembly;
             LITypes = AccessTools.GetTypesFromAssembly(LIAssembly);
-
-            LIShipStatusType = LITypes.First(t => t.Name == "LIShipStatus");
-
-            MapLoaderType = LITypes.First(t => t.Name == "MapLoader");
-            LIMapType = LITypes.First(t => t.Name == "LIMap");
-            LoadMapMethod = AccessTools.Method(MapLoaderType, "LoadMap", new[] { LIMapType, typeof(bool) });
-            UnloadMapMethod = AccessTools.Method(MapLoaderType, "UnloadMap");
-
-            TownOfUsReworked.ModInstance.Harmony.Patch(LoadMapMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(SetCurrentMap))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(UnloadMapMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(UnloadMap))));
 
             LogMessage("LevelImpostor compatibility finished");
             return true;
@@ -380,47 +341,54 @@ public static class ModCompatibility
         }
     }
 
-    private static void SetCurrentMap(ref dynamic map)
+    public static bool InitialiseMalumMenu()
     {
-        if (!LILoaded || map == null)
-        {
-            CurrentLIMap = "LevelImpostor";
-            return;
-        }
+        if (!IL2CPPChainloader.Instance.Plugins.TryGetValue("MalumMenu", out _))
+            return false;
 
-        CurrentLIMap = $"{map.name} <size=0.9>By {map.authorName}</size>";
+        LogFatal("MalumMenu was detected");
+        Harmony.UnpatchAll();
+        return true;
     }
 
-    private static void UnloadMap() => CurrentLIMap = "LevelImpostor";
+    private static bool Initialized;
 
     public static void Init()
     {
+        if (Initialized)
+            return;
+
         try
         {
+            Initialized = true;
+
             LILoaded = InitializeLevelImpostor();
-            SubLoaded = InitializeSubmerged();
+            SubLoaded = false; //InitializeSubmerged();
+
+            LogMessage(LILoaded || SubLoaded ? "Mod compatibility finished" : "No extra mods detected");
         }
         catch (Exception e)
         {
             LogError($"Couldn't load compatibilies:\n{e}");
+            Initialized = false;
         }
     }
 
-    public static readonly List<string> Unsupported = new() { "Mini.RegionInstall", "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod" };
+    private static readonly string[] Unsupported = { "Mini.RegionInstall", "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod" };
 
-    public static void CheckAbort(out bool abort, out string mod)
+    public static bool CheckAbort(out string mod)
     {
-        abort = false;
         mod = "";
 
         foreach (var unsupp in Unsupported)
         {
             if (File.Exists($"{TownOfUsReworked.ModsFolder}{unsupp}.dll"))
             {
-                abort = true;
                 mod = unsupp;
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 }

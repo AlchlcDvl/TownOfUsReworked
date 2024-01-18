@@ -6,7 +6,7 @@ public class Bomber : Syndicate
     public CustomButton DetonateButton { get; set; }
     public List<Bomb> Bombs { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Bomber : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Bomber : CustomColorManager.Syndicate;
     public override string Name => "Bomber";
     public override LayerEnum Type => LayerEnum.Bomber;
     public override Func<string> StartText => () => "Make People Go Boom";
@@ -25,7 +25,7 @@ public class Bomber : Syndicate
     public override void OnLobby()
     {
         base.OnLobby();
-        Bomb.Clear(Bombs);
+        Bombs.ForEach(x => x.Destroy());
         Bombs.Clear();
     }
 
@@ -34,7 +34,10 @@ public class Bomber : Syndicate
         base.OnMeetingStart(__instance);
 
         if (CustomGameOptions.BombsDetonateOnMeetingStart)
-            Bomb.DetonateBombs(Bombs);
+        {
+            Bombs.ForEach(x => x.Detonate());
+            Bombs.Clear();
+        }
     }
 
     public void Place()
@@ -48,7 +51,8 @@ public class Bomber : Syndicate
 
     public void Detonate()
     {
-        Bomb.DetonateBombs(Bombs);
+        Bombs.ForEach(x => x.Detonate());
+        Bombs.Clear();
         DetonateButton.StartCooldown();
 
         if (CustomGameOptions.BombCooldownsLinked)

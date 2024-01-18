@@ -7,7 +7,7 @@ public class Lovers : Objectifier
     private bool IsDeadLover => Player == null || Player.HasDied();
     public bool LoversAlive => !IsDeadLover && !LoverDead;
 
-    public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Lovers : Colors.Objectifier;
+    public override UColor Color => ClientGameOptions.CustomObjColors ? CustomColorManager.Lovers : CustomColorManager.Objectifier;
     public override string Name => "Lovers";
     public override string Symbol => "♥";
     public override LayerEnum Type => LayerEnum.Lovers;

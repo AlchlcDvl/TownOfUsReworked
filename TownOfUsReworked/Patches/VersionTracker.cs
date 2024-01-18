@@ -7,15 +7,17 @@ public static class VersionShowerPatch
 
     public static void Postfix(VersionShower __instance)
     {
+        __instance.text.text += $" - <color=#C50000FF>Reworked</color> {TownOfUsReworked.VersionFinal}";
         var gameObject = GameObject.Find("LOGO-AU");
 
         if (gameObject && !ModVersion)
         {
             ModVersion = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
             ModVersion.transform.localPosition = new(0, -2f, 0);
-            ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nCreated by <color=#C50000FF>AlchlcDvl</color></b></size>";
+            ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nCreated by <color=#C50000FF>AlchlcSystm</color></b></size>";
             ModVersion.alignment = TextAlignmentOptions.Center;
             ModVersion.fontStyle = FontStyles.Bold;
+            ModVersion.font = UpdateSplashPatch.Font;
             ModVersion.name = "ModVersionText";
         }
     }
@@ -43,15 +45,15 @@ public static class PingTracker_Update
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
         var fps = Mathf.Ceil(1f / deltaTime);
 
+        //try catch my beloved <3
         try
         {
             var host = GameData.Instance?.GetHost();
-            //try catch my beloved <3
             __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n" +
                 "<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
                 $"{(!Meeting ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
                 (TownOfUsReworked.MCIActive ? (IsLobby ? $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist\n" : "") :
-                "") + $"Host: {host.PlayerName}</size>";
+                "") + (host != null ? $"Host: {host.PlayerName}</size>" : "");
         } catch {}
 
         return false;

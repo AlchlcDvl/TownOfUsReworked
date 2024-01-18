@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Patches;
 
 public static class MeetingPatches
 {
-    private static GameData.PlayerInfo VoteTarget;
     public static int MeetingCount;
     private static GameData.PlayerInfo Reported;
+    private static PlayerControl Reporter;
     public static bool GivingAnnouncements;
 
     [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.SetCosmetics))]
@@ -32,10 +32,14 @@ public static class MeetingPatches
         }
     }
 
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
     public static class SetReported
     {
-        public static void Postfix(ref GameData.PlayerInfo target) => Reported = target;
+        public static void Postfix(PlayerControl __instance, ref GameData.PlayerInfo target)
+        {
+            Reported = target;
+            Reporter = __instance;
+        }
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
@@ -45,12 +49,10 @@ public static class MeetingPatches
         {
             __instance.gameObject.AddComponent<MeetingHudPagingBehaviour>().Menu = __instance;
             OtherButtonsPatch.CloseMenus();
+            CustomPlayer.Local.DisableButtons();
+            Ash.DestroyAll();
             MeetingCount++;
             Coroutines.Start(Announcements());
-            GivingAnnouncements = true;
-            CallRpc(CustomRPC.Misc, MiscRPC.MeetingStart);
-            CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
-            AllBodies.ForEach(x => x?.gameObject?.Destroy());
 
             if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount)
                 Role.ChaosDriveMeetingTimerCount++;
@@ -67,6 +69,7 @@ public static class MeetingPatches
 
         private static IEnumerator Announcements()
         {
+            GivingAnnouncements = true;
             yield return Wait(5f);
 
             if (CustomGameOptions.GameAnnouncements)
@@ -78,15 +81,11 @@ public static class MeetingPatches
                     var player = Reported.Object;
                     check = player;
                     var report = $"{player.name} was found dead last round.";
-                    Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
-
-                    if (CustomGameOptions.LocationReports)
-                        report = $"Their body was found in {BodyLocations[Reported.PlayerId]}.";
-                    else
-                        report = "It is unknown where they died.";
-
-                    Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                    report = CustomGameOptions.LocationReports && BodyLocations.TryGetValue(Reported.PlayerId, out var location) ? $"Their body was found in {location}." :
+                        "It is unknown where they died.";
+                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
                     var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
                     var killerRole = Role.GetRole(killer);
@@ -98,7 +97,7 @@ public static class MeetingPatches
                     else
                         report = "They were killed by an unknown assailant.";
 
-                    Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
                     var role = Role.GetRole(player);
 
@@ -109,28 +108,29 @@ public static class MeetingPatches
                     else
                         report = $"We could not determine what {player.name} was.";
 
-                    Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                 }
                 else
-                    Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", "A meeting has been called.");
+                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", "A meeting has been called.");
 
                 yield return Wait(2f);
 
-                foreach (var player in RecentlyKilled)
+                foreach (var playerid in RecentlyKilled)
                 {
-                    if (player != check)
+                    if (playerid != check.PlayerId)
                     {
-                        var report = $"{player.name} was found dead last round.";
-                        Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                        var player = PlayerById(playerid);
+                        var report = $"{player} was found dead last round.";
+                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
                         report = "It is unknown where they died.";
-                        Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
 
                         var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
                         var killerRole = Role.GetRole(killer);
 
-                        if (Role.Cleaned.Contains(player))
+                        if (Role.Cleaned.Contains(player.PlayerId))
                             report = "They were killed by an unknown assailant.";
                         else if (CustomGameOptions.KillerReports == RoleFactionReports.Role)
                             report = $"They were killed by the <b>{killerRole.Name}</b>.";
@@ -139,56 +139,56 @@ public static class MeetingPatches
                         else
                             report = "They were killed by an unknown assailant.";
 
-                        Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
                         var role = Role.GetRole(player);
 
-                        if (Role.Cleaned.Contains(player))
-                            report = $"We could not determine what {player.name} was.";
+                        if (Role.Cleaned.Contains(player.PlayerId))
+                            report = $"We could not determine what {player} was.";
                         else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
                             report = $"They were the <b>{role}</b>.";
                         else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Faction)
                             report = $"They were the <b>{role.FactionName}</b>.";
                         else
-                            report = $"We could not determine what {player.name} was.";
+                            report = $"We could not determine what {player} was.";
 
-                        Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
                     }
                 }
 
                 foreach (var player in DisconnectHandler.Disconnected)
                 {
-                    if (player != check)
+                    if (player != check.PlayerId)
                     {
-                        Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} killed themselves last round.");
+                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} killed themselves last round.");
                         yield return Wait(2f);
                     }
                 }
 
                 foreach (var player in SetPostmortals.EscapedPlayers)
                 {
-                    if (player != check)
+                    if (player != check.PlayerId)
                     {
-                        Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} accomplished their objective and escaped last round.");
+                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} accomplished their objective and escaped last round.");
                         yield return Wait(2f);
                     }
                 }
 
                 foreach (var player in SetPostmortals.MisfiredPlayers)
                 {
-                    if (player != check)
+                    if (player != check.PlayerId)
                     {
-                        Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} was ejected for their misuse of power.");
+                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} was ejected for their misuse of power.");
                         yield return Wait(2f);
                     }
                 }
 
                 foreach (var player in SetPostmortals.MarkedPlayers)
                 {
-                    if (player != check)
+                    if (player != check.PlayerId)
                     {
-                        Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {player.name} to be ejected!");
+                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {PlayerById(player)} to be ejected!");
                         yield return Wait(2f);
                     }
                 }
@@ -205,11 +205,11 @@ public static class MeetingPatches
             else
                 message = "The <b>Syndicate</b> possesses the Chaos Drive.";
 
-            Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", message);
+            Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
 
             yield return Wait(2f);
 
-            if (Objectifier.GetObjectifiers(LayerEnum.Overlord).Any(x => x.IsAlive))
+            if (PlayerLayer.GetLayers<Overlord>().Any(x => x.IsAlive))
             {
                 if (MeetingCount == CustomGameOptions.OverlordMeetingWinCount - 1)
                     message = "This is the last meeting to find and kill the <b>Overlord</b>. Should you fail, you will all lose!";
@@ -217,7 +217,7 @@ public static class MeetingPatches
                     message = "There seems to be an <b>Overlord</b> bent on dominating the mission! Kill them before they are successful!";
 
                 if (message != "")
-                    Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", message);
+                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
 
                 yield return Wait(2f);
             }
@@ -237,7 +237,7 @@ public static class MeetingPatches
                         if (!knight.HasDied())
                         {
                             message = $"{knight.name} was knighted by a <b>Monarch</b>!";
-                            Run(Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", message);
+                            Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
                             knighted.Add(id);
                         }
                     }
@@ -248,20 +248,21 @@ public static class MeetingPatches
                 monarch.ToBeKnighted.Clear();
             }
 
+            foreach (var layer in PlayerLayer.LocalLayers)
+            {
+                layer?.OnMeetingStart(Meeting);
+
+                if (layer?.Player == Reporter)
+                    layer?.OnBodyReport(Reported);
+
+                yield return Wait(0.5f);
+            }
+
             RecentlyKilled.Clear();
             Role.Cleaned.Clear();
             GivingAnnouncements = false;
             Reported = null;
             DisconnectHandler.Disconnected.Clear();
-
-            foreach (var layer in PlayerLayer.LocalLayers)
-            {
-                layer?.OnBodyReport(Reported);
-                layer?.OnMeetingStart(Meeting);
-
-                yield return Wait(0.5f);
-            }
-
             yield break;
         }
     }
@@ -271,20 +272,10 @@ public static class MeetingPatches
     {
         public static void Postfix(MeetingHud __instance)
         {
+            CustomPlayer.Local.EnableButtons();
+            ButtonUtils.Reset(CooldownType.Meeting);
             PlayerLayer.LocalLayers.ForEach(x => x?.OnMeetingEnd(__instance));
             CachedFirstDead = null;
-        }
-    }
-
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
-    public static class StartMeetingPatch
-    {
-        public static void Prefix(ref GameData.PlayerInfo target)
-        {
-            VoteTarget = target;
-
-            if (CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.Local.inMovingPlat && !CustomPlayer.Local.onLadder)
-                Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition = CustomPlayer.LocalCustom.Position;
         }
     }
 
@@ -294,11 +285,16 @@ public static class MeetingPatches
         public static void Postfix(MeetingHud __instance)
         {
             //Deactivate skip Button if skipping on emergency meetings is disabled
-            __instance.SkipVoteButton.gameObject.SetActive(!((VoteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) ||
-                (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !Ability.GetAssassins().Any(x => x.Phone)
-                && !PlayerLayer.GetLayers<Guesser>().Any(x => x.Phone));
 
-            AllVoteAreas.ForEach(x => x.SetName());
+            if (!CustomPlayer.LocalCustom.IsDead)
+            {
+                __instance.SkipVoteButton.gameObject.SetActive(!((Reported == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) ||
+                    (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !Ability.GetAssassins().Any(x =>
+                    x.Phone) && !PlayerLayer.GetLayers<Guesser>().Any(x => x.Phone) && !PlayerLayer.GetLayers<Thief>().Any(x => x.Phone));
+            }
+
+            AllVoteAreas.ForEach(SetNames);
+            ButtonUtils.DisableAllButtons();
             PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMeeting(__instance));
         }
     }
@@ -383,15 +379,15 @@ public static class MeetingPatches
         }
     }
 
-    private static void SetName(this PlayerVoteArea player) => (player.NameText.text, player.NameText.color) = UpdateGameName(player);
+    private static void SetNames(PlayerVoteArea player) => (player.NameText.text, player.NameText.color) = UpdateGameName(player);
 
-    private static (string, Color) UpdateGameName(PlayerVoteArea player)
+    private static (string, UColor) UpdateGameName(PlayerVoteArea player)
     {
         var color = UColor.white;
         var name = UpdateNames.PlayerNames.FirstOrDefault(x => x.Key == player.TargetPlayerId).Value;
         var info = player.AllPlayerInfo();
         var localinfo = CustomPlayer.Local.AllPlayerInfo();
-        var roleRevealed = false;
+        var revealed = false;
 
         if (!info[0] || !localinfo[0])
             return (name, color);
@@ -400,7 +396,7 @@ public static class MeetingPatches
         {
             var role = info[0] as Role;
             name = $"{name} ({role.TasksCompleted}/{role.TotalTasks})";
-            roleRevealed = true;
+            revealed = true;
         }
 
         if (player.IsKnighted())
@@ -418,7 +414,7 @@ public static class MeetingPatches
 
             if (mayor.Revealed)
             {
-                roleRevealed = true;
+                revealed = true;
                 name += $"\n{mayor.Name}";
                 color = mayor.Color;
 
@@ -444,7 +440,7 @@ public static class MeetingPatches
 
             if (dict.Revealed)
             {
-                roleRevealed = true;
+                revealed = true;
                 name += $"\n{dict.Name}";
                 color = dict.Color;
 
@@ -469,22 +465,22 @@ public static class MeetingPatches
         {
             var coroner = localinfo[0] as Coroner;
 
-            if (coroner.Reported.Contains(player.TargetPlayerId) && !roleRevealed)
+            if (coroner.Reported.Contains(player.TargetPlayerId) && !revealed)
             {
                 var role = info[0] as Role;
                 color = role.Color;
                 name += $"\n{role}";
-                roleRevealed = true;
+                revealed = true;
             }
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Consigliere) && !DeadSeeEverything)
         {
             var consigliere = localinfo[0] as Consigliere;
 
-            if (consigliere.Investigated.Contains(player.TargetPlayerId) && !roleRevealed)
+            if (consigliere.Investigated.Contains(player.TargetPlayerId) && !revealed)
             {
                 var role = info[0] as Role;
-                roleRevealed = true;
+                revealed = true;
 
                 if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
                 {
@@ -505,10 +501,10 @@ public static class MeetingPatches
         {
             var godfather = localinfo[0] as PromotedGodfather;
 
-            if (godfather.IsConsig && godfather.Investigated.Contains(player.TargetPlayerId) && !roleRevealed)
+            if (godfather.IsConsig && godfather.Investigated.Contains(player.TargetPlayerId) && !revealed)
             {
                 var role = info[0] as Role;
-                roleRevealed = true;
+                revealed = true;
 
                 if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
                 {
@@ -536,12 +532,12 @@ public static class MeetingPatches
         {
             var ret = localinfo[0] as Retributionist;
 
-            if (ret.Reported.Contains(player.TargetPlayerId) && !roleRevealed)
+            if (ret.Reported.Contains(player.TargetPlayerId) && !revealed)
             {
                 var role = info[0] as Role;
                 color = role.Color;
                 name += $"\n{role}";
-                roleRevealed = true;
+                revealed = true;
             }
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Arsonist) && !DeadSeeEverything)
@@ -580,12 +576,12 @@ public static class MeetingPatches
             {
                 name += " <color=#CCCCCCFF>§</color>";
 
-                if (CustomGameOptions.ExeKnowsTargetRole && !roleRevealed)
+                if (CustomGameOptions.ExeKnowsTargetRole && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = executioner.Color;
@@ -609,12 +605,12 @@ public static class MeetingPatches
             {
                 name += " <color=#FFFFFFFF>★</color>";
 
-                if (CustomGameOptions.GAKnowsTargetRole && !roleRevealed)
+                if (CustomGameOptions.GAKnowsTargetRole && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = guardianAngel.Color;
@@ -626,12 +622,12 @@ public static class MeetingPatches
 
             if (whisperer.Persuaded.Contains(player.TargetPlayerId))
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#F995FCFF>Λ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = whisperer.SubFactionColor;
@@ -651,12 +647,12 @@ public static class MeetingPatches
 
             if (dracula.Converted.Contains(player.TargetPlayerId))
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#7B8968FF>γ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = dracula.SubFactionColor;
@@ -668,12 +664,12 @@ public static class MeetingPatches
 
             if (jackal.Recruited.Contains(player.TargetPlayerId))
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#575657FF>$</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = jackal.SubFactionColor;
@@ -685,12 +681,12 @@ public static class MeetingPatches
 
             if (necromancer.Resurrected.Contains(player.TargetPlayerId))
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#E6108AFF>Σ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = necromancer.SubFactionColor;
@@ -698,13 +694,13 @@ public static class MeetingPatches
         }
         else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything && CustomGameOptions.NKsKnow)
         {
-            if (((player.GetRole() == CustomPlayer.Local.GetRole() && CustomGameOptions.NoSolo == NoSolo.SameNKs) || player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
-                CustomGameOptions.NoSolo == NoSolo.AllNKs) && !roleRevealed)
+            if (((player.GetRole() == CustomPlayer.Local.GetRole() && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
+                CustomGameOptions.NoSolo == NoSolo.AllNKs)) && !revealed)
             {
                 var role = info[0] as Role;
                 color = role.Color;
                 name += $"\n{role}";
-                roleRevealed = true;
+                revealed = true;
             }
         }
 
@@ -714,12 +710,12 @@ public static class MeetingPatches
 
             if (dracula.Converted.Contains(player.TargetPlayerId) && !dracula.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#7B8968FF>γ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -746,12 +742,12 @@ public static class MeetingPatches
 
             if (jackal.Recruited.Contains(player.TargetPlayerId) && !jackal.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#575657FF>$</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -778,12 +774,12 @@ public static class MeetingPatches
 
             if (necromancer.Resurrected.Contains(player.TargetPlayerId) && !necromancer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#E6108AFF>Σ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -810,12 +806,12 @@ public static class MeetingPatches
 
             if (whisperer.Persuaded.Contains(player.TargetPlayerId) && !whisperer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#F995FCFF>Λ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -854,12 +850,12 @@ public static class MeetingPatches
             {
                 name += $" {lover.ColoredSymbol}";
 
-                if (CustomGameOptions.LoversRoles && !roleRevealed)
+                if (CustomGameOptions.LoversRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -887,12 +883,12 @@ public static class MeetingPatches
             {
                 name += $" {rival.ColoredSymbol}";
 
-                if (CustomGameOptions.RivalsRoles && !roleRevealed)
+                if (CustomGameOptions.RivalsRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -920,12 +916,12 @@ public static class MeetingPatches
             {
                 name += $" {link.ColoredSymbol}";
 
-                if (CustomGameOptions.LinkedRoles && !roleRevealed)
+                if (CustomGameOptions.LinkedRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -952,12 +948,12 @@ public static class MeetingPatches
             {
                 name += $" {mafia.ColoredSymbol}";
 
-                if (CustomGameOptions.MafiaRoles && !roleRevealed)
+                if (CustomGameOptions.MafiaRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -992,7 +988,7 @@ public static class MeetingPatches
                     {
                         color = role2.Color;
                         name += $"\n{role2.Name}";
-                        roleRevealed = true;
+                        revealed = true;
                     }
                 }
                 else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) || (player.Is(Faction.Crew)
@@ -1005,16 +1001,17 @@ public static class MeetingPatches
                     }
                     else
                     {
-                        color = Colors.Crew;
+                        color = CustomColorManager.Crew;
                         name += "\nCrew";
                     }
 
-                    roleRevealed = true;
+                    revealed = true;
                 }
             }
         }
 
-        if (player.Is(LayerEnum.Snitch))
+        if (player.Is(LayerEnum.Snitch) && !DeadSeeEverything && player.TargetPlayerId != CustomPlayer.Local.PlayerId && (CustomPlayer.Local.Is(Faction.Syndicate) ||
+            CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals)))
         {
             var role = info[0] as Role;
 
@@ -1023,20 +1020,20 @@ public static class MeetingPatches
                 var ability = info[2] as Ability;
                 color = ability.Color;
                 name += (name.Contains('\n') ? " " : "\n") + $"{ability.Name}";
-                roleRevealed = true;
+                revealed = true;
             }
         }
 
-        if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.TargetPlayerId != CustomPlayer.Local.PlayerId && (player.GetFaction() == Faction.Intruder || player.GetFaction()
-            == Faction.Syndicate) && !DeadSeeEverything)
+        if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.TargetPlayerId != CustomPlayer.Local.PlayerId && player.GetFaction() is Faction.Intruder or Faction.Syndicate &&
+            !DeadSeeEverything)
         {
             var role = info[0] as Role;
 
-            if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+            if (CustomGameOptions.FactionSeeRoles && !revealed)
             {
                 color = role.Color;
                 name += $"\n{role}";
-                roleRevealed = true;
+                revealed = true;
 
                 if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                 {
@@ -1071,7 +1068,7 @@ public static class MeetingPatches
             name += " <color=#008000FF>Δ</color>";
         }
 
-        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.CompletedTasks) && CustomPlayer.Local.Is(Faction.Crew))
+        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught) && CustomPlayer.Local.Is(Faction.Crew))
         {
             var role = info[0] as Role;
 
@@ -1082,7 +1079,7 @@ public static class MeetingPatches
                 {
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
             }
             else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) || (player.Is(Faction.Crew) &&
@@ -1096,11 +1093,11 @@ public static class MeetingPatches
                 }
                 else
                 {
-                    color = Colors.Crew;
+                    color = CustomColorManager.Crew;
                     name += "\nCrew";
                 }
 
-                roleRevealed = true;
+                revealed = true;
             }
         }
 
@@ -1189,16 +1186,20 @@ public static class MeetingPatches
                     name += $" {objectifier.ColoredSymbol}";
             }
 
-            if (!roleRevealed)
+            if (info[0])
             {
                 var role = info[0] as Role;
-                color = role.Color;
-                name += $"\n{role}";
-                roleRevealed = true;
+
+                if (!name.Contains(role.Name))
+                {
+                    color = role.Color;
+                    name += $"{(name.Contains('\n') ? " " : "\n")}{role}";
+                    revealed = true;
+                }
             }
         }
 
-        if (roleRevealed)
+        if (revealed)
             player.ColorBlindName.transform.localPosition = new(-0.93f, 0f, -0.1f);
 
         return (name, color);
@@ -1215,7 +1216,7 @@ public static class MeetingPatches
             temp.x = Mathf.SmoothStep(source.x, dest.x, t);
             temp.y = Mathf.SmoothStep(source.y, dest.y, t);
             target.position = temp;
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
 
         temp.x = dest.x;
@@ -1246,6 +1247,13 @@ public static class MeetingPatches
             var cb1 = role.Swap1.ColorBlindName.transform;
             var overlay1 = role.Swap1.Overlay.transform;
             var report1 = role.Swap1.Megaphone.transform;
+            var votes1 = new List<Transform>();
+
+            for (var childI = 0; childI < role.Swap1.transform.childCount; childI++)
+            {
+                if (role.Swap1.transform.GetChild(childI).gameObject.name == "playerVote(Clone)")
+                    votes1.Add(role.Swap1.transform.GetChild(childI));
+            }
 
             var pooldest1 = (Vector2)pool1.position;
             var namedest1 = (Vector2)name1.position;
@@ -1262,10 +1270,17 @@ public static class MeetingPatches
             var background2 = role.Swap2.Background.transform;
             var mask2 = role.Swap2.MaskArea.transform;
             var whiteBackground2 = role.Swap2.PlayerButton.transform;
-            var level2 = role.Swap1.LevelNumberText.transform;
+            var level2 = role.Swap2.LevelNumberText.transform;
             var cb2 = role.Swap2.ColorBlindName.transform;
             var overlay2 = role.Swap2.Overlay.transform;
             var report2 = role.Swap2.Megaphone.transform;
+            var votes2 = new List<Transform>();
+
+            for (var childI = 0; childI < role.Swap2.transform.childCount; childI++)
+            {
+                if (role.Swap2.transform.GetChild(childI).gameObject.name == "playerVote(Clone)")
+                    votes2.Add(role.Swap2.transform.GetChild(childI));
+            }
 
             var pooldest2 = (Vector2)pool2.position;
             var namedest2 = (Vector2)name2.position;
@@ -1276,6 +1291,12 @@ public static class MeetingPatches
             var cbdest2 = (Vector2)cb2.position;
             var overlaydest2 = (Vector2)overlay2.position;
             var reportdest2 = (Vector2)report2.position;
+
+            foreach (var vote in votes2)
+                vote.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap1.MaskLayer);
+
+            foreach (var vote in votes1)
+                vote.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap2.MaskLayer);
 
             var duration = 1f / (Ability.GetAbilities(LayerEnum.Swapper).Count + 1);
 
@@ -1300,5 +1321,130 @@ public static class MeetingPatches
         }
 
         yield break;
+    }
+
+    private static Dictionary<byte, int> CalculateAllVotes(this MeetingHud __instance, out bool tie, out KeyValuePair<byte, int> max)
+    {
+        var dictionary = new Dictionary<byte, int>();
+
+        for (var i = 0; i < __instance.playerStates.Length; i++)
+        {
+            var playerVoteArea = __instance.playerStates[i];
+
+            if (!playerVoteArea.DidVote || playerVoteArea.AmDead || playerVoteArea.VotedFor == PlayerVoteArea.MissedVote || playerVoteArea.VotedFor == PlayerVoteArea.DeadVote)
+                continue;
+
+            if (dictionary.TryGetValue(playerVoteArea.VotedFor, out var num))
+                dictionary[playerVoteArea.VotedFor] = num + 1;
+            else
+                dictionary[playerVoteArea.VotedFor] = 1;
+        }
+
+        foreach (var role in PlayerLayer.GetLayers<Politician>())
+        {
+            foreach (var number in role.ExtraVotes)
+            {
+                if (dictionary.TryGetValue(number, out var num))
+                    dictionary[number] = num + 1;
+                else
+                    dictionary[number] = 1;
+            }
+        }
+
+        foreach (var role in PlayerLayer.GetLayers<Mayor>())
+        {
+            if (role.Revealed)
+            {
+                if (dictionary.TryGetValue(VoteAreaByPlayer(role.Player).VotedFor, out var num))
+                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = num + CustomGameOptions.MayorVoteCount;
+                else
+                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = 1 + CustomGameOptions.MayorVoteCount;
+            }
+        }
+
+        var knighted = new List<byte>();
+
+        foreach (var role in PlayerLayer.GetLayers<Monarch>())
+        {
+            foreach (var id in role.Knighted)
+            {
+                if (!knighted.Contains(id))
+                {
+                    var area = VoteAreaById(id);
+
+                    if (dictionary.TryGetValue(area.VotedFor, out var num))
+                        dictionary[area.VotedFor] = num + CustomGameOptions.KnightVoteCount;
+                    else
+                        dictionary[area.VotedFor] = 1 + CustomGameOptions.KnightVoteCount;
+
+                    knighted.Add(id);
+                }
+            }
+        }
+
+        foreach (var swapper in PlayerLayer.GetLayers<Swapper>())
+        {
+            if (swapper.Player.HasDied() || swapper.Swap1 == null || swapper.Swap2 == null)
+                continue;
+
+            var swapPlayer1 = PlayerByVoteArea(swapper.Swap1);
+            var swapPlayer2 = PlayerByVoteArea(swapper.Swap2);
+
+            if (swapPlayer1 == null || swapPlayer2 == null || swapPlayer1.HasDied() || swapPlayer2.HasDied())
+                continue;
+
+            var swap1 = 0;
+            var swap2 = 0;
+
+            if (dictionary.TryGetValue(swapper.Swap1.TargetPlayerId, out var value))
+                swap1 = value;
+
+            if (dictionary.TryGetValue(swapper.Swap2.TargetPlayerId, out var value2))
+                swap2 = value2;
+
+            dictionary[swapper.Swap2.TargetPlayerId] = swap1;
+            dictionary[swapper.Swap1.TargetPlayerId] = swap2;
+        }
+
+        max = dictionary.MaxPair(out tie);
+
+        if (tie)
+        {
+            foreach (var player in __instance.playerStates)
+            {
+                if (!player.DidVote || player.AmDead || player.VotedFor == PlayerVoteArea.MissedVote || player.VotedFor == PlayerVoteArea.DeadVote)
+                    continue;
+
+                if (PlayerByVoteArea(player).Is(LayerEnum.Tiebreaker))
+                {
+                    if (dictionary.TryGetValue(player.VotedFor, out var num))
+                        dictionary[player.VotedFor] = num + 1;
+                    else
+                        dictionary[player.VotedFor] = 1;
+                }
+            }
+        }
+
+        _ = dictionary.MaxPair(out tie);
+        return dictionary;
+    }
+
+    private static KeyValuePair<byte, int> MaxPair(this Dictionary<byte, int> self, out bool tie)
+    {
+        tie = true;
+        var result = new KeyValuePair<byte, int>(255, int.MinValue);
+
+        foreach (var keyValuePair in self)
+        {
+            if (keyValuePair.Value > result.Value)
+            {
+                result = keyValuePair;
+                tie = false;
+            }
+            else if (keyValuePair.Value == result.Value)
+                tie = true;
+        }
+
+        return result;
     }
 }

@@ -6,9 +6,9 @@ public class Silencer : Syndicate
     public PlayerControl SilencedPlayer { get; set; }
     public bool ShookAlready { get; set; }
     public Sprite PrevOverlay { get; set; }
-    public Color PrevColor { get; set; }
+    public UColor PrevColor { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Silencer : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Silencer : CustomColorManager.Syndicate;
     public override string Name => "Silencer";
     public override LayerEnum Type => LayerEnum.Silencer;
     public override Func<string> StartText => () => "You Are The One Who Hushes";
@@ -20,22 +20,18 @@ public class Silencer : Syndicate
     {
         Alignment = Alignment.SyndicateDisrup;
         SilencedPlayer = null;
-        SilenceButton = new(this, "Silence", AbilityTypes.Target, "Secondary", Silence, CustomGameOptions.SilenceCd, Exception1);
+        SilenceButton = new(this, "Silence", AbilityTypes.Alive, "Secondary", Silence, CustomGameOptions.SilenceCd, Exception1);
     }
 
     public void Silence()
     {
-        var interact = Interact(Player, SilenceButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, SilenceButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             SilencedPlayer = SilenceButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, SilencedPlayer);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         SilenceButton.StartCooldown(cooldown);
     }

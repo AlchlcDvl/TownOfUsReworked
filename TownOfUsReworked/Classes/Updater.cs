@@ -1,195 +1,181 @@
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Text.Json;
+using UnityEngine.Networking;
 
 namespace TownOfUsReworked.Classes;
 
 public static class ModUpdater
 {
-    private static bool Running = false;
-    public static bool ReworkedUpdate = false;
-    public static bool SubmergedUpdate = false;
-    public static bool CanDownloadSubmerged = false;
-    private static string ReworkedURI = null;
-    private static string SubmergedURI = null;
-    private static Task ReworkedTask = null;
-    private static Task SubmergedTask = null;
-    private static GenericPopup InfoPopup;
+    private static readonly Dictionary<string, bool> Running = new() { { "Reworked", false }, { "Submerged", false }, { "LevelImpostor", false } };
+    public static bool ReworkedUpdate;
+    public static bool SubmergedUpdate;
+    public static bool CanDownloadSubmerged;
+    public static bool CanDownloadLevelImpostor;
+    public static readonly Dictionary<string, string> URLs = new();
+    private static GenericPopup Popup;
 
     private static string GetLink(string tag) => tag switch
     {
-        "Reworked" => "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases/latest",
-        "Submerged" => "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases/latest",
+        "Reworked" => "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases",
+        "Submerged" => "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases",
+        "LevelImpostor" => "https://api.github.com/repos/DigiWorm0/LevelImposter/releases",
         _ => throw new NotImplementedException(tag)
     };
 
-    private static string GetLink2(string tag) => tag switch
+    public static IEnumerator CheckForUpdate(string updateType)
     {
-        "Reworked" => ReworkedURI,
-        "Submerged" => SubmergedURI,
-        _ => throw new NotImplementedException(tag)
-    };
+        if (Running[updateType])
+            yield break;
 
-    public static void LaunchUpdater()
-    {
-        if (Running)
-            return;
+        Running[updateType] = true;
+        UpdateSplashPatch.SetText($"Fetching {updateType} data");
+        LogMessage($"Getting update info for {updateType}");
+        yield return new WaitForEndOfFrame();
 
-        Running = true;
-        CanDownloadSubmerged = !SubLoaded;
-        CheckForUpdate("Reworked");
-        CheckForUpdate("Submerged");
+        //Checks the github api for tags. Compares current version to the latest tag version on GitHub
+        var www = new UnityWebRequest();
+        www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
+        www.SetUrl(GetLink(updateType));
+        www.downloadHandler = new DownloadHandlerBuffer();
+        var operation = www.SendWebRequest();
 
-        if (ReworkedUpdate || SubmergedUpdate || CanDownloadSubmerged)
+        while (!operation.isDone)
+            yield return new WaitForEndOfFrame();
+
+        if (www.isNetworkError || www.isHttpError)
         {
-            InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
-            InfoPopup.TextAreaTMP.fontSize *= 0.7f;
-            InfoPopup.TextAreaTMP.enableAutoSizing = false;
+            LogError(www.error);
+            yield break;
         }
-    }
 
-    public static void ExecuteUpdate(string updateType)
-    {
-        var info = Translate("Updates.Mod.Updating").Replace("%mod%", Translate($"Mod.{updateType}"));
-        InfoPopup.Show(info);
+        var data = JsonSerializer.Deserialize<List<GitHubApiObject>>(www.downloadHandler.text)[0];
+        www.downloadHandler.Dispose();
+        www.Dispose();
 
+        if (data.Tag == null)
+        {
+            LogError($"{updateType} tag doesn't exist");
+            yield break; // Something went wrong
+        }
+
+        if (data.Description == null)
+        {
+            LogError($"{updateType} description doesn't exist");
+            yield break; // Something went wrong part 2
+        }
+
+        if (data.Assets == null)
+        {
+            LogError($"No assets found for {updateType}");
+            yield break; // Something went wrong part 3
+        }
+
+        //Check Reworked version
         if (updateType == "Reworked")
         {
-            if (ReworkedTask == null)
-            {
-                if (ReworkedURI != null)
-                    ReworkedTask = DownloadUpdate("Reworked");
-                else
-                    info = Translate("Updates.Mod.Manually");
-            }
-            else
-                info = Translate("Updates.Mod.InProgress");
+            var version = Version.Parse(data.Tag.Replace("v", ""));
+            var diff = TownOfUsReworked.Version.CompareTo(version);
+            ReworkedUpdate = diff < 0 || (diff == 0 && TownOfUsReworked.IsDev);
         }
-        else if (updateType == "Submerged")
+        //Accounts for broken version + checks Submerged version
+        else if (updateType == "Submerged" && SubLoaded)
+            SubmergedUpdate = SubVersion == null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(data.Tag.Replace("v", ""))) < 0;
+
+        foreach (var asset in data.Assets)
         {
-            if (SubmergedTask == null)
+            if (asset.URL == null || (data.Description.Contains("[NoUpdate]") && ReworkedUpdate))
+                continue;
+
+            if (asset.URL.EndsWith(".dll"))
             {
-                if (SubmergedURI != null)
-                    SubmergedTask = DownloadUpdate("Submerged");
-                else
-                    info = Translate("Updates.Mod.Manually");
+                URLs[updateType] = asset.URL;
+                break;
             }
-            else
-                info = Translate("Updates.Mod.InProgress");
         }
 
-        InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => SetPopupText(info))));
+        yield return new WaitForEndOfFrame();
+        yield break;
     }
 
-    private static async void CheckForUpdate(string updateType)
+    public static IEnumerator DownloadUpdate(string updateType)
     {
-        //Checks the github api for tags. Compares current version to the latest tag version on GitHub
-        try
+        if (!Popup)
         {
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "Updater");
-            using var response = await client.GetAsync(GetLink(updateType), HttpCompletionOption.ResponseContentRead);
+            Popup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
+            Popup.TextAreaTMP.fontSize *= 0.7f;
+            Popup.TextAreaTMP.enableAutoSizing = false;
+        }
 
-            if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
+        Popup.Show(TranslationManager.Translate("Updates.Mod.Updating").Replace("%mod%", updateType));
+
+        var button = Popup.transform.GetChild(2).gameObject;
+        button.SetActive(false);
+
+        if (!URLs.TryGetValue(updateType, out var link))
+        {
+            LogError($"No link found for {updateType}");
+            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Manually");
+            button.SetActive(true);
+            yield break;
+        }
+
+        var www = new UnityWebRequest();
+        www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
+        www.SetUrl(link);
+        www.downloadHandler = new DownloadHandlerBuffer();
+        var operation = www.SendWebRequest();
+
+        while (!operation.isDone)
+        {
+            var stars = Mathf.CeilToInt(www.downloadProgress * 10);
+            Popup.TextAreaTMP.text = $"{TranslationManager.Translate("Updates.Mod.Updating").Replace("%mod%", updateType)}";
+            Popup.TextAreaTMP.text += $"\n{new string((char)0x25A0, stars) + new string((char)0x25A1, 10 - stars)}";
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.NoSuccess");
+            LogError(www.error);
+            yield break;
+        }
+
+        Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Copying").Replace("%mod%", updateType);
+        var filePath = Path.Combine(TownOfUsReworked.ModsFolder, $"{updateType}.dll");
+
+        if (File.Exists(filePath + ".old"))
+            File.Delete(filePath + "old");
+
+        if (File.Exists(filePath))
+            File.Move(filePath, filePath + ".old");
+
+        var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
+        var hasError = false;
+        Exception error = null;
+
+        while (!persistTask.IsCompleted)
+        {
+            if (persistTask.Exception != null)
             {
-                LogError($"Server returned no data: {response.StatusCode} for {updateType}");
-                return;
+                hasError = true;
+                error = persistTask.Exception;
+                break;
             }
 
-            var json = await response.Content.ReadAsStringAsync();
-            var data = JsonSerializer.Deserialize<GitHubApiObject>(json);
-
-            var tagname = data.Tag;
-
-            if (tagname == null)
-            {
-                LogError($"{updateType} tag doesn't exist");
-                return; // Something went wrong
-            }
-
-            //Check Reworked version
-            if (updateType == "Reworked")
-                ReworkedUpdate = TownOfUsReworked.Version.CompareTo(Version.Parse(tagname.Replace("v", ""))) < 0;
-            //Accounts for broken version + checks Submerged version
-            else if (updateType == "Submerged" && SubLoaded)
-                SubmergedUpdate = SubVersion == null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", ""))) < 0;
-
-            var assets = data.Assets;
-
-            if (assets == null)
-                return;
-
-            foreach (var asset in assets)
-            {
-                if (asset.URL == null)
-                    continue;
-
-                if (asset.URL.EndsWith(".dll"))
-                {
-                    if (updateType == "Reworked")
-                        ReworkedURI = asset.URL;
-                    else if (updateType == "Submerged")
-                        SubmergedURI = asset.URL;
-
-                    return;
-                }
-            }
+            yield return new WaitForEndOfFrame();
         }
-        catch (Exception ex)
+
+        www.downloadHandler.Dispose();
+        www.Dispose();
+
+        if (hasError)
         {
-            LogError(ex);
+            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.NoSuccess");
+            LogError(error);
         }
-    }
+        else
+            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Success").Replace("%mod%", updateType);
 
-    private static async Task<bool> DownloadUpdate(string updateType)
-    {
-        try
-        {
-            //Downloads the new dll from GitHub into the plugins folder
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "Updater");
-            using var response = await client.GetAsync(GetLink2(updateType), HttpCompletionOption.ResponseContentRead);
-
-            if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
-            {
-                LogError($"Server returned no data: {response.StatusCode} for {updateType}");
-                ShowPopUp(Translate("Updates.Mod.NoSuccess"));
-                return false;
-            }
-
-            var fullname = $"{TownOfUsReworked.ModsFolder}{updateType}.dll";
-
-            if (File.Exists(fullname + ".old")) // Clear old file
-                File.Delete(fullname + ".old");
-
-            if (File.Exists(fullname)) // Rename current executable to old, if any
-                File.Move(fullname, fullname + ".old");
-
-            var array = await response.Content.ReadAsByteArrayAsync();
-            File.WriteAllBytes(fullname, array);
-            ShowPopUp(Translate("Updates.Mod.Success").Replace("%mod%", Translate($"Mod.{updateType}")));
-            return true;
-        }
-        catch (Exception ex)
-        {
-            LogError(ex);
-            ShowPopUp(Translate("Updates.Mod.NoSuccess"));
-            return false;
-        }
-    }
-
-    private static void ShowPopUp(string message)
-    {
-        SetPopupText(message);
-        InfoPopup.gameObject.SetActive(true);
-    }
-
-    public static void SetPopupText(string message)
-    {
-        if (InfoPopup == null)
-            return;
-
-        if (InfoPopup.TextAreaTMP != null)
-            InfoPopup.TextAreaTMP.text = message;
+        button.SetActive(true);
+        yield break;
     }
 }

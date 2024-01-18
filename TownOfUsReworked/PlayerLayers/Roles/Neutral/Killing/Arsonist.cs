@@ -8,19 +8,21 @@ public class Arsonist : Neutral
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CustomGameOptions.ArsoLastKillerBoost;
     public List<byte> Doused { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Arsonist : CustomColorManager.Neutral;
     public override string Name => "Arsonist";
     public override LayerEnum Type => LayerEnum.Arsonist;
     public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with " +
         "you will get doused";
+    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override DefenseEnum DefenseVal => Doused.Count < 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
     public Arsonist(PlayerControl player) : base(player)
     {
         Objectives = () => "- Burn anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         Doused = new();
-        DouseButton = new(this, "ArsoDouse", AbilityTypes.Target, "ActionSecondary", Douse, CustomGameOptions.ArsoDouseCd, Exception);
+        DouseButton = new(this, "ArsoDouse", AbilityTypes.Alive, "ActionSecondary", Douse, CustomGameOptions.ArsoDouseCd, Exception);
         IgniteButton = new(this, "Ignite", AbilityTypes.Targetless, "Secondary", Ignite, CustomGameOptions.IgniteCd);
     }
 
@@ -35,10 +37,8 @@ public class Arsonist : Neutral
             {
                 var player = PlayerById(playerId);
 
-                if (player == null || player.HasDied() || player.Is(Alignment.NeutralApoc) || player.IsProtected())
-                    continue;
-
-                RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
+                if (CanAttack(AttackVal, player.GetDefenseValue()))
+                    RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
             }
 
             if (CustomGameOptions.IgnitionCremates)
@@ -64,14 +64,10 @@ public class Arsonist : Neutral
 
     public void Douse()
     {
-        var interact = Interact(Player, DouseButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, DouseButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             RpcSpreadDouse(Player, DouseButton.TargetPlayer);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         DouseButton.StartCooldown(cooldown);
 

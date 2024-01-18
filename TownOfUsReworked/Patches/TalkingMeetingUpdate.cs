@@ -102,7 +102,7 @@ public static class MeetingHudStart
 public static class MeetingHud_Update
 {
     private static Sprite CachedOverlay;
-    private static Color CachedColor;
+    private static UColor CachedColor;
 
     public static void Postfix(MeetingHud __instance)
     {
@@ -131,7 +131,7 @@ public static class MeetingHud_Update
                         role.PrevColor = CachedColor;
 
                     playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? Colors.What : Colors.Blackmailer;
+                    playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
 
                     if (__instance.state != MeetingHud.VoteStates.Animating && !role.ShookAlready)
                     {
@@ -164,7 +164,7 @@ public static class MeetingHud_Update
                         role.PrevColor = CachedColor;
 
                     playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? Colors.What : Colors.Blackmailer;
+                    playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
 
                     if (__instance.state != MeetingHud.VoteStates.Animating && !role.ShookAlready)
                     {
@@ -200,7 +200,7 @@ public static class MeetingHud_Update
                         role.PrevColor = CachedColor;
 
                     playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? Colors.What : Colors.Silencer;
+                    playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
 
                     if (__instance.state != MeetingHud.VoteStates.Animating && !role.ShookAlready)
                     {
@@ -233,7 +233,7 @@ public static class MeetingHud_Update
                         role.PrevColor = CachedColor;
 
                     playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? Colors.What : Colors.Silencer;
+                    playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
 
                     if (__instance.state != MeetingHud.VoteStates.Animating && !role.ShookAlready)
                     {

@@ -6,7 +6,7 @@ public class Sidekick : Syndicate
     public Rebel Rebel { get; set; }
     public bool CanPromote => (Rebel.IsDead || Rebel.Disconnected) && !IsDead;
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Sidekick : CustomColorManager.Syndicate;
     public override string Name => "Sidekick";
     public override LayerEnum Type => LayerEnum.Sidekick;
     public override Func<string> StartText => () => "Succeed The <color=#FFFCCEFF>Rebel</color>";

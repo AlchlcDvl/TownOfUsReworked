@@ -34,7 +34,7 @@ public static class AdminPatch
                 if (isOP)
                     PlayerMaterial.SetColors(colorMapping[i], sprite);
                 else
-                    PlayerMaterial.SetColors(new Color(0.8793f, 1, 0, 1), sprite);
+                    PlayerMaterial.SetColors(new UColor(0.8793f, 1, 0, 1), sprite);
             }
 
             if (text != null && isOP && DataManager.Settings.Accessibility.ColorBlindMode)

@@ -96,7 +96,7 @@ public static class BetterAirship
                 }
             }
 
-            if (!CustomGameOptions.EnableBetterAirship)
+            if (!CustomGameOptions.EnableBetterAirship || IsSubmerged())
                 return true;
 
             if (!GameStarted && CustomGameOptions.SpawnType != AirshipSpawnType.Meeting)

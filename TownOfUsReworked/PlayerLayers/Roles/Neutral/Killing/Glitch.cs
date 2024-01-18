@@ -9,12 +9,14 @@ public class Glitch : Neutral
     public PlayerControl MimicTarget { get; set; }
     public CustomMenu MimicMenu { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Glitch : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Glitch : CustomColorManager.Neutral;
     public override string Name => "Glitch";
     public override LayerEnum Type => LayerEnum.Glitch;
     public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";
     public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
         "short while\n- You are immune to blocks\n- If you hack a <color=#336EFFFF>Serial Killer</color> they will be forced to kill you";
+    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
 
     public Glitch(PlayerControl player) : base(player)
     {
@@ -22,8 +24,8 @@ public class Glitch : Neutral
         Alignment = Alignment.NeutralKill;
         MimicMenu = new(Player, Click, Exception3);
         RoleBlockImmune = true;
-        NeutraliseButton = new(this, "Neutralise", AbilityTypes.Target, "ActionSecondary", Neutralise, CustomGameOptions.NeutraliseCd, Exception1);
-        HackButton = new(this, "Hack", AbilityTypes.Target, "ActionSecondary", HitHack, CustomGameOptions.HackCd, CustomGameOptions.HackDur, Hack, UnHack, Exception2);
+        NeutraliseButton = new(this, "Neutralise", AbilityTypes.Alive, "ActionSecondary", Neutralise, CustomGameOptions.NeutraliseCd, Exception1);
+        HackButton = new(this, "Hack", AbilityTypes.Alive, "ActionSecondary", HitHack, CustomGameOptions.HackCd, CustomGameOptions.HackDur, Hack, UnHack, Exception2);
         MimicButton = new(this, "Mimic", AbilityTypes.Targetless, "Secondary", HitMimic, CustomGameOptions.MimicCd, CustomGameOptions.MimicDur, (CustomButton.EffectVoid)Mimic, UnMimic);
         player.Data.Role.IntroSound = GetAudio("GlitchIntro");
     }
@@ -48,32 +50,19 @@ public class Glitch : Neutral
 
     public void HitHack()
     {
-        var interact = Interact(Player, HackButton.TargetPlayer);
+        var cooldown = Interact(Player, HackButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             HackTarget = HackButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, GlitchActionsRPC.Hack, HackTarget);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, HackButton, GlitchActionsRPC.Hack, HackTarget);
             HackButton.Begin();
         }
-        else if (interact.Reset)
-            HackButton.StartCooldown();
-        else if (interact.Protected)
-            HackButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            HackButton.StartCooldown(cooldown);
     }
 
-    public void Neutralise()
-    {
-        var interact = Interact(Player, NeutraliseButton.TargetPlayer, true);
-        var cooldown = CooldownType.Reset;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
-
-        NeutraliseButton.StartCooldown(cooldown);
-    }
+    public void Neutralise() => NeutraliseButton.StartCooldown(Interact(Player, NeutraliseButton.TargetPlayer, true));
 
     public void HitMimic()
     {
@@ -81,7 +70,7 @@ public class Glitch : Neutral
             MimicMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, GlitchActionsRPC.Mimic, MimicTarget);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, MimicButton, GlitchActionsRPC.Mimic, MimicTarget);
             MimicButton.Begin();
         }
     }
@@ -105,7 +94,7 @@ public class Glitch : Neutral
             if (MimicTarget != null && !MimicButton.EffectActive)
                 MimicTarget = null;
 
-            LogInfo("Removed a target");
+            LogMessage("Removed a target");
         }
     }
 

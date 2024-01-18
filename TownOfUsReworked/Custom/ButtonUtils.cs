@@ -3,16 +3,19 @@ namespace TownOfUsReworked.Custom;
 public static class ButtonUtils
 {
     private static bool Use;
+    private static bool Haunt;
 
     public static void DisableButtons(this PlayerControl player)
     {
+        Use = HUD.UseButton.isActiveAndEnabled;
+        Haunt = HUD.AbilityButton.isActiveAndEnabled;
         player.GetButtons().ForEach(x => x.Disable());
         HUD.SabotageButton.gameObject.SetActive(false);
         HUD.ReportButton.gameObject.SetActive(false);
         HUD.ImpostorVentButton.gameObject.SetActive(false);
         HUD.UseButton.gameObject.SetActive(false);
         HUD.PetButton.gameObject.SetActive(false);
-        Use = HUD.UseButton.isActiveAndEnabled;
+        HUD.AbilityButton.gameObject.SetActive(false);
     }
 
     public static List<CustomButton> GetButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ToList();
@@ -24,6 +27,7 @@ public static class ButtonUtils
         HUD.SabotageButton.gameObject.SetActive(player.CanSabotage());
         HUD.ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward));
         HUD.ImpostorVentButton.gameObject.SetActive(player.CanVent());
+        HUD.AbilityButton.gameObject.SetActive(Haunt);
 
         if (Use)
             HUD.UseButton.gameObject.SetActive(true);
@@ -33,6 +37,8 @@ public static class ButtonUtils
 
     public static void DisableAllButtons()
     {
+        Use = HUD.UseButton.isActiveAndEnabled;
+        Haunt = HUD.AbilityButton.isActiveAndEnabled;
         CustomButton.AllButtons.ForEach(x => x.Disable());
         HUD.KillButton.gameObject.SetActive(false);
         HUD.SabotageButton.gameObject.SetActive(false);
@@ -40,7 +46,7 @@ public static class ButtonUtils
         HUD.ImpostorVentButton.gameObject.SetActive(false);
         HUD.UseButton.gameObject.SetActive(false);
         HUD.PetButton.gameObject.SetActive(false);
-        Use = HUD.UseButton.isActiveAndEnabled;
+        HUD.AbilityButton.gameObject.SetActive(false);
     }
 
     public static void SetDelay(this ActionButton button, float timer)
@@ -122,8 +128,11 @@ public static class ButtonUtils
         {
             op.BuggedPlayers.Clear();
 
-            if (CustomGameOptions.BugsRemoveOnNewRound)
-                Bug.Clear(op.Bugs);
+            if (CustomGameOptions.BugsRemoveOnNewRound && meeting)
+            {
+                op.Bugs.ForEach(x => x.Destroy());
+                op.Bugs.Clear();
+            }
         }
         else if (role is Tracker track)
         {
@@ -138,8 +147,6 @@ public static class ButtonUtils
             trans.TransportPlayer1 = null;
             trans.TransportPlayer2 = null;
         }
-        else if (role is Vigilante vigi)
-            vigi.RoundOne = start && CustomGameOptions.RoundOneNoShot;
         else if (role is Mayor mayor)
             mayor.RoundOne = start && CustomGameOptions.RoundOneNoMayorReveal;
         else if (role is Monarch mon)
@@ -157,7 +164,10 @@ public static class ButtonUtils
             ret.MediatedPlayers.Clear();
 
             if (CustomGameOptions.BugsRemoveOnNewRound && meeting)
-                Bug.Clear(ret.Bugs);
+            {
+                ret.Bugs.ForEach(x => x.Destroy());
+                ret.Bugs.Clear();
+            }
 
             if (CustomGameOptions.ResetOnNewRound)
             {
@@ -213,7 +223,10 @@ public static class ButtonUtils
         else if (role is Silencer sil)
             sil.SilencedPlayer = null;
         else if (role is Bomber bomb && CustomGameOptions.BombsRemoveOnNewRound && meeting)
-            Bomb.Clear(bomb.Bombs);
+        {
+            bomb.Bombs.ForEach(x => x.Destroy());
+            bomb.Bombs.Clear();
+        }
         else if (role is Framer framer && player.HasDied())
             framer.Framed.Clear();
         else if (role is Crusader crus)
@@ -234,7 +247,10 @@ public static class ButtonUtils
             reb.CrusadedPlayer = null;
 
             if (CustomGameOptions.BombsRemoveOnNewRound && meeting)
-                Bomb.Clear(reb.Bombs);
+            {
+                reb.Bombs.ForEach(x => x.Destroy());
+                reb.Bombs.Clear();
+            }
 
             if (player.HasDied())
                 reb.Framed.Clear();

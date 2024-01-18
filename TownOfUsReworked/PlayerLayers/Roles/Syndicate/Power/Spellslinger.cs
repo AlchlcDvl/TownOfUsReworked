@@ -6,7 +6,7 @@ public class Spellslinger : Syndicate
     public List<byte> Spelled { get; set; }
     public int SpellCount { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Spellslinger : CustomColorManager.Syndicate;
     public override string Name => "Spellslinger";
     public override LayerEnum Type => LayerEnum.Spellslinger;
     public override Func<string> StartText => () => "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";
@@ -18,7 +18,7 @@ public class Spellslinger : Syndicate
         Alignment = Alignment.SyndicatePower;
         Spelled = new();
         SpellCount = 0;
-        SpellButton = new(this, "Spell", AbilityTypes.Target, "Secondary", HitSpell, CustomGameOptions.SpellCd, Exception1);
+        SpellButton = new(this, "Spell", AbilityTypes.Alive, "Secondary", HitSpell, CustomGameOptions.SpellCd, Exception1);
     }
 
     public void Spell(PlayerControl player)
@@ -37,23 +37,12 @@ public class Spellslinger : Syndicate
 
     public void HitSpell()
     {
-        if (HoldsDrive)
-        {
+        var cooldown = Interact(Player, SpellButton.TargetPlayer, astral: HoldsDrive);
+
+        if (cooldown != CooldownType.Fail)
             Spell(SpellButton.TargetPlayer);
-            SpellButton.StartCooldown();
-        }
-        else
-        {
-            var interact = Interact(Player, SpellButton.TargetPlayer);
 
-            if (interact.AbilityUsed)
-                Spell(SpellButton.TargetPlayer);
-
-            if (interact.Reset)
-                SpellButton.StartCooldown();
-            else if (interact.Protected)
-                SpellButton.StartCooldown(CooldownType.GuardianAngel);
-        }
+        SpellButton.StartCooldown(cooldown);
     }
 
     public bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId);

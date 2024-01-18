@@ -1,34 +1,36 @@
+using Cpp2IL.Core.Extensions;
+
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
 public static class OtherButtonsPatch
 {
     private static PassiveButton ZoomButton;
-    public static bool Zooming;
+    private static bool Zooming;
     private static Vector3 Pos;
 
     private static SpriteRenderer Phone;
     private static TextMeshPro PhoneText;
 
     private static PassiveButton RoleCardButton;
-    public static bool RoleCardActive;
+    private static bool RoleCardActive;
     private static Vector3 Pos2;
-    private static Transform ToTheWiki;
+    private static PassiveButton ToTheWiki;
 
     private static PassiveButton SettingsButton;
-    public static bool SettingsActive;
+    private static bool SettingsActive;
     private static Vector3 Pos3;
 
     private static PassiveButton WikiButton;
-    public static bool WikiActive;
+    private static bool WikiActive;
     private static Vector3 Pos4;
-    private static Transform NextButton;
-    private static Transform BackButton;
-    private static Transform LoreButton;
-    private static Transform YourStatus;
-    private static readonly Dictionary<int, List<Transform>> Buttons = new();
+    private static PassiveButton NextButton;
+    private static PassiveButton BackButton;
+    private static PassiveButton LoreButton;
+    private static PassiveButton YourStatus;
+    public static readonly Dictionary<int, List<PassiveButton>> Buttons = new();
     private static readonly Dictionary<int, KeyValuePair<string, Info>> Sorted = new();
-    private static int Page;
+    public static int Page;
     private static int ResultPage;
     private static int MaxPage;
     private static bool PagesSet;
@@ -41,19 +43,30 @@ public static class OtherButtonsPatch
     private static Vector3 MapPos;
     private static bool MapModified;
 
-    public static float Size => Zooming ? 4f : 1f;
+    private static float Size => Zooming ? 4f : 1f;
 
     public static void Postfix(HudManager __instance)
     {
+        if (IsHnS)
+            return;
+
         try
         {
-            if (IsHnS)
-                return;
-
-            __instance.GameSettings.text = SettingsPatches.Settings();
+            if (IsInGame)
+                __instance.GameSettings.text = SettingsPatches.Settings();
 
             if (__instance.TaskPanel)
                 __instance.TaskPanel.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting && !(Map && Map.IsOpen) && !WikiActive && !IsCustomHnS);
+
+            var taskBar = UObject.FindObjectOfType<ProgressTracker>(true);
+
+            if (taskBar)
+            {
+                if (CustomGameOptions.TaskBarMode == TaskBar.Invisible)
+                    taskBar.gameObject.SetActive(false);
+                else
+                    taskBar.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !(Map && Map.IsOpen) && !WikiActive);
+            }
 
             MapPos = __instance.SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -__instance.SettingsButton.transform.localPosition.z - 51f);
 
@@ -174,10 +187,6 @@ public static class OtherButtonsPatch
     public static void Zoom()
     {
         Zooming = !Zooming;
-
-        if (!Zooming)
-            return;
-
         Camera.main.orthographicSize = 3f * Size;
 
         foreach (var cam in Camera.allCameras)
@@ -309,16 +318,10 @@ public static class OtherButtonsPatch
 
         if (!PagesSet)
         {
-            var clone = Info.AllInfo;
-            var keys = new List<Info>();
-
-            foreach (var info in clone)
-            {
-                if (info.Name is "Invalid" or "None" || info.Type == InfoType.Lore)
-                    keys.Add(info);
-            }
-
-            clone.RemoveAll(keys.Contains);
+            var clone = Info.AllInfo.Clone();
+            clone.RemoveAll(x => x.Name is "Invalid" or "None" || x.Type == InfoType.Lore);
+            clone.Reverse();
+            clone = clone.Distinct().ToList();
             var i = 0;
             var j = 0;
             var k = 0;
@@ -332,7 +335,7 @@ public static class OtherButtonsPatch
                 if (k >= 28)
                 {
                     i++;
-                    k -= 28;
+                    k = 0;
                 }
             }
 
@@ -357,7 +360,7 @@ public static class OtherButtonsPatch
                     Page = CycleInt(MaxPage, 0, Page, false);
                 else if (LoreActive)
                 {
-                    DisableText();
+                    PhoneText.gameObject.SetActive(false);
                     AddInfo();
                     LoreActive = false;
                 }
@@ -367,8 +370,8 @@ public static class OtherButtonsPatch
                     SelectionActive = false;
                     LoreButton.gameObject.SetActive(false);
                     NextButton.gameObject.SetActive(true);
-                    NextButton.localPosition = new(2.5f, 1.6f, 0f);
-                    DisableText();
+                    NextButton.transform.localPosition = new(2.5f, 1.6f, 0f);
+                    PhoneText.gameObject.SetActive(false);
                     Entry.Clear();
                 }
 
@@ -408,7 +411,8 @@ public static class OtherButtonsPatch
                     Buttons.Add(i, new());
 
                 var cache = Sorted[k].Value;
-                var button = CreateButton($"{Sorted[k].Key}Info", Sorted[k].Key, () =>
+                var cache2 = Sorted[k].Key;
+                var button = CreateButton($"{cache2}Info", cache2, () =>
                 {
                     foreach (var buttons in Buttons.Values)
                     {
@@ -419,7 +423,7 @@ public static class OtherButtonsPatch
                     Selected = cache;
                     NextButton.gameObject.SetActive(false);
                     AddInfo();
-                }, Sorted[k].Value.Color);
+                }, cache.Color);
 
                 Buttons[i].Add(button);
                 j++;
@@ -427,7 +431,7 @@ public static class OtherButtonsPatch
                 if (j >= 28)
                 {
                     i++;
-                    j -= 28;
+                    j = 0;
                 }
             }
         }
@@ -441,29 +445,29 @@ public static class OtherButtonsPatch
         Selected = null;
 
         if (!WikiActive && PhoneText)
-            DisableText();
+            PhoneText.gameObject.SetActive(false);
     }
 
     private static void ResetButtonPos()
     {
         if (BackButton != null)
-            BackButton.localPosition = new(-2.6f, 1.6f, 0f);
+            BackButton.transform.localPosition = new(-2.6f, 1.6f, 0f);
 
         if (NextButton != null)
-            NextButton.localPosition = new(2.5f, 1.6f, 0f);
+            NextButton.transform.localPosition = new(2.5f, 1.6f, 0f);
 
         if (YourStatus != null)
-            YourStatus.localPosition = new(0f, 1.6f, 0f);
+            YourStatus.transform.localPosition = new(0f, 1.6f, 0f);
 
         if (ToTheWiki != null)
-            ToTheWiki.localPosition = new(-2.6f, 1.6f, 0f);
+            ToTheWiki.transform.localPosition = new(-2.6f, 1.6f, 0f);
 
         if (Selected != null)
         {
             if (LayerInfo.AllLore.Any(x => x.Name == Selected.Name || x.Short == Selected.Short) && LoreButton != null)
             {
                 LoreButton.gameObject.SetActive(!LoreActive);
-                LoreButton.localPosition = new(0f, -1.7f, 0f);
+                LoreButton.transform.localPosition = new(0f, -1.7f, 0f);
             }
 
             return;
@@ -480,7 +484,7 @@ public static class OtherButtonsPatch
 
                 var row = m / 4;
                 var col = m % 4;
-                button.localPosition = new(-2.6f + (1.7f * col), 1f - (0.45f * row), -1f);
+                button.transform.localPosition = new(-2.6f + (1.7f * col), 1f - (0.45f * row), -1f);
                 button.gameObject.SetActive(Page == pair.Key && WikiActive);
                 m++;
 
@@ -510,9 +514,7 @@ public static class OtherButtonsPatch
         SelectionActive = true;
     }
 
-    private static void DisableText() => PhoneText.gameObject.SetActive(false);
-
-    private static Transform CreateButton(string name, string labelText, Action onClick, Color? textColor = null)
+    private static PassiveButton CreateButton(string name, string labelText, Action onClick, UColor? textColor = null)
     {
         var button = UObject.Instantiate(HUD.MapButton, Phone.transform);
         button.name = $"{name}Button";
@@ -529,13 +531,14 @@ public static class OtherButtonsPatch
         label.name = $"{name}Text";
         var rend = button.GetComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Plate");
+        rend.color = UColor.white;
         button.OnClick = new();
         button.OnClick.AddListener(onClick);
         button.OnMouseOver = new();
         button.OnMouseOver.AddListener((Action)(() => rend.color = UColor.yellow));
         button.OnMouseOut = new();
         button.OnMouseOut.AddListener((Action)(() => rend.color = UColor.white));
-        return button.transform;
+        return button;
     }
 
     public static void CloseMenus()
@@ -552,7 +555,7 @@ public static class OtherButtonsPatch
         if (SettingsActive)
             OpenSettings();
 
-        if (MapPatch.MapActive)
+        if (MapPatch.MapActive && Map)
             Map.Close();
     }
 

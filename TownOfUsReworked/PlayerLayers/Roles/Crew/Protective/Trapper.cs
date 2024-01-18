@@ -10,7 +10,7 @@ public class Trapper : Crew
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Trapper : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Trapper : CustomColorManager.Crew;
     public override string Name => "Trapper";
     public override LayerEnum Type => LayerEnum.Trapper;
     public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <color=#FF0000FF>Evildoers</color></size>";
@@ -21,7 +21,7 @@ public class Trapper : Crew
         Trapped = new();
         TriggeredRoles = new();
         BuildButton = new(this, "Build", AbilityTypes.Targetless, "Secondary", StartBuildling, CustomGameOptions.BuildCd, CustomGameOptions.BuildDur, EndBuildling, canClickAgain: false);
-        TrapButton = new(this, "Trap", AbilityTypes.Target, "ActionSecondary", SetTrap, CustomGameOptions.TrapCd, Exception, CustomGameOptions.MaxTraps);
+        TrapButton = new(this, "Trap", AbilityTypes.Alive, "ActionSecondary", SetTrap, CustomGameOptions.TrapCd, Exception, CustomGameOptions.MaxTraps);
         TrapsMade = 0;
         TrapButton.Uses = 0;
     }
@@ -41,17 +41,13 @@ public class Trapper : Crew
 
     private void SetTrap()
     {
-        var interact = Interact(Player, TrapButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, TrapButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, TrapperActionsRPC.Place, TrapButton.TargetPlayer.PlayerId);
             Trapped.Add(TrapButton.TargetPlayer.PlayerId);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         TrapButton.StartCooldown(cooldown);
     }
@@ -116,10 +112,10 @@ public class Trapper : Crew
 
             //Only Trapper can see this
             if (HUD)
-                Run(Chat, "<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", message);
+                Run("<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", message);
         }
         else if (AttackedSomeone && HUD)
-            Run(Chat, "<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
+            Run("<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
 
         TriggeredRoles.Clear();
     }

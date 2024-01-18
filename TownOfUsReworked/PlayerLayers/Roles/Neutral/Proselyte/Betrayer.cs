@@ -4,7 +4,7 @@ public class Betrayer : Neutral
 {
     public CustomButton KillButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Betrayer : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Betrayer : CustomColorManager.Neutral;
     public override string Name => "Betrayer";
     public override LayerEnum Type => LayerEnum.Betrayer;
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
@@ -14,21 +14,10 @@ public class Betrayer : Neutral
     {
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
         Alignment = Alignment.NeutralPros;
-        KillButton = new(this, "BetKill", AbilityTypes.Target, "ActionSecondary", Kill, CustomGameOptions.BetrayCd, Exception);
+        KillButton = new(this, "BetKill", AbilityTypes.Alive, "ActionSecondary", Kill, CustomGameOptions.BetrayCd, Exception);
     }
 
-    public void Kill()
-    {
-        var interact = Interact(Player, KillButton.TargetPlayer, true);
-        var cooldown = CooldownType.Reset;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
-
-        KillButton.StartCooldown(cooldown);
-    }
+    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
 
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);

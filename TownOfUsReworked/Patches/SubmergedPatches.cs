@@ -25,13 +25,13 @@ public static class SubmergedHudPatch
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
 public static class SubmergedPhysicsPatch
 {
-    public static void Postfix(PlayerPhysics __instance) => Ghostrolefix(__instance);
+    public static void Postfix(PlayerPhysics __instance) => GhostRoleFix(__instance);
 }
 
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.LateUpdate))]
 public static class SubmergedLateUpdatePhysicsPatch
 {
-    public static void Postfix(PlayerPhysics __instance) => Ghostrolefix(__instance);
+    public static void Postfix(PlayerPhysics __instance) => GhostRoleFix(__instance);
 }
 
 [HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]

@@ -14,7 +14,7 @@ public static class RPCHandling
         {
             case CustomRPC.Test:
                 LogMessage("Received RPC!");
-                Run(Chat, "<color=#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
+                Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
                 break;
 
             case CustomRPC.Misc:
@@ -26,22 +26,6 @@ public static class RPCHandling
                         RoleGen.SetLayer(reader.ReadInt32(), reader.ReadPlayer(), (PlayerLayerEnum)reader.ReadByte());
                         break;
 
-                    case MiscRPC.SetRevealer:
-                        SetPostmortals.WillBeRevealers.Add(reader.ReadPlayer());
-                        break;
-
-                    case MiscRPC.SetPhantom:
-                        SetPostmortals.WillBePhantoms.Add(reader.ReadPlayer());
-                        break;
-
-                    case MiscRPC.SetBanshee:
-                        SetPostmortals.WillBeBanshees.Add(reader.ReadPlayer());
-                        break;
-
-                    case MiscRPC.SetGhoul:
-                        SetPostmortals.WillBeGhouls.Add(reader.ReadPlayer());
-                        break;
-
                     case MiscRPC.Whisper:
                         if (!Chat)
                             break;
@@ -51,33 +35,15 @@ public static class RPCHandling
                         var message = reader.ReadString();
 
                         if (whispered == CustomPlayer.Local)
-                            Run(Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
+                            Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
                         else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer)
                             && CustomGameOptions.WhispersNotPrivateSilencer))
                         {
-                            Run(Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name} : {message}");
+                            Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name} : {message}");
                         }
                         else if (CustomGameOptions.WhispersAnnouncement)
-                            Run(Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
+                            Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
 
-                        break;
-
-                    case MiscRPC.CatchPhantom:
-                        var phan = reader.ReadPlayer();
-                        Role.GetRole<Phantom>(phan).Caught = true;
-                        phan.Exiled();
-                        break;
-
-                    case MiscRPC.CatchBanshee:
-                        var ban = reader.ReadPlayer();
-                        Role.GetRole<Banshee>(ban).Caught = true;
-                        ban.Exiled();
-                        break;
-
-                    case MiscRPC.CatchGhoul:
-                        var gho = reader.ReadPlayer();
-                        Role.GetRole<Ghoul>(gho).Caught = true;
-                        gho.Exiled();
                         break;
 
                     case MiscRPC.Start:
@@ -96,17 +62,8 @@ public static class RPCHandling
                         Role.BastionBomb(reader.ReadVent(), CustomGameOptions.BombRemovedOnKill);
                         break;
 
-                    case MiscRPC.CatchRevealer:
-                        var rev = reader.ReadPlayer();
-                        var revRole = Role.GetRole<Revealer>(rev);
-                        revRole.Caught = true;
-                        revRole.CompletedTasks = false;
-                        rev.Exiled();
-                        break;
-
-                    case MiscRPC.MeetingStart:
-                        AllBodies.ForEach(x => x?.gameObject?.Destroy());
-                        CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
+                    case MiscRPC.Catch:
+                        PlayerControlOnClick.CatchPostmortal(reader.ReadPlayer(), reader.ReadPlayer());
                         break;
 
                     case MiscRPC.DoorSyncToilet:
@@ -125,7 +82,8 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.VersionHandshake:
-                        VersionHandshake(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
+                        VersionHandshake(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
+                            new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
                         break;
 
                     case MiscRPC.SubmergedFixOxygen:
@@ -135,6 +93,11 @@ public static class RPCHandling
                     case MiscRPC.FixLights:
                         var lights = Ship.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
                         lights.ActualSwitches = lights.ExpectedSwitches;
+                        break;
+
+                    case MiscRPC.FixMixup:
+                        var mixup = Ship.Systems[SystemTypes.MushroomMixupSabotage].Cast<MushroomMixupSabotageSystem>();
+                        mixup.secondsForAutoHeal = 0.1f;
                         break;
 
                     case MiscRPC.SetSpawnAirship:
@@ -190,20 +153,19 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.BodyLocation:
-                        var id = reader.ReadByte();
-                        var location = reader.ReadString();
-
-                        if (!BodyLocations.TryAdd(id, location))
-                            BodyLocations[id] = location;
-
+                        BodyLocations[reader.ReadByte()] = reader.ReadString();
                         break;
 
                     case MiscRPC.MoveBody:
                         reader.ReadBody().transform.position = reader.ReadVector2();
                         break;
 
+                    case MiscRPC.LoadPreset:
+                        Run("<color=#00CC99FF>【 Loading Preset 】</color>", $"Loading the {reader.ReadString()} preset!");
+                        break;
+
                     default:
-                        LogError($"Received unknown RPC - {misc}");
+                        LogError($"Received unknown RPC - {(int)misc}");
                         break;
                 }
 
@@ -283,7 +245,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogError($"Received unknown RPC - {turn}");
+                        LogError($"Received unknown RPC - {(int)turn}");
                         break;
                 }
 
@@ -325,17 +287,17 @@ public static class RPCHandling
 
                         if (faction == Faction.Crew)
                         {
-                            alliedRole.FactionColor = Colors.Crew;
+                            alliedRole.FactionColor = CustomColorManager.Crew;
                             alliedRole.IsCrewAlly = true;
                         }
                         else if (faction == Faction.Intruder)
                         {
-                            alliedRole.FactionColor = Colors.Intruder;
+                            alliedRole.FactionColor = CustomColorManager.Intruder;
                             alliedRole.IsIntAlly = true;
                         }
                         else if (faction == Faction.Syndicate)
                         {
-                            alliedRole.FactionColor = Colors.Syndicate;
+                            alliedRole.FactionColor = CustomColorManager.Syndicate;
                             alliedRole.IsSynAlly = true;
                         }
 
@@ -363,7 +325,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogError($"Received unknown RPC - {target}");
+                        LogError($"Received unknown RPC - {(int)target}");
                         break;
                 }
 
@@ -397,6 +359,10 @@ public static class RPCHandling
                         AddVent(reader.ReadLayer<Role>(), reader.ReadVector2());
                         break;
 
+                    case ActionsRPC.Infect:
+                        Pestilence.Infected[reader.ReadByte()] = reader.ReadInt32();
+                        break;
+
                     case ActionsRPC.SetUninteractable:
                         try
                         {
@@ -409,19 +375,8 @@ public static class RPCHandling
 
                         break;
 
-                    case ActionsRPC.BarryButton:
-                        var buttonBarry = reader.ReadPlayer();
-                        buttonBarry.RemainingEmergencies++;
-
-                        if (AmongUsClient.Instance.AmHost)
-                        {
-                            MeetingRoomManager.Instance.reporter = buttonBarry;
-                            MeetingRoomManager.Instance.target = null;
-                            AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-                            HUD.OpenMeetingRoom(buttonBarry);
-                            buttonBarry.RpcStartMeeting(null);
-                        }
-
+                    case ActionsRPC.CallMeeting:
+                        CallMeeting(reader.ReadPlayer());
                         break;
 
                     case ActionsRPC.BaitReport:
@@ -431,8 +386,8 @@ public static class RPCHandling
                     case ActionsRPC.Drop:
                         var dragged1 = reader.ReadBody();
                         dragged1.gameObject.GetComponent<DragBehaviour>().Destroy();
-                        ((Janitor)Role.AllRoles.Find(x => x.Type == LayerEnum.Janitor && ((Janitor)x).CurrentlyDragging == dragged1)).CurrentlyDragging = null;
-                        ((PromotedGodfather)Role.AllRoles.Find(x => x.Type == LayerEnum.PromotedGodfather && ((PromotedGodfather)x).CurrentlyDragging == dragged1)).CurrentlyDragging = null;
+                        PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging == dragged1).ToList().ForEach(x => x.CurrentlyDragging = null);
+                        PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.IsJani && x.CurrentlyDragging == dragged1).ToList().ForEach(x => x.CurrentlyDragging = null);
                         break;
 
                     case ActionsRPC.Burn:
@@ -470,7 +425,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogError($"Received unknown RPC - {action}");
+                        LogError($"Received unknown RPC - {(int)action}");
                         break;
                 }
 
@@ -604,7 +559,7 @@ public static class RPCHandling
                         Objectifier.CorruptedWins = true;
 
                         if (CustomGameOptions.AllCorruptedWin)
-                            Objectifier.GetObjectifiers(LayerEnum.Corrupted).ForEach(x => x.Winner = true);
+                            PlayerLayer.GetLayers<Corrupted>().ForEach(x => x.Winner = true);
 
                         reader.ReadLayer().Winner = true;
                         break;
@@ -637,7 +592,6 @@ public static class RPCHandling
 
                     case WinLoseRPC.PhantomWin:
                         Role.PhantomWins = true;
-                        reader.ReadLayer<Phantom>().CompletedTasks = true;
                         break;
 
                     case WinLoseRPC.TaskRunnerWins:
@@ -654,14 +608,14 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogError($"Received unknown RPC - {winlose}");
+                        LogError($"Received unknown RPC - {(int)winlose}");
                         break;
                 }
 
                 break;
 
             default:
-                LogError($"Received unknown RPC - {rpc}");
+                LogError($"Received unknown RPC - {(int)rpc}");
                 break;
         }
     }

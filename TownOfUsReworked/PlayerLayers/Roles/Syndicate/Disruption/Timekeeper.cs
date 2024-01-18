@@ -4,7 +4,7 @@ public class Timekeeper : Syndicate
 {
     public CustomButton TimeButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Timekeeper : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Timekeeper : CustomColorManager.Syndicate;
     public override string Name => "Timekeeper";
     public override LayerEnum Type => LayerEnum.Timekeeper;
     public override Func<string> StartText => () => "Bend Time To Your Will";

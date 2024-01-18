@@ -6,13 +6,13 @@ public class Runner : Role
     public override LayerEnum Type => LayerEnum.Runner;
     public override Func<string> StartText => () => "Speedrun Tasks To Be The Victor";
     public override Faction BaseFaction => Faction.GameMode;
-    public override Color Color => Colors.Runner;
+    public override UColor Color => CustomColorManager.Runner;
     public override string FactionName => "Task Race";
 
     public Runner(PlayerControl player) : base(player)
     {
         Faction = Faction.GameMode;
-        FactionColor = Colors.TaskRace;
+        FactionColor = CustomColorManager.TaskRace;
         Objectives = () => "- Finish your tasks before the others";
         Data.SetImpostor(false);
     }

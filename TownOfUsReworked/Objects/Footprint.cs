@@ -8,7 +8,7 @@ public class Footprint
     private readonly SpriteRenderer Sprite;
     private readonly float Time2;
     private readonly Vector2 Velocity;
-    public Color Color { get; set; }
+    public UColor Color { get; set; }
     public readonly Vector3 Position;
     private static bool Grey => CustomGameOptions.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (HudUpdate.IsCamoed && CustomGameOptions.AnonymousFootPrint ==
         FootprintVisibility.OnlyWhenCamouflaged);
@@ -19,7 +19,7 @@ public class Footprint
         Position = player.transform.position;
         Velocity = player.gameObject.GetComponent<Rigidbody2D>().velocity;
         Player = player;
-        Time2 = (int)Time.time;
+        Time2 = Time.time;
         Color = UColor.black;
 
         if (!OddEven.ContainsKey(Player.PlayerId))

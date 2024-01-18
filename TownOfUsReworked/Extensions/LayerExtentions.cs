@@ -2,17 +2,17 @@ namespace TownOfUsReworked.Extensions;
 
 public static class LayerExtentions
 {
-    public static string RoleColorString => $"<color=#{Colors.Role.ToHtmlStringRGBA()}>";
-    public static string AlignmentColorString => $"<color=#{Colors.Alignment.ToHtmlStringRGBA()}>";
-    public static string ObjectivesColorString => $"<color=#{Colors.Objectives.ToHtmlStringRGBA()}>";
-    public static string AttributesColorString => $"<color=#{Colors.Attributes.ToHtmlStringRGBA()}>";
-    public static string AbilitiesColorString => $"<color=#{Colors.Abilities.ToHtmlStringRGBA()}>";
-    public static string ObjectifierColorString => $"<color=#{Colors.Objectifier.ToHtmlStringRGBA()}>";
-    public static string ModifierColorString => $"<color=#{Colors.Modifier.ToHtmlStringRGBA()}>";
-    public static string AbilityColorString => $"<color=#{Colors.Ability.ToHtmlStringRGBA()}>";
-    public static string SubFactionColorString => $"<color=#{Colors.SubFaction.ToHtmlStringRGBA()}>";
-    public static string AttackColorString => $"<color=#{Colors.Attack.ToHtmlStringRGBA()}>";
-    public static string DefenseColorString => $"<color=#{Colors.Defense.ToHtmlStringRGBA()}>";
+    public static string RoleColorString => $"<color=#{CustomColorManager.Role.ToHtmlStringRGBA()}>";
+    public static string AlignmentColorString => $"<color=#{CustomColorManager.Alignment.ToHtmlStringRGBA()}>";
+    public static string ObjectivesColorString => $"<color=#{CustomColorManager.Objectives.ToHtmlStringRGBA()}>";
+    public static string AttributesColorString => $"<color=#{CustomColorManager.Attributes.ToHtmlStringRGBA()}>";
+    public static string AbilitiesColorString => $"<color=#{CustomColorManager.Abilities.ToHtmlStringRGBA()}>";
+    public static string ObjectifierColorString => $"<color=#{CustomColorManager.Objectifier.ToHtmlStringRGBA()}>";
+    public static string ModifierColorString => $"<color=#{CustomColorManager.Modifier.ToHtmlStringRGBA()}>";
+    public static string AbilityColorString => $"<color=#{CustomColorManager.Ability.ToHtmlStringRGBA()}>";
+    public static string SubFactionColorString => $"<color=#{CustomColorManager.SubFaction.ToHtmlStringRGBA()}>";
+    public static string AttackColorString => $"<color=#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
+    public static string DefenseColorString => $"<color=#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
     public static bool Is(this PlayerControl player, LayerEnum type) => PlayerLayer.GetLayers(player).Any(x => x.Type == type);
 
@@ -25,6 +25,8 @@ public static class LayerExtentions
     public static bool Is(this PlayerControl player, SubFaction subFaction) => Role.GetRole(player)?.SubFaction == subFaction;
 
     public static bool Is(this PlayerControl player, Faction faction) => player.GetFaction() == faction;
+
+    public static bool IsBase(this PlayerControl player, Faction faction) => Role.GetRole(player)?.BaseFaction == faction;
 
     public static bool Is(this PlayerControl player, Alignment alignment) => Role.GetRole(player)?.Alignment == alignment;
 
@@ -142,6 +144,9 @@ public static class LayerExtentions
 
     public static bool CanSabotage(this PlayerControl player)
     {
+        if (IsHnS)
+            return false;
+
         var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && CustomGameOptions.AltImps)) && !Meeting && CustomGameOptions.IntrudersCanSabotage &&
             !player.IsFlashed();
 
@@ -334,10 +339,6 @@ public static class LayerExtentions
 
     public static bool IsCryoDoused(this PlayerVoteArea player) => PlayerByVoteArea(player).IsCryoDoused();
 
-    public static Crusader GetCrusader(this PlayerControl player) => PlayerLayer.GetLayers<Crusader>().Find(role => player == role.CrusadedPlayer);
-
-    public static PromotedRebel GetRebCrus(this PlayerControl player) => PlayerLayer.GetLayers<PromotedRebel>().Find(role => player == role.CrusadedPlayer);
-
     public static bool IsOnAlert(this PlayerControl player)
     {
         var vetFlag = PlayerLayer.GetLayers<Veteran>().Any(role => role.AlertButton.EffectActive && player == role.Player);
@@ -435,12 +436,12 @@ public static class LayerExtentions
         PlayerLayer.GetLayers<PromotedGodfather>().Any(x => x.IsGren && x.FlashedPlayers.Contains(player)));
 
     public static bool SyndicateSided(this PlayerControl player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly() || (player.Is(Faction.Syndicate) &&
-        player.Is(LayerEnum.Betrayer)) || player.IsSynDefect() || (player.Is(Faction.Syndicate) && Role.GetRole(player).BaseFaction != Faction.Syndicate);
+        player.Is(LayerEnum.Betrayer)) || player.IsSynDefect() || (player.Is(Faction.Syndicate) && !player.IsBase(Faction.Syndicate));
 
     public static bool IntruderSided(this PlayerControl player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic() || (player.Is(Faction.Intruder) &&
-        player.Is(LayerEnum.Betrayer)) || player.IsIntDefect() || (player.Is(Faction.Intruder) && Role.GetRole(player).BaseFaction != Faction.Intruder);
+        player.Is(LayerEnum.Betrayer)) || player.IsIntDefect() || (player.Is(Faction.Intruder) && !player.IsBase(Faction.Intruder));
 
-    public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly() || player.IsCrewDefect() || (player.Is(Faction.Crew) && Role.GetRole(player).BaseFaction != Faction.Crew);
+    public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly() || player.IsCrewDefect() || (player.Is(Faction.Crew) && !player.IsBase(Faction.Crew));
 
     public static bool SyndicateSided(this PlayerVoteArea player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly();
 
@@ -570,6 +571,14 @@ public static class LayerExtentions
 
     public static float GetSize(this PlayerControl player)
     {
+        if (Ship?.Systems?.TryGetValue(SystemTypes.MushroomMixupSabotage, out var sab) == true)
+        {
+            var mixup = sab.TryCast<MushroomMixupSabotageSystem>();
+
+            if (mixup != null && mixup.IsActive)
+                return 1f;
+        }
+
         if (Lobby || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
         else if (player.Is(LayerEnum.Dwarf))
@@ -877,7 +886,7 @@ public static class LayerExtentions
         var modifierName = $"{ModifierColorString}Modifier: <b>";
         var alignment = $"{AlignmentColorString}Alignment: <b>";
         var subfaction = $"{SubFactionColorString}Sub-Faction: <b>";
-        //var attdef = $"{AttackColorString}Attack/{DefenseColorString}Defense</color>: <b>";
+        var attdef = $"{AttackColorString}Attack/{DefenseColorString}Defense</color>: <b>";
 
         if (info[0])
         {
@@ -885,20 +894,20 @@ public static class LayerExtentions
             objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
             alignment += $"{role.Alignment.AlignmentName(true)}";
             subfaction += $"{role.SubFactionColorString}{role.SubFactionName} {role.SubFactionSymbol}</color>";
-            //attdef += $"{role.AttackVal}/{DefenseColorString}{role.DefenseVal}</color>";
+            attdef += $"{role.AttackVal}/{DefenseColorString}{role.DefenseVal}</color>";
         }
         else
         {
             roleName += "None";
             alignment += "None";
             subfaction += "None";
-            //attdef += $"None/{DefenseColorString}None</color>";
+            attdef += $"None/{DefenseColorString}None</color>";
         }
 
         roleName += "</b></color>";
         alignment += "</b></color>";
         subfaction += "</b></color>";
-        //attdef += "</b></color>";
+        attdef += "</b></color>";
 
         if (info[3] && !objectifier.Hidden)
         {
@@ -927,22 +936,22 @@ public static class LayerExtentions
         if (player.IsRecruit())
         {
             var jackal = player.GetJackal();
-            objectives += $"\n<color=#{Colors.Cabal.ToHtmlStringRGBA()}>- You are a member of the Cabal. Help {jackal.PlayerName} in taking over the mission $</color>";
+            objectives += $"\n<color=#{CustomColorManager.Cabal.ToHtmlStringRGBA()}>- You are a member of the Cabal. Help {jackal.PlayerName} in taking over the mission $</color>";
         }
         else if (player.IsResurrected())
         {
             var necromancer = player.GetNecromancer();
-            objectives += $"\n<color=#{Colors.Reanimated.ToHtmlStringRGBA()}>- You are a member of the Reanimated. Help {necromancer.PlayerName} in taking over the mission Σ</color>";
+            objectives += $"\n<color=#{CustomColorManager.Reanimated.ToHtmlStringRGBA()}>- You are a member of the Reanimated. Help {necromancer.PlayerName} in taking over the mission Σ</color>";
         }
         else if (player.IsPersuaded())
         {
             var whisperer = player.GetWhisperer();
-            objectives += $"\n<color=#{Colors.Sect.ToHtmlStringRGBA()}>- You are a member of the Sect. Help {whisperer.PlayerName} in taking over the mission Λ</color>";
+            objectives += $"\n<color=#{CustomColorManager.Sect.ToHtmlStringRGBA()}>- You are a member of the Sect. Help {whisperer.PlayerName} in taking over the mission Λ</color>";
         }
         else if (player.IsBitten())
         {
             var dracula = player.GetDracula();
-            objectives += $"\n<color=#{Colors.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {dracula.PlayerName} in taking over the mission γ</color>";
+            objectives += $"\n<color=#{CustomColorManager.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {dracula.PlayerName} in taking over the mission γ</color>";
             abilities += $"\n{role.ColorString}- Attempting to interact with a <color=#C0C0C0FF>Vampire Hunter</color> will force them to kill you</color>";
         }
 
@@ -988,8 +997,7 @@ public static class LayerExtentions
         else
             attributes = $"\n{attributes}</color>";
 
-        return $"{roleName}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
-        //return $"{roleName}\n{attdef}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
+        return $"{roleName}\n{attdef}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
     }
 
     public static void RegenTask(this PlayerControl player)
@@ -1057,7 +1065,7 @@ public static class LayerExtentions
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
+            Flash(CustomColorManager.Seer);
 
         ButtonUtils.Reset(CooldownType.Reset, newRole.Player);
     }
@@ -1305,5 +1313,46 @@ public static class LayerExtentions
             return PlayerLayerEnum.Ability;
         else
             return PlayerLayerEnum.None;
+    }
+
+    public static AttackEnum GetAttackValue(this PlayerControl player, PlayerControl target = null, AttackEnum? overrideAtt = null)
+    {
+        var attack = 0;
+
+        foreach (var layer in PlayerLayer.GetLayers(player))
+        {
+            if (attack < 2)
+                attack += (int)layer.AttackVal;
+        }
+
+        if ((player.IsAmbushed() || player.IsCrusaded() || Role.GetRole(player).Bombed) && attack < 1)
+            attack = 1;
+
+        if (target && target.Is(SubFaction.Undead) && player.Is(LayerEnum.VampireHunter))
+            attack = 3;
+
+        if (target && player.IsLinkedTo(target))
+            attack = 0;
+
+        attack = Mathf.Clamp(attack, 0, 3);
+        return overrideAtt ?? (AttackEnum)attack;
+    }
+
+    public static DefenseEnum GetDefenseValue(this PlayerControl player, PlayerControl source = null, DefenseEnum? overrideDef = null)
+    {
+        var defense = 0;
+        PlayerLayer.GetLayers(player).ForEach(x => defense += (int)x.DefenseVal);
+
+        if ((player.IsShielded() || player.IsAmbushed() || player.IsCrusaded() | player.IsProtected()) && defense < 2)
+            defense = 2;
+
+        if (source && source.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead))
+            defense = 3;
+
+        if (source && player.IsLinkedTo(source))
+            defense = 3;
+
+        defense = Mathf.Clamp(defense, 0, 3);
+        return overrideDef ?? (DefenseEnum)defense;
     }
 }

@@ -6,9 +6,9 @@ public class Blackmailer : Intruder
     public PlayerControl BlackmailedPlayer { get; set; }
     public bool ShookAlready { get; set; }
     public Sprite PrevOverlay { get; set; }
-    public Color PrevColor { get; set; }
+    public UColor PrevColor { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Blackmailer : CustomColorManager.Intruder;
     public override string Name => "Blackmailer";
     public override LayerEnum Type => LayerEnum.Blackmailer;
     public override Func<string> StartText => () => "You Know Their Secrets";
@@ -20,22 +20,18 @@ public class Blackmailer : Intruder
     {
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
-        BlackmailButton = new(this, "Blackmail", AbilityTypes.Target, "Secondary", Blackmail, CustomGameOptions.BlackmailCd, Exception1);
+        BlackmailButton = new(this, "Blackmail", AbilityTypes.Alive, "Secondary", Blackmail, CustomGameOptions.BlackmailCd, Exception1);
     }
 
     public void Blackmail()
     {
-        var interact = Interact(Player, BlackmailButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, BlackmailButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             BlackmailedPlayer = BlackmailButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, BlackmailedPlayer);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         BlackmailButton.StartCooldown(cooldown);
     }

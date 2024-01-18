@@ -4,7 +4,7 @@ public class Shifter : Crew
 {
     public CustomButton ShiftButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Shifter : CustomColorManager.Crew;
     public override string Name => "Shifter";
     public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText => () => "Shift Around Roles";
@@ -13,22 +13,20 @@ public class Shifter : Crew
     public Shifter(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewSupport;
-        ShiftButton = new(this, "Shift", AbilityTypes.Target, "ActionSecondary", Shift, CustomGameOptions.ShiftCd);
+        ShiftButton = new(this, "Shift", AbilityTypes.Alive, "ActionSecondary", Shift, CustomGameOptions.ShiftCd);
     }
 
     public void Shift()
     {
-        var interact = Interact(Player, ShiftButton.TargetPlayer);
+        var cooldown = Interact(Player, ShiftButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ShiftButton.TargetPlayer);
             Shift(ShiftButton.TargetPlayer);
         }
-        else if (interact.Reset)
-            ShiftButton.StartCooldown();
-        else if (interact.Protected)
-            ShiftButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            ShiftButton.StartCooldown(cooldown);
     }
 
     public void Shift(PlayerControl other)
@@ -45,7 +43,7 @@ public class Shifter : Crew
 
         if (CustomPlayer.Local == other || CustomPlayer.Local == Player)
         {
-            Flash(Colors.Shifter);
+            Flash(CustomColorManager.Shifter);
             role.OnLobby();
             OnLobby();
             ButtonUtils.Reset();

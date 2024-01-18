@@ -6,7 +6,7 @@ public class Medic : Crew
     public PlayerControl ExShielded { get; set; }
     public CustomButton ShieldButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Medic : CustomColorManager.Crew;
     public override string Name => "Medic";
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
@@ -19,15 +19,13 @@ public class Medic : Crew
         ShieldedPlayer = null;
         ExShielded = null;
         Alignment = Alignment.CrewProt;
-        ShieldButton = new(this, "Shield", AbilityTypes.Target, "ActionSecondary", Protect, Exception);
+        ShieldButton = new(this, "Shield", AbilityTypes.Alive, "ActionSecondary", Protect, Exception);
         player.Data.Role.IntroSound = GetAudio("MedicIntro");
     }
 
     public void Protect()
     {
-        var interact = Interact(Player, ShieldButton.TargetPlayer);
-
-        if (interact.AbilityUsed)
+        if (Interact(Player, ShieldButton.TargetPlayer) != CooldownType.Fail)
         {
             if (ShieldedPlayer == null)
             {

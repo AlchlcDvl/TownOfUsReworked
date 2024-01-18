@@ -2,12 +2,13 @@ namespace TownOfUsReworked.Data;
 
 public static class References
 {
-    public static readonly List<PlayerControl> RecentlyKilled = new();
+    public static readonly List<byte> RecentlyKilled = new();
     public static readonly Dictionary<byte, byte> CachedMorphs = new();
     public static readonly List<DeadPlayer> KilledPlayers = new();
     public static readonly Dictionary<byte, float> TransitioningSize = new(); //wheeze
     public static readonly Dictionary<byte, float> TransitioningSpeed = new(); //double wheeze
     public static readonly Dictionary<byte, DateTime> UninteractiblePlayers = new();
+    public static Dictionary<byte, string> BodyLocations = new();
     public static List<DeadBody> AllBodies => UObject.FindObjectsOfType<DeadBody>().ToList();
     public static List<Vent> AllVents => UObject.FindObjectsOfType<Vent>().ToList();
     public static List<Vent> AllMapVents => Ship.AllVents.ToList();
@@ -25,7 +26,6 @@ public static class References
     public static Minigame ActiveTask => Minigame.Instance;
     public static LobbyBehaviour Lobby => LobbyBehaviour.Instance;
     public static ChatController Chat => HUD.Chat;
-    public static Dictionary<byte, string> BodyLocations = new();
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +
         "乂⁂¤∮彡个「」人요〖〗ロ米卄王īl【】·ㅇ°◈◆◇◥◤◢◣《》︵︶☆☀☂☹☺♡♩♪♫♬✓☜☞☟☯☃✿❀÷º¿※⁑∞≠";
     public static readonly Dictionary<string, string> KeyWords = new()
@@ -35,7 +35,9 @@ public static class References
         { "%github%", $"[{TownOfUsReworked.GitHubLink}]GitHub[]" },
         { "%assets%", $"[{TownOfUsReworked.AssetsLink}]Assets[]" }
     };
-    public static readonly List<Vector2> SkeldSpawns = new()
+    public static readonly char[] Lowercase = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+    public static readonly char[] Uppercase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+    public static readonly Vector2[] SkeldSpawns =
     {
         new(-2.2f, 2.2f), //Cafeteria. botton. top left.
         new(0.7f, 2.2f), //Caffeteria. button. top right.
@@ -46,39 +48,39 @@ public static class References
         new(9.5f, -1f), //Weapons bottom
         new(6.5f, -3.5f), //O2
         new(11.5f, -3.5f), //O2-nav hall
-        new(17.0f, -3.5f), //Navigation top
+        new(17, -3.5f), //Navigation top
         new(18.2f, -5.7f), //Navigation bottom
         new(16f, -2f), //Navigation vent
         new(11.5f, -6.5f), //Nav-shields top
         new(9.5f, -8.5f), //Nav-shields bottom
         new(9.2f, -12.2f), //Shields top
-        new(8.0f, -14.3f), //Shields bottom
+        new(8, -14.3f), //Shields bottom
         new(2.5f, -16f), //Comms left
         new(4.2f, -16.4f), //Comms middle
         new(5.5f, -16f), //Comms right
-        new(-1.5f, -10.0f), //Storage top
+        new(-1.5f, -10), //Storage top
         new(-1.5f, -15.5f), //Storage bottom
         new(-4.5f, -12.5f), //Storrage left
         new(0.3f, -12.5f), //Storrage right
         new(4.5f, -7.5f), //Admin top
         new(4.5f, -9.5f), //Admin bottom
-        new(-9.0f, -8.0f), //Elec top left
-        new(-6.0f, -8.0f), //Elec top right
-        new(-8.0f, -11.0f), //Elec bottom
-        new(-12.0f, -13.0f), //Elec-lower hall
+        new(-9, -8), //Elec top left
+        new(-6, -8), //Elec top right
+        new(-8, -11), //Elec bottom
+        new(-12, -13), //Elec-lower hall
         new(-17f, -10f), //Lower engine top
-        new(-17.0f, -13.0f), //Lower engine bottom
-        new(-21.5f, -3.0f), //Reactor top
-        new(-21.5f, -8.0f), //Reactor bottom
-        new(-13.0f, -3.0f), //Security top
+        new(-17, -13), //Lower engine bottom
+        new(-21.5f, -3), //Reactor top
+        new(-21.5f, -8), //Reactor bottom
+        new(-13, -3), //Security top
         new(-12.6f, -5.6f), //Security bottom
-        new(-17.0f, 2.5f), //Upper engibe top
-        new(-17.0f, -1.0f), //Upper engine bottom
-        new(-10.5f, 1.0f), //Upper-mad hall
-        new(-10.5f, -2.0f), //Medbay top
+        new(-17, 2.5f), //Upper engibe top
+        new(-17, -1), //Upper engine bottom
+        new(-10.5f, 1), //Upper-mad hall
+        new(-10.5f, -2), //Medbay top
         new(-6.5f, -4.5f) //Medbay bottom
     };
-    public static readonly List<Vector2> MiraSpawns = new()
+    public static readonly Vector2[] MiraSpawns =
     {
         new(-4.5f, 3.5f), //Launchpad top
         new(-4.5f, -1.4f), //Launchpad bottom
@@ -102,7 +104,7 @@ public static class References
         new(19f, 4f), //Storage
         new(22f, -2f) //Balcony
     };
-    public static readonly List<Vector2> PolusSpawns = new()
+    public static readonly Vector2[] PolusSpawns =
     {
         new(16.6f, -1f), //Dropship top
         new(16.6f, -5f), //Dropship bottom
@@ -149,45 +151,45 @@ public static class References
         new(15f, -17f), //Between coms-office
         new(17.5f, -25.7f) //Snowman under office
     };
-    public static readonly List<Vector2> dlekSSpawns = new()
+    public static readonly Vector2[] dlekSSpawns =
     {
         new(2.2f, 2.2f), //Cafeteria. botton. top left.
         new(-0.7f, 2.2f), //Caffeteria. button. top right.
         new(2.2f, -0.2f), //Caffeteria. button. bottom left.
         new(-0.7f, -0.2f), //Caffeteria. button. bottom right.
-        new(-10.0f, 3.0f), //Weapons top
-        new(-9.0f, 1.0f), //Weapons bottom
+        new(-10, 3), //Weapons top
+        new(-9, 1), //Weapons bottom
         new(-6.5f, -3.5f), //O2
         new(-11.5f, -3.5f), //O2-nav hall
-        new(-17.0f, -3.5f), //Navigation top
+        new(-17, -3.5f), //Navigation top
         new(-18.2f, -5.7f), //Navigation bottom
         new(-11.5f, -6.5f), //Nav-shields top
         new(-9.5f, -8.5f), //Nav-shields bottom
         new(-9.2f, -12.2f), //Shields top
-        new(-8.0f, -14.3f), //Shields bottom
+        new(-8, -14.3f), //Shields bottom
         new(-2.5f, -16f), //Comms left
         new(-4.2f, -16.4f), //Comms middle
         new(-5.5f, -16f), //Comms right
-        new(1.5f, -10.0f), //Storage top
+        new(1.5f, -10), //Storage top
         new(1.5f, -15.5f), //Storage bottom
         new(4.5f, -12.5f), //Storrage left
         new(-0.3f, -12.5f), //Storrage right
         new(-4.5f, -7.5f), //Admin top
         new(-4.5f, -9.5f), //Admin bottom
-        new(9.0f, -8.0f), //Elec top left
-        new(6.0f, -8.0f), //Elec top right
-        new(8.0f, -11.0f), //Elec bottom
-        new(12.0f, -13.0f), //Elec-lower hall
+        new(9, -8), //Elec top left
+        new(6, -8), //Elec top right
+        new(8, -11), //Elec bottom
+        new(12, -13), //Elec-lower hall
         new(17f, -10f), //Lower engine top
-        new(17.0f, -13.0f), //Lower engine bottom
-        new(21.5f, -3.0f), //Reactor top
-        new(21.5f, -8.0f), //Reactor bottom
-        new(13.0f, -3.0f), //Security top
+        new(17, -13), //Lower engine bottom
+        new(21.5f, -3), //Reactor top
+        new(21.5f, -8), //Reactor bottom
+        new(13, -3), //Security top
         new(12.6f, -5.6f), //Security bottom
-        new(17.0f, 2.5f), //Upper engibe top
-        new(17.0f, -1.0f), //Upper engine bottom
-        new(10.5f, 1.0f), //Upper-mad hall
-        new(10.5f, -2.0f), //Medbay top
+        new(17, 2.5f), //Upper engibe top
+        new(17, -1), //Upper engine bottom
+        new(10.5f, 1), //Upper-mad hall
+        new(10.5f, -2), //Medbay top
         new(6.5f, -4.5f) //Medbay bottom
     };
 }

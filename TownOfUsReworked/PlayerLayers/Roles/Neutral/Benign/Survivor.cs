@@ -5,11 +5,12 @@ public class Survivor : Neutral
     public bool Alive => !Disconnected && !IsDead;
     public CustomButton VestButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Survivor : CustomColorManager.Neutral;
     public override string Name => "Survivor";
     public override LayerEnum Type => LayerEnum.Survivor;
     public override Func<string> StartText => () => "Do Whatever It Takes To Live";
     public override Func<string> Description => () => "- You can put on a vest, which makes you unkillable for a short duration of time";
+    public override DefenseEnum DefenseVal => VestButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
 
     public Survivor(PlayerControl player) : base(player)
     {

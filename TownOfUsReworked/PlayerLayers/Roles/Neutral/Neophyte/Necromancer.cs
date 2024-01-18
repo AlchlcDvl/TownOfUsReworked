@@ -9,7 +9,7 @@ public class Necromancer : Neutral
     public int ResurrectedCount { get; set; }
     public int KillCount { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Necromancer : CustomColorManager.Neutral;
     public override string Name => "Necromancer";
     public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
@@ -21,13 +21,13 @@ public class Necromancer : Neutral
         Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
         Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Reanimated;
-        SubFactionColor = Colors.Reanimated;
+        SubFactionColor = CustomColorManager.Reanimated;
         ResurrectedCount = 0;
         KillCount = 0;
         Resurrected = new() { Player.PlayerId };
         ResurrectButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", Resurrect, CustomGameOptions.ResurrectCd, CustomGameOptions.ResurrectDur, UponEnd,
             CustomGameOptions.MaxResurrections, Exception);
-        SacrificeButton = new(this, "NecroKill", AbilityTypes.Target, "Secondary", Kill, CustomGameOptions.NecroKillCd, Exception);
+        SacrificeButton = new(this, "NecroKill", AbilityTypes.Alive, "Secondary", Kill, CustomGameOptions.NecroKillCd, Exception);
         SubFactionSymbol = "Σ";
     }
 
@@ -91,16 +91,10 @@ public class Necromancer : Neutral
 
     public void Kill()
     {
-        var interact = Interact(Player, SacrificeButton.TargetPlayer, true);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, SacrificeButton.TargetPlayer, true);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             KillCount++;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
 
         SacrificeButton.StartCooldown(cooldown);
 
@@ -122,7 +116,7 @@ public class Necromancer : Neutral
         ResurrectingBody = reader.ReadBody();
 
         if (CustomPlayer.Local.PlayerId == ResurrectingBody.ParentId)
-            Flash(Colors.Necromancer, CustomGameOptions.ResurrectDur);
+            Flash(CustomColorManager.Necromancer, CustomGameOptions.ResurrectDur);
 
         if (CustomGameOptions.AltruistTargetBody)
             ResurrectingBody.gameObject.Destroy();

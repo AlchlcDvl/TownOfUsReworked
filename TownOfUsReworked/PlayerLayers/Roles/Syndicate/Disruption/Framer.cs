@@ -6,7 +6,7 @@ public class Framer : Syndicate
     public CustomButton RadialFrameButton { get; set; }
     public List<byte> Framed { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Framer : CustomColorManager.Syndicate;
     public override string Name => "Framer";
     public override LayerEnum Type => LayerEnum.Framer;
     public override Func<string> StartText => () => "Make Everyone Suspicious";
@@ -17,7 +17,7 @@ public class Framer : Syndicate
     {
         Alignment = Alignment.SyndicateDisrup;
         Framed = new();
-        FrameButton = new(this, "Frame", AbilityTypes.Target, "Secondary", Frame, CustomGameOptions.FrameCd, Exception1);
+        FrameButton = new(this, "Frame", AbilityTypes.Alive, "Secondary", Frame, CustomGameOptions.FrameCd, Exception1);
         RadialFrameButton = new(this, "RadialFrame", AbilityTypes.Targetless, "Secondary", RadialFrame, CustomGameOptions.FrameCd);
     }
 
@@ -32,14 +32,10 @@ public class Framer : Syndicate
 
     public void Frame()
     {
-        var interact = Interact(Player, FrameButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, FrameButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             RpcFrame(FrameButton.TargetPlayer);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         FrameButton.StartCooldown(cooldown);
     }

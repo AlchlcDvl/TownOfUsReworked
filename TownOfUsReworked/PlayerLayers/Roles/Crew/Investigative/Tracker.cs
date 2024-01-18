@@ -5,7 +5,7 @@ public class Tracker : Crew
     public Dictionary<byte, CustomArrow> TrackerArrows { get; set; }
     public CustomButton TrackButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Tracker : CustomColorManager.Crew;
     public override string Name => "Tracker";
     public override LayerEnum Type => LayerEnum.Tracker;
     public override Func<string> StartText => () => "Track Everyone's Movements";
@@ -15,7 +15,7 @@ public class Tracker : Crew
     {
         TrackerArrows = new();
         Alignment = Alignment.CrewInvest;
-        TrackButton = new(this, "Track", AbilityTypes.Target, "ActionSecondary", Track, CustomGameOptions.TrackCd, Exception, CustomGameOptions.MaxTracks);
+        TrackButton = new(this, "Track", AbilityTypes.Alive, "ActionSecondary", Track, CustomGameOptions.TrackCd, Exception, CustomGameOptions.MaxTracks);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -35,14 +35,10 @@ public class Tracker : Crew
 
     public void Track()
     {
-        var interact = Interact(Player, TrackButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, TrackButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), CustomGameOptions.UpdateInterval));
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         TrackButton.StartCooldown(cooldown);
     }

@@ -5,35 +5,30 @@ public class Juggernaut : Neutral
     public int JuggKills { get; set; }
     public CustomButton AssaultButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Juggernaut : CustomColorManager.Neutral;
     public override string Name => "Juggernaut";
     public override LayerEnum Type => LayerEnum.Juggernaut;
     public override Func<string> StartText => () => "Your Power Grows With Every Kill";
     public override Func<string> Description => () => "- With each kill, your kill cooldown decreases" + (JuggKills >= 4 ? "\n- You can bypass all forms of protection" : "");
+    public override AttackEnum AttackVal => (AttackEnum)Mathf.Clamp(JuggKills, 1, 3);
 
     public Juggernaut(PlayerControl player) : base(player)
     {
         Objectives = () => "- Assault anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         JuggKills = 0;
-        AssaultButton = new(this, "Assault", AbilityTypes.Target, "ActionSecondary", Assault, CustomGameOptions.AssaultCd, Exception);
+        AssaultButton = new(this, "Assault", AbilityTypes.Alive, "ActionSecondary", Assault, CustomGameOptions.AssaultCd, Exception);
     }
 
     public void Assault()
     {
-        var interact = Interact(Player, AssaultButton.TargetPlayer, true, false, JuggKills >= 4);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, AssaultButton.TargetPlayer, true, false, JuggKills >= 4);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
+        {
             JuggKills++;
-
-        if (JuggKills == 4 && Local)
             Flash(Color);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
+        }
 
         AssaultButton.StartCooldown(cooldown);
     }

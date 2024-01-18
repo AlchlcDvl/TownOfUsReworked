@@ -7,7 +7,7 @@ public class Detective : Crew
     public List<Footprint> AllPrints { get; set; }
     public List<byte> Investigated { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Detective : CustomColorManager.Crew;
     public override string Name => "Detective";
     public override LayerEnum Type => LayerEnum.Detective;
     public override Func<string> StartText => () => "Examine Players For <color=#AA0000FF>Blood</color>";
@@ -19,7 +19,7 @@ public class Detective : Crew
         AllPrints = new();
         Investigated = new();
         Alignment = Alignment.CrewInvest;
-        ExamineButton = new(this, "Examine", AbilityTypes.Target, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
+        ExamineButton = new(this, "Examine", AbilityTypes.Alive, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
     }
 
     public override void OnLobby()
@@ -44,18 +44,14 @@ public class Detective : Crew
 
     public void Examine()
     {
-        var interact = Interact(Player, ExamineButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, ExamineButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
                 CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
             Investigated.Add(ExamineButton.TargetPlayer.PlayerId);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         ExamineButton.StartCooldown(cooldown);
     }

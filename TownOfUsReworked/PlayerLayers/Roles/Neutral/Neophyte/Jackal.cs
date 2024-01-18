@@ -10,7 +10,7 @@ public class Jackal : Neutral
         EvilRecruit.HasDied());
     public List<byte> Recruited { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Jackal : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Jackal : CustomColorManager.Neutral;
     public override string Name => "Jackal";
     public override LayerEnum Type => LayerEnum.Jackal;
     public override Func<string> StartText => () => "Gain A Majority";
@@ -22,26 +22,20 @@ public class Jackal : Neutral
     {
         Objectives = () => "- Recruit or kill anyone who can oppose the <color=#575657FF>Cabal</color>";
         SubFaction = SubFaction.Cabal;
-        SubFactionColor = Colors.Cabal;
+        SubFactionColor = CustomColorManager.Cabal;
         Alignment = Alignment.NeutralNeo;
         Recruited = new() { Player.PlayerId };
-        RecruitButton = new(this, "Recruit", AbilityTypes.Target, "ActionSecondary", Recruit, Exception);
+        RecruitButton = new(this, "Recruit", AbilityTypes.Alive, "ActionSecondary", Recruit, Exception);
         SubFactionSymbol = "$";
         player.Data.Role.IntroSound = GetAudio("JackalIntro");
     }
 
     public void Recruit()
     {
-        var interact = Interact(Player, RecruitButton.TargetPlayer, false, true);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, RecruitButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             RoleGen.RpcConvert(RecruitButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Cabal);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-        else if (interact.Vested)
-            cooldown = CooldownType.Survivor;
 
         RecruitButton.StartCooldown(cooldown);
     }

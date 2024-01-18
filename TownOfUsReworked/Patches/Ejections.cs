@@ -17,16 +17,7 @@ public static class ConfirmEjects
 
         var player = exiled.Object;
         var role = Role.GetRole(player);
-
-        var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
-            !x.HasDied());
-        var totalEvilsRemaining = IsAA ? "an unknown number of" : $"{totalEvilsCount}";
-        var s = totalEvilsCount > 1 ? "s" : "";
-        var isAre = totalEvilsCount > 1 ? "are" : "is";
-        var totalEvils = $"There {isAre} {totalEvilsRemaining} <color=#FF0000FF>evil{s}</color> remaining.";
-
         var ejectString = "";
-        var target = PlayerLayer.GetLayers<Executioner>().First(x => x.TargetPlayer == player)?.TargetPlayer;
 
         if (role == null)
             return;
@@ -34,7 +25,7 @@ public static class ConfirmEjects
         role.DeathReason = DeathReasonEnum.Ejected;
         role.KilledBy = " ";
 
-        if (role == null || !CustomGameOptions.ConfirmEjects)
+        if (!CustomGameOptions.ConfirmEjects)
         {
             if (ClientGameOptions.CustomEjects)
             {
@@ -62,7 +53,7 @@ public static class ConfirmEjects
             {
                 if (player.Is(LayerEnum.Jester) && CustomGameOptions.JestEjectScreen)
                     ejectString = "The <color=#F7B3DAFF>Jester</color> will get his revenge from beyond the grave!";
-                else if (target != null && CustomGameOptions.ExeEjectScreen)
+                else if (PlayerLayer.GetLayers<Executioner>().Any(x => x.TargetPlayer == player) && CustomGameOptions.ExeEjectScreen)
                     ejectString = "The <color=#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
                 else
                     ejectString = $"{player.name} was the {role.ColorString}{role.Name}</color>.";
@@ -72,7 +63,12 @@ public static class ConfirmEjects
             else
                 ejectString = $"{player.name} was {role.FactionColorString}{role.FactionName}</color>.";
 
-            __instance.ImpostorText.text = totalEvils;
+            var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
+                !x.HasDied());
+            var totalEvilsRemaining = IsAA ? "an unknown number of" : $"{totalEvilsCount}";
+            var s = totalEvilsCount > 1 ? "s" : "";
+            var isAre = totalEvilsCount > 1 ? "are" : "is";
+            __instance.ImpostorText.text = $"There {isAre} {totalEvilsRemaining} <color=#FF0000FF>evil{s}</color> remaining.";
         }
 
         __instance.completeString = ejectString;

@@ -16,16 +16,15 @@ public static class PlayerControlRevivePatch
         __instance.cosmetics.SetPetSource(__instance);
         __instance.cosmetics.SetNameMask(true);
         KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || x == null);
-        RecentlyKilled.RemoveAll(x => x.PlayerId == __instance.PlayerId || x == null);
-        Role.Cleaned.RemoveAll(x => x == __instance || x == null);
-        ReassignPostmortals(__instance);
+        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || x == 255);
+        Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || x == 255 || !PlayerById(x));
+        SetPostmortals.RemoveFromPostmortals(__instance);
         __instance.Data.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
         var body = BodyByPlayer(__instance);
 
         if (body != null)
         {
-            var position = body.TruePosition;
-            __instance.NetTransform.RpcSnapTo(new(position.x, position.y + 0.3636f));
+            __instance.NetTransform.RpcSnapTo(body.TruePosition);
             body.gameObject.Destroy();
         }
 
@@ -39,10 +38,10 @@ public static class PlayerControlRevivePatch
             return false;
 
         HUD.ShadowQuad.gameObject.SetActive(true);
-        HUD.KillButton.ToggleVisible(false);
-        HUD.AdminButton.ToggleVisible(__instance.IsImpostor() && IsHnS);
-        HUD.SabotageButton.ToggleVisible(__instance.CanSabotage());
-        HUD.ImpostorVentButton.ToggleVisible(__instance.CanVent());
+        HUD.KillButton.gameObject.SetActive(false);
+        HUD.AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS);
+        HUD.SabotageButton.gameObject.SetActive(__instance.CanSabotage());
+        HUD.ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
         ButtonUtils.Reset();
 
         if (Chat.IsOpenOrOpening)

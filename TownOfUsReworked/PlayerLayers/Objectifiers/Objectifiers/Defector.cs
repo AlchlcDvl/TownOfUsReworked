@@ -6,25 +6,25 @@ public class Defector : Objectifier
     public Faction Side { get; set; }
     private bool Defect => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && !Turned;
 
-    public override Color Color
+    public override UColor Color
     {
         get
         {
             if (Turned)
             {
                 if (Side == Faction.Crew)
-                    return Colors.Crew;
+                    return CustomColorManager.Crew;
                 else if (Side == Faction.Syndicate)
-                    return Colors.Syndicate;
+                    return CustomColorManager.Syndicate;
                 else if (Side == Faction.Intruder)
-                    return Colors.Intruder;
+                    return CustomColorManager.Intruder;
                 else if (Side == Faction.Neutral)
-                    return Colors.Neutral;
+                    return CustomColorManager.Neutral;
                 else
-                    return ClientGameOptions.CustomObjColors ? Colors.Defector : Colors.Objectifier;
+                    return ClientGameOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Objectifier;
             }
             else
-                return ClientGameOptions.CustomObjColors ? Colors.Defector : Colors.Objectifier;
+                return ClientGameOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Objectifier;
         }
     }
     public override string Name => "Defector";
@@ -56,7 +56,7 @@ public class Defector : Objectifier
         if (crew)
         {
             role.Faction = Faction.Crew;
-            role.FactionColor = Colors.Crew;
+            role.FactionColor = CustomColorManager.Crew;
             role.IsCrewDefect = true;
         }
         else if (evil)
@@ -64,13 +64,13 @@ public class Defector : Objectifier
             if (Side == Faction.Intruder)
             {
                 role.Faction = Faction.Syndicate;
-                role.FactionColor = Colors.Syndicate;
+                role.FactionColor = CustomColorManager.Syndicate;
                 role.IsSynDefect = true;
             }
             else if (Side == Faction.Intruder)
             {
                 role.Faction = Faction.Intruder;
-                role.FactionColor = Colors.Intruder;
+                role.FactionColor = CustomColorManager.Intruder;
                 role.IsIntDefect = true;
             }
         }
@@ -82,7 +82,7 @@ public class Defector : Objectifier
             Flash(Color);
 
         if (CustomPlayer.Local.Is(LayerEnum.Mystic))
-            Flash(Colors.Mystic);
+            Flash(CustomColorManager.Mystic);
     }
 
     public override void UpdateHud(HudManager __instance)

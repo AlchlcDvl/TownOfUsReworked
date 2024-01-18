@@ -7,7 +7,7 @@ public class Dwarf : Modifier
     private static bool Useless => !Smol && !Sped;
     private static string Text => Smol && Sped ? "tiny and speedy" : (Smol ? "tiny" : (Sped ? "speedy" : ""));
 
-    public override Color Color => ClientGameOptions.CustomModColors ? (Useless ? Colors.Modifier : Colors.Dwarf) : Colors.Modifier;
+    public override UColor Color => ClientGameOptions.CustomModColors ? (Useless ? CustomColorManager.Modifier : CustomColorManager.Dwarf) : CustomColorManager.Modifier;
     public override string Name => Useless ? "Useless" : (!Smol ? "Flash" : (Sped ? "Gremlin" : "Dwarf"));
     public override LayerEnum Type => LayerEnum.Dwarf;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";

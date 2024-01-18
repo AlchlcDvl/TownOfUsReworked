@@ -7,12 +7,12 @@ public class Janitor : Intruder
     public CustomButton DropButton { get; set; }
     public DeadBody CurrentlyDragging { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Janitor : CustomColorManager.Intruder;
     public override string Name => "Janitor";
     public override LayerEnum Type => LayerEnum.Janitor;
     public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Neccessary";
-    public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting " +
-        $"reported\n{CommonAbilities}";
+    public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
+        CommonAbilities;
 
     public Janitor(PlayerControl player) : base(player)
     {
@@ -26,7 +26,7 @@ public class Janitor : Intruder
     public void Clean()
     {
         Spread(Player, PlayerByBody(CleanButton.TargetBody));
-        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, this, CleanButton.TargetBody);
+        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, CleanButton.TargetBody);
         FadeBody(CleanButton.TargetBody);
         CleanButton.StartCooldown();
 
@@ -39,9 +39,7 @@ public class Janitor : Intruder
         CurrentlyDragging = DragButton.TargetBody;
         Spread(Player, PlayerByBody(CurrentlyDragging));
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, CurrentlyDragging);
-        var drag = CurrentlyDragging.gameObject.AddComponent<DragBehaviour>();
-        drag.Source = Player;
-        drag.Dragged = CurrentlyDragging;
+        CurrentlyDragging.gameObject.AddComponent<DragBehaviour>().SetDrag(Player, CurrentlyDragging);
     }
 
     public void Drop()
@@ -63,8 +61,6 @@ public class Janitor : Intruder
     public override void ReadRPC(MessageReader reader)
     {
         CurrentlyDragging = reader.ReadBody();
-        var drag = CurrentlyDragging.gameObject.AddComponent<DragBehaviour>();
-        drag.Source = Player;
-        drag.Dragged = CurrentlyDragging;
+        CurrentlyDragging.gameObject.AddComponent<DragBehaviour>().SetDrag(Player, CurrentlyDragging);
     }
 }

@@ -28,3 +28,11 @@ public static class SameVoteAll
         CustomPlayer.AllPlayers.ForEach(x => __instance.CmdCastVote(x.PlayerId, sus));
     }
 }
+
+[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
+public static class CacheGlassSprite
+{
+    public static Sprite Cache;
+
+    public static void Prefix(MeetingHud __instance) => Cache ??= __instance.Glass.sprite;
+}

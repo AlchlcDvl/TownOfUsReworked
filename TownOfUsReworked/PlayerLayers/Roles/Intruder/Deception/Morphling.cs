@@ -8,7 +8,7 @@ public class Morphling : Intruder
     public PlayerControl SampledPlayer { get; set; }
     public bool Morphed => MorphButton.EffectActive;
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Morphling : CustomColorManager.Intruder;
     public override string Name => "Morphling";
     public override LayerEnum Type => LayerEnum.Morphling;
     public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
@@ -19,8 +19,8 @@ public class Morphling : Intruder
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
+        SampleButton = new(this, "Sample", AbilityTypes.Alive, "Tertiary", Sample, CustomGameOptions.SampleCd, Exception1);
         MorphButton = new(this, "Morph", AbilityTypes.Targetless, "Secondary", HitMorph, CustomGameOptions.MorphCd, CustomGameOptions.MorphDur, (CustomButton.EffectVoid)Morph, UnMorph);
-        SampleButton = new(this, "Sample", AbilityTypes.Target, "Tertiary", Sample, CustomGameOptions.SampleCd, Exception1);
         player.Data.Role.IntroSound = GetAudio("MorphlingIntro");
     }
 
@@ -44,14 +44,10 @@ public class Morphling : Intruder
 
     public void Sample()
     {
-        var interact = Interact(Player, SampleButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, SampleButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             SampledPlayer = SampleButton.TargetPlayer;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         SampleButton.StartCooldown(cooldown);
 

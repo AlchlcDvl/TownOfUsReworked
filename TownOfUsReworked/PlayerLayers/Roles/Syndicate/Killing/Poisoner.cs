@@ -7,7 +7,7 @@ public class Poisoner : Syndicate
     public PlayerControl PoisonedPlayer { get; set; }
     public CustomMenu PoisonMenu { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Poisoner : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Poisoner : CustomColorManager.Syndicate;
     public override string Name => "Poisoner";
     public override LayerEnum Type => LayerEnum.Poisoner;
     public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
@@ -19,7 +19,7 @@ public class Poisoner : Syndicate
         PoisonedPlayer = null;
         Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);
-        PoisonButton = new(this, "Poison", AbilityTypes.Target, "ActionSecondary", HitPoison, CustomGameOptions.PoisonCd, CustomGameOptions.PoisonDur, UnPoison, Exception1);
+        PoisonButton = new(this, "Poison", AbilityTypes.Alive, "ActionSecondary", HitPoison, CustomGameOptions.PoisonCd, CustomGameOptions.PoisonDur, UnPoison, Exception1);
         GlobalPoisonButton = new(this, "GlobalPoison", AbilityTypes.Targetless, "ActionSecondary", HitGlobalPoison, CustomGameOptions.PoisonCd, CustomGameOptions.PoisonDur, UnPoison);
     }
 
@@ -27,7 +27,7 @@ public class Poisoner : Syndicate
 
     public void UnPoison()
     {
-        if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is(LayerEnum.Pestilence)))
+        if (CanAttack(AttackEnum.Basic, PoisonedPlayer.GetDefenseValue(Player)))
             RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
@@ -35,16 +35,12 @@ public class Poisoner : Syndicate
 
     public void Click(PlayerControl player)
     {
-        var interact = Interact(Player, player, poisoning: true);
+        var cooldown = Interact(Player, player, astral: true, delayed: true);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             PoisonedPlayer = player;
-        else if (interact.Reset)
-            GlobalPoisonButton.StartCooldown();
-        else if (interact.Protected)
-            GlobalPoisonButton.StartCooldown(CooldownType.GuardianAngel);
-        else if (interact.Vested)
-            GlobalPoisonButton.StartCooldown(CooldownType.Survivor);
+        else
+            GlobalPoisonButton.StartCooldown(cooldown);
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -58,7 +54,7 @@ public class Poisoner : Syndicate
             if (PoisonedPlayer != null && HoldsDrive && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
                 PoisonedPlayer = null;
 
-            LogInfo("Removed a target");
+            LogMessage("Removed a target");
         }
     }
 
@@ -67,20 +63,16 @@ public class Poisoner : Syndicate
 
     public void HitPoison()
     {
-        var interact = Interact(Player, PoisonButton.TargetPlayer, poisoning: true);
+        var cooldown = Interact(Player, PoisonButton.TargetPlayer, delayed: true);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             PoisonedPlayer = PoisonButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, PoisonButton, PoisonedPlayer);
             PoisonButton.Begin();
         }
-        else if (interact.Reset)
-            PoisonButton.StartCooldown();
-        else if (interact.Protected)
-            PoisonButton.StartCooldown(CooldownType.GuardianAngel);
-        else if (interact.Vested)
-            PoisonButton.StartCooldown(CooldownType.Survivor);
+        else
+            PoisonButton.StartCooldown(cooldown);
     }
 
     public void HitGlobalPoison()
@@ -89,7 +81,7 @@ public class Poisoner : Syndicate
             PoisonMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, PoisonButton, PoisonedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, GlobalPoisonButton, PoisonedPlayer);
             GlobalPoisonButton.Begin();
         }
     }

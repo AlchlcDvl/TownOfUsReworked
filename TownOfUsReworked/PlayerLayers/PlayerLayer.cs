@@ -2,15 +2,15 @@ namespace TownOfUsReworked.PlayerLayers;
 
 public abstract class PlayerLayer
 {
-    public virtual Color Color => Colors.Layer;
+    public virtual UColor Color => CustomColorManager.Layer;
     public virtual string Name => "None";
     public string Short => Info.AllInfo.Find(x => x.Name == Name)?.Short;
     public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
     public virtual LayerEnum Type => LayerEnum.None;
     public virtual Func<string> Description => () => "- None";
     public virtual Func<string> Attributes => () => "- None";
-    //public virtual AttackEnum AttackVal => AttackEnum.None;
-    //public virtual DefenseEnum DefenseVal => DefenseEnum.None;
+    public virtual AttackEnum AttackVal => AttackEnum.None;
+    public virtual DefenseEnum DefenseVal => DefenseEnum.None;
 
     public PlayerControl Player { get; set; }
     public bool IsBlocked { get; set; }
@@ -43,13 +43,13 @@ public abstract class PlayerLayer
         AllLayers.Add(this);
     }
 
-    public virtual void OnLobby() => OnGameEndPatch.Reset();
+    public virtual void OnLobby() {}
 
-    public virtual void OnIntroEnd() => ButtonUtils.Reset(CooldownType.Start);
+    public virtual void OnIntroEnd() {}
 
     public virtual void UpdateHud(HudManager __instance) {}
 
-    public virtual void UpdateMeeting(MeetingHud __instance) => ButtonUtils.DisableAllButtons();
+    public virtual void UpdateMeeting(MeetingHud __instance) {}
 
     public virtual void VoteComplete(MeetingHud __instance) {}
 
@@ -69,21 +69,11 @@ public abstract class PlayerLayer
 
     public virtual void EnteringLayer() {}
 
-    public virtual void OnMeetingStart(MeetingHud __instance)
-    {
-        Player.DisableButtons();
-        OnGameEndPatch.Reset();
-        Ash.DestroyAll();
-    }
+    public virtual void OnMeetingStart(MeetingHud __instance) {}
 
-    public virtual void OnMeetingEnd(MeetingHud __instance)
-    {
-        Player.EnableButtons();
-        OnGameEndPatch.Reset();
-        ButtonUtils.Reset(CooldownType.Meeting);
-    }
+    public virtual void OnMeetingEnd(MeetingHud __instance) {}
 
-    public virtual void OnBodyReport(GameData.PlayerInfo info) => OnGameEndPatch.Reset();
+    public virtual void OnBodyReport(GameData.PlayerInfo info) {}
 
     public virtual void UponTaskComplete(PlayerControl player, uint taskId) {}
 
@@ -98,8 +88,7 @@ public abstract class PlayerLayer
             if (Type == LayerEnum.Phantom && TasksDone && ((Role)this).Faithful)
             {
                 Role.PhantomWins = true;
-                ((Phantom)this).CompletedTasks = true;
-                CallRpc(CustomRPC.WinLose, WinLoseRPC.PhantomWin, this);
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.PhantomWin);
                 EndGame();
             }
             else if (LayerType == PlayerLayerEnum.Role && ((Role)this).Alignment == Alignment.NeutralEvil && CustomGameOptions.NeutralEvilsEndGame)
@@ -129,8 +118,6 @@ public abstract class PlayerLayer
                     EndGame();
                 }
             }
-
-            return;
         }
         else if (LayerType == PlayerLayerEnum.Objectifier)
         {
@@ -397,4 +384,8 @@ public abstract class PlayerLayer
 
     public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => x.GetType() == typeof(T) && (!x.Ignore || includeIgnored)).Cast<T>()
         .ToList();
+
+    public static PlayerLayer GetLayer(PlayerControl player, PlayerLayerEnum layerType) => AllLayers.Find(x => x.Player == player && x.LayerType == layerType);
+
+    public static T GetLayer<T>(PlayerControl player, PlayerLayerEnum layerType) where T : PlayerLayer => GetLayer(player, layerType) as T;
 }

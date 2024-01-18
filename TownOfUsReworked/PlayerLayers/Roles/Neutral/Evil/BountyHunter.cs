@@ -22,22 +22,23 @@ public class BountyHunter : Neutral
     public int Rounds { get; set; }
     public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.BountyHunter : CustomColorManager.Neutral;
     public override string Name => "Bounty Hunter";
     public override LayerEnum Type => LayerEnum.BountyHunter;
     public override Func<string> StartText => () => "Find And Kill Your Target";
     public override Func<string> Description => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- " +
         "Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you" +
         " will become a <color=#678D36FF>Troll</color>");
+    public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public BountyHunter(PlayerControl player) : base(player)
     {
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (TargetPlayer == null ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;
-        GuessButton = new(this, "BHGuess", AbilityTypes.Target, "Secondary", Guess, CustomGameOptions.GuessCd, CustomGameOptions.BountyHunterGuesses);
-        HuntButton = new(this, "Hunt", AbilityTypes.Target, "ActionSecondary", Hunt, CustomGameOptions.GuessCd);
-        RequestButton = new(this, "Request", AbilityTypes.Target, "Tertiary", Request, Exception);
+        GuessButton = new(this, "BHGuess", AbilityTypes.Alive, "Secondary", Guess, CustomGameOptions.GuessCd, CustomGameOptions.BountyHunterGuesses);
+        HuntButton = new(this, "Hunt", AbilityTypes.Alive, "ActionSecondary", Hunt, CustomGameOptions.GuessCd);
+        RequestButton = new(this, "Request", AbilityTypes.Alive, "Tertiary", Request, Exception);
     }
 
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || GetRole(player).Requesting || (player.Is(SubFaction) && SubFaction !=
@@ -128,7 +129,7 @@ public class BountyHunter : Neutral
         }
         else if (!ColorHintGiven)
         {
-            something = $"Your target is a {CustomColors.LightDarkColors[TargetPlayer.CurrentOutfit.ColorId].ToLower()} color!";
+            something = $"Your target is a {(TargetPlayer.CurrentOutfit.ColorId.IsLighter() ? "lighter" : "darker")} color!";
             ColorHintGiven = true;
         }
         else if (!RoleHintGiven)
@@ -142,7 +143,7 @@ public class BountyHunter : Neutral
 
         //Ensures only the Bounty Hunter sees this
         if (HUD && something != "")
-            Run(Chat, "<color=#B51E39FF>〖 Bounty Hunt 〗</color>", something);
+            Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", something);
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -194,26 +195,12 @@ public class BountyHunter : Neutral
         }
         else if (HuntButton.TargetPlayer == TargetPlayer && !TargetKilled)
         {
-            var interact = Interact(Player, HuntButton.TargetPlayer, true);
-
-            if (!interact.AbilityUsed)
-                RpcMurderPlayer(Player, HuntButton.TargetPlayer);
-
+            RpcMurderPlayer(Player, HuntButton.TargetPlayer);
             TargetKilled = true;
-            HuntButton.StartCooldown();
+            HuntButton.StartCooldown(Interact(Player, HuntButton.TargetPlayer));
             CallRpc(CustomRPC.WinLose, WinLoseRPC.BountyHunterWin, this);
         }
         else
-        {
-            var interact = Interact(Player, HuntButton.TargetPlayer, true);
-            var cooldown = CooldownType.Reset;
-
-            if (interact.Protected)
-                cooldown = CooldownType.GuardianAngel;
-            else if (interact.Vested)
-                cooldown = CooldownType.Survivor;
-
-            HuntButton.StartCooldown(cooldown);
-        }
+            HuntButton.StartCooldown(Interact(Player, HuntButton.TargetPlayer, true));
     }
 }

@@ -51,7 +51,7 @@ public class CustomButton
     private GameObject Block { get; set; }
     public string ID { get; }
     private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
-    private bool Disabled { get; set; }
+    public bool Disabled { get; set; }
     public bool Blocked => Owner.IsBlocked;
     private bool KeyDown => Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind);
     private bool Active => IsRoaming && Owner.Local && ButtonsActive && !Disabled && Owner.IsDead == PostDeath;
@@ -196,6 +196,7 @@ public class CustomButton
         Base.graphic.sprite = GetSprite(Sprite);
         Base.gameObject.name = Base.name = ID;
         Base.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Clicked));
+        Base.GetComponent<PassiveButton>().HoverSound = SoundEffects["Hover"];
         Block = new($"{Base}Block");
         Block.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
         Block.transform.localScale *= 0.75f;
@@ -240,10 +241,9 @@ public class CustomButton
     {
         CooldownType.Start => CustomGameOptions.EnableInitialCds ? CustomGameOptions.InitialCooldowns : MaxCooldown,
         CooldownType.Meeting => CustomGameOptions.EnableMeetingCds ? CustomGameOptions.MeetingCooldowns : MaxCooldown,
-        CooldownType.GuardianAngel => CustomGameOptions.ProtectKCReset,
-        CooldownType.Survivor => CustomGameOptions.VestKCReset,
+        CooldownType.Fail => CustomGameOptions.EnableFailCds ? CustomGameOptions.FailCooldowns : MaxCooldown,
         CooldownType.Custom => cooldown,
-        CooldownType.Reset or _ => MaxCooldown
+        _ => MaxCooldown
     };
 
     public void Clicked()
@@ -254,11 +254,14 @@ public class CustomButton
 
             if (HasUses)
                 Uses--;
+
+            Play("Click");
         }
         else if ((DelayActive || EffectActive) && CanClickAgain)
         {
             ClickedAgain = true;
-            CallRpc(CustomRPC.Action, ActionsRPC.Cancel, ID);
+            CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
+            Play("Click");
         }
 
         DisableTarget();
@@ -374,15 +377,15 @@ public class CustomButton
             return;
 
         if (prevRend)
-            prevRend.SetOutline(UColor.clear);
+            prevRend.SetOutlineColor(UColor.clear);
 
         if (newRend)
-            newRend.SetOutline(Owner.Color);
+            newRend.SetOutlineColor(Owner.Color);
     }
 
     private void SetTarget()
     {
-        if (Type == AbilityTypes.Target)
+        if (Type == AbilityTypes.Alive)
             SetAliveTarget();
         else if (Type == AbilityTypes.Dead)
             SetDeadTarget();
@@ -458,7 +461,7 @@ public class CustomButton
         Block.SetActive(Blocked && Active);
         Usable = usable && !(HasUses && Uses <= 0);
 
-        if (!EffectActive && !DelayActive && !CooldownActive)
+        if (!EffectActive && !DelayActive && !CooldownActive && !Disabled)
             SetTarget();
 
         Clickable = Base && !EffectActive && usable && condition && !Meeting && !Blocked && !DelayActive && !Owner.Player.CannotUse() && Owner.Local && Targeting && !Ejection && !Disabled &&
@@ -474,23 +477,23 @@ public class CustomButton
 
         switch (Type)
         {
-            case AbilityTypes.Target:
-                TargetPlayer?.MyRend()?.SetOutline(UColor.clear);
+            case AbilityTypes.Alive:
+                TargetPlayer?.MyRend()?.SetOutlineColor(UColor.clear);
                 TargetPlayer = null;
                 break;
 
             case AbilityTypes.Dead:
-                TargetBody?.MyRend()?.SetOutline(UColor.clear);
+                TargetBody?.MyRend()?.SetOutlineColor(UColor.clear);
                 TargetBody = null;
                 break;
 
             case AbilityTypes.Vent:
-                TargetVent?.MyRend()?.SetOutline(UColor.clear);
+                TargetVent?.MyRend()?.SetOutlineColor(UColor.clear);
                 TargetVent = null;
                 break;
 
             case AbilityTypes.Console:
-                TargetConsole?.MyRend()?.SetOutline(UColor.clear);
+                TargetConsole?.MyRend()?.SetOutlineColor(UColor.clear);
                 TargetConsole = null;
                 break;
         }
@@ -518,19 +521,15 @@ public class CustomButton
     {
         Disabled = true;
 
-        if (Base == null)
+        if (!Base)
             return;
 
         Base?.SetCoolDown(0, 0);
         Base?.SetDisabled();
-        Base.GetComponent<PassiveButton>().OnClick = new();
-        Base?.buttonLabelText?.gameObject?.SetActive(false);
-        Base?.buttonLabelText?.gameObject?.Destroy();
         Block?.SetActive(false);
         Block?.Destroy();
         Base?.gameObject?.SetActive(false);
         Base?.gameObject?.Destroy();
-        Base?.Destroy();
         Base = null;
     }
 

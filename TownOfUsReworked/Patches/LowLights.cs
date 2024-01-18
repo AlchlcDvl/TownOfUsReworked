@@ -67,7 +67,7 @@ public static class AdjustLightingPatch
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        if (CustomPlayer.Local != __instance)
+        if (CustomPlayer.Local != __instance || !Ship)
             return true;
 
         var flashlights = false;
@@ -92,7 +92,7 @@ public static class AdjustLightingPatch
             size /= Ship.MaxLightRadius;
 
         __instance.TargetFlashlight.gameObject.SetActive(flashlights);
-        __instance.StartCoroutine(__instance.EnableRightJoystick(flashlights));
+        __instance.StartCoroutine(__instance.EnableRightJoystick(false));
         __instance.lightSource.SetupLightingForGameplay(flashlights, size, __instance.TargetFlashlight.transform);
         return false;
     }

@@ -6,7 +6,7 @@ public class Enforcer : Intruder
     public PlayerControl BombedPlayer { get; set; }
     public bool BombSuccessful { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Enforcer : CustomColorManager.Intruder;
     public override string Name => "Enforcer";
     public override LayerEnum Type => LayerEnum.Enforcer;
     public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
@@ -17,7 +17,7 @@ public class Enforcer : Intruder
     {
         Alignment = Alignment.IntruderKill;
         BombedPlayer = null;
-        BombButton = new(this, "Enforce", AbilityTypes.Target, "Secondary", Bomb, CustomGameOptions.EnforceCd, CustomGameOptions.EnforceDur, BoomStart, UnBoom, CustomGameOptions.EnforceDelay,
+        BombButton = new(this, "Enforce", AbilityTypes.Alive, "Secondary", Bomb, CustomGameOptions.EnforceCd, CustomGameOptions.EnforceDur, BoomStart, UnBoom, CustomGameOptions.EnforceDelay,
             Exception1, canClickAgain: false);
     }
 
@@ -33,40 +33,34 @@ public class Enforcer : Intruder
     public void UnBoom()
     {
         if (!BombSuccessful)
-            Explode();
+            Explode(BombedPlayer, Player);
 
         GetRole(BombedPlayer).Bombed = false;
         BombedPlayer = null;
         BombSuccessful = false;
     }
 
-    private void Explode()
+    public static void Explode(PlayerControl centre, PlayerControl enf)
     {
-        foreach (var player in GetClosestPlayers(BombedPlayer.transform.position, CustomGameOptions.EnforceRadius))
+        foreach (var player in GetClosestPlayers(centre.transform.position, CustomGameOptions.EnforceRadius))
         {
-            Spread(BombedPlayer, player);
-
-            if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsProtectedMonarch() || player.Is(LayerEnum.Pestilence))
-                continue;
-
-            RpcMurderPlayer(Player, player, DeathReasonEnum.Bombed, false);
+            if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
+                RpcMurderPlayer(enf, player, DeathReasonEnum.Bombed, false);
         }
     }
 
     public void Bomb()
     {
-        var interact = Interact(Player, BombButton.TargetPlayer);
+        var cooldown = Interact(Player, BombButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             BombedPlayer = BombButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, BombButton, BombedPlayer);
             BombButton.Begin();
         }
-        else if (interact.Reset)
-            BombButton.StartCooldown();
-        else if (interact.Protected)
-            BombButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            BombButton.StartCooldown(cooldown);
     }
 
     public bool Exception1(PlayerControl player) => player == BombedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction

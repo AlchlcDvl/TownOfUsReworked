@@ -4,16 +4,13 @@ public class Allied : Objectifier
 {
     public Faction Side { get; set; }
 
-    public override Color Color
+    public override UColor Color => Side switch
     {
-        get => Side switch
-        {
-            Faction.Crew => Colors.Crew,
-            Faction.Syndicate => Colors.Syndicate,
-            Faction.Intruder => Colors.Intruder,
-            _ => ClientGameOptions.CustomObjColors ? Colors.Allied : Colors.Objectifier,
-        };
-    }
+        Faction.Crew => CustomColorManager.Crew,
+        Faction.Syndicate => CustomColorManager.Syndicate,
+        Faction.Intruder => CustomColorManager.Intruder,
+        _ => ClientGameOptions.CustomObjColors ? CustomColorManager.Allied : CustomColorManager.Objectifier,
+    };
     public override string Name => "Allied";
     public override string Symbol => "ζ";
     public override LayerEnum Type => LayerEnum.Allied;

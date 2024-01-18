@@ -6,7 +6,7 @@ public class Consort : Intruder
     public PlayerControl BlockTarget { get; set; }
     public CustomMenu BlockMenu { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Consort : CustomColorManager.Intruder;
     public override string Name => "Consort";
     public override LayerEnum Type => LayerEnum.Consort;
     public override Func<string> StartText => () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
@@ -33,14 +33,12 @@ public class Consort : Intruder
 
     public void Click(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             BlockTarget = player;
-        else if (interact.Reset)
-            BlockButton.StartCooldown();
-        else if (interact.Protected)
-            BlockButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            BlockButton.StartCooldown(cooldown);
     }
 
     public void Roleblock()
@@ -67,7 +65,7 @@ public class Consort : Intruder
             if (BlockTarget != null && !BlockButton.EffectActive)
                 BlockTarget = null;
 
-            LogInfo("Removed a target");
+            LogMessage("Removed a target");
         }
     }
 

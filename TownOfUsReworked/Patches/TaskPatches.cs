@@ -166,9 +166,6 @@ public static class CompleteTasksPatch
 
             if (role.TasksLeft == CustomGameOptions.PhantomTasksRemaining && CustomGameOptions.PhantomPlayersAlerted && !role.Caught)
                 Flash(role.Color);
-
-            if (role.TasksDone && !role.Caught)
-                role.CompletedTasks = true;
         }
         else if (__instance.Is(LayerEnum.Runner))
         {
@@ -195,8 +192,6 @@ public static class CompleteTasksPatch
             }
             else if (role.TasksDone && !role.Caught)
             {
-                role.CompletedTasks = role.TasksDone;
-
                 if (CustomPlayer.Local.Is(LayerEnum.Revealer) || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) &&
                     CustomGameOptions.RevealerRevealsNeutrals))
                 {

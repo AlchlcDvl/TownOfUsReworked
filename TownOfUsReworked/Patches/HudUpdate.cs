@@ -37,6 +37,8 @@ public static class HudUpdate
 
         CustomPlayer.Local.RegenTask();
 
+        Objects.Range.AllItems.ForEach(x => x.Update());
+
         var vent = GetSprite("DefaultVent");
 
         if (CustomPlayer.Local.Is(Faction.Intruder))

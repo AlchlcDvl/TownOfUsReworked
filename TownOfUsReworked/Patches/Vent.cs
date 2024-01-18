@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
-public static class VentPatches
+public static class VentCanUsePatch
 {
     public static void Postfix(Vent __instance, ref GameData.PlayerInfo pc, ref bool canUse, ref bool couldUse, ref float __result)
     {
@@ -12,8 +12,6 @@ public static class VentPatches
             couldUse = playerControl.CanVent();
         else if (IsHnS)
             couldUse = !pc.IsImpostor();
-        else
-            couldUse = canUse;
 
         var ventitaltionSystem = Ship.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
@@ -21,51 +19,16 @@ public static class VentPatches
             couldUse = false;
 
         canUse = couldUse;
-        var center = playerControl.Collider.bounds.center;
-        var position = __instance.transform.position;
-
-        if (IsSubmerged())
-        {
-            if (GetInTransition())
-            {
-                __result = float.MaxValue;
-                canUse = couldUse = false;
-                return;
-            }
-
-            switch (__instance.Id)
-            {
-                case 9:  //Engine Room Exit Only Vent
-                    if (CustomPlayer.Local.inVent)
-                        break;
-
-                    __result = float.MaxValue;
-                    return;
-
-                case 14: //Lower Central
-                    __result = float.MaxValue;
-
-                    if (canUse)
-                    {
-                        __result = Vector2.Distance(center, position);
-                        canUse &= __result <= __instance.UsableDistance;
-                    }
-
-                    return;
-            }
-        }
 
         if (canUse)
         {
+            var center = playerControl.Collider.bounds.center;
+            var position = __instance.transform.position;
             num = Vector2.Distance(center, position);
+            canUse &= num <= __instance.UsableDistance;
 
-            if (__instance.Id == 14 && IsSubmerged())
-                canUse &= num <= __instance.UsableDistance;
-            else
-            {
-                canUse = ((canUse ? 1 : 0) & (num > __instance.UsableDistance ? 0 : (!PhysicsHelpers.AnythingBetween(playerControl.Collider, center, position, Constants.ShipOnlyMask, false)
-                    ? 1 : 0))) != 0;
-            }
+            if (__instance.Id != 14 || !IsSubmerged())
+                canUse &= !PhysicsHelpers.AnythingBetween(playerControl.Collider, center, position, Constants.ShipOnlyMask, false);
         }
 
         __result = num;
@@ -105,7 +68,7 @@ public static class EnterVentPatch
             Vector2 vector;
 
             if (__instance.Right && __instance.Left)
-                vector = (__instance.Right.transform.position + __instance.Left.transform.position) / 2f - __instance.transform.position;
+                vector = ((__instance.Right.transform.position + __instance.Left.transform.position) / 2f) - __instance.transform.position;
             else
                 vector = Vector2.zero;
 
@@ -121,9 +84,8 @@ public static class EnterVentPatch
                     {
                         var ventilationSystem = Ship.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
                         var flag1 = ventilationSystem != null && ventilationSystem.IsVentCurrentlyBeingCleaned(vent.Id);
-                        buttonBehavior.gameObject.SetActive(true);
                         var gameObject = __instance.CleaningIndicators.Count > 0 ? __instance.CleaningIndicators[i] : null;
-                        __instance.ToggleNeighborVentBeingCleaned(flag, buttonBehavior, gameObject);
+                        __instance.ToggleNeighborVentBeingCleaned(flag1 || LocalBlocked, buttonBehavior, gameObject);
                         var vector2 = vent.transform.position - __instance.transform.position;
                         var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
                         vector3.x *= Mathf.Sign(Ship.transform.localScale.x);
@@ -131,12 +93,13 @@ public static class EnterVentPatch
                         vector3.z = -10f;
                         buttonBehavior.transform.localPosition = vector3;
                         buttonBehavior.transform.LookAt2d(vent.transform);
-                        vector3 = vector3.RotateZ((vector.AngleSigned(vector2) > 0f) ? __instance.spreadAmount : (-__instance.spreadAmount));
+                        var deg = vector.AngleSigned(vector2) > 0f ? __instance.spreadAmount : -__instance.spreadAmount;
+                        vector3 = vector3.RotateZ(deg);
                         buttonBehavior.transform.localPosition = vector3;
-                        buttonBehavior.transform.Rotate(0f, 0f, (vector.AngleSigned(vector2) > 0f) ? __instance.spreadAmount : (-__instance.spreadAmount));
+                        buttonBehavior.transform.Rotate(0f, 0f, deg);
                     }
-                    else
-                        buttonBehavior.gameObject.SetActive(false);
+
+                    buttonBehavior.gameObject.SetActive(vent);
                 }
                 else
                     buttonBehavior.gameObject.SetActive(false);
@@ -164,56 +127,15 @@ public static class SetVentOutlinePatch
     }
 }
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcEnterVent))]
-public static class TryToEnterVentPatch
-{
-    public static bool Prefix(PlayerPhysics __instance, ref int id)
-    {
-        var vent = VentById(id);
-
-        if (vent.IsBombed())
-        {
-            RpcMurderPlayer(__instance.myPlayer);
-            Role.BastionBomb(vent, CustomGameOptions.BombRemovedOnKill);
-            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
-            return false;
-        }
-
-        return true;
-    }
-}
-
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcExitVent))]
-public static class TryToExitVentPatch
-{
-    public static bool Prefix(PlayerPhysics __instance, ref int id)
-    {
-        var vent = VentById(id);
-
-        if (vent.IsBombed())
-        {
-            RpcMurderPlayer(__instance.myPlayer);
-            Role.BastionBomb(vent, CustomGameOptions.BombRemovedOnKill);
-            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
-            return false;
-        }
-
-        return true;
-    }
-}
-
 [HarmonyPatch(typeof(Vent), nameof(Vent.Use))]
 public static class UseVent
 {
     public static bool Prefix(Vent __instance)
     {
-        if (NoPlayers)
-            return true;
-
-        if (!CustomPlayer.Local.CanVent())
+        if (NoPlayers || !CustomPlayer.Local.CanVent() || LocalBlocked)
             return false;
 
-        if (__instance.IsBombed())
+        if (__instance.IsBombed() && !CustomPlayer.Local.IsPostmortal())
         {
             RpcMurderPlayer(CustomPlayer.Local);
             Role.BastionBomb(__instance, CustomGameOptions.BombRemovedOnKill);
@@ -221,7 +143,7 @@ public static class UseVent
             return false;
         }
 
-        return LocalNotBlocked;
+        return true;
     }
 }
 
@@ -230,13 +152,10 @@ public static class MoveToVentPatch
 {
     public static bool Prefix(ref Vent otherVent)
     {
-        if (NoPlayers)
-            return true;
-
-        if (!CustomPlayer.Local.CanVent())
+        if (NoPlayers || !CustomPlayer.Local.CanVent() || LocalBlocked)
             return false;
 
-        if (otherVent.IsBombed())
+        if (otherVent.IsBombed() && !CustomPlayer.Local.IsPostmortal())
         {
             RpcMurderPlayer(CustomPlayer.Local);
             Role.BastionBomb(otherVent, CustomGameOptions.BombRemovedOnKill);
@@ -244,7 +163,7 @@ public static class MoveToVentPatch
             return false;
         }
 
-        return LocalNotBlocked;
+        return true;
     }
 }
 
@@ -262,7 +181,7 @@ public static class FixdlekSVents1
 
             if (vent)
             {
-                __instance.ToggleNeighborVentBeingCleaned(ventSystem.IsVentCurrentlyBeingCleaned(vent.Id), __instance.Buttons[i], __instance.CleaningIndicators.Count > 0 ?
+                __instance.ToggleNeighborVentBeingCleaned(ventSystem.IsVentCurrentlyBeingCleaned(vent.Id) || LocalBlocked, __instance.Buttons[i], __instance.CleaningIndicators.Count > 0 ?
                     __instance.CleaningIndicators[i] : null);
             }
         }
@@ -276,9 +195,6 @@ public static class FixdlekSVents2
 {
     public static bool Prefix(ref bool ventBeingCleaned, ref ButtonBehavior b, ref GameObject c)
     {
-        if (MapPatches.CurrentMap != 3)
-            return true;
-
         b.enabled = !ventBeingCleaned;
         c?.SetActive(ventBeingCleaned);
         return false;

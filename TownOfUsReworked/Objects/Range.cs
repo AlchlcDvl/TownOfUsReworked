@@ -1,3 +1,5 @@
+using Cpp2IL.Core.Extensions;
+
 namespace TownOfUsReworked.Objects;
 
 public class Range
@@ -10,7 +12,7 @@ public class Range
     public readonly PlayerControl Owner;
     public readonly float Size;
 
-    public Range(PlayerControl owner, Color color, float scale, string name)
+    public Range(PlayerControl owner, UColor color, float scale, string name)
     {
         Owner = owner;
         Item = new(name) { layer = 11 };
@@ -32,36 +34,32 @@ public class Range
         AllItems.Add(this);
     }
 
-    public void Destroy(bool remove = true)
+    public void Destroy()
     {
-        if (Item == null)
+        AllItems.Remove(this);
+
+        if (!Item)
             return;
 
         NumberText.gameObject.SetActive(false);
         NumberText.gameObject.Destroy();
         Item.SetActive(false);
         Item.Destroy();
-        Stop();
-
-        if (remove)
-            AllItems.Remove(this);
     }
-
-    public virtual IEnumerator Timer() => null;
 
     public virtual void Update()
     {
-        if (Transform == null)
+        if (!Transform)
             return;
 
         Transform.Rotate(Vector3.forward * 10 * Time.fixedDeltaTime);
     }
 
-    public virtual void Stop() => Coroutines.Stop(Timer());
-
     public static void DestroyAll()
     {
-        AllItems.ForEach(p => p.Destroy(false));
+        var dupe = AllItems.Clone();
+        dupe.ForEach(p => p.Destroy());
         AllItems.Clear();
+        dupe.Clear();
     }
 }

@@ -4,7 +4,7 @@ public class Engineer : Crew
 {
     public CustomButton FixButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Engineer : CustomColorManager.Crew;
     public override string Name => "Engineer";
     public override LayerEnum Type => LayerEnum.Engineer;
     public override Func<string> StartText => () => "Just Fix It";
@@ -20,10 +20,8 @@ public class Engineer : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        FixButton.Update2("FIX SABOTAGE", condition: Condition());
+        FixButton.Update2("FIX SABOTAGE", CustomGameOptions.MaxFixes > 0, Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive);
     }
-
-    public bool Condition() => Ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
 
     public void Fix()
     {

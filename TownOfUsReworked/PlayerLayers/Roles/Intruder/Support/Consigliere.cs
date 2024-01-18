@@ -6,7 +6,7 @@ public class Consigliere : Intruder
     public CustomButton InvestigateButton { get; set; }
     private static string Option => CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Consigliere : CustomColorManager.Intruder;
     public override string Name => "Consigliere";
     public override LayerEnum Type => LayerEnum.Consigliere;
     public override Func<string> StartText => () => "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
@@ -17,20 +17,17 @@ public class Consigliere : Intruder
     {
         Alignment = Alignment.IntruderSupport;
         Investigated = new();
-        InvestigateButton = new(this, "Investigate", AbilityTypes.Target, "Secondary", Investigate, CustomGameOptions.InvestigateCd, Exception1);
+        InvestigateButton = new(this, "Investigate", AbilityTypes.Alive, "Secondary", Investigate, CustomGameOptions.InvestigateCd, Exception1);
     }
 
     public void Investigate()
     {
-        var interact = Interact(Player, InvestigateButton.TargetPlayer);
+        var cooldown = Interact(Player, InvestigateButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Investigated.Add(InvestigateButton.TargetPlayer.PlayerId);
 
-        if (interact.Reset)
-            InvestigateButton.StartCooldown();
-        else if (interact.Protected)
-            InvestigateButton.StartCooldown(CooldownType.GuardianAngel);
+        InvestigateButton.StartCooldown(cooldown);
     }
 
     public bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||

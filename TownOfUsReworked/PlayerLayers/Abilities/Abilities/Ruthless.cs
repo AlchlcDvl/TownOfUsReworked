@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public class Ruthless : Ability
 {
-    public override Color Color => ClientGameOptions.CustomAbColors ? Colors.Ruthless : Colors.Ability;
+    public override UColor Color => ClientGameOptions.CustomAbColors ? CustomColorManager.Ruthless : CustomColorManager.Ability;
     public override string Name => "Ruthless";
     public override LayerEnum Type => LayerEnum.Ruthless;
     public override Func<string> Description => () => "- Your attacks cannot be stopped";

@@ -6,7 +6,7 @@ public class Operative : Crew
     public List<LayerEnum> BuggedPlayers { get; set; }
     public CustomButton BugButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Operative : CustomColorManager.Crew;
     public override string Name => "Operative";
     public override LayerEnum Type => LayerEnum.Operative;
     public override Func<string> StartText => () => "Detect Which Roles Are Here";
@@ -24,7 +24,7 @@ public class Operative : Crew
     public override void OnLobby()
     {
         base.OnLobby();
-        Bug.Clear(Bugs);
+        Bugs.ForEach(x => x.Destroy());
         Bugs.Clear();
     }
 
@@ -58,7 +58,7 @@ public class Operative : Crew
         }
 
         if (HUD)
-            Run(Chat, "<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
+            Run("<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
     public override void UpdateHud(HudManager __instance)

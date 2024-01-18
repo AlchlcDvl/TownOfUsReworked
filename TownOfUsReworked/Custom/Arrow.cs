@@ -10,11 +10,11 @@ public class CustomArrow
     private DateTime _time { get; set; }
     private Vector3 Target { get; set; }
     private SpriteRenderer Point { get; set; }
-    private Color ArrowColor { get; set; }
+    private UColor ArrowColor { get; set; }
     private bool Disabled { get; set; }
     public static readonly List<CustomArrow> AllArrows = new();
 
-    public CustomArrow(PlayerControl owner, Color color, float interval = 0f)
+    public CustomArrow(PlayerControl owner, UColor color, float interval = 0f)
     {
         Owner = owner;
         Interval = interval;
@@ -41,9 +41,9 @@ public class CustomArrow
         Arrow.target = Owner.transform.position;
     }
 
-    public void Update(Color? color = null) => Update(Target, color);
+    public void Update(UColor? color = null) => Update(Target, color);
 
-    public void Update(Vector3 target, Color? color = null)
+    public void Update(Vector3 target, UColor? color = null)
     {
         if (ArrowObj == null || Arrow == null || Render == null || (Owner != CustomPlayer.Local && Disabled))
             return;
@@ -78,10 +78,8 @@ public class CustomArrow
 
     public void Destroy()
     {
-        ArrowObj?.Destroy();
-        Arrow?.Destroy();
-        Render?.Destroy();
         Point?.Destroy();
+        ArrowObj?.Destroy();
         ArrowObj = null;
         Arrow = null;
         Render = null;

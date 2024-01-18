@@ -5,7 +5,7 @@ public class Hunter : HideAndSeek
     public override string Name => "Hunter";
     public override LayerEnum Type => LayerEnum.Hunter;
     public override Func<string> StartText => () => "Hunt Them All Down";
-    public override Color Color => Colors.Hunter;
+    public override UColor Color => CustomColorManager.Hunter;
     public override string FactionName => "Hide And Seek";
 
     public CustomButton HuntButton { get; set; }
@@ -15,7 +15,7 @@ public class Hunter : HideAndSeek
     public Hunter(PlayerControl player) : base(player)
     {
         Objectives = () => "- Hunt the others down before they finish their tasks";
-        HuntButton = new(this, "IntruderKill", AbilityTypes.Target, "ActionSecondary", Hunt, CustomGameOptions.HuntCd, Exception);
+        HuntButton = new(this, "IntruderKill", AbilityTypes.Alive, "ActionSecondary", Hunt, CustomGameOptions.HuntCd, Exception);
         Data.SetImpostor(true);
     }
 

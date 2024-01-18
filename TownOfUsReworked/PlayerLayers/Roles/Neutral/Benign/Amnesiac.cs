@@ -5,7 +5,7 @@ public class Amnesiac : Neutral
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
     public CustomButton RememberButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Amnesiac : CustomColorManager.Neutral;
     public override string Name => "Amnesiac";
     public override LayerEnum Type => LayerEnum.Amnesiac;
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
@@ -55,7 +55,7 @@ public class Amnesiac : Neutral
 
         if (CustomPlayer.Local == player || CustomPlayer.Local == other)
         {
-            Flash(Colors.Amnesiac);
+            Flash(CustomColorManager.Amnesiac);
             role.OnLobby();
             OnLobby();
             ButtonUtils.Reset();
@@ -179,15 +179,15 @@ public class Amnesiac : Neutral
             foreach (var snitch in GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == player)
-                    LocalRole.AllArrows.Add(snitch.PlayerId, new(player, Colors.Snitch));
+                    LocalRole.AllArrows.Add(snitch.PlayerId, new(player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
-                    GetRole(snitch.Player).AllArrows.Add(player.PlayerId, new(snitch.Player, Colors.Snitch));
+                    GetRole(snitch.Player).AllArrows.Add(player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
 
             foreach (var revealer in GetLayers<Revealer>())
             {
                 if (revealer.Revealed && CustomPlayer.Local == player)
-                    LocalRole.AllArrows.Add(revealer.PlayerId, new(player, Colors.Revealer));
+                    LocalRole.AllArrows.Add(revealer.PlayerId, new(player, CustomColorManager.Revealer));
             }
         }
 

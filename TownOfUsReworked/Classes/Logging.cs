@@ -16,6 +16,7 @@ public static class Logging
 
     private static void LogSomething(object message, LogLevel type)
     {
+        message ??= "message is null";
         Log?.Log(type, message);
         SavedLogs += $"[{type, -7}] {message}\n";
     }

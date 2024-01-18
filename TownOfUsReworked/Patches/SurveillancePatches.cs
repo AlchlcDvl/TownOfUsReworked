@@ -13,7 +13,7 @@ public static class SurveillancePatches
         {
             if (Ship.AllCameras.Length > 4 && __instance.FilteredRooms.Length > 0)
             {
-                __instance.textures = __instance.textures.ToList().Concat(new RenderTexture[Ship.AllCameras.Length - 4]).ToArray();
+                __instance.textures = __instance.textures.Concat(new RenderTexture[Ship.AllCameras.Length - 4]).ToArray();
 
                 for (var i = 4; i < Ship.AllCameras.Length; i++)
                 {
@@ -82,13 +82,13 @@ public static class SurveillancePatches
             Transform viewablesTransform = null;
             var viewPorts = new List<MeshRenderer>();
 
-            if (__instance1 != null)
+            if (__instance1)
             {
                 closeButton = __instance1.Viewables.transform.Find("CloseButton").gameObject;
                 viewPorts.AddRange(__instance1.ViewPorts);
                 viewablesTransform = __instance1.Viewables.transform;
             }
-            else if (__instance2 != null)
+            else if (__instance2)
             {
                 closeButton = __instance2.Viewables.transform.Find("CloseButton").gameObject;
                 viewPorts.Add(__instance2.ViewPort);
@@ -101,7 +101,7 @@ public static class SurveillancePatches
             {
                 var overlayObject = UObject.Instantiate(closeButton, viewablesTransform);
                 overlayObject.transform.position = new(renderer.transform.position.x, renderer.transform.position.y, overlayObject.transform.position.z);
-                overlayObject.transform.localScale = __instance1 != null ? new(0.91f, 0.612f, 1f) : new(2.124f, 1.356f, 1f);
+                overlayObject.transform.localScale = __instance1 ? new(0.91f, 0.612f, 1f) : new(2.124f, 1.356f, 1f);
                 overlayObject.layer = closeButton.layer;
                 overlayObject.GetComponent<SpriteRenderer>().sprite = GetSprite("NightVision");
                 overlayObject.SetActive(false);
@@ -147,11 +147,8 @@ public static class SurveillancePatches
             if (player == CustomPlayer.Local)
                 continue;
 
-            if (LightsOut && Overlays.Count > 0 && NVActive && player.GetCustomOutfitType() is not (CustomPlayerOutfitType.NightVision or CustomPlayerOutfitType.Invis or
-                CustomPlayerOutfitType.PlayerNameOnly))
-            {
+            if (LightsOut && Overlays.Count > 0 && NVActive && (int)player.GetCustomOutfitType() is not (9 or 6 or 7))
                 player.SetOutfit(CustomPlayerOutfitType.NightVision, NightVisonOutfit());
-            }
         }
     }
 }

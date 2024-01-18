@@ -33,7 +33,7 @@ public static class ConstantVariables
     {
         get
         {
-            var flag = CustomPlayer.LocalCustom.IsDead && CustomGameOptions.DeadSeeEverything && Role.LocalRole.TrulyDead;
+            var flag = CustomPlayer.LocalCustom.IsDead && CustomGameOptions.DeadSeeEverything && (Role.LocalRole?.TrulyDead == false);
 
             if (!flag)
                 return false;

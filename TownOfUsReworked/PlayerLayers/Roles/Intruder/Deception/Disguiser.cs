@@ -9,7 +9,7 @@ public class Disguiser : Intruder
     public PlayerControl DisguisedPlayer { get; set; }
     public bool Disguised => DisguiseButton.EffectActive;
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
+    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Disguiser : CustomColorManager.Intruder;
     public override string Name => "Disguiser";
     public override LayerEnum Type => LayerEnum.Disguiser;
     public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
@@ -18,9 +18,9 @@ public class Disguiser : Intruder
     public Disguiser(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderDecep;
-        DisguiseButton = new(this, "Disguise", AbilityTypes.Target, "Secondary", HitDisguise, CustomGameOptions.DisguiseCd, CustomGameOptions.DisguiseDur, Disguise, UnDisguise,
+        MeasureButton = new(this, "Measure", AbilityTypes.Alive, "Tertiary", Measure, CustomGameOptions.MeasureCd, Exception2);
+        DisguiseButton = new(this, "Disguise", AbilityTypes.Alive, "Secondary", HitDisguise, CustomGameOptions.DisguiseCd, CustomGameOptions.DisguiseDur, Disguise, UnDisguise,
             CustomGameOptions.DisguiseDelay, Exception1);
-        MeasureButton = new(this, "Measure", AbilityTypes.Target, "Tertiary", Measure, CustomGameOptions.MeasureCd, Exception2);
         DisguisedPlayer = null;
         MeasuredPlayer = null;
         CopiedPlayer = null;
@@ -37,21 +37,17 @@ public class Disguiser : Intruder
 
     public void HitDisguise()
     {
-        var interact = Interact(Player, DisguiseButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, DisguiseButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             CopiedPlayer = MeasuredPlayer;
             DisguisedPlayer = DisguiseButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, DisguiseButton, CopiedPlayer, DisguisedPlayer);
             DisguiseButton.Begin();
         }
-        else if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-
-        if (!interact.AbilityUsed)
-            MeasureButton.StartCooldown(cooldown);
+        else
+            DisguiseButton.StartCooldown(cooldown);
 
         if (CustomGameOptions.DisgCooldownsLinked)
             DisguiseButton.StartCooldown(cooldown);
@@ -59,14 +55,10 @@ public class Disguiser : Intruder
 
     public void Measure()
     {
-        var interact = Interact(Player, MeasureButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, MeasureButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             MeasuredPlayer = MeasureButton.TargetPlayer;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         MeasureButton.StartCooldown(cooldown);
 

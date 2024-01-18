@@ -19,7 +19,7 @@ public class Transporter : Crew
     public Vent Vent1 { get; set; }
     public Vent Vent2 { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Transporter : CustomColorManager.Crew;
     public override string Name => "Transporter";
     public override LayerEnum Type => LayerEnum.Transporter;
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
@@ -81,7 +81,7 @@ public class Transporter : Crew
         if (TransportPlayer1.inVent)
         {
             while (GetInTransition())
-                yield return null;
+                yield return new WaitForEndOfFrame();
 
             TransportPlayer1.MyPhysics.ExitAllVents();
             Vent1 = TransportPlayer1.GetClosestVent();
@@ -91,7 +91,7 @@ public class Transporter : Crew
         if (TransportPlayer2.inVent)
         {
             while (GetInTransition())
-                yield return null;
+                yield return new WaitForEndOfFrame();
 
             TransportPlayer2.MyPhysics.ExitAllVents();
             Vent2 = TransportPlayer2.GetClosestVent();
@@ -128,7 +128,7 @@ public class Transporter : Crew
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.TransportDur)
-                yield return null;
+                yield return new WaitForEndOfFrame();
             else
                 break;
 
@@ -220,26 +220,22 @@ public class Transporter : Crew
 
     public void Click1(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             TransportPlayer1 = player;
-        else if (interact.Reset)
-            TransportButton.StartCooldown();
-        else if (interact.Protected)
-            TransportButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            TransportButton.StartCooldown(cooldown);
     }
 
     public void Click2(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             TransportPlayer2 = player;
-        else if (interact.Reset)
-            TransportButton.StartCooldown();
-        else if (interact.Protected)
-            TransportButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            TransportButton.StartCooldown(cooldown);
     }
 
     public void AnimateTransport1()
@@ -320,7 +316,7 @@ public class Transporter : Crew
                     TransportPlayer1 = null;
             }
 
-            LogInfo("Removed a target");
+            LogMessage("Removed a target");
         }
     }
 }

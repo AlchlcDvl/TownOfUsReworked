@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
 public class Overlord : Objectifier
 {
-    public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Overlord : Colors.Objectifier;
+    public override UColor Color => ClientGameOptions.CustomObjColors ? CustomColorManager.Overlord : CustomColorManager.Objectifier;
     public override string Name => "Overlord";
     public override string Symbol => "β";
     public override LayerEnum Type => LayerEnum.Overlord;

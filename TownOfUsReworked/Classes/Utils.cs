@@ -1,4 +1,7 @@
-﻿namespace TownOfUsReworked.Classes;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+namespace TownOfUsReworked.Classes;
 
 public static class Utils
 {
@@ -58,7 +61,7 @@ public static class Utils
 
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var color = UColor.Lerp(CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), CustomColors.GetColor(morphTarget.Data.DefaultOutfit.ColorId, false), p);
+                var color = UColor.Lerp(CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), CustomColorManager.GetColor(morphTarget.Data.DefaultOutfit.ColorId, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
                 TransitioningSize[player.PlayerId] = Mathf.Lerp(player.GetSize(), morphTarget.GetSize(), p);
                 TransitioningSpeed[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), morphTarget.GetSpeed(), p);
@@ -124,7 +127,7 @@ public static class Utils
                     player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
                 }
 
-                var color = Color.Lerp(CustomColors.GetColor(37, false), HudUpdate.IsCamoed ? UColor.grey : CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
+                var color = UColor.Lerp(CustomColorManager.GetColor(37, false), HudUpdate.IsCamoed ? UColor.grey : CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
                 PlayerMaterial.SetColors(color, rend);
             })));
 
@@ -134,7 +137,7 @@ public static class Utils
         {
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var color = UColor.Lerp(UColor.grey, CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
+                var color = UColor.Lerp(UColor.grey, CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
                 player.SetHatAndVisorAlpha(p);
                 var color2 = player.cosmetics.skin.layer.color;
@@ -161,7 +164,7 @@ public static class Utils
 
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var color = UColor.Lerp(CustomColors.GetColor(morphTarget.Data.DefaultOutfit.ColorId, false), CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
+                var color = UColor.Lerp(CustomColorManager.GetColor(morphTarget.Data.DefaultOutfit.ColorId, false), CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
                 TransitioningSize[player.PlayerId] = Mathf.Lerp(morphTarget.GetSize(), player.GetSize(), p);
                 TransitioningSpeed[player.PlayerId] = Mathf.Lerp(morphTarget.GetSpeed(), player.GetSpeed(), p);
@@ -213,7 +216,7 @@ public static class Utils
             player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var color = Color.Lerp(CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), UColor.grey, p);
+                var color = UColor.Lerp(CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), UColor.grey, p);
                 PlayerMaterial.SetColors(color, player.MyRend());
                 player.SetHatAndVisorAlpha(1 - p);
                 var color2 = player.cosmetics.skin.layer.color;
@@ -248,7 +251,7 @@ public static class Utils
                 player.SetHatAndVisorAlpha(1 - p);
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
-                var color = Color.Lerp(HudUpdate.IsCamoed ? UColor.grey : CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), CustomColors.GetColor(37, false), p);
+                var color = UColor.Lerp(HudUpdate.IsCamoed ? UColor.grey : CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), CustomColorManager.GetColor(37, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
 
                 if (player != CustomPlayer.Local)
@@ -270,8 +273,10 @@ public static class Utils
         while (duration > 0)
         {
             duration -= Time.deltaTime;
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
+
+        yield break;
     }
 
     public static GameData.PlayerOutfit InvisOutfit1(PlayerControl player) => new()
@@ -280,31 +285,31 @@ public static class Utils
         HatId = player.CurrentOutfit.HatId,
         SkinId = player.CurrentOutfit.SkinId,
         VisorId = player.CurrentOutfit.VisorId,
-        NamePlateId = "",
+        NamePlateId = "nameplate_NoPlate",
         PlayerName = " ",
-        PetId = ""
+        PetId = "pet_EmptyPet"
     };
 
     public static GameData.PlayerOutfit InvisOutfit2() => new()
     {
         ColorId = 37,
-        HatId = "",
-        SkinId = "",
-        VisorId = "",
-        NamePlateId = "",
+        HatId = "hat_NoHat",
+        SkinId = "skin_None",
+        VisorId = "visor_EmptyVisor",
+        NamePlateId = "nameplate_NoPlate",
         PlayerName = " ",
-        PetId = ""
+        PetId = "pet_EmptyPet"
     };
 
     public static GameData.PlayerOutfit BlankOutfit(PlayerControl player) => new()
     {
         ColorId = player.Data.DefaultOutfit.ColorId,
-        HatId = "",
-        SkinId = "",
-        VisorId = "",
-        NamePlateId = "",
+        HatId = "hat_NoHat",
+        SkinId = "skin_None",
+        VisorId = "visor_EmptyVisor",
+        NamePlateId = "nameplate_NoPlate",
         PlayerName = " ",
-        PetId = ""
+        PetId = "pet_EmptyPet"
     };
 
     public static GameData.PlayerOutfit CamoOutfit(PlayerControl player) => new()
@@ -313,31 +318,31 @@ public static class Utils
         HatId = player.CurrentOutfit.HatId,
         SkinId = player.CurrentOutfit.SkinId,
         VisorId = player.CurrentOutfit.VisorId,
-        NamePlateId = "",
+        NamePlateId = "nameplate_NoPlate",
         PlayerName = GetRandomisedName(),
-        PetId = ""
+        PetId = "pet_EmptyPet"
     };
 
     public static GameData.PlayerOutfit ColorblindOutfit() => new()
     {
         ColorId = 7,
-        HatId = "",
-        SkinId = "",
-        VisorId = "",
-        NamePlateId = "",
+        HatId = "hat_NoHat",
+        SkinId = "skin_None",
+        VisorId = "visor_EmptyVisor",
+        NamePlateId = "nameplate_NoPlate",
         PlayerName = " ",
-        PetId = ""
+        PetId = "pet_EmptyPet"
     };
 
     public static GameData.PlayerOutfit NightVisonOutfit() => new()
     {
         ColorId = 11,
-        HatId = "",
-        SkinId = "",
-        VisorId = "",
+        HatId = "hat_NoHat",
+        SkinId = "skin_None",
+        VisorId = "visor_EmptyVisor",
         PlayerName = " ",
-        NamePlateId = "",
-        PetId = ""
+        NamePlateId = "nameplate_NoPlate",
+        PetId = "pet_EmptyPet"
     };
 
     public static void DefaultOutfitAll() => CustomPlayer.AllPlayers.ForEach(DefaultOutfit);
@@ -348,20 +353,20 @@ public static class Utils
             self.Add(item);
     }
 
-    public static Color GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
+    public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
     {
         if ((HudUpdate.IsCamoed && camoCondition) || otherCondition)
-            return CustomColors.Shadow(UColor.grey);
+            return UColor.grey.Shadow();
         else
-            return CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, true);
+            return CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, true);
     }
 
-    public static Color GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
+    public static UColor GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
     {
         if ((HudUpdate.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey;
         else
-            return CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false);
+            return CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false);
     }
 
     public static PlayerControl PlayerById(byte id) => CustomPlayer.AllPlayers.Find(x => x.PlayerId == id);
@@ -380,7 +385,7 @@ public static class Utils
 
     public static PlayerControl PlayerByVoteArea(PlayerVoteArea state) => PlayerById(state.TargetPlayerId);
 
-    public static Vector2 GetSize() => Vector2.Scale(AllMapVents[0].GetComponent<BoxCollider2D>().size, AllMapVents[0].transform.localScale) * 0.75f;
+    public static Vector2 GetSize() => Vector2.Scale(AllVents[0].GetComponent<BoxCollider2D>().size, AllVents[0].transform.localScale) * 0.75f;
 
     public static double GetDistance(PlayerControl player, PlayerControl refplayer)
     {
@@ -418,8 +423,8 @@ public static class Utils
         if (data.IsDead)
             return;
 
-        if (target.inVent || target.walkingToVent)
-            target.GetClosestVent(ignoreWalls: true)?.Buttons.ForEach(x => x.gameObject.SetActive(false));
+        if (target.inVent)
+            Vent.currentVent?.Buttons.ForEach(x => x.gameObject.SetActive(false));
 
         if (IsCustomHnS || CustomPlayer.LocalCustom.IsDead)
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD.transform.parent).Show(target, 0);
@@ -432,9 +437,9 @@ public static class Utils
 
         if (target == CustomPlayer.Local)
         {
-            var tracker = DestroyableSingleton<RoomTracker>.Instance.text;
+            var tracker = HUD.roomTracker.text;
             var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
-            BodyLocations.TryAdd(target.PlayerId, location);
+            BodyLocations[target.PlayerId] = location;
             CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, target, location);
         }
 
@@ -445,21 +450,21 @@ public static class Utils
         target.Visible = false;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coroner) && !CustomPlayer.LocalCustom.IsDead)
-            Flash(Colors.Coroner);
+            Flash(CustomColorManager.Coroner);
 
         if (CustomPlayer.LocalCustom.IsDead)
-            Flash(Colors.Stalemate);
+            Flash(CustomColorManager.Stalemate);
 
         if (killer == CustomPlayer.Local && killer.Is(LayerEnum.VampireHunter) && target.Is(SubFaction.Undead))
-            Flash(Colors.Undead);
+            Flash(CustomColorManager.Undead);
 
         var targetRole = Role.GetRole(target);
 
         if (target.Is(LayerEnum.VIP))
         {
             Flash(targetRole.Color);
-            Role.LocalRole.AllArrows.TryAdd(target.PlayerId, new(CustomPlayer.Local, Colors.VIP));
-            Role.LocalRole.AllArrows[target.PlayerId].Update(Colors.VIP);
+            Role.LocalRole.AllArrows.TryAdd(target.PlayerId, new(CustomPlayer.Local, CustomColorManager.VIP));
+            Role.LocalRole.AllArrows[target.PlayerId].Update(CustomColorManager.VIP);
         }
 
         var killerRole = Role.GetRole(killer);
@@ -492,9 +497,9 @@ public static class Utils
         if (target.Is(LayerEnum.Framer))
             ((Framer)targetRole).Framed.Clear();
 
-        RecentlyKilled.Add(target);
+        RecentlyKilled.Add(target.PlayerId);
         KilledPlayers.Add(new(killer.PlayerId, target.PlayerId));
-        ReassignPostmortals(target);
+        SetPostmortals.BeginPostmortals(target, false);
 
         if (target == Role.DriveHolder)
             RoleGen.AssignChaosDrive();
@@ -503,7 +508,7 @@ public static class Utils
         {
             var lover = target.GetOtherLover();
 
-            if (!lover.Is(LayerEnum.Pestilence) && CustomGameOptions.BothLoversDie && !lover.Data.IsDead)
+            if (!lover.Is(Alignment.NeutralApoc) && CustomGameOptions.BothLoversDie && !lover.Data.IsDead)
                 RpcMurderPlayer(lover);
         }
 
@@ -716,8 +721,7 @@ public static class Utils
                 }
             }
 
-            AssignPostmortals(target);
-            SetPostmortals.AssassinatedPlayers.Add(target);
+            SetPostmortals.AssassinatedPlayers.Add(target.PlayerId);
             Meeting.CheckForEndVoting();
         }
 
@@ -733,6 +737,8 @@ public static class Utils
             else
                 role2.DeathReason = DeathReasonEnum.Misfire;
         }
+
+        SetPostmortals.BeginPostmortals(target, false);
     }
 
     public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
@@ -744,7 +750,7 @@ public static class Utils
 
         yield return Wait(URandom.RandomRange(CustomGameOptions.BaitMinDelay, CustomGameOptions.BaitMaxDelay));
 
-        if (BodyById(target.PlayerId) != null)
+        if (BodyById(target.PlayerId))
         {
             if (AmongUsClient.Instance.AmHost)
                 killer.ReportDeadBody(target.Data);
@@ -766,13 +772,6 @@ public static class Utils
 
     public static bool NoButton(PlayerControl target, LayerEnum layer) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
         !target.Is(layer) || !IsRoaming || Meeting || target != CustomPlayer.Local;
-
-    public static void Spread(PlayerControl interacter, PlayerControl target)
-    {
-        PlayerLayer.GetLayers<Plaguebearer>().ForEach(pb => pb.RpcSpreadInfection(interacter, target));
-        PlayerLayer.GetLayers<Arsonist>().ForEach(arso => arso.RpcSpreadDouse(target, interacter));
-        PlayerLayer.GetLayers<Cryomaniac>().ForEach(cryo => cryo.RpcSpreadDouse(target, interacter));
-    }
 
     public static void StopDragging(byte id)
     {
@@ -815,14 +814,17 @@ public static class Utils
         {
             foreach (var renderer in body.bodyRenderers)
             {
+                if (!renderer)
+                    continue;
+
                 var color = renderer.color;
                 renderer.color = new(color.r, color.g, color.b, 1 - p);
             }
 
             if (p == 1)
             {
-                body.gameObject.Destroy();
-                Role.Cleaned.Add(PlayerById(body.ParentId));
+                body?.gameObject?.Destroy();
+                Role.Cleaned.Add(body.ParentId);
             }
         })));
     }
@@ -840,18 +842,18 @@ public static class Utils
     public static void AddVent(Role role, Vector2 position)
     {
         if (role is Miner miner)
-            miner.Vents.Add(SpawnVent(miner.Vents, position, "Miner"));
+            miner.Vents.Add(SpawnVent(miner.Vents, position, miner.Player.transform.position.z, "Miner"));
         else if (role is PromotedGodfather gf)
-            gf.Vents.Add(SpawnVent(gf.Vents, position, "Godfather"));
+            gf.Vents.Add(SpawnVent(gf.Vents, position, gf.Player.transform.position.z, "Godfather"));
     }
 
-    public static Vent SpawnVent(List<Vent> vents, Vector2 position, string name)
+    public static Vent SpawnVent(List<Vent> vents, Vector2 position, float zAxis, string name)
     {
         var ventPrefab = UObject.FindObjectOfType<Vent>();
         var vent = UObject.Instantiate(ventPrefab, ventPrefab.transform.parent);
 
         vent.Id = GetAvailableId();
-        vent.transform.position = position;
+        vent.transform.position = new(position.x, position.y, zAxis + 0.001f);
 
         if (vents.Count > 0)
         {
@@ -876,10 +878,10 @@ public static class Utils
             vent.gameObject.AddSubmergedComponent("ElevatorMover"); //Just in case elevator vent is not blocked
 
             if (vent.transform.position.y > -7)
-                vent.transform.position = new(vent.transform.position.x, vent.transform.position.y, 0.03f);
+                vent.transform.position = new(position.x, position.y, 0.03f);
             else
             {
-                vent.transform.position = new(vent.transform.position.x, vent.transform.position.y, 0.0009f);
+                vent.transform.position = new(position.x, position.y, 0.0009f);
                 vent.transform.localPosition = new(vent.transform.localPosition.x, vent.transform.localPosition.y, -0.003f);
             }
         }
@@ -900,11 +902,11 @@ public static class Utils
         }
     }
 
-    public static void Flash(Color color, string message, float duration = 0.5f, float size = 100f) => Flash(color, duration, message, size);
+    public static void Flash(UColor color, string message, float duration = 0.5f, float size = 100f) => Flash(color, duration, message, size);
 
-    public static void Flash(Color color, float duration = 0.5f, string message = "", float size = 100f) => Coroutines.Start(FlashCoro(color, duration, message, size));
+    public static void Flash(UColor color, float duration = 0.5f, string message = "", float size = 100f) => Coroutines.Start(FlashCoro(color, duration, message, size));
 
-    public static IEnumerator FlashCoro(Color color, float duration, string message, float size)
+    public static IEnumerator FlashCoro(UColor color, float duration, string message, float size)
     {
         if (IntroCutscene.Instance)
             yield break;
@@ -918,8 +920,6 @@ public static class Utils
             fullscreen.gameObject.active = true;
             fullscreen.color = color;
         }
-
-        HUD.Notifier.AddItem($"<color=#FFFFFFFF><size={size}%>{message}</size></color>");
 
         yield return Wait(duration);
 
@@ -1028,7 +1028,7 @@ public static class Utils
             for (var i = 1f; i >= 0; i -= Time.deltaTime)
             {
                 HUD.FullScreen.color = new(0, 0, 0, i);
-                yield return null;
+                yield return new WaitForEndOfFrame();
             }
         }
         else
@@ -1036,11 +1036,12 @@ public static class Utils
             for (var i = 0f; i <= 1; i += Time.deltaTime)
             {
                 HUD.FullScreen.color = new(0, 0, 0, i);
-                yield return null;
+                yield return new WaitForEndOfFrame();
             }
         }
 
         SetFullScreenHUD();
+        yield break;
     }
 
     public static IEnumerator CoTeleportPlayer(PlayerControl __instance, Vector2 position)
@@ -1051,234 +1052,6 @@ public static class Utils
         yield return Wait(0.25f);
         yield return Fade(true);
         yield break;
-    }
-
-    public static Dictionary<byte, int> CalculateAllVotes(this MeetingHud __instance, out bool tie, out KeyValuePair<byte, int> max)
-    {
-        var dictionary = new Dictionary<byte, int>();
-
-        for (var i = 0; i < __instance.playerStates.Length; i++)
-        {
-            var playerVoteArea = __instance.playerStates[i];
-
-            if (!playerVoteArea.DidVote || playerVoteArea.AmDead || playerVoteArea.VotedFor == PlayerVoteArea.MissedVote || playerVoteArea.VotedFor == PlayerVoteArea.DeadVote)
-                continue;
-
-            if (dictionary.TryGetValue(playerVoteArea.VotedFor, out var num))
-                dictionary[playerVoteArea.VotedFor] = num + 1;
-            else
-                dictionary[playerVoteArea.VotedFor] = 1;
-        }
-
-        foreach (var role in PlayerLayer.GetLayers<Politician>())
-        {
-            foreach (var number in role.ExtraVotes)
-            {
-                if (dictionary.TryGetValue(number, out var num))
-                    dictionary[number] = num + 1;
-                else
-                    dictionary[number] = 1;
-            }
-        }
-
-        foreach (var role in PlayerLayer.GetLayers<Mayor>())
-        {
-            if (role.Revealed)
-            {
-                if (dictionary.TryGetValue(VoteAreaByPlayer(role.Player).VotedFor, out var num))
-                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = num + CustomGameOptions.MayorVoteCount;
-                else
-                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = 1 + CustomGameOptions.MayorVoteCount;
-            }
-        }
-
-        var knighted = new List<byte>();
-
-        foreach (var role in PlayerLayer.GetLayers<Monarch>())
-        {
-            foreach (var id in role.Knighted)
-            {
-                if (!knighted.Contains(id))
-                {
-                    var area = VoteAreaById(id);
-
-                    if (dictionary.TryGetValue(area.VotedFor, out var num))
-                        dictionary[area.VotedFor] = num + CustomGameOptions.KnightVoteCount;
-                    else
-                        dictionary[area.VotedFor] = 1 + CustomGameOptions.KnightVoteCount;
-
-                    knighted.Add(id);
-                }
-            }
-        }
-
-        foreach (var swapper in PlayerLayer.GetLayers<Swapper>())
-        {
-            if (swapper.Player.HasDied() || swapper.Swap1 == null || swapper.Swap2 == null)
-                continue;
-
-            var swapPlayer1 = PlayerByVoteArea(swapper.Swap1);
-            var swapPlayer2 = PlayerByVoteArea(swapper.Swap2);
-
-            if (swapPlayer1 == null || swapPlayer2 == null || swapPlayer1.HasDied() || swapPlayer2.HasDied())
-                continue;
-
-            var swap1 = 0;
-            var swap2 = 0;
-
-            if (dictionary.TryGetValue(swapper.Swap1.TargetPlayerId, out var value))
-                swap1 = value;
-
-            if (dictionary.TryGetValue(swapper.Swap2.TargetPlayerId, out var value2))
-                swap2 = value2;
-
-            dictionary[swapper.Swap2.TargetPlayerId] = swap1;
-            dictionary[swapper.Swap1.TargetPlayerId] = swap2;
-        }
-
-        max = dictionary.MaxPair(out tie);
-
-        if (tie)
-        {
-            foreach (var player in __instance.playerStates)
-            {
-                if (!player.DidVote || player.AmDead || player.VotedFor == PlayerVoteArea.MissedVote || player.VotedFor == PlayerVoteArea.DeadVote)
-                    continue;
-
-                if (PlayerByVoteArea(player).Is(LayerEnum.Tiebreaker))
-                {
-                    if (dictionary.TryGetValue(player.VotedFor, out var num))
-                        dictionary[player.VotedFor] = num + 1;
-                    else
-                        dictionary[player.VotedFor] = 1;
-                }
-            }
-        }
-
-        _ = dictionary.MaxPair(out tie);
-        return dictionary;
-    }
-
-    public static KeyValuePair<byte, int> MaxPair(this Dictionary<byte, int> self, out bool tie)
-    {
-        tie = true;
-        var result = new KeyValuePair<byte, int>(255, int.MinValue);
-
-        foreach (var keyValuePair in self)
-        {
-            if (keyValuePair.Value > result.Value)
-            {
-                result = keyValuePair;
-                tie = false;
-            }
-            else if (keyValuePair.Value == result.Value)
-                tie = true;
-        }
-
-        return result;
-    }
-
-    public static void AssignPostmortals(bool revealer, bool ghoul, bool banshee, bool phantom, PlayerControl player = null)
-    {
-        if (!AmongUsClient.Instance.AmHost)
-            return;
-
-        if (player != null)
-        {
-            if (SetPostmortals.RevealerOn && !SetPostmortals.WillBeRevealers.Contains(player) && player.Is(Faction.Crew) && SetPostmortals.WillBeRevealers.Count(x => x) <
-                CustomGameOptions.RevealerCount)
-            {
-                SetPostmortals.WillBeRevealers.Add(player);
-                CallRpc(CustomRPC.Misc, MiscRPC.SetRevealer, player);
-            }
-            else if (SetPostmortals.PhantomOn && !SetPostmortals.WillBePhantoms.Contains(player) && player.Is(Faction.Neutral) && SetPostmortals.WillBePhantoms.Count(x => x) <
-                CustomGameOptions.PhantomCount && !NeutralHasUnfinishedBusiness(player))
-            {
-                SetPostmortals.WillBePhantoms.Add(player);
-                CallRpc(CustomRPC.Misc, MiscRPC.SetPhantom, player);
-            }
-            else if (SetPostmortals.BansheeOn && !SetPostmortals.WillBeBanshees.Contains(player) && player.Is(Faction.Syndicate) && SetPostmortals.WillBeBanshees.Count(x => x) <
-                CustomGameOptions.BansheeCount)
-            {
-                SetPostmortals.WillBeBanshees.Add(player);
-                CallRpc(CustomRPC.Misc, MiscRPC.SetBanshee, player);
-            }
-            else if (SetPostmortals.GhoulOn && !SetPostmortals.WillBeGhouls.Contains(player) && player.Is(Faction.Intruder) && SetPostmortals.WillBeGhouls.Count(x => x) <
-                CustomGameOptions.GhoulCount)
-            {
-                SetPostmortals.WillBeGhouls.Add(player);
-                CallRpc(CustomRPC.Misc, MiscRPC.SetGhoul, player);
-            }
-        }
-        else if (revealer)
-        {
-            var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-
-            if (toChooseFrom.Count == 0)
-                CallRpc(CustomRPC.Misc, MiscRPC.SetRevealer, 255);
-            else
-            {
-                var pc = toChooseFrom.Random();
-                SetPostmortals.WillBeRevealers.Add(pc);
-                CallRpc(CustomRPC.Misc, MiscRPC.SetRevealer, pc);
-            }
-        }
-        else if (phantom)
-        {
-            var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && !NeutralHasUnfinishedBusiness(x) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-
-            if (toChooseFrom.Count == 0)
-                CallRpc(CustomRPC.Misc, MiscRPC.SetPhantom, 255);
-            else
-            {
-                var pc = toChooseFrom.Random();
-                SetPostmortals.WillBePhantoms.Add(pc);
-                CallRpc(CustomRPC.Misc, MiscRPC.SetPhantom, pc);
-            }
-        }
-        else if (banshee)
-        {
-            var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-
-            if (toChooseFrom.Count == 0)
-                CallRpc(CustomRPC.Misc, MiscRPC.SetBanshee, 255);
-            else
-            {
-                var pc = toChooseFrom.Random();
-                SetPostmortals.WillBeBanshees.Add(pc);
-                CallRpc(CustomRPC.Misc, MiscRPC.SetBanshee, pc);
-            }
-        }
-        else if (ghoul)
-        {
-            var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Intruder) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-
-            if (toChooseFrom.Count == 0)
-                CallRpc(CustomRPC.Misc, MiscRPC.SetGhoul, 255);
-            else
-            {
-                var pc = toChooseFrom.Random();
-                SetPostmortals.WillBeGhouls.Add(pc);
-                CallRpc(CustomRPC.Misc, MiscRPC.SetGhoul, pc);
-            }
-        }
-    }
-
-    public static void AssignPostmortals(PlayerControl player) => AssignPostmortals(false, false, false, false, player);
-
-    public static void ReassignPostmortals(PlayerControl player)
-    {
-        var revealer = SetPostmortals.WillBeRevealers.RemoveAll(x => x == player) > 0 && SetPostmortals.WillBeRevealers.Count < CustomGameOptions.RevealerCount;
-        var phantom = SetPostmortals.WillBePhantoms.RemoveAll(x => x == player) > 0 && SetPostmortals.WillBePhantoms.Count < CustomGameOptions.PhantomCount;
-        var banshee = SetPostmortals.WillBeBanshees.RemoveAll(x => x == player) > 0 && SetPostmortals.WillBeBanshees.Count < CustomGameOptions.BansheeCount;
-        var ghoul = SetPostmortals.WillBeGhouls.RemoveAll(x => x == player) > 0 && SetPostmortals.WillBeGhouls.Count < CustomGameOptions.GhoulCount;
-
-        SetPostmortals.WillBeRevealers.RemoveAll(x => x == null);
-        SetPostmortals.WillBePhantoms.RemoveAll(x => x == null);
-        SetPostmortals.WillBeBanshees.RemoveAll(x => x == null);
-        SetPostmortals.WillBeGhouls.RemoveAll(x => x == null);
-
-        AssignPostmortals(revealer, ghoul, banshee, phantom);
     }
 
     public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false) =>
@@ -1295,7 +1068,7 @@ public static class Utils
 
         foreach (var player in allPlayers)
         {
-            if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargeting))
+            if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargeting) || player.walkingToVent)
                 continue;
 
             var distance = Vector2.Distance(position, player.transform.position);
@@ -1358,7 +1131,7 @@ public static class Utils
 
         foreach (var body in allBodies)
         {
-            if (Role.Cleaned.Any(x => x.PlayerId == body.ParentId))
+            if (Role.Cleaned.Any(x => x == body.ParentId))
                 continue;
 
             var distance = Vector2.Distance(position, body.transform.position);
@@ -1531,14 +1304,78 @@ public static class Utils
 
     public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.ToList().Find(x => x.Role == roleType).IntroSound;
 
-    public static bool RpcBreakShield(PlayerControl target)
+    public static void RpcBreakShield(PlayerControl target)
     {
         Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
         CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-        return CustomGameOptions.ShieldBreaks;
     }
 
     public static T EnsureComponent<T>(this Component component) where T : Component => component?.gameObject?.EnsureComponent<T>();
 
     public static T EnsureComponent<T>(this GameObject gameObject) where T : Component => gameObject?.GetComponent<T>() ?? gameObject?.AddComponent<T>();
+
+    public static void CallMeeting(PlayerControl player)
+    {
+        player.RemainingEmergencies++;
+
+        if (AmongUsClient.Instance.AmHost)
+        {
+            MeetingRoomManager.Instance.reporter = player;
+            MeetingRoomManager.Instance.target = null;
+            AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
+            HUD.OpenMeetingRoom(player);
+            player.RpcStartMeeting(null);
+        }
+        else
+            CallRpc(CustomRPC.Action, ActionsRPC.CallMeeting, player);
+    }
+
+    //Adapted from LevelImpostor to hopefully resolve some stuttering issues
+    public static void SetCPUAffinity()
+    {
+        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        var process = Process.GetCurrentProcess();
+
+        if (!isWindows && !isLinux)
+            LogError("System Incompatible");
+        else if (process.ProcessorAffinity.ToInt32() == 6)
+        {
+            process.ProcessorAffinity = (IntPtr)(Math.Pow(2, Environment.ProcessorCount) - 1);
+            LogInfo("Reset CPU affinity");
+        }
+        else
+        {
+            process.ProcessorAffinity = (IntPtr)6;
+            LogInfo("Set CPU affinity to 1 & 2");
+        }
+    }
+
+    public static void SetOutlineColor(this Renderer renderer, Color? color)
+    {
+        renderer.material.SetFloat("_Outline", color.HasValue ? 1f : 0f);
+        renderer.material.SetColor("_OutlineColor", color ?? UColor.clear);
+        renderer.material.SetColor("_AddColor", color ?? UColor.clear);
+    }
+
+    public static byte ClampByte(float value, float min, float max) => (byte)Mathf.Clamp(value, min, max);
+
+    public static string AddSpaces(this string @string)
+    {
+        Uppercase.ForEach(x =>
+        {
+            var index = @string.IndexOf(x);
+
+            if (index > 0)
+                @string = @string.Insert(index, " ");
+        });
+        return @string;
+    }
+
+    public static string SanitisePath(this string path)
+    {
+        path = path.Split('/')[^1];
+        path = path.Split('\\')[^1];
+        return path;
+    }
 }

@@ -8,34 +8,31 @@ public class Monarch : Crew
     public List<byte> Knighted { get; set; }
     public bool Protected => Knighted.Count > 0;
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Monarch : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Monarch : CustomColorManager.Crew;
     public override string Name => "Monarch";
     public override LayerEnum Type => LayerEnum.Monarch;
     public override Func<string> StartText => () => "Knight Those Who You Trust";
     public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {CustomGameOptions.KnightVoteCount + 1} times\n- As long as "
         + "a knight is alive, you cannot be killed";
+    public override DefenseEnum DefenseVal => Knighted.Any() ? DefenseEnum.Basic : DefenseEnum.None;
 
     public Monarch(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewSov;
         Knighted = new();
         ToBeKnighted = new();
-        KnightButton = new(this, "Knight", AbilityTypes.Target, "ActionSecondary", Knight, CustomGameOptions.KnightingCd, Exception, CustomGameOptions.KnightCount);
+        KnightButton = new(this, "Knight", AbilityTypes.Alive, "ActionSecondary", Knight, CustomGameOptions.KnightingCd, Exception, CustomGameOptions.KnightCount);
     }
 
     public void Knight()
     {
-        var interact = Interact(Player, KnightButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, KnightButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, KnightButton.TargetPlayer.PlayerId);
             ToBeKnighted.Add(KnightButton.TargetPlayer.PlayerId);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         KnightButton.StartCooldown(cooldown);
     }

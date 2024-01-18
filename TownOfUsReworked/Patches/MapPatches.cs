@@ -50,7 +50,7 @@ public static class MapPatches
     {
         var map = (byte)CustomGameOptions.Map;
 
-        if (!((CurrentMap == 6 && !SubLoaded) || (CurrentMap == 7 && !LILoaded) || CurrentMap == 8))
+        if (map < 8)
             return map;
 
         var random = new SRandom();
@@ -70,6 +70,8 @@ public static class MapPatches
 
         if (LILoaded)
             maps.Add(7);
+
+        maps.Shuffle();
 
         if (totalWeight == 0)
             return maps.Random();

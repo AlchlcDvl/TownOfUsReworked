@@ -8,7 +8,7 @@ public class Jester : Neutral
     public CustomButton HauntButton { get; set; }
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Jester : CustomColorManager.Neutral;
     public override string Name => "Jester";
     public override LayerEnum Type => LayerEnum.Jester;
     public override Func<string> StartText => () => "It Was Jest A Prank Bro";
@@ -19,7 +19,7 @@ public class Jester : Neutral
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
         Alignment = Alignment.NeutralEvil;
         ToHaunt = new();
-        HauntButton = new(this, "Haunt", AbilityTypes.Target, "ActionSecondary", Haunt, Exception, true);
+        HauntButton = new(this, "Haunt", AbilityTypes.Alive, "ActionSecondary", Haunt, Exception, true);
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -42,7 +42,8 @@ public class Jester : Neutral
         }
     }
 
-    public bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
+    public bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player) ||
+        player.Is(Alignment.NeutralApoc);
 
     public void Haunt()
     {

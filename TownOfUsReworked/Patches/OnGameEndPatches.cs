@@ -55,7 +55,7 @@ public static class OnGameEndPatch
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
-                    if (!defect.Disconnected && defect.Side == Faction.Crew && Role.GetRole(defect.Player).BaseFaction != defect.Side)
+                    if (!defect.Disconnected && defect.Side == Faction.Crew && !defect.Player.IsBase(defect.Side))
                         winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
                 }
             }
@@ -87,7 +87,7 @@ public static class OnGameEndPatch
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
-                    if (!defect.Disconnected && defect.Side == Faction.Intruder && Role.GetRole(defect.Player).BaseFaction != defect.Side)
+                    if (!defect.Disconnected && defect.Side == Faction.Intruder && !defect.Player.IsBase(defect.Side))
                         winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
                 }
             }
@@ -119,7 +119,7 @@ public static class OnGameEndPatch
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
-                    if (!defect.Disconnected && defect.Side == Faction.Syndicate && Role.GetRole(defect.Player).BaseFaction != defect.Side)
+                    if (!defect.Disconnected && defect.Side == Faction.Syndicate && !defect.Player.IsBase(defect.Side))
                         winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
                 }
             }
@@ -229,7 +229,7 @@ public static class OnGameEndPatch
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Phantom>())
                 {
-                    if (!role2.Disconnected && role2.Faithful && role2.CompletedTasks)
+                    if (!role2.Disconnected && role2.Faithful && role2.TasksDone && !role2.Caught)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
                 }
             }
@@ -394,7 +394,7 @@ public static class OnGameEndPatch
             var text = UObject.Instantiate(__instance.WinText, __instance.WinText.transform.parent);
             SoundManager.Instance.StopSound(__instance.ImpostorStinger);
             var winsound = "IntruderWin";
-            Color? color = Colors.Stalemate;
+            UColor? color = CustomColorManager.Stalemate;
             var texttext = "Stalemate";
 
             foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
@@ -408,176 +408,176 @@ public static class OnGameEndPatch
             else if (Role.SyndicateWin)
             {
                 texttext = "The Syndicate Wins";
-                color = Colors.Syndicate;
+                color = CustomColorManager.Syndicate;
             }
             else if (Role.IntruderWin)
             {
                 texttext = "Intruders Win";
-                color = Colors.Intruder;
+                color = CustomColorManager.Intruder;
             }
             else if (Role.AllNeutralsWin)
             {
                 texttext = "Neutrals Win";
-                color = Colors.Neutral;
+                color = CustomColorManager.Neutral;
             }
             else if (Role.CrewWin)
             {
                 texttext = "Crew Wins";
-                color = Colors.Crew;
+                color = CustomColorManager.Crew;
                 winsound = "CrewWin";
             }
             else if (Role.NKWins)
             {
                 texttext = "Neutral Killers Win";
-                color = Colors.Alignment;
+                color = CustomColorManager.Alignment;
             }
             else if (Role.ApocalypseWins)
             {
                 texttext = "The Apocalypse Is Nigh";
-                color = Colors.Apocalypse;
+                color = CustomColorManager.Apocalypse;
             }
             else if (Role.UndeadWin)
             {
                 texttext = "The Undead Win";
-                color = Colors.Undead;
+                color = CustomColorManager.Undead;
             }
             else if (Role.CabalWin)
             {
                 texttext = "The Cabal Wins";
-                color = Colors.Cabal;
+                color = CustomColorManager.Cabal;
             }
             else if (Role.SectWin)
             {
                 texttext = "The Sect Wins";
-                color = Colors.Sect;
+                color = CustomColorManager.Sect;
             }
             else if (Role.ReanimatedWin)
             {
                 texttext = "The Reanimated Win";
-                color = Colors.Reanimated;
+                color = CustomColorManager.Reanimated;
             }
             else if (Role.CryomaniacWins)
             {
                 texttext = "Cryomaniac Wins";
-                color = Colors.Cryomaniac;
+                color = CustomColorManager.Cryomaniac;
             }
             else if (Role.ArsonistWins)
             {
                 texttext = "Aronist Wins";
-                color = Colors.Arsonist;
+                color = CustomColorManager.Arsonist;
             }
             else if (Role.GlitchWins)
             {
                 texttext = "Glitch Wins";
-                color = Colors.Glitch;
+                color = CustomColorManager.Glitch;
             }
             else if (Role.JuggernautWins)
             {
                 texttext = "Juggernaut Wins";
-                color = Colors.Juggernaut;
+                color = CustomColorManager.Juggernaut;
             }
             else if (Role.MurdererWins)
             {
                 texttext = "Murderer Wins";
-                color = Colors.Murderer;
+                color = CustomColorManager.Murderer;
             }
             else if (Role.SerialKillerWins)
             {
                 texttext = "Serial Killer Wins";
-                color = Colors.SerialKiller;
+                color = CustomColorManager.SerialKiller;
             }
             else if (Role.WerewolfWins)
             {
                 texttext = "Werewolf Wins";
-                color = Colors.Werewolf;
+                color = CustomColorManager.Werewolf;
             }
             else if (Role.PhantomWins)
             {
                 texttext = "Phantom Wins";
-                color = Colors.Phantom;
+                color = CustomColorManager.Phantom;
             }
             else if (Role.ActorWins)
             {
                 texttext = "Actor Wins";
-                color = Colors.Actor;
+                color = CustomColorManager.Actor;
             }
             else if (Role.BountyHunterWins)
             {
                 texttext = "Bounty Hunter Wins";
-                color = Colors.BountyHunter;
+                color = CustomColorManager.BountyHunter;
             }
             else if (Role.CannibalWins)
             {
                 texttext = "Cannibal Wins";
-                color = Colors.Cannibal;
+                color = CustomColorManager.Cannibal;
             }
             else if (Role.ExecutionerWins)
             {
                 texttext = "Executioner Wins";
-                color = Colors.Executioner;
+                color = CustomColorManager.Executioner;
             }
             else if (Role.GuesserWins)
             {
                 texttext = "Guesser Wins";
-                color = Colors.Guesser;
+                color = CustomColorManager.Guesser;
             }
             else if (Role.JesterWins)
             {
                 texttext = "Jester Wins";
-                color = Colors.Jester;
+                color = CustomColorManager.Jester;
             }
             else if (Role.TrollWins)
             {
                 texttext = "Troll Wins";
-                color = Colors.Troll;
+                color = CustomColorManager.Troll;
             }
             else if (Role.TaskRunnerWins)
             {
                 texttext = "Tasks Completed";
-                color = Colors.TaskRace;
+                color = CustomColorManager.TaskRace;
             }
             else if (Role.HuntedWins)
             {
                 texttext = "The Hunted Survived";
-                color = Colors.Hunted;
+                color = CustomColorManager.Hunted;
             }
             else if (Role.HunterWins)
             {
                 texttext = "Every One Was Hunted";
-                color = Colors.Hunter;
+                color = CustomColorManager.Hunter;
             }
             else if (Objectifier.CorruptedWins)
             {
                 texttext = "Corrupted Wins";
-                color = Colors.Corrupted;
+                color = CustomColorManager.Corrupted;
             }
             else if (Objectifier.LoveWins)
             {
                 texttext = "Love Wins";
-                color = Colors.Lovers;
+                color = CustomColorManager.Lovers;
             }
             else if (Objectifier.RivalWins)
             {
                 texttext = "Rival Wins";
-                color = Colors.Rivals;
+                color = CustomColorManager.Rivals;
             }
             else if (Objectifier.TaskmasterWins)
             {
                 texttext = "Taskmaster Wins";
-                color = Colors.Taskmaster;
+                color = CustomColorManager.Taskmaster;
             }
             else if (Objectifier.OverlordWins)
             {
                 texttext = "Overlord Wins";
-                color = Colors.Overlord;
+                color = CustomColorManager.Overlord;
             }
             else if (Objectifier.MafiaWins)
             {
                 texttext = "The Mafia Wins";
-                color = Colors.Mafia;
+                color = CustomColorManager.Mafia;
             }
 
-            __instance.BackgroundBar.material.color = text.color = color ?? Colors.Stalemate;
+            __instance.BackgroundBar.material.color = text.color = color ?? CustomColorManager.Stalemate;
             var pos = __instance.WinText.transform.localPosition;
             pos.y += 1.5f;
             __instance.WinText.transform.localPosition = pos;
@@ -586,20 +586,11 @@ public static class OnGameEndPatch
         }
     }
 
-    public static void Reset()
-    {
-        PlayerLayer.GetLayers<Detective>().ForEach(x => x.Clear());
-        PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.ClearFootprints());
-    }
-
-    [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
-    public static class EndGame
-    {
-        public static void Prefix() => Reset();
-    }
-
     public static void AddSummaryInfo(PlayerControl player, bool disconnected = false)
     {
+        if (player == null)
+            return;
+
         var summary = "";
         var cache = "";
 
@@ -682,15 +673,18 @@ public static class OnGameEndPatch
 
         if (player.CanDoTasks())
         {
-            if (role.TasksCompleted != role.TotalTasks)
+            if (info[0])
             {
-                summary += $" <{role.TasksCompleted}/{role.TotalTasks}>";
-                cache += $" <{role.TasksCompleted}/{role.TotalTasks}>";
-            }
-            else
-            {
-                summary += $" ✔";
-                cache += $" ✔";
+                if (!role.TasksDone)
+                {
+                    summary += $" <{role.TasksCompleted}/{role.TotalTasks}>";
+                    cache += $" <{role.TasksCompleted}/{role.TotalTasks}>";
+                }
+                else
+                {
+                    summary += " ✔";
+                    cache += " ✔";
+                }
             }
         }
 

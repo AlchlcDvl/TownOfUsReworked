@@ -5,7 +5,7 @@ public class Mystic : Crew
     private static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None));
     private CustomButton RevealButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Mystic : CustomColorManager.Crew;
     public override string Name => "Mystic";
     public override LayerEnum Type => LayerEnum.Mystic;
     public override Func<string> StartText => () => "You Know When Converts Happen";
@@ -15,7 +15,7 @@ public class Mystic : Crew
     public Mystic(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewAudit;
-        RevealButton = new(this, "MysticReveal", AbilityTypes.Target, "ActionSecondary", Reveal, CustomGameOptions.MysticRevealCd, Exception);
+        RevealButton = new(this, "MysticReveal", AbilityTypes.Alive, "ActionSecondary", Reveal, CustomGameOptions.MysticRevealCd, Exception);
     }
 
     public void TurnSeer() => new Seer(Player).RoleUpdate(this);
@@ -34,17 +34,13 @@ public class Mystic : Crew
 
     private void Reveal()
     {
-        var interact = Interact(Player, RevealButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, RevealButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             Flash((!RevealButton.TargetPlayer.Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.TargetPlayer.Is(Alignment.NeutralNeo)) || RevealButton.TargetPlayer.IsFramed()
                 ? UColor.red : UColor.green);
         }
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         RevealButton.StartCooldown(cooldown);
     }

@@ -26,6 +26,10 @@ Enable Meeting End Cooldowns
 True
 Meeting End Cooldown
 15
+Enable Ability Failure Cooldowns
+True
+Ability Failure Cooldown
+5
 Player Report Distance
 20
 Chat Cooldown
@@ -37,6 +41,12 @@ Lobby Size
 Game Mode
 1
 Enable Uniques
+True
+Ignore <color=#1D7CF2FF>Alignment</color> Caps
+True
+Ignore <color=#00E66DFF>Faction</color> Caps
+True
+Ignore Non-<color=#FFD700FF>Role</color> Layer Caps
 True
 <color=#B3B3B3FF>Neutrals</color> Count
 13
@@ -123,7 +133,7 @@ Every Body's <color=#FFD700FF>Role</color>/<color=#00E66DFF>Faction</color> Is A
 Every Body's Killer's <color=#FFD700FF>Role</color>/<color=#00E66DFF>Faction</color> Is Announced
 1
 Map
-8
+6
 Skeld Chance
 100
 Mira Chance
@@ -157,7 +167,7 @@ Large Maps Decreased Short Tasks
 Large Maps Decreased Long Tasks
 0
 Random Player Spawns
-True
+3
 Camouflaged Comms
 True
 Camouflaged Meetings
@@ -170,18 +180,24 @@ Oxygen Sabotage Slows Down Players
 True
 Reactor Sabotage Shakes The Screen By
 100
+Enable Better Skeld Changes
+True
 Changed Skeld Vent Layout
 True
 Skeld Reactor Meltdown Countdown
 60
 Skeld Oxygen Depletion Countdown
 60
+Enable Better Mira HQ Changes
+True
 Changed Mira HQ Vent Layout
 True
 Mira HQ Reactor Meltdown Countdown
 60
 Mira HQ Oxygen Depletion Countdown
 60
+Enable Better Polus Changes
+True
 Changed Polus Vent Layout
 True
 Vitals Moved To Lab
@@ -192,6 +208,8 @@ Reboot Wifi And Chart Course Swapped
 True
 Seimic Stabliser Malfunction Countdown
 60
+Enable Better Airship Changes
+True
 Spawn Type
 2
 Move Vitals
@@ -208,6 +226,8 @@ Min Time For Door Swipe
 0.4
 Heli Crash Countdown
 90
+Enable Better Fungle Changes
+True
 Fungle Reactor Meltdown Countdown
 60
 Fungle Mushroom Mixup Timer
@@ -272,6 +292,9 @@ True
 <color=#006600FF>Medic</color>
 100
 1
+<color=#BE1C8CFF>Trapper</color>
+0
+0
 <color=#00CB97FF>Dictator</color>
 100
 1
@@ -447,6 +470,16 @@ Who Gets Murder Attempt Indicator
 3
 Shield Breaks On Murder Attempt
 False
+<color=#BE1C8CFF>Trapper</color> Is Unique
+False
+Max Traps
+5
+Build Cooldown
+25
+Build Duration
+10
+Trap Cooldown
+25
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereigns</color>
 14
 <color=#00CB97FF>Dictator</color> Is Unique
@@ -651,8 +684,6 @@ Protect Cooldown
 10
 Protect Duration
 30
-Cooldown Reset When Protected
-2.5
 Max Protects
 15
 Show Protected Player
@@ -673,8 +704,6 @@ Vest Cooldown
 10
 Vest Duration
 5
-Cooldown Reset When Vested
-2.5
 Max Vests
 15
 <color=#DDDD00FF>Survivor</color> Can Hide In Vents
@@ -843,10 +872,10 @@ True
 False
 Mimic Cooldown
 10
-Hack Cooldown
-10
 Mimic Duration
 30
+Hack Cooldown
+10
 Hack Duration
 30
 Neutralise Cooldown
@@ -1307,8 +1336,6 @@ Bomb Radius
 5
 Chaos Drive Bomb Radius Increase
 5
-Bomb Detonation Kills Members Of The <color=#008000FF>Syndicate</color>
-True
 <color=#B345FFFF>Collider</color> Is Unique
 False
 Set Charges Cooldown

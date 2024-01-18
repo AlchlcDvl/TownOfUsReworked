@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 public class Colorblind : Modifier
 {
-    public override Color Color => ClientGameOptions.CustomModColors ? Colors.Colorblind : Colors.Modifier;
+    public override UColor Color => ClientGameOptions.CustomModColors ? CustomColorManager.Colorblind : CustomColorManager.Modifier;
     public override string Name => "Colorblind";
     public override LayerEnum Type => LayerEnum.Colorblind;
     public override Func<string> Description => () => "- You can't tell the difference between players";
@@ -47,9 +47,9 @@ public class Colorblind : Modifier
         {
             player.SetOutfit(CustomPlayerOutfitType.Colorblind, ColorblindOutfit());
             player.cosmetics.SetBodyColor(15);
-            player.MyRend().color = Color.grey;
-            player.NameText().color = Color.clear;
-            player.cosmetics.colorBlindText.color = Color.clear;
+            player.MyRend().color = UColor.grey;
+            player.NameText().color = UColor.clear;
+            player.cosmetics.colorBlindText.color = UColor.clear;
         }
     }
 
@@ -58,7 +58,7 @@ public class Colorblind : Modifier
         foreach (var p in CustomPlayer.AllPlayers)
         {
             DefaultOutfit(p);
-            p.MyRend().color = Color.white;
+            p.MyRend().color = UColor.white;
         }
     }
 

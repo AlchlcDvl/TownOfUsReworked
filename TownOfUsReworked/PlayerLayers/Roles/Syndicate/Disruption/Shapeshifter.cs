@@ -8,7 +8,7 @@ public class Shapeshifter : Syndicate
     public CustomMenu ShapeshiftMenu1 { get; set; }
     public CustomMenu ShapeshiftMenu2 { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Shapeshifter : CustomColorManager.Syndicate;
     public override string Name => "Shapeshifter";
     public override LayerEnum Type => LayerEnum.Shapeshifter;
     public override Func<string> StartText => () => "Change Everyone's Appearances";
@@ -77,26 +77,22 @@ public class Shapeshifter : Syndicate
 
     public void Click1(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             ShapeshiftPlayer1 = player;
-        else if (interact.Reset)
-            ShapeshiftButton.StartCooldown();
-        else if (interact.Protected)
-            ShapeshiftButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            ShapeshiftButton.StartCooldown(cooldown);
     }
 
     public void Click2(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             ShapeshiftPlayer2 = player;
-        else if (interact.Reset)
-            ShapeshiftButton.StartCooldown();
-        else if (interact.Protected)
-            ShapeshiftButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            ShapeshiftButton.StartCooldown(cooldown);
     }
 
     public void HitShapeshift()
@@ -140,7 +136,7 @@ public class Shapeshifter : Syndicate
                     ShapeshiftPlayer1 = null;
             }
 
-            LogInfo("Removed a target");
+            LogMessage("Removed a target");
         }
     }
 

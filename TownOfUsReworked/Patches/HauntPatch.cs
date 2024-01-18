@@ -21,16 +21,16 @@ public static class HauntPatch
         var objectiveString = "";
         var otherString = "";
 
-        if (role != null)
+        if (role)
             objectiveString += role.Name;
 
-        if (objectifier != null && objectifier.Type != LayerEnum.None)
+        if (objectifier && objectifier.Type != LayerEnum.None)
             objectiveString += $" {objectifier.ColoredSymbol}";
 
-        if (modifier != null && modifier.Type != LayerEnum.None)
+        if (modifier && modifier.Type != LayerEnum.None)
             otherString += $" {modifier.Name}";
 
-        if (ability != null && ability.Type != LayerEnum.None)
+        if (ability && ability.Type != LayerEnum.None)
             otherString += $" {ability.Name}";
 
         var filter = objectiveString;
@@ -48,9 +48,6 @@ public static class AddNeutralHauntPatch
 {
     public static bool Prefix(HauntMenuMinigame __instance)
     {
-        if (IsHnS)
-            return true;
-
         __instance.FilterButtons[0].gameObject.SetActive(true);
         var numActive = 0;
         var numButtons = __instance.FilterButtons.Count(x => x.isActiveAndEnabled);

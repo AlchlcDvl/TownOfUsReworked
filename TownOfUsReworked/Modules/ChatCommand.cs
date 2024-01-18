@@ -6,8 +6,8 @@ public class ChatCommand
     private readonly ExecuteArgsCommand ExecuteArgs;
     private readonly ExecuteArglessCommand ExecuteArgless;
 
-    private delegate void ExecuteArgsCommand(string[] args, ChatController __instance);
-    private delegate void ExecuteArglessCommand(ChatController __instance);
+    private delegate void ExecuteArgsCommand(string[] args);
+    private delegate void ExecuteArglessCommand();
 
     private static readonly List<ChatCommand> AllCommands = new()
     {
@@ -43,27 +43,27 @@ public class ChatCommand
         ExecuteArgs = null;
     }
 
-    public static void Execute(ChatCommand command, ChatController __instance, string[] args)
+    public static void Execute(ChatCommand command, string[] args)
     {
         if (command == null)
-            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
+            Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
         else if (command.ExecuteArgs == null)
-            command.ExecuteArgless(__instance);
+            command.ExecuteArgless();
         else if (command.ExecuteArgless == null)
-            command.ExecuteArgs(args, __instance);
+            command.ExecuteArgs(args);
         else
-            Run(__instance, "<color=#FFFF00FF>⚠ Huh? ⚠</color>", "Weird...");
+            Run("<color=#FFFF00FF>⚠ Huh? ⚠</color>", "Weird...");
     }
 
     public static ChatCommand Find(string[] args) => AllCommands.Find(x => x.Aliases.Any(x => args[0] == $"/{x}"));
 
-    public static void Run(ChatController __instance, string title, string text, bool withColor = true, bool hasColor = false, UColor? color = null)
+    public static void Run(string title, string text, bool withColor = true, bool hasColor = false, UColor? color = null)
     {
-        var pooledBubble = __instance.GetPooledBubble();
+        var pooledBubble = Chat.GetPooledBubble();
 
         try
         {
-            pooledBubble.transform.SetParent(__instance.scroller.Inner);
+            pooledBubble.transform.SetParent(Chat.scroller.Inner);
             pooledBubble.transform.localScale = Vector3.one;
             pooledBubble.SetLeft();
             pooledBubble.SetCosmetics(CustomPlayer.Local.Data);
@@ -75,7 +75,7 @@ public class ChatCommand
             pooledBubble.TextArea.text = text;
             pooledBubble.TextArea.ForceMeshUpdate(true, true);
             pooledBubble.Background.size = new(5.52f, 0.2f + pooledBubble.NameText.GetNotDumbRenderedHeight() + pooledBubble.TextArea.GetNotDumbRenderedHeight());
-            pooledBubble.MaskArea.size = pooledBubble.Background.size - new Vector2(0.0f, 0.03f);
+            pooledBubble.MaskArea.size = pooledBubble.Background.size - new Vector2(0, 0.03f);
             pooledBubble.TextArea.richText = withColor;
             pooledBubble.Background.color = color ?? UColor.white;
 
@@ -86,27 +86,27 @@ public class ChatCommand
             var pos = pooledBubble.NameText.transform.localPosition;
             pos.y += 0.05f;
             pooledBubble.NameText.transform.localPosition = pos;
-            __instance.AlignAllBubbles();
+            Chat.AlignAllBubbles();
             Play("Chat");
         }
         catch (Exception ex)
         {
             LogError(ex);
-            __instance.chatBubblePool.Reclaim(pooledBubble);
+            Chat.chatBubblePool.Reclaim(pooledBubble);
         }
     }
 
-    private static void Whisper(string[] args, ChatController __instance)
+    private static void Whisper(string[] args)
     {
         if (!CustomGameOptions.Whispers && IsInGame)
         {
-            Run(__instance, "<color=#00FF00FF>⚠ No Whispering ⚠</color>", "Whispering is not turned on.");
+            Run("<color=#00FF00FF>⚠ No Whispering ⚠</color>", "Whispering is not turned on.");
             return;
         }
 
         if (args.Length < 3 || IsNullEmptyOrWhiteSpace(args[1]) || IsNullEmptyOrWhiteSpace(args[2]))
         {
-            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number> <message>");
+            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number> <message>");
             return;
         }
 
@@ -115,76 +115,77 @@ public class ChatCommand
         message = message.Remove(message.Length - 1);
 
         if (CustomPlayer.LocalCustom.IsDead)
-            Run(__instance, "<color=#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
+            Run("<color=#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
         else if (CustomPlayer.Local.IsBlackmailed())
-            Run(__instance, "<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
+            Run("<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
         else if (CustomPlayer.Local.SilenceActive())
-            Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
+            Run("<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         else if (byte.TryParse(args[1], out var id))
         {
             var whispered = PlayerById(id);
 
             if (whispered == CustomPlayer.Local)
-                Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
+                Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
             else if (whispered)
             {
                 if (whispered.HasDied())
-                    Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
+                    Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
                 else
                 {
-                    Run(__instance, "<color=#4D4DFFFF>「 Whispers 」</color>", $"You whisper to {whispered.name}: {message}");
+                    Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"You whisper to {whispered.name}: {message}");
                     CallRpc(CustomRPC.Misc, MiscRPC.Whisper, CustomPlayer.Local, whispered, message);
                 }
             }
             else
-                Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Who are you trying to whisper?");
+                Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Who are you trying to whisper?");
         }
         else
-            Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{args[1]} is not a valid number.");
+            Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{args[1]} is not a valid number.");
     }
 
-    private static void SetColor(string[] args, ChatController __instance)
+    private static void SetColor(string[] args)
     {
         if (!TownOfUsReworked.IsTest || !IsLobby)
         {
-            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
+            Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
         {
-            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<setcolour | setcolor | sc> <color id>");
+            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<setcolour | setcolor | sc> <color id>");
             return;
         }
 
-        var spelling = args[0].ToLower().Contains("color") ? "olor" : "olour";
+        var spelling = args[0].ToLower().Contains("color") ? "" : "u";
 
         if (!byte.TryParse(args[1], out var col))
         {
-            Run(__instance, "<color=#FF0000FF>⚠ Color Error ⚠</color>", $"{args[1]} is an invalid c{spelling}.\nYou need to use the color ID for the color you want to be. To find out a " +
-                "color's ID, go into the color selection screen and count the number of colors starting from 0 to the position of the color you want to pick, from left to right. The range of"
-                + "colors is from 0 to 49 meaning Red to Rainbow respectively.");
+            Run($"<color=#FF0000FF>⚠ Colo{spelling}r Error ⚠</color>", $"{args[1]} is an invalid colo{spelling}r.\nYou need to use the colo{spelling}r ID for the colo{spelling}r you want to"
+                + $" be. To find out a colo{spelling}r's ID, go into the colo{spelling}r selection screen and count the number of colo{spelling}rs starting from 0 to the position of the " +
+                $"colo{spelling}r you want to pick, from left to right. The range of colo{spelling}rs is from 0 to {CustomColorManager.AllColors.Count - 1} meaning Red to Rainbow " +
+                "respectively.");
         }
-        else if (CustomColors.OutOfBounds(col))
-            Run(__instance, "<color=#FF0000FF>⚠ Color Error ⚠</color>", $"Invalid c{spelling} id.");
+        else if (CustomColorManager.OutOfBounds(col))
+            Run($"<color=#FF0000FF>⚠ Colo{spelling}r Error ⚠</color>", $"Invalid colo{spelling}r id.");
         else
         {
             CustomPlayer.Local.CmdCheckColor(col);
-            Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", $"C{spelling} changed!");
+            Run("<color=#B148E2FF>◈ Success ◈</color>", $"Colo{spelling}r changed!");
         }
     }
 
-    private static void SetName(string[] args, ChatController __instance)
+    private static void SetName(string[] args)
     {
         if (!TownOfUsReworked.IsTest || !IsLobby)
         {
-            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
+            Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
         {
-            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<setname | sn> <name>");
+            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<setname | sn> <name>");
             return;
         }
 
@@ -193,39 +194,39 @@ public class ChatCommand
         arg = arg.Remove(arg.Length - 1);
 
         if (arg.Any(disallowed.Contains))
-            Run(__instance, "<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains disallowed characters.");
+            Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains disallowed characters.");
         else if (profanities.Any(arg.Contains))
-            Run(__instance, "<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains unaccepted words.");
+            Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains unaccepted words.");
         else if (arg.Length > 20)
-            Run(__instance, "<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name is too long.");
+            Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name is too long.");
         else
         {
             CustomPlayer.Local.RpcSetName(arg);
-            Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", "Name changed!");
+            Run("<color=#B148E2FF>◈ Success ◈</color>", "Name changed!");
         }
     }
 
-    private static void Summary(ChatController __instance)
+    private static void Summary()
     {
-        var summary = ReadText("Summary");
+        var summary = ReadDiskText("Summary");
 
         if (IsNullEmptyOrWhiteSpace(summary))
-            Run(__instance, "<color=#FF0000FF>⚠ Summary Error ⚠</color>", "Summary could not be found.");
+            Run("<color=#FF0000FF>⚠ Summary Error ⚠</color>", "Summary could not be found.");
         else
-            Run(__instance, "<color=#FF0080FF>个 Previous Game Summary 个</color>", summary, false, true);
+            Run("<color=#FF0080FF>个 Previous Game Summary 个</color>", summary, false, true);
     }
 
-    private static void Clear(ChatController __instance)
+    private static void Clear()
     {
         if (!IsLobby)
         {
-            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
+            Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (!AmongUsClient.Instance.CanBan() || !AmongUsClient.Instance.AmHost)
         {
-            Run(__instance, "<color=#FF0000FF>⚠ Not Allowed ⚠</color>", "This command is not for you to use.");
+            Run("<color=#FF0000FF>⚠ Not Allowed ⚠</color>", "This command is not for you to use.");
             return;
         }
 
@@ -240,20 +241,20 @@ public class ChatCommand
             }
         }
 
-        Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", "Lobby cleared!");
+        Run("<color=#B148E2FF>◈ Success ◈</color>", "Lobby cleared!");
     }
 
-    private static void KickBan(string[] args, ChatController __instance)
+    private static void KickBan(string[] args)
     {
         if (!IsLobby)
         {
-            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
+            Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (!AmongUsClient.Instance.CanBan() || !AmongUsClient.Instance.AmHost)
         {
-            Run(__instance, "<color=#FF0000FF>⚠ Not Allowed ⚠</color>", "This command is not for you to use.");
+            Run("<color=#FF0000FF>⚠ Not Allowed ⚠</color>", "This command is not for you to use.");
             return;
         }
 
@@ -261,7 +262,7 @@ public class ChatCommand
 
         if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
         {
-            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", $"Usage: /{(ban ? "<ban | b>" : "<kick | k>")} <player name>");
+            Run("<color=#00FF00FF>★ Help ★</color>", $"Usage: /{(ban ? "<ban | b>" : "<kick | k>")} <player name>");
             return;
         }
 
@@ -273,13 +274,13 @@ public class ChatCommand
 
         if (target == null)
         {
-            Run(__instance, $"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
+            Run($"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
             return;
         }
 
         if (target == CustomPlayer.Local)
         {
-            Run(__instance, $"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Don't {(ban ? "ban" : "kick")} yourself.");
+            Run($"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Don't {(ban ? "ban" : "kick")} yourself.");
             return;
         }
 
@@ -287,53 +288,50 @@ public class ChatCommand
 
         if (client == null)
         {
-            Run(__instance, $"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
+            Run($"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
             return;
         }
 
         AmongUsClient.Instance.KickPlayer(client.Id, ban);
-        Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", $"{target.name} {(ban ? "Bann" : "Kick")}ed!");
+        Run("<color=#B148E2FF>◈ Success ◈</color>", $"{target.name} {(ban ? "Bann" : "Kick")}ed!");
     }
 
-    private static void Help(ChatController __instance)
+    private static void Help()
     {
         var setColor = TownOfUsReworked.IsTest ? "/setcolour or /setcolor, /setname" : "";
         var comma = setColor.Length == 0 ? "" : ", ";
         var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
         var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
         var lobby = setColor + kickBan != "" ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "";
-        Run(__instance, "<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n{lobby}");
+        Run("<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n{lobby}");
     }
 
-    private static void Controls(ChatController __instance) => Run(__instance, "<color=#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Start up the MCI control panel (local "
-        + "only)\nF2 - Toggle the visibility of the control panel (local only)\nTab/Backspace - Change pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page "
-        + "when in a menu\n1 - 9 - Jump between setting pages (in lobby)");
+    private static void Controls() => Run("<color=#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Start up the MCI control panel (local only)\nF2 - Toggle the visibility of "
+        + "the control panel (local only)\nTab/Backspace - Change pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu\n1 - 9 - Jump between "
+        + "setting pages (in lobby)");
 
-    private static void TestArgs(string[] args, ChatController __instance)
+    private static void TestArgs(string[] args)
     {
         var message = "You entered the following params:\n";
         args[1..].ForEach(arg => message += $"{arg}, ");
         message = message.Remove(message.Length - 2);
-        Run(__instance, "<color=#FF00FFFF>⚠ TEST ⚠</color>", message);
+        Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", message);
     }
 
-    private static void TestArgless(ChatController __instance) => Run(__instance, "<color=#FF00FFFF>⚠ TEST ⚠</color>", "Test.");
+    private static void TestArgless() => Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", "Test.");
 
-    private static void SendRPC(ChatController __instance)
+    private static void SendRPC()
     {
         CallRpc(CustomRPC.Test);
         LogMessage("RPC Sent!");
-        Run(__instance, "<color=#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
+        Run("<color=#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
     }
 
-    private static void Translate(string[] args, ChatController __instance)
+    private static void Translate(string[] args)
     {
         if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
-        {
-            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<translate | trans> <text id>");
-            return;
-        }
-
-        Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", Test(args[1]));
+            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<translate | trans> <text id>");
+        else
+            Run("<color=#B148E2FF>◈ Success ◈</color>", TranslationManager.Test(args[1]));
     }
 }

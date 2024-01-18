@@ -34,7 +34,7 @@ public static class PooledMapIconPatch
         var sprite = __instance.GetComponent<SpriteRenderer>();
 
         if (sprite != null)
-            PlayerMaterial.SetColors(new Color(0.8793f, 1, 0, 1), sprite);
+            PlayerMaterial.SetColors(new UColor(0.8793f, 1, 0, 1), sprite);
 
         var text = __instance.GetComponentInChildren<TextMeshPro>(true);
 
@@ -130,7 +130,7 @@ public static class MapPatch
 [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
 public static class DisconnectHandler
 {
-    public static readonly List<PlayerControl> Disconnected = new();
+    public static readonly List<byte> Disconnected = new();
 
     public static void Prefix(ref PlayerControl player)
     {
@@ -146,8 +146,8 @@ public static class DisconnectHandler
         if (IsLobby)
             return;
 
-        ReassignPostmortals(player);
-        Disconnected.Add(player);
+        SetPostmortals.RemoveFromPostmortals(player);
+        Disconnected.Add(player.PlayerId);
         OnGameEndPatch.AddSummaryInfo(player, true);
     }
 }
@@ -200,12 +200,9 @@ public static class MinigameBeginPatch
 {
     public static void Postfix(Minigame __instance)
     {
-        if (!__instance || __instance is TaskAdderGame)
-            return;
-
         CustomPlayer.Local.DisableButtons();
 
-        if (!CustomPlayer.Local.Is(LayerEnum.Multitasker))
+        if (__instance is null or TaskAdderGame or HauntMenuMinigame or SpawnInMinigame || !CustomPlayer.Local.Is(LayerEnum.Multitasker))
             return;
 
         __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, CustomGameOptions.Transparancy / 100f));
@@ -260,7 +257,7 @@ public static class ExitGamePatch
     public static void Prefix()
     {
         SaveText("ReworkedLogs.txt", SavedLogs);
-        CustomOption.SaveSettings("LastUsedSettings");
+        CustomOption.SaveSettings("Last Used");
     }
 }
 
@@ -295,22 +292,6 @@ public static class OverlayKillAnimationPatch
     }
 
     public static void Postfix(GameData.PlayerInfo kInfo) => kInfo.Object.CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
-}
-
-[HarmonyPatch(typeof(OverlayKillAnimation._CoShow_d__13), nameof(OverlayKillAnimation._CoShow_d__13.MoveNext))]
-public static class FixMeetingKills
-{
-    public static void Postfix(OverlayKillAnimation._CoShow_d__13 __instance)
-    {
-        if (__instance.__1__state != 0)
-            return;
-
-        if (Meeting)
-        {
-            __instance.__4__this.killerParts.SetMaskLayer(PlayerMaterial.MaskLayer);
-            __instance.__4__this.victimParts.SetMaskLayer(PlayerMaterial.MaskLayer);
-        }
-    }
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
@@ -425,7 +406,7 @@ public static class SetRoles
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
 public static class FixHudNullRef
 {
-    public static bool Prefix() => !IsEnded;
+    public static bool Prefix() => CustomPlayer.Local;
 }
 
 [HarmonyPatch(typeof(EmergencyMinigame), nameof(EmergencyMinigame.Update))]
@@ -467,6 +448,8 @@ public static class LobbyBehaviourPatch
         MCIUtils.SavedPositions.Clear();
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame;
         DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
+        OtherButtonsPatch.Page = 0;
+        OtherButtonsPatch.Buttons.Clear();
 
         if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame)
             MCIUtils.CreatePlayerInstances(count);
@@ -483,12 +466,6 @@ public static class DeathPopUpPatch
 
         __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => __instance.text.text = $"Was {(CustomGameOptions.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}")));
     }
-}
-
-[HarmonyPatch(typeof(UnityExtensions), nameof(UnityExtensions.SetOutline))]
-public static class OneMoreThing
-{
-    public static void Postfix(ref Renderer renderer, ref Color? color) => renderer.material.SetColor(Shader.PropertyToID("_AddColor"), color ?? UColor.clear);
 }
 
 [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.SnapTo), typeof(Vector2))]
@@ -584,3 +561,50 @@ public static class AmongUsClientOnPlayerJoined
         }
     }
 }
+
+[HarmonyPatch(typeof(SkinLayer), nameof(SkinLayer.IsPlayingRunAnim))]
+public static class FixLogSpam
+{
+    public static bool Prefix(SkinLayer __instance, ref bool __result)
+    {
+        try
+        {
+            var anim = __instance.animator.GetCurrentAnimation();
+            __result = anim == __instance.skin.RunAnim || anim == __instance.skin.RunLeftAnim;
+        }
+        catch
+        {
+            __result = false;
+        }
+
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetKinematic))]
+public static class LadderFix
+{
+    public static bool Prefix(PlayerControl __instance, ref bool b)
+    {
+        if (__instance != CustomPlayer.Local || !__instance.onLadder || b || (!__instance.Is(LayerEnum.Giant) && !__instance.Is(LayerEnum.Dwarf)) || MapPatches.CurrentMap != 5)
+            return true;
+
+        var ladder = UObject.FindObjectsOfType<Ladder>().OrderBy(x => Vector3.Distance(x.transform.position, __instance.transform.position)).ElementAt(0);
+
+        if (!ladder.IsTop)
+            return true; // Are we at the bottom?
+
+        __instance.NetTransform.RpcSnapTo(__instance.transform.position + new Vector3(0,0.5f));
+        return true;
+    }
+}
+
+/*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
+public static class DebuggingClassForRandomStuff
+{
+    public static void Postfix(KeyboardJoystick __instance)
+    {
+        //some sick code here
+        //got too lazy to constantly remove it so it'll stay now, still commented tho because i love reduce dll size :D
+    }
+}*/

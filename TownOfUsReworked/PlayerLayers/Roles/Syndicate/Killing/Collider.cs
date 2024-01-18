@@ -9,7 +9,7 @@ public class Collider : Syndicate
     public PlayerControl Negative { get; set; }
     private float Range => CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Collider : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Collider : CustomColorManager.Syndicate;
     public override string Name => "Collider";
     public override LayerEnum Type => LayerEnum.Collider;
     public override Func<string> StartText => () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
@@ -21,8 +21,8 @@ public class Collider : Syndicate
         Alignment = Alignment.SyndicateKill;
         Positive = null;
         Negative = null;
-        PositiveButton = new(this, "Positive", AbilityTypes.Target, "ActionSecondary", SetPositive, CustomGameOptions.CollideCd, Exception1);
-        NegativeButton = new(this, "Negative", AbilityTypes.Target, "Secondary", SetNegative, CustomGameOptions.CollideCd, Exception2);
+        PositiveButton = new(this, "Positive", AbilityTypes.Alive, "ActionSecondary", SetPositive, CustomGameOptions.CollideCd, Exception1);
+        NegativeButton = new(this, "Negative", AbilityTypes.Alive, "Secondary", SetNegative, CustomGameOptions.CollideCd, Exception2);
         ChargeButton = new(this, "Charge", AbilityTypes.Targetless, "Tertiary", Charge, CustomGameOptions.ChargeCd, CustomGameOptions.ChargeDur);
     }
 
@@ -42,14 +42,10 @@ public class Collider : Syndicate
 
     public void SetPositive()
     {
-        var interact = Interact(Player, PositiveButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, PositiveButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Positive = PositiveButton.TargetPlayer;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         PositiveButton.StartCooldown(cooldown);
 
@@ -59,14 +55,10 @@ public class Collider : Syndicate
 
     public void SetNegative()
     {
-        var interact = Interact(Player, NegativeButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
+        var cooldown = Interact(Player, NegativeButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             Negative = NegativeButton.TargetPlayer;
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
 
         NegativeButton.StartCooldown(cooldown);
 
@@ -87,12 +79,15 @@ public class Collider : Syndicate
         NegativeButton.Update2("SET NEGATIVE");
         ChargeButton.Update2("CHARGE", HoldsDrive);
 
+        if (IsDead)
+            return;
+
         if (GetDistance(Positive, Negative) <= Range)
         {
-            if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() || Negative.IsVesting()))
+            if (CanAttack(AttackEnum.Powerful, Negative.GetDefenseValue(Player)))
                 RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
 
-            if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() || Positive.IsVesting()))
+            if (CanAttack(AttackEnum.Powerful, Positive.GetDefenseValue(Player)))
                 RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
 
             Positive = null;
@@ -106,7 +101,7 @@ public class Collider : Syndicate
         }
         else if (GetDistance(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
         {
-            if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() || Negative.IsVesting()))
+            if (CanAttack(AttackEnum.Powerful, Negative.GetDefenseValue(Player)))
                 RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
 
             Negative = null;
@@ -119,7 +114,7 @@ public class Collider : Syndicate
         }
         else if (GetDistance(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
         {
-            if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() || Positive.IsVesting()))
+            if (CanAttack(AttackEnum.Powerful, Positive.GetDefenseValue(Player)))
                 RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
 
             Positive = null;

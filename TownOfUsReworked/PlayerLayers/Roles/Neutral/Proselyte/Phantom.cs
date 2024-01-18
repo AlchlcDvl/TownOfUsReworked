@@ -3,10 +3,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Phantom : Neutral
 {
     public bool Caught { get; set; }
-    public bool CompletedTasks { get; set; }
     public bool Faded { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
+    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Phantom : CustomColorManager.Neutral;
     public override string Name => "Phantom";
     public override LayerEnum Type => LayerEnum.Phantom;
     public override Func<string> StartText => () => "Peek-A-Boo!";
@@ -25,7 +24,7 @@ public class Phantom : Neutral
 
         Faded = true;
         Player.Visible = true;
-        var color = new Color(1f, 1f, 1f, 0f);
+        var color = new UColor(1f, 1f, 1f, 0f);
 
         var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
         var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;

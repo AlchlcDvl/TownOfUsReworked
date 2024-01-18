@@ -4,14 +4,17 @@ public class Volatile : Modifier
 {
     private float _time;
     private int OtherNumber { get; set; }
-    private static bool RickRolled;
     private bool Exposed { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomModColors ? Colors.Volatile : Colors.Modifier;
+    private static bool LMAO;
+
+    public override UColor Color => ClientGameOptions.CustomModColors ? CustomColorManager.Volatile : CustomColorManager.Modifier;
     public override string Name => "Volatile";
     public override LayerEnum Type => LayerEnum.Volatile;
     public override Func<string> Description => () => "- You experience hallucinations";
     public override bool Hidden => !CustomGameOptions.VolatileKnows && !Exposed && !IsDead;
+
+    private static readonly string[] Links = { "https://www.youtube.com/watch?v=79-AwFZCKpA", "https://www.youtube.com/watch?v=xm3YgoEiEDc" };
 
     public Volatile(PlayerControl player) : base(player) => Exposed = !CustomGameOptions.VolatileKnows;
 
@@ -45,10 +48,10 @@ public class Volatile : Modifier
                 __instance.KillOverlay.ShowKillAnimation(CustomPlayer.AllPlayers.Random().Data, Data);
             }
             //Get rick rolled lmao
-            else if (randomNumber == 2 && !RickRolled)
+            else if (randomNumber == 2 && !LMAO && !TownOfUsReworked.IsStream)
             {
-                RickRolled = true;
-                Application.OpenURL("https://www.youtube.com/watch?v=xm3YgoEiEDc");
+                LMAO = true;
+                Application.OpenURL(Links.Random());
             }
             //Hear random things
             else if (randomNumber == 3)

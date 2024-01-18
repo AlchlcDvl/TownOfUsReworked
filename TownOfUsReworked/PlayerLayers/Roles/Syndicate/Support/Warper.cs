@@ -15,7 +15,7 @@ public class Warper : Syndicate
     public bool WasInVent { get; set; }
     public Vent Vent { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
+    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Warper : CustomColorManager.Syndicate;
     public override string Name => "Warper";
     public override LayerEnum Type => LayerEnum.Warper;
     public override Func<string> StartText => () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
@@ -69,7 +69,7 @@ public class Warper : Syndicate
         if (WarpPlayer1.inVent)
         {
             while (GetInTransition())
-                yield return null;
+                yield return new WaitForEndOfFrame();
 
             WarpPlayer1.MyPhysics.ExitAllVents();
         }
@@ -77,7 +77,7 @@ public class Warper : Syndicate
         if (WarpPlayer2.inVent)
         {
             while (GetInTransition())
-                yield return null;
+                yield return new WaitForEndOfFrame();
 
             Vent = WarpPlayer2.GetClosestVent();
             WasInVent = true;
@@ -104,7 +104,7 @@ public class Warper : Syndicate
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.WarpDur)
-                yield return null;
+                yield return new WaitForEndOfFrame();
             else
                 break;
 
@@ -174,26 +174,22 @@ public class Warper : Syndicate
 
     public void Click1(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             WarpPlayer1 = player;
-        else if (interact.Reset)
-            WarpButton.StartCooldown();
-        else if (interact.Protected)
-            WarpButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            WarpButton.StartCooldown(cooldown);
     }
 
     public void Click2(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var cooldown = Interact(Player, player);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
             WarpPlayer2 = player;
-        else if (interact.Reset)
-            WarpButton.StartCooldown();
-        else if (interact.Protected)
-            WarpButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            WarpButton.StartCooldown(cooldown);
     }
 
     public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
@@ -237,6 +233,13 @@ public class Warper : Syndicate
             else
                 player.NetTransform.RpcSnapTo(pos);
         }
+
+        if (CustomPlayer.Local.walkingToVent)
+        {
+            CustomPlayer.Local.inVent = false;
+            CustomPlayer.Local.moveable = true;
+            CustomPlayer.Local.MyPhysics.StopAllCoroutines();
+        }
     }
 
     public void Warp()
@@ -279,7 +282,7 @@ public class Warper : Syndicate
                     WarpPlayer1 = null;
             }
 
-            LogInfo("Removed a target");
+            LogMessage("Removed a target");
         }
     }
 }

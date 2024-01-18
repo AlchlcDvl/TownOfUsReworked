@@ -13,7 +13,7 @@ public static class BetterSabotages
             var system = Ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
 
             if (system.IsActive && CustomGameOptions.ReactorShake != 0f)
-                __instance.PlayerCam.ShakeScreen(500, (CustomGameOptions.ReactorShake * (system.ReactorDuration - system.Countdown)) / (100f * system.ReactorDuration));
+                __instance.PlayerCam.ShakeScreen(500, CustomGameOptions.ReactorShake * (system.ReactorDuration - system.Countdown) / (100f * system.ReactorDuration));
             else
                 __instance.PlayerCam.ShakeScreen(0, 0);
         }
@@ -22,7 +22,7 @@ public static class BetterSabotages
             var system = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 
             if (system.IsActive && CustomGameOptions.ReactorShake != 0f)
-                __instance.PlayerCam.ShakeScreen(500, (CustomGameOptions.ReactorShake * (system.ReactorDuration - system.Countdown)) / (100f * system.ReactorDuration));
+                __instance.PlayerCam.ShakeScreen(500, CustomGameOptions.ReactorShake * (system.ReactorDuration - system.Countdown) / (100f * system.ReactorDuration));
             else
                 __instance.PlayerCam.ShakeScreen(0, 0);
         }

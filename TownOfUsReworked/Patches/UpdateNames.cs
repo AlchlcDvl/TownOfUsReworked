@@ -1,29 +1,31 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
 public static class UpdateNames
 {
     public static readonly Dictionary<byte, string> PlayerNames = new();
     public static readonly Dictionary<byte, string> ColorNames = new();
+    private static Vector3? NamePos;
 
-    public static void Postfix()
+    public static void Postfix(PlayerControl __instance)
     {
-        if (NoPlayers || IsHnS || Meeting || IsLobby)
+        if (NoPlayers || IsHnS || Meeting)
             return;
 
-        CustomPlayer.AllPlayers.ForEach(SetNames);
+        SetNames(__instance);
     }
 
     private static void SetNames(PlayerControl player)
     {
-        if (!PlayerNames.ContainsKey(player.PlayerId))
-            PlayerNames.Add(player.PlayerId, player.Data.PlayerName);
+        NamePos ??= player.NameText().transform.localPosition;
+        PlayerNames[player.PlayerId] = player.Data.PlayerName;
+        ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
 
-        if (!ColorNames.ContainsKey(player.PlayerId))
-            ColorNames.Add(player.PlayerId, player.Data.ColorName.Replace("(", "").Replace(")", ""));
-
-        (player.NameText().text, player.NameText().color) = UpdateGameName(player);
-        (player.ColorBlindText().text, player.ColorBlindText().color) = (UpdateColorblind(player), player.NameText().color);
+        if (!IsLobby)
+        {
+            (player.NameText().text, player.NameText().color) = UpdateGameName(player);
+            (player.ColorBlindText().text, player.ColorBlindText().color) = (UpdateColorblind(player), player.NameText().color);
+        }
     }
 
     private static string UpdateColorblind(PlayerControl player)
@@ -43,7 +45,7 @@ public static class UpdateNames
         player.IsMimicking(out player);
         var name = "";
 
-        if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !ClientGameOptions.OptimisationMode)
             name = GetRandomisedName();
         else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
@@ -54,7 +56,7 @@ public static class UpdateNames
         else
             name = ColorNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
 
-        var ld = CustomColors.LightDarkColors[player.CurrentOutfit.ColorId] == "Lighter" ? "L" : "D";
+        var ld = player.CurrentOutfit.ColorId.IsLighter() ? "L" : "D";
 
         if (ClientGameOptions.LighterDarker)
             name += $" ({ld})";
@@ -62,7 +64,7 @@ public static class UpdateNames
         return name;
     }
 
-    public static (string, Color) UpdateGameName(PlayerControl player)
+    public static (string, UColor) UpdateGameName(PlayerControl player)
     {
         var distance = Vector2.Distance(CustomPlayer.Local.transform.position, player.transform.position);
         var vector = player.transform.position - CustomPlayer.Local.transform.position;
@@ -80,9 +82,9 @@ public static class UpdateNames
         var color = UColor.white;
         var info = player.AllPlayerInfo();
         var localinfo = CustomPlayer.Local.AllPlayerInfo();
-        var roleRevealed = false;
+        var revealed = false;
 
-        if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !ClientGameOptions.OptimisationMode)
             name = GetRandomisedName();
         else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
@@ -117,7 +119,7 @@ public static class UpdateNames
 
             if (mayor.Revealed)
             {
-                roleRevealed = true;
+                revealed = true;
                 name += $"\n{mayor.Name}";
                 color = mayor.Color;
 
@@ -143,7 +145,7 @@ public static class UpdateNames
 
             if (dict.Revealed)
             {
-                roleRevealed = true;
+                revealed = true;
                 name += $"\n{dict.Name}";
                 color = dict.Color;
 
@@ -168,10 +170,10 @@ public static class UpdateNames
         {
             var consigliere = localinfo[0] as Consigliere;
 
-            if (consigliere.Investigated.Contains(player.PlayerId) && !roleRevealed)
+            if (consigliere.Investigated.Contains(player.PlayerId) && !revealed)
             {
                 var role = info[0] as Role;
-                roleRevealed = true;
+                revealed = true;
 
                 if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
                 {
@@ -192,10 +194,10 @@ public static class UpdateNames
         {
             var godfather = localinfo[0] as PromotedGodfather;
 
-            if (godfather.IsConsig && godfather.Investigated.Contains(player.PlayerId) && !roleRevealed)
+            if (godfather.IsConsig && godfather.Investigated.Contains(player.PlayerId) && !revealed)
             {
                 var role = info[0] as Role;
-                roleRevealed = true;
+                revealed = true;
 
                 if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
                 {
@@ -271,12 +273,12 @@ public static class UpdateNames
             {
                 name += " <color=#CCCCCCFF>§</color>";
 
-                if (CustomGameOptions.ExeKnowsTargetRole && !roleRevealed)
+                if (CustomGameOptions.ExeKnowsTargetRole && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = executioner.Color;
@@ -303,12 +305,12 @@ public static class UpdateNames
                 if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 1 or 2)
                     name += " <color=#FFFFFFFF>η</color>";
 
-                if (CustomGameOptions.GAKnowsTargetRole && !roleRevealed)
+                if (CustomGameOptions.GAKnowsTargetRole && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = guardianAngel.Color;
@@ -320,12 +322,12 @@ public static class UpdateNames
 
             if (whisperer.Persuaded.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#F995FCFF>Λ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = whisperer.SubFactionColor;
@@ -345,12 +347,12 @@ public static class UpdateNames
 
             if (dracula.Converted.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#7B8968FF>γ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = dracula.SubFactionColor;
@@ -362,12 +364,12 @@ public static class UpdateNames
 
             if (jackal.Recruited.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#575657FF>$</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = jackal.SubFactionColor;
@@ -379,12 +381,12 @@ public static class UpdateNames
 
             if (necromancer.Resurrected.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#E6108AFF>Σ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
                 else
                     color = necromancer.SubFactionColor;
@@ -393,12 +395,12 @@ public static class UpdateNames
         else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything && CustomGameOptions.NKsKnow)
         {
             if (((player.GetRole() == CustomPlayer.Local.GetRole() && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
-                CustomGameOptions.NoSolo == NoSolo.AllNKs)) && !roleRevealed)
+                CustomGameOptions.NoSolo == NoSolo.AllNKs)) && !revealed)
             {
                 var role = info[0] as Role;
                 color = role.Color;
                 name += $"\n{role}";
-                roleRevealed = true;
+                revealed = true;
             }
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Blackmailer))
@@ -415,7 +417,7 @@ public static class UpdateNames
         {
             name += $"\n{info[0]}";
             color = info[0].Color;
-            roleRevealed = true;
+            revealed = true;
         }
 
         if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything)
@@ -424,12 +426,12 @@ public static class UpdateNames
 
             if (dracula.Converted.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#7B8968FF>γ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -456,12 +458,12 @@ public static class UpdateNames
 
             if (jackal.Recruited.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#575657FF>$</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -488,12 +490,12 @@ public static class UpdateNames
 
             if (necromancer.Resurrected.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+                if (CustomGameOptions.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#E6108AFF>Σ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -525,7 +527,7 @@ public static class UpdateNames
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $" <color=#F995FCFF>Λ</color>\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -564,12 +566,12 @@ public static class UpdateNames
             {
                 name += $" {lover.ColoredSymbol}";
 
-                if (CustomGameOptions.LoversRoles && !roleRevealed)
+                if (CustomGameOptions.LoversRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -597,12 +599,12 @@ public static class UpdateNames
             {
                 name += $" {rival.ColoredSymbol}";
 
-                if (CustomGameOptions.RivalsRoles && !roleRevealed)
+                if (CustomGameOptions.RivalsRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -630,12 +632,12 @@ public static class UpdateNames
             {
                 name += $" {link.ColoredSymbol}";
 
-                if (CustomGameOptions.LinkedRoles && !roleRevealed)
+                if (CustomGameOptions.LinkedRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -662,12 +664,12 @@ public static class UpdateNames
             {
                 name += $" {mafia.ColoredSymbol}";
 
-                if (CustomGameOptions.MafiaRoles && !roleRevealed)
+                if (CustomGameOptions.MafiaRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
 
                     if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                     {
@@ -702,7 +704,7 @@ public static class UpdateNames
                     {
                         color = role2.Color;
                         name += $"\n{role2.Name}";
-                        roleRevealed = true;
+                        revealed = true;
                     }
                 }
                 else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) || (player.Is(Faction.Crew) &&
@@ -715,16 +717,17 @@ public static class UpdateNames
                     }
                     else
                     {
-                        color = Colors.Crew;
+                        color = CustomColorManager.Crew;
                         name += "\nCrew";
                     }
 
-                    roleRevealed = true;
+                    revealed = true;
                 }
             }
         }
 
-        if (player.Is(LayerEnum.Snitch) && !DeadSeeEverything && player != CustomPlayer.Local)
+        if (player.Is(LayerEnum.Snitch) && !DeadSeeEverything && player != CustomPlayer.Local && (CustomPlayer.Local.Is(Faction.Syndicate) || CustomPlayer.Local.Is(Faction.Intruder) ||
+            (CustomPlayer.Local.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals)))
         {
             var role = info[0] as Role;
 
@@ -733,20 +736,19 @@ public static class UpdateNames
                 var ability = info[2] as Ability;
                 color = ability.Color;
                 name += (name.Contains('\n') ? " " : "\n") + ability.Name;
-                roleRevealed = true;
+                revealed = true;
             }
         }
 
-        if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player != CustomPlayer.Local && (player.GetFaction() == Faction.Intruder || player.GetFaction() == Faction.Syndicate)
-            && !DeadSeeEverything)
+        if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player != CustomPlayer.Local && player.GetFaction() is Faction.Intruder or Faction.Syndicate && !DeadSeeEverything)
         {
             var role = info[0] as Role;
 
-            if (CustomGameOptions.FactionSeeRoles && !roleRevealed)
+            if (CustomGameOptions.FactionSeeRoles && !revealed)
             {
                 color = role.Color;
                 name += $"\n{role}";
-                roleRevealed = true;
+                revealed = true;
 
                 if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
                 {
@@ -781,7 +783,7 @@ public static class UpdateNames
             name += " <color=#008000FF>Δ</color>";
         }
 
-        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.CompletedTasks) && CustomPlayer.Local.Is(Faction.Crew))
+        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught) && CustomPlayer.Local.Is(Faction.Crew))
         {
             var role = info[0] as Role;
 
@@ -792,7 +794,7 @@ public static class UpdateNames
                 {
                     color = role.Color;
                     name += $"\n{role}";
-                    roleRevealed = true;
+                    revealed = true;
                 }
             }
             else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) || (player.Is(Faction.Crew)
@@ -805,11 +807,11 @@ public static class UpdateNames
                 }
                 else
                 {
-                    color = Colors.Crew;
+                    color = CustomColorManager.Crew;
                     name += "\nCrew";
                 }
 
-                roleRevealed = true;
+                revealed = true;
             }
         }
 
@@ -913,17 +915,19 @@ public static class UpdateNames
                     name += $" {objectifier.ColoredSymbol}";
             }
 
-            if (!roleRevealed)
+            if (!revealed)
             {
                 var role = info[0] as Role;
                 color = role.Color;
                 name += $"\n{role}";
-                roleRevealed = true;
+                revealed = true;
             }
         }
 
-        if (roleRevealed)
+        if (revealed)
             player.NameText().transform.localPosition = new(0f, 0.15f, -0.5f);
+        else
+            player.NameText().transform.localPosition = NamePos.Value;
 
         return (name, color);
     }

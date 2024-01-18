@@ -5,7 +5,7 @@ public class Escort : Crew
     public PlayerControl BlockTarget { get; set; }
     public CustomButton BlockButton { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
+    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Escort : CustomColorManager.Crew;
     public override string Name => "Escort";
     public override LayerEnum Type => LayerEnum.Escort;
     public override Func<string> StartText => () => "Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>";
@@ -17,7 +17,7 @@ public class Escort : Crew
         Alignment = Alignment.CrewSupport;
         RoleBlockImmune = true;
         BlockTarget = null;
-        BlockButton = new(this, "EscortRoleblock", AbilityTypes.Target, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur, (CustomButton.EffectVoid)Block,
+        BlockButton = new(this, "EscortRoleblock", AbilityTypes.Alive, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur, (CustomButton.EffectVoid)Block,
             UnBlock);
     }
 
@@ -31,18 +31,16 @@ public class Escort : Crew
 
     public void Roleblock()
     {
-        var interact = Interact(Player, BlockButton.TargetPlayer);
+        var cooldown = Interact(Player, BlockButton.TargetPlayer);
 
-        if (interact.AbilityUsed)
+        if (cooldown != CooldownType.Fail)
         {
             BlockTarget = BlockButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, BlockButton, BlockTarget);
             BlockButton.Begin();
         }
-        else if (interact.Reset)
-            BlockButton.StartCooldown();
-        else if (interact.Protected)
-            BlockButton.StartCooldown(CooldownType.GuardianAngel);
+        else
+            BlockButton.StartCooldown(cooldown);
     }
 
     public override void ReadRPC(MessageReader reader) => BlockTarget = reader.ReadPlayer();

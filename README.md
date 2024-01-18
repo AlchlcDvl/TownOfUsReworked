@@ -146,8 +146,9 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 **Disclaimer: The mod is *not* guaranteed to work on the latest versions of Among Us when the game updates.**
 
-| Among Us           | Mod Version | Link                                                                                            |
+| Among Us           | Mod Version | Download Link                                                                                   |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
+| 2023.11.28 (s & e) | 0.6.4       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.4/Reworked.zip) |
 | 2023.11.28 (s & e) | 0.6.3       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.3/Reworked.zip) |
 | 2023.10.24 (s & e) | 0.6.2       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.2/Reworked.zip) |
 | 2023.10.24 (s & e) | 0.6.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.1/Reworked.zip) |
@@ -156,7 +157,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 <details>
 <summary>Older Versions</summary>
 
-| Among Us           | Mod Version  | Link                                                                                                                  |
+| Among Us           | Mod Version  | Download Link                                                                                                         |
 |--------------------|--------------|-----------------------------------------------------------------------------------------------------------------------|
 | 2023.7.12 (s & e)  | 0.5.4        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.4/Reworked.zip)                       |
 | 2023.7.12 (s & e)  | 0.5.3        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.3/Reworked.zip)                       |
@@ -1943,7 +1944,7 @@ Abilities give you extra perks on top of your role's regular powers.
 ### Applied To: Intruders, Crew, Syndicate, Neutral (Killing), Neutral (Harbinger) and Neutral (Neophyte)
 ### Origin: Town Of Us
 
-The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name os the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals and Sniper is for the Syndicate.
+The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name of the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals and Sniper is for the Syndicate.
 
 ### Game Options
 
