@@ -2,9 +2,9 @@
 
 public class Bug : Range
 {
-    private readonly Dictionary<byte, float> Players = new();
+    private Dictionary<byte, float> Players { get; }
     private List<PlayerControl> Closest { get; set; }
-    private readonly Dictionary<byte, LayerEnum> Results = new();
+    private Dictionary<byte, LayerEnum> Results { get; }
 
     public Bug(PlayerControl owner) : base(owner, CustomColorManager.Operative, CustomGameOptions.BugRange, "Bug")
     {
@@ -40,13 +40,13 @@ public class Bug : Range
 
             if (Players[player.PlayerId] >= CustomGameOptions.MinAmountOfTimeInBug && player != Owner && !Results.ContainsKey(player.PlayerId))
             {
-                var type = Role.GetRole(player).Type;
+                var type = player.GetRole().Type;
                 Results[player.PlayerId] = type;
 
                 if (Owner.Is(LayerEnum.Operative))
-                    Role.GetRole<Operative>(Owner).BuggedPlayers.Add(type);
+                    Owner.GetRole<Operative>().BuggedPlayers.Add(type);
                 else if (Owner.Is(LayerEnum.Retributionist))
-                    Role.GetRole<Retributionist>(Owner).BuggedPlayers.Add(type);
+                    Owner.GetRole<Retributionist>().BuggedPlayers.Add(type);
             }
         }
     }
@@ -56,7 +56,7 @@ public class Bug : Range
         var result = "";
         var results = Results.Values.ToList();
         results.Shuffle();
-        results.ForEach(role => result += $"{Role.GetRoles(role)[0]}, ");
+        results.ForEach(role => result += $"{PlayerLayer.GetLayers(role)[0]}, ");
         result = result.Remove(result.Length - 2);
 
         if (CustomGameOptions.PreciseOperativeInfo)

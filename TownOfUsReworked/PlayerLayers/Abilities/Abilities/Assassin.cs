@@ -5,7 +5,7 @@ public class CrewAssassin : Assassin
     public override LayerEnum Type => LayerEnum.CrewAssassin;
     public override string Name => "Bullseye";
 
-    public CrewAssassin(PlayerControl player) : base(player) {}
+    public CrewAssassin() : base() {}
 }
 
 public class IntruderAssassin : Assassin
@@ -13,7 +13,7 @@ public class IntruderAssassin : Assassin
     public override LayerEnum Type => LayerEnum.IntruderAssassin;
     public override string Name => "Hitman";
 
-    public IntruderAssassin(PlayerControl player) : base(player) {}
+    public IntruderAssassin() : base() {}
 }
 
 public class NeutralAssassin : Assassin
@@ -21,7 +21,7 @@ public class NeutralAssassin : Assassin
     public override LayerEnum Type => LayerEnum.NeutralAssassin;
     public override string Name => "Slayer";
 
-    public NeutralAssassin(PlayerControl player) : base(player) {}
+    public NeutralAssassin() : base() {}
 }
 
 public class SyndicateAssassin : Assassin
@@ -29,7 +29,7 @@ public class SyndicateAssassin : Assassin
     public override LayerEnum Type => LayerEnum.NeutralAssassin;
     public override string Name => "Sniper";
 
-    public SyndicateAssassin(PlayerControl player) : base(player) {}
+    public SyndicateAssassin() : base() {}
 }
 
 public abstract class Assassin : Ability
@@ -49,9 +49,13 @@ public abstract class Assassin : Ability
 
     public override UColor Color => ClientGameOptions.CustomAbColors ? CustomColorManager.Assassin : CustomColorManager.Ability;
     public override Func<string> Description => () => "- You can guess players mid-meetings";
+    public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    protected Assassin(PlayerControl player) : base(player)
+    protected Assassin() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
         ColorMapping = new();
         SortedColorMapping = new();
         SelectedButton = null;
@@ -60,6 +64,7 @@ public abstract class Assassin : Ability
         Buttons = new();
         Sorted = new();
         AssassinMenu = new(Player, "Guess", CustomGameOptions.AssassinateAfterVoting, Guess, IsExempt, SetLists);
+        return this;
     }
 
     private void SetLists()
@@ -329,10 +334,10 @@ public abstract class Assassin : Ability
                     var targetId = voteArea.TargetPlayerId;
                     var targetPlayer = PlayerById(targetId);
 
-                    var playerRole = Role.GetRole(voteArea);
-                    var playerAbility = GetAbility(voteArea);
-                    var playerModifier = Modifier.GetModifier(voteArea);
-                    var playerObjectifier = Objectifier.GetObjectifier(voteArea);
+                    var playerRole = voteArea.GetRole();
+                    var playerAbility = voteArea.GetAbility();
+                    var playerModifier = voteArea.GetModifier();
+                    var playerObjectifier = voteArea.GetObjectifier();
 
                     var roleflag = playerRole?.Name == guess;
                     var modifierflag = playerModifier?.Name == guess && CustomGameOptions.AssassinGuessModifiers;
@@ -346,7 +351,7 @@ public abstract class Assassin : Ability
 
                     if (targetPlayer.Is(LayerEnum.Actor) && guess != "Actor")
                     {
-                        var actor = Role.GetRole<Actor>(targetPlayer);
+                        var actor = targetPlayer.GetRole<Actor>();
 
                         if (actor.PretendRoles.Any(x => x.Name == guess))
                         {
@@ -536,6 +541,8 @@ public abstract class Assassin : Ability
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
+        Spread(Player, guessTarget);
+
         if (Local && player == Player)
             AssassinMenu.HideButtons();
 
@@ -547,12 +554,12 @@ public abstract class Assassin : Ability
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
 
             Flash(CustomColorManager.Indomitable);
-            Modifier.GetModifier<Indomitable>(player).AttemptedGuess = true;
+            player.GetModifier<Indomitable>().AttemptedGuess = true;
         }
 
         if (Player.Is(LayerEnum.Professional) && Player == player)
         {
-            var modifier = Modifier.GetModifier<Professional>(Player);
+            var modifier = Player.GetModifier<Professional>();
 
             if (!modifier.LifeUsed)
             {
@@ -571,15 +578,18 @@ public abstract class Assassin : Ability
             }
         }
 
-        RemainingKills--;
-        MarkMeetingDead(player, Player);
-
-        if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+        if (CanAttack(AttackVal, player.GetDefenseValue(Player)) || player == Player)
         {
-            var otherLover = player.GetOtherLover();
+            RemainingKills--;
+            MarkMeetingDead(player, Player);
 
-            if (!otherLover.Is(Alignment.NeutralApoc))
-                RpcMurderPlayer(otherLover, guess, guessTarget);
+            if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+            {
+                var otherLover = player.GetOtherLover();
+
+                if (!otherLover.Is(Alignment.NeutralApoc))
+                    RpcMurderPlayer(otherLover, guess, guessTarget);
+            }
         }
 
         if (Local)

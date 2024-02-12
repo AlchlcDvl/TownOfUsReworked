@@ -8,5 +8,11 @@ public class Insider : Ability
     public override Func<string> Description => () => "- You can finish your tasks to see the votes of others";
     public override bool Hidden => !CustomGameOptions.InsiderKnows && !TasksDone && !IsDead;
 
-    public Insider(PlayerControl player) : base(player) {}
+    public Insider() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

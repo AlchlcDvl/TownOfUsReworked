@@ -16,7 +16,14 @@ public class Volatile : Modifier
 
     private static readonly string[] Links = { "https://www.youtube.com/watch?v=79-AwFZCKpA", "https://www.youtube.com/watch?v=xm3YgoEiEDc" };
 
-    public Volatile(PlayerControl player) : base(player) => Exposed = !CustomGameOptions.VolatileKnows;
+    public Volatile() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        Exposed = !CustomGameOptions.VolatileKnows;
+        return this;
+    }
 
     public override void UpdateHud(HudManager __instance)
     {

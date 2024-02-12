@@ -16,11 +16,16 @@ public class Vigilante : Crew
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Vigilante(PlayerControl player) : base(player)
+    public Vigilante() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewKill;
         ShootButton = new(this, "Shoot", AbilityTypes.Alive, "ActionSecondary", Shoot, CustomGameOptions.ShootCd, Exception, CustomGameOptions.MaxBullets);
         RoundOne = CustomGameOptions.RoundOneNoShot;
+        return this;
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -46,11 +51,11 @@ public class Vigilante : Crew
     public void Shoot()
     {
         var target = ShootButton.TargetPlayer;
-        var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb ||
-            target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || (target.Is(LayerEnum.Jester) && CustomGameOptions.VigiKillsJester) || (target.Is(LayerEnum.Executioner) &&
-            CustomGameOptions.VigiKillsExecutioner) || (target.Is(LayerEnum.Cannibal) && CustomGameOptions.VigiKillsCannibal) || target.IsFramed() || (target.Is(Alignment.NeutralBen) &&
-            CustomGameOptions.VigiKillsNB) || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.Is(LayerEnum.Corrupted) || (target.Is(LayerEnum.Actor) &&
-            CustomGameOptions.VigiKillsActor) || (target.Is(LayerEnum.BountyHunter) && CustomGameOptions.VigiKillsBH);
+        var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or
+            Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || (target.Is(LayerEnum.Jester) && CustomGameOptions.VigiKillsJester) ||
+            (target.Is(LayerEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) || (target.Is(LayerEnum.Cannibal) && CustomGameOptions.VigiKillsCannibal) || target.IsFramed() ||
+            (target.Is(Alignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() ||
+            Player.Is(LayerEnum.Corrupted) || (target.Is(LayerEnum.Actor) && CustomGameOptions.VigiKillsActor) || (target.Is(LayerEnum.BountyHunter) && CustomGameOptions.VigiKillsBH);
         var cooldown = Interact(Player, target, flag4);
 
         if (cooldown != CooldownType.Fail)

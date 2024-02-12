@@ -10,10 +10,15 @@ public class Sheriff : Crew
     public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";
     public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>";
 
-    public Sheriff(PlayerControl player) : base(player)
+    public Sheriff() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewKill;
         InterrogateButton = new(this, "Interrogate", AbilityTypes.Alive, "ActionSecondary", Interrogate, CustomGameOptions.InterrogateCd, Exception);
+        return this;
     }
 
     public void Interrogate()

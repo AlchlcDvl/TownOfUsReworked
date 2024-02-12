@@ -13,16 +13,24 @@ public class Sidekick : Syndicate
     public override Func<string> Description => () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your" +
         $" former role\n{CommonAbilities}";
 
-    public Sidekick(PlayerControl player) : base(player) => Alignment = Alignment.SyndicateUtil;
+    public Sidekick() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        BaseStart();
+        Alignment = Alignment.SyndicateUtil;
+        return this;
+    }
 
     public void TurnRebel()
     {
         FormerRole.IsPromoted = true;
-        new PromotedRebel(Player)
+        new PromotedRebel()
         {
             FormerRole = FormerRole,
             RoleBlockImmune = FormerRole.RoleBlockImmune
-        }.RoleUpdate(this);
+        }.Start<Role>(Player).RoleUpdate(this);
     }
 
     public override void UpdateHud(HudManager __instance)

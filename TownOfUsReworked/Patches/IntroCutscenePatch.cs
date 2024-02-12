@@ -16,9 +16,6 @@ public static class ShowTeamPatch
 [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__39), nameof(IntroCutscene._ShowRole_d__39.MoveNext))]
 public static class ShowRolePatch
 {
-    public static void Prefix(IntroCutscene._ShowRole_d__39 __instance) => __instance.__4__this.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => __instance.__4__this.YouAreText.text
-        = "You Are The")));
-
     public static void Postfix(IntroCutscene._ShowRole_d__39 __instance)
     {
         var role = Role.LocalRole;
@@ -49,6 +46,7 @@ public static class ShowRolePatch
         __instance.__4__this.YouAreText.color = role.Color;
         __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
         __instance.__4__this.RoleBlurbText.color = role.Color;
+        __instance.__4__this.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => __instance.__4__this.YouAreText.text = "You Are The")));
     }
 }
 

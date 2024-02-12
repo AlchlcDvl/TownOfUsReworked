@@ -5,9 +5,9 @@ public class CustomMenu
     public static readonly List<CustomMenu> AllMenus = new();
 
     public ShapeshifterMinigame Menu { get; set; }
-    public readonly PlayerControl Owner;
-    public readonly Select Click;
-    public readonly Exclude Exception;
+    public PlayerControl Owner { get; }
+    public Select Click { get; }
+    public Exclude Exception { get; }
     public List<PlayerControl> Targets => CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected).ToList();
 
     public delegate void Select(PlayerControl player);

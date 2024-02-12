@@ -8,5 +8,11 @@ public class Diseased : Modifier
     public override Func<string> Description => () => $"- Your killer's cooldown increases by {CustomGameOptions.DiseasedMultiplier} times";
     public override bool Hidden => !CustomGameOptions.DiseasedKnows && !IsDead;
 
-    public Diseased(PlayerControl player) : base(player) {}
+    public Diseased() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

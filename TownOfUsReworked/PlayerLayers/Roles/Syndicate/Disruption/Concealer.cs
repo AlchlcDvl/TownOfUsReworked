@@ -12,13 +12,18 @@ public class Concealer : Syndicate
     public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
     public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
 
-    public Concealer(PlayerControl player) : base(player)
+    public Concealer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;
         ConcealButton = new(this, "Conceal", AbilityTypes.Targetless, "Secondary", HitConceal, CustomGameOptions.ConcealCd, CustomGameOptions.ConcealDur, (CustomButton.EffectVoid)Conceal,
             UnConceal);
+        return this;
     }
 
     public void Conceal()

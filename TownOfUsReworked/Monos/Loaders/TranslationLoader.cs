@@ -2,28 +2,30 @@ using static TownOfUsReworked.Localisation.TranslationManager;
 
 namespace TownOfUsReworked.Monos;
 
-public class TranslationsLoader : AssetLoader
+public class TranslationLoader : AssetLoader
 {
     public override string ManifestFileName => "Languages";
+    public override string DirectoryInfo => TownOfUsReworked.Other;
 
     [HideFromIl2Cpp]
     public override Type JSONType => typeof(LanguageJSON);
 
-    public static TranslationsLoader Instance { get; private set; }
+    public static TranslationLoader Instance { get; private set; }
 
-    public TranslationsLoader(IntPtr ptr) : base(ptr)
+    public TranslationLoader(IntPtr ptr) : base(ptr)
     {
-        if (Instance != null)
+        if (Instance)
             Instance.Destroy();
 
         Instance = this;
     }
 
     [HideFromIl2Cpp]
-    public override void AfterLoading(object response)
+    public override IEnumerator AfterLoading(object response)
     {
         var langs = (LanguageJSON)response;
         AllTranslations.AddRange(langs.Languages);
         LogMessage($"Found {AllTranslations.Count} translations");
+        yield break;
     }
 }

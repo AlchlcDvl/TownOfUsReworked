@@ -21,10 +21,11 @@ public static class UpdateNames
         PlayerNames[player.PlayerId] = player.Data.PlayerName;
         ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
 
-        if (!IsLobby)
+        if (IsInGame)
         {
             (player.NameText().text, player.NameText().color) = UpdateGameName(player);
             (player.ColorBlindText().text, player.ColorBlindText().color) = (UpdateColorblind(player), player.NameText().color);
+            player.transform.localScale = CustomPlayer.Custom(player).SizeFactor;
         }
     }
 
@@ -45,7 +46,7 @@ public static class UpdateNames
         player.IsMimicking(out player);
         var name = "";
 
-        if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !ClientGameOptions.OptimisationMode)
+        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !ClientGameOptions.OptimisationMode)
             name = GetRandomisedName();
         else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
@@ -80,12 +81,12 @@ public static class UpdateNames
 
         var name = "";
         var color = UColor.white;
-        var info = player.AllPlayerInfo();
-        var localinfo = CustomPlayer.Local.AllPlayerInfo();
+        var info = player.GetLayers();
+        var localinfo = CustomPlayer.Local.GetLayers();
         var revealed = false;
 
-        if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !ClientGameOptions.OptimisationMode)
-            name = GetRandomisedName();
+        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+            name = ClientGameOptions.OptimisationMode ? "" : GetRandomisedName();
         else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
         else if (CachedMorphs.ContainsKey(player.PlayerId) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
@@ -95,7 +96,7 @@ public static class UpdateNames
         else
             name = PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
 
-        if (info[0] == null || localinfo[0] == null)
+        if (info.Count != 4 || localinfo.Count != 4)
             return (name, color);
 
         if (player.CanDoTasks() && (DeadSeeEverything || player == CustomPlayer.Local || IsCustomHnS || IsTaskRace))
@@ -110,8 +111,11 @@ public static class UpdateNames
         if (player.IsMarked())
             name += " <color=#F1C40FFF>χ</color>";
 
-        if (player == CachedFirstDead && ((player == CustomPlayer.Local && (int)CustomGameOptions.WhoSeesFirstKillShield == 1) || CustomGameOptions.WhoSeesFirstKillShield == 0))
+        if (player.Data.PlayerName == CachedFirstDead && ((player == CustomPlayer.Local && (int)CustomGameOptions.WhoSeesFirstKillShield == 1) || CustomGameOptions.WhoSeesFirstKillShield ==
+            0))
+        {
             name += " <color=#C2185BFF>Γ</color>";
+        }
 
         if (player.Is(LayerEnum.Mayor) && !DeadSeeEverything && CustomPlayer.Local != player)
         {
@@ -214,7 +218,35 @@ public static class UpdateNames
                 }
             }
             else if (godfather.IsBM && godfather.BlackmailedPlayer == player)
+            {
                 name += " <color=#02A752FF>Φ</color>";
+                color = godfather.Color;
+            }
+            else if (godfather.IsAmb && godfather.AmbushedPlayer == player)
+            {
+                name += " <color=#2BD29CFF>人</color>";
+                color = godfather.Color;
+            }
+            if (godfather.FlashedPlayers.Contains(player.PlayerId) && CustomGameOptions.GrenadierIndicators)
+            {
+                name += " <color=#85AA5BFF>ㅇ</color>";
+                color = godfather.Color;
+            }
+        }
+        else if (CustomPlayer.Local.Is(LayerEnum.PromotedRebel) && !DeadSeeEverything)
+        {
+            var rebel = localinfo[0] as PromotedRebel;
+
+            if (rebel.IsSil && rebel.SilencedPlayer == player)
+            {
+                name += " <color=#AAB43EFF>乂</color>";
+                color = rebel.Color;
+            }
+            else if (rebel.IsCrus && rebel.CrusadedPlayer == player)
+            {
+                name += " <color=#DF7AE8FF>τ</color>";
+                color = rebel.Color;
+            }
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Medic))
         {
@@ -223,12 +255,28 @@ public static class UpdateNames
             if (medic.ShieldedPlayer != null && medic.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
         }
+        else if (CustomPlayer.Local.Is(LayerEnum.Trapper))
+        {
+            var trapper = localinfo[0] as Trapper;
+
+            if (trapper.Trapped.Contains(player.PlayerId))
+                name += " <color=#BE1C8CFF>∮</color>";
+        }
         else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
         {
             var ret = localinfo[0] as Retributionist;
 
             if (ret.ShieldedPlayer != null && ret.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            {
                 name += " <color=#006600FF>✚</color>";
+                color = ret.Color;
+            }
+
+            if (ret.Trapped.Contains(player.PlayerId))
+            {
+                name += " <color=#BE1C8CFF>∮</color>";
+                color = ret.Color;
+            }
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Arsonist) && !DeadSeeEverything)
         {
@@ -332,14 +380,8 @@ public static class UpdateNames
                 else
                     color = whisperer.SubFactionColor;
             }
-            else
-            {
-                foreach (var (key, value) in whisperer.PlayerConversion)
-                {
-                    if (player.PlayerId == key)
-                        name += $" {value}%";
-                }
-            }
+            else if (whisperer.PlayerConversion.TryGetValue(player.PlayerId, out var value))
+                name += $" {value}%";
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Dracula) && !DeadSeeEverything)
         {
@@ -394,13 +436,23 @@ public static class UpdateNames
         }
         else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything && CustomGameOptions.NKsKnow)
         {
-            if (((player.GetRole() == CustomPlayer.Local.GetRole() && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
+            if (((player.GetRole().Type == CustomPlayer.Local.GetRole().Type && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
                 CustomGameOptions.NoSolo == NoSolo.AllNKs)) && !revealed)
             {
                 var role = info[0] as Role;
                 color = role.Color;
                 name += $"\n{role}";
                 revealed = true;
+            }
+        }
+        else if (CustomPlayer.Local.Is(LayerEnum.Grenadier))
+        {
+            var grenadier = localinfo[0] as Grenadier;
+
+            if (grenadier.FlashedPlayers.Contains(player.PlayerId) && CustomGameOptions.GrenadierIndicators)
+            {
+                name += " <color=#85AA5BFF>ㅇ</color>";
+                color = grenadier.Color;
             }
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Blackmailer))
@@ -413,6 +465,36 @@ public static class UpdateNames
                 color = blackmailer.Color;
             }
         }
+        else if (CustomPlayer.Local.Is(LayerEnum.Silencer))
+        {
+            var silencer = localinfo[0] as Silencer;
+
+            if (silencer.SilencedPlayer == player)
+            {
+                name += " <color=#AAB43EFF>乂</color>";
+                color = silencer.Color;
+            }
+        }
+        else if (CustomPlayer.Local.Is(LayerEnum.Ambusher))
+        {
+            var ambusher = localinfo[0] as Ambusher;
+
+            if (ambusher.AmbushedPlayer == player)
+            {
+                name += " <color=#2BD29CFF>人</color>";
+                color = ambusher.Color;
+            }
+        }
+        else if (CustomPlayer.Local.Is(LayerEnum.Crusader))
+        {
+            var crusader = localinfo[0] as Crusader;
+
+            if (crusader.CrusadedPlayer == player)
+            {
+                name += " <color=#DF7AE8FF>τ</color>";
+                color = crusader.Color;
+            }
+        }
         else if ((IsCustomHnS || IsTaskRace) && player != CustomPlayer.Local)
         {
             name += $"\n{info[0]}";
@@ -420,7 +502,7 @@ public static class UpdateNames
             revealed = true;
         }
 
-        if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything)
+        if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Dracula))
         {
             var dracula = CustomPlayer.Local.GetDracula();
 
@@ -452,7 +534,7 @@ public static class UpdateNames
                     color = dracula.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsRecruit() && !DeadSeeEverything)
+        else if (CustomPlayer.Local.IsRecruit() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Jackal))
         {
             var jackal = CustomPlayer.Local.GetJackal();
 
@@ -484,7 +566,7 @@ public static class UpdateNames
                     color = jackal.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsResurrected() && !DeadSeeEverything)
+        else if (CustomPlayer.Local.IsResurrected() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Necromancer))
         {
             var necromancer = CustomPlayer.Local.GetNecromancer();
 
@@ -516,7 +598,7 @@ public static class UpdateNames
                     color = necromancer.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsPersuaded() && !DeadSeeEverything)
+        else if (CustomPlayer.Local.IsPersuaded() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Whisperer))
         {
             var whisperer = CustomPlayer.Local.GetWhisperer();
 
@@ -547,14 +629,8 @@ public static class UpdateNames
                 else
                     color = whisperer.SubFactionColor;
             }
-            else
-            {
-                foreach (var (key, value) in whisperer.PlayerConversion)
-                {
-                    if (player.PlayerId == key && !player.Is(SubFaction.Sect))
-                        name += $" {value}%";
-                }
-            }
+            else if (whisperer.PlayerConversion.TryGetValue(player.PlayerId, out var value))
+                name += $" {value}%";
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Lovers) && !DeadSeeEverything)
@@ -818,6 +894,9 @@ public static class UpdateNames
         if ((player == CustomPlayer.Local || DeadSeeEverything) && player.IsVesting())
             name += " <color=#DDDD00FF>υ</color>";
 
+        if ((player == CustomPlayer.Local || DeadSeeEverything) && player.IsOnAlert())
+            name += " <color=#998040FF>σ</color>";
+
         if (player == CustomPlayer.Local && !DeadSeeEverything)
         {
             if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 0 or 2)
@@ -859,6 +938,15 @@ public static class UpdateNames
             if (player.IsProtected() && CustomGameOptions.ShowProtect != ProtectOptions.Everyone)
                 name += " <color=#FFFFFFFF>η</color>";
 
+            if (player.IsTrapped())
+                name += " <color=#BE1C8CFF>∮</color>";
+
+            if (player.IsAmbushed())
+                name += " <color=#2BD29CFF>人</color>";
+
+            if (player.IsCrusaded())
+                name += " <color=#DF7AE8FF>τ</color>";
+
             if (player.IsBHTarget())
                 name += " <color=#B51E39FF>Θ</color>";
 
@@ -895,7 +983,7 @@ public static class UpdateNames
             if (player.IsCryoDoused())
                 name += " <color=#642DEAFF>λ</color>";
 
-            if (player.IsSpelled())
+            if (player.IsSpellbound())
                 name += " <color=#0028F5FF>ø</color>";
         }
 
@@ -905,15 +993,18 @@ public static class UpdateNames
         if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 3 && !DeadSeeEverything)
             name += " <color=#FFFFFFFF>η</color>";
 
+        if ((DeadSeeEverything || CustomPlayer.Local.Is(LayerEnum.Pestilence)) && Pestilence.Infected.TryGetValue(player.PlayerId, out var count))
+        {
+            for (var i = 0; i < count; i++)
+                name += " <color=#424242FF>米</color>";
+        }
+
         if (DeadSeeEverything || player == CustomPlayer.Local)
         {
-            if (info[3] != null)
-            {
-                var objectifier = info[3] as Objectifier;
+            var objectifier = info[3] as Objectifier;
 
-                if (objectifier.Type != LayerEnum.None && !objectifier.Hidden)
-                    name += $" {objectifier.ColoredSymbol}";
-            }
+            if (objectifier.Type != LayerEnum.NoneObjectifier && !objectifier.Hidden)
+                name += $" {objectifier.ColoredSymbol}";
 
             if (!revealed)
             {

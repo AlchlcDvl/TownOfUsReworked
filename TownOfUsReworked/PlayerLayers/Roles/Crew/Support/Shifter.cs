@@ -10,10 +10,15 @@ public class Shifter : Crew
     public override Func<string> StartText => () => "Shift Around Roles";
     public override Func<string> Description => () => "- You can steal another player's role\n- Shifting withn on-<color=#8CFFFFFF>Crew</color> will cause you to kill yourself";
 
-    public Shifter(PlayerControl player) : base(player)
+    public Shifter() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewSupport;
         ShiftButton = new(this, "Shift", AbilityTypes.Alive, "ActionSecondary", Shift, CustomGameOptions.ShiftCd);
+        return this;
     }
 
     public void Shift()
@@ -31,7 +36,7 @@ public class Shifter : Crew
 
     public void Shift(PlayerControl other)
     {
-        var role = GetRole(other);
+        var role = other.GetRole();
 
         if (!other.Is(Faction.Crew) || other.IsFramed())
         {
@@ -41,7 +46,9 @@ public class Shifter : Crew
             return;
         }
 
-        if (CustomPlayer.Local == other || CustomPlayer.Local == Player)
+        var player = Player;
+
+        if (CustomPlayer.Local == other || CustomPlayer.Local == player)
         {
             Flash(CustomColorManager.Shifter);
             role.OnLobby();
@@ -51,44 +58,44 @@ public class Shifter : Crew
 
         Role newRole = role.Type switch
         {
-            LayerEnum.Crewmate => new Crewmate(Player),
-            LayerEnum.Detective => new Detective(Player),
-            LayerEnum.Escort => new Escort(Player),
-            LayerEnum.Sheriff => new Sheriff(Player),
-            LayerEnum.Medium => new Medium(Player),
-            LayerEnum.VampireHunter => new VampireHunter(Player),
-            LayerEnum.Mystic => new Mystic(Player),
-            LayerEnum.Seer => new Seer(Player),
-            LayerEnum.Altruist => new Altruist(Player),
-            LayerEnum.Engineer => new Engineer(Player),
-            LayerEnum.Transporter => new Transporter(Player),
-            LayerEnum.Mayor => new Mayor(Player),
-            LayerEnum.Operative => new Operative(Player),
-            LayerEnum.Veteran => new Veteran(Player),
-            LayerEnum.Vigilante => new Vigilante(Player),
-            LayerEnum.Chameleon => new Chameleon(Player),
-            LayerEnum.Dictator => new Dictator(Player),
-            LayerEnum.Tracker => new Tracker(Player),
-            LayerEnum.Coroner => new Coroner(Player),
-            LayerEnum.Bastion => new Bastion(Player) { BombedIDs = ((Bastion)role).BombedIDs },
-            LayerEnum.Medic => new Medic(Player) { ShieldedPlayer = ((Medic)role).ShieldedPlayer },
-            LayerEnum.Monarch => new Monarch(Player)
+            LayerEnum.Crewmate => new Crewmate(),
+            LayerEnum.Detective => new Detective(),
+            LayerEnum.Escort => new Escort(),
+            LayerEnum.Sheriff => new Sheriff(),
+            LayerEnum.Medium => new Medium(),
+            LayerEnum.VampireHunter => new VampireHunter(),
+            LayerEnum.Mystic => new Mystic(),
+            LayerEnum.Seer => new Seer(),
+            LayerEnum.Altruist => new Altruist(),
+            LayerEnum.Engineer => new Engineer(),
+            LayerEnum.Transporter => new Transporter(),
+            LayerEnum.Mayor => new Mayor(),
+            LayerEnum.Operative => new Operative(),
+            LayerEnum.Veteran => new Veteran(),
+            LayerEnum.Vigilante => new Vigilante(),
+            LayerEnum.Chameleon => new Chameleon(),
+            LayerEnum.Dictator => new Dictator(),
+            LayerEnum.Tracker => new Tracker(),
+            LayerEnum.Coroner => new Coroner(),
+            LayerEnum.Bastion => new Bastion() { BombedIDs = ((Bastion)role).BombedIDs },
+            LayerEnum.Medic => new Medic() { ShieldedPlayer = ((Medic)role).ShieldedPlayer },
+            LayerEnum.Monarch => new Monarch()
             {
                 ToBeKnighted = ((Monarch)role).ToBeKnighted,
                 Knighted = ((Monarch)role).Knighted
             },
-            LayerEnum.Retributionist => new Retributionist(Player)
+            LayerEnum.Retributionist => new Retributionist()
             {
                 Selected = ((Retributionist)role).Selected,
                 ShieldedPlayer = ((Retributionist)role).ShieldedPlayer,
                 BombedIDs = ((Retributionist)role).BombedIDs
             },
-            LayerEnum.Shifter or _ => new Shifter(Player),
+            LayerEnum.Shifter or _ => new Shifter(),
         };
 
-        newRole.RoleUpdate(this);
-        Role newRole2 = CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter ? new Shifter(other) : new Crewmate(other);
-        newRole2.RoleUpdate(role);
+        newRole.Start<Role>(player).RoleUpdate(this);
+        Role newRole2 = CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
+        newRole2.Start<Role>(other).RoleUpdate(role);
     }
 
     public bool Exception(PlayerControl player) => (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None && player.Is(SubFaction));

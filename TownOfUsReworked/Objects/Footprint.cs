@@ -2,16 +2,17 @@ namespace TownOfUsReworked.Objects;
 
 public class Footprint
 {
-    public readonly PlayerControl Player;
+    public PlayerControl Player { get; }
     public byte PlayerId => Player.PlayerId;
-    private readonly GameObject GObject;
-    private readonly SpriteRenderer Sprite;
-    private readonly float Time2;
-    private readonly Vector2 Velocity;
+    private GameObject GObject { get; }
+    private SpriteRenderer Sprite { get; }
+    private float Time2 { get; }
+    private Vector2 Velocity { get; }
     public UColor Color { get; set; }
-    public readonly Vector3 Position;
-    private static bool Grey => CustomGameOptions.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (HudUpdate.IsCamoed && CustomGameOptions.AnonymousFootPrint ==
+    public Vector3 Position { get; }
+    private static bool Grey => CustomGameOptions.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (HudHandler.Instance.IsCamoed && CustomGameOptions.AnonymousFootPrint ==
         FootprintVisibility.OnlyWhenCamouflaged);
+
     public static readonly Dictionary<byte, int> OddEven = new();
 
     public Footprint(PlayerControl player)

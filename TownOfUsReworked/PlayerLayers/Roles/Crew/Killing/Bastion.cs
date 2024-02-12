@@ -12,11 +12,16 @@ public class Bastion : Crew
     public override Func<string> Description => () => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    public Bastion(PlayerControl player) : base(player)
+    public Bastion() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewKill;
         BombedIDs = new();
         BombButton = new(this, $"{SpriteName}VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, Exception);
+        return this;
     }
 
     public static string SpriteName => MapPatches.CurrentMap switch

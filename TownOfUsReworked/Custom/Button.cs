@@ -461,7 +461,7 @@ public class CustomButton
         Block.SetActive(Blocked && Active);
         Usable = usable && !(HasUses && Uses <= 0);
 
-        if (!EffectActive && !DelayActive && !CooldownActive && !Disabled)
+        if (!EffectActive && !DelayActive && !CooldownActive && !Disabled && PostDeath == Owner.IsDead)
             SetTarget();
 
         Clickable = Base && !EffectActive && usable && condition && !Meeting && !Blocked && !DelayActive && !Owner.Player.CannotUse() && Owner.Local && Targeting && !Ejection && !Disabled &&

@@ -42,9 +42,6 @@ public static class CustomVisorManager
         };
         CustomVisorRegistry.TryAdd(visor.name, extend);
         CustomVisorViewDatas.TryAdd(visor.ProductId, viewData);
-        cv.Data = visor;
-        cv.ViewData = viewData;
-        cv.Extension = extend;
         return visor;
     }
 

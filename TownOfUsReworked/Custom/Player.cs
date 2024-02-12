@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomPlayer
 {
-    public readonly PlayerControl Player;
+    public PlayerControl Player { get; }
     public GameData.PlayerInfo Data => Player.Data;
     public Transform Transform => Player.transform;
     public Vector3 Position => Transform.position;

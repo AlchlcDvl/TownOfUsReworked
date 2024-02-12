@@ -14,8 +14,12 @@ public class Shapeshifter : Syndicate
     public override Func<string> StartText => () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
 
-    public Shapeshifter(PlayerControl player) : base(player)
+    public Shapeshifter() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;
@@ -23,6 +27,7 @@ public class Shapeshifter : Syndicate
         ShapeshiftMenu2 = new(Player, Click2, Exception2);
         ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Targetless, "Secondary", HitShapeshift, CustomGameOptions.ShapeshiftCd, CustomGameOptions.ShapeshiftDur,
             (CustomButton.EffectVoid)Shift, UnShapeshift);
+        return this;
     }
 
     public void Shift() => Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
@@ -113,11 +118,11 @@ public class Shapeshifter : Syndicate
         }
     }
 
-    public bool Exception1(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && BodyByPlayer(player) == null) || (player.Is(Faction) &&
-        !CustomGameOptions.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&
-        !CustomGameOptions.ShapeshiftMates);
+    public bool Exception1(PlayerControl player) => player == ShapeshiftPlayer2 || CommonException(player);
 
-    public bool Exception2(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && BodyByPlayer(player) == null) || (player.Is(Faction) &&
+    public bool Exception2(PlayerControl player) => player == ShapeshiftPlayer1 || CommonException(player);
+
+    public bool CommonException(PlayerControl player) => player == Player || (player.Data.IsDead && BodyByPlayer(player) == null) || (player.Is(Faction) &&
         !CustomGameOptions.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&
         !CustomGameOptions.ShapeshiftMates);
 

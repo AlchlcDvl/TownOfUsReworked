@@ -10,17 +10,21 @@ public class Medic : Crew
     public override string Name => "Medic";
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
-    public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" +
-        (CustomGameOptions.NotificationShield is ShieldOptions.Everyone or ShieldOptions.Medic or ShieldOptions.SelfAndMedic ? "\n- If your target is attacked, you will be notified of it" :
-        "");
+    public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (CustomGameOptions.NotificationShield is ShieldOptions.Everyone or
+        ShieldOptions.Medic or ShieldOptions.SelfAndMedic ? "\n- If your target is attacked, you will be notified of it" : "");
 
-    public Medic(PlayerControl player) : base(player)
+    public Medic() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         ShieldedPlayer = null;
         ExShielded = null;
         Alignment = Alignment.CrewProt;
         ShieldButton = new(this, "Shield", AbilityTypes.Alive, "ActionSecondary", Protect, Exception);
-        player.Data.Role.IntroSound = GetAudio("MedicIntro");
+        Data.Role.IntroSound = GetAudio("MedicIntro");
+        return this;
     }
 
     public void Protect()
@@ -43,7 +47,7 @@ public class Medic : Crew
     public bool Exception(PlayerControl player)
     {
         if (ShieldedPlayer == null)
-            return (player.Is(LayerEnum.Mayor) && GetRole<Mayor>(player).Revealed) || (player.Is(LayerEnum.Dictator) && GetRole<Dictator>(player).Revealed);
+            return (player.Is(LayerEnum.Mayor) && player.GetRole<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetRole<Dictator>().Revealed);
         else
             return ShieldedPlayer != player;
     }

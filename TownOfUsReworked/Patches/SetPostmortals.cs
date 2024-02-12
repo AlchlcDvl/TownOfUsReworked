@@ -25,13 +25,13 @@ public static class SetPostmortals
             return;
 
         if (CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
-            Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
+            CustomPlayer.Local.GetModifier<Astral>().SetPosition();
 
         foreach (var id in AssassinatedPlayers)
         {
             var player = PlayerById(id);
 
-            if (!player.Data.Disconnected)
+            if (!player.HasDied())
                 player.Exiled();
         }
 
@@ -80,7 +80,7 @@ public static class SetPostmortals
                         continue;
 
                     player.Exiled();
-                    var role = Role.GetRole(player);
+                    var role = player.GetRole();
                     role.KilledBy = " By " + dict.PlayerName;
                     role.DeathReason = DeathReasonEnum.Dictated;
                 }
@@ -187,7 +187,7 @@ public static class SetPostmortals
         }
     }
 
-    public static void SetStartingVent(PlayerControl player)
+    private static void SetStartingVent(PlayerControl player)
     {
         if (!player.Data.IsDead || !player.IsPostmortal() || (player.IsPostmortal() && player.Caught()))
             return;
@@ -199,14 +199,15 @@ public static class SetPostmortals
             var ventilationSystem = systemType.TryCast<VentilationSystem>();
 
             if (ventilationSystem != null)
-                vents = AllMapVents.Where(x => ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id)).ToList();
+                vents = AllMapVents.Where(x => !ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id)).ToList();
         }
 
         if (IsSubmerged())
             vents = vents.Where(x => AllMapVents.IndexOf(x) is not (0 or 14)).ToList();
 
-        var startingVent = vents[URandom.RandomRangeInt(0, vents.Count)];
-        player.NetTransform.RpcSnapTo(GetVentPosition(startingVent));
+        vents.Shuffle();
+        var startingVent = vents.Random();
+        player.RpcCustomSnapTo(GetVentPosition(startingVent));
         player.MyPhysics.RpcEnterVent(startingVent.Id);
     }
 
@@ -236,8 +237,8 @@ public static class SetPostmortals
 
             if (!rev.Is(LayerEnum.Revealer))
             {
-                var former = Role.GetRole(rev);
-                new Revealer(rev) { FormerRole = former }.RoleUpdate(former);
+                var former = rev.GetRole();
+                new Revealer() { FormerRole = former }.Start<Role>(rev).RoleUpdate(former);
                 RemoveTasks(rev);
                 rev.gameObject.layer = LayerMask.NameToLayer("Players");
             }
@@ -248,7 +249,7 @@ public static class SetPostmortals
 
             if (rev == CustomPlayer.Local)
             {
-                if (Role.GetRole<Revealer>(rev).Caught)
+                if (rev.GetRole<Revealer>().Caught)
                     continue;
 
                 SetStartingVent(rev);
@@ -258,7 +259,7 @@ public static class SetPostmortals
         WillBeRevealers.RemoveAll(remove.Contains);
     }
 
-    public static void TryAddRevealer(PlayerControl dead)
+    private static void TryAddRevealer(PlayerControl dead)
     {
         if (!dead.HasDied())
             return;
@@ -293,8 +294,8 @@ public static class SetPostmortals
 
             if (!phan.Is(LayerEnum.Phantom))
             {
-                var former = Role.GetRole(phan);
-                new Phantom(phan).RoleUpdate(former);
+                var former = phan.GetRole();
+                new Phantom().Start<Role>(phan).RoleUpdate(former);
                 RemoveTasks(phan);
                 phan.gameObject.layer = LayerMask.NameToLayer("Players");
             }
@@ -305,7 +306,7 @@ public static class SetPostmortals
 
             if (phan == CustomPlayer.Local)
             {
-                if (Role.GetRole<Phantom>(phan).Caught)
+                if (phan.GetRole<Phantom>().Caught)
                     continue;
 
                 SetStartingVent(phan);
@@ -315,7 +316,7 @@ public static class SetPostmortals
         WillBePhantoms.RemoveAll(remove.Contains);
     }
 
-    public static void TryAddPhantom(PlayerControl dead)
+    private static void TryAddPhantom(PlayerControl dead)
     {
         if (!dead.HasDied())
             return;
@@ -350,8 +351,8 @@ public static class SetPostmortals
 
             if (!ban.Is(LayerEnum.Banshee))
             {
-                var former = Role.GetRole(ban);
-                new Banshee(ban).RoleUpdate(former);
+                var former = ban.GetRole();
+                new Banshee().Start<Role>(ban).RoleUpdate(former);
                 ban.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
@@ -361,7 +362,7 @@ public static class SetPostmortals
 
             if (ban == CustomPlayer.Local)
             {
-                if (Role.GetRole<Banshee>(ban).Caught)
+                if (ban.GetRole<Banshee>().Caught)
                     continue;
 
                 SetStartingVent(ban);
@@ -371,7 +372,7 @@ public static class SetPostmortals
         WillBeBanshees.RemoveAll(remove.Contains);
     }
 
-    public static void TryAddBanshee(PlayerControl dead)
+    private static void TryAddBanshee(PlayerControl dead)
     {
         if (!dead.HasDied())
             return;
@@ -406,8 +407,8 @@ public static class SetPostmortals
 
             if (!ghoul.Is(LayerEnum.Ghoul))
             {
-                var former = Role.GetRole(ghoul);
-                new Ghoul(ghoul).RoleUpdate(former);
+                var former = ghoul.GetRole();
+                new Ghoul().Start<Role>(ghoul).RoleUpdate(former);
                 ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
@@ -417,7 +418,7 @@ public static class SetPostmortals
 
             if (ghoul == CustomPlayer.Local)
             {
-                if (Role.GetRole<Ghoul>(ghoul).Caught)
+                if (ghoul.GetRole<Ghoul>().Caught)
                     continue;
 
                 SetStartingVent(ghoul);
@@ -427,7 +428,7 @@ public static class SetPostmortals
         WillBeGhouls.RemoveAll(remove.Contains);
     }
 
-    public static void TryAddGhoul(PlayerControl dead)
+    private static void TryAddGhoul(PlayerControl dead)
     {
         if (!dead.HasDied())
             return;

@@ -19,15 +19,21 @@ public class Executioner : Neutral
     public override Func<string> StartText => () => "Find Someone To Eject";
     public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to eject" : ((TargetVotedOut ? "- You can doom those who voted for " +
         $"{TargetPlayer?.name}\n" : "") + $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>");
+    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
-    public Executioner(PlayerControl player) : base(player)
+    public Executioner() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (TargetPlayer == null ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
         Alignment = Alignment.NeutralEvil;
         ToDoom = new();
         DoomButton = new(this, "Doom", AbilityTypes.Alive, "ActionSecondary", Doom, Exception1);
         TargetButton = new(this, "ExeTarget", AbilityTypes.Alive, "ActionSecondary", SelectTarget, Exception2);
         Rounds = 0;
+        return this;
     }
 
     public void SelectTarget()
@@ -49,14 +55,14 @@ public class Executioner : Neutral
         {
             var player = PlayerByVoteArea(state);
 
-            if (state.AmDead || player.Data.Disconnected || state.VotedFor != TargetPlayer.PlayerId || state.TargetPlayerId == PlayerId || Player.IsLinkedTo(player))
+            if (state.AmDead || player.HasDied() || state.VotedFor != TargetPlayer.PlayerId || state.TargetPlayerId == PlayerId || Player.IsLinkedTo(player))
                 continue;
 
             ToDoom.Add(state.TargetPlayerId);
         }
     }
 
-    public void TurnJest() => new Jester(Player).RoleUpdate(this);
+    public void TurnJest() => new Jester().Start<Role>(Player).RoleUpdate(this);
 
     public void Doom()
     {

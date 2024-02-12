@@ -3,12 +3,10 @@ namespace TownOfUsReworked.Custom;
 public static class ButtonUtils
 {
     private static bool Use;
-    private static bool Haunt;
 
     public static void DisableButtons(this PlayerControl player)
     {
         Use = HUD.UseButton.isActiveAndEnabled;
-        Haunt = HUD.AbilityButton.isActiveAndEnabled;
         player.GetButtons().ForEach(x => x.Disable());
         HUD.SabotageButton.gameObject.SetActive(false);
         HUD.ReportButton.gameObject.SetActive(false);
@@ -27,7 +25,11 @@ public static class ButtonUtils
         HUD.SabotageButton.gameObject.SetActive(player.CanSabotage());
         HUD.ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward));
         HUD.ImpostorVentButton.gameObject.SetActive(player.CanVent());
-        HUD.AbilityButton.gameObject.SetActive(Haunt);
+
+        if (IsHnS)
+            HUD.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
+        else
+            HUD.AbilityButton.gameObject.SetActive(!Meeting && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()));
 
         if (Use)
             HUD.UseButton.gameObject.SetActive(true);
@@ -38,7 +40,6 @@ public static class ButtonUtils
     public static void DisableAllButtons()
     {
         Use = HUD.UseButton.isActiveAndEnabled;
-        Haunt = HUD.AbilityButton.isActiveAndEnabled;
         CustomButton.AllButtons.ForEach(x => x.Disable());
         HUD.KillButton.gameObject.SetActive(false);
         HUD.SabotageButton.gameObject.SetActive(false);
@@ -111,7 +112,7 @@ public static class ButtonUtils
     public static void Reset(CooldownType cooldown = CooldownType.Reset, PlayerControl player = null)
     {
         player ??= CustomPlayer.Local;
-        var role = Role.GetRole(player);
+        var role = player.GetRole();
         var start = cooldown == CooldownType.Start;
         var meeting = cooldown == CooldownType.Meeting;
         CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.StartCooldown(cooldown));

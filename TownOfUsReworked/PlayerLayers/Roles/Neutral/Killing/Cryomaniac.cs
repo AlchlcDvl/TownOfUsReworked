@@ -17,16 +17,21 @@ public class Cryomaniac : Neutral
     public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
-    public override DefenseEnum DefenseVal => Doused.Count < 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Cryomaniac(PlayerControl player) : base(player)
+    public Cryomaniac() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Freeze anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         Doused = new();
         DouseButton = new(this, "CryoDouse", AbilityTypes.Alive, "ActionSecondary", Douse, CustomGameOptions.CryoDouseCd, Exception);
         FreezeButton = new(this, "Freeze", AbilityTypes.Targetless, "Secondary", Freeze);
         KillButton = new(this, "CryoKill", AbilityTypes.Alive, "Tertiary", Kill, CustomGameOptions.CryoKillCd, Exception);
+        return this;
     }
 
     public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));

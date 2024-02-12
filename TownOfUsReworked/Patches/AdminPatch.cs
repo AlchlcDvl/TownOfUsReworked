@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
 public static class AdminPatch
 {
-    public static void SetSabotaged(MapCountOverlay __instance, bool sabotaged)
+    private static void SetSabotaged(MapCountOverlay __instance, bool sabotaged)
     {
         __instance.isSab = sabotaged;
         __instance.BackgroundColor.SetColor(sabotaged ? Palette.DisabledGrey : UColor.green);
@@ -13,7 +13,7 @@ public static class AdminPatch
             __instance.CountAreas.ForEach(x => x.UpdateCount(0));
     }
 
-    public static void UpdateBlips(CounterArea area, List<byte> colorMapping, bool isOP)
+    private static void UpdateBlips(CounterArea area, List<byte> colorMapping, bool isOP)
     {
         area.UpdateCount(colorMapping.Count);
         var icons = area.myIcons.ToArray();
@@ -26,7 +26,7 @@ public static class AdminPatch
             var sprite = icon.GetComponent<SpriteRenderer>();
             var text = icon.GetComponentInChildren<TextMeshPro>(true);
 
-            if (HudUpdate.IsCamoed)
+            if (HudHandler.Instance.IsCamoed)
                 sprite.color = UColor.grey;
 
             if (sprite != null)
@@ -56,7 +56,7 @@ public static class AdminPatch
         }
     }
 
-    public static void UpdateBlips(MapCountOverlay __instance, bool isOP)
+    private static void UpdateBlips(MapCountOverlay __instance, bool isOP)
     {
         var rooms = Ship.FastRooms;
         var colorMapDuplicate = new List<byte>();

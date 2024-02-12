@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Mystic : Crew
 {
-    private static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None));
+    private bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None) && !x.Is(SubFaction));
     private CustomButton RevealButton { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Mystic : CustomColorManager.Crew;
@@ -12,13 +12,18 @@ public class Mystic : Crew
     public override Func<string> Description => () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n-" +
         " When all converted and converters die, you will become a <color=#71368AFF>Seer</color>";
 
-    public Mystic(PlayerControl player) : base(player)
+    public Mystic() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewAudit;
         RevealButton = new(this, "MysticReveal", AbilityTypes.Alive, "ActionSecondary", Reveal, CustomGameOptions.MysticRevealCd, Exception);
+        return this;
     }
 
-    public void TurnSeer() => new Seer(Player).RoleUpdate(this);
+    public void TurnSeer() => new Seer().Start<Role>(Player).RoleUpdate(this);
 
     public override void UpdateHud(HudManager __instance)
     {

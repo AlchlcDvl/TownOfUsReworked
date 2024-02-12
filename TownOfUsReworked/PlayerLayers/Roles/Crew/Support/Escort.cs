@@ -12,22 +12,27 @@ public class Escort : Crew
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
         "to blocks\n- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
 
-    public Escort(PlayerControl player) : base(player)
+    public Escort() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewSupport;
         RoleBlockImmune = true;
         BlockTarget = null;
         BlockButton = new(this, "EscortRoleblock", AbilityTypes.Alive, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur, (CustomButton.EffectVoid)Block,
             UnBlock);
+        return this;
     }
 
     public void UnBlock()
     {
-        GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
+        BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
         BlockTarget = null;
     }
 
-    public void Block() => GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
+    public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
 
     public void Roleblock()
     {

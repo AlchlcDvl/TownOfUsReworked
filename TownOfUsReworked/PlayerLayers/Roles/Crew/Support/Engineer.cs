@@ -10,11 +10,16 @@ public class Engineer : Crew
     public override Func<string> StartText => () => "Just Fix It";
     public override Func<string> Description => () => "- You can fix sabotages at any time from anywhere\n- You can vent";
 
-    public Engineer(PlayerControl player) : base(player)
+    public Engineer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewSupport;
         FixButton = new(this, "Fix", AbilityTypes.Targetless, "ActionSecondary", Fix, CustomGameOptions.FixCd, CustomGameOptions.MaxFixes);
-        player.Data.Role.IntroSound = GetAudio("EngineerIntro");
+        Data.Role.IntroSound = GetAudio("EngineerIntro");
+        return this;
     }
 
     public override void UpdateHud(HudManager __instance)

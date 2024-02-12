@@ -60,7 +60,7 @@ public static class CastVote
         if (playerVoteArea.DidVote)
         {
             if (player.Is(LayerEnum.Politician))
-                Ability.GetAbility<Politician>(player).ExtraVotes.Add(suspectPlayerId);
+                player.GetAbility<Politician>().ExtraVotes.Add(suspectPlayerId);
         }
         else
         {

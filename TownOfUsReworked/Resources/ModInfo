@@ -7,56 +7,48 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Update: Updated BepInEx to 6.0.0-be.682
-- Addition: Added Attack and Defense values to roles, for simpler actions and explanations
-- Addition: Added a loading screen
-- Addition: Added next/back page buttons to guessing menus
-- Addition: Added some countermeasures for the hacks that have been going around lately
-- Rework: Pestilence has been reworked to work similar to Plaguebearer
-- Recode: Interactions and Cosmetics have been fully recoded
-- Recode: Saving and loading custom options have been recoded to be simpler to manage including being able to name your own presets (and no more slot limits!)
-- Improvement: The hud buttons are a little more interactive
-- Improvement: Improved the mod updater/downloader
-- Improvement: LevelImpostor can now also be downloaded from the main menu
-- Improvement: Bugs and bombs are now handled a little better to avoid any errors
-- Improvement: Setting the "Max Fixes" setting to 0 will turn Engineers into regular venting crewmates
-- Improvement: Reduced the load the mod puts for smoother gameplay
-- Improvement: Scaled up the Grenadier flash range options
-- Change: Ambushers and Crusaders now protect their targets too, making them double edged swords
-- Critical Fix: Fixed settings being duplicated
-- Critical Fix: Fixed postmortal roles not spawning in correctly
-- Critical Fix: Fixed dead bodies not showing up on the meeting screen for non-hosts
-- Critical Fix: Fixed the games not starting with 8 and byond players in the lobby
-- Critical Fix: Fixed the "Fatal Error In GC" issue that has been plaguing us for months
-- Role Fix: Fixed Whisperer conversions not syncing for persuaded players
-- Role Fix: Fixed Engineer not fixing the mushroom mixup sabotage on Fungle
-- Role Fix: Fixed Actor role lists not syncing correctly
-- Role Fix: Fixed sometimes being unable to drag bodies as Janitor
-- Bug Fix: Fixed the log spams that slowed the game down
-- Bug Fix: Reduced the lobby load in times by a lot
-- Bug Fix: Fixed not being able to zoom in
-- Bug Fix: Fixed guess buttons not disappearing correctly
-- Bug Fix: Fixed being able to lag role generation in Role List mode by setting a role list and ban list value the same
-- Bug Fix: Fixed some more log spams
-- Bug Fix: Fixed several desync issues
-- General Fix: Fixed a couple of oversights in the code
-- Visual Fix: Fixed the report button showing even when dead
-- Visual Fix: Fixed the "Player does not have Town Of Us Reworked" appearing when someone is joining
-- Visual Fix: Fixed the glass cracks not disappearing when switching between dead and alive players during a meeting
-- Visual Fix: Fixed a small visual bug with flashlights
-- Temporary Removal: Removed Submerged compatibility for now as it is really buggy, it will return next update
+- Mega Addition: Completely recoded the asset management system, now you can customise the mod's icons however you wish!
+- Addition: Added some more visual indicators for player statuses
+- Optimisation: Optimised the code to run better
+- Recode: Recoded client options
+- Buff: Monarch is now alerted when a knight is attacked
+- Buff: Jackal can now kill directly when all of their recruits are dead (including the third one)
+- Buff: Glitch hacks can now render your defense useless (unless you are an Apocalypse role)
+- Change: Guesses now count as an interaction, making guessers susceptible to being doused or infected
+- Improvement: Greatly reduced the time it takes to load a lot of things
+- Improvement: Improved how random maps are selected
+- Critical Fix: The game should no longer crash during the loading screen for lower end PCs
+- Role Fix: Fixed Monarch having permanent defense for as long as they have knighted someone
+- Role Fix: Fixed converted Mystics not being able to turn into Seers
+- Role Fix: Fixed Grenadier not flashing during their first attempt at blinding people
+- Role Fix: Fixed Bastion bombs bypassing defense
+- Role Fix: Fixed the Guesser guess menu being bugged out
+- Role Fix: Protect uses now sync correctly between the alive and grave protect buttons for Guardian Angel
+- Objectifier Fix: Fixed the Allied faction not syncing correctly
+- Bug Fix: Fixed role generation sometimes freaking out
+- Bug Fix: Fixed being able to call sabotages when blinded
+- Bug Fix: Fixed teleports behaving weirdly sometimes
+- Bug Fix: Fixed clicking on the report button using your ability instead
+- Bug Fix: Fixed some more log spams (these things haunt me I swear)
+- Bug Fix: Fixed Submerged breaking with the mod active
+- Bug Fix: Fixed the Presets menu sometimes overlapping
+- Bug Fix: Fixed the overlapping issue with client side options
+- Bug Fix: Fixed some minor issues here and there
+- Visual Fix: Fixed the role card incorrectly showing your attack and defense values sometimes
+- Visual Fix: Fixed animations for jumping out of a vent not playing
+- General Fix: Clarified a lot of outdated/missing information
+- Removed: Removed the region installer from the mod, it's better being used in Mini's mod
 
 Credits-
-Reworked Creator - AlchlcSystm
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
-Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, HalloweenApple, Dave, Nerdy
+Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, HalloweenApple, Dave, GD
 Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces, Det (their work can be found in %assets%)
 Reworked Translators - XiezibanWrite, CharlesQwQ
 Moral Support - MyDragonBreath
 
 Base Mod Creator - Slushiegoose
-Base And Reactivated Maintainers - eDonnes/Donners, MyDragonBreath
-Base And Reactivated Contributors - XtraCube, OhMyGuus, Ruiner, -H, Term
+Base And Reactivated Maintainers - MyDragonBreath
+Base And Reactivated Contributors - eDonnes/Donners, XtraCube, OhMyGuus, Ruiner, -H, Term
 
 Derived Ideas (And Code) From - Woodi, NotHunter101, Evan91380, Hardel-DW, tomozbot, Eisbison, Malloris, K3ndo, Gendelo, Bavari, Scoom, Zeo, 5up, Brybry16, DorCoMaNdO, Galster, przebor, VincentVision, Lunastellia, Allul, Ottomated, BlankMediaGames, The Submerged Team, DigiWorm0
 

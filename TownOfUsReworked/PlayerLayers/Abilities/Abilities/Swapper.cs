@@ -11,11 +11,15 @@ public class Swapper : Ability
     public override LayerEnum Type => LayerEnum.Swapper;
     public override Func<string> Description => () => "- You can swap the votes against 2 players in meetings";
 
-    public Swapper(PlayerControl player) : base(player)
+    public Swapper() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
         Swap1 = null;
         Swap2 = null;
         SwapMenu = new(Player, "SwapActive", "SwapDisabled", CustomGameOptions.SwapAfterVoting, SetActive, IsExempt, position: null);
+        return this;
     }
 
     public override void VoteComplete(MeetingHud __instance)

@@ -17,16 +17,21 @@ public class GuardianAngel : Neutral
     public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a " +
         $"short while\n- If {TargetPlayer?.name} dies, you will become a <color=#DDDD00FF>Survivor</color>");
 
-    public GuardianAngel(PlayerControl player) : base(player)
+    public GuardianAngel() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => TargetPlayer == null ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         Alignment = Alignment.NeutralBen;
         TargetPlayer = null;
         ProtectButton = new(this, "Protect", AbilityTypes.Targetless, "ActionSecondary", HitProtect, CustomGameOptions.ProtectCd, CustomGameOptions.ProtectDur, CustomGameOptions.MaxProtects);
-        GraveProtectButton = new(this, "GraveProtect", AbilityTypes.Targetless, "ActionSecondary", HitProtect, CustomGameOptions.ProtectCd, CustomGameOptions.ProtectDur,
+        GraveProtectButton = new(this, "GraveProtect", AbilityTypes.Targetless, "ActionSecondary", HitGraveProtect, CustomGameOptions.ProtectCd, CustomGameOptions.ProtectDur,
             CustomGameOptions.MaxProtects, true);
         TargetButton = new(this, "GATarget", AbilityTypes.Alive, "ActionSecondary", SelectTarget);
         Rounds = 0;
+        return this;
     }
 
     public void SelectTarget()
@@ -35,12 +40,26 @@ public class GuardianAngel : Neutral
         CallRpc(CustomRPC.Target, TargetRPC.SetGATarget, this, TargetPlayer);
     }
 
-    public void TurnSurv() => new Survivor(Player).RoleUpdate(this);
+    public void TurnSurv() => new Survivor().Start<Role>(Player).RoleUpdate(this);
 
     public void HitProtect()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ProtectButton);
         ProtectButton.Begin();
+        GraveProtectButton.Uses--;
+
+        if (GraveProtectButton.Uses == 0 && IsDead)
+            TrulyDead = true;
+    }
+
+    public void HitGraveProtect()
+    {
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, GraveProtectButton);
+        GraveProtectButton.Begin();
+        ProtectButton.Uses--;
+
+        if (ProtectButton.Uses == 0)
+            TrulyDead = true;
     }
 
     public override void UpdateHud(HudManager __instance)

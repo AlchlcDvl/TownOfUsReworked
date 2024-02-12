@@ -14,14 +14,19 @@ public class Morphling : Intruder
     public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
 
-    public Morphling(PlayerControl player) : base(player)
+    public Morphling() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
         SampleButton = new(this, "Sample", AbilityTypes.Alive, "Tertiary", Sample, CustomGameOptions.SampleCd, Exception1);
         MorphButton = new(this, "Morph", AbilityTypes.Targetless, "Secondary", HitMorph, CustomGameOptions.MorphCd, CustomGameOptions.MorphDur, (CustomButton.EffectVoid)Morph, UnMorph);
-        player.Data.Role.IntroSound = GetAudio("MorphlingIntro");
+        Data.Role.IntroSound = GetAudio("MorphlingIntro");
+        return this;
     }
 
     public void Morph() => Utils.Morph(Player, MorphedPlayer);

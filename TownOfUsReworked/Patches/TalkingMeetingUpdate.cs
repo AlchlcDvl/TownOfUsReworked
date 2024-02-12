@@ -8,91 +8,30 @@ public static class MeetingHudStart
 
     public static void Postfix()
     {
-        foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
-        {
-            if (role.BlackmailedPlayer == null)
-                continue;
+        BeingBlackmailed = CustomPlayer.Local.IsBlackmailed() && !CustomPlayer.LocalCustom.IsDead;
+        BeingSilenced = CustomPlayer.Local.IsSilenced() && !CustomPlayer.LocalCustom.IsDead;
 
-            if (role.BlackmailedPlayer == CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
-                Coroutines.Start(BlackmailShhh());
-
-            role.ShookAlready = false;
-        }
-
-        foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
-        {
-            if (role.BlackmailedPlayer == null || !role.IsBM)
-                continue;
-
-            if (role.BlackmailedPlayer == CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
-                Coroutines.Start(BlackmailShhh());
-
-            role.ShookAlready = false;
-        }
-
-        foreach (var role in PlayerLayer.GetLayers<Silencer>())
-        {
-            if (role.SilencedPlayer == null)
-                continue;
-
-            if (role.SilencedPlayer == CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
-                Coroutines.Start(SilencedShhh());
-
-            role.ShookAlready = false;
-        }
-
-        foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
-        {
-            if (role.SilencedPlayer == null || !role.IsSil)
-                continue;
-
-            if (role.SilencedPlayer == CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
-                Coroutines.Start(BlackmailShhh());
-
-            role.ShookAlready = false;
-        }
+        if (BeingBlackmailed && BeingSilenced)
+            Coroutines.Start(Shhh("RIP BLACKMAILED AND SILENCED"));
+        else if (BeingSilenced || BeingBlackmailed)
+            Coroutines.Start(Shhh($"YOU ARE {(BeingBlackmailed ? "BLACKMAILED" : "SILENCED")}"));
     }
 
-    public static IEnumerator BlackmailShhh()
+    private static IEnumerator Shhh(string status)
     {
-        if (BeingSilenced)
-            yield break;
-
-        BeingBlackmailed = true;
         yield return HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
         var TempPosition = HUD.shhhEmblem.transform.localPosition;
         var TempDuration = HUD.shhhEmblem.HoldDuration;
         var pos = HUD.shhhEmblem.transform.localPosition;
         pos.z++;
         HUD.shhhEmblem.transform.localPosition = pos;
-        HUD.shhhEmblem.TextImage.text = "YOU ARE BLACKMAILED";
+        HUD.shhhEmblem.TextImage.text = status;
         HUD.shhhEmblem.HoldDuration = 2.5f;
         yield return HUD.ShowEmblem(true);
         HUD.shhhEmblem.transform.localPosition = TempPosition;
         HUD.shhhEmblem.HoldDuration = TempDuration;
         yield return HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         BeingBlackmailed = false;
-        yield break;
-    }
-
-    public static IEnumerator SilencedShhh()
-    {
-        if (BeingBlackmailed)
-            yield break;
-
-        BeingSilenced = true;
-        yield return HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
-        var TempPosition = HUD.shhhEmblem.transform.localPosition;
-        var TempDuration = HUD.shhhEmblem.HoldDuration;
-        var pos = HUD.shhhEmblem.transform.localPosition;
-        pos.z++;
-        HUD.shhhEmblem.transform.localPosition = pos;
-        HUD.shhhEmblem.TextImage.text = "YOU ARE SILENCED";
-        HUD.shhhEmblem.HoldDuration = 2.5f;
-        yield return HUD.ShowEmblem(true);
-        HUD.shhhEmblem.transform.localPosition = TempPosition;
-        HUD.shhhEmblem.HoldDuration = TempDuration;
-        yield return HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         BeingSilenced = false;
         yield break;
     }
@@ -102,7 +41,7 @@ public static class MeetingHudStart
 public static class MeetingHud_Update
 {
     private static Sprite CachedOverlay;
-    private static UColor CachedColor;
+    private static UColor? CachedColor;
 
     public static void Postfix(MeetingHud __instance)
     {
@@ -115,21 +54,12 @@ public static class MeetingHud_Update
 
                 if (!role.BlackmailedPlayer.HasDied())
                 {
-                    var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.BlackmailedPlayer.PlayerId);
+                    var playerState = VoteAreaByPlayer(role.BlackmailedPlayer);
                     playerState.Overlay.gameObject.SetActive(true);
-
-                    if (CachedOverlay == null)
-                        CachedOverlay = playerState.Overlay.sprite;
-
-                    if (CachedColor == default)
-                        CachedColor = playerState.Overlay.color;
-
-                    if (role.PrevOverlay == null)
-                        role.PrevOverlay = CachedOverlay;
-
-                    if (role.PrevColor == default)
-                        role.PrevColor = CachedColor;
-
+                    CachedOverlay ??= playerState.Overlay.sprite;
+                    CachedColor ??= playerState.Overlay.color;
+                    role.PrevOverlay ??= CachedOverlay;
+                    role.PrevColor ??= CachedColor;
                     playerState.Overlay.sprite = GetSprite("Overlay");
                     playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
 
@@ -148,21 +78,12 @@ public static class MeetingHud_Update
 
                 if (!role.BlackmailedPlayer.HasDied())
                 {
-                    var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.BlackmailedPlayer.PlayerId);
+                    var playerState = VoteAreaByPlayer(role.BlackmailedPlayer);
                     playerState.Overlay.gameObject.SetActive(true);
-
-                    if (CachedOverlay == null)
-                        CachedOverlay = playerState.Overlay.sprite;
-
-                    if (CachedColor == default)
-                        CachedColor = playerState.Overlay.color;
-
-                    if (role.PrevOverlay == null)
-                        role.PrevOverlay = CachedOverlay;
-
-                    if (role.PrevColor == default)
-                        role.PrevColor = CachedColor;
-
+                    CachedOverlay ??= playerState.Overlay.sprite;
+                    CachedColor ??= playerState.Overlay.color;
+                    role.PrevOverlay ??= CachedOverlay;
+                    role.PrevColor ??= CachedColor;
                     playerState.Overlay.sprite = GetSprite("Overlay");
                     playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
 
@@ -184,21 +105,12 @@ public static class MeetingHud_Update
 
                 if (!role.SilencedPlayer.HasDied())
                 {
-                    var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.SilencedPlayer.PlayerId);
+                    var playerState = VoteAreaByPlayer(role.SilencedPlayer);
                     playerState.Overlay.gameObject.SetActive(true);
-
-                    if (CachedOverlay == null)
-                        CachedOverlay = playerState.Overlay.sprite;
-
-                    if (CachedColor == default)
-                        CachedColor = playerState.Overlay.color;
-
-                    if (role.PrevOverlay == null)
-                        role.PrevOverlay = CachedOverlay;
-
-                    if (role.PrevColor == default)
-                        role.PrevColor = CachedColor;
-
+                    CachedOverlay ??= playerState.Overlay.sprite;
+                    CachedColor ??= playerState.Overlay.color;
+                    role.PrevOverlay ??= CachedOverlay;
+                    role.PrevColor ??= CachedColor;
                     playerState.Overlay.sprite = GetSprite("Overlay");
                     playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
 
@@ -217,21 +129,12 @@ public static class MeetingHud_Update
 
                 if (!role.SilencedPlayer.HasDied())
                 {
-                    var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.SilencedPlayer.PlayerId);
+                    var playerState = VoteAreaByPlayer(role.SilencedPlayer);
                     playerState.Overlay.gameObject.SetActive(true);
-
-                    if (CachedOverlay == null)
-                        CachedOverlay = playerState.Overlay.sprite;
-
-                    if (CachedColor == default)
-                        CachedColor = playerState.Overlay.color;
-
-                    if (role.PrevOverlay == null)
-                        role.PrevOverlay = CachedOverlay;
-
-                    if (role.PrevColor == default)
-                        role.PrevColor = CachedColor;
-
+                    CachedOverlay ??= playerState.Overlay.sprite;
+                    CachedColor ??= playerState.Overlay.color;
+                    role.PrevOverlay ??= CachedOverlay;
+                    role.PrevColor ??= CachedColor;
                     playerState.Overlay.sprite = GetSprite("Overlay");
                     playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
 

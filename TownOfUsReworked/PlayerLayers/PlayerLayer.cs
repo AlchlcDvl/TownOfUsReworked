@@ -11,6 +11,7 @@ public abstract class PlayerLayer
     public virtual Func<string> Attributes => () => "- None";
     public virtual AttackEnum AttackVal => AttackEnum.None;
     public virtual DefenseEnum DefenseVal => DefenseEnum.None;
+    public virtual bool Hidden => false;
 
     public PlayerControl Player { get; set; }
     public bool IsBlocked { get; set; }
@@ -22,7 +23,7 @@ public abstract class PlayerLayer
     public bool IsAlive => !(IsDead || Disconnected);
     public bool Local => Player == CustomPlayer.Local;
 
-    public GameData.PlayerInfo Data => Player.Data;
+    public GameData.PlayerInfo Data => Player?.Data;
     public string PlayerName => Data.PlayerName;
     public byte PlayerId => Player.PlayerId;
     public int TasksLeft => Data.Tasks.Count(x => !x.Complete);
@@ -35,12 +36,30 @@ public abstract class PlayerLayer
     public static bool NobodyWins { get; set; }
 
     public static readonly List<PlayerLayer> AllLayers = new();
-    public static List<PlayerLayer> LocalLayers => GetLayers(CustomPlayer.Local);
+    public static List<PlayerLayer> LocalLayers => CustomPlayer.Local.GetLayers();
 
-    protected PlayerLayer(PlayerControl player)
+    protected PlayerLayer() => AllLayers.Add(this);
+
+    public virtual PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        return this;
+    }
+
+    public T Start<T>(PlayerControl player) where T : PlayerLayer => Start(player) as T;
+
+    public void SetPlayer(PlayerControl player)
+    {
+        if (LayerType == PlayerLayerEnum.Role && player.GetRole() && player.GetRole() != this)
+            player.GetRole().Player = null;
+        else if (LayerType == PlayerLayerEnum.Modifier && player.GetModifier() && player.GetModifier() != this)
+            player.GetModifier().Player = null;
+        else if (LayerType == PlayerLayerEnum.Ability && player.GetAbility() && player.GetAbility() != this)
+            player.GetAbility().Player = null;
+        else if (LayerType == PlayerLayerEnum.Objectifier && player.GetObjectifier() && player.GetObjectifier() != this)
+            player.GetObjectifier().Player = null;
+
         Player = player;
-        AllLayers.Add(this);
     }
 
     public virtual void OnLobby() {}
@@ -79,9 +98,9 @@ public abstract class PlayerLayer
 
     public virtual void ReadRPC(MessageReader reader) {}
 
-    public virtual void GameEnd()
+    public void GameEnd()
     {
-        if (Player == null || Disconnected)
+        if (!Player || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier)
             return;
         else if (IsDead)
         {
@@ -126,7 +145,7 @@ public abstract class PlayerLayer
                 Objectifier.CorruptedWins = true;
 
                 if (CustomGameOptions.AllCorruptedWin)
-                    Objectifier.GetObjectifiers(LayerEnum.Corrupted).ForEach(x => x.Winner = true);
+                    GetLayers<Corrupted>().ForEach(x => x.Winner = true);
 
                 Winner = true;
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.CorruptedWin, this);
@@ -136,7 +155,7 @@ public abstract class PlayerLayer
             {
                 Objectifier.LoveWins = true;
                 Winner = true;
-                Objectifier.GetObjectifier(((Lovers)this).OtherLover).Winner = true;
+                ((Lovers)this).OtherLover.GetObjectifier().Winner = true;
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.LoveWin, this);
                 EndGame();
             }
@@ -163,7 +182,7 @@ public abstract class PlayerLayer
             else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive)
             {
                 Objectifier.OverlordWins = true;
-                Objectifier.GetObjectifiers(LayerEnum.Overlord).Where(ov => ov.IsAlive).ForEach(x => x.Winner = true);
+                GetLayers<Overlord>().Where(ov => ov.IsAlive).ForEach(x => x.Winner = true);
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.OverlordWin);
                 EndGame();
             }
@@ -269,7 +288,7 @@ public abstract class PlayerLayer
 
                 if (CustomGameOptions.NoSolo == NoSolo.SameNKs)
                 {
-                    foreach (var role2 in Role.GetRoles(role.Type))
+                    foreach (var role2 in GetLayers<Neutral>().Where(x => x.Type == role.Type))
                     {
                         if (!role2.Disconnected && role2.Faithful)
                             role2.Winner = true;
@@ -342,7 +361,7 @@ public abstract class PlayerLayer
 
     public static bool operator !=(PlayerLayer a, PlayerLayer b) => !(a == b);
 
-    public static implicit operator bool(PlayerLayer exists) => exists != null;
+    public static implicit operator bool(PlayerLayer exists) => exists != null && exists.Player;
 
     private bool Equals(PlayerLayer other) => Equals(Player, other.Player) && Type == other.Type && GetHashCode() == other.GetHashCode();
 
@@ -380,12 +399,8 @@ public abstract class PlayerLayer
         Ability.AllAbilities.Clear();
     }
 
-    public static List<PlayerLayer> GetLayers(PlayerControl player) => AllLayers.Where(x => x.Player == player).ToList();
+    public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => x.GetType() == typeof(T) && (!x.Ignore || includeIgnored) && x.Player)
+        .Cast<T>().ToList();
 
-    public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => x.GetType() == typeof(T) && (!x.Ignore || includeIgnored)).Cast<T>()
-        .ToList();
-
-    public static PlayerLayer GetLayer(PlayerControl player, PlayerLayerEnum layerType) => AllLayers.Find(x => x.Player == player && x.LayerType == layerType);
-
-    public static T GetLayer<T>(PlayerControl player, PlayerLayerEnum layerType) where T : PlayerLayer => GetLayer(player, layerType) as T;
+    public static List<PlayerLayer> GetLayers(LayerEnum type, bool includeIgnored = false) => AllLayers.Where(x => x.Type == type && (!x.Ignore || includeIgnored) && x.Player).ToList();
 }

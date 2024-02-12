@@ -97,7 +97,7 @@ public static class RoleGen
 
     private static readonly List<byte> Spawns = new() { 0, 1, 2, 3, 4, 5, 6 };
 
-    public static bool Check(int probability, bool sorting = false)
+    private static bool Check(int probability, bool sorting = false)
     {
         if (probability == 0)
             return false;
@@ -113,11 +113,13 @@ public static class RoleGen
         var newList = new List<GenerationData>();
         items.Shuffle();
 
+        if (amount != CustomPlayer.AllPlayers.Count && IsAA)
+            amount = CustomPlayer.AllPlayers.Count;
+        else if (items.Count < amount)
+            amount = items.Count;
+
         if (IsAA)
         {
-            if (amount > CustomPlayer.AllPlayers.Count)
-                amount = CustomPlayer.AllPlayers.Count;
-
             var rate = 0;
 
             while (newList.Count < amount && items.Count > 0 && rate < 10000)
@@ -133,20 +135,20 @@ public static class RoleGen
         }
         else
         {
-            if (items.Count < amount)
-                amount = items.Count;
-
             var guaranteed = items.Where(x => x.Chance == 100).ToList();
             guaranteed.Shuffle();
             var optionals = items.Where(x => Check(x.Chance, true)).ToList();
             optionals.Shuffle();
             newList.AddRanges(guaranteed, optionals);
+
+            while (newList.Count < amount)
+                newList.Add(items.Where(x => x.Chance < 100).Random(x => !newList.Contains(x)));
         }
 
-        _ = newList.OrderBy(x => 100 - x.Chance);
+        newList = newList.OrderBy(x => 100 - x.Chance).ToList();
 
         while (newList.Count > amount && newList.Count > 1)
-            newList.Remove(newList[^1]);
+            newList.Remove(newList.Last());
 
         newList.Shuffle();
         return newList;
@@ -2447,7 +2449,7 @@ public static class RoleGen
             else if (canHaveRuthless.Count > 0 && id == LayerEnum.Ruthless)
                 assigned = canHaveRuthless.TakeFirst();
 
-            if (assigned != null)
+            if (assigned)
             {
                 canHaveSnitch.Remove(assigned);
                 canHaveSyndicateAbility.Remove(assigned);
@@ -2479,8 +2481,8 @@ public static class RoleGen
                 canHaveRuthless.Shuffle();
                 AllAbilities.Shuffle();
 
-                if (Ability.GetAbility(assigned) == null)
-                    Gen(assigned, (int)id, PlayerLayerEnum.Ability);
+                if (!assigned.GetAbility())
+                    Gen(assigned, id, PlayerLayerEnum.Ability);
                 else
                     AllAbilities.Add(GenerateSpawnItem(id));
             }
@@ -2718,7 +2720,7 @@ public static class RoleGen
             else if (id == LayerEnum.Defector && canHaveDefector.Count > 1)
                 assigned = canHaveDefector.TakeFirst();
 
-            if (assigned != null)
+            if (assigned)
             {
                 canHaveLoverorRival.Remove(assigned);
                 canHaveCrewObjectifier.Remove(assigned);
@@ -2734,13 +2736,13 @@ public static class RoleGen
                 canHaveDefector.Shuffle();
                 AllObjectifiers.Shuffle();
 
-                if (Objectifier.GetObjectifier(assigned) == null)
-                    Gen(assigned, (int)id, PlayerLayerEnum.Objectifier);
+                if (!assigned.GetObjectifier())
+                    Gen(assigned, id, PlayerLayerEnum.Objectifier);
                 else
                     AllObjectifiers.Add(GenerateSpawnItem(id));
             }
 
-            if (assignedOther != null)
+            if (assignedOther)
             {
                 canHaveLoverorRival.Remove(assignedOther);
                 canHaveCrewObjectifier.Remove(assignedOther);
@@ -2749,8 +2751,8 @@ public static class RoleGen
                 canHaveObjectifier.Remove(assignedOther);
                 canHaveDefector.Remove(assignedOther);
 
-                if (Objectifier.GetObjectifier(assignedOther) == null)
-                    Gen(assignedOther, (int)id, PlayerLayerEnum.Objectifier);
+                if (!assignedOther.GetObjectifier())
+                    Gen(assignedOther, id, PlayerLayerEnum.Objectifier);
             }
         }
 
@@ -3011,7 +3013,7 @@ public static class RoleGen
             else if (canHaveShy.Count > 0 && id == LayerEnum.Shy)
                 assigned = canHaveShy.TakeFirst();
 
-            if (assigned != null)
+            if (assigned)
             {
                 canHaveBait.Remove(assigned);
                 canHaveDiseased.Remove(assigned);
@@ -3025,8 +3027,8 @@ public static class RoleGen
                 canHaveShy.Shuffle();
                 AllModifiers.Shuffle();
 
-                if (Modifier.GetModifier(assigned) == null)
-                    Gen(assigned, (int)id, PlayerLayerEnum.Modifier);
+                if (!assigned.GetModifier())
+                    Gen(assigned, id, PlayerLayerEnum.Modifier);
                 else
                     AllModifiers.Add(GenerateSpawnItem(id));
             }
@@ -3041,12 +3043,12 @@ public static class RoleGen
         {
             foreach (var ally in PlayerLayer.GetLayers<Allied>())
             {
-                var alliedRole = Role.GetRole(ally.Player);
+                var alliedRole = ally.Player.GetRole();
                 var crew = CustomGameOptions.AlliedFaction == AlliedFaction.Crew;
                 var intr = CustomGameOptions.AlliedFaction == AlliedFaction.Intruder;
                 var syn = CustomGameOptions.AlliedFaction == AlliedFaction.Syndicate;
-                var factions = new List<int>() { 1, 3, 0 };
-                int faction;
+                var factions = new List<byte>() { 1, 3, 0 };
+                byte faction;
 
                 if (CustomGameOptions.AlliedFaction == AlliedFaction.Random)
                 {
@@ -3059,24 +3061,15 @@ public static class RoleGen
                     faction = factions[(int)CustomGameOptions.AlliedFaction - 1];
 
                 if (crew)
-                {
                     alliedRole.FactionColor = CustomColorManager.Crew;
-                    alliedRole.IsCrewAlly = crew;
-                }
                 else if (intr)
-                {
                     alliedRole.FactionColor = CustomColorManager.Intruder;
-                    alliedRole.IsIntAlly = intr;
-                }
                 else if (syn)
-                {
                     alliedRole.FactionColor = CustomColorManager.Syndicate;
-                    alliedRole.IsSynAlly = syn;
-                }
 
                 ally.Side = alliedRole.Faction = (Faction)faction;
                 alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment((Faction)faction);
-                ally.Data.SetImpostor((Faction)faction is Faction.Intruder or Faction.Syndicate);
+                ally.Player.SetImpostor((Faction)faction is Faction.Intruder or Faction.Syndicate);
                 CallRpc(CustomRPC.Target, TargetRPC.SetAlliedFaction, ally, faction);
             }
 
@@ -3181,7 +3174,7 @@ public static class RoleGen
 
         if (CustomGameOptions.MafiaOn > 0)
         {
-            if (Objectifier.GetObjectifiers(LayerEnum.Mafia).Count == 1)
+            if (PlayerLayer.GetLayers<Mafia>().Count == 1)
             {
                 foreach (var player in CustomPlayer.AllPlayers.Where(x => x.Is(LayerEnum.Mafia)))
                     NullLayer(player, PlayerLayerEnum.Objectifier);
@@ -3609,7 +3602,7 @@ public static class RoleGen
         }
 
         while (players.Count > 0 && AllRoles.Count > 0)
-            Gen(players.TakeFirst(), (int)AllRoles.TakeFirst().ID, PlayerLayerEnum.Role);
+            Gen(players.TakeFirst(), AllRoles.TakeFirst().ID, PlayerLayerEnum.Role);
 
         LogMessage("Role Spawn Done");
 
@@ -3655,175 +3648,169 @@ public static class RoleGen
 
         foreach (var player in CustomPlayer.AllPlayers)
         {
-            if (!Modifier.GetModifier(player))
-                NullLayer(player, PlayerLayerEnum.Modifier);
-
-            if (!Ability.GetAbility(player))
-                NullLayer(player, PlayerLayerEnum.Ability);
-
-            if (!Objectifier.GetObjectifier(player))
-                NullLayer(player, PlayerLayerEnum.Objectifier);
-
-            if (!Role.GetRole(player))
-                NullLayer(player, PlayerLayerEnum.Role);
+            CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, player);
+            var mod = player.GetModifierOrBlank();
+            var ab = player.GetAbilityOrBlank();
+            var obj = player.GetObjectifierOrBlank();
+            var role = player.GetRoleOrBlank();
 
             if (TownOfUsReworked.IsTest)
-                LogMessage($"{player.name} -> {Role.GetRole(player)}, {Objectifier.GetObjectifier(player)}, {Modifier.GetModifier(player)}, {Ability.GetAbility(player)}");
+                LogMessage($"{player.name} -> {role}, {obj}, {mod}, {ab}");
         }
 
         LogMessage("Gen Ended");
     }
 
-    private static void Gen(PlayerControl player, int id, PlayerLayerEnum rpc)
+    private static void Gen(PlayerControl player, LayerEnum id, PlayerLayerEnum rpc)
     {
-        SetLayer(id, player, rpc);
-        CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, player, rpc);
+        SetLayer(id, rpc).Start(player);
+        CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
     }
 
-    private static void NullLayer(PlayerControl player, PlayerLayerEnum rpc) => Gen(player, 10000, rpc);
+    private static void NullLayer(PlayerControl player, PlayerLayerEnum rpc) => Gen(player, LayerEnum.None, rpc);
 
-    public static PlayerLayer SetLayer(int id, PlayerControl player, PlayerLayerEnum rpc) => (LayerEnum)id switch
+    public static PlayerLayer SetLayer(LayerEnum id, PlayerLayerEnum rpc) => id switch
     {
-        LayerEnum.Altruist => new Altruist(player),
-        LayerEnum.Chameleon => new Chameleon(player),
-        LayerEnum.Coroner => new Coroner(player),
-        LayerEnum.Crewmate => new Crewmate(player),
-        LayerEnum.Detective => new Detective(player),
-        LayerEnum.Dictator => new Dictator(player),
-        LayerEnum.Engineer => new Engineer(player),
-        LayerEnum.Escort => new Escort(player),
-        LayerEnum.Mayor => new Mayor(player),
-        LayerEnum.Medic => new Medic(player),
-        LayerEnum.Medium => new Medium(player),
-        LayerEnum.Monarch => new Monarch(player),
-        LayerEnum.Mystic => new Mystic(player),
-        LayerEnum.Operative => new Operative(player),
-        LayerEnum.Retributionist => new Retributionist(player),
-        LayerEnum.Revealer => new Revealer(player),
-        LayerEnum.Seer => new Seer(player),
-        LayerEnum.Sheriff => new Sheriff(player),
-        LayerEnum.Shifter => new Shifter(player),
-        LayerEnum.Tracker => new Tracker(player),
-        LayerEnum.Transporter => new Transporter(player),
-        LayerEnum.VampireHunter => new VampireHunter(player),
-        LayerEnum.Veteran => new Veteran(player),
-        LayerEnum.Vigilante => new Vigilante(player),
-        LayerEnum.Actor => new Actor(player),
-        LayerEnum.Amnesiac => new Amnesiac(player),
-        LayerEnum.Arsonist => new Arsonist(player),
-        LayerEnum.BountyHunter => new BountyHunter(player),
-        LayerEnum.Cannibal => new Cannibal(player),
-        LayerEnum.Cryomaniac => new Cryomaniac(player),
-        LayerEnum.Dracula => new Dracula(player),
-        LayerEnum.Executioner => new Executioner(player),
-        LayerEnum.Glitch => new Glitch(player),
-        LayerEnum.GuardianAngel => new GuardianAngel(player),
-        LayerEnum.Guesser => new Guesser(player),
-        LayerEnum.Jackal => new Jackal(player),
-        LayerEnum.Jester => new Jester(player),
-        LayerEnum.Juggernaut => new Juggernaut(player),
-        LayerEnum.Murderer => new Murderer(player),
-        LayerEnum.Necromancer => new Necromancer(player),
-        LayerEnum.Pestilence => new Pestilence(player),
-        LayerEnum.Phantom => new Phantom(player),
-        LayerEnum.Plaguebearer => new Plaguebearer(player),
-        LayerEnum.SerialKiller => new SerialKiller(player),
-        LayerEnum.Survivor => new Survivor(player),
-        LayerEnum.Thief => new Thief(player),
-        LayerEnum.Troll => new Troll(player),
-        LayerEnum.Werewolf => new Werewolf(player),
-        LayerEnum.Whisperer => new Whisperer(player),
-        LayerEnum.Betrayer => new Betrayer(player),
-        LayerEnum.Ambusher => new Ambusher(player),
-        LayerEnum.Blackmailer => new Blackmailer(player),
-        LayerEnum.Camouflager => new Camouflager(player),
-        LayerEnum.Consigliere => new Consigliere(player),
-        LayerEnum.Consort => new Consort(player),
-        LayerEnum.Disguiser => new Disguiser(player),
-        LayerEnum.Enforcer => new Enforcer(player),
-        LayerEnum.Ghoul => new Ghoul(player),
-        LayerEnum.Godfather => new Godfather(player),
-        LayerEnum.Grenadier => new Grenadier(player),
-        LayerEnum.Impostor => new Impostor(player),
-        LayerEnum.Janitor => new Janitor(player),
-        LayerEnum.Mafioso => new Mafioso(player),
-        LayerEnum.Miner => new Miner(player),
-        LayerEnum.Morphling => new Morphling(player),
-        LayerEnum.PromotedGodfather => new PromotedGodfather(player),
-        LayerEnum.Teleporter => new Teleporter(player),
-        LayerEnum.Wraith => new Wraith(player),
-        LayerEnum.Anarchist => new Anarchist(player),
-        LayerEnum.Banshee => new Banshee(player),
-        LayerEnum.Bomber => new Bomber(player),
-        LayerEnum.Concealer => new Concealer(player),
-        LayerEnum.Collider => new PlayerLayers.Roles.Collider(player),
-        LayerEnum.Crusader => new Crusader(player),
-        LayerEnum.Drunkard => new Drunkard(player),
-        LayerEnum.Framer => new Framer(player),
-        LayerEnum.Poisoner => new Poisoner(player),
-        LayerEnum.PromotedRebel => new PromotedRebel(player),
-        LayerEnum.Rebel => new Rebel(player),
-        LayerEnum.Shapeshifter => new Shapeshifter(player),
-        LayerEnum.Sidekick => new Sidekick(player),
-        LayerEnum.Silencer => new Silencer(player),
-        LayerEnum.Spellslinger => new Spellslinger(player),
-        LayerEnum.Stalker => new Stalker(player),
-        LayerEnum.Timekeeper => new Timekeeper(player),
-        LayerEnum.Warper => new Warper(player),
-        LayerEnum.Runner => new Runner(player),
-        LayerEnum.Hunter => new Hunter(player),
-        LayerEnum.Hunted => new Hunted(player),
-        LayerEnum.Bastion => new Bastion(player),
-        LayerEnum.Trapper => new Trapper(player),
-        LayerEnum.CrewAssassin => new CrewAssassin(player),
-        LayerEnum.IntruderAssassin => new IntruderAssassin(player),
-        LayerEnum.NeutralAssassin => new NeutralAssassin(player),
-        LayerEnum.SyndicateAssassin => new SyndicateAssassin(player),
-        LayerEnum.ButtonBarry => new ButtonBarry(player),
-        LayerEnum.Insider => new Insider(player),
-        LayerEnum.Multitasker => new Multitasker(player),
-        LayerEnum.Ninja => new Ninja(player),
-        LayerEnum.Politician => new Politician(player),
-        LayerEnum.Radar => new Radar(player),
-        LayerEnum.Ruthless => new Ruthless(player),
-        LayerEnum.Snitch => new Snitch(player),
-        LayerEnum.Swapper => new Swapper(player),
-        LayerEnum.Tiebreaker => new Tiebreaker(player),
-        LayerEnum.Torch => new Torch(player),
-        LayerEnum.Tunneler => new Tunneler(player),
-        LayerEnum.Underdog => new Underdog(player),
-        LayerEnum.Allied => new Allied(player),
-        LayerEnum.Corrupted => new Corrupted(player),
-        LayerEnum.Defector => new Defector(player),
-        LayerEnum.Fanatic => new Fanatic(player),
-        LayerEnum.Linked => new Linked(player),
-        LayerEnum.Lovers => new Lovers(player),
-        LayerEnum.Mafia => new Mafia(player),
-        LayerEnum.Overlord => new Overlord(player),
-        LayerEnum.Rivals => new Rivals(player),
-        LayerEnum.Taskmaster => new Taskmaster(player),
-        LayerEnum.Traitor => new Traitor(player),
-        LayerEnum.Astral => new Astral(player),
-        LayerEnum.Bait => new Bait(player),
-        LayerEnum.Coward => new Coward(player),
-        LayerEnum.Diseased => new Diseased(player),
-        LayerEnum.Drunk => new Drunk(player),
-        LayerEnum.Dwarf => new Dwarf(player),
-        LayerEnum.Giant => new Giant(player),
-        LayerEnum.Indomitable => new Indomitable(player),
-        LayerEnum.Professional => new Professional(player),
-        LayerEnum.Shy => new Shy(player),
-        LayerEnum.VIP => new VIP(player),
-        LayerEnum.Volatile => new Volatile(player),
-        LayerEnum.Yeller => new Yeller(player),
-        LayerEnum.Colorblind => new Colorblind(player),
+        LayerEnum.Altruist => new Altruist(),
+        LayerEnum.Chameleon => new Chameleon(),
+        LayerEnum.Coroner => new Coroner(),
+        LayerEnum.Crewmate => new Crewmate(),
+        LayerEnum.Detective => new Detective(),
+        LayerEnum.Dictator => new Dictator(),
+        LayerEnum.Engineer => new Engineer(),
+        LayerEnum.Escort => new Escort(),
+        LayerEnum.Mayor => new Mayor(),
+        LayerEnum.Medic => new Medic(),
+        LayerEnum.Medium => new Medium(),
+        LayerEnum.Monarch => new Monarch(),
+        LayerEnum.Mystic => new Mystic(),
+        LayerEnum.Operative => new Operative(),
+        LayerEnum.Retributionist => new Retributionist(),
+        LayerEnum.Revealer => new Revealer(),
+        LayerEnum.Seer => new Seer(),
+        LayerEnum.Sheriff => new Sheriff(),
+        LayerEnum.Shifter => new Shifter(),
+        LayerEnum.Tracker => new Tracker(),
+        LayerEnum.Transporter => new Transporter(),
+        LayerEnum.VampireHunter => new VampireHunter(),
+        LayerEnum.Veteran => new Veteran(),
+        LayerEnum.Vigilante => new Vigilante(),
+        LayerEnum.Actor => new Actor(),
+        LayerEnum.Amnesiac => new Amnesiac(),
+        LayerEnum.Arsonist => new Arsonist(),
+        LayerEnum.BountyHunter => new BountyHunter(),
+        LayerEnum.Cannibal => new Cannibal(),
+        LayerEnum.Cryomaniac => new Cryomaniac(),
+        LayerEnum.Dracula => new Dracula(),
+        LayerEnum.Executioner => new Executioner(),
+        LayerEnum.Glitch => new Glitch(),
+        LayerEnum.GuardianAngel => new GuardianAngel(),
+        LayerEnum.Guesser => new Guesser(),
+        LayerEnum.Jackal => new Jackal(),
+        LayerEnum.Jester => new Jester(),
+        LayerEnum.Juggernaut => new Juggernaut(),
+        LayerEnum.Murderer => new Murderer(),
+        LayerEnum.Necromancer => new Necromancer(),
+        LayerEnum.Pestilence => new Pestilence(),
+        LayerEnum.Phantom => new Phantom(),
+        LayerEnum.Plaguebearer => new Plaguebearer(),
+        LayerEnum.SerialKiller => new SerialKiller(),
+        LayerEnum.Survivor => new Survivor(),
+        LayerEnum.Thief => new Thief(),
+        LayerEnum.Troll => new Troll(),
+        LayerEnum.Werewolf => new Werewolf(),
+        LayerEnum.Whisperer => new Whisperer(),
+        LayerEnum.Betrayer => new Betrayer(),
+        LayerEnum.Ambusher => new Ambusher(),
+        LayerEnum.Blackmailer => new Blackmailer(),
+        LayerEnum.Camouflager => new Camouflager(),
+        LayerEnum.Consigliere => new Consigliere(),
+        LayerEnum.Consort => new Consort(),
+        LayerEnum.Disguiser => new Disguiser(),
+        LayerEnum.Enforcer => new Enforcer(),
+        LayerEnum.Ghoul => new Ghoul(),
+        LayerEnum.Godfather => new Godfather(),
+        LayerEnum.Grenadier => new Grenadier(),
+        LayerEnum.Impostor => new Impostor(),
+        LayerEnum.Janitor => new Janitor(),
+        LayerEnum.Mafioso => new Mafioso(),
+        LayerEnum.Miner => new Miner(),
+        LayerEnum.Morphling => new Morphling(),
+        LayerEnum.PromotedGodfather => new PromotedGodfather(),
+        LayerEnum.Teleporter => new Teleporter(),
+        LayerEnum.Wraith => new Wraith(),
+        LayerEnum.Anarchist => new Anarchist(),
+        LayerEnum.Banshee => new Banshee(),
+        LayerEnum.Bomber => new Bomber(),
+        LayerEnum.Concealer => new Concealer(),
+        LayerEnum.Collider => new PlayerLayers.Roles.Collider(),
+        LayerEnum.Crusader => new Crusader(),
+        LayerEnum.Drunkard => new Drunkard(),
+        LayerEnum.Framer => new Framer(),
+        LayerEnum.Poisoner => new Poisoner(),
+        LayerEnum.PromotedRebel => new PromotedRebel(),
+        LayerEnum.Rebel => new Rebel(),
+        LayerEnum.Shapeshifter => new Shapeshifter(),
+        LayerEnum.Sidekick => new Sidekick(),
+        LayerEnum.Silencer => new Silencer(),
+        LayerEnum.Spellslinger => new Spellslinger(),
+        LayerEnum.Stalker => new Stalker(),
+        LayerEnum.Timekeeper => new Timekeeper(),
+        LayerEnum.Warper => new Warper(),
+        LayerEnum.Runner => new Runner(),
+        LayerEnum.Hunter => new Hunter(),
+        LayerEnum.Hunted => new Hunted(),
+        LayerEnum.Bastion => new Bastion(),
+        LayerEnum.Trapper => new Trapper(),
+        LayerEnum.CrewAssassin => new CrewAssassin(),
+        LayerEnum.IntruderAssassin => new IntruderAssassin(),
+        LayerEnum.NeutralAssassin => new NeutralAssassin(),
+        LayerEnum.SyndicateAssassin => new SyndicateAssassin(),
+        LayerEnum.ButtonBarry => new ButtonBarry(),
+        LayerEnum.Insider => new Insider(),
+        LayerEnum.Multitasker => new Multitasker(),
+        LayerEnum.Ninja => new Ninja(),
+        LayerEnum.Politician => new Politician(),
+        LayerEnum.Radar => new Radar(),
+        LayerEnum.Ruthless => new Ruthless(),
+        LayerEnum.Snitch => new Snitch(),
+        LayerEnum.Swapper => new Swapper(),
+        LayerEnum.Tiebreaker => new Tiebreaker(),
+        LayerEnum.Torch => new Torch(),
+        LayerEnum.Tunneler => new Tunneler(),
+        LayerEnum.Underdog => new Underdog(),
+        LayerEnum.Allied => new Allied(),
+        LayerEnum.Corrupted => new Corrupted(),
+        LayerEnum.Defector => new Defector(),
+        LayerEnum.Fanatic => new Fanatic(),
+        LayerEnum.Linked => new Linked(),
+        LayerEnum.Lovers => new Lovers(),
+        LayerEnum.Mafia => new Mafia(),
+        LayerEnum.Overlord => new Overlord(),
+        LayerEnum.Rivals => new Rivals(),
+        LayerEnum.Taskmaster => new Taskmaster(),
+        LayerEnum.Traitor => new Traitor(),
+        LayerEnum.Astral => new Astral(),
+        LayerEnum.Bait => new Bait(),
+        LayerEnum.Coward => new Coward(),
+        LayerEnum.Diseased => new Diseased(),
+        LayerEnum.Drunk => new Drunk(),
+        LayerEnum.Dwarf => new Dwarf(),
+        LayerEnum.Giant => new Giant(),
+        LayerEnum.Indomitable => new Indomitable(),
+        LayerEnum.Professional => new Professional(),
+        LayerEnum.Shy => new Shy(),
+        LayerEnum.VIP => new VIP(),
+        LayerEnum.Volatile => new Volatile(),
+        LayerEnum.Yeller => new Yeller(),
+        LayerEnum.Colorblind => new Colorblind(),
         _ => rpc switch
         {
-            PlayerLayerEnum.Role => new Roleless(player),
-            PlayerLayerEnum.Modifier => new Modifierless(player),
-            PlayerLayerEnum.Objectifier => new Objectifierless(player),
-            PlayerLayerEnum.Ability => new Abilityless(player),
-            _ => throw new NotImplementedException()
+            PlayerLayerEnum.Role => new Roleless(),
+            PlayerLayerEnum.Modifier => new Modifierless(),
+            PlayerLayerEnum.Objectifier => new Objectifierless(),
+            PlayerLayerEnum.Ability => new Abilityless(),
+            _ => throw new NotImplementedException(id.ToString())
         }
     };
 
@@ -3853,7 +3840,7 @@ public static class RoleGen
                 chosen = all.Find(x => x.Is(Alignment.SyndicateKill));
 
             if (chosen == null)
-                chosen = all.Find(x => x.GetRole() is LayerEnum.Anarchist or LayerEnum.Rebel or LayerEnum.Sidekick);
+                chosen = all.Find(x => x.GetRole() is Anarchist or Rebel or Sidekick);
         }
 
         if (chosen)
@@ -3877,8 +3864,8 @@ public static class RoleGen
         }
         else
         {
-            var role1 = Role.GetRole(converted);
-            var role2 = Role.GetRole(converter);
+            var role1 = converted.GetRole();
+            var role2 = converter.GetRole();
             var converts = converted.Is(SubFaction.None);
 
             if (!converts && !converted.Is(sub))
@@ -3888,10 +3875,7 @@ public static class RoleGen
                 if (converter.Is(LayerEnum.Dracula))
                 {
                     if (converts)
-                    {
                         ((Dracula)role2).Converted.Add(target);
-                        role1.IsBitten = true;
-                    }
                     else if (converted.IsBitten())
                         ((Dracula)role2).Converted.Add(target);
                     else if (converted.Is(LayerEnum.Dracula))
@@ -3903,10 +3887,7 @@ public static class RoleGen
                 else if (converter.Is(LayerEnum.Whisperer))
                 {
                     if (converts)
-                    {
                         ((Whisperer)role2).Persuaded.Add(target);
-                        role1.IsPersuaded = true;
-                    }
                     else if (converted.IsPersuaded())
                         ((Whisperer)role2).Persuaded.Add(target);
                     else if (converted.Is(LayerEnum.Whisperer))
@@ -3921,10 +3902,7 @@ public static class RoleGen
                 else if (converter.Is(LayerEnum.Necromancer))
                 {
                     if (converts)
-                    {
                         ((Necromancer)role2).Resurrected.Add(target);
-                        role1.IsResurrected = true;
-                    }
                     else if (converted.IsResurrected())
                         ((Necromancer)role2).Resurrected.Add(target);
                     else if (converted.Is(LayerEnum.Necromancer))
@@ -3939,7 +3917,6 @@ public static class RoleGen
                     {
                         var jackal = (Jackal)role2;
                         jackal.Recruited.Add(target);
-                        role1.IsRecruit = true;
 
                         if (jackal.GoodRecruit == null)
                             jackal.GoodRecruit = converted;
@@ -3957,19 +3934,18 @@ public static class RoleGen
                     }
                 }
 
-                var (flash, symbol) = sub switch
+                var flash = sub switch
                 {
-                    SubFaction.Undead => (CustomColorManager.Undead, "γ"),
-                    SubFaction.Cabal => (CustomColorManager.Cabal, "$"),
-                    SubFaction.Reanimated => (CustomColorManager.Reanimated, "Σ"),
-                    SubFaction.Sect => (CustomColorManager.Sect, "Λ"),
-                    _ => (CustomColorManager.SubFaction, "φ")
+                    SubFaction.Undead => CustomColorManager.Undead,
+                    SubFaction.Cabal => CustomColorManager.Cabal,
+                    SubFaction.Reanimated => CustomColorManager.Reanimated,
+                    SubFaction.Sect => CustomColorManager.Sect,
+                    _ => CustomColorManager.SubFaction
                 };
 
                 role1.SubFaction = sub;
                 role1.SubFactionColor = flash;
                 role1.Alignment = role1.Alignment.GetNewAlignment(Faction.Neutral);
-                role1.SubFactionSymbol = symbol;
                 Convertible--;
 
                 if (CustomPlayer.Local == converted)

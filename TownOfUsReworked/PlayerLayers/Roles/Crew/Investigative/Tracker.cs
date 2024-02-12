@@ -11,11 +11,16 @@ public class Tracker : Crew
     public override Func<string> StartText => () => "Track Everyone's Movements";
     public override Func<string> Description => () => "- You can track players which creates arrows that update every now and then with the target's position";
 
-    public Tracker(PlayerControl player) : base(player)
+    public Tracker() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         TrackerArrows = new();
         Alignment = Alignment.CrewInvest;
         TrackButton = new(this, "Track", AbilityTypes.Alive, "ActionSecondary", Track, CustomGameOptions.TrackCd, Exception, CustomGameOptions.MaxTracks);
+        return this;
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -57,7 +62,7 @@ public class Tracker : Crew
                 var player = PlayerById(pair.Key);
                 var body = BodyById(pair.Key);
 
-                if (player == null || player.Data.Disconnected || (player.Data.IsDead && body == null))
+                if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
                     DestroyArrow(pair.Key);
                 else
                     pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());

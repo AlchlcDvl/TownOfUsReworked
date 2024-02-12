@@ -12,11 +12,16 @@ public class Survivor : Neutral
     public override Func<string> Description => () => "- You can put on a vest, which makes you unkillable for a short duration of time";
     public override DefenseEnum DefenseVal => VestButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Survivor(PlayerControl player) : base(player)
+    public Survivor() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Live to the end of the game";
         VestButton = new(this, "Vest", AbilityTypes.Targetless, "ActionSecondary", HitVest, CustomGameOptions.VestCd, CustomGameOptions.VestDur, CustomGameOptions.MaxVests);
+        return this;
     }
 
     public void HitVest()

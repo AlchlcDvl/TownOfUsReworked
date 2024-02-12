@@ -2,8 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Retributionist : Crew
 {
-    public Retributionist(PlayerControl player) : base(player)
+    public Retributionist() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewSupport;
         BodyArrows = new();
         MediatedPlayers = new();
@@ -66,12 +70,13 @@ public class Retributionist : Crew
         RetMenu = new(Player, "RetActive", "RetDisabled", CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
         TrapsMade = 0;
         TrapButton.Uses = 0;
+        return this;
     }
 
     //Retributionist Stuff
     public PlayerVoteArea Selected { get; set; }
     public PlayerControl Revived { get; set; }
-    public Role RevivedRole => Revived == null ? null : (Revived.Is(LayerEnum.Revealer) ? GetRole<Revealer>(Revived).FormerRole : GetRole(Revived));
+    public Role RevivedRole => Revived == null ? null : (Revived.Is(LayerEnum.Revealer) ? Revived.GetRole<Revealer>().FormerRole : Revived.GetRole());
     public CustomMeeting RetMenu { get; set; }
 
     public override UColor Color
@@ -89,7 +94,7 @@ public class Retributionist : Crew
     public override string Name => "Retributionist";
     public override LayerEnum Type => LayerEnum.Retributionist;
     public override Func<string> StartText => () => "Mimic the Dead";
-    public override Func<string> Description => () => "- You can mimic the abilities of dead <color=#8CFFFFFF>Crew</color>" + (RevivedRole == null ? "" : $"\n{RevivedRole.Description()}");
+    public override Func<string> Description => () => "- You can mimic the abilities of dead <color=#8CFFFFFF>Crew</color>" + (!RevivedRole ? "" : $"\n{RevivedRole.Description()}");
     public override AttackEnum AttackVal
     {
         get
@@ -147,7 +152,7 @@ public class Retributionist : Crew
         }
     }
 
-    private bool IsExempt(PlayerVoteArea voteArea) => !voteArea.AmDead || PlayerByVoteArea(voteArea).Data.Disconnected || IsDead || GetRole(voteArea).BaseFaction != Faction.Crew;
+    private bool IsExempt(PlayerVoteArea voteArea) => !voteArea.AmDead || PlayerByVoteArea(voteArea).HasDied() || IsDead || !voteArea.IsBase(Faction.Crew);
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
     {
@@ -397,7 +402,7 @@ public class Retributionist : Crew
             {
                 message = "The following roles triggered your bugs: ";
                 BuggedPlayers.Shuffle();
-                BuggedPlayers.ForEach(role => message += $"{GetRoles(role)[0]}, ");
+                BuggedPlayers.ForEach(role => message += $"{GetLayers(role)[0]}, ");
                 message = message.Remove(message.Length - 2);
             }
 
@@ -668,7 +673,7 @@ public class Retributionist : Crew
         if (!player.Data.IsDead)
             return;
 
-        var targetRole = GetRole(player);
+        var targetRole = player.GetRole();
         var formerKiller = targetRole.KilledBy;
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
@@ -677,7 +682,7 @@ public class Retributionist : Crew
         if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
         {
             var lover = player.GetOtherLover();
-            var loverRole = GetRole(lover);
+            var loverRole = lover.GetRole();
             loverRole.DeathReason = DeathReasonEnum.Revived;
             loverRole.KilledBy = " By " + PlayerName;
             lover.Revive();
@@ -733,7 +738,7 @@ public class Retributionist : Crew
     public bool MedicException(PlayerControl player)
     {
         if (ShieldedPlayer == null)
-            return (player.Is(LayerEnum.Mayor) && GetRole<Mayor>(player).Revealed) || (player.Is(LayerEnum.Dictator) && GetRole<Dictator>(player).Revealed);
+            return (player.Is(LayerEnum.Mayor) && player.GetRole<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetRole<Dictator>().Revealed);
         else
             return ShieldedPlayer != player;
     }
@@ -792,7 +797,7 @@ public class Retributionist : Crew
         var cooldown = Interact(Player, SeerButton.TargetPlayer);
 
         if (cooldown != CooldownType.Fail)
-            Flash(GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
+            Flash(SeerButton.TargetPlayer.GetRole().RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }
@@ -804,11 +809,11 @@ public class Retributionist : Crew
 
     public void UnBlock()
     {
-        GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
+        BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
         BlockTarget = null;
     }
 
-    public void Block() => GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
+    public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
 
     public void Roleblock()
     {
@@ -879,7 +884,7 @@ public class Retributionist : Crew
         if (TransportPlayer1.inVent)
         {
             while (GetInTransition())
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
 
             TransportPlayer1.MyPhysics.ExitAllVents();
             Vent1 = TransportPlayer1.GetClosestVent();
@@ -889,7 +894,7 @@ public class Retributionist : Crew
         if (TransportPlayer2.inVent)
         {
             while (GetInTransition())
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
 
             TransportPlayer2.MyPhysics.ExitAllVents();
             Vent2 = TransportPlayer2.GetClosestVent();
@@ -926,7 +931,7 @@ public class Retributionist : Crew
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.TransportDur)
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
             else
                 break;
 
@@ -942,8 +947,8 @@ public class Retributionist : Crew
             TransportPlayer1.MyPhysics.ResetMoveState();
             TransportPlayer2.MyPhysics.ResetMoveState();
             var TempPosition = TransportPlayer1.GetTruePosition();
-            TransportPlayer1.NetTransform.SnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
-            TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
+            TransportPlayer1.CustomSnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
+            TransportPlayer2.CustomSnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
             if (IsSubmerged())
             {
@@ -972,7 +977,7 @@ public class Retributionist : Crew
             TransportPlayer2.MyPhysics.ResetMoveState();
             var TempPosition = Player1Body.TruePosition;
             Player1Body.transform.position = TransportPlayer2.GetTruePosition();
-            TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
+            TransportPlayer2.CustomSnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
             if (IsSubmerged() && CustomPlayer.Local == TransportPlayer2)
             {
@@ -985,7 +990,7 @@ public class Retributionist : Crew
             StopDragging(Player2Body.ParentId);
             TransportPlayer1.MyPhysics.ResetMoveState();
             var TempPosition = TransportPlayer1.GetTruePosition();
-            TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
+            TransportPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
             Player2Body.transform.position = TempPosition;
 
             if (IsSubmerged() && CustomPlayer.Local == TransportPlayer1)
@@ -1026,8 +1031,8 @@ public class Retributionist : Crew
 
         HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
         {
-            var index = (int)(p * PortalAnimation.Length);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
+            var index = (int)(p * PortalAnimation.Count);
+            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
             AnimationPlaying1.sprite = PortalAnimation[index];
             TransportPlayer1.SetPlayerMaterialColors(AnimationPlaying1);
 
@@ -1044,8 +1049,8 @@ public class Retributionist : Crew
 
         HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
         {
-            var index = (int)(p * PortalAnimation.Length);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
+            var index = (int)(p * PortalAnimation.Count);
+            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
             AnimationPlaying2.sprite = PortalAnimation[index];
             TransportPlayer2.SetPlayerMaterialColors(AnimationPlaying2);
 
@@ -1077,9 +1082,15 @@ public class Retributionist : Crew
     public void Transport()
     {
         if (TransportPlayer1 == null)
+        {
             TransportMenu1.Open();
+            TransportButton.Uses++;
+        }
         else if (TransportPlayer2 == null)
+        {
             TransportMenu2.Open();
+            TransportButton.Uses++;
+        }
         else
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Transport, TransportPlayer1, TransportPlayer2);
@@ -1153,7 +1164,7 @@ public class Retributionist : Crew
 
         if (!isAttack)
         {
-            TriggeredRoles.Add(GetRole(trigger));
+            TriggeredRoles.Add(trigger.GetRole());
             Trapped.Remove(trapped.PlayerId);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Trigger, trapped, trigger, isAttack);
         }

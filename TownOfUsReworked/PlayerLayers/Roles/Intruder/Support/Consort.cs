@@ -13,23 +13,28 @@ public class Consort : Intruder
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
         $"immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
 
-    public Consort(PlayerControl player) : base(player)
+    public Consort() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderSupport;
         RoleBlockImmune = true;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
         BlockButton = new(this, "ConsortRoleblock", AbilityTypes.Targetless, "Secondary", Roleblock, CustomGameOptions.ConsortCd, CustomGameOptions.ConsortDur, (CustomButton.EffectVoid)Block,
             UnBlock);
+        return this;
     }
 
     public void UnBlock()
     {
-        GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
+        BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
         BlockTarget = null;
     }
 
-    public void Block() => GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
+    public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
 
     public void Click(PlayerControl player)
     {

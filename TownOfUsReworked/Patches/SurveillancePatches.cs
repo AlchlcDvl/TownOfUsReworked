@@ -133,14 +133,14 @@ public static class SurveillancePatches
         {
             NVActive = false;
 
-            if (HudUpdate.IsCamoed)
+            if (HudHandler.Instance.IsCamoed)
                 Camouflage();
             else
                 DefaultOutfitAll();
         }
     }
 
-    public static void EnforceNightVision()
+    private static void EnforceNightVision()
     {
         foreach (var player in CustomPlayer.AllPlayers)
         {

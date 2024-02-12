@@ -16,15 +16,19 @@ public class Politician : Ability
     public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
 
-    public Politician(PlayerControl player) : base(player)
+    public Politician() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
         VoteBank = CustomGameOptions.PoliticianVoteBank;
         ExtraVotes = new();
+        return this;
     }
 
     private void UpdateButton(MeetingHud __instance)
     {
-        if (CanKill)
+        if (CanKill || !Abstain)
             return;
 
         Abstain.gameObject.SetActive(__instance.SkipVoteButton.gameObject.active && !VotedOnce);
@@ -35,7 +39,7 @@ public class Politician : Ability
 
     public void DestroyAbstain()
     {
-        if (CanKill || Abstain == null)
+        if (CanKill || !Abstain)
             return;
 
         Abstain.ClearButtons();
@@ -50,7 +54,7 @@ public class Politician : Ability
     {
         base.OnMeetingStart(__instance);
 
-        if (CanKill)
+        if (CanKill || !Abstain)
             return;
 
         Abstain = UObject.Instantiate(__instance.SkipVoteButton, __instance.SkipVoteButton.transform.parent);

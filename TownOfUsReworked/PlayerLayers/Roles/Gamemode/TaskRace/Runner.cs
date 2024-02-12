@@ -9,12 +9,17 @@ public class Runner : Role
     public override UColor Color => CustomColorManager.Runner;
     public override string FactionName => "Task Race";
 
-    public Runner(PlayerControl player) : base(player)
+    public Runner() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
         Faction = Faction.GameMode;
         FactionColor = CustomColorManager.TaskRace;
         Objectives = () => "- Finish your tasks before the others";
-        Data.SetImpostor(false);
+        Player.SetImpostor(false);
+        Alignment = Alignment.GameModeTaskRace;
+        return this;
     }
 
     public override void UpdateHud(HudManager __instance)

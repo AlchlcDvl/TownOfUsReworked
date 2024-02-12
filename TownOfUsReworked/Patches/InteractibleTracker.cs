@@ -16,7 +16,7 @@ public static class SaveLadderPlayer
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Astral))
-            Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition = CustomPlayer.LocalCustom.Position;
+            CustomPlayer.Local.GetModifier<Astral>().LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }
 
@@ -36,7 +36,7 @@ public static class SavePlatformPlayer
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Astral))
-            Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition = CustomPlayer.LocalCustom.Position;
+            CustomPlayer.Local.GetModifier<Astral>().LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }
 
@@ -56,6 +56,6 @@ public static class SaveZiplinePlayer
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Astral))
-            Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition = CustomPlayer.LocalCustom.Position;
+            CustomPlayer.Local.GetModifier<Astral>().LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }

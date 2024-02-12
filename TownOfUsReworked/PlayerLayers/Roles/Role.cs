@@ -5,10 +5,11 @@ public abstract class Role : PlayerLayer
     public static readonly List<Role> AllRoles = new();
     public static readonly List<byte> Cleaned = new();
 
-    public static Role LocalRole => GetRole(CustomPlayer.Local);
+    public static Role LocalRole => CustomPlayer.Local.GetRole();
 
     public override UColor Color => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
+    public override LayerEnum Type => LayerEnum.NoneRole;
 
     public virtual Faction BaseFaction => Faction.None;
     public virtual Func<string> StartText => () => "Woah The Game Started";
@@ -90,7 +91,14 @@ public abstract class Role : PlayerLayer
 
     public virtual string FactionName => $"{Faction}";
     public virtual string SubFactionName => $"{SubFaction}";
-    public string SubFactionSymbol { get; set; } = "φ";
+    public string SubFactionSymbol => SubFaction switch
+    {
+        SubFaction.Cabal => "$",
+        SubFaction.Sect => "Λ",
+        SubFaction.Reanimated => "Σ",
+        SubFaction.Undead => "γ",
+        _ => "φ"
+    };
 
     public string KilledBy { get; set; } = "";
     public DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
@@ -111,39 +119,37 @@ public abstract class Role : PlayerLayer
 
     public bool Diseased { get; set; }
 
-    public bool IsRecruit { get; set; }
-    public bool IsResurrected { get; set; }
-    public bool IsPersuaded { get; set; }
-    public bool IsBitten { get; set; }
-    public bool IsIntTraitor { get; set; }
-    public bool IsIntAlly { get; set; }
-    public bool IsIntFanatic { get; set; }
-    public bool IsSynTraitor { get; set; }
-    public bool IsSynAlly { get; set; }
-    public bool IsSynFanatic { get; set; }
-    public bool IsCrewAlly { get; set; }
-    public bool IsCrewDefect { get; set; }
-    public bool IsIntDefect { get; set; }
-    public bool IsSynDefect { get; set; }
-    public bool IsNeutDefect { get; set; }
+    public bool IsRecruit => SubFaction == SubFaction.Cabal;
+    public bool IsResurrected => SubFaction == SubFaction.Reanimated;
+    public bool IsPersuaded => SubFaction == SubFaction.Sect;
+    public bool IsBitten => SubFaction == SubFaction.Undead;
+    public bool IsIntTraitor => Player.Is(LayerEnum.Traitor) && Faction == Faction.Intruder;
+    public bool IsIntAlly => Player.Is(LayerEnum.Allied) && Faction == Faction.Intruder;
+    public bool IsIntFanatic => Player.Is(LayerEnum.Fanatic) && Faction == Faction.Intruder;
+    public bool IsSynTraitor => Player.Is(LayerEnum.Traitor) && Faction == Faction.Syndicate;
+    public bool IsSynAlly => Player.Is(LayerEnum.Allied) && Faction == Faction.Syndicate;
+    public bool IsSynFanatic => Player.Is(LayerEnum.Fanatic) && Faction == Faction.Syndicate;
+    public bool IsCrewAlly => Player.Is(LayerEnum.Allied) && Faction == Faction.Crew;
+    public bool IsCrewDefect => Player.Is(LayerEnum.Traitor) && Faction == Faction.Crew && BaseFaction != Faction.Crew;
+    public bool IsIntDefect => Player.Is(LayerEnum.Defector) && Faction == Faction.Intruder && BaseFaction != Faction.Intruder;
+    public bool IsSynDefect => Player.Is(LayerEnum.Defector) && Faction == Faction.Syndicate && BaseFaction != Faction.Syndicate;
+    public bool IsNeutDefect => Player.Is(LayerEnum.Defector) && Faction == Faction.Neutral && BaseFaction != Faction.Neutral;
     public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !Player.Is(LayerEnum.Allied) && !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect &&
         !Player.Is(LayerEnum.Corrupted) && !Player.Is(LayerEnum.Mafia) && !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction && !Player.IsTurnedFanatic() &&
         !Player.IsTurnedTraitor() && !Ignore;
 
     public bool HasTarget => Type is LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.Guesser or LayerEnum.BountyHunter;
 
-    protected Role(PlayerControl player) : base(player)
-    {
-        if (GetRole(player))
-            GetRole(player).Player = null;
+    protected Role() : base() => AllRoles.Add(this);
 
+    public void RoleStart()
+    {
         RoleHistory = new();
         AllArrows = new();
         DeadArrows = new();
         Positions = new();
         YellerArrows = new();
         PlayerNumbers = new();
-        AllRoles.Add(this);
 
         /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
             CallButton = new(this, "CallPlatform", AbilityTypes.Targetless, "Quarternary", UsePlatform);*/
@@ -250,7 +256,7 @@ public abstract class Role : PlayerLayer
             else if (Positions.Count > 0)
             {
                 var point = PointsInTime[^1];
-                Player.NetTransform.RpcSnapTo(point.Position);
+                Player.RpcCustomSnapTo(point.Position);
                 Positions.Remove(point);
             }
             else
@@ -434,7 +440,7 @@ public abstract class Role : PlayerLayer
         if (Requesting && BountyTimer > 2)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.PlaceHit, Player, Player);
-            GetRole<BountyHunter>(Requestor).TentativeTarget = Player;
+            Requestor.GetRole<BountyHunter>().TentativeTarget = Player;
             Requesting = false;
             Requestor = null;
         }
@@ -473,7 +479,7 @@ public abstract class Role : PlayerLayer
     public void PlaceHit()
     {
         var target = Requestor.IsLinkedTo(PlaceHitButton.TargetPlayer) ? Player : PlaceHitButton.TargetPlayer;
-        GetRole<BountyHunter>(Requestor).TentativeTarget = target;
+        Requestor.GetRole<BountyHunter>().TentativeTarget = target;
         Requesting = false;
         Requestor = null;
         CallRpc(CustomRPC.Action, ActionsRPC.PlaceHit, Player, target);
@@ -481,7 +487,7 @@ public abstract class Role : PlayerLayer
 
     public static void PublicReveal(PlayerControl player)
     {
-        var role = GetRole(player);
+        var role = player.GetRole();
 
         if (role is Mayor mayor)
             mayor.Revealed = true;
@@ -603,14 +609,6 @@ public abstract class Role : PlayerLayer
         GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
-
-    public static Role GetRole(PlayerControl player) => AllRoles.Find(x => x.Player == player);
-
-    public static T GetRole<T>(PlayerControl player) where T : Role => GetRole(player) as T;
-
-    public static Role GetRole(PlayerVoteArea area) => GetRole(PlayerByVoteArea(area));
-
-    public static List<Role> GetRoles(LayerEnum roletype) => AllRoles.Where(x => x.Type == roletype && !x.Ignore).ToList();
 
     public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && !x.Ignore).ToList();
 

@@ -12,11 +12,16 @@ public class Murderer : Neutral
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => DefenseEnum.Basic;
 
-    public Murderer(PlayerControl player) : base(player)
+    public Murderer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Murder anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MurderButton = new(this, "Murder", AbilityTypes.Alive, "ActionSecondary", Murder, CustomGameOptions.MurderCd, Exception);
+        return this;
     }
 
     public void Murder() => MurderButton.StartCooldown(Interact(Player, MurderButton.TargetPlayer, true));

@@ -10,7 +10,14 @@ public class ButtonBarry : Ability
     public override LayerEnum Type => LayerEnum.ButtonBarry;
     public override Func<string> Description => () => "- You can call a button from anywhere";
 
-    public ButtonBarry(PlayerControl player) : base(player) => ButtonButton = new(this, "Button", AbilityTypes.Targetless, "Quarternary", Call, CustomGameOptions.ButtonCooldown);
+    public ButtonBarry() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        ButtonButton = new(this, "Button", AbilityTypes.Targetless, "Quarternary", Call, CustomGameOptions.ButtonCooldown);
+        return this;
+    }
 
     private void Call()
     {

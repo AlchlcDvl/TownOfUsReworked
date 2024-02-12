@@ -15,7 +15,7 @@ public class BountyHunter : Neutral
     public bool Failed => (!GuessButton.Usable && !TargetFound) || (!TargetKilled && TargetPlayer.HasDied());
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
-    private readonly List<string> Letters = new();
+    private List<string> Letters { get; set; }
     public bool CanHunt => TargetPlayer != null && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers));
     public bool CanRequest => (RequestingPlayer == null || RequestingPlayer.HasDied()) && TargetPlayer == null;
     public bool Assigned { get; set; }
@@ -29,22 +29,28 @@ public class BountyHunter : Neutral
     public override Func<string> Description => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- " +
         "Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you" +
         " will become a <color=#678D36FF>Troll</color>");
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
-    public BountyHunter(PlayerControl player) : base(player)
+    public BountyHunter() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (TargetPlayer == null ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;
         GuessButton = new(this, "BHGuess", AbilityTypes.Alive, "Secondary", Guess, CustomGameOptions.GuessCd, CustomGameOptions.BountyHunterGuesses);
         HuntButton = new(this, "Hunt", AbilityTypes.Alive, "ActionSecondary", Hunt, CustomGameOptions.GuessCd);
         RequestButton = new(this, "Request", AbilityTypes.Alive, "Tertiary", Request, Exception);
+        Letters = new();
+        return this;
     }
 
-    public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || GetRole(player).Requesting || (player.Is(SubFaction) && SubFaction !=
+    public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.GetRole().Requesting || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
-    public void TurnTroll() => new Troll(Player).RoleUpdate(this);
+    public void TurnTroll() => new Troll().Start<Role>(Player).RoleUpdate(this);
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
@@ -134,7 +140,7 @@ public class BountyHunter : Neutral
         }
         else if (!RoleHintGiven)
         {
-            something = $"Your target is the {GetRole(TargetPlayer)}!";
+            something = $"Your target is a {TargetPlayer.GetRole()}!";
             RoleHintGiven = true;
         }
 
@@ -163,8 +169,8 @@ public class BountyHunter : Neutral
     public void Request()
     {
         RequestingPlayer = RequestButton.TargetPlayer;
-        GetRole(RequestingPlayer).Requesting = true;
-        GetRole(RequestingPlayer).Requestor = Player;
+        RequestingPlayer.GetRole().Requesting = true;
+        RequestingPlayer.GetRole().Requestor = Player;
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RequestingPlayer);
     }
 
@@ -172,8 +178,8 @@ public class BountyHunter : Neutral
     {
         var request = reader.ReadPlayer();
         RequestingPlayer = request;
-        GetRole(request).Requesting = true;
-        GetRole(request).Requestor = Player;
+        request.GetRole().Requesting = true;
+        request.GetRole().Requestor = Player;
     }
 
     public void Guess()
@@ -195,9 +201,8 @@ public class BountyHunter : Neutral
         }
         else if (HuntButton.TargetPlayer == TargetPlayer && !TargetKilled)
         {
-            RpcMurderPlayer(Player, HuntButton.TargetPlayer);
             TargetKilled = true;
-            HuntButton.StartCooldown(Interact(Player, HuntButton.TargetPlayer));
+            HuntButton.StartCooldown(Interact(Player, HuntButton.TargetPlayer, true, bypass: true));
             CallRpc(CustomRPC.WinLose, WinLoseRPC.BountyHunterWin, this);
         }
         else

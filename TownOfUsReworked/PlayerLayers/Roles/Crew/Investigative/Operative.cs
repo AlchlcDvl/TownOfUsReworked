@@ -13,12 +13,17 @@ public class Operative : Crew
     public override Func<string> Description => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +
         " meeting\n- You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
 
-    public Operative(PlayerControl player) : base(player)
+    public Operative() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewInvest;
         BuggedPlayers = new();
         Bugs = new();
         BugButton = new(this, "Bug", AbilityTypes.Targetless, "ActionSecondary", PlaceBug, CustomGameOptions.BugCd, CustomGameOptions.MaxBugs);
+        return this;
     }
 
     public override void OnLobby()
@@ -53,7 +58,7 @@ public class Operative : Crew
         {
             message = "The following roles triggered your bugs: ";
             BuggedPlayers.Shuffle();
-            BuggedPlayers.ForEach(role => message += $"{GetRoles(role)[0]}, ");
+            BuggedPlayers.ForEach(role => message += $"{GetLayers(role)[0]}, ");
             message = message.Remove(message.Length - 2);
         }
 

@@ -9,7 +9,14 @@ public class Radar : Ability
     public override LayerEnum Type => LayerEnum.Radar;
     public override Func<string> Description => () => "- You are aware of those close to you";
 
-    public Radar(PlayerControl player) : base(player) => RadarArrow = new(Player, Color);
+    public Radar() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        RadarArrow = new(Player, Color);
+        return this;
+    }
 
     public override void OnLobby()
     {
@@ -27,8 +34,8 @@ public class Radar : Ability
         {
             var closest = Player.GetClosestPlayer(ignoreWalls: true);
             var body = Player.GetClosestBody(ignoreWalls: true);
-            var transform = body != null && Vector2.Distance(closest.transform.position, Player.transform.position) > Vector2.Distance(body.transform.position,
-                Player.transform.position) ? body.transform : closest.transform;
+            var transform = body != null && Vector2.Distance(closest.transform.position, Player.transform.position) > Vector2.Distance(body.transform.position, Player.transform.position) ?
+                body.transform : closest.transform;
             RadarArrow.Update(transform.position);
         }
     }

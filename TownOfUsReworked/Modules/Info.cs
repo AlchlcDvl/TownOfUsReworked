@@ -2,12 +2,12 @@ namespace TownOfUsReworked.Modules;
 
 public class Info
 {
-    public readonly string Name;
+    public string Name { get; }
     public string Short { get; set; }
     public string Description { get; set; }
     public UColor Color { get; set; }
-    public readonly InfoType Type;
-    public readonly bool Header;
+    public InfoType Type { get; }
+    public bool Header { get; }
 
     public static readonly List<Info> AllInfo = new();
 
@@ -22,17 +22,14 @@ public class Info
     }
 
     public static void SetAllInfo() => AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllObjectifiers, LayerInfo.AllFactions,
-        LayerInfo.AllSubFactions, LayerInfo.AllModes, LayerInfo.AllOthers);
+        LayerInfo.AllSubFactions, LayerInfo.AllModes, LayerInfo.AllOthers, LayerInfo.AllSymbols);
 
     public static string ColorIt(string result, bool bold = true)
     {
         foreach (var info in AllInfo.Where(x => x.Type is not (InfoType.Alignment or InfoType.Lore)))
             result = result.Replace(info.Name, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Name}</color></b>");
 
-        foreach (var info in LayerInfo.AllObjectifiers)
-            result = result.Replace(info.Symbol, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
-
-        foreach (var info in LayerInfo.AllSubFactions)
+        foreach (var info in LayerInfo.AllSymbols)
             result = result.Replace(info.Symbol, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
 
         for (var i = 0; i < 56; i++)
@@ -40,6 +37,9 @@ public class Info
 
         result = result.Replace($"<b><color=#758000FF>Drunk</color></b>ard", "Drunkard")
             .Replace($"<b><color=#FFD700FF>Role</color></b> List", "Role List")
+            .Replace($"<b><color=#B51E39FF>Bounty</color></b> Hunter", "Bounty Hunter")
+            .Replace($"<b><color=#B51E39FF>Bounty</color></b> <b><color=#FF004EFF>Hunter</color></b>", "Bounty Hunter")
+            .Replace($"Bounty <b><color=#FF004EFF>Hunter</color></b>", "Bounty Hunter")
             .Replace($"Vampire <b><color=#FF004EFF>Hunter</color></b>", "Vampire Hunter");
 
         if (!bold)
@@ -53,25 +53,29 @@ public class Info
 
 public class RoleInfo : Info
 {
-    public readonly string Alignment;
-    public readonly string ColoredAlignment;
-    public readonly string WinCon;
-    public readonly string Quote;
-    public readonly Faction Faction;
-    public readonly LayerEnum Role;
+    public string Alignment { get; }
+    public string ColoredAlignment { get; }
+    public string WinCon { get; }
+    public string Quote { get; }
+    public string Attack { get; }
+    public string Defense { get; }
+    public Faction Faction { get; }
+    public LayerEnum Role { get; }
 
     private const string IntruderObjective = "Have a critical sabotage set off by the Intruders reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew and opposing Neutrals.";
     private const string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, Crew and opposing Neutrals.";
     private const string CrewObjective = "Finish tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, and opposing Neutrals.";
 
-    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, UColor color, LayerEnum role, string wincon = "", bool header =
-        false) : base(name, shortF, description, color, InfoType.Role, header)
+    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, UColor color, LayerEnum role, string attack = "None", string
+        defense = "None", string wincon = "", bool header = false) : base(name, shortF, description, color, InfoType.Role, header)
     {
         Faction = faction;
         Role = role;
         Quote = quote;
         Alignment = alignmentEnum.AlignmentName();
         ColoredAlignment = alignmentEnum.AlignmentName(true);
+        Attack = attack;
+        Defense = defense;
         WinCon = faction switch
         {
             Faction.Syndicate => SyndicateObjective,
@@ -88,6 +92,8 @@ public class RoleInfo : Info
         result += ColorIt($"Name: {Name}");
         result += "\n" + ColorIt($"Short Form: {Short}");
         result += $"\nAlignment: {ColoredAlignment}";
+        result += $"\nAttack: {Attack}";
+        result += $"\nDefense: {Defense}";
         result += "\n" + ColorIt(WrapText($"Win Condition: {WinCon}"));
         result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         result += "\n\n" + ColorIt(WrapText(Quote));
@@ -96,24 +102,22 @@ public class RoleInfo : Info
 
 public class FactionInfo : Info
 {
-    private const string SyndicateDescription = "Each member of this faction has a special ability and then after a certain number of meetings, can also kill. The main theme of " +
-        "this faction is chaos. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. After a certain number " +
-        "of meetings, the Syndicate can retreive the \"Chaos Drive\" which gives the holder the ability to kill (if they couldn't already) while also enhancing their existing " +
-        "abilities.";
-    private const string CrewDescription = "Each member has a special ability which determines who’s who and can help weed out the evils. The main theme of this faction is " +
-        "deduction and goodwill. This faction is an uninformed majority meaning they make up most of the players and don't who the other members are. The Crew can do tasks which " +
-        "sort of act like a timer for non-Crew roles.";
+    private const string SyndicateDescription = "Each member of this faction has a special ability and then after a certain number of meetings, can also kill. The main theme of this faction "
+        + "is chaos. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. After a certain number of meetings, the " +
+        "Syndicate can retreive the \"Chaos Drive\" which gives the holder the ability to kill (if they couldn't already) while also enhancing their existing abilities.";
+    private const string CrewDescription = "Each member has a special ability which determines who’s who and can help weed out the evils. The main theme of this faction is deduction and " +
+        "goodwill. This faction is an uninformed majority meaning they make up most of the players and don't who the other members are. The Crew can do tasks which sort of act like a timer "
+        + "for non-Crew roles.";
     private const string IntruderDescription = "Each member of this faction has the ability to kill alongside an ability pertaining to their role. The main theme of this faction is " +
-        "destruction and raw power. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. All members can sabotage "
-        + "to distract the Crew from their tasks.";
-    private const string NeutralDescription = "Neutrals are essentially factionless. Each member of this faction has their own unique way to win, seperate from the other roles in" +
-        " the same faction. The main theme of this faction is free for all. This faction is an uninformed minority of the game, meaning they make up a small part of the crew " +
-        "while not knowing who the other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of " +
-        "existing.";
+        "destruction and raw power. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. All members can sabotage to " +
+        "distract the Crew from their tasks.";
+    private const string NeutralDescription = "Neutrals are essentially factionless. Each member of this faction has their own unique way to win, seperate from the other roles in the same " +
+        "faction. The main theme of this faction is free for all. This faction is an uninformed minority of the game, meaning they make up a small part of the crew while not knowing who the "
+        + "other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of existing.";
     private const string GameModeDescription = "Game Mode roles only spawn in certain special game modes. They have their own special abilities and objectives that are not seen in other " +
         "factions.";
 
-    public readonly Faction Faction;
+    public Faction Faction { get; }
 
     public FactionInfo(Faction faction, bool header = false) : base($"{faction}", "", "", default, InfoType.Faction, header)
     {
@@ -140,18 +144,18 @@ public class FactionInfo : Info
 
 public class SubFactionInfo : Info
 {
-    private const string CabalDescription = "The Cabal is an oraganisation that's similar to the Syndicate. They, however, operate covertly by secretly recruiting people to join their"
-        + " group. The Cabal starts off very strong so they are of a higher priority when dealing with enemies. The Cabal is led by the Jackal.";
+    private const string CabalDescription = "The Cabal is an oraganisation that's similar to the Syndicate. They, however, operate covertly by secretly recruiting people to join their group"
+        + ". The Cabal starts off very strong so they are of a higher priority when dealing with enemies. The Cabal is led by the Jackal.";
     private const string UndeadDescription = "The Undead are a group of bloodthirsty vampires who slowly grow their numbers. The longer the game goes on, the higher their priority on the " +
         "elimination list. If a member of this subfaction interacts with a Vampire Hunter, the interactor will be killed by the Vampire Hunter in question. The Undead are led by the " +
         "Dracula.";
     private const string ReanimatedDescription = "The Reanimated are a bunch of people who have died yet hold a grudge agaisnt the living. This is made possible by the Necromancer, who leads"
         + " them. The longer the game goes on with no deaths, the higher the chances of a Necromancer at work.";
-    private const string SectDescription = "The Sect is a cult which can gain massive amounts of followers in one go. It may be weak at the start, but do not understimate their " +
-        "powerful growth as it may overrun you. The Sect is led by the Whisperer.";
+    private const string SectDescription = "The Sect is a cult which can gain massive amounts of followers in one go. It may be weak at the start, but do not understimate their powerful " +
+        "growth as it may overrun you. The Sect is led by the Whisperer.";
 
-    public readonly string Symbol;
-    public readonly SubFaction SubFaction;
+    public string Symbol { get; }
+    public SubFaction SubFaction { get; }
 
     public SubFactionInfo(SubFaction sub, bool header = false) : base($"{sub}", "", "", default, InfoType.SubFaction, header)
     {
@@ -252,8 +256,8 @@ public class AlignmentInfo : Info
     private const string HnSDescription = "These roles spawn in the Hide And Seek game mode.";
     private const string TRDescription = "These roles spawn in the Task Race game mode.";
 
-    public readonly string AlignmentName;
-    public readonly Alignment Alignment;
+    public string AlignmentName { get; }
+    public Alignment Alignment { get; }
 
     public AlignmentInfo(Alignment alignmentEnum, bool header = false) : base(alignmentEnum.AlignmentName(), "", "", CustomColorManager.Alignment, InfoType.Alignment, header)
     {
@@ -331,8 +335,8 @@ public class AlignmentInfo : Info
 
 public class ModifierInfo : Info
 {
-    public readonly string AppliesTo;
-    public readonly LayerEnum Modifier;
+    public string AppliesTo { get; }
+    public LayerEnum Modifier { get; }
 
     public ModifierInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum modifier, bool header = false) : base(name, shortF, description, color,
         InfoType.Modifier, header)
@@ -353,10 +357,10 @@ public class ModifierInfo : Info
 
 public class ObjectifierInfo : Info
 {
-    public readonly string AppliesTo;
-    public readonly string WinCon;
-    public readonly string Symbol;
-    public readonly LayerEnum Objectifier;
+    public string AppliesTo { get; }
+    public string WinCon { get; }
+    public string Symbol { get; }
+    public LayerEnum Objectifier { get; }
 
     public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum objectifier, bool header = false) : base(name,
         shortF, description, color, InfoType.Objectifier, header)
@@ -381,8 +385,8 @@ public class ObjectifierInfo : Info
 
 public class AbilityInfo : Info
 {
-    public readonly string AppliesTo;
-    public readonly LayerEnum Ability;
+    public string AppliesTo { get; }
+    public LayerEnum Ability { get; }
 
     public AbilityInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum ability, bool header = false) : base(name, shortF, description, color,
         InfoType.Ability, header)
@@ -414,7 +418,7 @@ public class Lore : Info
 
 public class OtherInfo : Info
 {
-    public readonly string OtherNotes;
+    public string OtherNotes { get; }
 
     public OtherInfo(string name, string shortF, string description, UColor color, string otherNotes = "", bool header = false) : base(name, shortF, description, color, InfoType.Other,
         header) => OtherNotes = otherNotes;
@@ -446,7 +450,7 @@ public class GameModeInfo : Info
     private const string TRDescription = "This mode is a skill check mode to see who's the best at planning their task path and finishing tasks. No one can kill each other and must race to "
         + "be the first one to finish their tasks.";
 
-    public readonly GameMode Mode;
+    public GameMode Mode { get; }
 
     public GameModeInfo(GameMode mode, bool header = false) : base(mode.GameModeName(), "", "", default, InfoType.GameMode, header)
     {
@@ -470,6 +474,21 @@ public class GameModeInfo : Info
         base.WikiEntry(out result);
         result += ColorIt($"Name: {Mode.GameModeName(true)}");
         result += "\n" + ColorIt($"Short Form: {Short}");
+        result += "\n" + ColorIt(WrapText($"Description: {Description}"));
+    }
+}
+
+public class SymbolInfo : Info
+{
+    public string Symbol { get; }
+
+    public SymbolInfo(string name, string symbol, string description, UColor color, bool header = false) : base(name, "", description, color, InfoType.GameMode, header) => Symbol = symbol;
+
+    public override void WikiEntry(out string result)
+    {
+        base.WikiEntry(out result);
+        result += ColorIt($"Name: {Name}");
+        result += "\n" + ColorIt($"Symbol: {Symbol}");
         result += "\n" + ColorIt(WrapText($"Description: {Description}"));
     }
 }

@@ -14,7 +14,7 @@ public static class VersionShowerPatch
         {
             ModVersion = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
             ModVersion.transform.localPosition = new(0, -2f, 0);
-            ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nCreated by <color=#C50000FF>AlchlcSystm</color></b></size>";
+            ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nBy <color=#C50000FF>AlchlcSystm</color></b></size>";
             ModVersion.alignment = TextAlignmentOptions.Center;
             ModVersion.fontStyle = FontStyles.Bold;
             ModVersion.font = UpdateSplashPatch.Font;

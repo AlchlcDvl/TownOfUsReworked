@@ -12,10 +12,15 @@ public class Altruist : Crew
     public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {CustomGameOptions.ReviveDur}s\n- If a meeting is called or you are killed " +
         "during your revive, the revive fails";
 
-    public Altruist(PlayerControl player) : base(player)
+    public Altruist() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewProt;
         ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", Revive, CustomGameOptions.ReviveCd, CustomGameOptions.ReviveDur, UponEnd, CustomGameOptions.MaxRevives);
+        return this;
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -39,7 +44,7 @@ public class Altruist : Crew
         if (!player.Data.IsDead)
             return;
 
-        var targetRole = GetRole(player);
+        var targetRole = player.GetRole();
         var formerKiller = targetRole.KilledBy;
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
@@ -48,7 +53,7 @@ public class Altruist : Crew
         if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
         {
             var lover = player.GetOtherLover();
-            var loverRole = GetRole(lover);
+            var loverRole = lover.GetRole();
             loverRole.DeathReason = DeathReasonEnum.Revived;
             loverRole.KilledBy = " By " + PlayerName;
             lover.Revive();

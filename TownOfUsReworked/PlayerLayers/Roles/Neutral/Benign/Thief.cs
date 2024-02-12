@@ -20,9 +20,14 @@ public class Thief : Neutral
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
+    public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    public Thief(PlayerControl player) : base(player)
+    public Thief() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.NeutralBen;
         StealButton = new(this, "Steal", AbilityTypes.Alive, "ActionSecondary", Steal, CustomGameOptions.StealCd, Exception);
         ColorMapping = new();
@@ -34,6 +39,7 @@ public class Thief : Neutral
         Sorted = new();
         GuessMenu = new(Player, "Guess", CustomGameOptions.ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
         SetLists();
+        return this;
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -186,7 +192,7 @@ public class Thief : Neutral
                     var targetId = voteArea.TargetPlayerId;
                     var targetPlayer = PlayerById(targetId);
 
-                    var playerRole = GetRole(voteArea);
+                    var playerRole = voteArea.GetRole();
 
                     var roleflag = playerRole?.Name == guess;
                     var recruitflag = targetPlayer.IsRecruit() && guess == "Recruit";
@@ -380,7 +386,7 @@ public class Thief : Neutral
 
     public void Steal(PlayerControl other)
     {
-        var role = GetRole(other);
+        var role = other.GetRole();
         var target = other.GetTarget();
         var leader = other.GetLeader();
         var player = Player;
@@ -394,69 +400,69 @@ public class Thief : Neutral
 
         Role newRole = role.Type switch
         {
-            LayerEnum.Anarchist => new Anarchist(player),
-            LayerEnum.Arsonist => new Arsonist(player) { Doused = ((Arsonist)role).Doused },
-            LayerEnum.Blackmailer => new Blackmailer(player) { BlackmailedPlayer = ((Blackmailer)role).BlackmailedPlayer },
-            LayerEnum.Bomber => new Bomber(player),
-            LayerEnum.Camouflager => new Camouflager(player),
-            LayerEnum.Concealer => new Concealer(player),
-            LayerEnum.Consigliere => new Consigliere(player),
-            LayerEnum.Consort => new Consort(player),
-            LayerEnum.Cryomaniac => new Cryomaniac(player) { Doused = ((Cryomaniac)role).Doused },
-            LayerEnum.Disguiser => new Disguiser(player),
-            LayerEnum.Dracula => new Dracula(player) { Converted = ((Dracula)role).Converted },
-            LayerEnum.Framer => new Framer(player) { Framed = ((Framer)role).Framed },
-            LayerEnum.Glitch => new Glitch(player),
-            LayerEnum.Enforcer => new Enforcer(player),
-            LayerEnum.Godfather => new Godfather(player),
-            LayerEnum.Grenadier => new Grenadier(player),
-            LayerEnum.Impostor => new Impostor(player),
-            LayerEnum.Juggernaut => new Juggernaut(player),
-            LayerEnum.Mafioso => new Mafioso(player) { Godfather = (Godfather)leader },
-            LayerEnum.PromotedGodfather => new PromotedGodfather(player) { BlackmailedPlayer = ((PromotedGodfather)role).BlackmailedPlayer },
-            LayerEnum.Miner => new Miner(player),
-            LayerEnum.Morphling => new Morphling(player),
-            LayerEnum.Rebel => new Rebel(player),
-            LayerEnum.Sidekick => new Sidekick(player) { Rebel = (Rebel)leader },
-            LayerEnum.Shapeshifter => new Shapeshifter(player),
-            LayerEnum.Murderer => new Murderer(player),
-            LayerEnum.Plaguebearer => new Plaguebearer(player) { Infected = ((Plaguebearer)role).Infected },
-            LayerEnum.Pestilence => new Pestilence(player),
-            LayerEnum.SerialKiller => new SerialKiller(player),
-            LayerEnum.Werewolf => new Werewolf(player),
-            LayerEnum.Janitor => new Janitor(player),
-            LayerEnum.Poisoner => new Poisoner(player),
-            LayerEnum.Teleporter => new Teleporter(player),
-            LayerEnum.VampireHunter => new VampireHunter(player),
-            LayerEnum.Veteran => new Veteran(player),
-            LayerEnum.Vigilante => new Vigilante(player),
-            LayerEnum.Warper => new Warper(player),
-            LayerEnum.Wraith => new Wraith(player),
-            LayerEnum.BountyHunter => new BountyHunter(player) { TargetPlayer = target },
-            LayerEnum.Bastion => new Bastion(player) { BombedIDs = ((Bastion)role).BombedIDs },
-            LayerEnum.Jackal => new Jackal(player)
+            LayerEnum.Anarchist => new Anarchist(),
+            LayerEnum.Arsonist => new Arsonist() { Doused = ((Arsonist)role).Doused },
+            LayerEnum.Blackmailer => new Blackmailer() { BlackmailedPlayer = ((Blackmailer)role).BlackmailedPlayer },
+            LayerEnum.Bomber => new Bomber(),
+            LayerEnum.Camouflager => new Camouflager(),
+            LayerEnum.Concealer => new Concealer(),
+            LayerEnum.Consigliere => new Consigliere(),
+            LayerEnum.Consort => new Consort(),
+            LayerEnum.Cryomaniac => new Cryomaniac() { Doused = ((Cryomaniac)role).Doused },
+            LayerEnum.Disguiser => new Disguiser(),
+            LayerEnum.Dracula => new Dracula() { Converted = ((Dracula)role).Converted },
+            LayerEnum.Framer => new Framer() { Framed = ((Framer)role).Framed },
+            LayerEnum.Glitch => new Glitch(),
+            LayerEnum.Enforcer => new Enforcer(),
+            LayerEnum.Godfather => new Godfather(),
+            LayerEnum.Grenadier => new Grenadier(),
+            LayerEnum.Impostor => new Impostor(),
+            LayerEnum.Juggernaut => new Juggernaut(),
+            LayerEnum.Mafioso => new Mafioso() { Godfather = (Godfather)leader },
+            LayerEnum.PromotedGodfather => new PromotedGodfather() { BlackmailedPlayer = ((PromotedGodfather)role).BlackmailedPlayer },
+            LayerEnum.Miner => new Miner(),
+            LayerEnum.Morphling => new Morphling(),
+            LayerEnum.Rebel => new Rebel(),
+            LayerEnum.Sidekick => new Sidekick() { Rebel = (Rebel)leader },
+            LayerEnum.Shapeshifter => new Shapeshifter(),
+            LayerEnum.Murderer => new Murderer(),
+            LayerEnum.Plaguebearer => new Plaguebearer() { Infected = ((Plaguebearer)role).Infected },
+            LayerEnum.Pestilence => new Pestilence(),
+            LayerEnum.SerialKiller => new SerialKiller(),
+            LayerEnum.Werewolf => new Werewolf(),
+            LayerEnum.Janitor => new Janitor(),
+            LayerEnum.Poisoner => new Poisoner(),
+            LayerEnum.Teleporter => new Teleporter(),
+            LayerEnum.VampireHunter => new VampireHunter(),
+            LayerEnum.Veteran => new Veteran(),
+            LayerEnum.Vigilante => new Vigilante(),
+            LayerEnum.Warper => new Warper(),
+            LayerEnum.Wraith => new Wraith(),
+            LayerEnum.BountyHunter => new BountyHunter() { TargetPlayer = target },
+            LayerEnum.Bastion => new Bastion() { BombedIDs = ((Bastion)role).BombedIDs },
+            LayerEnum.Jackal => new Jackal()
             {
                 Recruited = ((Jackal)role).Recruited,
                 EvilRecruit = ((Jackal)role).EvilRecruit,
                 GoodRecruit = ((Jackal)role).GoodRecruit,
                 BackupRecruit = ((Jackal)role).BackupRecruit
             },
-            LayerEnum.Necromancer => new Necromancer(player) { Resurrected = ((Necromancer)role).Resurrected },
-            LayerEnum.Whisperer => new Whisperer(player) { Persuaded = ((Whisperer)role).Persuaded },
-            LayerEnum.Betrayer => new Betrayer(player) { Faction = role.Faction },
-            LayerEnum.Ambusher => new Ambusher(player),
-            LayerEnum.Crusader => new Crusader(player),
-            LayerEnum.PromotedRebel => new PromotedRebel(player)
+            LayerEnum.Necromancer => new Necromancer() { Resurrected = ((Necromancer)role).Resurrected },
+            LayerEnum.Whisperer => new Whisperer() { Persuaded = ((Whisperer)role).Persuaded },
+            LayerEnum.Betrayer => new Betrayer() { Faction = role.Faction },
+            LayerEnum.Ambusher => new Ambusher(),
+            LayerEnum.Crusader => new Crusader(),
+            LayerEnum.PromotedRebel => new PromotedRebel()
             {
                 Framed = ((PromotedRebel)role).Framed,
                 SilencedPlayer = ((PromotedRebel)role).SilencedPlayer,
             },
-            LayerEnum.Stalker => new Stalker(player),
-            LayerEnum.Silencer => new Silencer(player) { SilencedPlayer = ((Silencer)role).SilencedPlayer, },
-            _ => new Thief(player),
+            LayerEnum.Stalker => new Stalker(),
+            LayerEnum.Silencer => new Silencer() { SilencedPlayer = ((Silencer)role).SilencedPlayer, },
+            _ => new Thief(),
         };
 
-        newRole.RoleUpdate(this, Faction == Faction.Neutral);
+        newRole.Start<Role>(player).RoleUpdate(this, Faction == Faction.Neutral);
 
         if (other.Is(LayerEnum.Dracula))
             ((Dracula)role).Converted.Clear();
@@ -477,18 +483,17 @@ public class Thief : Neutral
             if (CustomPlayer.Local == other && other.Is(Faction.Intruder))
                 other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
 
-            var newRole2 = new Thief(other);
-            newRole2.RoleUpdate(role, true);
+            new Thief().Start<Role>(other).RoleUpdate(role, true);
         }
 
         if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals))
         {
-            foreach (var snitch in PlayerLayer.GetLayers<Snitch>())
+            foreach (var snitch in GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == player)
                     LocalRole.AllArrows.Add(snitch.PlayerId, new(player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
-                    GetRole(snitch.Player).AllArrows.Add(player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
+                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
 
             foreach (var revealer in GetLayers<Revealer>())
@@ -532,6 +537,8 @@ public class Thief : Neutral
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
+        Spread(Player, guessTarget);
+
         if (Local && player == Player)
             GuessMenu.HideButtons();
 
@@ -543,23 +550,23 @@ public class Thief : Neutral
             return;
         }
 
-        MarkMeetingDead(player, Player);
-
-        if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+        if (CanAttack(AttackVal, player.GetDefenseValue(Player)) || player == Player)
         {
-            var otherLover = player.GetOtherLover();
+            MarkMeetingDead(player, Player);
 
-            if (!otherLover.Is(LayerEnum.Pestilence))
-                RpcMurderPlayer(otherLover, guess, guessTarget);
+            if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+            {
+                var otherLover = player.GetOtherLover();
+
+                if (!otherLover.Is(LayerEnum.Pestilence))
+                    RpcMurderPlayer(otherLover, guess, guessTarget);
+            }
         }
 
         if (Local)
         {
             if (Player != player)
-            {
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
-                GuessMenu.HideButtons();
-            }
             else
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
@@ -575,7 +582,7 @@ public class Thief : Neutral
         else
             Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
 
-        if (Player != player)
+        if (Player != player && CanAttack(AttackVal, player.GetDefenseValue(Player)))
             Steal(player);
     }
 

@@ -9,27 +9,19 @@ public static class UpdateSplashPatch
 
     private static bool Loading;
     private static TextMeshPro TMP;
-    private static bool SetCPU;
 
     public static bool Prefix(SplashManager __instance)
     {
-        if (__instance.doneLoadingRefdata && !__instance.startedSceneLoad && Time.time - __instance.startTime > 4.2f && !Loading)
+        if (__instance.doneLoadingRefdata && !__instance.startedSceneLoad && Time.time - __instance.startTime > 4.2f)
             __instance.StartCoroutine(LoadingScreen(__instance));
 
         return false;
     }
 
-    public static IEnumerator LoadingScreen(SplashManager __instance)
+    private static IEnumerator LoadingScreen(SplashManager __instance)
     {
         if (Loading)
             yield break;
-
-        if (ClientGameOptions.OptimisationMode && !SetCPU)
-        {
-            SetCPUAffinity();
-            SetCPU = true;
-            yield return Wait(0.1f);
-        }
 
         Loading = true;
         var loading = new GameObject("LoadingLogo");
@@ -45,39 +37,56 @@ public static class UpdateSplashPatch
         {
             num += Time.deltaTime;
             rend.color = UColor.white.AlphaMultiplied(num);
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
         rend.color = UColor.white;
         TMP = UObject.Instantiate(__instance.errorPopup.InfoText, loading.transform);
         TMP.transform.localPosition = new(0f, -1.5f, -10f);
         TMP.fontStyle = FontStyles.Bold;
-        TMP.SetText("Loading...");
         TMP.color = UColor.clear;
         TMP.transform.localScale /= 2f;
         Font = TMP.font;
+
+        SetText("Loading...");
+        yield return EndFrame();
+
         num = 0f;
 
         while (num < 1f)
         {
             num += Time.deltaTime;
             TMP.color = UColor.white.AlphaMultiplied(num);
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
-        yield return HatsLoader.Instance.CoFetch();
-        yield return VisorsLoader.Instance.CoFetch();
-        yield return NameplatesLoader.Instance.CoFetch();
-        yield return ColorsLoader.Instance.CoFetch();
-        yield return TranslationsLoader.Instance.CoFetch();
+        if (!Directory.Exists(TownOfUsReworked.Assets))
+            Directory.CreateDirectory(TownOfUsReworked.Assets);
+
+        if (!Directory.Exists(TownOfUsReworked.Other))
+            Directory.CreateDirectory(TownOfUsReworked.Other);
+
+        if (!Directory.Exists(TownOfUsReworked.Logs))
+            Directory.CreateDirectory(TownOfUsReworked.Logs);
+
+        Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
+
+        yield return HatLoader.Instance.CoFetch();
+        yield return VisorLoader.Instance.CoFetch();
+        yield return NameplateLoader.Instance.CoFetch();
+        yield return ColorLoader.Instance.CoFetch();
+        yield return TranslationLoader.Instance.CoFetch();
+        yield return PresetLoader.Instance.CoFetch();
+        yield return ImageLoader.Instance.CoFetch();
+        yield return PortalLoader.Instance.CoFetch();
+        yield return SoundLoader.Instance.CoFetch();
+
+        yield return ModUpdater.CheckForUpdate("Reworked");
+        yield return ModUpdater.CheckForUpdate("Submerged");
+        yield return ModUpdater.CheckForUpdate("LevelImpostor");
 
         SetText("Setting Mod Data");
         ModCompatibility.Init();
-        yield return Wait(0.1f);
-
-        yield return ModUpdater.CheckForUpdate("Reworked");
-        //yield return ModUpdater.CheckForUpdate("Submerged");
-        yield return ModUpdater.CheckForUpdate("LevelImpostor");
 
         ModUpdater.CanDownloadSubmerged = !SubLoaded && ModUpdater.URLs.ContainsKey("Submerged");
         ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
@@ -86,24 +95,10 @@ public static class UpdateSplashPatch
         Info.SetAllInfo();
         ExtraRegions.UpdateRegions();
 
-        if (!Directory.Exists(TownOfUsReworked.Options))
-            Directory.CreateDirectory(TownOfUsReworked.Options);
-
-        Presets.ForEach(x => SaveText(x.AddSpaces(), ReadResourceText(x, "Presets"), TownOfUsReworked.Options));
-
-        //ClientMenu.SetUpClientOptions();
-
         yield return Wait(1.5f);
 
         SetText("Loaded!");
-        yield return Wait(0.1f);
-
-        for (var i = 0; i < 4; i++)
-        {
-            SetText("");
-            yield return Wait(0.1f);
-            SetText("Loaded!");
-        }
+        yield return Wait(0.5f);
 
         num = 0.5f;
 
@@ -111,7 +106,7 @@ public static class UpdateSplashPatch
         {
             num -= Time.deltaTime * 2;
             TMP.color = UColor.white.AlphaMultiplied(num);
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
         SetText("");
@@ -121,11 +116,10 @@ public static class UpdateSplashPatch
         {
             num -= Time.deltaTime;
             rend.color = UColor.white.AlphaMultiplied(num);
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
         rend.color = UColor.clear;
-        rend.Destroy();
         loading.Destroy();
         yield return Wait(0.1f);
 

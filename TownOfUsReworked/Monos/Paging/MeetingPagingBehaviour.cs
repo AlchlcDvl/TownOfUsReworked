@@ -1,8 +1,8 @@
 namespace TownOfUsReworked.Monos;
 
-public class MeetingHudPagingBehaviour : BasePagingBehaviour
+public class MeetingPagingBehaviour : BasePagingBehaviour
 {
-    public MeetingHudPagingBehaviour(IntPtr ptr) : base(ptr) {}
+    public MeetingPagingBehaviour(IntPtr ptr) : base(ptr) {}
 
     [HideFromIl2Cpp]
     public IEnumerable<PlayerVoteArea> Targets => Menu.playerStates.OrderBy(p => p.AmDead);

@@ -12,5 +12,11 @@ public class Giant : Modifier
     public override LayerEnum Type => LayerEnum.Giant;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
 
-    public Giant(PlayerControl player) : base(player) {}
+    public Giant() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

@@ -105,7 +105,8 @@ public static class CheckEndGame
         }
         else
         {
-            PlayerLayer.AllLayers.ForEach(x => x?.GameEnd());
+            Objectifier.AllObjectifiers.ForEach(x => x.GameEnd());
+            Role.AllRoles.ForEach(x => x.GameEnd());
             DetectStalemate();
         }
 
@@ -169,7 +170,7 @@ public static class CheckEndGame
                     {
                         allCrew.Add(player);
 
-                        if (Role.GetRole(player).TasksDone)
+                        if (player.GetRole().TasksDone)
                             crewWithNoTasks.Add(player);
                     }
                 }
@@ -190,7 +191,7 @@ public static class CheckEndGame
                     {
                         allCrew.Add(player);
 
-                        if (Role.GetRole(player).TasksDone)
+                        if (player.GetRole().TasksDone)
                             crewWithNoTasks.Add(player);
                     }
                 }

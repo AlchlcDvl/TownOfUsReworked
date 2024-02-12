@@ -192,12 +192,12 @@ public static class ModCompatibility
     public static IEnumerator WaitStart(Action next)
     {
         while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
 
         yield return Wait(0.5f);
 
         while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
 
         next();
         yield break;
@@ -206,12 +206,12 @@ public static class ModCompatibility
     public static IEnumerator WaitMeeting(Action next)
     {
         while (!CustomPlayer.Local.moveable)
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
 
         yield return Wait(0.5f);
 
         while (HUD.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
 
         next();
         yield break;
@@ -363,7 +363,7 @@ public static class ModCompatibility
             Initialized = true;
 
             LILoaded = InitializeLevelImpostor();
-            SubLoaded = false; //InitializeSubmerged();
+            SubLoaded = InitializeSubmerged();
 
             LogMessage(LILoaded || SubLoaded ? "Mod compatibility finished" : "No extra mods detected");
         }
@@ -374,7 +374,7 @@ public static class ModCompatibility
         }
     }
 
-    private static readonly string[] Unsupported = { "Mini.RegionInstall", "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod" };
+    private static readonly string[] Unsupported = { "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod" };
 
     public static bool CheckAbort(out string mod)
     {
@@ -382,7 +382,7 @@ public static class ModCompatibility
 
         foreach (var unsupp in Unsupported)
         {
-            if (File.Exists($"{TownOfUsReworked.ModsFolder}{unsupp}.dll"))
+            if (File.Exists(Path.Combine(TownOfUsReworked.ModsFolder, $"{unsupp}.dll")))
             {
                 mod = unsupp;
                 return true;

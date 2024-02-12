@@ -12,11 +12,16 @@ public class Stalker : Syndicate
     public override Func<string> Description => () => $"- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
         CommonAbilities;
 
-    public Stalker(PlayerControl player) : base(player)
+    public Stalker() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         StalkerArrows = new();
         Alignment = Alignment.SyndicateSupport;
         StalkButton = new(this, "Stalk", AbilityTypes.Alive, "ActionSecondary", Stalk, CustomGameOptions.StalkCd, Exception1);
+        return this;
     }
 
     public void DestroyArrow(byte targetPlayerId)

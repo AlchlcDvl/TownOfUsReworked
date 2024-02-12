@@ -2,17 +2,17 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomMeeting
 {
-    public readonly PlayerControl Owner;
-    public readonly OnClick Click;
-    public readonly Action Parallel;
-    public readonly Exemption IsExempt;
-    public readonly string ActiveSprite;
-    public readonly string DisabledSprite;
-    public readonly MeetingTypes Type;
+    public PlayerControl Owner { get; }
+    public OnClick Click { get; }
+    public Action Parallel { get; }
+    public Exemption IsExempt { get; }
+    public string ActiveSprite { get; }
+    public string DisabledSprite { get; }
+    public MeetingTypes Type { get; }
     public Vector3? Position { get; set; }
     public Dictionary<byte, bool> Actives { get; set; }
     public Dictionary<byte, GameObject> Buttons { get; set; }
-    public readonly bool AfterVote;
+    public bool AfterVote { get; }
     public delegate void OnClick(PlayerVoteArea voteArea, MeetingHud __instance);
     public delegate bool Exemption(PlayerVoteArea voteArea);
     private static Vector3 BasePosition => new(-0.95f, 0.03f, -1.3f);

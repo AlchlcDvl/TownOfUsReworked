@@ -15,9 +15,14 @@ public class Necromancer : Neutral
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
     public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
         "up the process";
+    public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Necromancer(PlayerControl player) : base(player)
+    public Necromancer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
         Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Reanimated;
@@ -28,7 +33,7 @@ public class Necromancer : Neutral
         ResurrectButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", Resurrect, CustomGameOptions.ResurrectCd, CustomGameOptions.ResurrectDur, UponEnd,
             CustomGameOptions.MaxResurrections, Exception);
         SacrificeButton = new(this, "NecroKill", AbilityTypes.Alive, "Secondary", Kill, CustomGameOptions.NecroKillCd, Exception);
-        SubFactionSymbol = "Σ";
+        return this;
     }
 
     public void UponEnd()
@@ -46,7 +51,7 @@ public class Necromancer : Neutral
         if (!player.Data.IsDead)
             return;
 
-        var targetRole = GetRole(player);
+        var targetRole = player.GetRole();
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
         RoleGen.Convert(player.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
@@ -56,7 +61,7 @@ public class Necromancer : Neutral
         if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
         {
             var lover = player.GetOtherLover();
-            var loverRole = GetRole(lover);
+            var loverRole = lover.GetRole();
             loverRole.DeathReason = DeathReasonEnum.Revived;
             loverRole.KilledBy = " By " + PlayerName;
             RoleGen.Convert(lover.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);

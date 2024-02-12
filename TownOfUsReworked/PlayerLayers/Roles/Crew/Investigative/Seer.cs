@@ -15,21 +15,26 @@ public class Seer : Crew
     public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
         "<color=#FFCC80FF>Sheriff</color>";
 
-    public Seer(PlayerControl player) : base(player)
+    public Seer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewInvest;
         SeerButton = new(this, "Seer", AbilityTypes.Alive, "ActionSecondary", See, CustomGameOptions.SeerCd);
-        player.Data.Role.IntroSound = GetAudio("SeerIntro");
+        Data.Role.IntroSound = GetAudio("SeerIntro");
+        return this;
     }
 
-    public void TurnSheriff() => new Sheriff(Player).RoleUpdate(this);
+    public void TurnSheriff() => new Sheriff().Start<Role>(Player).RoleUpdate(this);
 
     public void See()
     {
         var cooldown = Interact(Player, SeerButton.TargetPlayer);
 
         if (cooldown != CooldownType.Fail)
-            Flash(GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
+            Flash(SeerButton.TargetPlayer.GetRole().RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }

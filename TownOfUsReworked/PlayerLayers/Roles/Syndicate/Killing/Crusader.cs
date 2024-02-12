@@ -12,11 +12,16 @@ public class Crusader : Syndicate
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
         $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {CustomGameOptions.ChaosDriveCrusadeRadius}m radies" : "")}\n{CommonAbilities}";
 
-    public Crusader(PlayerControl player) : base(player)
+    public Crusader() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicateKill;
         CrusadedPlayer = null;
         CrusadeButton = new(this, "Crusade", AbilityTypes.Alive, "Secondary", Crusade, CustomGameOptions.CrusadeCd, CustomGameOptions.CrusadeDur, UnCrusade, Exception1);
+        return this;
     }
 
     public void UnCrusade() => CrusadedPlayer = null;

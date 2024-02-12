@@ -30,10 +30,4 @@ public static class Logging
     public static void LogInfo(object message) => LogSomething(message, LogLevel.Info);
 
     public static void LogWarning(object message) => LogSomething(message, LogLevel.Warning);
-
-    public static void LogDebug(object message) => LogSomething(message, LogLevel.Debug);
-
-    public static void LogNone(object message) => LogSomething(message, LogLevel.None);
-
-    public static void LogAll(object message) => LogSomething(message, LogLevel.All);
 }

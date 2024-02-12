@@ -9,14 +9,21 @@ public class Astral : Modifier
     public override LayerEnum Type => LayerEnum.Astral;
     public override Func<string> Description => () => "- You will not teleport to the meeting button";
 
-    public Astral(PlayerControl player) : base(player) => LastPosition = Vector3.zero;
+    public Astral() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        LastPosition = Vector3.zero;
+        return this;
+    }
 
     public void SetPosition()
     {
         if (LastPosition == Vector3.zero)
             return;
 
-        Player.NetTransform.RpcSnapTo(LastPosition);
+        Player.RpcCustomSnapTo(LastPosition);
 
         if (IsSubmerged())
             ChangeFloor(LastPosition.y > -7);

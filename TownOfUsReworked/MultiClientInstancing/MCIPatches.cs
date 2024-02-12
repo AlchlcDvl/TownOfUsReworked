@@ -29,7 +29,7 @@ public static class SameVoteAll
     }
 }
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
+[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.SetForegroundForDead))]
 public static class CacheGlassSprite
 {
     public static Sprite Cache;

@@ -8,5 +8,11 @@ public class Ruthless : Ability
     public override Func<string> Description => () => "- Your attacks cannot be stopped";
     public override bool Hidden => !CustomGameOptions.RuthlessKnows && !IsDead;
 
-    public Ruthless(PlayerControl player) : base(player) {}
+    public Ruthless() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

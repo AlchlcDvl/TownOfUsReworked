@@ -18,8 +18,12 @@ public class Glitch : Neutral
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
 
-    public Glitch(PlayerControl player) : base(player)
+    public Glitch() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Neutralise anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MimicMenu = new(Player, Click, Exception3);
@@ -28,15 +32,16 @@ public class Glitch : Neutral
         HackButton = new(this, "Hack", AbilityTypes.Alive, "ActionSecondary", HitHack, CustomGameOptions.HackCd, CustomGameOptions.HackDur, Hack, UnHack, Exception2);
         MimicButton = new(this, "Mimic", AbilityTypes.Targetless, "Secondary", HitMimic, CustomGameOptions.MimicCd, CustomGameOptions.MimicDur, (CustomButton.EffectVoid)Mimic, UnMimic);
         player.Data.Role.IntroSound = GetAudio("GlitchIntro");
+        return this;
     }
 
     public void UnHack()
     {
-        GetLayers(HackTarget).ForEach(x => x.IsBlocked = false);
+        HackTarget.GetLayers().ForEach(x => x.IsBlocked = false);
         HackTarget = null;
     }
 
-    public void Hack() => GetLayers(HackTarget).ForEach(x => x.IsBlocked = !GetRole(HackTarget).RoleBlockImmune);
+    public void Hack() => HackTarget.GetLayers().ForEach(x => x.IsBlocked = !HackTarget.GetRole().RoleBlockImmune);
 
     public void Mimic() => Morph(Player, MimicTarget);
 

@@ -12,11 +12,16 @@ public class Miner : Intruder
         "From The Top, Make It Drop, Boom, That's A Vent";
     public override Func<string> Description => () => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
 
-    public Miner(PlayerControl player) : base(player)
+    public Miner() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderSupport;
         MineButton = new(this, SpriteName, AbilityTypes.Targetless, "Secondary", Mine, CustomGameOptions.MineCd);
         Vents = new();
+        return this;
     }
 
     public static string SpriteName => MapPatches.CurrentMap switch

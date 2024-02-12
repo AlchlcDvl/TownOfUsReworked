@@ -2,8 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class PromotedGodfather : Intruder
 {
-    public PromotedGodfather(PlayerControl player) : base(player)
+    public PromotedGodfather() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderHead;
         BlockMenu = new(Player, ConsClick, ConsException);
         TeleportPoint = Vector3.zero;
@@ -41,6 +45,7 @@ public class PromotedGodfather : Intruder
         MineButton = new(this, Miner.SpriteName, AbilityTypes.Targetless, "Secondary", Mine, CustomGameOptions.MineCd);
         MarkButton = new(this, "Mark", AbilityTypes.Targetless, "Secondary", Mark, CustomGameOptions.TeleMarkCd);
         TeleportButton = new(this, "Teleport", AbilityTypes.Targetless, "Secondary", Teleport, CustomGameOptions.TeleportCd);
+        return this;
     }
 
     //PromotedGodfather Stuff
@@ -52,7 +57,7 @@ public class PromotedGodfather : Intruder
         {
             if (!ClientGameOptions.CustomIntColors)
                 return CustomColorManager.Intruder;
-            else if (FormerRole != null)
+            else if (FormerRole)
                 return FormerRole.Color;
             else
                 return CustomColorManager.Godfather;
@@ -62,7 +67,7 @@ public class PromotedGodfather : Intruder
     public override LayerEnum Type => LayerEnum.PromotedGodfather;
     public override Func<string> StartText => () => "Lead The <color=#FF1919FF>Intruders</color>";
     public override Func<string> Description => () => "- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities"
-        + (FormerRole == null ? "" : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
+        + (!FormerRole ? "" : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
 
     public override void TryEndEffect()
     {
@@ -90,7 +95,7 @@ public class PromotedGodfather : Intruder
         MeasureButton.Update2("MEASURE", IsDisg);
         DisguiseButton.Update2("DISGUISE", MeasuredPlayer != null && IsDisg);
         BlackmailButton.Update2("BLACKMAIL", IsBM);
-        CamouflageButton.Update2("CAMOUFLAGE", IsCamo, !HudUpdate.IsCamoed);
+        CamouflageButton.Update2("CAMOUFLAGE", IsCamo, !HudHandler.Instance.IsCamoed);
         CleanButton.Update2("CLEAN BODY", CurrentlyDragging == null && IsJani, difference: LastImp && CustomGameOptions.SoloBoost && !IsDead ? -CustomGameOptions.UnderdogKillBonus : 0);
         DragButton.Update2("DRAG BODY", CurrentlyDragging == null && IsJani);
         DropButton.Update2("DROP BODY", CurrentlyDragging != null && IsJani);
@@ -107,7 +112,6 @@ public class PromotedGodfather : Intruder
 
     public override void ReadRPC(MessageReader reader)
     {
-
         var gfAction = (GFActionsRPC)reader.ReadByte();
 
         switch (gfAction)
@@ -152,7 +156,7 @@ public class PromotedGodfather : Intruder
     public PlayerControl BlackmailedPlayer { get; set; }
     public bool ShookAlready { get; set; }
     public Sprite PrevOverlay { get; set; }
-    public UColor PrevColor { get; set; }
+    public UColor? PrevColor { get; set; }
     public bool IsBM => FormerRole?.Type == LayerEnum.Blackmailer;
 
     public void Blackmail()
@@ -177,13 +181,13 @@ public class PromotedGodfather : Intruder
 
     public void Camouflage()
     {
-        HudUpdate.GodfatherEnabled = true;
+        HudHandler.Instance.GodfatherEnabled = true;
         Utils.Camouflage();
     }
 
     public void UnCamouflage()
     {
-        HudUpdate.GodfatherEnabled = false;
+        HudHandler.Instance.GodfatherEnabled = false;
         DefaultOutfitAll();
     }
 
@@ -195,13 +199,15 @@ public class PromotedGodfather : Intruder
 
     //Grenadier Stuff
     public CustomButton FlashButton { get; set; }
-    public List<PlayerControl> FlashedPlayers { get; set; }
+    public List<byte> FlashedPlayers { get; set; }
     public bool IsGren => FormerRole?.Type == LayerEnum.Grenadier;
 
     public void Flash()
     {
-        foreach (var player in FlashedPlayers)
+        foreach (var id in FlashedPlayers)
         {
+            var player = PlayerById(id);
+
             if (CustomPlayer.Local == player)
             {
                 if (FlashButton.EffectTime > CustomGameOptions.FlashDur - 0.5f)
@@ -215,7 +221,7 @@ public class PromotedGodfather : Intruder
                     else
                         HUD.FullScreen.color = CustomColorManager.NormalVision;
                 }
-                else if (FlashButton.EffectTime.IsInRange(0.5f, CustomGameOptions.FlashDur - 0.5f))
+                else if (FlashButton.EffectTime.IsInRange(0.5f, CustomGameOptions.FlashDur - 0.5f, true, true))
                 {
                     if (ShouldPlayerBeBlinded(player))
                         HUD.FullScreen.color = CustomColorManager.BlindVision;
@@ -245,8 +251,8 @@ public class PromotedGodfather : Intruder
         }
     }
 
-    private bool ShouldPlayerBeDimmed(PlayerControl player) => ((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None) || player.Data.IsDead) && !Meeting;
+    private bool ShouldPlayerBeDimmed(PlayerControl player) =>  (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
+        SubFaction.None) || player.Data.IsDead) && !Meeting) || player == Player;
 
     private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player) && !Meeting;
 
@@ -262,7 +268,7 @@ public class PromotedGodfather : Intruder
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius);
+    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius).Select(x => x.PlayerId).ToList();
 
     //Janitor Stuff
     public CustomButton CleanButton { get; set; }
@@ -292,6 +298,9 @@ public class PromotedGodfather : Intruder
 
     public void Drop()
     {
+        if (!CurrentlyDragging)
+            return;
+
         CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
         CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
         CurrentlyDragging = null;
@@ -462,7 +471,7 @@ public class PromotedGodfather : Intruder
 
     public void Teleport()
     {
-        Player.NetTransform.RpcSnapTo(TeleportPoint);
+        Player.RpcCustomSnapTo(TeleportPoint);
         Utils.Flash(Color);
         TeleportButton.StartCooldown();
 
@@ -512,11 +521,11 @@ public class PromotedGodfather : Intruder
 
     public void UnBlock()
     {
-        GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
+        BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
         BlockTarget = null;
     }
 
-    public void Block() => GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
+    public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
 
     public void ConsClick(PlayerControl player)
     {
@@ -553,7 +562,7 @@ public class PromotedGodfather : Intruder
         if (CustomPlayer.Local == BombedPlayer && !IsDead)
         {
             Utils.Flash(Color);
-            GetRole(BombedPlayer).Bombed = true;
+            BombedPlayer.GetRole().Bombed = true;
         }
     }
 
@@ -562,7 +571,7 @@ public class PromotedGodfather : Intruder
         if (!BombSuccessful)
             Enforcer.Explode(BombedPlayer, Player);
 
-        GetRole(BombedPlayer).Bombed = false;
+        BombedPlayer.GetRole().Bombed = false;
         BombedPlayer = null;
         BombSuccessful = false;
     }

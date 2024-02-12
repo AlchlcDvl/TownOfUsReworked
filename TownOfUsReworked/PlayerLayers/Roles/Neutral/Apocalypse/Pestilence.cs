@@ -13,11 +13,16 @@ public class Pestilence : Neutral
 
     public static readonly Dictionary<byte, int> Infected = new();
 
-    public Pestilence(PlayerControl player) : base(player)
+    public Pestilence() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Obliterate anyone who can oppose you";
         Alignment = Alignment.NeutralApoc;
         ObliterateButton = new(this, "Obliterate", AbilityTypes.Alive, "ActionSecondary", Obliterate, CustomGameOptions.ObliterateCd, Exception);
+        return this;
     }
 
     private void Obliterate()

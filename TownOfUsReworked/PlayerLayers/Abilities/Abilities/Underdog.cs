@@ -9,5 +9,11 @@ public class Underdog : Ability
         "'re not alone") : "- You have short cooldowns when you're alone");
     public override bool Hidden => !CustomGameOptions.TraitorKnows && !Last(Player) && !IsDead;
 
-    public Underdog(PlayerControl player) : base(player) {}
+    public Underdog() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

@@ -3,20 +3,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public abstract class Ability : PlayerLayer
 {
     public static readonly List<Ability> AllAbilities = new();
-    public static Ability LocalAbility => GetAbility(CustomPlayer.Local);
+    public static Ability LocalAbility => CustomPlayer.Local.GetAbility();
 
     public override UColor Color => CustomColorManager.Ability;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Ability;
+    public override LayerEnum Type => LayerEnum.NoneAbility;
 
-    public virtual bool Hidden => false;
-
-    protected Ability(PlayerControl player) : base(player)
-    {
-        if (GetAbility(player))
-            GetAbility(player).Player = null;
-
-        AllAbilities.Add(this);
-    }
+    protected Ability() : base() => AllAbilities.Add(this);
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
@@ -43,14 +36,6 @@ public abstract class Ability : PlayerLayer
                 pol.VoteBank++;
         }
     }
-
-    public static Ability GetAbility(PlayerControl player) => AllAbilities.Find(x => x.Player == player);
-
-    public static T GetAbility<T>(PlayerControl player) where T : Ability => GetAbility(player) as T;
-
-    public static Ability GetAbility(PlayerVoteArea area) => GetAbility(PlayerByVoteArea(area));
-
-    public static List<Ability> GetAbilities(LayerEnum abilitytype) => AllAbilities.Where(x => x.Type == abilitytype).ToList();
 
     public static List<Assassin> GetAssassins() => AllAbilities.Where(x => x.Type is LayerEnum.CrewAssassin or LayerEnum.NeutralAssassin or LayerEnum.IntruderAssassin or
         LayerEnum.SyndicateAssassin).Cast<Assassin>().ToList();

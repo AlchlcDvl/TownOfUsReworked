@@ -8,5 +8,11 @@ public class Snitch : Ability
     public override Func<string> Description => () => "- You can finish your tasks to get information on who's evil";
     public override bool Hidden => !CustomGameOptions.TraitorKnows && !TasksDone && !IsDead;
 
-    public Snitch(PlayerControl player) : base(player) {}
+    public Snitch() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

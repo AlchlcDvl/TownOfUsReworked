@@ -12,18 +12,11 @@ public static class OtherButtonsPatch
     private static SpriteRenderer Phone;
     private static TextMeshPro PhoneText;
 
-    private static PassiveButton RoleCardButton;
+    private static PassiveButton WikiRCButton;
+    private static bool WikiActive;
     private static bool RoleCardActive;
     private static Vector3 Pos2;
     private static PassiveButton ToTheWiki;
-
-    private static PassiveButton SettingsButton;
-    private static bool SettingsActive;
-    private static Vector3 Pos3;
-
-    private static PassiveButton WikiButton;
-    private static bool WikiActive;
-    private static Vector3 Pos4;
     private static PassiveButton NextButton;
     private static PassiveButton BackButton;
     private static PassiveButton LoreButton;
@@ -39,6 +32,13 @@ public static class OtherButtonsPatch
     private static bool SelectionActive;
     private static readonly List<string> Entry = new();
     //Max page line limit is 20, keeping this in mind for now
+
+    private static PassiveButton SettingsButton;
+    private static bool SettingsActive;
+    private static Vector3 Pos3;
+
+    private static PassiveButton ClientOptionsButton;
+    private static Vector3 Pos4;
 
     private static Vector3 MapPos;
     private static bool MapModified;
@@ -76,17 +76,7 @@ public static class OtherButtonsPatch
                 __instance.MapButton.OnClick = new();
                 __instance.MapButton.OnClick.AddListener((Action)(() =>
                 {
-                    if (WikiActive)
-                        OpenWiki();
-
-                    if (RoleCardActive)
-                        OpenRoleCard();
-
-                    if (Zooming)
-                        Zoom();
-
-                    if (SettingsActive)
-                        OpenSettings();
+                    CloseMenus(SkipEnum.Map);
 
                     if (MapPatch.MapActive)
                         Map.Close();
@@ -100,17 +90,17 @@ public static class OtherButtonsPatch
                 }));
             }
 
-            if (!WikiButton)
+            if (!WikiRCButton)
             {
-                WikiButton = UObject.Instantiate(__instance.MapButton, __instance.MapButton.transform.parent);
-                WikiButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Wiki");
-                WikiButton.GetComponent<PassiveButton>().OnClick = new();
-                WikiButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(OpenWiki));
-                WikiButton.name = "WikiButton";
+                WikiRCButton = UObject.Instantiate(__instance.MapButton, __instance.MapButton.transform.parent);
+                WikiRCButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Wiki");
+                WikiRCButton.GetComponent<PassiveButton>().OnClick = new();
+                WikiRCButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Open));
+                WikiRCButton.name = "WikiAndRCButton";
             }
 
-            WikiButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay);
-            WikiButton.transform.localPosition = MapPos;
+            WikiRCButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay);
+            WikiRCButton.transform.localPosition = MapPos;
             ResetButtonPos();
 
             Pos = MapPos + new Vector3(0, -0.66f, 0f);
@@ -137,21 +127,21 @@ public static class OtherButtonsPatch
             }
 
             Pos2 = Pos + new Vector3(0, -0.66f, 0f);
-            SettingsButton.gameObject.SetActive(__instance.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal && !IsFreePlay);
+            SettingsButton.gameObject.SetActive(__instance.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal && !IsFreePlay && IsInGame);
             SettingsButton.transform.localPosition = Pos2;
 
-            if (!RoleCardButton)
+            if (!ClientOptionsButton)
             {
-                RoleCardButton = UObject.Instantiate(__instance.MapButton, __instance.MapButton.transform.parent);
-                RoleCardButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Help");
-                RoleCardButton.OnClick = new();
-                RoleCardButton.OnClick.AddListener(new Action(OpenRoleCard));
-                RoleCardButton.name = "RoleCardButton";
+                ClientOptionsButton = UObject.Instantiate(__instance.MapButton, __instance.MapButton.transform.parent);
+                ClientOptionsButton.OnClick = new();
+                ClientOptionsButton.OnClick.AddListener(new Action(LobbyConsole.CreateMenu));
+                ClientOptionsButton.name = "ClientOptionsButton";
             }
 
             Pos3 = Pos2 + new Vector3(0, -0.66f, 0f);
-            RoleCardButton.gameObject.SetActive(__instance.MapButton.gameObject.active && IsNormal && !IntroCutscene.Instance && !IsFreePlay);
-            RoleCardButton.transform.localPosition = Pos3;
+            ClientOptionsButton.gameObject.SetActive(__instance.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal && !IsFreePlay && IsInGame);
+            ClientOptionsButton.transform.localPosition = Pos3;
+            ClientOptionsButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Client");
 
             if (!ZoomButton)
             {
@@ -162,8 +152,8 @@ public static class OtherButtonsPatch
             }
 
             Pos4 = Pos3 + new Vector3(0, -0.66f, 0f);
-            ZoomButton.gameObject.SetActive(__instance.MapButton.gameObject.active && IsNormal && CustomPlayer.LocalCustom.IsDead && !IntroCutscene.Instance&& !IsFreePlay &&
-                (!CustomPlayer.Local.IsPostmortal() || (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught())) );
+            ZoomButton.gameObject.SetActive(__instance.MapButton.gameObject.active && IsNormal && CustomPlayer.LocalCustom.IsDead && !IntroCutscene.Instance && !IsFreePlay &&
+                (!CustomPlayer.Local.IsPostmortal() || (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught())) && IsInGame);
             ZoomButton.transform.localPosition = Pos4;
             ZoomButton.GetComponent<SpriteRenderer>().sprite = GetSprite(Zooming ? "Plus" : "Minus");
 
@@ -184,51 +174,28 @@ public static class OtherButtonsPatch
         } catch {}
     }
 
-    public static void Zoom()
-    {
-        Zooming = !Zooming;
-        Camera.main.orthographicSize = 3f * Size;
-
-        foreach (var cam in Camera.allCameras)
-        {
-            if (cam?.gameObject.name == "UI Camera")
-                cam.orthographicSize = 3f * Size;
-        }
-
-        ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen);
-    }
-
     private static void ClickZoom()
     {
-        if (WikiActive)
-            OpenWiki();
-
-        if (RoleCardActive)
-            OpenRoleCard();
-
-        if (SettingsActive)
-            OpenSettings();
-
-        if (MapPatch.MapActive)
-            Map.Close();
+        CloseMenus(SkipEnum.Zooming);
 
         if (!Meeting)
-            Zoom();
+        {
+            Zooming = !Zooming;
+            Camera.main.orthographicSize = 3f * Size;
+
+            foreach (var cam in Camera.allCameras)
+            {
+                if (cam?.gameObject.name == "UI Camera")
+                    cam.orthographicSize = 3f * Size;
+            }
+
+            ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen);
+        }
     }
 
-    public static void OpenSettings()
+    private static void OpenSettings()
     {
-        if (WikiActive)
-            OpenWiki();
-
-        if (RoleCardActive)
-            OpenRoleCard();
-
-        if (Zooming)
-            Zoom();
-
-        if (MapPatch.MapActive)
-            Map.Close();
+        CloseMenus(SkipEnum.Settings);
 
         if (LocalBlocked)
             return;
@@ -237,31 +204,12 @@ public static class OtherButtonsPatch
         HUD.GameSettings.gameObject.SetActive(SettingsActive);
     }
 
-    public static void OpenRoleCard()
+    private static void OpenRoleCard()
     {
-        if (WikiActive)
-            OpenWiki();
-
-        if (Zooming)
-            Zoom();
-
-        if (SettingsActive)
-            OpenSettings();
-
-        if (MapPatch.MapActive)
-            Map.Close();
+        CloseMenus(SkipEnum.RoleCard);
 
         if (LocalBlocked)
             return;
-
-        if (!Phone)
-        {
-            Phone = new GameObject("Phone") { layer = 5 }.AddComponent<SpriteRenderer>();
-            Phone.sprite = GetSprite("Phone");
-            Phone.transform.SetParent(HUD.transform);
-            Phone.transform.localPosition = new(0, 0, -49f);
-            Phone.transform.localScale *= 1.25f;
-        }
 
         if (PhoneText)
             PhoneText.gameObject.Destroy();
@@ -290,23 +238,8 @@ public static class OtherButtonsPatch
         ToTheWiki.gameObject.SetActive(RoleCardActive && IsNormal && IsInGame);
     }
 
-    public static void OpenWiki()
+    private static void Open()
     {
-        if (RoleCardActive)
-            OpenRoleCard();
-
-        if (Zooming)
-            Zoom();
-
-        if (SettingsActive)
-            OpenSettings();
-
-        if (MapPatch.MapActive)
-            Map.Close();
-
-        if (LocalBlocked)
-            return;
-
         if (!Phone)
         {
             Phone = new GameObject("Phone") { layer = 5 }.AddComponent<SpriteRenderer>();
@@ -315,6 +248,19 @@ public static class OtherButtonsPatch
             Phone.transform.localPosition = new(0, 0, -49f);
             Phone.transform.localScale *= 1.25f;
         }
+
+        if (IsInGame)
+            OpenRoleCard();
+        else
+            OpenWiki();
+    }
+
+    private static void OpenWiki()
+    {
+        CloseMenus(SkipEnum.Wiki);
+
+        if (LocalBlocked)
+            return;
 
         if (!PagesSet)
         {
@@ -328,7 +274,7 @@ public static class OtherButtonsPatch
 
             foreach (var pair in clone)
             {
-                Sorted.Add(j, new(pair.Name, pair));
+                Sorted.Add(j, new(pair is SymbolInfo symbol ? symbol.Symbol : pair.Name, pair));
                 j++;
                 k++;
 
@@ -541,22 +487,28 @@ public static class OtherButtonsPatch
         return button;
     }
 
-    public static void CloseMenus()
+    public static void CloseMenus(SkipEnum skip = SkipEnum.None)
     {
-        if (WikiActive)
+        if (WikiActive && skip != SkipEnum.Wiki)
             OpenWiki();
 
-        if (RoleCardActive)
+        if (RoleCardActive && skip != SkipEnum.RoleCard)
             OpenRoleCard();
 
-        if (Zooming)
-            Zoom();
+        if (Zooming && skip != SkipEnum.Zooming)
+            ClickZoom();
 
-        if (SettingsActive)
+        if (SettingsActive && skip != SkipEnum.Settings)
             OpenSettings();
 
-        if (MapPatch.MapActive && Map)
+        if (MapPatch.MapActive && Map && skip != SkipEnum.Map)
             Map.Close();
+
+        if (ActiveTask && ActiveTask && skip != SkipEnum.Task)
+            ActiveTask.Close();
+
+        if (GameSettingMenu.Instance && skip != SkipEnum.Client)
+            GameSettingMenu.Instance.Close();
     }
 
     private static void SetEntryText(string result)

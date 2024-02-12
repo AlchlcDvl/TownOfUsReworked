@@ -10,5 +10,12 @@ public class Professional : Modifier
     public override Func<string> Description => () => "- You have an extra life when assassinating";
     public override bool Hidden => !CustomGameOptions.TraitorKnows && !LifeUsed && !IsDead;
 
-    public Professional(PlayerControl player) : base(player) => LifeUsed = false;
+    public Professional() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        LifeUsed = false;
+        return this;
+    }
 }

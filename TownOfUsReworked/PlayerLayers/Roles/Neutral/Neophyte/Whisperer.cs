@@ -15,9 +15,14 @@ public class Whisperer : Neutral
     public override Func<string> StartText => () => "PSST";
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
         "defect and join the <color=#F995FCFF>Sect</color>";
+    public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Whisperer(PlayerControl player) : base(player)
+    public Whisperer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
         Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Sect;
@@ -25,10 +30,10 @@ public class Whisperer : Neutral
         WhisperConversion = CustomGameOptions.WhisperRate;
         Persuaded = new() { Player.PlayerId };
         WhisperButton = new(this, "Whisper", AbilityTypes.Targetless, "ActionSecondary", Whisper, CustomGameOptions.WhisperCd);
-        SubFactionSymbol = "Λ";
         PlayerConversion = new();
         CustomPlayer.AllPlayers.ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
         Persuaded.ForEach(x => PlayerConversion.Remove(x));
+        return this;
     }
 
     public void Whisper()

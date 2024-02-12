@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Modules;
 
 public class ChatCommand
 {
-    private readonly string[] Aliases;
-    private readonly ExecuteArgsCommand ExecuteArgs;
-    private readonly ExecuteArglessCommand ExecuteArgless;
+    private string[] Aliases { get; }
+    private ExecuteArgsCommand ExecuteArgs { get; }
+    private ExecuteArglessCommand ExecuteArgless { get; }
 
     private delegate void ExecuteArgsCommand(string[] args);
     private delegate void ExecuteArglessCommand();
@@ -208,7 +208,7 @@ public class ChatCommand
 
     private static void Summary()
     {
-        var summary = ReadDiskText("Summary");
+        var summary = ReadDiskText("Summary", TownOfUsReworked.Other);
 
         if (IsNullEmptyOrWhiteSpace(summary))
             Run("<color=#FF0000FF>⚠ Summary Error ⚠</color>", "Summary could not be found.");

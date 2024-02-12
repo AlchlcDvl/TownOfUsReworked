@@ -11,11 +11,16 @@ public class Ambusher : Intruder
     public override Func<string> StartText => () => "Spook The <color=#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
 
-    public Ambusher(PlayerControl player) : base(player)
+    public Ambusher() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
         AmbushButton = new(this, "Ambush", AbilityTypes.Alive, "Secondary", Ambush, CustomGameOptions.AmbushCd, CustomGameOptions.AmbushDur, UnAmbush, Exception1);
+        return this;
     }
 
     public void UnAmbush() => AmbushedPlayer = null;

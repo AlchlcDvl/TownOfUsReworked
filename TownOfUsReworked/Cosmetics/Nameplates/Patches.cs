@@ -25,7 +25,7 @@ public static class NameplatesTabOnEnablePatch
 {
     private static TMP_Text Template;
 
-    public static float CreateNameplatePackage(List<NamePlateData> nameplates, string packageName, float YStart, NameplatesTab __instance)
+    private static float CreateNameplatePackage(List<NamePlateData> nameplates, string packageName, float YStart, NameplatesTab __instance)
     {
         var isDefaultPackage = "Innersloth" == packageName;
 
@@ -81,7 +81,7 @@ public static class NameplatesTabOnEnablePatch
         return offset - ((nameplates.Count - 1) / __instance.NumPerRow * __instance.YOffset) - 1.5f;
     }
 
-    public static void DefaultNameplateCoro(NameplatesTab __instance, NameplateChip chip)
+    private static void DefaultNameplateCoro(NameplatesTab __instance, NameplateChip chip)
     {
         __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance.GetNamePlateById(chip.ProductId).ViewDataRef, (Action<NamePlateViewData>)(viewData =>
             chip.image.sprite = viewData?.Image)));
@@ -140,8 +140,13 @@ public static class CosmeticsCacheGetPlatePatch
 {
     public static bool Prefix(CosmeticsCache __instance, ref string id, ref NamePlateViewData __result)
     {
+        var cache = __result;
+
         if (!CustomNameplateViewDatas.TryGetValue(id, out __result))
+        {
+            __result = cache;
             return true;
+        }
 
         if (__result == null)
             __result = __instance.nameplates["nameplate_NoPlate"].GetAsset();

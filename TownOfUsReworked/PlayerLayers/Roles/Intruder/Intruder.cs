@@ -10,13 +10,16 @@ public abstract class Intruder : Role
     public override Faction BaseFaction => Faction.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    protected Intruder(PlayerControl player) : base(player)
+    protected Intruder() : base() {}
+
+    public void BaseStart()
     {
+        RoleStart();
         Faction = Faction.Intruder;
         FactionColor = CustomColorManager.Intruder;
         Objectives = () => IntrudersWinCon;
         KillButton = new(this, "IntruderKill", AbilityTypes.Alive, "ActionSecondary", Kill, CustomGameOptions.IntKillCd, Exception);
-        Data.SetImpostor(true);
+        Player.SetImpostor(true);
     }
 
     public override List<PlayerControl> Team()

@@ -14,12 +14,17 @@ public class Plaguebearer : Neutral
         + " via interaction between players";
     public override DefenseEnum DefenseVal => Infected.Count < CustomPlayer.AllPlayers.Count / 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Plaguebearer(PlayerControl player) : base(player)
+    public Plaguebearer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Alignment = Alignment.NeutralHarb;
         Infected = new() { Player.PlayerId };
         InfectButton = new(this, "Infect", AbilityTypes.Alive, "ActionSecondary", Infect, CustomGameOptions.InfectCd, Exception);
+        return this;
     }
 
     public void RpcSpreadInfection(PlayerControl source, PlayerControl target)
@@ -52,7 +57,7 @@ public class Plaguebearer : Neutral
 
     public void TurnPestilence()
     {
-        new Pestilence(Player).RoleUpdate(this);
+        new Pestilence().Start<Role>(Player).RoleUpdate(this);
 
         if (CustomGameOptions.PlayersAlerted)
             Flash(Color);

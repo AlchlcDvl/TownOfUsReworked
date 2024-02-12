@@ -1,17 +1,12 @@
-using System.Text.Json.Serialization;
-
 namespace TownOfUsReworked.Modules;
 
-public abstract class CustomCosmetic
+public abstract class CustomCosmetic : Asset
 {
     [JsonPropertyName("artist")]
     public string Artist { get; set; }
 
     [JsonPropertyName("name")]
     public string Name { get; set; }
-
-    [JsonPropertyName("id")]
-    public string ID { get; set; }
 
     [JsonPropertyName("condition")]
     public string Condition { get; set; }
@@ -21,15 +16,6 @@ public abstract class CustomCosmetic
 
     [JsonPropertyName("test")]
     public bool TestOnly { get; set; }
-
-    [JsonIgnore]
-    public CosmeticExtension Extension { get; set; }
-
-    [JsonIgnore]
-    public CosmeticData Data { get; set; }
-
-    [JsonIgnore]
-    public ScriptableObject ViewData { get; set; }
 }
 
 public abstract class CosmeticExtension

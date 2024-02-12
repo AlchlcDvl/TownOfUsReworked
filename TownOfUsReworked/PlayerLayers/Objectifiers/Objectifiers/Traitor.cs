@@ -31,17 +31,24 @@ public class Traitor : Objectifier
         "";
     public override bool Hidden => !CustomGameOptions.TraitorKnows && !Turned && !IsDead;
 
-    public Traitor(PlayerControl player) : base(player) => Side = Faction.Crew;
+    public Traitor() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        Side = Faction.Crew;
+        return this;
+    }
 
     public void TurnBetrayer()
     {
-        var role = Role.GetRole(Player);
+        var role = Player.GetRole();
         Betrayed = true;
 
         if (role.Type == LayerEnum.Betrayer)
             return;
 
-        new Betrayer(Player) { Objectives = role.Objectives }.RoleUpdate(role);
+        new Betrayer() { Objectives = role.Objectives }.Start<Role>(Player).RoleUpdate(role);
     }
 
     public static void GetFactionChoice(out bool turnSyndicate, out bool turnIntruder)
@@ -80,19 +87,17 @@ public class Traitor : Objectifier
 
     public void TurnTraitor(bool turnSyndicate, bool turnIntruder)
     {
-        var traitorRole = Role.GetRole(Player);
+        var traitorRole = Player.GetRole();
 
         if (turnIntruder)
         {
             traitorRole.Faction = Faction.Intruder;
-            traitorRole.IsIntTraitor = true;
             traitorRole.FactionColor = CustomColorManager.Intruder;
             traitorRole.Objectives = () => Role.IntrudersWinCon;
         }
         else if (turnSyndicate)
         {
             traitorRole.Faction = Faction.Syndicate;
-            traitorRole.IsSynTraitor = true;
             traitorRole.FactionColor = CustomColorManager.Syndicate;
             traitorRole.Objectives = () => Role.SyndicateWinCon;
         }
@@ -108,7 +113,7 @@ public class Traitor : Objectifier
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == Player)
                     Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
-                    Role.GetRole(snitch.Player).AllArrows.Add(Player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
+                    snitch.Player.GetRole().AllArrows.Add(Player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
         }
 

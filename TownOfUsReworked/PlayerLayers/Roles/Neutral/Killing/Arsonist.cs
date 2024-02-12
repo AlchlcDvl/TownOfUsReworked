@@ -15,15 +15,20 @@ public class Arsonist : Neutral
     public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with " +
         "you will get doused";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
-    public override DefenseEnum DefenseVal => Doused.Count < 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Arsonist(PlayerControl player) : base(player)
+    public Arsonist() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Burn anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         Doused = new();
         DouseButton = new(this, "ArsoDouse", AbilityTypes.Alive, "ActionSecondary", Douse, CustomGameOptions.ArsoDouseCd, Exception);
         IgniteButton = new(this, "Ignite", AbilityTypes.Targetless, "Secondary", Ignite, CustomGameOptions.IgniteCd);
+        return this;
     }
 
     public void Ignite()

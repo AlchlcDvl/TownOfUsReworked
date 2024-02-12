@@ -34,7 +34,7 @@ public class Ash
 
     public static void CreateAsh(DeadBody body)
     {
-        _ = new Ash(body.TruePosition);
+        new Ash(body.TruePosition);
         FadeBody(body);
     }
 }

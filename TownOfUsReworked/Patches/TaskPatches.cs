@@ -22,14 +22,14 @@ public static class RecomputeTaskCounts
                 if (pc == null || playerInfo == null || playerInfo.Tasks == null || pc.HasDied())
                     continue;
 
-                var mostRole = Role.GetRole(most);
-                var pcRole = Role.GetRole(pc);
+                var mostRole = most.GetRole();
+                var pcRole = pc.GetRole();
 
                 if (most == null || (pcRole && mostRole && mostRole.TasksLeft >= pcRole.TasksLeft))
                     most = pc;
             }
 
-            var mostRole2 = Role.GetRole(most);
+            var mostRole2 = most.GetRole();
 
             if (mostRole2)
                 __instance.CompletedTasks = mostRole2.TasksCompleted;
@@ -100,7 +100,7 @@ public static class CompleteTasksPatch
 
         if (__instance.Is(LayerEnum.Snitch) && !__instance.Data.IsDead)
         {
-            var role = Ability.GetAbility<Snitch>(__instance);
+            var role = __instance.GetAbility<Snitch>();
 
             if (role.TasksLeft == CustomGameOptions.SnitchTasksRemaining)
             {
@@ -127,7 +127,7 @@ public static class CompleteTasksPatch
 
         if (__instance.Is(LayerEnum.Traitor) && !__instance.Data.IsDead && AmongUsClient.Instance.AmHost)
         {
-            var traitor = Objectifier.GetObjectifier<Traitor>(__instance);
+            var traitor = __instance.GetObjectifier<Traitor>();
 
             if (traitor.TasksDone)
             {
@@ -138,7 +138,7 @@ public static class CompleteTasksPatch
         }
         else if (__instance.Is(LayerEnum.Taskmaster) && !__instance.Data.IsDead)
         {
-            var role = Objectifier.GetObjectifier<Taskmaster>(__instance);
+            var role = __instance.GetObjectifier<Taskmaster>();
 
             if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
             {
@@ -162,21 +162,21 @@ public static class CompleteTasksPatch
 
         if (__instance.Is(LayerEnum.Phantom))
         {
-            var role = Role.GetRole<Phantom>(__instance);
+            var role = __instance.GetRole<Phantom>();
 
             if (role.TasksLeft == CustomGameOptions.PhantomTasksRemaining && CustomGameOptions.PhantomPlayersAlerted && !role.Caught)
                 Flash(role.Color);
         }
         else if (__instance.Is(LayerEnum.Runner))
         {
-            var role = Role.GetRole<Runner>(__instance);
+            var role = __instance.GetRole<Runner>();
 
             if (role.TasksLeft == 1)
                 Flash(role.Color);
         }
         else if (__instance.Is(LayerEnum.Revealer))
         {
-            var role = Role.GetRole<Revealer>(__instance);
+            var role = __instance.GetRole<Revealer>();
 
             if (role.TasksLeft == CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
             {

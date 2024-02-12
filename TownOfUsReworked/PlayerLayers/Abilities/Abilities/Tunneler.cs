@@ -8,5 +8,11 @@ public class Tunneler : Ability
     public override Func<string> Description => () => "- You can finish tasks to be able to vent";
     public override bool Hidden => !CustomGameOptions.TunnelerKnows && !TasksDone && !IsDead;
 
-    public Tunneler(PlayerControl player) : base(player) {}
+    public Tunneler() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace TownOfUsReworked.Modules;
 
 public record class GenerationData(int Chance, LayerEnum ID, bool Unique);
@@ -8,7 +6,7 @@ public record class SummaryInfo(string PlayerName, string History, string Cached
 
 public class PointInTime
 {
-    public readonly Vector3 Position;
+    public Vector3 Position { get; }
 
     public PointInTime(Vector3 position) => Position = position;
 }
@@ -30,7 +28,7 @@ public class GitHubApiObject
     public string Description { get; set; }
 
     [JsonPropertyName("assets")]
-    public GitHubApiAsset[] Assets { get; set; }
+    public List<GitHubApiAsset> Assets { get; set; }
 }
 
 public class GitHubApiAsset

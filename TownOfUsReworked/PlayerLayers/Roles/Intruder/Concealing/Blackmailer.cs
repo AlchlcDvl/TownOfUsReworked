@@ -6,7 +6,7 @@ public class Blackmailer : Intruder
     public PlayerControl BlackmailedPlayer { get; set; }
     public bool ShookAlready { get; set; }
     public Sprite PrevOverlay { get; set; }
-    public UColor PrevColor { get; set; }
+    public UColor? PrevColor { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Blackmailer : CustomColorManager.Intruder;
     public override string Name => "Blackmailer";
@@ -16,11 +16,16 @@ public class Blackmailer : Intruder
         "alerted at the start of the meeting that someone has been silenced ") : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") +
         $"\n{CommonAbilities}";
 
-    public Blackmailer(PlayerControl player) : base(player)
+    public Blackmailer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
         BlackmailButton = new(this, "Blackmail", AbilityTypes.Alive, "Secondary", Blackmail, CustomGameOptions.BlackmailCd, Exception1);
+        return this;
     }
 
     public void Blackmail()

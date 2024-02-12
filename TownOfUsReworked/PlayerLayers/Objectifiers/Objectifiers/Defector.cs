@@ -33,7 +33,14 @@ public class Defector : Objectifier
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
     public override bool Hidden => !CustomGameOptions.DefectorKnows && !Turned;
 
-    public Defector(PlayerControl player) : base(player) => Side = Player.GetFaction();
+    public Defector() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        Side = Player.GetFaction();
+        return this;
+    }
 
     public static void GetFactionChoice(out bool crew, out bool evil)
     {
@@ -51,13 +58,12 @@ public class Defector : Objectifier
     public void TurnSides(bool crew, bool evil)
     {
         Turned = true;
-        var role = Role.GetRole(Player);
+        var role = Player.GetRole();
 
         if (crew)
         {
             role.Faction = Faction.Crew;
             role.FactionColor = CustomColorManager.Crew;
-            role.IsCrewDefect = true;
         }
         else if (evil)
         {
@@ -65,13 +71,11 @@ public class Defector : Objectifier
             {
                 role.Faction = Faction.Syndicate;
                 role.FactionColor = CustomColorManager.Syndicate;
-                role.IsSynDefect = true;
             }
             else if (Side == Faction.Intruder)
             {
                 role.Faction = Faction.Intruder;
                 role.FactionColor = CustomColorManager.Intruder;
-                role.IsIntDefect = true;
             }
         }
 

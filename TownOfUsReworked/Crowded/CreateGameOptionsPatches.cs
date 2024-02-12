@@ -67,7 +67,16 @@ public static class CreateOptionsPicker_Awake
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMap))]
 public static class MapPickerPatch
 {
-    public static void Postfix(ref int mapId) => Generate.Map.Set(mapId);
+    public static void Postfix(ref int mapId)
+    {
+        if (mapId == 6 && !SubLoaded)
+            mapId = LILoaded ? 7 : 5;
+
+        if (mapId == 7 && !LILoaded)
+            mapId = SubLoaded ? 6 : 5;
+
+        Generate.Map.Set(mapId);
+    }
 }
 
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMaxPlayersButtons))]

@@ -10,10 +10,15 @@ public class Wraith : Intruder
     public override Func<string> StartText => () => "Sneaky Sneaky";
     public override Func<string> Description => () => $"- You can turn invisible\n{CommonAbilities}";
 
-    public Wraith(PlayerControl player) : base(player)
+    public Wraith() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderDecep;
         InvisButton = new(this, "Invis", AbilityTypes.Targetless, "Secondary", HitInvis, CustomGameOptions.InvisCd, CustomGameOptions.InvisDur, (CustomButton.EffectVoid)Invis, UnInvis);
+        return this;
     }
 
     public void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));

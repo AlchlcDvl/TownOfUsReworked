@@ -135,7 +135,7 @@ public static class UseVent
         if (NoPlayers || !CustomPlayer.Local.CanVent() || LocalBlocked)
             return false;
 
-        if (__instance.IsBombed() && !CustomPlayer.Local.IsPostmortal())
+        if (__instance.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
         {
             RpcMurderPlayer(CustomPlayer.Local);
             Role.BastionBomb(__instance, CustomGameOptions.BombRemovedOnKill);
@@ -155,7 +155,7 @@ public static class MoveToVentPatch
         if (NoPlayers || !CustomPlayer.Local.CanVent() || LocalBlocked)
             return false;
 
-        if (otherVent.IsBombed() && !CustomPlayer.Local.IsPostmortal())
+        if (otherVent.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
         {
             RpcMurderPlayer(CustomPlayer.Local);
             Role.BastionBomb(otherVent, CustomGameOptions.BombRemovedOnKill);

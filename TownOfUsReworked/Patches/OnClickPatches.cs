@@ -25,15 +25,15 @@ public static class PlayerControlOnClick
         if (CustomPlayer.Local.Data.Tasks == null || __instance == CustomPlayer.Local)
             return false;
 
-        CatchPostmortal(__instance, CustomPlayer.Local);
         CallRpc(CustomRPC.Misc, MiscRPC.Catch, __instance, CustomPlayer.Local);
+        CatchPostmortal(__instance, CustomPlayer.Local);
         return false;
     }
 
     public static void CatchPostmortal(PlayerControl player, PlayerControl clicker)
     {
         var tasksLeft = player.Data.Tasks.Count(x => !x.Complete);
-        var role = Role.GetRole(player);
+        var role = player.GetRole();
 
         if (role is Phantom phantom)
         {
@@ -83,7 +83,7 @@ public static class DeadBodyOnClick
 {
     public static bool Prefix(DeadBody __instance)
     {
-        if (__instance == null || Meeting || Lobby || IsHnS)
+        if (__instance == null || Meeting || Lobby || IsHnS || PerformReport.ReportPressed)
             return true;
 
         var button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable && !x.Blocked);

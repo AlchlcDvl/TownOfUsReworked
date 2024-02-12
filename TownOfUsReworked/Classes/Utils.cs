@@ -1,13 +1,10 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
-
-namespace TownOfUsReworked.Classes;
+﻿namespace TownOfUsReworked.Classes;
 
 public static class Utils
 {
     public static bool Shapeshifted;
 
-    public static bool HasDied(this PlayerControl player) => player == null || player.Data.IsDead || player.Data.Disconnected;
+    public static bool HasDied(this PlayerControl player) => player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected;
 
     public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
@@ -120,14 +117,14 @@ public static class Utils
                     cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, p);
                 }
 
-                if (!HudUpdate.IsCamoed)
+                if (!HudHandler.Instance.IsCamoed)
                 {
                     player.SetHatAndVisorAlpha(p);
                     var color2 = player.cosmetics.skin.layer.color;
                     player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
                 }
 
-                var color = UColor.Lerp(CustomColorManager.GetColor(37, false), HudUpdate.IsCamoed ? UColor.grey : CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
+                var color = UColor.Lerp(CustomColorManager.GetColor(37, false), HudHandler.Instance.IsCamoed ? UColor.grey : CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
                 PlayerMaterial.SetColors(color, rend);
             })));
 
@@ -200,7 +197,7 @@ public static class Utils
             player.SetOutfit(CustomPlayerOutfitType.Default);
         }
 
-        if (!HudUpdate.IsCamoed && player.GetCustomOutfitType() != CustomPlayerOutfitType.Default)
+        if (!HudHandler.Instance.IsCamoed && player.GetCustomOutfitType() != CustomPlayerOutfitType.Default)
             player.SetOutfit(CustomPlayerOutfitType.Default);
 
         Shapeshifted = false;
@@ -251,7 +248,7 @@ public static class Utils
                 player.SetHatAndVisorAlpha(1 - p);
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
-                var color = UColor.Lerp(HudUpdate.IsCamoed ? UColor.grey : CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), CustomColorManager.GetColor(37, false), p);
+                var color = UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false), CustomColorManager.GetColor(37, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
 
                 if (player != CustomPlayer.Local)
@@ -273,7 +270,7 @@ public static class Utils
         while (duration > 0)
         {
             duration -= Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
         yield break;
@@ -355,7 +352,7 @@ public static class Utils
 
     public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
     {
-        if ((HudUpdate.IsCamoed && camoCondition) || otherCondition)
+        if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey.Shadow();
         else
             return CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, true);
@@ -363,7 +360,7 @@ public static class Utils
 
     public static UColor GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
     {
-        if ((HudUpdate.IsCamoed && camoCondition) || otherCondition)
+        if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey;
         else
             return CustomColorManager.GetColor(player.Data.DefaultOutfit.ColorId, false);
@@ -444,7 +441,7 @@ public static class Utils
         }
 
         if (FirstDead == null)
-            FirstDead = target;
+            FirstDead = target.Data.PlayerName;
 
         target.gameObject.layer = LayerMask.NameToLayer("Ghost");
         target.Visible = false;
@@ -458,7 +455,10 @@ public static class Utils
         if (killer == CustomPlayer.Local && killer.Is(LayerEnum.VampireHunter) && target.Is(SubFaction.Undead))
             Flash(CustomColorManager.Undead);
 
-        var targetRole = Role.GetRole(target);
+        if (CustomPlayer.Local.Is(LayerEnum.Monarch) && CustomPlayer.Local.GetRole<Monarch>().Knighted.Contains(target.PlayerId))
+            Flash(CustomColorManager.Monarch);
+
+        var targetRole = target.GetRoleOrBlank();
 
         if (target.Is(LayerEnum.VIP))
         {
@@ -467,7 +467,7 @@ public static class Utils
             Role.LocalRole.AllArrows[target.PlayerId].Update(CustomColorManager.VIP);
         }
 
-        var killerRole = Role.GetRole(killer);
+        var killerRole = killer.GetRole();
 
         if (target.AmOwner)
         {
@@ -518,11 +518,11 @@ public static class Utils
             BaitReport(killer, target);
 
         if (killer.Is(LayerEnum.Politician))
-            Ability.GetAbility<Politician>(killer).VoteBank++;
+            killer.GetAbility<Politician>().VoteBank++;
 
         if (target.Is(LayerEnum.Troll) && AmongUsClient.Instance.AmHost)
         {
-            var troll = Role.GetRole<Troll>(target);
+            var troll = target.GetRole<Troll>();
             troll.Killed = true;
             CallRpc(CustomRPC.WinLose, WinLoseRPC.TrollWin, troll);
 
@@ -550,7 +550,7 @@ public static class Utils
 
             if (target.Is(LayerEnum.Swapper))
             {
-                var swapper = Ability.GetAbility<Swapper>(target);
+                var swapper = target.GetAbility<Swapper>();
                 swapper.Swap1 = null;
                 swapper.Swap2 = null;
                 swapper.SwapMenu.HideButtons();
@@ -559,7 +559,7 @@ public static class Utils
 
             if (target.Is(LayerEnum.Dictator))
             {
-                var dict = Role.GetRole<Dictator>(target);
+                var dict = target.GetRole<Dictator>();
                 dict.DictMenu.HideButtons();
                 dict.ToBeEjected.Clear();
                 dict.ToDie = false;
@@ -567,25 +567,25 @@ public static class Utils
             }
 
             if (target.Is(LayerEnum.Retributionist))
-                Role.GetRole<Retributionist>(target).RetMenu.HideButtons();
+                target.GetRole<Retributionist>().RetMenu.HideButtons();
 
             if (target.IsAssassin())
             {
-                var assassin = Ability.GetAbility<Assassin>(target);
+                var assassin = target.GetAbility<Assassin>();
                 assassin.Exit(Meeting);
                 assassin.AssassinMenu.HideButtons();
             }
 
             if (target.Is(LayerEnum.Guesser))
             {
-                var guesser = Role.GetRole<Guesser>(CustomPlayer.Local);
+                var guesser = CustomPlayer.Local.GetRole<Guesser>();
                 guesser.Exit(Meeting);
                 guesser.GuessMenu.HideButtons();
             }
 
             if (target.Is(LayerEnum.Thief))
             {
-                var thief = Role.GetRole<Thief>(CustomPlayer.Local);
+                var thief = CustomPlayer.Local.GetRole<Thief>();
                 thief.Exit(Meeting);
                 thief.GuessMenu.HideButtons();
             }
@@ -609,7 +609,7 @@ public static class Utils
             if (target == role.BlackmailedPlayer && role.PrevOverlay != null)
             {
                 voteArea.Overlay.sprite = role.PrevOverlay;
-                voteArea.Overlay.color = role.PrevColor;
+                voteArea.Overlay.color = role.PrevColor.Value;
             }
         }
 
@@ -618,7 +618,7 @@ public static class Utils
             if (target == role.SilencedPlayer && role.PrevOverlay != null)
             {
                 voteArea.Overlay.sprite = role.PrevOverlay;
-                voteArea.Overlay.color = role.PrevColor;
+                voteArea.Overlay.color = role.PrevColor.Value;
             }
         }
 
@@ -627,7 +627,7 @@ public static class Utils
             if (target == role.BlackmailedPlayer && role.PrevOverlay != null && role.IsBM)
             {
                 voteArea.Overlay.sprite = role.PrevOverlay;
-                voteArea.Overlay.color = role.PrevColor;
+                voteArea.Overlay.color = role.PrevColor.Value;
             }
         }
 
@@ -636,34 +636,34 @@ public static class Utils
             if (target == role.SilencedPlayer && role.PrevOverlay != null && role.IsSil)
             {
                 voteArea.Overlay.sprite = role.PrevOverlay;
-                voteArea.Overlay.color = role.PrevColor;
+                voteArea.Overlay.color = role.PrevColor.Value;
             }
         }
 
         if (CustomPlayer.Local.IsAssassin() && !CustomPlayer.LocalCustom.IsDead)
         {
-            var assassin = Ability.GetAbility<Assassin>(CustomPlayer.Local);
+            var assassin = CustomPlayer.Local.GetAbility<Assassin>();
             assassin.Exit(Meeting);
             assassin.AssassinMenu.HideSingle(target.PlayerId);
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Guesser) && !CustomPlayer.LocalCustom.IsDead)
         {
-            var guesser = Role.GetRole<Guesser>(CustomPlayer.Local);
+            var guesser = CustomPlayer.Local.GetRole<Guesser>();
             guesser.Exit(Meeting);
             guesser.GuessMenu.HideSingle(target.PlayerId);
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Thief) && !CustomPlayer.LocalCustom.IsDead)
         {
-            var thief = Role.GetRole<Thief>(CustomPlayer.Local);
+            var thief = CustomPlayer.Local.GetRole<Thief>();
             thief.Exit(Meeting);
             thief.GuessMenu.HideSingle(target.PlayerId);
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Swapper) && !CustomPlayer.LocalCustom.IsDead)
         {
-            var swapper = Ability.GetAbility<Swapper>(CustomPlayer.Local);
+            var swapper = CustomPlayer.Local.GetAbility<Swapper>();
 
             if (swapper.SwapMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
             {
@@ -681,7 +681,7 @@ public static class Utils
 
         if (CustomPlayer.Local.Is(LayerEnum.Dictator) && !CustomPlayer.LocalCustom.IsDead)
         {
-            var dictator = Role.GetRole<Dictator>(CustomPlayer.Local);
+            var dictator = CustomPlayer.Local.GetRole<Dictator>();
 
             if (dictator.DictMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
             {
@@ -727,7 +727,8 @@ public static class Utils
 
         if (!noReason)
         {
-            var role2 = Role.GetRole(target);
+            var role2 = target.GetRole();
+            role2.TrulyDead = true;
 
             if ((killer != target && doesKill) || !doesKill)
             {
@@ -739,6 +740,9 @@ public static class Utils
         }
 
         SetPostmortals.BeginPostmortals(target, false);
+
+        if (FirstDead == null)
+            FirstDead = target.Data.PlayerName;
     }
 
     public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
@@ -769,9 +773,6 @@ public static class Utils
 
     public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => CustomPlayer.AllPlayers.Where(x => Vector2.Distance(truePosition,
         x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))).ToList();
-
-    public static bool NoButton(PlayerControl target, LayerEnum layer) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-        !target.Is(layer) || !IsRoaming || Meeting || target != CustomPlayer.Local;
 
     public static void StopDragging(byte id)
     {
@@ -901,12 +902,9 @@ public static class Utils
             id++;
         }
     }
+    public static void Flash(UColor color, float duration = 0.5f) => Coroutines.Start(FlashCoro(color, duration));
 
-    public static void Flash(UColor color, string message, float duration = 0.5f, float size = 100f) => Flash(color, duration, message, size);
-
-    public static void Flash(UColor color, float duration = 0.5f, string message = "", float size = 100f) => Coroutines.Start(FlashCoro(color, duration, message, size));
-
-    public static IEnumerator FlashCoro(UColor color, float duration, string message, float size)
+    public static IEnumerator FlashCoro(UColor color, float duration)
     {
         if (IntroCutscene.Instance)
             yield break;
@@ -978,8 +976,7 @@ public static class Utils
 
                     var reactor3 = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
                     var oxygen3 = Ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    var seismic2 = Ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
+                    fs = reactor3.IsActive || oxygen3.IsActive;
                     break;
             }
         }
@@ -1028,7 +1025,7 @@ public static class Utils
             for (var i = 1f; i >= 0; i -= Time.deltaTime)
             {
                 HUD.FullScreen.color = new(0, 0, 0, i);
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
             }
         }
         else
@@ -1036,7 +1033,7 @@ public static class Utils
             for (var i = 0f; i <= 1; i += Time.deltaTime)
             {
                 HUD.FullScreen.color = new(0, 0, 0, i);
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
             }
         }
 
@@ -1048,7 +1045,7 @@ public static class Utils
     {
         yield return Fade(false);
         yield return Wait(0.25f);
-        __instance.NetTransform.RpcSnapTo(position);
+        __instance.RpcCustomSnapTo(position);
         yield return Wait(0.25f);
         yield return Fade(true);
         yield break;
@@ -1316,7 +1313,8 @@ public static class Utils
 
     public static void CallMeeting(PlayerControl player)
     {
-        player.RemainingEmergencies++;
+        if (player == CustomPlayer.Local)
+            player.RemainingEmergencies++;
 
         if (AmongUsClient.Instance.AmHost)
         {
@@ -1330,29 +1328,11 @@ public static class Utils
             CallRpc(CustomRPC.Action, ActionsRPC.CallMeeting, player);
     }
 
-    //Adapted from LevelImpostor to hopefully resolve some stuttering issues
-    public static void SetCPUAffinity()
+    public static void SetOutlineColor(this Renderer renderer, UColor? color)
     {
-        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        var process = Process.GetCurrentProcess();
+        if (!renderer)
+            return;
 
-        if (!isWindows && !isLinux)
-            LogError("System Incompatible");
-        else if (process.ProcessorAffinity.ToInt32() == 6)
-        {
-            process.ProcessorAffinity = (IntPtr)(Math.Pow(2, Environment.ProcessorCount) - 1);
-            LogInfo("Reset CPU affinity");
-        }
-        else
-        {
-            process.ProcessorAffinity = (IntPtr)6;
-            LogInfo("Set CPU affinity to 1 & 2");
-        }
-    }
-
-    public static void SetOutlineColor(this Renderer renderer, Color? color)
-    {
         renderer.material.SetFloat("_Outline", color.HasValue ? 1f : 0f);
         renderer.material.SetColor("_OutlineColor", color ?? UColor.clear);
         renderer.material.SetColor("_AddColor", color ?? UColor.clear);
@@ -1376,6 +1356,69 @@ public static class Utils
     {
         path = path.Split('/')[^1];
         path = path.Split('\\')[^1];
+        path = path.Replace(TownOfUsReworked.Resources, "");
+        path = path.Replace(".png", "");
+        path = path.Replace(".raw", "");
+        path = path.Replace(".wav", "");
+        path = path.Replace(".txt", "");
         return path;
+    }
+
+    public static IEnumerator EndFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        yield break;
+    }
+
+    public static void RpcCustomSnapTo(this PlayerControl player, Vector2 pos)
+    {
+        player.CustomSnapTo(pos);
+        CallRpc(CustomRPC.Vanilla, VanillaRPC.SnapTo, player, pos);
+    }
+
+    public static void CustomSnapTo(this PlayerControl player, Vector2 pos)
+    {
+        player.moveable = false;
+        player.Collider.enabled = false;
+        player.NetTransform.Halt();
+
+        if (player.inVent)
+            player.MyPhysics.ExitAllVents();
+
+        player.NetTransform.SnapTo(pos);
+
+        if (player.walkingToVent)
+        {
+            player.inVent = false;
+            Vent.currentVent = null;
+            player.MyPhysics.StopAllCoroutines();
+            player.walkingToVent = false;
+        }
+
+        if (player == CustomPlayer.Local)
+        {
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (MapPatch.MapActive)
+                Map.Close();
+
+            if (IsSubmerged())
+            {
+                ChangeFloor(CustomPlayer.Local.GetTruePosition().y > -7);
+                CheckOutOfBoundsElevator(CustomPlayer.Local);
+            }
+
+            var role = player.GetRole();
+
+            if (role is Janitor jani)
+                jani.Drop();
+            else if (role is PromotedGodfather gf)
+                gf.Drop();
+        }
+
+        player.moveable = true;
+        player.Collider.enabled = !player.Data.IsDead;
+        player.MyPhysics.ResetMoveState();
     }
 }

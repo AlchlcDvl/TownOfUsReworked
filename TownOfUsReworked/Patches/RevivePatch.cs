@@ -19,12 +19,12 @@ public static class PlayerControlRevivePatch
         RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || x == 255);
         Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || x == 255 || !PlayerById(x));
         SetPostmortals.RemoveFromPostmortals(__instance);
-        __instance.Data.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
+        __instance.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
         var body = BodyByPlayer(__instance);
 
         if (body != null)
         {
-            __instance.NetTransform.RpcSnapTo(body.TruePosition);
+            __instance.RpcCustomSnapTo(body.TruePosition);
             body.gameObject.Destroy();
         }
 
@@ -32,7 +32,7 @@ public static class PlayerControlRevivePatch
             ChangeFloor(__instance.transform.position.y > -7);
 
         if (__instance.Is(LayerEnum.Troll))
-            Role.GetRole<Troll>(__instance).Killed = false;
+            __instance.GetRole<Troll>().Killed = false;
 
         if (!__instance.AmOwner)
             return false;
@@ -42,7 +42,7 @@ public static class PlayerControlRevivePatch
         HUD.AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS);
         HUD.SabotageButton.gameObject.SetActive(__instance.CanSabotage());
         HUD.ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
-        ButtonUtils.Reset();
+        ButtonUtils.Reset(player: __instance);
 
         if (Chat.IsOpenOrOpening)
             Chat.ForceClosed();

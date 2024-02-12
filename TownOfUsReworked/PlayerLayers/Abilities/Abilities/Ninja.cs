@@ -7,5 +7,11 @@ public class Ninja : Ability
     public override LayerEnum Type => LayerEnum.Ninja;
     public override Func<string> Description => () => "- You do not lunge when killing";
 
-    public Ninja(PlayerControl player) : base(player) {}
+    public Ninja() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

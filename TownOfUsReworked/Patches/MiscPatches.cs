@@ -84,12 +84,6 @@ public static class SecurityLoggerPatch
     public static void Postfix(ref SecurityLogger __instance) => __instance.Timers = new float[127];
 }
 
-[HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Close))]
-public static class CloseMapMenuPatch
-{
-    public static void Postfix() => CustomPlayer.Local.EnableButtons();
-}
-
 [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
 public static class OpenMapMenuPatch
 {
@@ -102,8 +96,11 @@ public static class OpenMapMenuPatch
 
         if (opts.Mode is not (MapOptions.Modes.None or MapOptions.Modes.CountOverlay))
         {
-            if (CustomPlayer.Local.CanSabotage())
+            if (CustomPlayer.Local.CanSabotage() && !(PlayerLayer.GetLayers<Grenadier>().Any(x => x.FlashButton.EffectActive) || PlayerLayer.GetLayers<PromotedGodfather>().Any(x =>
+                x.FlashButton.EffectActive)))
+            {
                 __instance.ShowSabotageMap();
+            }
             else
                 __instance.ShowNormalMap();
 
@@ -114,9 +111,10 @@ public static class OpenMapMenuPatch
         PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
         CustomPlayer.Local.DisableButtons();
-        MapPatch.MapActive = true;
         return notmodified;
     }
+
+    public static void Postfix() => MapPatch.MapActive = true;
 }
 
 [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Close))]
@@ -124,7 +122,11 @@ public static class MapPatch
 {
     public static bool MapActive;
 
-    public static void Postfix() => MapActive = false;
+    public static void Postfix()
+    {
+        MapActive = false;
+        CustomPlayer.Local.EnableButtons();
+    }
 }
 
 [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
@@ -200,8 +202,6 @@ public static class MinigameBeginPatch
 {
     public static void Postfix(Minigame __instance)
     {
-        CustomPlayer.Local.DisableButtons();
-
         if (__instance is null or TaskAdderGame or HauntMenuMinigame or SpawnInMinigame || !CustomPlayer.Local.Is(LayerEnum.Multitasker))
             return;
 
@@ -246,8 +246,10 @@ public static class AirshipSpawnInPatch
 {
     public static void Postfix()
     {
-        if (CustomPlayer.Local.Is(LayerEnum.Astral) && Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition != Vector3.zero)
-            Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
+        if (CustomPlayer.Local.Is(LayerEnum.Astral) && CustomPlayer.Local.GetModifier<Astral>().LastPosition != Vector3.zero)
+            CustomPlayer.Local.GetModifier<Astral>().SetPosition();
+
+        SetFullScreenHUD();
     }
 }
 
@@ -256,7 +258,16 @@ public static class ExitGamePatch
 {
     public static void Prefix()
     {
-        SaveText("ReworkedLogs.txt", SavedLogs);
+        var filePath = Path.Combine(TownOfUsReworked.Logs, "ReworkedLogs.log");
+        var i = 1;
+
+        while (File.Exists(filePath))
+        {
+            filePath = Path.Combine(TownOfUsReworked.Logs, $"ReworkedLogs{i}.log");
+            i++;
+        }
+
+        SaveText($"{filePath.SanitisePath()}.log", SavedLogs, TownOfUsReworked.Logs);
         CustomOption.SaveSettings("Last Used");
     }
 }
@@ -299,8 +310,8 @@ public static class AddCustomPlayerPatch
 {
     public static void Postfix(PlayerControl __instance)
     {
-        if (!CustomPlayer.AllCustomPlayers.Any(x => x.Player == __instance))
-            _ = new CustomPlayer(__instance);
+        CustomPlayer.Custom(__instance);
+        SoundEffects.TryAdd("Kill", __instance.KillSfx);
     }
 }
 
@@ -315,25 +326,11 @@ public static class LobbySizePatch
 {
     public static void Postfix()
     {
-        while (CustomPlayer.AllPlayers.Count > CustomGameOptions.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+        if (IsLobby)
         {
-            var player = CustomPlayer.AllPlayers[^1];
-            var client = AmongUsClient.Instance.GetClient(player.OwnerId);
-            AmongUsClient.Instance.KickPlayer(client.Id, false);
+            while (CustomPlayer.AllPlayers.Count > CustomGameOptions.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+                AmongUsClient.Instance.KickPlayer(AmongUsClient.Instance.GetClient(CustomPlayer.AllPlayers.Last().OwnerId).Id, false);
         }
-    }
-}
-
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-public static class SizePatch
-{
-    public static void Postfix()
-    {
-        try
-        {
-            CustomPlayer.AllPlayers.ForEach(x => x.transform.localScale = CustomPlayer.Custom(x).SizeFactor);
-            AllBodies.ForEach(x => x.transform.localScale = CustomPlayer.Custom(PlayerByBody(x)).SizeFactor);
-        } catch {}
     }
 }
 
@@ -437,7 +434,6 @@ public static class LobbyBehaviourPatch
     public static void Postfix()
     {
         SetFullScreenHUD();
-        DataManager.Settings.Gameplay.ScreenShake = SpawnPatches.CachedChoice;
         RoleGen.ResetEverything();
         TownOfUsReworked.IsTest = IsLocalGame && (TownOfUsReworked.IsDev || (TownOfUsReworked.IsTest && TownOfUsReworked.MCIActive));
         StopAll();
@@ -450,9 +446,21 @@ public static class LobbyBehaviourPatch
         DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
         OtherButtonsPatch.Page = 0;
         OtherButtonsPatch.Buttons.Clear();
+        OtherButtonsPatch.CloseMenus();
 
         if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame)
             MCIUtils.CreatePlayerInstances(count);
+
+        var lobbyTransform = References.Lobby.transform;
+        var consolePrefab = lobbyTransform.FindChild("panel_Wardrobe").gameObject;
+        var rewConsoleObj = UObject.Instantiate(consolePrefab, lobbyTransform);
+        rewConsoleObj.name = "panel_Reworked";
+        rewConsoleObj.transform.localPosition = new(0f, 2.86f, -9.898f);
+
+        var consoleObj = rewConsoleObj.transform.GetChild(0).gameObject;
+        consoleObj.GetComponent<OptionsConsole>().Destroy();
+        consoleObj.AddComponent<LobbyConsole>().SetRenderer(rewConsoleObj.GetComponent<SpriteRenderer>());
+        rewConsoleObj.GetComponentInChildren<BoxCollider2D>().size = new(0.01f, 0.01f);
     }
 }
 
@@ -465,55 +473,6 @@ public static class DeathPopUpPatch
             return;
 
         __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => __instance.text.text = $"Was {(CustomGameOptions.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}")));
-    }
-}
-
-[HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.SnapTo), typeof(Vector2))]
-public static class TeleportationPatch
-{
-    public static void Prefix(CustomNetworkTransform __instance)
-    {
-        __instance.myPlayer.MyPhysics.ResetMoveState();
-        __instance.myPlayer.moveable = false;
-        __instance.myPlayer.Collider.enabled = false;
-        __instance.Halt();
-
-        if (__instance.myPlayer.inVent)
-            __instance.myPlayer.MyPhysics.ExitAllVents();
-    }
-
-    public static void Postfix(CustomNetworkTransform __instance)
-    {
-        if (__instance.myPlayer == CustomPlayer.Local)
-        {
-            if (ActiveTask)
-                ActiveTask.Close();
-
-            if (MapPatch.MapActive)
-                Map.Close();
-
-            if (IsSubmerged())
-            {
-                ChangeFloor(CustomPlayer.Local.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
-            }
-
-            if (CustomPlayer.Local.inVent)
-            {
-                CustomPlayer.Local.MyPhysics.RpcExitVent(Vent.currentVent.Id);
-                CustomPlayer.Local.MyPhysics.ExitAllVents();
-            }
-        }
-
-        if (AmongUsClient.Instance.AmHost)
-        {
-            PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
-            PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
-        }
-
-        __instance.myPlayer.moveable = true;
-        __instance.myPlayer.Collider.enabled = true;
-        __instance.myPlayer.MyPhysics.ResetMoveState();
     }
 }
 
@@ -586,16 +545,47 @@ public static class LadderFix
 {
     public static bool Prefix(PlayerControl __instance, ref bool b)
     {
-        if (__instance != CustomPlayer.Local || !__instance.onLadder || b || (!__instance.Is(LayerEnum.Giant) && !__instance.Is(LayerEnum.Dwarf)) || MapPatches.CurrentMap != 5)
+        if (__instance != CustomPlayer.Local || !__instance.onLadder || b || __instance.GetModifier() is not (Giant or Dwarf) || MapPatches.CurrentMap != 5)
             return true;
 
         var ladder = UObject.FindObjectsOfType<Ladder>().OrderBy(x => Vector3.Distance(x.transform.position, __instance.transform.position)).ElementAt(0);
 
         if (!ladder.IsTop)
-            return true; // Are we at the bottom?
+            return true; //Are we at the bottom?
 
-        __instance.NetTransform.RpcSnapTo(__instance.transform.position + new Vector3(0,0.5f));
+        __instance.RpcCustomSnapTo(__instance.transform.position + new Vector3(0, 0.5f, 0f));
         return true;
+    }
+}
+
+[HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
+public static class RefreshPatch
+{
+    public static bool Prefix() => false;
+}
+
+[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
+public static class StartHud
+{
+    public static void Postfix(HudManager __instance)
+    {
+        Sprites.TryAdd("DefaultVent", __instance.ImpostorVentButton.graphic.sprite);
+        Sprites.TryAdd("DefaultSabotage", __instance.SabotageButton.graphic.sprite);
+    }
+}
+
+[HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]
+public static class MeetingCooldowns
+{
+    public static void Postfix(ref UObject obj)
+    {
+        if (obj == null)
+            return;
+
+        if (Ejection && obj == Ejection.gameObject)
+            ButtonUtils.Reset(CooldownType.Meeting);
+        else if (ActiveTask && obj == ActiveTask.gameObject)
+            CustomPlayer.Local.EnableButtons();
     }
 }
 
@@ -604,7 +594,7 @@ public static class DebuggingClassForRandomStuff
 {
     public static void Postfix(KeyboardJoystick __instance)
     {
-        //some sick code here
-        //got too lazy to constantly remove it so it'll stay now, still commented tho because i love reduce dll size :D
+        //Some sick code here
+        //Got too lazy to constantly remove it so it'll stay now, still commented tho because i love to reduce dll size :D
     }
 }*/

@@ -32,22 +32,22 @@ public static class Freeplaypatches
         button.Button.OnClick = new();
         button.Button.OnClick.AddListener((Action)(() =>
         {
-            var role = Role.GetRole(CustomPlayer.Local);
+            var role = CustomPlayer.Local.GetRole();
 
             if (role && !PreviouslySelected.Any(x => x.Type == role.Type))
                 PreviouslySelected.Add(role);
 
-            var ability = Ability.GetAbility(CustomPlayer.Local);
+            var ability = CustomPlayer.Local.GetAbility();
 
             if (ability && !PreviouslySelected.Any(x => x.Type == ability.Type))
                 PreviouslySelected.Add(ability);
 
-            var modifier = Modifier.GetModifier(CustomPlayer.Local);
+            var modifier = CustomPlayer.Local.GetModifier();
 
             if (modifier && !PreviouslySelected.Any(x => x.Type == modifier.Type))
                 PreviouslySelected.Add(modifier);
 
-            var objectifier = Objectifier.GetObjectifier(CustomPlayer.Local);
+            var objectifier = CustomPlayer.Local.GetObjectifier();
 
             if (objectifier && !PreviouslySelected.Any(x => x.Type == objectifier.Type))
                 PreviouslySelected.Add(objectifier);
@@ -57,7 +57,7 @@ public static class Freeplaypatches
             if (selected)
                 selected.Player = CustomPlayer.Local;
             else
-                selected = RoleGen.SetLayer((int)layer, CustomPlayer.Local, layer.GetLayerType());
+                selected = RoleGen.SetLayer(layer, layer.GetLayerType()).Start(CustomPlayer.Local);
 
             if (role && role.Type == layer)
             {

@@ -7,10 +7,16 @@ public class Colorblind : Modifier
     public override LayerEnum Type => LayerEnum.Colorblind;
     public override Func<string> Description => () => "- You can't tell the difference between players";
 
-    public Colorblind(PlayerControl player) : base(player)
+    public Colorblind() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+
         if (Local)
             ColorAll();
+
+        return this;
     }
 
     public override void OnLobby()

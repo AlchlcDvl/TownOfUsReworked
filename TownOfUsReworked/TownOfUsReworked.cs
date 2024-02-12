@@ -9,7 +9,7 @@ public partial class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.6.4.0";
+    public const string VersionString = "0.6.5.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = false;
@@ -20,22 +20,23 @@ public partial class TownOfUsReworked : BasePlugin
     private static string VersionS => VersionString.Remove(VersionString.Length - 2);
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
     private static string TestString => IsTest ? "_test" : "";
-    private static string StreamString => IsStream ? " s" : "";
-    public static string VersionFinal => $"v{VersionS}{DevString}{TestString}{StreamString}";
+    private static string StreamString => IsStream ? "s" : "";
+    public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}{TestString}";
 
     public const string Resources = "TownOfUsReworked.Resources.";
-    public const string Buttons = $"{Resources}Buttons.";
-    public const string Misc = $"{Resources}Misc.";
-    public const string Portal = $"{Resources}Portal.";
-    public const string Presets = $"{Resources}Presets.";
-    public const string Sounds = $"{Resources}Sounds.";
 
     public static string DataPath => Path.GetDirectoryName(Application.dataPath);
-    public static string Hats => Path.Combine(DataPath, "CustomHats");
-    public static string Visors => Path.Combine(DataPath, "CustomVisors");
-    public static string Nameplates => Path.Combine(DataPath, "CustomNameplates");
-    public static string Colors => Path.Combine(DataPath, "CustomColors");
-    public static string Options => Path.Combine(DataPath, "CustomOptions");
+    public static string Assets => Path.Combine(DataPath, "ReworkedAssets");
+    public static string Hats => Path.Combine(Assets, "CustomHats");
+    public static string Visors => Path.Combine(Assets, "CustomVisors");
+    public static string Nameplates => Path.Combine(Assets, "CustomNameplates");
+    public static string Colors => Path.Combine(Assets, "CustomColors");
+    public static string Options => Path.Combine(Assets, "CustomOptions");
+    public static string Images => Path.Combine(Assets, "CustomImages");
+    public static string Sounds => Path.Combine(Assets, "CustomSounds");
+    public static string Portal => Path.Combine(Assets, "PortalAnim");
+    public static string Logs => Path.Combine(Assets, "ModLogs");
+    public static string Other => Path.Combine(Assets, "Other");
     public static string ModsFolder => Path.Combine(DataPath, "BepInEx", "plugins");
 
     public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
@@ -58,8 +59,6 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static ConfigEntry<string> Ip { get; set; }
     public static ConfigEntry<ushort> Port { get; set; }
-    public static ConfigEntry<string> Regions { get; set; }
-    public static ConfigEntry<string> RegionsToRemove { get; set; }
     public static ConfigEntry<bool> LighterDarker { get; set; }
     public static ConfigEntry<bool> WhiteNameplates { get; set; }
     public static ConfigEntry<bool> NoLevels { get; set; }
@@ -75,9 +74,10 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static TownOfUsReworked ModInstance { get; private set; }
 
+    public TownOfUsReworked() : base() => Logging.Init();
+
     public override void Load()
     {
-        Logging.Init();
         LogMessage("Loading");
 
         if (InitialiseMalumMenu())

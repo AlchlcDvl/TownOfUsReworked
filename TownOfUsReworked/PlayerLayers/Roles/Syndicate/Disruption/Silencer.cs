@@ -6,7 +6,7 @@ public class Silencer : Syndicate
     public PlayerControl SilencedPlayer { get; set; }
     public bool ShookAlready { get; set; }
     public Sprite PrevOverlay { get; set; }
-    public UColor PrevColor { get; set; }
+    public UColor? PrevColor { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Silencer : CustomColorManager.Syndicate;
     public override string Name => "Silencer";
@@ -16,11 +16,16 @@ public class Silencer : Syndicate
         "alerted at the start of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") +
         CommonAbilities;
 
-    public Silencer(PlayerControl player) : base(player)
+    public Silencer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         SilencedPlayer = null;
         SilenceButton = new(this, "Silence", AbilityTypes.Alive, "Secondary", Silence, CustomGameOptions.SilenceCd, Exception1);
+        return this;
     }
 
     public void Silence()

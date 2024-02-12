@@ -103,7 +103,7 @@ public static class MCIUtils
 
         PlayerLayer.LocalLayers.ForEach(x => x.ExitingLayer());
 
-        CustomPlayer.Local.NetTransform.RpcSnapTo(CustomPlayer.LocalCustom.Position);
+        CustomPlayer.Local.RpcCustomSnapTo(CustomPlayer.LocalCustom.Position);
         CustomPlayer.Local.moveable = false;
 
         var light = CustomPlayer.Local.lightSource;
@@ -153,10 +153,10 @@ public static class MCIUtils
         Chat.SetVisible(newPlayer.CanChat());
 
         if (SavedPositions.TryGetValue(playerId, out var pos))
-            newPlayer.NetTransform.RpcSnapTo(pos);
+            newPlayer.RpcCustomSnapTo(pos);
 
         if (SavedPositions.TryGetValue(savedId, out var pos2))
-            PlayerById(savedId).NetTransform.RpcSnapTo(pos2);
+            PlayerById(savedId).RpcCustomSnapTo(pos2);
     }
 
     public static void SetForegroundForAlive(this MeetingHud __instance)

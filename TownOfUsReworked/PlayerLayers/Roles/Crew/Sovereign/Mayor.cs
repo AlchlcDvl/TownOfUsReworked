@@ -13,11 +13,16 @@ public class Mayor : Crew
     public override Func<string> Description => () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you cannot "
         + "be protected";
 
-    public Mayor(PlayerControl player) : base(player)
+    public Mayor() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewSov;
         RevealButton = new(this, "MayorReveal", AbilityTypes.Targetless, "ActionSecondary", Reveal);
-        player.Data.Role.IntroSound = GetAudio("MayorIntro");
+        Data.Role.IntroSound = GetAudio("MayorIntro");
+        return this;
     }
 
     public void Reveal()

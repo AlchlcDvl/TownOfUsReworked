@@ -10,5 +10,11 @@ public class Indomitable : Modifier
     public override Func<string> Description => () => "- You cannot be guessed";
     public override bool Hidden => !CustomGameOptions.IndomitableKnows && !AttemptedGuess && !IsDead;
 
-    public Indomitable(PlayerControl player) : base(player) => AttemptedGuess = false;
+    public Indomitable() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

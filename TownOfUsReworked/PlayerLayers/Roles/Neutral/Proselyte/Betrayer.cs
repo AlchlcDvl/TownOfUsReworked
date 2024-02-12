@@ -10,11 +10,16 @@ public class Betrayer : Neutral
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
     public override Func<string> Description => () => "- You can kill";
 
-    public Betrayer(PlayerControl player) : base(player)
+    public Betrayer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
         Alignment = Alignment.NeutralPros;
         KillButton = new(this, "BetKill", AbilityTypes.Alive, "ActionSecondary", Kill, CustomGameOptions.BetrayCd, Exception);
+        return this;
     }
 
     public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));

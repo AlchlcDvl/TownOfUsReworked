@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Werewolf : Neutral
 {
-    public bool CanMaul => Rounds is not (0 or 2);
+    public bool CanMaul => Rounds is not (0 or 2) || CustomGameOptions.CanStillAttack;
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 
@@ -14,12 +14,17 @@ public class Werewolf : Neutral
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
 
-    public Werewolf(PlayerControl player) : base(player)
+    public Werewolf() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Maul anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MaulButton = new(this, "Maul", AbilityTypes.Alive, "ActionSecondary", HitMaul, CustomGameOptions.MaulCd, Exception);
-        player.Data.Role.IntroSound = GetAudio("WerewolfIntro");
+        Data.Role.IntroSound = GetAudio("WerewolfIntro");
+        return this;
     }
 
     public void Maul()

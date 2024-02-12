@@ -5,8 +5,8 @@ public static class References
     public static readonly List<byte> RecentlyKilled = new();
     public static readonly Dictionary<byte, byte> CachedMorphs = new();
     public static readonly List<DeadPlayer> KilledPlayers = new();
-    public static readonly Dictionary<byte, float> TransitioningSize = new(); //wheeze
-    public static readonly Dictionary<byte, float> TransitioningSpeed = new(); //double wheeze
+    public static readonly Dictionary<byte, float> TransitioningSize = new(); //Wheeze
+    public static readonly Dictionary<byte, float> TransitioningSpeed = new(); //Double wheeze
     public static readonly Dictionary<byte, DateTime> UninteractiblePlayers = new();
     public static Dictionary<byte, string> BodyLocations = new();
     public static List<DeadBody> AllBodies => UObject.FindObjectsOfType<DeadBody>().ToList();
@@ -16,8 +16,8 @@ public static class References
     public static List<Console> AllConsoles => UObject.FindObjectsOfType<Console>().ToList();
     public static List<SystemConsole> AllSystemConsoles => UObject.FindObjectsOfType<SystemConsole>().ToList();
     public static List<PlayerVoteArea> AllVoteAreas => Meeting.playerStates.ToList();
-    public static PlayerControl FirstDead;
-    public static PlayerControl CachedFirstDead;
+    public static string FirstDead;
+    public static string CachedFirstDead;
     public static HudManager HUD => HudManager.Instance;
     public static MeetingHud Meeting => MeetingHud.Instance;
     public static ExileController Ejection => ExileController.Instance;

@@ -7,5 +7,11 @@ public class Multitasker : Ability
     public override LayerEnum Type => LayerEnum.Multitasker;
     public override Func<string> Description => () => "- Your task windows are transparent";
 
-    public Multitasker(PlayerControl player) : base(player) {}
+    public Multitasker() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

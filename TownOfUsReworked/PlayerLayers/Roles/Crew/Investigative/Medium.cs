@@ -14,13 +14,18 @@ public class Medium : Crew
     public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead == ShowMediumToDead.No ? "" : ("\n- When" +
         " mediating, dead players will be able to see you"));
 
-    public Medium(PlayerControl player) : base(player)
+    public Medium() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         MediatedPlayers = new();
         MediateArrows = new();
         Alignment = Alignment.CrewInvest;
         MediateButton = new(this, "Mediate", AbilityTypes.Targetless, "ActionSecondary", Mediate, CustomGameOptions.MediateCd);
         //SeanceButton = new(this, "Seance", AbilityTypes.Targetless, "ActionSecondary", Seance, CustomGameOptions.SeanceCd, true);
+        return this;
     }
 
     //private void Seance() { Currently blank, gonna work on this later }

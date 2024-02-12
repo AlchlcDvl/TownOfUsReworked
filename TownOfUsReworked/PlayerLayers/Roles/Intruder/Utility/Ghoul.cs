@@ -14,11 +14,16 @@ public class Ghoul : Intruder
     public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the "
         + "next meeting if you are not clicked";
 
-    public Ghoul(PlayerControl player) : base(player)
+    public Ghoul() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderUtil;
         MarkedPlayer = null;
         MarkButton = new(this, "GhoulMark", AbilityTypes.Alive, "ActionSecondary", Mark, CustomGameOptions.GhoulMarkCd, Exception1, true);
+        return this;
     }
 
     public void Fade()

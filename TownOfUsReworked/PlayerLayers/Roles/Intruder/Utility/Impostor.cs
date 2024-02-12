@@ -7,9 +7,14 @@ public class Impostor : Intruder
     public override Func<string> StartText => () => "Sabotage And Kill Everyone";
     public override Func<string> Description => () => CommonAbilities;
 
-    public Impostor(PlayerControl player) : base(player)
+    public Impostor() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderUtil;
-        player.Data.Role.IntroSound = GetAudio("ImpostorIntro");
+        Data.Role.IntroSound = GetAudio("ImpostorIntro");
+        return this;
     }
 }

@@ -13,12 +13,17 @@ public class Enforcer : Intruder
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
         $"{CustomGameOptions.EnforceDur}s, the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
 
-    public Enforcer(PlayerControl player) : base(player)
+    public Enforcer() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderKill;
         BombedPlayer = null;
         BombButton = new(this, "Enforce", AbilityTypes.Alive, "Secondary", Bomb, CustomGameOptions.EnforceCd, CustomGameOptions.EnforceDur, BoomStart, UnBoom, CustomGameOptions.EnforceDelay,
             Exception1, canClickAgain: false);
+        return this;
     }
 
     public void BoomStart()
@@ -26,7 +31,7 @@ public class Enforcer : Intruder
         if (CustomPlayer.Local == BombedPlayer && !IsDead)
         {
             Flash(Color);
-            GetRole(BombedPlayer).Bombed = true;
+            BombedPlayer.GetRole().Bombed = true;
         }
     }
 
@@ -35,7 +40,7 @@ public class Enforcer : Intruder
         if (!BombSuccessful)
             Explode(BombedPlayer, Player);
 
-        GetRole(BombedPlayer).Bombed = false;
+        BombedPlayer.GetRole().Bombed = false;
         BombedPlayer = null;
         BombSuccessful = false;
     }

@@ -14,12 +14,17 @@ public class Detective : Crew
     public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
         $"{CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
 
-    public Detective(PlayerControl player) : base(player)
+    public Detective() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         AllPrints = new();
         Investigated = new();
         Alignment = Alignment.CrewInvest;
         ExamineButton = new(this, "Examine", AbilityTypes.Alive, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
+        return this;
     }
 
     public override void OnLobby()

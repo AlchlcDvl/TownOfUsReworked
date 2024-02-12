@@ -15,14 +15,19 @@ public class Coroner : Crew
     public override Func<string> Description => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +
         "when you report a body\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined";
 
-    public Coroner(PlayerControl player) : base(player)
+    public Coroner() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewInvest;
         BodyArrows = new();
         Reported = new();
         ReferenceBodies = new();
         AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy, CustomGameOptions.AutopsyCd);
         CompareButton = new(this, "Compare", AbilityTypes.Alive, "Secondary", Compare, CustomGameOptions.CompareCd);
+        return this;
     }
 
     public void DestroyArrow(byte targetPlayerId)

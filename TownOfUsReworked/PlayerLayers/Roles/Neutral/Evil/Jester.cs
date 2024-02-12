@@ -13,13 +13,19 @@ public class Jester : Neutral
     public override LayerEnum Type => LayerEnum.Jester;
     public override Func<string> StartText => () => "It Was Jest A Prank Bro";
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
+    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
-    public Jester(PlayerControl player) : base(player)
+    public Jester() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
         Alignment = Alignment.NeutralEvil;
         ToHaunt = new();
         HauntButton = new(this, "Haunt", AbilityTypes.Alive, "ActionSecondary", Haunt, Exception, true);
+        return this;
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -35,7 +41,7 @@ public class Jester : Neutral
         {
             var player = PlayerByVoteArea(state);
 
-            if (state.AmDead || player.Data.Disconnected || state.VotedFor != PlayerId || state.TargetPlayerId == PlayerId || Player.IsLinkedTo(player))
+            if (state.AmDead || player.HasDied() || state.VotedFor != PlayerId || state.TargetPlayerId == PlayerId || Player.IsLinkedTo(player))
                 continue;
 
             ToHaunt.Add(state.TargetPlayerId);
@@ -49,6 +55,7 @@ public class Jester : Neutral
     {
         RpcMurderPlayer(Player, HauntButton.TargetPlayer, DeathReasonEnum.Haunted, false);
         HasHaunted = true;
+        TrulyDead = true;
     }
 
     public override void UpdateHud(HudManager __instance)

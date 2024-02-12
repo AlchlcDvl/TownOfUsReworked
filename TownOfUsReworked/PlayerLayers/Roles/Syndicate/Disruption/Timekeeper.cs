@@ -11,11 +11,16 @@ public class Timekeeper : Syndicate
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +
         CommonAbilities;
 
-    public Timekeeper(PlayerControl player) : base(player)
+    public Timekeeper() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         TimeButton = new(this, "Time", AbilityTypes.Targetless, "Secondary", TimeControl, CustomGameOptions.TimeCd, CustomGameOptions.TimeDur, Control, ControlStart, UnControl);
-        player.Data.Role.IntroSound = GetAudio("TimekeeperIntro");
+        Data.Role.IntroSound = GetAudio("TimekeeperIntro");
+        return this;
     }
 
     public void ControlStart() => Flash(Color, CustomGameOptions.TimeDur);
@@ -23,10 +28,10 @@ public class Timekeeper : Syndicate
     public void Control()
     {
         if (HoldsDrive)
-            CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = true);
+            CustomPlayer.AllPlayers.ForEach(x => x.GetRole().Rewinding = true);
     }
 
-    public void UnControl() => CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = false);
+    public void UnControl() => CustomPlayer.AllPlayers.ForEach(x => x.GetRole().Rewinding = false);
 
     public void TimeControl()
     {

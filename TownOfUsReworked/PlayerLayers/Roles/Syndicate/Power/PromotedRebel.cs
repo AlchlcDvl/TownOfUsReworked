@@ -2,8 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class PromotedRebel : Syndicate
 {
-    public PromotedRebel(PlayerControl player) : base(player)
+    public PromotedRebel() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicatePower;
         SpellCount = 0;
         Framed = new();
@@ -38,7 +42,7 @@ public class PromotedRebel : Syndicate
         PoisonMenu = new(Player, PoisonClick, PoisonException);
         ShapeshiftMenu1 = new(Player, ShapeshiftClick1, SSException1);
         ShapeshiftMenu2 = new(Player, ShapeshiftClick2, SSException2);
-        SpellButton = new(this, "Spell", AbilityTypes.Alive, "Secondary", HitSpell, CustomGameOptions.SpellCd, SpellException);
+        SpellButton = new(this, "Spellbind", AbilityTypes.Alive, "Secondary", HitSpell, CustomGameOptions.SpellCd, SpellException);
         StalkButton = new(this, "Stalk", AbilityTypes.Alive, "ActionSecondary", Stalk, CustomGameOptions.StalkCd, StalkException);
         PositiveButton = new(this, "Positive", AbilityTypes.Alive, "ActionSecondary", SetPositive, CustomGameOptions.CollideCd, PlusException);
         NegativeButton = new(this, "Negative", AbilityTypes.Alive, "Secondary", SetNegative, CustomGameOptions.CollideCd, MinusException);
@@ -59,6 +63,7 @@ public class PromotedRebel : Syndicate
             (CustomButton.EffectStartVoid)StartConfusion, UnConfuse);
         TimeButton = new(this, "Time", AbilityTypes.Targetless, "Secondary", TimeControl, CustomGameOptions.TimeCd, CustomGameOptions.TimeDur, Control, ControlStart, UnControl);
         SilenceButton = new(this, "Silence", AbilityTypes.Alive, "Secondary", Silence, CustomGameOptions.SilenceCd, SilenceException);
+        return this;
     }
 
     //Rebel Stuff
@@ -80,7 +85,7 @@ public class PromotedRebel : Syndicate
     public override LayerEnum Type => LayerEnum.PromotedRebel;
     public override Func<string> StartText => () => "Lead The <color=#008000FF>Syndicate</color>";
     public override Func<string> Description => () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities" +
-        (FormerRole == null ? CommonAbilities : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
+        (!FormerRole ? CommonAbilities : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
 
     public override void TryEndEffect()
     {
@@ -95,7 +100,7 @@ public class PromotedRebel : Syndicate
         base.UpdateHud(__instance);
         ConfuseButton.Update2(ConfusedPlayer == null && !HoldsDrive ? "SET TARGET" : "CONFUSE", IsDrunk);
         StalkButton.Update2("STALK", !HoldsDrive && IsStalk);
-        SpellButton.Update2("SPELL", IsSpell, difference: SpellCount * CustomGameOptions.SpellCdIncrease * CustomGameOptions.RebPromotionCdDecrease);
+        SpellButton.Update2("SPELLBIND", IsSpell, difference: SpellCount * CustomGameOptions.SpellCdIncrease * CustomGameOptions.RebPromotionCdDecrease);
         PositiveButton.Update2("SET POSITIVE", IsCol);
         NegativeButton.Update2("SET NEGATIVE", IsCol);
         ChargeButton.Update2("CHARGE", HoldsDrive && IsCol);
@@ -271,7 +276,7 @@ public class PromotedRebel : Syndicate
                 CrusadedPlayer = reader.ReadPlayer();
                 break;
 
-            case RebActionsRPC.Spell:
+            case RebActionsRPC.Spellbind:
                 Spelled.Add(reader.ReadByte());
                 break;
 
@@ -592,7 +597,7 @@ public class PromotedRebel : Syndicate
         if (WarpPlayer1.inVent)
         {
             while (GetInTransition())
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
 
             WarpPlayer1.MyPhysics.ExitAllVents();
         }
@@ -600,7 +605,7 @@ public class PromotedRebel : Syndicate
         if (WarpPlayer2.inVent)
         {
             while (GetInTransition())
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
 
             Vent = WarpPlayer2.GetClosestVent();
             WasInVent = true;
@@ -627,7 +632,7 @@ public class PromotedRebel : Syndicate
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.WarpDur)
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
             else
                 break;
 
@@ -641,7 +646,7 @@ public class PromotedRebel : Syndicate
         if (Player1Body == null && Player2Body == null)
         {
             WarpPlayer1.MyPhysics.ResetMoveState();
-            WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
+            WarpPlayer1.CustomSnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
             if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
             {
@@ -666,7 +671,7 @@ public class PromotedRebel : Syndicate
         else if (Player1Body == null && Player2Body != null)
         {
             WarpPlayer1.MyPhysics.ResetMoveState();
-            WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
+            WarpPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
             if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
             {
@@ -703,8 +708,8 @@ public class PromotedRebel : Syndicate
 
         HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDur, new Action<float>(p =>
         {
-            var index = (int)(p * PortalAnimation.Length);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
+            var index = (int)(p * PortalAnimation.Count);
+            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
             AnimationPlaying.sprite = PortalAnimation[index];
             WarpPlayer1.SetPlayerMaterialColors(AnimationPlaying);
 
@@ -830,13 +835,13 @@ public class PromotedRebel : Syndicate
 
     public bool SpellException(PlayerControl player) => Spelled.Contains(player.PlayerId);
 
-    public void Spell(PlayerControl player)
+    public void Spellbind(PlayerControl player)
     {
         if (player.Is(Faction) || Spelled.Contains(player.PlayerId))
             return;
 
         Spelled.Add(player.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RebActionsRPC.Spell, player.PlayerId);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RebActionsRPC.Spellbind, player.PlayerId);
 
         if (!HoldsDrive)
             SpellCount++;
@@ -849,7 +854,7 @@ public class PromotedRebel : Syndicate
         var cooldown = Interact(Player, SpellButton.TargetPlayer, astral: HoldsDrive);
 
         if (cooldown != CooldownType.Fail)
-            Spell(SpellButton.TargetPlayer);
+            Spellbind(SpellButton.TargetPlayer);
 
         SpellButton.StartCooldown(cooldown);
     }
@@ -931,10 +936,10 @@ public class PromotedRebel : Syndicate
     public void Control()
     {
         if (HoldsDrive)
-            CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = true);
+            CustomPlayer.AllPlayers.ForEach(x => x.GetRole().Rewinding = true);
     }
 
-    public void UnControl() => CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = false);
+    public void UnControl() => CustomPlayer.AllPlayers.ForEach(x => x.GetRole().Rewinding = false);
 
     public void TimeControl()
     {
@@ -947,7 +952,7 @@ public class PromotedRebel : Syndicate
     public PlayerControl SilencedPlayer { get; set; }
     public bool ShookAlready { get; set; }
     public Sprite PrevOverlay { get; set; }
-    public UColor PrevColor { get; set; }
+    public UColor? PrevColor { get; set; }
     public bool IsSil => FormerRole?.Type == LayerEnum.Silencer;
 
     public bool SilenceException(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&

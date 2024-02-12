@@ -10,18 +10,23 @@ public class Spellslinger : Syndicate
     public override string Name => "Spellslinger";
     public override LayerEnum Type => LayerEnum.Spellslinger;
     public override Func<string> StartText => () => "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";
-    public override Func<string> Description => () => $"- You can place a spell on players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
+    public override Func<string> Description => () => $"- You can spellbind players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
         $"{FactionColorString}{Faction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
 
-    public Spellslinger(PlayerControl player) : base(player)
+    public Spellslinger() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicatePower;
         Spelled = new();
         SpellCount = 0;
-        SpellButton = new(this, "Spell", AbilityTypes.Alive, "Secondary", HitSpell, CustomGameOptions.SpellCd, Exception1);
+        SpellButton = new(this, "Spellbind", AbilityTypes.Alive, "Secondary", HitSpell, CustomGameOptions.SpellCd, Exception1);
+        return this;
     }
 
-    public void Spell(PlayerControl player)
+    public void Spellbind(PlayerControl player)
     {
         if (player.Is(Faction) || Spelled.Contains(player.PlayerId))
             return;
@@ -40,7 +45,7 @@ public class Spellslinger : Syndicate
         var cooldown = Interact(Player, SpellButton.TargetPlayer, astral: HoldsDrive);
 
         if (cooldown != CooldownType.Fail)
-            Spell(SpellButton.TargetPlayer);
+            Spellbind(SpellButton.TargetPlayer);
 
         SpellButton.StartCooldown(cooldown);
     }
@@ -52,6 +57,6 @@ public class Spellslinger : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SpellButton.Update2("SPELL", difference: SpellCount * CustomGameOptions.SpellCdIncrease);
+        SpellButton.Update2("SPELLBIND", difference: SpellCount * CustomGameOptions.SpellCdIncrease);
     }
 }

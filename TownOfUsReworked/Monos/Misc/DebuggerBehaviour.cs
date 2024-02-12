@@ -18,7 +18,7 @@ public class DebuggerBehaviour : MonoBehaviour
     public DebuggerBehaviour(IntPtr ptr) : base(ptr)
     {
         if (Instance)
-            this.Destroy();
+            Instance.Destroy();
 
         Instance = this;
 
@@ -134,8 +134,8 @@ public class DebuggerBehaviour : MonoBehaviour
 
                 if (GUILayout.Button("Log Dump"))
                 {
-                    LogMessage(CustomPlayer.Local.name);
-                    PlayerLayer.LocalLayers.ForEach(x => LogMessage(x.Name));
+                    LogMessage(CustomPlayer.Local.Data.PlayerName);
+                    PlayerLayer.LocalLayers.ForEach(LogMessage);
                     LogMessage("Is Dead - " + CustomPlayer.LocalCustom.IsDead);
                     LogMessage("Location - " + CustomPlayer.LocalCustom.Position);
                 }
@@ -146,7 +146,7 @@ public class DebuggerBehaviour : MonoBehaviour
                     var g = (byte)URandom.RandomRangeInt(0, 256);
                     var b = (byte)URandom.RandomRangeInt(0, 256);
                     var flashColor = new Color32(r, g, b, 255);
-                    Flash(flashColor, "Flash!");
+                    Flash(flashColor);
                 }
 
                 if (GUILayout.Button("Open Cooldowns Menu"))

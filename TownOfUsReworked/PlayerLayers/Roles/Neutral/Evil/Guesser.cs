@@ -11,7 +11,7 @@ public class Guesser : Neutral
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private string RoleName { get; set; }
-    public readonly List<string> Letters = new();
+    public List<string> Letters { get; set; }
     public Dictionary<string, UColor> ColorMapping { get; set; }
     public Dictionary<string, UColor> SortedColorMapping { get; set; }
     public GameObject Phone { get; set; }
@@ -34,9 +34,14 @@ public class Guesser : Neutral
     public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles " +
         "without penalties" : $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an " +
         "<color=#00ACC2FF>Actor</color>");
+    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
-    public Guesser(PlayerControl player) : base(player)
+    public Guesser() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.NeutralEvil;
         RemainingGuesses = CustomGameOptions.MaxGuesses;
         SortedColorMapping = new();
@@ -52,6 +57,8 @@ public class Guesser : Neutral
         TargetButton = new(this, "GuessTarget", AbilityTypes.Alive, "ActionSecondary", SelectTarget, Exception);
         GuessMenu = new(Player, "Guess", CustomGameOptions.GuesserAfterVoting, Guess, IsExempt, SetLists);
         Rounds = 0;
+        Letters = new();
+        return this;
     }
 
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
@@ -244,7 +251,7 @@ public class Guesser : Neutral
                     var targetId = voteArea.TargetPlayerId;
                     var targetPlayer = PlayerById(targetId);
 
-                    var playerRole = GetRole(voteArea);
+                    var playerRole = voteArea.GetRole();
 
                     var roleflag = playerRole?.Name == guess;
                     var recruitflag = targetPlayer.IsRecruit() && guess == "Recruit";
@@ -315,9 +322,9 @@ public class Guesser : Neutral
     public void TurnAct(List<Role> targets)
     {
         if (IsRoleList)
-            new Jester(Player).RoleUpdate(this);
+            new Jester().Start<Role>(Player).RoleUpdate(this);
         else
-            new Actor(Player) { PretendRoles = targets }.RoleUpdate(this);
+            new Actor() { PretendRoles = targets }.Start<Role>(Player).RoleUpdate(this);
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -342,7 +349,7 @@ public class Guesser : Neutral
 
         GuessMenu.GenButtons(__instance, RemainingGuesses > 0);
 
-        var targetRole = GetRole(TargetPlayer);
+        var targetRole = TargetPlayer.GetRole();
         var something = "";
         var newRoleName = targetRole.Name;
         var rolechanged = false;
@@ -546,6 +553,14 @@ public class Guesser : Neutral
                 else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
                     Page = CycleInt(MaxPage, 0, Page, false);
             }
+
+            foreach (var pair in GuessButtons)
+            {
+                if (pair.Value.Count > 0)
+                    pair.Value.ForEach(x => x?.gameObject?.SetActive(Page == pair.Key));
+
+                GuessButtons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UColor.red : UColor.white);
+            }
         }
     }
 
@@ -557,24 +572,30 @@ public class Guesser : Neutral
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
+        Spread(Player, guessTarget);
+
         if (Player != player)
         {
-            if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie && AmongUsClient.Instance.AmHost)
-            {
-                var otherLover = player.GetOtherLover();
-
-                if (!otherLover.Is(LayerEnum.Pestilence) && !otherLover.Data.IsDead)
-                    RpcMurderPlayer(otherLover, guess, guessTarget);
-            }
-
             TargetGuessed = true;
-            MarkMeetingDead(player, Player);
+
+            if (CanAttack(AttackVal, player.GetDefenseValue(Player)))
+            {
+                MarkMeetingDead(player, Player);
+
+                if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie && AmongUsClient.Instance.AmHost)
+                {
+                    var otherLover = player.GetOtherLover();
+
+                    if (!otherLover.Is(LayerEnum.Pestilence) && !otherLover.Data.IsDead)
+                        RpcMurderPlayer(otherLover, guess, guessTarget);
+                }
+            }
 
             if (CustomPlayer.Local == player)
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
             else if (DeadSeeEverything)
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
-            else
+            else if (CanAttack(AttackVal, player.GetDefenseValue(Player)))
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
         }
         else if (Player == player)

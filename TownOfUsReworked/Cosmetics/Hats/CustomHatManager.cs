@@ -9,7 +9,7 @@ public static class CustomHatManager
 
     private static Material Shader;
 
-    internal static HatExtension TestExtension { get; private set; }
+    public static HatExtension TestExtension { get; private set; }
 
     public static HatData CreateHatBehaviour(CustomHat ch)
     {
@@ -60,9 +60,6 @@ public static class CustomHatManager
             CustomHatRegistry.TryAdd(hat.name, extend);
 
         CustomHatViewDatas.TryAdd(hat.ProductId, viewData);
-        ch.Data = hat;
-        ch.ViewData = viewData;
-        ch.Extension = extend;
         return hat;
     }
 

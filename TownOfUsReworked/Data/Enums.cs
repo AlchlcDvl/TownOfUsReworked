@@ -67,6 +67,7 @@ public enum InfoType
     SubFaction,
     Alignment,
     GameMode,
+    Symbol,
     Other,
 
     None
@@ -204,6 +205,7 @@ public enum MultiMenu
     Objectifier,
     Ability,
     RoleList,
+    Client,
     External
 }
 
@@ -358,6 +360,7 @@ public enum MiscRPC
     BastionBomb,
     MoveBody,
     LoadPreset,
+    EndRoleGen,
 
     None
 }
@@ -370,8 +373,28 @@ public enum CustomRPC
     Target,
     Misc,
     Test,
+    Vanilla,
 
     None
+}
+
+public enum VanillaRPC
+{
+    SnapTo,
+    SetScanner,
+    EndGame,
+    StartMeeting,
+    UpdateSystem,
+    SetName,
+    CompleteTask,
+    MeetingClose,
+    SyncSettings,
+    ClimbLadder,
+    VotingComplete,
+    SendChat,
+    EnterVent,
+    ExitVent,
+    StartCounter
 }
 
 public enum PlayerLayerEnum
@@ -384,7 +407,7 @@ public enum PlayerLayerEnum
     None
 }
 
-public enum LayerEnum
+public enum LayerEnum : byte
 {
     Altruist,
     Bastion,
@@ -483,6 +506,8 @@ public enum LayerEnum
 
     Runner,
 
+    NoneRole,
+
     Astral,
     Bait,
     Colorblind,
@@ -497,6 +522,7 @@ public enum LayerEnum
     VIP,
     Volatile,
     Yeller,
+    NoneModifier,
 
     Allied,
     Corrupted,
@@ -509,7 +535,9 @@ public enum LayerEnum
     Rivals,
     Taskmaster,
     Traitor,
+    NoneObjectifier,
 
+    Assassin,
     ButtonBarry,
     CrewAssassin,
     Insider,
@@ -527,6 +555,7 @@ public enum LayerEnum
     Torch,
     Tunneler,
     Underdog,
+    NoneAbility,
 
     Any,
 
@@ -762,7 +791,7 @@ public enum RebActionsRPC
     Shapeshift,
     Frame,
     Crusade,
-    Spell,
+    Spellbind,
     Confuse,
     Silence
 }
@@ -886,4 +915,24 @@ public enum CosmeticTypeEnum
     Hat,
     Visor,
     Nameplate
+}
+
+public enum SkipEnum
+{
+    Map,
+    RoleCard,
+    Zooming,
+    Wiki,
+    Settings,
+    Task,
+    Client,
+    None
+}
+
+public enum WerewolfVentOptions
+{
+    Allways,
+    Attacking,
+    NotAttacking,
+    Never
 }

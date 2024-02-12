@@ -4,20 +4,18 @@ public static class AssetManager
 {
     public static readonly Dictionary<string, AudioClip> SoundEffects = new();
     public static readonly Dictionary<string, Sprite> Sprites = new();
-    public static readonly Dictionary<string, float> Sizes = new();
-    public static readonly Dictionary<string, int> Frequencies = new();
-    public static readonly Sprite[] PortalAnimation = new Sprite[205];
+    public static readonly List<Sprite> PortalAnimation = new();
     public static readonly string[] Presets = { "Casual", "Chaos", "Ranked" };
 
     public static AudioClip GetAudio(string path)
     {
         if (!SoundEffects.TryGetValue(path, out var sound))
         {
-            LogError($"{path} does not exist");
-            return null;
+            //LogError($"{path} does not exist");
+            return SoundEffects["Placeholder"];
         }
 
-        return sound;
+        return sound ?? SoundEffects["Placeholder"];
     }
 
     public static Sprite GetSprite(string path)
@@ -33,30 +31,16 @@ public static class AssetManager
 
     public static void Play(string path, bool loop = false, float volume = 1f)
     {
-        try
-        {
-            Stop(path);
+        Stop(path);
 
-            if (Constants.ShouldPlaySfx())
-                SoundManager.Instance.PlaySound(GetAudio(path), loop, volume);
-        }
-        catch
-        {
-            LogError($"Error playing because {path} was null");
-        }
+        if (Constants.ShouldPlaySfx())
+            SoundManager.Instance.PlaySound(GetAudio(path), loop, volume);
     }
 
     public static void Stop(string path)
     {
-        try
-        {
-            if (Constants.ShouldPlaySfx())
-                SoundManager.Instance.StopSound(GetAudio(path));
-        }
-        catch
-        {
-            LogError($"Error stopping because {path} was null");
-        }
+        if (Constants.ShouldPlaySfx())
+            SoundManager.Instance.StopSound(GetAudio(path));
     }
 
     public static void StopAll() => SoundEffects.Keys.ForEach(Stop);
@@ -64,99 +48,78 @@ public static class AssetManager
     public static Texture2D LoadDiskTexture(string path)
     {
         var texture = EmptyTexture();
-        _ = ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
-        texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
+        ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
+        texture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
         texture.name = path;
-        _ = texture.DontDestroy();
-        return texture;
+        return texture.DontDestroy().Decompress();
     }
 
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
 
     public static unsafe Texture2D LoadResourceTexture(string path)
     {
-        try
-        {
-            var sname = path.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
-            var texture = EmptyTexture();
-            var stream = TownOfUsReworked.Core.GetManifestResourceStream(path);
-            var length = stream.Length;
-            var byteTexture = new Il2CppStructArray<byte>(length);
-            _ = stream.Read(new(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
-            _ = ImageConversion.LoadImage(texture, byteTexture, false);
-            texture.name = sname;
-            texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
-            _ = texture.DontDestroy();
-            return texture;
-        }
-        catch
-        {
-            LogError($"Error loading {path} from resources");
-            return null;
-        }
+        var sname = path.SanitisePath();
+        var texture = EmptyTexture();
+        var stream = TownOfUsReworked.Core.GetManifestResourceStream(path);
+        var length = stream.Length;
+        var byteTexture = new Il2CppStructArray<byte>(length);
+        stream.Read(new(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
+        ImageConversion.LoadImage(texture, byteTexture, false);
+        texture.name = sname;
+        texture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+        return texture.DontDestroy().Decompress();
     }
 
-    public static Sprite CreateSprite(string name)
+    public static Sprite CreateResourceSprite(string path) => CreateSprite(LoadResourceTexture(path), path.SanitisePath());
+
+    public static Sprite CreateSprite(Texture2D tex, string name, float size = -1f)
     {
-        try
-        {
-            var sname = name.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
-            var tex = LoadResourceTexture(name);
-            var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), Sizes[sname]);
-            sprite.name = sname;
-            sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
-            _ = sprite.DontDestroy();
-            return sprite;
-        }
-        catch (Exception e)
-        {
-            LogError($"Error loading {name} as a sprite\n{e}");
-            return null;
-        }
+        var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), size > 0f ? size : GetSize(name));
+        sprite.name = name;
+        sprite.hideFlags |= HideFlags.DontSaveInEditor;
+        return sprite.DontDestroy();
     }
 
-    public static AudioClip CreateAudio(string path)
+    public static AudioClip CreateResourceAudio(string path) => CreateDiskAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path));
+
+    public static AudioClip CreateDiskAudio(string name, Stream stream)
     {
-        try
-        {
-            var sname = path.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
-            var stream = TownOfUsReworked.Core.GetManifestResourceStream(path);
-            var byteAudio = new byte[stream.Length];
-            _ = stream.Read(byteAudio, 0, (int)stream.Length);
-            var samples = new float[byteAudio.Length / 4];
+        var byteAudio = new byte[stream.Length];
+        stream.Read(byteAudio, 0, (int)stream.Length);
+        var samples = new float[byteAudio.Length / 4];
 
-            for (var i = 0; i < samples.Length; i++)
-                samples[i] = (float)BitConverter.ToInt32(byteAudio, i * 4) / int.MaxValue;
+        for (var i = 0; i < samples.Length; i++)
+            samples[i] = (float)BitConverter.ToInt32(byteAudio, i * 4) / int.MaxValue;
 
-            var audioClip = AudioClip.Create(sname, samples.Length / 2, 2, Frequencies[sname], false);
-            audioClip.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
-            audioClip.SetData(samples, 0);
-            _ = audioClip.DontDestroy();
-            return audioClip;
-        }
-        catch (Exception e)
-        {
-            LogError($"Error loading {path} from resources\n{e}");
-            return null;
-        }
+        var audioClip = AudioClip.Create(name, samples.Length / 2, 2, GetFrequency(name), false);
+        audioClip.SetData(samples, 0);
+        audioClip.hideFlags |= HideFlags.DontSaveInEditor;
+        return audioClip.DontDestroy();
     }
 
     public static string ReadResourceText(string itemName, string folder = "")
     {
-        try
-        {
-            var resourceName = $"{TownOfUsReworked.Resources}{(folder == "" ? "" : $"{folder}.")}{itemName}";
-            var stream = TownOfUsReworked.Core.GetManifestResourceStream(resourceName);
-            var reader = new StreamReader(stream);
-            var text = reader.ReadToEnd();
-            KeyWords.ForEach(x => text = text.Replace(x.Key, x.Value));
-            return text;
-        }
-        catch (Exception e)
-        {
-            LogError($"Error loading {itemName} from resources\n{e}");
-            return "";
-        }
+        var resourceName = $"{TownOfUsReworked.Resources}{(folder == "" ? "" : $"{folder}.")}{itemName}";
+        var stream = TownOfUsReworked.Core.GetManifestResourceStream(resourceName);
+        var reader = new StreamReader(stream);
+        var text = reader.ReadToEnd();
+        KeyWords.ForEach(x => text = text.Replace(x.Key, x.Value));
+        return text;
+    }
+
+    //https://stackoverflow.com/questions/51315918/how-to-encodetopng-compressed-textures-in-unity courtesy of pat from salem mod loader
+    public static Texture2D Decompress(this Texture2D source)
+    {
+        var renderTex = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
+        Graphics.Blit(source, renderTex);
+        var previous = RenderTexture.active;
+        RenderTexture.active = renderTex;
+        var readableText = new Texture2D(source.width, source.height);
+        readableText.ReadPixels(new(0, 0, renderTex.width, renderTex.height), 0, 0);
+        readableText.Apply();
+        RenderTexture.active = previous;
+        RenderTexture.ReleaseTemporary(renderTex);
+        return readableText;
     }
 
     public static void SaveText(string fileName, string textToSave, string diskLocation) => SaveText(fileName, textToSave, true, diskLocation);
@@ -165,7 +128,7 @@ public static class AssetManager
     {
         try
         {
-            File.WriteAllText(Path.Combine(diskLocation ?? Application.persistentDataPath, fileName), (overrideText ? "" : ReadDiskText(fileName)) + textToSave);
+            File.WriteAllText(Path.Combine(diskLocation ?? Application.persistentDataPath, fileName), (overrideText ? "" : ReadDiskText(fileName, diskLocation)) + textToSave);
         }
         catch
         {
@@ -189,54 +152,15 @@ public static class AssetManager
     public static void LoadAssets()
     {
         SoundEffects.Clear();
-        Sizes.Clear();
         Sprites.Clear();
-        Frequencies.Clear();
-        Array.Clear(PortalAnimation, 0, 205);
+        PortalAnimation.Clear();
 
         foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
         {
-            if (resourceName.EndsWith(".png"))
-            {
-                var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
-
-                if (name is "CurrentSettings" or "Help" or "Plus" or "Minus" or "Wiki")
-                    Sizes.Add(name, 180);
-                else if (name == "Phone")
-                    Sizes.Add(name, 200);
-                else if (name == "Cursor")
-                    Sizes.Add(name, 115);
-                else if (name == "NightVision")
-                    Sizes.Add(name, 350);
-                else
-                    Sizes.Add(name, 100);
-            }
-            else if (resourceName.EndsWith(".raw"))
-            {
-                var name = resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
-
-                if (name.Contains("Intro"))
-                    Frequencies.Add(name, 36000);
-                else
-                    Frequencies.Add(name, 48000);
-            }
-        }
-
-        var position = 0;
-
-        foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
-        {
-            if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
-                Sprites.Add(resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, ""), CreateSprite(resourceName));
-            else if (resourceName.StartsWith(TownOfUsReworked.Sounds) && resourceName.EndsWith(".raw"))
-                SoundEffects.Add(resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, ""), CreateAudio(resourceName));
-            else if (resourceName.StartsWith(TownOfUsReworked.Portal) && resourceName.EndsWith(".png"))
-            {
-                if (PortalAnimation[position] == null)
-                    PortalAnimation[position] = CreateSprite(resourceName);
-
-                position++;
-            }
+            if (resourceName.StartsWith(TownOfUsReworked.Resources) && resourceName.EndsWith(".png"))
+                Sprites.Add(resourceName.SanitisePath(), CreateResourceSprite(resourceName));
+            else if (resourceName.StartsWith(TownOfUsReworked.Resources) && resourceName.EndsWith(".raw"))
+                SoundEffects.Add(resourceName.SanitisePath(), CreateResourceAudio(resourceName));
         }
 
         Cursor.SetCursor(GetSprite("Cursor").texture, Vector2.zero, CursorMode.Auto);
@@ -249,5 +173,31 @@ public static class AssetManager
         SoundEffects.TryAdd("MedicIntro", GetIntroSound(RoleTypes.Scientist));
         SoundEffects.TryAdd("CrewmateIntro", GetIntroSound(RoleTypes.Crewmate));
         SoundEffects.TryAdd("ImpostorIntro", GetIntroSound(RoleTypes.Impostor));
+    }
+
+    public static float GetSize(string path)
+    {
+        var name = path.SanitisePath();
+
+        if (name is "CurrentSettings" or "Client" or "Plus" or "Minus" or "Wiki")
+            return 180;
+        else if (name == "Phone")
+            return 200;
+        else if (name == "Cursor")
+            return 115;
+        else if (name == "NightVision")
+            return 350;
+        else
+            return 100;
+    }
+
+    public static int GetFrequency(string path)
+    {
+        var name = path.SanitisePath();
+
+        if (name.Contains("Intro"))
+            return 36000;
+        else
+            return 48000;
     }
 }

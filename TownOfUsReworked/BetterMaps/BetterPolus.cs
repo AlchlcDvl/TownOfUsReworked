@@ -305,11 +305,8 @@ public static class NormalPlayerTaskPatches
 {
     public static bool Prefix(NormalPlayerTask __instance, ref Il2CppSystem.Text.StringBuilder sb)
     {
-        if (!CustomGameOptions.EnableBetterPolus || !Ship || MapPatches.CurrentMap != 2 || __instance.TaskType is not (TaskTypes.RebootWifi or TaskTypes.RecordTemperature or
-            TaskTypes.ChartCourse))
-        {
+        if (!CustomGameOptions.EnableBetterPolus || !Ship || MapPatches.CurrentMap != 2 || (int)__instance.TaskType is not (42 or 41 or 3))
             return true;
-        }
 
         var flag = __instance.ShouldYellowText();
 

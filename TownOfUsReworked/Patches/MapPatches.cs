@@ -53,7 +53,6 @@ public static class MapPatches
         if (map < 8)
             return map;
 
-        var random = new SRandom();
         var totalWeight = 0;
         totalWeight += CustomGameOptions.RandomMapSkeld;
         totalWeight += CustomGameOptions.RandomMapMira;
@@ -76,47 +75,79 @@ public static class MapPatches
         if (totalWeight == 0)
             return maps.Random();
 
-        var randomNumber = random.Next(0, totalWeight);
+        var randoms = new List<byte>();
+        var num = CustomGameOptions.RandomMapSkeld / 5;
 
-        if (randomNumber < CustomGameOptions.RandomMapSkeld)
-            return 0;
+        while (num > 0)
+        {
+            randoms.Add(0);
+            num--;
+        }
 
-        randomNumber -= CustomGameOptions.RandomMapSkeld;
+        num = CustomGameOptions.RandomMapMira / 5;
 
-        if (randomNumber < CustomGameOptions.RandomMapMira)
-            return 1;
+        while (num > 0)
+        {
+            randoms.Add(1);
+            num--;
+        }
 
-        randomNumber -= CustomGameOptions.RandomMapMira;
+        num = CustomGameOptions.RandomMapPolus / 5;
 
-        if (randomNumber < CustomGameOptions.RandomMapPolus)
-            return 2;
+        while (num > 0)
+        {
+            randoms.Add(2);
+            num--;
+        }
 
-        randomNumber -= CustomGameOptions.RandomMapPolus;
+        num = CustomGameOptions.RandomMapdlekS / 5;
 
-        if (randomNumber < CustomGameOptions.RandomMapdlekS)
-            return 3;
+        while (num > 0)
+        {
+            randoms.Add(3);
+            num--;
+        }
 
-        randomNumber -= CustomGameOptions.RandomMapdlekS;
+        num = CustomGameOptions.RandomMapAirship / 5;
 
-        if (randomNumber < CustomGameOptions.RandomMapAirship)
-            return 4;
+        while (num > 0)
+        {
+            randoms.Add(4);
+            num--;
+        }
 
-        randomNumber -= CustomGameOptions.RandomMapAirship;
+        num = CustomGameOptions.RandomMapFungle / 5;
 
-        if (randomNumber < CustomGameOptions.RandomMapFungle)
-            return 5;
+        while (num > 0)
+        {
+            randoms.Add(5);
+            num--;
+        }
 
-        randomNumber -= CustomGameOptions.RandomMapFungle;
+        if (SubLoaded)
+        {
+            num = CustomGameOptions.RandomMapSubmerged / 5;
 
-        if (SubLoaded && randomNumber < CustomGameOptions.RandomMapSubmerged)
-            return 6;
+            while (num > 0)
+            {
+                randoms.Add(6);
+                num--;
+            }
+        }
 
-        randomNumber -= CustomGameOptions.RandomMapSubmerged;
+        if (LILoaded)
+        {
+            num = CustomGameOptions.RandomMapLevelImpostor / 5;
 
-        if (LILoaded && randomNumber < CustomGameOptions.RandomMapLevelImpostor)
-            return 7;
+            while (num > 0)
+            {
+                randoms.Add(7);
+                num--;
+            }
+        }
 
-        return maps.Random();
+        randoms.Shuffle();
+        return (randoms.Count > 0 ? randoms : maps).Random();
     }
 
     public static void AdjustSettings()

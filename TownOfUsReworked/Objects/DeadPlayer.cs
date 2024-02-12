@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Objects;
 
 public class DeadPlayer
 {
-    public readonly byte KillerId;
-    public readonly byte PlayerId;
-    public readonly DateTime KillTime;
+    public byte KillerId { get; }
+    public byte PlayerId { get; }
+    public DateTime KillTime { get; }
 
     public PlayerControl Killer => PlayerById(KillerId);
     public PlayerControl Body => PlayerById(PlayerId);
@@ -22,8 +22,8 @@ public class DeadPlayer
     public string ParseBodyReport()
     {
         var report = $"{Body.name}'s Report:\n";
-        var killerRole = Role.GetRole(Killer);
-        var bodyRole = Role.GetRole(Body);
+        var killerRole = Killer.GetRole();
+        var bodyRole = Body.GetRole();
 
         if (!Reporter.IsFlashed())
         {

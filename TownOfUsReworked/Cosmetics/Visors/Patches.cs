@@ -24,7 +24,7 @@ public static class VisorsTabOnEnablePatch
 {
     private static TMP_Text Template;
 
-    public static float CreateVisorPackage(List<VisorData> visors, string packageName, float YStart, VisorsTab __instance)
+    private static float CreateVisorPackage(List<VisorData> visors, string packageName, float YStart, VisorsTab __instance)
     {
         var isDefaultPackage = "Innersloth" == packageName;
 
@@ -146,8 +146,13 @@ public static class CosmeticsCacheGetVisorPatch
 {
     public static bool Prefix(CosmeticsCache __instance, ref string id, ref VisorViewData __result)
     {
+        var cache = __result;
+
         if (!CustomVisorViewDatas.TryGetValue(id, out __result))
+        {
+            __result = cache;
             return true;
+        }
 
         if (__result == null)
             __result = __instance.visors["visor_EmptyVisor"].GetAsset();
@@ -193,8 +198,13 @@ public static class VisorlayerPatches
     [HarmonyPrefix]
     public static bool SetVisorPrefix1(VisorLayer __instance, ref VisorData data, ref VisorViewData visorView, ref int colorId)
     {
+        var cache = visorView;
+
         if (!CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProductId, out visorView))
+        {
+            visorView = cache;
             return true;
+        }
 
         __instance.currentVisor = data;
         __instance.transform.SetLocalZ(__instance.ZIndexSpacing * (data.BehindHats ? -1.5f : -3f));

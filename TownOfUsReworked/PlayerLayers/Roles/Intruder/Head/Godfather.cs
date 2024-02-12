@@ -13,21 +13,26 @@ public class Godfather : Intruder
         "Intruder</color> turns them into a <color=#6400FFFF>Mafioso</color>\n- If you die, the <color=#6400FFFF>Mafioso</color> will become the new <color=#404C08FF>Godfather</color>"
         + $"\nand inherits better abilities of their former role\n{CommonAbilities}";
 
-    public Godfather(PlayerControl player) : base(player)
+    public Godfather() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderHead;
         DeclareButton = new(this, "Promote", AbilityTypes.Alive, "Secondary", Declare);
+        return this;
     }
 
     public void Declare(PlayerControl target)
     {
         HasDeclared = true;
-        var formerRole = GetRole(target);
-        new Mafioso(target)
+        var formerRole = target.GetRole();
+        new Mafioso()
         {
             FormerRole = formerRole,
             Godfather = this
-        }.RoleUpdate(formerRole);
+        }.Start<Role>(target).RoleUpdate(formerRole);
     }
 
     public void Declare()
@@ -39,8 +44,7 @@ public class Godfather : Intruder
         }
     }
 
-    public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is LayerEnum.PromotedGodfather or LayerEnum.Mafioso or LayerEnum.Godfather) &&
-        player.Is(Faction.Intruder));
+    public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is PromotedGodfather or Mafioso or Godfather) && player.IsBase(Faction.Intruder));
 
     public override void UpdateHud(HudManager __instance)
     {

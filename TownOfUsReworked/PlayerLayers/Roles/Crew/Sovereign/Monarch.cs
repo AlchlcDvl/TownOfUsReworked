@@ -14,14 +14,19 @@ public class Monarch : Crew
     public override Func<string> StartText => () => "Knight Those Who You Trust";
     public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {CustomGameOptions.KnightVoteCount + 1} times\n- As long as "
         + "a knight is alive, you cannot be killed";
-    public override DefenseEnum DefenseVal => Knighted.Any() ? DefenseEnum.Basic : DefenseEnum.None;
+    public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Monarch(PlayerControl player) : base(player)
+    public Monarch() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewSov;
         Knighted = new();
         ToBeKnighted = new();
         KnightButton = new(this, "Knight", AbilityTypes.Alive, "ActionSecondary", Knight, CustomGameOptions.KnightingCd, Exception, CustomGameOptions.KnightCount);
+        return this;
     }
 
     public void Knight()
@@ -45,5 +50,24 @@ public class Monarch : Crew
     {
         base.UpdateHud(__instance);
         KnightButton.Update2("KNIGHT", !RoundOne);
+    }
+
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        base.OnMeetingStart(__instance);
+        var remove = new List<byte>();
+
+        foreach (var id in Knighted)
+        {
+            var knight = PlayerById(id);
+
+            if (knight.HasDied())
+            {
+                remove.Add(id);
+                Run("<color=#FF004EFF>〖 Alert 〗</color>", "A Knight as died!");
+            }
+        }
+
+        remove.ForEach(x => Knighted.Remove(x));
     }
 }

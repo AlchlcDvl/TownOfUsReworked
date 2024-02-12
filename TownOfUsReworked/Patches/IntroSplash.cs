@@ -21,7 +21,7 @@ public static class IntroSplash
         "Push to production is my motto. Bugs? meh public release go brrrr",
         "LET. HIM. COOK."
     };
-    public static TextMeshPro Intro;
+    private static TextMeshPro Intro;
 
     [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
     public static class IntroCreatePatch

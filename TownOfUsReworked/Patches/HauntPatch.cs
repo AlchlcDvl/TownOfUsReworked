@@ -14,23 +14,23 @@ public static class HauntPatch
             return false;
         }
 
-        var role = Role.GetRole(__instance.HauntTarget);
-        var modifier = Modifier.GetModifier(__instance.HauntTarget);
-        var ability = Ability.GetAbility(__instance.HauntTarget);
-        var objectifier = Objectifier.GetObjectifier(__instance.HauntTarget);
+        var role = __instance.HauntTarget.GetRole();
+        var modifier = __instance.HauntTarget.GetModifier();
+        var ability = __instance.HauntTarget.GetAbility();
+        var objectifier = __instance.HauntTarget.GetObjectifier();
         var objectiveString = "";
         var otherString = "";
 
         if (role)
             objectiveString += role.Name;
 
-        if (objectifier && objectifier.Type != LayerEnum.None)
+        if (objectifier && objectifier.Type != LayerEnum.NoneObjectifier)
             objectiveString += $" {objectifier.ColoredSymbol}";
 
-        if (modifier && modifier.Type != LayerEnum.None)
+        if (modifier && modifier.Type != LayerEnum.NoneModifier)
             otherString += $" {modifier.Name}";
 
-        if (ability && ability.Type != LayerEnum.None)
+        if (ability && ability.Type != LayerEnum.NoneAbility)
             otherString += $" {ability.Name}";
 
         var filter = objectiveString;

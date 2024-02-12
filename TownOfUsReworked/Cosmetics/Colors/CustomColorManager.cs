@@ -302,6 +302,7 @@ public static class CustomColorManager
     public static readonly UColor Attributes = FromHex("#EC1C45FF");
     public static readonly UColor Abilities =FromHex("#206694FF");
     public static readonly UColor What = FromHex("#6697FFFF");
+    public static readonly UColor FirstShield = FromHex("#C2185BFF");
 
     //Stuff
     public static readonly Color32 NormalVision = new(212, 212, 212, 0);
@@ -316,5 +317,5 @@ public static class CustomColorManager
     //#1A3270 #20A1B7 #606168 #99007F #ECFF45 #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #B34D99 #FFC34F
 
     //Symbol Storage
-    //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν σ τ ψ ✧ ¢ 乂 ⁂ ¤ ∮ 彡 个 「 」 人 요 〖 〗 ロ 米 卄 王 ī l · ㅇ ° ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
+    //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 王 ī l · ° ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
 }

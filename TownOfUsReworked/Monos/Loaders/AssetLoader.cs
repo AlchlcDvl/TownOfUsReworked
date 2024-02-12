@@ -1,6 +1,3 @@
-using System.Text.Json;
-using UnityEngine.Networking;
-
 namespace TownOfUsReworked.Monos;
 
 public abstract class AssetLoader : MonoBehaviour
@@ -26,48 +23,66 @@ public abstract class AssetLoader : MonoBehaviour
             yield break;
 
         Running = true;
-        UpdateSplashPatch.SetText($"Fetching {ManifestFileName}");
-        yield return new WaitForEndOfFrame();
 
-        if (DirectoryInfo != "" && !Directory.Exists(DirectoryInfo))
+        if (JSONType == null)
+        {
+            LogError($"Missing JSON type for {ManifestFileName}");
+            yield break;
+        }
+
+        if (IsNullEmptyOrWhiteSpace(DirectoryInfo))
+        {
+            LogError($"Missing DirectoryInfo for {ManifestFileName}");
+            yield break;
+        }
+
+        UpdateSplashPatch.SetText($"Fetching {ManifestFileName}");
+        yield return EndFrame();
+
+        if (!Directory.Exists(DirectoryInfo))
             Directory.CreateDirectory(DirectoryInfo);
 
-        var www = new UnityWebRequest();
-        www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
         LogMessage($"Downloading manifest at: {RepositoryUrl}/{ManifestFileName}.json");
-        www.SetUrl($"{RepositoryUrl}/{ManifestFileName}.json");
-        www.downloadHandler = new DownloadHandlerBuffer();
-        var operation = www.SendWebRequest();
+        var www = UnityWebRequest.Get($"{RepositoryUrl}/{ManifestFileName}.json");
+        yield return www.SendWebRequest();
 
-        while (!operation.isDone)
-            yield return new WaitForEndOfFrame();
-
-        var filePath = Path.Combine(DirectoryInfo, $"{ManifestFileName}.json");
-        var isError = www.isNetworkError || www.isHttpError;
-        var jsonText = isError ? ReadDiskText($"{ManifestFileName}.json", DirectoryInfo) : www.downloadHandler.text;
+        var isError = www.result != UnityWebRequest.Result.Success;
+        var jsonText = isError && DirectoryInfo != "" ? ReadDiskText($"{ManifestFileName}.json", DirectoryInfo) : www.downloadHandler.text;
 
         if (isError)
             LogError(www.error);
-
-        var response = JsonSerializer.Deserialize(jsonText, JSONType, new JsonSerializerOptions() { AllowTrailingCommas = true });
-        www.downloadHandler.Dispose();
-        www.Dispose();
-
-        if (!isError)
+        else if (DirectoryInfo != "")
         {
-            var task = File.WriteAllTextAsync(filePath, jsonText);
+            var task = File.WriteAllTextAsync(Path.Combine(DirectoryInfo, $"{ManifestFileName}.json"), www.downloadHandler.text);
 
             while (!task.IsCompleted)
             {
                 if (task.Exception != null)
                 {
-                    LogError(task.Exception.Message);
+                    LogError(task.Exception);
                     break;
                 }
 
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
             }
         }
+
+        www.downloadHandler.Dispose();
+        www.Dispose();
+
+        if (IsNullEmptyOrWhiteSpace(jsonText) && DirectoryInfo != "" && !isError)
+        {
+            jsonText = ReadDiskText($"{ManifestFileName}.json", DirectoryInfo);
+            LogWarning($"Online JSON for {ManifestFileName} was missing");
+        }
+
+        if (IsNullEmptyOrWhiteSpace(jsonText))
+        {
+            LogError($"Unable to load online or local JSON data for {ManifestFileName}");
+            yield break;
+        }
+
+        var response = JsonSerializer.Deserialize(jsonText, JSONType);
 
         if (Downloading)
         {
@@ -76,10 +91,7 @@ public abstract class AssetLoader : MonoBehaviour
         }
 
         UpdateSplashPatch.SetText($"Preloading {ManifestFileName}");
-        AfterLoading(response);
-        response = null;
-        jsonText = null;
-        yield return new WaitForEndOfFrame();
+        yield return AfterLoading(response);
         yield break;
     }
 
@@ -87,21 +99,15 @@ public abstract class AssetLoader : MonoBehaviour
     public virtual IEnumerator BeginDownload(object response) => null;
 
     [HideFromIl2Cpp]
-    public virtual void AfterLoading(object response) {}
+    public virtual IEnumerator AfterLoading(object response) => null;
 
     [HideFromIl2Cpp]
-    public static IEnumerator CoDownloadAsset(string fileName, AssetLoader downloader)
+    public static IEnumerator CoDownloadAsset(string fileName, AssetLoader downloader, string fileType)
     {
-        var www = new UnityWebRequest();
-        www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
         fileName = fileName.Replace(" ", "%20");
         LogMessage($"Downloading: {downloader.FolderDownloadName}/{fileName}");
-        www.SetUrl($"{RepositoryUrl}/{downloader.FolderDownloadName}/{fileName}.png");
-        www.downloadHandler = new DownloadHandlerBuffer();
-        var operation = www.SendWebRequest();
-
-        while (!operation.isDone)
-            yield return new WaitForEndOfFrame();
+        var www = UnityWebRequest.Get($"{RepositoryUrl}/{downloader.FolderDownloadName}/{fileName}.{fileType}");
+        yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
         {
@@ -109,24 +115,24 @@ public abstract class AssetLoader : MonoBehaviour
             yield break;
         }
 
-        var filePath = Path.Combine(downloader.DirectoryInfo, $"{fileName}.png");
-        filePath = filePath.Replace("%20", " ");
+        var filePath = Path.Combine(downloader.DirectoryInfo, $"{fileName}.{fileType}");
+        filePath = filePath.Replace("%20", " ").Replace(".txt", "");
         var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
 
         while (!persistTask.IsCompleted)
         {
             if (persistTask.Exception != null)
             {
-                LogError(persistTask.Exception.Message);
+                LogError(persistTask.Exception);
                 break;
             }
 
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
         www.downloadHandler.Dispose();
         www.Dispose();
-        yield return new WaitForEndOfFrame();
+        yield return EndFrame();
         yield break;
     }
 }

@@ -22,7 +22,7 @@ public static class CalculateLightRadiusPatch
 
         var pc = player.Object;
 
-        if (!Role.GetRole(pc))
+        if (!pc.GetRole())
         {
             __result = __instance.MaxLightRadius * (pc.IsImpostor() ? TownOfUsReworked.NormalOptions.ImpostorLightMod : TownOfUsReworked.NormalOptions.CrewLightMod);
             return false;
@@ -44,7 +44,7 @@ public static class CalculateLightRadiusPatch
         else if (pc.Is(LayerEnum.Hunted))
             __result = __instance.MaxLightRadius * CustomGameOptions.HuntedVision;
         else if (pc.Is(LayerEnum.Hunter))
-            __result = __instance.MaxLightRadius * (Role.GetRole<Hunter>(pc).Starting ? 0f : CustomGameOptions.HunterVision);
+            __result = __instance.MaxLightRadius * (pc.GetRole<Hunter>().Starting ? 0f : CustomGameOptions.HunterVision);
         else
         {
             var t = __instance.MaxLightRadius;

@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Classes;
 
 public static class RPC
 {
-    public static void SendOptionRPC(CustomOption setting = null)
+    public static void SendOptionRPC(CustomOption setting = null, int targetClientId = -1)
     {
         List<CustomOption> options;
 
@@ -13,13 +13,14 @@ public static class RPC
         else
             options = CustomOption.AllOptions.Clone();
 
-        options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Button);
+        options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Button || x.ClientOnly);
+        options.Reverse();
         var split = options.Split(50);
-        LogMessage($"Split options to {split.Count} sets");
+        LogInfo($"Sending {options.Count} options to {targetClientId} split to {split.Count} sets");
 
         foreach (var list in split)
         {
-            var writer = CallOpenRpc(CustomRPC.Misc, MiscRPC.SyncCustomSettings, list.Count);
+            var writer = CallTargetedOpenRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, list.Count);
 
             foreach (var option in list)
             {
@@ -29,13 +30,17 @@ public static class RPC
                     writer.Write((bool)option.Value);
                 else if (option.Type == CustomOptionType.Number)
                     writer.Write((float)option.Value);
-                else if (option.Type is CustomOptionType.String or CustomOptionType.Entry)
+                else if (option.Type == CustomOptionType.String)
                     writer.Write((int)option.Value);
+                else if (option.Type == CustomOptionType.Entry)
+                    writer.Write((LayerEnum)option.Value);
                 else if (option.Type == CustomOptionType.Layers)
                 {
                     writer.Write((int)option.Value);
                     writer.Write((int)option.OtherValue);
                 }
+
+                LogInfo($"Sending {option}");
             }
 
             writer.EndRpc();
@@ -47,7 +52,7 @@ public static class RPC
     public static void ReceiveOptionRPC(MessageReader reader)
     {
         var count = reader.ReadInt32();
-        LogInfo($"{count} Options received:");
+        LogInfo($"{count} options received:");
 
         for (var i = 0; i < count; i++)
         {
@@ -63,7 +68,7 @@ public static class RPC
             else if (customOption.Type == CustomOptionType.String)
                 value = reader.ReadInt32();
             else if (customOption.Type == CustomOptionType.Entry)
-                value = (LayerEnum)reader.ReadInt32();
+                value = (LayerEnum)reader.ReadByte();
             else if (customOption.Type == CustomOptionType.Layers)
             {
                 value = reader.ReadInt32();
@@ -141,8 +146,10 @@ public static class RPC
     public static void Write(this MessageWriter writer, PlayerLayer layer)
     {
         writer.Write(layer.PlayerId);
-        writer.Write((byte)layer.Type);
+        writer.Write(layer.Type);
     }
+
+    public static void Write(this MessageWriter writer, LayerEnum layer) => writer.Write((byte)layer);
 
     public static void Write(this MessageWriter writer, object item, object[] data)
     {
@@ -188,6 +195,8 @@ public static class RPC
             writer.WriteBytesAndSize(array);
         else if (item is List<byte> list)
             writer.WriteBytesAndSize(list.ToArray());
+        else if (item is LayerEnum layerEnum)
+            writer.Write(layerEnum);
         else if (item is TargetRPC target)
             writer.Write((byte)target);
         else if (item is ActionsRPC action)
@@ -224,6 +233,8 @@ public static class RPC
             writer.Write((byte)trapAction);
         else if (item is MiscRPC misc)
             writer.Write((byte)misc);
+        else if (item is VanillaRPC vanilla)
+            writer.Write((byte)vanilla);
         else if (item is CustomButton button)
             writer.Write(button.ID);
         else if (item is List<Role> roles)
@@ -240,26 +251,13 @@ public static class RPC
             LogError($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
     }
 
-    public static void CallRpc(params object[] data)
-    {
-        //Just to be safe
-        if (data[0] is object[])
-            data = data[0] as object[];
-
-        if (data[0] is not CustomRPC)
-        {
-            LogError("The first parameter must be CustomRPC");
-            return;
-        }
-
-        CallOpenRpc(data)?.EndRpc();
-    }
+    public static void CallRpc(params object[] data) => CallOpenRpc(data)?.EndRpc();
 
     public static MessageWriter CallOpenRpc(params object[] data)
     {
         //Just to be safe
-        if (data[0] is object[])
-            data = data[0] as object[];
+        if (data[0] is object[] array)
+            data = array;
 
         if (data[0] is not CustomRPC)
         {
@@ -272,5 +270,30 @@ public static class RPC
         return writer;
     }
 
-    public static void EndRpc(this MessageWriter writer) => AmongUsClient.Instance.FinishRpcImmediately(writer);
+    public static void CallTargetedRpc(int targetClientId, params object[] data) => CallTargetedOpenRpc(targetClientId, data)?.EndRpc();
+
+    public static MessageWriter CallTargetedOpenRpc(int targetClientId, params object[] data)
+    {
+        //Just to be safe
+        if (data[0] is object[] array)
+            data = array;
+
+        if (data[0] is not CustomRPC)
+        {
+            LogError("The first parameter must be CustomRPC");
+            return null;
+        }
+
+        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable, targetClientId);
+        data.ForEach(x => writer.Write(x, data));
+        return writer;
+    }
+
+    public static void EndRpc(this MessageWriter writer)
+    {
+        if (writer == null)
+            return;
+
+        AmongUsClient.Instance.FinishRpcImmediately(writer);
+    }
 }

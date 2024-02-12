@@ -13,13 +13,18 @@ public class Drunkard : Syndicate
     public override Func<string> StartText => () => "<i>Burp</i>";
     public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
 
-    public Drunkard(PlayerControl player) : base(player)
+    public Drunkard() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         ConfuseMenu = new(Player, Click, Exception1);
         ConfusedPlayer = null;
-        ConfuseButton = new(this, "Confuse", AbilityTypes.Targetless, "Secondary", HitConfuse, CustomGameOptions.ConfuseCd, CustomGameOptions.ConfuseDur,
-            (CustomButton.EffectStartVoid)StartConfusion, UnConfuse);
+        ConfuseButton = new(this, "Confuse", AbilityTypes.Targetless, "Secondary", HitConfuse, CustomGameOptions.ConfuseCd, CustomGameOptions.ConfuseDur, (CustomButton.EffectStartVoid)
+            StartConfusion, UnConfuse);
+        return this;
     }
 
     public void StartConfusion()

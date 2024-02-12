@@ -16,10 +16,10 @@ public static class ConfirmEjects
         }
 
         var player = exiled.Object;
-        var role = Role.GetRole(player);
+        var role = player.GetRole();
         var ejectString = "";
 
-        if (role == null)
+        if (!role)
             return;
 
         role.DeathReason = DeathReasonEnum.Ejected;

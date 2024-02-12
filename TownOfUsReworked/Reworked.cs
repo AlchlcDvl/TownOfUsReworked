@@ -18,23 +18,19 @@ public partial class TownOfUsReworked
         CustomAbColors = Config.Bind("Custom", "Custom Ability Colors", true, "Enables custom colors for Abilities");
         CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
         OptimisationMode = Config.Bind("Custom", "Optimisation Mode", false, "Disables things that would be considered resource heavy");
-        Regions = Config.Bind("Custom", "Regions", "{\"CurrentRegionIdx\":0,\"Regions\":[]}",
-            "Create an array of Regions you want to add/update. To create this array, go to https://impostor.github.io/Impostor/ and put the Regions array from the server file in here");
-        RegionsToRemove = Config.Bind("Custom", "Remove Regions", "", "Comma-seperated list of region names that should be removed");
     }
 
     public void LoadComponents()
     {
+        Harmony.PatchAll();
         var text = Path.Combine(DataPath, "steam_appid.txt");
 
         if (!File.Exists(text))
             File.WriteAllText(text, "945360");
 
-        Harmony.PatchAll();
         AllMonos.RegisterMonos();
         AllMonos.AddComponents();
         SetUpConfigs();
         LoadAssets();
-        DataManager.Player.Onboarding.ViewedHideAndSeekHowToPlay = true;
     }
 }

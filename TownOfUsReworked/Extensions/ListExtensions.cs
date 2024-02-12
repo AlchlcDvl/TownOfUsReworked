@@ -55,13 +55,9 @@ public static class ListExtensions
 
     public static bool All<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().All(predicate);
 
-    public static IEnumerable<T> Where<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().Where(predicate);
-
     public static void ForEach<T>(this ISystem.List<T> list, Action<T> action) => list.Il2CppToSystem().ForEach(action);
 
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => source.ToList().ForEach(action);
-
-    public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action) => dict.ToList().ForEach(pair => action(pair.Key, pair.Value));
 
     public static List<List<T>> Split<T>(this List<T> list, int splitCount)
     {
@@ -85,7 +81,7 @@ public static class ListExtensions
         return result;
     }
 
-    public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)
             throw new ArgumentNullException(nameof(source));
@@ -106,6 +102,28 @@ public static class ListExtensions
         return -1;
     }
 
+    public static Dictionary<int, List<T>> SplitAndGetIndices<T>(this List<T> list, Func<T, int> predicate)
+    {
+        var result = new Dictionary<int, List<T>>();
+
+        foreach (var item in list)
+        {
+            var index = predicate(item);
+
+            if (!result.ContainsKey(index))
+                result[index] = new();
+
+            result[index].Add(item);
+        }
+
+        result.Values.ForEach(x => x.Shuffle());
+        return result;
+    }
+
+    public static IEnumerable<T> Where<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().Where(predicate);
+
+    public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action) => dict.ToList().ForEach(pair => action(pair.Key, pair.Value));
+
     public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
     {
         if (source == null)
@@ -120,7 +138,7 @@ public static class ListExtensions
         enumerator.Dispose();
     }
 
-    /*public static void Shuffle<T>(this ISystem.List<T> list)
+    public static void Shuffle<T>(this ISystem.List<T> list)
     {
         if (list.Count is 1 or 0)
             return;
@@ -130,9 +148,9 @@ public static class ListExtensions
             var r = URandom.RandomRangeInt(0, i + 1);
             (list[r], list[i]) = (list[i], list[r]);
         }
-    }*/
+    }
 
-    /*public static T TakeFirst<T>(this ISystem.List<T> list) => list.Il2CppToSystem().TakeFirst();
+    public static T TakeFirst<T>(this ISystem.List<T> list) => list.Il2CppToSystem().TakeFirst();
 
     public static int RemoveAsInt<T>(this List<T> list, params T[] items)
     {
@@ -171,9 +189,9 @@ public static class ListExtensions
         }
 
         return result;
-    }*/
+    }
 
-    /*public static int RemoveRanges<T>(this List<T> main, params IEnumerable<T>[] items)
+    public static int RemoveRanges<T>(this List<T> main, params IEnumerable<T>[] items)
     {
         var result = 0;
         items.ForEach(x => result += main.RemoveRange(x));

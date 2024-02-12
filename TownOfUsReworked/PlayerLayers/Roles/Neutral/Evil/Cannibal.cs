@@ -16,13 +16,18 @@ public class Cannibal : Neutral
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
         + "an arrow pointing to their body" : "");
 
-    public Cannibal(PlayerControl player) : base(player)
+    public Cannibal() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = new();
         EatNeed = Math.Min(CustomGameOptions.BodiesNeeded, CustomPlayer.AllPlayers.Count / 2);
         EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat, CustomGameOptions.EatCd);
+        return this;
     }
 
     public void DestroyArrow(byte targetPlayerId)

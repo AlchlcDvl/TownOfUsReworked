@@ -22,8 +22,13 @@ public class Warper : Syndicate
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
         " player to another player of your choice") + $"\n{CommonAbilities}";
 
-    public Warper(PlayerControl player) : base(player)
+    public Warper() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
+        Alignment = Alignment.SyndicateSupport;
         WarpPlayer1 = null;
         WarpPlayer2 = null;
         WarpMenu1 = new(Player, Click1, Exception1);
@@ -40,7 +45,8 @@ public class Warper : Syndicate
         AnimationPlaying.sprite = PortalAnimation[0];
         AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
         WarpObj.SetActive(true);
-        player.Data.Role.IntroSound = GetAudio("WarperIntro");
+        Data.Role.IntroSound = GetAudio("WarperIntro");
+        return this;
     }
 
     public IEnumerator WarpPlayers()
@@ -69,7 +75,7 @@ public class Warper : Syndicate
         if (WarpPlayer1.inVent)
         {
             while (GetInTransition())
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
 
             WarpPlayer1.MyPhysics.ExitAllVents();
         }
@@ -77,7 +83,7 @@ public class Warper : Syndicate
         if (WarpPlayer2.inVent)
         {
             while (GetInTransition())
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
 
             Vent = WarpPlayer2.GetClosestVent();
             WasInVent = true;
@@ -104,7 +110,7 @@ public class Warper : Syndicate
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.WarpDur)
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
             else
                 break;
 
@@ -118,7 +124,7 @@ public class Warper : Syndicate
         if (Player1Body == null && Player2Body == null)
         {
             WarpPlayer1.MyPhysics.ResetMoveState();
-            WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
+            WarpPlayer1.CustomSnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
             if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
             {
@@ -143,7 +149,7 @@ public class Warper : Syndicate
         else if (Player1Body == null && Player2Body != null)
         {
             WarpPlayer1.MyPhysics.ResetMoveState();
-            WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
+            WarpPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
             if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
             {
@@ -206,8 +212,8 @@ public class Warper : Syndicate
 
         HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDur, new Action<float>(p =>
         {
-            var index = (int)(p * PortalAnimation.Length);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
+            var index = (int)(p * PortalAnimation.Count);
+            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
             AnimationPlaying.sprite = PortalAnimation[index];
             WarpPlayer1.SetPlayerMaterialColors(AnimationPlaying);
 
@@ -231,7 +237,7 @@ public class Warper : Syndicate
                 CallRpc(CustomRPC.Misc, MiscRPC.MoveBody, body, pos);
             }
             else
-                player.NetTransform.RpcSnapTo(pos);
+                player.RpcCustomSnapTo(pos);
         }
 
         if (CustomPlayer.Local.walkingToVent)

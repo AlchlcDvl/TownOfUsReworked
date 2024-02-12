@@ -12,11 +12,17 @@ public class Teleporter : Intruder
     public override Func<string> StartText => () => "X Marks The Spot";
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
 
-    public Teleporter(PlayerControl player) : base(player)
+    public Teleporter() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
+        Alignment = Alignment.IntruderSupport;
         TeleportPoint = Vector3.zero;
         MarkButton = new(this, "Mark", AbilityTypes.Targetless, "Secondary", Mark, CustomGameOptions.TeleMarkCd);
         TeleportButton = new(this, "Teleport", AbilityTypes.Targetless, "Secondary", Teleport, CustomGameOptions.TeleportCd);
+        return this;
     }
 
     public void Mark()
@@ -30,7 +36,7 @@ public class Teleporter : Intruder
 
     public void Teleport()
     {
-        Player.NetTransform.RpcSnapTo(TeleportPoint);
+        Player.RpcCustomSnapTo(TeleportPoint);
         Flash(Color);
         TeleportButton.StartCooldown();
 

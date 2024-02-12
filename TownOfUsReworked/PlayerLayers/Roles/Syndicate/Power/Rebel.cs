@@ -13,21 +13,26 @@ public class Rebel : Syndicate
         "Syndicate</color> turns them into a <color=#979C9FFF>Sidekick</color>\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\n" +
         $"and inherits better abilities of their former role\n{CommonAbilities}";
 
-    public Rebel(PlayerControl player) : base(player)
+    public Rebel() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicatePower;
         SidekickButton = new(this, "Sidekick", AbilityTypes.Alive, "Secondary", Sidekick);
+        return this;
     }
 
     public void Sidekick(PlayerControl target)
     {
         HasDeclared = true;
-        var formerRole = GetRole<Syndicate>(target);
-        new Sidekick(target)
+        var formerRole = target.GetRole<Syndicate>();
+        new Sidekick()
         {
             FormerRole = formerRole,
             Rebel = this
-        }.RoleUpdate(formerRole);
+        }.Start<Role>(target).RoleUpdate(formerRole);
     }
 
     public void Sidekick()
@@ -39,7 +44,7 @@ public class Rebel : Syndicate
         }
     }
 
-    public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is LayerEnum.PromotedRebel or LayerEnum.Sidekick or LayerEnum.Rebel) && player.Is(Faction));
+    public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is PromotedRebel or Roles.Sidekick or Rebel) && player.IsBase(Faction));
 
     public override void ReadRPC(MessageReader reader) => Sidekick(reader.ReadPlayer());
 

@@ -3,21 +3,13 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
 public static class PerformVent
 {
-    public static bool Prefix(VentButton __instance)
+    public static bool Prefix()
     {
-        if (NoPlayers)
+        if (NoPlayers || IsLobby)
             return true;
 
         if (!CustomPlayer.Local.CanVent())
             return false;
-
-        if (__instance.currentTarget.IsBombed() && !CustomPlayer.Local.IsPostmortal())
-        {
-            RpcMurderPlayer(CustomPlayer.Local);
-            Role.BastionBomb(__instance.currentTarget, CustomGameOptions.BombRemovedOnKill);
-            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, __instance.currentTarget);
-            return false;
-        }
 
         return LocalNotBlocked;
     }
@@ -26,16 +18,20 @@ public static class PerformVent
 [HarmonyPatch(typeof(ReportButton), nameof(ReportButton.DoClick))]
 public static class PerformReport
 {
+    public static bool ReportPressed;
+
     public static bool Prefix()
     {
-        if (NoPlayers)
+        if (NoPlayers || IsLobby)
             return true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coward))
             return false;
 
-        return LocalNotBlocked;
+        return ReportPressed = LocalNotBlocked;
     }
+
+    public static void Postfix() => ReportPressed = false;
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportClosest))]
@@ -43,7 +39,7 @@ public static class ReportClosest
 {
     public static bool Prefix()
     {
-        if (NoPlayers)
+        if (NoPlayers || IsLobby)
             return true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coward))
@@ -58,7 +54,7 @@ public static class ReportDeadBody
 {
     public static bool Prefix()
     {
-        if (NoPlayers)
+        if (NoPlayers || IsLobby)
             return true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coward))
@@ -73,7 +69,7 @@ public static class PerformUse
 {
     public static bool Prefix()
     {
-        if (NoPlayers)
+        if (NoPlayers || IsLobby)
             return true;
 
         return LocalNotBlocked;
@@ -85,7 +81,7 @@ public static class PerformSabotage
 {
     public static bool Prefix()
     {
-        if (NoPlayers)
+        if (NoPlayers || IsLobby)
             return true;
 
         return LocalNotBlocked && CustomPlayer.Local.CanSabotage();
@@ -97,7 +93,7 @@ public static class PerformAdmin
 {
     public static bool Prefix()
     {
-        if (NoPlayers)
+        if (NoPlayers || IsLobby)
             return true;
 
         return LocalNotBlocked;
@@ -109,7 +105,7 @@ public static class PerformPet
 {
     public static bool Prefix()
     {
-        if (NoPlayers)
+        if (NoPlayers || IsLobby)
             return true;
 
         return LocalNotBlocked; //No petting for you lmao
@@ -133,7 +129,7 @@ public static class Blocked
 
     public static void Postfix(HudManager __instance)
     {
-        if (IsEnded)
+        if (!CustomPlayer.Local || IsLobby)
             return;
 
         if (!UseBlock && __instance.UseButton.isActiveAndEnabled)

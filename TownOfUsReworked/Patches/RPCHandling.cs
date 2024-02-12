@@ -23,7 +23,7 @@ public static class RPCHandling
                 switch (misc)
                 {
                     case MiscRPC.SetLayer:
-                        RoleGen.SetLayer(reader.ReadInt32(), reader.ReadPlayer(), (PlayerLayerEnum)reader.ReadByte());
+                        RoleGen.SetLayer((LayerEnum)reader.ReadByte(), (PlayerLayerEnum)reader.ReadByte()).Start(reader.ReadPlayer());
                         break;
 
                     case MiscRPC.Whisper:
@@ -78,7 +78,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.SyncSummary:
-                        SaveText("Summary", reader.ReadString());
+                        SaveText("Summary", reader.ReadString(), TownOfUsReworked.Other);
                         break;
 
                     case MiscRPC.VersionHandshake:
@@ -149,7 +149,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.SetFirstKilled:
-                        CachedFirstDead = FirstDead = reader.ReadPlayer();
+                        CachedFirstDead = FirstDead = reader.ReadString();
                         break;
 
                     case MiscRPC.BodyLocation:
@@ -162,6 +162,14 @@ public static class RPCHandling
 
                     case MiscRPC.LoadPreset:
                         Run("<color=#00CC99FF>【 Loading Preset 】</color>", $"Loading the {reader.ReadString()} preset!");
+                        break;
+
+                    case MiscRPC.EndRoleGen:
+                        var player2 = reader.ReadPlayer();
+                        player2.GetModifierOrBlank();
+                        player2.GetAbilityOrBlank();
+                        player2.GetObjectifierOrBlank();
+                        player2.GetRoleOrBlank();
                         break;
 
                     default:
@@ -251,6 +259,22 @@ public static class RPCHandling
 
                 break;
 
+            case CustomRPC.Vanilla:
+                var vanilla = (VanillaRPC)reader.ReadByte();
+
+                switch (vanilla)
+                {
+                    case VanillaRPC.SnapTo:
+                        reader.ReadPlayer().CustomSnapTo(reader.ReadVector2());
+                        break;
+
+                    default:
+                        LogError($"Received unknown RPC - {(int)vanilla}");
+                        break;
+                }
+
+                break;
+
             case CustomRPC.Target:
                 var target = (TargetRPC)reader.ReadByte();
 
@@ -278,28 +302,19 @@ public static class RPCHandling
 
                     case TargetRPC.SetAlliedFaction:
                         var player6 = reader.ReadPlayer();
-                        var alliedRole = Role.GetRole(player6);
-                        var ally = Objectifier.GetObjectifier<Allied>(player6);
+                        var alliedRole = player6.GetRole();
+                        var ally = player6.GetObjectifier<Allied>();
                         var faction = (Faction)reader.ReadByte();
                         alliedRole.Faction = ally.Side = faction;
-                        player6.Data.SetImpostor(faction is Faction.Intruder or Faction.Syndicate);
+                        player6.SetImpostor(faction is Faction.Intruder or Faction.Syndicate);
                         alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(faction);
 
                         if (faction == Faction.Crew)
-                        {
                             alliedRole.FactionColor = CustomColorManager.Crew;
-                            alliedRole.IsCrewAlly = true;
-                        }
                         else if (faction == Faction.Intruder)
-                        {
                             alliedRole.FactionColor = CustomColorManager.Intruder;
-                            alliedRole.IsIntAlly = true;
-                        }
                         else if (faction == Faction.Syndicate)
-                        {
                             alliedRole.FactionColor = CustomColorManager.Syndicate;
-                            alliedRole.IsSynAlly = true;
-                        }
 
                         break;
 
@@ -402,10 +417,10 @@ public static class RPCHandling
                         break;
 
                     case ActionsRPC.PlaceHit:
-                        var requestor = reader.ReadPlayer();
-                        Role.GetRole<BountyHunter>(Role.GetRole(requestor).Requestor).TentativeTarget = reader.ReadPlayer();
-                        Role.GetRole(requestor).Requesting = false;
-                        Role.GetRole(requestor).Requestor = null;
+                        var requestor = reader.ReadPlayer().GetRole();
+                        requestor.Requestor.GetRole<BountyHunter>().TentativeTarget = reader.ReadPlayer();
+                        requestor.Requesting = false;
+                        requestor.Requestor = null;
                         break;
 
                     case ActionsRPC.LayerAction1:
@@ -513,7 +528,7 @@ public static class RPCHandling
 
                         if (winlose == WinLoseRPC.SameNKWins)
                         {
-                            foreach (var role in Role.GetRoles(nkRole.Type))
+                            foreach (var role in PlayerLayer.GetLayers<Neutral>().Where(x => x.Type == nkRole.Type))
                             {
                                 if (!role.Disconnected && role.Faithful)
                                     role.Winner = true;
@@ -568,12 +583,12 @@ public static class RPCHandling
                         Objectifier.LoveWins = true;
                         var lover = reader.ReadLayer<Lovers>();
                         lover.Winner = true;
-                        Objectifier.GetObjectifier(lover.OtherLover).Winner = true;
+                        lover.OtherLover.GetObjectifier().Winner = true;
                         break;
 
                     case WinLoseRPC.OverlordWin:
                         Objectifier.OverlordWins = true;
-                        Objectifier.GetObjectifiers(LayerEnum.Overlord).Where(ov => ov.IsAlive).ForEach(x => x.Winner = true);
+                        PlayerLayer.GetLayers<Overlord>().Where(ov => ov.IsAlive).ForEach(x => x.Winner = true);
                         break;
 
                     case WinLoseRPC.MafiaWins:

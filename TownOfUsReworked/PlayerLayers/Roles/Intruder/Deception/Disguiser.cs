@@ -15,8 +15,12 @@ public class Disguiser : Intruder
     public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
 
-    public Disguiser(PlayerControl player) : base(player)
+    public Disguiser() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderDecep;
         MeasureButton = new(this, "Measure", AbilityTypes.Alive, "Tertiary", Measure, CustomGameOptions.MeasureCd, Exception2);
         DisguiseButton = new(this, "Disguise", AbilityTypes.Alive, "Secondary", HitDisguise, CustomGameOptions.DisguiseCd, CustomGameOptions.DisguiseDur, Disguise, UnDisguise,
@@ -24,6 +28,7 @@ public class Disguiser : Intruder
         DisguisedPlayer = null;
         MeasuredPlayer = null;
         CopiedPlayer = null;
+        return this;
     }
 
     public void Disguise() => Morph(DisguisedPlayer, CopiedPlayer);

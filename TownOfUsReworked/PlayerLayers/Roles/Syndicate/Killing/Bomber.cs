@@ -13,13 +13,18 @@ public class Bomber : Syndicate
     public override Func<string> Description => () => $"- You can place bombs which can be detonated at any time to kill anyone within a {CustomGameOptions.BombRange}m radius\n" +
         CommonAbilities;
 
-    public Bomber(PlayerControl player) : base(player)
+    public Bomber() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicateKill;
         Bombs = new();
         BombButton = new(this, "Plant", AbilityTypes.Targetless, "ActionSecondary", Place, CustomGameOptions.BombCd);
         DetonateButton = new(this, "Detonate", AbilityTypes.Targetless, "Secondary", Detonate, CustomGameOptions.DetonateCd);
-        player.Data.Role.IntroSound = GetAudio("BomberIntro");
+        Data.Role.IntroSound = GetAudio("BomberIntro");
+        return this;
     }
 
     public override void OnLobby()

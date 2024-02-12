@@ -13,5 +13,11 @@ public class Rivals : Objectifier
     public override LayerEnum Type => LayerEnum.Rivals;
     public override Func<string> Description => () => $"- Get {OtherRival.name} killed and then live to the final 2";
 
-    public Rivals(PlayerControl player) : base(player) {}
+    public Rivals() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

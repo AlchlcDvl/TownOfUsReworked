@@ -13,16 +13,21 @@ public class Dracula : Neutral
     public override Func<string> Description => () => "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the " +
         $"number of alive <color=#7B8968FF>Undead</color> exceeds {CustomGameOptions.AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire " +
         "Hunter</color> will force them to kill you";
+    public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Dracula(PlayerControl player) : base(player)
+    public Dracula() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
         Alignment = Alignment.NeutralNeo;
         SubFactionColor = CustomColorManager.Undead;
         Converted = new() { Player.PlayerId };
         BiteButton = new(this, "Bite", AbilityTypes.Alive, "ActionSecondary", Convert, CustomGameOptions.BiteCd, Exception);
-        SubFactionSymbol = "γ";
+        return this;
     }
 
     public void Convert()

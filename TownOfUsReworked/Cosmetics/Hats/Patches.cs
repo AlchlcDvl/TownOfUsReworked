@@ -1,5 +1,4 @@
 using PowerTools;
-using System.Text.Json;
 using static TownOfUsReworked.Cosmetics.CustomHats.CustomHatManager;
 
 namespace TownOfUsReworked.Cosmetics.CustomHats;
@@ -68,7 +67,7 @@ public static class HatParentPatches
             return true;
 
         var json = File.ReadAllText(filePath);
-        var data = JsonSerializer.Deserialize<HatsJSON>(json, new JsonSerializerOptions() { AllowTrailingCommas = true });
+        var data = JsonSerializer.Deserialize<HatsJSON>(json);
         data.Hats.ForEach(x => x.TestOnly = true);
 
         if (data.Hats.Count <= 0)
@@ -93,7 +92,7 @@ public static class HatParentPatches
 
     [HarmonyPatch(nameof(HatParent.SetHat), typeof(HatData), typeof(int))]
     [HarmonyPrefix]
-    public static bool SetHatPrefix(HatParent __instance, ref HatData hat, ref int color)
+    public static bool SetHatPrefix1(HatParent __instance, ref int color)
     {
         if (SetCustomHat(__instance))
             return true;
@@ -105,7 +104,7 @@ public static class HatParentPatches
 
     [HarmonyPatch(nameof(HatParent.SetHat), typeof(int))]
     [HarmonyPrefix]
-    public static bool SetHatPrefix(HatParent __instance, ref int color)
+    public static bool SetHatPrefix2(HatParent __instance, ref int color)
     {
         if (!CustomHatViewDatas.ContainsKey(__instance.Hat.ProductId))
             return true;
@@ -353,8 +352,13 @@ public static class CosmeticsCacheGetVisorPatch
 {
     public static bool Prefix(CosmeticsCache __instance, ref string id, ref HatViewData __result)
     {
+        var cache = __result;
+
         if (!CustomHatViewDatas.TryGetValue(id, out __result))
+        {
+            __result = cache;
             return true;
+        }
 
         if (__result == null)
             __result = __instance.hats["hat_NoHat"].GetAsset();
@@ -368,7 +372,7 @@ public static class HatsTabOnEnablePatch
 {
     private static TMP_Text Template;
 
-    public static float CreateHatPackage(List<HatData> hats, string packageName, float YStart, HatsTab __instance)
+    private static float CreateHatPackage(List<HatData> hats, string packageName, float YStart, HatsTab __instance)
     {
         var isDefaultPackage = "Innersloth" == packageName;
 

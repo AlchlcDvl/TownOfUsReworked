@@ -16,7 +16,7 @@ public static class Keybinds
         __instance.userData.RegisterBind("Quarternary", "Quartnary Ability", KeyboardKeyCode.Z);
     }
 
-    private static int RegisterBind(this UserData self, string name, string description, KeyboardKeyCode keycode)
+    private static void RegisterBind(this UserData self, string name, string description, KeyboardKeyCode keycode)
     {
         self.AddAction(0);
         var action = self.GetAction(self.actions.Count - 1)!;
@@ -40,6 +40,5 @@ public static class Keybinds
 
         self.keyboardMaps[0].actionElementMaps.Add(map);
         self.joystickMaps[0].actionElementMaps.Add(map);
-        return action.id;
     }
 }

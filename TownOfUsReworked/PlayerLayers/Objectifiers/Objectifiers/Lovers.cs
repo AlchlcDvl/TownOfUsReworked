@@ -13,5 +13,11 @@ public class Lovers : Objectifier
     public override LayerEnum Type => LayerEnum.Lovers;
     public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.name}";
 
-    public Lovers(PlayerControl player) : base(player) {}
+    public Lovers() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

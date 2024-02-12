@@ -12,11 +12,15 @@ public class Hunter : HideAndSeek
     public float StartingTimer { get; set; }
     public bool Starting => StartingTimer > 0f;
 
-    public Hunter(PlayerControl player) : base(player)
+    public Hunter() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
         Objectives = () => "- Hunt the others down before they finish their tasks";
         HuntButton = new(this, "IntruderKill", AbilityTypes.Alive, "ActionSecondary", Hunt, CustomGameOptions.HuntCd, Exception);
-        Data.SetImpostor(true);
+        Player.SetImpostor(true);
+        return this;
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -37,8 +41,8 @@ public class Hunter : HideAndSeek
 
     public void TurnHunter(PlayerControl player)
     {
-        var oldRole = GetRole<Hunted>(player);
-        var newRole = new Hunter(player);
+        var oldRole = player.GetRole<Hunted>();
+        var newRole = new Hunter().Start<Hunter>(player);
         newRole.RoleUpdate(oldRole);
         newRole.KilledBy = " By " + PlayerName;
         newRole.DeathReason = DeathReasonEnum.Converted;

@@ -14,16 +14,23 @@ public class Trapper : Crew
     public override string Name => "Trapper";
     public override LayerEnum Type => LayerEnum.Trapper;
     public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <color=#FF0000FF>Evildoers</color></size>";
-    public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place traps on players and make them";
+    public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles ineractors on " +
+        "them\nor protect from an attack once and kill the attacker";
 
-    public Trapper(PlayerControl owner) : base(owner)
+    public Trapper() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
+        Alignment = Alignment.IntruderSupport;
         Trapped = new();
         TriggeredRoles = new();
         BuildButton = new(this, "Build", AbilityTypes.Targetless, "Secondary", StartBuildling, CustomGameOptions.BuildCd, CustomGameOptions.BuildDur, EndBuildling, canClickAgain: false);
         TrapButton = new(this, "Trap", AbilityTypes.Alive, "ActionSecondary", SetTrap, CustomGameOptions.TrapCd, Exception, CustomGameOptions.MaxTraps);
         TrapsMade = 0;
         TrapButton.Uses = 0;
+        return this;
     }
 
     private void StartBuildling()
@@ -68,7 +75,7 @@ public class Trapper : Crew
 
         if (!isAttack)
         {
-            TriggeredRoles.Add(GetRole(trigger));
+            TriggeredRoles.Add(trigger.GetRole());
             Trapped.Remove(trapped.PlayerId);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, TrapperActionsRPC.Trigger, trapped, trigger, isAttack);
         }

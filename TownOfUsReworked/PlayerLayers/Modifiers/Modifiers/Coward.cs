@@ -7,7 +7,13 @@ public class Coward : Modifier
     public override LayerEnum Type => LayerEnum.Coward;
     public override Func<string> Description => () => "- You cannot report bodies";
 
-    public Coward(PlayerControl player) : base(player) {}
+    public Coward() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 
     public override void UpdateHud(HudManager __instance)
     {

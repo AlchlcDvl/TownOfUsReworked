@@ -13,39 +13,25 @@ public class Banshee : Syndicate
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
 
-    public Banshee(PlayerControl player) : base(player)
+    public Banshee() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.SyndicateUtil;
         Blocked = new();
         RoleBlockImmune = true; //Not taking chances
         ScreamButton = new(this, "Scream", AbilityTypes.Targetless, "ActionSecondary", HitScream, CustomGameOptions.ScreamCd, CustomGameOptions.ScreamDur, (CustomButton.EffectVoid)Scream,
             UnScream, true);
+        return this;
     }
 
-    public void Scream()
-    {
-        foreach (var id in Blocked)
-        {
-            var player = PlayerById(id);
-
-            foreach (var layer in GetLayers(player))
-                layer.IsBlocked = !GetRole(player).RoleBlockImmune;
-        }
-    }
+    public void Scream() => Blocked.ForEach(y => PlayerById(y).GetLayers().ForEach(x => x.IsBlocked = !PlayerById(y).GetRole().RoleBlockImmune));
 
     public void UnScream()
     {
-        foreach (var id in Blocked)
-        {
-            var player = PlayerById(id);
-
-            if (player?.Data.Disconnected == true)
-                continue;
-
-            foreach (var layer in GetLayers(player))
-                layer.IsBlocked = false;
-        }
-
+        Blocked.ForEach(y => PlayerById(y).GetLayers().ForEach(x => x.IsBlocked = false));
         Blocked.Clear();
     }
 

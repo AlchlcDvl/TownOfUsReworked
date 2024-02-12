@@ -13,11 +13,16 @@ public class Consigliere : Intruder
     public override Func<string> Description => () => $"- You can reveal a player's {Option}\n{CommonAbilities}";
     public override Func<string> Attributes => () => Player.IsAssassin() && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "";
 
-    public Consigliere(PlayerControl player) : base(player)
+    public Consigliere() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderSupport;
         Investigated = new();
         InvestigateButton = new(this, "Investigate", AbilityTypes.Alive, "Secondary", Investigate, CustomGameOptions.InvestigateCd, Exception1);
+        return this;
     }
 
     public void Investigate()

@@ -144,6 +144,7 @@ public static class CmdCheckColorPatch
     {
         CallRpc(CustomRPC.Misc, MiscRPC.SetColor, __instance, bodyColor);
         __instance.SetColor(bodyColor);
+        UpdateNames.ColorNames[__instance.PlayerId] = __instance.Data.ColorName.Replace("(", "").Replace(")", "");
         return false;
     }
 }
@@ -161,6 +162,16 @@ public static class UpdateAvailableColorsPatch
                 __instance.AvailableColors.Add(i);
         }
 
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetPlayerMaterialColors))]
+public static class FixPlayerMaterials
+{
+    public static bool Prefix(PlayerControl __instance, ref Renderer rend)
+    {
+        PlayerMaterial.SetColors(__instance.Data.DefaultOutfit.ColorId, rend);
         return false;
     }
 }

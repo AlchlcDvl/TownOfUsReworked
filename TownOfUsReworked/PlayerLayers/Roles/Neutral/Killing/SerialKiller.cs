@@ -14,13 +14,18 @@ public class SerialKiller : Neutral
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => BloodlustButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public SerialKiller(PlayerControl player) : base(player)
+    public SerialKiller() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Stab anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         RoleBlockImmune = true;
         BloodlustButton = new(this, "Bloodlust", AbilityTypes.Targetless, "Secondary", Lust, CustomGameOptions.BloodlustCd, CustomGameOptions.BloodlustDur);
         StabButton = new(this, "Stab", AbilityTypes.Alive, "ActionSecondary", Stab, CustomGameOptions.StabCd, Exception);
+        return this;
     }
 
     public void Lust()

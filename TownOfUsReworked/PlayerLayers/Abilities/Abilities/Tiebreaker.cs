@@ -8,5 +8,11 @@ public class Tiebreaker : Ability
     public override Func<string> Description => () => "- Your votes break ties";
     public override bool Hidden => !CustomGameOptions.TiebreakerKnows && !IsDead;
 
-    public Tiebreaker(PlayerControl player) : base(player) {}
+    public Tiebreaker() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

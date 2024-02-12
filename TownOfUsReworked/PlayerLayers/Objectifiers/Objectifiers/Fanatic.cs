@@ -31,11 +31,18 @@ public class Fanatic : Objectifier
         "side") : "";
     public override bool Hidden => !CustomGameOptions.FanaticKnows && !Turned && !IsDead;
 
-    public Fanatic(PlayerControl player) : base(player) => Side = Faction.Crew;
+    public Fanatic() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        Side = Faction.Crew;
+        return this;
+    }
 
     public void TurnFanatic(Faction faction)
     {
-        var fanaticRole = Role.GetRole(Player);
+        var fanaticRole = Player.GetRole();
         fanaticRole.Faction = faction;
         Turned = true;
 
@@ -44,13 +51,11 @@ public class Fanatic : Objectifier
 
         if (faction == Faction.Syndicate)
         {
-            fanaticRole.IsSynFanatic = true;
             fanaticRole.FactionColor = CustomColorManager.Syndicate;
             fanaticRole.Objectives = () => Role.SyndicateWinCon;
         }
         else if (faction == Faction.Intruder)
         {
-            fanaticRole.IsIntFanatic = true;
             fanaticRole.FactionColor = CustomColorManager.Intruder;
             fanaticRole.Objectives = () => Role.IntrudersWinCon;
         }
@@ -65,7 +70,7 @@ public class Fanatic : Objectifier
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && Local)
                     Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
-                    Role.GetRole(snitch.Player).AllArrows.Add(PlayerId, new(snitch.Player, CustomColorManager.Snitch));
+                    snitch.Player.GetRole().AllArrows.Add(PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
         }
 
@@ -84,13 +89,13 @@ public class Fanatic : Objectifier
 
     public void TurnBetrayer()
     {
-        var role = Role.GetRole(Player);
+        var role = Player.GetRole();
         Betrayed = true;
 
         if (role.Type == LayerEnum.Betrayer)
             return;
 
-        new Betrayer(Player) { Objectives = role.Objectives }.RoleUpdate(role);
+        new Betrayer() { Objectives = role.Objectives }.Start<Role>(Player).RoleUpdate(role);
     }
 
     public override void UpdateHud(HudManager __instance)

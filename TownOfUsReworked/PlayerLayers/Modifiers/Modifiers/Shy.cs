@@ -7,5 +7,11 @@ public class Shy : Modifier
     public override LayerEnum Type => LayerEnum.Shy;
     public override Func<string> Description => () => "- You cannot call meetings";
 
-    public Shy(PlayerControl player) : base(player) {}
+    public Shy() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

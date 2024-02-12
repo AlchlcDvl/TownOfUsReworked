@@ -7,5 +7,11 @@ public class Torch : Ability
     public override LayerEnum Type => LayerEnum.Torch;
     public override Func<string> Description => () => "- You see more than the others";
 
-    public Torch(PlayerControl player) : base(player) {}
+    public Torch() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

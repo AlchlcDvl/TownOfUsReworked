@@ -9,7 +9,6 @@ public static class ChatUpdate
 
     public static bool Prefix(ChatController __instance)
     {
-        SoundEffects.TryAdd("Chat", __instance.messageSound);
         UpdateHistory(__instance);
         UpdateBubbles(__instance);
         UpdateChatTimer(__instance);
@@ -44,21 +43,17 @@ public static class ChatUpdate
                 {
                     if (chat.NameText.text.Contains(player.Data.PlayerName))
                     {
-                        var role = Role.GetRole(player);
+                        var role = player.GetRole();
 
                         if (role != null)
                         {
-                            if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral)) ||
-                                (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None))) && CustomGameOptions.FactionSeeRoles) || player ==
-                                CustomPlayer.Local)
+                            if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral)) || (CustomPlayer.Local.GetSubFaction()
+                                == player.GetSubFaction() && !player.Is(SubFaction.None))) && CustomGameOptions.FactionSeeRoles) || player == CustomPlayer.Local)
                             {
                                 chat.NameText.color = role.Color;
                             }
-                            else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral) &&
-                                !CustomGameOptions.FactionSeeRoles)
-                            {
+                            else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral) && !CustomGameOptions.FactionSeeRoles)
                                 chat.NameText.color = role.FactionColor;
-                            }
                             else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !CustomGameOptions.FactionSeeRoles)
                                 chat.NameText.color = role.SubFactionColor;
                             else
@@ -140,8 +135,11 @@ public static class OverrideCharCountPatch
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.AddChat))]
 public static class ChatChannels
 {
-    public static bool Prefix(ChatController __instance, ref PlayerControl sourcePlayer)
+    public static bool Prefix(ChatController __instance, ref PlayerControl sourcePlayer, ref string chatText)
     {
+        if ((ChatUpdate.ChatHistory.Count == 0 || ChatUpdate.ChatHistory[^1].Contains(chatText)) && !chatText.StartsWith("/"))
+            ChatUpdate.ChatHistory.Add($"{sourcePlayer.Data.PlayerName}: {chatText}");
+
         if (__instance != Chat)
             return true;
 
@@ -150,7 +148,7 @@ public static class ChatChannels
         if (localPlayer == null)
             return true;
 
-        var sourcerole = Role.GetRole(sourcePlayer);
+        var sourcerole = sourcePlayer.GetRole();
         var shouldSeeMessage = (sourcePlayer.IsOtherLover(localPlayer) && CustomGameOptions.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) ||
             (sourcePlayer.IsOtherRival(localPlayer) && CustomGameOptions.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) &&
             CustomGameOptions.LinkedChat && sourcerole.CurrentChannel == ChatChannel.Linked);
@@ -180,9 +178,6 @@ public static class ChatCommands
     {
         var text = __instance.freeChatField.Text.ToLower();
         var chatHandled = false;
-
-        if ((ChatUpdate.ChatHistory.Count == 0 || ChatUpdate.ChatHistory[^1] != text) && !text.StartsWith("/"))
-            ChatUpdate.ChatHistory.Add(text);
 
         //Chat command system
         if (text.StartsWith("/"))
@@ -256,9 +251,9 @@ public static class ChatCommands
             return;
 
         var playerVoteArea = VoteAreaById(targetPlayerId);
-        var chat = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.Megaphone.transform.parent);
+        var chat = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.transform.parent);
         chat.name = $"Notification{targetPlayerId}";
-        chat.transform.localPosition = new(-2f, 0.1f, -1f);
+        chat.transform.localPosition = new(-1.3f, 0.1f, -1f);
         chat.sprite = GetSprite("Chat");
         chat.gameObject.SetActive(true);
         Notifs.Add(targetPlayerId, chat);
@@ -293,6 +288,8 @@ public static class ChatControllerAwakePatch
         if (!EOSManager.Instance.isKWSMinor)
             DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
     }
+
+    public static void Postfix(ChatController __instance) => SoundEffects.TryAdd("Chat", __instance.messageSound);
 }
 
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]

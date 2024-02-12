@@ -10,8 +10,17 @@ public class Chameleon : Crew
     public override Func<string> StartText => () => "Go Invisible To Stalk Players";
     public override Func<string> Description => () => "- You can turn invisible";
 
-    public Chameleon(PlayerControl player) : base(player) => SwoopButton = new(this, "Swoop", AbilityTypes.Targetless, "ActionSecondary", Swoop, CustomGameOptions.SwoopCd,
-        CustomGameOptions.SwoopDur, Invis, UnInvis, CustomGameOptions.MaxSwoops);
+    public Chameleon() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        BaseStart();
+        Alignment = Alignment.CrewSupport;
+        SwoopButton = new(this, "Swoop", AbilityTypes.Targetless, "ActionSecondary", Swoop, CustomGameOptions.SwoopCd, CustomGameOptions.SwoopDur, Invis, UnInvis,
+            CustomGameOptions.MaxSwoops);
+        return this;
+    }
 
     public void Invis() => Utils.Invis(Player);
 

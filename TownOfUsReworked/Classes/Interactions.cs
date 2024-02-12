@@ -8,7 +8,7 @@ public static class Interactions
             return true;
         else if (target.IsAmbushed() && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates)))
             return true;
-        else if (target.Is(LayerEnum.SerialKiller) && player.GetRole() is LayerEnum.Escort or LayerEnum.Consort or LayerEnum.Glitch && !harmful)
+        else if (target.Is(LayerEnum.SerialKiller) && player.GetRole() is Escort or Consort or Glitch && !harmful)
             return true;
         else if (target.IsCrusaded() && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)))
             return true;
@@ -167,13 +167,13 @@ public static class Interactions
             if (!bastion)
                 bastion = PlayerLayer.GetLayers<Retributionist>().First(x => x.BombedIDs.Contains(target.Id))?.Player;
 
-            if (player.IsShielded() || player.IsProtected())
+            if (!CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
             {
                 abilityUsed = true;
                 RpcBreakShield(player);
             }
             else
-                RpcMurderPlayer(player, bastion, DeathReasonEnum.Bombed, false);
+                RpcMurderPlayer(bastion, player, DeathReasonEnum.Bombed, false);
 
             Role.BastionBomb(target, CustomGameOptions.BombRemovedOnKill);
             CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);

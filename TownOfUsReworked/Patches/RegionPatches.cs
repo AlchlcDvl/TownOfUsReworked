@@ -117,37 +117,3 @@ public static class RegionMenuChooseOptionPatch
         return false;
     }
 }
-
-[HarmonyPatch(typeof(DnsRegionInfo), nameof(DnsRegionInfo.PopulateServers))]
-public static class DnsRegionInfoPatch
-{
-    public static void Postfix(DnsRegionInfo __instance)
-    {
-        LogInfo($"DRI Populate Servers: {__instance.Fqdn}");
-
-        foreach (var server in __instance.Servers)
-            LogInfo($"Configured server: {server.ToString()}");
-    }
-}
-
-[HarmonyPatch(typeof(ServerManager), nameof(ServerManager.ReselectServer))]
-public static class SMReselectPatch
-{
-    public static void Prefix(ServerManager __instance) => ExtraRegions.CorrectCurrentRegion(__instance);
-
-    public static void Postfix(ServerManager __instance)
-    {
-        var server = __instance.CurrentUdpServer;
-        LogInfo($"Current server: {server.ToString()}");
-    }
-}
-
-[HarmonyPatch(typeof(ServerManager), nameof(ServerManager.LoadServers))]
-public static class ServerManagerLoadServersPatch
-{
-    public static void Postfix(ServerManager __instance)
-    {
-        ExtraRegions.CorrectCurrentRegion(__instance);
-        __instance.CurrentUdpServer = __instance.CurrentRegion.Servers[0];
-    }
-}

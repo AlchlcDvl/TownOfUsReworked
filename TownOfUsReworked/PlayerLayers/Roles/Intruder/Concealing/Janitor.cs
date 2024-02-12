@@ -14,13 +14,18 @@ public class Janitor : Intruder
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
         CommonAbilities;
 
-    public Janitor(PlayerControl player) : base(player)
+    public Janitor() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
         DragButton = new(this, "Drag", AbilityTypes.Dead, "Tertiary", Drag, CustomGameOptions.DragCd);
         DropButton = new(this, "Drop", AbilityTypes.Targetless, "Tertiary", Drop);
         CleanButton = new(this, "Clean", AbilityTypes.Dead, "Secondary", Clean, CustomGameOptions.CleanCd);
+        return this;
     }
 
     public void Clean()
@@ -44,6 +49,9 @@ public class Janitor : Intruder
 
     public void Drop()
     {
+        if (!CurrentlyDragging)
+            return;
+
         CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
         CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
         CurrentlyDragging = null;

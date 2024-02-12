@@ -2,11 +2,11 @@ namespace TownOfUsReworked.BetterMaps;
 
 public static class BetterAirship
 {
-    public static bool GameStarted;
+    private static bool GameStarted;
     public static readonly List<byte> SpawnPoints = new();
 
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
-    static class Repositioning
+    public static class Repositioning
     {
         public static void Postfix()
         {
@@ -76,8 +76,8 @@ public static class BetterAirship
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
-            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.Is(LayerEnum.Astral) &&
-                Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition != Vector3.zero))
+            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.Is(LayerEnum.Astral) && CustomPlayer.Local.GetModifier<Astral>().LastPosition !=
+                Vector3.zero))
             {
                 __instance.Close();
                 return false;
@@ -92,7 +92,7 @@ public static class BetterAirship
 
                     var rand = URandom.Range(0, __instance.Locations.Count);
                     player.gameObject.SetActive(true);
-                    player.NetTransform.RpcSnapTo(__instance.Locations[rand].Location);
+                    player.RpcCustomSnapTo(__instance.Locations[rand].Location);
                 }
             }
 
@@ -123,7 +123,7 @@ public static class BetterAirship
 
             __instance.Close();
             CustomPlayer.Local.moveable = true;
-            CustomPlayer.Local.NetTransform.RpcSnapTo(GetMeetingPosition(CustomPlayer.Local.PlayerId));
+            CustomPlayer.Local.RpcCustomSnapTo(GetMeetingPosition(CustomPlayer.Local.PlayerId));
             return false;
         }
 
@@ -144,12 +144,12 @@ public static class BetterAirship
             return position;
         }
     }
-}
 
-[HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
-public static class GameEndedPatch
-{
-    public static void Prefix() => BetterAirship.GameStarted = false;
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
+    public static class GameEndedPatch
+    {
+        public static void Prefix() => GameStarted = false;
+    }
 }
 
 [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]

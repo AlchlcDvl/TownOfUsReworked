@@ -5,12 +5,15 @@ public abstract class Crew : Role
     public override UColor Color => CustomColorManager.Crew;
     public override Faction BaseFaction => Faction.Crew;
 
-    protected Crew(PlayerControl player) : base(player)
+    protected Crew() : base() {}
+
+    public void BaseStart()
     {
+        RoleStart();
         Faction = Faction.Crew;
         FactionColor = CustomColorManager.Crew;
         Objectives = () => CrewWinCon;
-        Data.SetImpostor(false);
+        Player.SetImpostor(false);
     }
 
     public override List<PlayerControl> Team()

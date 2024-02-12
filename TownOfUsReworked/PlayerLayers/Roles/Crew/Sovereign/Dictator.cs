@@ -16,14 +16,19 @@ public class Dictator : Crew
     public override Func<string> StartText => () => "You Have The Final Say";
     public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
 
-    public Dictator(PlayerControl player) : base(player)
+    public Dictator() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.CrewSov;
         ToBeEjected = new();
         Ejected = false;
         ToDie = false;
         RevealButton = new(this, "DictReveal", AbilityTypes.Targetless, "ActionSecondary", Reveal);
         DictMenu = new(Player, "DictActive", "DictDisabled", CustomGameOptions.DictateAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
+        return this;
     }
 
     public void Reveal()

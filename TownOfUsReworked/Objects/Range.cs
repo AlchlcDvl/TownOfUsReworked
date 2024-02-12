@@ -5,12 +5,13 @@ namespace TownOfUsReworked.Objects;
 public class Range
 {
     public static readonly List<Range> AllItems = new();
-    private readonly GameObject Item;
+
+    private GameObject Item { get; }
     public Transform Transform => Item?.transform;
-    public readonly int Number;
-    private readonly TextMeshPro NumberText;
-    public readonly PlayerControl Owner;
-    public readonly float Size;
+    public int Number { get; }
+    private TextMeshPro NumberText { get; }
+    public PlayerControl Owner { get; }
+    public float Size { get; }
 
     public Range(PlayerControl owner, UColor color, float scale, string name)
     {

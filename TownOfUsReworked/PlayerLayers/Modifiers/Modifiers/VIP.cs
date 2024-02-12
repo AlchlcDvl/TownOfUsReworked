@@ -8,5 +8,11 @@ public class VIP : Modifier
     public override Func<string> Description => () => "- Your death will alert everyone and will have an arrow pointing at your body";
     public override bool Hidden => !CustomGameOptions.VIPKnows && !IsDead;
 
-    public VIP(PlayerControl player) : base(player) {}
+    public VIP() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

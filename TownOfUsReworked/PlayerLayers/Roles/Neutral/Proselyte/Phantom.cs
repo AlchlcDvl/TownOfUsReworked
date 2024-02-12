@@ -11,10 +11,15 @@ public class Phantom : Neutral
     public override Func<string> StartText => () => "Peek-A-Boo!";
     public override Func<string> Description => () => "- You end the game upon finishing your objective";
 
-    public Phantom(PlayerControl player) : base(player)
+    public Phantom() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Finish your tasks without getting clicked";
         Alignment = Alignment.NeutralPros;
+        return this;
     }
 
     public void Fade()

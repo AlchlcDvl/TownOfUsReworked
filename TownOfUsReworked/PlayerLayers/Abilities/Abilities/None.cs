@@ -4,5 +4,11 @@ public class Abilityless : Ability
 {
     public override bool Hidden => true;
 
-    public Abilityless(PlayerControl player) : base(player) {}
+    public Abilityless() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

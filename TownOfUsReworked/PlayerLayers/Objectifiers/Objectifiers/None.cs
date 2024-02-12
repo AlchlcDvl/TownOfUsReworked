@@ -4,5 +4,11 @@ public class Objectifierless : Objectifier
 {
     public override bool Hidden => true;
 
-    public Objectifierless(PlayerControl player) : base(player) {}
+    public Objectifierless() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
+    {
+        SetPlayer(player);
+        return this;
+    }
 }

@@ -1,6 +1,3 @@
-using System.Text.Json;
-using UnityEngine.Networking;
-
 namespace TownOfUsReworked.Classes;
 
 public static class ModUpdater
@@ -15,9 +12,9 @@ public static class ModUpdater
 
     private static string GetLink(string tag) => tag switch
     {
-        "Reworked" => "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases",
-        "Submerged" => "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases",
-        "LevelImpostor" => "https://api.github.com/repos/DigiWorm0/LevelImposter/releases",
+        "Reworked" => "AlchlcDvl/TownOfUsReworked",
+        "Submerged" => "SubmergedAmongUs/Submerged",
+        "LevelImpostor" => "DigiWorm0/LevelImposter",
         _ => throw new NotImplementedException(tag)
     };
 
@@ -29,44 +26,66 @@ public static class ModUpdater
         Running[updateType] = true;
         UpdateSplashPatch.SetText($"Fetching {updateType} data");
         LogMessage($"Getting update info for {updateType}");
-        yield return new WaitForEndOfFrame();
+        yield return EndFrame();
 
         //Checks the github api for tags. Compares current version to the latest tag version on GitHub
-        var www = new UnityWebRequest();
-        www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
-        www.SetUrl(GetLink(updateType));
-        www.downloadHandler = new DownloadHandlerBuffer();
-        var operation = www.SendWebRequest();
+        var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=5");
+        yield return www.SendWebRequest();
 
-        while (!operation.isDone)
-            yield return new WaitForEndOfFrame();
+        var isError = www.result != UnityWebRequest.Result.Success;
+        var jsonText = isError ? ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other) : www.downloadHandler.text;
 
-        if (www.isNetworkError || www.isHttpError)
-        {
+        if (isError)
             LogError(www.error);
+        else
+        {
+            var task = File.WriteAllTextAsync(Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json"), www.downloadHandler.text);
+
+            while (!task.IsCompleted)
+            {
+                if (task.Exception != null)
+                {
+                    LogError(task.Exception);
+                    break;
+                }
+
+                yield return EndFrame();
+            }
+        }
+
+        www.downloadHandler.Dispose();
+        www.Dispose();
+
+        if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
+        {
+            jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
+            LogWarning($"Online JSON for {updateType} was missing");
+        }
+
+        if (IsNullEmptyOrWhiteSpace(jsonText))
+        {
+            LogError($"Unable to load online or local JSON data for {updateType}");
             yield break;
         }
 
-        var data = JsonSerializer.Deserialize<List<GitHubApiObject>>(www.downloadHandler.text)[0];
-        www.downloadHandler.Dispose();
-        www.Dispose();
+        var data = JsonSerializer.Deserialize<List<GitHubApiObject>>(jsonText)[0];
 
         if (data.Tag == null)
         {
             LogError($"{updateType} tag doesn't exist");
-            yield break; // Something went wrong
+            yield break; //Something went wrong
         }
 
         if (data.Description == null)
         {
             LogError($"{updateType} description doesn't exist");
-            yield break; // Something went wrong part 2
+            yield break; //Something went wrong part 2
         }
 
         if (data.Assets == null)
         {
             LogError($"No assets found for {updateType}");
-            yield break; // Something went wrong part 3
+            yield break; //Something went wrong part 3
         }
 
         //Check Reworked version
@@ -92,7 +111,7 @@ public static class ModUpdater
             }
         }
 
-        yield return new WaitForEndOfFrame();
+        yield return EndFrame();
         yield break;
     }
 
@@ -118,10 +137,7 @@ public static class ModUpdater
             yield break;
         }
 
-        var www = new UnityWebRequest();
-        www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
-        www.SetUrl(link);
-        www.downloadHandler = new DownloadHandlerBuffer();
+        var www = UnityWebRequest.Get(link);
         var operation = www.SendWebRequest();
 
         while (!operation.isDone)
@@ -129,7 +145,7 @@ public static class ModUpdater
             var stars = Mathf.CeilToInt(www.downloadProgress * 10);
             Popup.TextAreaTMP.text = $"{TranslationManager.Translate("Updates.Mod.Updating").Replace("%mod%", updateType)}";
             Popup.TextAreaTMP.text += $"\n{new string((char)0x25A0, stars) + new string((char)0x25A1, 10 - stars)}";
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
         if (www.isNetworkError || www.isHttpError)
@@ -161,7 +177,7 @@ public static class ModUpdater
                 break;
             }
 
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
         www.downloadHandler.Dispose();

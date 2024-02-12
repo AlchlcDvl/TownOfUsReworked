@@ -8,9 +8,13 @@ public class Hunted : HideAndSeek
     public override UColor Color => CustomColorManager.Hunted;
     public override string FactionName => "Hide And Seek";
 
-    public Hunted(PlayerControl player) : base(player)
+    public Hunted() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
         Objectives = () => "- Finish your tasks before the others";
-        Data.SetImpostor(false);
+        Player.SetImpostor(false);
+        return this;
     }
 }

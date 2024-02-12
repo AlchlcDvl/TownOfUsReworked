@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Grenadier : Intruder
 {
     public CustomButton FlashButton { get; set; }
-    public List<PlayerControl> FlashedPlayers { get; set; }
+    public List<byte> FlashedPlayers { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Grenadier : CustomColorManager.Intruder;
     public override string Name => "Grenadier";
@@ -11,17 +11,24 @@ public class Grenadier : Intruder
     public override Func<string> StartText => () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
     public override Func<string> Description => () => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
 
-    public Grenadier(PlayerControl player) : base(player)
+    public Grenadier() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         Alignment = Alignment.IntruderConceal;
         FlashedPlayers = new();
         FlashButton = new(this, "Flash", AbilityTypes.Targetless, "Secondary", HitFlash, CustomGameOptions.FlashCd, CustomGameOptions.FlashDur, Flash, StartFlash, UnFlash);
+        return this;
     }
 
     public void Flash()
     {
-        foreach (var player in FlashedPlayers)
+        foreach (var id in FlashedPlayers)
         {
+            var player = PlayerById(id);
+
             if (CustomPlayer.Local == player)
             {
                 if (FlashButton.EffectTime > CustomGameOptions.FlashDur - 0.5f)
@@ -35,7 +42,7 @@ public class Grenadier : Intruder
                     else
                         HUD.FullScreen.color = CustomColorManager.NormalVision;
                 }
-                else if (FlashButton.EffectTime.IsInRange(0.5f, CustomGameOptions.FlashDur - 0.5f))
+                else if (FlashButton.EffectTime.IsInRange(0.5f, CustomGameOptions.FlashDur - 0.5f, true, true))
                 {
                     if (ShouldPlayerBeBlinded(player))
                         HUD.FullScreen.color = CustomColorManager.BlindVision;
@@ -65,8 +72,8 @@ public class Grenadier : Intruder
         }
     }
 
-    private bool ShouldPlayerBeDimmed(PlayerControl player) => ((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None) || player.Data.IsDead) && !Meeting;
+    private bool ShouldPlayerBeDimmed(PlayerControl player) => (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
+        SubFaction.None) || player.Data.IsDead) && !Meeting) || player == Player;
 
     private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player) && !Meeting;
 
@@ -82,7 +89,7 @@ public class Grenadier : Intruder
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius);
+    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius).Select(x => x.PlayerId).ToList();
 
     public override void UpdateHud(HudManager __instance)
     {

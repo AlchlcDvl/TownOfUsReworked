@@ -28,7 +28,7 @@ public static class HauntUpdatePatch
         else if (IsHnS)
             __instance.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
         else
-            __instance.gameObject.SetActive(!(CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) && !Meeting && CustomPlayer.LocalCustom.IsDead);
+            __instance.gameObject.SetActive(!Meeting && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.IsDead);
     }
 }
 
@@ -54,8 +54,9 @@ public static class AbilityButtonSetFillUp
     public static bool Prefix(ActionButton __instance, ref float timer, ref float maxTimer)
     {
         var percentCool = Mathf.Clamp((maxTimer - timer) / maxTimer, 0f, 1f);
+        var rand = URandom.Range(-0.05f, 0.051f);
         __instance.isCoolingDown = percentCool > 0f;
-        __instance.graphic.transform.localPosition = __instance.position + ((Vector3)URandom.insideUnitCircle * (__instance.isCoolingDown && timer < 3f ? 0.05f : 0f));
+        __instance.graphic.transform.localPosition = __instance.position + ((Vector3)URandom.insideUnitCircle * (__instance.isCoolingDown && timer < 3f ? rand : 0f));
         __instance.cooldownTimerText.text = Mathf.CeilToInt(timer).ToString();
         __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
         __instance.SetCooldownFill(percentCool);

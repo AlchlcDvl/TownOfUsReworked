@@ -23,6 +23,7 @@ public static class MainMenuStartPatch
 
     public static void Prefix(MainMenuManager __instance)
     {
+        AllMonos.LateAddComponents();
         LoadVanillaSounds();
         var rightPanel = GameObject.Find("RightPanel");
 
@@ -38,7 +39,6 @@ public static class MainMenuStartPatch
         var pos = 0.75f;
 
         //If there's a possible download, create and show the buttons for it
-
         if (ModUpdater.ReworkedUpdate)
         {
             LogInfo("Reworked can be updated");

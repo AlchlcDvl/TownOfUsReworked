@@ -36,9 +36,6 @@ public static class CustomNameplateManager
         };
         CustomNameplateRegistry.TryAdd(nameplate.name, extend);
         CustomNameplateViewDatas.TryAdd(nameplate.ProductId, viewData);
-        cn.Data = nameplate;
-        cn.ViewData = viewData;
-        cn.Extension = extend;
         return nameplate;
     }
 

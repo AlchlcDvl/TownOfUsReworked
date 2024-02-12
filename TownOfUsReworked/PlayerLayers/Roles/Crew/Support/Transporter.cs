@@ -25,8 +25,12 @@ public class Transporter : Crew
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
 
-    public Transporter(PlayerControl player) : base(player)
+    public Transporter() : base() {}
+
+    public override PlayerLayer Start(PlayerControl player)
     {
+        SetPlayer(player);
+        BaseStart();
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Alignment = Alignment.CrewSupport;
@@ -51,6 +55,7 @@ public class Transporter : Crew
         AnimationPlaying1.material = AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
         Transport1.SetActive(true);
         Transport2.SetActive(true);
+        return this;
     }
 
     public IEnumerator TransportPlayers()
@@ -81,7 +86,7 @@ public class Transporter : Crew
         if (TransportPlayer1.inVent)
         {
             while (GetInTransition())
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
 
             TransportPlayer1.MyPhysics.ExitAllVents();
             Vent1 = TransportPlayer1.GetClosestVent();
@@ -91,7 +96,7 @@ public class Transporter : Crew
         if (TransportPlayer2.inVent)
         {
             while (GetInTransition())
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
 
             TransportPlayer2.MyPhysics.ExitAllVents();
             Vent2 = TransportPlayer2.GetClosestVent();
@@ -128,7 +133,7 @@ public class Transporter : Crew
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.TransportDur)
-                yield return new WaitForEndOfFrame();
+                yield return EndFrame();
             else
                 break;
 
@@ -144,8 +149,8 @@ public class Transporter : Crew
             TransportPlayer1.MyPhysics.ResetMoveState();
             TransportPlayer2.MyPhysics.ResetMoveState();
             var TempPosition = TransportPlayer1.GetTruePosition();
-            TransportPlayer1.NetTransform.SnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
-            TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
+            TransportPlayer1.CustomSnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
+            TransportPlayer2.CustomSnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
             if (IsSubmerged())
             {
@@ -174,7 +179,7 @@ public class Transporter : Crew
             TransportPlayer2.MyPhysics.ResetMoveState();
             var TempPosition = Player1Body.TruePosition;
             Player1Body.transform.position = TransportPlayer2.GetTruePosition();
-            TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
+            TransportPlayer2.CustomSnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
             if (IsSubmerged() && CustomPlayer.Local == TransportPlayer2)
             {
@@ -187,7 +192,7 @@ public class Transporter : Crew
             StopDragging(Player2Body.ParentId);
             TransportPlayer1.MyPhysics.ResetMoveState();
             var TempPosition = TransportPlayer1.GetTruePosition();
-            TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
+            TransportPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
             Player2Body.transform.position = TempPosition;
 
             if (IsSubmerged() && CustomPlayer.Local == TransportPlayer1)
@@ -246,8 +251,8 @@ public class Transporter : Crew
 
         HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
         {
-            var index = (int)(p * PortalAnimation.Length);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
+            var index = (int)(p * PortalAnimation.Count);
+            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
             AnimationPlaying1.sprite = PortalAnimation[index];
             TransportPlayer1.SetPlayerMaterialColors(AnimationPlaying1);
 
@@ -264,8 +269,8 @@ public class Transporter : Crew
 
         HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
         {
-            var index = (int)(p * PortalAnimation.Length);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
+            var index = (int)(p * PortalAnimation.Count);
+            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
             AnimationPlaying2.sprite = PortalAnimation[index];
             TransportPlayer2.SetPlayerMaterialColors(AnimationPlaying2);
 
@@ -283,9 +288,15 @@ public class Transporter : Crew
     public void Transport()
     {
         if (TransportPlayer1 == null)
+        {
             TransportMenu1.Open();
+            TransportButton.Uses++;
+        }
         else if (TransportPlayer2 == null)
+        {
             TransportMenu2.Open();
+            TransportButton.Uses++;
+        }
         else
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, TransportPlayer1, TransportPlayer2);

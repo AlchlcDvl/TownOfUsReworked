@@ -12,7 +12,7 @@ public static class MeetingPatches
     {
         public static void Postfix(PlayerVoteArea __instance)
         {
-            if (CustomGameOptions.CamouflagedMeetings && HudUpdate.IsCamoed)
+            if (CustomGameOptions.CamouflagedMeetings && HudHandler.Instance.IsCamoed)
             {
                 __instance.Background.sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
@@ -47,7 +47,7 @@ public static class MeetingPatches
     {
         public static void Postfix(MeetingHud __instance)
         {
-            __instance.gameObject.AddComponent<MeetingHudPagingBehaviour>().Menu = __instance;
+            __instance.gameObject.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
             OtherButtonsPatch.CloseMenus();
             CustomPlayer.Local.DisableButtons();
             Ash.DestroyAll();
@@ -63,8 +63,7 @@ public static class MeetingPatches
                 RoleGen.AssignChaosDrive();
             }
 
-            if (CachedFirstDead)
-                CachedFirstDead = null;
+            CachedFirstDead = null;
         }
 
         private static IEnumerator Announcements()
@@ -88,7 +87,7 @@ public static class MeetingPatches
                     Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
                     var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
-                    var killerRole = Role.GetRole(killer);
+                    var killerRole = killer.GetRole();
 
                     if (CustomGameOptions.KillerReports == RoleFactionReports.Role)
                         report = $"They were killed by the <b>{killerRole}</b>.";
@@ -99,7 +98,7 @@ public static class MeetingPatches
 
                     Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
-                    var role = Role.GetRole(player);
+                    var role = player.GetRole();
 
                     if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
                         report = $"They were the <b>{role}</b>.";
@@ -128,7 +127,7 @@ public static class MeetingPatches
                         yield return Wait(2f);
 
                         var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
-                        var killerRole = Role.GetRole(killer);
+                        var killerRole = killer.GetRole();
 
                         if (Role.Cleaned.Contains(player.PlayerId))
                             report = "They were killed by an unknown assailant.";
@@ -141,7 +140,7 @@ public static class MeetingPatches
 
                         Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
-                        var role = Role.GetRole(player);
+                        var role = player.GetRole();
 
                         if (Role.Cleaned.Contains(player.PlayerId))
                             report = $"We could not determine what {player} was.";
@@ -196,18 +195,21 @@ public static class MeetingPatches
 
             var message = "";
 
-            if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount - 1)
-                message = $"{CustomGameOptions.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-            else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount - 1)
-                message = "This is the last meeting before the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-            else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount && MeetingCount == Role.ChaosDriveMeetingTimerCount)
-                message = "The <b>Syndicate</b> now possesses the Chaos Drive!";
-            else
-                message = "The <b>Syndicate</b> possesses the Chaos Drive.";
+            if (CustomGameOptions.SyndicateCount > 0)
+            {
+                if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount - 1)
+                    message = $"{CustomGameOptions.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
+                else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount - 1)
+                    message = "This is the last meeting before the <b>Syndicate</b> gets their hands on the Chaos Drive!";
+                else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount && MeetingCount == Role.ChaosDriveMeetingTimerCount)
+                    message = "The <b>Syndicate</b> now possesses the Chaos Drive!";
+                else
+                    message = "The <b>Syndicate</b> possesses the Chaos Drive.";
 
-            Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
+                Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
 
-            yield return Wait(2f);
+                yield return Wait(2f);
+            }
 
             if (PlayerLayer.GetLayers<Overlord>().Any(x => x.IsAlive))
             {
@@ -250,19 +252,19 @@ public static class MeetingPatches
 
             foreach (var layer in PlayerLayer.LocalLayers)
             {
-                layer?.OnMeetingStart(Meeting);
+                layer.OnMeetingStart(Meeting);
 
-                if (layer?.Player == Reporter)
-                    layer?.OnBodyReport(Reported);
+                if (layer.Player == Reporter)
+                    layer.OnBodyReport(Reported);
 
-                yield return Wait(0.5f);
+                yield return Wait(0.1f);
             }
 
             RecentlyKilled.Clear();
             Role.Cleaned.Clear();
-            GivingAnnouncements = false;
             Reported = null;
             DisconnectHandler.Disconnected.Clear();
+            GivingAnnouncements = false;
             yield break;
         }
     }
@@ -275,7 +277,6 @@ public static class MeetingPatches
             CustomPlayer.Local.EnableButtons();
             ButtonUtils.Reset(CooldownType.Meeting);
             PlayerLayer.LocalLayers.ForEach(x => x?.OnMeetingEnd(__instance));
-            CachedFirstDead = null;
         }
     }
 
@@ -285,7 +286,6 @@ public static class MeetingPatches
         public static void Postfix(MeetingHud __instance)
         {
             //Deactivate skip Button if skipping on emergency meetings is disabled
-
             if (!CustomPlayer.LocalCustom.IsDead)
             {
                 __instance.SkipVoteButton.gameObject.SetActive(!((Reported == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) ||
@@ -294,8 +294,7 @@ public static class MeetingPatches
             }
 
             AllVoteAreas.ForEach(SetNames);
-            ButtonUtils.DisableAllButtons();
-            PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMeeting(__instance));
+            PlayerLayer.LocalLayers.ForEach(x => x.UpdateMeeting(__instance));
         }
     }
 
@@ -384,12 +383,17 @@ public static class MeetingPatches
     private static (string, UColor) UpdateGameName(PlayerVoteArea player)
     {
         var color = UColor.white;
-        var name = UpdateNames.PlayerNames.FirstOrDefault(x => x.Key == player.TargetPlayerId).Value;
-        var info = player.AllPlayerInfo();
-        var localinfo = CustomPlayer.Local.AllPlayerInfo();
+        var name = "";
+        var info = player.GetLayers();
+        var localinfo = CustomPlayer.Local.GetLayers();
         var revealed = false;
 
-        if (!info[0] || !localinfo[0])
+        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+            name = ClientGameOptions.OptimisationMode ? "" : GetRandomisedName();
+        else
+            name = UpdateNames.PlayerNames.FirstOrDefault(x => x.Key == player.TargetPlayerId).Value;
+
+        if (info.Count != 4 || localinfo.Count != 4)
             return (name, color);
 
         if (player.CanDoTasks() && (CustomPlayer.Local.PlayerId == player.TargetPlayerId || DeadSeeEverything))
@@ -402,7 +406,7 @@ public static class MeetingPatches
         if (player.IsKnighted())
             name += " <color=#FF004EFF>κ</color>";
 
-        if (player.IsSpelled())
+        if (player.IsSpellbound())
             name += " <color=#0028F5FF>ø</color>";
 
         if (player.IsMarked())
@@ -528,6 +532,13 @@ public static class MeetingPatches
             if (medic.ShieldedPlayer != null && medic.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
         }
+        else if (CustomPlayer.Local.Is(LayerEnum.Trapper))
+        {
+            var trapper = localinfo[0] as Trapper;
+
+            if (trapper.Trapped.Contains(player.TargetPlayerId))
+                name += " <color=#BE1C8CFF>∮</color>";
+        }
         else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
         {
             var ret = localinfo[0] as Retributionist;
@@ -539,6 +550,12 @@ public static class MeetingPatches
                 name += $"\n{role}";
                 revealed = true;
             }
+
+            if (ret.ShieldedPlayer != null && ret.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
+                name += " <color=#006600FF>✚</color>";
+
+            if (ret.Trapped.Contains(player.TargetPlayerId))
+                name += " <color=#BE1C8CFF>∮</color>";
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Arsonist) && !DeadSeeEverything)
         {
@@ -632,14 +649,8 @@ public static class MeetingPatches
                 else
                     color = whisperer.SubFactionColor;
             }
-            else
-            {
-                foreach (var (key, value) in whisperer.PlayerConversion)
-                {
-                    if (player.TargetPlayerId == key)
-                        name += $" {value}%";
-                }
-            }
+            else if (whisperer.PlayerConversion.TryGetValue(player.TargetPlayerId, out var value))
+                name += $" {value}%";
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Dracula) && !DeadSeeEverything)
         {
@@ -694,7 +705,7 @@ public static class MeetingPatches
         }
         else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything && CustomGameOptions.NKsKnow)
         {
-            if (((player.GetRole() == CustomPlayer.Local.GetRole() && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
+            if (((player.GetRole().Type == CustomPlayer.Local.GetRole().Type && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
                 CustomGameOptions.NoSolo == NoSolo.AllNKs)) && !revealed)
             {
                 var role = info[0] as Role;
@@ -704,7 +715,7 @@ public static class MeetingPatches
             }
         }
 
-        if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything)
+        if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Dracula))
         {
             var dracula = CustomPlayer.Local.GetDracula();
 
@@ -736,7 +747,7 @@ public static class MeetingPatches
                     color = dracula.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsRecruit() && !DeadSeeEverything)
+        else if (CustomPlayer.Local.IsRecruit() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Jackal))
         {
             var jackal = CustomPlayer.Local.GetJackal();
 
@@ -768,7 +779,7 @@ public static class MeetingPatches
                     color = jackal.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsResurrected() && !DeadSeeEverything)
+        else if (CustomPlayer.Local.IsResurrected() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Necromancer))
         {
             var necromancer = CustomPlayer.Local.GetNecromancer();
 
@@ -800,7 +811,7 @@ public static class MeetingPatches
                     color = necromancer.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsPersuaded() && !DeadSeeEverything)
+        else if (CustomPlayer.Local.IsPersuaded() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Whisperer))
         {
             var whisperer = CustomPlayer.Local.GetWhisperer();
 
@@ -831,14 +842,8 @@ public static class MeetingPatches
                 else
                     color = whisperer.SubFactionColor;
             }
-            else
-            {
-                foreach (var (key, value) in whisperer.PlayerConversion)
-                {
-                    if (player.TargetPlayerId == key && !player.Is(SubFaction.Sect))
-                        name += $" {value}%";
-                }
-            }
+            else if (whisperer.PlayerConversion.TryGetValue(player.TargetPlayerId, out var value))
+                name += $" {value}%";
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Lovers) && !DeadSeeEverything)
@@ -1136,6 +1141,9 @@ public static class MeetingPatches
             if (player.IsShielded() && CustomGameOptions.ShowShielded != ShieldOptions.Everyone)
                 name += " <color=#006600FF>✚</color>";
 
+            if (player.IsTrapped())
+                name += " <color=#BE1C8CFF>∮</color>";
+
             if (player.IsBHTarget())
                 name += " <color=#B51E39FF>Θ</color>";
 
@@ -1176,13 +1184,22 @@ public static class MeetingPatches
                 name += " <<color=#642DEAFF>λ</color>";
         }
 
+        if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 3 && !DeadSeeEverything)
+            name += " <color=#006600FF>✚</color>";
+
+        if ((DeadSeeEverything || CustomPlayer.Local.Is(LayerEnum.Pestilence)) && Pestilence.Infected.TryGetValue(player.TargetPlayerId, out var count))
+        {
+            for (var i = 0; i < count; i++)
+                name += " <color=#424242FF>米</color>";
+        }
+
         if (DeadSeeEverything || player.TargetPlayerId == CustomPlayer.Local.PlayerId)
         {
             if (info[3])
             {
                 var objectifier = info[3] as Objectifier;
 
-                if (objectifier.Type != LayerEnum.None && !objectifier.Hidden)
+                if (objectifier.Type != LayerEnum.NoneObjectifier && !objectifier.Hidden)
                     name += $" {objectifier.ColoredSymbol}";
             }
 
@@ -1216,7 +1233,7 @@ public static class MeetingPatches
             temp.x = Mathf.SmoothStep(source.x, dest.x, t);
             temp.y = Mathf.SmoothStep(source.y, dest.y, t);
             target.position = temp;
-            yield return new WaitForEndOfFrame();
+            yield return EndFrame();
         }
 
         temp.x = dest.x;
@@ -1298,7 +1315,7 @@ public static class MeetingPatches
             foreach (var vote in votes1)
                 vote.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap2.MaskLayer);
 
-            var duration = 1f / (Ability.GetAbilities(LayerEnum.Swapper).Count + 1);
+            var duration = 1f / (PlayerLayer.GetLayers<Swapper>().Count + 1);
 
             Coroutines.Start(Slide2D(cb1, cbdest1, cbdest2, duration));
             Coroutines.Start(Slide2D(cb2, cbdest2, cbdest1, duration));
@@ -1425,7 +1442,7 @@ public static class MeetingPatches
             }
         }
 
-        _ = dictionary.MaxPair(out tie);
+        dictionary.MaxPair(out tie);
         return dictionary;
     }
 
