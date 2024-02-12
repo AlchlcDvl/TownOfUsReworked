@@ -902,6 +902,7 @@ public static class Utils
             id++;
         }
     }
+
     public static void Flash(UColor color, float duration = 0.5f) => Coroutines.Start(FlashCoro(color, duration));
 
     public static IEnumerator FlashCoro(UColor color, float duration)
