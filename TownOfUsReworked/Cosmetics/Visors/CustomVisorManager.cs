@@ -2,24 +2,20 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors;
 
 public static class CustomVisorManager
 {
-    public static readonly List<CustomVisor> UnregisteredVisors = new();
-    public static readonly List<VisorData> RegisteredVisors = new();
-    public static readonly Dictionary<string, VisorExtension> CustomVisorRegistry = new();
-    public static readonly Dictionary<string, VisorViewData> CustomVisorViewDatas = new();
-
-    private static Material Shader;
+    public static readonly List<CustomVisor> UnregisteredVisors = [];
+    public static readonly List<VisorData> RegisteredVisors = [];
+    public static readonly Dictionary<string, VisorExtension> CustomVisorRegistry = [];
+    public static readonly Dictionary<string, VisorViewData> CustomVisorViewDatas = [];
 
     public static VisorData CreateVisorBehaviour(CustomVisor cv)
     {
-        if (Shader == null)
-            Shader = HatManager.Instance.PlayerMaterial;
-
         var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
         var viewData = ScriptableObject.CreateInstance<VisorViewData>().DontDestroy();
         viewData.IdleFrame = CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.ID), CosmeticTypeEnum.Visor);
         viewData.FloorFrame = cv.FloorID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.FloorID), CosmeticTypeEnum.Visor) : viewData.IdleFrame;
         viewData.LeftIdleFrame = cv.FlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.FlipID), CosmeticTypeEnum.Visor) : null;
         viewData.ClimbFrame = cv.ClimbID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.ClimbID), CosmeticTypeEnum.Visor) : null;
+        viewData.MatchPlayerColor = cv.Adaptive;
         visor.SpritePreview = viewData.IdleFrame;
         visor.name = cv.Name;
         visor.displayOrder = 99;
@@ -28,9 +24,6 @@ public static class CustomVisorManager
         visor.Free = true;
         visor.behindHats = !cv.InFront;
         visor.NotInStore = true;
-
-        if (cv.Adaptive && Shader != null)
-            viewData.AltShader = Shader;
 
         visor.ViewDataRef = new(viewData.Pointer);
         visor.CreateAddressableAsset();

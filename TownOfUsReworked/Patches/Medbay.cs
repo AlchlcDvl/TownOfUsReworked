@@ -31,7 +31,7 @@ public static class MedScanMinigameFixedUpdatePatch
     {
         if (CustomGameOptions.ParallelMedScans)
         {
-            //Allows multiple medbay scans at once
+            // Allows multiple medbay scans at once
             __instance.medscan.CurrentUser = CustomPlayer.Local.PlayerId;
             __instance.medscan.UsersList.Clear();
         }

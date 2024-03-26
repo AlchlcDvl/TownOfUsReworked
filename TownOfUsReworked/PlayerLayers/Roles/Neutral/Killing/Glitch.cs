@@ -18,21 +18,20 @@ public class Glitch : Neutral
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
 
-    public Glitch() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Neutralise anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MimicMenu = new(Player, Click, Exception3);
         RoleBlockImmune = true;
-        NeutraliseButton = new(this, "Neutralise", AbilityTypes.Alive, "ActionSecondary", Neutralise, CustomGameOptions.NeutraliseCd, Exception1);
-        HackButton = new(this, "Hack", AbilityTypes.Alive, "ActionSecondary", HitHack, CustomGameOptions.HackCd, CustomGameOptions.HackDur, Hack, UnHack, Exception2);
-        MimicButton = new(this, "Mimic", AbilityTypes.Targetless, "Secondary", HitMimic, CustomGameOptions.MimicCd, CustomGameOptions.MimicDur, (CustomButton.EffectVoid)Mimic, UnMimic);
-        player.Data.Role.IntroSound = GetAudio("GlitchIntro");
-        return this;
+        NeutraliseButton = CreateButton(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Neutralise, (PlayerBodyExclusion)Exception1,
+            new Cooldown(CustomGameOptions.NeutraliseCd), "NEUTRALISE");
+        HackButton = CreateButton(this, new SpriteName("Hack"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitHack, new Cooldown(CustomGameOptions.HackCd), (EffectVoid)Hack,
+            new Duration(CustomGameOptions.HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK", (EndFunc)EndHack);
+        MimicButton = CreateButton(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMimic, new Cooldown(CustomGameOptions.MimicCd), "MIMIC",
+            new Duration(CustomGameOptions.MimicDur), (EffectVoid)Mimic, (EffectEndVoid)UnMimic, (EndFunc)EndMimic);
+        Data.Role.IntroSound = GetAudio("GlitchIntro");
     }
 
     public void UnHack()
@@ -60,7 +59,7 @@ public class Glitch : Neutral
         if (cooldown != CooldownType.Fail)
         {
             HackTarget = HackButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, HackButton, GlitchActionsRPC.Hack, HackTarget);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, HackButton, GlitchActionsRPC.Hack, HackTarget);
             HackButton.Begin();
         }
         else
@@ -75,7 +74,7 @@ public class Glitch : Neutral
             MimicMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, MimicButton, GlitchActionsRPC.Mimic, MimicTarget);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, MimicButton, GlitchActionsRPC.Mimic, MimicTarget);
             MimicButton.Begin();
         }
     }
@@ -90,24 +89,19 @@ public class Glitch : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        NeutraliseButton.Update2("NEUTRALISE");
-        HackButton.Update2("HACK");
-        MimicButton.Update2("MIMIC");
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if (MimicTarget != null && !MimicButton.EffectActive)
+            if (MimicTarget && !MimicButton.EffectActive)
                 MimicTarget = null;
 
             LogMessage("Removed a target");
         }
     }
 
-    public override void TryEndEffect()
-    {
-        HackButton.Update3((HackTarget != null && HackTarget.HasDied()) || IsDead);
-        MimicButton.Update3(IsDead);
-    }
+    public bool EndHack() => (HackTarget && HackTarget.HasDied()) || Dead;
+
+    public bool EndMimic() => Dead;
 
     public override void ReadRPC(MessageReader reader)
     {
@@ -124,7 +118,7 @@ public class Glitch : Neutral
                 break;
 
             default:
-                LogError($"Received unknown RPC - {glitchAction}");
+                LogError($"Received unknown RPC - {(int)glitchAction}");
                 break;
         }
     }

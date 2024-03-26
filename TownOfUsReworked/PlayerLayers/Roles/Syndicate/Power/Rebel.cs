@@ -13,15 +13,12 @@ public class Rebel : Syndicate
         "Syndicate</color> turns them into a <color=#979C9FFF>Sidekick</color>\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\n" +
         $"and inherits better abilities of their former role\n{CommonAbilities}";
 
-    public Rebel() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicatePower;
-        SidekickButton = new(this, "Sidekick", AbilityTypes.Alive, "Secondary", Sidekick);
-        return this;
+        SidekickButton = CreateButton(this, new SpriteName("Sidekick"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
+            (UsableFunc)Usable);
     }
 
     public void Sidekick(PlayerControl target)
@@ -39,18 +36,14 @@ public class Rebel : Syndicate
     {
         if (Interact(Player, SidekickButton.TargetPlayer) != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, SidekickButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SidekickButton.TargetPlayer);
             Sidekick(SidekickButton.TargetPlayer);
         }
     }
 
-    public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is PromotedRebel or Roles.Sidekick or Rebel) && player.IsBase(Faction));
+    public bool Exception1(PlayerControl player) => player.GetRole() is PromotedRebel or Roles.Sidekick or Rebel || !(player.IsBase(Faction.Syndicate) && player.Is(Faction));
 
     public override void ReadRPC(MessageReader reader) => Sidekick(reader.ReadPlayer());
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        SidekickButton.Update2("SIDEKICK", !HasDeclared);
-    }
+    public bool Usable() => !HasDeclared;
 }

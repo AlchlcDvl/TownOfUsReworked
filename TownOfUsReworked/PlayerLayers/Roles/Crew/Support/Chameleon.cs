@@ -10,16 +10,12 @@ public class Chameleon : Crew
     public override Func<string> StartText => () => "Go Invisible To Stalk Players";
     public override Func<string> Description => () => "- You can turn invisible";
 
-    public Chameleon() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewSupport;
-        SwoopButton = new(this, "Swoop", AbilityTypes.Targetless, "ActionSecondary", Swoop, CustomGameOptions.SwoopCd, CustomGameOptions.SwoopDur, Invis, UnInvis,
-            CustomGameOptions.MaxSwoops);
-        return this;
+        SwoopButton = CreateButton(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Swoop, new Cooldown(CustomGameOptions.SwoopCd),
+            new Duration(CustomGameOptions.SwoopDur), (EffectVoid)Invis, (EffectEndVoid)UnInvis, (EndFunc)EndEffect, CustomGameOptions.MaxSwoops);
     }
 
     public void Invis() => Utils.Invis(Player);
@@ -28,15 +24,9 @@ public class Chameleon : Crew
 
     public void Swoop()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, SwoopButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, SwoopButton);
         SwoopButton.Begin();
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        SwoopButton.Update2("SWOOP");
-    }
-
-    public override void TryEndEffect() => SwoopButton.Update3(IsDead);
+    public bool EndEffect() => Dead;
 }

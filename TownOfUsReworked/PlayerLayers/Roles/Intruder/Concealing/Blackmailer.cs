@@ -16,16 +16,13 @@ public class Blackmailer : Intruder
         "alerted at the start of the meeting that someone has been silenced ") : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") +
         $"\n{CommonAbilities}";
 
-    public Blackmailer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
-        BlackmailButton = new(this, "Blackmail", AbilityTypes.Alive, "Secondary", Blackmail, CustomGameOptions.BlackmailCd, Exception1);
-        return this;
+        BlackmailButton = CreateButton(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(CustomGameOptions.BlackmailCd),
+            (PlayerBodyExclusion)Exception1);
     }
 
     public void Blackmail()
@@ -35,7 +32,7 @@ public class Blackmailer : Intruder
         if (cooldown != CooldownType.Fail)
         {
             BlackmailedPlayer = BlackmailButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, BlackmailedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BlackmailedPlayer);
         }
 
         BlackmailButton.StartCooldown(cooldown);
@@ -45,10 +42,4 @@ public class Blackmailer : Intruder
         || (player.Is(SubFaction) && SubFaction != SubFaction.None && CustomGameOptions.BlackmailMates);
 
     public override void ReadRPC(MessageReader reader) => BlackmailedPlayer = reader.ReadPlayer();
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        BlackmailButton.Update2("BLACKMAIL");
-    }
 }

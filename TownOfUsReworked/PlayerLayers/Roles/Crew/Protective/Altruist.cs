@@ -12,28 +12,19 @@ public class Altruist : Crew
     public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {CustomGameOptions.ReviveDur}s\n- If a meeting is called or you are killed " +
         "during your revive, the revive fails";
 
-    public Altruist() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewProt;
-        ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", Revive, CustomGameOptions.ReviveCd, CustomGameOptions.ReviveDur, UponEnd, CustomGameOptions.MaxRevives);
-        return this;
+        ReviveButton = CreateButton(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Revive, new Cooldown(CustomGameOptions.ReviveCd),
+            new Duration(CustomGameOptions.ReviveDur), (EffectEndVoid)UponEnd, CustomGameOptions.MaxRevives, (EndFunc)EndEffect);
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        ReviveButton.Update2("REVIVE");
-    }
-
-    public override void TryEndEffect() => ReviveButton.Update3(IsDead);
+    public bool EndEffect() => Dead;
 
     public void UponEnd()
     {
-        if (!(Meeting || IsDead))
+        if (!(Meeting || Dead))
             FinishRevive();
     }
 
@@ -73,7 +64,7 @@ public class Altruist : Crew
     {
         RevivingBody = ReviveButton.TargetBody;
         Spread(Player, PlayerByBody(RevivingBody));
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ReviveButton, RevivingBody);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ReviveButton, RevivingBody);
         ReviveButton.Begin();
         Flash(Color, CustomGameOptions.ReviveDur);
 

@@ -12,28 +12,19 @@ public class Veteran : Crew
     public override DefenseEnum DefenseVal => AlertButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
     public override AttackEnum AttackVal => AlertButton.EffectActive ? AttackEnum.Powerful : AttackEnum.None;
 
-    public Veteran() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewKill;
-        AlertButton = new(this, "Alert", AbilityTypes.Targetless, "ActionSecondary", Alert, CustomGameOptions.AlertCd, CustomGameOptions.AlertDur, CustomGameOptions.MaxAlerts);
-        return this;
+        AlertButton = CreateButton(this, "ALERT", new SpriteName("Alert"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Alert, new Cooldown(CustomGameOptions.AlertCd),
+            new Duration(CustomGameOptions.AlertDur), CustomGameOptions.MaxAlerts, (EndFunc)EndEffect);
     }
 
     public void Alert()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, AlertButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AlertButton);
         AlertButton.Begin();
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        AlertButton.Update2("ALERT");
-    }
-
-    public override void TryEndEffect() => AlertButton.Update3(IsDead);
+    public bool EndEffect() => Dead;
 }

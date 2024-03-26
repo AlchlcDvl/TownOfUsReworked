@@ -11,12 +11,4 @@ public class Giant : Modifier
     public override string Name => Useless ? "Useless" : (!Chonk ? "Sloth" : (Snail ? "Chonker" : "Giant"));
     public override LayerEnum Type => LayerEnum.Giant;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
-
-    public Giant() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
 }

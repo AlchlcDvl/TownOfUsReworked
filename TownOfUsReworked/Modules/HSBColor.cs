@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Modules;
 
-[Serializable]
 public struct HSBColor
 {
     public float h { get; set; }
@@ -127,16 +126,16 @@ public struct HSBColor
         return new(Mathf.Clamp01(r), Mathf.Clamp01(g), Mathf.Clamp01(b), hsbColor.a);
     }
 
-    public UColor ToColor() => ToColor(this);
+    public readonly UColor ToColor() => ToColor(this);
 
-    public override string ToString() => $"H: {h} S: {s} B: {b}";
+    public override readonly string ToString() => $"H: {h} S: {s} B: {b}";
 
     public static HSBColor Lerp(HSBColor a, HSBColor b, float t)
     {
         float h, s;
 
-        //Check special case black (color.b == 0): interpolate neither hue nor saturation!
-        //Check special case grey (color.s == 0): don't interpolate hue!
+        // Check special case black (color.b == 0): interpolate neither hue nor saturation!
+        // Check special case grey (color.s == 0): don't interpolate hue!
 
         if (a.b == 0)
         {
@@ -190,7 +189,7 @@ public struct HSBColor
         var parts = input.Split(';');
 
         if (parts.Length is not (3 or 4))
-            throw new ArgumentOutOfRangeException(input);
+            throw new IncorrectLengthException(input);
 
         var parts2 = new List<float>();
 
@@ -211,7 +210,7 @@ public struct HSBColor
                 parts2.Add(reverse ? PingPongReverse(min, max, mul) : PingPong(min, max, mul));
             }
             else
-                throw new ArgumentOutOfRangeException(input);
+                throw new IncorrectLengthException($"{input}:{part}");
         }
 
         return new(parts2[0], parts2[1], parts2[2], parts2.Count == 4 ? parts2[3] : 1f);

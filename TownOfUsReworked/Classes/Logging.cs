@@ -2,7 +2,7 @@ using BepInEx.Logging;
 
 namespace TownOfUsReworked.Classes;
 
-//Adapted from LevelImpostor
+// Adapted from LevelImpostor
 public static class Logging
 {
     private static ManualLogSource Log;

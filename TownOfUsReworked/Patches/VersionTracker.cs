@@ -17,7 +17,7 @@ public static class VersionShowerPatch
             ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nBy <color=#C50000FF>AlchlcSystm</color></b></size>";
             ModVersion.alignment = TextAlignmentOptions.Center;
             ModVersion.fontStyle = FontStyles.Bold;
-            ModVersion.font = UpdateSplashPatch.Font;
+            ModVersion.font = GetFont("Placeholder");
             ModVersion.name = "ModVersionText";
         }
     }
@@ -26,7 +26,7 @@ public static class VersionShowerPatch
 [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
 public static class PingTracker_Update
 {
-    private static float deltaTime;
+    private static float DeltaTime;
 
     public static bool Prefix(PingTracker __instance)
     {
@@ -42,10 +42,10 @@ public static class PingTracker_Update
             logo.transform.localScale *= 0.5f;
         }
 
-        deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
-        var fps = Mathf.Ceil(1f / deltaTime);
+        DeltaTime += (Time.deltaTime - DeltaTime) * 0.1f;
+        var fps = Mathf.Ceil(1f / DeltaTime);
 
-        //try catch my beloved <3
+        // try catch my beloved <3
         try
         {
             var host = GameData.Instance?.GetHost();

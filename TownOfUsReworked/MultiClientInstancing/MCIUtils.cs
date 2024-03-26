@@ -2,9 +2,9 @@ namespace TownOfUsReworked.MultiClientInstancing;
 
 public static class MCIUtils
 {
-    public static readonly Dictionary<int, ClientData> Clients = new();
-    public static readonly Dictionary<byte, int> PlayerClientIDs = new();
-    public static readonly Dictionary<byte, Vector3> SavedPositions = new();
+    public static readonly Dictionary<int, ClientData> Clients = [];
+    public static readonly Dictionary<byte, int> PlayerClientIDs = [];
+    public static readonly Dictionary<byte, Vector3> SavedPositions = [];
 
     public static int AvailableId()
     {
@@ -109,7 +109,7 @@ public static class MCIUtils
         var light = CustomPlayer.Local.lightSource;
         var savedId = CustomPlayer.Local.PlayerId;
 
-        //Setup new player
+        // Setup new player
         var newPlayer = PlayerById(playerId);
 
         if (newPlayer == null)

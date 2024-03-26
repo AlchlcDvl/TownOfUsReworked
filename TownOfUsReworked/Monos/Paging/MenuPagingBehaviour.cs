@@ -2,8 +2,6 @@ namespace TownOfUsReworked.Monos;
 
 public class MenuPagingBehaviour : BasePagingBehaviour
 {
-    public MenuPagingBehaviour(IntPtr ptr) : base(ptr) {}
-
     [HideFromIl2Cpp]
     public IEnumerable<ShapeshifterPanel> Targets => Menu.potentialVictims.ToArray();
 

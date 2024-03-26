@@ -5,8 +5,6 @@ public abstract class Neutral : Role
     public override UColor Color => CustomColorManager.Neutral;
     public override Faction BaseFaction => Faction.Neutral;
 
-    protected Neutral() : base() {}
-
     public void BaseStart()
     {
         RoleStart();
@@ -23,7 +21,14 @@ public abstract class Neutral : Role
         {
             var jackal = Player.GetJackal();
             team.Add(jackal.Player);
-            team.Add(Player == jackal.EvilRecruit ? jackal.GoodRecruit : jackal.EvilRecruit);
+
+            foreach (var rec in jackal.Recruited)
+            {
+                if (rec == PlayerId)
+                    continue;
+
+                team.Add(PlayerById(rec));
+            }
         }
         else if (Type == LayerEnum.Jackal)
         {

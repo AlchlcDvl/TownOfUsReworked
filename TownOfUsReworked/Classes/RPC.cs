@@ -1,17 +1,20 @@
-using Cpp2IL.Core.Extensions;
-
 namespace TownOfUsReworked.Classes;
 
 public static class RPC
 {
+    private const byte CustomRPCCallID = 254;
+
     public static void SendOptionRPC(CustomOption setting = null, int targetClientId = -1)
     {
+        if (TownOfUsReworked.MCIActive)
+            return;
+
         List<CustomOption> options;
 
         if (setting != null)
-            options = new() { setting };
+            options = [setting];
         else
-            options = CustomOption.AllOptions.Clone();
+            options = [..CustomOption.AllOptions];
 
         options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Button || x.ClientOnly);
         options.Reverse();
@@ -51,6 +54,9 @@ public static class RPC
 
     public static void ReceiveOptionRPC(MessageReader reader)
     {
+        if (TownOfUsReworked.MCIActive)
+            return;
+
         var count = reader.ReadInt32();
         LogInfo($"{count} options received:");
 
@@ -84,17 +90,20 @@ public static class RPC
 
     public static void ShareGameVersion()
     {
+        if (TownOfUsReworked.MCIActive)
+            return;
+
         var writer = CallOpenRpc(CustomRPC.Misc, MiscRPC.VersionHandshake, TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build,
-            TownOfUsReworked.Version.Revision, TownOfUsReworked.IsDev, TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream,
+            TownOfUsReworked.Version.Revision, TownOfUsReworked.IsDev, TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream, TownOfUsReworked.VersionFinal,
             TownOfUsReworked.Core.ManifestModule.ModuleVersionId.ToByteArray());
         writer.WritePacked(AmongUsClient.Instance.ClientId);
         writer.EndRpc();
         VersionHandshake(TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build, TownOfUsReworked.Version.Revision, TownOfUsReworked.IsDev,
-            TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream, TownOfUsReworked.Core.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
+            TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream, TownOfUsReworked.VersionFinal, TownOfUsReworked.Core.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
     }
 
-    public static void VersionHandshake(int major, int minor, int build, int revision, bool dev, int devBuild, bool stream, Guid guid, int clientId) =>
-        GameStartManagerPatch.PlayerVersions.TryAdd(clientId, new(new(major, minor, build, revision), dev, devBuild, stream, guid));
+    public static void VersionHandshake(int major, int minor, int build, int revision, bool dev, int devBuild, bool stream, string version, Guid guid, int clientId) =>
+        GameStartManagerPatch.PlayerVersions.TryAdd(clientId, new(new(major, minor, build, revision), dev, devBuild, stream, guid, version));
 
     public static PlayerControl ReadPlayer(this MessageReader reader) => PlayerById(reader.ReadByte());
 
@@ -114,12 +123,12 @@ public static class RPC
     public static CustomButton ReadButton(this MessageReader reader)
     {
         var id = reader.ReadString();
-        return CustomButton.AllButtons.Find(x => x.ID == id);
+        return AllButtons.Find(x => x.ID == id);
     }
 
     public static T ReadLayer<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayer() as T;
 
-    public static List<byte> ReadByteList(this MessageReader reader) => reader.ReadBytesAndSize().ToList();
+    public static List<byte> ReadByteList(this MessageReader reader) => [..reader.ReadBytesAndSize()];
 
     public static List<PlayerLayer> ReadLayerList(this MessageReader reader)
     {
@@ -197,12 +206,8 @@ public static class RPC
             writer.WriteBytesAndSize(list.ToArray());
         else if (item is LayerEnum layerEnum)
             writer.Write(layerEnum);
-        else if (item is TargetRPC target)
-            writer.Write((byte)target);
         else if (item is ActionsRPC action)
             writer.Write((byte)action);
-        else if (item is TurnRPC turn)
-            writer.Write((byte)turn);
         else if (item is Faction faction)
             writer.Write((byte)faction);
         else if (item is Alignment alignment)
@@ -255,7 +260,10 @@ public static class RPC
 
     public static MessageWriter CallOpenRpc(params object[] data)
     {
-        //Just to be safe
+        if (TownOfUsReworked.MCIActive)
+            return null;
+
+        // Just to be safe
         if (data[0] is object[] array)
             data = array;
 
@@ -265,7 +273,7 @@ public static class RPC
             return null;
         }
 
-        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
+        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable);
         data.ForEach(x => writer.Write(x, data));
         return writer;
     }
@@ -274,7 +282,10 @@ public static class RPC
 
     public static MessageWriter CallTargetedOpenRpc(int targetClientId, params object[] data)
     {
-        //Just to be safe
+        if (TownOfUsReworked.MCIActive)
+            return null;
+
+        // Just to be safe
         if (data[0] is object[] array)
             data = array;
 
@@ -284,7 +295,7 @@ public static class RPC
             return null;
         }
 
-        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable, targetClientId);
+        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
         data.ForEach(x => writer.Write(x, data));
         return writer;
     }
@@ -292,7 +303,10 @@ public static class RPC
     public static void EndRpc(this MessageWriter writer)
     {
         if (writer == null)
+        {
+            LogError("RPC writer was null");
             return;
+        }
 
         AmongUsClient.Instance.FinishRpcImmediately(writer);
     }

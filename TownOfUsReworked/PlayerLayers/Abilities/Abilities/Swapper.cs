@@ -11,15 +11,11 @@ public class Swapper : Ability
     public override LayerEnum Type => LayerEnum.Swapper;
     public override Func<string> Description => () => "- You can swap the votes against 2 players in meetings";
 
-    public Swapper() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         Swap1 = null;
         Swap2 = null;
         SwapMenu = new(Player, "SwapActive", "SwapDisabled", CustomGameOptions.SwapAfterVoting, SetActive, IsExempt, position: null);
-        return this;
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -28,7 +24,7 @@ public class Swapper : Ability
         SwapMenu.HideButtons();
 
         if (Swap1 && Swap2)
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, Swap1, Swap2);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Swap1, Swap2);
     }
 
     public override void ReadRPC(MessageReader reader)
@@ -75,7 +71,7 @@ public class Swapper : Ability
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (Local && Player == player && !CustomGameOptions.SwapSelf) || IsDead;
+        return player.HasDied() || (Local && Player == player && !CustomGameOptions.SwapSelf) || Dead;
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)
@@ -84,7 +80,7 @@ public class Swapper : Ability
         SwapMenu.Voted();
 
         if (Swap1 && Swap2)
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, Swap1, Swap2);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Swap1, Swap2);
     }
 
     public override void UpdateMeeting(MeetingHud __instance)

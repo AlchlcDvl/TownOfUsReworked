@@ -11,16 +11,13 @@ public class Timekeeper : Syndicate
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +
         CommonAbilities;
 
-    public Timekeeper() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
-        TimeButton = new(this, "Time", AbilityTypes.Targetless, "Secondary", TimeControl, CustomGameOptions.TimeCd, CustomGameOptions.TimeDur, Control, ControlStart, UnControl);
+        TimeButton = CreateButton(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(CustomGameOptions.TimeCd), (LabelFunc)Label,
+            new Duration(CustomGameOptions.TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl);
         Data.Role.IntroSound = GetAudio("TimekeeperIntro");
-        return this;
     }
 
     public void ControlStart() => Flash(Color, CustomGameOptions.TimeDur);
@@ -35,13 +32,9 @@ public class Timekeeper : Syndicate
 
     public void TimeControl()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, TimeButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, TimeButton);
         TimeButton.Begin();
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        TimeButton.Update2(HoldsDrive ? "REWIND" : "FREEZE");
-    }
+    public string Label() => HoldsDrive ? "REWIND" : "FREEZE";
 }

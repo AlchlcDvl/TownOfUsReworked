@@ -16,6 +16,7 @@ public static class HatManagerPatch
         var allPlates = __instance.allNamePlates.ToList();
         allPlates.AddRange(RegisteredNameplates);
         __instance.allNamePlates = allPlates.ToArray();
+        RegisteredNameplates.Clear();
         IsLoaded = true;
     }
 }
@@ -44,7 +45,7 @@ public static class NameplatesTabOnEnablePatch
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
-            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => title.SetText(packageName, true))));
+            __instance.StartCoroutine(PerformTimedAction(0.1f, _ => title.SetText(packageName, true)));
             offset -= 0.8f * __instance.YOffset;
         }
 
@@ -108,7 +109,7 @@ public static class NameplatesTabOnEnablePatch
                 package = "Misc";
 
             if (!packages.ContainsKey(package))
-                packages[package] = new();
+                packages[package] = [];
 
             packages[package].Add(data);
         }
@@ -136,7 +137,7 @@ public static class NameplatesTabOnEnablePatch
 }
 
 [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetNameplate))]
-public static class CosmeticsCacheGetPlatePatch
+public static class CosmeticsCacheGetNameplatePatch
 {
     public static bool Prefix(CosmeticsCache __instance, ref string id, ref NamePlateViewData __result)
     {

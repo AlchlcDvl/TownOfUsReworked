@@ -1,10 +1,7 @@
 namespace TownOfUsReworked.Modules;
 
-public class Language
+public class Language : Asset
 {
-    [JsonPropertyName("id")]
-    public string ID { get; set; }
-
     [JsonPropertyName("english")]
     public string English { get; set; }
 
@@ -23,7 +20,7 @@ public class Language
             };
 
             if (IsNullEmptyOrWhiteSpace(result) || !TranslationManager.SupportedLangNames.Contains(lang))
-                throw new NotImplementedException(lang);
+                throw new UnsupportedLanguageException(lang);
             else
                 return result;
         }
@@ -34,15 +31,9 @@ public class Language
             else if (lang == "SChinese")
                 SChinese = value;
             else
-                throw new NotImplementedException(lang);
+                throw new UnsupportedLanguageException(lang);
         }
     }
 
     public override string ToString() => TranslationManager.Test(ID);
-}
-
-public class LanguageJSON
-{
-    [JsonPropertyName("languages")]
-    public List<Language> Languages { get; set; }
 }

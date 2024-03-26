@@ -2,189 +2,161 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomButton
 {
-    public static readonly List<CustomButton> AllButtons = new();
+    public static readonly List<CustomButton> AllButtons = [];
 
-    public ActionButton Base { get; set; }
-    public PlayerLayer Owner { get; }
-    public string Sprite { get; }
-    public AbilityTypes Type { get; }
-    public string Keybind { get; }
-    public bool PostDeath { get; }
-    public bool HasEffect => Duration > 0;
-    public bool HasDelay => Delay > 0;
-    public Action DoClick { get; }
-    public EffectVoid Effect { get; }
-    public EffectStartVoid OnEffectStart { get; }
-    public EffectEndVoid OnEffectEnd { get; }
-    public DelayStartVoid OnDelayStart { get; }
-    public DelayEndVoid OnDelayEnd { get; }
-    public DelayVoid ActionDelay { get; }
-    public bool End { get; set; }
-    public CoUpdate Update { get; }
-    public float Cooldown { get; }
-    public float MaxCooldown { get; set; }
-    public float Duration { get; }
-    public float Delay { get; }
-    public int MaxUses { get; }
-    public bool HasUses => MaxUses > 0;
+    // Params
+    public PlayerLayer Owner { get; set; }
+    public SpriteName Sprite { get; set; }
+    public AbilityTypes Type { get; set; }
+    public KeybindType Keybind { get; set; }
+    public PostDeath PostDeath { get; set; }
+    public OnClick DoClick { get; set; }
+    public EffectVoid Effect { get; set; }
+    public EffectStartVoid OnEffectStart { get; set; }
+    public EffectEndVoid OnEffectEnd { get; set; }
+    public DelayStartVoid OnDelayStart { get; set; }
+    public DelayEndVoid OnDelayEnd { get; set; }
+    public DelayVoid ActionDelay { get; set; }
+    public EndFunc End { get; set; }
+    public Cooldown Cooldown { get; set; }
+    public DifferenceFunc Difference { get; set; }
+    public MultiplierFunc Multiplier { get; set; }
+    public Duration Duration { get; set; }
+    public Delay Delay { get; set; }
+    public int MaxUses { get; set; }
     public int Uses { get; set; }
+    public UsableFunc IsUsable { get; set; }
+    public ConditionFunc Condition { get; set; }
+    public CanClickAgain CanClickAgain { get; set; }
+    public PlayerBodyExclusion PlayerBodyException { get; set; }
+    public VentExclusion VentException { get; set; }
+    public ConsoleExclusion ConsoleException { get; set; }
+    public LabelFunc ButtonLabelFunc { get; set; }
+    public string ButtonLabel { get; set; }
+
+    // Other things
+    public ActionButton Base { get; set; }
     public bool EffectEnabled { get; set; }
     public bool DelayEnabled { get; set; }
-    public bool EffectActive => EffectTime > 0f;
-    public bool DelayActive => DelayTime > 0f;
-    public bool CooldownActive => CooldownTime > 0f;
-    public float EffectTime { get; set; }
-    public float DelayTime { get; set; }
-    public float CooldownTime { get; set; }
     public bool Targeting { get; set; }
-    public bool Clickable { get; set; }
-    public bool Usable { get; set; }
-    public bool CanClickAgain { get; set; }
     public PlayerControl TargetPlayer { get; set; }
     public DeadBody TargetBody { get; set; }
     public Vent TargetVent { get; set; }
     public Console TargetConsole { get; set; }
-    public Exclude1 PlayerException { get; set; }
-    public Exclude2 VentException { get; set; }
-    public Exclude3 ConsoleException { get; set; }
     public bool ClickedAgain { get; set; }
     private GameObject Block { get; set; }
-    public string ID { get; }
-    private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
+    public string ID { get; set; }
     public bool Disabled { get; set; }
-    public bool Blocked => Owner.IsBlocked;
-    private bool KeyDown => Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind);
-    private bool Active => IsRoaming && Owner.Local && ButtonsActive && !Disabled && Owner.IsDead == PostDeath;
-    private static bool ButtonsActive => HUD.UseButton.isActiveAndEnabled || HUD.PetButton.isActiveAndEnabled;
+    public float EffectTime { get; set; }
+    public float DelayTime { get; set; }
+    public float CooldownTime { get; set; }
 
-    public delegate bool Exclude1(PlayerControl player);
-    public delegate bool Exclude2(Vent vent);
-    public delegate bool Exclude3(Console console);
-    public delegate void EffectVoid();
-    public delegate void EffectStartVoid();
-    public delegate void EffectEndVoid();
-    public delegate void DelayVoid();
-    public delegate void DelayStartVoid();
-    public delegate void DelayEndVoid();
-    public delegate void CoUpdate();
+    // Read-onlys (onlies?)
+    public bool HasEffect => Duration.Value > 0f;
+    public bool HasDelay => Delay.Value > 0f;
+    public bool HasUses => MaxUses > 0;
+    public bool EffectActive => EffectTime > 0f;
+    public bool DelayActive => DelayTime > 0f;
+    public bool CooldownActive => CooldownTime > 0f;
+    private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
 
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, bool postDeath = false) : this(owner, sprite, type, keybind, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, bool postDeath = false) : this(owner, sprite, type, keybind, click, 0f, postDeath)
-        {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, Exclude1 exception1, bool postDeath = false) : this(owner, sprite, type, keybind,
-        click, 0f, exception1, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, bool postDeath = false) : this(owner, sprite, type, keybind, click,
-        cooldown, null, null, null, null, 0f, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, float cooldown, float duration, bool postDeath = false) : this(owner, sprite, type, keybind, null,
-        cooldown, null, null, null, null, duration, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, int uses, bool postDeath = false) : this(owner, sprite, type,
-        keybind, click, cooldown, null, null, null, null, 0f, null, null, null, 0f, uses, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, bool postDeath = false) : this(owner, sprite, type,
-        keybind, click, cooldown, null, null, null, null, duration, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, bool postDeath = false) : this(owner, sprite,
-        type, keybind, click, cooldown, exception1, null, null, null, 0f, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, int uses, bool postDeath = false) : this(owner,
-        sprite, type, keybind, click, cooldown, exception1, null, null, null, 0f, null, null, null, 0f, uses, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, int uses, bool postDeath = false) : this(owner,
-        sprite, type, keybind, click, cooldown, null, null, null, null, duration, null, null, null, 0f, uses, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, bool postDeath = false) :
-        this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, int uses, Exclude2 exception2, bool postDeath = false) : this(owner,
-        sprite, type, keybind, click, cooldown, null, null, null, null, 0f, null, null, null, 0f, true, uses, null, exception2, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, int uses, bool postDeath =
-        false) : this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, uses, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectEndVoid offEffect, bool
-        postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, null, effect, null, offEffect, duration, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, Exclude1 exception1, bool
-        postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception1, null, null, offEffect, duration, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectStartVoid onEffect, EffectEndVoid offEffect,
-        bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, null, null, onEffect, offEffect, duration, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, bool canClickAgain, bool
-        postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, canClickAgain, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectEndVoid offEffect, int
-        uses, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, null, effect, null, offEffect, duration, null, null, null, 0f, uses, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, int uses, Exclude1
-        exception1, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception1, null, null, offEffect, duration, null, null, null, 0f, uses, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectStartVoid onEffect,
-        EffectEndVoid offEffect, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, null, effect, onEffect, offEffect, duration, null, null, null, 0f, 0, null,
-        postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectEndVoid offEffect,
-        Exclude1 exception1, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception1, effect, null, offEffect, duration, null, null, null, 0f, 0, null,
-        postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
-        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, CoUpdate update, bool postDeath = false) :
-        this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, true, uses, update, null, null,
-        postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectEndVoid offEffect, float
-        delay, Exclude1 exception, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception, effect, null, offEffect, duration, null, null, null, delay, 0,
-        null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectEndVoid offEffect, float
-        delay, Exclude1 exception, bool canClickAgain, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception, effect, null, offEffect, duration, null, null,
-        null, delay, 0, canClickAgain, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
-        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, bool canClickAgain, CoUpdate update, bool
-        postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, canClickAgain,
-        uses, update, null, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
-        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, bool canClickAgain, int uses, CoUpdate update, bool
-        postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, canClickAgain,
-        uses, update, null, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
-        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, bool canClickAgain, int uses, CoUpdate update, Exclude2
-        exception2, Exclude3 exception3, bool postDeath = false)
+    public static CustomButton CreateButton(params object[] properties)
     {
-        Owner = owner;
-        Sprite = sprite;
-        Type = type;
-        DoClick = click ?? BlankVoid;
-        Keybind = keybind;
-        PostDeath = postDeath;
-        PlayerException = exception1 ?? BlankFalse;
-        VentException = exception2 ?? BlankFalse;
-        ConsoleException = exception3 ?? BlankFalse;
-        ID = Sprite + Owner.Name + Owner.PlayerName + AllButtons.Count;
-        Cooldown = cooldown;
-        Effect = effect ?? BlankVoid;
-        OnEffectStart = onEffect ?? BlankVoid;
-        OnEffectEnd = offEffect ?? BlankVoid;
-        OnDelayEnd = delayEnd ?? BlankVoid;
-        OnDelayStart = delayStart ?? BlankVoid;
-        Duration = duration;
-        ActionDelay = actionDelay ?? BlankVoid;
-        Delay = delay;
-        Uses = MaxUses = uses;
-        Update = update ?? BlankVoid;
-        CooldownTime = EffectTime = DelayTime = 0f;
-        CanClickAgain = canClickAgain;
-        Disabled = !Owner.Local;
-        CreateButton();
-        AllButtons.Add(this);
+        var button = new CustomButton();
+        var missing = new List<object>();
+
+        foreach (var prop in properties)
+        {
+            if (prop is PlayerLayer layer)
+                button.Owner = layer;
+            else if (prop is LabelFunc labelFunc)
+                button.ButtonLabelFunc = labelFunc;
+            else if (prop is SpriteName sprite)
+                button.Sprite = sprite;
+            else if (prop is AbilityTypes type)
+                button.Type = type;
+            else if (prop is KeybindType keybind)
+                button.Keybind = keybind;
+            else if (prop is PostDeath postDeath)
+                button.PostDeath = postDeath;
+            else if (prop is OnClick onClick)
+                button.DoClick = onClick;
+            else if (prop is EffectVoid effect)
+                button.Effect = effect;
+            else if (prop is EffectStartVoid onEffect)
+                button.OnEffectStart = onEffect;
+            else if (prop is EffectEndVoid offEffect)
+                button.OnEffectEnd = offEffect;
+            else if (prop is DelayStartVoid onDelay)
+                button.OnDelayStart = onDelay;
+            else if (prop is DelayEndVoid offDelay)
+                button.OnDelayEnd = offDelay;
+            else if (prop is DelayVoid delay)
+                button.ActionDelay = delay;
+            else if (prop is EndFunc end)
+                button.End = end;
+            else if (prop is Cooldown cooldown)
+                button.Cooldown = cooldown;
+            else if (prop is DifferenceFunc difference)
+                button.Difference = difference;
+            else if (prop is MultiplierFunc multiplier)
+                button.Multiplier = multiplier;
+            else if (prop is Duration duration)
+                button.Duration = duration;
+            else if (prop is Delay delay1)
+                button.Delay = delay1;
+            else if (prop is int uses)
+                button.Uses = button.MaxUses = uses;
+            else if (prop is UsableFunc usable)
+                button.IsUsable = usable;
+            else if (prop is ConditionFunc condition)
+                button.Condition = condition;
+            else if (prop is CanClickAgain canClickAgain)
+                button.CanClickAgain = canClickAgain;
+            else if (prop is PlayerBodyExclusion playerBody)
+                button.PlayerBodyException = playerBody;
+            else if (prop is VentExclusion vent)
+                button.VentException = vent;
+            else if (prop is ConsoleExclusion console)
+                button.ConsoleException = console;
+            else if (prop is string label)
+                button.ButtonLabel = label;
+            else
+                missing.Add(prop);
+        }
+
+        button.DoClick ??= BlankVoid;
+        button.PlayerBodyException ??= BlankFalse;
+        button.VentException ??= BlankFalse;
+        button.ConsoleException ??= BlankFalse;
+        button.Effect ??= BlankVoid;
+        button.OnEffectStart ??= BlankVoid;
+        button.OnEffectEnd ??= BlankVoid;
+        button.OnDelayEnd ??= BlankVoid;
+        button.OnDelayStart ??= BlankVoid;
+        button.ActionDelay ??= BlankVoid;
+        button.End ??= BlankFalse;
+        button.IsUsable ??= BlankTrue;
+        button.Condition ??= BlankTrue;
+        button.Difference ??= BlankZero;
+        button.Multiplier ??= BlankOne;
+        button.ButtonLabelFunc ??= BlankButtonLabel;
+        button.ButtonLabel ??= "ABILITY";
+        button.Cooldown ??= new(0f);
+        button.Duration ??= new(0f);
+        button.Delay ??= new(0f);
+        button.PostDeath ??= new(false);
+        button.CanClickAgain ??= new(true);
+        button.CooldownTime = button.EffectTime = button.DelayTime = 0f;
+        button.ID = button.Sprite.Value + button.Owner.Name + button.Owner.PlayerName + AllButtons.Count;
+        button.Disabled = !button.Owner.Local;
+        button.CreateButton();
+        AllButtons.Add(button);
+
+        foreach (var prop in missing)
+            LogError($"Unassigned proprty of type ({prop.GetType().Name}) was found in the button ({button.ID})");
+
+        return button;
     }
 
     private void CreateButton()
@@ -193,7 +165,8 @@ public class CustomButton
             return;
 
         Base = InstantiateButton();
-        Base.graphic.sprite = GetSprite(Sprite);
+        Base.graphic.sprite = GetSprite(Sprite.Value);
+        Base.graphic.SetCooldownNormalizedUvs();
         Base.gameObject.name = Base.name = ID;
         Base.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Clicked));
         Base.GetComponent<PassiveButton>().HoverSound = SoundEffects["Hover"];
@@ -203,6 +176,11 @@ public class CustomButton
         Block.SetActive(false);
         Block.transform.SetParent(Base.transform);
         Block.transform.localPosition = new(0f, 0f, -5f);
+
+        if (HasUses)
+            Base.SetUsesRemaining(Uses);
+        else
+            Base.SetInfiniteUses();
     }
 
     private static ActionButton InstantiateButton()
@@ -226,9 +204,9 @@ public class CustomButton
     private bool Exception(object obj)
     {
         if (obj is PlayerControl player)
-            return PlayerException(player);
+            return PlayerBodyException(player);
         else if (obj is DeadBody body)
-            return PlayerException(PlayerByBody(body));
+            return PlayerBodyException(PlayerByBody(body));
         else if (obj is Vent vent)
             return VentException(vent);
         else if (obj is Console console)
@@ -239,25 +217,28 @@ public class CustomButton
 
     public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f) => CooldownTime = type switch
     {
-        CooldownType.Start => CustomGameOptions.EnableInitialCds ? CustomGameOptions.InitialCooldowns : MaxCooldown,
-        CooldownType.Meeting => CustomGameOptions.EnableMeetingCds ? CustomGameOptions.MeetingCooldowns : MaxCooldown,
-        CooldownType.Fail => CustomGameOptions.EnableFailCds ? CustomGameOptions.FailCooldowns : MaxCooldown,
+        CooldownType.Start => CustomGameOptions.EnableInitialCds ? CustomGameOptions.InitialCooldowns : MaxCooldown(),
+        CooldownType.Meeting => CustomGameOptions.EnableMeetingCds ? CustomGameOptions.MeetingCooldowns : MaxCooldown(),
+        CooldownType.Fail => CustomGameOptions.EnableFailCds ? CustomGameOptions.FailCooldowns : MaxCooldown(),
         CooldownType.Custom => cooldown,
-        _ => MaxCooldown
+        _ => MaxCooldown()
     };
 
     public void Clicked()
     {
-        if (Clickable)
+        if (Clickable())
         {
             DoClick();
 
             if (HasUses)
+            {
                 Uses--;
+                Base.SetUsesRemaining(Uses);
+            }
 
             Play("Click");
         }
-        else if ((DelayActive || EffectActive) && CanClickAgain)
+        else if ((DelayActive || EffectActive) && CanClickAgain.Value)
         {
             ClickedAgain = true;
             CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
@@ -280,14 +261,14 @@ public class CustomButton
         if (!EffectEnabled)
         {
             OnEffectStart();
-            EffectTime = Duration;
+            EffectTime = Duration.Value;
             EffectEnabled = true;
         }
 
         EffectTime -= Time.deltaTime;
         Effect();
 
-        if (End || Meeting || ClickedAgain)
+        if (End() || Meeting || ClickedAgain || !Local || !IsInGame || !Owner || !Owner.Player)
             EffectTime = 0f;
     }
 
@@ -295,7 +276,6 @@ public class CustomButton
     {
         OnEffectEnd();
         EffectEnabled = false;
-        End = false;
         ClickedAgain = false;
         StartCooldown();
     }
@@ -305,14 +285,14 @@ public class CustomButton
         if (!DelayEnabled)
         {
             OnDelayStart();
-            DelayTime = Delay;
+            DelayTime = Delay.Value;
             DelayEnabled = true;
         }
 
         DelayTime -= Time.deltaTime;
         ActionDelay();
 
-        if (End || Meeting || ClickedAgain)
+        if (End() || Meeting || ClickedAgain || !Local || !IsInGame || !Owner || !Owner.Player)
             DelayTime = 0f;
     }
 
@@ -320,14 +300,13 @@ public class CustomButton
     {
         OnDelayEnd();
         DelayEnabled = false;
-        End = false;
         ClickedAgain = false;
         ButtonEffect();
     }
 
     private void Timer()
     {
-        if (Owner.Player == null)
+        if (!Owner || !Owner.Player || !Local)
             return;
 
         if (!((Owner.Player.inVent && !CustomGameOptions.CooldownInVent) || Owner.Player.inMovingPlat || Owner.Player.onLadder))
@@ -339,34 +318,42 @@ public class CustomButton
 
     private void SetAliveTarget()
     {
-        var previousRend = TargetPlayer?.MyRend();
+        var previous = TargetPlayer;
         TargetPlayer = Owner.Player.GetClosestPlayer(CustomPlayer.AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving())));
         Targeting = TargetPlayer != null;
-        SetOutline(previousRend, TargetPlayer?.MyRend());
+
+        if (previous != TargetPlayer)
+            SetOutline(previous?.MyRend(), TargetPlayer?.MyRend());
     }
 
     private void SetDeadTarget()
     {
-        var previousRend = TargetBody?.MyRend();
+        var previous = TargetBody;
         TargetBody = Owner.Player.GetClosestBody(AllBodies.Where(x => !Exception(x)));
         Targeting = TargetBody != null;
-        SetOutline(previousRend, TargetBody?.MyRend());
+
+        if (previous != TargetBody)
+            SetOutline(previous?.MyRend(), TargetBody?.MyRend());
     }
 
     private void SetVentTarget()
     {
-        var previousRend = TargetVent?.MyRend();
+        var previous = TargetVent;
         TargetVent = Owner.Player.GetClosestVent(AllMapVents.Where(x => !Exception(x)));
         Targeting = TargetVent != null;
-        SetOutline(previousRend, TargetVent?.MyRend());
+
+        if (previous != TargetVent)
+            SetOutline(previous?.MyRend(), TargetVent?.MyRend());
     }
 
     private void SetConsoleTarget()
     {
-        var previousRend = TargetConsole?.MyRend();
+        var previous = TargetConsole;
         TargetConsole = Owner.Player.GetClosestConsole(AllConsoles.Where(x => !Exception(x)));
         Targeting = TargetConsole != null;
-        SetOutline(previousRend, TargetConsole?.MyRend());
+
+        if (previous != TargetConsole)
+            SetOutline(previous?.MyRend(), TargetConsole?.MyRend());
     }
 
     private void SetNoTarget() => Targeting = true;
@@ -382,6 +369,26 @@ public class CustomButton
         if (newRend)
             newRend.SetOutlineColor(Owner.Color);
     }
+
+    public float MaxCooldown() => PostDeath.Value ? Cooldown.Value : Owner.Player.GetModifiedCooldown(Cooldown.Value, Difference(), Multiplier());
+
+    public string Label()
+    {
+        var result = ButtonLabelFunc();
+
+        if (result == "ABILITY")
+            result = ButtonLabel;
+
+        if (Owner.IsBlocked)
+            result = "BLOCKED";
+
+        return result;
+    }
+
+    public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive);
+
+    public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Meeting && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Owner.Local && Targeting &&
+        !Ejection && !Disabled && !CooldownActive && Base.isActiveAndEnabled && Targeting && IsRoaming && Owner.Dead == PostDeath.Value;
 
     private void SetTarget()
     {
@@ -399,7 +406,7 @@ public class CustomButton
 
     private void EnableDisable()
     {
-        if (EffectActive || Clickable || DelayActive)
+        if (EffectActive || Clickable() || DelayActive)
             Base.SetEnabled();
         else
             Base.SetDisabled();
@@ -419,57 +426,39 @@ public class CustomButton
             Timer();
     }
 
-    public void Update1()
+    public void Update()
     {
-        if (!Local || Disabled || Base == null || Owner.Player == null)
+        if (!Base || !Owner || !Owner.Player)
+            return;
+
+        if ((!Local || IsLobby || (HasUses && Uses <= 0) || Meeting || NoPlayers || !Usable() || !IsRoaming || Owner.Dead != PostDeath.Value) && !Disabled)
+            Disable();
+        else if (Disabled && Usable())
+            Enable();
+
+        if (Disabled)
             return;
 
         Base.buttonLabelText.SetOutlineColor(Owner.Color);
         Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
-        Update();
+        Base.buttonLabelText.text = Label();
+        Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled);
+
+        if (!EffectActive && !DelayActive && !CooldownActive && !Disabled && PostDeath.Value == Owner.Dead)
+            SetTarget();
+
+        EnableDisable();
 
         if (DelayActive)
             Base.SetDelay(DelayTime);
         else if (EffectActive)
-            Base.SetFillUp(EffectTime, Duration);
+            Base.SetFillUp(EffectTime, Duration.Value);
         else
-            Base.SetCoolDown(CooldownTime, MaxCooldown);
+            Base.SetCoolDown(CooldownTime, MaxCooldown());
 
-        if (HasUses)
-            Base.SetUsesRemaining(Uses);
-        else
-            Base.SetInfiniteUses();
-
-        if (KeyDown)
+        if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind.ToString()))
             Clicked();
     }
-
-    public void Update2(string label = "ABILITY", bool usable = true, bool condition = true, float difference = 0f, float multiplier = 1f)
-    {
-        if (Owner.Player == null)
-            return;
-
-        if ((!Local || IsLobby || (HasUses && Uses <= 0) || Meeting || NoPlayers || !usable || !Active) && !Disabled)
-            Disable();
-
-        if (usable && Disabled && !(HasUses && Uses <= 0))
-            Enable();
-
-        Base.buttonLabelText.text = (Blocked ? "BLOCKED" : label).ToLower();
-        MaxCooldown = PostDeath ? Cooldown : Owner.Player.GetModifiedCooldown(Cooldown, difference, multiplier);
-        Base.gameObject.SetActive(Active);
-        Block.SetActive(Blocked && Active);
-        Usable = usable && !(HasUses && Uses <= 0);
-
-        if (!EffectActive && !DelayActive && !CooldownActive && !Disabled && PostDeath == Owner.IsDead)
-            SetTarget();
-
-        Clickable = Base && !EffectActive && usable && condition && !Meeting && !Blocked && !DelayActive && !Owner.Player.CannotUse() && Owner.Local && Targeting && !Ejection && !Disabled &&
-            !CooldownActive && !(HasUses && Uses <= 0) && Base.isActiveAndEnabled && Targeting;
-        EnableDisable();
-    }
-
-    public void Update3(bool end = false) => End = Owner.Player == null || end;
 
     private void DisableTarget()
     {
@@ -507,6 +496,7 @@ public class CustomButton
     public void Disable()
     {
         Disabled = true;
+        Base.enabled = false;
         Base?.gameObject?.SetActive(false);
         DisableTarget();
     }
@@ -514,6 +504,7 @@ public class CustomButton
     public void Enable()
     {
         Disabled = false;
+        Base.enabled = true;
         Base?.gameObject?.SetActive(true);
     }
 
@@ -530,6 +521,7 @@ public class CustomButton
         Block?.Destroy();
         Base?.gameObject?.SetActive(false);
         Base?.gameObject?.Destroy();
+        Base?.Destroy();
         Base = null;
     }
 

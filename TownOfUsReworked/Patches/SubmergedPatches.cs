@@ -12,16 +12,6 @@ public static class SubmergedStartPatch
     }
 }
 
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-public static class SubmergedHudPatch
-{
-    public static void Postfix(HudManager __instance)
-    {
-        if (IsSubmerged() && CustomPlayer.Local.IsPostmortal())
-            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(CustomPlayer.Local.Caught());
-    }
-}
-
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
 public static class SubmergedPhysicsPatch
 {
@@ -44,9 +34,9 @@ public static class SubmergedExile
 
         if (obj.name.Contains("ExileCutscene"))
             SetPostmortals.ExileControllerPostfix(Ejection);
-        else if (obj.name.Contains("SpawnInMinigame") && CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
+        else if (obj.name.Contains("SpawnInMinigame") && CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast) && !CustomPlayer.LocalCustom.Dead)
         {
-            CustomPlayer.Local.GetModifier<Astral>().SetPosition();
+            ast.SetPosition();
             SetFullScreenHUD();
         }
     }

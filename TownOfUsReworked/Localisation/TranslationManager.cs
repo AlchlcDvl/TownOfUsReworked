@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Localisation;
 
 public static class TranslationManager
 {
-    public static readonly List<Language> AllTranslations = new();
+    public static readonly List<Language> AllTranslations = [];
 
     public static string CurrentLanguage => DataManager.Settings.Language.CurrentLanguage switch
     {
@@ -10,7 +10,7 @@ public static class TranslationManager
         _ => "English"
     };
 
-    public static readonly string[] SupportedLangNames = { "English", "SChinese" };
+    public static readonly string[] SupportedLangNames = ["English", "SChinese"];
 
     public static string Translate(string id, string language = null)
     {

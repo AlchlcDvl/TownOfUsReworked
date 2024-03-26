@@ -1,21 +1,14 @@
 ﻿namespace TownOfUsReworked.Objects;
 
-public class Bomb : Range
+public class Bomb(PlayerControl bomb, bool drived) : Range(bomb, CustomColorManager.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f), "Bomb")
 {
-    public List<PlayerControl> Players { get; set; }
-    public bool Drived { get; set; }
-
-    public Bomb(PlayerControl bomb, bool drived) : base(bomb, CustomColorManager.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f), "Bomb")
-    {
-        Drived = drived;
-        Players = new();
-    }
+    public bool Drived { get; set; } = drived;
 
     public void Detonate()
     {
-        Players = GetClosestPlayers(Transform.position, Size);
+        var players = GetClosestPlayers(Transform.position, Size);
 
-        foreach (var player in Players)
+        foreach (var player in players)
         {
             if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
                 RpcMurderPlayer(Owner, player, DeathReasonEnum.Bombed, false);

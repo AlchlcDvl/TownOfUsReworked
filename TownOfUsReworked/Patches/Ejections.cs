@@ -17,11 +17,11 @@ public static class ConfirmEjects
 
         var player = exiled.Object;
         var role = player.GetRole();
-        var ejectString = "";
 
         if (!role)
             return;
 
+        var ejectString = "";
         role.DeathReason = DeathReasonEnum.Ejected;
         role.KilledBy = " ";
 

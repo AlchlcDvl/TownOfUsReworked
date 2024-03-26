@@ -11,18 +11,15 @@ public class Pestilence : Neutral
     public override Func<string> Description => () => "- You can spread a deadly disease to kill everyone";
     public override DefenseEnum DefenseVal => DefenseEnum.Invincible;
 
-    public static readonly Dictionary<byte, int> Infected = new();
+    public static readonly Dictionary<byte, int> Infected = [];
 
-    public Pestilence() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Obliterate anyone who can oppose you";
         Alignment = Alignment.NeutralApoc;
-        ObliterateButton = new(this, "Obliterate", AbilityTypes.Alive, "ActionSecondary", Obliterate, CustomGameOptions.ObliterateCd, Exception);
-        return this;
+        ObliterateButton = CreateButton(this, new SpriteName("Obliterate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",
+            new Cooldown(CustomGameOptions.ObliterateCd));
     }
 
     private void Obliterate()
@@ -33,10 +30,4 @@ public class Pestilence : Neutral
 
     private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        ObliterateButton.Update2("OBLITERATE");
-    }
 }

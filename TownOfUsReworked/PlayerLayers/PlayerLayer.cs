@@ -18,9 +18,9 @@ public abstract class PlayerLayer
     public bool Winner { get; set; }
     public bool Ignore { get; set; }
 
-    public bool IsDead => Data.IsDead;
+    public bool Dead => Data.IsDead;
     public bool Disconnected => Data.Disconnected;
-    public bool IsAlive => !(IsDead || Disconnected);
+    public bool Alive => !Disconnected && !Dead;
     public bool Local => Player == CustomPlayer.Local;
 
     public GameData.PlayerInfo Data => Player?.Data;
@@ -35,17 +35,19 @@ public abstract class PlayerLayer
 
     public static bool NobodyWins { get; set; }
 
-    public static readonly List<PlayerLayer> AllLayers = new();
+    public static readonly List<PlayerLayer> AllLayers = [];
     public static List<PlayerLayer> LocalLayers => CustomPlayer.Local.GetLayers();
 
     protected PlayerLayer() => AllLayers.Add(this);
 
-    public virtual PlayerLayer Start(PlayerControl player)
+    public PlayerLayer Start(PlayerControl player)
     {
         SetPlayer(player);
+        Init();
         return this;
     }
 
+    // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
     public T Start<T>(PlayerControl player) where T : PlayerLayer => Start(player) as T;
 
     public void SetPlayer(PlayerControl player)
@@ -61,6 +63,8 @@ public abstract class PlayerLayer
 
         Player = player;
     }
+
+    public virtual void Init() {}
 
     public virtual void OnLobby() {}
 
@@ -82,8 +86,6 @@ public abstract class PlayerLayer
 
     public virtual void UpdateMap(MapBehaviour __instance) {}
 
-    public virtual void TryEndEffect() {}
-
     public virtual void ExitingLayer() {}
 
     public virtual void EnteringLayer() {}
@@ -102,7 +104,7 @@ public abstract class PlayerLayer
     {
         if (!Player || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier)
             return;
-        else if (IsDead)
+        else if (Dead)
         {
             if (Type == LayerEnum.Phantom && TasksDone && ((Role)this).Faithful)
             {
@@ -179,10 +181,16 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.MafiaWins);
                 EndGame();
             }
-            else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive)
+            else if (Type == LayerEnum.Defector && DefectorWins)
+            {
+                Objectifier.DefectorWins = true;
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.DefectorWins);
+                EndGame();
+            }
+            else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && Alive)
             {
                 Objectifier.OverlordWins = true;
-                GetLayers<Overlord>().Where(ov => ov.IsAlive).ForEach(x => x.Winner = true);
+                GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.OverlordWin);
                 EndGame();
             }
@@ -345,6 +353,12 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.HuntedWins);
                 EndGame();
             }
+            else if (Type == LayerEnum.Betrayer && role.Faction == Faction.Neutral)
+            {
+                Role.BetrayerWins = true;
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.BetrayerWin);
+                EndGame();
+            }
         }
     }
 
@@ -393,10 +407,6 @@ public abstract class PlayerLayer
     {
         AllLayers.ForEach(x => x.Delete());
         AllLayers.Clear();
-        Role.AllRoles.Clear();
-        Objectifier.AllObjectifiers.Clear();
-        Modifier.AllModifiers.Clear();
-        Ability.AllAbilities.Clear();
     }
 
     public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => x.GetType() == typeof(T) && (!x.Ignore || includeIgnored) && x.Player)

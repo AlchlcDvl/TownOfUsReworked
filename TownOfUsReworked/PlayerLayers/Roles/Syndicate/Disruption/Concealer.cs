@@ -12,18 +12,14 @@ public class Concealer : Syndicate
     public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
     public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
 
-    public Concealer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;
-        ConcealButton = new(this, "Conceal", AbilityTypes.Targetless, "Secondary", HitConceal, CustomGameOptions.ConcealCd, CustomGameOptions.ConcealDur, (CustomButton.EffectVoid)Conceal,
-            UnConceal);
-        return this;
+        ConcealButton = CreateButton(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(CustomGameOptions.ConcealCd),
+            (LabelFunc)Label, new Duration(CustomGameOptions.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal);
     }
 
     public void Conceal()
@@ -58,14 +54,14 @@ public class Concealer : Syndicate
     {
         if (HoldsDrive)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ConcealButton);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
             ConcealButton.Begin();
         }
-        else if (ConcealedPlayer == null)
+        else if (!ConcealedPlayer)
             ConcealMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ConcealButton, ConcealedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton, ConcealedPlayer);
             ConcealButton.Begin();
         }
     }
@@ -73,21 +69,22 @@ public class Concealer : Syndicate
     public bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !CustomGameOptions.ConcealMates && Faction is Faction.Intruder or
         Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.ConcealMates);
 
+    public string Label() => ConcealedPlayer || HoldsDrive ? "CONCEAL" : "SET TARGET";
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ConcealButton.Update2(ConcealedPlayer == null && !HoldsDrive ? "SET TARGET" : "CONCEAL");
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if (ConcealedPlayer != null && !HoldsDrive && !ConcealButton.EffectActive)
+            if (ConcealedPlayer && !HoldsDrive && !ConcealButton.EffectActive)
                 ConcealedPlayer = null;
 
             LogMessage("Removed a target");
         }
     }
 
-    public override void TryEndEffect() => ConcealButton.Update3(!HoldsDrive && ConcealedPlayer != null && ConcealedPlayer.HasDied());
+    public bool EndEffect() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead);
 
     public override void ReadRPC(MessageReader reader)
     {

@@ -22,18 +22,15 @@ public class Warper : Syndicate
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
         " player to another player of your choice") + $"\n{CommonAbilities}";
 
-    public Warper() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateSupport;
         WarpPlayer1 = null;
         WarpPlayer2 = null;
         WarpMenu1 = new(Player, Click1, Exception1);
         WarpMenu2 = new(Player, Click2, Exception2);
-        WarpButton = new(this, "Warp", AbilityTypes.Targetless, "ActionSecondary", Warp, CustomGameOptions.WarpCd);
+        WarpButton = CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(CustomGameOptions.WarpCd), (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;
         WasInVent = false;
@@ -46,7 +43,6 @@ public class Warper : Syndicate
         AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
         WarpObj.SetActive(true);
         Data.Role.IntroSound = GetAudio("WarperIntro");
-        return this;
     }
 
     public IEnumerator WarpPlayers()
@@ -210,7 +206,7 @@ public class Warper : Syndicate
         AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
         AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDur, new Action<float>(p =>
+        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.WarpDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -219,7 +215,7 @@ public class Warper : Syndicate
 
             if (p == 1)
                 AnimationPlaying.sprite = PortalAnimation[0];
-        })));
+        }));
     }
 
     public static void WarpAll()
@@ -261,7 +257,7 @@ public class Warper : Syndicate
             WarpMenu2.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, WarpPlayer1, WarpPlayer2);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpPlayer1, WarpPlayer2);
             Coroutines.Start(WarpPlayers());
         }
     }
@@ -273,18 +269,29 @@ public class Warper : Syndicate
         Coroutines.Start(WarpPlayers());
     }
 
+    public string Label()
+    {
+        if (HoldsDrive)
+            return "WARP";
+        else if (!WarpPlayer1)
+            return "FIRST TARGET";
+        else if (!WarpPlayer2)
+            return "SECOND TARGET";
+        else
+            return "WARP";
+    }
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        WarpButton.Update2(WarpPlayer1 == null && !HoldsDrive ? "FIRST TARGET" : (WarpPlayer2 == null && !HoldsDrive ? "SECOND TARGET" : "WARP"));
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (!HoldsDrive && !Warping)
             {
-                if (WarpPlayer2 != null)
+                if (WarpPlayer2)
                     WarpPlayer2 = null;
-                else if (WarpPlayer1 != null)
+                else if (WarpPlayer1)
                     WarpPlayer1 = null;
             }
 

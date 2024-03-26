@@ -1,14 +1,9 @@
 using AmongUs.Data.Player;
 using AmongUs.Data.Legacy;
 using Discord;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace TownOfUsReworked.Patches;
-
-[HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.InitializeOptions))]
-public static class EnableMapImps
-{
-    public static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new(0);
-}
 
 [HarmonyPatch(typeof(RoleBehaviour), nameof(RoleBehaviour.IsAffectedByComms), MethodType.Getter)]
 public static class ButtonsPatch
@@ -21,8 +16,11 @@ public static class MapBehaviourPatch
 {
     public static void Postfix(MapBehaviour __instance)
     {
-        PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMap(__instance));
-        CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
+        PlayerLayer.LocalLayers.ForEach(x => x.UpdateMap(__instance));
+        CustomArrow.AllArrows.ForEach(x => x.UpdateArrowBlip(__instance));
+
+        if (LocalBlocked)
+            __instance.Close();
     }
 }
 
@@ -38,7 +36,7 @@ public static class PooledMapIconPatch
 
         var text = __instance.GetComponentInChildren<TextMeshPro>(true);
 
-        if (text == null)
+        if (!text)
         {
             text = new GameObject("Text") { layer = 5 }.AddComponent<TextMeshPro>();
             text.transform.SetParent(__instance.transform, false);
@@ -89,6 +87,11 @@ public static class OpenMapMenuPatch
 {
     public static bool Prefix(MapBehaviour __instance, ref MapOptions opts)
     {
+        if (ClientHandler.Instance.SettingsActive)
+            return false;
+
+        ClientStuff.CloseMenus(SkipEnum.Map);
+
         if (PlayerLayer.LocalLayers.All(x => x.IsBlocked))
             return false;
 
@@ -96,11 +99,8 @@ public static class OpenMapMenuPatch
 
         if (opts.Mode is not (MapOptions.Modes.None or MapOptions.Modes.CountOverlay))
         {
-            if (CustomPlayer.Local.CanSabotage() && !(PlayerLayer.GetLayers<Grenadier>().Any(x => x.FlashButton.EffectActive) || PlayerLayer.GetLayers<PromotedGodfather>().Any(x =>
-                x.FlashButton.EffectActive)))
-            {
+            if (CustomPlayer.Local.CanSabotage() && !CustomPlayer.AllPlayers.Any(x => x.IsFlashed()))
                 __instance.ShowSabotageMap();
-            }
             else
                 __instance.ShowNormalMap();
 
@@ -132,7 +132,7 @@ public static class MapPatch
 [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
 public static class DisconnectHandler
 {
-    public static readonly List<byte> Disconnected = new();
+    public static readonly List<byte> Disconnected = [];
 
     public static void Prefix(ref PlayerControl player)
     {
@@ -180,10 +180,18 @@ public static class VisibleOverride
 {
     public static void Prefix(PlayerControl __instance, ref bool value)
     {
-        if (!__instance.IsPostmortal() || (__instance.IsPostmortal() && __instance.Caught()))
-            return;
-
-        value = !__instance.inVent;
+        if (__instance.IsPostmortal() && !__instance.Caught())
+            value = !__instance.inVent;
+        else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && __instance != CustomPlayer.Local)
+            value = !ClientGameOptions.HideOtherGhosts;
+        else if ((CustomPlayer.Local.TryGetLayer<Medium>(LayerEnum.Medium, out var med) && med.MediatedPlayers.Contains(__instance.PlayerId) && __instance != CustomPlayer.Local) ||
+            (CustomPlayer.Local.TryGetLayer<Retributionist>(LayerEnum.Retributionist, out var ret) && ret.MediatedPlayers.Contains(__instance.PlayerId) && __instance !=
+            CustomPlayer.Local))
+        {
+            value = true;
+        }
+        else
+            value = __instance == CustomPlayer.Local || !__instance.Data.IsDead;
     }
 }
 
@@ -231,7 +239,7 @@ public static class CustomMenuPatch
             var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
             panel.transform.localPosition = new(__instance.XStart + (num * __instance.XOffset), __instance.YStart + (num2 * __instance.YOffset), -1f);
             panel.SetPlayer(i, player.Data, (Action)(() => menu.Clicked(player)));
-            (panel.NameText.text, panel.NameText.color) = UpdateNames.UpdateGameName(player);
+            (panel.NameText.text, panel.NameText.color) = PlayerHandler.UpdateGameName(player);
             __instance.potentialVictims.Add(panel);
             list2.Add(panel.Button);
         }
@@ -246,10 +254,11 @@ public static class AirshipSpawnInPatch
 {
     public static void Postfix()
     {
-        if (CustomPlayer.Local.Is(LayerEnum.Astral) && CustomPlayer.Local.GetModifier<Astral>().LastPosition != Vector3.zero)
-            CustomPlayer.Local.GetModifier<Astral>().SetPosition();
+        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast) && ast.LastPosition != Vector3.zero)
+            ast.SetPosition();
 
-        SetFullScreenHUD();
+        HUD.FullScreen.enabled = true;
+        HUD.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
     }
 }
 
@@ -354,24 +363,6 @@ public static class SpeedNetworkPatch
     }
 }
 
-[HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
-public static class BegoneModstamp
-{
-    public static bool Prefix(ModManager __instance)
-    {
-        try
-        {
-            //try catch my beloved <3
-            __instance.localCamera = !HudManager.InstanceExists ? Camera.main : HUD.GetComponentInChildren<Camera>();
-            __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
-                __instance.localCamera.nearClipPlane));
-            __instance.ModStamp.gameObject.SetActive(IsEnded || NoLobby || IsLobby);
-        } catch {}
-
-        return false;
-    }
-}
-
 [HarmonyPatch(typeof(Constants), nameof(Constants.GetBroadcastVersion))]
 public static class ConstantsPatch
 {
@@ -444,9 +435,10 @@ public static class LobbyBehaviourPatch
         MCIUtils.SavedPositions.Clear();
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame;
         DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
-        OtherButtonsPatch.Page = 0;
-        OtherButtonsPatch.Buttons.Clear();
-        OtherButtonsPatch.CloseMenus();
+        ClientHandler.Instance.Page = 0;
+        ClientHandler.Instance.Buttons.Clear();
+        ClientStuff.CloseMenus();
+        // FreeplayPatches.PreviouslySelected.Clear();
 
         if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame)
             MCIUtils.CreatePlayerInstances(count);
@@ -469,55 +461,8 @@ public static class DeathPopUpPatch
 {
     public static void Prefix(HideAndSeekDeathPopup __instance)
     {
-        if (!IsCustomHnS)
-            return;
-
-        __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => __instance.text.text = $"Was {(CustomGameOptions.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}")));
-    }
-}
-
-[HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.Halt))]
-public static class TaskSnapHaltPatch
-{
-    public static bool Prefix(CustomNetworkTransform __instance)
-    {
-        if (ActiveTask)
-        {
-            __instance.body.velocity = Vector2.zero;
-            return false;
-        }
-
-        return true;
-    }
-}
-
-[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
-public static class AmongUsClientOnPlayerJoined
-{
-    public static bool Prefix(AmongUsClient __instance, ref ClientData data)
-    {
-        if (CustomGameOptions.LobbySize < __instance.allClients.Count)
-        {
-            DisconnectPlayer(__instance, data.Id);
-            return false;
-        }
-
-        return true;
-    }
-
-    private static void DisconnectPlayer(InnerNetClient _this, int clientId)
-    {
-        if (_this.AmHost)
-        {
-            var val = MessageWriter.Get(SendOption.Reliable);
-            val.StartMessage(4);
-            val.Write(_this.GameId);
-            val.WritePacked(clientId);
-            val.Write((byte)1);
-            val.EndMessage();
-            _this.SendOrDisconnect(val);
-            val.Recycle();
-        }
+        if (IsCustomHnS)
+            __instance.StartCoroutine(PerformTimedAction(0.01f, _ => __instance.text.text = $"Was {(CustomGameOptions.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}"));
     }
 }
 
@@ -545,13 +490,13 @@ public static class LadderFix
 {
     public static bool Prefix(PlayerControl __instance, ref bool b)
     {
-        if (__instance != CustomPlayer.Local || !__instance.onLadder || b || __instance.GetModifier() is not (Giant or Dwarf) || MapPatches.CurrentMap != 5)
+        if (__instance != CustomPlayer.Local || !__instance.onLadder || b || __instance.GetModifier() is not (Giant or Dwarf) || MapPatches.CurrentMap is not (5 or 4))
             return true;
 
         var ladder = UObject.FindObjectsOfType<Ladder>().OrderBy(x => Vector3.Distance(x.transform.position, __instance.transform.position)).ElementAt(0);
 
         if (!ladder.IsTop)
-            return true; //Are we at the bottom?
+            return true; // Are we at the bottom?
 
         __instance.RpcCustomSnapTo(__instance.transform.position + new Vector3(0, 0.5f, 0f));
         return true;
@@ -564,16 +509,6 @@ public static class RefreshPatch
     public static bool Prefix() => false;
 }
 
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
-public static class StartHud
-{
-    public static void Postfix(HudManager __instance)
-    {
-        Sprites.TryAdd("DefaultVent", __instance.ImpostorVentButton.graphic.sprite);
-        Sprites.TryAdd("DefaultSabotage", __instance.SabotageButton.graphic.sprite);
-    }
-}
-
 [HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]
 public static class MeetingCooldowns
 {
@@ -583,18 +518,88 @@ public static class MeetingCooldowns
             return;
 
         if (Ejection && obj == Ejection.gameObject)
+        {
             ButtonUtils.Reset(CooldownType.Meeting);
+            PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.OnRoleSelected());
+        }
         else if (ActiveTask && obj == ActiveTask.gameObject)
             CustomPlayer.Local.EnableButtons();
+    }
+}
+
+// Taken and adapted from Submerged recently going open source with their mod code
+[HarmonyPatch(typeof(KillOverlay), nameof(KillOverlay.ShowKillAnimation), typeof(GameData.PlayerInfo), typeof(GameData.PlayerInfo))]
+public static class ShowCustomAnim
+{
+    private static OverlayKillAnimation _selfDeath;
+    private static OverlayKillAnimation SelfDeath
+    {
+        get
+        {
+            // DO NOT TOUCH THIS GETTER
+            // LITERALLY DO NOT TOUCH IT
+            //
+            // The objects used in this method are in some kind of ethereal state.
+            // After very careful manipulation and a lot of time and patience,
+            // I have managed to come up with a very meticulous recipe for modifying
+            // the death animation. If you change this...you will pay with your blood!
+            //
+            // - Alex
+
+            // SIR YES SIR o7
+            // - AD
+
+            if (_selfDeath)
+                return _selfDeath;
+
+            var parent = new GameObject("SelfKillObject").DontUnload().DontDestroy().transform;
+            parent.gameObject.SetActive(false);
+            _selfDeath = UObject.Instantiate(HudManager.Instance.KillOverlay.KillAnims[0], parent);
+
+            _selfDeath.killerParts.gameObject.SetActive(false);
+            _selfDeath.killerParts = null;
+            _selfDeath.transform.Find("killstabknife").gameObject.SetActive(false);
+            _selfDeath.transform.Find("killstabknifehand").gameObject.SetActive(false);
+
+            _selfDeath.victimParts.transform.localPosition = new(-1.5f, 0, 0);
+            _selfDeath.KillType = (KillAnimType)10;
+
+            _selfDeath.gameObject.AddComponent<CustomKillAnimationPlayer>();
+            return _selfDeath;
+        }
+    }
+
+    public static bool Prefix(KillOverlay __instance, ref GameData.PlayerInfo killer, ref GameData.PlayerInfo victim)
+    {
+        if (killer.PlayerId != victim.PlayerId || AprilFoolsMode.ShouldHorseAround() || AprilFoolsMode.ShouldLongAround() || IsSubmerged())
+            return true;
+
+        __instance.ShowKillAnimation(SelfDeath, killer, victim);
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.WaitForFinish))]
+public static class WaitForFinishPatch
+{
+    public static bool Prefix(OverlayKillAnimation __instance, ref Il2CppSystem.Collections.IEnumerator __result)
+    {
+        var customKillAnim = __instance.GetComponent<CustomKillAnimationPlayer>();
+
+        if (!customKillAnim)
+            return true;
+
+        __result = customKillAnim.WaitForFinish().WrapToIl2Cpp();
+        return false;
     }
 }
 
 /*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
 public static class DebuggingClassForRandomStuff
 {
-    public static void Postfix(KeyboardJoystick __instance)
+    public static void Postfix()
     {
-        //Some sick code here
-        //Got too lazy to constantly remove it so it'll stay now, still commented tho because i love to reduce dll size :D
+        // Some sick code here
+        // Got too lazy to constantly remove it so it'll stay now, still commented tho because i love to reduce dll size :D
     }
 }*/

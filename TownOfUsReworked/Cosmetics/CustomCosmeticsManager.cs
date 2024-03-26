@@ -8,7 +8,7 @@ public static class CustomCosmeticsManager
         var size = cosmetic switch
         {
             CosmeticTypeEnum.Hat or CosmeticTypeEnum.Visor => 100f,
-            CosmeticTypeEnum.Nameplate or _ => texture.width * 0.375f
+            _ => texture.width * 0.375f
         };
         return CreateSprite(texture, path.SanitisePath(), size);
     }

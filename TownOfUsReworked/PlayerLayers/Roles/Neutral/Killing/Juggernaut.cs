@@ -13,17 +13,14 @@ public class Juggernaut : Neutral
     public override AttackEnum AttackVal => (AttackEnum)Mathf.Clamp(JuggKills, 1, 3);
     public override DefenseEnum DefenseVal => JuggKills >= 3 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Juggernaut() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Assault anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         JuggKills = 0;
-        AssaultButton = new(this, "Assault", AbilityTypes.Alive, "ActionSecondary", Assault, CustomGameOptions.AssaultCd, Exception);
-        return this;
+        AssaultButton = CreateButton(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(CustomGameOptions.AssaultCd),
+            (PlayerBodyExclusion)Exception, "ASSAULT", (DifferenceFunc)Difference);
     }
 
     public void Assault()
@@ -42,9 +39,5 @@ public class Juggernaut : Neutral
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        AssaultButton.Update2("ASSAULT", difference: -(CustomGameOptions.AssaultBonus * JuggKills));
-    }
+    public float Difference() => -(CustomGameOptions.AssaultBonus * JuggKills);
 }

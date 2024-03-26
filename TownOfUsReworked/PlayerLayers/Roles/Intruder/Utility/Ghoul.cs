@@ -11,19 +11,16 @@ public class Ghoul : Intruder
     public override string Name => "Ghoul";
     public override LayerEnum Type => LayerEnum.Ghoul;
     public override Func<string> StartText => () => "BOO!";
-    public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the "
-        + "next meeting if you are not clicked";
+    public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next" +
+        " meeting if you are not clicked";
 
-    public Ghoul() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderUtil;
         MarkedPlayer = null;
-        MarkButton = new(this, "GhoulMark", AbilityTypes.Alive, "ActionSecondary", Mark, CustomGameOptions.GhoulMarkCd, Exception1, true);
-        return this;
+        MarkButton = CreateButton(this, new SpriteName("GhoulMark"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Mark, new Cooldown(CustomGameOptions.GhoulMarkCd), "MARK",
+            (PlayerBodyExclusion)Exception1, new PostDeath(true), (UsableFunc)Usable);
     }
 
     public void Fade()
@@ -32,7 +29,6 @@ public class Ghoul : Intruder
             return;
 
         Faded = true;
-        Player.Visible = true;
         var color = new UColor(1f, 1f, 1f, 0f);
 
         var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
@@ -59,7 +55,7 @@ public class Ghoul : Intruder
     public void Mark()
     {
         MarkedPlayer = MarkButton.TargetPlayer;
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, MarkedPlayer);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MarkedPlayer);
         MarkButton.StartCooldown();
     }
 
@@ -75,16 +71,9 @@ public class Ghoul : Intruder
             DefaultOutfitAll();
     }
 
-    public bool Usable() => !Caught;
+    public bool Usable() => !Caught && !MarkedPlayer;
 
     public bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        KillButton.Disable();
-        MarkButton.Update2("MARK", MarkedPlayer != null);
-    }
 
     public override void ReadRPC(MessageReader reader) => MarkedPlayer = reader.ReadPlayer();
 }

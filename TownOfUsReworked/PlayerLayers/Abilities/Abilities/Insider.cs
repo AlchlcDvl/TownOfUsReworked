@@ -6,13 +6,5 @@ public class Insider : Ability
     public override string Name => "Insider";
     public override LayerEnum Type => LayerEnum.Insider;
     public override Func<string> Description => () => "- You can finish your tasks to see the votes of others";
-    public override bool Hidden => !CustomGameOptions.InsiderKnows && !TasksDone && !IsDead;
-
-    public Insider() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
+    public override bool Hidden => !CustomGameOptions.InsiderKnows && !TasksDone && !Dead;
 }

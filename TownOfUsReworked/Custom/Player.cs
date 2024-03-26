@@ -6,18 +6,18 @@ public class CustomPlayer
     public GameData.PlayerInfo Data => Player.Data;
     public Transform Transform => Player.transform;
     public Vector3 Position => Transform.position;
-    public bool IsDead => Data.IsDead;
+    public bool Dead => Data.IsDead;
     public bool Disconnected => Data.Disconnected;
     public float SpeedFactor => Player.GetBaseSpeed() * Player.GetModifiedSpeed();
     public Vector3 SizeFactor => new(0.7f * Size, 0.7f * Size, 1f);
-    public float Size => IsLobby || IsDead || Disconnected ? 1f : Player.GetModifiedSize();
+    public float Size => IsLobby || Dead || Disconnected ? 1f : Player.GetModifiedSize();
     public GameData.PlayerOutfit DefaultOutfit => Data.DefaultOutfit;
     public string PlayerName => Data.PlayerName;
 
     public static PlayerControl Local => PlayerControl.LocalPlayer;
     public static CustomPlayer LocalCustom => Custom(Local);
     public static List<PlayerControl> AllPlayers => PlayerControl.AllPlayerControls.Il2CppToSystem();
-    public static readonly List<CustomPlayer> AllCustomPlayers = new();
+    public static readonly List<CustomPlayer> AllCustomPlayers = [];
 
     public CustomPlayer(PlayerControl player)
     {

@@ -22,13 +22,15 @@ public static class PerformReport
 
     public static bool Prefix()
     {
+        ReportPressed = true;
+
         if (NoPlayers || IsLobby)
             return true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coward))
             return false;
 
-        return ReportPressed = LocalNotBlocked;
+        return LocalNotBlocked;
     }
 
     public static void Postfix() => ReportPressed = false;
@@ -108,7 +110,7 @@ public static class PerformPet
         if (NoPlayers || IsLobby)
             return true;
 
-        return LocalNotBlocked; //No petting for you lmao
+        return LocalNotBlocked; // No petting for you lmao
     }
 }
 
@@ -226,5 +228,53 @@ public static class Blocked
             ReportBlock.transform.position = pos;
             ReportBlock.SetActive(LocalBlocked && __instance.ReportButton.isActiveAndEnabled);
         }
+
+        __instance.KillButton.SetTarget(null);
+        __instance.KillButton.gameObject.SetActive(false);
+
+        if (__instance.ImpostorVentButton.currentTarget == null || LocalBlocked)
+            __instance.ImpostorVentButton.SetDisabled();
+        else
+            __instance.ImpostorVentButton.SetEnabled();
+
+        __instance.ImpostorVentButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "VENT";
+        __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map && Map.IsOpen) && !ActiveTask);
+        var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: CustomGameOptions.ReportDistance);
+
+        if (closestDead == null || CustomPlayer.Local.CannotUse())
+            __instance.ReportButton.SetDisabled();
+        else
+            __instance.ReportButton.SetEnabled();
+
+        __instance.ReportButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "REPORT";
+
+        if (CustomPlayer.Local.closest == null || LocalBlocked)
+            __instance.UseButton.SetDisabled();
+        else
+            __instance.UseButton.SetEnabled();
+
+        __instance.UseButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "USE";
+
+        if (LocalBlocked || CustomPlayer.Local.CannotUse())
+            __instance.PetButton.SetDisabled();
+        else
+            __instance.PetButton.SetEnabled();
+
+        __instance.PetButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "PET";
+
+        if (CustomPlayer.Local.CannotUse() || !CustomPlayer.Local.CanSabotage())
+            __instance.SabotageButton.SetDisabled();
+        else
+            __instance.SabotageButton.SetEnabled();
+
+        __instance.SabotageButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "SABOTAGE";
+        __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map && Map.IsOpen) && !ActiveTask);
+
+        if (!IsInGame)
+            __instance.AbilityButton.gameObject.SetActive(false);
+        else if (IsHnS)
+            __instance.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
+        else
+            __instance.AbilityButton.gameObject.SetActive(!Meeting && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.Dead);
     }
 }

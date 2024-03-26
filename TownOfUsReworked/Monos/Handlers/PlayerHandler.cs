@@ -1,25 +1,28 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Monos;
 
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-public static class UpdateNames
+public class PlayerHandler : MonoBehaviour
 {
-    public static readonly Dictionary<byte, string> PlayerNames = new();
-    public static readonly Dictionary<byte, string> ColorNames = new();
+    public readonly Dictionary<byte, string> PlayerNames = [];
+    public readonly Dictionary<byte, string> ColorNames = [];
     private static Vector3? NamePos;
 
-    public static void Postfix(PlayerControl __instance)
+    public static PlayerHandler Instance { get; private set; }
+
+    public PlayerHandler(IntPtr ptr) : base(ptr) => Instance = this;
+
+    public void Update()
     {
         if (NoPlayers || IsHnS || Meeting)
             return;
 
-        SetNames(__instance);
+        CustomPlayer.AllPlayers.ForEach(UpdatePlayer);
     }
 
-    private static void SetNames(PlayerControl player)
+    private static void UpdatePlayer(PlayerControl player)
     {
         NamePos ??= player.NameText().transform.localPosition;
-        PlayerNames[player.PlayerId] = player.Data.PlayerName;
-        ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
+        Instance.PlayerNames[player.PlayerId] = player.Data.PlayerName;
+        Instance.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
 
         if (IsInGame)
         {
@@ -38,24 +41,26 @@ public static class UpdateNames
         var vector = player.transform.position - CustomPlayer.Local.transform.position;
 
         if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && player != CustomPlayer.Local &&
-            !CustomPlayer.LocalCustom.IsDead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
+            !CustomPlayer.LocalCustom.Dead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
         {
             return "";
         }
 
-        player.IsMimicking(out player);
+        if (!TransitioningSize.ContainsKey(player.PlayerId))
+            player.IsMimicking(out player);
+
         var name = "";
 
-        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !ClientGameOptions.OptimisationMode)
+        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead && !ClientGameOptions.OptimisationMode)
             name = GetRandomisedName();
         else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
-        else if (CachedMorphs.ContainsKey(player.PlayerId) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
-            name = ColorNames.FirstOrDefault(x => x.Key == CachedMorphs[player.PlayerId]).Value;
-        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
+            name = Instance.ColorNames.FirstOrDefault(x => x.Key == cache).Value;
+        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
             name = "";
         else
-            name = ColorNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
+            name = Instance.ColorNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
 
         var ld = player.CurrentOutfit.ColorId.IsLighter() ? "L" : "D";
 
@@ -71,12 +76,12 @@ public static class UpdateNames
         var vector = player.transform.position - CustomPlayer.Local.transform.position;
 
         if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && player != CustomPlayer.Local &&
-            !CustomPlayer.LocalCustom.IsDead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
+            !CustomPlayer.LocalCustom.Dead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
         {
             return ("", UColor.clear);
         }
 
-        if (player != CustomPlayer.Local && !DeadSeeEverything)
+        if (player != CustomPlayer.Local && !DeadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId))
             player.IsMimicking(out player);
 
         var name = "";
@@ -85,16 +90,16 @@ public static class UpdateNames
         var localinfo = CustomPlayer.Local.GetLayers();
         var revealed = false;
 
-        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
             name = ClientGameOptions.OptimisationMode ? "" : GetRandomisedName();
         else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
-        else if (CachedMorphs.ContainsKey(player.PlayerId) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
-            name = PlayerNames.FirstOrDefault(x => x.Key == CachedMorphs[player.PlayerId]).Value;
-        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
+            name = Instance.PlayerNames.FirstOrDefault(x => x.Key == cache).Value;
+        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
             name = "";
         else
-            name = PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
+            name = Instance.PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
 
         if (info.Count != 4 || localinfo.Count != 4)
             return (name, color);
@@ -436,7 +441,7 @@ public static class UpdateNames
         }
         else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything && CustomGameOptions.NKsKnow)
         {
-            if (((player.GetRole().Type == CustomPlayer.Local.GetRole().Type && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
+            if (((player.GetRole().Type == Role.LocalRole.Type && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
                 CustomGameOptions.NoSolo == NoSolo.AllNKs)) && !revealed)
             {
                 var role = info[0] as Role;

@@ -13,14 +13,10 @@ public class Revealer : Crew
     public override Func<string> StartText => () => "OOOOOOO";
     public override Func<string> Description => () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
 
-    public Revealer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewUtil;
-        return this;
     }
 
     public void Fade()
@@ -29,7 +25,6 @@ public class Revealer : Crew
             return;
 
         Faded = true;
-        Player.Visible = true;
         var color = new UColor(1f, 1f, 1f, 0f);
 
         var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;

@@ -13,31 +13,14 @@ public class Spellslinger : Syndicate
     public override Func<string> Description => () => $"- You can spellbind players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
         $"{FactionColorString}{Faction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
 
-    public Spellslinger() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicatePower;
-        Spelled = new();
+        Spelled = [];
         SpellCount = 0;
-        SpellButton = new(this, "Spellbind", AbilityTypes.Alive, "Secondary", HitSpell, CustomGameOptions.SpellCd, Exception1);
-        return this;
-    }
-
-    public void Spellbind(PlayerControl player)
-    {
-        if (player.Is(Faction) || Spelled.Contains(player.PlayerId))
-            return;
-
-        Spelled.Add(player.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, player.PlayerId);
-
-        if (!HoldsDrive)
-            SpellCount++;
-        else
-            SpellCount = 0;
+        SpellButton = CreateButton(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(CustomGameOptions.SpellCd), "SPELLBIND",
+            (PlayerBodyExclusion)Exception1, (DifferenceFunc)Difference);
     }
 
     public void HitSpell()
@@ -45,18 +28,22 @@ public class Spellslinger : Syndicate
         var cooldown = Interact(Player, SpellButton.TargetPlayer, astral: HoldsDrive);
 
         if (cooldown != CooldownType.Fail)
-            Spellbind(SpellButton.TargetPlayer);
+        {
+            Spelled.Add(SpellButton.TargetPlayer.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SpellButton.TargetPlayer.PlayerId);
+
+            if (HoldsDrive)
+                SpellCount = 0;
+            else
+                SpellCount++;
+        }
 
         SpellButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId);
+    public bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate);
 
     public override void ReadRPC(MessageReader reader) => Spelled.Add(reader.ReadByte());
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        SpellButton.Update2("SPELLBIND", difference: SpellCount * CustomGameOptions.SpellCdIncrease);
-    }
+    public float Difference() => SpellCount * CustomGameOptions.SpellCdIncrease;
 }

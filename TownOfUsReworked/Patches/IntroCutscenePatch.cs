@@ -1,9 +1,9 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__36), nameof(IntroCutscene._ShowTeam_d__36.MoveNext))]
+[HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__38), nameof(IntroCutscene._ShowTeam_d__38.MoveNext))]
 public static class ShowTeamPatch
 {
-    public static void Postfix(IntroCutscene._ShowTeam_d__36 __instance)
+    public static void Postfix(IntroCutscene._ShowTeam_d__38 __instance)
     {
         __instance.__4__this.TeamTitle.text = Role.LocalRole.FactionName;
         __instance.__4__this.TeamTitle.color = Role.LocalRole.FactionColor;
@@ -13,10 +13,10 @@ public static class ShowTeamPatch
     }
 }
 
-[HarmonyPatch(typeof(IntroCutscene._ShowRole_d__39), nameof(IntroCutscene._ShowRole_d__39.MoveNext))]
+[HarmonyPatch(typeof(IntroCutscene._ShowRole_d__41), nameof(IntroCutscene._ShowRole_d__41.MoveNext))]
 public static class ShowRolePatch
 {
-    public static void Postfix(IntroCutscene._ShowRole_d__39 __instance)
+    public static void Postfix(IntroCutscene._ShowRole_d__41 __instance)
     {
         var role = Role.LocalRole;
         var modifier = Modifier.LocalModifier;
@@ -46,7 +46,7 @@ public static class ShowRolePatch
         __instance.__4__this.YouAreText.color = role.Color;
         __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
         __instance.__4__this.RoleBlurbText.color = role.Color;
-        __instance.__4__this.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => __instance.__4__this.YouAreText.text = "You Are The")));
+        __instance.__4__this.StartCoroutine(PerformTimedAction(0.01f, _ => __instance.__4__this.YouAreText.text = "You Are The"));
     }
 }
 

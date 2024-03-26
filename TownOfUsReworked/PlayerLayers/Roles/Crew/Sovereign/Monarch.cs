@@ -6,7 +6,7 @@ public class Monarch : Crew
     public CustomButton KnightButton { get; set; }
     public List<byte> ToBeKnighted { get; set; }
     public List<byte> Knighted { get; set; }
-    public bool Protected => Knighted.Count > 0;
+    public bool Protected => Knighted.Any();
 
     public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Monarch : CustomColorManager.Crew;
     public override string Name => "Monarch";
@@ -16,17 +16,14 @@ public class Monarch : Crew
         + "a knight is alive, you cannot be killed";
     public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Monarch() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewSov;
-        Knighted = new();
-        ToBeKnighted = new();
-        KnightButton = new(this, "Knight", AbilityTypes.Alive, "ActionSecondary", Knight, CustomGameOptions.KnightingCd, Exception, CustomGameOptions.KnightCount);
-        return this;
+        Knighted = [];
+        ToBeKnighted = [];
+        KnightButton = CreateButton(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Knight, new Cooldown(CustomGameOptions.KnightingCd),
+            (PlayerBodyExclusion)Exception, CustomGameOptions.KnightCount, (UsableFunc)Usable);
     }
 
     public void Knight()
@@ -35,7 +32,7 @@ public class Monarch : Crew
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, KnightButton.TargetPlayer.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, KnightButton.TargetPlayer.PlayerId);
             ToBeKnighted.Add(KnightButton.TargetPlayer.PlayerId);
         }
 
@@ -46,11 +43,7 @@ public class Monarch : Crew
 
     public override void ReadRPC(MessageReader reader) => ToBeKnighted.Add(reader.ReadByte());
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        KnightButton.Update2("KNIGHT", !RoundOne);
-    }
+    public bool Usable() => !RoundOne;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

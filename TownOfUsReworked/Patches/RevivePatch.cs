@@ -15,9 +15,9 @@ public static class PlayerControlRevivePatch
         __instance.Collider.enabled = true;
         __instance.cosmetics.SetPetSource(__instance);
         __instance.cosmetics.SetNameMask(true);
-        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || x == null);
-        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || x == 255);
-        Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || x == 255 || !PlayerById(x));
+        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x.PlayerId));
+        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x));
+        Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x) || !PlayerById(x));
         SetPostmortals.RemoveFromPostmortals(__instance);
         __instance.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
         var body = BodyByPlayer(__instance);
@@ -31,8 +31,8 @@ public static class PlayerControlRevivePatch
         if (IsSubmerged() && CustomPlayer.Local == __instance)
             ChangeFloor(__instance.transform.position.y > -7);
 
-        if (__instance.Is(LayerEnum.Troll))
-            __instance.GetRole<Troll>().Killed = false;
+        if (__instance.TryGetLayer<Troll>(LayerEnum.Troll, out var troll))
+            troll.Killed = false;
 
         if (!__instance.AmOwner)
             return false;

@@ -12,16 +12,13 @@ public class Bastion : Crew
     public override Func<string> Description => () => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    public Bastion() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewKill;
-        BombedIDs = new();
-        BombButton = new(this, $"{SpriteName}VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, Exception);
-        return this;
+        BombedIDs = [];
+        BombButton = CreateButton(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClick)Bomb,
+            new Cooldown(CustomGameOptions.BastionCd), (VentExclusion)Exception, CustomGameOptions.MaxBombs);
     }
 
     public static string SpriteName => MapPatches.CurrentMap switch
@@ -40,17 +37,11 @@ public class Bastion : Crew
         if (cooldown != CooldownType.Fail)
         {
             BombedIDs.Add(BombButton.TargetVent.Id);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, BombButton.TargetVent);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BombButton.TargetVent);
         }
 
         BombButton.StartCooldown(cooldown);
     }
 
     public override void ReadRPC(MessageReader reader) => BombedIDs.Add(reader.ReadInt32());
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        BombButton.Update2("PLACE BOMB");
-    }
 }

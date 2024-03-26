@@ -16,19 +16,18 @@ public class Collider : Syndicate
     public override Func<string> Description => () => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die together" +
         $"{(HoldsDrive ? "\n- You can charge yourself to kill those you marked" : "")}\n{CommonAbilities}";
 
-    public Collider() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateKill;
         Positive = null;
         Negative = null;
-        PositiveButton = new(this, "Positive", AbilityTypes.Alive, "ActionSecondary", SetPositive, CustomGameOptions.CollideCd, Exception1);
-        NegativeButton = new(this, "Negative", AbilityTypes.Alive, "Secondary", SetNegative, CustomGameOptions.CollideCd, Exception2);
-        ChargeButton = new(this, "Charge", AbilityTypes.Targetless, "Tertiary", Charge, CustomGameOptions.ChargeCd, CustomGameOptions.ChargeDur);
-        return this;
+        PositiveButton = CreateButton(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetPositive, new Cooldown(CustomGameOptions.CollideCd),
+            (PlayerBodyExclusion)Exception1, "SET POSITIVE");
+        NegativeButton = CreateButton(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)SetNegative, new Cooldown(CustomGameOptions.CollideCd),
+            (PlayerBodyExclusion)Exception2, "SET NEGATIVE");
+        ChargeButton = CreateButton(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Charge, new Cooldown(CustomGameOptions.ChargeCd), "CHARGE",
+            new Duration(CustomGameOptions.ChargeDur), (UsableFunc)Usable, (EndFunc)EndEffect);
     }
 
     public void Charge() => ChargeButton.Begin();
@@ -77,15 +76,16 @@ public class Collider : Syndicate
     public bool Exception2(PlayerControl player) => player == Positive || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None) || Player.IsLinkedTo(player);
 
+    public bool Usable() => HoldsDrive;
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        PositiveButton.Update2("SET POSITIVE");
-        NegativeButton.Update2("SET NEGATIVE");
-        ChargeButton.Update2("CHARGE", HoldsDrive);
 
-        if (IsDead)
+        if (Dead)
             return;
+
+        var shouldReset = false;
 
         if (GetDistance(Positive, Negative) <= Range)
         {
@@ -97,12 +97,7 @@ public class Collider : Syndicate
 
             Positive = null;
             Negative = null;
-
-            if (CustomGameOptions.CollideResetsCooldown)
-            {
-                PositiveButton.StartCooldown();
-                NegativeButton.StartCooldown();
-            }
+            shouldReset = true;
         }
         else if (GetDistance(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
         {
@@ -110,12 +105,7 @@ public class Collider : Syndicate
                 RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
 
             Negative = null;
-
-            if (CustomGameOptions.CollideResetsCooldown)
-            {
-                PositiveButton.StartCooldown();
-                NegativeButton.StartCooldown();
-            }
+            shouldReset = true;
         }
         else if (GetDistance(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
         {
@@ -123,16 +113,17 @@ public class Collider : Syndicate
                 RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
 
             Positive = null;
+            shouldReset = true;
+        }
 
-            if (CustomGameOptions.CollideResetsCooldown)
-            {
-                PositiveButton.StartCooldown();
-                NegativeButton.StartCooldown();
-            }
+        if (CustomGameOptions.CollideResetsCooldown && shouldReset)
+        {
+            PositiveButton.StartCooldown();
+            NegativeButton.StartCooldown();
         }
     }
 
-    public override void TryEndEffect() => ChargeButton.Update3(IsDead);
+    public bool EndEffect() => Dead;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

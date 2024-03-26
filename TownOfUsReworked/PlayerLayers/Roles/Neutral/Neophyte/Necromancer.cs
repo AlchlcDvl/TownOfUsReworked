@@ -17,11 +17,8 @@ public class Necromancer : Neutral
         "up the process";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Necromancer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
         Alignment = Alignment.NeutralNeo;
@@ -29,20 +26,19 @@ public class Necromancer : Neutral
         SubFactionColor = CustomColorManager.Reanimated;
         ResurrectedCount = 0;
         KillCount = 0;
-        Resurrected = new() { Player.PlayerId };
-        ResurrectButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", Resurrect, CustomGameOptions.ResurrectCd, CustomGameOptions.ResurrectDur, UponEnd,
-            CustomGameOptions.MaxResurrections, Exception);
-        SacrificeButton = new(this, "NecroKill", AbilityTypes.Alive, "Secondary", Kill, CustomGameOptions.NecroKillCd, Exception);
-        return this;
+        Resurrected = [Player.PlayerId];
+        ResurrectButton = CreateButton(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(CustomGameOptions.ResurrectCd),
+            new Duration(CustomGameOptions.ResurrectDur), (EffectEndVoid)UponEnd, CustomGameOptions.MaxResurrections, (PlayerBodyExclusion)Exception, "RESURRECT",
+            (DifferenceFunc)Difference1, (EndFunc)EndEffect);
+        SacrificeButton = CreateButton(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, CustomGameOptions.NecroKillCd, "SACRIFICE",
+            (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
     }
 
     public void UponEnd()
     {
-        if (!(Meeting || IsDead))
+        if (!(Meeting || Dead))
             FinishResurrect();
     }
-
-    public bool End() => IsDead;
 
     private void FinishResurrect()
     {
@@ -80,7 +76,7 @@ public class Necromancer : Neutral
         {
             ResurrectingBody = ResurrectButton.TargetBody;
             Spread(Player, PlayerByBody(ResurrectingBody));
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ResurrectButton, ResurrectingBody);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ResurrectButton, ResurrectingBody);
             ResurrectButton.Begin();
             Flash(Color, CustomGameOptions.ResurrectDur);
 
@@ -107,14 +103,11 @@ public class Necromancer : Neutral
             ResurrectButton.StartCooldown(cooldown);
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        ResurrectButton.Update2("RESURRECT", difference: CustomGameOptions.ResurrectCdIncreases ? (ResurrectedCount * CustomGameOptions.ResurrectCdIncrease) : 0);
-        SacrificeButton.Update2("SACRIFICE", difference: CustomGameOptions.NecroKillCdIncreases ? (KillCount * CustomGameOptions.NecroKillCdIncrease) : 0);
-    }
+    public float Difference1() => CustomGameOptions.ResurrectCdIncreases ? (ResurrectedCount * CustomGameOptions.ResurrectCdIncrease) : 0;
 
-    public override void TryEndEffect() => ResurrectButton.Update3(IsDead);
+    public float Difference2() => CustomGameOptions.NecroKillCdIncreases ? (KillCount * CustomGameOptions.NecroKillCdIncrease) : 0;
+
+    public bool EndEffect() => Dead;
 
     public override void ReadRPC(MessageReader reader)
     {
@@ -123,7 +116,7 @@ public class Necromancer : Neutral
         if (CustomPlayer.Local.PlayerId == ResurrectingBody.ParentId)
             Flash(CustomColorManager.Necromancer, CustomGameOptions.ResurrectDur);
 
-        if (CustomGameOptions.AltruistTargetBody)
+        if (CustomGameOptions.NecromancerTargetBody)
             ResurrectingBody.gameObject.Destroy();
     }
 }

@@ -11,17 +11,13 @@ public class Camouflager : Intruder
     public override Func<string> Description => () => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey " +
         $"with fluctuating names and no cosmetics\n{CommonAbilities}";
 
-    public Camouflager() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderConceal;
-        CamouflageButton = new(this, "Camouflage", AbilityTypes.Targetless, "Secondary", HitCamouflage, CustomGameOptions.CamouflagerCd, CustomGameOptions.CamouflageDur,
-            (CustomButton.EffectVoid)Camouflage, UnCamouflage);
+        CamouflageButton = CreateButton(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
+            new Cooldown(CustomGameOptions.CamouflagerCd), new Duration(CustomGameOptions.CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage);
         Data.Role.IntroSound = GetAudio("CamouflagerIntro");
-        return this;
     }
 
     public void Camouflage()
@@ -38,13 +34,9 @@ public class Camouflager : Intruder
 
     public void HitCamouflage()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, CamouflageButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, CamouflageButton);
         CamouflageButton.Begin();
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        CamouflageButton.Update2("CAMOUFLAGE", condition: !HudHandler.Instance.IsCamoed);
-    }
+    public bool Condition() => !HudHandler.Instance.IsCamoed;
 }

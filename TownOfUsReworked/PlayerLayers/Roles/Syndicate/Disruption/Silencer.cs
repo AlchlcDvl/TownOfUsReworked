@@ -16,16 +16,13 @@ public class Silencer : Syndicate
         "alerted at the start of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") +
         CommonAbilities;
 
-    public Silencer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         SilencedPlayer = null;
-        SilenceButton = new(this, "Silence", AbilityTypes.Alive, "Secondary", Silence, CustomGameOptions.SilenceCd, Exception1);
-        return this;
+        SilenceButton = CreateButton(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(CustomGameOptions.SilenceCd), "SILENCE",
+            (PlayerBodyExclusion)Exception1);
     }
 
     public void Silence()
@@ -35,7 +32,7 @@ public class Silencer : Syndicate
         if (cooldown != CooldownType.Fail)
         {
             SilencedPlayer = SilenceButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, SilencedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SilencedPlayer);
         }
 
         SilenceButton.StartCooldown(cooldown);
@@ -45,10 +42,4 @@ public class Silencer : Syndicate
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.SilenceMates);
 
     public override void ReadRPC(MessageReader reader) => SilencedPlayer = reader.ReadPlayer();
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        SilenceButton.Update2("SILENCE");
-    }
 }

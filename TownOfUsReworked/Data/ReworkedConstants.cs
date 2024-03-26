@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data;
 
-//Thanks to Town Of Host parts of this code
+// Thanks to Town Of Host parts of this code
 public static class ReworkedConstants
 {
     public static bool IsCountDown => GameStartManager.Instance?.startState == GameStartManager.StartingStates.Countdown;
@@ -33,23 +33,17 @@ public static class ReworkedConstants
     {
         get
         {
-            var flag = CustomPlayer.LocalCustom.IsDead && CustomGameOptions.DeadSeeEverything && Role.LocalRole.TrulyDead;
+            var flag = CustomPlayer.LocalCustom.Dead && CustomGameOptions.DeadSeeEverything && Role.LocalRole.TrulyDead;
 
             if (!flag)
                 return false;
 
             var otherFlag = false;
 
-            if (CustomPlayer.Local.Is(LayerEnum.GuardianAngel))
-            {
-                var ga = (GuardianAngel)Role.LocalRole;
-                otherFlag = !ga.Failed && ga.TargetPlayer != null && ga.TargetAlive && CustomGameOptions.ProtectBeyondTheGrave && ga.GraveProtectButton.Usable;
-            }
-            else if (CustomPlayer.Local.Is(LayerEnum.Jester))
-            {
-                var jest = (Jester)Role.LocalRole;
+            if (CustomPlayer.Local.TryGetLayer<GuardianAngel>(LayerEnum.GuardianAngel, out var ga))
+                otherFlag = !ga.Failed && ga.TargetAlive && CustomGameOptions.ProtectBeyondTheGrave && ga.GraveProtectButton.Usable();
+            else if (CustomPlayer.Local.TryGetLayer<Jester>(LayerEnum.Jester, out var jest))
                 otherFlag = jest.CanHaunt;
-            }
 
             return flag && !otherFlag;
         }
@@ -117,4 +111,8 @@ public static class ReworkedConstants
     public static bool HunterWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && x.Is(LayerEnum.Hunted));
 
     public static bool HuntedWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && x.Is(LayerEnum.Hunter));
+
+    public static bool DefectorWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(LayerEnum.Defector) && !x.Is(Faction.Neutral));
+
+    public static bool BetrayerWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(LayerEnum.Betrayer) && !(x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralEvil)));
 }

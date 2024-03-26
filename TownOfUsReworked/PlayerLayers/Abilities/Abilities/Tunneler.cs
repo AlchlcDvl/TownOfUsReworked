@@ -6,13 +6,5 @@ public class Tunneler : Ability
     public override string Name => "Tunneler";
     public override LayerEnum Type => LayerEnum.Tunneler;
     public override Func<string> Description => () => "- You can finish tasks to be able to vent";
-    public override bool Hidden => !CustomGameOptions.TunnelerKnows && !TasksDone && !IsDead;
-
-    public Tunneler() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
+    public override bool Hidden => !CustomGameOptions.TunnelerKnows && !TasksDone && !Dead;
 }

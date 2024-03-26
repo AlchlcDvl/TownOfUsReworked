@@ -17,20 +17,18 @@ public class Trapper : Crew
     public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles ineractors on " +
         "them\nor protect from an attack once and kill the attacker";
 
-    public Trapper() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderSupport;
-        Trapped = new();
-        TriggeredRoles = new();
-        BuildButton = new(this, "Build", AbilityTypes.Targetless, "Secondary", StartBuildling, CustomGameOptions.BuildCd, CustomGameOptions.BuildDur, EndBuildling, canClickAgain: false);
-        TrapButton = new(this, "Trap", AbilityTypes.Alive, "ActionSecondary", SetTrap, CustomGameOptions.TrapCd, Exception, CustomGameOptions.MaxTraps);
+        Trapped = [];
+        TriggeredRoles = [];
+        BuildButton = CreateButton(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling,
+            new Cooldown(CustomGameOptions.BuildCd), new Duration(CustomGameOptions.BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), (UsableFunc)Usable);
+        TrapButton = CreateButton(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(CustomGameOptions.TrapCd),
+            (PlayerBodyExclusion)Exception, CustomGameOptions.MaxTraps);
         TrapsMade = 0;
         TrapButton.Uses = 0;
-        return this;
     }
 
     private void StartBuildling()
@@ -52,7 +50,7 @@ public class Trapper : Crew
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, TrapperActionsRPC.Place, TrapButton.TargetPlayer.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Place, TrapButton.TargetPlayer.PlayerId);
             Trapped.Add(TrapButton.TargetPlayer.PlayerId);
         }
 
@@ -61,12 +59,7 @@ public class Trapper : Crew
 
     private bool Exception(PlayerControl player) => Trapped.Contains(player.PlayerId);
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        BuildButton.Update2("BUILD TRAP", TrapsMade < CustomGameOptions.MaxTraps);
-        TrapButton.Update2("PLACE TRAP");
-    }
+    public bool Usable() => TrapsMade < CustomGameOptions.MaxTraps;
 
     public void TriggerTrap(PlayerControl trapped, PlayerControl trigger, bool isAttack)
     {
@@ -76,11 +69,12 @@ public class Trapper : Crew
         if (!isAttack)
         {
             TriggeredRoles.Add(trigger.GetRole());
-            Trapped.Remove(trapped.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, TrapperActionsRPC.Trigger, trapped, trigger, isAttack);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Trigger, trapped, trigger, isAttack);
         }
         else
             AttackedSomeone = true;
+
+        Trapped.Remove(trapped.PlayerId);
     }
 
     public override void ReadRPC(MessageReader reader)
@@ -98,7 +92,7 @@ public class Trapper : Crew
                 break;
 
             default:
-                LogError($"Received unknown RPC - {trapAction}");
+                LogError($"Received unknown RPC - {(int)trapAction}");
                 break;
         }
     }
@@ -107,7 +101,7 @@ public class Trapper : Crew
     {
         base.OnMeetingStart(__instance);
 
-        if (!AttackedSomeone && TriggeredRoles.Count > 0)
+        if (!AttackedSomeone && TriggeredRoles.Any())
         {
             var message = "Your trap detected the following roles: ";
             TriggeredRoles.Shuffle();
@@ -117,7 +111,7 @@ public class Trapper : Crew
             if (IsNullEmptyOrWhiteSpace(message))
                 return;
 
-            //Only Trapper can see this
+            // Only Trapper can see this
             if (HUD)
                 Run("<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", message);
         }

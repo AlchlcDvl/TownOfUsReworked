@@ -14,22 +14,19 @@ public class Plaguebearer : Neutral
         + " via interaction between players";
     public override DefenseEnum DefenseVal => Infected.Count < CustomPlayer.AllPlayers.Count / 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Plaguebearer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Alignment = Alignment.NeutralHarb;
-        Infected = new() { Player.PlayerId };
-        InfectButton = new(this, "Infect", AbilityTypes.Alive, "ActionSecondary", Infect, CustomGameOptions.InfectCd, Exception);
-        return this;
+        Infected = [Player.PlayerId];
+        InfectButton = CreateButton(this, new SpriteName("Infect"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Infect, new Cooldown(CustomGameOptions.InfectCd), "INFECT",
+            (PlayerBodyExclusion)Exception);
     }
 
     public void RpcSpreadInfection(PlayerControl source, PlayerControl target)
     {
-        if ((Infected.Contains(source.PlayerId) && Infected.Contains(target.PlayerId)) || (!Infected.Contains(source.PlayerId) && !Infected.Contains(target.PlayerId)))
+        if (Infected.Contains(source.PlayerId) == Infected.Contains(target.PlayerId))
             return;
 
         byte id = 0;
@@ -48,7 +45,7 @@ public class Plaguebearer : Neutral
 
         if (changed)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, id);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, id);
             Infected.Add(id);
         }
     }
@@ -74,11 +71,10 @@ public class Plaguebearer : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        InfectButton.Update2("INFECT");
 
-        if (CanTransform && !IsDead)
+        if (CanTransform && !Dead)
         {
-            CallRpc(CustomRPC.Change, TurnRPC.TurnPestilence, this);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnPestilence();
         }
     }

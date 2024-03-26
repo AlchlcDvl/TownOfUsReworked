@@ -13,7 +13,7 @@ public static class AdminPatch
             __instance.CountAreas.ForEach(x => x.UpdateCount(0));
     }
 
-    private static void UpdateBlips(CounterArea area, List<byte> colorMapping, bool isOP)
+    private static void UpdateBlips(CounterArea area, List<byte> colorMapping, bool isOp)
     {
         area.UpdateCount(colorMapping.Count);
         var icons = area.myIcons.ToArray();
@@ -31,20 +31,20 @@ public static class AdminPatch
 
             if (sprite != null)
             {
-                if (isOP)
+                if (isOp)
                     PlayerMaterial.SetColors(colorMapping[i], sprite);
                 else
                     PlayerMaterial.SetColors(new UColor(0.8793f, 1, 0, 1), sprite);
             }
 
-            if (text != null && isOP && DataManager.Settings.Accessibility.ColorBlindMode)
+            if (text != null && isOp && DataManager.Settings.Accessibility.ColorBlindMode)
             {
                 text.gameObject.SetActive(true);
                 text.text = colorMapping[i].ToString();
 
-                //Show first row numbers below player icons
-                //Show second row numbers above player icons
-                //Show all icons on player icons when there are three rows
+                // Show first row numbers below player icons
+                // Show second row numbers above player icons
+                // Show all icons on player icons when there are three rows
 
                 if (useCompactText)
                     text.transform.localPosition = new(0, 0, -20);
@@ -56,19 +56,14 @@ public static class AdminPatch
         }
     }
 
-    private static void UpdateBlips(MapCountOverlay __instance, bool isOP)
+    private static void UpdateBlips(MapCountOverlay __instance, bool isOp)
     {
         var rooms = Ship.FastRooms;
         var colorMapDuplicate = new List<byte>();
 
         foreach (var area in __instance.CountAreas)
         {
-            if (!rooms.ContainsKey(area.RoomType))
-                continue;
-
-            var room = rooms[area.RoomType];
-
-            if (room.roomArea == null)
+            if (!rooms.TryGetValue(area.RoomType, out var room) || room.roomArea == null)
                 continue;
 
             var objectsInRoom = room.roomArea.OverlapCollider(__instance.filter, __instance.buffer);
@@ -81,7 +76,7 @@ public static class AdminPatch
                 var player = collider.GetComponent<PlayerControl>();
                 var data = player?.Data;
 
-                if (collider.tag == "DeadBody" && ((isOP && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOP && (int)CustomGameOptions.WhoSeesDead is 2) || DeadSeeEverything ||
+                if (collider.tag == "DeadBody" && ((isOp && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOp && (int)CustomGameOptions.WhoSeesDead is 2) || DeadSeeEverything ||
                     CustomGameOptions.WhoSeesDead == 0))
                 {
                     var playerId = collider.GetComponent<DeadBody>().ParentId;
@@ -100,17 +95,17 @@ public static class AdminPatch
                 }
             }
 
-            UpdateBlips(area, colorMap, isOP);
+            UpdateBlips(area, colorMap, isOp);
         }
     }
 
     public static bool Prefix(MapCountOverlay __instance)
     {
         var localPlayer = CustomPlayer.Local;
-        var isOP = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything;
+        var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything;
 
-        if (!isOP)
-            isOP = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;
+        if (!isOp)
+            isOp = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOp;
 
         __instance.timer += Time.deltaTime;
 
@@ -124,7 +119,7 @@ public static class AdminPatch
             SetSabotaged(__instance, sabotaged);
 
         if (!sabotaged)
-            UpdateBlips(__instance, isOP);
+            UpdateBlips(__instance, isOp);
 
         return false;
     }

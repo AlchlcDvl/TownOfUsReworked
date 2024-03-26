@@ -13,18 +13,14 @@ public class Drunkard : Syndicate
     public override Func<string> StartText => () => "<i>Burp</i>";
     public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
 
-    public Drunkard() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         ConfuseMenu = new(Player, Click, Exception1);
         ConfusedPlayer = null;
-        ConfuseButton = new(this, "Confuse", AbilityTypes.Targetless, "Secondary", HitConfuse, CustomGameOptions.ConfuseCd, CustomGameOptions.ConfuseDur, (CustomButton.EffectStartVoid)
-            StartConfusion, UnConfuse);
-        return this;
+        ConfuseButton = CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(CustomGameOptions.ConfuseCd),
+            new Duration(CustomGameOptions.ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (LabelFunc)Label, (EndFunc)EndEffect);
     }
 
     public void StartConfusion()
@@ -49,36 +45,37 @@ public class Drunkard : Syndicate
     {
         if (HoldsDrive)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ConfuseButton);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfuseButton);
             ConfuseButton.Begin();
         }
         else if (ConfusedPlayer == null)
             ConfuseMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ConfuseButton, ConfusedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfuseButton, ConfusedPlayer);
             ConfuseButton.Begin();
         }
     }
 
     public bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
-        !CustomGameOptions.ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.ConfuseImmunity);
+        CustomGameOptions.ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && CustomGameOptions.ConfuseImmunity);
+
+    public string Label() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
+
+    public bool EndEffect() => (ConfusedPlayer && ConfusedPlayer.HasDied()) || (!HoldsDrive && Dead);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ConfuseButton.Update2(ConfusedPlayer == null && !HoldsDrive ? "SET TARGET" : "CONFUSE");
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if (ConfusedPlayer != null && !HoldsDrive && !ConfuseButton.EffectActive)
+            if (ConfusedPlayer && !HoldsDrive && !ConfuseButton.EffectActive)
                 ConfusedPlayer = null;
 
             LogMessage("Removed a target");
         }
     }
-
-    public override void TryEndEffect() => ConfuseButton.Update3(!HoldsDrive && ConfusedPlayer != null && ConfusedPlayer.HasDied());
 
     public override void ReadRPC(MessageReader reader)
     {

@@ -14,17 +14,13 @@ public class Detective : Crew
     public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
         $"{CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
 
-    public Detective() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
-        AllPrints = new();
-        Investigated = new();
+        AllPrints = [];
+        Investigated = [];
         Alignment = Alignment.CrewInvest;
-        ExamineButton = new(this, "Examine", AbilityTypes.Alive, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
-        return this;
+        ExamineButton = CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(CustomGameOptions.ExamineCd));
     }
 
     public override void OnLobby()
@@ -64,9 +60,8 @@ public class Detective : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ExamineButton.Update2("EXAMINE");
 
-        if (!IsDead)
+        if (!Dead)
         {
             _time += Time.deltaTime;
 
@@ -97,7 +92,7 @@ public class Detective : Crew
                 }
             }
         }
-        else
+        else if (AllPrints.Count > 0)
             OnLobby();
     }
 }

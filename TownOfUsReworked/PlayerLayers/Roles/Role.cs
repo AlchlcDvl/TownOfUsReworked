@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Role : PlayerLayer
 {
-    public static readonly List<Role> AllRoles = new();
-    public static readonly List<byte> Cleaned = new();
+    public static List<Role> AllRoles => [..AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Role).Cast<Role>()];
+    public static readonly List<byte> Cleaned = [];
 
     public static Role LocalRole => CustomPlayer.Local.GetRole();
 
@@ -14,7 +14,7 @@ public abstract class Role : PlayerLayer
     public virtual Faction BaseFaction => Faction.None;
     public virtual Func<string> StartText => () => "Woah The Game Started";
 
-    public virtual List<PlayerControl> Team() => new() { Player };
+    public virtual List<PlayerControl> Team() => [Player];
 
     public static bool UndeadWin { get; set; }
     public static bool CabalWin { get; set; }
@@ -39,6 +39,7 @@ public abstract class Role : PlayerLayer
     public static bool WerewolfWins { get; set; }
 
     public static bool PhantomWins { get; set; }
+    public static bool BetrayerWins { get; set; }
 
     public static bool JesterWins { get; set; }
     public static bool ActorWins { get; set; }
@@ -60,7 +61,7 @@ public abstract class Role : PlayerLayer
 
     public static bool RoleWins => UndeadWin || CabalWin || ApocalypseWins || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins ||
         JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins || ActorWins || BountyHunterWins || CannibalWins || TrollWins ||
-        ExecutionerWins || GuesserWins || JesterWins || TaskRunnerWins || HuntedWins || HunterWins;
+        ExecutionerWins || GuesserWins || JesterWins || TaskRunnerWins || HuntedWins || HunterWins || BetrayerWins;
 
     public static bool FactionWins => CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin;
 
@@ -80,7 +81,7 @@ public abstract class Role : PlayerLayer
     public Dictionary<byte, CustomArrow> AllArrows { get; set; }
     public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
     public Dictionary<PointInTime, DateTime> Positions { get; set; }
-    public List<PointInTime> PointsInTime => Positions.Keys.ToList();
+    public List<PointInTime> PointsInTime => [..Positions.Keys];
     public Dictionary<byte, CustomArrow> YellerArrows { get; set; }
     public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
 
@@ -140,27 +141,28 @@ public abstract class Role : PlayerLayer
 
     public bool HasTarget => Type is LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.Guesser or LayerEnum.BountyHunter;
 
-    protected Role() : base() => AllRoles.Add(this);
-
     public void RoleStart()
     {
-        RoleHistory = new();
-        AllArrows = new();
-        DeadArrows = new();
-        Positions = new();
-        YellerArrows = new();
-        PlayerNumbers = new();
+        RoleHistory = [];
+        AllArrows = [];
+        DeadArrows = [];
+        Positions = [];
+        YellerArrows = [];
+        PlayerNumbers = [];
 
         /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
-            CallButton = new(this, "CallPlatform", AbilityTypes.Targetless, "Quarternary", UsePlatform);*/
+        {
+            CallButton = CreateButton(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClick)UsePlatform, (UsableFunc)CallUsable,
+                (ConditionFunc)CallCondition);
+        }*/
 
         if (!IsCustomHnS && !IsTaskRace)
         {
             if (CustomGameOptions.EnforcerOn > 0)
-                BombKillButton = new(this, "BombKill", AbilityTypes.Alive, "Quarternary", BombKill);
+                BombKillButton = CreateButton(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
 
             if (CustomGameOptions.BountyHunterOn > 0 && CustomGameOptions.BountyHunterCanPickTargets)
-                PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Alive, "Quarternary", PlaceHit);
+                PlaceHitButton = CreateButton(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
         }
     }
 
@@ -187,7 +189,7 @@ public abstract class Role : PlayerLayer
         {
             if (yeller.Player != Player)
             {
-                if (!yeller.IsDead)
+                if (!yeller.Dead)
                 {
                     if (!YellerArrows.ContainsKey(yeller.PlayerId))
                         YellerArrows.Add(yeller.PlayerId, new(Player, CustomColorManager.Yeller));
@@ -210,10 +212,6 @@ public abstract class Role : PlayerLayer
                 pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position);
         }
 
-        BombKillButton?.Update2("KILL", Bombed);
-        PlaceHitButton?.Update2("PLACE HIT", Requesting);
-        //CallButton?.Update("CALL PLATFORM", IsInPosition(), CanCall());
-
         if (__instance.TaskPanel)
         {
             var tabText = __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>();
@@ -221,22 +219,22 @@ public abstract class Role : PlayerLayer
 
             if (Player.CanDoTasks())
             {
-                var color = "FF0000FF";
+                var color = "FF00";
 
                 if (TasksDone)
-                    color = "00FF00FF";
+                    color = "00FF";
                 else if (TasksCompleted > 0)
-                    color = "FFFF00FF";
+                    color = "FFFF";
 
-                text = $"Tasks <color=#{color}>({TasksCompleted}/{TotalTasks})</color>";
+                text = $"Tasks <color=#{color}00FF>({TasksCompleted}/{TotalTasks})</color>";
             }
             else
-                text = "Fake Tasks";
+                text = "<color=#FF0000FF>Fake Tasks</color>";
 
             tabText.SetText(text);
         }
 
-        if (!IsDead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity) && Faction != Faction.GameMode)
+        if (!Dead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity) && Faction != Faction.GameMode && CustomPlayer.AllPlayers.Any(x => x.Is(LayerEnum.Timekeeper)))
         {
             if (!Rewinding)
             {
@@ -253,7 +251,7 @@ public abstract class Role : PlayerLayer
 
                 toBeRemoved.ForEach(x => Positions.Remove(x));
             }
-            else if (Positions.Count > 0)
+            else if (Positions.Any())
             {
                 var point = PointsInTime[^1];
                 Player.RpcCustomSnapTo(point.Position);
@@ -264,9 +262,13 @@ public abstract class Role : PlayerLayer
         }
     }
 
-    /*private bool CanCall() => ((IsLeft && PlayerIsLeft) || (!IsLeft && !PlayerIsLeft)) && !PlateformIsUsed && MapPatches.CurrentMap != 4;
+    public bool BombUsable() => Bombed;
 
-    private bool IsInPosition()
+    public bool RequestUsable() => Requesting;
+
+    /*private bool CallCondition() => IsLeft == PlayerIsLeft && !PlateformIsUsed && MapPatches.CurrentMap != 4;
+
+    private bool CallUsable()
     {
         if (MapPatches.CurrentMap != 4)
             return false;
@@ -292,7 +294,7 @@ public abstract class Role : PlayerLayer
 
     private static void UsePlatform()
     {
-        if (!PlateformIsUsed && LocalRole.CanCall() && LocalRole.IsInPosition())
+        if (!PlateformIsUsed && LocalRole.CanCall() && LocalRole.CallUsable())
             UsePlateforRpc();
     }
 
@@ -359,8 +361,11 @@ public abstract class Role : PlayerLayer
     public override void OnLobby()
     {
         base.OnLobby();
+
         AllArrows.Values.ToList().DestroyAll();
         AllArrows.Clear();
+
+        RoleHistory.Clear();
     }
 
     public override void UpdateMap(MapBehaviour __instance)
@@ -368,9 +373,6 @@ public abstract class Role : PlayerLayer
         base.UpdateMap(__instance);
         __instance.ColorControl.baseColor = Color;
         __instance.ColorControl.SetColor(Color);
-
-        if (IsBlocked)
-            __instance.Close();
     }
 
     public void GenText(PlayerVoteArea voteArea)
@@ -431,7 +433,7 @@ public abstract class Role : PlayerLayer
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        TrulyDead = IsDead;
+        TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
         AllVoteAreas.ForEach(GenText);
         AllRoles.ForEach(x => x.CurrentChannel = ChatChannel.All);
         GetLayers<Thief>().ForEach(x => x.GuessMenu.HideButtons());
@@ -464,7 +466,7 @@ public abstract class Role : PlayerLayer
                 bh.TargetPlayer = bh.TentativeTarget;
                 bh.Assigned = true;
 
-                //Ensures only the Bounty Hunter sees this
+                // Ensures only the Bounty Hunter sees this
                 if (HUD && bh.Local)
                     Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
             }
@@ -543,7 +545,7 @@ public abstract class Role : PlayerLayer
             if (role2.ShieldedPlayer == player)
             {
                 role2.ShieldedPlayer = null;
-                role2.ExShielded = player;
+                role2.ShieldBroken = true;
 
                 if (TownOfUsReworked.IsTest)
                     LogMessage(player.name + " Is Ex-Shielded");
@@ -558,7 +560,7 @@ public abstract class Role : PlayerLayer
             if (role2.ShieldedPlayer == player)
             {
                 role2.ShieldedPlayer = null;
-                role2.ExShielded = player;
+                role2.ShieldBroken = true;
 
                 if (TownOfUsReworked.IsTest)
                     LogMessage(player.name + " Is Ex-Shielded");
@@ -610,9 +612,11 @@ public abstract class Role : PlayerLayer
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
 
-    public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && !x.Ignore).ToList();
+    public static List<Role> GetRoles(Faction faction) => [..AllRoles.Where(x => x.Faction == faction && !x.Ignore)];
 
-    public static List<Role> GetRoles(Alignment ra) => AllRoles.Where(x => x.Alignment == ra && !x.Ignore).ToList();
+    public static List<Role> GetRoles(Alignment ra) => [..AllRoles.Where(x => x.Alignment == ra && !x.Ignore)];
 
-    public static List<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction && !x.Ignore).ToList();
+    public static List<Role> GetRoles(SubFaction subfaction) => [..AllRoles.Where(x => x.SubFaction == subfaction && !x.Ignore)];
+
+    public static T LocalRoleAs<T>() where T : Role => LocalRole as T;
 }

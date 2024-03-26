@@ -2,15 +2,15 @@ namespace TownOfUsReworked.Cosmetics.CustomColors;
 
 public static class CustomColorManager
 {
-    public static readonly List<CustomColor> AllColors = new();
+    public static readonly List<CustomColor> AllColors = [];
 
     public static void SetColor(Renderer rend, int id)
     {
         if (!rend || OutOfBounds(id))
             return;
 
-        rend.material.SetColor(PlayerMaterial.BackColor, GetColor(id, true));
-        rend.material.SetColor(PlayerMaterial.BodyColor, GetColor(id, false));
+        rend.material.SetColor(PlayerMaterial.BackColor, id.GetColor(true));
+        rend.material.SetColor(PlayerMaterial.BodyColor, id.GetColor(false));
         rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
     }
 
@@ -22,7 +22,7 @@ public static class CustomColorManager
 
     public static bool IsLighter(this int id) => !OutOfBounds(id) && AllColors.Find(x => x.ColorID == id).Lighter;
 
-    public static UColor GetColor(int id, bool shadow)
+    public static UColor GetColor(this int id, bool shadow)
     {
         var custom = AllColors.Find(x => x.ColorID == id);
         return shadow ? custom.ShadowColor : custom.MainColor;
@@ -39,7 +39,7 @@ public static class CustomColorManager
         var parts = input.Split(',');
 
         if (parts.Length is not (3 or 4))
-            throw new ArgumentOutOfRangeException(input);
+            throw new IncorrectLengthException(input);
 
         var result = new List<byte>();
         parts.ForEach(x => result.Add(byte.Parse(x)));
@@ -55,7 +55,7 @@ public static class CustomColorManager
         }
         catch
         {
-            bytes = new();
+            bytes = [];
             return false;
         }
     }
@@ -116,21 +116,21 @@ public static class CustomColorManager
         return gradientText;
     }
 
-    //Layer Colors
+    // Layer Colors
     public static readonly UColor Role = FromHex("#FFD700FF");
     public static readonly UColor Modifier = FromHex("#7F7F7FFF");
     public static readonly UColor Ability = FromHex("#FF9900FF");
     public static readonly UColor Layer = FromHex("#2684C1FF");
     public static readonly UColor Objectifier = FromHex("#DD585BFF");
 
-    //Faction Colors
+    // Faction Colors
     public static readonly UColor Crew = FromHex("#8CFFFFFF");
     public static readonly UColor Neutral = FromHex("#B3B3B3FF");
     public static readonly UColor Intruder = FromHex("#FF1919FF");
     public static readonly UColor Syndicate = FromHex("#008000FF");
     public static readonly UColor Faction = FromHex("#00E66DFF");
 
-    //Game Mode Colors
+    // Game Mode Colors
     public static readonly UColor GameMode = FromHex("#A81538FF");
     public static readonly UColor TaskRace = FromHex("#1E49CFFF");
     public static readonly UColor HideAndSeek = FromHex("#7500AFFF");
@@ -140,14 +140,14 @@ public static class CustomColorManager
     public static readonly UColor RoleList = FromHex("#FA1C79FF");
     public static readonly UColor KillingOnly = FromHex("#06E00CFF");
 
-    //Task Race Colors
+    // Task Race Colors
     public static readonly UColor Runner = FromHex("#ECC23EFF");
 
-    //Hide And Seek Colors
+    // Hide And Seek Colors
     public static readonly UColor Hunter = FromHex("#FF004EFF");
     public static readonly UColor Hunted = FromHex("#1F51FFFF");
 
-    //Subfaction Colors
+    // Subfaction Colors
     public static readonly UColor Undead = FromHex("#7B8968FF");
     public static readonly UColor Cabal = FromHex("#575757FF");
     public static readonly UColor Reanimated = FromHex("#E6108AFF");
@@ -157,7 +157,7 @@ public static class CustomColorManager
     public static readonly UColor Attack = FromHex("#E37C21FF");
     public static readonly UColor Defense = FromHex("#2B0538FF");
 
-    //Crew Colors
+    // Crew Colors
     public static readonly UColor Mayor = FromHex("#704FA8FF");
     public static readonly UColor Vigilante = FromHex("#FFFF00FF");
     public static readonly UColor Engineer = FromHex("#FFA60AFF");
@@ -184,7 +184,7 @@ public static class CustomColorManager
     public static readonly UColor Dictator = FromHex("#00CB97FF");
     public static readonly UColor Trapper = FromHex("#BE1C8CFF");
 
-    //Neutral Colors
+    // Neutral Colors
     public static readonly UColor Jester = FromHex("#F7B3DAFF");
     public static readonly UColor Executioner = FromHex("#CCCCCCFF");
     public static readonly UColor Glitch = FromHex("#00FF00FF");
@@ -212,7 +212,7 @@ public static class CustomColorManager
     public static readonly UColor BountyHunter = FromHex("#B51E39FF");
     public static readonly UColor Betrayer = FromHex("#11806AFF");
 
-    //Intruder Colors
+    // Intruder Colors
     public static readonly UColor Consigliere = FromHex("#FFFF99FF");
     public static readonly UColor Grenadier = FromHex("#85AA5BFF");
     public static readonly UColor Morphling = FromHex("#BB45B0FF");
@@ -230,7 +230,7 @@ public static class CustomColorManager
     public static readonly UColor Ghoul = FromHex("#F1C40FFF");
     public static readonly UColor Enforcer = FromHex("#005643FF");
 
-    //Syndicate Colors
+    // Syndicate Colors
     public static readonly UColor Warper = FromHex("#8C7140FF");
     public static readonly UColor Framer = FromHex("#00FFFFFF");
     public static readonly UColor Rebel = FromHex("#FFFCCEFF");
@@ -248,7 +248,7 @@ public static class CustomColorManager
     public static readonly UColor Timekeeper = FromHex("#3769FEFF");
     public static readonly UColor Silencer = FromHex("#AAB43EFF");
 
-    //Modifier Colors
+    // Modifier Colors
     public static readonly UColor Bait = FromHex("#00B3B3FF");
     public static readonly UColor Coward = FromHex("#456BA8FF");
     public static readonly UColor Diseased = FromHex("#374D1EFF");
@@ -264,7 +264,7 @@ public static class CustomColorManager
     public static readonly UColor Yeller = FromHex("#F6AAB7FF");
     public static readonly UColor Colorblind = FromHex("#B34D99FF");
 
-    //Ability Colors
+    // Ability Colors
     public static readonly UColor Assassin = FromHex("#073763FF");
     public static readonly UColor Torch = FromHex("#FFFF99FF");
     public static readonly UColor Tunneler = FromHex("#E91E63FF");
@@ -280,7 +280,7 @@ public static class CustomColorManager
     public static readonly UColor Politician = FromHex("#CCA3CCFF");
     public static readonly UColor Swapper = FromHex("#66E666FF");
 
-    //Objectifier Colors
+    // Objectifier Colors
     public static readonly UColor Lovers = FromHex("#FF66CCFF");
     public static readonly UColor Traitor = FromHex("#370D43FF");
     public static readonly UColor Rivals = FromHex("#3D2D2CFF");
@@ -293,7 +293,7 @@ public static class CustomColorManager
     public static readonly UColor Defector = FromHex("#E1C849FF");
     public static readonly UColor Linked = FromHex("#FF351FFF");
 
-    //Other
+    // Other
     public static readonly UColor Stalemate = FromHex("#E6E6E6FF");
     public static readonly UColor Alignment = FromHex("#1D7CF2FF");
     public static readonly UColor Status = FromHex("#9B59B6FF");
@@ -304,18 +304,18 @@ public static class CustomColorManager
     public static readonly UColor What = FromHex("#6697FFFF");
     public static readonly UColor FirstShield = FromHex("#C2185BFF");
 
-    //Stuff
+    // Stuff
     public static readonly Color32 NormalVision = new(212, 212, 212, 0);
     public static readonly Color32 DimVision = new(212, 212, 212, 51);
     public static readonly Color32 BlindVision = new(212, 212, 212, 255);
 
-    //Color Storage
-    //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b #80B3FF
-    //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038 #EDC240
-    //#6a1515 #569d29 #f1612b #7d86e1 #EC62A5 #78c689 #fccc52 #6b2d2a #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C
-    //#1E300B #F3A6D3 #F9BFA7 #E1E4E4 #869919 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14 #A9A9A9 #8BFDFD
-    //#1A3270 #20A1B7 #606168 #99007F #ECFF45 #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #B34D99 #FFC34F
+    // Color Storage
+    // #dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b #80B3FF
+    // #4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038 #EDC240
+    // #6a1515 #569d29 #f1612b #7d86e1 #EC62A5 #78c689 #fccc52 #6b2d2a #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C
+    // #1E300B #F3A6D3 #F9BFA7 #E1E4E4 #869919 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14 #A9A9A9 #8BFDFD
+    // #1A3270 #20A1B7 #606168 #99007F #ECFF45 #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #B34D99 #FFC34F
 
-    //Symbol Storage
-    //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 王 ī l · ° ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
+    // Symbol Storage
+    // ⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 王 ī l · ° ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
 }

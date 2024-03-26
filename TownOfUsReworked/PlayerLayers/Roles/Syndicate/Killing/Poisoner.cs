@@ -14,21 +14,19 @@ public class Poisoner : Syndicate
     public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {CustomGameOptions.PoisonDur}s\n" +
         CommonAbilities;
 
-    public Poisoner() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         PoisonedPlayer = null;
         Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);
-        PoisonButton = new(this, "Poison", AbilityTypes.Alive, "ActionSecondary", HitPoison, CustomGameOptions.PoisonCd, CustomGameOptions.PoisonDur, UnPoison, Exception1);
-        GlobalPoisonButton = new(this, "GlobalPoison", AbilityTypes.Targetless, "ActionSecondary", HitGlobalPoison, CustomGameOptions.PoisonCd, CustomGameOptions.PoisonDur, UnPoison);
-        return this;
+        PoisonButton = CreateButton(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(CustomGameOptions.PoisonCd), "POISON",
+            new Duration(CustomGameOptions.PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (UsableFunc)Usable1, (EndFunc)EndEffect);
+        GlobalPoisonButton = CreateButton(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)Label,
+            new Cooldown(CustomGameOptions.PoisonCd), CustomGameOptions.PoisonDur, (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);
     }
 
-    public bool End() => PoisonedPlayer.HasDied() || IsDead;
+    public bool EndEffect() => PoisonedPlayer.HasDied() || Dead;
 
     public void UnPoison()
     {
@@ -48,15 +46,19 @@ public class Poisoner : Syndicate
             GlobalPoisonButton.StartCooldown(cooldown);
     }
 
+    public string Label() => PoisonedPlayer ? "POISON" : "SET TARGET";
+
+    public bool Usable1() => !HoldsDrive;
+
+    public bool Usable2() => HoldsDrive;
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        GlobalPoisonButton.Update2(PoisonedPlayer == null && HoldsDrive ? "SET TARGET" : "POISON", HoldsDrive);
-        PoisonButton.Update2("POISON", !HoldsDrive);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if (PoisonedPlayer != null && HoldsDrive && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
+            if (PoisonedPlayer && HoldsDrive && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
                 PoisonedPlayer = null;
 
             LogMessage("Removed a target");
@@ -73,7 +75,7 @@ public class Poisoner : Syndicate
         if (cooldown != CooldownType.Fail)
         {
             PoisonedPlayer = PoisonButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, PoisonButton, PoisonedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, PoisonButton, PoisonedPlayer);
             PoisonButton.Begin();
         }
         else
@@ -82,11 +84,11 @@ public class Poisoner : Syndicate
 
     public void HitGlobalPoison()
     {
-        if (PoisonedPlayer == null)
+        if (!PoisonedPlayer)
             PoisonMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, GlobalPoisonButton, PoisonedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, GlobalPoisonButton, PoisonedPlayer);
             GlobalPoisonButton.Begin();
         }
     }

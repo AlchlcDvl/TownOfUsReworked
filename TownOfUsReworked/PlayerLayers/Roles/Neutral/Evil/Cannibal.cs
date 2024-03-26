@@ -16,18 +16,14 @@ public class Cannibal : Neutral
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
         + "an arrow pointing to their body" : "");
 
-    public Cannibal() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
-        BodyArrows = new();
+        BodyArrows = [];
         EatNeed = Math.Min(CustomGameOptions.BodiesNeeded, CustomPlayer.AllPlayers.Count / 2);
-        EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat, CustomGameOptions.EatCd);
-        return this;
+        EatButton = CreateButton(this, new SpriteName("Eat"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Eat, new Cooldown(CustomGameOptions.EatCd), "EAT", (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -43,12 +39,13 @@ public class Cannibal : Neutral
         BodyArrows.Clear();
     }
 
+    public bool Usable() => CanEat;
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        EatButton.Update2("EAT", CanEat);
 
-        if (CustomGameOptions.EatArrows && !IsDead)
+        if (CustomGameOptions.EatArrows && !Dead)
         {
             var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(CustomGameOptions.EatArrowDelay) < DateTime.UtcNow));
 

@@ -19,19 +19,22 @@ public class Cryomaniac : Neutral
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Cryomaniac() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Freeze anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        Doused = new();
-        DouseButton = new(this, "CryoDouse", AbilityTypes.Alive, "ActionSecondary", Douse, CustomGameOptions.CryoDouseCd, Exception);
-        FreezeButton = new(this, "Freeze", AbilityTypes.Targetless, "Secondary", Freeze);
-        KillButton = new(this, "CryoKill", AbilityTypes.Alive, "Tertiary", Kill, CustomGameOptions.CryoKillCd, Exception);
-        return this;
+        Doused = [];
+        DouseButton = CreateButton(this, new SpriteName("CryoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(CustomGameOptions.CryoDouseCd), "DOUSE",
+            (PlayerBodyExclusion)Exception);
+        FreezeButton = CreateButton(this, new SpriteName("Freeze"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)FreezeUnFreeze, (LabelFunc)Label, (UsableFunc)Doused.Any);
+
+        if (CustomGameOptions.CryoLastKillerBoost)
+        {
+            KillButton = CreateButton(this, new SpriteName("CryoKill"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Kill, new Cooldown(CustomGameOptions.CryoKillCd), "KILL",
+                (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
+        }
+
     }
 
     public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
@@ -42,7 +45,7 @@ public class Cryomaniac : Neutral
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, target.PlayerId);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -84,15 +87,11 @@ public class Cryomaniac : Neutral
         DouseButton.StartCooldown(cooldown);
     }
 
-    public void Freeze() => FreezeUsed = true;
+    public void FreezeUnFreeze() => FreezeUsed = !FreezeUsed;
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        DouseButton.Update2("DOUSE");
-        FreezeButton.Update2("FREEZE", Doused.Count > 0 && !FreezeUsed);
-        KillButton.Update2("KILL", LastKiller);
-    }
+    public string Label() => (FreezeUsed ? "UN" : "") + "FREEZE";
+
+    public bool Usable() => LastKiller;
 
     public override void ReadRPC(MessageReader reader) => Doused.Add(reader.ReadByte());
 }

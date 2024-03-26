@@ -17,18 +17,16 @@ public class Arsonist : Neutral
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Arsonist() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Burn anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        Doused = new();
-        DouseButton = new(this, "ArsoDouse", AbilityTypes.Alive, "ActionSecondary", Douse, CustomGameOptions.ArsoDouseCd, Exception);
-        IgniteButton = new(this, "Ignite", AbilityTypes.Targetless, "Secondary", Ignite, CustomGameOptions.IgniteCd);
-        return this;
+        Doused = [];
+        DouseButton = CreateButton(this, new SpriteName("ArsoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(CustomGameOptions.ArsoDouseCd),
+            (PlayerBodyExclusion)Exception, "DOUSE");
+        IgniteButton = CreateButton(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Ignite, new Cooldown(CustomGameOptions.IgniteCd), "IGNITE",
+            (UsableFunc)Doused.Any);
     }
 
     public void Ignite()
@@ -86,18 +84,11 @@ public class Arsonist : Neutral
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, target.PlayerId);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
     }
 
-    public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction
-        is Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        DouseButton.Update2("DOUSE");
-        IgniteButton.Update2("IGNITE", Doused.Count > 0);
-    }
+    public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
+        Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
     public override void ReadRPC(MessageReader reader) => Doused.Add(reader.ReadByte());
 }

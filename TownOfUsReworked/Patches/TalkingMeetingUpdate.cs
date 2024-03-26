@@ -8,11 +8,11 @@ public static class MeetingHudStart
 
     public static void Postfix()
     {
-        BeingBlackmailed = CustomPlayer.Local.IsBlackmailed() && !CustomPlayer.LocalCustom.IsDead;
-        BeingSilenced = CustomPlayer.Local.IsSilenced() && !CustomPlayer.LocalCustom.IsDead;
+        BeingBlackmailed = CustomPlayer.Local.IsBlackmailed() && !CustomPlayer.LocalCustom.Dead;
+        BeingSilenced = CustomPlayer.Local.IsSilenced() && !CustomPlayer.LocalCustom.Dead;
 
         if (BeingBlackmailed && BeingSilenced)
-            Coroutines.Start(Shhh("RIP BLACKMAILED AND SILENCED"));
+            Coroutines.Start(Shhh("RIP YOU ARE BLACKMAILED AND SILENCED"));
         else if (BeingSilenced || BeingBlackmailed)
             Coroutines.Start(Shhh($"YOU ARE {(BeingBlackmailed ? "BLACKMAILED" : "SILENCED")}"));
     }

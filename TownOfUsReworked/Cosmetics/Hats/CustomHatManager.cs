@@ -2,20 +2,13 @@ namespace TownOfUsReworked.Cosmetics.CustomHats;
 
 public static class CustomHatManager
 {
-    public static readonly List<CustomHat> UnregisteredHats = new();
-    public static readonly List<HatData> RegisteredHats = new();
-    public static readonly Dictionary<string, HatViewData> CustomHatViewDatas = new();
-    public static readonly Dictionary<string, HatExtension> CustomHatRegistry = new();
-
-    private static Material Shader;
-
-    public static HatExtension TestExtension { get; private set; }
+    public static readonly List<CustomHat> UnregisteredHats = [];
+    public static readonly List<HatData> RegisteredHats = [];
+    public static readonly Dictionary<string, HatViewData> CustomHatViewDatas = [];
+    public static readonly Dictionary<string, HatExtension> CustomHatRegistry = [];
 
     public static HatData CreateHatBehaviour(CustomHat ch)
     {
-        if (Shader == null)
-            Shader = HatManager.Instance.PlayerMaterial;
-
         var hat = ScriptableObject.CreateInstance<HatData>().DontDestroy();
         var viewData = ScriptableObject.CreateInstance<HatViewData>().DontDestroy();
         viewData.MainImage = CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.ID), CosmeticTypeEnum.Hat);
@@ -26,6 +19,7 @@ public static class CustomHatManager
         viewData.FloorImage = ch.FloorID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FloorID), CosmeticTypeEnum.Hat) : viewData.MainImage;
         viewData.LeftMainImage = ch.FlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FlipID), CosmeticTypeEnum.Hat) : viewData.MainImage;
         viewData.LeftFloorImage = ch.FloorFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FloorFlipID), CosmeticTypeEnum.Hat) : viewData.FloorImage;
+        viewData.MatchPlayerColor = ch.Adaptive;
         hat.SpritePreview = viewData.MainImage;
         hat.name = ch.Name;
         hat.displayOrder = 99;
@@ -35,10 +29,6 @@ public static class CustomHatManager
         hat.ChipOffset = new(0f, 0.2f);
         hat.Free = true;
         hat.NotInStore = true;
-
-        if (ch.Adaptive && Shader != null)
-            viewData.AltShader = Shader;
-
         hat.ViewDataRef = new(viewData.Pointer);
         hat.CreateAddressableAsset();
 
@@ -51,14 +41,7 @@ public static class CustomHatManager
             TestOnly = ch.TestOnly
         };
 
-        if (ch.TestOnly)
-        {
-            TestExtension = extend;
-            TestExtension.Condition = hat.name;
-        }
-        else
-            CustomHatRegistry.TryAdd(hat.name, extend);
-
+        CustomHatRegistry.TryAdd(hat.name, extend);
         CustomHatViewDatas.TryAdd(hat.ProductId, viewData);
         return hat;
     }
@@ -116,9 +99,6 @@ public static class CustomHatManager
     {
         if (hat == null)
             return null;
-
-        if (TestExtension?.Condition == hat.name)
-            return TestExtension;
 
         CustomHatRegistry.TryGetValue(hat.name, out var ret);
         return ret;

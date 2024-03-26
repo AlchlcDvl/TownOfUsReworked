@@ -49,8 +49,8 @@ public static class CalculateLightRadiusPatch
         {
             var t = __instance.MaxLightRadius;
 
-            if (__instance.Systems.ContainsKey(SystemTypes.Electrical))
-                t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>().Value / 255f);
+            if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system))
+                t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, system.Cast<SwitchSystem>().Value / 255f);
 
             __result = t * (pc.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision : CustomGameOptions.CrewVision);
         }

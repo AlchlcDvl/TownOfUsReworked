@@ -13,18 +13,14 @@ public class Banshee : Syndicate
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
 
-    public Banshee() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateUtil;
-        Blocked = new();
-        RoleBlockImmune = true; //Not taking chances
-        ScreamButton = new(this, "Scream", AbilityTypes.Targetless, "ActionSecondary", HitScream, CustomGameOptions.ScreamCd, CustomGameOptions.ScreamDur, (CustomButton.EffectVoid)Scream,
-            UnScream, true);
-        return this;
+        Blocked = [];
+        RoleBlockImmune = true; // Not taking chances
+        ScreamButton = CreateButton(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitScream, new Cooldown(CustomGameOptions.ScreamCd),
+            new Duration(CustomGameOptions.ScreamDur), (EffectVoid)Scream, (EffectEndVoid)UnScream, new PostDeath(true), "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
     }
 
     public void Scream() => Blocked.ForEach(y => PlayerById(y).GetLayers().ForEach(x => x.IsBlocked = !PlayerById(y).GetRole().RoleBlockImmune));
@@ -41,7 +37,6 @@ public class Banshee : Syndicate
             return;
 
         Faded = true;
-        Player.Visible = true;
         var color = new UColor(1f, 1f, 1f, 0f);
 
         var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
@@ -84,18 +79,13 @@ public class Banshee : Syndicate
                 Blocked.Add(player.PlayerId);
         }
 
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ScreamButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ScreamButton);
         ScreamButton.Begin();
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        KillButton.Disable();
-        ScreamButton.Update2("SCREAM", !Caught);
-    }
+    public bool Usable() => !Caught;
 
-    public override void TryEndEffect() => ScreamButton.Update3(Caught);
+    public bool EndEffect() => Caught;
 
     public override void ReadRPC(MessageReader reader)
     {

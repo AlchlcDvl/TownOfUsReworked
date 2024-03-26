@@ -41,7 +41,7 @@ public static class ListExtensions
 
     public static T Random<T>(this IEnumerable<T> enumerable, T defaultVal)
     {
-        if (enumerable.Count() == 0)
+        if (!enumerable.Any())
             return defaultVal;
         else
             return enumerable.Random();
@@ -71,11 +71,11 @@ public static class ListExtensions
             if (temp.Count == splitCount)
             {
                 result.Add(temp);
-                temp = new();
+                temp = [];
             }
         }
 
-        if (temp.Count > 0)
+        if (temp.Any())
             result.Add(temp);
 
         return result;
@@ -111,7 +111,7 @@ public static class ListExtensions
             var index = predicate(item);
 
             if (!result.ContainsKey(index))
-                result[index] = new();
+                result[index] = [];
 
             result[index].Add(item);
         }

@@ -13,7 +13,7 @@ public static class HandleDisconnect
             {
                 var votesRegained = pol.ExtraVotes.RemoveAll(x => x == player2.PlayerId);
                 pol.VoteBank += votesRegained;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, pol, PoliticianActionsRPC.Add, votesRegained);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, pol, PoliticianActionsRPC.Add, votesRegained);
             }
         }
 
@@ -28,9 +28,6 @@ public static class HandleDisconnect
         SetPostmortals.RemoveFromPostmortals(pc);
         MarkMeetingDead(pc, false, true);
         OnGameEndPatch.AddSummaryInfo(pc, true);
-
-        if (!OnGameEndPatch.Disconnected.Any(x => x.PlayerName == player2.name))
-            OnGameEndPatch.AddSummaryInfo(pc, true);
     }
 }
 
@@ -224,7 +221,7 @@ public static class PatchVoteBloops
     public static bool Prefix(MeetingHud __instance, ref GameData.PlayerInfo voterPlayer, ref int index, ref Transform parent)
     {
         var insiderFlag = CustomPlayer.Local.Is(LayerEnum.Insider) && Role.LocalRole.TasksDone;
-        var deadFlag = CustomGameOptions.DeadSeeEverything && CustomPlayer.LocalCustom.IsDead;
+        var deadFlag = CustomGameOptions.DeadSeeEverything && CustomPlayer.LocalCustom.Dead;
 
         if (CustomGameOptions.AnonymousVoting == AnonVotes.NotVisible && !(deadFlag || insiderFlag))
             return false;

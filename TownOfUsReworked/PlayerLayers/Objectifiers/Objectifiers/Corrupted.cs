@@ -11,21 +11,11 @@ public class Corrupted : Objectifier
     public override Func<string> Description => () => "- Corrupt everyone";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Corrupted() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
-        CorruptButton = new(this, "Corrupt", AbilityTypes.Alive, "Quarternary", Corrupt, CustomGameOptions.CorruptCd);
+        CorruptButton = CreateButton(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)Corrupt, new Cooldown(CustomGameOptions.CorruptCd));
         Player.GetRole().Alignment = Player.GetRole().Alignment.GetNewAlignment(Faction.Neutral);
-        return this;
     }
 
     private void Corrupt() => CorruptButton.StartCooldown(Interact(Player, CorruptButton.TargetPlayer, true));
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        CorruptButton.Update2("CORRUPT");
-    }
 }

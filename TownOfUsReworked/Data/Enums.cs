@@ -13,8 +13,8 @@ public enum ActionsRPC
     SetUninteractable,
     Burn,
     PlaceHit,
-    LayerAction1,
-    LayerAction2,
+    ButtonAction,
+    LayerAction,
     Cancel,
     PublicReveal,
     Infect,
@@ -69,29 +69,6 @@ public enum InfoType
     GameMode,
     Symbol,
     Other,
-
-    None
-}
-
-public enum TurnRPC
-{
-    TurnPestilence,
-    TurnVigilante,
-    TurnGodfather,
-    TurnRebel,
-    TurnTraitor,
-    TurnFanatic,
-    TurnSeer,
-    TurnSheriff,
-    TurnTraitorBetrayer,
-    TurnFanaticBetrayer,
-    TurnJest,
-    TurnSurv,
-    TurnAct,
-    TurnTroll,
-    TurnThief,
-    TurnSides,
-    TurnRole,
 
     None
 }
@@ -319,22 +296,6 @@ public enum CustomPlayerOutfitType
     NightVision
 }
 
-public enum TargetRPC
-{
-    SetCouple,
-    SetDuo,
-    SetLinked,
-    SetAlliedFaction,
-
-    SetExeTarget,
-    SetGATarget,
-    SetGuessTarget,
-    SetBHTarget,
-    SetActPretendList,
-
-    None
-}
-
 public enum MiscRPC
 {
     SetLayer,
@@ -361,6 +322,10 @@ public enum MiscRPC
     MoveBody,
     LoadPreset,
     EndRoleGen,
+    SyncConvertible,
+    RemoveTarget,
+    SetTarget,
+    ChangeRoles,
 
     None
 }
@@ -369,8 +334,6 @@ public enum CustomRPC
 {
     Action,
     WinLose,
-    Change,
-    Target,
     Misc,
     Test,
     Vanilla,
@@ -380,7 +343,7 @@ public enum CustomRPC
 
 public enum VanillaRPC
 {
-    SnapTo,
+    SnapTo/*,
     SetScanner,
     EndGame,
     StartMeeting,
@@ -394,7 +357,7 @@ public enum VanillaRPC
     SendChat,
     EnterVent,
     ExitVent,
-    StartCounter
+    StartCounter*/
 }
 
 public enum PlayerLayerEnum
@@ -640,6 +603,7 @@ public enum WinLoseRPC
     GuesserWin,
     ActorWin,
     BountyHunterWin,
+    BetrayerWin,
 
     CrewWin,
     IntruderWin,
@@ -662,6 +626,7 @@ public enum WinLoseRPC
     CorruptedWin,
     OverlordWin,
     MafiaWins,
+    DefectorWins,
 
     NobodyWins,
 
@@ -838,7 +803,11 @@ public enum ChatChannel
 public enum DefectorFaction
 {
     Random,
+    NonFaction,
+    NonNeutral,
+    NonCrew,
     OpposingEvil,
+    Neutral,
     Crew
 }
 
@@ -935,4 +904,12 @@ public enum WerewolfVentOptions
     Attacking,
     NotAttacking,
     Never
+}
+
+public enum KeybindType
+{
+    ActionSecondary,
+    Secondary,
+    Tertiary,
+    Quarternary
 }

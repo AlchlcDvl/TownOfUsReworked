@@ -9,24 +9,24 @@ public class ChatCommand
     private delegate void ExecuteArgsCommand(string[] args);
     private delegate void ExecuteArglessCommand();
 
-    private static readonly List<ChatCommand> AllCommands = new()
-    {
-        new(new[] { "controls", "ctrl", "mci" }, Controls),
-        new(new[] { "kick", "k", "ban", "b" }, KickBan),
-        new(new[] { "summary", "sum" }, Summary),
-        new(new[] { "clearlobby", "cl", "clear" }, Clear),
-        new(new[] { "setname", "sn", "name" }, SetName),
-        new(new[] { "setcolor", "setcolour", "sc", "color", "colour" }, SetColor),
-        new(new[] { "whisper", "w" }, Whisper),
-        new(new[] { "testargs", "targ" }, TestArgs),
-        new(new[] { "testargless", "targless" }, TestArgless),
-        new(new[] { "help", "h" }, Help),
-        new(new[] { "translate", "trans" }, Translate),
-        new(new[] { "rpc" }, SendRPC)
-    };
+    private static readonly List<ChatCommand> AllCommands =
+    [
+        new(["controls", "ctrl", "mci"], Controls),
+        new(["kick", "k", "ban", "b"], KickBan),
+        new(["summary", "sum"], Summary),
+        new(["clearlobby", "cl", "clear"], Clear),
+        new(["setname", "sn", "name"], SetName),
+        new(["setcolor", "setcolour", "sc", "color", "colour"], SetColor),
+        new(["whisper", "w"], Whisper),
+        new(["help", "h"], Help)/*,
+        new(["testargs", "targ"], TestArgs),
+        new(["testargless", "targless"], TestArgless),
+        new(["translate", "trans"], Translate),
+        new(["rpc"], SendRPC)*/
+    ];
 
-    //As much as I hate to do this, people will take advantage of this function so we're better off doing this early
-    private static readonly string[] profanities = { "fuck", "bastard", "cunt", "bitch", "ass", "nigg", "nig", "neg", "whore", "negro", "dick", "penis", "yiff", "rape", "rapist" };
+    // As much as I hate to do this, people will take advantage of this function so we're better off doing this early
+    private static readonly string[] profanities = ["fuck", "bastard", "cunt", "bitch", "ass", "nigg", "nig", "neg", "whore", "negro", "dick", "penis", "yiff", "rape", "rapist"];
     private const string disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
 
     private ChatCommand(string[] aliases) => Aliases = aliases;
@@ -114,7 +114,7 @@ public class ChatCommand
         args[2..].ForEach(arg => message += $"{arg} ");
         message = message.Remove(message.Length - 1);
 
-        if (CustomPlayer.LocalCustom.IsDead)
+        if (CustomPlayer.LocalCustom.Dead)
             Run("<color=#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
         else if (CustomPlayer.Local.IsBlackmailed())
             Run("<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
@@ -269,7 +269,6 @@ public class ChatCommand
         var arg = "";
         args[1..].ForEach(arg2 => arg += $"{arg2} ");
         arg = arg.Remove(arg.Length - 1);
-
         var target = CustomPlayer.AllPlayers.Find(x => x.Data.PlayerName == arg);
 
         if (target == null)
@@ -310,7 +309,7 @@ public class ChatCommand
         + "the control panel (local only)\nTab/Backspace - Change pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu\n1 - 9 - Jump between "
         + "setting pages (in lobby)");
 
-    private static void TestArgs(string[] args)
+    /*private static void TestArgs(string[] args)
     {
         var message = "You entered the following params:\n";
         args[1..].ForEach(arg => message += $"{arg}, ");
@@ -333,5 +332,5 @@ public class ChatCommand
             Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<translate | trans> <text id>");
         else
             Run("<color=#B148E2FF>◈ Success ◈</color>", TranslationManager.Test(args[1]));
-    }
+    }*/
 }

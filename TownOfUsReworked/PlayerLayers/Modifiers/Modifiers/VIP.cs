@@ -6,13 +6,5 @@ public class VIP : Modifier
     public override string Name => "VIP";
     public override LayerEnum Type => LayerEnum.VIP;
     public override Func<string> Description => () => "- Your death will alert everyone and will have an arrow pointing at your body";
-    public override bool Hidden => !CustomGameOptions.VIPKnows && !IsDead;
-
-    public VIP() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
+    public override bool Hidden => !CustomGameOptions.VIPKnows && !Dead;
 }

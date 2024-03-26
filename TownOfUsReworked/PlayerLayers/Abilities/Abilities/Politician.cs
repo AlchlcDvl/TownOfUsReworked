@@ -16,14 +16,10 @@ public class Politician : Ability
     public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
 
-    public Politician() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         VoteBank = CustomGameOptions.PoliticianVoteBank;
-        ExtraVotes = new();
-        return this;
+        ExtraVotes = [];
     }
 
     private void UpdateButton(MeetingHud __instance)
@@ -79,7 +75,7 @@ public class Politician : Ability
 
         UpdateButton(__instance);
 
-        if (IsDead || __instance.TimerText.text.Contains("Can Vote"))
+        if (Dead || __instance.TimerText.text.Contains("Can Vote"))
             return;
 
         __instance.TimerText.text = $"Can Vote: {VoteBank} time(s) | {__instance.TimerText.text}";
@@ -141,7 +137,7 @@ public class Politician : Ability
                 break;
 
             default:
-                LogError($"Received unknown RPC - {polAction}");
+                LogError($"Received unknown RPC - {(int)polAction}");
                 break;
         }
     }

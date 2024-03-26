@@ -1,25 +1,15 @@
 namespace TownOfUsReworked.Modules;
 
-public class Info
+public class Info(string name, string shortF, string description, UColor color, InfoType type, bool header = false)
 {
-    public string Name { get; }
-    public string Short { get; set; }
-    public string Description { get; set; }
-    public UColor Color { get; set; }
-    public InfoType Type { get; }
-    public bool Header { get; }
+    public string Name { get; } = name;
+    public string Short { get; set; } = shortF;
+    public string Description { get; set; } = description;
+    public UColor Color { get; set; } = color;
+    public InfoType Type { get; } = type;
+    public bool Header { get; } = header;
 
-    public static readonly List<Info> AllInfo = new();
-
-    public Info(string name, string shortF, string description, UColor color, InfoType type, bool header = false)
-    {
-        Name = name;
-        Short = shortF;
-        Description = description;
-        Color = color;
-        Type = type;
-        Header = header;
-    }
+    public static readonly List<Info> AllInfo = [];
 
     public static void SetAllInfo() => AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllObjectifiers, LayerInfo.AllFactions,
         LayerInfo.AllSubFactions, LayerInfo.AllModes, LayerInfo.AllOthers, LayerInfo.AllSymbols);
@@ -51,40 +41,28 @@ public class Info
     public virtual void WikiEntry(out string result) => result = "";
 }
 
-public class RoleInfo : Info
+public class RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, UColor color, LayerEnum role, string attack = "None", string
+    defense = "None", string wincon = "", bool header = false) : Info(name, shortF, description, color, InfoType.Role, header)
 {
-    public string Alignment { get; }
-    public string ColoredAlignment { get; }
-    public string WinCon { get; }
-    public string Quote { get; }
-    public string Attack { get; }
-    public string Defense { get; }
-    public Faction Faction { get; }
-    public LayerEnum Role { get; }
+    public string Alignment { get; } = alignmentEnum.AlignmentName();
+    public string ColoredAlignment { get; } = alignmentEnum.AlignmentName(true);
+    public string WinCon { get; } = faction switch
+    {
+        Faction.Syndicate => SyndicateObjective,
+        Faction.Crew => CrewObjective,
+        Faction.Intruder => IntruderObjective,
+        Faction.Neutral or Faction.GameMode => wincon,
+        _ => "Invalid"
+    };
+    public string Quote { get; } = quote;
+    public string Attack { get; } = attack;
+    public string Defense { get; } = defense;
+    public Faction Faction { get; } = faction;
+    public LayerEnum Role { get; } = role;
 
     private const string IntruderObjective = "Have a critical sabotage set off by the Intruders reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew and opposing Neutrals.";
     private const string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, Crew and opposing Neutrals.";
     private const string CrewObjective = "Finish tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, and opposing Neutrals.";
-
-    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, UColor color, LayerEnum role, string attack = "None", string
-        defense = "None", string wincon = "", bool header = false) : base(name, shortF, description, color, InfoType.Role, header)
-    {
-        Faction = faction;
-        Role = role;
-        Quote = quote;
-        Alignment = alignmentEnum.AlignmentName();
-        ColoredAlignment = alignmentEnum.AlignmentName(true);
-        Attack = attack;
-        Defense = defense;
-        WinCon = faction switch
-        {
-            Faction.Syndicate => SyndicateObjective,
-            Faction.Crew => CrewObjective,
-            Faction.Intruder => IntruderObjective,
-            Faction.Neutral or Faction.GameMode => wincon,
-            _ => "Invalid"
-        };
-    }
 
     public override void WikiEntry(out string result)
     {
@@ -333,17 +311,11 @@ public class AlignmentInfo : Info
     }
 }
 
-public class ModifierInfo : Info
+public class ModifierInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum modifier, bool header = false) : Info(name, shortF, description, color,
+    InfoType.Modifier, header)
 {
-    public string AppliesTo { get; }
-    public LayerEnum Modifier { get; }
-
-    public ModifierInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum modifier, bool header = false) : base(name, shortF, description, color,
-        InfoType.Modifier, header)
-    {
-        AppliesTo = applies;
-        Modifier = modifier;
-    }
+    public string AppliesTo { get; } = applies;
+    public LayerEnum Modifier { get; } = modifier;
 
     public override void WikiEntry(out string result)
     {
@@ -355,21 +327,13 @@ public class ModifierInfo : Info
     }
 }
 
-public class ObjectifierInfo : Info
+public class ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum objectifier, bool header = false) :
+    Info(name, shortF, description, color, InfoType.Objectifier, header)
 {
-    public string AppliesTo { get; }
-    public string WinCon { get; }
-    public string Symbol { get; }
-    public LayerEnum Objectifier { get; }
-
-    public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum objectifier, bool header = false) : base(name,
-        shortF, description, color, InfoType.Objectifier, header)
-    {
-        AppliesTo = applies;
-        WinCon = wincon;
-        Symbol = symbol;
-        Objectifier = objectifier;
-    }
+    public string AppliesTo { get; } = applies;
+    public string WinCon { get; } = wincon;
+    public string Symbol { get; } = symbol;
+    public LayerEnum Objectifier { get; } = objectifier;
 
     public override void WikiEntry(out string result)
     {
@@ -383,17 +347,11 @@ public class ObjectifierInfo : Info
     }
 }
 
-public class AbilityInfo : Info
+public class AbilityInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum ability, bool header = false) : Info(name, shortF, description, color,
+    InfoType.Ability, header)
 {
-    public string AppliesTo { get; }
-    public LayerEnum Ability { get; }
-
-    public AbilityInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum ability, bool header = false) : base(name, shortF, description, color,
-        InfoType.Ability, header)
-    {
-        AppliesTo = applies;
-        Ability = ability;
-    }
+    public string AppliesTo { get; } = applies;
+    public LayerEnum Ability { get; } = ability;
 
     public override void WikiEntry(out string result)
     {
@@ -405,10 +363,8 @@ public class AbilityInfo : Info
     }
 }
 
-public class Lore : Info
+public class Lore(string name, string story, string shortF, UColor color) : Info(name, shortF, story, color, InfoType.Lore)
 {
-    public Lore(string name, string story, string shortF, UColor color) : base(name, shortF, story, color, InfoType.Lore) {}
-
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
@@ -416,12 +372,10 @@ public class Lore : Info
     }
 }
 
-public class OtherInfo : Info
+public class OtherInfo(string name, string shortF, string description, UColor color, string otherNotes = "", bool header = false) : Info(name, shortF, description, color, InfoType.Other,
+    header)
 {
-    public string OtherNotes { get; }
-
-    public OtherInfo(string name, string shortF, string description, UColor color, string otherNotes = "", bool header = false) : base(name, shortF, description, color, InfoType.Other,
-        header) => OtherNotes = otherNotes;
+    public string OtherNotes { get; } = otherNotes;
 
     public override void WikiEntry(out string result)
     {
@@ -478,11 +432,9 @@ public class GameModeInfo : Info
     }
 }
 
-public class SymbolInfo : Info
+public class SymbolInfo(string name, string symbol, string description, UColor color, bool header = false) : Info(name, "", description, color, InfoType.GameMode, header)
 {
-    public string Symbol { get; }
-
-    public SymbolInfo(string name, string symbol, string description, UColor color, bool header = false) : base(name, "", description, color, InfoType.GameMode, header) => Symbol = symbol;
+    public string Symbol { get; } = symbol;
 
     public override void WikiEntry(out string result)
     {

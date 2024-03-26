@@ -13,16 +13,13 @@ public class Consigliere : Intruder
     public override Func<string> Description => () => $"- You can reveal a player's {Option}\n{CommonAbilities}";
     public override Func<string> Attributes => () => Player.IsAssassin() && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "";
 
-    public Consigliere() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderSupport;
-        Investigated = new();
-        InvestigateButton = new(this, "Investigate", AbilityTypes.Alive, "Secondary", Investigate, CustomGameOptions.InvestigateCd, Exception1);
-        return this;
+        Investigated = [];
+        InvestigateButton = CreateButton(this, new SpriteName("Investigate"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Investigate, new Cooldown(CustomGameOptions.InvestigateCd),
+            (PlayerBodyExclusion)Exception1, "INVESTIGATE");
     }
 
     public void Investigate()
@@ -39,10 +36,4 @@ public class Consigliere : Intruder
         (player.Is(SubFaction) && SubFaction != SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) ||
         (Player.IsOtherRival(player) && CustomGameOptions.RivalsRoles) || (player.Is(LayerEnum.Mafia) && Player.Is(LayerEnum.Mafia) && CustomGameOptions.MafiaRoles) ||
         (Player.IsOtherLink(player) && CustomGameOptions.LinkedRoles);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        InvestigateButton.Update2("INVESTIGATE");
-    }
 }

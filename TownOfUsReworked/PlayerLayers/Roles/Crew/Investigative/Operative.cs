@@ -13,17 +13,14 @@ public class Operative : Crew
     public override Func<string> Description => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +
         " meeting\n- You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
 
-    public Operative() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewInvest;
-        BuggedPlayers = new();
-        Bugs = new();
-        BugButton = new(this, "Bug", AbilityTypes.Targetless, "ActionSecondary", PlaceBug, CustomGameOptions.BugCd, CustomGameOptions.MaxBugs);
-        return this;
+        BuggedPlayers = [];
+        Bugs = [];
+        BugButton = CreateButton(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(CustomGameOptions.BugCd),
+            CustomGameOptions.MaxBugs, (ConditionFunc)Condition);
     }
 
     public override void OnLobby()
@@ -36,6 +33,10 @@ public class Operative : Crew
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
+
+        if (Dead)
+            return;
+
         var message = "";
 
         if (BuggedPlayers.Count == 0)
@@ -66,10 +67,12 @@ public class Operative : Crew
             Run("<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
+    public bool Condition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.Transform.position) < x.Size * 2);
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BugButton.Update2("BUG", condition: !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.Transform.position) < x.Size * 2));
+        Bugs.ForEach(x => x.Update());
     }
 
     public void PlaceBug()

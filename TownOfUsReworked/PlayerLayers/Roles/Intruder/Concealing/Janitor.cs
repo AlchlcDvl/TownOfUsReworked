@@ -14,18 +14,16 @@ public class Janitor : Intruder
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
         CommonAbilities;
 
-    public Janitor() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
-        DragButton = new(this, "Drag", AbilityTypes.Dead, "Tertiary", Drag, CustomGameOptions.DragCd);
-        DropButton = new(this, "Drop", AbilityTypes.Targetless, "Tertiary", Drop);
-        CleanButton = new(this, "Clean", AbilityTypes.Dead, "Secondary", Clean, CustomGameOptions.CleanCd);
-        return this;
+        DragButton = CreateButton(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(CustomGameOptions.DragCd), "DRAG BODY",
+            (UsableFunc)Usable1);
+        DropButton = CreateButton(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
+        CleanButton = CreateButton(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CustomGameOptions.CleanCd), "CLEAN BODY",
+            (UsableFunc)Usable1, (DifferenceFunc)Difference);
     }
 
     public void Clean()
@@ -43,8 +41,8 @@ public class Janitor : Intruder
     {
         CurrentlyDragging = DragButton.TargetBody;
         Spread(Player, PlayerByBody(CurrentlyDragging));
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, CurrentlyDragging);
-        CurrentlyDragging.gameObject.AddComponent<DragBehaviour>().SetDrag(Player, CurrentlyDragging);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CurrentlyDragging);
+        DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
     }
 
     public void Drop()
@@ -52,23 +50,21 @@ public class Janitor : Intruder
         if (!CurrentlyDragging)
             return;
 
-        CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
-        CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
+        CallRpc(CustomRPC.Action, ActionsRPC.Drop, Player);
+        DragHandler.Instance.StopDrag(Player);
         CurrentlyDragging = null;
         DragButton.StartCooldown();
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        CleanButton.Update2("CLEAN BODY", CurrentlyDragging == null, difference: LastImp && CustomGameOptions.SoloBoost && !IsDead ? -CustomGameOptions.UnderdogKillBonus : 0);
-        DragButton.Update2("DRAG BODY", CurrentlyDragging == null);
-        DropButton.Update2("DROP BODY", !DragButton.Usable);
-    }
+    public bool Usable1() => !CurrentlyDragging;
+
+    public bool Usable2() => CurrentlyDragging;
+
+    public float Difference() => LastImp && CustomGameOptions.SoloBoost && !Dead ? -CustomGameOptions.UnderdogKillBonus : 0;
 
     public override void ReadRPC(MessageReader reader)
     {
         CurrentlyDragging = reader.ReadBody();
-        CurrentlyDragging.gameObject.AddComponent<DragBehaviour>().SetDrag(Player, CurrentlyDragging);
+        DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
     }
 }

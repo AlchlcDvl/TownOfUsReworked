@@ -11,12 +11,4 @@ public class Dwarf : Modifier
     public override string Name => Useless ? "Useless" : (!Smol ? "Flash" : (Sped ? "Gremlin" : "Dwarf"));
     public override LayerEnum Type => LayerEnum.Dwarf;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
-
-    public Dwarf() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
 }

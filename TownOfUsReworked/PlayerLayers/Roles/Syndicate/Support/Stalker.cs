@@ -12,16 +12,13 @@ public class Stalker : Syndicate
     public override Func<string> Description => () => $"- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
         CommonAbilities;
 
-    public Stalker() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
-        StalkerArrows = new();
+        StalkerArrows = [];
         Alignment = Alignment.SyndicateSupport;
-        StalkButton = new(this, "Stalk", AbilityTypes.Alive, "ActionSecondary", Stalk, CustomGameOptions.StalkCd, Exception1);
-        return this;
+        StalkButton = CreateButton(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(CustomGameOptions.StalkCd), "STALK",
+            (PlayerBodyExclusion)Exception1, (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -49,12 +46,13 @@ public class Stalker : Syndicate
 
     public bool Exception1(PlayerControl player) => StalkerArrows.ContainsKey(player.PlayerId);
 
+    public bool Usable() => !HoldsDrive;
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        StalkButton.Update2("STALK", !HoldsDrive);
 
-        if (IsDead)
+        if (Dead && StalkerArrows.Count > 0)
             OnLobby();
         else
         {

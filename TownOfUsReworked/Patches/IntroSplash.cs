@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 public static class IntroSplash
 {
     private static readonly string[] Splashes =
-    {
+    [
         "Oh boy, here I go killing again",
         "Screwed up since 2069",
         "We were bad, but now we're good",
@@ -20,7 +20,7 @@ public static class IntroSplash
         "Let me introduce you to our sponsor, Raid-",
         "Push to production is my motto. Bugs? meh public release go brrrr",
         "LET. HIM. COOK."
-    };
+    ];
     private static TextMeshPro Intro;
 
     [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
@@ -38,7 +38,7 @@ public static class IntroSplash
                 Intro.alignment = TextAlignmentOptions.Center;
                 Intro.fontStyle = FontStyles.Bold;
                 Intro.name = "ModIntroText";
-                Intro.font = UpdateSplashPatch.Font;
+                Intro.font = GetFont("Placeholder");
             }
         }
     }

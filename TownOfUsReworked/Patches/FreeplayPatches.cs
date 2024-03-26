@@ -1,14 +1,14 @@
 /*namespace TownOfUsReworked.Patches;
 
-//I'll leave the code here for now and get back to it later
+// I'll leave the code here for now and get back to it later
 
-public static class Freeplaypatches
+public static class FreeplayPatches
 {
     private const SystemTypes LayersType = (SystemTypes)255;
 
-    private static readonly List<PlayerLayer> PreviouslySelected = new();
-    private static readonly List<string> FolderNames = new();
-    private static readonly Dictionary<string, LayerEnum> RoleButtons = new();
+    public static readonly List<PlayerLayer> PreviouslySelected = [];
+    private static readonly List<string> FolderNames = [];
+    private static readonly Dictionary<string, LayerEnum> RoleButtons = [];
 
     private static TaskFolder CreateFolder(TaskAdderGame __instance, string name, TaskFolder parent)
     {
@@ -20,8 +20,9 @@ public static class Freeplaypatches
         return folder;
     }
 
-    private static void CreateRoleButton(TaskAdderGame __instance, TaskFolder folder, Info info, LayerEnum layer, ref float num, ref float num2, ref float num3)
+    private static void CreateRoleButton(TaskAdderGame __instance, TaskFolder folder, LayerEnum layer, ref float num, ref float num2, ref float num3)
     {
+        var info = LayerInfo.AllRoles.Find(x => x.Role == layer);
         var button = UObject.Instantiate(__instance.RoleButton);
         button.SafePositionWorld = __instance.SafePositionWorld;
         button.Text.text = $"{info.Short.Replace(" (XD)", "")}.exe";
@@ -32,22 +33,22 @@ public static class Freeplaypatches
         button.Button.OnClick = new();
         button.Button.OnClick.AddListener((Action)(() =>
         {
-            var role = CustomPlayer.Local.GetRole();
+            var role = Role.LocalRole;
 
             if (role && !PreviouslySelected.Any(x => x.Type == role.Type))
                 PreviouslySelected.Add(role);
 
-            var ability = CustomPlayer.Local.GetAbility();
+            var ability = Ability.LocalAbility;
 
             if (ability && !PreviouslySelected.Any(x => x.Type == ability.Type))
                 PreviouslySelected.Add(ability);
 
-            var modifier = CustomPlayer.Local.GetModifier();
+            var modifier = Modifier.LocalModifier;
 
             if (modifier && !PreviouslySelected.Any(x => x.Type == modifier.Type))
                 PreviouslySelected.Add(modifier);
 
-            var objectifier = CustomPlayer.Local.GetObjectifier();
+            var objectifier = Objectifier.LocalObjectifier;
 
             if (objectifier && !PreviouslySelected.Any(x => x.Type == objectifier.Type))
                 PreviouslySelected.Add(objectifier);
@@ -59,29 +60,31 @@ public static class Freeplaypatches
             else
                 selected = RoleGen.SetLayer(layer, layer.GetLayerType()).Start(CustomPlayer.Local);
 
-            if (role && role.Type == layer)
+            if (role?.Type == layer)
             {
                 role.ExitingLayer();
                 role.Player = null;
             }
 
-            if (ability && ability.Type == layer)
+            if (ability?.Type == layer)
             {
                 ability.ExitingLayer();
                 ability.Player = null;
             }
 
-            if (modifier && modifier.Type == layer)
+            if (modifier?.Type == layer)
             {
                 modifier.ExitingLayer();
                 modifier.Player = null;
             }
 
-            if (objectifier && objectifier.Type == layer)
+            if (objectifier?.Type == layer)
             {
                 objectifier.ExitingLayer();
                 objectifier.Player = null;
             }
+
+            ButtonUtils.Reset();
         }));
         __instance.AddFileAsChild(folder, button, ref num, ref num2, ref num3);
         RoleButtons[button.Text.text] = layer;
@@ -104,7 +107,7 @@ public static class Freeplaypatches
         {
             if (!folders.TryGetValue(LayersType, out var taskFolder))
             {
-                taskFolder = folders[LayersType] = CreateFolder(__instance, "Layers", rootFolder);
+                taskFolder = folders[LayersType] = CreateFolder(__instance, "_Reworked", rootFolder);
 
                 for (var i = 0; i < 4; i++)
                 {
@@ -173,29 +176,24 @@ public static class Freeplaypatches
 
             if (FolderNames.Contains(taskFolder.FolderName))
             {
-                int start = -1, end = -1;
                 var layerEnum = Enum.TryParse<PlayerLayerEnum>(taskFolder.FolderName, out var h) ? h : PlayerLayerEnum.None;
-
-                if (layerEnum != PlayerLayerEnum.None)
+                var (start, end) = layerEnum switch
                 {
-                    (start, end) = layerEnum switch
-                    {
-                        PlayerLayerEnum.Modifier => (91, 104),
-                        PlayerLayerEnum.Objectifier => (105, 115),
-                        PlayerLayerEnum.Ability => (87, 89),
-                        _ => (-1, -1)
-                    };
-                }
+                    PlayerLayerEnum.Modifier => ((int)LayerEnum.Astral, (int)LayerEnum.Yeller),
+                    PlayerLayerEnum.Objectifier => ((int)LayerEnum.Allied, (int)LayerEnum.Traitor),
+                    PlayerLayerEnum.Ability => ((int)LayerEnum.ButtonBarry, (int)LayerEnum.Underdog),
+                    _ => (-1, -1)
+                };
 
                 if (Enum.TryParse<Faction>(taskFolder.FolderName, out var faction))
                 {
                     (start, end) = faction switch
                     {
-                        Faction.Crew => (0, 25),
-                        Faction.Neutral => (26, 51),
-                        Faction.Intruder => (52, 69),
-                        Faction.GameMode => (88, 90),
-                        Faction.Syndicate => (70, 87),
+                        Faction.Crew => ((int)LayerEnum.Altruist, (int)LayerEnum.Vigilante),
+                        Faction.Neutral => ((int)LayerEnum.Actor, (int)LayerEnum.Whisperer),
+                        Faction.Intruder => ((int)LayerEnum.Ambusher, (int)LayerEnum.Wraith),
+                        Faction.GameMode => ((int)LayerEnum.Hunter, (int)LayerEnum.Runner),
+                        Faction.Syndicate => ((int)LayerEnum.Anarchist, (int)LayerEnum.Warper),
                         _ => (-1, -1)
                     };
                 }
@@ -205,14 +203,13 @@ public static class Freeplaypatches
                     for (var k = start; k <= end; k++)
                     {
                         var layer = (LayerEnum)k;
-                        var info = LayerInfo.AllRoles.Find(x => x.Role == layer);
 
                         if (layer is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer)
                             continue;
 
                         try
                         {
-                            CreateRoleButton(__instance, taskFolder, info, layer, ref num, ref num2, ref num3);
+                            CreateRoleButton(__instance, taskFolder, layer, ref num, ref num2, ref num3);
                         }
                         catch (Exception e)
                         {

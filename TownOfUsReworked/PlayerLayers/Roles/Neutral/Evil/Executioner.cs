@@ -7,39 +7,46 @@ public class Executioner : Neutral
     public List<byte> ToDoom { get; set; }
     public bool HasDoomed { get; set; }
     public CustomButton DoomButton { get; set; }
-    public bool CanDoom => TargetPlayer != null && TargetVotedOut && !HasDoomed && ToDoom.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
+    public bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !CustomGameOptions.AvoidNeutralKingmakers;
     public bool Failed => !TargetVotedOut && TargetPlayer.HasDied();
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
-    public bool TargetFailed => TargetPlayer == null && Rounds > 2;
+    public bool TargetFailed => !TargetPlayer && Rounds > 2;
 
     public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Executioner : CustomColorManager.Neutral;
     public override string Name => "Executioner";
     public override LayerEnum Type => LayerEnum.Executioner;
     public override Func<string> StartText => () => "Find Someone To Eject";
-    public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to eject" : ((TargetVotedOut ? "- You can doom those who voted for " +
-        $"{TargetPlayer?.name}\n" : "") + $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>");
+    public override Func<string> Description => () => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
+        $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
-    public Executioner() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
-        Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (TargetPlayer == null ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
+        Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (!TargetPlayer ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
         Alignment = Alignment.NeutralEvil;
-        ToDoom = new();
-        DoomButton = new(this, "Doom", AbilityTypes.Alive, "ActionSecondary", Doom, Exception1);
-        TargetButton = new(this, "ExeTarget", AbilityTypes.Alive, "ActionSecondary", SelectTarget, Exception2);
+        ToDoom = [];
+
+        if (CustomGameOptions.ExecutionerCanPickTargets)
+        {
+            TargetButton = CreateButton(this, new SpriteName("ExeTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
+                (UsableFunc)Usable2);
+        }
+
+        if (!CustomGameOptions.AvoidNeutralKingmakers)
+        {
+            DoomButton = CreateButton(this, new SpriteName("Doom"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Doom, (PlayerBodyExclusion)Exception1, "DOOM",
+                (UsableFunc)Usable1);
+        }
+
         Rounds = 0;
-        return this;
     }
 
     public void SelectTarget()
     {
         TargetPlayer = TargetButton.TargetPlayer;
-        CallRpc(CustomRPC.Target, TargetRPC.SetExeTarget, this, TargetPlayer);
+        CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -76,16 +83,29 @@ public class Executioner : Neutral
     public bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewSov) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
+    public bool Usable1() => CanDoom;
+
+    public bool Usable2() => !TargetPlayer;
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DoomButton.Update2("DOOM", CanDoom);
-        TargetButton.Update2("TORMENT", TargetPlayer == null);
 
-        if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
+        if ((TargetFailed || (TargetPlayer && Failed)) && !Dead)
         {
-            CallRpc(CustomRPC.Change, TurnRPC.TurnJest, this);
-            TurnJest();
+            if (CustomGameOptions.ExeToJest)
+            {
+                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
+                TurnJest();
+            }
+            else if (CustomGameOptions.ExecutionerCanPickTargets)
+            {
+                TargetPlayer = null;
+                Rounds = 0;
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
+            }
+            else
+                RpcMurderPlayer(Player);
         }
     }
 }

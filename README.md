@@ -148,6 +148,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 | Among Us           | Mod Version | Download Link                                                                                   |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
+| 2024.3.5 (s & e)   | 0.6.6       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.6/Reworked.zip) |
 | 2023.11.28 (s & e) | 0.6.5       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.5/Reworked.zip) |
 | 2023.11.28 (s & e) | 0.6.4       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.4/Reworked.zip) |
 | 2023.11.28 (s & e) | 0.6.3       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.3/Reworked.zip) |

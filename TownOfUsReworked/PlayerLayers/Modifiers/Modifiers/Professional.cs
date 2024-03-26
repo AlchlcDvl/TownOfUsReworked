@@ -8,14 +8,7 @@ public class Professional : Modifier
     public override string Name => "Professional";
     public override LayerEnum Type => LayerEnum.Professional;
     public override Func<string> Description => () => "- You have an extra life when assassinating";
-    public override bool Hidden => !CustomGameOptions.TraitorKnows && !LifeUsed && !IsDead;
+    public override bool Hidden => !CustomGameOptions.TraitorKnows && !LifeUsed && !Dead;
 
-    public Professional() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        LifeUsed = false;
-        return this;
-    }
+    public override void Init() => LifeUsed = false;
 }

@@ -11,15 +11,11 @@ public class Phantom : Neutral
     public override Func<string> StartText => () => "Peek-A-Boo!";
     public override Func<string> Description => () => "- You end the game upon finishing your objective";
 
-    public Phantom() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Finish your tasks without getting clicked";
         Alignment = Alignment.NeutralPros;
-        return this;
     }
 
     public void Fade()
@@ -28,7 +24,6 @@ public class Phantom : Neutral
             return;
 
         Faded = true;
-        Player.Visible = true;
         var color = new UColor(1f, 1f, 1f, 0f);
 
         var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;

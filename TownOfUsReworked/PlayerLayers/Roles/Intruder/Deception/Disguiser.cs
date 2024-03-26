@@ -15,20 +15,18 @@ public class Disguiser : Intruder
     public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
 
-    public Disguiser() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderDecep;
-        MeasureButton = new(this, "Measure", AbilityTypes.Alive, "Tertiary", Measure, CustomGameOptions.MeasureCd, Exception2);
-        DisguiseButton = new(this, "Disguise", AbilityTypes.Alive, "Secondary", HitDisguise, CustomGameOptions.DisguiseCd, CustomGameOptions.DisguiseDur, Disguise, UnDisguise,
-            CustomGameOptions.DisguiseDelay, Exception1);
+        MeasureButton = CreateButton(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(CustomGameOptions.MeasureCd), "MEASURE",
+            (PlayerBodyExclusion)Exception2);
+        DisguiseButton = CreateButton(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitDisguise, new Cooldown(CustomGameOptions.DisguiseCd),
+            new Duration(CustomGameOptions.DisguiseDur), (EffectVoid)Disguise, (EffectEndVoid)UnDisguise, new Delay(CustomGameOptions.DisguiseDelay), (PlayerBodyExclusion)Exception1,
+            (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE");
         DisguisedPlayer = null;
         MeasuredPlayer = null;
         CopiedPlayer = null;
-        return this;
     }
 
     public void Disguise() => Morph(DisguisedPlayer, CopiedPlayer);
@@ -48,7 +46,7 @@ public class Disguiser : Intruder
         {
             CopiedPlayer = MeasuredPlayer;
             DisguisedPlayer = DisguiseButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, DisguiseButton, CopiedPlayer, DisguisedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, DisguiseButton, CopiedPlayer, DisguisedPlayer);
             DisguiseButton.Begin();
         }
         else
@@ -76,14 +74,9 @@ public class Disguiser : Intruder
 
     public bool Exception2(PlayerControl player) => player == MeasuredPlayer;
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        MeasureButton.Update2("MEASURE");
-        DisguiseButton.Update2("DISGUISE", MeasuredPlayer != null);
-    }
+    public bool Usable() => MeasuredPlayer;
 
-    public override void TryEndEffect() => DisguiseButton.Update3((DisguisedPlayer != null && DisguisedPlayer.HasDied()) || IsDead);
+    public bool EndEffect() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead;
 
     public override void ReadRPC(MessageReader reader)
     {

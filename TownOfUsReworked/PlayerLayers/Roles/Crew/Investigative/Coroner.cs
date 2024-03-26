@@ -15,19 +15,16 @@ public class Coroner : Crew
     public override Func<string> Description => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +
         "when you report a body\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined";
 
-    public Coroner() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewInvest;
-        BodyArrows = new();
-        Reported = new();
-        ReferenceBodies = new();
-        AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy, CustomGameOptions.AutopsyCd);
-        CompareButton = new(this, "Compare", AbilityTypes.Alive, "Secondary", Compare, CustomGameOptions.CompareCd);
-        return this;
+        BodyArrows = [];
+        Reported = [];
+        ReferenceBodies = [];
+        AutopsyButton = CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, new Cooldown(CustomGameOptions.AutopsyCd));
+        CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(CustomGameOptions.CompareCd),
+            (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -43,13 +40,13 @@ public class Coroner : Crew
         BodyArrows.Clear();
     }
 
+    public bool Usable() => ReferenceBodies.Any();
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        AutopsyButton.Update2("AUTOPSY");
-        CompareButton.Update2("COMPARE", ReferenceBodies.Count > 0);
 
-        if (!CustomPlayer.LocalCustom.IsDead)
+        if (!Dead)
         {
             var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDur)));
 
@@ -67,7 +64,7 @@ public class Coroner : Crew
                 BodyArrows[body.ParentId]?.Update(body.TruePosition);
             }
         }
-        else if (BodyArrows.Count != 0)
+        else if (BodyArrows.Count > 0)
             OnLobby();
     }
 
@@ -109,7 +106,7 @@ public class Coroner : Crew
         if (IsNullEmptyOrWhiteSpace(reportMsg))
             return;
 
-        //Only Coroner can see this
+        // Only Coroner can see this
         if (HUD)
             Run("<color=#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
     }

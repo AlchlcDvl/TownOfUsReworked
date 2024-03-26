@@ -17,23 +17,20 @@ public class Whisperer : Neutral
         "defect and join the <color=#F995FCFF>Sect</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Whisperer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
         Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Sect;
         SubFactionColor = CustomColorManager.Sect;
         WhisperConversion = CustomGameOptions.WhisperRate;
-        Persuaded = new() { Player.PlayerId };
-        WhisperButton = new(this, "Whisper", AbilityTypes.Targetless, "ActionSecondary", Whisper, CustomGameOptions.WhisperCd);
-        PlayerConversion = new();
+        Persuaded = [Player.PlayerId];
+        WhisperButton = CreateButton(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Whisper, new Cooldown(CustomGameOptions.WhisperCd),
+            "WHISPER", (DifferenceFunc)Difference);
+        PlayerConversion = [];
         CustomPlayer.AllPlayers.ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
         Persuaded.ForEach(x => PlayerConversion.Remove(x));
-        return this;
     }
 
     public void Whisper()
@@ -71,7 +68,7 @@ public class Whisperer : Neutral
         Persuaded.ForEach(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
         WhisperButton.StartCooldown();
-        var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, PlayerConversion.Count);
+        var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, PlayerConversion.Count);
 
         foreach (var (id, perc) in PlayerConversion)
         {
@@ -82,11 +79,7 @@ public class Whisperer : Neutral
         writer.EndRpc();
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        WhisperButton.Update2("WHISPER", difference: CustomGameOptions.WhisperCdIncreases ? (CustomGameOptions.WhisperCdIncrease * WhisperCount) : 0);
-    }
+    public float Difference() => CustomGameOptions.WhisperCdIncreases ? (CustomGameOptions.WhisperCdIncrease * WhisperCount) : 0;
 
     public override void ReadRPC(MessageReader reader)
     {

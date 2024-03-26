@@ -9,14 +9,7 @@ public class Astral : Modifier
     public override LayerEnum Type => LayerEnum.Astral;
     public override Func<string> Description => () => "- You will not teleport to the meeting button";
 
-    public Astral() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        LastPosition = Vector3.zero;
-        return this;
-    }
+    public override void Init() => LastPosition = Vector3.zero;
 
     public void SetPosition()
     {
@@ -33,7 +26,7 @@ public class Astral : Modifier
     {
         base.OnMeetingStart(__instance);
 
-        if (!UninteractiblePlayers.ContainsKey(Player.PlayerId))
+        if (!UninteractiblePlayers.ContainsKey(PlayerId))
             LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }

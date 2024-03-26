@@ -2,7 +2,7 @@ using Reactor.Utilities.ImGui;
 
 namespace TownOfUsReworked.Monos;
 
-//Based off of Reactor.Debugger but merged with MCI and added some functions and changes of my own for testing
+// Based off of Reactor.Debugger but merged with MCI and added some functions and changes of my own for testing
 public class DebuggerBehaviour : MonoBehaviour
 {
     [HideFromIl2Cpp]
@@ -17,9 +17,6 @@ public class DebuggerBehaviour : MonoBehaviour
 
     public DebuggerBehaviour(IntPtr ptr) : base(ptr)
     {
-        if (Instance)
-            Instance.Destroy();
-
         Instance = this;
 
         TestWindow = new(new(20, 20, 0, 0), "Reworked Debugger", () =>
@@ -29,7 +26,7 @@ public class DebuggerBehaviour : MonoBehaviour
             if (GUILayout.Button("Close Testing Menu"))
                 TestWindow.Enabled = false;
 
-            if (CustomPlayer.Local && !NoLobby && !CustomPlayer.LocalCustom.IsDead && !IsEnded && !GameHasEnded)
+            if (CustomPlayer.Local && !NoLobby && !CustomPlayer.LocalCustom.Dead && !IsEnded && !GameHasEnded)
                 CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Enable Player Collider");
 
             if (IsLobby)
@@ -136,7 +133,7 @@ public class DebuggerBehaviour : MonoBehaviour
                 {
                     LogMessage(CustomPlayer.Local.Data.PlayerName);
                     PlayerLayer.LocalLayers.ForEach(LogMessage);
-                    LogMessage("Is Dead - " + CustomPlayer.LocalCustom.IsDead);
+                    LogMessage("Is Dead - " + CustomPlayer.Local.HasDied());
                     LogMessage("Location - " + CustomPlayer.LocalCustom.Position);
                 }
 
@@ -145,8 +142,7 @@ public class DebuggerBehaviour : MonoBehaviour
                     var r = (byte)URandom.RandomRangeInt(0, 256);
                     var g = (byte)URandom.RandomRangeInt(0, 256);
                     var b = (byte)URandom.RandomRangeInt(0, 256);
-                    var flashColor = new Color32(r, g, b, 255);
-                    Flash(flashColor);
+                    Flash(new Color32(r, g, b, 255));
                 }
 
                 if (GUILayout.Button("Open Cooldowns Menu"))
@@ -170,6 +166,12 @@ public class DebuggerBehaviour : MonoBehaviour
         {
             if (GUILayout.Button("Cancel Cooldowns"))
                 CustomPlayer.Local.GetButtons().ForEach(x => x.CooldownTime = 0f);
+
+            if (GUILayout.Button("Click Buttons"))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.Clicked());
+
+            if (GUILayout.Button("Cancel Effects"))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.ClickedAgain = true);
 
             if (GUILayout.Button("Reset Full Cooldown"))
                 CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown());
@@ -201,7 +203,7 @@ public class DebuggerBehaviour : MonoBehaviour
             if (CooldownsWindow.Enabled)
                 CooldownsWindow.Enabled = false;
 
-            return; //You must ensure you are only playing on local
+            return; // You must ensure you are only playing on local
         }
 
         if (Input.GetKeyDown(KeyCode.F1))

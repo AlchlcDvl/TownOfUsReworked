@@ -4,32 +4,24 @@ public class CrewAssassin : Assassin
 {
     public override LayerEnum Type => LayerEnum.CrewAssassin;
     public override string Name => "Bullseye";
-
-    public CrewAssassin() : base() {}
 }
 
 public class IntruderAssassin : Assassin
 {
     public override LayerEnum Type => LayerEnum.IntruderAssassin;
     public override string Name => "Hitman";
-
-    public IntruderAssassin() : base() {}
 }
 
 public class NeutralAssassin : Assassin
 {
     public override LayerEnum Type => LayerEnum.NeutralAssassin;
     public override string Name => "Slayer";
-
-    public NeutralAssassin() : base() {}
 }
 
 public class SyndicateAssassin : Assassin
 {
     public override LayerEnum Type => LayerEnum.NeutralAssassin;
     public override string Name => "Sniper";
-
-    public SyndicateAssassin() : base() {}
 }
 
 public abstract class Assassin : Ability
@@ -51,20 +43,16 @@ public abstract class Assassin : Ability
     public override Func<string> Description => () => "- You can guess players mid-meetings";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    protected Assassin() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
-        ColorMapping = new();
-        SortedColorMapping = new();
+        ColorMapping = [];
+        SortedColorMapping = [];
         SelectedButton = null;
         Page = 0;
         MaxPage = 0;
-        Buttons = new();
-        Sorted = new();
+        Buttons = [];
+        Sorted = [];
         AssassinMenu = new(Player, "Guess", CustomGameOptions.AssassinateAfterVoting, Guess, IsExempt, SetLists);
-        return this;
     }
 
     private void SetLists()
@@ -73,7 +61,7 @@ public abstract class Assassin : Ability
         SortedColorMapping.Clear();
         Sorted.Clear();
 
-        //Adds all the roles that have a non-zero chance of being in the game
+        // Adds all the roles that have a non-zero chance of being in the game
         if (!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None))
         {
             ColorMapping.Add("Crewmate", CustomColorManager.Crew);
@@ -205,7 +193,7 @@ public abstract class Assassin : Ability
                 ColorMapping.Add("Persuaded", CustomColorManager.Sect);
             }
 
-            //Add certain Neutral roles if enabled
+            // Add certain Neutral roles if enabled
             if (CustomGameOptions.AssassinGuessNeutralBenign)
             {
                 if (CustomGameOptions.AmnesiacOn > 0) ColorMapping.Add("Amnesiac", CustomColorManager.Amnesiac);
@@ -226,7 +214,7 @@ public abstract class Assassin : Ability
             }
         }
 
-        //Add Modifiers if enabled
+        // Add Modifiers if enabled
         if (CustomGameOptions.AssassinGuessModifiers)
         {
             if (CustomGameOptions.BaitOn > 0) ColorMapping.Add("Bait", CustomColorManager.Bait);
@@ -235,7 +223,7 @@ public abstract class Assassin : Ability
             if (CustomGameOptions.VIPOn > 0) ColorMapping.Add("VIP", CustomColorManager.VIP);
         }
 
-        //Add Objectifiers if enabled
+        // Add Objectifiers if enabled
         if (CustomGameOptions.AssassinGuessObjectifiers)
         {
             if (CustomGameOptions.LoversOn > 0 && !Player.Is(LayerEnum.Lovers)) ColorMapping.Add("Lover", CustomColorManager.Lovers);
@@ -251,7 +239,7 @@ public abstract class Assassin : Ability
             if (CustomGameOptions.DefectorOn > 0) ColorMapping.Add("Defector", CustomColorManager.Defector);
         }
 
-        //Add Abilities if enabled
+        // Add Abilities if enabled
         if (CustomGameOptions.AssassinGuessAbilities)
         {
             if (CustomGameOptions.CrewAssassinOn > 0) ColorMapping.Add("Bullseye", CustomColorManager.Assassin);
@@ -270,7 +258,7 @@ public abstract class Assassin : Ability
             if (CustomGameOptions.PoliticianOn > 0) ColorMapping.Add("Politician", CustomColorManager.Politician);
         }
 
-        //Sorts the list alphabetically.
+        // Sorts the list alphabetically.
         SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
         var i = 0;
@@ -303,7 +291,7 @@ public abstract class Assassin : Ability
         for (var k = 0; k < SortedColorMapping.Count; k++)
         {
             if (!Buttons.ContainsKey(i))
-                Buttons.Add(i, new());
+                Buttons.Add(i, []);
 
             var row = j / 5;
             var col = j % 5;
@@ -313,7 +301,7 @@ public abstract class Assassin : Ability
             var button = UObject.Instantiate(buttonTemplate, buttonParent);
             MakeTheButton(button, buttonParent, voteArea, new(-3.47f + (1.75f * col), 1.5f - (0.45f * row), -5f), guess, Sorted[k].Value, () =>
             {
-                if (IsDead)
+                if (Dead)
                     return;
 
                 if (SelectedButton != button)
@@ -426,7 +414,7 @@ public abstract class Assassin : Ability
     {
         var player = PlayerByVoteArea(voteArea);
         return player.HasDied() || (voteArea.NameText.text.Contains('\n') && ((Player.GetFaction() != player.GetFaction()) || (Player.GetSubFaction() != Player.GetSubFaction()))) ||
-            IsDead || (player == Player && player == CustomPlayer.Local) || (Player.GetFaction() == player.GetFaction() && Player.GetFaction() != Faction.Crew) | RemainingKills <= 0 ||
+            Dead || (player == Player && player == CustomPlayer.Local) || (Player.GetFaction() == player.GetFaction() && Player.GetFaction() != Faction.Crew) | RemainingKills <= 0 ||
             (Player.GetSubFaction() == player.GetSubFaction() && Player.GetSubFaction() != SubFaction.None) || Player.IsLinkedTo(player);
     }
 
@@ -525,7 +513,7 @@ public abstract class Assassin : Ability
 
             foreach (var pair in Buttons)
             {
-                if (pair.Value.Count > 0)
+                if (pair.Value.Any())
                     pair.Value.ForEach(x => x?.gameObject?.SetActive(Page == pair.Key));
 
                 Buttons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UColor.red : UColor.white);
@@ -536,7 +524,7 @@ public abstract class Assassin : Ability
     public void RpcMurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, player, guess, guessTarget);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, player, guess, guessTarget);
     }
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)

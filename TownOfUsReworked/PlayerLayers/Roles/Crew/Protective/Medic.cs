@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Medic : Crew
 {
     public PlayerControl ShieldedPlayer { get; set; }
-    public PlayerControl ExShielded { get; set; }
+    public bool ShieldBroken { get; set; }
     public CustomButton ShieldButton { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Medic : CustomColorManager.Crew;
@@ -13,50 +13,42 @@ public class Medic : Crew
     public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (CustomGameOptions.NotificationShield is ShieldOptions.Everyone or
         ShieldOptions.Medic or ShieldOptions.SelfAndMedic ? "\n- If your target is attacked, you will be notified of it" : "");
 
-    public Medic() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         ShieldedPlayer = null;
-        ExShielded = null;
         Alignment = Alignment.CrewProt;
-        ShieldButton = new(this, "Shield", AbilityTypes.Alive, "ActionSecondary", Protect, Exception);
+        ShieldButton = CreateButton(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Protect, (PlayerBodyExclusion)Exception,
+            (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("MedicIntro");
-        return this;
     }
 
     public void Protect()
     {
         if (Interact(Player, ShieldButton.TargetPlayer) != CooldownType.Fail)
         {
-            if (ShieldedPlayer == null)
+            if (ShieldedPlayer)
             {
-                ShieldedPlayer = ShieldButton.TargetPlayer;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, MedicActionsRPC.Add, ShieldedPlayer);
+                ShieldedPlayer = null;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MedicActionsRPC.Remove);
             }
             else
             {
-                ShieldedPlayer = null;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, MedicActionsRPC.Remove);
+                ShieldedPlayer = ShieldButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MedicActionsRPC.Add, ShieldedPlayer);
             }
         }
     }
 
     public bool Exception(PlayerControl player)
     {
-        if (ShieldedPlayer == null)
-            return (player.Is(LayerEnum.Mayor) && player.GetRole<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetRole<Dictator>().Revealed);
-        else
+        if (ShieldedPlayer)
             return ShieldedPlayer != player;
+        else
+            return (player.Is(LayerEnum.Mayor) && player.GetRole<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetRole<Dictator>().Revealed);
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        ShieldButton.Update2("SHIELD", ExShielded == null);
-    }
+    public bool Usable() => !ShieldBroken;
 
     public override void ReadRPC(MessageReader reader) => ShieldedPlayer = (MedicActionsRPC)reader.ReadByte() == MedicActionsRPC.Add ? reader.ReadPlayer() : null;
 }

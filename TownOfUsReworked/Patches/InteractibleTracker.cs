@@ -8,15 +8,15 @@ public static class SaveLadderPlayer
         try
         {
             UninteractiblePlayers.TryAdd(__instance.myPlayer.PlayerId, DateTime.UtcNow);
-            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local, 6, false);
         }
         catch (Exception e)
         {
             LogError(e);
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Astral))
-            CustomPlayer.Local.GetModifier<Astral>().LastPosition = CustomPlayer.LocalCustom.Position;
+        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast))
+            ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }
 
@@ -28,34 +28,47 @@ public static class SavePlatformPlayer
         try
         {
             UninteractiblePlayers.TryAdd(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local, 6, false);
         }
         catch (Exception e)
         {
             LogError(e);
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Astral))
-            CustomPlayer.Local.GetModifier<Astral>().LastPosition = CustomPlayer.LocalCustom.Position;
+        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast))
+            ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }
 
 [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), typeof(PlayerControl), typeof(bool))]
 public static class SaveZiplinePlayer
 {
-    public static void Prefix()
+    public static void Prefix(ZiplineBehaviour __instance, ref PlayerControl player, ref bool fromTop)
     {
         try
         {
-            UninteractiblePlayers.TryAdd(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
+            UninteractiblePlayers.TryAdd(player.PlayerId, DateTime.UtcNow);
+            UninteractiblePlayers2.TryAdd(player.PlayerId, fromTop ? __instance.upTravelTime : __instance.downTravelTime);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, UninteractiblePlayers2[player.PlayerId], true);
+            var hand = __instance.playerIdHands[player.PlayerId];
+
+            if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly)
+                hand.handRenderer.color.SetAlpha(player.MyRend().color.a);
+            else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
+                PlayerMaterial.SetColors(UColor.grey, hand.handRenderer);
+            else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Colorblind)
+                hand.handRenderer.color = UColor.grey;
+            else if (player.IsMimicking(out var mimicked))
+                hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None);
+            else
+                hand.SetPlayerColor(player.GetCurrentOutfit(), PlayerMaterial.MaskType.None);
         }
         catch (Exception e)
         {
             LogError(e);
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Astral))
-            CustomPlayer.Local.GetModifier<Astral>().LastPosition = CustomPlayer.LocalCustom.Position;
+        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast))
+            ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }

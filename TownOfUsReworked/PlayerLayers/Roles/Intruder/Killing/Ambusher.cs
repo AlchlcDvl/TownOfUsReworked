@@ -11,16 +11,13 @@ public class Ambusher : Intruder
     public override Func<string> StartText => () => "Spook The <color=#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
 
-    public Ambusher() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
-        AmbushButton = new(this, "Ambush", AbilityTypes.Alive, "Secondary", Ambush, CustomGameOptions.AmbushCd, CustomGameOptions.AmbushDur, UnAmbush, Exception1);
-        return this;
+        AmbushButton = CreateButton(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(CustomGameOptions.AmbushCd), (EndFunc)EndEffect,
+            new Duration(CustomGameOptions.AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1, "AMBUSH");
     }
 
     public void UnAmbush() => AmbushedPlayer = null;
@@ -32,7 +29,7 @@ public class Ambusher : Intruder
         if (cooldown != CooldownType.Fail)
         {
             AmbushedPlayer = AmbushButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, AmbushButton, AmbushedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AmbushButton, AmbushedPlayer);
             AmbushButton.Begin();
         }
         else
@@ -42,13 +39,7 @@ public class Ambusher : Intruder
     public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !CustomGameOptions.AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.AmbushMates);
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        AmbushButton.Update2("AMBUSH");
-    }
-
-    public override void TryEndEffect() => AmbushButton.Update3(IsDead || (AmbushedPlayer != null && AmbushedPlayer.HasDied()));
+    public bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 
     public override void ReadRPC(MessageReader reader) => AmbushedPlayer = reader.ReadPlayer();
 }

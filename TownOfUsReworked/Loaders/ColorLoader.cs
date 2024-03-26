@@ -1,30 +1,18 @@
 using static TownOfUsReworked.Cosmetics.CustomColors.CustomColorManager;
 
-namespace TownOfUsReworked.Monos;
+namespace TownOfUsReworked.Loaders;
 
-public class ColorLoader : AssetLoader
+public class ColorLoader : AssetLoader<CustomColor>
 {
     public override string DirectoryInfo => TownOfUsReworked.Colors;
-    public override string ManifestFileName => "Colors";
+    public override string Manifest => "Colors";
 
-    [HideFromIl2Cpp]
-    public override Type JSONType => typeof(ColorsJSON);
+    public static ColorLoader Instance { get; set; }
 
-    public static ColorLoader Instance { get; private set; }
-
-    public ColorLoader(IntPtr ptr) : base(ptr)
-    {
-        if (Instance)
-            Instance.Destroy();
-
-        Instance = this;
-    }
-
-    [HideFromIl2Cpp]
     public override IEnumerator AfterLoading(object response)
     {
-        var colors = (ColorsJSON)response;
-        AllColors.AddRange(colors.Colors);
+        var colors = (List<CustomColor>)response;
+        AllColors.AddRange(colors);
         var cache = AllColors.Count;
         LogMessage($"Found {cache} colors");
 
@@ -34,19 +22,19 @@ public class ColorLoader : AssetLoader
 
             if (File.Exists(filePath))
             {
-                var json = File.ReadAllText(filePath);
-                var data = JsonSerializer.Deserialize<ColorsJSON>(json);
-                data.Colors.ForEach(x => x.StreamOnly = true);
-                AllColors.AddRange(data.Colors);
+                var data = JsonSerializer.Deserialize<List<CustomColor>>(File.ReadAllText(filePath));
+                data.ForEach(x => x.StreamOnly = true);
+                AllColors.AddRange(data);
             }
         }*/
 
         LogMessage($"Found {AllColors.Count - cache} local colors");
         AllColors.RemoveAll(x => x.StreamOnly && !TownOfUsReworked.IsStream);
 
-        foreach (var color in AllColors)
+        for (var i = 0; i < AllColors.Count; i++)
         {
-            color.ColorID = AllColors.IndexOf(color);
+            var color = AllColors[i];
+            color.ColorID = i;
             color.Title ??= (color.Default ? "Innersloth" : "Custom");
 
             if (!color.Default)

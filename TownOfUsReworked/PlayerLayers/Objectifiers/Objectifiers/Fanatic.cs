@@ -5,7 +5,7 @@ public class Fanatic : Objectifier
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }
     public Faction Side { get; set; }
-    private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
+    private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !Dead && Turned && !Betrayed;
 
     public override UColor Color
     {
@@ -13,12 +13,12 @@ public class Fanatic : Objectifier
         {
             if (Turned)
             {
-                if (Side == Faction.Syndicate)
-                    return CustomColorManager.Syndicate;
-                else if (Side == Faction.Intruder)
-                    return CustomColorManager.Intruder;
-                else
-                    return ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier;
+                return Side switch
+                {
+                    Faction.Intruder => CustomColorManager.Intruder,
+                    Faction.Syndicate => CustomColorManager.Syndicate,
+                    _ => ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier
+                };
             }
             else
                 return ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier;
@@ -27,18 +27,11 @@ public class Fanatic : Objectifier
     public override string Name => "Fanatic";
     public override string Symbol => "♠";
     public override LayerEnum Type => LayerEnum.Fanatic;
-    public override Func<string> Description => () => !Turned ? ("- Get attacked by either an <color=#FF1919FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their " +
-        "side") : "";
-    public override bool Hidden => !CustomGameOptions.FanaticKnows && !Turned && !IsDead;
+    public override Func<string> Description => () => !Turned ? "- Get attacked by either an <color=#FF1919FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side" :
+        "";
+    public override bool Hidden => !CustomGameOptions.FanaticKnows && !Turned && !Dead;
 
-    public Fanatic() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        Side = Faction.Crew;
-        return this;
-    }
+    public override void Init() => Side = Faction.Crew;
 
     public void TurnFanatic(Faction faction)
     {
@@ -92,10 +85,8 @@ public class Fanatic : Objectifier
         var role = Player.GetRole();
         Betrayed = true;
 
-        if (role.Type == LayerEnum.Betrayer)
-            return;
-
-        new Betrayer() { Objectives = role.Objectives }.Start<Role>(Player).RoleUpdate(role);
+        if (role.Type != LayerEnum.Betrayer)
+            new Betrayer() { Objectives = role.Objectives }.Start<Role>(Player).RoleUpdate(role);
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -104,7 +95,7 @@ public class Fanatic : Objectifier
 
         if (Betray && Turned)
         {
-            CallRpc(CustomRPC.Change, TurnRPC.TurnFanaticBetrayer, this);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, true);
             TurnBetrayer();
         }
     }

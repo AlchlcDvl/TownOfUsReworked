@@ -6,7 +6,7 @@ public class Jester : Neutral
     public List<byte> ToHaunt { get; set; }
     public bool HasHaunted { get; set; }
     public CustomButton HauntButton { get; set; }
-    public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
+    public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !CustomGameOptions.AvoidNeutralKingmakers;
 
     public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Jester : CustomColorManager.Neutral;
     public override string Name => "Jester";
@@ -15,17 +15,19 @@ public class Jester : Neutral
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
-    public Jester() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
         Alignment = Alignment.NeutralEvil;
-        ToHaunt = new();
-        HauntButton = new(this, "Haunt", AbilityTypes.Alive, "ActionSecondary", Haunt, Exception, true);
-        return this;
+        ToHaunt = [];
+
+        if (!CustomGameOptions.AvoidNeutralKingmakers)
+        {
+            HauntButton = CreateButton(this, new SpriteName("Haunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Haunt, (PlayerBodyExclusion)Exception, new PostDeath(true),
+                "HAUNT", (UsableFunc)Usable);
+        }
+
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -58,9 +60,5 @@ public class Jester : Neutral
         TrulyDead = true;
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        HauntButton.Update2("HAUNT", CanHaunt);
-    }
+    public bool Usable() => CanHaunt;
 }

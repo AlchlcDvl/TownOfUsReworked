@@ -4,13 +4,13 @@ public class CustomStringOption : CustomOption
 {
     public string[] Values { get; }
 
+    public CustomStringOption(MultiMenu menu, string name, string[] values, object parent = null) : this(menu, name, values, [parent], false) {}
+
     public CustomStringOption(MultiMenu menu, string name, string[] values, object[] parents, bool all = false) : base(menu, name, CustomOptionType.String, 0, parents, all)
     {
         Values = values;
         Format = (val, _) => Values[(int)val];
     }
-
-    public CustomStringOption(MultiMenu menu, string name, string[] values, object parent = null) : this(menu, name, values, new[] { parent }, false) {}
 
     public int GetInt() => (int)Value;
 

@@ -5,30 +5,9 @@ public static class HauntUpdatePatch
 {
     public static bool Prefix(AbilityButton __instance)
     {
-        var button = CustomButton.AllButtons.Find(x => x.Base == __instance);
-
-        if (button != null)
-        {
-            if (!button.Disabled)
-                button.Update1();
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public static void Postfix(AbilityButton __instance)
-    {
-        if (__instance != HUD.AbilityButton)
-            return;
-
-        if (!IsInGame)
-            __instance.gameObject.SetActive(false);
-        else if (IsHnS)
-            __instance.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
-        else
-            __instance.gameObject.SetActive(!Meeting && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.IsDead);
+        var button = AllButtons.Find(x => x.Base == __instance && !x.Disabled);
+        button?.Update();
+        return button == null;
     }
 }
 
@@ -70,4 +49,10 @@ public static class AbilityButtonSetFillUp
 
         return false;
     }
+}
+
+[HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
+public static class BlockDis
+{
+    public static bool Prefix(AbilityButton __instance) => !AllButtons.Any(x => x.Base == __instance);
 }

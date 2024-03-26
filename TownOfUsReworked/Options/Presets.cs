@@ -3,8 +3,8 @@ namespace TownOfUsReworked.Options;
 public class Preset : CustomButtonOption
 {
     private CustomButtonOption Loading { get; set; }
-    private List<OptionBehaviour> OldButtons { get; set; } = new();
-    public List<CustomButtonOption> SlotButtons = new();
+    private List<OptionBehaviour> OldButtons { get; set; } = [];
+    public List<CustomButtonOption> SlotButtons = [];
 
     public Preset() : base(MultiMenu.Main, "Load Preset Settings") => Do = ToDo;
 
@@ -107,5 +107,5 @@ public class Preset : CustomButtonOption
         Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
     }
 
-    private IEnumerator FlashWhite() => null;
+    private IEnumerator FlashWhite() => EndFrame();
 }

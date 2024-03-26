@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
-//Adapted from The Other Roles and Mini.RegionInstall
+// Adapted from The Other Roles
 [HarmonyPatch(typeof(RegionMenu), nameof(RegionMenu.Open))]
 public static class RegionInfoOpenPatch
 {
@@ -9,77 +9,74 @@ public static class RegionInfoOpenPatch
 
     public static void Postfix(RegionMenu __instance)
     {
-        if (!__instance.TryCast<RegionMenu>())
-            return;
-
-        var flag = ServerManager.Instance.CurrentRegion.Name == "Custom";
-        IPField?.gameObject?.SetActive(flag);
-        PortField?.gameObject?.SetActive(flag);
         var joinGameButton1 = DestroyableSingleton<JoinGameButton>.Instance;
 
         foreach (var joinGameButton2 in UObject.FindObjectsOfType<JoinGameButton>())
         {
-            if (joinGameButton2.GameIdText != null && joinGameButton2.GameIdText.Background != null)
+            if (joinGameButton2.GameIdText && joinGameButton2.GameIdText.Background)
             {
                 joinGameButton1 = joinGameButton2;
                 break;
             }
         }
 
-        if (joinGameButton1 == null || joinGameButton1.GameIdText == null)
+        if (!joinGameButton1 || !joinGameButton1.GameIdText)
             return;
 
-        if (IPField == null || IPField.gameObject == null)
+        var flag = ServerManager.Instance.CurrentRegion.Name == "Custom";
+
+        if (!IPField || !IPField.gameObject)
         {
             IPField = UObject.Instantiate(joinGameButton1.GameIdText, __instance.transform);
-            IPField.gameObject.name = "IpTextBox";
+            IPField.gameObject.name = "IPTextBox";
             var child = IPField.transform.FindChild("arrowEnter");
 
-            if (child == null || child.gameObject == null)
-                return;
-
-            child.gameObject.DestroyImmediate();
-            IPField.transform.localPosition = new(-2.5f, -1.55f, -100f);
-            IPField.characterLimit = 30;
-            IPField.AllowSymbols = true;
-            IPField.ForceUppercase = false;
-            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+            if (child && child.gameObject)
             {
-                IPField.outputText.SetText(TownOfUsReworked.Ip.Value, true);
-                IPField.SetText(TownOfUsReworked.Ip.Value);
-            })));
-            IPField.ClearOnFocus = false;
-            IPField.OnEnter = IPField.OnChange = new();
-            IPField.OnFocusLost = new();
-            IPField.OnChange.AddListener(new Action(ChangeIP));
-            IPField.OnFocusLost.AddListener(new Action(ExtraRegions.UpdateRegions));
-            IPField.gameObject.SetActive(flag);
+                child.gameObject.DestroyImmediate();
+                IPField.transform.localPosition = new(-2.5f, -1.55f, -100f);
+                IPField.characterLimit = 30;
+                IPField.AllowSymbols = true;
+                IPField.ForceUppercase = false;
+                __instance.StartCoroutine(PerformTimedAction(0.1f, _ =>
+                {
+                    IPField.outputText.SetText(TownOfUsReworked.Ip.Value, true);
+                    IPField.SetText(TownOfUsReworked.Ip.Value);
+                }));
+                IPField.ClearOnFocus = false;
+                IPField.OnEnter = IPField.OnChange = new();
+                IPField.OnFocusLost = new();
+                IPField.OnChange.AddListener(new Action(ChangeIP));
+                IPField.OnFocusLost.AddListener(new Action(UpdateRegions));
+            }
         }
 
-        if (PortField == null || PortField.gameObject == null)
+        if (!PortField || !PortField.gameObject)
         {
             PortField = UObject.Instantiate(joinGameButton1.GameIdText, __instance.transform);
             PortField.gameObject.name = "PortTextBox";
             var child1 = PortField.transform.FindChild("arrowEnter");
 
-            if (child1 == null || child1.gameObject == null)
-                return;
-
-            child1.gameObject.DestroyImmediate();
-            PortField.transform.localPosition = new(2.8f, -1.55f, -100f);
-            PortField.characterLimit = 5;
-            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+            if (child1 && child1.gameObject)
             {
-                PortField.outputText.SetText($"{TownOfUsReworked.Port.Value}", true);
-                PortField.SetText($"{TownOfUsReworked.Port.Value}");
-            })));
-            PortField.ClearOnFocus = false;
-            PortField.OnEnter = PortField.OnChange = new();
-            PortField.OnFocusLost = new();
-            PortField.OnChange.AddListener(new Action(ChangePort));
-            PortField.OnFocusLost.AddListener(new Action(ExtraRegions.UpdateRegions));
-            PortField.gameObject.SetActive(flag);
+                child1.gameObject.DestroyImmediate();
+                PortField.transform.localPosition = new(2.8f, -1.55f, -100f);
+                PortField.characterLimit = 5;
+                __instance.StartCoroutine(PerformTimedAction(0.1f, _ =>
+                {
+                    PortField.outputText.SetText($"{TownOfUsReworked.Port.Value}", true);
+                    PortField.SetText($"{TownOfUsReworked.Port.Value}");
+                }));
+                PortField.ClearOnFocus = false;
+                PortField.OnEnter = PortField.OnChange = new();
+                PortField.OnFocusLost = new();
+                PortField.OnChange.AddListener(new Action(ChangePort));
+                PortField.OnFocusLost.AddListener(new Action(UpdateRegions));
+            }
         }
+
+        IPField?.gameObject?.SetActive(flag);
+        PortField?.gameObject?.SetActive(flag);
     }
 
     private static void ChangeIP() => TownOfUsReworked.Ip.Value = IPField.text;
@@ -93,6 +90,43 @@ public static class RegionInfoOpenPatch
         }
         else
             PortField.outputText.color = UColor.red;
+    }
+
+    public static void UpdateRegions()
+    {
+        var mna = new StaticHttpRegionInfo("Modded NA (MNA)", StringNames.NoTranslation, "www.aumods.us", new(new[] { new ServerInfo("Http-1", "https://www.aumods.us", 443, false)
+            })).Cast<IRegionInfo>();
+
+        var meu = new StaticHttpRegionInfo("Modded EU (MEU)", StringNames.NoTranslation, "au-eu.duikbo.at", new(new[] { new ServerInfo("Http-1", "https://au-eu.duikbo.at", 443, false)
+            })).Cast<IRegionInfo>();
+
+        var mas = new StaticHttpRegionInfo("Modded Asia (MAS)", StringNames.NoTranslation, "au-as.duikbo.at", new(new[] { new ServerInfo("Http-1", "https://au-as.duikbo.at", 443, false)
+            })).Cast<IRegionInfo>();
+
+        var custom = new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, TownOfUsReworked.Ip.Value, new(new[] { new ServerInfo("Custom", TownOfUsReworked.Ip.Value,
+            TownOfUsReworked.Port.Value, false) })).Cast<IRegionInfo>();
+
+        var iregionInfoArray = new IRegionInfo[] { mna, meu, mas, custom };
+        var iregionInfo1 = ServerManager.Instance.CurrentRegion;
+
+        foreach (var iregionInfo2 in iregionInfoArray)
+        {
+            if (iregionInfo2 == null)
+                LogError("Could not add region");
+            else
+            {
+                if (iregionInfo1 != null && iregionInfo2.Name.Equals(iregionInfo1.Name, StringComparison.OrdinalIgnoreCase))
+                    iregionInfo1 = iregionInfo2;
+
+                ServerManager.Instance.AddOrUpdateRegion(iregionInfo2);
+            }
+        }
+
+        if (iregionInfo1 == null)
+            return;
+
+        LogInfo("Resetting previous region");
+        ServerManager.Instance.SetRegion(iregionInfo1);
     }
 }
 

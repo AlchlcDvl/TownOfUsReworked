@@ -11,16 +11,13 @@ public class Tracker : Crew
     public override Func<string> StartText => () => "Track Everyone's Movements";
     public override Func<string> Description => () => "- You can track players which creates arrows that update every now and then with the target's position";
 
-    public Tracker() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
-        TrackerArrows = new();
+        TrackerArrows = [];
         Alignment = Alignment.CrewInvest;
-        TrackButton = new(this, "Track", AbilityTypes.Alive, "ActionSecondary", Track, CustomGameOptions.TrackCd, Exception, CustomGameOptions.MaxTracks);
-        return this;
+        TrackButton = CreateButton(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(CustomGameOptions.TrackCd),
+            (PlayerBodyExclusion)Exception, CustomGameOptions.MaxTracks);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -51,9 +48,8 @@ public class Tracker : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        TrackButton.Update2("TRACK");
 
-        if (IsDead)
+        if (Dead)
             OnLobby();
         else
         {

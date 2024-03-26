@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 public static class SurveillancePatches
 {
     public static bool NVActive;
-    private static readonly List<GameObject> Overlays = new();
+    private static readonly List<GameObject> Overlays = [];
     private static bool LightsOut => CustomPlayer.Local.myTasks.Any(x => x.name.Contains("FixLightsTask"));
 
     [HarmonyPatch(typeof(SurveillanceMinigame), nameof(SurveillanceMinigame.Begin))]
@@ -147,7 +147,7 @@ public static class SurveillancePatches
             if (player == CustomPlayer.Local)
                 continue;
 
-            if (LightsOut && Overlays.Count > 0 && NVActive && (int)player.GetCustomOutfitType() is not (9 or 6 or 7))
+            if (LightsOut && Overlays.Any() && NVActive && (int)player.GetCustomOutfitType() is not (9 or 6 or 7))
                 player.SetOutfit(CustomPlayerOutfitType.NightVision, NightVisonOutfit());
         }
     }

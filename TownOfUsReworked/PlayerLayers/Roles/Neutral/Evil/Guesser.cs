@@ -36,29 +36,31 @@ public class Guesser : Neutral
         "<color=#00ACC2FF>Actor</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
-    public Guesser() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.NeutralEvil;
         RemainingGuesses = CustomGameOptions.MaxGuesses;
-        SortedColorMapping = new();
+        SortedColorMapping = [];
         SelectedButton = null;
         Page = 0;
         MaxPage = 0;
-        GuessButtons = new();
-        Sorted = new();
-        ColorMapping = new();
+        GuessButtons = [];
+        Sorted = [];
+        ColorMapping = [];
         Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer?.name} was" : (TargetPlayer == null ? "- Find someone to be guessed by you" : ("- Guess " +
             $"{TargetPlayer?.name}'s role"));
         SetLists();
-        TargetButton = new(this, "GuessTarget", AbilityTypes.Alive, "ActionSecondary", SelectTarget, Exception);
         GuessMenu = new(Player, "Guess", CustomGameOptions.GuesserAfterVoting, Guess, IsExempt, SetLists);
         Rounds = 0;
-        Letters = new();
-        return this;
+        Letters = [];
+
+        if (CustomGameOptions.GuesserCanPickTargets)
+        {
+            TargetButton = CreateButton(this, new SpriteName("GuessTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception,
+                (UsableFunc)Usable, "AGONISE");
+        }
+
     }
 
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
@@ -66,11 +68,8 @@ public class Guesser : Neutral
 
     public void SelectTarget()
     {
-        if (TargetPlayer != null)
-            return;
-
         TargetPlayer = TargetButton.TargetPlayer;
-        CallRpc(CustomRPC.Target, TargetRPC.SetGuessTarget, this, TargetPlayer);
+        CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
     }
 
     private void SetLists()
@@ -81,7 +80,7 @@ public class Guesser : Neutral
 
         ColorMapping.Add("Crewmate", CustomColorManager.Crew);
 
-        //Adds all the roles that have a non-zero chance of being in the game
+        // Adds all the roles that have a non-zero chance of being in the game
         if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
         {
             if (CustomGameOptions.MayorOn > 0) ColorMapping.Add("Mayor", CustomColorManager.Mayor);
@@ -187,7 +186,7 @@ public class Guesser : Neutral
             }
         }
 
-        //Sorts the list alphabetically.
+        // Sorts the list alphabetically.
         SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
         var i = 0;
@@ -220,7 +219,7 @@ public class Guesser : Neutral
         for (var k = 0; k < SortedColorMapping.Count; k++)
         {
             if (!GuessButtons.ContainsKey(i))
-                GuessButtons.Add(i, new());
+                GuessButtons.Add(i, []);
 
             var row = j / 5;
             var col = j % 5;
@@ -230,7 +229,7 @@ public class Guesser : Neutral
             var button = UObject.Instantiate(buttonTemplate, buttonParent);
             MakeTheButton(button, buttonParent, voteArea, new(-3.47f + (1.75f * col), 1.5f - (0.45f * row), -5f), guess, Sorted[k].Value, () =>
             {
-                if (IsDead)
+                if (Dead)
                     return;
 
                 if (SelectedButton != button)
@@ -319,24 +318,33 @@ public class Guesser : Neutral
         passive.HoverSound = SoundEffects["Hover"];
     }
 
-    public void TurnAct(List<Role> targets)
+    public void TurnAct()
     {
-        if (IsRoleList)
-            new Jester().Start<Role>(Player).RoleUpdate(this);
-        else
-            new Actor() { PretendRoles = targets }.Start<Role>(Player).RoleUpdate(this);
+        Role role = IsRoleList ? new Jester() : new Actor();
+        role.Start<Role>(Player).RoleUpdate(this);
     }
+
+    public bool Usable() => !TargetPlayer;
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        TargetButton.Update2("AGONISE", TargetPlayer == null);
 
-        if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
+        if ((TargetFailed || (TargetPlayer && Failed)) && !Dead)
         {
-            var targets = new List<Role>();
-            CallRpc(CustomRPC.Change, TurnRPC.TurnAct, this, targets);
-            TurnAct(targets);
+            if (CustomGameOptions.GuessToAct)
+            {
+                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
+                TurnAct();
+            }
+            else if (CustomGameOptions.GuesserCanPickTargets)
+            {
+                TargetPlayer = null;
+                Rounds = 0;
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
+            }
+            else
+                Utils.RpcMurderPlayer(Player);
         }
     }
 
@@ -344,7 +352,7 @@ public class Guesser : Neutral
     {
         base.OnMeetingStart(__instance);
 
-        if (((TargetPlayer == null || Failed) && !IsDead) || IsDead)
+        if (((TargetPlayer == null || Failed) && !Dead) || Dead)
             return;
 
         GuessMenu.GenButtons(__instance, RemainingGuesses > 0);
@@ -455,7 +463,7 @@ public class Guesser : Neutral
         if (IsNullEmptyOrWhiteSpace(something))
             return;
 
-        //Ensures only the Guesser sees this
+        // Ensures only the Guesser sees this
         if (HUD && something != "")
             Run("<color=#EEE5BEFF>〖 Guess Hint 〗</color>", something);
     }
@@ -463,7 +471,7 @@ public class Guesser : Neutral
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (player != TargetPlayer && !TargetGuessed) || player == CustomPlayer.Local || RemainingGuesses <= 0 || IsDead || Player.IsLinkedTo(player) || (TargetGuessed
+        return player.HasDied() || (player != TargetPlayer && !TargetGuessed) || player == CustomPlayer.Local || RemainingGuesses <= 0 || Dead || Player.IsLinkedTo(player) || (TargetGuessed
             && CustomGameOptions.AvoidNeutralKingmakers);
     }
 
@@ -556,7 +564,7 @@ public class Guesser : Neutral
 
             foreach (var pair in GuessButtons)
             {
-                if (pair.Value.Count > 0)
+                if (pair.Value.Any())
                     pair.Value.ForEach(x => x?.gameObject?.SetActive(Page == pair.Key));
 
                 GuessButtons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UColor.red : UColor.white);
@@ -567,7 +575,7 @@ public class Guesser : Neutral
     public void RpcMurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, player, guess, guessTarget);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, player, guess, guessTarget);
     }
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)

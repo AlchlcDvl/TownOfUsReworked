@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Options;
 
 public static class CustomGameOptions
 {
-    //Global Options
+    // Global Options
     public static bool ConfirmEjects => Generate.ConfirmEjects;
     public static float PlayerSpeed => Generate.PlayerSpeed;
     public static float GhostSpeed => Generate.GhostSpeed;
@@ -28,7 +28,7 @@ public static class CustomGameOptions
         _ => (TaskBar)Generate.TaskBarMode.GetInt()
     };
 
-    //Game Modifiers
+    // Game Modifiers
     public static WhoCanVentOptions WhoCanVent => (WhoCanVentOptions)Generate.WhoCanVent.GetInt();
     public static bool VisualTasks => Generate.VisualTasks;
     public static AnonVotes AnonymousVoting => (AnonVotes)Generate.AnonymousVoting.GetInt();
@@ -48,8 +48,9 @@ public static class CustomGameOptions
     public static WhoCanSeeFirstKillShield WhoSeesFirstKillShield => (WhoCanSeeFirstKillShield)Generate.WhoSeesFirstKillShield.GetInt();
     public static PlayerNames PlayerNames => (PlayerNames)Generate.PlayerNames.GetInt();
     public static bool DeadSeeEverything => Generate.DeadSeeEverything;
+    public static bool HideVentAnims => Generate.HideVentAnims;
 
-    //Better Sabotage Settings
+    // Better Sabotage Settings
     public static float ReactorShake => Generate.ReactorShake;
     public static bool OxySlow => Generate.OxySlow;
     public static bool CamouflagedComms => Generate.CamouflagedComms;
@@ -57,30 +58,30 @@ public static class CustomGameOptions
     public static bool NightVision => Generate.NightVision;
     public static bool EvilsIgnoreNV => Generate.EvilsIgnoreNV;
 
-    //Announcement Settings
+    // Announcement Settings
     public static bool LocationReports => Generate.LocationReports;
     public static RoleFactionReports RoleFactionReports => (RoleFactionReports)Generate.RoleFactionReports.GetInt();
     public static RoleFactionReports KillerReports => (RoleFactionReports)Generate.KillerReports.GetInt();
     public static bool GameAnnouncements => Generate.GameAnnouncements;
 
-    //Game Modes
+    // Game Modes
     public static GameMode GameMode => (GameMode)Generate.CurrentMode.GetInt();
 
-    //Classic/Custom Settings
+    // Classic/Custom Settings
     public static bool IgnoreAlignmentCaps => Generate.IgnoreAlignmentCaps;
     public static bool IgnoreFactionCaps => Generate.IgnoreFactionCaps;
     public static bool IgnoreLayerCaps => Generate.IgnoreLayerCaps;
 
-    //Killing Only Settings
+    // Killing Only Settings
     public static bool AddArsonist => Generate.AddArsonist;
     public static bool AddCryomaniac => Generate.AddCryomaniac;
     public static bool AddPlaguebearer => Generate.AddPlaguebearer;
     public static int NeutralRoles => Generate.NeutralRoles;
 
-    //All Any Settings
+    // All Any Settings
     public static bool EnableUniques => Generate.EnableUniques;
 
-    //Map Settings
+    // Map Settings
     public static MapEnum Map
     {
         get
@@ -133,7 +134,7 @@ public static class CustomGameOptions
         _ => Generate.CommonTasks
     };
 
-    //Hide And Seek Settings
+    // Hide And Seek Settings
     public static int HunterCount => Generate.HunterCount;
     public static float StartTime => Generate.StartTime;
     public static bool HunterVent => Generate.HunterVent;
@@ -146,7 +147,7 @@ public static class CustomGameOptions
     public static bool HunterFlashlight => Generate.HunterFlashlight;
     public static bool HuntedChat => Generate.HuntedChat;
 
-    //Polus Settings
+    // Polus Settings
     public static bool VitalsLab => Generate.VitalsLab;
     public static bool ColdTempDeathValley => Generate.ColdTempDeathValley;
     public static bool WifiChartCourseSwap => Generate.WifiChartCourseSwap;
@@ -154,24 +155,24 @@ public static class CustomGameOptions
     public static float SeismicTimer => Generate.SeismicTimer;
     public static bool EnableBetterPolus => Generate.EnableBetterPolus;
 
-    //Mira Settings
+    // Mira Settings
     public static bool MiraHQVentImprovements => Generate.MiraHQVentImprovements;
     public static float MiraO2Timer => Generate.MiraO2Timer;
     public static float MiraReactorTimer => Generate.MiraReactorTimer;
     public static bool EnableBetterMiraHQ => Generate.EnableBetterMiraHQ;
 
-    //Fungle Settings
+    // Fungle Settings
     public static float FungleReactorTimer => Generate.FungleReactorTimer;
     public static float FungleMixupTimer => Generate.FungleMixupTimer;
     public static bool EnableBetterFungle => Generate.EnableBetterFungle;
 
-    //Skeld Settings
+    // Skeld Settings
     public static bool SkeldVentImprovements => Generate.SkeldVentImprovements;
     public static float SkeldO2Timer => Generate.SkeldO2Timer;
     public static float SkeldReactorTimer => Generate.SkeldReactorTimer;
     public static bool EnableBetterSkeld => Generate.EnableBetterSkeld;
 
-    //Airship Settings
+    // Airship Settings
     public static bool MoveDivert => Generate.MoveDivert;
     public static bool MoveFuel => Generate.MoveFuel;
     public static bool MoveVitals => Generate.MoveVitals;
@@ -182,7 +183,7 @@ public static class CustomGameOptions
     public static MoveElectrical MoveElectrical => (MoveElectrical)Generate.MoveElectrical.GetInt();
     public static bool EnableBetterAirship => Generate.EnableBetterAirship;
 
-    //Role Spawn
+    // Role Spawn
     public static int MayorOn => Generate.MayorOn.GetChance();
     public static int JesterOn => Generate.JesterOn.GetChance();
     public static int SheriffOn => Generate.SheriffOn.GetChance();
@@ -268,7 +269,7 @@ public static class CustomGameOptions
     public static int BastionOn => Generate.BastionOn.GetChance();
     public static int TrapperOn => Generate.TrapperOn.GetChance();
 
-    //Ability Spawn
+    // Ability Spawn
     public static int CrewAssassinOn => Generate.CrewAssassinOn.GetChance();
     public static int IntruderAssassinOn => Generate.IntruderAssassinOn.GetChance();
     public static int SyndicateAssassinOn => Generate.SyndicateAssassinOn.GetChance();
@@ -285,7 +286,7 @@ public static class CustomGameOptions
     public static int InsiderOn => Generate.InsiderOn.GetChance();
     public static int RuthlessOn => Generate.RuthlessOn.GetChance();
 
-    //Objectifier Spawn
+    // Objectifier Spawn
     public static int RivalsOn => Generate.RivalsOn.GetChance();
     public static int FanaticOn => Generate.FanaticOn.GetChance();
     public static int TraitorOn => Generate.TraitorOn.GetChance();
@@ -298,7 +299,7 @@ public static class CustomGameOptions
     public static int DefectorOn => Generate.DefectorOn.GetChance();
     public static int LinkedOn => Generate.LinkedOn.GetChance();
 
-    //Modifier Spawn
+    // Modifier Spawn
     public static int ProfessionalOn => Generate.ProfessionalOn.GetChance();
     public static int DiseasedOn => Generate.DiseasedOn.GetChance();
     public static int GiantOn => Generate.GiantOn.GetChance();
@@ -314,7 +315,7 @@ public static class CustomGameOptions
     public static int YellerOn => Generate.YellerOn.GetChance();
     public static int ColorblindOn => Generate.ColorblindOn.GetChance();
 
-    //Crew Options
+    // Crew Options
     public static float CrewVision => Generate.CrewVision;
     public static bool GhostTasksCountToWin => Generate.GhostTasksCountToWin;
     public static bool CrewFlashlight => Generate.CrewFlashlight;
@@ -322,7 +323,7 @@ public static class CustomGameOptions
     public static int CrewMax => Generate.CrewMax;
     public static int CrewMin => Generate.CrewMin;
 
-    //Intruder Options
+    // Intruder Options
     public static float IntruderVision => Generate.IntruderVision;
     public static float IntKillCd => Generate.IntKillCd;
     public static int IntruderCount => Generate.IntruderCount;
@@ -334,7 +335,7 @@ public static class CustomGameOptions
     public static bool IntruderFlashlight => Generate.IntruderFlashlight;
     public static bool GhostsCanSabotage => Generate.GhostsCanSabotage;
 
-    //Syndicate Options
+    // Syndicate Options
     public static float SyndicateVision => Generate.SyndicateVision;
     public static bool AltImps => Generate.AltImps || IntruderCount == 0;
     public static SyndicateVentOptions SyndicateVent => (SyndicateVentOptions)Generate.SyndicateVent.GetInt();
@@ -346,7 +347,7 @@ public static class CustomGameOptions
     public static int SyndicateMin => Generate.SyndicateMin;
     public static bool SyndicateFlashlight => Generate.SyndicateFlashlight;
 
-    //Neutral Options
+    // Neutral Options
     public static float NeutralVision => Generate.NeutralVision;
     public static bool LightsAffectNeutrals => Generate.LightsAffectNeutrals;
     public static NoSolo NoSolo => (NoSolo)Generate.NoSolo.GetInt();
@@ -356,22 +357,22 @@ public static class CustomGameOptions
     public static int NeutralMin => Generate.NeutralMin;
     public static bool NeutralFlashlight => Generate.NeutralFlashlight;
 
-    //Vampire Hunter Settings
+    // Vampire Hunter Settings
     public static int VampireHunterCount => Generate.VampireHunterOn.GetCount();
     public static bool UniqueVampireHunter => Generate.UniqueVampireHunter;
     public static float StakeCd => Generate.StakeCd;
 
-    //Mystic Settings
+    // Mystic Settings
     public static int MysticCount => Generate.MysticOn.GetCount();
     public static bool UniqueMystic => Generate.UniqueMystic;
     public static float MysticRevealCd => Generate.MysticRevealCd;
 
-    //Seer Settings
+    // Seer Settings
     public static int SeerCount => Generate.SeerOn.GetCount();
     public static bool UniqueSeer => Generate.UniqueSeer;
     public static float SeerCd => Generate.SeerCd;
 
-    //Trapper Settings
+    // Trapper Settings
     public static int TrapperCount => Generate.TrapperOn.GetCount();
     public static bool UniqueTrapper => Generate.UniqueTrapper;
     public static float BuildCd => Generate.BuildCd;
@@ -379,7 +380,7 @@ public static class CustomGameOptions
     public static float TrapCd => Generate.TrapCd;
     public static int MaxTraps => Generate.MaxTraps;
 
-    //Detective Settings
+    // Detective Settings
     public static int DetectiveCount => Generate.DetectiveOn.GetCount();
     public static float ExamineCd => Generate.ExamineCd;
     public static bool UniqueDetective => Generate.UniqueDetective;
@@ -388,7 +389,7 @@ public static class CustomGameOptions
     public static float FootprintDur => Generate.FootprintDur;
     public static FootprintVisibility AnonymousFootPrint => (FootprintVisibility)Generate.AnonymousFootPrint.GetInt();
 
-    //Medium Settings
+    // Medium Settings
     public static int MediumCount => Generate.MediumOn.GetCount();
     public static DeadRevealed DeadRevealed => (DeadRevealed)Generate.DeadRevealed.GetInt();
     public static float MediateCd => Generate.MediateCd;
@@ -396,7 +397,7 @@ public static class CustomGameOptions
     public static ShowMediumToDead ShowMediumToDead => (ShowMediumToDead)Generate.ShowMediumToDead.GetInt();
     public static bool UniqueMedium => Generate.UniqueMedium;
 
-    //Coroner Settings
+    // Coroner Settings
     public static bool CoronerReportName => Generate.CoronerReportName;
     public static bool CoronerReportRole => Generate.CoronerReportRole;
     public static float CoronerArrowDur => Generate.CoronerArrowDur;
@@ -406,7 +407,7 @@ public static class CustomGameOptions
     public static float CompareCd => Generate.CompareCd;
     public static float AutopsyCd => Generate.AutopsyCd;
 
-    //Revealer Settings
+    // Revealer Settings
     public static int RevealerTasksRemainingClicked => Generate.RevealerTasksRemainingClicked;
     public static int RevealerTasksRemainingAlert => Generate.RevealerTasksRemainingAlert;
     public static int RevealerCount => IsRoleList ? 1 : Generate.RevealerOn.GetCount();
@@ -417,14 +418,14 @@ public static class CustomGameOptions
     public static bool RevealerRevealsFanatic => Generate.RevealerRevealsFanatic;
     public static bool RevealerRevealsRoles => Generate.RevealerRevealsRoles;
 
-    //Sheriff Settings
+    // Sheriff Settings
     public static bool NeutEvilRed => Generate.NeutEvilRed;
     public static bool NeutKillingRed => Generate.NeutKillingRed;
     public static bool UniqueSheriff => Generate.UniqueSheriff;
     public static float InterrogateCd => Generate.InterrogateCd;
     public static int SheriffCount => Generate.SheriffOn.GetCount();
 
-    //Tracker Settings
+    // Tracker Settings
     public static bool ResetOnNewRound => Generate.ResetOnNewRound;
     public static float UpdateInterval => Generate.UpdateInterval;
     public static int TrackerCount => Generate.TrackerOn.GetCount();
@@ -432,7 +433,7 @@ public static class CustomGameOptions
     public static float TrackCd => Generate.TrackCd;
     public static int MaxTracks => Generate.MaxTracks;
 
-    //Operative Settings
+    // Operative Settings
     public static float BugCd => Generate.BugCd;
     public static int MaxBugs => Generate.MaxBugs;
     public static float MinAmountOfTimeInBug => Generate.MinAmountOfTimeInBug;
@@ -444,21 +445,21 @@ public static class CustomGameOptions
     public static AdminDeadPlayers WhoSeesDead => (AdminDeadPlayers)Generate.WhoSeesDead.GetInt();
     public static bool PreciseOperativeInfo => Generate.PreciseOperativeInfo;
 
-    //Veteran Settings
+    // Veteran Settings
     public static float AlertCd => Generate.AlertCd;
     public static float AlertDur => Generate.AlertDur;
     public static int MaxAlerts => Generate.MaxAlerts;
     public static int VeteranCount => Generate.VeteranOn.GetCount();
     public static bool UniqueVeteran => Generate.UniqueVeteran;
 
-    //Bastion Settings
+    // Bastion Settings
     public static float BastionCd => Generate.BastionCd;
     public static int MaxBombs => Generate.MaxBombs;
     public static int BastionCount => Generate.BastionOn.GetCount();
     public static bool UniqueBastion => Generate.UniqueBastion;
     public static bool BombRemovedOnKill => Generate.BombRemovedOnKill;
 
-    //Vigilante Settings
+    // Vigilante Settings
     public static VigiOptions VigiOptions => (VigiOptions)Generate.VigiOptions.GetInt();
     public static int VigilanteCount => Generate.VigilanteOn.GetCount();
     public static int MaxBullets => Generate.MaxBullets;
@@ -469,7 +470,7 @@ public static class CustomGameOptions
     public static bool RoundOneNoShot => Generate.RoundOneNoShot;
     public static VigiNotif VigiNotifOptions => (VigiNotif)Generate.VigiNotifOptions.GetInt();
 
-    //Altruist Settings
+    // Altruist Settings
     public static bool AltruistTargetBody => Generate.AltruistTargetBody;
     public static bool UniqueAltruist => Generate.UniqueAltruist;
     public static float ReviveDur => Generate.ReviveDur;
@@ -477,28 +478,28 @@ public static class CustomGameOptions
     public static int MaxRevives => Generate.MaxRevives;
     public static float ReviveCd => Generate.ReviveCd;
 
-    //Medic Settings
+    // Medic Settings
     public static ShieldOptions ShowShielded => (ShieldOptions)Generate.ShowShielded.GetInt();
     public static int MedicCount => Generate.MedicOn.GetCount();
     public static bool UniqueMedic => Generate.UniqueMedic;
     public static ShieldOptions NotificationShield => (ShieldOptions)Generate.WhoGetsNotification.GetInt();
     public static bool ShieldBreaks => Generate.ShieldBreaks;
 
-    //Dictator Settings
+    // Dictator Settings
     public static bool UniqueDictator => Generate.UniqueDictator;
     public static int DictatorCount => Generate.DictatorOn.GetCount();
     public static bool DictatorButton => Generate.DictatorButton;
     public static bool RoundOneNoDictReveal => Generate.RoundOneNoDictReveal;
     public static bool DictateAfterVoting => Generate.DictateAfterVoting;
 
-    //Mayor Settings
+    // Mayor Settings
     public static bool UniqueMayor => Generate.UniqueMayor;
     public static int MayorCount => Generate.MayorOn.GetCount();
     public static int MayorVoteCount => Generate.MayorVoteCount;
     public static bool MayorButton => Generate.MayorButton;
     public static bool RoundOneNoMayorReveal => Generate.RoundOneNoMayorReveal;
 
-    //Monarch Settings
+    // Monarch Settings
     public static bool UniqueMonarch => Generate.UniqueMonarch;
     public static int MonarchCount => Generate.MonarchOn.GetCount();
     public static int KnightVoteCount => Generate.KnightVoteCount;
@@ -508,37 +509,37 @@ public static class CustomGameOptions
     public static bool RoundOneNoKnighting => Generate.RoundOneNoKnighting;
     public static float KnightingCd => Generate.KnightingCd;
 
-    //Engineer Settings
+    // Engineer Settings
     public static int EngineerCount => Generate.EngineerOn.GetCount();
     public static int MaxFixes => Generate.MaxFixes;
     public static bool UniqueEngineer => Generate.UniqueEngineer;
     public static float FixCd => Generate.FixCd;
 
-    //Escort Settings
+    // Escort Settings
     public static int EscortCount => Generate.EscortOn.GetCount();
     public static float EscortCd => Generate.EscortCd;
     public static float EscortDur => Generate.EscortDur;
     public static bool UniqueEscort => Generate.UniqueEscort;
 
-    //Chameleon Settings
+    // Chameleon Settings
     public static int ChameleonCount => Generate.ChameleonOn.GetCount();
     public static float SwoopCd => Generate.SwoopCd;
     public static float SwoopDur => Generate.SwoopDur;
     public static bool UniqueChameleon => Generate.UniqueChameleon;
     public static int MaxSwoops => Generate.MaxSwoops;
 
-    //Retributionist Settings
+    // Retributionist Settings
     public static int RetributionistCount => Generate.RetributionistOn.GetCount();
     public static bool UniqueRetributionist => Generate.UniqueRetributionist;
     public static bool ReviveAfterVoting => Generate.ReviveAfterVoting;
 
-    //Shifter Settings
+    // Shifter Settings
     public static BecomeEnum ShiftedBecomes => (BecomeEnum)Generate.ShiftedBecomes.GetInt();
     public static int ShifterCount => Generate.ShifterOn.GetCount();
     public static bool UniqueShifter => Generate.UniqueShifter;
     public static float ShiftCd => Generate.ShiftCd;
 
-    //Transporter Settings
+    // Transporter Settings
     public static float TransportCd => Generate.TransportCd;
     public static int MaxTransports => Generate.MaxTransports;
     public static int TransporterCount => Generate.TransporterOn.GetCount();
@@ -546,18 +547,19 @@ public static class CustomGameOptions
     public static bool TransSelf => Generate.TransSelf;
     public static float TransportDur => Generate.TransportDur;
 
-    //Crewmate Settings
+    // Crewmate Settings
     public static int CrewCount => Generate.CrewmateOn.GetCount();
 
-    //Amnesiac Settings
+    // Amnesiac Settings
     public static bool RememberArrows => Generate.RememberArrows;
     public static int AmnesiacCount => Generate.AmnesiacOn.GetCount();
     public static bool AmneVent => Generate.AmneVent;
     public static bool AmneVentSwitch => Generate.AmneSwitchVent;
     public static float RememberArrowDelay => Generate.RememberArrowDelay;
     public static bool UniqueAmnesiac => Generate.UniqueAmnesiac;
+    public static bool AmneToThief => Generate.AmneToThief;
 
-    //Survivor Settings
+    // Survivor Settings
     public static float VestCd => Generate.VestCd;
     public static float VestDur => Generate.VestDur;
     public static int MaxVests => Generate.MaxVests;
@@ -566,7 +568,7 @@ public static class CustomGameOptions
     public static bool SurvVentSwitch => Generate.SurvSwitchVent;
     public static bool UniqueSurvivor => Generate.UniqueSurvivor;
 
-    //GA Settings
+    // GA Settings
     public static float ProtectCd => Generate.ProtectCd;
     public static float ProtectDur => Generate.ProtectDur;
     public static int MaxProtects => Generate.MaxProtects;
@@ -579,8 +581,9 @@ public static class CustomGameOptions
     public static bool GAKnowsTargetRole => Generate.GAKnowsTargetRole;
     public static bool UniqueGuardianAngel => Generate.UniqueGuardianAngel;
     public static bool GuardianAngelCanPickTargets => Generate.GuardianAngelCanPickTargets;
+    public static bool GAToSurv => Generate.GAToSurv;
 
-    //Thief Settings
+    // Thief Settings
     public static int ThiefCount => Generate.ThiefOn.GetCount();
     public static bool ThiefVent => Generate.ThiefVent;
     public static float StealCd => Generate.StealCd;
@@ -589,7 +592,7 @@ public static class CustomGameOptions
     public static bool ThiefCanGuess => Generate.ThiefCanGuess;
     public static bool ThiefCanGuessAfterVoting => Generate.ThiefCanGuessAfterVoting;
 
-    //Jester Settings
+    // Jester Settings
     public static bool VigiKillsJester => Generate.VigiKillsJester;
     public static bool JestEjectScreen => Generate.JestEjectScreen;
     public static bool JestVentSwitch => Generate.JestSwitchVent;
@@ -598,7 +601,7 @@ public static class CustomGameOptions
     public static int JesterCount => Generate.JesterOn.GetCount();
     public static bool UniqueJester => Generate.UniqueJester;
 
-    //Actor Settings
+    // Actor Settings
     public static bool VigiKillsActor => Generate.VigiKillsActor;
     public static bool ActVentSwitch => Generate.ActSwitchVent;
     public static bool ActorButton => Generate.ActorButton;
@@ -608,14 +611,14 @@ public static class CustomGameOptions
     public static bool ActorCanPickRole => Generate.ActorCanPickRole;
     public static int ActorRoleCount => Generate.ActorRoleCount;
 
-    //Troll Settings
+    // Troll Settings
     public static bool TrollVent => Generate.TrollVent;
     public static float InteractCd => Generate.InteractCd;
     public static int TrollCount => Generate.TrollOn.GetCount();
     public static bool TrollVentSwitch => Generate.TrollSwitchVent;
     public static bool UniqueTroll => Generate.UniqueTroll;
 
-    //Bounty Hunter Settings
+    // Bounty Hunter Settings
     public static bool BHVent => Generate.BHVent;
     public static float GuessCd => Generate.GuessCd;
     public static int BHCount => Generate.BountyHunterOn.GetCount();
@@ -623,8 +626,9 @@ public static class CustomGameOptions
     public static bool UniqueBountyHunter => Generate.UniqueBountyHunter;
     public static bool VigiKillsBH => Generate.VigiKillsBH;
     public static bool BountyHunterCanPickTargets => Generate.BountyHunterCanPickTargets;
+    public static bool BHToTroll => Generate.BHToTroll;
 
-    //Cannibal Settings
+    // Cannibal Settings
     public static float EatArrowDelay => Generate.EatArrowDelay;
     public static bool EatArrows => Generate.EatArrows;
     public static bool CannibalVent => Generate.CannibalVent;
@@ -634,7 +638,7 @@ public static class CustomGameOptions
     public static bool VigiKillsCannibal => Generate.VigiKillsCannibal;
     public static bool UniqueCannibal => Generate.UniqueCannibal;
 
-    //Executioner Settings
+    // Executioner Settings
     public static int ExecutionerCount => Generate.ExecutionerOn.GetCount();
     public static bool ExeCanWinBeyondDeath => Generate.ExeCanWinBeyondDeath;
     public static bool VigiKillsExecutioner => Generate.VigiKillsExecutioner;
@@ -646,8 +650,9 @@ public static class CustomGameOptions
     public static bool ExeVentSwitch => Generate.ExeSwitchVent;
     public static bool UniqueExecutioner => Generate.UniqueExecutioner;
     public static bool ExecutionerCanPickTargets => Generate.ExecutionerCanPickTargets;
+    public static bool ExeToJest => Generate.ExeToJest;
 
-    //Guesser Settings
+    // Guesser Settings
     public static int GuesserCount => Generate.GuesserOn.GetCount();
     public static bool VigiKillsGuesser => Generate.VigiKillsGuesser;
     public static bool GuessVent => Generate.GuessVent;
@@ -659,8 +664,9 @@ public static class CustomGameOptions
     public static bool MultipleGuesses => Generate.MultipleGuesses;
     public static int MaxGuesses => Generate.MaxGuesses;
     public static bool GuesserCanPickTargets => Generate.GuesserCanPickTargets;
+    public static bool GuessToAct => Generate.GuessToAct;
 
-    //Glitch Settings
+    // Glitch Settings
     public static bool GlitchVent => Generate.GlitchVent;
     public static float MimicCd => Generate.MimicCd;
     public static float HackCd => Generate.HackCd;
@@ -670,14 +676,14 @@ public static class CustomGameOptions
     public static float NeutraliseCd => Generate.NeutraliseCd;
     public static bool UniqueGlitch => Generate.UniqueGlitch;
 
-    //Juggernaut Settings
+    // Juggernaut Settings
     public static float AssaultBonus => Generate.AssaultBonus;
     public static bool JuggVent => Generate.JuggVent;
     public static int JuggernautCount => Generate.JuggernautOn.GetCount();
     public static float AssaultCd => Generate.AssaultCd;
     public static bool UniqueJuggernaut => Generate.UniqueJuggernaut;
 
-    //Cryomaniac Settings
+    // Cryomaniac Settings
     public static bool CryoVent => Generate.CryoVent;
     public static int CryomaniacCount => Generate.CryomaniacOn.GetCount();
     public static float CryoDouseCd => Generate.CryoDouseCd;
@@ -686,13 +692,13 @@ public static class CustomGameOptions
     public static bool CryoFreezeAll => Generate.CryoFreezeAll;
     public static bool CryoLastKillerBoost => Generate.CryoLastKillerBoost;
 
-    //Plaguebearer Settings
+    // Plaguebearer Settings
     public static bool PBVent => Generate.PBVent;
     public static float InfectCd => Generate.InfectCd;
     public static int PlaguebearerCount => Generate.PlaguebearerOn.GetCount();
     public static bool UniquePlaguebearer => Generate.UniquePlaguebearer;
 
-    //Arsonist Settings
+    // Arsonist Settings
     public static bool ArsoLastKillerBoost => Generate.ArsoLastKillerBoost;
     public static bool ArsoVent => Generate.ArsoVent;
     public static float ArsoDouseCd => Generate.ArsoDouseCd;
@@ -703,13 +709,13 @@ public static class CustomGameOptions
     public static bool ArsoIgniteAll => Generate.ArsoIgniteAll;
     public static bool IgnitionCremates => Generate.IgnitionCremates;
 
-    //Murderer Settings
+    // Murderer Settings
     public static float MurderCd => Generate.MurderCd;
     public static bool MurdVent => Generate.MurdVent;
     public static int MurdCount => Generate.MurdererOn.GetCount();
     public static bool UniqueMurderer => Generate.UniqueMurderer;
 
-    //SK Settings
+    // SK Settings
     public static float BloodlustCd => Generate.BloodlustCd;
     public static float BloodlustDur => Generate.BloodlustDur;
     public static int SKCount => Generate.SerialKillerOn.GetCount();
@@ -717,7 +723,7 @@ public static class CustomGameOptions
     public static float StabCd => Generate.StabCd;
     public static SKVentOptions SKVentOptions => (SKVentOptions)Generate.SKVentOptions.GetInt();
 
-    //WW Settings
+    // WW Settings
     public static WerewolfVentOptions WerewolfVent => (WerewolfVentOptions)Generate.WerewolfVent.GetInt();
     public static bool CanStillAttack => Generate.CanStillAttack;
     public static float MaulRadius => Generate.MaulRadius;
@@ -725,7 +731,7 @@ public static class CustomGameOptions
     public static int WerewolfCount => Generate.WerewolfOn.GetCount();
     public static bool UniqueWerewolf => Generate.UniqueWerewolf;
 
-    //Dracula Settings
+    // Dracula Settings
     public static bool DracVent => Generate.DracVent;
     public static bool UndeadVent => Generate.UndeadVent;
     public static float BiteCd => Generate.BiteCd;
@@ -733,7 +739,7 @@ public static class CustomGameOptions
     public static int AliveVampCount => Generate.AliveVampCount;
     public static bool UniqueDracula => Generate.UniqueDracula;
 
-    //Necromancer Settings
+    // Necromancer Settings
     public static bool NecroVent => Generate.NecroVent;
     public static bool NecroCooldownsLinked => Generate.NecroCooldownsLinked;
     public static float ResurrectCd => Generate.ResurrectCd;
@@ -750,7 +756,7 @@ public static class CustomGameOptions
     public static bool NecroKillCdIncreases => Generate.NecroKillCdIncreases;
     public static bool ResurrectCdIncreases => Generate.ResurrectCdIncreases;
 
-    //Whisperer Settings
+    // Whisperer Settings
     public static bool WhispVent => Generate.WhispVent;
     public static float WhisperCd => Generate.WhisperCd;
     public static float WhisperRadius => Generate.WhisperRadius;
@@ -763,29 +769,29 @@ public static class CustomGameOptions
     public static bool UniqueWhisperer => Generate.UniqueWhisperer;
     public static bool PersuadedVent => Generate.PersuadedVent;
 
-    //Jackal Settings
+    // Jackal Settings
     public static bool JackalVent => Generate.JackalVent;
     public static bool RecruitVent => Generate.RecruitVent;
     public static int JackalCount => Generate.JackalOn.GetCount();
     public static bool UniqueJackal => Generate.UniqueJackal;
     public static float RecruitCd => Generate.RecruitCd;
 
-    //Phantom Settings
+    // Phantom Settings
     public static int PhantomTasksRemaining => Generate.PhantomTasksRemaining;
     public static bool PhantomPlayersAlerted => Generate.PhantomPlayersAlerted;
     public static int PhantomCount => IsRoleList ? 1 : Generate.PhantomOn.GetCount();
 
-    //Pestilence Settings
+    // Pestilence Settings
     public static float ObliterateCd => Generate.ObliterateCd;
     public static bool PlayersAlerted => Generate.PlayersAlerted;
     public static bool PestSpawn => Generate.PestSpawn;
     public static bool PestVent => Generate.PestVent;
 
-    //Ghoul Settings
+    // Ghoul Settings
     public static float GhoulMarkCd => Generate.GhoulMarkCd;
     public static int GhoulCount => IsRoleList ? 1 : Generate.GhoulOn.GetCount();
 
-    //Janitor Settings
+    // Janitor Settings
     public static float CleanCd => Generate.CleanCd;
     public static int JanitorCount => Generate.JanitorOn.GetCount();
     public static bool SoloBoost => Generate.SoloBoost;
@@ -795,7 +801,7 @@ public static class CustomGameOptions
     public static float DragModifier => Generate.DragModifier;
     public static float DragCd => Generate.DragCd;
 
-    //Blackmailer Settings
+    // Blackmailer Settings
     public static float BlackmailCd => Generate.BlackmailCd;
     public static int BlackmailerCount => Generate.BlackmailerOn.GetCount();
     public static bool UniqueBlackmailer => Generate.UniqueBlackmailer;
@@ -803,7 +809,7 @@ public static class CustomGameOptions
     public static bool BlackmailMates => Generate.BlackmailMates;
     public static bool BMRevealed => Generate.BMRevealed;
 
-    //Grenadier Settings
+    // Grenadier Settings
     public static bool GrenadierIndicators => Generate.GrenadierIndicators;
     public static float FlashCd => Generate.FlashCd;
     public static int GrenadierCount => Generate.GrenadierOn.GetCount();
@@ -813,7 +819,7 @@ public static class CustomGameOptions
     public static bool UniqueGrenadier => Generate.UniqueGrenadier;
     public static bool SaboFlash => Generate.SaboFlash;
 
-    //Camouflager Settings
+    // Camouflager Settings
     public static bool CamoHideSize => Generate.CamoHideSize;
     public static bool CamoHideSpeed => Generate.CamoHideSpeed;
     public static float CamouflagerCd => Generate.CamouflageCd;
@@ -821,7 +827,7 @@ public static class CustomGameOptions
     public static int CamouflagerCount => Generate.CamouflagerOn.GetCount();
     public static bool UniqueCamouflager => Generate.UniqueCamouflager;
 
-    //Morphling Settings
+    // Morphling Settings
     public static bool MorphlingVent => Generate.MorphlingVent;
     public static int MorphlingCount => Generate.MorphlingOn.GetCount();
     public static float MorphCd => Generate.MorphCd;
@@ -830,21 +836,21 @@ public static class CustomGameOptions
     public static bool UniqueMorphling => Generate.UniqueMorphling;
     public static bool MorphCooldownsLinked => Generate.MorphCooldownsLinked;
 
-    //Wraith Settings
+    // Wraith Settings
     public static bool WraithVent => Generate.WraithVent;
     public static float InvisCd => Generate.InvisCd;
     public static float InvisDur => Generate.InvisDur;
     public static int WraithCount => Generate.WraithOn.GetCount();
     public static bool UniqueWraith => Generate.UniqueWraith;
 
-    //Ambusher Settings
+    // Ambusher Settings
     public static float AmbushCd => Generate.AmbushCd;
     public static float AmbushDur => Generate.AmbushDur;
     public static int AmbusherCount => Generate.AmbusherOn.GetCount();
     public static bool UniqueAmbusher => Generate.UniqueAmbusher;
     public static bool AmbushMates => Generate.AmbushMates;
 
-    //Enforcer Settings
+    // Enforcer Settings
     public static float EnforceCd => Generate.EnforceCd;
     public static float EnforceDur => Generate.EnforceDur;
     public static int EnforcerCount => Generate.EnforcerOn.GetCount();
@@ -852,7 +858,7 @@ public static class CustomGameOptions
     public static float EnforceDelay => Generate.EnforceDelay;
     public static bool UniqueEnforcer => Generate.UniqueEnforcer;
 
-    //Teleporter Settings
+    // Teleporter Settings
     public static bool TeleVent => Generate.TeleVent;
     public static float TeleportCd => Generate.TeleportCd;
     public static float TeleMarkCd => Generate.TeleMarkCd;
@@ -860,19 +866,19 @@ public static class CustomGameOptions
     public static bool UniqueTeleporter => Generate.UniqueTeleporter;
     public static bool TeleCooldownsLinked => Generate.TeleCooldownsLinked;
 
-    //Consigliere Settings
+    // Consigliere Settings
     public static ConsigInfo ConsigInfo => (ConsigInfo)Generate.ConsigInfo.GetInt();
     public static float InvestigateCd => Generate.InvestigateCd;
     public static int ConsigliereCount => Generate.ConsigliereOn.GetCount();
     public static bool UniqueConsigliere => Generate.UniqueConsigliere;
 
-    //Consort Settings
+    // Consort Settings
     public static int ConsortCount => Generate.ConsortOn.GetCount();
     public static float ConsortCd => Generate.ConsortCd;
     public static bool UniqueConsort => Generate.UniqueConsort;
     public static float ConsortDur => Generate.ConsortDur;
 
-    //Disguiser Settings
+    // Disguiser Settings
     public static int DisguiserCount => Generate.DisguiserOn.GetCount();
     public static float DisguiseDur => Generate.DisguiseDur;
     public static float DisguiseCd => Generate.DisguiseCd;
@@ -882,35 +888,35 @@ public static class CustomGameOptions
     public static float MeasureCd => Generate.MeasureCd;
     public static bool DisgCooldownsLinked => Generate.DisgCooldownsLinked;
 
-    //Godfather Settings
+    // Godfather Settings
     public static int GodfatherCount => Generate.GodfatherOn.GetCount();
     public static bool UniqueGodfather => Generate.UniqueGodfather;
     public static float GFPromotionCdDecrease => Generate.GFPromotionCdDecrease;
 
-    //Miner Settings
+    // Miner Settings
     public static float MineCd => Generate.MineCd;
     public static int MinerCount => Generate.MinerOn.GetCount();
     public static bool UniqueMiner => Generate.UniqueMiner;
 
-    //Impostor Settings
+    // Impostor Settings
     public static int ImpCount => Generate.ImpostorOn.GetCount();
 
-    //Anarchist Settings
+    // Anarchist Settings
     public static int AnarchistCount => Generate.AnarchistOn.GetCount();
 
-    //Framer Settings
+    // Framer Settings
     public static int FramerCount => Generate.FramerOn.GetCount();
     public static float FrameCd => Generate.FrameCd;
     public static float ChaosDriveFrameRadius => Generate.ChaosDriveFrameRadius;
     public static bool UniqueFramer => Generate.UniqueFramer;
 
-    //Spellslinger Settings
+    // Spellslinger Settings
     public static int SpellslingerCount => Generate.SpellslingerOn.GetCount();
     public static float SpellCd => Generate.SpellCd;
     public static float SpellCdIncrease => Generate.SpellCdIncrease;
     public static bool UniqueSpellslinger => Generate.UniqueSpellslinger;
 
-    //Collider Settings
+    // Collider Settings
     public static int ColliderCount => Generate.ColliderOn.GetCount();
     public static float CollideCd => Generate.CollideCd;
     public static float ChargeCd => Generate.ChargeCd;
@@ -921,21 +927,21 @@ public static class CustomGameOptions
     public static bool CollideResetsCooldown => Generate.CollideResetsCooldown;
     public static bool ChargeCooldownsLinked => Generate.ChargeCooldownsLinked;
 
-    //Shapeshifter Settings
+    // Shapeshifter Settings
     public static int ShapeshifterCount => Generate.ShapeshifterOn.GetCount();
     public static float ShapeshiftCd => Generate.ShapeshiftCd;
     public static float ShapeshiftDur => Generate.ShapeshiftDur;
     public static bool UniqueShapeshifter => Generate.UniqueShapeshifter;
     public static bool ShapeshiftMates => Generate.ShapeshiftMates;
 
-    //Drunkard Settings
+    // Drunkard Settings
     public static int DrunkardCount => Generate.DrunkardOn.GetCount();
     public static float ConfuseCd => Generate.ConfuseCd;
     public static float ConfuseDur => Generate.ConfuseDur;
     public static bool UniqueDrunkard => Generate.UniqueDrunkard;
     public static bool ConfuseImmunity => Generate.ConfuseImmunity;
 
-    //Timekeeper Settings
+    // Timekeeper Settings
     public static int TimekeeperCount => Generate.TimekeeperOn.GetCount();
     public static float TimeCd => Generate.TimeCd;
     public static float TimeDur => Generate.TimeDur;
@@ -943,7 +949,7 @@ public static class CustomGameOptions
     public static bool TimeFreezeImmunity => Generate.TimeFreezeImmunity;
     public static bool TimeRewindImmunity => Generate.TimeRewindImmunity;
 
-    //Crusader Settings
+    // Crusader Settings
     public static float CrusadeCd => Generate.CrusadeCd;
     public static float CrusadeDur => Generate.CrusadeDur;
     public static int CrusaderCount => Generate.CrusaderOn.GetCount();
@@ -951,12 +957,12 @@ public static class CustomGameOptions
     public static float ChaosDriveCrusadeRadius => Generate.ChaosDriveCrusadeRadius;
     public static bool CrusadeMates => Generate.CrusadeMates;
 
-    //Banshee Settings
+    // Banshee Settings
     public static float ScreamCd => Generate.ScreamCd;
     public static float ScreamDur => Generate.ScreamDur;
     public static int BansheeCount => IsRoleList ? 1 : Generate.BansheeOn.GetCount();
 
-    //Bomber Settings
+    // Bomber Settings
     public static float BombCd => Generate.BombCd;
     public static float DetonateCd => Generate.DetonateCd;
     public static int BomberCount => Generate.BomberOn.GetCount();
@@ -967,14 +973,14 @@ public static class CustomGameOptions
     public static bool BombsRemoveOnNewRound => Generate.BombsRemoveOnNewRound;
     public static float ChaosDriveBombRange => Generate.ChaosDriveBombRange;
 
-    //Concealer Settings
+    // Concealer Settings
     public static int ConcealerCount => Generate.ConcealerOn.GetCount();
     public static float ConcealCd => Generate.ConcealCd;
     public static float ConcealDur => Generate.ConcealDur;
     public static bool UniqueConcealer => Generate.UniqueConcealer;
     public static bool ConcealMates => Generate.ConcealMates;
 
-    //Silencer Settings
+    // Silencer Settings
     public static float SilenceCd => Generate.SilenceCd;
     public static int SilencerCount => Generate.SilencerOn.GetCount();
     public static bool UniqueSilencer => Generate.UniqueSilencer;
@@ -982,46 +988,46 @@ public static class CustomGameOptions
     public static bool SilenceMates => Generate.SilenceMates;
     public static bool SilenceRevealed => Generate.SilenceRevealed;
 
-    //Stalker Settings
+    // Stalker Settings
     public static int StalkerCount => Generate.StalkerOn.GetCount();
     public static bool UniqueStalker => Generate.UniqueStalker;
     public static float StalkCd => Generate.StalkCd;
 
-    //Poisoner Settings
+    // Poisoner Settings
     public static float PoisonCd => Generate.PoisonCd;
     public static float PoisonDur => Generate.PoisonDur;
     public static int PoisonerCount => Generate.PoisonerOn.GetCount();
     public static bool UniquePoisoner => Generate.UniquePoisoner;
 
-    //Rebel Settings
+    // Rebel Settings
     public static int RebelCount => Generate.RebelOn.GetCount();
     public static bool UniqueRebel => Generate.UniqueRebel;
     public static float RebPromotionCdDecrease => Generate.RebPromotionCdDecrease;
 
-    //Warper Settings
+    // Warper Settings
     public static float WarpCd => Generate.WarpCd;
     public static bool UniqueWarper => Generate.UniqueWarper;
     public static bool WarpSelf => Generate.WarpSelf;
     public static int WarperCount => Generate.WarperOn.GetCount();
     public static float WarpDur => Generate.WarpDur;
 
-    //Betrayer Settings
+    // Betrayer Settings
     public static float BetrayCd => Generate.BetrayCd;
     public static bool BetrayerVent => Generate.BetrayerVent;
 
-    //Modifier Settings
+    // Modifier Settings
     public static int MaxModifiers => Generate.MaxModifiers;
     public static int MinModifiers => Generate.MinModifiers;
 
-    //Objectifier Settings
+    // Objectifier Settings
     public static int MaxObjectifiers => Generate.MaxObjectifiers;
     public static int MinObjectifiers => Generate.MinObjectifiers;
 
-    //Ability Settings
+    // Ability Settings
     public static int MaxAbilities => Generate.MaxAbilities;
     public static int MinAbilities => Generate.MinAbilities;
 
-    //Snitch Settings
+    // Snitch Settings
     public static bool SnitchSeesNeutrals => Generate.SnitchSeesNeutrals;
     public static int SnitchCount => Generate.SnitchOn.GetCount();
     public static bool SnitchSeesCrew => Generate.SnitchSeesCrew;
@@ -1033,7 +1039,7 @@ public static class CustomGameOptions
     public static int SnitchTasksRemaining => Generate.SnitchTasksRemaining;
     public static bool UniqueSnitch => Generate.UniqueSnitch;
 
-    //Assassin Settings
+    // Assassin Settings
     public static int AssassinKills => Generate.AssassinKills;
     public static int NumberOfIntruderAssassins => Generate.IntruderAssassinOn.GetCount();
     public static int NumberOfCrewAssassins => Generate.CrewAssassinOn.GetCount();
@@ -1053,279 +1059,279 @@ public static class CustomGameOptions
     public static bool UniqueIntruderAssassin => Generate.UniqueIntruderAssassin;
     public static bool UniqueSyndicateAssassin => Generate.UniqueSyndicateAssassin;
 
-    //Underdog Settings
+    // Underdog Settings
     public static bool UnderdogIncreasedKC => Generate.UnderdogIncreasedKC;
     public static float UnderdogKillBonus => Generate.UnderdogKillBonus;
     public static bool UniqueUnderdog => Generate.UniqueUnderdog;
     public static bool UnderdogKnows => Generate.UnderdogKnows;
     public static int UnderdogCount => Generate.UnderdogOn.GetCount();
 
-    //Multitasker Settings
+    // Multitasker Settings
     public static int MultitaskerCount => Generate.MultitaskerOn.GetCount();
     public static float Transparancy => Generate.Transparancy;
     public static bool UniqueMultitasker => Generate.UniqueMultitasker;
 
-    //BB Settings
+    // BB Settings
     public static int ButtonBarryCount => Generate.ButtonBarryOn.GetCount();
     public static float ButtonCooldown => Generate.ButtonCooldown;
     public static bool UniqueButtonBarry => Generate.UniqueButtonBarry;
 
-    //Swapper Settings
+    // Swapper Settings
     public static bool SwapperButton => Generate.SwapperButton;
     public static int SwapperCount => Generate.SwapperOn.GetCount();
     public static bool SwapAfterVoting => Generate.SwapAfterVoting;
     public static bool SwapSelf => Generate.SwapSelf;
     public static bool UniqueSwapper => Generate.UniqueSwapper;
 
-    //Politician Settings
+    // Politician Settings
     public static int PoliticianVoteBank => Generate.PoliticianVoteBank;
     public static bool UniquePolitician => Generate.UniquePolitician;
     public static int PoliticianCount => Generate.PoliticianOn.GetCount();
     public static bool PoliticianButton => Generate.PoliticianButton;
 
-    //Tiebreaker Settings
+    // Tiebreaker Settings
     public static bool TiebreakerKnows => Generate.TiebreakerKnows;
     public static int TiebreakerCount => Generate.TiebreakerOn.GetCount();
     public static bool UniqueTiebreaker => Generate.UniqueTiebreaker;
 
-    //Torch Settings
+    // Torch Settings
     public static int TorchCount => Generate.TorchOn.GetCount();
     public static bool UniqueTorch => Generate.UniqueTorch;
 
-    //Tunneler Settings
+    // Tunneler Settings
     public static bool TunnelerKnows => Generate.TunnelerKnows;
     public static int TunnelerCount => Generate.TunnelerOn.GetCount();
     public static bool UniqueTunneler => Generate.UniqueTunneler;
 
-    //Radar Settings
+    // Radar Settings
     public static bool UniqueRadar => Generate.UniqueRadar;
     public static int RadarCount => Generate.RadarOn.GetCount();
 
-    //Ninja Settings
+    // Ninja Settings
     public static int NinjaCount => Generate.NinjaOn.GetCount();
     public static bool UniqueNinja => Generate.UniqueNinja;
 
-    //Ruthless Settings
+    // Ruthless Settings
     public static int RuthlessCount => Generate.RuthlessOn.GetCount();
     public static bool UniqueRuthless => Generate.UniqueRuthless;
     public static bool RuthlessKnows => Generate.RuthlessKnows;
 
-    //Insider Settings
+    // Insider Settings
     public static bool InsiderKnows => Generate.InsiderKnows;
     public static int InsiderCount => Generate.InsiderOn.GetCount();
     public static bool UniqueInsider => Generate.UniqueInsider;
 
-    //Traitor Settings
+    // Traitor Settings
     public static int TraitorCount => Generate.TraitorOn.GetCount();
     public static bool TraitorColourSwap => Generate.TraitorColourSwap;
     public static bool TraitorKnows => Generate.TraitorKnows;
     public static bool UniqueTraitor => Generate.UniqueTraitor;
 
-    //Fanatic Settings
+    // Fanatic Settings
     public static bool FanaticKnows => Generate.FanaticKnows;
     public static int FanaticCount => Generate.FanaticOn.GetCount();
     public static bool UniqueFanatic => Generate.UniqueFanatic;
     public static bool FanaticColourSwap => Generate.FanaticColourSwap;
 
-    //Taskmaster Settings
+    // Taskmaster Settings
     public static int TMTasksRemaining => Generate.TMTasksRemaining;
     public static int TaskmasterCount => Generate.TaskmasterOn.GetCount();
     public static bool UniqueTaskmaster => Generate.UniqueTaskmaster;
 
-    //Lovers Settings
+    // Lovers Settings
     public static bool BothLoversDie => Generate.BothLoversDie;
     public static bool UniqueLovers => Generate.UniqueLovers;
     public static bool LoversChat => Generate.LoversChat;
     public static int LoversCount => Generate.LoversOn.GetCount();
     public static bool LoversRoles => Generate.LoversRoles;
 
-    //Linked Settings
+    // Linked Settings
     public static bool UniqueLinked => Generate.UniqueLinked;
     public static bool LinkedChat => Generate.LinkedChat;
     public static int LinkedCount => Generate.LinkedOn.GetCount();
     public static bool LinkedRoles => Generate.LinkedRoles;
 
-    //Defector Settings
+    // Defector Settings
     public static bool DefectorKnows => Generate.DefectorKnows;
     public static bool UniqueDefector => Generate.UniqueDefector;
     public static int DefectorCount => Generate.DefectorOn.GetCount();
     public static DefectorFaction DefectorFaction => (DefectorFaction)Generate.DefectorFaction.GetInt();
 
-    //Rivals Settings
+    // Rivals Settings
     public static bool RivalsChat => Generate.RivalsChat;
     public static int RivalsCount => Generate.RivalsOn.GetCount();
     public static bool RivalsRoles => Generate.RivalsRoles;
     public static bool UniqueRivals => Generate.UniqueRivals;
 
-    //Mafia Settings
+    // Mafia Settings
     public static int MafiaCount => Generate.MafiaOn.GetCount();
     public static bool MafiaRoles => Generate.MafiaRoles;
     public static bool UniqueMafia => Generate.UniqueMafia;
     public static bool MafVent => Generate.MafVent;
 
-    //Giant Settings
+    // Giant Settings
     public static int GiantCount => Generate.GiantOn.GetCount();
     public static float GiantSpeed => Generate.GiantSpeed;
     public static float GiantScale => Generate.GiantScale;
     public static bool UniqueGiant => Generate.UniqueGiant;
 
-    //Indomitable Settings
+    // Indomitable Settings
     public static bool UniqueIndomitable => Generate.UniqueIndomitable;
     public static int IndomitableCount => Generate.IndomitableOn.GetCount();
     public static bool IndomitableKnows => Generate.IndomitableKnows;
 
-    //Overlord Settings
+    // Overlord Settings
     public static int OverlordCount => Generate.OverlordOn.GetCount();
     public static bool UniqueOverlord => Generate.UniqueOverlord;
     public static int OverlordMeetingWinCount => Generate.OverlordMeetingWinCount;
     public static bool OverlordKnows => Generate.OverlordKnows;
 
-    //Allied Settings
+    // Allied Settings
     public static int AlliedCount => Generate.AlliedOn.GetCount();
     public static bool UniqueAllied => Generate.UniqueAllied;
     public static AlliedFaction AlliedFaction => (AlliedFaction)Generate.AlliedFaction.GetInt();
 
-    //Corrupted Settings
+    // Corrupted Settings
     public static int CorruptedCount => Generate.CorruptedOn.GetCount();
     public static bool UniqueCorrupted => Generate.UniqueCorrupted;
     public static float CorruptCd => Generate.CorruptCd;
     public static bool AllCorruptedWin => Generate.AllCorruptedWin;
     public static bool CorruptedVent => Generate.CorruptedVent;
 
-    //Dwarf Settings
+    // Dwarf Settings
     public static float DwarfSpeed => Generate.DwarfSpeed;
     public static bool UniqueDwarf => Generate.UniqueDwarf;
     public static float DwarfScale => Generate.DwarfScale;
     public static int DwarfCount => Generate.DwarfOn.GetCount();
 
-    //Drunk Settings
+    // Drunk Settings
     public static bool DrunkControlsSwap => Generate.DrunkControlsSwap;
     public static int DrunkCount => Generate.DrunkOn.GetCount();
     public static bool UniqueDrunk => Generate.UniqueDrunk;
     public static bool DrunkKnows => Generate.DrunkKnows;
     public static float DrunkInterval => Generate.DrunkInterval;
 
-    //Bait Settings
+    // Bait Settings
     public static bool BaitKnows => Generate.BaitKnows;
     public static float BaitMinDelay => Generate.BaitMinDelay;
     public static float BaitMaxDelay => Generate.BaitMaxDelay;
     public static int BaitCount => Generate.BaitOn.GetCount();
     public static bool UniqueBait => Generate.UniqueBait;
 
-    //Diseased Settings
+    // Diseased Settings
     public static bool DiseasedKnows => Generate.DiseasedKnows;
     public static float DiseasedMultiplier => Generate.DiseasedKillMultiplier;
     public static int DiseasedCount => Generate.DiseasedOn.GetCount();
     public static bool UniqueDiseased => Generate.UniqueDiseased;
 
-    //Shy Settings
+    // Shy Settings
     public static int ShyCount => Generate.ShyOn.GetCount();
     public static bool UniqueShy => Generate.UniqueShy;
 
-    //Colorblind Settings
+    // Colorblind Settings
     public static int ColorblindCount => Generate.ColorblindOn.GetCount();
     public static bool UniqueColorblind => Generate.UniqueColorblind;
 
-    //Astral Settings
+    // Astral Settings
     public static int AstralCount => Generate.AstralOn.GetCount();
     public static bool UniqueAstral => Generate.UniqueAstral;
 
-    //Yeller Settings
+    // Yeller Settings
     public static int YellerCount => Generate.YellerOn.GetCount();
     public static bool UniqueYeller => Generate.UniqueYeller;
 
-    //VIP Settings
+    // VIP Settings
     public static bool VIPKnows => Generate.VIPKnows;
     public static bool UniqueVIP => Generate.UniqueVIP;
     public static int VIPCount => Generate.VIPOn.GetCount();
 
-    //Volatile Settings
+    // Volatile Settings
     public static int VolatileCount => Generate.VolatileOn.GetCount();
     public static float VolatileInterval => Generate.VolatileInterval;
     public static bool UniqueVolatile => Generate.UniqueVolatile;
     public static bool VolatileKnows => Generate.VolatileKnows;
 
-    //Professional Settings
+    // Professional Settings
     public static bool ProfessionalKnows => Generate.ProfessionalKnows;
     public static bool UniqueProfessional => Generate.UniqueProfessional;
     public static int ProfessionalCount => Generate.ProfessionalOn.GetCount();
 
-    //Coward Settings
+    // Coward Settings
     public static int CowardCount => Generate.CowardOn.GetCount();
     public static bool UniqueCoward => Generate.UniqueCoward;
 
-    //NB Settings
+    // NB Settings
     public static int NBMax => Generate.NBMax;
     public static bool VigiKillsNB => Generate.VigiKillsNB;
 
-    //NK Settings
+    // NK Settings
     public static int NKMax => Generate.NKMax;
     public static bool NKHasImpVision => Generate.NKHasImpVision;
     public static bool NKsKnow => Generate.NKsKnow;
 
-    //CSv Settings
+    // CSv Settings
     public static int CSvMax => Generate.CSvMax;
 
-    //CA Settings
+    // CA Settings
     public static int CAMax => Generate.CAMax;
 
-    //CK Settings
+    // CK Settings
     public static int CKMax => Generate.CKMax;
 
-    //CS Settings
+    // CS Settings
     public static int CSMax => Generate.CSMax;
 
-    //CI Settings
+    // CI Settings
     public static int CIMax => Generate.CIMax;
 
-    //CrP Settings
+    // CrP Settings
     public static int CrPMax => Generate.CrPMax;
 
-    //IC Settings
+    // IC Settings
     public static int ICMax => Generate.ICMax;
 
-    //ID Settings
+    // ID Settings
     public static int IDMax => Generate.IDMax;
 
-    //IS Settings
+    // IS Settings
     public static int ISMax => Generate.ISMax;
 
-    //IH Settings
+    // IH Settings
     public static int IHMax => Generate.IHMax;
 
-    //IK Settings
+    // IK Settings
     public static int IKMax => Generate.IKMax;
 
-    //SD Settings
+    // SD Settings
     public static int SDMax => Generate.SDMax;
 
-    //SyK Settings
+    // SyK Settings
     public static int SyKMax => Generate.SyKMax;
 
-    //SSu Settings
+    // SSu Settings
     public static int SSuMax => Generate.SSuMax;
 
-    //SP Settings
+    // SP Settings
     public static int SPMax => Generate.SPMax;
 
-    //NE Settings
+    // NE Settings
     public static int NEMax => Generate.NEMax;
     public static bool NeutralEvilsEndGame => Generate.NeutralEvilsEndGame;
 
-    //NN Settings
+    // NN Settings
     public static int NNMax => Generate.NNMax;
     public static bool NNHasImpVision => Generate.NNHasImpVision;
 
-    //NH Settings
+    // NH Settings
     public static int NHMax => Generate.NHMax;
 
-    //Free Bans
+    // Free Bans
     public static bool BanCrewmate => Generate.BanCrewmate;
     public static bool BanImpostor => Generate.BanImpostor;
     public static bool BanAnarchist => Generate.BanAnarchist;
     public static bool BanMurderer => Generate.BanMurderer;
 
-    //Enabling Postmortals
+    // Enabling Postmortals
     public static bool EnableBanshee => Generate.EnableBanshee;
     public static bool EnableGhoul => Generate.EnableGhoul;
     public static bool EnablePhantom => Generate.EnablePhantom;

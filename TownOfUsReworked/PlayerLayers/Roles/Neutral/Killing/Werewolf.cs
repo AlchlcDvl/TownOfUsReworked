@@ -14,17 +14,14 @@ public class Werewolf : Neutral
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
 
-    public Werewolf() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Maul anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        MaulButton = new(this, "Maul", AbilityTypes.Alive, "ActionSecondary", HitMaul, CustomGameOptions.MaulCd, Exception);
+        MaulButton = CreateButton(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitMaul, new Cooldown(CustomGameOptions.MaulCd), "MAUL",
+            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("WerewolfIntro");
-        return this;
     }
 
     public void Maul()
@@ -51,9 +48,5 @@ public class Werewolf : Neutral
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        MaulButton.Update2("MAUL", CanMaul);
-    }
+    public bool Usable() => CanMaul;
 }

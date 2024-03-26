@@ -7,14 +7,14 @@ public class CustomLayersOption : CustomOption
     private int Max { get; }
     private int Min { get; }
 
+    public CustomLayersOption(MultiMenu menu, string name, int min = 1, int max = 15, object parent = null) : this(menu, name, min, max, [parent], false) {}
+
     public CustomLayersOption(MultiMenu menu, string name, int min = 1, int max = 15, object[] parent = null, bool all = false) : base(menu, name, CustomOptionType.Layers, 0, 0, parent, all)
     {
         Min = min;
         Max = max;
         Format = (val, otherVal) => $"{val}%" + (IsCustom ? $" (x{otherVal})" : "");
     }
-
-    public CustomLayersOption(MultiMenu menu, string name, int min = 1, int max = 15, object parent = null) : this(menu, name, min, max, new[] { parent }, false) {}
 
     public override void OptionCreated()
     {

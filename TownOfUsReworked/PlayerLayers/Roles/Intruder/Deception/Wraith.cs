@@ -10,15 +10,12 @@ public class Wraith : Intruder
     public override Func<string> StartText => () => "Sneaky Sneaky";
     public override Func<string> Description => () => $"- You can turn invisible\n{CommonAbilities}";
 
-    public Wraith() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderDecep;
-        InvisButton = new(this, "Invis", AbilityTypes.Targetless, "Secondary", HitInvis, CustomGameOptions.InvisCd, CustomGameOptions.InvisDur, (CustomButton.EffectVoid)Invis, UnInvis);
-        return this;
+        InvisButton = CreateButton(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitInvis, new Cooldown(CustomGameOptions.InvisCd),
+            (EffectVoid)Invis, new Duration(CustomGameOptions.InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
     public void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
@@ -27,15 +24,9 @@ public class Wraith : Intruder
 
     public void HitInvis()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, InvisButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, InvisButton);
         InvisButton.Begin();
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        InvisButton.Update2("INVISIBILITY");
-    }
-
-    public override void TryEndEffect() => InvisButton.Update3(IsDead);
+    public bool EndEffect() => Dead;
 }

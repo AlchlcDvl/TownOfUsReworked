@@ -3,7 +3,7 @@ namespace TownOfUsReworked.BetterMaps;
 public static class BetterAirship
 {
     private static bool GameStarted;
-    public static readonly List<byte> SpawnPoints = new();
+    public static readonly List<byte> SpawnPoints = [];
 
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
     public static class Repositioning
@@ -20,17 +20,17 @@ public static class BetterAirship
 
                 if ((int)CustomGameOptions.MoveAdmin == 1)
                 {
-                    adminTable.transform.position = new(-17.269f, 1.375f);
+                    adminTable.transform.position = new(-17.269f, 1.375f, 0f);
                     adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 350.316f));
                     adminTable.transform.localScale = new(1, 1, 1);
 
-                    mapFloating.transform.position = new(-17.736f, 2.36f);
+                    mapFloating.transform.position = new(-17.736f, 2.36f, 0f);
                     mapFloating.transform.rotation = Quaternion.Euler(new(0, 0, 350));
                     mapFloating.transform.localScale = new(1, 1, 1);
                 }
                 else if ((int)CustomGameOptions.MoveAdmin == 2)
                 {
-                    //New Admin
+                    // New Admin
                     adminTable.transform.position = new(5.078f, 3.4f, 1);
                     adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 76.1f));
                     adminTable.transform.localScale = new(1.200f, 1.700f, 1);
@@ -44,7 +44,7 @@ public static class BetterAirship
 
                 if ((int)CustomGameOptions.MoveElectrical == 1)
                 {
-                    electrical.transform.position = new(-8.818f, 13.184f);
+                    electrical.transform.position = new(-8.818f, 13.184f, 0f);
                     electrical.transform.localScale = new(0.909f, 0.818f, 1);
 
                     var originalSupport = GameObject.Find("Vault/cockpit_comms");
@@ -54,20 +54,20 @@ public static class BetterAirship
                     supportElectrical.transform.localScale = new(1, 1, 1);
                 }
                 else if ((int)CustomGameOptions.MoveElectrical == 2)
-                    electrical.transform.position = new(19.339f, -3.665f);
+                    electrical.transform.position = new(19.339f, -3.665f, 0f);
             }
 
             if (CustomGameOptions.MoveVitals)
             {
-                GameObject.Find("Medbay/panel_vitals").transform.position = new(24.55f, -4.780f);
-                GameObject.Find("Medbay/panel_data").transform.position = new(25.240f, -7.938f);
+                GameObject.Find("Medbay/panel_vitals").transform.position = new(24.55f, -4.780f, 0f);
+                GameObject.Find("Medbay/panel_data").transform.position = new(25.240f, -7.938f, 0f);
             }
 
             if (CustomGameOptions.MoveFuel)
-                GameObject.Find("Storage/task_gas").transform.position = new(36.070f, 1.897f);
+                GameObject.Find("Storage/task_gas").transform.position = new(36.070f, 1.897f, 0f);
 
             if (CustomGameOptions.MoveDivert)
-                GameObject.Find("HallwayMain/DivertRecieve").transform.position = new(13.35f, -1.659f);
+                GameObject.Find("HallwayMain/DivertRecieve").transform.position = new(13.35f, -1.659f, 0f);
         }
     }
 
@@ -76,7 +76,7 @@ public static class BetterAirship
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
-            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.Is(LayerEnum.Astral) && CustomPlayer.Local.GetModifier<Astral>().LastPosition !=
+            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var astral) && astral.LastPosition !=
                 Vector3.zero))
             {
                 __instance.Close();

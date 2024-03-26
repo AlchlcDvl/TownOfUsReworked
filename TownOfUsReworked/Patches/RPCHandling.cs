@@ -54,6 +54,10 @@ public static class RPCHandling
                         RoleGen.PureCrew = reader.ReadPlayer();
                         break;
 
+                    case MiscRPC.SyncConvertible:
+                        RoleGen.Convertible = reader.ReadInt32();
+                        break;
+
                     case MiscRPC.AttemptSound:
                         Role.BreakShield(reader.ReadPlayer(), CustomGameOptions.ShieldBreaks);
                         break;
@@ -74,7 +78,7 @@ public static class RPCHandling
                     case MiscRPC.SetColor:
                         var player = reader.ReadPlayer();
                         player.SetColor(reader.ReadByte());
-                        UpdateNames.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
+                        PlayerHandler.Instance.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
                         break;
 
                     case MiscRPC.SyncSummary:
@@ -83,7 +87,7 @@ public static class RPCHandling
 
                     case MiscRPC.VersionHandshake:
                         VersionHandshake(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
-                            new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
+                            reader.ReadString(), new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
                         break;
 
                     case MiscRPC.SubmergedFixOxygen:
@@ -172,88 +176,107 @@ public static class RPCHandling
                         player2.GetRoleOrBlank();
                         break;
 
+                    case MiscRPC.SetTarget:
+                        var layer = reader.ReadLayer();
+
+                        if (layer.Type == LayerEnum.Executioner)
+                            ((Executioner)layer).TargetPlayer = reader.ReadPlayer();
+                        else if (layer.Type == LayerEnum.Guesser)
+                            ((Guesser)layer).TargetPlayer = reader.ReadPlayer();
+                        else if (layer.Type == LayerEnum.GuardianAngel)
+                            ((GuardianAngel)layer).TargetPlayer = reader.ReadPlayer();
+                        else if (layer.Type == LayerEnum.BountyHunter)
+                            ((BountyHunter)layer).TargetPlayer = reader.ReadPlayer();
+                        else if (layer.Type == LayerEnum.Actor)
+                            ((Actor)layer).PretendRoles = reader.ReadLayerList<Role>();
+                        else if (layer.Type == LayerEnum.Allied)
+                        {
+                            var ally = (Allied)layer;
+                            var alliedRole = ally.Player.GetRole();
+                            var faction = (Faction)reader.ReadByte();
+                            alliedRole.Faction = ally.Side = faction;
+                            ally.Player.SetImpostor(faction is Faction.Intruder or Faction.Syndicate);
+                            alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(faction);
+                            alliedRole.FactionColor = faction switch
+                            {
+                                Faction.Crew => CustomColorManager.Crew,
+                                Faction.Intruder => CustomColorManager.Intruder,
+                                Faction.Syndicate => CustomColorManager.Syndicate,
+                                _ => CustomColorManager.Neutral,
+                            };
+                        }
+                        else if (layer.Type == LayerEnum.Actor)
+                        {
+                            var lover1 = (Lovers)layer;
+                            var lover2 = reader.ReadLayer<Lovers>();
+                            lover1.OtherLover = lover2.Player;
+                            lover2.OtherLover = lover1.Player;
+                        }
+                        else if (layer.Type == LayerEnum.Actor)
+                        {
+                            var rival1 = (Rivals)layer;
+                            var rival2 = reader.ReadLayer<Rivals>();
+                            rival1.OtherRival = rival2.Player;
+                            rival2.OtherRival = rival1.Player;
+                        }
+                        else if (layer.Type == LayerEnum.Actor)
+                        {
+                            var link1 = (Linked)layer;
+                            var link2 = reader.ReadLayer<Linked>();
+                            link1.OtherLink = link2.Player;
+                            link2.OtherLink = link1.Player;
+                        }
+
+                        break;
+
+                    case MiscRPC.ChangeRoles:
+                        var layer2 = reader.ReadLayer();
+
+                        if (layer2 is Traitor traitor)
+                        {
+                            if (reader.ReadBoolean())
+                                traitor.TurnBetrayer();
+                            else
+                                traitor.TurnTraitor(reader.ReadBoolean(), reader.ReadBoolean());
+                        }
+                        else if (layer2 is Defector defector)
+                            defector.TurnSides(reader.ReadBoolean(), reader.ReadBoolean(), reader.ReadBoolean());
+                        else if (layer2 is Fanatic fanatic)
+                        {
+                            if (reader.ReadBoolean())
+                                fanatic.TurnBetrayer();
+                            else
+                                fanatic.TurnFanatic((Faction)reader.ReadByte());
+                        }
+                        else if (layer2 is Guesser guess)
+                            guess.TurnAct();
+                        else if (layer2 is Actor act)
+                            act.TurnRole(reader.ReadLayer<Role>());
+                        else if (layer2 is VampireHunter vh)
+                            vh.TurnVigilante();
+                        else if (layer2 is Plaguebearer pb)
+                            pb.TurnPestilence();
+                        else if (layer2 is BountyHunter bh)
+                            bh.TurnTroll();
+                        else if (layer2 is GuardianAngel ga)
+                            ga.TurnSurv();
+                        else if (layer2 is Mafioso mafioso)
+                            mafioso.TurnGodfather();
+                        else if (layer2 is Executioner exe)
+                            exe.TurnJest();
+                        else if (layer2 is Sidekick sidekick)
+                            sidekick.TurnRebel();
+                        else if (layer2 is Amnesiac amne)
+                            amne.TurnThief();
+                        else if (layer2 is Seer seer)
+                            seer.TurnSheriff();
+                        else if (layer2 is Mystic mystic)
+                            mystic.TurnSeer();
+
+                        break;
+
                     default:
                         LogError($"Received unknown RPC - {(int)misc}");
-                        break;
-                }
-
-                break;
-
-            case CustomRPC.Change:
-                var turn = (TurnRPC)reader.ReadByte();
-
-                switch (turn)
-                {
-                    case TurnRPC.TurnTraitor:
-                        reader.ReadLayer<Traitor>().TurnTraitor(reader.ReadBoolean(), reader.ReadBoolean());
-                        break;
-
-                    case TurnRPC.TurnSides:
-                        reader.ReadLayer<Defector>().TurnSides(reader.ReadBoolean(), reader.ReadBoolean());
-                        break;
-
-                    case TurnRPC.TurnFanatic:
-                        reader.ReadLayer<Fanatic>().TurnFanatic((Faction)reader.ReadByte());
-                        break;
-
-                    case TurnRPC.TurnAct:
-                        reader.ReadLayer<Guesser>().TurnAct(reader.ReadLayerList<Role>());
-                        break;
-
-                    case TurnRPC.TurnRole:
-                        reader.ReadLayer<Actor>().TurnRole(reader.ReadLayer<Role>());
-                        break;
-
-                    case TurnRPC.TurnVigilante:
-                        reader.ReadLayer<VampireHunter>().TurnVigilante();
-                        break;
-
-                    case TurnRPC.TurnPestilence:
-                        reader.ReadLayer<Plaguebearer>().TurnPestilence();
-                        break;
-
-                    case TurnRPC.TurnTroll:
-                        reader.ReadLayer<BountyHunter>().TurnTroll();
-                        break;
-
-                    case TurnRPC.TurnSurv:
-                        reader.ReadLayer<GuardianAngel>().TurnSurv();
-                        break;
-
-                    case TurnRPC.TurnGodfather:
-                        reader.ReadLayer<Mafioso>().TurnGodfather();
-                        break;
-
-                    case TurnRPC.TurnJest:
-                        reader.ReadLayer<Executioner>().TurnJest();
-                        break;
-
-                    case TurnRPC.TurnTraitorBetrayer:
-                        reader.ReadLayer<Traitor>().TurnBetrayer();
-                        break;
-
-                    case TurnRPC.TurnFanaticBetrayer:
-                        reader.ReadLayer<Fanatic>().TurnBetrayer();
-                        break;
-
-                    case TurnRPC.TurnRebel:
-                        reader.ReadLayer<Sidekick>().TurnRebel();
-                        break;
-
-                    case TurnRPC.TurnThief:
-                        reader.ReadLayer<Amnesiac>().TurnThief();
-                        break;
-
-                    case TurnRPC.TurnSheriff:
-                        reader.ReadLayer<Seer>().TurnSheriff();
-                        break;
-
-                    case TurnRPC.TurnSeer:
-                        reader.ReadLayer<Mystic>().TurnSeer();
-                        break;
-
-                    default:
-                        LogError($"Received unknown RPC - {(int)turn}");
                         break;
                 }
 
@@ -270,77 +293,6 @@ public static class RPCHandling
 
                     default:
                         LogError($"Received unknown RPC - {(int)vanilla}");
-                        break;
-                }
-
-                break;
-
-            case CustomRPC.Target:
-                var target = (TargetRPC)reader.ReadByte();
-
-                switch (target)
-                {
-                    case TargetRPC.SetExeTarget:
-                        reader.ReadLayer<Executioner>().TargetPlayer = reader.ReadPlayer();
-                        break;
-
-                    case TargetRPC.SetGuessTarget:
-                        reader.ReadLayer<Guesser>().TargetPlayer = reader.ReadPlayer();
-                        break;
-
-                    case TargetRPC.SetGATarget:
-                        reader.ReadLayer<GuardianAngel>().TargetPlayer = reader.ReadPlayer();
-                        break;
-
-                    case TargetRPC.SetBHTarget:
-                        reader.ReadLayer<BountyHunter>().TargetPlayer = reader.ReadPlayer();
-                        break;
-
-                    case TargetRPC.SetActPretendList:
-                        reader.ReadLayer<Actor>().PretendRoles = reader.ReadLayerList<Role>();
-                        break;
-
-                    case TargetRPC.SetAlliedFaction:
-                        var player6 = reader.ReadPlayer();
-                        var alliedRole = player6.GetRole();
-                        var ally = player6.GetObjectifier<Allied>();
-                        var faction = (Faction)reader.ReadByte();
-                        alliedRole.Faction = ally.Side = faction;
-                        player6.SetImpostor(faction is Faction.Intruder or Faction.Syndicate);
-                        alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(faction);
-
-                        if (faction == Faction.Crew)
-                            alliedRole.FactionColor = CustomColorManager.Crew;
-                        else if (faction == Faction.Intruder)
-                            alliedRole.FactionColor = CustomColorManager.Intruder;
-                        else if (faction == Faction.Syndicate)
-                            alliedRole.FactionColor = CustomColorManager.Syndicate;
-
-                        break;
-
-                    case TargetRPC.SetCouple:
-                        var lover1 = reader.ReadLayer<Lovers>();
-                        var lover2 = reader.ReadLayer<Lovers>();
-                        lover1.OtherLover = lover2.Player;
-                        lover2.OtherLover = lover1.Player;
-                        break;
-
-                    case TargetRPC.SetDuo:
-                        var rival1 = reader.ReadLayer<Rivals>();
-                        var rival2 = reader.ReadLayer<Rivals>();
-                        rival1.OtherRival = rival2.Player;
-                        rival2.OtherRival = rival1.Player;
-                        break;
-
-                    case TargetRPC.SetLinked:
-                        var link1 = reader.ReadLayer<Linked>();
-                        var link2 = reader.ReadLayer<Linked>();
-                        link1.OtherLink = link2.Player;
-                        link2.OtherLink = link1.Player;
-                        break;
-
-                    default:
-                        LogError($"Received unknown RPC - {(int)target}");
                         break;
                 }
 
@@ -381,7 +333,27 @@ public static class RPCHandling
                     case ActionsRPC.SetUninteractable:
                         try
                         {
-                            UninteractiblePlayers.TryAdd(reader.ReadByte(), DateTime.UtcNow);
+                            var playerid = reader.ReadByte();
+                            UninteractiblePlayers.TryAdd(playerid, DateTime.UtcNow);
+                            UninteractiblePlayers2.TryAdd(playerid, reader.ReadSingle());
+
+                            if (reader.ReadBoolean())
+                            {
+                                var zipline = UObject.FindObjectOfType<ZiplineBehaviour>();
+                                var hand = zipline.playerIdHands[playerid];
+                                var playerfromid = PlayerById(playerid);
+
+                                if (playerfromid.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly)
+                                    hand.handRenderer.color.SetAlpha(playerfromid.MyRend().color.a);
+                                else if (playerfromid.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
+                                    PlayerMaterial.SetColors(UColor.grey, hand.handRenderer);
+                                else if (playerfromid.GetCustomOutfitType() == CustomPlayerOutfitType.Colorblind)
+                                    hand.handRenderer.color = UColor.grey;
+                                else if (playerfromid.IsMimicking(out var mimicked))
+                                    hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None);
+                                else
+                                    hand.SetPlayerColor(playerfromid.GetCurrentOutfit(), PlayerMaterial.MaskType.None);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -399,8 +371,9 @@ public static class RPCHandling
                         break;
 
                     case ActionsRPC.Drop:
-                        var dragged1 = reader.ReadBody();
-                        dragged1.gameObject.GetComponent<DragBehaviour>().Destroy();
+                        var dragger = reader.ReadPlayer();
+                        var dragged1 = BodyById(DragHandler.Instance.Dragging[dragger.PlayerId]);
+                        DragHandler.Instance.StopDrag(dragger);
                         PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging == dragged1).ToList().ForEach(x => x.CurrentlyDragging = null);
                         PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.IsJani && x.CurrentlyDragging == dragged1).ToList().ForEach(x => x.CurrentlyDragging = null);
                         break;
@@ -423,11 +396,11 @@ public static class RPCHandling
                         requestor.Requestor = null;
                         break;
 
-                    case ActionsRPC.LayerAction1:
+                    case ActionsRPC.ButtonAction:
                         reader.ReadButton().StartEffectRPC(reader);
                         break;
 
-                    case ActionsRPC.LayerAction2:
+                    case ActionsRPC.LayerAction:
                         reader.ReadLayer().ReadRPC(reader);
                         break;
 
@@ -489,6 +462,10 @@ public static class RPCHandling
 
                     case WinLoseRPC.AllNKsWin:
                         Role.NKWins = true;
+                        break;
+
+                    case WinLoseRPC.BetrayerWin:
+                        Role.BetrayerWins = true;
                         break;
 
                     case WinLoseRPC.SameNKWins:
@@ -588,11 +565,15 @@ public static class RPCHandling
 
                     case WinLoseRPC.OverlordWin:
                         Objectifier.OverlordWins = true;
-                        PlayerLayer.GetLayers<Overlord>().Where(ov => ov.IsAlive).ForEach(x => x.Winner = true);
+                        PlayerLayer.GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
                         break;
 
                     case WinLoseRPC.MafiaWins:
                         Objectifier.MafiaWins = true;
+                        break;
+
+                    case WinLoseRPC.DefectorWins:
+                        Objectifier.DefectorWins = true;
                         break;
 
                     case WinLoseRPC.TaskmasterWin:

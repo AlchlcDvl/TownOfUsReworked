@@ -10,27 +10,20 @@ public class Engineer : Crew
     public override Func<string> StartText => () => "Just Fix It";
     public override Func<string> Description => () => "- You can fix sabotages at any time from anywhere\n- You can vent";
 
-    public Engineer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewSupport;
-        FixButton = new(this, "Fix", AbilityTypes.Targetless, "ActionSecondary", Fix, CustomGameOptions.FixCd, CustomGameOptions.MaxFixes);
+        FixButton = CreateButton(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Fix, new Cooldown(CustomGameOptions.FixCd),
+            CustomGameOptions.MaxFixes, (ConditionFunc)Condition);
         Data.Role.IntroSound = GetAudio("EngineerIntro");
-        return this;
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        FixButton.Update2("FIX SABOTAGE", CustomGameOptions.MaxFixes > 0, Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive);
-    }
+    public bool Condition() => Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
 
     public void Fix()
     {
         FixExtentions.Fix();
-        FixButton.StartCooldown(CooldownType.Start);
+        FixButton.StartCooldown(CooldownType.Reset);
     }
 }

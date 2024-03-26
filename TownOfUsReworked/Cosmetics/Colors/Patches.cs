@@ -1,5 +1,3 @@
-using static TownOfUsReworked.Cosmetics.CustomColors.CustomColorManager;
-
 namespace TownOfUsReworked.Cosmetics.CustomColors;
 
 [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
@@ -22,7 +20,7 @@ public static class PlayerTabOnEnablePatch
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
             title.gameObject.SetActive(true);
-            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => title.SetText(packageName, true))));
+            __instance.StartCoroutine(PerformTimedAction(0.1f, _ => title.SetText(packageName, true)));
             offset -= 0.8f * __instance.YOffset;
         }
 
@@ -72,7 +70,7 @@ public static class PlayerTabOnEnablePatch
                 package = "Misc";
 
             if (!packages.ContainsKey(package))
-                packages[package] = new();
+                packages[package] = [];
 
             packages[package].Add(data);
         }
@@ -110,31 +108,34 @@ public static class PlayerTabOnEnablePatch
 [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.Update))]
 public static class PlayerTabUpdatePatch
 {
+    private static float TimePassed;
+    private static bool Shadow;
+
     public static void Postfix(PlayerTab __instance)
     {
+        TimePassed += Time.deltaTime;
+
+        if (TimePassed > 2f)
+        {
+            TimePassed = 0f;
+            Shadow = !Shadow;
+        }
+
         for (var i = 0; i < __instance.ColorChips.Count; i++)
-            __instance.ColorChips[i].Inner.SpriteColor = GetColor(i, false);
+            __instance.ColorChips[i].Inner.SpriteColor = i.GetColor(Shadow);
     }
 }
 
 [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
 public static class SetPlayerMaterialPatch1
 {
-    public static bool Prefix(ref int colorId, ref Renderer rend)
-    {
-        rend.gameObject.EnsureComponent<ColorBehaviour>().AddRend(rend, colorId);
-        return !colorId.IsChanging();
-    }
+    public static void Prefix(ref int colorId, ref Renderer rend) => ColorHandler.Instance.SetRend(rend, colorId); // rend.gameObject.EnsureComponent<ColorBehaviour>().SetRend(rend, colorId);
 }
 
 [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(UColor), typeof(Renderer))]
 public static class SetPlayerMaterialPatch2
 {
-    public static bool Prefix(ref Renderer rend)
-    {
-        rend.gameObject.EnsureComponent<ColorBehaviour>().AddRend(rend, -1);
-        return true;
-    }
+    public static void Prefix(ref Renderer rend) => ColorHandler.Instance.SetRend(rend, -1); // rend.gameObject.EnsureComponent<ColorBehaviour>().SetRend(rend, -1);
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdCheckColor))]
@@ -144,7 +145,7 @@ public static class CmdCheckColorPatch
     {
         CallRpc(CustomRPC.Misc, MiscRPC.SetColor, __instance, bodyColor);
         __instance.SetColor(bodyColor);
-        UpdateNames.ColorNames[__instance.PlayerId] = __instance.Data.ColorName.Replace("(", "").Replace(")", "");
+        PlayerHandler.Instance.ColorNames[__instance.PlayerId] = __instance.Data.ColorName.Replace("(", "").Replace(")", "");
         return false;
     }
 }

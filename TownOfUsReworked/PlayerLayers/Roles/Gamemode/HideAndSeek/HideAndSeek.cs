@@ -6,8 +6,9 @@ public abstract class HideAndSeek : Role
     public override UColor Color => CustomColorManager.HideAndSeek;
     public override string FactionName => "Hide And Seek";
 
-    protected HideAndSeek() : base()
+    public void BaseStart()
     {
+        RoleStart();
         Faction = Faction.GameMode;
         FactionColor = CustomColorManager.HideAndSeek;
         Alignment = Alignment.GameModeHideAndSeek;

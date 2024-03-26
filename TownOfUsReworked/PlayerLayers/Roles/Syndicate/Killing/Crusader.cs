@@ -12,16 +12,13 @@ public class Crusader : Syndicate
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
         $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {CustomGameOptions.ChaosDriveCrusadeRadius}m radies" : "")}\n{CommonAbilities}";
 
-    public Crusader() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateKill;
         CrusadedPlayer = null;
-        CrusadeButton = new(this, "Crusade", AbilityTypes.Alive, "Secondary", Crusade, CustomGameOptions.CrusadeCd, CustomGameOptions.CrusadeDur, UnCrusade, Exception1);
-        return this;
+        CrusadeButton = CreateButton(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Crusade, new Cooldown(CustomGameOptions.CrusadeCd), "CRUSADE",
+            new Duration(CustomGameOptions.CrusadeDur), (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
     }
 
     public void UnCrusade() => CrusadedPlayer = null;
@@ -33,7 +30,7 @@ public class Crusader : Syndicate
         if (cooldown != CooldownType.Fail)
         {
             CrusadedPlayer = CrusadeButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, CrusadeButton, CrusadedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, CrusadeButton, CrusadedPlayer);
             CrusadeButton.Begin();
         }
         else
@@ -64,13 +61,7 @@ public class Crusader : Syndicate
     public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !CustomGameOptions.CrusadeMates && Faction is Faction.Intruder or Faction.Syndicate) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.CrusadeMates);
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        CrusadeButton.Update2("CRUSADE");
-    }
-
-    public override void TryEndEffect() => CrusadeButton.Update3((CrusadedPlayer != null && CrusadedPlayer.HasDied()) || IsDead);
+    public bool EndEffect() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
 
     public override void ReadRPC(MessageReader reader) => CrusadedPlayer = reader.ReadPlayer();
 }

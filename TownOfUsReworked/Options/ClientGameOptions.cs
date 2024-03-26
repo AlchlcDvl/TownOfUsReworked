@@ -14,4 +14,5 @@ public static class ClientGameOptions
     public static bool CustomAbColors => Generate.CustomAbColors;
     public static bool CustomEjects => Generate.CustomEjects;
     public static bool OptimisationMode => Generate.OptimisationMode;
+    public static bool HideOtherGhosts => Generate.HideOtherGhosts;
 }

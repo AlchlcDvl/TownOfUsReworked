@@ -13,7 +13,7 @@ public class Footprint
     private static bool Grey => CustomGameOptions.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (HudHandler.Instance.IsCamoed && CustomGameOptions.AnonymousFootPrint ==
         FootprintVisibility.OnlyWhenCamouflaged);
 
-    public static readonly Dictionary<byte, int> OddEven = new();
+    public static readonly Dictionary<byte, int> OddEven = [];
 
     public Footprint(PlayerControl player)
     {
@@ -46,23 +46,19 @@ public class Footprint
     public bool Update()
     {
         var currentTime = Time.time;
-        var alpha = Mathf.Max(1f - ((currentTime - Time2) / CustomGameOptions.FootprintDur), 0f);
-
-        if (alpha is < 0 or > 1)
-            alpha = 0;
-
+        var alpha = Mathf.Clamp(Mathf.Max(1f - ((currentTime - Time2) / CustomGameOptions.FootprintDur), 0f), 0f, 1f);
         Color = Player.GetPlayerColor(false, Grey);
         Color = new(Color.r, Color.g, Color.b, alpha);
         Sprite.color = Color;
+        var result = (Time2 + CustomGameOptions.FootprintDur) < currentTime;
 
-        if (Time2 + CustomGameOptions.FootprintDur < currentTime)
+        if (result)
         {
             Destroy();
             PlayerLayer.GetLayers<Detective>().ForEach(x => x.AllPrints.Remove(this));
             PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.AllPrints.Remove(this));
-            return true;
         }
-        else
-            return false;
+
+        return result;
     }
 }

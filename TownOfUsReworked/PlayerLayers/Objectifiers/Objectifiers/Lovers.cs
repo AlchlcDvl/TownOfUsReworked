@@ -11,13 +11,5 @@ public class Lovers : Objectifier
     public override string Name => "Lovers";
     public override string Symbol => "♥";
     public override LayerEnum Type => LayerEnum.Lovers;
-    public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.name}";
-
-    public Lovers() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
+    public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.Data.PlayerName}";
 }

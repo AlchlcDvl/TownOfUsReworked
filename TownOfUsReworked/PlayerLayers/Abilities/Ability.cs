@@ -2,14 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public abstract class Ability : PlayerLayer
 {
-    public static readonly List<Ability> AllAbilities = new();
+    public static List<Ability> AllAbilities => AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Ability).Cast<Ability>().ToList();
     public static Ability LocalAbility => CustomPlayer.Local.GetAbility();
 
     public override UColor Color => CustomColorManager.Ability;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Ability;
     public override LayerEnum Type => LayerEnum.NoneAbility;
-
-    protected Ability() : base() => AllAbilities.Add(this);
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
@@ -37,6 +35,7 @@ public abstract class Ability : PlayerLayer
         }
     }
 
-    public static List<Assassin> GetAssassins() => AllAbilities.Where(x => x.Type is LayerEnum.CrewAssassin or LayerEnum.NeutralAssassin or LayerEnum.IntruderAssassin or
-        LayerEnum.SyndicateAssassin).Cast<Assassin>().ToList();
+    public static List<Assassin> GetAssassins() => AllAbilities.Where(x => x is CrewAssassin or NeutralAssassin or IntruderAssassin or SyndicateAssassin).Cast<Assassin>().ToList();
+
+    public static T LocalAbilityAs<T>() where T : Ability => LocalAbility as T;
 }

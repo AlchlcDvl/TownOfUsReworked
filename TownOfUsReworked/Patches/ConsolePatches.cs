@@ -72,14 +72,15 @@ public static class DoorConsoleUsePatch
     {
         __instance.CanUse(CustomPlayer.LocalCustom.Data, out var canUse, out _);
 
-        if (!canUse)
-            return false;
+        if (canUse)
+        {
+            CustomPlayer.Local.NetTransform.Halt();
+            var minigame = UObject.Instantiate(__instance.MinigamePrefab, Camera.main.transform);
+            minigame.transform.localPosition = new(0f, 0f, -50f);
+            minigame.TryCast<IDoorMinigame>()?.SetDoor(__instance.MyDoor);
+            minigame.Begin(null);
+        }
 
-        CustomPlayer.Local.NetTransform.Halt();
-        var minigame = UObject.Instantiate(__instance.MinigamePrefab, Camera.main.transform);
-        minigame.transform.localPosition = new(0f, 0f, -50f);
-        minigame.TryCast<IDoorMinigame>()?.SetDoor(__instance.MyDoor);
-        minigame.Begin(null);
         return false;
     }
 }
@@ -181,7 +182,7 @@ public static class ConsoleCanUsePatch
         var playerControl = pc.Object;
         var flag = !playerControl.CanDoTasks();
 
-        //If the console is not a sabotage repair console
+        // If the console is not a sabotage repair console
         if (flag && !__instance.AllowImpostor)
         {
             __result = float.MaxValue;

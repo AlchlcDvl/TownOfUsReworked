@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Patches;
 
 public static class GameStartManagerPatch
 {
-    //The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Patches/GameStartManagerPatch.cs under GPL v3 with some
-    //Modifications from me to account for MCI and the horrid vanilla spam in the logs
-    public static readonly Dictionary<int, PlayerVersion> PlayerVersions = new();
+    // The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Patches/GameStartManagerPatch.cs under GPL v3 with some
+    // modifications from me to account for MCI and the horrid vanilla spam in the logs
+    public static readonly Dictionary<int, PlayerVersion> PlayerVersions = [];
     private static float KickingTimer;
     private static bool VersionSent;
 
@@ -70,19 +70,19 @@ public static class GameStartManagerPatch
                 __instance.ShareOnDiscordButton.gameObject.SetActive(false);
             }
 
-            //Lobby size
+            // Lobby size
             __instance.MinPlayers = 1;
             Generate.LobbySize.Set((float)TownOfUsReworked.NormalOptions?.MaxPlayers);
 
             if (!IsHnS)
             {
-                //Trigger version refresh
+                // Trigger version refresh
                 VersionSent = false;
-                //Reset kicking timer
+                // Reset kicking timer
                 KickingTimer = 0f;
-                //Copy lobby code
+                // Copy lobby code
                 GUIUtility.systemCopyBuffer = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
-                //Clear player versions
+                // Clear player versions
                 PlayerVersions.Clear();
             }
         }
@@ -105,7 +105,7 @@ public static class GameStartManagerPatch
 
         private static void UpdatePrefix(GameStartManager __instance)
         {
-            if (!__instance || !AmongUsClient.Instance || !GameData.Instance || !GameManager.Instance || IsInGame)
+            if (!AmongUsClient.Instance || !GameData.Instance || !GameManager.Instance || IsInGame)
                 return;
 
             __instance.MakePublicButton.sprite = AmongUsClient.Instance.IsGamePublic ? __instance.PublicGameImage : __instance.PrivateGameImage;
@@ -145,10 +145,11 @@ public static class GameStartManagerPatch
                 }
             }
 
-            //Check version handshake infos
+            // Check version handshake infos
             var versionMismatch = false;
             var message = "";
 
+            // Send version as soon as local player exists
             if (CustomPlayer.Local && !VersionSent)
             {
                 VersionSent = true;
@@ -157,43 +158,47 @@ public static class GameStartManagerPatch
 
             if (!TownOfUsReworked.MCIActive && !IsHnS)
             {
-                //Send version as soon as CustomPlayer.Local exists
                 foreach (var client in AmongUsClient.Instance.allClients)
                 {
                     if (!client.Character)
                         continue;
 
-                    if (PlayerVersions.ContainsKey(client.Id))
+                    if (PlayerVersions.TryGetValue(client.Id, out var pv))
                     {
-                        var pv = PlayerVersions[client.Id];
-                        var diff = TownOfUsReworked.Version.CompareTo(pv.Version);
-
-                        if (diff > 0)
+                        if (pv.Diff > 0)
                         {
                             versionMismatch = true;
-                            message += $"{client.PlayerName} has an older version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n";
+                            message += $"{client.PlayerName} has an older version of Town Of Us Reworked (v{pv.VersionString})\n";
                         }
-                        else if (diff < 0)
+                        else if (pv.Diff < 0)
                         {
                             versionMismatch = true;
-                            message += $"{client.PlayerName} has a newer version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n";
+                            message += $"{client.PlayerName} has a newer version of Town Of Us Reworked (v{pv.VersionString})\n";
                         }
                         else if (!pv.DevMatches || !pv.StreamMatches || !pv.DevBuildMatches)
                         {
-                            //Version presumably matches, check if Dev/Stream matches
+                            // Version presumably matches, check if Dev/Stream matches
                             versionMismatch = true;
-                            message += $"You or {client.PlayerName} have mismatching non-public versions of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n";
+                            message += $"{client.PlayerName} has a mismatching non-public version of Town Of Us Reworked (v{pv.VersionString})\n";
                         }
-                        else if (!pv.GuidMatches)
+                        else if (!pv.GuidMatches || !pv.VersionStringMatches)
                         {
-                            //Version presumably matches, check if Guid matches
+                            // Version presumably matches, check if Guid or Version string matches
                             versionMismatch = true;
-                            message += $"{client.PlayerName} has a modified version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version} ({pv.Guid}))\n";
+                            message += $"{client.PlayerName} has a modified version of Town Of Us Reworked (v{pv.VersionString})\n";
+                        }
+                        else if (!pv.EverythingMatches)
+                        {
+                            // Somehow something's still not matching, so just display that the player has something wrong
+                            versionMismatch = true;
+                            message += $"You or {client.PlayerName} somehow still has a version mismatch, please share logs\n";
+                            LogWarning($"Guid - {pv.GuidMatches} Dev - {pv.DevMatches} Stream - {pv.StreamMatches} Dev Build - {pv.DevBuildMatches} Version String - {pv.VersionString} " +
+                                $"Version - {pv.Version}");
                         }
                     }
                 }
 
-                //Display message to the host
+                // Display message to the host
                 if (AmongUsClient.Instance.AmHost)
                 {
                     if (versionMismatch)
@@ -205,8 +210,8 @@ public static class GameStartManagerPatch
                     else if (!IsCountDown)
                         __instance.StartButton.color = __instance.startLabelText.color = Palette.EnabledColor;
                 }
-                //Client update with handshake infos
-                else if (!PlayerVersions.ContainsKey(AmongUsClient.Instance.HostId) || TownOfUsReworked.Version.CompareTo(PlayerVersions[AmongUsClient.Instance.HostId].Version) != 0)
+                // Client update with handshake infos
+                else if (!PlayerVersions.TryGetValue(AmongUsClient.Instance.HostId, out var pv) || pv.Diff != 0)
                 {
                     KickingTimer += Time.deltaTime;
 
@@ -249,7 +254,12 @@ public static class GameStartManagerPatch
                     CustomPlayer.Local.RpcSetStartCounter(Seconds);
 
                 if (Seconds <= 0)
+                {
                     __instance.FinallyBegin();
+
+                    // Clear player versions right before the game starts
+                    PlayerVersions.Clear();
+                }
             }
         }
     }
@@ -259,7 +269,7 @@ public static class GameStartManagerPatch
     {
         public static bool Prefix()
         {
-            //Block game start if not everyone has the same mod version
+            // Block game start if not everyone has the same mod version
             var continueStart = true;
 
             if (!TownOfUsReworked.MCIActive && AmongUsClient.Instance.AmHost)
@@ -274,16 +284,13 @@ public static class GameStartManagerPatch
                     if (dummyComponent?.enabled == true)
                         continue;
 
-                    if (!PlayerVersions.ContainsKey(client.Id))
+                    if (!PlayerVersions.TryGetValue(client.Id, out var pv))
                     {
                         continueStart = false;
                         break;
                     }
 
-                    var PV = PlayerVersions[client.Id];
-                    var diff = TownOfUsReworked.Version.CompareTo(PV.Version);
-
-                    if (diff != 0 || !PV.GuidMatches)
+                    if (!pv.EverythingMatches)
                     {
                         continueStart = false;
                         break;

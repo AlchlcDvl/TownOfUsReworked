@@ -11,16 +11,13 @@ public class Grenadier : Intruder
     public override Func<string> StartText => () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
     public override Func<string> Description => () => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
 
-    public Grenadier() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderConceal;
-        FlashedPlayers = new();
-        FlashButton = new(this, "Flash", AbilityTypes.Targetless, "Secondary", HitFlash, CustomGameOptions.FlashCd, CustomGameOptions.FlashDur, Flash, StartFlash, UnFlash);
-        return this;
+        FlashedPlayers = [];
+        FlashButton = CreateButton(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(CustomGameOptions.FlashCd),
+            new Duration(CustomGameOptions.FlashDur), (EffectVoid)Flash, (EffectStartVoid)StartFlash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, "FLASH");
     }
 
     public void Flash()
@@ -85,15 +82,11 @@ public class Grenadier : Intruder
 
     public void HitFlash()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, FlashButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, FlashButton);
         FlashButton.Begin();
     }
 
     public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius).Select(x => x.PlayerId).ToList();
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        FlashButton.Update2("FLASH", condition: !Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !CustomGameOptions.SaboFlash);
-    }
+    public bool Condition() => !Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !CustomGameOptions.SaboFlash;
 }

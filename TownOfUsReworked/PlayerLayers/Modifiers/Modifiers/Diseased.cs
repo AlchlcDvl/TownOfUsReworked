@@ -6,13 +6,5 @@ public class Diseased : Modifier
     public override string Name => "Diseased";
     public override LayerEnum Type => LayerEnum.Diseased;
     public override Func<string> Description => () => $"- Your killer's cooldown increases by {CustomGameOptions.DiseasedMultiplier} times";
-    public override bool Hidden => !CustomGameOptions.DiseasedKnows && !IsDead;
-
-    public Diseased() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
+    public override bool Hidden => !CustomGameOptions.DiseasedKnows && !Dead;
 }

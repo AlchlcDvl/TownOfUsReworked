@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
 public abstract class Objectifier : PlayerLayer
 {
-    public static readonly List<Objectifier> AllObjectifiers = new();
+    public static List<Objectifier> AllObjectifiers => AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Objectifier).Cast<Objectifier>().ToList();
     public static Objectifier LocalObjectifier => CustomPlayer.Local.GetObjectifier();
 
     public override UColor Color => CustomColorManager.Objectifier;
@@ -20,8 +20,6 @@ public abstract class Objectifier : PlayerLayer
     public static bool DefectorWins { get; set; }
 
     public static bool ObjectifierWins => LoveWins || RivalWins || TaskmasterWins || CorruptedWins || OverlordWins || MafiaWins || DefectorWins;
-
-    protected Objectifier() : base() => AllObjectifiers.Add(this);
 
     public string ColoredSymbol => $"{ColorString}{Symbol}</color>";
 }

@@ -17,6 +17,7 @@ public partial class TownOfUsReworked
         CustomObjColors = Config.Bind("Custom", "Custom Objectifier Colors", true, "Enables custom colors for Objectifiers");
         CustomAbColors = Config.Bind("Custom", "Custom Ability Colors", true, "Enables custom colors for Abilities");
         CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
+        HideOtherGhosts = Config.Bind("Custom", "Hide Other Ghosts", true, "Hides other ghosts when you are dead");
         OptimisationMode = Config.Bind("Custom", "Optimisation Mode", false, "Disables things that would be considered resource heavy");
     }
 
@@ -29,7 +30,6 @@ public partial class TownOfUsReworked
             File.WriteAllText(text, "945360");
 
         AllMonos.RegisterMonos();
-        AllMonos.AddComponents();
         SetUpConfigs();
         LoadAssets();
     }

@@ -9,12 +9,4 @@ public class Taskmaster : Objectifier
     public override string Symbol => "µ";
     public override LayerEnum Type => LayerEnum.Taskmaster;
     public override Func<string> Description => () => "- Finish your tasks before the game ends";
-
-    public Taskmaster() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
 }

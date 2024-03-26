@@ -13,18 +13,16 @@ public class Bomber : Syndicate
     public override Func<string> Description => () => $"- You can place bombs which can be detonated at any time to kill anyone within a {CustomGameOptions.BombRange}m radius\n" +
         CommonAbilities;
 
-    public Bomber() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateKill;
-        Bombs = new();
-        BombButton = new(this, "Plant", AbilityTypes.Targetless, "ActionSecondary", Place, CustomGameOptions.BombCd);
-        DetonateButton = new(this, "Detonate", AbilityTypes.Targetless, "Secondary", Detonate, CustomGameOptions.DetonateCd);
+        Bombs = [];
+        BombButton = CreateButton(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(CustomGameOptions.BombCd), "PLACE BOMB",
+            (ConditionFunc)Condition);
+        DetonateButton = CreateButton(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(CustomGameOptions.DetonateCd),
+            "DETONATE", (UsableFunc)Bombs.Any);
         Data.Role.IntroSound = GetAudio("BomberIntro");
-        return this;
     }
 
     public override void OnLobby()
@@ -64,10 +62,11 @@ public class Bomber : Syndicate
             BombButton.StartCooldown();
     }
 
+    public bool Condition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.Transform.position) < x.Size * 2);
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BombButton.Update2("PLACE BOMB", condition: !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.Transform.position) < x.Size * 2));
-        DetonateButton.Update2("DETONATE", Bombs.Count > 0);
+        Bombs.ForEach(x => x.Update());
     }
 }

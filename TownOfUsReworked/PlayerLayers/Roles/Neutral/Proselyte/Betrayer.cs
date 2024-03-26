@@ -10,26 +10,17 @@ public class Betrayer : Neutral
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
     public override Func<string> Description => () => "- You can kill";
 
-    public Betrayer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
         Alignment = Alignment.NeutralPros;
-        KillButton = new(this, "BetKill", AbilityTypes.Alive, "ActionSecondary", Kill, CustomGameOptions.BetrayCd, Exception);
-        return this;
+        KillButton = CreateButton(this, new SpriteName("BetrayerKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(CustomGameOptions.BetrayCd), "BETRAY",
+            (PlayerBodyExclusion)Exception);
     }
 
     public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
 
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        KillButton.Update2("BETRAY");
-    }
 }

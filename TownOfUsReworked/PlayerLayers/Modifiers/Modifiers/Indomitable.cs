@@ -8,13 +8,5 @@ public class Indomitable : Modifier
     public override string Name => "Indomitable";
     public override LayerEnum Type => LayerEnum.Indomitable;
     public override Func<string> Description => () => "- You cannot be guessed";
-    public override bool Hidden => !CustomGameOptions.IndomitableKnows && !AttemptedGuess && !IsDead;
-
-    public Indomitable() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
+    public override bool Hidden => !CustomGameOptions.IndomitableKnows && !AttemptedGuess && !Dead;
 }

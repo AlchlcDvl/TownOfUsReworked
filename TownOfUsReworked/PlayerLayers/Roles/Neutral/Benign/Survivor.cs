@@ -2,7 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Survivor : Neutral
 {
-    public bool Alive => !Disconnected && !IsDead;
     public CustomButton VestButton { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Survivor : CustomColorManager.Neutral;
@@ -12,27 +11,18 @@ public class Survivor : Neutral
     public override Func<string> Description => () => "- You can put on a vest, which makes you unkillable for a short duration of time";
     public override DefenseEnum DefenseVal => VestButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public Survivor() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Live to the end of the game";
-        VestButton = new(this, "Vest", AbilityTypes.Targetless, "ActionSecondary", HitVest, CustomGameOptions.VestCd, CustomGameOptions.VestDur, CustomGameOptions.MaxVests);
-        return this;
+        VestButton = CreateButton(this, new SpriteName("Vest"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitVest, new Cooldown(CustomGameOptions.VestCd), "VEST",
+            new Duration(CustomGameOptions.VestDur), CustomGameOptions.MaxVests);
     }
 
     public void HitVest()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, VestButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, VestButton);
         VestButton.Begin();
-    }
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        VestButton.Update2("VEST");
     }
 }

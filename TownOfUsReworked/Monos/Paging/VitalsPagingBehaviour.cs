@@ -2,10 +2,8 @@ namespace TownOfUsReworked.Monos;
 
 public class VitalsPagingBehaviour : BasePagingBehaviour
 {
-    public VitalsPagingBehaviour(IntPtr ptr) : base(ptr) {}
-
     [HideFromIl2Cpp]
-    public IEnumerable<VitalsPanel> Targets => Menu.vitals.ToArray();
+    public IEnumerable<VitalsPanel> Targets => [..Menu.vitals];
 
     public override int MaxPageIndex => (Targets.Count() - 1) / 15;
     private TextMeshPro PageText;

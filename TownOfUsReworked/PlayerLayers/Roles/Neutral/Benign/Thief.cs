@@ -22,30 +22,21 @@ public class Thief : Neutral
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    public Thief() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.NeutralBen;
-        StealButton = new(this, "Steal", AbilityTypes.Alive, "ActionSecondary", Steal, CustomGameOptions.StealCd, Exception);
-        ColorMapping = new();
-        SortedColorMapping = new();
+        StealButton = CreateButton(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(CustomGameOptions.StealCd), "STEAL",
+            (PlayerBodyExclusion)Exception);
+        ColorMapping = [];
+        SortedColorMapping = [];
         SelectedButton = null;
         Page = 0;
         MaxPage = 0;
-        GuessButtons = new();
-        Sorted = new();
+        GuessButtons = [];
+        Sorted = [];
         GuessMenu = new(Player, "Guess", CustomGameOptions.ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
         SetLists();
-        return this;
-    }
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        StealButton.Update2("STEAL");
     }
 
     private void SetLists()
@@ -54,7 +45,7 @@ public class Thief : Neutral
         SortedColorMapping.Clear();
         Sorted.Clear();
 
-        //Adds all the roles that have a non-zero chance of being in the game
+        // Adds all the roles that have a non-zero chance of being in the game
         if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
         {
             if (CustomGameOptions.VeteranOn > 0) ColorMapping.Add("Veteran", CustomColorManager.Veteran);
@@ -128,7 +119,7 @@ public class Thief : Neutral
             if (CustomGameOptions.BountyHunterOn > 0) ColorMapping.Add("Bounty Hunter", CustomColorManager.BountyHunter);
         }
 
-        //Sorts the list alphabetically.
+        // Sorts the list alphabetically.
         SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
         var i = 0;
@@ -161,7 +152,7 @@ public class Thief : Neutral
         for (var k = 0; k < SortedColorMapping.Count; k++)
         {
             if (!GuessButtons.ContainsKey(i))
-                GuessButtons.Add(i, new());
+                GuessButtons.Add(i, []);
 
             var row = j / 5;
             var col = j % 5;
@@ -171,7 +162,7 @@ public class Thief : Neutral
             var button = UObject.Instantiate(buttonTemplate, buttonParent);
             MakeTheButton(button, buttonParent, voteArea, new(-3.47f + (1.75f * col), 1.5f - (0.45f * row), -5f), guess, Sorted[k].Value, () =>
             {
-                if (IsDead)
+                if (Dead)
                     return;
 
                 if (SelectedButton != button)
@@ -257,7 +248,7 @@ public class Thief : Neutral
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || IsDead || (player == Player && player == CustomPlayer.Local) ||
+        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || Dead || (player == Player && player == CustomPlayer.Local) ||
             (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
     }
 
@@ -354,7 +345,7 @@ public class Thief : Neutral
                 break;
 
             default:
-                LogError($"Received unknown RPC - {thiefAction}");
+                LogError($"Received unknown RPC - {(int)thiefAction}");
                 break;
         }
     }
@@ -365,17 +356,15 @@ public class Thief : Neutral
 
         if (cooldown != CooldownType.Fail)
         {
-            if (!(StealButton.TargetPlayer.GetFaction() is Faction.Intruder or Faction.Syndicate || StealButton.TargetPlayer.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo
-                or Alignment.NeutralPros or Alignment.CrewKill))
-            {
-                Utils.RpcMurderPlayer(Player);
-            }
-            else
+            if (StealButton.TargetPlayer.GetFaction() is Faction.Intruder or Faction.Syndicate || StealButton.TargetPlayer.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
+                Alignment.NeutralPros or Alignment.CrewKill || StealButton.TargetPlayer.GetRole() is VampireHunter)
             {
                 Utils.RpcMurderPlayer(Player, StealButton.TargetPlayer);
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ThiefActionsRPC.Steal, StealButton.TargetPlayer);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, StealButton.TargetPlayer);
                 Steal(StealButton.TargetPlayer);
             }
+            else
+                Utils.RpcMurderPlayer(Player);
         }
 
         StealButton.StartCooldown(cooldown);
@@ -387,8 +376,6 @@ public class Thief : Neutral
     public void Steal(PlayerControl other)
     {
         var role = other.GetRole();
-        var target = other.GetTarget();
-        var leader = other.GetLeader();
         var player = Player;
 
         if (CustomPlayer.Local == other || CustomPlayer.Local == player)
@@ -400,66 +387,65 @@ public class Thief : Neutral
 
         Role newRole = role.Type switch
         {
-            LayerEnum.Anarchist => new Anarchist(),
-            LayerEnum.Arsonist => new Arsonist() { Doused = ((Arsonist)role).Doused },
-            LayerEnum.Blackmailer => new Blackmailer() { BlackmailedPlayer = ((Blackmailer)role).BlackmailedPlayer },
-            LayerEnum.Bomber => new Bomber(),
-            LayerEnum.Camouflager => new Camouflager(),
-            LayerEnum.Concealer => new Concealer(),
-            LayerEnum.Consigliere => new Consigliere(),
-            LayerEnum.Consort => new Consort(),
-            LayerEnum.Cryomaniac => new Cryomaniac() { Doused = ((Cryomaniac)role).Doused },
-            LayerEnum.Disguiser => new Disguiser(),
-            LayerEnum.Dracula => new Dracula() { Converted = ((Dracula)role).Converted },
-            LayerEnum.Framer => new Framer() { Framed = ((Framer)role).Framed },
-            LayerEnum.Glitch => new Glitch(),
-            LayerEnum.Enforcer => new Enforcer(),
-            LayerEnum.Godfather => new Godfather(),
-            LayerEnum.Grenadier => new Grenadier(),
-            LayerEnum.Impostor => new Impostor(),
-            LayerEnum.Juggernaut => new Juggernaut(),
-            LayerEnum.Mafioso => new Mafioso() { Godfather = (Godfather)leader },
-            LayerEnum.PromotedGodfather => new PromotedGodfather() { BlackmailedPlayer = ((PromotedGodfather)role).BlackmailedPlayer },
-            LayerEnum.Miner => new Miner(),
-            LayerEnum.Morphling => new Morphling(),
-            LayerEnum.Rebel => new Rebel(),
-            LayerEnum.Sidekick => new Sidekick() { Rebel = (Rebel)leader },
-            LayerEnum.Shapeshifter => new Shapeshifter(),
-            LayerEnum.Murderer => new Murderer(),
-            LayerEnum.Plaguebearer => new Plaguebearer() { Infected = ((Plaguebearer)role).Infected },
-            LayerEnum.Pestilence => new Pestilence(),
-            LayerEnum.SerialKiller => new SerialKiller(),
-            LayerEnum.Werewolf => new Werewolf(),
-            LayerEnum.Janitor => new Janitor(),
-            LayerEnum.Poisoner => new Poisoner(),
-            LayerEnum.Teleporter => new Teleporter(),
+            // Crew roles
+            LayerEnum.Bastion => new Bastion(),
             LayerEnum.VampireHunter => new VampireHunter(),
             LayerEnum.Veteran => new Veteran(),
             LayerEnum.Vigilante => new Vigilante(),
-            LayerEnum.Warper => new Warper(),
-            LayerEnum.Wraith => new Wraith(),
-            LayerEnum.BountyHunter => new BountyHunter() { TargetPlayer = target },
-            LayerEnum.Bastion => new Bastion() { BombedIDs = ((Bastion)role).BombedIDs },
-            LayerEnum.Jackal => new Jackal()
-            {
-                Recruited = ((Jackal)role).Recruited,
-                EvilRecruit = ((Jackal)role).EvilRecruit,
-                GoodRecruit = ((Jackal)role).GoodRecruit,
-                BackupRecruit = ((Jackal)role).BackupRecruit
-            },
-            LayerEnum.Necromancer => new Necromancer() { Resurrected = ((Necromancer)role).Resurrected },
-            LayerEnum.Whisperer => new Whisperer() { Persuaded = ((Whisperer)role).Persuaded },
+
+            // Neutral roles
+            LayerEnum.Arsonist => new Arsonist(),
             LayerEnum.Betrayer => new Betrayer() { Faction = role.Faction },
+            LayerEnum.Cannibal => new Cannibal(),
+            LayerEnum.Cryomaniac => new Cryomaniac(),
+            LayerEnum.Glitch => new Glitch(),
+            LayerEnum.Juggernaut => new Juggernaut(),
+            LayerEnum.Murderer => new Murderer(),
+            LayerEnum.Plaguebearer or LayerEnum.Pestilence => new Plaguebearer(),
+            LayerEnum.SerialKiller => new SerialKiller(),
+            LayerEnum.Thief => new Thief(),
+            LayerEnum.Werewolf => new Werewolf(),
+
+            // Intruder roles
             LayerEnum.Ambusher => new Ambusher(),
+            LayerEnum.Blackmailer => new Blackmailer(),
+            LayerEnum.Camouflager => new Camouflager(),
+            LayerEnum.Consigliere => new Consigliere(),
+            LayerEnum.Consort => new Consort(),
+            LayerEnum.Disguiser => new Disguiser(),
+            LayerEnum.Enforcer => new Enforcer(),
+            LayerEnum.Godfather => new Godfather(),
+            LayerEnum.PromotedGodfather => new PromotedGodfather(),
+            LayerEnum.Grenadier => new Grenadier(),
+            LayerEnum.Impostor => new Impostor(),
+            LayerEnum.Janitor => new Janitor(),
+            LayerEnum.Mafioso => new Mafioso() { Godfather = ((Mafioso)role).Godfather },
+            LayerEnum.Miner => new Miner(),
+            LayerEnum.Morphling => new Morphling(),
+            LayerEnum.Teleporter => new Teleporter(),
+            LayerEnum.Wraith => new Wraith(),
+
+            // Syndicate roles
+            LayerEnum.Anarchist => new Anarchist(),
+            LayerEnum.Bomber => new Bomber(),
+            LayerEnum.Collider => new Collider(),
+            LayerEnum.Concealer => new Concealer(),
             LayerEnum.Crusader => new Crusader(),
-            LayerEnum.PromotedRebel => new PromotedRebel()
-            {
-                Framed = ((PromotedRebel)role).Framed,
-                SilencedPlayer = ((PromotedRebel)role).SilencedPlayer,
-            },
+            LayerEnum.Drunkard => new Drunkard(),
+            LayerEnum.Framer => new Framer(),
+            LayerEnum.Poisoner => new Poisoner(),
+            LayerEnum.Rebel => new Rebel(),
+            LayerEnum.PromotedRebel => new PromotedRebel(),
+            LayerEnum.Shapeshifter => new Shapeshifter(),
+            LayerEnum.Sidekick => new Sidekick() { Rebel = ((Sidekick)role).Rebel },
+            LayerEnum.Silencer => new Silencer(),
+            LayerEnum.Spellslinger => new Spellslinger(),
             LayerEnum.Stalker => new Stalker(),
-            LayerEnum.Silencer => new Silencer() { SilencedPlayer = ((Silencer)role).SilencedPlayer, },
-            _ => new Thief(),
+            LayerEnum.Timekeeper => new Timekeeper(),
+            LayerEnum.Warper => new Warper(),
+
+            // Whatever else
+            LayerEnum.Thief or _ => new Thief()
         };
 
         newRole.Start<Role>(player).RoleUpdate(this, Faction == Faction.Neutral);
@@ -521,7 +507,7 @@ public class Thief : Neutral
 
             foreach (var pair in GuessButtons)
             {
-                if (pair.Value.Count > 0)
+                if (pair.Value.Any())
                     pair.Value.ForEach(x => x?.gameObject?.SetActive(Page == pair.Key));
 
                 GuessButtons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UColor.red : UColor.white);
@@ -532,7 +518,7 @@ public class Thief : Neutral
     public void RpcMurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ThiefActionsRPC.Guess, player, guess, guessTarget);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Guess, player, guess, guessTarget);
     }
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)

@@ -2,51 +2,62 @@ namespace TownOfUsReworked.Options;
 
 public static class SettingsPatches
 {
-    private static readonly string[] Menus = { "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List", "Client" };
-    private static readonly List<GameObject> MenuG = new();
-    private static readonly List<SpriteRenderer> MenuS = new();
+    private static readonly string[] Menus = ["Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List", "Client"];
+    private static readonly List<GameObject> MenuG = [];
+    private static readonly List<SpriteRenderer> MenuS = [];
     private static GameObject ClientMenu;
     private static SpriteRenderer ClientSprite;
 
     public static Preset PresetButton;
     public static CustomButtonOption SaveSettings;
 
-    public static int SettingsPage;
+    private static int _page;
+    public static int SettingsPage
+    {
+        get => _page;
+        set
+        {
+            _page = value;
+
+            if (IsInGame && HUD)
+                HUD.GameSettings.text = Settings();
+        }
+    }
     public static int CurrentPage = 1;
     public static bool AllSettings;
 
     [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
     public static class GameOptionsDataPatch
     {
-        public static void Postfix(ref string __result)
+        public static bool Prefix(ref string __result)
         {
             if (IsHnS)
-                return;
+                return true;
 
             __result = Settings();
+            return false;
         }
     }
 
-    public static string Settings()
+    private static string Settings()
     {
-        if (SettingsPage == 10)
+        if (_page == 10)
             return "";
 
         var builder = new StringBuilder();
 
         if (!AllSettings)
-            builder.AppendLine($"<b><size=160%>{TranslationManager.Translate($"GameSettings.Page{SettingsPage + 1}")}</size></b>");
+            builder.AppendLine($"<b><size=160%>{TranslationManager.Translate($"GameSettings.Page{_page + 1}")}</size></b>");
 
-        var tobedisplayed = CustomOption.AllOptions.Where(x => (x.Menu == (MultiMenu)SettingsPage || AllSettings) && x.Active).ToList();
+        var tobedisplayed = CustomOption.AllOptions.Where(x => (x.Menu == (MultiMenu)_page || AllSettings) && x.Active).ToList();
 
-        foreach (var option in tobedisplayed)
+        for (var i = 0; i < tobedisplayed.Count; i++)
         {
-            if (option.Type == CustomOptionType.Button)
-                continue;
+            var option = tobedisplayed[i];
 
-            if (option.Menu == MultiMenu.External || (option.Menu == MultiMenu.RoleList && !IsRoleList) || (option.Menu == MultiMenu.Ability && (!CustomGameOptions.EnableAbilities ||
-                IsRoleList)) || (option.Menu == MultiMenu.Modifier && (!CustomGameOptions.EnableModifiers || IsRoleList)) || (option.Menu == MultiMenu.Objectifier &&
-                (!CustomGameOptions.EnableObjectifiers || IsRoleList)))
+            if (option.Type == CustomOptionType.Button || option.Menu == MultiMenu.External || (option.Menu == MultiMenu.RoleList && !IsRoleList) || (option.Menu == MultiMenu.Ability &&
+                (!CustomGameOptions.EnableAbilities || IsRoleList)) || (option.Menu == MultiMenu.Modifier && (!CustomGameOptions.EnableModifiers || IsRoleList)) || (option.Menu ==
+                MultiMenu.Objectifier && (!CustomGameOptions.EnableObjectifiers || IsRoleList)))
             {
                 continue;
             }
@@ -56,8 +67,7 @@ public static class SettingsPatches
             if (AllSettings && !builder.ToString().Contains(title))
                 builder.AppendLine(title);
 
-            var index = tobedisplayed.IndexOf(option);
-            var thing = option is CustomHeaderOption ? "" : (index == tobedisplayed.Count - 1 || tobedisplayed[index + 1].Type == CustomOptionType.Header ? "┗ " : "┣ " );
+            var thing = option is CustomHeaderOption ? "" : (i == tobedisplayed.Count - 1 || tobedisplayed[i + 1].Type == CustomOptionType.Header ? "┗ " : "┣ " );
             builder.AppendLine($"{thing}{option}");
         }
 
@@ -91,10 +101,10 @@ public static class SettingsPatches
 
     private static void UpdatePageNumber()
     {
-        if (Chat && Chat.IsOpenOrOpening)
+        if ((Chat && Chat.IsOpenOrOpening) || (IsInGame && !ClientHandler.Instance.SettingsActive))
             return;
 
-        var cached = SettingsPage;
+        var cached = _page;
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -233,7 +243,17 @@ public static class SettingsPatches
                 CreateOptionsMenu(__instance, index, obj);
             }
 
-            DisableVanillaMenus(__instance);
+            __instance.RegularGameSettings.SetActive(false);
+            __instance.RolesSettings.gameObject.SetActive(false);
+            __instance.GameSettingsHightlight.gameObject.SetActive(false);
+            __instance.RolesSettingsHightlight.gameObject.SetActive(false);
+            __instance.GameSettingsHightlight.enabled = false;
+            __instance.RolesSettingsHightlight.enabled = false;
+            __instance.RolesSettingsHightlight.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            __instance.GameSettingsHightlight.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            __instance.RolesSettingsHightlight.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+            __instance.GameSettingsHightlight.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+
             ToggleButtonVoid(SettingsPage);
         }
 
@@ -243,7 +263,7 @@ public static class SettingsPatches
             touSettings.SetActive(false);
             touSettings.name = $"{Menus[index].Replace(" ", "")}Settings";
 
-            //Derived this from Town Of Host Edited
+            // Derived this from Town Of Host Edited
             touSettings.transform.FindChild("BackPanel").transform.localScale = new(1.6f, 1f, 1f);
             touSettings.transform.FindChild("Bottom Gradient").transform.localScale = new(1.6f, 1f, 1f);
             touSettings.transform.FindChild("BackPanel").transform.localPosition += new Vector3(0.2f, 0f, 0f);
@@ -274,7 +294,7 @@ public static class SettingsPatches
             ourSettingsButton.transform.localPosition = new(-4.3f + (0.7f * ((index == 9 ? 4 : index) + 1)), 0f, -5f);
             ourSettingsButton.name = $"{Menus[index].Replace(" ", "")}Tab";
 
-            var hatButton = ourSettingsButton.transform.GetChild(0); //TODO: Change to FindChild I guess to be sure
+            var hatButton = ourSettingsButton.transform.GetChild(0); // TODO: Change to FindChild I guess to be sure
             hatButton.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite(GetSettingSprite(index));
 
             var tabBackground = hatButton.GetChild(1);
@@ -329,20 +349,6 @@ public static class SettingsPatches
         };
     }
 
-    private static void DisableVanillaMenus(GameSettingMenu __instance)
-    {
-        __instance.RegularGameSettings.SetActive(false);
-        __instance.RolesSettings.gameObject.SetActive(false);
-        __instance.GameSettingsHightlight.gameObject.SetActive(false);
-        __instance.RolesSettingsHightlight.gameObject.SetActive(false);
-        __instance.GameSettingsHightlight.enabled = false;
-        __instance.RolesSettingsHightlight.enabled = false;
-        __instance.RolesSettingsHightlight.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        __instance.GameSettingsHightlight.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        __instance.RolesSettingsHightlight.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
-        __instance.GameSettingsHightlight.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
-    }
-
     private static void ToggleButtonVoid(int id, int current = 0)
     {
         if (id < 9 && !LobbyConsole.ClientOptionsActive)
@@ -360,26 +366,6 @@ public static class SettingsPatches
         }
 
         PresetButton.SlotButtons.Clear();
-    }
-
-    [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
-    public static class OptionsMenuBehaviour_Update
-    {
-        public static void Postfix(GameSettingMenu __instance)
-        {
-            if (IsHnS)
-                return;
-
-            DisableVanillaMenus(__instance);
-
-            if (TownOfUsReworked.NormalOptions.MaxPlayers != CustomGameOptions.LobbySize)
-            {
-                TownOfUsReworked.NormalOptions.MaxPlayers = CustomGameOptions.LobbySize;
-                GameStartManager.Instance.LastPlayerCount = CustomGameOptions.LobbySize;
-                GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
-                CustomPlayer.Local.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
-            }
-        }
     }
 
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Close))]
@@ -429,8 +415,8 @@ public static class SettingsPatches
             for (var k = 0; k < children.Length; k++)
                 children[k] = __instance.gameObject.transform.GetChild(k);
 
-            //TODO: Make a better fix for this for example caching the options or creating it ourself.
-            //AD Says: Done, kinda.
+            // TODO: Make a better fix for this for example caching the options or creating it ourself.
+            // AD Says: Done, kinda.
             if (!ValuesSet)
             {
                 ValuesSet = true;
@@ -467,7 +453,7 @@ public static class SettingsPatches
 
             if (RolePrefab == null)
             {
-                //Background = 0, Title = 1, Count - = 2, Count Val = 3, Count + = 4, Chance - = 5, Chance Val = 6, Chance + = 7
+                // Background = 0, Title = 1, Count - = 2, Count Val = 3, Count + = 4, Chance - = 5, Chance Val = 6, Chance + = 7
                 RolePrefab = UObject.Instantiate(UObject.FindObjectOfType<RoleOptionSetting>(true), null);
                 RolePrefab.name = "CustomLayersOptionPrefab";
                 RolePrefab.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
@@ -516,7 +502,7 @@ public static class SettingsPatches
 
                     switch (option.Type)
                     {
-                        case CustomOptionType.Number: //Background = 0, + = 1, - = 2, Title = 3, Val = 4
+                        case CustomOptionType.Number: // Background = 0, + = 1, - = 2, Title = 3, Val = 4
                             setting = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
                             setting.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
                             setting.transform.GetChild(1).localPosition += new Vector3(1.4f, 0f, 0f);
@@ -527,7 +513,7 @@ public static class SettingsPatches
                             setting.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new(1.6f, 0.26f);
                             break;
 
-                        case CustomOptionType.String: //Background = 0, + = 1, - = 2, Title = 3, Val = 4
+                        case CustomOptionType.String: // Background = 0, + = 1, - = 2, Title = 3, Val = 4
                             setting = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
                             setting.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
                             setting.transform.GetChild(1).localPosition += new Vector3(1.4f, 0f, 0f);
@@ -545,7 +531,7 @@ public static class SettingsPatches
                             setting.transform.GetChild(4).gameObject.SetActive(IsCustom);
                             break;
 
-                        case CustomOptionType.Toggle or CustomOptionType.Header or CustomOptionType.Entry: //Title = 0, Background = 1, Check + Box = 2
+                        case CustomOptionType.Toggle or CustomOptionType.Header or CustomOptionType.Entry: // Title = 0, Background = 1, Check + Box = 2
                             setting = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
                             setting.transform.GetChild(0).localPosition = new(-1.05f, 0f, 0f);
                             setting.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new(5.5f, 0.37f);
@@ -588,6 +574,12 @@ public static class SettingsPatches
             __instance.RefreshChildren();
             return false;
         }
+    }
+
+    [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
+    public static class FixIssue
+    {
+        public static bool Prefix() => false;
     }
 
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
@@ -974,9 +966,8 @@ public static class SettingsPatches
 
         public static void Prefix(HudManager __instance)
         {
-            if (IsLobby || CustomPlayer.Local.HasDied())
-                __instance?.ReportButton?.gameObject?.SetActive(false);
-
+            __instance?.ReportButton?.gameObject?.SetActive(!IsLobby && !CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is(LayerEnum.Coward) && IsInGame &&
+                !CustomPlayer.Local.Is(Faction.GameMode));
             UpdatePageNumber();
 
             if (__instance.GameSettings?.transform == null)
@@ -1008,7 +999,7 @@ public static class SettingsPatches
 
             Scroller.ContentYBounds = new(MinY, maxY);
 
-            //Prevent scrolling when the player is interacting with a menu
+            // Prevent scrolling when the player is interacting with a menu
             if (CustomPlayer.Local?.CanMove == false)
             {
                 __instance.GameSettings.transform.localPosition = LastPosition;

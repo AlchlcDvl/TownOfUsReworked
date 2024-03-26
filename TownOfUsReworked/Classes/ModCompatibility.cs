@@ -7,10 +7,10 @@ public static class ModCompatibility
 
     public static SemanticVersioning.Version SubVersion { get; private set; }
     public static bool SubLoaded { get; private set; }
-    public static BasePlugin SubPlugin { get; private set; }
-    public static Assembly SubAssembly { get; private set; }
-    public static Type[] SubTypes { get; private set; }
-    public static Dictionary<string, Type> SubInjectedTypes { get; private set; }
+    private static BasePlugin SubPlugin { get; set; }
+    private static Assembly SubAssembly { get; set; }
+    private static Type[] SubTypes { get; set; }
+    private static Dictionary<string, Type> SubInjectedTypes { get; set; }
 
     public static bool IsSubmerged() => SubLoaded && Ship && Ship.Type == SUBMERGED_MAP_TYPE && MapPatches.CurrentMap == 6;
 
@@ -139,7 +139,7 @@ public static class ModCompatibility
         if (!isInElevator)
             return;
 
-        //True is top, false is bottom
+        // True is top, false is bottom
         var currentFloor = (bool)UpperDeckIsTargetFloorField.GetValue(GetSubElevatorSystemField.GetValue(elevator));
         var playerFloor = player.transform.position.y > -7f;
 
@@ -159,8 +159,8 @@ public static class ModCompatibility
 
         if ((int)GetMovementStageFromTimeMethod.Invoke(elevator, null) >= 5)
         {
-            //Fade to clear
-            //True is top, false is bottom
+            // Fade to clear
+            // True is top, false is bottom
             var topfloortarget = (bool)UpperDeckIsTargetFloorField.GetValue(GetSubElevatorSystemField.GetValue(elevator));
             var topintendedtarget = player.transform.position.y > -7f;
 
@@ -176,7 +176,7 @@ public static class ModCompatibility
 
         foreach (var elevator in (IList)SubmergedElevatorsField.GetValue(SubmergedInstanceField.GetValue(null)))
         {
-            if ((bool)GetInElevatorMethod.Invoke(elevator, new[] { player }))
+            if ((bool)GetInElevatorMethod.Invoke(elevator, [player]))
                 return (true, elevator);
         }
 
@@ -254,10 +254,9 @@ public static class ModCompatibility
         if (!IsSubmerged())
             return;
 
-        var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new[] { CustomPlayer.Local })).TryCast(FloorHandlerType) as MonoBehaviour;
-        var args = new object[] { toUpper };
-        RpcRequestChangeFloorMethod.Invoke(_floorHandler, args);
-        RegisterFloorOverrideMethod.Invoke(_floorHandler, args);
+        var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, [CustomPlayer.Local])).TryCast(FloorHandlerType) as MonoBehaviour;
+        RpcRequestChangeFloorMethod.Invoke(_floorHandler, [toUpper]);
+        RegisterFloorOverrideMethod.Invoke(_floorHandler, [toUpper]);
     }
 
     public static bool GetInTransition()
@@ -276,7 +275,7 @@ public static class ModCompatibility
         try
         {
             Ship.RpcUpdateSystem((SystemTypes)130, 64);
-            RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), new object[] { CustomPlayer.Local, 64 });
+            RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), [CustomPlayer.Local, 64]);
         } catch {}
     }
 
@@ -309,9 +308,9 @@ public static class ModCompatibility
 
     public static SemanticVersioning.Version LIVersion { get; private set; }
     public static bool LILoaded { get; private set; }
-    public static BasePlugin LIPlugin { get; private set; }
-    public static Assembly LIAssembly { get; private set; }
-    public static Type[] LITypes { get; private set; }
+    private static BasePlugin LIPlugin { get; set; }
+    private static Assembly LIAssembly { get; set; }
+    private static Type[] LITypes { get; set; }
 
     public static bool IsLevelImpostor() => LILoaded && Ship && Ship.Type == LI_MAP_TYPE && MapPatches.CurrentMap == 7;
 
@@ -343,7 +342,7 @@ public static class ModCompatibility
 
     public static bool InitialiseMalumMenu()
     {
-        if (!IL2CPPChainloader.Instance.Plugins.TryGetValue("MalumMenu", out _))
+        if (!IL2CPPChainloader.Instance.Plugins.ContainsKey("MalumMenu"))
             return false;
 
         LogFatal("MalumMenu was detected");
@@ -374,7 +373,7 @@ public static class ModCompatibility
         }
     }
 
-    private static readonly string[] Unsupported = { "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod" };
+    private static readonly string[] Unsupported = ["AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod"];
 
     public static bool CheckAbort(out string mod)
     {

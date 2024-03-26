@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Patches;
 public static class MapPatches
 {
     public static byte CurrentMap;
-    private static readonly byte[] TBModes = { 1, 0, 2 };
+    private static readonly byte[] TBModes = [1, 0, 2];
 
     public static void Prefix()
     {
@@ -147,7 +147,7 @@ public static class MapPatches
         }
 
         randoms.Shuffle();
-        return (randoms.Count > 0 ? randoms : maps).Random();
+        return (randoms.Any() ? randoms : maps).Random();
     }
 
     public static void AdjustSettings()

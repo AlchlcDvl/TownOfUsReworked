@@ -3,14 +3,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Intruder : Role
 {
     public CustomButton KillButton { get; set; }
-    public string CommonAbilities => "<color=#FF1919FF>- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can " +
+    public string CommonAbilities => "<color=#FF1919FF>- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (Dead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can " +
         "call sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "") + "</color>";
 
     public override UColor Color => CustomColorManager.Intruder;
     public override Faction BaseFaction => Faction.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
-
-    protected Intruder() : base() {}
 
     public void BaseStart()
     {
@@ -18,7 +16,8 @@ public abstract class Intruder : Role
         Faction = Faction.Intruder;
         FactionColor = CustomColorManager.Intruder;
         Objectives = () => IntrudersWinCon;
-        KillButton = new(this, "IntruderKill", AbilityTypes.Alive, "ActionSecondary", Kill, CustomGameOptions.IntKillCd, Exception);
+        KillButton = CreateButton(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(CustomGameOptions.IntKillCd), "KILL",
+            (PlayerBodyExclusion)Exception);
         Player.SetImpostor(true);
     }
 
@@ -73,11 +72,6 @@ public abstract class Intruder : Role
         KillButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) =>  (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||  Player.IsLinkedTo(player);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        KillButton.Update2("KILL");
-    }
+    public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+        Player.IsLinkedTo(player);
 }

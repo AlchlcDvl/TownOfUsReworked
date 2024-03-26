@@ -7,13 +7,9 @@ public class Anarchist : Syndicate
     public override Func<string> StartText => () => "Wreck Everyone With A Passion";
     public override Func<string> Description => () => CommonAbilities;
 
-    public Anarchist() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateUtil;
-        return this;
     }
 }

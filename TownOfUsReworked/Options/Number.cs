@@ -6,14 +6,17 @@ public class CustomNumberOption : CustomOption
     private float Max { get; }
     private float Increment { get; }
 
+    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object parent) : this(menu, name, defaultValue, min, max, increment,
+        null, parent) {}
+
+    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object[] parents, bool all = false) : this(menu, name,
+        defaultValue, min, max, increment, null, parents, all) {}
+
     public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, object, string> format = null) : this(menu, name,
         defaultValue, min, max, increment, format, parent: null) {}
 
     public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, object, string> format, object parent) : this(menu, name,
-        defaultValue, min, max, increment, format, new[] { parent }, false) {}
-
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object parent) : this(menu, name, defaultValue, min, max,
-        increment, null, parent) {}
+        defaultValue, min, max, increment, format, [parent], false) {}
 
     public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, object, string> format, object[] parents, bool all = false)
         : base(menu, name, CustomOptionType.Number, defaultValue, parents, all)
@@ -23,9 +26,6 @@ public class CustomNumberOption : CustomOption
         Increment = increment;
         Format = format ?? Blank;
     }
-
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object[] parents, bool all = false) : this(menu, name,
-        defaultValue, min, max, increment, null, parents, all) {}
 
     private static Func<object, object, string> Blank => (val, _) => $"{val}";
 

@@ -15,19 +15,16 @@ public class Dracula : Neutral
         "Hunter</color> will force them to kill you";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Dracula() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
         Alignment = Alignment.NeutralNeo;
         SubFactionColor = CustomColorManager.Undead;
-        Converted = new() { Player.PlayerId };
-        BiteButton = new(this, "Bite", AbilityTypes.Alive, "ActionSecondary", Convert, CustomGameOptions.BiteCd, Exception);
-        return this;
+        Converted = [Player.PlayerId];
+        BiteButton = CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(CustomGameOptions.BiteCd), "BITE",
+            (PlayerBodyExclusion)Exception);
     }
 
     public void Convert()
@@ -41,10 +38,4 @@ public class Dracula : Neutral
     }
 
     public bool Exception(PlayerControl player) => Converted.Contains(player.PlayerId);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        BiteButton.Update2("BITE");
-    }
 }

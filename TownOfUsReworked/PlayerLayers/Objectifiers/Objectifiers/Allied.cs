@@ -16,12 +16,5 @@ public class Allied : Objectifier
     public override LayerEnum Type => LayerEnum.Allied;
     public override Func<string> Description => () => Side == Faction.Neutral ? "- You are conflicted" : "";
 
-    public Allied() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        Side = Faction.Neutral;
-        return this;
-    }
+    public override void Init() => Side = Faction.Neutral;
 }

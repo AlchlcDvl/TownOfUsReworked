@@ -10,15 +10,12 @@ public class Sheriff : Crew
     public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";
     public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>";
 
-    public Sheriff() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewKill;
-        InterrogateButton = new(this, "Interrogate", AbilityTypes.Alive, "ActionSecondary", Interrogate, CustomGameOptions.InterrogateCd, Exception);
-        return this;
+        InterrogateButton = CreateButton(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Interrogate,
+            new Cooldown(CustomGameOptions.InterrogateCd), (PlayerBodyExclusion)Exception);
     }
 
     public void Interrogate()
@@ -34,10 +31,4 @@ public class Sheriff : Crew
     public bool Exception(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
         CustomGameOptions.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) || (Player.IsOtherRival(player) && CustomGameOptions.RivalsRoles) ||
         (player.Is(LayerEnum.Mafia) && Player.Is(LayerEnum.Mafia) && CustomGameOptions.MafiaRoles) || (Player.IsOtherLink(player) && CustomGameOptions.LinkedRoles);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        InterrogateButton.Update2("INTERROGATE");
-    }
 }

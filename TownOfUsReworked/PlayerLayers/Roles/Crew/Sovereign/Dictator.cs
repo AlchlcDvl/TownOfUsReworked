@@ -16,19 +16,15 @@ public class Dictator : Crew
     public override Func<string> StartText => () => "You Have The Final Say";
     public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
 
-    public Dictator() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewSov;
-        ToBeEjected = new();
+        ToBeEjected = [];
         Ejected = false;
         ToDie = false;
-        RevealButton = new(this, "DictReveal", AbilityTypes.Targetless, "ActionSecondary", Reveal);
+        RevealButton = CreateButton(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal);
         DictMenu = new(Player, "DictActive", "DictDisabled", CustomGameOptions.DictateAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
-        return this;
     }
 
     public void Reveal()
@@ -37,21 +33,15 @@ public class Dictator : Crew
         PublicReveal(Player);
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        RevealButton.Update2("REVEAL", !Revealed && !RoundOne);
-    }
-
     public override void VoteComplete(MeetingHud __instance)
     {
         base.VoteComplete(__instance);
         DictMenu.HideButtons();
 
-        if (ToBeEjected.Count > 0 && !Ejected)
+        if (ToBeEjected.Any() && !Ejected)
         {
             ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ToDie, ToBeEjected);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ToDie, ToBeEjected);
         }
     }
 
@@ -89,7 +79,7 @@ public class Dictator : Crew
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (player == Player && Local) || IsDead || !Revealed || Ejected;
+        return player.HasDied() || (player == Player && Local) || Dead || !Revealed || Ejected;
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)
@@ -97,10 +87,10 @@ public class Dictator : Crew
         base.ConfirmVotePrefix(__instance);
         DictMenu.Voted();
 
-        if (ToBeEjected.Count > 0 && !Ejected)
+        if (ToBeEjected.Any() && !Ejected)
         {
             ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ToDie, ToBeEjected);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ToDie, ToBeEjected);
         }
     }
 

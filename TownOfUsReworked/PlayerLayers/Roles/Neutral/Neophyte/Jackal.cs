@@ -9,7 +9,7 @@ public class Jackal : Neutral
     public CustomButton KillButton { get; set; }
     public bool RecruitsDead => EvilRecruit == null || GoodRecruit == null || (BackupRecruit == null && GoodRecruit != null && EvilRecruit != null && GoodRecruit.HasDied() &&
         EvilRecruit.HasDied());
-    public bool AllRecruitsDead => GoodRecruit.HasDied() && EvilRecruit.HasDied() && BackupRecruit.HasDied();
+    public bool AllRecruitsDead => GoodRecruit && GoodRecruit.HasDied() && EvilRecruit && EvilRecruit.HasDied() && BackupRecruit && BackupRecruit.HasDied();
     public List<byte> Recruited { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Jackal : CustomColorManager.Neutral;
@@ -21,21 +21,19 @@ public class Jackal : Neutral
         " member into the <color=#575657FF>Cabal</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Jackal() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Recruit or kill anyone who can oppose the <color=#575657FF>Cabal</color>";
         SubFaction = SubFaction.Cabal;
         SubFactionColor = CustomColorManager.Cabal;
         Alignment = Alignment.NeutralNeo;
-        Recruited = new() { Player.PlayerId };
-        RecruitButton = new(this, "Recruit", AbilityTypes.Alive, "ActionSecondary", Recruit, Exception);
-        KillButton = new(this, "JackalKill", AbilityTypes.Alive, "ActionSecondary", Kill, Exception);
+        Recruited = [Player.PlayerId];
+        RecruitButton = CreateButton(this, new SpriteName("Recruit"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Recruit, (PlayerBodyExclusion)Exception, "RECRUIT",
+            (UsableFunc)Usable1);
+        KillButton = CreateButton(this, new SpriteName("JackalKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, (PlayerBodyExclusion)Exception, "KILL",
+            (UsableFunc)Usable2);
         Data.Role.IntroSound = GetAudio("JackalIntro");
-        return this;
     }
 
     public void Recruit()
@@ -52,10 +50,7 @@ public class Jackal : Neutral
 
     public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        RecruitButton.Update2("RECRUIT", RecruitsDead);
-        KillButton.Update2("KILL", AllRecruitsDead);
-    }
+    public bool Usable1() => RecruitsDead;
+
+    public bool Usable2() => AllRecruitsDead;
 }

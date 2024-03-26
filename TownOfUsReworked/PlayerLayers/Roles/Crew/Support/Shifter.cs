@@ -10,15 +10,11 @@ public class Shifter : Crew
     public override Func<string> StartText => () => "Shift Around Roles";
     public override Func<string> Description => () => "- You can steal another player's role\n- Shifting withn on-<color=#8CFFFFFF>Crew</color> will cause you to kill yourself";
 
-    public Shifter() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewSupport;
-        ShiftButton = new(this, "Shift", AbilityTypes.Alive, "ActionSecondary", Shift, CustomGameOptions.ShiftCd);
-        return this;
+        ShiftButton = CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Shift, new Cooldown(CustomGameOptions.ShiftCd));
     }
 
     public void Shift()
@@ -27,7 +23,7 @@ public class Shifter : Crew
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ShiftButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ShiftButton.TargetPlayer);
             Shift(ShiftButton.TargetPlayer);
         }
         else
@@ -58,38 +54,40 @@ public class Shifter : Crew
 
         Role newRole = role.Type switch
         {
+            LayerEnum.Altruist => new Altruist(),
+            LayerEnum.Bastion => new Bastion() { BombedIDs = ((Bastion)role).BombedIDs },
+            LayerEnum.Chameleon => new Chameleon(),
+            LayerEnum.Coroner => new Coroner(),
             LayerEnum.Crewmate => new Crewmate(),
             LayerEnum.Detective => new Detective(),
-            LayerEnum.Escort => new Escort(),
-            LayerEnum.Sheriff => new Sheriff(),
-            LayerEnum.Medium => new Medium(),
-            LayerEnum.VampireHunter => new VampireHunter(),
-            LayerEnum.Mystic => new Mystic(),
-            LayerEnum.Seer => new Seer(),
-            LayerEnum.Altruist => new Altruist(),
-            LayerEnum.Engineer => new Engineer(),
-            LayerEnum.Transporter => new Transporter(),
-            LayerEnum.Mayor => new Mayor(),
-            LayerEnum.Operative => new Operative(),
-            LayerEnum.Veteran => new Veteran(),
-            LayerEnum.Vigilante => new Vigilante(),
-            LayerEnum.Chameleon => new Chameleon(),
             LayerEnum.Dictator => new Dictator(),
-            LayerEnum.Tracker => new Tracker(),
-            LayerEnum.Coroner => new Coroner(),
-            LayerEnum.Bastion => new Bastion() { BombedIDs = ((Bastion)role).BombedIDs },
+            LayerEnum.Engineer => new Engineer(),
+            LayerEnum.Escort => new Escort(),
+            LayerEnum.Mayor => new Mayor(),
             LayerEnum.Medic => new Medic() { ShieldedPlayer = ((Medic)role).ShieldedPlayer },
+            LayerEnum.Medium => new Medium(),
             LayerEnum.Monarch => new Monarch()
             {
                 ToBeKnighted = ((Monarch)role).ToBeKnighted,
                 Knighted = ((Monarch)role).Knighted
             },
+            LayerEnum.Mystic => new Mystic(),
+            LayerEnum.Operative => new Operative(),
             LayerEnum.Retributionist => new Retributionist()
             {
                 Selected = ((Retributionist)role).Selected,
                 ShieldedPlayer = ((Retributionist)role).ShieldedPlayer,
-                BombedIDs = ((Retributionist)role).BombedIDs
+                BombedIDs = ((Retributionist)role).BombedIDs,
+                Trapped = ((Retributionist)role).Trapped
             },
+            LayerEnum.Seer => new Seer(),
+            LayerEnum.Sheriff => new Sheriff(),
+            LayerEnum.Tracker => new Tracker(),
+            LayerEnum.Transporter => new Transporter(),
+            LayerEnum.Trapper => new Trapper() { Trapped = ((Trapper)role).Trapped },
+            LayerEnum.VampireHunter => new VampireHunter(),
+            LayerEnum.Veteran => new Veteran(),
+            LayerEnum.Vigilante => new Vigilante(),
             LayerEnum.Shifter or _ => new Shifter(),
         };
 
@@ -101,10 +99,4 @@ public class Shifter : Crew
     public bool Exception(PlayerControl player) => (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None && player.Is(SubFaction));
 
     public override void ReadRPC(MessageReader reader) => Shift(reader.ReadPlayer());
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        ShiftButton.Update2("SHIFT");
-    }
 }

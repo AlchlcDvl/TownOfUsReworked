@@ -14,23 +14,21 @@ public class SerialKiller : Neutral
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => BloodlustButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public SerialKiller() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Stab anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         RoleBlockImmune = true;
-        BloodlustButton = new(this, "Bloodlust", AbilityTypes.Targetless, "Secondary", Lust, CustomGameOptions.BloodlustCd, CustomGameOptions.BloodlustDur);
-        StabButton = new(this, "Stab", AbilityTypes.Alive, "ActionSecondary", Stab, CustomGameOptions.StabCd, Exception);
-        return this;
+        BloodlustButton = CreateButton(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Lust, new Cooldown(CustomGameOptions.BloodlustCd),
+            new Duration(CustomGameOptions.BloodlustDur), "BLOODLUST", (EndFunc)EndEffect);
+        StabButton = CreateButton(this, new SpriteName("Stab"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stab, new Cooldown(CustomGameOptions.StabCd), "STAB",
+            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 
     public void Lust()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, BloodlustButton);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BloodlustButton);
         BloodlustButton.Begin();
     }
 
@@ -39,12 +37,7 @@ public class SerialKiller : Neutral
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        StabButton.Update2("STAB", BloodlustButton.EffectActive);
-        BloodlustButton.Update2("BLOODLUST");
-    }
+    public bool Usable() => BloodlustButton.EffectActive;
 
-    public override void TryEndEffect() => BloodlustButton.Update3(IsDead);
+    public bool EndEffect() => Dead;
 }

@@ -12,15 +12,14 @@ public abstract class Syndicate : Role
     public override Faction BaseFaction => Faction.Syndicate;
     public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.Basic;
 
-    protected Syndicate() : base() {}
-
     public void BaseStart()
     {
         RoleStart();
         Faction = Faction.Syndicate;
         FactionColor = CustomColorManager.Syndicate;
         Objectives = () => SyndicateWinCon;
-        KillButton = new(this, "SyndicateKill", AbilityTypes.Alive, "ActionSecondary", Kill, CustomGameOptions.CDKillCd, Exception);
+        KillButton = CreateButton(this, new SpriteName("SyndicateKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(CustomGameOptions.CDKillCd), "KILL",
+            (PlayerBodyExclusion)Exception);
         Player.SetImpostor(true);
         IsPromoted = false;
     }
@@ -60,11 +59,8 @@ public abstract class Syndicate : Role
 
     public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
 
-    public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
+    public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+        Player.IsLinkedTo(player);
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        KillButton.Update2("KILL", (HoldsDrive && Alignment != Alignment.SyndicateKill) || Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel);
-    }
+    public bool KillUsable() => (HoldsDrive && Alignment != Alignment.SyndicateKill) || Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel;
 }

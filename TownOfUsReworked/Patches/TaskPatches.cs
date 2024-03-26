@@ -83,10 +83,8 @@ public static class PlayerControl_SetTasks
 {
     public static void Postfix(PlayerControl._CoSetTasks_d__126 __instance)
     {
-        if (__instance == null || IsHnS)
-            return;
-
-        __instance.__4__this.RegenTask();
+        if (__instance != null && !IsHnS)
+            __instance.__4__this.RegenTask();
     }
 }
 
@@ -132,7 +130,7 @@ public static class CompleteTasksPatch
             if (traitor.TasksDone)
             {
                 Traitor.GetFactionChoice(out var syndicate, out var intruder);
-                CallRpc(CustomRPC.Change, TurnRPC.TurnTraitor, traitor, syndicate, intruder);
+                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, false, traitor, syndicate, intruder);
                 traitor.TurnTraitor(syndicate, intruder);
             }
         }
@@ -200,10 +198,13 @@ public static class CompleteTasksPatch
             }
         }
 
-        foreach (var button in CustomButton.AllButtons.Where(x => x.Owner.Player == __instance))
+        foreach (var button in AllButtons.Where(x => x.Owner.Player == __instance))
         {
             if (button.HasUses)
+            {
                 button.Uses++;
+                button.MaxUses++;
+            }
         }
     }
 }

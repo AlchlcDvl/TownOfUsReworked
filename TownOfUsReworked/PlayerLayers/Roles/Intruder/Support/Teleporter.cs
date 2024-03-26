@@ -12,17 +12,15 @@ public class Teleporter : Intruder
     public override Func<string> StartText => () => "X Marks The Spot";
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
 
-    public Teleporter() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderSupport;
         TeleportPoint = Vector3.zero;
-        MarkButton = new(this, "Mark", AbilityTypes.Targetless, "Secondary", Mark, CustomGameOptions.TeleMarkCd);
-        TeleportButton = new(this, "Teleport", AbilityTypes.Targetless, "Secondary", Teleport, CustomGameOptions.TeleportCd);
-        return this;
+        MarkButton = CreateButton(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(CustomGameOptions.TeleMarkCd), "MARK POSITION",
+            (ConditionFunc)Condition1);
+        TeleportButton = CreateButton(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(CustomGameOptions.TeleportCd),
+            "TELEPORT", (UsableFunc)Usable, (ConditionFunc)Condition2);
     }
 
     public void Mark()
@@ -44,17 +42,14 @@ public class Teleporter : Intruder
             MarkButton.StartCooldown();
     }
 
-    public bool Condition()
+    public bool Condition1()
     {
         var hits = Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0);
         hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)).ToArray();
         return hits.Count == 0 && Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != Player.transform.position;
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        MarkButton.Update2("MARK SPOT", condition: Condition());
-        TeleportButton.Update2("TELEPORT", TeleportPoint != Vector3.zero);
-    }
+    public bool Usable() => TeleportPoint != Vector3.zero;
+
+    public bool Condition2() => Player.transform.position != TeleportPoint;
 }

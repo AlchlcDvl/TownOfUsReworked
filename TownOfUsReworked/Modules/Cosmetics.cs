@@ -26,9 +26,6 @@ public abstract class CosmeticExtension
     public bool TestOnly { get; set; }
 }
 
-//Idk why i did it, but ig i just really wanted it for consistency's sake
-public abstract class CosmeticsJSON {}
-
 public class CustomHat : CustomCosmetic
 {
     [JsonPropertyName("flipid")]
@@ -68,12 +65,6 @@ public class HatExtension : CosmeticExtension
     public Sprite BackFlipImage { get; set; }
 }
 
-public class HatsJSON : CosmeticsJSON
-{
-    [JsonPropertyName("hats")]
-    public List<CustomHat> Hats { get; set; }
-}
-
 public class CustomVisor : CustomCosmetic
 {
     [JsonPropertyName("flipid")]
@@ -92,23 +83,11 @@ public class CustomVisor : CustomCosmetic
     public bool InFront { get; set; }
 }
 
-public class VisorExtension : CosmeticExtension {}
+public class VisorExtension : CosmeticExtension;
 
-public class VisorsJSON : CosmeticsJSON
-{
-    [JsonPropertyName("visors")]
-    public List<CustomVisor> Visors { get; set; }
-}
+public class CustomNameplate : CustomCosmetic;
 
-public class CustomNameplate : CustomCosmetic {}
-
-public class NameplateExtension : CosmeticExtension {}
-
-public class NameplatesJSON : CosmeticsJSON
-{
-    [JsonPropertyName("nameplates")]
-    public List<CustomNameplate> Nameplates { get; set; }
-}
+public class NameplateExtension : CosmeticExtension;
 
 public class CustomColor : CustomCosmetic
 {
@@ -175,11 +154,5 @@ public class CustomColor : CustomCosmetic
     }
 }
 
-//Idk why i did it, but ig i just really wanted it for consistency's sake part 2
-public class ColorExtention : CosmeticExtension {}
-
-public class ColorsJSON : CosmeticsJSON
-{
-    [JsonPropertyName("colors")]
-    public List<CustomColor> Colors { get; set; }
-}
+// Idk why i did it, but ig i just really wanted it for consistency's sake
+public class ColorExtention : CosmeticExtension;

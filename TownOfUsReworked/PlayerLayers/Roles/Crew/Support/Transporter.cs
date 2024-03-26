@@ -25,18 +25,16 @@ public class Transporter : Crew
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
 
-    public Transporter() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Alignment = Alignment.CrewSupport;
         TransportMenu1 = new(Player, Click1, Exception1);
         TransportMenu2 = new(Player, Click2, Exception2);
-        TransportButton = new(this, "Transport", AbilityTypes.Targetless, "ActionSecondary", Transport, CustomGameOptions.TransportCd, CustomGameOptions.MaxTransports);
+        TransportButton = CreateButton(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, CustomGameOptions.MaxTransports,
+            (LabelFunc)Label, new Cooldown(CustomGameOptions.TransportCd));
         Player1Body = null;
         Player2Body = null;
         WasInVent1 = false;
@@ -55,7 +53,16 @@ public class Transporter : Crew
         AnimationPlaying1.material = AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
         Transport1.SetActive(true);
         Transport2.SetActive(true);
-        return this;
+    }
+
+    public string Label()
+    {
+        if (TransportPlayer1 && TransportPlayer2)
+            return "TRANSPORT";
+        else if (TransportPlayer1)
+            return "SECOND TARGET";
+        else
+            return "FIRST TARGET";
     }
 
     public IEnumerator TransportPlayers()
@@ -71,7 +78,7 @@ public class Transporter : Crew
         {
             Player1Body = BodyById(TransportPlayer1.PlayerId);
 
-            if (Player1Body == null)
+            if (!Player1Body)
                 yield break;
         }
 
@@ -79,7 +86,7 @@ public class Transporter : Crew
         {
             Player2Body = BodyById(TransportPlayer2.PlayerId);
 
-            if (Player2Body == null)
+            if (!Player2Body)
                 yield break;
         }
 
@@ -120,10 +127,10 @@ public class Transporter : Crew
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
             Flash(Color, CustomGameOptions.TransportDur);
 
-        if (Player1Body == null && !WasInVent1)
+        if (!Player1Body && !WasInVent1)
             AnimateTransport1();
 
-        if (Player2Body == null && !WasInVent2)
+        if (!Player2Body && !WasInVent2)
             AnimateTransport2();
 
         var startTime = DateTime.UtcNow;
@@ -144,7 +151,7 @@ public class Transporter : Crew
             }
         }
 
-        if (Player1Body == null && Player2Body == null)
+        if (!Player1Body && !Player2Body)
         {
             TransportPlayer1.MyPhysics.ResetMoveState();
             TransportPlayer2.MyPhysics.ResetMoveState();
@@ -167,13 +174,13 @@ public class Transporter : Crew
                 }
             }
 
-            if (TransportPlayer1.CanVent() && Vent2 != null && WasInVent2)
+            if (TransportPlayer1.CanVent() && Vent2 && WasInVent2)
                 TransportPlayer1.MyPhysics.RpcEnterVent(Vent2.Id);
 
-            if (TransportPlayer2.CanVent() && Vent1 != null && WasInVent1)
+            if (TransportPlayer2.CanVent() && Vent1 && WasInVent1)
                 TransportPlayer2.MyPhysics.RpcEnterVent(Vent1.Id);
         }
-        else if (Player1Body != null && Player2Body == null)
+        else if (Player1Body && !Player2Body)
         {
             StopDragging(Player1Body.ParentId);
             TransportPlayer2.MyPhysics.ResetMoveState();
@@ -187,7 +194,7 @@ public class Transporter : Crew
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
         }
-        else if (Player1Body == null && Player2Body != null)
+        else if (!Player1Body && Player2Body)
         {
             StopDragging(Player2Body.ParentId);
             TransportPlayer1.MyPhysics.ResetMoveState();
@@ -201,7 +208,7 @@ public class Transporter : Crew
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
         }
-        else if (Player1Body != null && Player2Body != null)
+        else if (Player1Body && Player2Body)
         {
             StopDragging(Player1Body.ParentId);
             StopDragging(Player2Body.ParentId);
@@ -249,7 +256,7 @@ public class Transporter : Crew
         AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
         AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
+        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.TransportDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -258,7 +265,7 @@ public class Transporter : Crew
 
             if (p == 1)
                 AnimationPlaying1.sprite = PortalAnimation[0];
-        })));
+        }));
     }
 
     public void AnimateTransport2()
@@ -267,7 +274,7 @@ public class Transporter : Crew
         AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
         AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
-        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
+        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.TransportDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -276,7 +283,7 @@ public class Transporter : Crew
 
             if (p == 1)
                 AnimationPlaying2.sprite = PortalAnimation[0];
-        })));
+        }));
     }
 
     public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || (BodyById(player.PlayerId) ==
@@ -299,7 +306,7 @@ public class Transporter : Crew
         }
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, TransportPlayer1, TransportPlayer2);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TransportPlayer1, TransportPlayer2);
             Coroutines.Start(TransportPlayers());
             TransportButton.StartCooldown();
         }
@@ -315,15 +322,14 @@ public class Transporter : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        TransportButton.Update2(TransportPlayer1 == null ? "FIRST TARGET" : (TransportPlayer2 == null ? "SECOND TARGET" : "TRANSPORT"));
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (!Transporting)
             {
-                if (TransportPlayer2 != null)
+                if (TransportPlayer2)
                     TransportPlayer2 = null;
-                else if (TransportPlayer1 != null)
+                else if (TransportPlayer1)
                     TransportPlayer1 = null;
             }
 

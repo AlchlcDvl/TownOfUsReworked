@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Options;
 
 public class CustomOption
 {
-    public static readonly List<CustomOption> AllOptions = new();
+    public static readonly List<CustomOption> AllOptions = [];
     public int ID { get; }
     public MultiMenu Menu { get; }
     public Func<object, object, string> Format { get; set; }
@@ -39,13 +39,13 @@ public class CustomOption
     }
 
     public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object parent = null, Action<object, object> onChanged = null, bool clientOnly = false) :
-        this(menu, name, type, defaultValue, new[] { parent }, false, onChanged, clientOnly) {}
+        this(menu, name, type, defaultValue, [parent], false, onChanged, clientOnly) {}
 
     public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object[] parent, bool all = false, Action<object, object> onChanged = null, bool clientOnly =
         false) : this(menu, name, type, defaultValue, null, parent, all, onChanged, clientOnly) {}
 
     public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object parent = null, Action<object, object> onChanged = null, bool
-        clientOnly = false) : this(menu, name, type, defaultValue, otherDefault, new[] { parent }, false, onChanged, clientOnly) {}
+        clientOnly = false) : this(menu, name, type, defaultValue, otherDefault, [parent], false, onChanged, clientOnly) {}
 
     public override string ToString()
     {
@@ -97,7 +97,7 @@ public class CustomOption
         OtherValue = otherValue;
         OnChanged(Value, OtherValue);
 
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || ID == -1))
+        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || ID == -1 || Type is CustomOptionType.Header or CustomOptionType.Button))
             SendOptionRPC(this);
 
         if (!Setting)
@@ -141,7 +141,7 @@ public class CustomOption
 
         foreach (var option in list)
         {
-            if (option.Type is CustomOptionType.Button or CustomOptionType.Header || option.ClientOnly)
+            if (option.Type is CustomOptionType.Button or CustomOptionType.Header || option.ClientOnly || option.ID == -1)
                 continue;
 
             builder.AppendLine(option.Name.Trim());
@@ -164,12 +164,12 @@ public class CustomOption
         splitText.RemoveAll(IsNullEmptyOrWhiteSpace);
         var pos = 0;
 
-        while (splitText.Count > 0)
+        while (splitText.Any())
         {
             pos++;
             var name = splitText[0].Trim();
             splitText.RemoveAt(0);
-            var option = AllOptions.Find(o => o.Name.Trim() == name);
+            var option = GetOption(name);
 
             if (option == null)
             {
@@ -232,4 +232,8 @@ public class CustomOption
     public static List<CustomOption> GetOptions(CustomOptionType type) => AllOptions.Where(x => x.Type == type).ToList();
 
     public static List<T> GetOptions<T>() where T : CustomOption => AllOptions.Where(x => x.GetType() == typeof(T)).Cast<T>().ToList();
+
+    public static CustomOption GetOption(string title) => AllOptions.Find(x => x.Name.Trim() == title.Trim());
+
+    public static T GetOption<T>(string title) where T : CustomOption => GetOption(title) as T;
 }

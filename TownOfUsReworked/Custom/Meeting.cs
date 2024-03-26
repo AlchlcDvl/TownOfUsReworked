@@ -16,7 +16,7 @@ public class CustomMeeting
     public delegate void OnClick(PlayerVoteArea voteArea, MeetingHud __instance);
     public delegate bool Exemption(PlayerVoteArea voteArea);
     private static Vector3 BasePosition => new(-0.95f, 0.03f, -1.3f);
-    public static readonly List<CustomMeeting> AllCustomMeetings = new();
+    public static readonly List<CustomMeeting> AllCustomMeetings = [];
 
     public CustomMeeting(PlayerControl owner, string active, string disabled, bool vote, OnClick click, Exemption isExempt = null, Vector3? position = null) : this(owner, active, disabled,
         MeetingTypes.Toggle, vote, click, isExempt, null, position) {}
@@ -39,8 +39,8 @@ public class CustomMeeting
         Parallel = parallel ?? BlankVoid;
         IsExempt = isExempt ?? BlankFalse;
         Position = position ?? BasePosition;
-        Actives = new();
-        Buttons = new();
+        Actives = [];
+        Buttons = [];
         AllCustomMeetings.Add(this);
     }
 

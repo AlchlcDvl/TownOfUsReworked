@@ -12,18 +12,14 @@ public class Escort : Crew
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
         "to blocks\n- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
 
-    public Escort() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewSupport;
         RoleBlockImmune = true;
         BlockTarget = null;
-        BlockButton = new(this, "EscortRoleblock", AbilityTypes.Alive, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur, (CustomButton.EffectVoid)Block,
-            UnBlock);
-        return this;
+        BlockButton = CreateButton(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Roleblock, (EffectVoid)Block,
+            new Cooldown(CustomGameOptions.EscortCd), new Duration(CustomGameOptions.EscortDur), (EffectEndVoid)UnBlock, (EndFunc)EndEffect);
     }
 
     public void UnBlock()
@@ -41,7 +37,7 @@ public class Escort : Crew
         if (cooldown != CooldownType.Fail)
         {
             BlockTarget = BlockButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, BlockButton, BlockTarget);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BlockButton, BlockTarget);
             BlockButton.Begin();
         }
         else
@@ -50,11 +46,5 @@ public class Escort : Crew
 
     public override void ReadRPC(MessageReader reader) => BlockTarget = reader.ReadPlayer();
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        BlockButton.Update2("ROLEBLOCK");
-    }
-
-    public override void TryEndEffect() => BlockButton.Update3(IsDead || (BlockTarget != null && BlockTarget.HasDied()));
+    public bool EndEffect() => Dead || (BlockTarget && BlockTarget.HasDied());
 }

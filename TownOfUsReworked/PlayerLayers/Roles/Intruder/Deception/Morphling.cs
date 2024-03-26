@@ -14,19 +14,17 @@ public class Morphling : Intruder
     public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
 
-    public Morphling() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
-        SampleButton = new(this, "Sample", AbilityTypes.Alive, "Tertiary", Sample, CustomGameOptions.SampleCd, Exception1);
-        MorphButton = new(this, "Morph", AbilityTypes.Targetless, "Secondary", HitMorph, CustomGameOptions.MorphCd, CustomGameOptions.MorphDur, (CustomButton.EffectVoid)Morph, UnMorph);
+        SampleButton = CreateButton(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (CustomGameOptions.SampleCd), "SAMPLE",
+            (PlayerBodyExclusion)Exception1);
+        MorphButton = CreateButton(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(CustomGameOptions.MorphCd), "MORPH",
+            new Duration(CustomGameOptions.MorphDur), (EffectVoid)Morph, (EffectEndVoid)UnMorph, (EndFunc)EndEffect, (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("MorphlingIntro");
-        return this;
     }
 
     public void Morph() => Utils.Morph(Player, MorphedPlayer);
@@ -43,7 +41,7 @@ public class Morphling : Intruder
     public void HitMorph()
     {
         MorphedPlayer = SampledPlayer;
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, MorphButton, MorphedPlayer);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, MorphButton, MorphedPlayer);
         MorphButton.Begin();
     }
 
@@ -62,14 +60,9 @@ public class Morphling : Intruder
 
     public bool Exception1(PlayerControl player) => player == SampledPlayer;
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        SampleButton.Update2("SAMPLE");
-        MorphButton.Update2("MORPH", SampledPlayer != null);
-    }
+    public bool Usable() => SampledPlayer;
 
-    public override void TryEndEffect() => MorphButton.Update3(IsDead);
+    public bool EndEffect() => Dead;
 
     public override void ReadRPC(MessageReader reader) => MorphedPlayer = reader.ReadPlayer();
 }

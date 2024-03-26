@@ -1,14 +1,13 @@
-using BepInEx.Unity.IL2CPP.Utils;
+using TownOfUsReworked.Loaders;
 
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(SplashManager), nameof(SplashManager.Update))]
 public static class UpdateSplashPatch
 {
-    public static TMP_FontAsset Font;
-
     private static bool Loading;
     private static TextMeshPro TMP;
+    private static bool DataSet;
 
     public static bool Prefix(SplashManager __instance)
     {
@@ -46,7 +45,7 @@ public static class UpdateSplashPatch
         TMP.fontStyle = FontStyles.Bold;
         TMP.color = UColor.clear;
         TMP.transform.localScale /= 2f;
-        Font = TMP.font;
+        Fonts.Add("Placeholder", TMP.font);
 
         SetText("Loading...");
         yield return EndFrame();
@@ -71,6 +70,7 @@ public static class UpdateSplashPatch
 
         Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
 
+        yield return AssetLoader.InitLoaders();
         yield return HatLoader.Instance.CoFetch();
         yield return VisorLoader.Instance.CoFetch();
         yield return NameplateLoader.Instance.CoFetch();
@@ -85,17 +85,7 @@ public static class UpdateSplashPatch
         yield return ModUpdater.CheckForUpdate("Submerged");
         yield return ModUpdater.CheckForUpdate("LevelImpostor");
 
-        SetText("Setting Mod Data");
-        ModCompatibility.Init();
-
-        ModUpdater.CanDownloadSubmerged = !SubLoaded && ModUpdater.URLs.ContainsKey("Submerged");
-        ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
-
-        Generate.GenerateAll();
-        Info.SetAllInfo();
-        ExtraRegions.UpdateRegions();
-
-        yield return Wait(1.5f);
+        yield return LoadModData();
 
         SetText("Loaded!");
         yield return Wait(0.5f);
@@ -129,4 +119,27 @@ public static class UpdateSplashPatch
     }
 
     public static void SetText(string text) => TMP.SetText(text);
+
+    private static IEnumerator LoadModData()
+    {
+        if (DataSet)
+            yield break;
+
+        SetText("Setting Mod Data");
+
+        ModCompatibility.Init();
+
+        ModUpdater.CanDownloadSubmerged = !SubLoaded && ModUpdater.URLs.ContainsKey("Submerged");
+        ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
+
+        Generate.GenerateAll();
+        Info.SetAllInfo();
+        RegionInfoOpenPatch.UpdateRegions();
+
+        DataSet = true;
+
+        yield return Wait(1f);
+        yield return EndFrame();
+        yield break;
+    }
 }

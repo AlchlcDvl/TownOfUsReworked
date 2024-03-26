@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Objects;
 
 public class Range
 {
-    public static readonly List<Range> AllItems = new();
+    public static readonly List<Range> AllItems = [];
 
     private GameObject Item { get; }
     public Transform Transform => Item?.transform;
@@ -50,10 +50,8 @@ public class Range
 
     public virtual void Update()
     {
-        if (!Transform)
-            return;
-
-        Transform.Rotate(Vector3.forward * 10 * Time.fixedDeltaTime);
+        if (Transform)
+            Transform.Rotate(Vector3.forward * 10 * Time.fixedDeltaTime);
     }
 
     public static void DestroyAll()

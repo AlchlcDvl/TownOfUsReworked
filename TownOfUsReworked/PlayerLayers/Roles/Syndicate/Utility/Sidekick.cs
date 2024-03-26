@@ -4,7 +4,7 @@ public class Sidekick : Syndicate
 {
     public Syndicate FormerRole { get; set; }
     public Rebel Rebel { get; set; }
-    public bool CanPromote => (Rebel.IsDead || Rebel.Disconnected) && !IsDead;
+    public bool CanPromote => (Rebel.Dead || Rebel.Disconnected) && !Dead;
 
     public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Sidekick : CustomColorManager.Syndicate;
     public override string Name => "Sidekick";
@@ -13,24 +13,22 @@ public class Sidekick : Syndicate
     public override Func<string> Description => () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your" +
         $" former role\n{CommonAbilities}";
 
-    public Sidekick() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateUtil;
-        return this;
     }
 
     public void TurnRebel()
     {
         FormerRole.IsPromoted = true;
-        new PromotedRebel()
+        var reb = new PromotedRebel()
         {
-            FormerRole = FormerRole,
+            FormerRole = FormerRole is PromotedRebel preb ? preb.FormerRole : FormerRole,
             RoleBlockImmune = FormerRole.RoleBlockImmune
-        }.Start<Role>(Player).RoleUpdate(this);
+        };
+        reb.Start<Role>(Player).RoleUpdate(this);
+        reb.OnRoleSelected();
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -39,7 +37,7 @@ public class Sidekick : Syndicate
 
         if (CanPromote)
         {
-            CallRpc(CustomRPC.Change, TurnRPC.TurnRebel, this);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnRebel();
         }
     }

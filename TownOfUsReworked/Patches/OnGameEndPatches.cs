@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Patches;
 
 public static class OnGameEndPatch
 {
-    private static readonly List<WinningPlayerData> PotentialWinners = new();
-    private static readonly List<SummaryInfo> PlayerRoles = new();
-    public static readonly List<SummaryInfo> Disconnected = new();
+    private static readonly List<WinningPlayerData> PotentialWinners = [];
+    private static readonly List<SummaryInfo> PlayerRoles = [];
+    public static readonly List<SummaryInfo> Disconnected = [];
 
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
     public static class AmongUsClient_OnGameEnd
@@ -269,6 +269,14 @@ public static class OnGameEndPatch
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
                 }
             }
+            else if (Role.BetrayerWins)
+            {
+                foreach (var role2 in PlayerLayer.GetLayers<Betrayer>())
+                {
+                    if (!role2.Disconnected && role2.Faction == Faction.Neutral)
+                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                }
+            }
             else if (Objectifier.LoveWins)
             {
                 foreach (var lover in PlayerLayer.GetLayers<Lovers>())
@@ -317,6 +325,14 @@ public static class OnGameEndPatch
                         winners.Add(PotentialWinners.First(x => x.PlayerName == maf.PlayerName));
                 }
             }
+            else if (Objectifier.DefectorWins)
+            {
+                foreach (var def in PlayerLayer.GetLayers<Defector>())
+                {
+                    if (!def.Disconnected && def.Side == Faction.Neutral)
+                        winners.Add(PotentialWinners.First(x => x.PlayerName == def.PlayerName));
+                }
+            }
 
             if (!Objectifier.ObjectifierWins)
             {
@@ -331,7 +347,7 @@ public static class OnGameEndPatch
 
                     foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
                     {
-                        if (!ga.Failed && ga.TargetPlayer != null && ga.TargetAlive)
+                        if (!ga.Failed && ga.TargetPlayer && ga.TargetAlive)
                             winners.Add(PotentialWinners.First(x => x.PlayerName == ga.PlayerName));
                     }
                 }
@@ -386,6 +402,8 @@ public static class OnGameEndPatch
             }
 
             TempData.winners.Clear();
+            winners.RemoveAll(x => x == null);
+            winners = [..winners.Distinct()];
             TempData.winners = winners.SystemToIl2Cpp();
         }
     }
@@ -398,10 +416,6 @@ public static class OnGameEndPatch
             SoundEffects.TryAdd("CrewWin", __instance.CrewStinger);
             SoundEffects.TryAdd("IntruderWin", __instance.ImpostorStinger);
             SoundEffects.TryAdd("Stalemate", __instance.DisconnectStinger);
-
-            if (!GameHasEnded)
-                return;
-
             var text = UObject.Instantiate(__instance.WinText, __instance.WinText.transform.parent);
             SoundManager.Instance.StopSound(__instance.ImpostorStinger);
             var winsound = "IntruderWin";
@@ -622,7 +636,7 @@ public static class OnGameEndPatch
 
         if (info[0])
         {
-            if (role.RoleHistory.Count > 0)
+            if (role.RoleHistory.Any())
             {
                 role.RoleHistory.Reverse();
 
@@ -721,8 +735,8 @@ public static class OnGameEndPatch
         public static void Postfix()
         {
             PlayerRoles.Clear();
-            //There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
-            //AD says "Done".
+            // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
+            // AD says "Done".
             CustomPlayer.AllPlayers.ForEach(x => AddSummaryInfo(x));
         }
     }
@@ -845,7 +859,7 @@ public static class OnGameEndPatch
 
         var die = role.DeathReason is not DeathReasonEnum.Alive ? $" | {role.DeathReason}" : "";
 
-        if (role.DeathReason is not DeathReasonEnum.Alive and not DeathReasonEnum.Ejected and not DeathReasonEnum.Suicide and not DeathReasonEnum.Escaped)
+        if (role.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped))
             die += role.KilledBy;
 
         return die;

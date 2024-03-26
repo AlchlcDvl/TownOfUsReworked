@@ -11,10 +11,7 @@ public static class PlayerControlOnClick
         if (IsHnS)
             return true;
 
-        var button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetPlayer == __instance && x.Clickable);
-
-        if (button == null)
-            button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.Clickable && __instance == CustomPlayer.Local && x.Type == AbilityTypes.Targetless);
+        var button = AllButtons.Find(x => x.Owner.Local && x.Clickable() && ((__instance == CustomPlayer.Local && x.Type == AbilityTypes.Targetless) || x.TargetPlayer == __instance));
 
         if (button != null)
         {
@@ -32,12 +29,11 @@ public static class PlayerControlOnClick
 
     public static void CatchPostmortal(PlayerControl player, PlayerControl clicker)
     {
-        var tasksLeft = player.Data.Tasks.Count(x => !x.Complete);
         var role = player.GetRole();
 
         if (role is Phantom phantom)
         {
-            if (tasksLeft <= CustomGameOptions.PhantomTasksRemaining)
+            if (role.TasksLeft <= CustomGameOptions.PhantomTasksRemaining)
                 phantom.Caught = true;
             else
                 return;
@@ -50,7 +46,7 @@ public static class PlayerControlOnClick
                 return;
             }
 
-            if (tasksLeft <= CustomGameOptions.RevealerTasksRemainingClicked)
+            if (role.TasksLeft <= CustomGameOptions.RevealerTasksRemainingClicked)
                 revealer.Caught = true;
             else
                 return;
@@ -86,7 +82,7 @@ public static class DeadBodyOnClick
         if (__instance == null || Meeting || Lobby || IsHnS || PerformReport.ReportPressed)
             return true;
 
-        var button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable && !x.Blocked);
+        var button = AllButtons.Find(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable() && !x.Owner.IsBlocked);
         button?.Clicked();
         return button == null && !IsTaskRace && !IsCustomHnS;
     }

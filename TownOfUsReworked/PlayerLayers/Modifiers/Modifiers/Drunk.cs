@@ -10,16 +10,12 @@ public class Drunk : Modifier
     public override string Name => "Drunk";
     public override LayerEnum Type => LayerEnum.Drunk;
     public override Func<string> Description => () => CustomGameOptions.DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
-    public override bool Hidden => !CustomGameOptions.DrunkKnows && !Exposed && !IsDead && CustomGameOptions.DrunkControlsSwap;
+    public override bool Hidden => !CustomGameOptions.DrunkKnows && !Exposed && !Dead && CustomGameOptions.DrunkControlsSwap;
 
-    public Drunk() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         Modify = Hidden ? 1 : -1;
         Exposed = false;
-        return this;
     }
 
     public override void UpdateHud(HudManager __instance)

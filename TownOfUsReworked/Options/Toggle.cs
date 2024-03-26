@@ -4,7 +4,7 @@ public class CustomToggleOption : CustomOption
 {
     public Func<bool> OnClick { get; }
 
-    public CustomToggleOption(MultiMenu menu, string name, bool value, object parent = null) : this(menu, name, value, new[] { parent }, false) {}
+    public CustomToggleOption(MultiMenu menu, string name, bool value, object parent = null) : this(menu, name, value, [parent], false) {}
 
     public CustomToggleOption(MultiMenu menu, string name, bool value, object[] parents, bool all = false) : base(menu, name, CustomOptionType.Toggle, value, parents, all) => Format = (val,
         _) => (bool)val ? "On" : "Off";

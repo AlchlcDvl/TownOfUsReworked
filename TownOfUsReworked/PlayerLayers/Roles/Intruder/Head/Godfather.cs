@@ -13,15 +13,11 @@ public class Godfather : Intruder
         "Intruder</color> turns them into a <color=#6400FFFF>Mafioso</color>\n- If you die, the <color=#6400FFFF>Mafioso</color> will become the new <color=#404C08FF>Godfather</color>"
         + $"\nand inherits better abilities of their former role\n{CommonAbilities}";
 
-    public Godfather() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.IntruderHead;
-        DeclareButton = new(this, "Promote", AbilityTypes.Alive, "Secondary", Declare);
-        return this;
+        DeclareButton = CreateButton(this, "Promote", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 
     public void Declare(PlayerControl target)
@@ -39,18 +35,14 @@ public class Godfather : Intruder
     {
         if (Interact(Player, DeclareButton.TargetPlayer) != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, DeclareButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DeclareButton.TargetPlayer);
             Declare(DeclareButton.TargetPlayer);
         }
     }
 
-    public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is PromotedGodfather or Mafioso or Godfather) && player.IsBase(Faction.Intruder));
+    public bool Exception1(PlayerControl player) => player.GetRole() is PromotedGodfather or Mafioso or Godfather || !(player.IsBase(Faction.Intruder) && player.Is(Faction));
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        DeclareButton.Update2("PROMOTE", !HasDeclared);
-    }
+    public bool Usable() => !HasDeclared;
 
     public override void ReadRPC(MessageReader reader) => Declare(reader.ReadPlayer());
 }

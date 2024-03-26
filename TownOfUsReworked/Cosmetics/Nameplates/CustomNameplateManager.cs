@@ -2,10 +2,10 @@ namespace TownOfUsReworked.Cosmetics.CustomNameplates;
 
 public static class CustomNameplateManager
 {
-    public static readonly List<CustomNameplate> UnregisteredNameplates = new();
-    public static readonly List<NamePlateData> RegisteredNameplates = new();
-    public static readonly Dictionary<string, NameplateExtension> CustomNameplateRegistry = new();
-    public static readonly Dictionary<string, NamePlateViewData> CustomNameplateViewDatas = new();
+    public static readonly List<CustomNameplate> UnregisteredNameplates = [];
+    public static readonly List<NamePlateData> RegisteredNameplates = [];
+    public static readonly Dictionary<string, NameplateExtension> CustomNameplateRegistry = [];
+    public static readonly Dictionary<string, NamePlateViewData> CustomNameplateViewDatas = [];
 
     public static NamePlateData CreateNameplateBehaviour(CustomNameplate cn)
     {

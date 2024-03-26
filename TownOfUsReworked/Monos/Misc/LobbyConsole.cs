@@ -2,8 +2,6 @@ namespace TownOfUsReworked.Monos;
 
 public class LobbyConsole : MonoBehaviour
 {
-    public LobbyConsole(IntPtr ptr) : base(ptr) {}
-
     public float UsableDistance => 1f;
     public float PercentCool => 0f;
     public ImageNames UseIcon => Customise;
@@ -17,7 +15,7 @@ public class LobbyConsole : MonoBehaviour
 
     public static GameObject CurrentMenu;
 
-    public void Start()
+    public void Awake()
     {
         if (Prefab)
             return;
@@ -72,9 +70,9 @@ public class LobbyConsole : MonoBehaviour
 
     public static void CreateMenu()
     {
-        OtherButtonsPatch.CloseMenus(SkipEnum.Client);
+        ClientStuff.CloseMenus(SkipEnum.Client);
 
-        if (ClientOptionsActive)
+        if (ClientOptionsActive && GameSettingMenu.Instance)
         {
             GameSettingMenu.Instance.Close();
             return;

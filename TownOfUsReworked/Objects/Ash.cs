@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Objects;
 
 public class Ash
 {
-    public static readonly List<Ash> AllPiles = new();
+    public static readonly List<Ash> AllPiles = [];
     public GameObject Pile { get; set; }
 
     public Ash(Vector2 position)

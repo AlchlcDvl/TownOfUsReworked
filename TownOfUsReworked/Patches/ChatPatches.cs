@@ -1,11 +1,11 @@
 namespace TownOfUsReworked.Patches;
 
-//Thanks to Town Of Host for the Chat History code
+// Thanks to Town Of Host for the Chat History code
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update))]
 public static class ChatUpdate
 {
     private static int CurrentHistorySelection = -1;
-    public static readonly List<string> ChatHistory = new();
+    public static readonly List<string> ChatHistory = [];
 
     public static bool Prefix(ChatController __instance)
     {
@@ -85,7 +85,7 @@ public static class ChatUpdate
             __instance.freeChatField.textArea.SetText("");
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) && ChatHistory.Count > 0)
+        if (Input.GetKeyDown(KeyCode.UpArrow) && ChatHistory.Any())
         {
             CurrentHistorySelection--;
 
@@ -98,7 +98,7 @@ public static class ChatUpdate
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow) && ChatHistory.Count > 0)
+        if (Input.GetKeyDown(KeyCode.DownArrow) && ChatHistory.Any())
         {
             CurrentHistorySelection++;
 
@@ -172,14 +172,14 @@ public static class MeetingStart
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
 public static class ChatCommands
 {
-    private static readonly Dictionary<byte, SpriteRenderer> Notifs = new();
+    private static readonly Dictionary<byte, SpriteRenderer> Notifs = [];
 
     public static bool Prefix(ChatController __instance)
     {
         var text = __instance.freeChatField.Text.ToLower();
         var chatHandled = false;
 
-        //Chat command system
+        // Chat command system
         if (text.StartsWith("/"))
         {
             chatHandled = true;
@@ -196,12 +196,12 @@ public static class ChatCommands
             chatHandled = true;
             Run("<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         }
-        else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.LocalCustom.IsDead)
+        else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.LocalCustom.Dead)
         {
             chatHandled = true;
             Run("<color=#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
         }
-        else if (!CustomPlayer.LocalCustom.IsDead && !IsNullEmptyOrWhiteSpace(text))
+        else if (!CustomPlayer.LocalCustom.Dead && !IsNullEmptyOrWhiteSpace(text))
         {
             Notify(CustomPlayer.Local.PlayerId);
             CallRpc(CustomRPC.Misc, MiscRPC.Notify, CustomPlayer.Local.PlayerId);
@@ -257,7 +257,7 @@ public static class ChatCommands
         chat.sprite = GetSprite("Chat");
         chat.gameObject.SetActive(true);
         Notifs.Add(targetPlayerId, chat);
-        HUD.StartCoroutine(Effects.Lerp(2, new Action<float>(p =>
+        HUD.StartCoroutine(PerformTimedAction(2, p =>
         {
             if (p == 1)
             {
@@ -266,7 +266,7 @@ public static class ChatCommands
                 chat.Destroy();
                 Notifs.Remove(targetPlayerId);
             }
-        })));
+        }));
     }
 }
 
@@ -295,12 +295,12 @@ public static class ChatControllerAwakePatch
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]
 public static class ChatFontPatch
 {
-    private static TMP_FontAsset Font = null;
-
     public static void Postfix(ChatController __instance)
     {
-        Font ??= __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font;
-        __instance.freeChatField.textArea.GetComponent<TextMeshPro>().font = Font;
+        if (!Fonts.ContainsKey("ChatFont"))
+            Fonts.Add("ChatFont", __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font);
+
+        __instance.freeChatField.textArea.GetComponent<TextMeshPro>().font = GetFont("ChatFont");
     }
 }
 

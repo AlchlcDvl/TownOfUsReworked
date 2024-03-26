@@ -9,27 +9,18 @@ public class Troll : Neutral
     public override string Name => "Troll";
     public override LayerEnum Type => LayerEnum.Troll;
     public override Func<string> StartText => () => "Troll Everyone With Your Death";
-    public override Func<string> Description => () => "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch " +
-        "sensitive roles\n- If you are killed, you will also kill your killer";
+    public override Func<string> Description => () => "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch sensitive" +
+        " roles\n- If you are killed, you will also kill your killer";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
-    public Troll() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
-        InteractButton = new(this, "Placeholder", AbilityTypes.Alive, "ActionSecondary", Interact, CustomGameOptions.InteractCd);
-        return this;
+        InteractButton = CreateButton(this, new SpriteName("Placeholder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Interact, new Cooldown(CustomGameOptions.InteractCd),
+            "INTERACT");
     }
 
     public void Interact() => InteractButton.StartCooldown(Interactions.Interact(Player, InteractButton.TargetPlayer));
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        InteractButton.Update2("INTERACT");
-    }
 }

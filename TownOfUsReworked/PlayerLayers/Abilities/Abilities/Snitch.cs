@@ -6,13 +6,5 @@ public class Snitch : Ability
     public override string Name => "Snitch";
     public override LayerEnum Type => LayerEnum.Snitch;
     public override Func<string> Description => () => "- You can finish your tasks to get information on who's evil";
-    public override bool Hidden => !CustomGameOptions.TraitorKnows && !TasksDone && !IsDead;
-
-    public Snitch() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
+    public override bool Hidden => !CustomGameOptions.TraitorKnows && !TasksDone && !Dead;
 }

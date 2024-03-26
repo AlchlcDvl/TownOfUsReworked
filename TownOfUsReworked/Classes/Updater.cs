@@ -7,7 +7,7 @@ public static class ModUpdater
     public static bool SubmergedUpdate;
     public static bool CanDownloadSubmerged;
     public static bool CanDownloadLevelImpostor;
-    public static readonly Dictionary<string, string> URLs = new();
+    public static readonly Dictionary<string, string> URLs = [];
     private static GenericPopup Popup;
 
     private static string GetLink(string tag) => tag switch
@@ -28,7 +28,7 @@ public static class ModUpdater
         LogMessage($"Getting update info for {updateType}");
         yield return EndFrame();
 
-        //Checks the github api for tags. Compares current version to the latest tag version on GitHub
+        // Checks the github api for tags. Compares current version to the latest tag version on GitHub
         var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=5");
         yield return www.SendWebRequest();
 
@@ -73,29 +73,29 @@ public static class ModUpdater
         if (data.Tag == null)
         {
             LogError($"{updateType} tag doesn't exist");
-            yield break; //Something went wrong
+            yield break; // Something went wrong
         }
 
         if (data.Description == null)
         {
             LogError($"{updateType} description doesn't exist");
-            yield break; //Something went wrong part 2
+            yield break; // Something went wrong part 2
         }
 
         if (data.Assets == null)
         {
             LogError($"No assets found for {updateType}");
-            yield break; //Something went wrong part 3
+            yield break; // Something went wrong part 3
         }
 
-        //Check Reworked version
+        // Check Reworked version
         if (updateType == "Reworked")
         {
             var version = Version.Parse(data.Tag.Replace("v", ""));
             var diff = TownOfUsReworked.Version.CompareTo(version);
             ReworkedUpdate = diff < 0 || (diff == 0 && TownOfUsReworked.IsDev);
         }
-        //Accounts for broken version + checks Submerged version
+        // Accounts for broken version + checks Submerged version
         else if (updateType == "Submerged" && SubLoaded)
             SubmergedUpdate = SubVersion == null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(data.Tag.Replace("v", ""))) < 0;
 

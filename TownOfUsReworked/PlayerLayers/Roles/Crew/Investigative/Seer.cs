@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Seer : Crew
 {
-    public bool ChangedDead => !AllRoles.Any(x => x.Player != null && !x.Player.HasDied() && (x.RoleHistory.Count > 0 || x.Is(LayerEnum.Amnesiac) || x.Is(LayerEnum.Thief) ||
+    public bool ChangedDead => !AllRoles.Any(x => x.Player != null && !x.Player.HasDied() && (x.RoleHistory.Any() || x.Is(LayerEnum.Amnesiac) || x.Is(LayerEnum.Thief) ||
         x.Player.Is(LayerEnum.Traitor) || x.Is(LayerEnum.VampireHunter) || x.Is(LayerEnum.Godfather) || x.Is(LayerEnum.Mafioso) || x.Is(LayerEnum.Shifter) || x.Is(LayerEnum.Guesser) ||
         x.Is(LayerEnum.Rebel) || x.Is(LayerEnum.Mystic) || x.Is(LayerEnum.Sidekick) || x.Is(LayerEnum.GuardianAngel) || x.Is(LayerEnum.Executioner) || x.Player.Is(LayerEnum.Fanatic) ||
         x.Is(LayerEnum.BountyHunter) || x.Is(LayerEnum.PromotedGodfather) || x.Is(LayerEnum.PromotedRebel) || x.Is(LayerEnum.Actor)));
@@ -15,16 +15,12 @@ public class Seer : Crew
     public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
         "<color=#FFCC80FF>Sheriff</color>";
 
-    public Seer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewInvest;
-        SeerButton = new(this, "Seer", AbilityTypes.Alive, "ActionSecondary", See, CustomGameOptions.SeerCd);
+        SeerButton = CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(CustomGameOptions.SeerCd));
         Data.Role.IntroSound = GetAudio("SeerIntro");
-        return this;
     }
 
     public void TurnSheriff() => new Sheriff().Start<Role>(Player).RoleUpdate(this);
@@ -34,7 +30,7 @@ public class Seer : Crew
         var cooldown = Interact(Player, SeerButton.TargetPlayer);
 
         if (cooldown != CooldownType.Fail)
-            Flash(SeerButton.TargetPlayer.GetRole().RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
+            Flash(SeerButton.TargetPlayer.GetRole().RoleHistory.Any() || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }
@@ -42,11 +38,10 @@ public class Seer : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SeerButton.Update2("SEE");
 
-        if (ChangedDead && !IsDead)
+        if (ChangedDead && !Dead)
         {
-            CallRpc(CustomRPC.Change, TurnRPC.TurnSheriff, this);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnSheriff();
         }
     }

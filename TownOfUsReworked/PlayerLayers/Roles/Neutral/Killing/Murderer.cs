@@ -12,26 +12,17 @@ public class Murderer : Neutral
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => DefenseEnum.Basic;
 
-    public Murderer() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Objectives = () => "- Murder anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        MurderButton = new(this, "Murder", AbilityTypes.Alive, "ActionSecondary", Murder, CustomGameOptions.MurderCd, Exception);
-        return this;
+        MurderButton = CreateButton(this, new SpriteName("Murder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Murder, new Cooldown(CustomGameOptions.MurderCd), "MURDER",
+            (PlayerBodyExclusion)Exception);
     }
 
     public void Murder() => MurderButton.StartCooldown(Interact(Player, MurderButton.TargetPlayer, true));
 
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        MurderButton.Update2("MURDER");
-    }
 }

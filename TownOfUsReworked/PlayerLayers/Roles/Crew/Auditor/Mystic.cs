@@ -12,15 +12,12 @@ public class Mystic : Crew
     public override Func<string> Description => () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n-" +
         " When all converted and converters die, you will become a <color=#71368AFF>Seer</color>";
 
-    public Mystic() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewAudit;
-        RevealButton = new(this, "MysticReveal", AbilityTypes.Alive, "ActionSecondary", Reveal, CustomGameOptions.MysticRevealCd, Exception);
-        return this;
+        RevealButton = CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (PlayerBodyExclusion)Exception,
+            new Cooldown(CustomGameOptions.MysticRevealCd));
     }
 
     public void TurnSeer() => new Seer().Start<Role>(Player).RoleUpdate(this);
@@ -28,11 +25,10 @@ public class Mystic : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        RevealButton.Update2("REVEAL");
 
-        if (ConvertedDead && !IsDead)
+        if (ConvertedDead && !Dead)
         {
-            CallRpc(CustomRPC.Change, TurnRPC.TurnSeer, this);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnSeer();
         }
     }

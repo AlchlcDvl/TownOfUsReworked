@@ -1,5 +1,4 @@
 using Assets.InnerNet;
-using BepInEx.Unity.IL2CPP.Utils;
 
 namespace TownOfUsReworked.Patches;
 
@@ -7,7 +6,7 @@ namespace TownOfUsReworked.Patches;
 public static class MainMenuStartPatch
 {
     private static AnnouncementPopUp PopUp;
-    private static Announcement ModInfo => new()
+    private static readonly Announcement ModInfo = new()
     {
         Id = "tourewInfo",
         Language = 0,
@@ -16,15 +15,17 @@ public static class MainMenuStartPatch
         ShortTitle = "Mod Info",
         SubTitle = "",
         PinState = false,
-        Date = "16.07.2023",
+        Date = "24.03.2024",
         Text = $"<size=75%>{ReadResourceText("ModInfo")}</size>"
     };
     public static GameObject Logo;
 
     public static void Prefix(MainMenuManager __instance)
     {
-        AllMonos.LateAddComponents();
+        AllMonos.AddComponents();
         LoadVanillaSounds();
+        CachedFirstDead = null;
+        TownOfUsReworked.IsTest = false;
         var rightPanel = GameObject.Find("RightPanel");
 
         if (!Logo && rightPanel)
@@ -38,7 +39,7 @@ public static class MainMenuStartPatch
         var y = -0.5f;
         var pos = 0.75f;
 
-        //If there's a possible download, create and show the buttons for it
+        // If there's a possible download, create and show the buttons for it
         if (ModUpdater.ReworkedUpdate)
         {
             LogInfo("Reworked can be updated");
@@ -67,7 +68,7 @@ public static class MainMenuStartPatch
         var template = GameObject.Find("ExitGameButton");
         var rightPanel = GameObject.Find("RightPanel");
 
-        if (template == null || rightPanel == null)
+        if (!template || !rightPanel)
             return;
 
         var button = UObject.Instantiate(template, rightPanel.transform);
@@ -88,11 +89,11 @@ public static class MainMenuStartPatch
             button.SetActive(false);
         }));
 
-        __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+        __instance.StartCoroutine(PerformTimedAction(0.1f, _ =>
         {
             button.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
             pos.AdjustPosition();
-        })));
+        }));
     }
 
     public static void Postfix(MainMenuManager __instance)
@@ -113,15 +114,15 @@ public static class MainMenuStartPatch
         __instance.myAccountButton.transform.position = pos;
         pos.y = __instance.newsButton.transform.localPosition.y;
         pos.x = __instance.quitButton.transform.localPosition.x;
-        __instance.newsButton.transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
-        __instance.newsButton.transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        __instance.newsButton.transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        __instance.myAccountButton.transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z); //WHY THE FUCK IS IT ACOUNT AND NOT ACCOUNT
-        __instance.myAccountButton.transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        __instance.myAccountButton.transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        __instance.settingsButton.transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
-        __instance.settingsButton.transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        __instance.settingsButton.transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.newsButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
+        __instance.newsButton.transform.GetChild(1).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.newsButton.transform.GetChild(2).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.myAccountButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
+        __instance.myAccountButton.transform.GetChild(1).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.myAccountButton.transform.GetChild(2).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.settingsButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
+        __instance.settingsButton.transform.GetChild(1).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.settingsButton.transform.GetChild(2).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
 
         var ghObj = UObject.Instantiate(__instance.newsButton, __instance.newsButton.transform.parent);
         ghObj.gameObject.name = "ReworkedGitHub";
@@ -154,7 +155,7 @@ public static class MainMenuStartPatch
             PopUp = UObject.Instantiate(template);
             PopUp.gameObject.SetActive(true);
 
-            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p =>
+            __instance.StartCoroutine(PerformTimedAction(0.1f, p =>
             {
                 if (p == 1)
                 {
@@ -165,19 +166,19 @@ public static class MainMenuStartPatch
                     var copy = DataManager.Player.Announcements.allAnnouncements;
                     PopUp.CreateAnnouncementList();
                     PopUp.UpdateAnnouncementText(ModInfo.Number);
-                    PopUp.visibleAnnouncements._items[0].PassiveButton.OnClick = new();
+                    PopUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
                     DataManager.Player.Announcements.allAnnouncements = backup;
                 }
-            })));
+            }));
         }));
         credObj.transform.localPosition = pos;
 
-        __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
+        __instance.StartCoroutine(PerformTimedAction(0.01f, _ =>
         {
             discObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Discord");
             ghObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod GitHub");
             credObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
-        })));
+        }));
 
         SoundEffects.TryAdd("Hover", __instance.playButton.HoverSound);
         SoundEffects.TryAdd("Click", __instance.playButton.ClickSound);

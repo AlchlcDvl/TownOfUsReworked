@@ -3,7 +3,7 @@ using Rewired.Data;
 
 namespace TownOfUsReworked.Patches;
 
-//Thanks to TheOtherRolesAU/TheOtherRoles/pull/347 by dadoum for the patch and extension
+// Thanks to TheOtherRolesAU/TheOtherRoles/pull/347 by dadoum for the patch and extension
 [HarmonyPatch(typeof(InputManager_Base), nameof(InputManager_Base.Awake))]
 public static class Keybinds
 {

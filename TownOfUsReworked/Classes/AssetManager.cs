@@ -2,16 +2,16 @@ namespace TownOfUsReworked.Classes;
 
 public static class AssetManager
 {
-    public static readonly Dictionary<string, AudioClip> SoundEffects = new();
-    public static readonly Dictionary<string, Sprite> Sprites = new();
-    public static readonly List<Sprite> PortalAnimation = new();
-    public static readonly string[] Presets = { "Casual", "Chaos", "Ranked" };
+    public static readonly Dictionary<string, AudioClip> SoundEffects = [];
+    public static readonly Dictionary<string, Sprite> Sprites = [];
+    public static readonly List<Sprite> PortalAnimation = [];
+    public static readonly Dictionary<string, TMP_FontAsset> Fonts = [];
 
     public static AudioClip GetAudio(string path)
     {
         if (!SoundEffects.TryGetValue(path, out var sound))
         {
-            //LogError($"{path} does not exist");
+            // LogError($"{path} does not exist");
             return SoundEffects["Placeholder"];
         }
 
@@ -22,11 +22,11 @@ public static class AssetManager
     {
         if (!Sprites.TryGetValue(path, out var sprite))
         {
-            //LogError($"{path} does not exist");
-            return Meeting ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"];
+            // LogError($"{path} does not exist");
+            return Sprites[(Meeting ? "Meeting" : "") + "Placeholder"];
         }
 
-        return sprite ?? Sprites["Placeholder"];
+        return sprite ?? Sprites[(Meeting ? "Meeting" : "") + "Placeholder"];
     }
 
     public static void Play(string path, bool loop = false, float volume = 1f)
@@ -49,9 +49,8 @@ public static class AssetManager
     {
         var texture = EmptyTexture();
         ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
-        texture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-        texture.name = path;
-        return texture.DontDestroy().Decompress();
+        texture.name = path.SanitisePath();
+        return texture.Decompress().DontDestroy();
     }
 
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
@@ -66,8 +65,7 @@ public static class AssetManager
         stream.Read(new(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
         ImageConversion.LoadImage(texture, byteTexture, false);
         texture.name = sname;
-        texture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-        return texture.DontDestroy().Decompress();
+        return texture.Decompress().DontDestroy();
     }
 
     public static Sprite CreateResourceSprite(string path) => CreateSprite(LoadResourceTexture(path), path.SanitisePath());
@@ -107,7 +105,7 @@ public static class AssetManager
         return text;
     }
 
-    //https://stackoverflow.com/questions/51315918/how-to-encodetopng-compressed-textures-in-unity courtesy of pat from salem mod loader
+    // https://stackoverflow.com/questions/51315918/how-to-encodetopng-compressed-textures-in-unity courtesy of pat from salem mod loader
     public static Texture2D Decompress(this Texture2D source)
     {
         var renderTex = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
@@ -119,6 +117,7 @@ public static class AssetManager
         readableText.Apply();
         RenderTexture.active = previous;
         RenderTexture.ReleaseTemporary(renderTex);
+        readableText.hideFlags |= HideFlags.DontUnloadUnusedAsset;
         return readableText;
     }
 
@@ -199,5 +198,16 @@ public static class AssetManager
             return 36000;
         else
             return 48000;
+    }
+
+    public static TMP_FontAsset GetFont(string path)
+    {
+        if (!Fonts.TryGetValue(path, out var sound))
+        {
+            // LogError($"{path} does not exist");
+            return Fonts["Placeholder"];
+        }
+
+        return sound ?? Fonts["Placeholder"];
     }
 }

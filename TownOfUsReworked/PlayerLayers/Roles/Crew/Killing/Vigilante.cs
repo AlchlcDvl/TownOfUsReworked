@@ -16,16 +16,13 @@ public class Vigilante : Crew
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public Vigilante() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.CrewKill;
-        ShootButton = new(this, "Shoot", AbilityTypes.Alive, "ActionSecondary", Shoot, CustomGameOptions.ShootCd, Exception, CustomGameOptions.MaxBullets);
+        ShootButton = CreateButton(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Shoot, new Cooldown(CustomGameOptions.ShootCd),
+            (PlayerBodyExclusion)Exception, CustomGameOptions.MaxBullets, (UsableFunc)Usable);
         RoundOne = CustomGameOptions.RoundOneNoShot;
-        return this;
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -42,11 +39,7 @@ public class Vigilante : Crew
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        ShootButton.Update2("SHOOT", !KilledInno && !RoundOne);
-    }
+    public bool Usable() => !KilledInno && !RoundOne;
 
     public void Shoot()
     {

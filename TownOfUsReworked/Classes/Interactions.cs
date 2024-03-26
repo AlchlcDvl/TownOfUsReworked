@@ -39,7 +39,11 @@ public static class Interactions
         PlayerLayer.GetLayers<Plaguebearer>().ForEach(pb => pb.RpcSpreadInfection(interacter, target));
         PlayerLayer.GetLayers<Arsonist>().ForEach(arso => arso.RpcSpreadDouse(target, interacter));
         PlayerLayer.GetLayers<Cryomaniac>().ForEach(cryo => cryo.RpcSpreadDouse(target, interacter));
-        var targetId = !(target.Is(Alignment.NeutralApoc) || target.Is(Alignment.NeutralHarb)) ? target.PlayerId : interacter.PlayerId;
+
+        if (!PlayerLayer.GetLayers<Pestilence>().Any())
+            return;
+
+        var targetId = target.Is(Alignment.NeutralApoc) || target.Is(Alignment.NeutralHarb) ? interacter.PlayerId : target.PlayerId;
 
         if (!Pestilence.Infected.ContainsKey(targetId))
             return;
@@ -62,6 +66,7 @@ public static class Interactions
         var abilityUsed = true;
         var attack = source.GetAttackValue(target);
         var defense = target.GetDefenseValue(source);
+        var faction = source.GetFaction();
         bypass |= source.Is(LayerEnum.Ruthless);
         PlayerControl trapper = null;
 
@@ -80,17 +85,24 @@ public static class Interactions
                 if (target.IsTrapped() && trapper && !astral)
                 {
                     if (source.IsShielded() || source.IsProtected())
-                        abilityUsed = true;
+                        abilityUsed = false;
                     else
                         RpcMurderPlayer(trapper, source, false);
                 }
                 else if (source.IsShielded() || source.IsProtected())
                 {
-                    abilityUsed = true;
+                    abilityUsed = false;
                     RpcBreakShield(source);
                 }
                 else if (!delayed)
                     RpcMurderPlayer(source, target);
+            }
+            else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
+            {
+                var fan = target.GetObjectifier<Fanatic>();
+                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
+                fan.TurnFanatic(faction);
+                abilityUsed = true;
             }
             else
             {
@@ -101,7 +113,7 @@ public static class Interactions
         else if (target.IsShielded() && isAttack)
         {
             RpcBreakShield(target);
-            abilityUsed = true;
+            abilityUsed = false;
         }
 
         if (TargetShouldAttack(source, target, isAttack && !bypass))
@@ -130,7 +142,7 @@ public static class Interactions
                     }
                     else if (target.IsShielded() || target.IsProtected())
                     {
-                        abilityUsed = true;
+                        abilityUsed = false;
                         RpcBreakShield(target);
                     }
                     else if (!delayed)
@@ -145,7 +157,7 @@ public static class Interactions
             else if (source.IsShielded() && isAttack)
             {
                 RpcBreakShield(source);
-                abilityUsed = true;
+                abilityUsed = false;
             }
         }
 
@@ -162,18 +174,18 @@ public static class Interactions
         if (target.IsBombed())
         {
             abilityUsed = false;
-            var bastion = PlayerLayer.GetLayers<Bastion>().First(x => x.BombedIDs.Contains(target.Id))?.Player;
+            var bastion = PlayerLayer.GetLayers<Bastion>().Find(x => x.BombedIDs.Contains(target.Id)) as Role;
 
             if (!bastion)
-                bastion = PlayerLayer.GetLayers<Retributionist>().First(x => x.BombedIDs.Contains(target.Id))?.Player;
+                bastion = PlayerLayer.GetLayers<Retributionist>().Find(x => x.BombedIDs.Contains(target.Id));
 
             if (!CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
             {
                 abilityUsed = true;
                 RpcBreakShield(player);
             }
-            else
-                RpcMurderPlayer(bastion, player, DeathReasonEnum.Bombed, false);
+            else if (bastion)
+                RpcMurderPlayer(bastion.Player, player, DeathReasonEnum.Bombed, false);
 
             Role.BastionBomb(target, CustomGameOptions.BombRemovedOnKill);
             CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);

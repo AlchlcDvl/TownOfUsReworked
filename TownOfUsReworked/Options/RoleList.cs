@@ -3,12 +3,12 @@ namespace TownOfUsReworked.Options;
 public class RoleListEntryOption : CustomOption
 {
     private CustomButtonOption Loading { get; set; }
-    private List<OptionBehaviour> OldButtons { get; set; } = new();
-    public List<CustomButtonOption> SlotButtons = new();
+    private List<OptionBehaviour> OldButtons { get; set; } = [];
+    public List<CustomButtonOption> SlotButtons = [];
     public bool IsBan { get; }
     private static int EntryNum;
     private static int BanNum;
-    public static readonly List<CustomButtonOption> EntryButtons = new();
+    public static readonly List<CustomButtonOption> EntryButtons = [];
     public static Dictionary<LayerEnum, string> Entries => new()
     {
         { LayerEnum.None, "None"},
@@ -177,7 +177,7 @@ public class RoleListEntryOption : CustomOption
 
         foreach (var button in SlotButtons)
         {
-            if (button.Setting != null)
+            if (button.Setting)
                 button.Setting.gameObject.SetActive(true);
             else
             {
@@ -252,7 +252,7 @@ public class RoleListEntryOption : CustomOption
         yield break;
     }
 
-    private static bool IsBanned(LayerEnum id) => GetOptions<RoleListEntryOption>().Any(x => x.IsBan && x.Get() == id);
+    public static bool IsBanned(LayerEnum id) => GetOptions<RoleListEntryOption>().Any(x => x.IsBan && x.Get() == id);
 
     private static bool IsAdded(LayerEnum id) => GetOptions<RoleListEntryOption>().Any(x => !x.IsBan && x.Get() == id);
 }

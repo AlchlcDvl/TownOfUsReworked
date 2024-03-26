@@ -7,19 +7,19 @@ public class CustomArrow
     private GameObject ArrowObj { get; set; }
     public PlayerControl Owner { get; }
     private float Interval { get; }
-    private DateTime _time { get; set; }
+    private DateTime Time { get; set; }
     private Vector3 Target { get; set; }
     private SpriteRenderer Point { get; set; }
     private UColor ArrowColor { get; set; }
     private bool Disabled { get; set; }
-    public static readonly List<CustomArrow> AllArrows = new();
+    public static readonly List<CustomArrow> AllArrows = [];
 
     public CustomArrow(PlayerControl owner, UColor color, float interval = 0f)
     {
         Owner = owner;
         Interval = interval;
         ArrowColor = color;
-        _time = DateTime.UnixEpoch;
+        Time = DateTime.UnixEpoch;
         Instantiate();
         Disabled = Owner != CustomPlayer.Local;
         AllArrows.Add(this);
@@ -60,10 +60,10 @@ public class CustomArrow
         if (color.HasValue)
             Render.color = ArrowColor = color.Value;
 
-        if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
+        if (Time <= DateTime.UtcNow.AddSeconds(-Interval))
         {
             Arrow.target = Target = target;
-            _time = DateTime.UtcNow;
+            Time = DateTime.UtcNow;
         }
     }
 
@@ -97,7 +97,7 @@ public class CustomArrow
 
     public void UpdateArrowBlip(MapBehaviour __instance)
     {
-        if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || Meeting || Owner != CustomPlayer.Local)
+        if (!ArrowObj || !Arrow || !Render || ArrowColor == default || Meeting || Owner != CustomPlayer.Local)
             return;
 
         var v = Target;

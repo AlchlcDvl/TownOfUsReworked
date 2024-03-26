@@ -5,7 +5,7 @@ public class Traitor : Objectifier
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }
     public Faction Side { get; set; }
-    private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
+    private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !Dead && Turned && !Betrayed;
 
     public override UColor Color
     {
@@ -13,12 +13,12 @@ public class Traitor : Objectifier
         {
             if (Turned)
             {
-                if (Side == Faction.Syndicate)
-                    return CustomColorManager.Syndicate;
-                else if (Side == Faction.Intruder)
-                    return CustomColorManager.Intruder;
-                else
-                    return ClientGameOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Objectifier;
+                return Side switch
+                {
+                    Faction.Intruder => CustomColorManager.Intruder,
+                    Faction.Syndicate => CustomColorManager.Syndicate,
+                    _ => ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier
+                };
             }
             else
                 return ClientGameOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Objectifier;
@@ -27,28 +27,18 @@ public class Traitor : Objectifier
     public override string Name => "Traitor";
     public override string Symbol => "♣";
     public override LayerEnum Type => LayerEnum.Traitor;
-    public override Func<string> Description => () => !Turned ? "- Finish your tasks to switch sides to either <color=#FF1919FF>Intruders</color> or the <color=#008000FF>Syndicate</color>" :
-        "";
-    public override bool Hidden => !CustomGameOptions.TraitorKnows && !Turned && !IsDead;
+    public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <color=#FF1919FF>Intruders</color> or the <color=#008000FF>Syndicate</color>" : "";
+    public override bool Hidden => !CustomGameOptions.TraitorKnows && !Turned && !Dead;
 
-    public Traitor() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        Side = Faction.Crew;
-        return this;
-    }
+    public override void Init() => Side = Faction.Crew;
 
     public void TurnBetrayer()
     {
         var role = Player.GetRole();
         Betrayed = true;
 
-        if (role.Type == LayerEnum.Betrayer)
-            return;
-
-        new Betrayer() { Objectives = role.Objectives }.Start<Role>(Player).RoleUpdate(role);
+        if (role.Type != LayerEnum.Betrayer)
+            new Betrayer() { Objectives = role.Objectives }.Start<Role>(Player).RoleUpdate(role);
     }
 
     public static void GetFactionChoice(out bool turnSyndicate, out bool turnIntruder)
@@ -56,32 +46,32 @@ public class Traitor : Objectifier
         turnIntruder = false;
         turnSyndicate = false;
 
-        var IntrudersAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.HasDied());
-        var SyndicateAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.HasDied());
+        var intAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.HasDied());
+        var synAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.HasDied());
 
-        if (IntrudersAlive > 0 && SyndicateAlive > 0)
+        if (intAlive > 0 && synAlive > 0)
         {
             var random = URandom.RandomRangeInt(0, 100);
 
-            if (IntrudersAlive == SyndicateAlive)
+            if (intAlive == synAlive)
             {
                 turnIntruder = random < 50;
                 turnSyndicate = random >= 50;
             }
-            else if (IntrudersAlive > SyndicateAlive)
+            else if (intAlive > synAlive)
             {
                 turnIntruder = random < 25;
                 turnSyndicate = random >= 25;
             }
-            else if (IntrudersAlive < SyndicateAlive)
+            else if (intAlive < synAlive)
             {
                 turnIntruder = random < 75;
                 turnSyndicate = random >= 75;
             }
         }
-        else if (IntrudersAlive > 0 && SyndicateAlive == 0)
+        else if (intAlive > 0 && synAlive == 0)
             turnIntruder = true;
-        else if (SyndicateAlive > 0 && IntrudersAlive == 0)
+        else if (synAlive > 0 && intAlive == 0)
             turnSyndicate = true;
     }
 
@@ -136,7 +126,7 @@ public class Traitor : Objectifier
 
         if (Betray && Turned)
         {
-            CallRpc(CustomRPC.Change, TurnRPC.TurnTraitorBetrayer, this);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, true);
             TurnBetrayer();
         }
     }

@@ -62,7 +62,7 @@ public static class EnterVentPatch
         else if (player.IsPostmortal())
             flag = false;
 
-        //Fix for dlekS
+        // Fix for dlekS
         if (flag)
         {
             Vector2 vector;
@@ -84,7 +84,7 @@ public static class EnterVentPatch
                     {
                         var ventilationSystem = Ship.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
                         var flag1 = ventilationSystem != null && ventilationSystem.IsVentCurrentlyBeingCleaned(vent.Id);
-                        var gameObject = __instance.CleaningIndicators.Count > 0 ? __instance.CleaningIndicators[i] : null;
+                        var gameObject = __instance.CleaningIndicators.Any() ? __instance.CleaningIndicators[i] : null;
                         __instance.ToggleNeighborVentBeingCleaned(flag1 || LocalBlocked, buttonBehavior, gameObject);
                         var vector2 = vent.transform.position - __instance.transform.position;
                         var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
@@ -110,8 +110,8 @@ public static class EnterVentPatch
     }
 }
 
-//Vent and kill shit
-//Yes thank you Discussions - AD
+// Vent and kill shit
+// Yes thank you Discussions - AD
 [HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
 public static class SetVentOutlinePatch
 {
@@ -181,7 +181,7 @@ public static class FixdlekSVents1
 
             if (vent)
             {
-                __instance.ToggleNeighborVentBeingCleaned(ventSystem.IsVentCurrentlyBeingCleaned(vent.Id) || LocalBlocked, __instance.Buttons[i], __instance.CleaningIndicators.Count > 0 ?
+                __instance.ToggleNeighborVentBeingCleaned(ventSystem.IsVentCurrentlyBeingCleaned(vent.Id) || LocalBlocked, __instance.Buttons[i], __instance.CleaningIndicators.Any() ?
                     __instance.CleaningIndicators[i] : null);
             }
         }
@@ -198,5 +198,35 @@ public static class FixdlekSVents2
         b.enabled = !ventBeingCleaned;
         c?.SetActive(ventBeingCleaned);
         return false;
+    }
+}
+
+[HarmonyPatch(typeof(Vent), nameof(Vent.EnterVent))]
+public static class HideVentAnims1
+{
+    public static bool Prefix(Vent __instance, ref PlayerControl pc)
+    {
+        if (!__instance.ExitVentAnim || !CustomGameOptions.HideVentAnims)
+            return true;
+
+        var truePosition = CustomPlayer.Local.GetTruePosition();
+        var vector = pc.GetTruePosition() - truePosition;
+        return vector.magnitude < CustomPlayer.Local.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude,
+            Constants.ShipAndObjectsMask);
+    }
+}
+
+[HarmonyPatch(typeof(Vent), nameof(Vent.ExitVent))]
+public static class HideVentAnims2
+{
+    public static bool Prefix(Vent __instance, ref PlayerControl pc)
+    {
+        if (!__instance.ExitVentAnim || !CustomGameOptions.HideVentAnims)
+            return true;
+
+        var truePosition = CustomPlayer.Local.GetTruePosition();
+        var vector = pc.GetTruePosition() - truePosition;
+        return vector.magnitude < CustomPlayer.Local.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude,
+            Constants.ShipAndObjectsMask);
     }
 }

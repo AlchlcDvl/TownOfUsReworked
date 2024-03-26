@@ -12,21 +12,18 @@ public class Hunter : HideAndSeek
     public float StartingTimer { get; set; }
     public bool Starting => StartingTimer > 0f;
 
-    public Hunter() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
+        BaseStart();
         Objectives = () => "- Hunt the others down before they finish their tasks";
-        HuntButton = new(this, "IntruderKill", AbilityTypes.Alive, "ActionSecondary", Hunt, CustomGameOptions.HuntCd, Exception);
+        HuntButton = CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(CustomGameOptions.HuntCd),
+            (PlayerBodyExclusion)Exception);
         Player.SetImpostor(true);
-        return this;
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        HuntButton.Update2("HUNT");
 
         if (Starting)
         {
@@ -60,7 +57,7 @@ public class Hunter : HideAndSeek
         else if (CustomGameOptions.HnSMode == HnSMode.Infection)
         {
             TurnHunter(HuntButton.TargetPlayer);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, HuntButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, HuntButton.TargetPlayer);
         }
 
         HuntButton.StartCooldown();

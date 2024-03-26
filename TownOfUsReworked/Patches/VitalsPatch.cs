@@ -6,12 +6,12 @@ public static class VitalsPatch
     public static void Postfix(VitalsMinigame __instance)
     {
         var localPlayer = CustomPlayer.Local;
-        var isOP = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything;
+        var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything;
 
-        if (!isOP)
-            isOP = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;
+        if (!isOp)
+            isOp = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOp;
 
-        if (!isOP)
+        if (!isOp)
             return;
 
         for (var i = 0; i < __instance.vitals.Count; i++)
@@ -22,7 +22,11 @@ public static class VitalsPatch
             if (!panel.IsDead)
                 continue;
 
-            var deadBody = KilledPlayers.First(x => x.PlayerId == info.PlayerId);
+            var deadBody = KilledPlayers.Find(x => x.PlayerId == info.PlayerId);
+
+            if (deadBody == null)
+                continue;
+
             var num = (float)(DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;
             var tmp = panel.Cardio.gameObject.GetComponent<TextMeshPro>();
             tmp.color = UColor.red;

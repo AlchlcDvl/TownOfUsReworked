@@ -7,16 +7,10 @@ public class Colorblind : Modifier
     public override LayerEnum Type => LayerEnum.Colorblind;
     public override Func<string> Description => () => "- You can't tell the difference between players";
 
-    public Colorblind() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
-
         if (Local)
             ColorAll();
-
-        return this;
     }
 
     public override void OnLobby()
@@ -33,7 +27,7 @@ public class Colorblind : Modifier
     {
         base.UpdateHud(__instance);
 
-        if (!IsDead)
+        if (!Dead)
             ColorAll();
     }
 
@@ -41,7 +35,7 @@ public class Colorblind : Modifier
     {
         base.OnMeetingEnd(__instance);
 
-        if (IsDead)
+        if (Dead)
             AllToNormal();
     }
 

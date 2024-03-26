@@ -8,8 +8,8 @@ public static class CheckEndGame
         if (IsFreePlay || IsHnS || !AmongUsClient.Instance.AmHost)
             return false;
 
-        var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
-        var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
+        var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
+        var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
 
         if (TasksDone())
         {
@@ -113,7 +113,7 @@ public static class CheckEndGame
         return false;
     }
 
-    //Stalemate detector for unwinnable situations
+    // Stalemate detector for unwinnable situations
     private static void DetectStalemate()
     {
         var players = CustomPlayer.AllPlayers.Where(x => !x.HasDied()).ToList();
@@ -140,7 +140,7 @@ public static class CheckEndGame
             var rival2 = player2.Is(LayerEnum.Rivals);
             var rivals = rival1 && rival2;
 
-            //NK vs NK when neither can kill each other and Neutrals don't win together
+            // NK vs NK when neither can kill each other and Neutrals don't win together
             if ((player1.Is(LayerEnum.Cryomaniac) && player2.Is(LayerEnum.Cryomaniac) && nosolo && nobuttons && neitherknighted) || NoOneWins || rivals || (cantkill && nobuttons))
                 PerformStalemate();
         }
@@ -179,7 +179,7 @@ public static class CheckEndGame
             }
             else
             {
-                if (Role.GetRoles(Faction.Crew).All(x => x.IsDead && !CustomGameOptions.GhostTasksCountToWin) || !Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
+                if (Role.GetRoles(Faction.Crew).All(x => x.Dead && !CustomGameOptions.GhostTasksCountToWin) || !Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
                     return false;
 
                 var allCrew = new List<PlayerControl>();
@@ -207,30 +207,30 @@ public static class CheckEndGame
     {
         try
         {
-            if (Ship.Systems.ContainsKey(SystemTypes.LifeSupp))
+            if (Ship.Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
             {
-                var lifeSuppSystemType = Ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                var lifeSuppSystemType = life.Cast<LifeSuppSystemType>();
 
                 if (lifeSuppSystemType.Countdown <= 0f)
                     return true;
             }
-            else if (Ship.Systems.ContainsKey(SystemTypes.Laboratory))
+            else if (Ship.Systems.TryGetValue(SystemTypes.Laboratory, out var lab))
             {
-                var reactorSystemType = Ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                var reactorSystemType = lab.Cast<ReactorSystemType>();
 
                 if (reactorSystemType.Countdown <= 0f)
                     return true;
             }
-            else if (Ship.Systems.ContainsKey(SystemTypes.Reactor))
+            else if (Ship.Systems.TryGetValue(SystemTypes.Reactor, out var reactor))
             {
-                var reactorSystemType = Ship.Systems[SystemTypes.Reactor].Cast<ICriticalSabotage>();
+                var reactorSystemType = reactor.Cast<ICriticalSabotage>();
 
                 if (reactorSystemType.Countdown <= 0f)
                     return true;
             }
-            else if (Ship.Systems.ContainsKey(SystemTypes.HeliSabotage))
+            else if (Ship.Systems.TryGetValue(SystemTypes.HeliSabotage, out var heli))
             {
-                var reactorSystemType = Ship.Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>();
+                var reactorSystemType = heli.Cast<HeliSabotageSystem>();
 
                 if (reactorSystemType.Countdown <= 0f)
                     return true;

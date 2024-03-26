@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomMenu
 {
-    public static readonly List<CustomMenu> AllMenus = new();
+    public static readonly List<CustomMenu> AllMenus = [];
 
     public ShapeshifterMinigame Menu { get; set; }
     public PlayerControl Owner { get; }

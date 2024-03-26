@@ -9,7 +9,7 @@ public partial class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.6.5.0";
+    public const string VersionString = "0.6.6.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = false;
@@ -71,6 +71,7 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> CustomAbColors { get; set; }
     public static ConfigEntry<bool> CustomEjects { get; set; }
     public static ConfigEntry<bool> OptimisationMode { get; set; }
+    public static ConfigEntry<bool> HideOtherGhosts { get; set; }
 
     public static TownOfUsReworked ModInstance { get; private set; }
 
@@ -105,6 +106,7 @@ public partial class TownOfUsReworked : BasePlugin
     {
         ModInstance = null;
         Harmony.UnpatchSelf();
+        LogMessage($"Mod Unloaded - {this}");
         return base.Unload();
     }
 }

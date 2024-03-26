@@ -9,14 +9,7 @@ public class Radar : Ability
     public override LayerEnum Type => LayerEnum.Radar;
     public override Func<string> Description => () => "- You are aware of those close to you";
 
-    public Radar() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        RadarArrow = new(Player, Color);
-        return this;
-    }
+    public override void Init() => RadarArrow = new(Player, Color);
 
     public override void OnLobby()
     {
@@ -28,7 +21,7 @@ public class Radar : Ability
     {
         base.UpdateHud(__instance);
 
-        if (IsDead)
+        if (Dead)
             OnLobby();
         else
         {

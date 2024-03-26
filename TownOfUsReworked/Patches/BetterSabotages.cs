@@ -8,18 +8,18 @@ public static class BetterSabotages
         if (!IsInGame || !Ship)
             return;
 
-        if (Ship.Systems.ContainsKey(SystemTypes.Laboratory) && MapPatches.CurrentMap == 2)
+        if (Ship.Systems.TryGetValue(SystemTypes.Laboratory, out var lab) && MapPatches.CurrentMap == 2)
         {
-            var system = Ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+            var system = lab.Cast<ReactorSystemType>();
 
             if (system.IsActive && CustomGameOptions.ReactorShake != 0f)
                 __instance.PlayerCam.ShakeScreen(500, CustomGameOptions.ReactorShake * (system.ReactorDuration - system.Countdown) / (100f * system.ReactorDuration));
             else
                 __instance.PlayerCam.ShakeScreen(0, 0);
         }
-        else if (Ship.Systems.ContainsKey(SystemTypes.Reactor) && MapPatches.CurrentMap is 0 or 1 or 3 or 5 or 7)
+        else if (Ship.Systems.TryGetValue(SystemTypes.Reactor, out var reactor) && MapPatches.CurrentMap is 0 or 1 or 3 or 5 or 7)
         {
-            var system = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+            var system = reactor.Cast<ReactorSystemType>();
 
             if (system.IsActive && CustomGameOptions.ReactorShake != 0f)
                 __instance.PlayerCam.ShakeScreen(500, CustomGameOptions.ReactorShake * (system.ReactorDuration - system.Countdown) / (100f * system.ReactorDuration));

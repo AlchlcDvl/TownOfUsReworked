@@ -14,20 +14,16 @@ public class Shapeshifter : Syndicate
     public override Func<string> StartText => () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
 
-    public Shapeshifter() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
+    public override void Init()
     {
-        SetPlayer(player);
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Exception1);
         ShapeshiftMenu2 = new(Player, Click2, Exception2);
-        ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Targetless, "Secondary", HitShapeshift, CustomGameOptions.ShapeshiftCd, CustomGameOptions.ShapeshiftDur,
-            (CustomButton.EffectVoid)Shift, UnShapeshift);
-        return this;
+        ShapeshiftButton = CreateButton(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(CustomGameOptions.ShapeshiftCd),
+            new Duration(CustomGameOptions.ShapeshiftDur), (EffectVoid)Shift, (EffectEndVoid)UnShapeshift, (LabelFunc)Label);
     }
 
     public void Shift() => Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
@@ -104,7 +100,7 @@ public class Shapeshifter : Syndicate
     {
         if (HoldsDrive)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ShapeshiftButton);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ShapeshiftButton);
             ShapeshiftButton.Begin();
         }
         else if (ShapeshiftPlayer1 == null)
@@ -113,7 +109,7 @@ public class Shapeshifter : Syndicate
             ShapeshiftMenu2.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ShapeshiftButton, ShapeshiftPlayer1, ShapeshiftPlayer2);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ShapeshiftButton, ShapeshiftPlayer1, ShapeshiftPlayer2);
             ShapeshiftButton.Begin();
         }
     }
@@ -122,22 +118,20 @@ public class Shapeshifter : Syndicate
 
     public bool Exception2(PlayerControl player) => player == ShapeshiftPlayer1 || CommonException(player);
 
-    public bool CommonException(PlayerControl player) => player == Player || (player.Data.IsDead && BodyByPlayer(player) == null) || (player.Is(Faction) &&
-        !CustomGameOptions.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&
-        !CustomGameOptions.ShapeshiftMates);
+    public bool CommonException(PlayerControl player) => player == Player || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) && Faction is Faction.Intruder or
+        Faction.Syndicate && !CustomGameOptions.ShapeshiftMates) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.ShapeshiftMates);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ShapeshiftButton.Update2(Label());
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (!HoldsDrive && !ShapeshiftButton.EffectActive)
             {
-                if (ShapeshiftPlayer2 != null)
+                if (ShapeshiftPlayer2)
                     ShapeshiftPlayer2 = null;
-                else if (ShapeshiftPlayer1 != null)
+                else if (ShapeshiftPlayer1)
                     ShapeshiftPlayer1 = null;
             }
 
@@ -149,9 +143,9 @@ public class Shapeshifter : Syndicate
     {
         if (HoldsDrive)
             return "SHAPESHIFT";
-        else if (ShapeshiftPlayer1 == null)
+        else if (!ShapeshiftPlayer1)
             return "FIRST TARGET";
-        else if (ShapeshiftPlayer2 == null)
+        else if (!ShapeshiftPlayer2)
             return "SECOND TARGET";
         else
             return "SHAPESHIFT";

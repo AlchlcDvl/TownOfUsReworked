@@ -6,13 +6,5 @@ public class Tiebreaker : Ability
     public override string Name => "Tiebreaker";
     public override LayerEnum Type => LayerEnum.Tiebreaker;
     public override Func<string> Description => () => "- Your votes break ties";
-    public override bool Hidden => !CustomGameOptions.TiebreakerKnows && !IsDead;
-
-    public Tiebreaker() : base() {}
-
-    public override PlayerLayer Start(PlayerControl player)
-    {
-        SetPlayer(player);
-        return this;
-    }
+    public override bool Hidden => !CustomGameOptions.TiebreakerKnows && !Dead;
 }

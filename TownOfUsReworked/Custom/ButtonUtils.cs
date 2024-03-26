@@ -16,7 +16,7 @@ public static class ButtonUtils
         HUD.AbilityButton.gameObject.SetActive(false);
     }
 
-    public static List<CustomButton> GetButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ToList();
+    public static List<CustomButton> GetButtons(this PlayerControl player) => [..AllButtons.Where(x => x.Owner.Player == player)];
 
     public static void EnableButtons(this PlayerControl player)
     {
@@ -40,7 +40,7 @@ public static class ButtonUtils
     public static void DisableAllButtons()
     {
         Use = HUD.UseButton.isActiveAndEnabled;
-        CustomButton.AllButtons.ForEach(x => x.Disable());
+        AllButtons.ForEach(x => x.Disable());
         HUD.KillButton.gameObject.SetActive(false);
         HUD.SabotageButton.gameObject.SetActive(false);
         HUD.ReportButton.gameObject.SetActive(false);
@@ -60,7 +60,7 @@ public static class ButtonUtils
         button.SetCooldownFill(1f);
     }
 
-    public static void DestroyButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Destroy());
+    public static void DestroyButtons(this PlayerControl player) => AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Destroy());
 
     public static bool CannotUse(this PlayerControl player) => player.onLadder || player.inVent || player.inMovingPlat;
 
@@ -115,7 +115,7 @@ public static class ButtonUtils
         var role = player.GetRole();
         var start = cooldown == CooldownType.Start;
         var meeting = cooldown == CooldownType.Meeting;
-        CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.StartCooldown(cooldown));
+        AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.StartCooldown(cooldown));
 
         if (role.Requesting && !start)
             role.BountyTimer++;
@@ -139,7 +139,7 @@ public static class ButtonUtils
         {
             if (CustomGameOptions.ResetOnNewRound)
             {
-                track.TrackButton.Uses = track.TrackButton.MaxUses + (track.TasksDone ? 1 : 0);
+                track.TrackButton.Uses = track.TrackButton.MaxUses;
                 track.OnLobby();
             }
         }
@@ -174,7 +174,7 @@ public static class ButtonUtils
             {
                 ret.TrackerArrows.Values.ToList().DestroyAll();
                 ret.TrackerArrows.Clear();
-                ret.TrackButton.Uses = ret.TrackButton.MaxUses + (ret.TasksDone ? 1 : 0);
+                ret.TrackButton.Uses = ret.TrackButton.MaxUses;
             }
         }
         else if (role is Blackmailer bm)

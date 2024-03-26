@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Data;
 
 public static class LayerInfo
 {
-    public static readonly List<RoleInfo> AllRoles = new()
-    {
+    public static readonly List<RoleInfo> AllRoles =
+    [
         new("Invalid", "Invalid", "Invalid", Alignment.None, Faction.None, "Invalid", CustomColorManager.Role, LayerEnum.NoneRole, "Invalid"),
 
         new("Altruist", "Alt", "The Altruist is capable of reviving dead players. After a set period of time, the player will be revived, if the revival isn't interrupted. Once a player is "
@@ -288,10 +288,10 @@ public static class LayerInfo
             "tasks before the Hunters catch them"),
         new("Runner", "Runner", "The Runner is a role that only spawns in the Task Race game mode. It has no abilities and just ends the game when they are the first to finish.",
             Alignment.GameModeTaskRace, Faction.GameMode, "Gotta go fast", CustomColorManager.Runner, LayerEnum.Runner, "Be the first to finish their tasks")
-    };
+    ];
 
-    public static readonly List<ModifierInfo> AllModifiers = new()
-    {
+    public static readonly List<ModifierInfo> AllModifiers =
+    [
         new("Invalid", "Invalid", "Invalid", "Invalid", CustomColorManager.Modifier, LayerEnum.NoneModifier),
         new("Bait", "Bait", "The Bait's killer will be forced to self-report the Bait's body.", "Everyone except Troll, Vigilate, Altruist, Thief and Shifter", CustomColorManager.Bait,
             LayerEnum.Bait, true),
@@ -312,10 +312,10 @@ public static class LayerInfo
         new("Colorblind", "CB", "A colorblind player cannot tell the difference between players.", "Everyone", CustomColorManager.Colorblind, LayerEnum.Colorblind),
         new("Volatile", "Vol", "A Volatile player will see random things happen to them and cannot distinguish real kill and flashes from the fake ones.", "Everyone",
             CustomColorManager.Volatile, LayerEnum.Volatile)
-    };
+    ];
 
-    public static readonly List<ObjectifierInfo> AllObjectifiers = new()
-    {
+    public static readonly List<ObjectifierInfo> AllObjectifiers =
+    [
         new("Invalid", "Invalid", "Invalid", "Invalid", "Invalid", "φ", CustomColorManager.Objectifier, LayerEnum.NoneObjectifier),
         new("Taskmaster", "TM", "The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate" +
             " and the Crew only sees a flash to indicate the Taskmaster's existence.", "Finish tasks without dying or game ending", "Neutrals", "µ", CustomColorManager.Taskmaster,
@@ -344,10 +344,10 @@ public static class LayerInfo
             "of how they won.", "Help the other link win", "Neutrals", "Ψ", CustomColorManager.Linked, LayerEnum.Linked),
         new("Defector", "Defect", "A Defector switches sides when they happen to be the last player alive in their original faction.", "Kill off anyone who opposes their new faction",
             "Intruders And Syndicate", "ε", CustomColorManager.Defector, LayerEnum.Defector)
-    };
+    ];
 
-    public static readonly List<AbilityInfo> AllAbilities = new()
-    {
+    public static readonly List<AbilityInfo> AllAbilities =
+    [
         new("Invalid", "Invalid", "Invalid", "Invalid", CustomColorManager.Ability, LayerEnum.NoneAbility),
         new("Assassin", "Assassin", "The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name " +
             "of the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals and Sniper is for the Syndicate. Assassin adds "
@@ -377,29 +377,29 @@ public static class LayerInfo
             "and Neutral Killers", CustomColorManager.Politician, LayerEnum.Politician),
         new("Swapper", "Swap", "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted towards the second player and "
             + "vice versa.", "Crew", CustomColorManager.Swapper, LayerEnum.Swapper)
-    };
+    ];
 
-    public static readonly List<FactionInfo> AllFactions = new()
-    {
+    public static readonly List<FactionInfo> AllFactions =
+    [
         new(Faction.None),
         new(Faction.Crew, true),
         new(Faction.Intruder),
         new(Faction.Neutral),
         new(Faction.Syndicate),
         new(Faction.GameMode)
-    };
+    ];
 
-    public static readonly List<SubFactionInfo> AllSubFactions = new()
-    {
+    public static readonly List<SubFactionInfo> AllSubFactions =
+    [
         new(SubFaction.None),
         new(SubFaction.Sect, true),
         new(SubFaction.Cabal),
         new(SubFaction.Undead),
         new(SubFaction.Reanimated)
-    };
+    ];
 
-    public static readonly List<AlignmentInfo> AllAlignments = new()
-    {
+    public static readonly List<AlignmentInfo> AllAlignments =
+    [
         new(Alignment.None),
         new(Alignment.CrewSupport, true),
         new(Alignment.CrewInvest),
@@ -457,10 +457,10 @@ public static class LayerInfo
         new(Alignment.SyndicateHead),
         new(Alignment.GameModeHideAndSeek),
         new(Alignment.GameModeTaskRace)
-    };
+    ];
 
-    public static readonly List<GameModeInfo> AllModes = new()
-    {
+    public static readonly List<GameModeInfo> AllModes =
+    [
         new(GameMode.None),
         new(GameMode.Classic, true),
         new(GameMode.Vanilla),
@@ -470,10 +470,10 @@ public static class LayerInfo
         new(GameMode.RoleList),
         new(GameMode.HideAndSeek),
         new(GameMode.Custom)
-    };
+    ];
 
-    public static readonly List<Lore> AllLore = new()
-    {
+    public static readonly List<Lore> AllLore =
+    [
         /*new("All", "The story takes place several hundred years in the future with is a gigantic leap in scientific advancement. As a result, space travel is a common thing and" +
             " is commonly used for mining resources from nearby celestial bodies. A multi-billion dollar government space exploration corporation called \"Mira\" just recently " +
             "discovered a new habitable planet several light years away. They named it \"Polus\". Soon enough, they build a ship that can carry over 200 passengers with plenty of " +
@@ -580,10 +580,10 @@ public static class LayerInfo
             "unable to form words due to the horror of what happened, couldn’t defend himself. Just as the Godfather was getting thrown into the airlock, he locked eyes with the " +
             "Crewmate. The Crewmate, with a smirk, gave the Godfather a V from his fingers and only then did the Godfather realise who the Transporter was.", "Trans",
             CustomColorManager.Transporter)
-    };
+    ];
 
-    public static readonly List<OtherInfo> AllOthers = new()
-    {
+    public static readonly List<OtherInfo> AllOthers =
+    [
         new("Invalid", "Invalid", "Invalid", UColor.red, "Invalid"),
         new("Chaos Drive", "CD", "The Chaos Drive is an ability boosting device that the Syndicate receives after a certain number of meetings. When the Chaos Drive is discovered, it "
             + "is handed to members of the Syndicate in a particular order. The holder of the Chaos Drive gains the ability to kill (if they didn't already) and have stronger variations/" +
@@ -601,10 +601,10 @@ public static class LayerInfo
             + ". Neutral (Killing) roles are generally solo, but can be toggled to side with each other.", CustomColorManager.Faction),
         new("Alignment", "Alignment", "Alignments are a general umbrella where certain roles from other factions fall under. Alignments are generally only used for classification purposes " +
             "and a role cannot change alignments at any point in the game.", CustomColorManager.Alignment)
-    };
+    ];
 
-    public static readonly List<SymbolInfo> AllSymbols = new()
-    {
+    public static readonly List<SymbolInfo> AllSymbols =
+    [
         new("Invalid", "Invalid", "Invalid", UColor.red),
         new("Null", "φ", "This symbol is a placeholder for when one doesn't have an objectifier or a subfaction that they are a part of.", CustomColorManager.SubFaction),
         new("Shield", "✚", "Players who have shield deployed on them through a Medic or a Retributionist-Medic.", CustomColorManager.Medic, true),
@@ -656,5 +656,5 @@ public static class LayerInfo
         new("Rivals", "α", "Use to denote those who have the Rivals objectifier.", CustomColorManager.Rivals),
         new("Taskmaster", "µ", "Use to denote those who have the Taskmaster objectifier.", CustomColorManager.Taskmaster),
         new("Traitor", "♣", "Use to denote those who have the Traitor objectifier. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Traitor)
-    };
+    ];
 }

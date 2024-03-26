@@ -2,10 +2,10 @@ namespace TownOfUsReworked.Patches;
 
 public static class SetPostmortals
 {
-    public static readonly List<byte> AssassinatedPlayers = new();
-    public static readonly List<byte> EscapedPlayers = new();
-    public static readonly List<byte> MarkedPlayers = new();
-    public static readonly List<byte> MisfiredPlayers = new();
+    public static readonly List<byte> AssassinatedPlayers = [];
+    public static readonly List<byte> EscapedPlayers = [];
+    public static readonly List<byte> MarkedPlayers = [];
+    public static readonly List<byte> MisfiredPlayers = [];
 
     [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
     public static class AirshipExile
@@ -24,8 +24,8 @@ public static class SetPostmortals
         if (CustomPlayer.LocalCustom.Disconnected)
             return;
 
-        if (CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
-            CustomPlayer.Local.GetModifier<Astral>().SetPosition();
+        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast) && !CustomPlayer.LocalCustom.Dead)
+            ast.SetPosition();
 
         foreach (var id in AssassinatedPlayers)
         {
@@ -70,7 +70,7 @@ public static class SetPostmortals
 
         foreach (var dict in PlayerLayer.GetLayers<Dictator>())
         {
-            if (dict.Revealed && dict.ToBeEjected.Count > 0 && !dict.ToBeEjected.Any(x => x == 255))
+            if (dict.Revealed && dict.ToBeEjected.Any() && !dict.ToBeEjected.Any(x => x == 255))
             {
                 foreach (var exiled1 in dict.ToBeEjected)
                 {
@@ -99,7 +99,7 @@ public static class SetPostmortals
 
         foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
         {
-            if (bh.TargetKilled && !bh.IsDead)
+            if (bh.TargetKilled && !bh.Dead)
             {
                 bh.Player.Exiled();
                 bh.DeathReason = DeathReasonEnum.Escaped;
@@ -109,7 +109,7 @@ public static class SetPostmortals
 
         foreach (var exe in PlayerLayer.GetLayers<Executioner>())
         {
-            if (exe.TargetVotedOut && !exe.IsDead)
+            if (exe.TargetVotedOut && !exe.Dead)
             {
                 exe.Player.Exiled();
                 exe.DeathReason = DeathReasonEnum.Escaped;
@@ -119,7 +119,7 @@ public static class SetPostmortals
 
         foreach (var guess in PlayerLayer.GetLayers<Guesser>())
         {
-            if (guess.TargetGuessed && !guess.IsDead)
+            if (guess.TargetGuessed && !guess.Dead)
             {
                 guess.Player.Exiled();
                 guess.DeathReason = DeathReasonEnum.Escaped;
@@ -129,7 +129,7 @@ public static class SetPostmortals
 
         foreach (var cann in PlayerLayer.GetLayers<Cannibal>())
         {
-            if (cann.Eaten && !cann.IsDead)
+            if (cann.Eaten && !cann.Dead)
             {
                 cann.Player.Exiled();
                 cann.DeathReason = DeathReasonEnum.Escaped;
@@ -176,7 +176,7 @@ public static class SetPostmortals
     {
         foreach (var exe in PlayerLayer.GetLayers<Executioner>())
         {
-            if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.IsDead))
+            if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.Dead))
                 continue;
 
             if (player == exe.TargetPlayer)
@@ -189,7 +189,7 @@ public static class SetPostmortals
 
     private static void SetStartingVent(PlayerControl player)
     {
-        if (!player.Data.IsDead || !player.IsPostmortal() || (player.IsPostmortal() && player.Caught()))
+        if (!player.Data.IsDead || !player.IsPostmortal() || player.Caught())
             return;
 
         var vents = AllMapVents;
@@ -211,7 +211,7 @@ public static class SetPostmortals
         player.MyPhysics.RpcEnterVent(startingVent.Id);
     }
 
-    public static readonly List<byte> WillBeRevealers = new();
+    public static readonly List<byte> WillBeRevealers = [];
     public static bool RevealerOn;
 
     private static void SetRevealers(PlayerControl dead, bool ejection)
@@ -244,7 +244,7 @@ public static class SetPostmortals
             }
 
             rev.gameObject.GetComponent<PassiveButton>().OnClick = new();
-            rev.gameObject.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => rev.OnClick()));
+            rev.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(rev.OnClick));
             rev.gameObject.GetComponent<BoxCollider2D>().enabled = true;
 
             if (rev == CustomPlayer.Local)
@@ -268,7 +268,7 @@ public static class SetPostmortals
             WillBeRevealers.Add(dead.PlayerId);
     }
 
-    public static readonly List<byte> WillBePhantoms = new();
+    public static readonly List<byte> WillBePhantoms = [];
     public static bool PhantomOn;
 
     private static void SetPhantoms(PlayerControl dead, bool ejection)
@@ -301,7 +301,7 @@ public static class SetPostmortals
             }
 
             phan.gameObject.GetComponent<PassiveButton>().OnClick = new();
-            phan.gameObject.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => phan.OnClick()));
+            phan.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(phan.OnClick));
             phan.gameObject.GetComponent<BoxCollider2D>().enabled = true;
 
             if (phan == CustomPlayer.Local)
@@ -325,7 +325,7 @@ public static class SetPostmortals
             WillBePhantoms.Add(dead.PlayerId);
     }
 
-    public static readonly List<byte> WillBeBanshees = new();
+    public static readonly List<byte> WillBeBanshees = [];
     public static bool BansheeOn;
 
     private static void SetBanshees(PlayerControl dead, bool ejection)
@@ -357,7 +357,7 @@ public static class SetPostmortals
             }
 
             ban.gameObject.GetComponent<PassiveButton>().OnClick = new();
-            ban.gameObject.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => ban.OnClick()));
+            ban.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(ban.OnClick));
             ban.gameObject.GetComponent<BoxCollider2D>().enabled = true;
 
             if (ban == CustomPlayer.Local)
@@ -381,7 +381,7 @@ public static class SetPostmortals
             WillBeBanshees.Add(dead.PlayerId);
     }
 
-    public static readonly List<byte> WillBeGhouls = new();
+    public static readonly List<byte> WillBeGhouls = [];
     public static bool GhoulOn;
 
     private static void SetGhouls(PlayerControl dead, bool ejection)
@@ -413,7 +413,7 @@ public static class SetPostmortals
             }
 
             ghoul.gameObject.GetComponent<PassiveButton>().OnClick = new();
-            ghoul.gameObject.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => ghoul.OnClick()));
+            ghoul.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(ghoul.OnClick));
             ghoul.gameObject.GetComponent<BoxCollider2D>().enabled = true;
 
             if (ghoul == CustomPlayer.Local)

@@ -1,10 +1,8 @@
 namespace TownOfUsReworked.Options;
 
-public class CustomButtonOption : CustomOption
+public class CustomButtonOption(MultiMenu menu, string name, Action toDo = null) : CustomOption(menu, name, CustomOptionType.Button, null)
 {
-    public Action Do { get; set; }
-
-    public CustomButtonOption(MultiMenu menu, string name, Action toDo = null) : base(menu, name, CustomOptionType.Button, null) => Do = toDo ?? BlankVoid;
+    public Action Do { get; set; } = toDo ?? BlankVoid;
 
     public override void OptionCreated()
     {
