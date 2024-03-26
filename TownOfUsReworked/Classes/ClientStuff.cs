@@ -39,7 +39,6 @@ public static class ClientStuff
             }
         }
 
-
         yield break;
     }
 

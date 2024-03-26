@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Modules;
 
+// Taken from Submerged going open source recently
 public struct KillAnimFrame
 {
     public int Animation;

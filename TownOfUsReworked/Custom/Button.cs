@@ -431,7 +431,7 @@ public class CustomButton
         if (!Base || !Owner || !Owner.Player)
             return;
 
-        if ((!Local || IsLobby || (HasUses && Uses <= 0) || Meeting || NoPlayers || !Usable() || !IsRoaming || Owner.Dead != PostDeath.Value) && !Disabled)
+        if ((!Local || IsLobby || (HasUses && Uses <= 0) || Meeting || NoPlayers || !Usable() || !IsRoaming || Owner.Dead != PostDeath.Value) && !Disabled && !EffectActive && !DelayActive)
             Disable();
         else if (Disabled && Usable())
             Enable();
@@ -515,13 +515,14 @@ public class CustomButton
         if (!Base)
             return;
 
-        Base?.SetCoolDown(0, 0);
-        Base?.SetDisabled();
-        Block?.SetActive(false);
-        Block?.Destroy();
-        Base?.gameObject?.SetActive(false);
-        Base?.gameObject?.Destroy();
-        Base?.Destroy();
+        Base.SetCoolDown(0, 0);
+        Base.SetDisabled();
+        Block.SetActive(false);
+        Block.Destroy();
+        Base.enabled = false;
+        Base.gameObject?.SetActive(false);
+        Base.gameObject?.Destroy();
+        Base.Destroy();
         Base = null;
     }
 

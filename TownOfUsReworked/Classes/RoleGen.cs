@@ -2411,9 +2411,9 @@ public static class RoleGen
             LogMessage("Abilities in the game: " + ids);
         }
 
-        while (canHaveSnitch.Any() || (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveTunnelerAbility.Any()) || canHaveIntruderAbility.Any() ||
-            canHaveNeutralAbility.Any() || canHaveCrewAbility.Any() || canHaveSyndicateAbility.Any() || canHaveAbility.Any() || canHaveEvilAbility.Any() ||
-            canHaveTaskedAbility.Any() || canHaveTorch.Any() || canHaveKillingAbility.Any())
+        while (canHaveSnitch.Any() || (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveTunnelerAbility.Any()) || canHaveIntruderAbility.Any() || canHaveTorch.Any() ||
+            canHaveNeutralAbility.Any() || canHaveCrewAbility.Any() || canHaveSyndicateAbility.Any() || canHaveAbility.Any() || canHaveEvilAbility.Any() || canHaveKillingAbility.Any() ||
+            canHaveTaskedAbility.Any())
         {
             if (AllAbilities.Count == 0)
                 break;
@@ -2972,8 +2972,7 @@ public static class RoleGen
         canHaveDiseased.RemoveAll(x => x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll));
         canHaveDiseased.Shuffle();
 
-        canHaveProfessional.RemoveAll(x => !(x.Is(LayerEnum.CrewAssassin) || x.Is(LayerEnum.NeutralAssassin) || x.Is(LayerEnum.IntruderAssassin) ||
-            x.Is(LayerEnum.SyndicateAssassin)));
+        canHaveProfessional.RemoveAll(x => !(x.Is(LayerEnum.CrewAssassin) || x.Is(LayerEnum.NeutralAssassin) || x.Is(LayerEnum.IntruderAssassin) || x.Is(LayerEnum.SyndicateAssassin)));
         canHaveProfessional.Shuffle();
 
         canHaveShy.RemoveAll(x => (x.Is(LayerEnum.Mayor) && !CustomGameOptions.MayorButton) || (x.Is(LayerEnum.Jester) && !CustomGameOptions.JesterButton) || (x.Is(LayerEnum.Swapper) &&
@@ -3321,8 +3320,8 @@ public static class RoleGen
 
                 ratelimit = 0;
 
-                while ((evilRecruit == null || evilRecruit == jackal.Player || evilRecruit.Is(Faction.Crew) || evilRecruit.Is(Alignment.NeutralBen) ||
-                    evilRecruit.Is(Alignment.NeutralNeo) || evilRecruit.Is(SubFaction.Cabal)) && ratelimit < 10000)
+                while ((evilRecruit == null || evilRecruit == jackal.Player || evilRecruit.Is(Faction.Crew) || evilRecruit.Is(Alignment.NeutralBen) || evilRecruit.Is(Alignment.NeutralNeo)
+                    || evilRecruit.Is(SubFaction.Cabal)) && ratelimit < 10000)
                 {
                     evilRecruit = CustomPlayer.AllPlayers.Random();
                     ratelimit++;
