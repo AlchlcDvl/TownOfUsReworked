@@ -31,11 +31,11 @@ public static class NameplatesTabOnEnablePatch
         var isDefaultPackage = "Innersloth" == packageName;
 
         if (!isDefaultPackage)
-            nameplates = nameplates.OrderBy(x => x.name).ToList();
+            nameplates = [ .. nameplates.OrderBy(x => x.name) ];
 
         var offset = YStart;
 
-        if (Template != null)
+        if (Template)
         {
             var title = UObject.Instantiate(Template, __instance.scroller.Inner);
             var material = title.GetComponent<MeshRenderer>().material;
@@ -58,12 +58,12 @@ public static class NameplatesTabOnEnablePatch
 
             if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
             {
-                colorChip.Button.OnMouseOver.AddListener((Action)(() => __instance.SelectNameplate(nameplate)));
-                colorChip.Button.OnMouseOut.AddListener((Action)(() => __instance.SelectNameplate(HatManager.Instance.GetNamePlateById(DataManager.Player.Customization.NamePlate))));
-                colorChip.Button.OnClick.AddListener((Action)(() => __instance.ClickEquip()));
+                colorChip.Button.OverrideOnMouseOverListeners(() => __instance.SelectNameplate(nameplate));
+                colorChip.Button.OverrideOnMouseOutListeners(() => __instance.SelectNameplate(HatManager.Instance.GetNamePlateById(DataManager.Player.Customization.NamePlate)));
+                colorChip.Button.OverrideOnClickListeners(__instance.ClickEquip);
             }
             else
-                colorChip.Button.OnClick.AddListener((Action)(() => __instance.SelectNameplate(nameplate)));
+                colorChip.Button.OverrideOnClickListeners(() => __instance.SelectNameplate(nameplate));
 
             colorChip.Button.ClickMask = __instance.scroller.Hitbox;
             colorChip.transform.localPosition = new(xpos, ypos, -1f);
@@ -141,17 +141,10 @@ public static class CosmeticsCacheGetNameplatePatch
 {
     public static bool Prefix(CosmeticsCache __instance, ref string id, ref NamePlateViewData __result)
     {
-        var cache = __result;
-
         if (!CustomNameplateViewDatas.TryGetValue(id, out __result))
-        {
-            __result = cache;
             return true;
-        }
 
-        if (__result == null)
-            __result = __instance.nameplates["nameplate_NoPlate"].GetAsset();
-
+        __result ??= __instance.nameplates["nameplate_NoPlate"].GetAsset();
         return false;
     }
 }

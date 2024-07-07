@@ -22,7 +22,9 @@ public class HudHandler : MonoBehaviour
 
         CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ForEach(x => x.Update());
         PlayerLayer.LocalLayers.ForEach(x => x.UpdateHud(HUD));
+        CustomPlayer.Local.GetButtons().ForEach(x => x.SetActive());
         AllButtons.ForEach(x => x.Timers());
+        HUD?.ReportButton?.gameObject?.SetActive(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is(LayerEnum.Coward) && !CustomPlayer.Local.Is(Faction.GameMode));
 
         foreach (var phantom in PlayerLayer.GetLayers<Phantom>())
         {

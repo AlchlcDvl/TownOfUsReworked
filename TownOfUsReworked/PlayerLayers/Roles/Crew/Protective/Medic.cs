@@ -45,7 +45,7 @@ public class Medic : Crew
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
         else
-            return (player.Is(LayerEnum.Mayor) && player.GetRole<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetRole<Dictator>().Revealed);
+            return (player.Is(LayerEnum.Mayor) && player.GetLayer<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetLayer<Dictator>().Revealed);
     }
 
     public bool Usable() => !ShieldBroken;

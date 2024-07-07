@@ -70,7 +70,7 @@ public class Glitch : Neutral
 
     public void HitMimic()
     {
-        if (MimicTarget == null)
+        if (!MimicTarget)
             MimicMenu.Open();
         else
         {

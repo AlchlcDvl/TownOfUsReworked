@@ -24,3 +24,14 @@ public static class MushroomFungle
         return false;
     }
 }
+
+[HarmonyPatch(typeof(MushroomMixupSabotageSystem), nameof(MushroomMixupSabotageSystem.GenerateRandomOutfit))]
+public static class MushroomMixupSabFix
+{
+    public static void Postfix(MushroomMixupSabotageSystem __instance, ref MushroomMixupSabotageSystem.CondensedOutfit __result)
+    {
+        List<byte> list = [ .. __instance.cachedOutfitsByPlayerId.keys ];
+        list.RemoveAll(x => __instance.cachedOutfitsByPlayerId[x].ColorId.IsChanging());
+        __result.ColorPlayerId = list.Random();
+    }
+}

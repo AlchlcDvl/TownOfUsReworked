@@ -8,5 +8,9 @@ public class Mafia : Objectifier
     public override LayerEnum Type => LayerEnum.Mafia;
     public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";
 
-    public override void Init() => Player.GetRole().Alignment = Player.GetRole().Alignment.GetNewAlignment(Faction.Neutral);
+    public override void Init()
+    {
+        base.Init();
+        Player.GetRole().Alignment = Player.GetRole().Alignment.GetNewAlignment(Faction.Neutral);
+    }
 }

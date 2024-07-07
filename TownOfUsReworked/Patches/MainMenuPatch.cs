@@ -32,7 +32,11 @@ public static class MainMenuStartPatch
         {
             Logo = new GameObject("ReworkedLogo");
             Logo.transform.position = new(2f, 0f, 100f);
-            Logo.AddComponent<SpriteRenderer>().sprite = GetSprite("Banner");
+            var rend = Logo.AddComponent<SpriteRenderer>();
+            rend.sprite = GetSprite("Banner");
+            var former = rend.materials.ToArray().ToList();
+            former.Add(Get<Material>("GlitchedPlayer"));
+            rend.SetMaterialArray(former.ToArray());
             Logo.transform.SetParent(rightPanel.transform);
         }
 
@@ -61,6 +65,14 @@ public static class MainMenuStartPatch
             LogInfo("LevelImpostor can be downloaded");
             CreatDownloadButton(__instance, "LevelImpostor", y, pos, "DownloadLevelImpostor");
         }
+
+        if (ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate)
+        {
+            var popup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
+            popup.TextAreaTMP.fontSize *= 0.7f;
+            popup.TextAreaTMP.enableAutoSizing = false;
+            popup.Show("A mod update is available!");
+        }
     }
 
     private static void CreatDownloadButton(MainMenuManager __instance, string downloadType, float yValue1, float yValue2, string spriteName)
@@ -81,13 +93,11 @@ public static class MainMenuStartPatch
         pos.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
         pos.DistanceFromEdge = new(1.5f, yValue2, 0f);
 
-        var passiveButton = button.GetComponent<PassiveButton>();
-        passiveButton.OnClick = new();
-        passiveButton.OnClick.AddListener((Action)(() =>
+        button.GetComponent<PassiveButton>().OverrideOnClickListeners(() =>
         {
             __instance.StartCoroutine(ModUpdater.DownloadUpdate(downloadType));
             button.SetActive(false);
-        }));
+        });
 
         __instance.StartCoroutine(PerformTimedAction(0.1f, _ =>
         {
@@ -126,27 +136,24 @@ public static class MainMenuStartPatch
 
         var ghObj = UObject.Instantiate(__instance.newsButton, __instance.newsButton.transform.parent);
         ghObj.gameObject.name = "ReworkedGitHub";
-        ghObj.OnClick = new();
-        ghObj.OnClick.AddListener((Action)(() => Application.OpenURL(TownOfUsReworked.GitHubLink)));
+        ghObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.GitHubLink));
         ghObj.transform.localPosition = pos;
         pos.y = __instance.settingsButton.transform.localPosition.y;
 
         var discObj = UObject.Instantiate(__instance.settingsButton, __instance.settingsButton.transform.parent);
         discObj.gameObject.name = "ReworkedDiscord";
-        discObj.OnClick = new();
-        discObj.OnClick.AddListener((Action)(() => Application.OpenURL(TownOfUsReworked.DiscordInvite)));
+        discObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.DiscordInvite));
         discObj.transform.localPosition = pos;
         pos.y = __instance.myAccountButton.transform.localPosition.y;
 
         var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
         credObj.gameObject.name = "ReworkedModInfo";
-        credObj.OnClick = new();
-        credObj.OnClick.AddListener((Action)(() =>
+        credObj.OverrideOnClickListeners(() =>
         {
             PopUp?.Destroy();
             var template = UObject.FindObjectOfType<AnnouncementPopUp>(true);
 
-            if (template == null)
+            if (!template)
             {
                 LogError("Pop up was null");
                 return;
@@ -170,7 +177,7 @@ public static class MainMenuStartPatch
                     DataManager.Player.Announcements.allAnnouncements = backup;
                 }
             }));
-        }));
+        });
         credObj.transform.localPosition = pos;
 
         __instance.StartCoroutine(PerformTimedAction(0.01f, _ =>

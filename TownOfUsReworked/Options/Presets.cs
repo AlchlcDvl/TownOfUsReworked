@@ -18,11 +18,11 @@ public class Preset : CustomButtonOption
                 button.Setting.gameObject.SetActive(true);
             else
             {
-                button.Setting = CreateButton();
+                button.Setting = UObject.Instantiate(SettingsPatches.ButtonPrefab, GameObject.Find($"Main Camera/PlayerOptionsMenu(Clone)/MainArea/GAME SETTINGS TAB/Scroller/SliderInner").transform);
                 button.OptionCreated();
             }
 
-            options.Add(button.Setting);
+            options.Add(button.Setting as OptionBehaviour);
         }
 
         return options;
@@ -40,11 +40,11 @@ public class Preset : CustomButtonOption
         Loading = SlotButtons[0];
         Loading.Do = BlankVoid;
         Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
-        __instance.Children = new[] { Loading.Setting };
+        __instance.Children = new List<OptionBehaviour>() { Loading.Setting as OptionBehaviour }.ToIl2Cpp();
         yield return IsNullEmptyOrWhiteSpace(settingsData) ? Wait(0.5f) : CoLoadSettings(settingsData);
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
-        __instance.Children = OldButtons.ToArray();
+        __instance.Children = OldButtons.ToIl2Cpp();
         SettingsPatches.SettingsPage = 0;
         yield return EndFrame();
         yield return flashCoro();
@@ -55,21 +55,21 @@ public class Preset : CustomButtonOption
     {
         SlotButtons.Clear();
         Directory.EnumerateFiles(TownOfUsReworked.Options).OrderBy(x => x).Select(x => x.SanitisePath()).Where(x => !x.EndsWith(".json")).ForEach(x =>
-            SlotButtons.Add(new(MultiMenu.External, x, () => LoadPreset(x))));
-        SlotButtons.Add(new(MultiMenu.External, "Cancel", () => Cancel(FlashWhite, "")));
+            SlotButtons.Add(new(MultiMenu.Presets, x, () => LoadPreset(x))));
+        SlotButtons.Add(new(MultiMenu.Presets, "Cancel", () => Cancel(FlashWhite, "")));
         var options = CreateOptions();
         var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
         var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
         var x = __instance.Children[1].transform.localPosition.x;
         var z = __instance.Children[1].transform.localPosition.z;
-        OldButtons = __instance.Children.ToList();
+        OldButtons = __instance.Children.ToSystem();
         OldButtons.ForEach(x => x.gameObject.SetActive(false));
         SettingsPatches.SettingsPage = 10;
 
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
-        __instance.Children = options.ToArray();
+        __instance.Children = options.ToIl2Cpp();
     }
 
     public void LoadPreset(string presetName)

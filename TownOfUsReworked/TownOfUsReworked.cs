@@ -8,16 +8,16 @@ namespace TownOfUsReworked;
 public partial class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
-    public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.6.6.0";
+    public const string Name = "Reworked";
+    public const string VersionString = "0.6.7.0";
     public static readonly Version Version = new(VersionString);
 
-    public const bool IsDev = false;
-    public const bool IsStream = false;
-    public const int DevBuild = 0;
+    public const bool IsDev = true;
+    public const bool IsStream = true;
+    public const int DevBuild = 5;
 
     public static bool IsTest { get; set; }
-    private static string VersionS => VersionString.Remove(VersionString.Length - 2);
+    private readonly static string VersionS = VersionString.Remove(VersionString.Length - 2);
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
     private static string TestString => IsTest ? "_test" : "";
     private static string StreamString => IsStream ? "s" : "";
@@ -25,28 +25,29 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
-    public static string DataPath => Path.GetDirectoryName(Application.dataPath);
-    public static string Assets => Path.Combine(DataPath, "ReworkedAssets");
-    public static string Hats => Path.Combine(Assets, "CustomHats");
-    public static string Visors => Path.Combine(Assets, "CustomVisors");
-    public static string Nameplates => Path.Combine(Assets, "CustomNameplates");
-    public static string Colors => Path.Combine(Assets, "CustomColors");
-    public static string Options => Path.Combine(Assets, "CustomOptions");
-    public static string Images => Path.Combine(Assets, "CustomImages");
-    public static string Sounds => Path.Combine(Assets, "CustomSounds");
-    public static string Portal => Path.Combine(Assets, "PortalAnim");
-    public static string Logs => Path.Combine(Assets, "ModLogs");
-    public static string Other => Path.Combine(Assets, "Other");
-    public static string ModsFolder => Path.Combine(DataPath, "BepInEx", "plugins");
+    public readonly static string DataPath = Path.GetDirectoryName(Application.dataPath);
+    public readonly static string Assets = Path.Combine(DataPath, "ReworkedAssets");
+    public readonly static string Hats = Path.Combine(Assets, "CustomHats");
+    public readonly static string Visors = Path.Combine(Assets, "CustomVisors");
+    public readonly static string Nameplates = Path.Combine(Assets, "CustomNameplates");
+    public readonly static string Colors = Path.Combine(Assets, "CustomColors");
+    public readonly static string Options = Path.Combine(Assets, "CustomOptions");
+    public readonly static string Images = Path.Combine(Assets, "CustomImages");
+    public readonly static string Sounds = Path.Combine(Assets, "CustomSounds");
+    public readonly static string Misc = Path.Combine(Assets, "MiscAssets");
+    public readonly static string Portal = Path.Combine(Assets, "PortalAnim");
+    public readonly static string Logs = Path.Combine(Assets, "ModLogs");
+    public readonly static string Other = Path.Combine(Assets, "Other");
+    public readonly static string ModsFolder = Path.Combine(DataPath, "BepInEx", "plugins");
 
     public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
     public const string GitHubLink = "https://github.com/AlchlcDvl/TownOfUsReworked";
     public const string AssetsLink = "https://github.com/AlchlcDvl/ReworkedAssets";
 
-    public static Assembly Core => typeof(TownOfUsReworked).Assembly;
+    public readonly static Assembly Core = typeof(TownOfUsReworked).Assembly;
 
-    public static NormalGameOptionsV07 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
-    public static HideNSeekGameOptionsV07 HNSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
+    public static NormalGameOptionsV08 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
+    public static HideNSeekGameOptionsV08 HNSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
 
     public static bool LobbyCapped { get; set; } = true;
     public static bool Persistence { get; set; } = true;
@@ -75,7 +76,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static TownOfUsReworked ModInstance { get; private set; }
 
-    public TownOfUsReworked() : base() => Logging.Init();
+    public TownOfUsReworked() : base() => Logging.Log = Log;
 
     public override void Load()
     {

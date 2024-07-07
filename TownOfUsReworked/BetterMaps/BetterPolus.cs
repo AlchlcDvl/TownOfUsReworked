@@ -66,7 +66,7 @@ public static class PolusShipStatusPatch
             if (!CustomGameOptions.EnableBetterPolus)
                 return;
 
-            if (!IsVentModified && __instance.Type == ShipStatus.MapType.Pb)
+            if (!IsVentModified && __instance.Type == ShipStatus.MapType.Pb && SpeciVent)
             {
                 SpeciVent.Id = GetAvailableId();
                 IsVentModified = true;
@@ -121,28 +121,28 @@ public static class PolusShipStatusPatch
 
     private static void FindVents()
     {
-        if (ElectricBuildingVent == null)
+        if (ElectricBuildingVent)
             ElectricBuildingVent = AllVents.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
 
-        if (ElectricalVent == null)
+        if (ElectricalVent)
             ElectricalVent = AllVents.Find(vent => vent.gameObject.name == "ElectricalVent");
 
-        if (ScienceBuildingVent == null)
+        if (ScienceBuildingVent)
             ScienceBuildingVent = AllVents.Find(vent => vent.gameObject.name == "ScienceBuildingVent");
 
-        if (StorageVent == null)
+        if (StorageVent)
             StorageVent = AllVents.Find(vent => vent.gameObject.name == "StorageVent");
 
-        if (LightCageVent == null)
+        if (LightCageVent)
             LightCageVent = AllVents.Find(vent => vent.gameObject.name == "ElecFenceVent");
 
-        if (AdminVent == null)
+        if (AdminVent)
             AdminVent = AllVents.Find(vent => vent.gameObject.name == "AdminVent");
 
-        if (BathroomVent == null)
+        if (BathroomVent)
             BathroomVent = AllVents.Find(vent => vent.gameObject.name == "BathroomVent");
 
-        if (SpeciVent == null)
+        if (SpeciVent)
         {
             SpeciVent = UObject.Instantiate(AdminVent, Specimen.transform);
             SpeciVent.Right = null;
@@ -156,22 +156,22 @@ public static class PolusShipStatusPatch
 
     private static void FindRooms()
     {
-        if (Comms == null)
+        if (!Comms)
             Comms = AllGameObjects.Find(o => o.name == "Comms");
 
-        if (DropShip == null)
+        if (!DropShip)
             DropShip = AllGameObjects.Find(o => o.name == "Dropship");
 
-        if (Outside == null)
+        if (!Outside)
             Outside = AllGameObjects.Find(o => o.name == "Outside");
 
-        if (Science == null)
+        if (!Science)
             Science = AllGameObjects.Find(o => o.name == "Science");
 
-        if (Specimen == null)
+        if (!Specimen)
             Specimen = AllGameObjects.Find(o => o.name == "RightPod");
 
-        if (Office == null)
+        if (!Office)
             Office = AllGameObjects.Find(o => o.name == "Office");
 
         IsRoomsFetched = Comms && DropShip && Outside && Science && Specimen && Office;
@@ -179,16 +179,16 @@ public static class PolusShipStatusPatch
 
     private static void FindObjects()
     {
-        if (WifiConsole == null)
+        if (!WifiConsole)
             WifiConsole = AllConsoles.Find(console => console.name == "panel_wifi");
 
-        if (NavConsole == null)
+        if (!NavConsole)
             NavConsole = AllConsoles.Find(console => console.name == "panel_nav");
 
-        if (Vitals == null)
+        if (!Vitals)
             Vitals = AllSystemConsoles.Find(console => console.name == "panel_vitals");
 
-        if (DvdScreenOffice == null)
+        if (!DvdScreenOffice)
         {
             var dvdScreenAdmin = AllGameObjects.Find(o => o.name == "dvdscreen");
 
@@ -200,7 +200,7 @@ public static class PolusShipStatusPatch
             }
         }
 
-        if (TempCold == null)
+        if (!TempCold)
             TempCold = AllConsoles.Find(console => console.name == "panel_tempcold");
 
         IsObjectsFetched = WifiConsole && NavConsole && Vitals && DvdScreenOffice && TempCold;

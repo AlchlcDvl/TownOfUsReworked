@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Troll : Neutral
 {
-    public bool Killed { get; set; }
+    public bool Killed => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public CustomButton InteractButton { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Troll : CustomColorManager.Neutral;
@@ -20,6 +20,7 @@ public class Troll : Neutral
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
         InteractButton = CreateButton(this, new SpriteName("Placeholder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Interact, new Cooldown(CustomGameOptions.InteractCd),
             "INTERACT");
+        Data.Role.IntroSound = GetAudio("TrollIntro");
     }
 
     public void Interact() => InteractButton.StartCooldown(Interactions.Interact(Player, InteractButton.TargetPlayer));

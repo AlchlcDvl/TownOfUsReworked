@@ -18,11 +18,13 @@ public static class PlayerControlRevivePatch
         KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x.PlayerId));
         RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x));
         Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x) || !PlayerById(x));
+        BodyLocations.Remove(__instance.PlayerId);
         SetPostmortals.RemoveFromPostmortals(__instance);
         __instance.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
         var body = BodyByPlayer(__instance);
+        __instance.GetLayers().ForEach(x => x.OnRevive());
 
-        if (body != null)
+        if (body)
         {
             __instance.RpcCustomSnapTo(body.TruePosition);
             body.gameObject.Destroy();
@@ -30,9 +32,6 @@ public static class PlayerControlRevivePatch
 
         if (IsSubmerged() && CustomPlayer.Local == __instance)
             ChangeFloor(__instance.transform.position.y > -7);
-
-        if (__instance.TryGetLayer<Troll>(LayerEnum.Troll, out var troll))
-            troll.Killed = false;
 
         if (!__instance.AmOwner)
             return false;

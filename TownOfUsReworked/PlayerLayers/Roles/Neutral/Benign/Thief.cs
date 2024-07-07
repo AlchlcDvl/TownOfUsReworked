@@ -167,7 +167,7 @@ public class Thief : Neutral
 
                 if (SelectedButton != button)
                 {
-                    if (SelectedButton != null)
+                    if (SelectedButton)
                         SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
 
                     SelectedButton = button;
@@ -177,7 +177,7 @@ public class Thief : Neutral
                 {
                     var focusedTarget = PlayerByVoteArea(voteArea);
 
-                    if (__instance.state == MeetingHud.VoteStates.Discussion || focusedTarget == null)
+                    if (__instance.state == MeetingHud.VoteStates.Discussion || !focusedTarget)
                         return;
 
                     var targetId = voteArea.TargetPlayerId;
@@ -235,12 +235,9 @@ public class Thief : Neutral
         label.text = title;
         label.color = color;
         var passive = button.GetComponent<PassiveButton>();
-        passive.OnMouseOver = new();
-        passive.OnMouseOver.AddListener((Action)(() => rend.color = UColor.green));
-        passive.OnMouseOut = new();
-        passive.OnMouseOut.AddListener((Action)(() => rend.color = SelectedButton == button ? UColor.red : UColor.white));
-        passive.OnClick = new();
-        passive.OnClick.AddListener(onClick);
+        passive.OverrideOnMouseOverListeners(() => rend.color = UColor.green);
+        passive.OverrideOnMouseOutListeners(() => rend.color = SelectedButton == button ? UColor.red : UColor.white);
+        passive.OverrideOnClickListeners(onClick);
         passive.ClickSound = SoundEffects["Click"];
         passive.HoverSound = SoundEffects["Hover"];
     }
@@ -271,9 +268,7 @@ public class Thief : Neutral
         exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = voteArea.Buttons.transform.Find("CancelButton").GetComponent<SpriteRenderer>().sprite;
         exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
         exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
-        var button = exitButton.GetComponent<PassiveButton>();
-        button.OnClick = new();
-        button.OnClick.AddListener((Action)(() => Exit(__instance)));
+        exitButton.GetComponent<PassiveButton>().OverrideOnClickListeners(() => Exit(__instance));
         SetButtons(__instance, voteArea);
     }
 
@@ -459,9 +454,9 @@ public class Thief : Neutral
         else if (other.Is(LayerEnum.Jackal))
         {
             ((Jackal)role).Recruited.Clear();
-            ((Jackal)role).EvilRecruit = null;
-            ((Jackal)role).GoodRecruit = null;
-            ((Jackal)role).BackupRecruit = null;
+            ((Jackal)role).Recruit2 = null;
+            ((Jackal)role).Recruit1 = null;
+            ((Jackal)role).Recruit3 = null;
         }
 
         if (CustomGameOptions.ThiefSteals)

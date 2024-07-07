@@ -6,6 +6,9 @@ public static class AssetManager
     public static readonly Dictionary<string, Sprite> Sprites = [];
     public static readonly List<Sprite> PortalAnimation = [];
     public static readonly Dictionary<string, TMP_FontAsset> Fonts = [];
+    public static readonly Dictionary<string, AssetBundle> Bundles = [];
+    public static readonly Dictionary<string, string> ObjectToBundle = [];
+    public static readonly Dictionary<string, List<UObject>> LoadedObjects = [];
 
     public static AudioClip GetAudio(string path)
     {
@@ -50,7 +53,7 @@ public static class AssetManager
         var texture = EmptyTexture();
         ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
         texture.name = path.SanitisePath();
-        return texture.Decompress().DontDestroy();
+        return texture.DontDestroy();
     }
 
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
@@ -65,7 +68,7 @@ public static class AssetManager
         stream.Read(new(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
         ImageConversion.LoadImage(texture, byteTexture, false);
         texture.name = sname;
-        return texture.Decompress().DontDestroy();
+        return texture.DontDestroy();
     }
 
     public static Sprite CreateResourceSprite(string path) => CreateSprite(LoadResourceTexture(path), path.SanitisePath());
@@ -94,6 +97,8 @@ public static class AssetManager
         audioClip.hideFlags |= HideFlags.DontSaveInEditor;
         return audioClip.DontDestroy();
     }
+
+    public static AssetBundle LoadBundle(Stream stream) => AssetBundle.LoadFromMemory(stream.ReadFully());
 
     public static string ReadResourceText(string itemName, string folder = "")
     {
@@ -172,6 +177,9 @@ public static class AssetManager
         SoundEffects.TryAdd("MedicIntro", GetIntroSound(RoleTypes.Scientist));
         SoundEffects.TryAdd("CrewmateIntro", GetIntroSound(RoleTypes.Crewmate));
         SoundEffects.TryAdd("ImpostorIntro", GetIntroSound(RoleTypes.Impostor));
+        SoundEffects.TryAdd("TrollIntro", GetIntroSound(RoleTypes.Noisemaker));
+        SoundEffects.TryAdd("TrackerIntro", GetIntroSound(RoleTypes.Tracker));
+        SoundEffects.TryAdd("WraithIntro", GetIntroSound(RoleTypes.Phantom));
     }
 
     public static float GetSize(string path)
@@ -210,4 +218,25 @@ public static class AssetManager
 
         return sound ?? Fonts["Placeholder"];
     }
+
+    public static T Get<T>(string name) where T : UObject
+    {
+        if (LoadedObjects.TryGetValue(name, out var objList))
+            return (T)objList.Find(x => x.GetType() == typeof(T));
+
+        if (ObjectToBundle.TryGetValue(name.ToLower(), out var bundle))
+            return LoadAsset<T>(Bundles[bundle], name);
+
+        return null;
+    }
+
+    private static T LoadAsset<T>(AssetBundle assetBundle, string name) where T : UObject
+    {
+        var asset = assetBundle.LoadAsset(name, Il2CppType.Of<T>())?.Cast<T>().DontUnload();
+        LoadedObjects.TryAdd(name, []);
+        LoadedObjects[name].Add(asset);
+        return asset;
+    }
+
+    public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.ToList().Find(x => x.Role == roleType).IntroSound;
 }

@@ -168,7 +168,7 @@ public static class FixExtentions
                     if (comms5.IsActive)
                         FixComms();
 
-                    if (CustomPlayer.Local.myTasks.Any(x => x.TaskType == RetrieveOxygenMask))
+                    if (HasTask(RetrieveOxygenMask))
                         FixSubOxygen();
 
                     break;

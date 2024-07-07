@@ -17,42 +17,24 @@ public static class SpawnPatches
 
     private static void DoTheThing(bool intro = false, bool meeting = false)
     {
-        HUD?.GameSettings?.gameObject?.SetActive(false);
+        // HUD?.GameSettings?.gameObject?.SetActive(false);
         HUD?.Chat?.SetVisible(CustomPlayer.Local.CanChat());
-        PlayerLayer.LocalLayers.ForEach(x => x?.OnIntroEnd());
+
+        if (intro)
+            PlayerLayer.LocalLayers.ForEach(x => x?.OnIntroEnd());
+
         CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
-        CustomPlayer.Local.EnableButtons();
         AllBodies.ForEach(x => x?.gameObject?.Destroy());
         ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);
         HUD.FullScreen.enabled = true;
+        Role.LocalRole.UpdateButtons();
 
         if (MapPatches.CurrentMap is not (4 or 6))
             HUD.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
 
         Sprites.TryAdd("DefaultVent", HUD.ImpostorVentButton.graphic.sprite);
         Sprites.TryAdd("DefaultSabotage", HUD.SabotageButton.graphic.sprite);
-        var sab = GetSprite("DefaultSabotage");
-        var vent = GetSprite("DefaultVent");
-
-        if (CustomPlayer.Local.Is(Faction.Syndicate))
-            sab = GetSprite("SyndicateSabotage");
-        else if (CustomPlayer.Local.Is(Faction.Intruder))
-            sab = GetSprite("IntruderSabotage");
-
-        if (CustomPlayer.Local.Is(Faction.Intruder))
-            vent = GetSprite("IntruderVent");
-        else if (CustomPlayer.Local.Is(Faction.Syndicate))
-            vent = GetSprite("SyndicateVent");
-        else if (CustomPlayer.Local.Is(Faction.Crew))
-            vent = GetSprite("CrewVent");
-        else if (CustomPlayer.Local.Is(Faction.Neutral))
-            vent = GetSprite("NeutralVent");
-
-        HUD.SabotageButton.graphic.sprite = sab;
-        HUD.SabotageButton.graphic.SetCooldownNormalizedUvs();
-        HUD.ImpostorVentButton.graphic.sprite = vent;
-        HUD.ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
         HUD.ImpostorVentButton.buttonLabelText.fontSharedMaterial = HUD.ReportButton.buttonLabelText.fontSharedMaterial = HUD.UseButton.buttonLabelText.fontSharedMaterial =
             HUD.PetButton.buttonLabelText.fontSharedMaterial = HUD.SabotageButton.buttonLabelText.fontSharedMaterial;
     }

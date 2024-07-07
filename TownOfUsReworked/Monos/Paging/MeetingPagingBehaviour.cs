@@ -24,7 +24,7 @@ public class MeetingPagingBehaviour : BasePagingBehaviour
 
         foreach (var button in Targets)
         {
-            if (i >= PageIndex * 15 && i < (PageIndex + 1) * 15 && !Ability.GetAssassins().Any(x => x.Phone) && !PlayerLayer.GetLayers<Guesser>().Any(x => x.Phone) &&
+            if (i >= (PageIndex * 15) && i < ((PageIndex + 1) * 15) && !Ability.GetAssassins().Any(x => x.Phone) && !PlayerLayer.GetLayers<Guesser>().Any(x => x.Phone) &&
                 !PlayerLayer.GetLayers<Thief>().Any(x => x.Phone))
             {
                 button.gameObject.SetActive(true);

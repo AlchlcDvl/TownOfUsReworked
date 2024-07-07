@@ -183,7 +183,7 @@ public struct HSBColor
         the alpha is optional, not including it will just set it to 1
         i'm quite proud of myself here
     */
-    public static HSBColor Parse(string input)
+    /*public static HSBColor Parse(string input)
     {
         input = input.Replace(" ", "");
         var parts = input.Split(';');
@@ -228,19 +228,11 @@ public struct HSBColor
             color = default;
             return false;
         }
-    }
+    }*/
 
     public static float PingPong(float min, float max, float mul) => min + Mathf.PingPong(Time.time * mul, max - min);
 
     public static float PingPongReverse(float min, float max, float mul) => max - Mathf.PingPong(Time.time * mul, max - min);
-
-    public static HSBColor operator +(HSBColor a, HSBColor b) => new(a.h + b.h, a.s + b.s, a.b + b.b, a.a + b.a);
-
-    public static HSBColor operator -(HSBColor a, HSBColor b) => new(a.h - b.h, a.s - b.s, a.b - b.b, a.a - b.a);
-
-    public static HSBColor operator *(float b, HSBColor a) => new(a.h * b, a.s * b, a.b * b, a.a * b);
-
-    public static HSBColor operator /(HSBColor a, float b) => new(a.h / b, a.s / b, a.b / b, a.a / b);
 
     /*public static void Test()
     {

@@ -82,12 +82,9 @@ public class CustomMeeting
         var renderer = targetBox.GetComponent<SpriteRenderer>();
         renderer.sprite = GetSprite(Type == MeetingTypes.Toggle ? DisabledSprite : ActiveSprite);
         var button = targetBox.GetComponent<PassiveButton>();
-        button.OnClick = new();
-        button.OnClick.AddListener((Action)(() => Click(voteArea, __instance)));
-        button.OnMouseOver = new();
-        button.OnMouseOver.AddListener((Action)(() => renderer.color = UColor.red));
-        button.OnMouseOut = new();
-        button.OnMouseOut.AddListener((Action)(() => renderer.color = Type == MeetingTypes.Toggle && Actives[voteArea.TargetPlayerId] ? UColor.green : UColor.white));
+        button.OverrideOnClickListeners(() => Click(voteArea, __instance));
+        button.OverrideOnMouseOverListeners(() => renderer.color = UColor.red);
+        button.OverrideOnMouseOutListeners(() => renderer.color = Type == MeetingTypes.Toggle && Actives[voteArea.TargetPlayerId] ? UColor.green : UColor.white);
         button.ClickSound = SoundEffects["Click"];
         button.HoverSound = SoundEffects["Hover"];
         var collider = targetBox.GetComponent<BoxCollider2D>();
@@ -114,7 +111,7 @@ public class CustomMeeting
         {
             foreach (var pair in Buttons)
             {
-                if (pair.Value == null)
+                if (!pair.Value)
                     continue;
 
                 var sprite = pair.Value.GetComponent<SpriteRenderer>();

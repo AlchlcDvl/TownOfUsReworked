@@ -31,7 +31,11 @@ public class Fanatic : Objectifier
         "";
     public override bool Hidden => !CustomGameOptions.FanaticKnows && !Turned && !Dead;
 
-    public override void Init() => Side = Faction.Crew;
+    public override void Init()
+    {
+        base.Init();
+        Side = Faction.Crew;
+    }
 
     public void TurnFanatic(Faction faction)
     {
@@ -78,6 +82,9 @@ public class Fanatic : Objectifier
 
         if (Local || CustomPlayer.Local.Is(faction))
             Flash(CustomColorManager.Fanatic);
+
+        if (Local)
+            fanaticRole.UpdateButtons();
     }
 
     public void TurnBetrayer()

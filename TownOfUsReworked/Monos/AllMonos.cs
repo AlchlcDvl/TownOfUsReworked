@@ -12,7 +12,7 @@ public static class AllMonos
 
         // Handlers
         ClassInjector.RegisterTypeInIl2Cpp<HudHandler>();
-        ClassInjector.RegisterTypeInIl2Cpp<ClientHandler>();
+        // ClassInjector.RegisterTypeInIl2Cpp<ClientHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<MeetingHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<DragHandler>();
@@ -25,10 +25,10 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
 
         // Misc
-        // ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<DebuggerBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<MissingBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<CustomKillAnimationPlayer>();
+        ClassInjector.RegisterTypeInIl2Cpp<CameraEffect>();
         ClassInjector.RegisterTypeInIl2Cpp<LobbyConsole>(usableInterface);
     }
 
@@ -37,14 +37,15 @@ public static class AllMonos
         if (ComponentsAdded)
             return;
 
-        var go = new GameObject("ModMonos").DontDestroyOnLoad();
-        go.AddComponent<DebuggerBehaviour>();
-        go.AddComponent<HudHandler>();
-        go.AddComponent<ClientHandler>();
-        go.AddComponent<PlayerHandler>();
-        go.AddComponent<MeetingHandler>();
-        go.AddComponent<DragHandler>();
-        go.AddComponent<ColorHandler>();
+        TownOfUsReworked.ModInstance.AddComponent<DebuggerBehaviour>();
+
+        TownOfUsReworked.ModInstance.AddComponent<HudHandler>();
+        // TownOfUsReworked.ModInstance.AddComponent<ClientHandler>();
+        TownOfUsReworked.ModInstance.AddComponent<PlayerHandler>();
+        TownOfUsReworked.ModInstance.AddComponent<MeetingHandler>();
+        TownOfUsReworked.ModInstance.AddComponent<DragHandler>();
+        TownOfUsReworked.ModInstance.AddComponent<ColorHandler>();
+
         ComponentsAdded = true;
     }
 }

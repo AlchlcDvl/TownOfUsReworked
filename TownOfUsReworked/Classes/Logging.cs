@@ -5,14 +5,8 @@ namespace TownOfUsReworked.Classes;
 // Adapted from LevelImpostor
 public static class Logging
 {
-    private static ManualLogSource Log;
-    public static string SavedLogs;
-
-    public static void Init()
-    {
-        SavedLogs = "";
-        Log = BepInEx.Logging.Logger.CreateLogSource("Reworked");
-    }
+    public static ManualLogSource Log { get; set; }
+    public static string SavedLogs { get; set; } = "";
 
     private static void LogSomething(object message, LogLevel type)
     {

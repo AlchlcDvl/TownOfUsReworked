@@ -3,16 +3,15 @@ namespace TownOfUsReworked.Options;
 public class CustomOption
 {
     public static readonly List<CustomOption> AllOptions = [];
+    private static int LastChangedSetting = -1;
     public int ID { get; }
     public MultiMenu Menu { get; }
-    public Func<object, object, string> Format { get; set; }
+    public Func<object, string> Format { get; set; }
     public string Name { get; }
-    public Action<object, object> OnChanged { get; }
+    public Action<object> OnChanged { get; }
     public object Value { get; set; }
-    public object OtherValue { get; set; }
     public object DefaultValue { get; }
-    public object OtherDefaultValue { get; }
-    public OptionBehaviour Setting { get; set; }
+    public MonoBehaviour Setting { get; set; }
     public CustomOptionType Type { get; }
     public object[] Parents { get; set; }
     public bool All { get; }
@@ -20,8 +19,7 @@ public class CustomOption
     public bool ClientOnly { get; }
     public bool Active => All ? Parents.All(IsActive) : Parents.Any(IsActive);
 
-    public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object[] parent, bool all = false, Action<object, object> onChanged =
-        null, bool clientOnly = false)
+    public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object[] parent, bool all = false, Action<object> onChanged = null, bool clientOnly = false)
     {
         Menu = menu;
         Name = name;
@@ -29,7 +27,6 @@ public class CustomOption
         Parents = parent;
         All = all;
         Value = DefaultValue = defaultValue;
-        OtherValue = OtherDefaultValue = otherDefault;
         OnChanged = onChanged ?? BlankVoid;
         ClientOnly = clientOnly;
         ID = Type is CustomOptionType.Header or CustomOptionType.Button || ClientOnly ? -1 : AllOptions.Count(x => x.Type is not (CustomOptionType.Header or CustomOptionType.Button));
@@ -38,21 +35,15 @@ public class CustomOption
             AllOptions.Add(this);
     }
 
-    public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object parent = null, Action<object, object> onChanged = null, bool clientOnly = false) :
+    public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object parent = null, Action<object> onChanged = null, bool clientOnly = false) :
         this(menu, name, type, defaultValue, [parent], false, onChanged, clientOnly) {}
-
-    public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object[] parent, bool all = false, Action<object, object> onChanged = null, bool clientOnly =
-        false) : this(menu, name, type, defaultValue, null, parent, all, onChanged, clientOnly) {}
-
-    public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object parent = null, Action<object, object> onChanged = null, bool
-        clientOnly = false) : this(menu, name, type, defaultValue, otherDefault, [parent], false, onChanged, clientOnly) {}
 
     public override string ToString()
     {
         var n = this is CustomHeaderOption ? "\n" : "";
         var colon = this is CustomHeaderOption ? "" : ": ";
         var name = this is CustomHeaderOption ? $"<b>{Name}</b>" : Name;
-        return n + name + colon + Format(Value, OtherValue);
+        return n + name + colon + Format(Value);
     }
 
     private bool IsActive(object option)
@@ -87,15 +78,18 @@ public class CustomOption
     public virtual void OptionCreated()
     {
         Setting.name = Setting.gameObject.name = Name.Replace(" ", "_");
-        Setting.Title = (StringNames)999999999;
-        Setting.OnValueChanged = new Action<OptionBehaviour>(_ => {});
+
+        if (Setting is OptionBehaviour option)
+        {
+            option.Title = (StringNames)999999999;
+            option.OnValueChanged = (Action<OptionBehaviour>)BlankVoid; // The cast here is not redundant, idk why the compiler refuses to accept this
+        }
     }
 
-    public void Set(object value, object otherValue = null, bool rpc = true)
+    public void Set(object value, bool rpc = true)
     {
         Value = value;
-        OtherValue = otherValue;
-        OnChanged(Value, OtherValue);
+        OnChanged(Value);
 
         if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || ID == -1 || Type is CustomOptionType.Header or CustomOptionType.Button))
             SendOptionRPC(this);
@@ -103,10 +97,12 @@ public class CustomOption
         if (!Setting)
             return;
 
+        var stringValue = "";
+
         if (Setting is ToggleOption toggle)
         {
             if (this is RoleListEntryOption entry)
-                toggle.TitleText.text = entry.GetString(Value);
+                toggle.TitleText.text = stringValue = entry.GetString(Value);
             else
             {
                 var newValue = (bool)Value;
@@ -114,23 +110,41 @@ public class CustomOption
 
                 if (toggle.CheckMark)
                     toggle.CheckMark.enabled = newValue;
+
+                stringValue = newValue ? "On" : "Off";
             }
         }
         else if (Setting is NumberOption number)
         {
             number.Value = number.oldValue = (float)Value;
-            number.ValueText.text = Format(Value, OtherValue);
+            number.ValueText.text = stringValue = Format(Value);
         }
-        else if (Setting is KeyValueOption str)
+        else if (Setting is StringOption str)
         {
             Value = Mathf.Clamp((int)Value, 0, ((CustomStringOption)this).Values.Length - 1);
-            str.Selected = str.oldValue = (int)Value;
-            str.ValueText.text = Format(Value, OtherValue);
+            str.Value = str.oldValue = (int)Value;
+            str.ValueText.text = stringValue = Format(Value);
         }
         else if (Setting is RoleOptionSetting role)
         {
-            role.ChanceText.text = $"{Value}%";
-            role.CountText.text = $"x{OtherValue}";
+            var tuple = ((int, int))Value;
+            role.chanceText.text = $"{tuple.Item1}%";
+            role.countText.text = $"x{tuple.Item2}";
+            stringValue = IsCustom ? $"({tuple.Item1}%, x{tuple.Item2})" : $"{tuple.Item1}%";
+        }
+
+        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Name}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
+
+        if (LastChangedSetting == ID && HUD.Notifier.activeMessages.Count > 0)
+            HUD.Notifier.activeMessages[^1].UpdateMessage(changed);
+        else
+        {
+            LastChangedSetting = ID;
+            var newMessage = UObject.Instantiate(HUD.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD.Notifier.transform);
+            newMessage.transform.localPosition = new(0f, 0f, -2f);
+            newMessage.SetUp(changed, HUD.Notifier.settingsChangeSprite, HUD.Notifier.settingsChangeColor, (Action)(() => HUD.Notifier.OnMessageDestroy(newMessage)));
+            HUD.Notifier.ShiftMessages();
+            HUD.Notifier.AddMessageToQueue(newMessage);
         }
     }
 
@@ -145,10 +159,14 @@ public class CustomOption
                 continue;
 
             builder.AppendLine(option.Name.Trim());
-            builder.AppendLine(option.Value.ToString().Trim());
 
-            if (option.OtherValue != null)
-                builder.AppendLine(option.OtherValue.ToString().Trim());
+            if (option.Value.GetType() == typeof((int, int)))
+            {
+                var tuple = ((int, int))option.Value;
+                builder.AppendLine($"{tuple.Item1.ToString().Trim()},{tuple.Item2.ToString().Trim()}");
+            }
+            else
+                builder.AppendLine(option.Value.ToString().Trim());
         }
 
         return builder.ToString();
@@ -191,25 +209,25 @@ public class CustomOption
                 switch (option.Type)
                 {
                     case CustomOptionType.Number:
-                        option.Set(float.Parse(value), null, false);
+                        option.Set(float.Parse(value), rpc: false);
                         break;
 
                     case CustomOptionType.Toggle:
-                        option.Set(bool.Parse(value), null, false);
+                        option.Set(bool.Parse(value), rpc: false);
                         break;
 
                     case CustomOptionType.String:
-                        option.Set(int.Parse(value), null, false);
+                        option.Set(int.Parse(value), rpc: false);
                         break;
 
                     case CustomOptionType.Entry:
-                        option.Set(Enum.Parse<LayerEnum>(value), null, false);
+                        option.Set(Enum.Parse<LayerEnum>(value), rpc: false);
                         break;
 
                     case CustomOptionType.Layers:
-                        var value2 = splitText[0];
+                        var values = value.Split(',');
                         splitText.RemoveAt(0);
-                        option.Set(int.Parse(value), int.Parse(value2), false);
+                        option.Set((int.Parse(values[0]), int.Parse(values[1])), false);
                         break;
                 }
             }
@@ -225,7 +243,7 @@ public class CustomOption
             }
         }
 
-        SendOptionRPC();
+        SendOptionRPC(setting: (CustomOption)null);
         yield break;
     }
 

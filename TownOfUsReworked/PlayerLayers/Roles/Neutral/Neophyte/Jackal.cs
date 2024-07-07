@@ -2,14 +2,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Jackal : Neutral
 {
-    public PlayerControl EvilRecruit { get; set; }
-    public PlayerControl GoodRecruit { get; set; }
-    public PlayerControl BackupRecruit { get; set; }
+    public PlayerControl Recruit2 { get; set; }
+    public PlayerControl Recruit1 { get; set; }
+    public PlayerControl Recruit3 { get; set; }
     public CustomButton RecruitButton { get; set; }
     public CustomButton KillButton { get; set; }
-    public bool RecruitsDead => EvilRecruit == null || GoodRecruit == null || (BackupRecruit == null && GoodRecruit != null && EvilRecruit != null && GoodRecruit.HasDied() &&
-        EvilRecruit.HasDied());
-    public bool AllRecruitsDead => GoodRecruit && GoodRecruit.HasDied() && EvilRecruit && EvilRecruit.HasDied() && BackupRecruit && BackupRecruit.HasDied();
+    public bool RecruitsDead => !Recruit2 || !Recruit1 || (!Recruit3 && Recruit1 && Recruit2 && Recruit1.HasDied() && Recruit2.HasDied());
+    public bool AllRecruitsDead => Recruit1 && Recruit1.HasDied() && Recruit2 && Recruit2.HasDied() && Recruit3 && Recruit3.HasDied();
     public List<byte> Recruited { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Jackal : CustomColorManager.Neutral;
@@ -28,7 +27,7 @@ public class Jackal : Neutral
         SubFaction = SubFaction.Cabal;
         SubFactionColor = CustomColorManager.Cabal;
         Alignment = Alignment.NeutralNeo;
-        Recruited = [Player.PlayerId];
+        Recruited = [ Player.PlayerId ];
         RecruitButton = CreateButton(this, new SpriteName("Recruit"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Recruit, (PlayerBodyExclusion)Exception, "RECRUIT",
             (UsableFunc)Usable1);
         KillButton = CreateButton(this, new SpriteName("JackalKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, (PlayerBodyExclusion)Exception, "KILL",

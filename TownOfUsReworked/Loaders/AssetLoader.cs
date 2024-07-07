@@ -12,16 +12,18 @@ public abstract class AssetLoader
     {
         fileName = fileName.Replace(" ", "%20");
         LogMessage($"Downloading: {downloader.Manifest}/{fileName}");
-        var www = UnityWebRequest.Get($"{RepositoryUrl}/{downloader.Manifest}/{fileName}.{fileType}");
+        var www = UnityWebRequest.Get($"{RepositoryUrl}/{downloader.Manifest}/{fileName}{(IsNullEmptyOrWhiteSpace(fileType) ? "" : $".{fileType}")}");
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
         {
             LogError(www.error);
+            www.downloadHandler.Dispose();
+            www.Dispose();
             yield break;
         }
 
-        var filePath = Path.Combine(downloader.DirectoryInfo, $"{fileName}.{fileType}");
+        var filePath = Path.Combine(downloader.DirectoryInfo, $"{fileName}{(IsNullEmptyOrWhiteSpace(fileType) ? "" : $".{fileType}")}");
         filePath = filePath.Replace("%20", " ").Replace(".txt", "");
         var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
 
@@ -54,6 +56,7 @@ public abstract class AssetLoader
         SoundLoader.Instance = new();
         TranslationLoader.Instance = new();
         VisorLoader.Instance = new();
+        BundleLoader.Instance = new();
         yield return EndFrame();
         yield break;
     }

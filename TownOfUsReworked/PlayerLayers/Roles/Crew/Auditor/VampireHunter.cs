@@ -34,5 +34,5 @@ public class VampireHunter : Crew
 
     private void Stake() => StakeButton.StartCooldown(Interact(Player, StakeButton.TargetPlayer, ShouldKill(StakeButton.TargetPlayer)));
 
-    private static bool ShouldKill(PlayerControl player) => player != null && (player.Is(SubFaction.Undead) || player.IsFramed());
+    private static bool ShouldKill(PlayerControl player) => player.Is(SubFaction.Undead) || player.IsFramed();
 }

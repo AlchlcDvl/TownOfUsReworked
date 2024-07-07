@@ -33,8 +33,8 @@ public abstract class Neutral : Role
         else if (Type == LayerEnum.Jackal)
         {
             var jackal = (Jackal)this;
-            team.Add(jackal.GoodRecruit);
-            team.Add(jackal.EvilRecruit);
+            team.Add(jackal.Recruit1);
+            team.Add(jackal.Recruit2);
         }
 
         if (HasTarget && Type != LayerEnum.BountyHunter)

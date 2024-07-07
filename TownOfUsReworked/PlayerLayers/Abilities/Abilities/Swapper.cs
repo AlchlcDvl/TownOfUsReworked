@@ -38,10 +38,16 @@ public class Swapper : Ability
         if (__instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
             return;
 
-        if (Swap1 == null)
+        if (!Swap1)
+        {
             Swap1 = voteArea;
-        else if (Swap2 == null)
+            SwapMenu.Actives[voteArea.TargetPlayerId] = true;
+        }
+        else if (!Swap2)
+        {
             Swap2 = voteArea;
+            SwapMenu.Actives[voteArea.TargetPlayerId] = true;
+        }
         else if (Swap1 == voteArea)
         {
             Swap1 = null;
@@ -57,9 +63,8 @@ public class Swapper : Ability
             SwapMenu.Actives[Swap1.TargetPlayerId] = false;
             Swap1 = Swap2;
             Swap2 = voteArea;
+            SwapMenu.Actives[voteArea.TargetPlayerId] = !SwapMenu.Actives[voteArea.TargetPlayerId];
         }
-
-        SwapMenu.Actives[voteArea.TargetPlayerId] = !SwapMenu.Actives[voteArea.TargetPlayerId];
     }
 
     public override void OnMeetingStart(MeetingHud __instance)

@@ -24,9 +24,14 @@ public static class ModUpdater
             yield break;
 
         Running[updateType] = true;
-        UpdateSplashPatch.SetText($"Fetching {updateType} data");
+        UpdateSplashPatch.SetText($"Fetching {updateType} Data And Loading Compatibility");
         LogMessage($"Getting update info for {updateType}");
         yield return EndFrame();
+
+        if (updateType == "Submerged")
+            SubLoaded = InitializeSubmerged();
+        else if (updateType == "LevelImpostor")
+            LILoaded = InitializeLevelImpostor();
 
         // Checks the github api for tags. Compares current version to the latest tag version on GitHub
         var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=5");

@@ -306,7 +306,7 @@ public abstract class Assassin : Ability
 
                 if (SelectedButton != button)
                 {
-                    if (SelectedButton != null)
+                    if (SelectedButton)
                         SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
 
                     SelectedButton = button;
@@ -316,7 +316,7 @@ public abstract class Assassin : Ability
                 {
                     var focusedTarget = PlayerByVoteArea(voteArea);
 
-                    if (__instance.state == MeetingHud.VoteStates.Discussion || focusedTarget == null || RemainingKills <= 0)
+                    if (__instance.state == MeetingHud.VoteStates.Discussion || !focusedTarget || RemainingKills <= 0)
                         return;
 
                     var targetId = voteArea.TargetPlayerId;
@@ -339,7 +339,7 @@ public abstract class Assassin : Ability
 
                     if (targetPlayer.Is(LayerEnum.Actor) && guess != "Actor")
                     {
-                        var actor = targetPlayer.GetRole<Actor>();
+                        var actor = targetPlayer.GetLayer<Actor>();
 
                         if (actor.PretendRoles.Any(x => x.Name == guess))
                         {
@@ -400,12 +400,9 @@ public abstract class Assassin : Ability
         label.text = title;
         label.color = color;
         var passive = button.GetComponent<PassiveButton>();
-        passive.OnMouseOver = new();
-        passive.OnMouseOver.AddListener((Action)(() => rend.color = UColor.green));
-        passive.OnMouseOut = new();
-        passive.OnMouseOut.AddListener((Action)(() => rend.color = SelectedButton == button ? UColor.red : UColor.white));
-        passive.OnClick = new();
-        passive.OnClick.AddListener(onClick);
+        passive.OverrideOnMouseOverListeners(() => rend.color = UColor.green);
+        passive.OverrideOnMouseOutListeners(() => rend.color = SelectedButton == button ? UColor.red : UColor.white);
+        passive.OverrideOnClickListeners(onClick);
         passive.ClickSound = SoundEffects["Click"];
         passive.HoverSound = SoundEffects["Hover"];
     }
@@ -437,9 +434,7 @@ public abstract class Assassin : Ability
         exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = voteArea.Buttons.transform.Find("CancelButton").GetComponent<SpriteRenderer>().sprite;
         exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
         exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
-        var button = exitButton.GetComponent<PassiveButton>();
-        button.OnClick = new();
-        button.OnClick.AddListener((Action)(() => Exit(__instance)));
+        exitButton.GetComponent<PassiveButton>().OverrideOnClickListeners(() => Exit(__instance));
         SetButtons(__instance, voteArea);
     }
 
@@ -542,12 +537,12 @@ public abstract class Assassin : Ability
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
 
             Flash(CustomColorManager.Indomitable);
-            player.GetModifier<Indomitable>().AttemptedGuess = true;
+            player.GetLayer<Indomitable>().AttemptedGuess = true;
         }
 
         if (Player.Is(LayerEnum.Professional) && Player == player)
         {
-            var modifier = Player.GetModifier<Professional>();
+            var modifier = Player.GetLayer<Professional>();
 
             if (!modifier.LifeUsed)
             {

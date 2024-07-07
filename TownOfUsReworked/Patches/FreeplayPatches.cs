@@ -30,8 +30,7 @@ public static class FreeplayPatches
         button.FileImage.color = button.RolloverHandler.OutColor = info.Color;
         button.Overlay.enabled = CustomPlayer.Local.Is(layer);
         button.Overlay.sprite = button.CheckImage;
-        button.Button.OnClick = new();
-        button.Button.OnClick.AddListener((Action)(() =>
+        button.Button.OverrideOnClickListeners(() =>
         {
             var role = Role.LocalRole;
 
@@ -85,7 +84,7 @@ public static class FreeplayPatches
             }
 
             ButtonUtils.Reset();
-        }));
+        });
         __instance.AddFileAsChild(folder, button, ref num, ref num2, ref num3);
         RoleButtons[button.Text.text] = layer;
     }
@@ -144,7 +143,7 @@ public static class FreeplayPatches
             var num = 0f;
             var num2 = 0f;
             var num3 = 0f;
-            taskFolder.SubFolders = taskFolder.SubFolders.Il2CppToSystem().OrderBy(x => x.FolderName).ToList().SystemToIl2Cpp();
+            taskFolder.SubFolders = taskFolder.SubFolders.ToSystem().OrderBy(x => x.FolderName).ToList().ToIl2Cpp();
 
             foreach (var sub in taskFolder.SubFolders)
             {
@@ -165,7 +164,7 @@ public static class FreeplayPatches
 
                 __instance.ActiveItems.Add(taskFolder2.transform);
 
-                if (taskFolder2 != null && taskFolder2.Button != null)
+                if (taskFolder2 && taskFolder2.Button)
                 {
                     ControllerManager.Instance.AddSelectableUiElement(taskFolder2.Button, false);
 
@@ -221,7 +220,7 @@ public static class FreeplayPatches
             else
             {
                 var flag = false;
-                taskFolder.Children = taskFolder.Children.Il2CppToSystem().OrderBy(t => t.TaskType).ToList().SystemToIl2Cpp();
+                taskFolder.Children = taskFolder.Children.ToSystem().OrderBy(t => t.TaskType).ToList().ToIl2Cpp();
 
                 foreach (var task in taskFolder.Children)
                 {
@@ -232,14 +231,14 @@ public static class FreeplayPatches
                     {
                         var divert = taskAddButton.MyTask.TryCast<DivertPowerTask>();
 
-                        if (divert != null)
+                        if (divert)
                             taskAddButton.Text.text = TranslationController.Instance.GetString(StringNames.DivertPowerTo, TranslationController.Instance.GetString(divert.TargetSystem));
                     }
                     else if (taskAddButton.MyTask.TaskType == TaskTypes.FixWeatherNode)
                     {
                         var node = taskAddButton.MyTask.TryCast<WeatherNodeTask>();
 
-                        if (node != null)
+                        if (node)
                         {
                             taskAddButton.Text.text = TranslationController.Instance.GetString(StringNames.FixWeatherNode) + " " +
                                 TranslationController.Instance.GetString(WeatherSwitchGame.ControlNames[node.NodeId]);
@@ -250,7 +249,7 @@ public static class FreeplayPatches
 
                     __instance.AddFileAsChild(taskFolder, taskAddButton, ref num, ref num2, ref num3);
 
-                    if (taskAddButton != null && taskAddButton.Button != null)
+                    if (taskAddButton && taskAddButton.Button)
                     {
                         ControllerManager.Instance.AddSelectableUiElement(taskAddButton.Button, false);
 
@@ -258,7 +257,7 @@ public static class FreeplayPatches
                         {
                             var component = ControllerManager.Instance.CurrentUiState.CurrentSelection.GetComponent<TaskFolder>();
 
-                            if (component != null)
+                            if (component)
                                 __instance.restorePreviousSelectionByFolderName = component.FolderName;
 
                             ControllerManager.Instance.SetDefaultSelection(taskAddButton.Button, null);

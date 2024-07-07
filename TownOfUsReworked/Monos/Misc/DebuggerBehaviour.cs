@@ -153,10 +153,10 @@ public class DebuggerBehaviour : MonoBehaviour
             {
                 var position = CustomPlayer.LocalCustom.Position;
                 GUILayout.Label($"Player Position\nx: {position.x:00.00} y: {position.y:00.00} z: {position.z:00.00}");
-
-                var mouse = Input.mousePosition;
-                GUILayout.Label($"Mouse Position\nx: {mouse.x:00.00} y: {mouse.y:00.00} z: {mouse.z:00.00}");
             }
+
+            var mouse = Input.mousePosition;
+            GUILayout.Label($"Mouse Position\nx: {mouse.x:00.00} y: {mouse.y:00.00} z: {mouse.z:00.00}");
         })
         {
             Enabled = false

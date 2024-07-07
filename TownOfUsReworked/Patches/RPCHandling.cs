@@ -75,19 +75,13 @@ public static class RPCHandling
                         UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == id2)?.SetDoorway(true);
                         break;
 
-                    case MiscRPC.SetColor:
-                        var player = reader.ReadPlayer();
-                        player.SetColor(reader.ReadByte());
-                        PlayerHandler.Instance.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
-                        break;
-
                     case MiscRPC.SyncSummary:
                         SaveText("Summary", reader.ReadString(), TownOfUsReworked.Other);
                         break;
 
                     case MiscRPC.VersionHandshake:
-                        VersionHandshake(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
-                            reader.ReadString(), new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
+                        // VersionHandshake(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
+                        //     reader.ReadString(), new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
                         break;
 
                     case MiscRPC.SubmergedFixOxygen:
@@ -128,6 +122,9 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
+                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
+                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
+                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
                         TownOfUsReworked.NormalOptions.CrewLightMod = CustomGameOptions.CrewVision;
                         TownOfUsReworked.NormalOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
                         TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting != AnonVotes.Disabled;
@@ -135,6 +132,7 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
                         TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
                         TownOfUsReworked.NormalOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)reader.ReadByte();
+                        // TownOfUsReworked.NormalOptions.TaskBarMode = CustomGameOptions2.TaskBarMode;
                         TownOfUsReworked.NormalOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
                         TownOfUsReworked.NormalOptions.VotingTime = CustomGameOptions.VotingTime;
                         TownOfUsReworked.NormalOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
@@ -147,7 +145,6 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
                         TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
                         TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
-                        GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
                         CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
                         MapPatches.AdjustSettings();
                         break;
@@ -169,11 +166,20 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.EndRoleGen:
-                        var player2 = reader.ReadPlayer();
-                        player2.GetModifierOrBlank();
-                        player2.GetAbilityOrBlank();
-                        player2.GetObjectifierOrBlank();
-                        player2.GetRoleOrBlank();
+                        foreach (var player2 in CustomPlayer.AllPlayers)
+                        {
+                            var role = player2.GetRole() ?? new Roleless().Start<Role>(player2);
+                            var mod = player2.GetModifier() ?? new Modifierless().Start<Modifier>(player2);
+                            var ab = player2.GetAbility() ?? new Abilityless().Start<Ability>(player2);
+                            var obj = player2.GetObjectifier() ?? new Objectifierless().Start<Objectifier>(player2);
+
+                            /*PlayerLayer.LayerLookup[player2.PlayerId] = [ role, mod, ab, obj ];
+                            Role.RoleLookup[player2.PlayerId] = role;
+                            Modifier.ModifierLookup[player2.PlayerId] = mod;
+                            Objectifier.ObjectifierLookup[player2.PlayerId] = obj;
+                            Ability.AbilityLookup[player2.PlayerId] = ab;*/
+                        }
+
                         break;
 
                     case MiscRPC.SetTarget:
@@ -291,6 +297,12 @@ public static class RPCHandling
                         reader.ReadPlayer().CustomSnapTo(reader.ReadVector2());
                         break;
 
+                    case VanillaRPC.SetColor:
+                        var player = reader.ReadPlayer();
+                        player.SetColor(reader.ReadByte());
+                        PlayerHandler.Instance.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
+                        break;
+
                     default:
                         LogError($"Received unknown RPC - {(int)vanilla}");
                         break;
@@ -391,7 +403,7 @@ public static class RPCHandling
 
                     case ActionsRPC.PlaceHit:
                         var requestor = reader.ReadPlayer().GetRole();
-                        requestor.Requestor.GetRole<BountyHunter>().TentativeTarget = reader.ReadPlayer();
+                        requestor.Requestor.GetLayer<BountyHunter>().TentativeTarget = reader.ReadPlayer();
                         requestor.Requesting = false;
                         requestor.Requestor = null;
                         break;
@@ -535,9 +547,9 @@ public static class RPCHandling
                         reader.ReadLayer<BountyHunter>().TargetKilled = true;
                         break;
 
-                    case WinLoseRPC.TrollWin:
+                    /*case WinLoseRPC.TrollWin:
                         reader.ReadLayer<Troll>().Killed = true;
-                        break;
+                        break;*/
 
                     case WinLoseRPC.ActorWin:
                         reader.ReadLayer<Actor>().Guessed = true;

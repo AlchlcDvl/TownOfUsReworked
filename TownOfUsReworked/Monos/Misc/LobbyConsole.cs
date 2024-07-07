@@ -9,11 +9,11 @@ public class LobbyConsole : MonoBehaviour
     private SpriteRenderer Rend = null;
 
     public static bool ClientOptionsActive;
+
     private static GameObject Prefab;
     private static Vector3 Pos;
     private static ImageNames Customise;
-
-    public static GameObject CurrentMenu;
+    private static GameObject CurrentMenu;
 
     public void Awake()
     {
@@ -21,7 +21,7 @@ public class LobbyConsole : MonoBehaviour
             return;
 
         var options = Lobby.transform.FindChild("SmallBox").GetChild(0).GetComponent<OptionsConsole>();
-        Prefab = Instantiate(options.MenuPrefab, null);
+        Prefab = Instantiate(options.MenuPrefab, null).DontUnload().DontDestroy();
         Prefab.SetActive(false);
         Prefab.name = "ClientOptionsMenuPrefab";
         Pos = options.CustomPosition;
@@ -40,7 +40,7 @@ public class LobbyConsole : MonoBehaviour
         Rend.material.SetColor("_AddColor", mainTarget ? UColor.white : UColor.clear);
     }
 
-    public float CanUse(GameData.PlayerInfo playerInfo, out bool canUse, out bool couldUse)
+    public float CanUse(NetworkedPlayerInfo playerInfo, out bool canUse, out bool couldUse)
     {
         var playerControl = playerInfo.Object;
         var truePosition = playerControl.GetTruePosition();
@@ -70,7 +70,7 @@ public class LobbyConsole : MonoBehaviour
 
     public static void CreateMenu()
     {
-        ClientStuff.CloseMenus(SkipEnum.Client);
+        // ClientStuff.CloseMenus(SkipEnum.Client);
 
         if (ClientOptionsActive && GameSettingMenu.Instance)
         {

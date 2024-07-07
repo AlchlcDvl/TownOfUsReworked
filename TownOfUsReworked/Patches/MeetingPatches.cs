@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 public static class MeetingPatches
 {
     public static int MeetingCount;
-    public static GameData.PlayerInfo Reported;
+    public static NetworkedPlayerInfo Reported;
     private static PlayerControl Reporter;
     public static bool GivingAnnouncements;
 
@@ -35,10 +35,18 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
     public static class SetReported
     {
-        public static void Postfix(PlayerControl __instance, ref GameData.PlayerInfo target)
+        public static void Postfix(PlayerControl __instance, ref NetworkedPlayerInfo target)
         {
             Reported = target;
             Reporter = __instance;
+
+            if (target == null)
+                return;
+
+            var data = target;
+            PlayerLayer.GetLayers<Plaguebearer>().ForEach(x => x.RpcSpreadInfection(__instance, data.Object));
+            PlayerLayer.GetLayers<Arsonist>().ForEach(x => x.RpcSpreadDouse(data.Object, __instance));
+            PlayerLayer.GetLayers<Cryomaniac>().ForEach(x => x.RpcSpreadDouse(data.Object, __instance));
         }
     }
 
@@ -48,7 +56,7 @@ public static class MeetingPatches
         public static void Postfix(MeetingHud __instance)
         {
             __instance.gameObject.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
-            ClientStuff.CloseMenus();
+            // ClientStuff.CloseMenus();
             CustomPlayer.Local.DisableButtons();
             Ash.DestroyAll();
             MeetingCount++;
@@ -281,13 +289,21 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
     public static class VotingComplete
     {
-        public static void Postfix(MeetingHud __instance, ref GameData.PlayerInfo exiled, ref bool tie)
+        public static void Postfix(MeetingHud __instance, ref NetworkedPlayerInfo exiled, ref bool tie)
         {
             var exiledString = exiled == null ? "null" : exiled.PlayerName;
             LogInfo($"Exiled PlayerName = {exiledString}");
             LogInfo($"Was a tie = {tie}");
             PlayerLayer.LocalLayers.ForEach(x => x?.VoteComplete(__instance));
             Coroutines.Start(PerformSwaps());
+
+            foreach (var role in Role.AllRoles)
+            {
+                if (role.Type is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.GuardianAngel or LayerEnum.Jester)
+                    continue;
+
+                role.TrulyDead = true;
+            }
         }
     }
 
@@ -358,6 +374,41 @@ public static class MeetingPatches
         }
     }
 
+    // Thanks twix
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CoIntro))]
+    public static class ShowNewDead
+    {
+        public static readonly List<byte> ReportedBodies = [];
+
+        public static void Postfix(MeetingHud __instance, ref NetworkedPlayerInfo reportedBody, ref Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
+        {
+            ReportedBodies.Clear();
+
+            if (!CustomGameOptions.IndicateReportedBodies)
+                return;
+
+            foreach (var player in __instance.playerStates)
+            {
+                if (deadBodies.Any(x => x.PlayerId == player.TargetPlayerId))
+                {
+                    player.Megaphone.gameObject.SetActive(true);
+                    player.Megaphone.enabled = true;
+                    player.Megaphone.transform.localEulerAngles = Vector3.zero;
+                    player.Megaphone.transform.localScale = Vector3.one;
+
+                    if (player.TargetPlayerId != reportedBody.PlayerId)
+                    {
+                        player.Megaphone.sprite = GameManager.Instance.DeadBodyPrefab.bodyRenderers[0].sprite;
+                        player.Megaphone.transform.localScale = new(0.3f, 0.3f, 0.3f);
+                        player.Megaphone.transform.localPosition -= new Vector3(0.2f, 0, 0);
+                    }
+
+                    ReportedBodies.Add(player.TargetPlayerId);
+                }
+            }
+        }
+    }
+
     private static IEnumerator Slide2D(Transform target, Vector2 source, Vector2 dest, float duration)
     {
         var temp = (Vector3)default;
@@ -382,7 +433,7 @@ public static class MeetingPatches
     {
         foreach (var role in PlayerLayer.GetLayers<Swapper>())
         {
-            if (!role.Alive || role.Swap1 == null || role.Swap2 == null)
+            if (!role.Alive || !role.Swap1 || !role.Swap2)
                 continue;
 
             var swapPlayer1 = PlayerByVoteArea(role.Swap1);
@@ -537,13 +588,13 @@ public static class MeetingPatches
 
         foreach (var swapper in PlayerLayer.GetLayers<Swapper>())
         {
-            if (swapper.Player.HasDied() || swapper.Swap1 == null || swapper.Swap2 == null)
+            if (swapper.Player.HasDied() || !swapper.Swap1 || !swapper.Swap2)
                 continue;
 
             var swapPlayer1 = PlayerByVoteArea(swapper.Swap1);
             var swapPlayer2 = PlayerByVoteArea(swapper.Swap2);
 
-            if (swapPlayer1 == null || swapPlayer2 == null || swapPlayer1.HasDied() || swapPlayer2.HasDied())
+            if (swapPlayer1.HasDied() || swapPlayer2.HasDied())
                 continue;
 
             var swap1 = 0;

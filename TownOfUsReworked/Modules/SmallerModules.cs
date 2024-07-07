@@ -30,7 +30,7 @@ public class GitHubApiObject
     public string Description { get; set; }
 
     [JsonPropertyName("assets")]
-    public List<GitHubApiAsset> Assets { get; set; }
+    public GitHubApiAsset[] Assets { get; set; }
 }
 
 public class GitHubApiAsset
@@ -43,4 +43,20 @@ public class Asset
 {
     [JsonPropertyName("id")]
     public string ID { get; set; }
+}
+
+public class RoleOptionData(int chance, int count, bool unique, bool active)
+{
+    public int Chance { get; } = chance;
+    public int Count { get; } = count;
+    public bool Unique { get; set; } = unique;
+    public bool Active { get; set; } = active;
+
+    public override string ToString() => $"{Chance},{Count},{Unique},{Active}";
+
+    public static RoleOptionData Parse(string input)
+    {
+        var parts = input.Split(',');
+        return new(int.Parse(parts[0]), int.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]));
+    }
 }

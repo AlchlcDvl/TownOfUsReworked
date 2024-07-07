@@ -67,6 +67,8 @@ public static class Generate
     public static CustomToggleOption DeadSeeEverything;
     public static CustomToggleOption ParallelMedScans;
     public static CustomToggleOption HideVentAnims;
+    public static CustomToggleOption JaniCanMutuallyExclusive;
+    public static CustomToggleOption IndicateReportedBodies;
 
     // Better Sabotages
     public static CustomHeaderOption BetterSabotages;
@@ -720,6 +722,7 @@ public static class Generate
     public static CustomHeaderOption Miner;
     public static CustomToggleOption UniqueMiner;
     public static CustomNumberOption MineCd;
+    public static CustomToggleOption MinerSpawnOnMira;
 
     // IK Options
     public static CustomHeaderOption IKSettings;
@@ -1486,10 +1489,10 @@ public static class Generate
     public static CustomHeaderOption ExampleHeader;
     public static CustomLayersOption ExampleLayers;*/
 
-    private static Func<object, object, string> PercentFormat => (value, _) => $"{value:0}%";
-    private static Func<object, object, string> CooldownFormat => (value, _) => $"{value:0.0#}s";
-    private static Func<object, object, string> DistanceFormat => (value, _) => $"{value:0.0#}m";
-    private static Func<object, object, string> MultiplierFormat => (value, _) => $"{value:0.0#}x";
+    private static Func<object, string> PercentFormat => value => $"{value:0}%";
+    private static Func<object, string> CooldownFormat => value => $"{value:0.##}s";
+    private static Func<object, string> DistanceFormat => value => $"{value:0.##}m";
+    private static Func<object, string> MultiplierFormat => value => $"{value:0.##}x";
 
     private static bool Generated;
 
@@ -1630,6 +1633,8 @@ public static class Generate
         DeadSeeEverything = new(MultiMenu.Main, "Dead Can See Everything", true);
         ParallelMedScans = new(MultiMenu.Main, "Parallel Medbay Scans", false);
         HideVentAnims = new(MultiMenu.Main, "Hide Vent Animations In The Dark", true);
+        JaniCanMutuallyExclusive = new(MultiMenu.Main, "Janitor And Cannibal Are Mutually Exclusive", false);
+        IndicateReportedBodies = new(MultiMenu.Main, "Indicate Reported Bodies In Meetings", false);
 
         GameAnnouncementsSettings = new(MultiMenu.Main, "Game Announcement Settings");
         GameAnnouncements = new(MultiMenu.Main, "Enable Game Announcements", false);
@@ -1714,62 +1719,67 @@ public static class Generate
         FungleReactorTimer = new(MultiMenu.Main, "Fungle Reactor Meltdown Countdown", 60f, 30f, 90f, 5f, CooldownFormat, BetterFungle);
         FungleMixupTimer = new(MultiMenu.Main, "Fungle Mushroom Mixup Timer", 8f, 4f, 20f, 1f, CooldownFormat, BetterFungle);
 
-        CrewSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Settings");
-        CommonTasks = new(MultiMenu.Crew, "Common Tasks", 2, 0, 100, 1);
-        LongTasks = new(MultiMenu.Crew, "Long Tasks", 1, 0, 100, 1);
-        ShortTasks = new(MultiMenu.Crew, "Short Tasks", 4, 0, 100, 1);
-        GhostTasksCountToWin = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win", true);
-        CrewVision = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-        CrewFlashlight = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Uses A Flashlight", false);
+        CrewSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Settings", [GameMode.Classic, GameMode.AllAny, GameMode.Custom, GameMode.Vanilla, GameMode.KillingOnly,
+            GameMode.RoleList]);
+        CommonTasks = new(MultiMenu.Crew, "Common Tasks", 2, 0, 100, 1, CrewSettings);
+        LongTasks = new(MultiMenu.Crew, "Long Tasks", 1, 0, 100, 1, CrewSettings);
+        ShortTasks = new(MultiMenu.Crew, "Short Tasks", 4, 0, 100, 1, CrewSettings);
+        GhostTasksCountToWin = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win", true, CrewSettings);
+        CrewVision = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat, CrewSettings);
+        CrewFlashlight = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Uses A Flashlight", false, CrewSettings);
         CrewMax = new(MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1, [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
         CrewMin = new(MultiMenu.Crew, "Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1, [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
-        CrewVent = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Can Vent", false);
+        CrewVent = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> Can Vent", false, CrewSettings);
 
-        CARoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
-        MysticOn = new(MultiMenu.Crew, "<color=#708EEFFF>Mystic</color>", parent: CARoles);
-        VampireHunterOn = new(MultiMenu.Crew, "<color=#C0C0C0FF>Vampire Hunter</color>", parent: CARoles);
-
-        CIRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
+        CARoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic, GameMode.AllAny,
             GameMode.Custom]);
-        CoronerOn = new(MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color>", parent: CIRoles);
-        DetectiveOn = new(MultiMenu.Crew, "<color=#4D4DFFFF>Detective</color>", parent: CIRoles);
-        MediumOn = new(MultiMenu.Crew, "<color=#A680FFFF>Medium</color>", parent: CIRoles);
-        OperativeOn = new(MultiMenu.Crew, "<color=#A7D1B3FF>Operative</color>", parent: CIRoles);
-        SeerOn = new(MultiMenu.Crew, "<color=#71368AFF>Seer</color>", parent: CIRoles);
-        SheriffOn = new(MultiMenu.Crew, "<color=#FFCC80FF>Sheriff</color>", parent: CIRoles);
-        TrackerOn = new(MultiMenu.Crew, "<color=#009900FF>Tracker</color>", parent: CIRoles);
+        MysticOn = new(MultiMenu.Crew, "<color=#708EEFFF>Mystic</color>", CustomColorManager.Mystic, parent: CARoles);
+        VampireHunterOn = new(MultiMenu.Crew, "<color=#C0C0C0FF>Vampire Hunter</color>", CustomColorManager.VampireHunter, parent: CARoles);
 
-        CKRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
-        BastionOn = new(MultiMenu.Crew, "<color=#7E3C64FF>Bastion</color>", parent: CKRoles);
-        VeteranOn = new(MultiMenu.Crew, "<color=#998040FF>Veteran</color>", parent: CKRoles);
-        VigilanteOn = new(MultiMenu.Crew, "<color=#FFFF00FF>Vigilante</color>", parent: CKRoles);
+        CIRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.Custom]);
+        CoronerOn = new(MultiMenu.Crew, "Coroner", CustomColorManager.Coroner, parent: CIRoles);
+        DetectiveOn = new(MultiMenu.Crew, "Detective", CustomColorManager.Detective, parent: CIRoles);
+        MediumOn = new(MultiMenu.Crew, "Medium", CustomColorManager.Medium, parent: CIRoles);
+        OperativeOn = new(MultiMenu.Crew, ">Operative", CustomColorManager.Operative, parent: CIRoles);
+        SeerOn = new(MultiMenu.Crew, "Seer", CustomColorManager.Seer, parent: CIRoles);
+        SheriffOn = new(MultiMenu.Crew, "Sheriff", CustomColorManager.Sheriff, parent: CIRoles);
+        TrackerOn = new(MultiMenu.Crew, "Tracker", CustomColorManager.Tracker, parent: CIRoles);
 
-        CrPRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
+        CKRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic, GameMode.AllAny,
             GameMode.Custom]);
-        AltruistOn = new(MultiMenu.Crew, "<color=#660000FF>Altruist</color>", parent: CrPRoles);
-        MedicOn = new(MultiMenu.Crew, "<color=#006600FF>Medic</color>", parent: CrPRoles);
-        TrapperOn = new(MultiMenu.Crew, "<color=#BE1C8CFF>Trapper</color>", parent: CrPRoles);
+        BastionOn = new(MultiMenu.Crew, "Bastion", CustomColorManager.Bastion, parent: CKRoles);
+        VeteranOn = new(MultiMenu.Crew, "Veteran", CustomColorManager.Veteran, parent: CKRoles);
+        VigilanteOn = new(MultiMenu.Crew, "Vigilante", CustomColorManager.Vigilante, parent: CKRoles);
 
-        CSvRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
+        CrPRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.Custom]);
+        AltruistOn = new(MultiMenu.Crew, "Altruist", CustomColorManager.Altruist, parent: CrPRoles);
+        MedicOn = new(MultiMenu.Crew, "Medic", CustomColorManager.Medic, parent: CrPRoles);
+        TrapperOn = new(MultiMenu.Crew, "Trapper", CustomColorManager.Trapper, parent: CrPRoles);
+
+        CSvRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.Custom]);
+        DictatorOn = new(MultiMenu.Crew, "Dictator", CustomColorManager.Dictator, parent: CSvRoles);
+        MayorOn = new(MultiMenu.Crew, "Mayor", CustomColorManager.Mayor, parent: CSvRoles);
+        MonarchOn = new(MultiMenu.Crew, "Monarch", CustomColorManager.Monarch, parent: CSvRoles);
+
+        CSRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic, GameMode.AllAny,
             GameMode.Custom]);
-        DictatorOn = new(MultiMenu.Crew, "<color=#00CB97FF>Dictator</color>", parent: CSvRoles);
-        MayorOn = new(MultiMenu.Crew, "<color=#704FA8FF>Mayor</color>", parent: CSvRoles);
-        MonarchOn = new(MultiMenu.Crew, "<color=#FF004EFF>Monarch</color>", parent: CSvRoles);
+        ChameleonOn = new(MultiMenu.Crew, "Chameleon", CustomColorManager.Chameleon, parent: CSRoles);
+        EngineerOn = new(MultiMenu.Crew, "Engineer", CustomColorManager.Engineer, parent: CSRoles);
+        EscortOn = new(MultiMenu.Crew, "Escort", CustomColorManager.Escort, parent: CSRoles);
+        RetributionistOn = new(MultiMenu.Crew, "Retributionist", CustomColorManager.Retributionist, parent: CSRoles);
+        ShifterOn = new(MultiMenu.Crew, "Shifter", CustomColorManager.Shifter, parent: CSRoles);
+        TransporterOn = new(MultiMenu.Crew, "Transporter", CustomColorManager.Transporter, parent: CSRoles);
 
-        CSRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
-        ChameleonOn = new(MultiMenu.Crew, "<color=#5411F8FF>Chameleon</color>", parent: CSRoles);
-        EngineerOn = new(MultiMenu.Crew, "<color=#FFA60AFF>Engineer</color>", parent: CSRoles);
-        EscortOn = new(MultiMenu.Crew, "<color=#803333FF>Escort</color>", parent: CSRoles);
-        RetributionistOn = new(MultiMenu.Crew, "<color=#8D0F8CFF>Retributionist</color>", parent: CSRoles);
-        ShifterOn = new(MultiMenu.Crew, "<color=#DF851FFF>Shifter</color>", parent: CSRoles);
-        TransporterOn = new(MultiMenu.Crew, "<color=#00EEFFFF>Transporter</color>", parent: CSRoles);
+        CURoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic, GameMode.AllAny,
+            GameMode.Custom]);
+        CrewmateOn = new(MultiMenu.Crew, "Crewmate", CustomColorManager.Crew, parent: [CURoles, GameMode.Custom], all: true);
+        RevealerOn = new(MultiMenu.Crew, "Revealer", CustomColorManager.Revealer, parent: CURoles);
 
-        CURoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
-        CrewmateOn = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crewmate</color>", parent: [CURoles, GameMode.Custom], all: true);
-        RevealerOn = new(MultiMenu.Crew, "<color=#D3D3D3FF>Revealer</color>", parent: CURoles);
-
-        CASettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> Settings", [VampireHunterOn, MysticOn, LayerEnum.VampireHunter, LayerEnum.CrewAudit,
-            LayerEnum.Mystic, LayerEnum.RandomCrew]);
+        CASettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> Settings", HeaderType.Layer, [VampireHunterOn, MysticOn, LayerEnum.VampireHunter,
+            LayerEnum.CrewAudit, LayerEnum.Mystic, LayerEnum.RandomCrew]);
         CAMax = new(MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditors</color>", 1, 1, 14, 1, CASettings);
 
         Mystic = new(MultiMenu.Crew, "<color=#708EEFFF>Mystic</color>", [MysticOn, LayerEnum.CrewAudit, LayerEnum.Mystic, LayerEnum.RandomCrew]);
@@ -1965,47 +1975,47 @@ public static class Generate
 
         CUSettings.Parents = [Revealer];
 
-        NBRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.Custom]);
-        AmnesiacOn = new(MultiMenu.Neutral, "<color=#22FFFFFF>Amnesiac</color>", parent: NBRoles);
-        GuardianAngelOn = new(MultiMenu.Neutral, "<color=#FFFFFFFF>Guardian Angel</color>", parent: NBRoles);
-        SurvivorOn = new(MultiMenu.Neutral, "<color=#DDDD00FF>Survivor</color>", parent: NBRoles);
-        ThiefOn = new(MultiMenu.Neutral, "<color=#80FF00FF>Thief</color>", parent: NBRoles);
+        NBRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.Custom]);
+        AmnesiacOn = new(MultiMenu.Neutral, "Amnesiac", CustomColorManager.Amnesiac, parent: NBRoles);
+        GuardianAngelOn = new(MultiMenu.Neutral, "Guardian Angel", CustomColorManager.GuardianAngel, parent: NBRoles);
+        SurvivorOn = new(MultiMenu.Neutral, "Survivor", CustomColorManager.Survivor, parent: NBRoles);
+        ThiefOn = new(MultiMenu.Neutral, "Thief", CustomColorManager.Thief, parent: NBRoles);
 
-        NERoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.Custom]);
-        ActorOn = new(MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color>", parent: NERoles);
-        BountyHunterOn = new(MultiMenu.Neutral, "<color=#B51E39FF>Bounty Hunter</color>", parent: NERoles);
-        CannibalOn = new(MultiMenu.Neutral, "<color=#8C4005FF>Cannibal</color>", parent: NERoles);
-        ExecutionerOn = new(MultiMenu.Neutral, "<color=#CCCCCCFF>Executioner</color>", parent: NERoles);
-        GuesserOn = new(MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color>", parent: NERoles);
-        JesterOn = new(MultiMenu.Neutral, "<color=#F7B3DAFF>Jester</color>", parent: NERoles);
-        TrollOn = new(MultiMenu.Neutral, "<color=#678D36FF>Troll</color>", parent: NERoles);
+        NERoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.Custom]);
+        ActorOn = new(MultiMenu.Neutral, "Actor", CustomColorManager.Actor, parent: NERoles);
+        BountyHunterOn = new(MultiMenu.Neutral, "Bounty Hunter", CustomColorManager.BountyHunter, parent: NERoles);
+        CannibalOn = new(MultiMenu.Neutral, "Cannibal", CustomColorManager.Cannibal, parent: NERoles);
+        ExecutionerOn = new(MultiMenu.Neutral, "Executioner", CustomColorManager.Executioner, parent: NERoles);
+        GuesserOn = new(MultiMenu.Neutral, "Guesser", CustomColorManager.Guesser, parent: NERoles);
+        JesterOn = new(MultiMenu.Neutral, "Jester", CustomColorManager.Jester, parent: NERoles);
+        TrollOn = new(MultiMenu.Neutral, "Troll", CustomColorManager.Troll, parent: NERoles);
 
-        NHRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.Custom, GameMode.KillingOnly, AddPlaguebearer]);
-        PlaguebearerOn = new(MultiMenu.Neutral, "<color=#CFFE61FF>Plaguebearer</color>", parent: [NHRoles, AddPlaguebearer]);
+        NHRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.Custom, GameMode.KillingOnly, AddPlaguebearer]);
+        PlaguebearerOn = new(MultiMenu.Neutral, "Plaguebearer", CustomColorManager.Plaguebearer, parent: [NHRoles, AddPlaguebearer]);
 
-        NKRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.KillingOnly,
-            GameMode.AllAny, GameMode.Custom, AddArsonist, AddCryomaniac]);
-        ArsonistOn = new(MultiMenu.Neutral, "<color=#EE7600FF>Arsonist</color>", parent: [NKRoles, AddArsonist]);
-        CryomaniacOn = new(MultiMenu.Neutral, "<color=#642DEAFF>Cryomaniac</color>", parent: [NKRoles, AddCryomaniac]);
-        GlitchOn = new(MultiMenu.Neutral, "<color=#00FF00FF>Glitch</color>", parent: NKRoles);
-        JuggernautOn = new(MultiMenu.Neutral, "<color=#A12B56FF>Juggernaut</color>", parent: NKRoles);
-        MurdererOn = new(MultiMenu.Neutral, "<color=#6F7BEAFF>Murderer</color>", parent: NKRoles);
-        SerialKillerOn = new(MultiMenu.Neutral, "<color=#336EFFFF>Serial Killer</color>", parent: NKRoles);
-        WerewolfOn = new(MultiMenu.Neutral, "<color=#9F703AFF>Werewolf</color>", parent: NKRoles);
+        NKRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom, AddArsonist, AddCryomaniac]);
+        ArsonistOn = new(MultiMenu.Neutral, "Arsonist", CustomColorManager.Arsonist, parent: [NKRoles, AddArsonist]);
+        CryomaniacOn = new(MultiMenu.Neutral, "Cryomaniac", CustomColorManager.Cryomaniac, parent: [NKRoles, AddCryomaniac]);
+        GlitchOn = new(MultiMenu.Neutral, "Glitch", CustomColorManager.Glitch, parent: NKRoles);
+        JuggernautOn = new(MultiMenu.Neutral, "Juggernaut", CustomColorManager.Juggernaut, parent: NKRoles);
+        MurdererOn = new(MultiMenu.Neutral, "Murderer", CustomColorManager.Murderer, parent: NKRoles);
+        SerialKillerOn = new(MultiMenu.Neutral, "Serial Killer", CustomColorManager.SerialKiller, parent: NKRoles);
+        WerewolfOn = new(MultiMenu.Neutral, "Werewolf", CustomColorManager.Werewolf, parent: NKRoles);
 
-        NNRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.Custom]);
-        DraculaOn = new(MultiMenu.Neutral, "<color=#AC8A00FF>Dracula</color>", parent: NNRoles);
-        JackalOn = new(MultiMenu.Neutral, "<color=#45076AFF>Jackal</color>", parent: NNRoles);
-        NecromancerOn = new(MultiMenu.Neutral, "<color=#BF5FFFFF>Necromancer</color>", parent: NNRoles);
-        WhispererOn = new(MultiMenu.Neutral, "<color=#2D6AA5FF>Whisperer</color>", parent: NNRoles);
+        NNRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.Custom]);
+        DraculaOn = new(MultiMenu.Neutral, "Dracula", CustomColorManager.Dracula, parent: NNRoles);
+        JackalOn = new(MultiMenu.Neutral, "Jackal", CustomColorManager.Jackal, parent: NNRoles);
+        NecromancerOn = new(MultiMenu.Neutral, "Necromancer", CustomColorManager.Necromancer, parent: NNRoles);
+        WhispererOn = new(MultiMenu.Neutral, "Whisperer", CustomColorManager.Whisperer, parent: NNRoles);
 
-        NPRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.Custom]);
-        PhantomOn = new(MultiMenu.Neutral, "<color=#662962FF>Phantom</color>", parent: NPRoles);
+        NPRoles = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.Custom]);
+        PhantomOn = new(MultiMenu.Neutral, "Phantom", CustomColorManager.Phantom, parent: NPRoles);
 
         NeutralSettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> Settings");
         NeutralVision = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> Vision", 1.5f, 0.25f, 5f, 0.25f, MultiplierFormat, NeutralSettings);
@@ -2219,7 +2229,7 @@ public static class Generate
         UniqueWerewolf = new(MultiMenu.Neutral, "<color=#9F703AFF>Werewolf</color> Is Unique", false, [Werewolf, EnableUniques], true);
         MaulCd = new(MultiMenu.Neutral, "Maul Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Werewolf);
         MaulRadius = new(MultiMenu.Neutral, "Maul Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat, Werewolf);
-        CanStillAttack = new(MultiMenu.Neutral, "<color=#AC8A00FF>Dracula</color> Can Attack Every Round", false, Werewolf);
+        CanStillAttack = new(MultiMenu.Neutral, "<color=#9F703AFF>Werewolf</color> Can Attack Every Round", false, Werewolf);
         WerewolfVent = new(MultiMenu.Neutral, "<color=#9F703AFF>Werewolf</color> Can Vent", ["Always", "When Attacking", "When Not Attacking", "Never"], Werewolf);
 
         NNSettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> Settings", [DraculaOn, WhispererOn, JackalOn, NecromancerOn,
@@ -2296,39 +2306,39 @@ public static class Generate
         IntruderMax = new(MultiMenu.Intruder, "Max <color=#FF1919FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1, [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
         IntruderMin = new(MultiMenu.Intruder, "Min <color=#FF1919FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1, [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
 
-        ICRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        BlackmailerOn = new(MultiMenu.Intruder, "<color=#02A752FF>Blackmailer</color>", parent: ICRoles);
-        CamouflagerOn = new(MultiMenu.Intruder, "<color=#378AC0FF>Camouflager</color>", parent: ICRoles);
-        GrenadierOn = new(MultiMenu.Intruder, "<color=#85AA5BFF>Grenadier</color>", parent: ICRoles);
-        JanitorOn = new(MultiMenu.Intruder, "<color=#2647A2FF>Janitor</color>", parent: ICRoles);
+        ICRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        BlackmailerOn = new(MultiMenu.Intruder, "Blackmailer", CustomColorManager.Blackmailer, parent: ICRoles);
+        CamouflagerOn = new(MultiMenu.Intruder, "Camouflager", CustomColorManager.Camouflager, parent: ICRoles);
+        GrenadierOn = new(MultiMenu.Intruder, "Grenadier", CustomColorManager.Grenadier, parent: ICRoles);
+        JanitorOn = new(MultiMenu.Intruder, "Janitor", CustomColorManager.Janitor, parent: ICRoles);
 
-        IDRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        DisguiserOn = new(MultiMenu.Intruder, "<color=#40B4FFFF>Disguiser</color>", parent: IDRoles);
-        MorphlingOn = new(MultiMenu.Intruder, "<color=#BB45B0FF>Morphling</color>", parent: IDRoles);
-        WraithOn = new(MultiMenu.Intruder, "<color=#5C4F75FF>Wraith</color>", parent: IDRoles);
+        IDRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        DisguiserOn = new(MultiMenu.Intruder, "Disguiser", CustomColorManager.Disguiser, parent: IDRoles);
+        MorphlingOn = new(MultiMenu.Intruder, "Morphling", CustomColorManager.Morphling, parent: IDRoles);
+        WraithOn = new(MultiMenu.Intruder, "Wraith", CustomColorManager.Wraith, parent: IDRoles);
 
-        IHRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Head</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        GodfatherOn = new(MultiMenu.Intruder, "<color=#404C08FF>Godfather</color>", parent: IHRoles);
+        IHRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Head</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        GodfatherOn = new(MultiMenu.Intruder, "Godfather", CustomColorManager.Godfather, parent: IHRoles);
 
-        IKRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        AmbusherOn = new(MultiMenu.Intruder, "<color=#2BD29CFF>Ambusher</color>", parent: IKRoles);
-        EnforcerOn = new(MultiMenu.Intruder, "<color=#005643FF>Enforcer</color>", parent: IKRoles);
+        IKRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        AmbusherOn = new(MultiMenu.Intruder, "Ambusher", CustomColorManager.Ambusher, parent: IKRoles);
+        EnforcerOn = new(MultiMenu.Intruder, "Enforcer", CustomColorManager.Enforcer, parent: IKRoles);
 
-        ISRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        ConsigliereOn = new(MultiMenu.Intruder, "<color=#FFFF99FF>Consigliere</color>", parent: ISRoles);
-        ConsortOn = new(MultiMenu.Intruder, "<color=#801780FF>Consort</color>", parent: ISRoles);
-        MinerOn = new(MultiMenu.Intruder, "<color=#AA7632FF>Miner</color>", parent: ISRoles);
-        TeleporterOn = new(MultiMenu.Intruder, "<color=#939593FF>Teleporter</color>", parent: ISRoles);
+        ISRoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        ConsigliereOn = new(MultiMenu.Intruder, "Consigliere", CustomColorManager.Consigliere, parent: ISRoles);
+        ConsortOn = new(MultiMenu.Intruder, "Consort", CustomColorManager.Consort, parent: ISRoles);
+        MinerOn = new(MultiMenu.Intruder, "Miner", CustomColorManager.Miner, parent: ISRoles);
+        TeleporterOn = new(MultiMenu.Intruder, "Teleporter", CustomColorManager.Teleporter, parent: ISRoles);
 
-        IURoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        GhoulOn = new(MultiMenu.Intruder, "<color=#F1C40FFF>Ghoul</color>", parent: IURoles);
-        ImpostorOn = new(MultiMenu.Intruder, "<color=#FF1919FF>Impostor</color>", parent: [IURoles, GameMode.Custom], all: true);
+        IURoles = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        GhoulOn = new(MultiMenu.Intruder, "Ghoul", CustomColorManager.Ghoul, parent: IURoles);
+        ImpostorOn = new(MultiMenu.Intruder, "Impostor", CustomColorManager.Intruder, parent: [IURoles, GameMode.Custom], all: true);
 
         ICSettings = new(MultiMenu.Intruder, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> Settings", [BlackmailerOn, CamouflagerOn, GrenadierOn, JanitorOn,
             LayerEnum.Blackmailer, LayerEnum.Camouflager, LayerEnum.Grenadier, LayerEnum.Janitor, LayerEnum.IntruderConceal, LayerEnum.RandomIntruder, LayerEnum.RegularIntruder]);
@@ -2447,6 +2457,7 @@ public static class Generate
         Miner = new(MultiMenu.Intruder, "<color=#AA7632FF>Miner</color>", [MinerOn, LayerEnum.Miner, LayerEnum.IntruderSupport, LayerEnum.RegularIntruder, LayerEnum.RandomIntruder]);
         UniqueMiner = new(MultiMenu.Intruder, "<color=#AA7632FF>Miner</color> Is Unique", false, [Miner, EnableUniques], true);
         MineCd = new(MultiMenu.Intruder, "Mine Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Miner);
+        MinerSpawnOnMira = new(MultiMenu.Intruder, "Can Spawn On Mira HQ", true, Miner);
 
         Teleporter = new(MultiMenu.Intruder, "<color=#939593FF>Teleporter</color>", [TeleporterOn, LayerEnum.Teleporter, LayerEnum.IntruderSupport, LayerEnum.RandomIntruder,
             LayerEnum.RegularIntruder]);
@@ -2475,36 +2486,36 @@ public static class Generate
         SyndicateMax = new(MultiMenu.Syndicate, "Max <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1, [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
         SyndicateMin = new(MultiMenu.Syndicate, "Min <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1, [GameMode.Classic, GameMode.AllAny, GameMode.Custom]);
 
-        SDRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        ConcealerOn = new(MultiMenu.Syndicate, "<color=#C02525FF>Concealer</color>", parent: SDRoles);
-        DrunkardOn = new(MultiMenu.Syndicate, "<color=#FF7900FF>Drunkard</color>", parent: SDRoles);
-        FramerOn = new(MultiMenu.Syndicate, "<color=#00FFFFFF>Framer</color>", parent: SDRoles);
-        ShapeshifterOn = new(MultiMenu.Syndicate, "<color=#2DFF00FF>Shapeshifter</color>", parent: SDRoles);
-        SilencerOn = new(MultiMenu.Syndicate, "<color=#AAB43EFF>Silencer</color>", parent: SDRoles);
-        TimekeeperOn = new(MultiMenu.Syndicate, "<color=#3769FEFF>Timekeeper</color>", parent: SDRoles);
+        SDRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        ConcealerOn = new(MultiMenu.Syndicate, "Concealer", CustomColorManager.Concealer, parent: SDRoles);
+        DrunkardOn = new(MultiMenu.Syndicate, "Drunkard", CustomColorManager.Drunkard, parent: SDRoles);
+        FramerOn = new(MultiMenu.Syndicate, "Framer", CustomColorManager.Framer, parent: SDRoles);
+        ShapeshifterOn = new(MultiMenu.Syndicate, "Shapeshifter", CustomColorManager.Shapeshifter, parent: SDRoles);
+        SilencerOn = new(MultiMenu.Syndicate, "Silencer", CustomColorManager.Silencer, parent: SDRoles);
+        TimekeeperOn = new(MultiMenu.Syndicate, "Timekeeper", CustomColorManager.Timekeeper, parent: SDRoles);
 
-        SyKRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        BomberOn = new(MultiMenu.Syndicate, "<color=#C9CC3FFF>Bomber</color>", parent: SyKRoles);
-        ColliderOn = new(MultiMenu.Syndicate, "<color=#B345FFFF>Collider</color>", parent: SyKRoles);
-        CrusaderOn = new(MultiMenu.Syndicate, "<color=#DF7AE8FF>Crusader</color>", parent: SyKRoles);
-        PoisonerOn = new(MultiMenu.Syndicate, "<color=#B5004CFF>Poisoner</color>", parent: SyKRoles);
+        SyKRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        BomberOn = new(MultiMenu.Syndicate, "Bomber", CustomColorManager.Bomber, parent: SyKRoles);
+        ColliderOn = new(MultiMenu.Syndicate, "Collider", CustomColorManager.Collider, parent: SyKRoles);
+        CrusaderOn = new(MultiMenu.Syndicate, "Crusader", CustomColorManager.Crusader, parent: SyKRoles);
+        PoisonerOn = new(MultiMenu.Syndicate, "Poisoner", CustomColorManager.Poisoner, parent: SyKRoles);
 
-        SPRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        RebelOn = new(MultiMenu.Syndicate, "<color=#FFFCCEFF>Rebel</color>", parent: SPRoles);
-        SpellslingerOn = new(MultiMenu.Syndicate, "<color=#0028F5FF>Spellslinger</color>", parent: SPRoles);
+        SPRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        RebelOn = new(MultiMenu.Syndicate, "Rebel", CustomColorManager.Rebel, parent: SPRoles);
+        SpellslingerOn = new(MultiMenu.Syndicate, "Spellslinger", CustomColorManager.Spellslinger, parent: SPRoles);
 
-        SSuRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        StalkerOn = new(MultiMenu.Syndicate, "<color=#7E4D00FF>Stalker</color>", parent: SSuRoles);
-        WarperOn = new(MultiMenu.Syndicate, "<color=#8C7140FF>Warper</color>", parent: SSuRoles);
+        SSuRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        StalkerOn = new(MultiMenu.Syndicate, "Stalker", CustomColorManager.Stalker, parent: SSuRoles);
+        WarperOn = new(MultiMenu.Syndicate, "Warper", CustomColorManager.Warper, parent: SSuRoles);
 
-        SURoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>", [GameMode.Classic, GameMode.AllAny,
-            GameMode.KillingOnly, GameMode.Custom]);
-        AnarchistOn = new(MultiMenu.Syndicate, "<color=#008000FF>Anarchist</color>", parent: [SURoles, GameMode.Custom], all: true);
-        BansheeOn = new(MultiMenu.Syndicate, "<color=#E67E22FF>Banshee</color>", parent: SURoles);
+        SURoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>", HeaderType.Layer, [GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom]);
+        AnarchistOn = new(MultiMenu.Syndicate, "Anarchist", CustomColorManager.Syndicate, parent: [SURoles, GameMode.Custom], all: true);
+        BansheeOn = new(MultiMenu.Syndicate, "Banshee", CustomColorManager.Banshee, parent: SURoles);
 
         SDSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> Settings", [ConcealerOn, DrunkardOn, FramerOn, ShapeshifterOn,
             SilencerOn, LayerEnum.RandomSyndicate, LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.SyndicateDisrup, TimekeeperOn,
@@ -2619,21 +2630,21 @@ public static class Generate
 
         SUSettings.Parents = [Banshee];
 
-        Modifiers = new(MultiMenu.Modifier, "<color=#7F7F7FFF>Modifiers</color>", [GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom]);
-        AstralOn = new(MultiMenu.Modifier, "<color=#612BEFFF>Astral</color>", parent: Modifiers);
-        BaitOn = new(MultiMenu.Modifier, "<color=#00B3B3FF>Bait</color>", parent: Modifiers);
-        ColorblindOn = new(MultiMenu.Modifier, "<color=#B34D99FF>Colorblind</color>", parent: Modifiers);
-        CowardOn = new(MultiMenu.Modifier, "<color=#456BA8FF>Coward</color>", parent: Modifiers);
-        DiseasedOn = new(MultiMenu.Modifier, "<color=#374D1EFF>Diseased</color>", parent: Modifiers);
-        DrunkOn = new(MultiMenu.Modifier, "<color=#758000FF>Drunk</color>", parent: Modifiers);
-        DwarfOn = new(MultiMenu.Modifier, "<color=#FF8080FF>Dwarf</color>", parent: Modifiers);
-        GiantOn = new(MultiMenu.Modifier, "<color=#FFB34DFF>Giant</color>", parent: Modifiers);
-        IndomitableOn = new(MultiMenu.Modifier, "<color=#2DE5BEFF>Indomitable</color>", parent: Modifiers);
-        ProfessionalOn = new(MultiMenu.Modifier, "<color=#860B7AFF>Professional</color>", parent: Modifiers);
-        ShyOn = new(MultiMenu.Modifier, "<color=#1002C5FF>Shy</color>", parent: Modifiers);
-        VIPOn = new(MultiMenu.Modifier, "<color=#DCEE85FF>VIP</color>", parent: Modifiers);
-        VolatileOn = new(MultiMenu.Modifier, "<color=#FFA60AFF>Volatile</color>", parent: Modifiers);
-        YellerOn = new(MultiMenu.Modifier, "<color=#F6AAB7FF>Yeller</color>", parent: Modifiers);
+        Modifiers = new(MultiMenu.Modifier, "<color=#7F7F7FFF>Modifiers</color>", HeaderType.Layer, [GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom]);
+        AstralOn = new(MultiMenu.Modifier, "Astral", CustomColorManager.Astral, parent: Modifiers);
+        BaitOn = new(MultiMenu.Modifier, "Bait", CustomColorManager.Bait, parent: Modifiers);
+        ColorblindOn = new(MultiMenu.Modifier, "Colorblind", CustomColorManager.Colorblind, parent: Modifiers);
+        CowardOn = new(MultiMenu.Modifier, "Coward", CustomColorManager.Coward, parent: Modifiers);
+        DiseasedOn = new(MultiMenu.Modifier, "Diseased", CustomColorManager.Diseased, parent: Modifiers);
+        DrunkOn = new(MultiMenu.Modifier, "Drunk", CustomColorManager.Drunk, parent: Modifiers);
+        DwarfOn = new(MultiMenu.Modifier, "Dwarf", CustomColorManager.Dwarf, parent: Modifiers);
+        GiantOn = new(MultiMenu.Modifier, "Giant", CustomColorManager.Giant, parent: Modifiers);
+        IndomitableOn = new(MultiMenu.Modifier, "Indomitable", CustomColorManager.Indomitable, parent: Modifiers);
+        ProfessionalOn = new(MultiMenu.Modifier, "Professional", CustomColorManager.Professional, parent: Modifiers);
+        ShyOn = new(MultiMenu.Modifier, "Shy", CustomColorManager.Shy, parent: Modifiers);
+        VIPOn = new(MultiMenu.Modifier, "VIP", CustomColorManager.VIP, parent: Modifiers);
+        VolatileOn = new(MultiMenu.Modifier, "Volatile", CustomColorManager.Volatile, parent: Modifiers);
+        YellerOn = new(MultiMenu.Modifier, "Yeller", CustomColorManager.Yeller, parent: Modifiers);
 
         ModifierSettings = new(MultiMenu.Modifier, "<color=#7F7F7FFF>Modifier</color> Settings", [AstralOn, BaitOn, CowardOn, DiseasedOn, DrunkOn, DwarfOn, GiantOn, ShyOn, VIPOn,
             IndomitableOn, ProfessionalOn, VolatileOn, YellerOn, ColorblindOn]);
@@ -2699,24 +2710,24 @@ public static class Generate
         Yeller = new(MultiMenu.Modifier, "<color=#F6AAB7FF>Yeller</color>", [YellerOn, EnableUniques], true);
         UniqueYeller = new(MultiMenu.Modifier, "<color=#F6AAB7FF>Yeller</color> Is Unique", false, Yeller);
 
-        Abilities = new(MultiMenu.Ability, "<color=#FF9900FF>Abilities</color>", [GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom]);
-        ButtonBarryOn = new(MultiMenu.Ability, "<color=#E600FFFF>Button Barry</color>", parent: Abilities);
-        CrewAssassinOn = new(MultiMenu.Ability, "<color=#8CFFFFFF>Bullseye</color>", parent: Abilities);
-        IntruderAssassinOn = new(MultiMenu.Ability, "<color=#FF1919FF>Hitman</color>", parent: Abilities);
-        InsiderOn = new(MultiMenu.Ability, "<color=#26FCFBFF>Insider</color>", parent: Abilities);
-        MultitaskerOn = new(MultiMenu.Ability, "<color=#FF804DFF>Multitasker</color>", parent: Abilities);
-        NinjaOn = new(MultiMenu.Ability, "<color=#A84300FF>Ninja</color>", parent: Abilities);
-        PoliticianOn = new(MultiMenu.Ability, "<color=#CCA3CCFF>Politician</color>", parent: Abilities);
-        RadarOn = new(MultiMenu.Ability, "<color=#FF0080FF>Radar</color>", parent: Abilities);
-        RuthlessOn = new(MultiMenu.Ability, "<color=#2160DDFF>Ruthless</color>", parent: Abilities);
-        SnitchOn = new(MultiMenu.Ability, "<color=#D4AF37FF>Snitch</color>", parent: Abilities);
-        SwapperOn = new(MultiMenu.Ability, "<color=#66E666FF>Swapper</color>", parent: Abilities);
-        NeutralAssassinOn = new(MultiMenu.Ability, "<color=#B3B3B3FF>Slayer</color>", parent: Abilities);
-        SyndicateAssassinOn = new(MultiMenu.Ability, "<color=#008000FF>Sniper</color>", parent: Abilities);
-        TiebreakerOn = new(MultiMenu.Ability, "<color=#99E699FF>Tiebreaker</color>", parent: Abilities);
-        TorchOn = new(MultiMenu.Ability, "<color=#FFFF99FF>Torch</color>", parent: Abilities);
-        TunnelerOn = new(MultiMenu.Ability, "<color=#E91E63FF>Tunneler</color>", parent: Abilities);
-        UnderdogOn = new(MultiMenu.Ability, "<color=#841A7FFF>Underdog</color>", parent: Abilities);
+        Abilities = new(MultiMenu.Ability, "<color=#FF9900FF>Abilities</color>", HeaderType.Layer, [GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom]);
+        ButtonBarryOn = new(MultiMenu.Ability, "Button Barry", CustomColorManager.ButtonBarry, parent: Abilities);
+        CrewAssassinOn = new(MultiMenu.Ability, "Bullseye", CustomColorManager.Crew, parent: Abilities);
+        IntruderAssassinOn = new(MultiMenu.Ability, "Hitman", CustomColorManager.Intruder, parent: Abilities);
+        InsiderOn = new(MultiMenu.Ability, "Insider", CustomColorManager.Insider, parent: Abilities);
+        MultitaskerOn = new(MultiMenu.Ability, "Multitasker", CustomColorManager.Multitasker, parent: Abilities);
+        NinjaOn = new(MultiMenu.Ability, "Ninja", CustomColorManager.Ninja, parent: Abilities);
+        PoliticianOn = new(MultiMenu.Ability, "Politician", CustomColorManager.Politician, parent: Abilities);
+        RadarOn = new(MultiMenu.Ability, "Radar", CustomColorManager.Radar, parent: Abilities);
+        RuthlessOn = new(MultiMenu.Ability, "Ruthless", CustomColorManager.Ruthless, parent: Abilities);
+        SnitchOn = new(MultiMenu.Ability, "Snitch", CustomColorManager.Snitch, parent: Abilities);
+        SwapperOn = new(MultiMenu.Ability, "Swapper", CustomColorManager.Swapper, parent: Abilities);
+        NeutralAssassinOn = new(MultiMenu.Ability, "Slayer", CustomColorManager.Neutral, parent: Abilities);
+        SyndicateAssassinOn = new(MultiMenu.Ability, "Sniper", CustomColorManager.Syndicate, parent: Abilities);
+        TiebreakerOn = new(MultiMenu.Ability, "Tiebreaker", CustomColorManager.Tiebreaker, parent: Abilities);
+        TorchOn = new(MultiMenu.Ability, "Torch", CustomColorManager.Torch, parent: Abilities);
+        TunnelerOn = new(MultiMenu.Ability, "Tunneler", CustomColorManager.Tunneler, parent: Abilities);
+        UnderdogOn = new(MultiMenu.Ability, "Underdog", CustomColorManager.Underdog, parent: Abilities);
 
         AbilitySettings = new(MultiMenu.Ability, "<color=#FF9900FF>Ability</color> Settings", [CrewAssassinOn, NeutralAssassinOn, IntruderAssassinOn, SyndicateAssassinOn, NinjaOn,
             ButtonBarryOn, InsiderOn, MultitaskerOn, PoliticianOn, RadarOn, RuthlessOn, SnitchOn, SwapperOn, TiebreakerOn, TunnelerOn, UnderdogOn]);
@@ -2801,18 +2812,18 @@ public static class Generate
         UnderdogKillBonus = new(MultiMenu.Ability, "Kill Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat, Underdog);
         UnderdogIncreasedKC = new(MultiMenu.Ability, "Increased Kill Cooldown When 2+ Teammates", true, Underdog);
 
-        Objectifiers = new(MultiMenu.Objectifier, "<color=#DD585BFF>Objectifiers</color>", [GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom]);
-        AlliedOn = new(MultiMenu.Objectifier, "<color=#4545A9FF>Allied</color>", parent: Objectifiers);
-        CorruptedOn = new(MultiMenu.Objectifier, "<color=#4545FFFF>Corrupted</color>", parent: Objectifiers);
-        DefectorOn = new(MultiMenu.Objectifier, "<color=#E1C849FF>Defector</color>", parent: Objectifiers);
-        FanaticOn = new(MultiMenu.Objectifier, "<color=#678D36FF>Fanatic</color>", parent: Objectifiers);
-        LinkedOn = new(MultiMenu.Objectifier, "<color=#FF351FFF>Linked</color> Pairs", 1, 7, Objectifiers);
-        LoversOn = new(MultiMenu.Objectifier, "<color=#FF66CCFF>Lovers</color> Pairs", 1, 7, Objectifiers);
-        MafiaOn = new(MultiMenu.Objectifier, "<color=#00EEFFFF>Mafia</color>", 2, parent: Objectifiers);
-        OverlordOn = new(MultiMenu.Objectifier, "<color=#008080FF>Overlord</color>", parent: Objectifiers);
-        RivalsOn = new(MultiMenu.Objectifier, "<color=#3D2D2CFF>Rivals</color> Pairs", 1, 7, Objectifiers);
-        TaskmasterOn = new(MultiMenu.Objectifier, "<color=#ABABFFFF>Taskmaster</color>", parent: Objectifiers);
-        TraitorOn = new(MultiMenu.Objectifier, "<color=#370D43FF>Traitor</color>", parent: Objectifiers);
+        Objectifiers = new(MultiMenu.Objectifier, "<color=#DD585BFF>Objectifiers</color>", HeaderType.Layer, [GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom]);
+        AlliedOn = new(MultiMenu.Objectifier, "Allied", CustomColorManager.Allied, parent: Objectifiers);
+        CorruptedOn = new(MultiMenu.Objectifier, "Corrupted", CustomColorManager.Corrupted, parent: Objectifiers);
+        DefectorOn = new(MultiMenu.Objectifier, "Defector", CustomColorManager.Defector, parent: Objectifiers);
+        FanaticOn = new(MultiMenu.Objectifier, "Fanatic", CustomColorManager.Fanatic, parent: Objectifiers);
+        LinkedOn = new(MultiMenu.Objectifier, "Linked Pairs", CustomColorManager.Linked, 1, 7, Objectifiers);
+        LoversOn = new(MultiMenu.Objectifier, "Lovers Pairs", CustomColorManager.Lovers, 1, 7, Objectifiers);
+        MafiaOn = new(MultiMenu.Objectifier, "Mafia", CustomColorManager.Mafia, 2, parent: Objectifiers);
+        OverlordOn = new(MultiMenu.Objectifier, "Overlord", CustomColorManager.Overlord, parent: Objectifiers);
+        RivalsOn = new(MultiMenu.Objectifier, "Rivals Pairs", CustomColorManager.Rivals, 1, 7, Objectifiers);
+        TaskmasterOn = new(MultiMenu.Objectifier, "Taskmaster", CustomColorManager.Taskmaster, parent: Objectifiers);
+        TraitorOn = new(MultiMenu.Objectifier, "Traitor", CustomColorManager.Traitor, parent: Objectifiers);
 
         Betrayer.Parents = [TraitorOn, FanaticOn];
 

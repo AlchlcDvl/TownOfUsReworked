@@ -20,7 +20,6 @@ public static class CustomHatManager
         viewData.LeftMainImage = ch.FlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FlipID), CosmeticTypeEnum.Hat) : viewData.MainImage;
         viewData.LeftFloorImage = ch.FloorFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FloorFlipID), CosmeticTypeEnum.Hat) : viewData.FloorImage;
         viewData.MatchPlayerColor = ch.Adaptive;
-        hat.SpritePreview = viewData.MainImage;
         hat.name = ch.Name;
         hat.displayOrder = 99;
         hat.ProductId = "customHat_" + ch.Name.Replace(' ', '_');
@@ -97,7 +96,7 @@ public static class CustomHatManager
 
     public static HatExtension GetExtention(this HatData hat)
     {
-        if (hat == null)
+        if (!hat)
             return null;
 
         CustomHatRegistry.TryGetValue(hat.name, out var ret);

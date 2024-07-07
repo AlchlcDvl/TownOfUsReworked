@@ -1,5 +1,7 @@
-### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***
-### ***Also Note: This mod is NOT for mobile and console versions and is NOT host only either, do not ask for a port or a rewrite.***
+
+> [!NOTE]
+> This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.
+> This mod is NOT for mobile and console versions and is NOT host only either, do not ask for a port or a rewrite.
 
 -----------------------
 
@@ -19,11 +21,14 @@ An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds 
 
 This mod is a mish mash of code and ideas from different games, mods and forks, mainly from Town Of Salem, Town Of Us Reactivated and The Other Roles. Enjoy the chaos that comes out as a result!
 
-Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
+> [!NOTE]
+> Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
-Check out the mod's [wiki](https://github.com/AlchlcDvl/TownOfUsReworked/wiki) for info!
+> [!NOTE]
+> Check out the mod's [wiki](https://github.com/AlchlcDvl/TownOfUsReworked/wiki) for info!
 
-Quick warning: This mod adds a whole LOT of stuff, and is currently not very beginner friendly. I've added a bunch of helpful wiki entries to make the mod easier to understand, but it's still a lot of reading you're going to have to do.
+> [!WARNING]
+> This mod adds a whole LOT of stuff, and is currently not very beginner friendly. I've added a bunch of helpful wiki entries to make the mod easier to understand, but it's still a lot of reading you're going to have to do.
 
 -----------------------
 
@@ -148,6 +153,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 | Among Us           | Mod Version | Download Link                                                                                   |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
+| 2024.3.5 (s & e)   | 0.6.7       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.7/Reworked.zip) |
 | 2024.3.5 (s & e)   | 0.6.6       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.6/Reworked.zip) |
 | 2023.11.28 (s & e) | 0.6.5       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.5/Reworked.zip) |
 | 2023.11.28 (s & e) | 0.6.4       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.4/Reworked.zip) |

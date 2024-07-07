@@ -56,7 +56,7 @@ public class Warper : Syndicate
         {
             Player1Body = BodyById(WarpPlayer1.PlayerId);
 
-            if (Player1Body == null)
+            if (!Player1Body)
                 yield break;
         }
 
@@ -64,7 +64,7 @@ public class Warper : Syndicate
         {
             Player2Body = BodyById(WarpPlayer2.PlayerId);
 
-            if (Player2Body == null)
+            if (!Player2Body)
                 yield break;
         }
 
@@ -96,7 +96,7 @@ public class Warper : Syndicate
         if (CustomPlayer.Local == WarpPlayer1)
             Flash(Color, CustomGameOptions.WarpDur);
 
-        if (Player1Body == null && !WasInVent)
+        if (!Player1Body && !WasInVent)
             AnimateWarp();
 
         var startTime = DateTime.UtcNow;
@@ -117,7 +117,7 @@ public class Warper : Syndicate
             }
         }
 
-        if (Player1Body == null && Player2Body == null)
+        if (!Player1Body && !Player2Body)
         {
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.CustomSnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
@@ -128,10 +128,10 @@ public class Warper : Syndicate
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
 
-            if (WarpPlayer1.CanVent() && Vent != null && WasInVent)
+            if (WarpPlayer1.CanVent() && Vent && WasInVent)
                 WarpPlayer1.MyPhysics.RpcEnterVent(Vent.Id);
         }
-        else if (Player1Body != null && Player2Body == null)
+        else if (Player1Body && !Player2Body)
         {
             StopDragging(Player1Body.ParentId);
             Player1Body.transform.position = WarpPlayer2.GetTruePosition();
@@ -142,7 +142,7 @@ public class Warper : Syndicate
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
         }
-        else if (Player1Body == null && Player2Body != null)
+        else if (!Player1Body && Player2Body)
         {
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
@@ -153,7 +153,7 @@ public class Warper : Syndicate
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
         }
-        else if (Player1Body != null && Player2Body != null)
+        else if (Player1Body && Player2Body)
         {
             StopDragging(Player1Body.ParentId);
             Player1Body.transform.position = Player2Body.TruePosition;
@@ -195,10 +195,10 @@ public class Warper : Syndicate
     }
 
     public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
-        (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
+        (!BodyById(player.PlayerId) && player.Data.IsDead) || player.IsMoving();
 
     public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
-        (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
+        (!BodyById(player.PlayerId) && player.Data.IsDead) || player.IsMoving();
 
     public void AnimateWarp()
     {
@@ -227,7 +227,7 @@ public class Warper : Syndicate
             var player = PlayerById(id);
             var body = BodyById(id);
 
-            if (body != null)
+            if (body)
             {
                 body.transform.position = pos;
                 CallRpc(CustomRPC.Misc, MiscRPC.MoveBody, body, pos);
@@ -251,9 +251,9 @@ public class Warper : Syndicate
             WarpAll();
             WarpButton.StartCooldown();
         }
-        else if (WarpPlayer1 == null)
+        else if (!WarpPlayer1)
             WarpMenu1.Open();
-        else if (WarpPlayer2 == null)
+        else if (!WarpPlayer2)
             WarpMenu2.Open();
         else
         {

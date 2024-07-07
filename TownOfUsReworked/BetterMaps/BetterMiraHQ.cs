@@ -84,40 +84,40 @@ public static class MiraShipStatusPatch
 
     private static void FindVents()
     {
-        if (SpawnVent == null)
+        if (!SpawnVent)
             SpawnVent = AllVents.Find(vent => vent.gameObject.name == "LaunchVent");
 
-        if (BalcVent == null)
+        if (!BalcVent)
             BalcVent = AllVents.Find(vent => vent.gameObject.name == "BalconyVent");
 
-        if (ReactorVent == null)
+        if (!ReactorVent)
             ReactorVent = AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
 
-        if (LabVent == null)
+        if (!LabVent)
             LabVent = AllVents.Find(vent => vent.gameObject.name == "LabVent");
 
-        if (LockerVent == null)
+        if (!LockerVent)
             LockerVent = AllVents.Find(vent => vent.gameObject.name == "LockerVent");
 
-        if (AdminVent == null)
+        if (!AdminVent)
             AdminVent = AllVents.Find(vent => vent.gameObject.name == "AdminVent");
 
-        if (LightsVent == null)
+        if (!LightsVent)
             LightsVent = AllVents.Find(vent => vent.gameObject.name == "OfficeVent");
 
-        if (O2Vent == null)
+        if (!O2Vent)
             O2Vent = AllVents.Find(vent => vent.gameObject.name == "AgriVent");
 
-        if (DeconVent == null)
+        if (!DeconVent)
             DeconVent = AllVents.Find(vent => vent.gameObject.name == "DeconVent");
 
-        if (MedicVent == null)
+        if (!MedicVent)
             MedicVent = AllVents.Find(vent => vent.gameObject.name == "MedVent");
 
-        if (YRightVent == null)
+        if (!YRightVent)
             YRightVent = AllVents.Find(vent => vent.gameObject.name == "YHallRightVent");
 
-        if (CommsVent == null)
+        if (!CommsVent)
         {
             CommsVent = UObject.Instantiate(YRightVent, Comms.transform);
             CommsVent.Right = null;
@@ -131,7 +131,7 @@ public static class MiraShipStatusPatch
 
     private static void FindRooms()
     {
-        if (Comms == null)
+        if (!Comms)
             Comms = AllGameObjects.Find(o => o.name == "Comms");
 
         IsRoomsFetched = Comms;

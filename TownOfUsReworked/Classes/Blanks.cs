@@ -4,7 +4,9 @@ public static class Blanks
 {
     public static void BlankVoid() {}
 
-    public static void BlankVoid(object _, object __) {}
+    public static void BlankVoid(object _) {}
+
+    public static void BlankVoid(OptionBehaviour _) {}
 
     public static bool BlankTrue() => true;
 

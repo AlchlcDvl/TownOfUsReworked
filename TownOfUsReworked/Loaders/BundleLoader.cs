@@ -1,0 +1,50 @@
+namespace TownOfUsReworked.Loaders;
+
+public class BundleLoader : AssetLoader<Asset>
+{
+    public override string DirectoryInfo => TownOfUsReworked.Misc;
+    public override bool Downloading => true;
+    public override string Manifest => "MiscAssets";
+
+    public static BundleLoader Instance { get; set; }
+
+    public override IEnumerator BeginDownload(object response)
+    {
+        var mainResponse = (List<Asset>)response;
+        LogMessage($"Found {mainResponse.Count} assets");
+        var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
+        LogMessage($"Downloading {toDownload.Count()} assets");
+
+        foreach (var fileName in toDownload)
+            yield return CoDownloadAsset(fileName, this, "");
+    }
+
+    public override IEnumerator AfterLoading(object response)
+    {
+        var assets = (List<Asset>)response;
+        var time = 0f;
+
+        for (var i = 0; i < assets.Count; i++)
+        {
+            var asset = assets[i];
+            var bundle = LoadBundle(File.Open(Path.Combine(DirectoryInfo, asset.ID), FileMode.Open));
+            Bundles[asset.ID] = bundle;
+            bundle.AllAssetNames().ForEach(x => ObjectToBundle[ConvertToBaseName(x)] = asset.ID);
+            time += Time.deltaTime;
+
+            if (time > 1f)
+            {
+                time = 0f;
+                UpdateSplashPatch.SetText($"Loading Assets ({i + 1}/{assets.Count})");
+                yield return EndFrame();
+            }
+        }
+
+        assets.Clear();
+        yield break;
+    }
+
+    private static bool ShouldDownload(string id) => !File.Exists(Path.Combine(TownOfUsReworked.Misc, id));
+
+    private static string ConvertToBaseName(string name) => name.Split('/').Last().Split('.').First();
+}

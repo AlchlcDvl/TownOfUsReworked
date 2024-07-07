@@ -117,7 +117,7 @@ public static class PerformPet
 [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
 public static class PerformKill
 {
-    public static bool Prefix() => false;
+    public static bool Prefix() => IsHnS;
 }
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -229,10 +229,13 @@ public static class Blocked
             ReportBlock.SetActive(LocalBlocked && __instance.ReportButton.isActiveAndEnabled);
         }
 
-        __instance.KillButton.SetTarget(null);
-        __instance.KillButton.gameObject.SetActive(false);
+        if (!IsHnS)
+        {
+            __instance.KillButton.SetTarget(null);
+            __instance.KillButton.gameObject.SetActive(false);
+        }
 
-        if (__instance.ImpostorVentButton.currentTarget == null || LocalBlocked)
+        if (!__instance.ImpostorVentButton.currentTarget || LocalBlocked)
             __instance.ImpostorVentButton.SetDisabled();
         else
             __instance.ImpostorVentButton.SetEnabled();
@@ -241,7 +244,7 @@ public static class Blocked
         __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map && Map.IsOpen) && !ActiveTask);
         var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: CustomGameOptions.ReportDistance);
 
-        if (closestDead == null || CustomPlayer.Local.CannotUse())
+        if (!closestDead || CustomPlayer.Local.CannotUse())
             __instance.ReportButton.SetDisabled();
         else
             __instance.ReportButton.SetEnabled();
@@ -270,7 +273,7 @@ public static class Blocked
         __instance.SabotageButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "SABOTAGE";
         __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map && Map.IsOpen) && !ActiveTask);
 
-        if (!IsInGame)
+        if (!IsInGame || IsLobby)
             __instance.AbilityButton.gameObject.SetActive(false);
         else if (IsHnS)
             __instance.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());

@@ -48,7 +48,7 @@ public class Drunkard : Syndicate
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfuseButton);
             ConfuseButton.Begin();
         }
-        else if (ConfusedPlayer == null)
+        else if (!ConfusedPlayer)
             ConfuseMenu.Open();
         else
         {

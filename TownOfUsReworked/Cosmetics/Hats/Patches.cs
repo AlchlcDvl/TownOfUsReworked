@@ -43,10 +43,10 @@ public static class PlayerPhysicsHandleAnimationPatch
 
             var extend = hp.Hat.GetExtention();
 
-            if (extend.FlipImage != null)
+            if (extend.FlipImage)
                 hp.FrontLayer.sprite = __instance.FlipX ? extend.FlipImage : viewData.MainImage;
 
-            if (extend.BackFlipImage != null)
+            if (extend.BackFlipImage)
                 hp.BackLayer.sprite = __instance.FlipX ? extend.BackFlipImage : viewData.BackImage;
         } catch {}
     }
@@ -329,17 +329,10 @@ public static class CosmeticsCacheGetHatPatch
 {
     public static bool Prefix(CosmeticsCache __instance, ref string id, ref HatViewData __result)
     {
-        var cache = __result;
-
         if (!CustomHatViewDatas.TryGetValue(id, out __result))
-        {
-            __result = cache;
             return true;
-        }
 
-        if (__result == null)
-            __result = __instance.hats["hat_NoHat"].GetAsset();
-
+        __result ??= __instance.hats["hat_NoHat"].GetAsset();
         return false;
     }
 }
@@ -354,7 +347,7 @@ public static class HatsTabOnEnablePatch
         var isDefaultPackage = "Innersloth" == packageName;
 
         if (!isDefaultPackage)
-            hats = hats.OrderBy(x => x.name).ToList();
+            hats = [ .. hats.OrderBy(x => x.name) ];
 
         var offset = YStart;
 
@@ -378,12 +371,12 @@ public static class HatsTabOnEnablePatch
 
             if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
             {
-                colorChip.Button.OnMouseOver.AddListener((Action)(() => __instance.SelectHat(hat)));
-                colorChip.Button.OnMouseOut.AddListener((Action)(() => __instance.SelectHat(HatManager.Instance.GetHatById(DataManager.Player.Customization.Hat))));
-                colorChip.Button.OnClick.AddListener((Action)(() => __instance.ClickEquip()));
+                colorChip.Button.OverrideOnMouseOverListeners(() => __instance.SelectHat(hat));
+                colorChip.Button.OverrideOnMouseOutListeners(() => __instance.SelectHat(HatManager.Instance.GetHatById(DataManager.Player.Customization.Hat)));
+                colorChip.Button.OverrideOnClickListeners(__instance.ClickEquip);
             }
             else
-                colorChip.Button.OnClick.AddListener((Action)(() => __instance.SelectHat(hat)));
+                colorChip.Button.OverrideOnClickListeners(() => __instance.SelectHat(hat));
 
             if (hat.GetExtention() != null)
             {

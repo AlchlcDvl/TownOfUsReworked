@@ -31,7 +31,11 @@ public class Defector : Objectifier
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
     public override bool Hidden => !CustomGameOptions.DefectorKnows && !Turned;
 
-    public override void Init() => Side = Player.GetFaction();
+    public override void Init()
+    {
+        base.Init();
+        Side = Player.GetFaction();
+    }
 
     public static void GetFactionChoice(out bool crew, out bool evil, out bool neut)
     {

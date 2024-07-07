@@ -7,45 +7,32 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 New!
-- Addition: Added options to turn off role changes for certain roles
-- Addition: Added a client side option to disable other ghosts from appearing when you are dead yourself
-- Addition: Added some options to control role/objectifier conversions
-- Addition: Added an animation to zooming in and out
-- Update: Updated codebase to C# 12
-- Update: Updated the mod to Among Us v2024.3.5
-- Update: Updated BepInEx to v6.0.0-be.688
+- Addition: Colorblind now has grayscale vision
+- Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
-- Nerf: Alive Guardian Angels will now cancel their ongoing protections when killed
-- Change: Lovers, Rivals and Linked partner assignment has been changed to support more randomisation
-- Change: When changing roles as an Amnesiac, Thief or Actor, you no longer change into a transformed apocalypse role directly
-- Change: Vampire Hunter is now a valid role change target for Thief
-- Change: Defectors can now defect to being Neutral (and as such behave as an NK)
-- Improvement: Improved how mod assets are downloaded and loaded
-- Improvement: Improved on some role to role conversions regarding objectifiers
-- Recode: Recoded the buttons for the n-th time to be more optimised
-- Recode: Recoded how body dragging and player colors are handled
+- Update: Updated the mod to Among Us v2024.6.18
+- Update: Updated BepInEx to 6.0.0-be.692
+- Update: Updated Reactor to 2.2.1*
+- Change: Jackal recruits can now need to only be of opposite factions so it's more flexible
+- Change: Shifter now has a player menu to swap through to prevent auto confirms
+- Improvement: Improved some button handling
+- Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
+- Recode: The custom options have been given a full recode to work even better than before
 
 Fixes!
-- Critical: Fixed Hide and Seek and Task Race just not working
-- Role: Fixed Retributionist-Mediums and Mediums not mediating properly
-- Role: Fixed Actors being able to get Actor in their target lists
-- Role: Fixed some role conversion shenanigans with Shifter, Amnesiac, Thief and Actor
-- Role: Fixed some Godfather-Mafioso and Rebel-Sidekick interactions to account for role changes
-- Role: Part 2 to fixing Rebels and Godfathers being able to promote those they shouldn't
-- Role: Fixed Retributionist abilities not cancelling when they should
-- Objectifier: Fixed Allied factions not syncing correctly
-- Objectifier: Defector no longer breaks
-- Objectifier: Fixed Fanatics not converting when attacked
-- Visual: Fixed Fungle zipline hands being the wrong colors
-- Visual: Fixed button targets not being highlighted correctly
-- General: Reduced the intro loading time a bit
-- General: Resolved some more stuttering
-- General: Fixed conversions incorrectly syncing after the host leaves for any reason mid-game
-- General: Fixed changing lobby sizes in settings crashing the game
-- General: Fixed interactions killing players directly instead of spreading pestilence like they should
-- General: Fixed interaction failure not actually resetting the cooldowns to failure as they should
-- General: Fixed a couple of other minor bugs
+- Critical: Fixed the rare instance where the host may lag a lot when a round starts
+- Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
+- Ability: Fixed the edge case where Swapper swaps didn't appear to be correctly selected
+- Visual: Fixed ability buttons appearing and disappearing incorrectly
+- General: Fixed spawning in forbidden places with Random Spawns on (somewhat)
+- General: Fixed dead players not being able to see roles even with the setting turned on
+- General: Some fixes with cosmetics*
+- General: Fixed some issues with button initialisation breaking role gen somehow (it's a bandaid fix, a proper fix will come later)
+- General: Made some more fixes for base game Hide and Seek
+- General: Fixed Submerged updater not actually checking for updates
+- General: Fixed not being able to get achievements for kills (why would you even want this only god knows)
+- General: Fixed body locations being shown of players who have been revived
 
 Credits-
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi

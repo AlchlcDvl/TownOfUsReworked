@@ -27,7 +27,7 @@ public class Actor : Neutral
         PretendRoles = [];
     }
 
-    private string PretendListString()
+    public string PretendListString()
     {
         var text = $"{PretendRoles[0].Name}, ";
         var pos = 0;

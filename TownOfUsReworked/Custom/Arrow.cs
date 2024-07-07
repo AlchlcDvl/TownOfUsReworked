@@ -45,7 +45,7 @@ public class CustomArrow
 
     public void Update(Vector3 target, UColor? color = null)
     {
-        if (ArrowObj == null || Arrow == null || Render == null || (Owner != CustomPlayer.Local && Disabled))
+        if (!ArrowObj || !Arrow || !Render || (Owner != CustomPlayer.Local && Disabled))
             return;
 
         if (Owner != CustomPlayer.Local)

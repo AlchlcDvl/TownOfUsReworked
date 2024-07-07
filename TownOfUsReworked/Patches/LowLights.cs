@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius))]
 public static class CalculateLightRadiusPatch
 {
-    public static bool Prefix(ShipStatus __instance, ref GameData.PlayerInfo player, ref float __result)
+    public static bool Prefix(ShipStatus __instance, ref NetworkedPlayerInfo player, ref float __result)
     {
         if (player == null)
             return false;
@@ -44,7 +44,7 @@ public static class CalculateLightRadiusPatch
         else if (pc.Is(LayerEnum.Hunted))
             __result = __instance.MaxLightRadius * CustomGameOptions.HuntedVision;
         else if (pc.Is(LayerEnum.Hunter))
-            __result = __instance.MaxLightRadius * (pc.GetRole<Hunter>().Starting ? 0f : CustomGameOptions.HunterVision);
+            __result = __instance.MaxLightRadius * (pc.GetLayer<Hunter>().Starting ? 0f : CustomGameOptions.HunterVision);
         else
         {
             var t = __instance.MaxLightRadius;

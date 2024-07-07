@@ -94,7 +94,7 @@ public class CustomColor : CustomCosmetic
     [JsonPropertyName("stringid")]
     public int StringID { get; set; }
 
-    [JsonPropertyName("rgbmain")]
+    /*[JsonPropertyName("rgbmain")]
     public string RGBMain { get; set; }
 
     [JsonPropertyName("rgbshadow")]
@@ -104,7 +104,7 @@ public class CustomColor : CustomCosmetic
     public string HSBMain { get; set; }
 
     [JsonPropertyName("hsbshadow")]
-    public string HSBShadow { get; set; }
+    public string HSBShadow { get; set; }*/
 
     [JsonPropertyName("default")]
     public bool Default { get; set; }
@@ -115,16 +115,19 @@ public class CustomColor : CustomCosmetic
     [JsonPropertyName("lighter")]
     public bool Lighter { get; set; }
 
-    [JsonPropertyName("noshadow")]
+    /*[JsonPropertyName("noshadow")]
     public bool NoShadow { get; set; }
 
     [JsonPropertyName("title")]
-    public string Title { get; set; }
+    public string Title { get; set; }*/
+
+    [JsonPropertyName("changing")]
+    public bool Changing { get; set; }
 
     [JsonIgnore]
     public int ColorID { get; set; }
 
-    [JsonIgnore]
+    /*[JsonIgnore]
     public bool Changing => HSBMain != null;
 
     [JsonIgnore]
@@ -151,7 +154,7 @@ public class CustomColor : CustomCosmetic
             else
                 return MainColor.Shadow();
         }
-    }
+    }*/
 }
 
 // Idk why i did it, but ig i just really wanted it for consistency's sake

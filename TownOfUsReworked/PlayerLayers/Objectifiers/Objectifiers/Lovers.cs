@@ -3,9 +3,7 @@
 public class Lovers : Objectifier
 {
     public PlayerControl OtherLover { get; set; }
-    private bool LoverDead => OtherLover == null || OtherLover.HasDied();
-    private bool IsDeadLover => Player == null || Player.HasDied();
-    public bool LoversAlive => !IsDeadLover && !LoverDead;
+    public bool LoversAlive => !Player.HasDied() && !OtherLover.HasDied();
 
     public override UColor Color => ClientGameOptions.CustomObjColors ? CustomColorManager.Lovers : CustomColorManager.Objectifier;
     public override string Name => "Lovers";

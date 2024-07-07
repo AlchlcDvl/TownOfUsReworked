@@ -17,6 +17,7 @@ public class HatLoader : AssetLoader<CustomHat>
         UnregisteredHats.AddRange(mainResponse);
         LogMessage($"Found {UnregisteredHats.Count} hats");
         var toDownload = GenerateDownloadList(UnregisteredHats);
+        mainResponse.Clear();
         LogMessage($"Downloading {toDownload.Count} hat files");
 
         foreach (var fileName in toDownload)
@@ -27,7 +28,7 @@ public class HatLoader : AssetLoader<CustomHat>
     {
         UnregisteredHats.ForEach(ch => ch.Behind = ch.BackID != null || ch.BackFlipID != null);
 
-        /*if (TownOfUsReworked.IsStream)
+        if (TownOfUsReworked.IsStream)
         {
             var filePath = Path.Combine(TownOfUsReworked.Hats, "Stream", "Hats.json");
 
@@ -37,7 +38,7 @@ public class HatLoader : AssetLoader<CustomHat>
                 data.ForEach(x => x.StreamOnly = true);
                 UnregisteredHats.AddRange(data);
             }
-        }*/
+        }
 
         var cache = UnregisteredHats.Clone();
         var time = 0f;

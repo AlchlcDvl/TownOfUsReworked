@@ -9,7 +9,7 @@ public class CustomStringOption : CustomOption
     public CustomStringOption(MultiMenu menu, string name, string[] values, object[] parents, bool all = false) : base(menu, name, CustomOptionType.String, 0, parents, all)
     {
         Values = values;
-        Format = (val, _) => Values[(int)val];
+        Format = val => Values[(int)val];
     }
 
     public int GetInt() => (int)Value;
@@ -23,16 +23,11 @@ public class CustomStringOption : CustomOption
     public override void OptionCreated()
     {
         base.OptionCreated();
-        var str = Setting.Cast<KeyValueOption>();
+        var str = Setting.Cast<StringOption>();
         str.TitleText.text = Name;
-        str.Selected = str.oldValue = GetInt();
+        str.Value = str.oldValue = GetInt();
         str.ValueText.text = GetString();
-        var list = new List<ISystem.KeyValuePair<string, int>>();
-
-        for (var i = 0; i < Values.Length; i++)
-            list.Add(new(Values[i], i));
-
-        str.Values = list.SystemToIl2Cpp();
+        str.Values = new(0);
     }
 
     public static implicit operator string(CustomStringOption option) => option == null ? "" : option.GetString();

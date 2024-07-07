@@ -24,7 +24,7 @@ public class VitalsPagingBehaviour : BasePagingBehaviour
     {
         if (PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(CustomPlayer.Local))
         {
-            PageText.text = "";
+            PageText.text = "ERROR";
             return;
         }
 

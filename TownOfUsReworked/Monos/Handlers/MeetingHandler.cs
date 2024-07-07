@@ -183,7 +183,7 @@ public class MeetingHandler : MonoBehaviour
         {
             var medic = localinfo[0] as Medic;
 
-            if (medic.ShieldedPlayer != null && medic.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            if (medic.ShieldedPlayer && medic.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Trapper))
@@ -205,7 +205,7 @@ public class MeetingHandler : MonoBehaviour
                 revealed = true;
             }
 
-            if (ret.ShieldedPlayer != null && ret.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            if (ret.ShieldedPlayer && ret.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
 
             if (ret.Trapped.Contains(player.TargetPlayerId))

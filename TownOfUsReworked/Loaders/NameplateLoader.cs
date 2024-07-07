@@ -17,6 +17,7 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
         UnregisteredNameplates.AddRange(mainResponse);
         LogMessage($"Found {UnregisteredNameplates.Count} nameplates");
         var toDownload = GenerateDownloadList(UnregisteredNameplates);
+        mainResponse.Clear();
         LogMessage($"Downloading {toDownload.Count} nameplate files");
 
         foreach (var fileName in toDownload)
@@ -25,7 +26,7 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
 
     public override IEnumerator AfterLoading(object response)
     {
-        /*if (TownOfUsReworked.IsStream)
+        if (TownOfUsReworked.IsStream)
         {
             var filePath = Path.Combine(TownOfUsReworked.Nameplates, "Stream", "Nameplates.json");
 
@@ -35,7 +36,7 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
                 data.ForEach(x => x.StreamOnly = true);
                 UnregisteredNameplates.AddRange(data);
             }
-        }*/
+        }
 
         var cache = UnregisteredNameplates.Clone();
         var time = 0f;

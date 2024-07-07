@@ -61,7 +61,7 @@ public class Stalker : Syndicate
                 var player = PlayerById(pair.Key);
                 var body = BodyById(pair.Key);
 
-                if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
+                if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
                     DestroyArrow(pair.Key);
                 else
                     pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive));

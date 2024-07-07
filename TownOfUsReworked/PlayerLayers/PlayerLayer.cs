@@ -18,51 +18,42 @@ public abstract class PlayerLayer
     public bool Winner { get; set; }
     public bool Ignore { get; set; }
 
-    public bool Dead => Data.IsDead;
-    public bool Disconnected => Data.Disconnected;
+    public bool Dead => Data?.IsDead ?? true;
+    public bool Disconnected => Data?.Disconnected ?? true;
     public bool Alive => !Disconnected && !Dead;
     public bool Local => Player == CustomPlayer.Local;
 
-    public GameData.PlayerInfo Data => Player?.Data;
-    public string PlayerName => Data.PlayerName;
-    public byte PlayerId => Player.PlayerId;
-    public int TasksLeft => Data.Tasks.Count(x => !x.Complete);
-    public int TasksCompleted => Data.Tasks.Count(x => x.Complete);
-    public int TotalTasks => Data.Tasks.Count;
-    public bool TasksDone => Player.CanDoTasks() && (TasksLeft <= 0 || TasksCompleted >= TotalTasks);
+    public NetworkedPlayerInfo Data => Player?.Data;
+    public string PlayerName => Data?.PlayerName ?? "";
+    public byte PlayerId => Player?.PlayerId ?? 255;
+    public int TasksLeft => Data?.Tasks?.Count(x => !x.Complete) ?? -1;
+    public int TasksCompleted => Data?.Tasks?.Count(x => x.Complete) ?? -1;
+    public int TotalTasks => Data?.Tasks?.Count ?? -1;
+    public bool TasksDone => Player.CanDoTasks() && (TasksLeft == 0 || TasksCompleted >= TotalTasks);
 
     public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 
     public static bool NobodyWins { get; set; }
 
     public static readonly List<PlayerLayer> AllLayers = [];
+    // public static readonly Dictionary<byte, List<PlayerLayer>> LayerLookup = [];
     public static List<PlayerLayer> LocalLayers => CustomPlayer.Local.GetLayers();
 
     protected PlayerLayer() => AllLayers.Add(this);
 
     public PlayerLayer Start(PlayerControl player)
     {
-        SetPlayer(player);
+        Player = player;
         Init();
+
+        if (Local)
+            EnteringLayer();
+
         return this;
     }
 
     // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
     public T Start<T>(PlayerControl player) where T : PlayerLayer => Start(player) as T;
-
-    public void SetPlayer(PlayerControl player)
-    {
-        if (LayerType == PlayerLayerEnum.Role && player.GetRole() && player.GetRole() != this)
-            player.GetRole().Player = null;
-        else if (LayerType == PlayerLayerEnum.Modifier && player.GetModifier() && player.GetModifier() != this)
-            player.GetModifier().Player = null;
-        else if (LayerType == PlayerLayerEnum.Ability && player.GetAbility() && player.GetAbility() != this)
-            player.GetAbility().Player = null;
-        else if (LayerType == PlayerLayerEnum.Objectifier && player.GetObjectifier() && player.GetObjectifier() != this)
-            player.GetObjectifier().Player = null;
-
-        Player = player;
-    }
 
     public virtual void Init() {}
 
@@ -94,11 +85,15 @@ public abstract class PlayerLayer
 
     public virtual void OnMeetingEnd(MeetingHud __instance) {}
 
-    public virtual void OnBodyReport(GameData.PlayerInfo info) {}
+    public virtual void OnBodyReport(NetworkedPlayerInfo info) {}
 
     public virtual void UponTaskComplete(PlayerControl player, uint taskId) {}
 
     public virtual void ReadRPC(MessageReader reader) {}
+
+    public virtual void OnDeath() {}
+
+    public virtual void OnRevive() {}
 
     public void GameEnd()
     {
@@ -400,6 +395,10 @@ public abstract class PlayerLayer
     public void Delete()
     {
         OnLobby();
+
+        if (Local)
+            ExitingLayer();
+
         Player = null;
     }
 
@@ -407,10 +406,16 @@ public abstract class PlayerLayer
     {
         AllLayers.ForEach(x => x.Delete());
         AllLayers.Clear();
+        /*LayerLookup.Values.ForEach(x => x.Clear());
+        LayerLookup.Clear();
+        Role.RoleLookup.Clear();
+        Objectifier.ObjectifierLookup.Clear();
+        Modifier.ModifierLookup.Clear();
+        Ability.AbilityLookup.Clear();*/
     }
 
-    public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => x.GetType() == typeof(T) && (!x.Ignore || includeIgnored) && x.Player)
-        .Cast<T>().ToList();
+    public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => [ .. AllLayers.Where(x => x.GetType() == typeof(T) && (!x.Ignore || includeIgnored) && x.Player)
+        .Cast<T>() ];
 
-    public static List<PlayerLayer> GetLayers(LayerEnum type, bool includeIgnored = false) => AllLayers.Where(x => x.Type == type && (!x.Ignore || includeIgnored) && x.Player).ToList();
+    public static List<PlayerLayer> GetLayers(LayerEnum type, bool includeIgnored = false) => [ .. AllLayers.Where(x => x.Type == type && (!x.Ignore || includeIgnored) && x.Player) ];
 }

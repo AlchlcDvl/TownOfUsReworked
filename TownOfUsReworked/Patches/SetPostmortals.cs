@@ -24,7 +24,7 @@ public static class SetPostmortals
         if (CustomPlayer.LocalCustom.Disconnected)
             return;
 
-        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast) && !CustomPlayer.LocalCustom.Dead)
+        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast) && !CustomPlayer.LocalCustom.Dead)
             ast.SetPosition();
 
         foreach (var id in AssassinatedPlayers)
@@ -44,7 +44,7 @@ public static class SetPostmortals
         {
             if (ghoul.Caught)
                 ghoul.MarkedPlayer = null;
-            else if (ghoul.MarkedPlayer != null && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.NeutralApoc))
+            else if (ghoul.MarkedPlayer && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.NeutralApoc))
             {
                 ghoul.MarkedPlayer.Exiled();
                 MarkedPlayers.Add(ghoul.MarkedPlayer.PlayerId);
@@ -54,7 +54,7 @@ public static class SetPostmortals
 
         var exiled = __instance.exiled?.Object;
 
-        if (exiled != null)
+        if (exiled)
         {
             JesterWin(exiled);
             ExecutionerWin(exiled);
@@ -76,7 +76,7 @@ public static class SetPostmortals
                 {
                     var player = PlayerById(exiled1);
 
-                    if (player == null)
+                    if (!player)
                         continue;
 
                     player.Exiled();
@@ -176,7 +176,7 @@ public static class SetPostmortals
     {
         foreach (var exe in PlayerLayer.GetLayers<Executioner>())
         {
-            if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.Dead))
+            if (!exe.TargetPlayer || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.Dead))
                 continue;
 
             if (player == exe.TargetPlayer)
@@ -199,11 +199,11 @@ public static class SetPostmortals
             var ventilationSystem = systemType.TryCast<VentilationSystem>();
 
             if (ventilationSystem != null)
-                vents = AllMapVents.Where(x => !ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id)).ToList();
+                vents = [ .. vents.Where(x => !ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id))];
         }
 
         if (IsSubmerged())
-            vents = vents.Where(x => AllMapVents.IndexOf(x) is not (0 or 14)).ToList();
+            vents = [ .. vents.Where(x => AllMapVents.IndexOf(x) is not (0 or 14))];
 
         vents.Shuffle();
         var startingVent = vents.Random();
@@ -243,16 +243,12 @@ public static class SetPostmortals
                 rev.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
-            rev.gameObject.GetComponent<PassiveButton>().OnClick = new();
-            rev.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(rev.OnClick));
-            rev.gameObject.GetComponent<BoxCollider2D>().enabled = true;
+            rev.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
 
             if (rev == CustomPlayer.Local)
             {
-                if (rev.GetRole<Revealer>().Caught)
-                    continue;
-
-                SetStartingVent(rev);
+                if (!rev.GetLayer<Revealer>().Caught)
+                    SetStartingVent(rev);
             }
         }
 
@@ -300,16 +296,12 @@ public static class SetPostmortals
                 phan.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
-            phan.gameObject.GetComponent<PassiveButton>().OnClick = new();
-            phan.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(phan.OnClick));
-            phan.gameObject.GetComponent<BoxCollider2D>().enabled = true;
+            phan.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
 
             if (phan == CustomPlayer.Local)
             {
-                if (phan.GetRole<Phantom>().Caught)
-                    continue;
-
-                SetStartingVent(phan);
+                if (!phan.GetLayer<Phantom>().Caught)
+                    SetStartingVent(phan);
             }
         }
 
@@ -356,16 +348,12 @@ public static class SetPostmortals
                 ban.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
-            ban.gameObject.GetComponent<PassiveButton>().OnClick = new();
-            ban.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(ban.OnClick));
-            ban.gameObject.GetComponent<BoxCollider2D>().enabled = true;
+            ban.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
 
             if (ban == CustomPlayer.Local)
             {
-                if (ban.GetRole<Banshee>().Caught)
-                    continue;
-
-                SetStartingVent(ban);
+                if (!ban.GetLayer<Banshee>().Caught)
+                    SetStartingVent(ban);
             }
         }
 
@@ -412,16 +400,12 @@ public static class SetPostmortals
                 ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
-            ghoul.gameObject.GetComponent<PassiveButton>().OnClick = new();
-            ghoul.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(ghoul.OnClick));
-            ghoul.gameObject.GetComponent<BoxCollider2D>().enabled = true;
+            ghoul.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
 
             if (ghoul == CustomPlayer.Local)
             {
-                if (ghoul.GetRole<Ghoul>().Caught)
-                    continue;
-
-                SetStartingVent(ghoul);
+                if (ghoul.GetLayer<Ghoul>().Caught)
+                    SetStartingVent(ghoul);
             }
         }
 

@@ -29,23 +29,19 @@ public static class ConfirmEjects
         {
             if (ClientGameOptions.CustomEjects)
             {
-                if (MapPatches.CurrentMap is 0 or 3)
-                    ejectString = $"{player.name} is now one with space.";
-                else if (MapPatches.CurrentMap == 1)
-                    ejectString = $"{player.name} is now experiencing fatal free fall.";
-                else if (MapPatches.CurrentMap == 2)
-                    ejectString = $"{player.name} is now enjoying a hot bath.";
-                else if (MapPatches.CurrentMap == 4)
-                    ejectString = $"{player.name} is now experiencing gravity.";
-                else if (MapPatches.CurrentMap == 5)
-                    ejectString = $"{player.name} has decided to leave for a new journey.";
-                else if (MapPatches.CurrentMap == 6)
-                    ejectString = $"{player.name} is now off to a scuba adventure.";
-                else if (MapPatches.CurrentMap == 7)
-                    ejectString = $"{player.name} has decided to explore newer frontiers.";
+                ejectString = $"{player.Data.PlayerName} " + (MapPatches.CurrentMap switch
+                {
+                    1 => "is now learning about free fall",
+                    2 => "is now enjoying a hot bath",
+                    4 => "is now experiencing gravity",
+                    5 => "has decided to leave for a new journey",
+                    6 => "is now off to a scuba adventure",
+                    7 => "has decided to explore newer frontiers",
+                    _ => "is now one with space",
+                }) + ".";
             }
             else
-                ejectString = $"{player.name} was ejected.";
+                ejectString = $"{player.Data.PlayerName} was ejected.";
         }
         else
         {
@@ -56,12 +52,12 @@ public static class ConfirmEjects
                 else if (PlayerLayer.GetLayers<Executioner>().Any(x => x.TargetPlayer == player) && CustomGameOptions.ExeEjectScreen)
                     ejectString = "The <color=#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
                 else
-                    ejectString = $"{player.name} was the {role.ColorString}{role.Name}</color>.";
+                    ejectString = $"{player.Data.PlayerName} was the {role.ColorString}{role.Name}</color>.";
             }
             else if (!player.Is(SubFaction.None))
-                ejectString = $"{player.name} was {role.SubFactionColorString}{role.SubFactionName}</color>.";
+                ejectString = $"{player.Data.PlayerName} was {role.SubFactionColorString}{role.SubFactionName}</color>.";
             else
-                ejectString = $"{player.name} was {role.FactionColorString}{role.FactionName}</color>.";
+                ejectString = $"{player.Data.PlayerName} was {role.FactionColorString}{role.FactionName}</color>.";
 
             var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
                 !x.HasDied());

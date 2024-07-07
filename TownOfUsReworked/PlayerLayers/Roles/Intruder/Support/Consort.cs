@@ -44,7 +44,7 @@ public class Consort : Intruder
 
     public void Roleblock()
     {
-        if (BlockTarget == null)
+        if (!BlockTarget)
             BlockMenu.Open();
         else
         {

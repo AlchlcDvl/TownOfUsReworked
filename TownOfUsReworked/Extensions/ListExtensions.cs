@@ -30,9 +30,9 @@ public static class ListExtensions
 
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
 
-    public static List<T> Il2CppToSystem<T>(this ISystem.List<T> list) => list.ToArray().ToList();
+    public static List<T> ToSystem<T>(this ISystem.List<T> list) => [ .. list.ToArray() ];
 
-    public static ISystem.List<T> SystemToIl2Cpp<T>(this List<T> list)
+    public static ISystem.List<T> ToIl2Cpp<T>(this List<T> list)
     {
         var newList = new ISystem.List<T>();
         list.ForEach(newList.Add);
@@ -49,13 +49,13 @@ public static class ListExtensions
 
     public static T Random<T>(this IEnumerable<T> list, Func<T, bool> predicate, T defaultVal = default) => list.Where(predicate).Random(defaultVal);
 
-    public static int Count<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().Count(predicate);
+    public static int Count<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().Count(predicate);
 
-    public static bool Any<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().Any(predicate);
+    public static bool Any<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().Any(predicate);
 
-    public static bool All<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().All(predicate);
+    public static bool All<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().All(predicate);
 
-    public static void ForEach<T>(this ISystem.List<T> list, Action<T> action) => list.Il2CppToSystem().ForEach(action);
+    public static void ForEach<T>(this ISystem.List<T> list, Action<T> action) => list.ToSystem().ForEach(action);
 
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => source.ToList().ForEach(action);
 
@@ -79,6 +79,46 @@ public static class ListExtensions
             result.Add(temp);
 
         return result;
+    }
+
+    public static List<List<T>> Split<T>(this List<T> list, Func<T, bool> splitCondition)
+    {
+        var result = new List<List<T>>();
+        var temp = new List<T>();
+
+        foreach (var item in list)
+        {
+            temp.Add(item);
+
+            if (splitCondition(item))
+            {
+                result.Add(temp);
+                temp = [];
+            }
+        }
+
+        if (temp.Any())
+            result.Add(temp);
+
+        return result;
+    }
+
+    public static T Find<T>(this IEnumerable<T> source, Func<T, bool> predicate) => source.ToList().Find(predicate);
+
+    public static List<T> GetRandomRange<T>(this List<T> list, int count)
+    {
+        var temp = new List<T>();
+
+        if (list.Count <= count)
+            temp.AddRange(list);
+        else
+        {
+            while (temp.Count < count)
+                temp.Add(list.Random(x => !temp.Contains(x)));
+        }
+
+        temp.Shuffle();
+        return temp;
     }
 
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
@@ -120,7 +160,7 @@ public static class ListExtensions
         return result;
     }
 
-    public static IEnumerable<T> Where<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().Where(predicate);
+    public static IEnumerable<T> Where<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().Where(predicate);
 
     public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action) => dict.ToList().ForEach(pair => action(pair.Key, pair.Value));
 
@@ -150,7 +190,7 @@ public static class ListExtensions
         }
     }
 
-    public static T TakeFirst<T>(this ISystem.List<T> list) => list.Il2CppToSystem().TakeFirst();
+    public static T TakeFirst<T>(this ISystem.List<T> list) => list.ToSystem().TakeFirst();
 
     public static int RemoveAsInt<T>(this List<T> list, params T[] items)
     {
@@ -235,11 +275,11 @@ public static class ListExtensions
         return contains;
     }
 
-    public static T Random<T>(this ISystem.List<T> list, T defaultVal = default) => list.Il2CppToSystem().Random(defaultVal);
+    public static T Random<T>(this ISystem.List<T> list, T defaultVal = default) => list.ToSystem().Random(defaultVal);
 
-    public static T Random<T>(this ISystem.List<T> list, Func<T, bool> predicate, T defaultVal = default) => list.Il2CppToSystem().Random(predicate, defaultVal);
+    public static T Random<T>(this ISystem.List<T> list, Func<T, bool> predicate, T defaultVal = default) => list.ToSystem().Random(predicate, defaultVal);
 
-    public static T Find<T>(this ISystem.List<T> list, Predicate<T> predicate) => list.Il2CppToSystem().Find(predicate);
+    public static T Find<T>(this ISystem.List<T> list, Predicate<T> predicate) => list.ToSystem().Find(predicate);
 
     public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, Func<TValue> newValue) where TKey : notnull
     {

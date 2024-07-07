@@ -40,6 +40,7 @@ public class ImageLoader : AssetLoader<Asset>
             }
         }
 
+        buttons.Clear();
         yield break;
     }
 

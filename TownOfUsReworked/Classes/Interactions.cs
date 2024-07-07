@@ -99,7 +99,7 @@ public static class Interactions
             }
             else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
             {
-                var fan = target.GetObjectifier<Fanatic>();
+                var fan = target.GetLayer<Fanatic>();
                 CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
                 fan.TurnFanatic(faction);
                 abilityUsed = true;

@@ -29,7 +29,7 @@ public static class AdminPatch
             if (HudHandler.Instance.IsCamoed)
                 sprite.color = UColor.grey;
 
-            if (sprite != null)
+            if (sprite)
             {
                 if (isOp)
                     PlayerMaterial.SetColors(colorMapping[i], sprite);
@@ -37,7 +37,7 @@ public static class AdminPatch
                     PlayerMaterial.SetColors(new UColor(0.8793f, 1, 0, 1), sprite);
             }
 
-            if (text != null && isOp && DataManager.Settings.Accessibility.ColorBlindMode)
+            if (text && isOp && DataManager.Settings.Accessibility.ColorBlindMode)
             {
                 text.gameObject.SetActive(true);
                 text.text = colorMapping[i].ToString();
@@ -63,7 +63,7 @@ public static class AdminPatch
 
         foreach (var area in __instance.CountAreas)
         {
-            if (!rooms.TryGetValue(area.RoomType, out var room) || room.roomArea == null)
+            if (!rooms.TryGetValue(area.RoomType, out var room) || !room.roomArea)
                 continue;
 
             var objectsInRoom = room.roomArea.OverlapCollider(__instance.filter, __instance.buffer);

@@ -80,6 +80,7 @@ public static class UpdateSplashPatch
         yield return ImageLoader.Instance.CoFetch();
         yield return PortalLoader.Instance.CoFetch();
         yield return SoundLoader.Instance.CoFetch();
+        yield return BundleLoader.Instance.CoFetch();
 
         yield return ModUpdater.CheckForUpdate("Reworked");
         yield return ModUpdater.CheckForUpdate("Submerged");
@@ -126,19 +127,18 @@ public static class UpdateSplashPatch
             yield break;
 
         SetText("Setting Mod Data");
-
-        ModCompatibility.Init();
+        LogMessage("Setting mod data");
 
         ModUpdater.CanDownloadSubmerged = !SubLoaded && ModUpdater.URLs.ContainsKey("Submerged");
         ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
 
         Generate.GenerateAll();
+        Generate2.GenerateAll();
         Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();
 
         DataSet = true;
 
-        yield return Wait(1f);
         yield return EndFrame();
         yield break;
     }

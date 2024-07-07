@@ -1,8 +1,8 @@
 namespace TownOfUsReworked.Patches;
 
-public static class OnGameEndPatch
+public static class OnGameEndPatches
 {
-    private static readonly List<WinningPlayerData> PotentialWinners = [];
+    private static readonly List<CachedPlayerData> PotentialWinners = [];
     private static readonly List<SummaryInfo> PlayerRoles = [];
     public static readonly List<SummaryInfo> Disconnected = [];
 
@@ -13,6 +13,9 @@ public static class OnGameEndPatch
         {
             PotentialWinners.Clear();
             CustomPlayer.AllPlayers.ForEach(x => PotentialWinners.Add(new(x.Data)));
+
+            if (CameraEffect.Instance)
+                CameraEffect.Instance.Materials.Clear();
         }
     }
 
@@ -21,7 +24,7 @@ public static class OnGameEndPatch
     {
         public static void Prefix()
         {
-            var winners = new List<WinningPlayerData>();
+            var winners = new List<CachedPlayerData>();
 
             if (Role.AllNeutralsWin)
             {
@@ -401,10 +404,10 @@ public static class OnGameEndPatch
                 }
             }
 
-            TempData.winners.Clear();
+            EndGameResult.CachedWinners.Clear();
             winners.RemoveAll(x => x == null);
-            winners = [..winners.Distinct()];
-            TempData.winners = winners.SystemToIl2Cpp();
+            winners = [ .. winners.Distinct() ];
+            EndGameResult.CachedWinners = winners.ToIl2Cpp();
         }
     }
 
@@ -618,7 +621,7 @@ public static class OnGameEndPatch
 
     public static void AddSummaryInfo(PlayerControl player, bool disconnected = false)
     {
-        if (player == null || Disconnected.Any(x => x.PlayerName == player.Data.PlayerName) || PlayerRoles.Any(x => x.PlayerName == player.Data.PlayerName))
+        if (!player || Disconnected.Any(x => x.PlayerName == player.Data.PlayerName) || PlayerRoles.Any(x => x.PlayerName == player.Data.PlayerName))
             return;
 
         var summary = "";
@@ -845,11 +848,11 @@ public static class OnGameEndPatch
         }
     }
 
-    private static bool IsWinner(this string playerName) => TempData.winners.Any(x => x.PlayerName == playerName);
+    private static bool IsWinner(this string playerName) => EndGameResult.CachedWinners.Any(x => x.PlayerName == playerName);
 
     private static string DeathReason(this PlayerControl player)
     {
-        if (player == null)
+        if (!player)
             return "";
 
         var role = player.GetRole();
@@ -859,7 +862,7 @@ public static class OnGameEndPatch
 
         var die = role.DeathReason is not DeathReasonEnum.Alive ? $" | {role.DeathReason}" : "";
 
-        if (role.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped))
+        if (role.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped) && !IsNullEmptyOrWhiteSpace(role.KilledBy))
             die += role.KilledBy;
 
         return die;

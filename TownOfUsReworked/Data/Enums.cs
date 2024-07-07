@@ -75,13 +75,12 @@ public enum InfoType
 
 public enum Faction
 {
+    None,
     Crew,
     Intruder,
     Neutral,
     Syndicate,
-    GameMode,
-
-    None
+    GameMode
 }
 
 public enum Alignment
@@ -183,13 +182,15 @@ public enum MultiMenu
     Ability,
     RoleList,
     Client,
-    External
+    Presets,
+    RoleListEntry,
+    Layer
 }
 
 public enum WhoCanVentOptions
 {
-    Default,
     Everyone,
+    Default,
     NoOne
 }
 
@@ -309,7 +310,6 @@ public enum MiscRPC
     Whisper,
     SetSpawnAirship,
     DoorSyncToilet,
-    SetColor,
     VersionHandshake,
     ChaosDrive,
     FixLights,
@@ -343,7 +343,8 @@ public enum CustomRPC
 
 public enum VanillaRPC
 {
-    SnapTo/*,
+    SnapTo,
+    SetColor/*,
     SetScanner,
     EndGame,
     StartMeeting,
@@ -829,11 +830,11 @@ public enum CooldownType
 
 public enum AnonVotes
 {
+    Disabled,
     Enabled,
     NonPolitician,
     PoliticianOnly,
-    NotVisible,
-    Disabled
+    NotVisible
 }
 
 public enum FootprintVisibility
@@ -912,4 +913,19 @@ public enum KeybindType
     Secondary,
     Tertiary,
     Quarternary
+}
+
+public enum Format
+{
+    None,
+    Time,
+    Distance,
+    Percent,
+    Multiplier
+}
+
+public enum HeaderType
+{
+    General,
+    Layer
 }

@@ -7,29 +7,28 @@ public class CustomMenu
     public ShapeshifterMinigame Menu { get; set; }
     public PlayerControl Owner { get; }
     public Select Click { get; }
-    public Exclude Exception { get; }
-    public List<PlayerControl> Targets => CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected).ToList();
+    public PlayerBodyExclusion Exception { get; }
+    public List<PlayerControl> Targets => [ .. CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 
     public delegate void Select(PlayerControl player);
-    public delegate bool Exclude(PlayerControl player);
 
-    public CustomMenu(PlayerControl owner, Select click, Exclude exception)
+    public CustomMenu(PlayerControl owner, Select click, PlayerBodyExclusion exception = null)
     {
         Owner = owner;
         Click = click;
-        Exception = exception;
+        Exception = exception ?? BlankFalse;
         AllMenus.Add(this);
     }
 
     public void Open()
     {
-        if (Menu == null)
+        if (!Menu)
         {
-            if (Camera.main == null)
+            if (!Camera.main)
                 return;
 
             Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
-            Menu.name = Menu.gameObject.name = $"{Owner.name}AbilityMenu";
+            Menu.name = Menu.gameObject.name = $"{Owner.Data.PlayerName}AbilityMenu";
         }
 
         Menu.transform.localPosition = new(0f, 0f, -50f);
@@ -49,7 +48,8 @@ public class CustomMenu
         if (!Menu)
             return;
 
-        Menu?.Destroy();
+        Menu.Destroy();
+        Menu.gameObject.Destroy();
         Menu = null;
     }
 

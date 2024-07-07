@@ -7,7 +7,6 @@ public class Guesser : Neutral
     public int RemainingGuesses { get; set; }
     public bool FactionHintGiven { get; set; }
     public bool AlignmentHintGiven { get; set; }
-    public bool Failed => TargetPlayer != null && !TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied());
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private string RoleName { get; set; }
@@ -22,7 +21,7 @@ public class Guesser : Neutral
     public Dictionary<int, KeyValuePair<string, UColor>> Sorted { get; set; }
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
-    public bool TargetFailed => TargetPlayer == null && Rounds > 2;
+    public bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
     public CustomMeeting GuessMenu { get; set; }
     private Transform Next;
     private Transform Back;
@@ -31,9 +30,8 @@ public class Guesser : Neutral
     public override string Name => "Guesser";
     public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText => () => "Guess What Someone Might Be";
-    public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles " +
-        "without penalties" : $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an " +
-        "<color=#00ACC2FF>Actor</color>");
+    public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
+        $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <color=#00ACC2FF>Actor</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
     public override void Init()
@@ -48,7 +46,7 @@ public class Guesser : Neutral
         GuessButtons = [];
         Sorted = [];
         ColorMapping = [];
-        Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer?.name} was" : (TargetPlayer == null ? "- Find someone to be guessed by you" : ("- Guess " +
+        Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer.Data.PlayerName} was" : (!TargetPlayer ? "- Find someone to be guessed by you" : ("- Guess " +
             $"{TargetPlayer?.name}'s role"));
         SetLists();
         GuessMenu = new(Player, "Guess", CustomGameOptions.GuesserAfterVoting, Guess, IsExempt, SetLists);
@@ -234,7 +232,7 @@ public class Guesser : Neutral
 
                 if (SelectedButton != button)
                 {
-                    if (SelectedButton != null)
+                    if (SelectedButton)
                         SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
 
                     SelectedButton = button;
@@ -244,7 +242,7 @@ public class Guesser : Neutral
                 {
                     var focusedTarget = PlayerByVoteArea(voteArea);
 
-                    if (__instance.state == MeetingHud.VoteStates.Discussion || focusedTarget == null || RemainingGuesses <= 0)
+                    if (__instance.state == MeetingHud.VoteStates.Discussion || !focusedTarget || RemainingGuesses <= 0)
                         return;
 
                     var targetId = voteArea.TargetPlayerId;
@@ -308,12 +306,9 @@ public class Guesser : Neutral
         label.text = title;
         label.color = color;
         var passive = button.GetComponent<PassiveButton>();
-        passive.OnMouseOver = new();
-        passive.OnMouseOver.AddListener((Action)(() => rend.color = UColor.green));
-        passive.OnMouseOut = new();
-        passive.OnMouseOut.AddListener((Action)(() => rend.color = SelectedButton == button ? UColor.red : UColor.white));
-        passive.OnClick = new();
-        passive.OnClick.AddListener(onClick);
+        passive.OverrideOnMouseOverListeners(() => rend.color = UColor.green);
+        passive.OverrideOnMouseOutListeners(() => rend.color = SelectedButton == button ? UColor.red : UColor.white);
+        passive.OverrideOnClickListeners(onClick);
         passive.ClickSound = SoundEffects["Click"];
         passive.HoverSound = SoundEffects["Hover"];
     }
@@ -330,7 +325,7 @@ public class Guesser : Neutral
     {
         base.UpdateHud(__instance);
 
-        if ((TargetFailed || (TargetPlayer && Failed)) && !Dead)
+        if (Failed && !Dead)
         {
             if (CustomGameOptions.GuessToAct)
             {
@@ -352,7 +347,7 @@ public class Guesser : Neutral
     {
         base.OnMeetingStart(__instance);
 
-        if (((TargetPlayer == null || Failed) && !Dead) || Dead)
+        if (TargetPlayer.HasDied() || Dead)
             return;
 
         GuessMenu.GenButtons(__instance, RemainingGuesses > 0);
@@ -494,9 +489,7 @@ public class Guesser : Neutral
         exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = voteArea.Buttons.transform.Find("CancelButton").GetComponent<SpriteRenderer>().sprite;
         exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
         exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
-        var button = exitButton.GetComponent<PassiveButton>();
-        button.OnClick = new();
-        button.OnClick.AddListener((Action)(() => Exit(__instance)));
+        exitButton.GetComponent<PassiveButton>().OverrideOnClickListeners(() => Exit(__instance));
         SetButtons(__instance, voteArea);
     }
 

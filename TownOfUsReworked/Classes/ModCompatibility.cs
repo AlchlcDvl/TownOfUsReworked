@@ -6,7 +6,7 @@ public static class ModCompatibility
     public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType)6;
 
     public static SemanticVersioning.Version SubVersion { get; private set; }
-    public static bool SubLoaded { get; private set; }
+    public static bool SubLoaded { get; set; }
     private static BasePlugin SubPlugin { get; set; }
     private static Assembly SubAssembly { get; set; }
     private static Type[] SubTypes { get; set; }
@@ -56,7 +56,7 @@ public static class ModCompatibility
     private static Type SubSpawnSystemType;
     private static MethodInfo GetReadyPlayerAmountMethod;
 
-    private static bool InitializeSubmerged()
+    public static bool InitializeSubmerged()
     {
         if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin) || subPlugin == null)
             return false;
@@ -79,7 +79,7 @@ public static class ModCompatibility
             SubmergedElevatorsField = AccessTools.Field(SubmarineStatusType, "elevators");
 
             FloorHandlerType = SubTypes.First(t => t.Name == "FloorHandler");
-            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", new[] { typeof(PlayerControl) });
+            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", [ typeof(PlayerControl) ]);
             RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
             RegisterFloorOverrideMethod = AccessTools.Method(FloorHandlerType, "RegisterFloorOverride");
 
@@ -100,7 +100,7 @@ public static class ModCompatibility
             SubmergedExileWrapUpMethod = AccessTools.Method(SubmergedExileControllerType, "WrapUpAndSpawn");
 
             SubmarineElevatorType = SubTypes.First(t => t.Name == "SubmarineElevator");
-            GetInElevatorMethod = AccessTools.Method(SubmarineElevatorType, "GetInElevator", new[] { typeof(PlayerControl) });
+            GetInElevatorMethod = AccessTools.Method(SubmarineElevatorType, "GetInElevator", [ typeof(PlayerControl) ]);
             GetMovementStageFromTimeMethod = AccessTools.Method(SubmarineElevatorType, "GetMovementStageFromTime");
             GetSubElevatorSystemField = AccessTools.Field(SubmarineElevatorType, "system");
 
@@ -116,8 +116,10 @@ public static class ModCompatibility
             GetReadyPlayerAmountMethod = AccessTools.Method(SubSpawnSystemType, "GetReadyPlayerAmount");
             CurrentStateField = AccessTools.Field(SubSpawnSystemType, "currentState");
 
-            TownOfUsReworked.ModInstance.Harmony.Patch(SubmergedExileWrapUpMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(ExileRoleChangePostfix))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(GetReadyPlayerAmountMethod, new(AccessTools.Method(typeof(ModCompatibility), nameof(ReadyPlayerAmount))));
+            var compatType = typeof(ModCompatibility);
+
+            TownOfUsReworked.ModInstance.Harmony.Patch(SubmergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(GetReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
 
             LogMessage("Submerged compatibility finished");
             return true;
@@ -176,7 +178,7 @@ public static class ModCompatibility
 
         foreach (var elevator in (IList)SubmergedElevatorsField.GetValue(SubmergedInstanceField.GetValue(null)))
         {
-            if ((bool)GetInElevatorMethod.Invoke(elevator, [player]))
+            if ((bool)GetInElevatorMethod.Invoke(elevator, [ player ]))
                 return (true, elevator);
         }
 
@@ -191,12 +193,12 @@ public static class ModCompatibility
 
     public static IEnumerator WaitStart(Action next)
     {
-        while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
+        while (!HUD.UICamera.transform.Find("SpawnInMinigame(Clone)"))
             yield return EndFrame();
 
         yield return Wait(0.5f);
 
-        while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
+        while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)"))
             yield return EndFrame();
 
         next();
@@ -210,7 +212,7 @@ public static class ModCompatibility
 
         yield return Wait(0.5f);
 
-        while (HUD.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
+        while (HUD.PlayerCam.transform.Find("SpawnInMinigame(Clone)"))
             yield return EndFrame();
 
         next();
@@ -254,9 +256,9 @@ public static class ModCompatibility
         if (!IsSubmerged())
             return;
 
-        var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, [CustomPlayer.Local])).TryCast(FloorHandlerType) as MonoBehaviour;
-        RpcRequestChangeFloorMethod.Invoke(_floorHandler, [toUpper]);
-        RegisterFloorOverrideMethod.Invoke(_floorHandler, [toUpper]);
+        var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, [ CustomPlayer.Local ])).TryCast(FloorHandlerType) as MonoBehaviour;
+        RpcRequestChangeFloorMethod.Invoke(_floorHandler, [ toUpper ]);
+        RegisterFloorOverrideMethod.Invoke(_floorHandler, [ toUpper ]);
     }
 
     public static bool GetInTransition()
@@ -275,7 +277,7 @@ public static class ModCompatibility
         try
         {
             Ship.RpcUpdateSystem((SystemTypes)130, 64);
-            RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), [CustomPlayer.Local, 64]);
+            RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), [ CustomPlayer.Local, 64 ]);
         } catch {}
     }
 
@@ -307,14 +309,14 @@ public static class ModCompatibility
     public const ShipStatus.MapType LI_MAP_TYPE = (ShipStatus.MapType)7;
 
     public static SemanticVersioning.Version LIVersion { get; private set; }
-    public static bool LILoaded { get; private set; }
+    public static bool LILoaded { get; set; }
     private static BasePlugin LIPlugin { get; set; }
     private static Assembly LIAssembly { get; set; }
     private static Type[] LITypes { get; set; }
 
     public static bool IsLevelImpostor() => LILoaded && Ship && Ship.Type == LI_MAP_TYPE && MapPatches.CurrentMap == 7;
 
-    private static bool InitializeLevelImpostor()
+    public static bool InitializeLevelImpostor()
     {
         if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(LI_GUID, out var liPlugin) || liPlugin == null)
             return false;
@@ -373,7 +375,7 @@ public static class ModCompatibility
         }
     }
 
-    private static readonly string[] Unsupported = ["AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod"];
+    private static readonly string[] Unsupported = [ "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI" ];
 
     public static bool CheckAbort(out string mod)
     {

@@ -18,7 +18,7 @@ public static class CustomNameplateManager
 
         var nameplate = ScriptableObject.CreateInstance<NamePlateData>().DontDestroy();
         var viewData = ScriptableObject.CreateInstance<NamePlateViewData>().DontDestroy();
-        nameplate.SpritePreview = viewData.Image = CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Nameplate);
+        viewData.Image = CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Nameplate);
         nameplate.PreviewCrewmateColor = false;
         nameplate.name = cn.Name;
         nameplate.displayOrder = 99;
@@ -57,7 +57,7 @@ public static class CustomNameplateManager
 
     public static NameplateExtension GetExtention(this NamePlateData nameplate)
     {
-        if (nameplate == null)
+        if (!nameplate)
             return null;
 
         CustomNameplateRegistry.TryGetValue(nameplate.name, out var ret);

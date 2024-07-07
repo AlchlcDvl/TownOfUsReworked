@@ -32,7 +32,7 @@ public abstract class Syndicate : Role
         {
             var jackal = Player.GetJackal();
             team.Add(jackal.Player);
-            team.Add(jackal.GoodRecruit);
+            team.Add(jackal.Recruit1);
         }
 
         foreach (var player in CustomPlayer.AllPlayers)

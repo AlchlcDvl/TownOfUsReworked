@@ -26,10 +26,10 @@ public class Necromancer : Neutral
         SubFactionColor = CustomColorManager.Reanimated;
         ResurrectedCount = 0;
         KillCount = 0;
-        Resurrected = [Player.PlayerId];
+        Resurrected = [ Player.PlayerId ];
         ResurrectButton = CreateButton(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(CustomGameOptions.ResurrectCd),
             new Duration(CustomGameOptions.ResurrectDur), (EffectEndVoid)UponEnd, CustomGameOptions.MaxResurrections, (PlayerBodyExclusion)Exception, "RESURRECT",
-            (DifferenceFunc)Difference1, (EndFunc)EndEffect);
+            (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
         SacrificeButton = CreateButton(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, CustomGameOptions.NecroKillCd, "SACRIFICE",
             (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
     }

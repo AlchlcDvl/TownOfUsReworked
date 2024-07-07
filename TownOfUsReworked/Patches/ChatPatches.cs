@@ -23,12 +23,13 @@ public static class ChatUpdate
         if (!__instance.sendRateMessageText.isActiveAndEnabled)
             return;
 
-        var f = CustomGameOptions.ChatCooldown - __instance.timeSinceLastMessage;
-
-        if (f <= 0 || CustomGameOptions.ChatCooldown == 0)
+        if (__instance.timeSinceLastMessage >= CustomGameOptions.ChatCooldown)
             __instance.sendRateMessageText.gameObject.SetActive(false);
         else
-            __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(f));
+        {
+            __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(CustomGameOptions.ChatCooldown -
+                __instance.timeSinceLastMessage));
+        }
     }
 
     private static void UpdateBubbles(ChatController __instance)
@@ -37,7 +38,7 @@ public static class ChatUpdate
         {
             var chat = bubble.Cast<ChatBubble>();
 
-            if (chat.NameText != null && IsInGame)
+            if (chat.NameText && IsInGame)
             {
                 foreach (var player in CustomPlayer.AllPlayers)
                 {
@@ -45,15 +46,18 @@ public static class ChatUpdate
                     {
                         var role = player.GetRole();
 
-                        if (role != null)
+                        if (role)
                         {
-                            if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral)) || (CustomPlayer.Local.GetSubFaction()
-                                == player.GetSubFaction() && !player.Is(SubFaction.None))) && CustomGameOptions.FactionSeeRoles) || player == CustomPlayer.Local)
+                            if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral)) || (!player.Is(SubFaction.None) &&
+                                CustomPlayer.Local.GetSubFaction() == player.GetSubFaction())) && CustomGameOptions.FactionSeeRoles) || player == CustomPlayer.Local)
                             {
                                 chat.NameText.color = role.Color;
                             }
-                            else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral) && !CustomGameOptions.FactionSeeRoles)
+                            else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) &&
+                                !CustomGameOptions.FactionSeeRoles)
+                            {
                                 chat.NameText.color = role.FactionColor;
+                            }
                             else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !CustomGameOptions.FactionSeeRoles)
                                 chat.NameText.color = role.SubFactionColor;
                             else
@@ -145,7 +149,7 @@ public static class ChatChannels
 
         var localPlayer = CustomPlayer.Local;
 
-        if (localPlayer == null)
+        if (!localPlayer)
             return true;
 
         var sourcerole = sourcePlayer.GetRole();
@@ -211,12 +215,11 @@ public static class ChatCommands
             Clear(__instance);
         else
         {
-            var f = CustomGameOptions.ChatCooldown - __instance.timeSinceLastMessage;
-
-            if (f > 0 && CustomGameOptions.ChatCooldown > 0)
+            if (CustomGameOptions.ChatCooldown > __instance.timeSinceLastMessage)
             {
                 __instance.sendRateMessageText.gameObject.SetActive(true);
-                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(f));
+                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(CustomGameOptions.ChatCooldown -
+                    __instance.timeSinceLastMessage));
             }
             else if (!IsNullEmptyOrWhiteSpace(text))
             {

@@ -15,7 +15,7 @@ public static class SaveLadderPlayer
             LogError(e);
         }
 
-        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast))
+        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
             ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }
@@ -35,7 +35,7 @@ public static class SavePlatformPlayer
             LogError(e);
         }
 
-        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast))
+        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
             ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }
@@ -68,7 +68,7 @@ public static class SaveZiplinePlayer
             LogError(e);
         }
 
-        if (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var ast))
+        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
             ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }

@@ -16,7 +16,7 @@ public static class ButtonUtils
         HUD.AbilityButton.gameObject.SetActive(false);
     }
 
-    public static List<CustomButton> GetButtons(this PlayerControl player) => [..AllButtons.Where(x => x.Owner.Player == player)];
+    public static List<CustomButton> GetButtons(this PlayerControl player) => [ .. AllButtons.Where(x => x.Owner.Player == player) ];
 
     public static void EnableButtons(this PlayerControl player)
     {
@@ -69,7 +69,7 @@ public static class ButtonUtils
         var result = (cooldown * factor * player.GetMultiplier()) + difference + player.GetDifference();
 
         if (result <= 0f)
-            result = 0.1f;
+            result = 0f;
 
         return result;
     }
@@ -111,6 +111,9 @@ public static class ButtonUtils
 
     public static void Reset(CooldownType cooldown = CooldownType.Reset, PlayerControl player = null)
     {
+        if (IsHnS)
+            return;
+
         player ??= CustomPlayer.Local;
         var role = player.GetRole();
         var start = cooldown == CooldownType.Start;
@@ -276,15 +279,15 @@ public static class ButtonUtils
             glitch.MimicTarget = null;
             glitch.HackTarget = null;
         }
-        else if (role is GuardianAngel ga && meeting && ga.TargetPlayer == null)
+        else if (role is GuardianAngel ga && meeting && !ga.TargetPlayer)
             ga.Rounds++;
         else if (role is Actor act && meeting && !act.Targeted)
             act.Rounds++;
-        else if (role is BountyHunter bh && meeting && bh.TargetPlayer == null)
+        else if (role is BountyHunter bh && meeting && !bh.TargetPlayer)
             bh.Rounds++;
-        else if (role is Executioner exe && meeting && exe.TargetPlayer == null)
+        else if (role is Executioner exe && meeting && !exe.TargetPlayer)
             exe.Rounds++;
-        else if (role is Guesser guess && meeting && guess.TargetPlayer == null)
+        else if (role is Guesser guess && meeting && !guess.TargetPlayer)
             guess.Rounds++;
     }
 }

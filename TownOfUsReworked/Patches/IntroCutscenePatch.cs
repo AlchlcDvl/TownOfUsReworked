@@ -5,6 +5,9 @@ public static class ShowTeamPatch
 {
     public static void Postfix(IntroCutscene._ShowTeam_d__38 __instance)
     {
+        if (IsHnS)
+            return;
+
         __instance.__4__this.TeamTitle.text = Role.LocalRole.FactionName;
         __instance.__4__this.TeamTitle.color = Role.LocalRole.FactionColor;
         __instance.__4__this.TeamTitle.outlineColor = UColor.black;
@@ -18,6 +21,9 @@ public static class ShowRolePatch
 {
     public static void Postfix(IntroCutscene._ShowRole_d__41 __instance)
     {
+        if (IsHnS)
+            return;
+
         var role = Role.LocalRole;
         var modifier = Modifier.LocalModifier;
         var objectifier = Objectifier.LocalObjectifier;
@@ -53,13 +59,25 @@ public static class ShowRolePatch
 [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.CreatePlayer))]
 public static class CreatePlayerPatch
 {
-    public static void Prefix(ref bool impostorPositioning) => impostorPositioning = true;
+    public static void Prefix(ref bool impostorPositioning)
+    {
+        if (!IsHnS)
+            impostorPositioning = true;
+    }
 
-    public static void Postfix(ref PoolablePlayer __result) => __result.SetNameColor(Role.LocalRole.FactionColor);
+    public static void Postfix(ref PoolablePlayer __result)
+    {
+        if (!IsHnS)
+            __result.SetNameColor(Role.LocalRole.FactionColor);
+    }
 }
 
 [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.SelectTeamToShow))]
 public static class OverrideShowTeam
 {
-    public static void Postfix(ref ISystem.List<PlayerControl> __result) => __result = Role.LocalRole.Team().SystemToIl2Cpp();
+    public static void Postfix(ref ISystem.List<PlayerControl> __result)
+    {
+        if (!IsHnS)
+            __result = Role.LocalRole.Team().ToIl2Cpp();
+    }
 }

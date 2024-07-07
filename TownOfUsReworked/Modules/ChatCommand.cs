@@ -26,8 +26,8 @@ public class ChatCommand
     ];
 
     // As much as I hate to do this, people will take advantage of this function so we're better off doing this early
-    private static readonly string[] profanities = ["fuck", "bastard", "cunt", "bitch", "ass", "nigg", "nig", "neg", "whore", "negro", "dick", "penis", "yiff", "rape", "rapist"];
-    private const string disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
+    private static readonly string[] Profanities = [ "fuck", "bastard", "cunt", "nigg", "nig", "neg", "whore", "negro", "yiff", "rape", "rapist" ];
+    private const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
 
     private ChatCommand(string[] aliases) => Aliases = aliases;
 
@@ -193,9 +193,9 @@ public class ChatCommand
         args[1..].ForEach(arg2 => arg += $"{arg2} ");
         arg = arg.Remove(arg.Length - 1);
 
-        if (arg.Any(disallowed.Contains))
-            Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains disallowed characters.");
-        else if (profanities.Any(arg.Contains))
+        if (arg.Any(Disallowed.Contains))
+            Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains Disallowed characters.");
+        else if (Profanities.Any(arg.Contains))
             Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains unaccepted words.");
         else if (arg.Length > 20)
             Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name is too long.");
@@ -271,7 +271,7 @@ public class ChatCommand
         arg = arg.Remove(arg.Length - 1);
         var target = CustomPlayer.AllPlayers.Find(x => x.Data.PlayerName == arg);
 
-        if (target == null)
+        if (!target)
         {
             Run($"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
             return;

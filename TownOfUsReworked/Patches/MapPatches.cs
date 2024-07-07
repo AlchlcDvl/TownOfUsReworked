@@ -1,3 +1,5 @@
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]
@@ -20,6 +22,9 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
+            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
+            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
+            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
             TownOfUsReworked.NormalOptions.CrewLightMod = CustomGameOptions.CrewVision;
             TownOfUsReworked.NormalOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
             TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting != AnonVotes.Disabled;
@@ -27,6 +32,7 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
             TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
             TownOfUsReworked.NormalOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)tbMode;
+            // TownOfUsReworked.NormalOptions.TaskBarMode = CustomGameOptions2.TaskBarMode;
             TownOfUsReworked.NormalOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
             TownOfUsReworked.NormalOptions.VotingTime = CustomGameOptions.VotingTime;
             TownOfUsReworked.NormalOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
@@ -39,9 +45,8 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
             TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
-            GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
             CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
-            CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap, tbMode);
+            CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
         }
     }
@@ -180,30 +185,71 @@ public static class MapPatches
     }
 }
 
-[HarmonyPatch(typeof(AmongUsClient._CoStartGameHost_d__30), nameof(AmongUsClient._CoStartGameHost_d__30.MoveNext))]
-public static class AmongUsClientCoStartHostPatch
+// For some reason something here was nulling, so I just overrided the whole thing instead of just a few parts of it
+[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGameHost))]
+public static class AmongUsClientCoStartHostPatch2
 {
-    public static bool Prefix(AmongUsClient._CoStartGameHost_d__30 __instance, ref bool __result)
+    public static bool Prefix(ref Il2CppSystem.Collections.IEnumerator __result)
     {
-        if (__instance.__1__state != 0)
-            return true;
+        __result = CoStartGameFix().WrapToIl2Cpp();
+        return false;
+    }
 
-        __instance.__1__state = -1;
-
+    private static IEnumerator CoStartGameFix()
+    {
         if (Lobby)
             Lobby.Despawn();
 
-        if (Ship)
+        if (!Ship)
         {
-            __instance.__2__current = null;
-            __instance.__1__state = 2;
-            __result = true;
-            return false;
+            AmongUsClient.Instance.ShipLoadingAsyncHandle = AmongUsClient.Instance.ShipPrefabs[MapPatches.CurrentMap].InstantiateAsync();
+            yield return AmongUsClient.Instance.ShipLoadingAsyncHandle;
+            var result = AmongUsClient.Instance.ShipLoadingAsyncHandle.Result;
+            AmongUsClient.Instance.ShipLoadingAsyncHandle = default;
+            ShipStatus.Instance = result.GetComponent<ShipStatus>();
+            AmongUsClient.Instance.Spawn(Ship);
         }
 
-        __instance.__2__current = __instance.__4__this.ShipLoadingAsyncHandle = __instance.__4__this.ShipPrefabs[MapPatches.CurrentMap].InstantiateAsync();
-        __instance.__1__state = 1;
-        __result = true;
-        return false;
+        var timer = 0f;
+
+        while (true)
+        {
+            var stopWaiting = true;
+            var num2 = 10;
+
+            if (MapPatches.CurrentMap is 5 or 4)
+                num2 = 15;
+
+            lock (AmongUsClient.Instance.allClients)
+            {
+                for (var i = 0; i < AmongUsClient.Instance.allClients.Count; i++)
+                {
+                    var clientData = AmongUsClient.Instance.allClients[i];
+
+                    if (clientData.Id != AmongUsClient.Instance.ClientId && !clientData.IsReady)
+                    {
+                        if (timer < num2)
+                            stopWaiting = false;
+                        else
+                        {
+                            AmongUsClient.Instance.SendLateRejection(clientData.Id, DisconnectReasons.ClientTimeout);
+                            clientData.IsReady = true;
+                            AmongUsClient.Instance.OnPlayerLeft(clientData, DisconnectReasons.ClientTimeout);
+                        }
+                    }
+                }
+            }
+
+            yield return EndFrame();
+
+            if (stopWaiting)
+                break;
+
+            timer += Time.deltaTime;
+        }
+
+        DestroyableSingleton<RoleManager>.Instance.SelectRoles();
+        ShipStatus.Instance.Begin();
+        AmongUsClient.Instance.SendClientReady();
     }
 }

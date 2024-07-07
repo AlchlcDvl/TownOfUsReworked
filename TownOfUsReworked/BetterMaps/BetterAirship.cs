@@ -76,8 +76,7 @@ public static class BetterAirship
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
-            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(LayerEnum.Astral, out var astral) && astral.LastPosition !=
-                Vector3.zero))
+            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
             {
                 __instance.Close();
                 return false;

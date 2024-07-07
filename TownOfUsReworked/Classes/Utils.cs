@@ -2,7 +2,7 @@
 
 public static class Utils
 {
-    public static bool HasDied(this PlayerControl player) => player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected;
+    public static bool HasDied(this PlayerControl player) => !player || player.Data == null || player.Data.IsDead || player.Data.Disconnected;
 
     public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
@@ -18,13 +18,13 @@ public static class Utils
 
     public static SpriteRenderer MyRend(this DeadBody d) => d?.bodyRenderers?.FirstOrDefault();
 
-    public static bool IsImpostor(this GameData.PlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
+    public static bool IsImpostor(this NetworkedPlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
 
     public static bool IsImpostor(this PlayerControl playerinfo) => playerinfo?.Data?.IsImpostor() == true;
 
     public static bool IsImpostor(this PlayerVoteArea playerinfo) => PlayerByVoteArea(playerinfo).IsImpostor();
 
-    public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfitType, GameData.PlayerOutfit outfit)
+    public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfitType, NetworkedPlayerInfo.PlayerOutfit outfit)
     {
         playerControl.Data.SetOutfit((PlayerOutfitType)customOutfitType, outfit);
         playerControl.SetOutfit(customOutfitType);
@@ -32,7 +32,7 @@ public static class Utils
 
     public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfit)
     {
-        if (playerControl == null)
+        if (!playerControl)
             return;
 
         var outfitType = (PlayerOutfitType)customOutfit;
@@ -260,7 +260,7 @@ public static class Utils
         yield break;
     }
 
-    public static GameData.PlayerOutfit InvisOutfit1(PlayerControl player) => new()
+    public static NetworkedPlayerInfo.PlayerOutfit InvisOutfit1(PlayerControl player) => new()
     {
         ColorId = player.CurrentOutfit.ColorId,
         HatId = player.CurrentOutfit.HatId,
@@ -271,7 +271,7 @@ public static class Utils
         PetId = "pet_EmptyPet"
     };
 
-    public static GameData.PlayerOutfit InvisOutfit2() => new()
+    public static NetworkedPlayerInfo.PlayerOutfit InvisOutfit2() => new()
     {
         ColorId = 37,
         HatId = "hat_NoHat",
@@ -282,7 +282,7 @@ public static class Utils
         PetId = "pet_EmptyPet"
     };
 
-    public static GameData.PlayerOutfit BlankOutfit(PlayerControl player) => new()
+    public static NetworkedPlayerInfo.PlayerOutfit BlankOutfit(PlayerControl player) => new()
     {
         ColorId = player.Data.DefaultOutfit.ColorId,
         HatId = "hat_NoHat",
@@ -293,7 +293,7 @@ public static class Utils
         PetId = "pet_EmptyPet"
     };
 
-    public static GameData.PlayerOutfit CamoOutfit(PlayerControl player) => new()
+    public static NetworkedPlayerInfo.PlayerOutfit CamoOutfit(PlayerControl player) => new()
     {
         ColorId = player.CurrentOutfit.ColorId,
         HatId = player.CurrentOutfit.HatId,
@@ -304,7 +304,7 @@ public static class Utils
         PetId = "pet_EmptyPet"
     };
 
-    public static GameData.PlayerOutfit ColorblindOutfit() => new()
+    public static NetworkedPlayerInfo.PlayerOutfit ColorblindOutfit() => new()
     {
         ColorId = 7,
         HatId = "hat_NoHat",
@@ -315,7 +315,7 @@ public static class Utils
         PetId = "pet_EmptyPet"
     };
 
-    public static GameData.PlayerOutfit NightVisonOutfit() => new()
+    public static NetworkedPlayerInfo.PlayerOutfit NightVisonOutfit() => new()
     {
         ColorId = 11,
         HatId = "hat_NoHat",
@@ -370,7 +370,7 @@ public static class Utils
 
     public static double GetDistance(PlayerControl player, PlayerControl refplayer)
     {
-        if (player == null || refplayer == null)
+        if (!player || !refplayer)
             return double.MaxValue;
 
         return Vector2.Distance(refplayer.transform.position, player.transform.position);
@@ -382,7 +382,7 @@ public static class Utils
 
     public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
-        if (killer == null || target == null)
+        if (!killer || !target)
             return;
 
         MurderPlayer(killer, target, reason, lunge);
@@ -391,21 +391,17 @@ public static class Utils
 
     public static void MurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason, bool lunge)
     {
-        if (killer == null || target == null)
+        if (!killer || !target)
             return;
 
         var data = target.Data;
 
-        if (data == null)
+        if (data == null || data.IsDead || killer.Data == null)
             return;
 
+        AchievementManager.Instance.OnMurder(killer == CustomPlayer.Local, target == CustomPlayer.Local, CachedMorphs.ContainsKey(killer.PlayerId),
+            CachedMorphs.TryGetValue(killer.PlayerId, out var id) ? id : 255, target.PlayerId);
         lunge &= !killer.Is(LayerEnum.Ninja) && killer != target;
-
-        if (data.IsDead)
-            return;
-
-        if (target.inVent)
-            Vent.currentVent?.Buttons.ForEach(x => x.gameObject.SetActive(false));
 
         if (IsCustomHnS || CustomPlayer.LocalCustom.Dead)
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD.transform.parent).Show(target, 0);
@@ -422,6 +418,9 @@ public static class Utils
             var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
             BodyLocations[target.PlayerId] = location;
             CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, target, location);
+
+            if (Vent.currentVent && Vent.currentVent.Buttons != null)
+                Vent.currentVent.Buttons.ForEach(x => x.gameObject.SetActive(false));
         }
 
         if (FirstDead == null)
@@ -438,10 +437,10 @@ public static class Utils
         if (killer == CustomPlayer.Local && killer.Is(LayerEnum.VampireHunter) && target.Is(SubFaction.Undead))
             Flash(CustomColorManager.Undead);
 
-        if (CustomPlayer.Local.TryGetLayer<Monarch>(LayerEnum.Monarch, out var mon) && mon.Knighted.Contains(target.PlayerId))
+        if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(target.PlayerId))
             Flash(CustomColorManager.Monarch);
 
-        var targetRole = target.GetRoleOrBlank();
+        var targetRole = target.GetRole();
 
         if (target.Is(LayerEnum.VIP))
         {
@@ -477,8 +476,8 @@ public static class Utils
         else
             targetRole.DeathReason = DeathReasonEnum.Suicide;
 
-        if (target.TryGetLayer<Framer>(LayerEnum.Framer, out var framer))
-            framer.Framed.Clear();
+        if (!PlayerLayer.GetLayers<Altruist>().Any() && !PlayerLayer.GetLayers<Necromancer>().Any())
+            targetRole.TrulyDead |= targetRole.Type != LayerEnum.GuardianAngel;
 
         RecentlyKilled.Add(target.PlayerId);
         KilledPlayers.RemoveAll(x => x.PlayerId == target.PlayerId);
@@ -501,13 +500,13 @@ public static class Utils
         else if (target.Is(LayerEnum.Bait) && killer != target)
             BaitReport(killer, target);
 
-        if (killer.TryGetLayer<Politician>(LayerEnum.Politician, out var poli))
+        if (killer.TryGetLayer<Politician>(out var poli))
             poli.VoteBank++;
 
-        if (target.TryGetLayer<Troll>(LayerEnum.Troll, out var troll) && AmongUsClient.Instance.AmHost)
+        if (target.TryGetLayer<Troll>(out var troll) && AmongUsClient.Instance.AmHost)
         {
-            troll.Killed = true;
-            CallRpc(CustomRPC.WinLose, WinLoseRPC.TrollWin, troll);
+            // troll.Killed = true;
+            // CallRpc(CustomRPC.WinLose, WinLoseRPC.TrollWin, troll);
 
             if (!CustomGameOptions.AvoidNeutralKingmakers)
                 RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
@@ -515,6 +514,8 @@ public static class Utils
 
         if (Meeting)
             MarkMeetingDead(target, killer);
+        else
+            target.GetLayers().ForEach(x => x.OnDeath());
     }
 
     public static void MarkMeetingDead(PlayerControl target, bool doesKill = true, bool noReason = false) => MarkMeetingDead(target, target, doesKill, noReason);
@@ -531,34 +532,34 @@ public static class Utils
             target.RpcSetScanner(false);
             Meeting.SetForegroundForDead();
 
-            if (target.TryGetLayer<Swapper>(LayerEnum.Swapper, out var swapper))
+            if (target.TryGetLayer<Swapper>(out var swapper))
             {
                 swapper.Swap1 = null;
                 swapper.Swap2 = null;
                 swapper.SwapMenu.HideButtons();
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, swapper, 255, 255);
             }
-            else if (target.TryGetLayer<Dictator>(LayerEnum.Dictator, out var dict))
+            else if (target.TryGetLayer<Dictator>(out var dict))
             {
                 dict.DictMenu.HideButtons();
                 dict.ToBeEjected.Clear();
                 dict.ToDie = false;
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, false, dict.ToBeEjected);
             }
-            else if (target.TryGetLayer<Retributionist>(LayerEnum.Retributionist, out var ret))
+            else if (target.TryGetLayer<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
             else if (target.IsAssassin())
             {
-                var assassin = target.GetAbility<Assassin>();
+                var assassin = target.GetLayer<Assassin>();
                 assassin.Exit(Meeting);
                 assassin.AssassinMenu.HideButtons();
             }
-            else if (target.TryGetLayer<Guesser>(LayerEnum.Guesser, out var guesser))
+            else if (target.TryGetLayer<Guesser>(out var guesser))
             {
                 guesser.Exit(Meeting);
                 guesser.GuessMenu.HideButtons();
             }
-            else if (target.TryGetLayer<Thief>(LayerEnum.Thief, out var thief))
+            else if (target.TryGetLayer<Thief>(out var thief))
             {
                 thief.Exit(Meeting);
                 thief.GuessMenu.HideButtons();
@@ -580,7 +581,7 @@ public static class Utils
 
         foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
         {
-            if (target == role.BlackmailedPlayer && role.PrevOverlay != null)
+            if (target == role.BlackmailedPlayer && role.PrevOverlay)
             {
                 voteArea.Overlay.sprite = role.PrevOverlay;
                 voteArea.Overlay.color = role.PrevColor.Value;
@@ -589,7 +590,7 @@ public static class Utils
 
         foreach (var role in PlayerLayer.GetLayers<Silencer>())
         {
-            if (target == role.SilencedPlayer && role.PrevOverlay != null)
+            if (target == role.SilencedPlayer && role.PrevOverlay)
             {
                 voteArea.Overlay.sprite = role.PrevOverlay;
                 voteArea.Overlay.color = role.PrevColor.Value;
@@ -598,7 +599,7 @@ public static class Utils
 
         foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
         {
-            if (target == role.BlackmailedPlayer && role.PrevOverlay != null && role.IsBM)
+            if (target == role.BlackmailedPlayer && role.PrevOverlay && role.IsBM)
             {
                 voteArea.Overlay.sprite = role.PrevOverlay;
                 voteArea.Overlay.color = role.PrevColor.Value;
@@ -607,7 +608,7 @@ public static class Utils
 
         foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
         {
-            if (target == role.SilencedPlayer && role.PrevOverlay != null && role.IsSil)
+            if (target == role.SilencedPlayer && role.PrevOverlay && role.IsSil)
             {
                 voteArea.Overlay.sprite = role.PrevOverlay;
                 voteArea.Overlay.color = role.PrevColor.Value;
@@ -622,17 +623,17 @@ public static class Utils
                 assassin.Exit(Meeting);
                 assassin.AssassinMenu.HideSingle(target.PlayerId);
             }
-            else if (CustomPlayer.Local.TryGetLayer<Guesser>(LayerEnum.Guesser, out var guesser))
+            else if (CustomPlayer.Local.TryGetLayer<Guesser>(out var guesser))
             {
                 guesser.Exit(Meeting);
                 guesser.GuessMenu.HideSingle(target.PlayerId);
             }
-            else if (CustomPlayer.Local.TryGetLayer<Thief>(LayerEnum.Thief, out var thief))
+            else if (CustomPlayer.Local.TryGetLayer<Thief>(out var thief))
             {
                 thief.Exit(Meeting);
                 thief.GuessMenu.HideSingle(target.PlayerId);
             }
-            else if (CustomPlayer.Local.TryGetLayer<Swapper>(LayerEnum.Swapper, out var swapper))
+            else if (CustomPlayer.Local.TryGetLayer<Swapper>(out var swapper))
             {
                 if (swapper.SwapMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
@@ -647,7 +648,7 @@ public static class Utils
 
                 swapper.SwapMenu.HideSingle(target.PlayerId);
             }
-            else if (CustomPlayer.Local.TryGetLayer<Dictator>(LayerEnum.Dictator, out var dict))
+            else if (CustomPlayer.Local.TryGetLayer<Dictator>(out var dict))
             {
                 if (dict.DictMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
@@ -707,13 +708,15 @@ public static class Utils
 
         if (FirstDead == null)
             FirstDead = target.Data.PlayerName;
+
+        target.GetLayers().ForEach(x => x.OnDeath());
     }
 
     public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
 
     public static IEnumerator BaitReportDelay(PlayerControl killer, PlayerControl target)
     {
-        if (killer == null || target == null || killer == target)
+        if (!killer || !target || killer == target)
             yield break;
 
         yield return Wait(URandom.RandomRange(CustomGameOptions.BaitMinDelay, CustomGameOptions.BaitMaxDelay));
@@ -735,13 +738,13 @@ public static class Utils
             GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
     }
 
-    public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => CustomPlayer.AllPlayers.Where(x => Vector2.Distance(truePosition,
-        x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))).ToList();
+    public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => [ .. CustomPlayer.AllPlayers.Where(x =>
+        Vector2.Distance(truePosition, x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))) ];
 
     public static void StopDragging(byte id)
     {
-        PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
-        PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
+        PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
+        PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.CurrentlyDragging && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
     }
 
     public static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
@@ -772,7 +775,7 @@ public static class Utils
 
     public static void FadeBody(DeadBody body)
     {
-        if (body == null)
+        if (!body)
             return;
 
         HUD.StartCoroutine(PerformTimedAction(1f, p =>
@@ -932,7 +935,7 @@ public static class Utils
                     if (!SubLoaded)
                         break;
 
-                    fs = CustomPlayer.Local.myTasks.Any(x => x.TaskType == RetrieveOxygenMask);
+                    fs = HasTask(RetrieveOxygenMask);
                     break;
 
                 case 7:
@@ -1148,7 +1151,7 @@ public static class Utils
         {
             var normalPlayerTask = task.TryCast<NormalPlayerTask>();
 
-            if (normalPlayerTask != null)
+            if (normalPlayerTask)
             {
                 var updateArrow = normalPlayerTask.taskStep > 0;
                 normalPlayerTask.taskStep = 0;
@@ -1255,16 +1258,17 @@ public static class Utils
         }
     }
 
-    public static string WrapTexts(List<string> texts, int width = 90, bool overflow = true)
+    public static string WrapTexts(IEnumerable<string> texts, int width = 90, bool overflow = true)
     {
-        var result = WrapText(texts[0], width, overflow);
+        if (!texts.Any())
+            return "";
+
+        var result = WrapText(texts.First(), width, overflow);
         texts.Skip(1).ForEach(x => result += $"\n{WrapText(x, width, overflow)}");
         return result;
     }
 
     public static bool IsNullEmptyOrWhiteSpace(string text) => text is null or "" || text.All(x => x is ' ' or '\n');
-
-    public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.ToList().Find(x => x.Role == roleType).IntroSound;
 
     public static void RpcBreakShield(PlayerControl target)
     {
@@ -1388,7 +1392,7 @@ public static class Utils
         player.MyPhysics.ResetMoveState();
     }
 
-    public static GameData.PlayerOutfit GetCurrentOutfit(this PlayerControl player)
+    public static NetworkedPlayerInfo.PlayerOutfit GetCurrentOutfit(this PlayerControl player)
     {
         if (!player.Data.Outfits.TryGetValue(player.CurrentOutfitType, out var outfit))
             return player.Data.DefaultOutfit;
@@ -1407,4 +1411,30 @@ public static class Utils
         action(1f);
         yield break;
     }
+
+    public static void OverrideOnClickListeners(this PassiveButton passive, Action action, bool enabled = true)
+    {
+        passive.OnClick.RemoveAllListeners();
+        passive.OnClick = new();
+        passive.OnClick.AddListener(action);
+        passive.enabled = enabled;
+    }
+
+    public static void OverrideOnMouseOverListeners(this PassiveButton passive, Action action, bool enabled = true)
+    {
+        passive.OnMouseOver.RemoveAllListeners();
+        passive.OnMouseOver = new();
+        passive.OnMouseOver.AddListener(action);
+        passive.enabled = enabled;
+    }
+
+    public static void OverrideOnMouseOutListeners(this PassiveButton passive, Action action, bool enabled = true)
+    {
+        passive.OnMouseOut.RemoveAllListeners();
+        passive.OnMouseOut = new();
+        passive.OnMouseOut.AddListener(action);
+        passive.enabled = enabled;
+    }
+
+    public static bool HasTask(params TaskTypes[] types) => CustomPlayer.Local.myTasks.Any(x => types.Contains(x.TaskType));
 }

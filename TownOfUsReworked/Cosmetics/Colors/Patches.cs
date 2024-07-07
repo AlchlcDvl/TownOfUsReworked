@@ -1,17 +1,20 @@
+// using static TownOfUsReworked.Cosmetics.CustomColors.CustomColorManager;
+
 namespace TownOfUsReworked.Cosmetics.CustomColors;
 
 [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
 public static class PlayerTabOnEnablePatch
 {
     /*private static TMP_Text Template;
+    private static BoxCollider2D Collider;
 
     private static float CreateColorPackage(List<CustomColor> colors, string packageName, float YStart, PlayerTab __instance)
     {
         var offset = YStart;
 
-        if (Template != null)
+        if (Template)
         {
-            var title = UObject.Instantiate(Template, __instance.ColorTabArea);
+            var title = UObject.Instantiate(Template, __instance.scroller.Inner);
             var material = title.GetComponent<MeshRenderer>().material;
             material.SetFloat("_StencilComp", 4f);
             material.SetFloat("_Stencil", 1f);
@@ -29,22 +32,24 @@ public static class PlayerTabOnEnablePatch
             var color = colors[i];
             var xpos = __instance.XRange.min + (i % 15 * 0.35f);
             var ypos = offset - (i / 15 * 0.35f);
-            var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.ColorTabArea);
+            var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
 
             if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
             {
-                colorChip.Button.OnMouseOver.AddListener((Action)(() => __instance.SelectColor(color.ColorID)));
-                colorChip.Button.OnMouseOut.AddListener((Action)(() => __instance.SelectColor(DataManager.Player.Customization.Color)));
-                colorChip.Button.OnClick.AddListener((Action)(() => __instance.ClickEquip()));
+                colorChip.Button.OverrideOnMouseOverListeners(() => __instance.SelectColor(color.ColorID));
+                colorChip.Button.OverrideOnMouseOutListeners(() => __instance.SelectColor(DataManager.Player.Customization.Color));
+                colorChip.Button.OverrideOnClickListeners(__instance.ClickEquip);
             }
             else
-                colorChip.Button.OnClick.AddListener((Action)(() => __instance.SelectColor(color.ColorID)));
+                colorChip.Button.OverrideOnClickListeners(() => __instance.SelectColor(color.ColorID));
 
             colorChip.transform.localScale *= 0.6f;
-            colorChip.Inner.SpriteColor = GetColor(i, false);
+            colorChip.Inner.SpriteColor = i.GetColor(false);
             colorChip.transform.localPosition = new(xpos, ypos, 2f);
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             colorChip.Tag = color.ColorID;
+            colorChip.Button.ClickMask = Collider;
+            colorChip.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             __instance.ColorChips.Add(colorChip);
         }
 
@@ -58,6 +63,22 @@ public static class PlayerTabOnEnablePatch
             for (var i = 0; i < __instance.scroller.Inner.childCount; i++)
                 __instance.scroller.Inner.GetChild(i).gameObject.Destroy();
         } catch {}
+
+        var tab = PlayerCustomizationMenu.Instance.Tabs[1].Tab;
+
+        if (!__instance.scroller)
+        {
+            __instance.scroller = UObject.Instantiate(tab.scroller, __instance.transform, true);
+            __instance.scroller.Inner.transform.DestroyChildren();
+            var gameObject = new GameObject("SpriteMask") { layer = 5 };
+            gameObject.transform.SetParent(__instance.transform);
+            gameObject.transform.localPosition = new(0f, 0f, 0f);
+            gameObject.transform.localScale = new(500f, 4.76f, 0f);
+            gameObject.AddComponent<SpriteMask>().sprite = GetSprite("Blank");
+            Collider = gameObject.AddComponent<BoxCollider2D>();
+            Collider.size = new(1f, 0.75f);
+            Collider.enabled = true;
+        }
 
         __instance.ColorChips = new();
         var packages = new Dictionary<string, List<CustomColor>>();
@@ -89,6 +110,7 @@ public static class PlayerTabOnEnablePatch
         });
         keys.ForEach(key => yOffset = CreateColorPackage(packages[key], key, yOffset, __instance));
         __instance.currentColor = DataManager.Player.Customization.Color;
+        __instance.SetScrollerBounds();
         return false;
     }*/
 
@@ -129,13 +151,13 @@ public static class PlayerTabUpdatePatch
 [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
 public static class SetPlayerMaterialPatch1
 {
-    public static void Prefix(ref int colorId, ref Renderer rend) => ColorHandler.Instance.SetRend(rend, colorId); // rend.gameObject.EnsureComponent<ColorBehaviour>().SetRend(rend, colorId);
+    public static void Prefix(ref int colorId, ref Renderer rend) => ColorHandler.Instance.SetRend(rend, colorId);
 }
 
 [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(UColor), typeof(Renderer))]
 public static class SetPlayerMaterialPatch2
 {
-    public static void Prefix(ref Renderer rend) => ColorHandler.Instance.SetRend(rend, -1); // rend.gameObject.EnsureComponent<ColorBehaviour>().SetRend(rend, -1);
+    public static void Prefix(ref Renderer rend) => ColorHandler.Instance.SetRend(rend, -1);
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdCheckColor))]
@@ -143,7 +165,7 @@ public static class CmdCheckColorPatch
 {
     public static bool Prefix(PlayerControl __instance, ref byte bodyColor)
     {
-        CallRpc(CustomRPC.Misc, MiscRPC.SetColor, __instance, bodyColor);
+        CallRpc(CustomRPC.Vanilla, VanillaRPC.SetColor, __instance, bodyColor);
         __instance.SetColor(bodyColor);
         PlayerHandler.Instance.ColorNames[__instance.PlayerId] = __instance.Data.ColorName.Replace("(", "").Replace(")", "");
         return false;

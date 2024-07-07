@@ -50,7 +50,7 @@ public class Retributionist : Crew
     // Retributionist Stuff
     public PlayerVoteArea Selected { get; set; }
     public PlayerControl Revived { get; set; }
-    public Role RevivedRole => Revived ? (Revived.Is(LayerEnum.Revealer) ? Revived.GetRole<Revealer>().FormerRole : Revived.GetRole()) : null;
+    public Role RevivedRole => Revived ? (Revived.Is(LayerEnum.Revealer) ? Revived.GetLayer<Revealer>().FormerRole : Revived.GetRole()) : null;
     public CustomMeeting RetMenu { get; set; }
 
     public override UColor Color
@@ -400,7 +400,7 @@ public class Retributionist : Crew
         Revived = null;
     }
 
-    public override void OnBodyReport(GameData.PlayerInfo info)
+    public override void OnBodyReport(NetworkedPlayerInfo info)
     {
         base.OnBodyReport(info);
 
@@ -836,7 +836,7 @@ public class Retributionist : Crew
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
         else
-            return (player.Is(LayerEnum.Mayor) && player.GetRole<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetRole<Dictator>().Revealed);
+            return (player.Is(LayerEnum.Mayor) && player.GetLayer<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetLayer<Dictator>().Revealed);
     }
 
     public bool MedicUsable() => !ShieldBroken && IsMedic;

@@ -10,7 +10,7 @@ public static class TranslationManager
         _ => "English"
     };
 
-    public static readonly string[] SupportedLangNames = ["English", "SChinese"];
+    public static readonly string[] SupportedLangNames = [ "English", "SChinese" ];
 
     public static string Translate(string id, string language = null)
     {

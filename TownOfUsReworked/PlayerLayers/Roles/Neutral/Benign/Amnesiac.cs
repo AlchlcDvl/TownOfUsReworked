@@ -166,9 +166,9 @@ public class Amnesiac : Neutral
         else if (other.Is(LayerEnum.Jackal))
         {
             ((Jackal)role).Recruited.Clear();
-            ((Jackal)role).EvilRecruit = null;
-            ((Jackal)role).GoodRecruit = null;
-            ((Jackal)role).BackupRecruit = null;
+            ((Jackal)role).Recruit2 = null;
+            ((Jackal)role).Recruit1 = null;
+            ((Jackal)role).Recruit3 = null;
         }
 
         if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && (CustomGameOptions.SnitchSeesNeutrals || CustomGameOptions.RevealerRevealsNeutrals)))

@@ -103,9 +103,9 @@ public class Shapeshifter : Syndicate
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ShapeshiftButton);
             ShapeshiftButton.Begin();
         }
-        else if (ShapeshiftPlayer1 == null)
+        else if (!ShapeshiftPlayer1)
             ShapeshiftMenu1.Open();
-        else if (ShapeshiftPlayer2 == null)
+        else if (!ShapeshiftPlayer2)
             ShapeshiftMenu2.Open();
         else
         {

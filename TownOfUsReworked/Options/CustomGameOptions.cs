@@ -49,6 +49,8 @@ public static class CustomGameOptions
     public static PlayerNames PlayerNames => (PlayerNames)Generate.PlayerNames.GetInt();
     public static bool DeadSeeEverything => Generate.DeadSeeEverything;
     public static bool HideVentAnims => Generate.HideVentAnims;
+    public static bool JaniCanMutuallyExclusive => Generate.JaniCanMutuallyExclusive;
+    public static bool IndicateReportedBodies => Generate.IndicateReportedBodies;
 
     // Better Sabotage Settings
     public static float ReactorShake => Generate.ReactorShake;
@@ -897,6 +899,7 @@ public static class CustomGameOptions
     public static float MineCd => Generate.MineCd;
     public static int MinerCount => Generate.MinerOn.GetCount();
     public static bool UniqueMiner => Generate.UniqueMiner;
+    public static bool MinerSpawnOnMira => Generate.MinerSpawnOnMira;
 
     // Impostor Settings
     public static int ImpCount => Generate.ImpostorOn.GetCount();

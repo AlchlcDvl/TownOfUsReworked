@@ -10,13 +10,13 @@ public static class References
     public static readonly Dictionary<byte, DateTime> UninteractiblePlayers = [];
     public static readonly Dictionary<byte, float> UninteractiblePlayers2 = [];
     public static readonly Dictionary<byte, string> BodyLocations = [];
-    public static List<DeadBody> AllBodies => [..UObject.FindObjectsOfType<DeadBody>()];
-    public static List<Vent> AllVents => [..UObject.FindObjectsOfType<Vent>()];
-    public static List<Vent> AllMapVents => [..Ship.AllVents];
-    public static List<GameObject> AllGameObjects => [..UObject.FindObjectsOfType<GameObject>()];
-    public static List<Console> AllConsoles => [..UObject.FindObjectsOfType<Console>()];
-    public static List<SystemConsole> AllSystemConsoles => [..UObject.FindObjectsOfType<SystemConsole>()];
-    public static List<PlayerVoteArea> AllVoteAreas => [..Meeting.playerStates];
+    public static List<DeadBody> AllBodies => [ .. UObject.FindObjectsOfType<DeadBody>() ];
+    public static List<Vent> AllVents => [ .. UObject.FindObjectsOfType<Vent>() ];
+    public static List<Vent> AllMapVents => [ .. Ship.AllVents ];
+    public static List<GameObject> AllGameObjects => [ .. UObject.FindObjectsOfType<GameObject>() ];
+    public static List<Console> AllConsoles => [ .. UObject.FindObjectsOfType<Console>() ];
+    public static List<SystemConsole> AllSystemConsoles => [ .. UObject.FindObjectsOfType<SystemConsole>() ];
+    public static List<PlayerVoteArea> AllVoteAreas => [ .. Meeting.playerStates ];
     public static string FirstDead;
     public static string CachedFirstDead;
     public static HudManager HUD => HudManager.Instance;
@@ -62,8 +62,8 @@ public static class References
         new(5.5f, -16f), // Comms right
         new(-1.5f, -10), // Storage top
         new(-1.5f, -15.5f), // Storage bottom
-        new(-4.5f, -12.5f), // Storrage left
-        new(0.3f, -12.5f), // Storrage right
+        new(-4.5f, -12.5f), // Storage left
+        new(0.3f, -12.5f), // Storage right
         new(4.5f, -7.5f), // Admin top
         new(4.5f, -9.5f), // Admin bottom
         new(-9, -8), // Elec top left
@@ -110,7 +110,7 @@ public static class References
     [
         new(16.6f, -1f), // Dropship top
         new(16.6f, -5f), // Dropship bottom
-        new(20f, -9f), // Above storrage
+        new(20f, -9f), // Above storage
         new(22f, -7f), // Right fuel
         new(25.5f, -6.9f), // Drill
         new(29f, -9.5f), // Lab lockers
@@ -130,9 +130,9 @@ public static class References
         new(27f, -16.5f), // Office lifelines
         new(32.7f, -15.7f), // Lavapool
         new(31.5f, -12f), // Snowmad below lab
-        new(10f, -14f), // Below storrage
-        new(21.5f, -12.5f), // Storrage vent
-        new(19f, -11f), // Storrage toolrack
+        new(10f, -14f), // Below storage
+        new(21.5f, -12.5f), // Storage vent
+        new(19f, -11f), // Storage toolrack
         new(12f, -7f), // Left fuel
         new(5f, -7.5f), // Above elec
         new(10f, -12f), // Elec fence
@@ -140,16 +140,16 @@ public static class References
         new(5f, -9f), // Elec window
         new(4f, -11.2f), // Elec tapes
         new(5.5f, -16f), // Elec-O2 hall
-        new(1f, -17.5f), // O2 tree hayball
+        new(1f, -17.5f), // O2 tree
         new(3f, -21f), // O2 middle
         new(2f, -19f), // O2 gas
         new(1f, -24f), // O2 water
         new(7f, -24f), // Under O2
         new(9f, -20f), // Right outside of O2
-        new(7f, -15.8f), // Snowman under elec
+        new(6.9f, -13.8f), // Snowman under elec
         new(11f, -17f), // Comms table
         new(12.7f, -15.5f), // Comms antenna pult
-        new(13f, -24.5f), // Weapons window
+        new(12f, -21.5f), // Weapons window
         new(15f, -17f), // Between coms-office
         new(17.5f, -25.7f) // Snowman under office
     ];
@@ -174,8 +174,8 @@ public static class References
         new(-5.5f, -16f), // Comms right
         new(1.5f, -10), // Storage top
         new(1.5f, -15.5f), // Storage bottom
-        new(4.5f, -12.5f), // Storrage left
-        new(-0.3f, -12.5f), // Storrage right
+        new(4.5f, -12.5f), // Storage left
+        new(-0.3f, -12.5f), // Storage right
         new(-4.5f, -7.5f), // Admin top
         new(-4.5f, -9.5f), // Admin bottom
         new(9, -8), // Elec top left

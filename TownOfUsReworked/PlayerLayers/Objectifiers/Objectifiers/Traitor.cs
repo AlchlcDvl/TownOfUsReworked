@@ -30,7 +30,11 @@ public class Traitor : Objectifier
     public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <color=#FF1919FF>Intruders</color> or the <color=#008000FF>Syndicate</color>" : "";
     public override bool Hidden => !CustomGameOptions.TraitorKnows && !Turned && !Dead;
 
-    public override void Init() => Side = Faction.Crew;
+    public override void Init()
+    {
+        base.Init();
+        Side = Faction.Crew;
+    }
 
     public void TurnBetrayer()
     {
@@ -118,6 +122,9 @@ public class Traitor : Objectifier
 
         if (Local || CustomPlayer.Local.Is(traitorRole.Faction))
             Flash(CustomColorManager.Traitor);
+
+        if (Local)
+            traitorRole.UpdateButtons();
     }
 
     public override void UpdateHud(HudManager __instance)

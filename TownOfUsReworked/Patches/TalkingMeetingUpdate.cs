@@ -49,7 +49,7 @@ public static class MeetingHud_Update
         {
             foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
             {
-                if (role.BlackmailedPlayer == null)
+                if (!role.BlackmailedPlayer)
                     continue;
 
                 if (!role.BlackmailedPlayer.HasDied())
@@ -73,7 +73,7 @@ public static class MeetingHud_Update
 
             foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
             {
-                if (role.BlackmailedPlayer == null || !role.IsBM)
+                if (!role.BlackmailedPlayer || !role.IsBM)
                     continue;
 
                 if (!role.BlackmailedPlayer.HasDied())
@@ -100,7 +100,7 @@ public static class MeetingHud_Update
         {
             foreach (var role in PlayerLayer.GetLayers<Silencer>())
             {
-                if (role.SilencedPlayer == null)
+                if (!role.SilencedPlayer)
                     continue;
 
                 if (!role.SilencedPlayer.HasDied())
@@ -124,7 +124,7 @@ public static class MeetingHud_Update
 
             foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
             {
-                if (role.SilencedPlayer == null || !role.IsSil)
+                if (!role.SilencedPlayer || !role.IsSil)
                     continue;
 
                 if (!role.SilencedPlayer.HasDied())

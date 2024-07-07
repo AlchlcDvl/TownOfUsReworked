@@ -86,7 +86,7 @@ public class Coroner : Crew
         CompareButton.StartCooldown(cooldown);
     }
 
-    public override void OnBodyReport(GameData.PlayerInfo info)
+    public override void OnBodyReport(NetworkedPlayerInfo info)
     {
         base.OnBodyReport(info);
 

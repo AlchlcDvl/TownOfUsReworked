@@ -31,10 +31,8 @@ public class PromotedGodfather : Intruder
         {
             if (!ClientGameOptions.CustomIntColors)
                 return CustomColorManager.Intruder;
-            else if (FormerRole)
-                return FormerRole.Color;
             else
-                return CustomColorManager.Godfather;
+                return FormerRole?.Color ?? CustomColorManager.Rebel;
         }
     }
     public override string Name => "Godfather";
@@ -302,7 +300,7 @@ public class PromotedGodfather : Intruder
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius).Select(x => x.PlayerId).ToList();
+    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius).Select(x => x.PlayerId) ];
 
     public bool GrenCondition() => !Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !CustomGameOptions.SaboFlash;
 
@@ -613,7 +611,7 @@ public class PromotedGodfather : Intruder
 
     public void Roleblock()
     {
-        if (BlockTarget == null)
+        if (!BlockTarget)
             BlockMenu.Open();
         else
         {

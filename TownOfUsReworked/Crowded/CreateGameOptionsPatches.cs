@@ -8,13 +8,14 @@ public static class CreateOptionsPicker_Awake
         if (__instance.mode != SettingsMode.Host)
             return;
 
+        var options = __instance.GetTargetOptions();
+
         var firstButtonRenderer = __instance.MaxPlayerButtons[0];
         firstButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "-";
         firstButtonRenderer.enabled = false;
 
         var firstButtonButton = firstButtonRenderer.GetComponent<PassiveButton>();
-        firstButtonButton.OnClick = new();
-        firstButtonButton.OnClick.AddListener((Action)(() =>
+        firstButtonButton.OverrideOnClickListeners(() =>
         {
             for (var i = 1; i < 11; i++)
             {
@@ -24,8 +25,8 @@ public static class CreateOptionsPicker_Awake
                 tmp.text = newValue.ToString();
             }
 
-            __instance.UpdateMaxPlayersButtons(__instance.GetTargetOptions());
-        }));
+            __instance.UpdateMaxPlayersButtons(options);
+        });
 
         firstButtonRenderer.Destroy();
 
@@ -34,8 +35,7 @@ public static class CreateOptionsPicker_Awake
         lastButtonRenderer.enabled = false;
 
         var lastButtonButton = lastButtonRenderer.GetComponent<PassiveButton>();
-        lastButtonButton.OnClick = new();
-        lastButtonButton.OnClick.AddListener((Action)(() =>
+        lastButtonButton.OverrideOnClickListeners(() =>
         {
             for (var i = 1; i < 11; i++)
             {
@@ -45,8 +45,8 @@ public static class CreateOptionsPicker_Awake
                 tmp.text = newValue.ToString();
             }
 
-            __instance.UpdateMaxPlayersButtons(__instance.GetTargetOptions());
-        }));
+            __instance.UpdateMaxPlayersButtons(options);
+        });
 
         lastButtonRenderer.Destroy();
 
@@ -54,11 +54,10 @@ public static class CreateOptionsPicker_Awake
         {
             var playerButton = __instance.MaxPlayerButtons[i].GetComponent<PassiveButton>();
             var text = playerButton.GetComponentInChildren<TextMeshPro>();
-            playerButton.OnClick = new();
-            playerButton.OnClick.AddListener((Action)(() => __instance.SetMaxPlayersButtons(byte.Parse(text.text))));
+            playerButton.OverrideOnClickListeners(() => __instance.SetMaxPlayersButtons(byte.Parse(text.text)));
         }
 
-        __instance.MaxPlayerButtons.ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == __instance.GetTargetOptions().MaxPlayers.ToString());
+        __instance.MaxPlayerButtons.ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == options.MaxPlayers.ToString());
         __instance.ImpostorButtons.ForEach(x => x.gameObject.SetActive(false));
         __instance.ImpostorText.gameObject.SetActive(false);
     }

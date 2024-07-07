@@ -13,6 +13,8 @@ public class PresetLoader : AssetLoader<Asset>
         var mainResponse = (List<Asset>)response;
         LogMessage($"Found {mainResponse.Count} presets");
         var toDownload = mainResponse.Select(x => x.ID);
+        mainResponse.Clear();
+        LogMessage($"Downloading {toDownload.Count()} presets");
 
         foreach (var fileName in toDownload)
             yield return CoDownloadAsset(fileName, this, "txt");

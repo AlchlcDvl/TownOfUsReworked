@@ -25,7 +25,7 @@ public class Whisperer : Neutral
         SubFaction = SubFaction.Sect;
         SubFactionColor = CustomColorManager.Sect;
         WhisperConversion = CustomGameOptions.WhisperRate;
-        Persuaded = [Player.PlayerId];
+        Persuaded = [ Player.PlayerId ];
         WhisperButton = CreateButton(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Whisper, new Cooldown(CustomGameOptions.WhisperCd),
             "WHISPER", (DifferenceFunc)Difference);
         PlayerConversion = [];

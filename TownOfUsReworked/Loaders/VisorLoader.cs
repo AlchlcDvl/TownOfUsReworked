@@ -16,6 +16,7 @@ public class VisorLoader : AssetLoader<CustomVisor>
         var mainResponse = (List<CustomVisor>)response;
         UnregisteredVisors.AddRange(mainResponse);
         LogMessage($"Found {UnregisteredVisors.Count} visors");
+        mainResponse.Clear();
         var toDownload = GenerateDownloadList(UnregisteredVisors);
         LogMessage($"Downloading {toDownload.Count} visor files");
 
@@ -25,7 +26,7 @@ public class VisorLoader : AssetLoader<CustomVisor>
 
     public override IEnumerator AfterLoading(object response)
     {
-        /*if (TownOfUsReworked.IsStream)
+        if (TownOfUsReworked.IsStream)
         {
             var filePath = Path.Combine(TownOfUsReworked.Visors, "Stream", "Visors.json");
 
@@ -35,7 +36,7 @@ public class VisorLoader : AssetLoader<CustomVisor>
                 data.ForEach(x => x.StreamOnly = true);
                 UnregisteredVisors.AddRange(data);
             }
-        }*/
+        }
 
         var cache = UnregisteredVisors.Clone();
         var time = 0f;

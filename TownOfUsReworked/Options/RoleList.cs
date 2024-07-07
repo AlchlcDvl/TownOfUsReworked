@@ -141,7 +141,7 @@ public class RoleListEntryOption : CustomOption
 
     public RoleListEntryOption(string name) : base(MultiMenu.RoleList, $"{name} {(name.Contains("Entry") ? EntryNum : BanNum) + 1}", CustomOptionType.Entry, LayerEnum.None)
     {
-        Format = (val, _) => GetString(val);
+        Format = GetString;
         IsBan = Name.Contains("Ban");
 
         if (Name.Contains("Entry"))
@@ -181,11 +181,11 @@ public class RoleListEntryOption : CustomOption
                 button.Setting.gameObject.SetActive(true);
             else
             {
-                button.Setting = CustomButtonOption.CreateButton();
+                button.Setting = UObject.Instantiate(SettingsPatches.ButtonPrefab, GameObject.Find($"Main Camera/PlayerOptionsMenu(Clone)/MainArea/ROLES TAB/Scroller/SliderInner").transform);
                 button.OptionCreated();
             }
 
-            options.Add(button.Setting);
+            options.Add(button.Setting as OptionBehaviour);
         }
 
         return options;
@@ -200,13 +200,13 @@ public class RoleListEntryOption : CustomOption
         if (!IsBan)
         {
             keys.RemoveAll(x => IsBanned(x) || x == LayerEnum.None);
-            Alignments.Keys.ForEach(x => SlotButtons.Add(new(MultiMenu.External, Alignments[x], delegate { SetVal(x); })));
+            Alignments.Keys.ForEach(x => SlotButtons.Add(new(MultiMenu.RoleListEntry, Alignments[x], delegate { SetVal(x); })));
         }
         else
             keys.RemoveAll(x => x is LayerEnum.Crewmate or LayerEnum.Impostor or LayerEnum.Anarchist or LayerEnum.Murderer || IsAdded(x));
 
-        keys.ForEach(x => SlotButtons.Add(new(MultiMenu.External, Entries[x], delegate { SetVal(x); })));
-        SlotButtons.Add(new(MultiMenu.External, "Cancel", Cancel));
+        keys.ForEach(x => SlotButtons.Add(new(MultiMenu.RoleListEntry, Entries[x], delegate { SetVal(x); })));
+        SlotButtons.Add(new(MultiMenu.RoleListEntry, "Cancel", Cancel));
         EntryButtons.AddRange(SlotButtons);
 
         var options = CreateOptions();
@@ -214,14 +214,14 @@ public class RoleListEntryOption : CustomOption
         var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
         var x = __instance.Children[1].transform.localPosition.x;
         var z = __instance.Children[1].transform.localPosition.z;
-        OldButtons = __instance.Children.ToList();
+        OldButtons = __instance.Children.ToSystem();
         OldButtons.ForEach(x => x.gameObject.SetActive(false));
         SettingsPatches.SettingsPage = 10;
 
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
-        __instance.Children = options.ToArray();
+        __instance.Children = options.ToIl2Cpp();
     }
 
     public void SetVal(LayerEnum value)
@@ -242,11 +242,11 @@ public class RoleListEntryOption : CustomOption
         Loading = SlotButtons[0];
         Loading.Do = BlankVoid;
         Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
-        __instance.Children = new[] { Loading.Setting };
+        __instance.Children = new List<OptionBehaviour>() { Loading.Setting as OptionBehaviour }.ToIl2Cpp();
         yield return Wait(0.5f);
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
-        __instance.Children = OldButtons.ToArray();
+        __instance.Children = OldButtons.ToIl2Cpp();
         SettingsPatches.SettingsPage = 8;
         yield return EndFrame();
         yield break;

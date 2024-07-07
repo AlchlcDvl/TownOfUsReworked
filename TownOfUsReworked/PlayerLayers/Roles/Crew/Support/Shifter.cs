@@ -3,6 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Shifter : Crew
 {
     public CustomButton ShiftButton { get; set; }
+    public CustomMenu ShifterMenu { get; set; }
 
     public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Shifter : CustomColorManager.Crew;
     public override string Name => "Shifter";
@@ -14,12 +15,14 @@ public class Shifter : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewSupport;
-        ShiftButton = CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Shift, new Cooldown(CustomGameOptions.ShiftCd));
+        ShifterMenu = new(Player, Shift, Exception);
+        ShiftButton = CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open,
+            new Cooldown(CustomGameOptions.ShiftCd));
     }
 
     public void Shift()
     {
-        var cooldown = Interact(Player, ShiftButton.TargetPlayer);
+        var cooldown = Interact(Player, ShiftButton.TargetPlayer, astral: true);
 
         if (cooldown != CooldownType.Fail)
         {
@@ -94,9 +97,12 @@ public class Shifter : Crew
         newRole.Start<Role>(player).RoleUpdate(this);
         Role newRole2 = CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
         newRole2.Start<Role>(other).RoleUpdate(role);
+        ShifterMenu.Destroy();
+        CustomMenu.AllMenus.Remove(ShifterMenu);
     }
 
-    public bool Exception(PlayerControl player) => (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None && player.Is(SubFaction));
+    public bool Exception(PlayerControl player) => player.HasDied() || (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None &&
+        player.Is(SubFaction));
 
     public override void ReadRPC(MessageReader reader) => Shift(reader.ReadPlayer());
 }

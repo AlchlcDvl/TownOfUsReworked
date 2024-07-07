@@ -257,7 +257,7 @@ public class PlayerHandler : MonoBehaviour
         {
             var medic = localinfo[0] as Medic;
 
-            if (medic.ShieldedPlayer != null && medic.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            if (medic.ShieldedPlayer && medic.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Trapper))
@@ -271,7 +271,7 @@ public class PlayerHandler : MonoBehaviour
         {
             var ret = localinfo[0] as Retributionist;
 
-            if (ret.ShieldedPlayer != null && ret.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            if (ret.ShieldedPlayer && ret.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
             {
                 name += " <color=#006600FF>✚</color>";
                 color = ret.Color;

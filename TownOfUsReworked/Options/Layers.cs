@@ -6,31 +6,38 @@ public class CustomLayersOption : CustomOption
     private int CachedChance { get; set; }
     private int Max { get; }
     private int Min { get; }
+    private bool PreviousState { get; set; }
+    public UColor LayerColor { get; }
 
-    public CustomLayersOption(MultiMenu menu, string name, int min = 1, int max = 15, object parent = null) : this(menu, name, min, max, [parent], false) {}
+    public CustomLayersOption(MultiMenu menu, string name, UColor color, int min = 1, int max = 15, object parent = null) : this(menu, name, color, min, max, [parent], false) {}
 
-    public CustomLayersOption(MultiMenu menu, string name, int min = 1, int max = 15, object[] parent = null, bool all = false) : base(menu, name, CustomOptionType.Layers, 0, 0, parent, all)
+    public CustomLayersOption(MultiMenu menu, string name, UColor color, int min = 1, int max = 15, object[] parent = null, bool all = false) : base(menu, name, CustomOptionType.Layers, (0,
+        0), parent, all)
     {
         Min = min;
         Max = max;
-        Format = (val, otherVal) => $"{val}%" + (IsCustom ? $" (x{otherVal})" : "");
+        LayerColor = color;
+        Format = val => $"{(((int, int))val).Item1}%" + (IsCustom ? $" (x{(((int, int))val).Item2})" : "");
     }
 
     public override void OptionCreated()
     {
         base.OptionCreated();
         var role = Setting.Cast<RoleOptionSetting>();
-        role.TitleText.text = Name;
-        role.RoleMaxCount = Max;
-        role.ChanceText.text = $"{Value}%";
-        role.CountText.text = $"x{OtherValue}";
-        role.Role = null;
-        role.RoleChance = (int)Value;
+        role.titleText.text = Name;
+        role.titleText.color = LayerColor.Light();
+        role.roleMaxCount = Max;
+        var tuple = ((int, int))Value;
+        role.chanceText.text = $"{tuple.Item1}%";
+        role.countText.text = $"x{tuple.Item2}";
+        role.role = null;
+        role.roleChance = GetChance();
+        role.labelSprite.color = LayerColor.Shadow();
     }
 
-    public int GetChance() => (int)Value;
+    public int GetChance() => (((int, int))Value).Item1;
 
-    public int GetCount() => !IsCustom ? 1 : (int)OtherValue;
+    public int GetCount() => IsCustom ? (((int, int))Value).Item2 : 1;
 
     public void IncreaseCount()
     {
@@ -46,7 +53,7 @@ public class CustomLayersOption : CustomOption
             chance = 0;
         }
 
-        Set(chance, count);
+        Set((chance, count));
     }
 
     public void DecreaseCount()
@@ -63,7 +70,7 @@ public class CustomLayersOption : CustomOption
             chance = 0;
         }
 
-        Set(chance, count);
+        Set((chance, count));
     }
 
     public void IncreaseChance()
@@ -79,7 +86,7 @@ public class CustomLayersOption : CustomOption
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsCustom ? Min : CachedCount;
 
-        Set(chance, count);
+        Set((chance, count));
     }
 
     public void DecreaseChance()
@@ -95,6 +102,16 @@ public class CustomLayersOption : CustomOption
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsCustom ? Min : CachedCount;
 
-        Set(chance, count);
+        Set((chance, count));
+    }
+
+    public void UpdateParts()
+    {
+        var current = IsCustom;
+
+        if (PreviousState == current)
+            return;
+
+        PreviousState = current;
     }
 }

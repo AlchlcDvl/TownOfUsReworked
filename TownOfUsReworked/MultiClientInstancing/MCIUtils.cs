@@ -4,13 +4,12 @@ public static class MCIUtils
 {
     public static readonly Dictionary<int, ClientData> Clients = [];
     public static readonly Dictionary<byte, int> PlayerClientIDs = [];
-    public static readonly Dictionary<byte, Vector3> SavedPositions = [];
 
-    public static int AvailableId()
+    private static int AvailableId()
     {
         for (var i = 1; i < 128; i++)
         {
-            if (!Clients.ContainsKey(i) && CustomPlayer.Local.OwnerId != i)
+            if (!AmongUsClient.Instance.allClients.Any(x => x.Id == i) && !Clients.ContainsKey(i) && CustomPlayer.Local.OwnerId != i)
                 return i;
         }
 
@@ -23,18 +22,90 @@ public static class MCIUtils
         {
             Clients.Clear();
             PlayerClientIDs.Clear();
-            SavedPositions.Clear();
         }
     }
 
-    public static void CreatePlayerInstances(int count)
+    public static void CreatePlayerInstances(int count) => Coroutines.Start(CoCreatePlayerInstances(count));
+
+    public static IEnumerator CoCreatePlayerInstances(int count)
     {
         for (var i = 0; i < count; i++)
-            CreatePlayerInstance();
+            yield return CoCreatePlayerInstance();
     }
 
-    public static void CreatePlayerInstance()
+    public static void CreatePlayerInstance() => Coroutines.Start(CoCreatePlayerInstance());
+
+    public static IEnumerator CoCreatePlayerInstance()
     {
+        // var sampleId = AvailableId();
+        // var sampleC = new ClientData(sampleId, $"Bot-{sampleId}", new()
+        // {
+        //     Platform = Platforms.StandaloneWin10,
+        //     PlatformName = "Bot"
+        // }, 1, "", "robotmodeactivate")
+        // {
+        //     IsBeingCreated = true
+        // };
+        // var owner = IsLocalGame || AmongUsClient.Instance.AmModdedHost;
+
+        // if (owner)
+        // {
+        //     if ((GameData.Instance.HasPlayer(sampleC) ? GameData.Instance.GetPlayerIdFromClient(sampleC) : GameData.Instance.GetAvailableId()) == -1)
+        //     {
+        //         AmongUsClient.Instance.SendLateRejection(sampleC.Id, DisconnectReasons.GameFull);
+        //         sampleC.IsBeingCreated = false;
+        //         yield break;
+        //     }
+        // }
+        // else
+        //     yield return new WaitUntil((Func<bool>)(() => GameData.Instance.HasPlayer(sampleC)));
+
+        // var playerControl = sampleC.Character = UObject.Instantiate(AmongUsClient.Instance.PlayerPrefab, Vector2.zero, Quaternion.identity);
+        // var playerId = playerControl.PlayerId = (byte)sampleId;
+        // playerControl.FriendCode = sampleC.FriendCode;
+        // playerControl.Puid = sampleC.ProductUserId;
+        // AmongUsClient.Instance.UpdateCachedClients(sampleC, sampleC.Character);
+
+        // var data = playerControl.CachedPlayerData = GameData.Instance.AddPlayer(playerControl, sampleC);
+        // data.PlayerLevel = sampleC.PlayerLevel;
+
+        // if (owner)
+        //     AmongUsClient.Instance.Spawn(data);
+        // else
+        // {
+        //     while (GameData.Instance.GetPlayerByClient(sampleC) == null)
+        //         yield return null;
+        // }
+
+        // AmongUsClient.Instance.Spawn(playerControl, sampleC.Id, SpawnFlags.IsClientCharacter);
+
+        // var colorId = CustomColorManager.AllColors.Random().ColorID;
+        // playerControl.SetName($"Bot {playerId}");
+        // playerControl.SetColor(colorId);
+        // playerControl.SetSkin(HatManager.Instance.allSkins.Random().ProdId, colorId);
+        // playerControl.SetNamePlate(HatManager.Instance.allNamePlates.Random().ProdId);
+        // playerControl.SetPet(HatManager.Instance.allPets.Random().ProdId);
+        // playerControl.SetVisor("visor_EmptyVisor", colorId);
+        // playerControl.SetHat("hat_NoHat", 0);
+        // playerControl.MyPhysics.ResetMoveState();
+
+        // if (ShipStatus.Instance)
+        //     ShipStatus.Instance.SpawnPlayer(playerControl, Palette.PlayerColors.Length, false);
+
+        // AmongUsClient.Instance.allClients.Add(sampleC);
+
+        // Clients.Add(sampleId, sampleC);
+        // PlayerClientIDs.Add(playerControl.PlayerId, sampleId);
+
+        // if (SubLoaded)
+        //     ImpartSub(playerControl);
+
+        // if (owner)
+        //     GameData.Instance.DirtyAllData();
+
+        // sampleC.IsBeingCreated = false;
+        // yield break;
+
         var sampleId = AvailableId();
         var sampleC = new ClientData(sampleId, $"Bot-{sampleId}", new()
         {
@@ -42,23 +113,29 @@ public static class MCIUtils
             PlatformName = "Bot"
         }, 1, "", "robotmodeactivate");
 
-        AmongUsClient.Instance.CreatePlayer(sampleC);
-        AmongUsClient.Instance.allClients.Add(sampleC);
+        AmongUsClient.Instance.GetOrCreateClient(sampleC);
+        yield return AmongUsClient.Instance.CreatePlayer(sampleC);
 
+        var colorId = CustomColorManager.AllColors.Random().ColorID;
         sampleC.Character.SetName($"Bot {sampleC.Character.PlayerId}");
-        sampleC.Character.SetSkin(HatManager.Instance.allSkins[URandom.RandomRangeInt(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
-        sampleC.Character.SetNamePlate(HatManager.Instance.allNamePlates[URandom.RandomRangeInt(0, HatManager.Instance.allNamePlates.Count)].ProdId);
-        sampleC.Character.SetPet(HatManager.Instance.allPets[URandom.RandomRangeInt(0, HatManager.Instance.allPets.Count)].ProdId);
-        sampleC.Character.SetHat("hat_NoHat", 0);
-        sampleC.Character.SetColor(URandom.RandomRangeInt(0, Palette.PlayerColors.Length));
-        sampleC.Character.MyPhysics.ResetMoveState();
+        sampleC.Character.SetColor(colorId);
+        sampleC.Character.SetSkin(HatManager.Instance.allSkins.Random().ProdId, colorId);
+        sampleC.Character.SetNamePlate(HatManager.Instance.allNamePlates.Random().ProdId);
+        sampleC.Character.SetPet(HatManager.Instance.allPets.Random().ProdId);
+        sampleC.Character.SetVisor("visor_EmptyVisor", colorId);
+        sampleC.Character.SetHat("hat_NoHat", colorId);
 
         Clients.Add(sampleId, sampleC);
         PlayerClientIDs.Add(sampleC.Character.PlayerId, sampleId);
-        SavedPositions.Remove(sampleC.Character.PlayerId);
+
+        sampleC.Character.MyPhysics.ResetAnimState();
+        sampleC.Character.MyPhysics.ResetMoveState();
 
         if (SubLoaded)
             ImpartSub(sampleC.Character);
+
+        yield return sampleC.Character.MyPhysics.CoSpawnPlayer(Lobby);
+        yield break;
     }
 
     public static void RemovePlayer(byte id)
@@ -69,7 +146,6 @@ public static class MCIUtils
         var clientId = Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
         Clients.Remove(clientId, out var outputData);
         PlayerClientIDs.Remove(id);
-        SavedPositions.Remove(id);
         AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.Custom);
         AmongUsClient.Instance.allClients.Remove(outputData);
     }
@@ -83,6 +159,12 @@ public static class MCIUtils
     public static void SwitchTo(byte playerId)
     {
         if (!TownOfUsReworked.MCIActive)
+            return;
+
+        // Setup new player
+        var newPlayer = PlayerById(playerId);
+
+        if (!newPlayer)
             return;
 
         if (ActiveTask)
@@ -99,21 +181,16 @@ public static class MCIUtils
             CustomPlayer.Local.DisableArrows();
         }
 
-        SavedPositions[CustomPlayer.Local.PlayerId] = CustomPlayer.LocalCustom.Position;
-
         PlayerLayer.LocalLayers.ForEach(x => x.ExitingLayer());
 
         CustomPlayer.Local.RpcCustomSnapTo(CustomPlayer.LocalCustom.Position);
         CustomPlayer.Local.moveable = false;
 
         var light = CustomPlayer.Local.lightSource;
-        var savedId = CustomPlayer.Local.PlayerId;
+        var savedPlayer = CustomPlayer.Local;
 
-        // Setup new player
-        var newPlayer = PlayerById(playerId);
-
-        if (newPlayer == null)
-            return;
+        var pos = CustomPlayer.LocalCustom.Position;
+        var pos2 = newPlayer.transform.position;
 
         PlayerControl.LocalPlayer = newPlayer;
         newPlayer.lightSource = light;
@@ -151,12 +228,9 @@ public static class MCIUtils
         PlayerLayer.LocalLayers.ForEach(x => x.EnteringLayer());
 
         Chat.SetVisible(newPlayer.CanChat());
-
-        if (SavedPositions.TryGetValue(playerId, out var pos))
-            newPlayer.RpcCustomSnapTo(pos);
-
-        if (SavedPositions.TryGetValue(savedId, out var pos2))
-            PlayerById(savedId).RpcCustomSnapTo(pos2);
+        newPlayer.RpcCustomSnapTo(pos2);
+        savedPlayer.RpcCustomSnapTo(pos);
+        Role.LocalRole.UpdateButtons();
     }
 
     public static void SetForegroundForAlive(this MeetingHud __instance)

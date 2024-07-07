@@ -24,7 +24,7 @@ public class Rebel : Syndicate
     public void Sidekick(PlayerControl target)
     {
         HasDeclared = true;
-        var formerRole = target.GetRole<Syndicate>();
+        var formerRole = target.GetLayer<Syndicate>();
         new Sidekick()
         {
             FormerRole = formerRole,

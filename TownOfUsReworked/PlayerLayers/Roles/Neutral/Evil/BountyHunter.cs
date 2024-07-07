@@ -12,29 +12,28 @@ public class BountyHunter : Neutral
     public CustomButton RequestButton { get; set; }
     public PlayerControl RequestingPlayer { get; set; }
     public PlayerControl TentativeTarget { get; set; }
-    public bool Failed => (!GuessButton.Usable() && !TargetFound) || (!TargetKilled && TargetPlayer.HasDied());
+    public bool Failed => (!TargetPlayer && Rounds > 2) || (!GuessButton.Usable() && !TargetFound) || (!TargetKilled && TargetPlayer && TargetPlayer.HasDied());
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private List<string> Letters { get; set; }
-    public bool CanHunt => TargetPlayer != null && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers));
-    public bool CanRequest => (RequestingPlayer == null || RequestingPlayer.HasDied()) && TargetPlayer == null;
+    public bool CanHunt => TargetPlayer && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers));
+    public bool CanRequest => RequestingPlayer.HasDied() && !TargetPlayer;
     public bool Assigned { get; set; }
     public int Rounds { get; set; }
-    public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
     public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.BountyHunter : CustomColorManager.Neutral;
     public override string Name => "Bounty Hunter";
     public override LayerEnum Type => LayerEnum.BountyHunter;
     public override Func<string> StartText => () => "Find And Kill Your Target";
-    public override Func<string> Description => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- " +
-        "Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you" +
-        " will become a <color=#678D36FF>Troll</color>");
+    public override Func<string> Description => () => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +
+        "finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you will" +
+        " become a <color=#678D36FF>Troll</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
     public override void Init()
     {
         BaseStart();
-        Objectives = () => TargetKilled ? "- You have completed the bounty" : (TargetPlayer == null ? "- Recieve a bounty" : "- Find and kill your target");
+        Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;
         GuessButton = CreateButton(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Guess, new Cooldown(CustomGameOptions.GuessCd), (UsableFunc)Usable1,
@@ -60,7 +59,7 @@ public class BountyHunter : Neutral
     {
         base.OnMeetingStart(__instance);
 
-        if (TargetPlayer == null)
+        if (TargetPlayer.HasDied() || Dead)
             return;
 
         var targetName = TargetPlayer.name;
@@ -166,7 +165,7 @@ public class BountyHunter : Neutral
     {
         base.UpdateHud(__instance);
 
-        if ((TargetFailed || (TargetPlayer && Failed)) && !Dead)
+        if (Failed && !Dead)
         {
             if (CustomGameOptions.BHToTroll)
             {

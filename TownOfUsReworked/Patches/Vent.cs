@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
 public static class VentCanUsePatch
 {
-    public static void Postfix(Vent __instance, ref GameData.PlayerInfo pc, ref bool canUse, ref bool couldUse, ref float __result)
+    public static void Postfix(Vent __instance, ref NetworkedPlayerInfo pc, ref bool canUse, ref bool couldUse, ref float __result)
     {
         var num = float.MaxValue;
         var playerControl = pc.Object;

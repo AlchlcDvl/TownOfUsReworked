@@ -56,9 +56,9 @@ public class Janitor : Intruder
         DragButton.StartCooldown();
     }
 
-    public bool Usable1() => !CurrentlyDragging;
+    public bool Usable1() => !DragHandler.Instance.Dragging.ContainsKey(PlayerId);
 
-    public bool Usable2() => CurrentlyDragging;
+    public bool Usable2() => DragHandler.Instance.Dragging.ContainsKey(PlayerId);
 
     public float Difference() => LastImp && CustomGameOptions.SoloBoost && !Dead ? -CustomGameOptions.UnderdogKillBonus : 0;
 

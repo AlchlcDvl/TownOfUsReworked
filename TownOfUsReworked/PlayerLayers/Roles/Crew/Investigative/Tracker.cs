@@ -16,6 +16,7 @@ public class Tracker : Crew
         BaseStart();
         TrackerArrows = [];
         Alignment = Alignment.CrewInvest;
+        Data.Role.IntroSound = GetAudio("TrackerIntro");
         TrackButton = CreateButton(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(CustomGameOptions.TrackCd),
             (PlayerBodyExclusion)Exception, CustomGameOptions.MaxTracks);
     }
@@ -58,7 +59,7 @@ public class Tracker : Crew
                 var player = PlayerById(pair.Key);
                 var body = BodyById(pair.Key);
 
-                if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
+                if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
                     DestroyArrow(pair.Key);
                 else
                     pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());

@@ -2,7 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
 public abstract class Objectifier : PlayerLayer
 {
-    public static List<Objectifier> AllObjectifiers => AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Objectifier).Cast<Objectifier>().ToList();
+    public static List<Objectifier> AllObjectifiers => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Objectifier).Cast<Objectifier>() ];
+    // public static readonly Dictionary<byte, Objectifier> ObjectifierLookup = [];
     public static Objectifier LocalObjectifier => CustomPlayer.Local.GetObjectifier();
 
     public override UColor Color => CustomColorManager.Objectifier;
@@ -22,4 +23,10 @@ public abstract class Objectifier : PlayerLayer
     public static bool ObjectifierWins => LoveWins || RivalWins || TaskmasterWins || CorruptedWins || OverlordWins || MafiaWins || DefectorWins;
 
     public string ColoredSymbol => $"{ColorString}{Symbol}</color>";
+
+    public override void Init()
+    {
+        base.Init();
+        Player.GetRole().LinkedObjectifier = Type;
+    }
 }

@@ -19,9 +19,19 @@ public class Colorblind : Modifier
         AllToNormal();
     }
 
-    public override void ExitingLayer() => AllToNormal();
+    public override void ExitingLayer()
+    {
+        AllToNormal();
+        CameraEffect.Instance.Materials.Clear();
+    }
 
-    public override void EnteringLayer() => ColorAll();
+    public override void EnteringLayer()
+    {
+        ColorAll();
+        CameraEffect.Initialize();
+        CameraEffect.Instance.Materials.Clear();
+        CameraEffect.Instance.Materials.Add(Get<Material>("SoundV"));
+    }
 
     public override void UpdateHud(HudManager __instance)
     {

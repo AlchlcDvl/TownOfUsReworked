@@ -22,7 +22,7 @@ public class Dracula : Neutral
         SubFaction = SubFaction.Undead;
         Alignment = Alignment.NeutralNeo;
         SubFactionColor = CustomColorManager.Undead;
-        Converted = [Player.PlayerId];
+        Converted = [ Player.PlayerId ];
         BiteButton = CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(CustomGameOptions.BiteCd), "BITE",
             (PlayerBodyExclusion)Exception);
     }

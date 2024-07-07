@@ -16,7 +16,6 @@ public static class CustomVisorManager
         viewData.LeftIdleFrame = cv.FlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.FlipID), CosmeticTypeEnum.Visor) : null;
         viewData.ClimbFrame = cv.ClimbID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.ClimbID), CosmeticTypeEnum.Visor) : null;
         viewData.MatchPlayerColor = cv.Adaptive;
-        visor.SpritePreview = viewData.IdleFrame;
         visor.name = cv.Name;
         visor.displayOrder = 99;
         visor.ProductId = "customVisor_" + cv.Name.Replace(' ', '_');
@@ -77,7 +76,7 @@ public static class CustomVisorManager
 
     public static VisorExtension GetExtention(this VisorData visor)
     {
-        if (visor == null)
+        if (!visor)
             return null;
 
         CustomVisorRegistry.TryGetValue(visor.name, out var ret);

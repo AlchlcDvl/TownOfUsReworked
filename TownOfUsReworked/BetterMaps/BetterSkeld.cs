@@ -66,34 +66,34 @@ public static class SkeldShipStatusPatch
 
     private static void FindVents()
     {
-        if (NavVentSouth == null)
+        if (!NavVentSouth)
             NavVentSouth = AllVents.Find(vent => vent.gameObject.name == "NavVentSouth");
 
-        if (NavVentNorth == null)
+        if (!NavVentNorth)
             NavVentNorth = AllVents.Find(vent => vent.gameObject.name == "NavVentNorth");
 
-        if (ShieldsVent == null)
+        if (!ShieldsVent)
             ShieldsVent = AllVents.Find(vent => vent.gameObject.name == "ShieldsVent");
 
-        if (WeaponsVent == null)
+        if (!WeaponsVent)
             WeaponsVent = AllVents.Find(vent => vent.gameObject.name == "WeaponsVent");
 
-        if (REngineVent == null)
+        if (!REngineVent)
             REngineVent = AllVents.Find(vent => vent.gameObject.name == "REngineVent");
 
-        if (UpperReactorVent == null)
+        if (!UpperReactorVent)
             UpperReactorVent = AllVents.Find(vent => vent.gameObject.name == "UpperReactorVent");
 
-        if (LEngineVent == null)
+        if (!LEngineVent)
             LEngineVent = AllVents.Find(vent => vent.gameObject.name == "LEngineVent");
 
-        if (ReactorVent == null)
+        if (!ReactorVent)
             ReactorVent = AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
 
-        if (BigYVent == null)
+        if (!BigYVent)
             BigYVent = AllVents.Find(vent => vent.gameObject.name == "BigYVent");
 
-        if (CafeVent == null)
+        if (!CafeVent)
             CafeVent = AllVents.Find(vent => vent.gameObject.name == "CafeVent");
 
         IsVentsFetched = NavVentSouth && NavVentNorth && ShieldsVent && WeaponsVent && REngineVent && UpperReactorVent && LEngineVent && ReactorVent && BigYVent && CafeVent;

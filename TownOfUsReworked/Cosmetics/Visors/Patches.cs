@@ -30,11 +30,11 @@ public static class VisorsTabOnEnablePatch
         var isDefaultPackage = "Innersloth" == packageName;
 
         if (!isDefaultPackage)
-            visors = visors.OrderBy(x => x.name).ToList();
+            visors = [ .. visors.OrderBy(x => x.name) ];
 
         var offset = YStart;
 
-        if (Template != null)
+        if (Template)
         {
             var title = UObject.Instantiate(Template, __instance.scroller.Inner);
             var material = title.GetComponent<MeshRenderer>().material;
@@ -57,12 +57,12 @@ public static class VisorsTabOnEnablePatch
 
             if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
             {
-                colorChip.Button.OnMouseOver.AddListener((Action)(() => __instance.SelectVisor(visor)));
-                colorChip.Button.OnMouseOut.AddListener((Action)(() => __instance.SelectVisor(HatManager.Instance.GetVisorById(DataManager.Player.Customization.Visor))));
-                colorChip.Button.OnClick.AddListener((Action)(() => __instance.ClickEquip()));
+                colorChip.Button.OverrideOnMouseOverListeners(() => __instance.SelectVisor(visor));
+                colorChip.Button.OverrideOnMouseOutListeners(() => __instance.SelectVisor(HatManager.Instance.GetVisorById(DataManager.Player.Customization.Visor)));
+                colorChip.Button.OverrideOnClickListeners(__instance.ClickEquip);
             }
             else
-                colorChip.Button.OnClick.AddListener((Action)(() => __instance.SelectVisor(visor)));
+                colorChip.Button.OverrideOnClickListeners(() => __instance.SelectVisor(visor));
 
             if (visor.GetExtention() != null)
             {
@@ -147,17 +147,10 @@ public static class CosmeticsCacheGetVisorPatch
 {
     public static bool Prefix(CosmeticsCache __instance, ref string id, ref VisorViewData __result)
     {
-        var cache = __result;
-
         if (!CustomVisorViewDatas.TryGetValue(id, out __result))
-        {
-            __result = cache;
             return true;
-        }
 
-        if (__result == null)
-            __result = __instance.visors["visor_EmptyVisor"].GetAsset();
-
+        __result ??= __instance.visors["visor_EmptyVisor"].GetAsset();
         return false;
     }
 }
@@ -172,7 +165,7 @@ public static class UpdateMaterialPrefix
 
         var maskType = __instance.matProperties.MaskType;
 
-        if (__instance.visorData != null && __instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor)
+        if (__instance.visorData && __instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor)
         {
             if (maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI)
                 __instance.Image.sharedMaterial = HatManager.Instance.MaskedPlayerMaterial;
@@ -192,7 +185,7 @@ public static class UpdateMaterialPrefix
         };
         __instance.Image.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
 
-        if (__instance.visorData != null && __instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor)
+        if (__instance.visorData && __instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor)
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.Image);
 
         if (__instance.matProperties.MaskLayer <= 0)
@@ -207,7 +200,7 @@ public static class SetFlipXPrefix
 {
     public static bool Prefix(VisorLayer __instance, ref bool flipX)
     {
-        if (__instance.visorData == null || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out var asset) || !asset)
+        if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out var asset) || !asset)
             return true;
 
         __instance.Image.flipX = flipX;
@@ -282,3 +275,12 @@ public static class HatParentSetFloorAnimPatch
         return false;
     }
 }
+
+/*[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
+public static class PlayerPhysicsVisorPatch
+{
+    public static void Postfix(PlayerPhysics __instance)
+    {
+
+    }
+}*/

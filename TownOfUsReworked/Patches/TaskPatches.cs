@@ -19,13 +19,13 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (pc == null || playerInfo == null || playerInfo.Tasks == null || pc.HasDied())
+                if (!pc || playerInfo == null || playerInfo.Tasks == null || pc.HasDied())
                     continue;
 
                 var mostRole = most.GetRole();
                 var pcRole = pc.GetRole();
 
-                if (most == null || (pcRole && mostRole && mostRole.TasksLeft >= pcRole.TasksLeft))
+                if (!most || (pcRole && mostRole && pcRole.TasksLeft >= mostRole.TasksLeft))
                     most = pc;
             }
 
@@ -78,12 +78,12 @@ public static class RecomputeTaskCounts
     }
 }
 
-[HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__126), nameof(PlayerControl._CoSetTasks_d__126.MoveNext))]
+[HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__141), nameof(PlayerControl._CoSetTasks_d__141.MoveNext))]
 public static class PlayerControl_SetTasks
 {
-    public static void Postfix(PlayerControl._CoSetTasks_d__126 __instance)
+    public static void Postfix(PlayerControl._CoSetTasks_d__141 __instance)
     {
-        if (__instance != null && !IsHnS)
+        if (!IsHnS)
             __instance.__4__this.RegenTask();
     }
 }
@@ -98,7 +98,7 @@ public static class CompleteTasksPatch
 
         if (__instance.Is(LayerEnum.Snitch) && !__instance.Data.IsDead)
         {
-            var role = __instance.GetAbility<Snitch>();
+            var role = __instance.GetLayer<Snitch>();
 
             if (role.TasksLeft == CustomGameOptions.SnitchTasksRemaining)
             {
@@ -125,7 +125,7 @@ public static class CompleteTasksPatch
 
         if (__instance.Is(LayerEnum.Traitor) && !__instance.Data.IsDead && AmongUsClient.Instance.AmHost)
         {
-            var traitor = __instance.GetObjectifier<Traitor>();
+            var traitor = __instance.GetLayer<Traitor>();
 
             if (traitor.TasksDone)
             {
@@ -136,7 +136,7 @@ public static class CompleteTasksPatch
         }
         else if (__instance.Is(LayerEnum.Taskmaster) && !__instance.Data.IsDead)
         {
-            var role = __instance.GetObjectifier<Taskmaster>();
+            var role = __instance.GetLayer<Taskmaster>();
 
             if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
             {
@@ -160,21 +160,21 @@ public static class CompleteTasksPatch
 
         if (__instance.Is(LayerEnum.Phantom))
         {
-            var role = __instance.GetRole<Phantom>();
+            var role = __instance.GetLayer<Phantom>();
 
             if (role.TasksLeft == CustomGameOptions.PhantomTasksRemaining && CustomGameOptions.PhantomPlayersAlerted && !role.Caught)
                 Flash(role.Color);
         }
         else if (__instance.Is(LayerEnum.Runner))
         {
-            var role = __instance.GetRole<Runner>();
+            var role = __instance.GetLayer<Runner>();
 
             if (role.TasksLeft == 1)
                 Flash(role.Color);
         }
         else if (__instance.Is(LayerEnum.Revealer))
         {
-            var role = __instance.GetRole<Revealer>();
+            var role = __instance.GetLayer<Revealer>();
 
             if (role.TasksLeft == CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
             {

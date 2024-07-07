@@ -9,16 +9,16 @@ public class CustomNumberOption : CustomOption
     public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object parent) : this(menu, name, defaultValue, min, max, increment,
         null, parent) {}
 
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object[] parents, bool all = false) : this(menu, name,
-        defaultValue, min, max, increment, null, parents, all) {}
+    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object[] parents, bool all = false) : this(menu, name, defaultValue, min,
+        max, increment, null, parents, all) {}
 
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, object, string> format = null) : this(menu, name,
-        defaultValue, min, max, increment, format, parent: null) {}
+    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) : this(menu, name, defaultValue, min,
+        max, increment, format, parent: null) {}
 
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, object, string> format, object parent) : this(menu, name,
+    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format, object parent) : this(menu, name,
         defaultValue, min, max, increment, format, [parent], false) {}
 
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, object, string> format, object[] parents, bool all = false)
+    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format, object[] parents, bool all = false)
         : base(menu, name, CustomOptionType.Number, defaultValue, parents, all)
     {
         Min = min;
@@ -27,7 +27,7 @@ public class CustomNumberOption : CustomOption
         Format = format ?? Blank;
     }
 
-    private static Func<object, object, string> Blank => (val, _) => $"{val}";
+    private static Func<object, string> Blank => (val) => $"{val}";
 
     public float Get() => (float)Value;
 
@@ -43,7 +43,7 @@ public class CustomNumberOption : CustomOption
         number.ValidRange = new(Min, Max);
         number.Increment = Increment;
         number.Value = number.oldValue = Get();
-        number.ValueText.text = Format(Value, OtherValue);
+        number.ValueText.text = Format(Value);
     }
 
     public static implicit operator float(CustomNumberOption option) => option == null ? 0f : option.Get();

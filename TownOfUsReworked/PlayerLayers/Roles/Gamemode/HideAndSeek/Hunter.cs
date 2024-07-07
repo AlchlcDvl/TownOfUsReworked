@@ -38,7 +38,7 @@ public class Hunter : HideAndSeek
 
     public void TurnHunter(PlayerControl player)
     {
-        var oldRole = player.GetRole<Hunted>();
+        var oldRole = player.GetLayer<Hunted>();
         var newRole = new Hunter().Start<Hunter>(player);
         newRole.RoleUpdate(oldRole);
         newRole.KilledBy = " By " + PlayerName;

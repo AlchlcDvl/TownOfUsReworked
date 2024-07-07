@@ -39,6 +39,7 @@ public class PortalLoader : AssetLoader<Asset>
             }
         }
 
+        portal.Clear();
         yield break;
     }
 

@@ -13,6 +13,7 @@ public class Corrupted : Objectifier
 
     public override void Init()
     {
+        base.Init();
         CorruptButton = CreateButton(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)Corrupt, new Cooldown(CustomGameOptions.CorruptCd));
         Player.GetRole().Alignment = Player.GetRole().Alignment.GetNewAlignment(Faction.Neutral);
     }

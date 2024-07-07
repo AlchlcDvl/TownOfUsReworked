@@ -20,7 +20,15 @@ public class Language : Asset
             };
 
             if (IsNullEmptyOrWhiteSpace(result) || !TranslationManager.SupportedLangNames.Contains(lang))
-                throw new UnsupportedLanguageException(lang);
+            {
+                if (English != null)
+                {
+                    LogError($"Selected language is unsupported {lang}");
+                    return English;
+                }
+                else
+                    throw new UnsupportedLanguageException(lang);
+            }
             else
                 return result;
         }

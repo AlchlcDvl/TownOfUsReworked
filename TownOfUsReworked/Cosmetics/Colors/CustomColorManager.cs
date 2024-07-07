@@ -4,6 +4,36 @@ public static class CustomColorManager
 {
     public static readonly List<CustomColor> AllColors = [];
 
+    public static UColor Rainbow => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), 1f, 1f).ToColor();
+    public static UColor RainbowShadow => Shadow(Rainbow);
+
+    public static UColor Galaxy => new HSBColor(HSBColor.PingPong(0.5f, 0.87f, 0.4f), 1f, 1f).ToColor();
+    public static UColor GalaxyShadow => Shadow(Galaxy);
+
+    public static UColor Fire => new HSBColor(HSBColor.PingPong(0f, 0.17f, 0.4f), 1f, 1f).ToColor();
+    public static UColor FireShadow => Shadow(Fire);
+
+    public static UColor Monochrome => new HSBColor(1f, 0f, HSBColor.PingPong(0f, 1f, 0.8f)).ToColor();
+    public static UColor MonochromeShadow => Shadow(Monochrome);
+
+    public static UColor Mantle => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), HSBColor.PingPong(0f, 1f, 0.9f), HSBColor.PingPong(0f, 0.8f, 0.5f)).ToColor();
+    public static UColor MantleShadow => Shadow(Mantle);
+
+    public static UColor Chroma => new HSBColor(HSBColor.PingPong(0f, 1f, 0.4f), HSBColor.PingPongReverse(0f, 1f, 0.6f), HSBColor.PingPong(0f, 1f, 0.9f)).ToColor();
+    public static UColor ChromaShadow => Shadow(Chroma);
+
+    public static UColor Reversebow => new HSBColor(HSBColor.PingPongReverse(0f, 1f, 0.3f), 1f, HSBColor.PingPongReverse(0f, 1f, 0.3f)).ToColor();
+    public static UColor ReversebowShadow => Shadow(Reversebow);
+
+    public static UColor Vibrance => new HSBColor(HSBColor.PingPongReverse(0.17f, 0.5f, 0.3f), HSBColor.PingPong(0.9f, 1f, 0.3f), HSBColor.PingPongReverse(0.9f, 1f, 0.3f)).ToColor();
+    public static UColor VibranceShadow => Shadow(Vibrance);
+
+    public static UColor Darkbow => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), 0.8f, 0.3f).ToColor();
+    public static UColor DarkbowShadow => Shadow(Darkbow);
+
+    public static UColor Abberation => new HSBColor(HSBColor.PingPong(0f, 0.2f, 0.9f), HSBColor.PingPongReverse(0.8f, 1f, 0.3f), 0.3f).ToColor();
+    public static UColor AbberationShadow => Shadow(Abberation);
+
     public static void SetColor(Renderer rend, int id)
     {
         if (!rend || OutOfBounds(id))
@@ -22,16 +52,151 @@ public static class CustomColorManager
 
     public static bool IsLighter(this int id) => !OutOfBounds(id) && AllColors.Find(x => x.ColorID == id).Lighter;
 
-    public static UColor GetColor(this int id, bool shadow)
+    /*public static UColor GetColor(this int id, bool shadow)
     {
         var custom = AllColors.Find(x => x.ColorID == id);
         return shadow ? custom.ShadowColor : custom.MainColor;
+    }*/
+
+    public static UColor GetColor(this int id, bool shadow) => id switch
+    {
+        41 => shadow ? ReversebowShadow : Reversebow,
+        42 => shadow ? VibranceShadow : Vibrance,
+        43 => shadow ? DarkbowShadow : Darkbow,
+        44 => shadow ? AbberationShadow : Abberation,
+        45 => shadow ? ChromaShadow : Chroma,
+        46 => shadow ? MantleShadow : Mantle,
+        47 => shadow ? FireShadow : Fire,
+        48 => shadow ? GalaxyShadow : Galaxy,
+        49 => shadow ? MonochromeShadow : Monochrome,
+        50 => shadow ? RainbowShadow : Rainbow,
+        _ => shadow ? Palette.ShadowColors[id] : Palette.PlayerColors[id]
+    };
+
+    public static void LoadColors()
+    {
+        Palette.PlayerColors = new Color32[]
+        {
+            new(198, 17, 17, 255),
+            new(19, 46, 210, 255),
+            new(17, 128, 45, 255),
+            new(238, 84, 187, 255),
+            new(240, 125, 13, 255),
+            new(246, 246, 87, 255),
+            new(63, 71, 78, 255),
+            new(215, 225, 241, 255),
+            new(107, 47, 188, 255),
+            new(113, 73, 30, 255),
+            new(56, 255, 221, 255),
+            new(80, 240, 57, 255),
+            new(95, 29, 46, 255),
+            new(236, 192, 211, 255),
+            new(240, 231, 168, 255),
+            new(117, 133, 147, 255),
+            new(145, 136, 119, 255),
+            new(215, 100, 100, 255),
+            //New colors
+            new(168, 50, 62, 255),
+            new(60, 48, 44, 255),
+            new(61, 129, 255, 255),
+            new(240, 211, 165, 255),
+            new(255, 0, 127, 255),
+            new(61, 255, 181, 255),
+            new(186, 161, 255, 255),
+            new(97, 114, 24, 255),
+            new(1, 166, 255, 255),
+            new(79, 0, 127, 255),
+            new(0, 47, 0, 255),
+            new(151, 255, 151, 255),
+            new(207, 255, 0, 255),
+            new(0, 97, 93, 255),
+            new(205, 63, 0, 255),
+            new(255, 207, 0, 255),
+            new(255, 255, 255, 255),
+            new(255, 0, 0, 255),
+            new(255, 255, 255, 255),
+            new(15, 15, 15, 255),
+            new(251, 251, 255, 255),
+            new(160, 101, 56, 255),
+            new(255, 255, 16, 255),
+            //Everchanging colors
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255)
+        };
+
+        Palette.ShadowColors = new Color32[]
+        {
+            new(122, 8, 56, 255),
+            new(9, 21, 142, 255),
+            new(10, 77, 46, 255),
+            new(172, 43, 174, 255),
+            new(180, 62, 21, 255),
+            new(195, 136, 34, 255),
+            new(30, 31, 38, 255),
+            new(132, 149, 192, 255),
+            new(59, 23, 124, 255),
+            new(94, 38, 21, 255),
+            new(36, 169, 191, 255),
+            new(21, 168, 66, 255),
+            new(65, 15, 26, 255),
+            new(222, 146, 179, 255),
+            new(210, 188, 137, 255),
+            new(70, 86, 100, 255),
+            new(81, 65, 62, 255),
+            new(180, 67, 98, 255),
+            //New colors
+            new(101, 30, 37, 255),
+            new(30, 24, 22, 255),
+            new(31, 65, 128, 255),
+            new(120, 106, 83, 255),
+            new(191, 0, 95, 255),
+            new(31, 128, 91, 255),
+            new(93, 81, 128, 255),
+            new(66, 91, 15, 255),
+            new(17, 104, 151, 255),
+            new(55, 0, 95, 255),
+            new(0, 23, 0, 255),
+            new(109, 191, 109, 255),
+            new(143, 191, 61, 255),
+            new(0, 65, 61, 255),
+            new(141, 31, 0, 255),
+            new(191, 143, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 255, 255),
+            new(255, 255, 255, 255),
+            new(0, 0, 0, 255),
+            new(112, 250, 241, 255),
+            new(115, 15, 78, 255),
+            new(255, 0, 0, 255),
+            //Everchanging colors
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255),
+            new(0, 0, 0, 255)
+        };
     }
 
-    public static UColor Shadow(this UColor color) => new(Mathf.Clamp(color.r - 0.2f, 0f, color.r), Mathf.Clamp(color.g - 0.2f, 0f, color.g), Mathf.Clamp(color.b - 0.2f, 0f, color.b),
-        color.a);
+    public static UColor Shadow(this UColor color) => new(Mathf.Clamp(color.r - 0.2f, 0f, 1f), Mathf.Clamp(color.g - 0.2f, 0f, 1f), Mathf.Clamp(color.b - 0.2f, 0f, 1f), color.a);
 
-    public static Color32 Shadow(this Color32 color) => new(ClampByte(color.r - 51, 0, color.r), ClampByte(color.g - 51, 0, color.g), ClampByte(color.b - 51, 0, color.b), color.a);
+    public static UColor Light(this UColor color) => new(Mathf.Clamp(color.r + 0.2f, 0f, 1f), Mathf.Clamp(color.g + 0.2f, 0f, 1f), Mathf.Clamp(color.b + 0.2f, 0f, 1f), color.a);
+
+    public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
+
+    /*public static Color32 Shadow(this Color32 color) => new(ClampByte(color.r - 51, 0, color.r), ClampByte(color.g - 51, 0, color.g), ClampByte(color.b - 51, 0, color.b), color.a);
 
     public static List<byte> ParseToBytes(string input)
     {
@@ -80,8 +245,6 @@ public static class CustomColorManager
         }
     }
 
-    public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
-
     public static string SetGradient(UColor startColor, UColor endColor, string text) => SetGradient(startColor.ToHtmlStringRGBA(), endColor.ToHtmlStringRGBA(), text);
 
     public static string SetGradient(string startColorHex, string endColorHex, string text)
@@ -114,7 +277,7 @@ public static class CustomColorManager
         }
 
         return gradientText;
-    }
+    }*/
 
     // Layer Colors
     public static readonly UColor Role = FromHex("#FFD700FF");

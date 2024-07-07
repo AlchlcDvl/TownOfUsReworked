@@ -50,10 +50,8 @@ public class PromotedRebel : Syndicate
         {
             if (!ClientGameOptions.CustomSynColors)
                 return CustomColorManager.Syndicate;
-            else if (FormerRole != null)
-                return FormerRole.Color;
             else
-                return CustomColorManager.Rebel;
+                return FormerRole?.Color ?? CustomColorManager.Rebel;
         }
     }
     public override string Name => "Rebel";
@@ -100,7 +98,7 @@ public class PromotedRebel : Syndicate
                     var player = PlayerById(pair.Key);
                     var body = BodyById(pair.Key);
 
-                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
+                    if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
                         DestroyArrow(pair.Key);
                     else
                         pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive));
@@ -495,11 +493,11 @@ public class PromotedRebel : Syndicate
     public CustomMenu ShapeshiftMenu2 { get; set; }
     public bool IsSS => FormerRole?.Type == LayerEnum.Shapeshifter;
 
-    public bool SSException1(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && BodyByPlayer(player) == null) || (player.Is(Faction) &&
+    public bool SSException1(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) &&
         !CustomGameOptions.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&
         !CustomGameOptions.ShapeshiftMates);
 
-    public bool SSException2(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && BodyByPlayer(player) == null) || (player.Is(Faction) &&
+    public bool SSException2(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) &&
         !CustomGameOptions.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&
         !CustomGameOptions.ShapeshiftMates);
 
@@ -546,9 +544,9 @@ public class PromotedRebel : Syndicate
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ShapeshiftButton, RebActionsRPC.Shapeshift);
             ShapeshiftButton.Begin();
         }
-        else if (ShapeshiftPlayer1 == null)
+        else if (!ShapeshiftPlayer1)
             ShapeshiftMenu1.Open();
-        else if (ShapeshiftPlayer2 == null)
+        else if (!ShapeshiftPlayer2)
             ShapeshiftMenu2.Open();
         else
         {
@@ -561,9 +559,9 @@ public class PromotedRebel : Syndicate
     {
         if (HoldsDrive)
             return "SHAPESHIFT";
-        else if (ShapeshiftPlayer1 == null)
+        else if (!ShapeshiftPlayer1)
             return "FIRST TARGET";
-        else if (ShapeshiftPlayer2 == null)
+        else if (!ShapeshiftPlayer2)
             return "SECOND TARGET";
         else
             return "SHAPESHIFT";
@@ -618,10 +616,10 @@ public class PromotedRebel : Syndicate
     public bool IsWarp => FormerRole?.Type == LayerEnum.Warper;
 
     public bool WarpException1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
-        (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
+        (!BodyById(player.PlayerId) && player.Data.IsDead) || player.IsMoving();
 
     public bool WarpException2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
-        (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
+        (!BodyById(player.PlayerId) && player.Data.IsDead) || player.IsMoving();
 
     public IEnumerator WarpPlayers()
     {
@@ -634,7 +632,7 @@ public class PromotedRebel : Syndicate
         {
             Player1Body = BodyById(WarpPlayer1.PlayerId);
 
-            if (Player1Body == null)
+            if (!Player1Body)
                 yield break;
         }
 
@@ -642,7 +640,7 @@ public class PromotedRebel : Syndicate
         {
             Player2Body = BodyById(WarpPlayer2.PlayerId);
 
-            if (Player2Body == null)
+            if (!Player2Body)
                 yield break;
         }
 
@@ -674,7 +672,7 @@ public class PromotedRebel : Syndicate
         if (CustomPlayer.Local == WarpPlayer1)
             Flash(Color, CustomGameOptions.WarpDur);
 
-        if (Player1Body == null && !WasInVent)
+        if (!Player1Body && !WasInVent)
             AnimateWarp();
 
         var startTime = DateTime.UtcNow;
@@ -695,7 +693,7 @@ public class PromotedRebel : Syndicate
             }
         }
 
-        if (Player1Body == null && Player2Body == null)
+        if (!Player1Body && !Player2Body)
         {
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.CustomSnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
@@ -706,10 +704,10 @@ public class PromotedRebel : Syndicate
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
 
-            if (WarpPlayer1.CanVent() && Vent != null && WasInVent)
+            if (WarpPlayer1.CanVent() && Vent && WasInVent)
                 WarpPlayer1.MyPhysics.RpcEnterVent(Vent.Id);
         }
-        else if (Player1Body != null && Player2Body == null)
+        else if (Player1Body && !Player2Body)
         {
             StopDragging(Player1Body.ParentId);
             Player1Body.transform.position = WarpPlayer2.GetTruePosition();
@@ -720,7 +718,7 @@ public class PromotedRebel : Syndicate
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
         }
-        else if (Player1Body == null && Player2Body != null)
+        else if (!Player1Body && Player2Body)
         {
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
@@ -731,7 +729,7 @@ public class PromotedRebel : Syndicate
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
         }
-        else if (Player1Body != null && Player2Body != null)
+        else if (Player1Body && Player2Body)
         {
             StopDragging(Player1Body.ParentId);
             Player1Body.transform.position = Player2Body.TruePosition;
@@ -797,9 +795,9 @@ public class PromotedRebel : Syndicate
             Warper.WarpAll();
             WarpButton.StartCooldown();
         }
-        else if (WarpPlayer1 == null)
+        else if (!WarpPlayer1)
             WarpMenu1.Open();
-        else if (WarpPlayer2 == null)
+        else if (!WarpPlayer2)
             WarpMenu2.Open();
         else
         {
@@ -995,7 +993,7 @@ public class PromotedRebel : Syndicate
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfuseButton, RebActionsRPC.Confuse);
             ConfuseButton.Begin();
         }
-        else if (ConfusedPlayer == null)
+        else if (!ConfusedPlayer)
             ConfuseMenu.Open();
         else
         {

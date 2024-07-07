@@ -38,6 +38,7 @@ public class SoundLoader : AssetLoader<Asset>
             }
         }
 
+        sounds.Clear();
         yield break;
     }
 

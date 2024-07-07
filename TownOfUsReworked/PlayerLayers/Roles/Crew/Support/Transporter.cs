@@ -294,12 +294,12 @@ public class Transporter : Crew
 
     public void Transport()
     {
-        if (TransportPlayer1 == null)
+        if (!TransportPlayer1)
         {
             TransportMenu1.Open();
             TransportButton.Uses++;
         }
-        else if (TransportPlayer2 == null)
+        else if (!TransportPlayer2)
         {
             TransportMenu2.Open();
             TransportButton.Uses++;

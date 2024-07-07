@@ -23,11 +23,11 @@ public static class HandleDisconnect
             DebuggerBehaviour.Instance.ControllingFigure = 0;
         }
 
-        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || x.Player == null);
+        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || !x.Player);
         DisconnectHandler.Disconnected.Add(pc.PlayerId);
         SetPostmortals.RemoveFromPostmortals(pc);
         MarkMeetingDead(pc, false, true);
-        OnGameEndPatch.AddSummaryInfo(pc, true);
+        OnGameEndPatches.AddSummaryInfo(pc, true);
     }
 }
 
@@ -57,7 +57,7 @@ public static class CastVote
         if (playerVoteArea.DidVote)
         {
             if (player.Is(LayerEnum.Politician))
-                player.GetAbility<Politician>().ExtraVotes.Add(suspectPlayerId);
+                player.GetLayer<Politician>().ExtraVotes.Add(suspectPlayerId);
         }
         else
         {
@@ -218,7 +218,7 @@ public static class PopulateResults
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.BloopAVoteIcon))]
 public static class PatchVoteBloops
 {
-    public static bool Prefix(MeetingHud __instance, ref GameData.PlayerInfo voterPlayer, ref int index, ref Transform parent)
+    public static bool Prefix(MeetingHud __instance, ref NetworkedPlayerInfo voterPlayer, ref int index, ref Transform parent)
     {
         var insiderFlag = CustomPlayer.Local.Is(LayerEnum.Insider) && Role.LocalRole.TasksDone;
         var deadFlag = CustomGameOptions.DeadSeeEverything && CustomPlayer.LocalCustom.Dead;
@@ -230,7 +230,7 @@ public static class PatchVoteBloops
         spriteRenderer.transform.localScale = Vector3.zero;
         var voteArea = parent.GetComponent<PlayerVoteArea>();
 
-        if (voteArea != null)
+        if (voteArea)
             spriteRenderer.material.SetInt(PlayerMaterial.MaskLayer, voteArea.MaskLayer);
 
         if (TownOfUsReworked.NormalOptions.AnonymousVotes && !(deadFlag || insiderFlag))

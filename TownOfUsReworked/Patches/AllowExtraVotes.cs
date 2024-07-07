@@ -17,7 +17,7 @@ public static class Select
             __instance.StartCoroutine(PerformTimedAction(0.35f, t => __instance.ConfirmButton.transform.localPosition = Vector2.Lerp(Vector2.right * startPos, Vector2.right * 0.65f,
                 Effects.ExpOut(t))));
             var list = new List<UiElement>() { __instance.CancelButton, __instance.ConfirmButton };
-            ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.CancelButton, __instance.ConfirmButton, list.SystemToIl2Cpp(), false);
+            ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.CancelButton, __instance.ConfirmButton, list.ToIl2Cpp(), false);
         }
 
         return false;

@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse))]
 public static class OpenDoorConsoleCanUse
 {
-    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Prefix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         __state = false;
         var playerControl = pc.Object;
@@ -16,7 +16,7 @@ public static class OpenDoorConsoleCanUse
         }
     }
 
-    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Postfix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         if (__state)
             pc.IsDead = true;
@@ -46,7 +46,7 @@ public static class OpenDoorConsoleUse
 [HarmonyPatch(typeof(DoorConsole), nameof(DoorConsole.CanUse))]
 public static class DoorConsoleCanUse
 {
-    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Prefix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         __state = false;
         var playerControl = pc.Object;
@@ -58,7 +58,7 @@ public static class DoorConsoleCanUse
         }
     }
 
-    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Postfix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         if (__state)
             pc.IsDead = true;
@@ -90,7 +90,7 @@ public static class DoorConsoleUsePatch
 [HarmonyPatch(typeof(Ladder), nameof(Ladder.CanUse))]
 public static class LadderCanUse
 {
-    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Prefix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         __state = false;
         var playerControl = pc.Object;
@@ -102,7 +102,7 @@ public static class LadderCanUse
         }
     }
 
-    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Postfix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         if (__state)
             pc.IsDead = true;
@@ -129,7 +129,7 @@ public static class LadderUse
 [HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.CanUse))]
 public static class PlatformConsoleCanUse
 {
-    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Prefix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         __state = false;
         var playerControl = pc.Object;
@@ -141,7 +141,7 @@ public static class PlatformConsoleCanUse
         }
     }
 
-    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Postfix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         if (__state)
             pc.IsDead = true;
@@ -153,7 +153,7 @@ public static class PlatformConsoleCanUse
 [HarmonyPatch(typeof(DeconControl), nameof(DeconControl.CanUse))]
 public static class DeconControlUse
 {
-    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Prefix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         __state = false;
         var playerControl = pc.Object;
@@ -165,7 +165,7 @@ public static class DeconControlUse
         }
     }
 
-    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Postfix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         if (__state)
             pc.IsDead = true;
@@ -177,7 +177,7 @@ public static class DeconControlUse
 [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
 public static class ConsoleCanUsePatch
 {
-    public static bool Prefix(Console __instance, ref GameData.PlayerInfo pc, ref float __result)
+    public static bool Prefix(Console __instance, ref NetworkedPlayerInfo pc, ref float __result)
     {
         var playerControl = pc.Object;
         var flag = !playerControl.CanDoTasks();
@@ -192,7 +192,7 @@ public static class ConsoleCanUsePatch
         return true;
     }
 
-    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Prefix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         __state = false;
         var playerControl = pc.Object;
@@ -204,7 +204,7 @@ public static class ConsoleCanUsePatch
         }
     }
 
-    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
+    public static void Postfix(ref NetworkedPlayerInfo pc, ref bool __state)
     {
         if (__state)
             pc.IsDead = true;
