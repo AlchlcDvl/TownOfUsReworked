@@ -2,7 +2,8 @@
 
 // public static class SettingsPatches
 // {
-//     private static readonly string[] Menus = ["Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List", "Client"];
+//     private static readonly string[] Menus = [ "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List", "Client", "Presets",
+//         "Role List Entry" ];
 //     private static readonly List<int> CreatedPages = [];
 
 //     public static Preset PresetButton;
@@ -67,7 +68,8 @@
 //     public static StringOption StringPrefab;
 //     public static CategoryHeaderMasked BaseHeaderPrefab;
 //     public static CategoryHeaderEditRole LayerHeaderPrefab;
-//     private const float Y = 0.713f;
+//     private static readonly List<MonoBehaviour> Prefabs1 = [];
+//     private static readonly List<MonoBehaviour> Prefabs2 = [];
 
 //     private static Dictionary<CustomOption, MonoBehaviour> CreateOptions(Transform parent = null)
 //     {
@@ -143,6 +145,8 @@
 //     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Awake))]
 //     public static class DefinePrefabs1
 //     {
+//         private static bool LayersSet;
+
 //         public static void Postfix(GameOptionsMenu __instance)
 //         {
 //             if (!NumberPrefab)
@@ -168,15 +172,7 @@
 //                 valueBox.localPosition += new Vector3(1.05f, 0f, 0f);
 //                 valueBox.localScale += new Vector3(0.2f, 0f, 0f);
 
-//                 NumberPrefab.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
-
-//                 foreach (var obj in NumberPrefab.GetComponentsInChildren<TextMeshPro>(true))
-//                 {
-//                     obj.fontMaterial.SetFloat("_StencilComp", 3f);
-//                     obj.fontMaterial.SetFloat("_Stencil", 20);
-//                 }
-
-//                 NumberPrefab.gameObject.SetActive(false);
+//                 Prefabs1.Add(NumberPrefab);
 //             }
 
 //             if (!StringPrefab)
@@ -207,15 +203,7 @@
 //                 valueBox.localPosition += new Vector3(1.05f, 0f, 0f);
 //                 valueBox.localScale += new Vector3(0.2f, 0f, 0f);
 
-//                 StringPrefab.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
-
-//                 foreach (var obj in StringPrefab.GetComponentsInChildren<TextMeshPro>(true))
-//                 {
-//                     obj.fontMaterial.SetFloat("_StencilComp", 3f);
-//                     obj.fontMaterial.SetFloat("_Stencil", 20);
-//                 }
-
-//                 StringPrefab.gameObject.SetActive(false);
+//                 Prefabs1.Add(StringPrefab);
 //             }
 
 //             if (!TogglePrefab)
@@ -234,15 +222,7 @@
 //                 background.localPosition += new Vector3(-0.8f, 0f, 0f);
 //                 background.localScale += new Vector3(1f, 0f, 0f);
 
-//                 TogglePrefab.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
-
-//                 foreach (var obj in TogglePrefab.GetComponentsInChildren<TextMeshPro>(true))
-//                 {
-//                     obj.fontMaterial.SetFloat("_StencilComp", 3f);
-//                     obj.fontMaterial.SetFloat("_Stencil", 20);
-//                 }
-
-//                 TogglePrefab.gameObject.SetActive(false);
+//                 Prefabs1.Add(TogglePrefab);
 //             }
 
 //             if (!ButtonPrefab)
@@ -261,15 +241,7 @@
 //                 ButtonPrefab.transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
 //                 ButtonPrefab.transform.GetChild(2).gameObject.SetActive(false);
 
-//                 ButtonPrefab.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
-
-//                 foreach (var obj in ButtonPrefab.GetComponentsInChildren<TextMeshPro>(true))
-//                 {
-//                     obj.fontMaterial.SetFloat("_StencilComp", 3f);
-//                     obj.fontMaterial.SetFloat("_Stencil", 20);
-//                 }
-
-//                 ButtonPrefab.gameObject.SetActive(false);
+//                 Prefabs1.Add(ButtonPrefab);
 //             }
 
 //             if (!BaseHeaderPrefab)
@@ -278,20 +250,26 @@
 //                 BaseHeaderPrefab.name = "CustomHeaderOptionBasePrefab";
 //                 BaseHeaderPrefab.transform.localScale = new(0.63f, 0.63f, 0.63f);
 //                 BaseHeaderPrefab.Background.transform.localScale += new Vector3(0.7f, 0f, 0f);
-//                 BaseHeaderPrefab.Background.material.SetInt(PlayerMaterial.MaskLayer, 20);
-//                 BaseHeaderPrefab.Divider?.material.SetInt(PlayerMaterial.MaskLayer, 20);
-//                 BaseHeaderPrefab.Title.fontMaterial.SetFloat("_StencilComp", 3f);
-//                 BaseHeaderPrefab.Title.fontMaterial.SetFloat("_Stencil", 20);
 
-//                 BaseHeaderPrefab.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+//                 Prefabs1.Add(BaseHeaderPrefab);
+//             }
 
-//                 foreach (var obj in BaseHeaderPrefab.GetComponentsInChildren<TextMeshPro>(true))
+//             if (!LayersSet)
+//             {
+//                 foreach (var mono in Prefabs1)
 //                 {
-//                     obj.fontMaterial.SetFloat("_StencilComp", 3f);
-//                     obj.fontMaterial.SetFloat("_Stencil", 20);
+//                     mono.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+
+//                     foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
+//                     {
+//                         obj.fontMaterial.SetFloat("_StencilComp", 3f);
+//                         obj.fontMaterial.SetFloat("_Stencil", 20);
+//                     }
+
+//                     mono.gameObject.SetActive(false);
 //                 }
 
-//                 BaseHeaderPrefab.gameObject.SetActive(false);
+//                 LayersSet = true;
 //             }
 //         }
 //     }
@@ -299,6 +277,8 @@
 //     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.Awake))]
 //     public static class DefinePrefabs2
 //     {
+//         private static bool LayersSet;
+
 //         public static void Postfix(RolesSettingsMenu __instance)
 //         {
 //             if (!LayersPrefab)
@@ -307,36 +287,52 @@
 //                 //            ┗------------┗----------- Value = 0, - = 1, + = 2, Value Box = 3
 //                 LayersPrefab = UObject.Instantiate(__instance.roleOptionSettingOrigin, null).DontUnload().DontDestroy();
 //                 LayersPrefab.name = "CustomLayersOptionPrefab";
+//                 LayersPrefab.titleText.alignment = TextAlignmentOptions.Left;
+//                 LayersPrefab.buttons = LayersPrefab.GetComponentsInChildren<PassiveButton>().ToArray();
 
-//                 LayersPrefab.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+//                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayersPrefab.transform);
+//                 newButton.name = "ConfigButton";
+//                 newButton.transform.localPosition = new(0.2419f, -0.2582f, -2f);
+//                 newButton.transform.FindChild("Plus_TMP").gameObject.Destroy();
+//                 newButton.transform.FindChild("InactiveSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("Cog");
+//                 newButton.transform.FindChild("ActiveSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("CogActive");
+//                 newButton.OverrideOnClickListeners(BlankVoid);
 
-//                 foreach (var obj in LayersPrefab.GetComponentsInChildren<TextMeshPro>(true))
-//                 {
-//                     obj.fontMaterial.SetFloat("_StencilComp", 3f);
-//                     obj.fontMaterial.SetFloat("_Stencil", 20);
-//                 }
+//                 var unique = UObject.Instantiate(TogglePrefab.transform.GetChild(1).GetComponent<PassiveButton>(), LayersPrefab.transform);
+//                 unique.name = "Unique";
+//                 unique.OverrideOnClickListeners(BlankVoid);
 
-//                 LayersPrefab.gameObject.SetActive(false);
+//                 var active = UObject.Instantiate(TogglePrefab.transform.GetChild(1).GetComponent<PassiveButton>(), LayersPrefab.transform);
+//                 active.name = "Active";
+//                 active.OverrideOnClickListeners(BlankVoid);
+
+//                 Prefabs2.Add(LayersPrefab);
 //             }
 
 //             if (!LayerHeaderPrefab)
 //             {
 //                 LayerHeaderPrefab = UObject.Instantiate(__instance.categoryHeaderEditRoleOrigin, null).DontUnload().DontDestroy();
 //                 LayerHeaderPrefab.name = "CustomHeaderOptionLayerPrefab";
-//                 LayerHeaderPrefab.Background.material.SetInt(PlayerMaterial.MaskLayer, 20);
-//                 LayerHeaderPrefab.Divider?.material.SetInt(PlayerMaterial.MaskLayer, 20);
-//                 LayerHeaderPrefab.Title.fontMaterial.SetFloat("_StencilComp", 3f);
-//                 LayerHeaderPrefab.Title.fontMaterial.SetFloat("_Stencil", 20);
 
-//                 LayerHeaderPrefab.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+//                 Prefabs2.Add(LayerHeaderPrefab);
+//             }
 
-//                 foreach (var obj in LayerHeaderPrefab.GetComponentsInChildren<TextMeshPro>(true))
+//             if (!LayersSet)
+//             {
+//                 foreach (var mono in Prefabs2)
 //                 {
-//                     obj.fontMaterial.SetFloat("_StencilComp", 3f);
-//                     obj.fontMaterial.SetFloat("_Stencil", 20);
+//                     mono.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+
+//                     foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
+//                     {
+//                         obj.fontMaterial.SetFloat("_StencilComp", 3f);
+//                         obj.fontMaterial.SetFloat("_Stencil", 20);
+//                     }
+
+//                     mono.gameObject.SetActive(false);
 //                 }
 
-//                 LayerHeaderPrefab.gameObject.SetActive(false);
+//                 LayersSet = true;
 //             }
 //         }
 //     }
@@ -351,13 +347,14 @@
 
 //             __instance.Children = new();
 //             __instance.MapPicker.Initialize(20);
-//                __instance.MapPicker.SetUpFromData(GameManager.Instance.GameSettingsList.MapNameSetting, 20);
+//             __instance.MapPicker.SetUpFromData(GameManager.Instance.GameSettingsList.MapNameSetting, 20);
+//             __instance.Children.Add(__instance.MapPicker);
 
 //             // TODO: Make a better fix for this for example caching the options or creating it ourself.
 //             // AD Says: Done, kinda.
 //             var allOptions = CreateOptions();
 //             var (customOptions, behaviours) = (allOptions.Keys.ToList(), allOptions.Values.ToList());
-//             var y = Y;
+//             var y = 0.713f;
 
 //             for (var i = 0; i < allOptions.Count; i++)
 //             {
@@ -366,16 +363,18 @@
 //                 behaviours[i].gameObject.SetActive(true);
 
 //                 if (behaviours[i] is OptionBehaviour option)
+//                 {
 //                     option.SetClickMask(__instance.ButtonClickMask);
+//                     __instance.Children.Add(option);
+//                 }
 
 //                 y -= isHeader ? 0.63f : 0.45f;
 //             }
 
-//             behaviours.RemoveAll(x => x is CategoryHeaderMasked);
-//             behaviours.Insert(0, __instance.MapPicker);
-//             __instance.Children = behaviours.Cast<OptionBehaviour>().ToList().ToIl2Cpp();
 //             __instance.scrollBar.SetYBoundsMax(-1.65f - y);
+//             __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
 //             __instance.InitializeControllerNavigation();
+//             OnValueChanged();
 //             return false;
 //         }
 //     }
@@ -492,11 +491,21 @@
 //     }
 
 //     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.ValueChanged))]
-//     public static class DisableCustomNotify
+//     public static class DisableCustomNotify1
 //     {
 //         public static bool Prefix(ref OptionBehaviour option)
 //         {
 //             var optionn = option;
+//             return CustomOption.AllOptions.Any(x => x.Setting == optionn);
+//         }
+//     }
+
+//     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.ValueChanged))]
+//     public static class DisableCustomNotify2
+//     {
+//         public static bool Prefix(ref OptionBehaviour obj)
+//         {
+//             var optionn = obj;
 //             return CustomOption.AllOptions.Any(x => x.Setting == optionn);
 //         }
 //     }
@@ -507,91 +516,34 @@
 //         public static bool Prefix() => false;
 //     }
 
-//     private static float Timer;
-
-//     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.Update))]
-//     public static class RolesSettingsMenu_Update
+//     public static void OnValueChanged()
 //     {
-//         public static bool Prefix(RolesSettingsMenu __instance)
+//         if (IsHnS || !GameSettingMenu.Instance)
+//             return;
+
+//         if (SettingsPage is 0 or 9 or 10 or 12)
 //         {
-//             if (IsHnS || SettingsPage is 0 or 9)
-//                 return true;
-
-//             Timer += Time.deltaTime;
-
-//             if (Timer < 0.1f)
-//                 return false;
-
-//             Timer = 0f;
-//             __instance.quotaHeader.Title.text = $"{Menus[SettingsPage]} Settings";
-//             __instance.quotaHeader.Title.color = __instance.quotaHeader.Background.color.Light().Light();
-//             var y = 0.65f;
-
-//             foreach (var option in CustomOption.AllOptions)
-//             {
-//                 if (option != null && option.Setting && option.Setting.gameObject)
-//                 {
-//                     if (option.Menu != (MultiMenu)SettingsPage || !option.Active)
-//                     {
-//                         option.Setting.gameObject.SetActive(false);
-//                         continue;
-//                     }
-
-//                     var isHeader = option is CustomHeaderOption;
-//                     var header = isHeader ? (CustomHeaderOption)option : null;
-//                     var isGen = header?.HeaderType == HeaderType.General;
-//                     var isLayer = option is CustomLayersOption;
-//                     option.Setting.gameObject.SetActive(true);
-//                     option.Setting.transform.localPosition = new(isLayer ? -0.15f : (isHeader ? (isGen ? -0.623f : 4.986f) : 1.232f), y, -2f);
-//                     y -= isHeader ? (isGen ? 0.63f : 0.6f) : (isLayer ? 0.47f : 0.45f);
-
-//                     if (option is CustomLayersOption layer)
-//                         layer.UpdateParts();
-//                 }
-//             }
-
-//             __instance.scrollBar.SetYBoundsMax(-1.65f - y);
-//             __instance.InitializeControllerNavigation();
-//             return false;
-//         }
-//     }
-
-//     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
-//     public static class GameOptionsMenu_Update
-//     {
-//         public static bool Prefix(GameOptionsMenu __instance)
-//         {
-//             if (__instance.Children == null || __instance.Children.Count == 0 || IsHnS || SettingsPage is not (0 or 9))
-//                 return true;
-
-//             Timer += Time.deltaTime;
-
-//             if (Timer < 0.1f)
-//                 return false;
-
-//             Timer = 0f;
-
-//             var y = Y;
-//             var list = new List<MonoBehaviour>();
+//             var y = 0.713f;
+//             GameSettingMenu.Instance.GameSettingsTab.Children = new();
+//             GameSettingMenu.Instance.GameSettingsTab.Children.Add(GameSettingMenu.Instance.GameSettingsTab.MapPicker);
 
 //             if (SettingsPage == 0)
 //             {
 //                 SaveSettings.Setting.gameObject.SetActive(true);
 //                 SaveSettings.Setting.transform.localPosition = new(0.952f, y, -2f);
 //                 y -= 0.45f;
-//                 list.Add(SaveSettings.Setting);
+
 
 //                 PresetButton.Setting.gameObject.SetActive(true);
 //                 PresetButton.Setting.transform.localPosition = new(0.952f, y, -2f);
 //                 y -= 0.45f;
-//                 list.Add(PresetButton.Setting);
 //             }
 
 //             foreach (var option in CustomOption.AllOptions)
 //             {
 //                 if (option != null && option.Setting && option.Setting.gameObject)
 //                 {
-//                     if (option.Menu != (MultiMenu)SettingsPage || !option.Active)
+//                     if (option.Menu != (MultiMenu)SettingsPage || !option.Active())
 //                     {
 //                         option.Setting.gameObject.SetActive(false);
 //                         continue;
@@ -600,19 +552,165 @@
 //                     var isHeader = option is CustomHeaderOption;
 //                     option.Setting.gameObject.SetActive(true);
 //                     option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
-//                     list.Add(option.Setting);
 //                     y -= isHeader ? 0.63f : 0.45f;
+
+//                     if (option.Setting is OptionBehaviour setting)
+//                         GameSettingMenu.Instance.GameSettingsTab.Children.Add(setting);
 //                 }
 //             }
 
-//             list.RemoveAll(x => x is CategoryHeaderMasked);
-//             list.Insert(0, __instance.MapPicker);
-//             __instance.Children = list.Cast<OptionBehaviour>().ToList().ToIl2Cpp();
-//             __instance.scrollBar.SetYBoundsMax(-1.65f - y);
-//             __instance.InitializeControllerNavigation();
-//             return false;
+//             GameSettingMenu.Instance.GameSettingsTab.scrollBar.SetYBoundsMax(-1.65f - y);
+//             GameSettingMenu.Instance.GameSettingsTab.ControllerSelectable.AddRange(new(GameSettingMenu.Instance.GameSettingsTab.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
+//             GameSettingMenu.Instance.GameSettingsTab.InitializeControllerNavigation();
+//         }
+//         else
+//         {
+//             var y = 0.65f;
+//             // GameSettingMenu.Instance.RoleSettingsTab.quotaHeader.gameObject.SetActive(false);
+//             GameSettingMenu.Instance.RoleSettingsTab.quotaHeader.Title.text = $"{Menus[SettingsPage]} Settings";
+//             GameSettingMenu.Instance.RoleSettingsTab.quotaHeader.Title.color = GameSettingMenu.Instance.RoleSettingsTab.quotaHeader.Background.color.Light().Light();
+
+//             for (var i = 0; i < CustomOption.AllOptions.Count; i++)
+//             {
+//                 var option = CustomOption.AllOptions[i];
+
+//                 if (option != null && option.Setting && option.Setting.gameObject)
+//                 {
+//                     var isLayer = option is CustomLayersOption;
+
+//                     if (isLayer)
+//                         ((CustomLayersOption)option).UpdateParts();
+
+//                     if (option.Menu != (MultiMenu)SettingsPage || !option.Active())
+//                     {
+//                         option.Setting.gameObject.SetActive(false);
+//                         continue;
+//                     }
+
+//                     var isHeader = option is CustomHeaderOption;
+//                     var header = isHeader ? (CustomHeaderOption)option : null;
+//                     var isGen = header?.HeaderType == HeaderType.General;
+
+//                     if (i > 0)
+//                         y -= isHeader ? (isGen ? 0.63f : 0.6f) : (isLayer ? 0.47f : 0.45f);
+
+//                     option.Setting.gameObject.SetActive(true);
+//                     option.Setting.transform.localPosition = new(isLayer ? -0.15f : (isHeader ? (isGen ? -0.623f : 4.986f) : 1.232f), y, -2f);
+//                 }
+//             }
+
+//             GameSettingMenu.Instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-1.65f - y);
+//             GameSettingMenu.Instance.RoleSettingsTab.ControllerSelectable.AddRange(new(GameSettingMenu.Instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
+//             GameSettingMenu.Instance.RoleSettingsTab.InitializeControllerNavigation();
 //         }
 //     }
+
+//     // private static float Timer;
+
+//     // [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.Update))]
+//     // public static class RolesSettingsMenu_Update
+//     // {
+//     //     public static bool Prefix(RolesSettingsMenu __instance)
+//     //     {
+//     //         if (IsHnS || SettingsPage is 0 or 9)
+//     //             return true;
+
+//     //         Timer += Time.deltaTime;
+
+//     //         if (Timer < 0.1f)
+//     //             return false;
+
+//     //         Timer = 0f;
+//     //         __instance.quotaHeader.Title.text = $"{Menus[SettingsPage]} Settings";
+//     //         __instance.quotaHeader.Title.color = __instance.quotaHeader.Background.color.Light().Light();
+//     //         var y = 0.65f;
+
+//     //         foreach (var option in CustomOption.AllOptions)
+//     //         {
+//     //             if (option != null && option.Setting && option.Setting.gameObject)
+//     //             {
+//     //                 if (option.Menu != (MultiMenu)SettingsPage || !option.Active)
+//     //                 {
+//     //                     option.Setting.gameObject.SetActive(false);
+//     //                     continue;
+//     //                 }
+
+//     //                 var isHeader = option is CustomHeaderOption;
+//     //                 var header = isHeader ? (CustomHeaderOption)option : null;
+//     //                 var isGen = header?.HeaderType == HeaderType.General;
+//     //                 var isLayer = option is CustomLayersOption;
+//     //                 option.Setting.gameObject.SetActive(true);
+//     //                 option.Setting.transform.localPosition = new(isLayer ? -0.15f : (isHeader ? (isGen ? -0.623f : 4.986f) : 1.232f), y, -2f);
+//     //                 y -= isHeader ? (isGen ? 0.63f : 0.6f) : (isLayer ? 0.47f : 0.45f);
+
+//     //                 if (option is CustomLayersOption layer)
+//     //                     layer.UpdateParts();
+//     //             }
+//     //         }
+
+//     //         __instance.scrollBar.SetYBoundsMax(-1.65f - y);
+//     //         __instance.InitializeControllerNavigation();
+//     //         return false;
+//     //     }
+//     // }
+
+//     // [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
+//     // public static class GameOptionsMenu_Update
+//     // {
+//     //     public static bool Prefix(GameOptionsMenu __instance)
+//     //     {
+//     //         if (__instance.Children == null || __instance.Children.Count == 0 || IsHnS || SettingsPage is not (0 or 9))
+//     //             return true;
+
+//     //         Timer += Time.deltaTime;
+
+//     //         if (Timer < 0.1f)
+//     //             return false;
+
+//     //         Timer = 0f;
+
+//     //         var y = Y;
+//     //         var list = new List<MonoBehaviour>();
+
+//     //         if (SettingsPage == 0)
+//     //         {
+//     //             SaveSettings.Setting.gameObject.SetActive(true);
+//     //             SaveSettings.Setting.transform.localPosition = new(0.952f, y, -2f);
+//     //             y -= 0.45f;
+//     //             list.Add(SaveSettings.Setting);
+
+//     //             PresetButton.Setting.gameObject.SetActive(true);
+//     //             PresetButton.Setting.transform.localPosition = new(0.952f, y, -2f);
+//     //             y -= 0.45f;
+//     //             list.Add(PresetButton.Setting);
+//     //         }
+
+//     //         foreach (var option in CustomOption.AllOptions)
+//     //         {
+//     //             if (option != null && option.Setting && option.Setting.gameObject)
+//     //             {
+//     //                 if (option.Menu != (MultiMenu)SettingsPage || !option.Active)
+//     //                 {
+//     //                     option.Setting.gameObject.SetActive(false);
+//     //                     continue;
+//     //                 }
+
+//     //                 var isHeader = option is CustomHeaderOption;
+//     //                 option.Setting.gameObject.SetActive(true);
+//     //                 option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
+//     //                 list.Add(option.Setting);
+//     //                 y -= isHeader ? 0.63f : 0.45f;
+//     //             }
+//     //         }
+
+//     //         list.RemoveAll(x => x is CategoryHeaderMasked);
+//     //         list.Insert(0, __instance.MapPicker);
+//     //         __instance.Children = list.Cast<OptionBehaviour>().ToList().ToIl2Cpp();
+//     //         __instance.scrollBar.SetYBoundsMax(-1.65f - y);
+//     //         __instance.InitializeControllerNavigation();
+//     //         return false;
+//     //     }
+//     // }
 
 //     private static bool Initialize(OptionBehaviour opt)
 //     {
@@ -662,6 +760,9 @@
 //     {
 //         public static bool Prefix(ToggleOption __instance)
 //         {
+//             if (!AmongUsClient.Instance.AmHost)
+//                 return false;
+
 //             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
 
 //             if (option is CustomToggleOption toggle)
@@ -672,27 +773,18 @@
 
 //             if (option is RoleListEntryOption role)
 //             {
-//                 if (!AmongUsClient.Instance.AmHost)
-//                     return false;
-
 //                 role.ToDo();
 //                 return false;
 //             }
 
 //             if (__instance == PresetButton.Setting)
 //             {
-//                 if (!AmongUsClient.Instance.AmHost)
-//                     return false;
-
 //                 PresetButton.Do();
 //                 return false;
 //             }
 
 //             if (__instance == SaveSettings.Setting)
 //             {
-//                 if (!AmongUsClient.Instance.AmHost)
-//                     return false;
-
 //                 SaveSettings.Do();
 //                 return false;
 //             }
@@ -701,9 +793,6 @@
 
 //             if (option1 is CustomButtonOption button)
 //             {
-//                 if (!AmongUsClient.Instance.AmHost)
-//                     return false;
-
 //                 button.Do();
 //                 return false;
 //             }
@@ -712,9 +801,6 @@
 
 //             if (option2 is CustomButtonOption button1)
 //             {
-//                 if (!AmongUsClient.Instance.AmHost)
-//                     return false;
-
 //                 button1.Do();
 //                 return false;
 //             }
@@ -890,4 +976,155 @@
 //                 CallRpc(CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
 //         }
 //     }
+
+//     [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.Initialize))]
+//     public static class GameOptionsMapPickerInitializePatch
+//     {
+//         public static void Postfix(GameOptionsMapPicker __instance, ref int maskLayer)
+//         {
+//             if (!__instance.AllMapIcons.Any(x => x.Name == MapNames.Dleks))
+//             {
+//                 __instance.AllMapIcons.Add(new()
+//                 {
+//                     Name = MapNames.Dleks,
+//                     MapImage = GetSprite("DleksBackground"),
+//                     MapIcon = GetSprite("DleksMapIcon"),
+//                     NameImage = GetSprite("Dleks")
+//                 });
+//             }
+
+//             if (!__instance.AllMapIcons.Any(x => x.Name == (MapNames)8))
+//             {
+//                 __instance.AllMapIcons.Add(new()
+//                 {
+//                     Name = (MapNames)8,
+//                     MapImage = GetSprite("RandomMapBackground"),
+//                     MapIcon = GetSprite("RandomMapIcon"),
+//                     NameImage = GetSprite("Random")
+//                 });
+//             }
+
+//             __instance.mapButtons.ForEach(x => x.gameObject.Destroy());
+//             __instance.mapButtons.Clear();
+//             __instance.transform.GetChild(1).localPosition = new(-1.134f, 0.733f, -1);
+
+//             for (var k = 0; k < __instance.AllMapIcons.Count; k++)
+//             {
+//                 var thisVal = __instance.AllMapIcons[k];
+//                 var mapButton = UObject.Instantiate(__instance.MapButtonOrigin, Vector3.zero, Quaternion.identity, __instance.transform);
+//                 mapButton.SetImage(thisVal.MapIcon, maskLayer);
+//                 mapButton.transform.localPosition = new(__instance.StartPosX + (k * __instance.SpacingX) - 0.7f, 0.74f, -2f);
+//                 mapButton.Button.ClickMask = __instance.ButtonClickMask;
+//                 mapButton.Button.OverrideOnClickListeners(() =>
+//                 {
+//                     __instance?.selectedButton?.Button?.SelectButton(false);
+//                     __instance.selectedButton = mapButton;
+//                     __instance.selectedButton.Button.SelectButton(true);
+//                     __instance.SelectMap(thisVal);
+//                 });
+
+//                 if (k > 0)
+//                 {
+//                     mapButton.Button.ControllerNav.selectOnLeft = __instance.mapButtons[k - 1].Button;
+//                     __instance.mapButtons[k - 1].Button.ControllerNav.selectOnRight = mapButton.Button;
+//                 }
+
+//                 __instance.mapButtons.Add(mapButton);
+
+//                 if (thisVal.Name == (MapNames)__instance.selectedMapId)
+//                 {
+//                     mapButton.Button.SelectButton(true);
+//                     __instance.SelectMap(__instance.selectedMapId);
+//                     __instance.selectedButton = mapButton;
+//                 }
+//             }
+//         }
+//     }
+
+//     [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.SelectMap), typeof(int))]
+//     public static class GameOptionsMapPickerSelectMapPatch1
+//     {
+//         public static void Postfix(ref int mapId) => SetMap(mapId);
+//     }
+
+//     [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
+//     public static class GameOptionsMapPickerSelectMapPatch2
+//     {
+//         public static void Postfix(ref MapIconByName mapInfo) => SetMap((int)mapInfo.Name);
+//     }
+
+//     private static readonly string[] Maps = [ "The Skeld", "Mira HQ", "Polus", "ehT dlekS", "Airship", "Fungle", "Submerged", "Level Impostor", "Random" ];
+//     private static LobbyNotificationMessage MapChangeNotif;
+
+//     private static void SetMap(int mapId)
+//     {
+//         CustomGameOptions.Map = (MapEnum)mapId;
+
+//         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[mapId]}</font>";
+
+//         if (MapChangeNotif != null)
+//             MapChangeNotif.UpdateMessage(changed);
+//         else
+//         {
+//             MapChangeNotif = UObject.Instantiate(HUD.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD.Notifier.transform);
+//             MapChangeNotif.transform.localPosition = new(0f, 0f, -2f);
+//             MapChangeNotif.SetUp(changed, HUD.Notifier.settingsChangeSprite, HUD.Notifier.settingsChangeColor, (Action)(() => HUD.Notifier.OnMessageDestroy(MapChangeNotif)));
+//             HUD.Notifier.ShiftMessages();
+//             HUD.Notifier.AddMessageToQueue(MapChangeNotif);
+//         }
+//     }
+
+//     [HarmonyPatch(typeof(NotificationPopper), (nameof(NotificationPopper.AddSettingsChangeMessage)))]
+//     public static class DisableVanilaNotifs
+//     {
+//         public static bool Prefix() => false;
+//     }
+
+//     // [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawNormalTab))]
+//     // public static class OverrideNormalViewSettingsTab
+//     // {
+//     //     public static bool Prefix(LobbyViewSettingsPane __instance)
+//     //     {
+//     //         var num = 1.44f;
+//     //         var num2 = -8.95f;
+
+//     //         foreach (var header in CustomOption.AllOptions.Where(x => x is CustomHeaderOption && x.Menu == MultiMenu.Main).Cast<CustomHeaderOption>())
+//     //         {
+//     //             var categoryHeaderMasked = UObject.Instantiate(__instance.categoryHeaderOrigin, __instance.settingsContainer);
+//     //             categoryHeaderMasked.transform.localScale = Vector3.one;
+//     //             categoryHeaderMasked.transform.localPosition = new(-9.77f, num, -2f);
+//     //             header.ViewSetting = categoryHeaderMasked;
+//     //             header.ViewOptionCreated();
+//     //             __instance.settingsInfo.Add(categoryHeaderMasked.gameObject);
+//     //             num -= 0.85f;
+
+//     //             for (var i = 0; i < header.GroupMembers.Length; i++)
+//     //             {
+//     //                 var option = header.GroupMembers[i];
+//     //                 var viewSettingsInfoPanel = UObject.Instantiate(__instance.infoPanelOrigin, __instance.settingsContainer);
+//     //                 viewSettingsInfoPanel.transform.localScale = Vector3.one;
+
+//     //                 if (i % 2 == 0)
+//     //                 {
+//     //                     num2 = -8.95f;
+
+//     //                     if (i > 0)
+//     //                         num -= 0.59f;
+//     //                 }
+//     //                 else
+//     //                     num2 = -3f;
+
+//     //                 viewSettingsInfoPanel.transform.localPosition = new(num2, num, -2f);
+//     //                 option.ViewSetting = viewSettingsInfoPanel;
+//     //                 option.ViewOptionCreated();
+//     //                 __instance.settingsInfo.Add(viewSettingsInfoPanel.gameObject);
+//     //             }
+
+//     //             num -= 0.59f;
+//     //         }
+
+//     //         __instance.scrollBar.SetYBoundsMax(-num);
+//     //         return false;
+//     //     }
+//     // }
 // }

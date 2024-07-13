@@ -84,23 +84,23 @@ public static class CustomGameOptions
     public static bool EnableUniques => Generate.EnableUniques;
 
     // Map Settings
-    public static MapEnum Map
-    {
-        get
-        {
-            var map = Generate.Map.GetInt();
-            var name = Generate.Map.GetString();
+    public static MapEnum Map { get; set; }
+    // {
+    //     get
+    //     {
+    //         var map = Generate.Map.GetInt();
+    //         var name = Generate.Map.GetString();
 
-            if (map is 0 or 1 or 2 or 3 or 4 or 5)
-                return (MapEnum)map;
-            else if (name == "Submerged" && SubLoaded)
-                return MapEnum.Submerged;
-            else if (name == "LevelImpostor" && LILoaded)
-                return MapEnum.LevelImpostor;
-            else
-                return MapEnum.Random;
-        }
-    }
+    //         if (map is 0 or 1 or 2 or 3 or 4 or 5)
+    //             return (MapEnum)map;
+    //         else if (name == "Submerged" && SubLoaded)
+    //             return MapEnum.Submerged;
+    //         else if (name == "LevelImpostor" && LILoaded)
+    //             return MapEnum.LevelImpostor;
+    //         else
+    //             return MapEnum.Random;
+    //     }
+    // }
     public static int RandomMapSkeld => Generate.RandomMapSkeld;
     public static int RandomMapMira => Generate.RandomMapMira;
     public static int RandomMapPolus => Generate.RandomMapPolus;

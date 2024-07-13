@@ -10,11 +10,11 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
     public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
     public string[] GroupMemberStrings { get; } = groupMemberStrings;
     public OptionAttribute[] GroupMembers { get; set; }
-    private GameObject UniqueCheckbox { get; set; }
-    private GameObject ActiveCheckbox { get; set; }
+    private GameObject Unique { get; set; }
+    private GameObject Active1 { get; set; }
     private GameObject Divider { get; set; }
-    private GameObject ChanceText { get; set; }
-    private GameObject CountText { get; set; }
+    private GameObject Chance { get; set; }
+    private GameObject Count { get; set; }
     private GameObject Cog { get; set; }
     private SpriteRenderer UniqueCheck { get; set; }
     private SpriteRenderer ActiveCheck { get; set; }
@@ -36,24 +36,24 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         role.roleChance = GetChance();
         role.labelSprite.color = LayerColor.Shadow().Shadow();
 
-        ChanceText = role.chanceText.gameObject;
-        CountText = role.countText.gameObject;
+        Chance = role.transform.GetChild(1).gameObject;
+        Count = role.transform.GetChild(2).gameObject;
         Divider = role.transform.GetChild(4).gameObject;
         Cog = role.transform.GetChild(5).gameObject;
-        UniqueCheckbox = role.transform.GetChild(6).gameObject;
-        ActiveCheckbox = role.transform.GetChild(7).gameObject;
+        Unique = role.transform.GetChild(6).gameObject;
+        Active1 = role.transform.GetChild(7).gameObject;
 
         if (Left == default)
-            Left = CountText.transform.localPosition;
+            Left = Count.transform.localPosition;
 
         if (Right == default)
-            Right = ChanceText.transform.localPosition;
+            Right = Chance.transform.localPosition;
 
         if (Diff == default)
             Diff = (Left - Right) / 2;
 
-        UniqueCheckbox.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
-        ActiveCheckbox.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
+        Unique.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
+        Active1.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
 
         UpdateParts();
     }
@@ -152,34 +152,34 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
             return;
 
         SavedMode = CustomGameOptions2.GameMode;
-        ChanceText.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
-        CountText.SetActive(SavedMode == GameMode.Custom);
+        Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
+        Count.SetActive(SavedMode == GameMode.Custom);
         Divider.SetActive(SavedMode is GameMode.Custom or GameMode.AllAny);
-        UniqueCheckbox.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
-        ActiveCheckbox.SetActive(SavedMode == GameMode.AllAny);
+        Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
+        Active1.SetActive(SavedMode == GameMode.AllAny);
 
         switch(SavedMode)
         {
             case GameMode.Classic:
-                ChanceText.transform.localPosition = Right + Diff;
+                Chance.transform.localPosition = Right + Diff;
                 break;
 
             case GameMode.Custom:
-                ChanceText.transform.localPosition = Right;
-                CountText.transform.localPosition = Left;
+                Chance.transform.localPosition = Right;
+                Count.transform.localPosition = Left;
                 break;
 
             case GameMode.AllAny:
-                UniqueCheckbox.transform.localPosition = Right;
-                ActiveCheckbox.transform.localPosition = Left;
+                Unique.transform.localPosition = Right;
+                Active1.transform.localPosition = Left;
                 break;
 
             case GameMode.RoleList:
-                UniqueCheckbox.transform.localPosition = Right + Diff;
+                Unique.transform.localPosition = Right + Diff;
                 break;
 
             case GameMode.KillingOnly:
-                ChanceText.transform.localPosition = Right + Diff;
+                Chance.transform.localPosition = Right + Diff;
                 break;
         }
     }

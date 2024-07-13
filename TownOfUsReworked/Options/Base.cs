@@ -17,7 +17,7 @@ public class CustomOption
     public bool All { get; }
     public bool Invert { get; }
     public bool ClientOnly { get; }
-    public bool Active => All ? Parents.All(IsActive) : Parents.Any(IsActive);
+    public bool Active() => All ? Parents.All(IsActive) : Parents.Any(IsActive);
 
     public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object[] parent, bool all = false, Action<object> onChanged = null, bool clientOnly = false)
     {
@@ -53,11 +53,11 @@ public class CustomOption
         if (option == null)
             result = true;
         else if (option is CustomToggleOption toggle)
-            result = toggle && toggle.Active;
+            result = toggle && toggle.Active();
         else if (option is CustomLayersOption layers)
-            result = layers.GetChance() > 0 && !IsRoleList && !IsVanilla && layers.Active;
+            result = layers.GetChance() > 0 && !IsRoleList && !IsVanilla && layers.Active();
         else if (option is CustomHeaderOption header)
-            result = header.Active;
+            result = header.Active();
         else if (option is MapEnum map)
             result = CustomGameOptions.Map == map;
         else if (option is GameMode mode)
@@ -65,7 +65,7 @@ public class CustomOption
         else if (option is LayerEnum layer)
             result = GetOptions<RoleListEntryOption>().Any(x => x.Name.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
         else if (option is CustomOption custom)
-            result = custom.Active;
+            result = custom.Active();
         else if (option is bool boolean)
             result = boolean;
 

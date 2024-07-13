@@ -186,4 +186,10 @@ public static class CustomGameOptions2
 
     // Map Settings
     public static MapEnum Map { get; set; }
+
+    [HeaderOption(MultiMenu.Crew, [], HeaderType.Layer)]
+    public static object tEST { get; set; }
+
+    [LayersOption(MultiMenu.Crew, "#837456FF", LayerEnum.Altruist)]
+    public static RoleOptionData Test { get; set; } = new(0, 0, false, false);
 }

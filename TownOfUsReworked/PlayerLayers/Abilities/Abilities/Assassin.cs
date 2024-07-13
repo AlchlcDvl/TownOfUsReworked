@@ -20,7 +20,7 @@ public class NeutralAssassin : Assassin
 
 public class SyndicateAssassin : Assassin
 {
-    public override LayerEnum Type => LayerEnum.NeutralAssassin;
+    public override LayerEnum Type => LayerEnum.SyndicateAssassin;
     public override string Name => "Sniper";
 }
 

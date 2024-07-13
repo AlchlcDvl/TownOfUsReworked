@@ -81,20 +81,23 @@ public static class ListExtensions
         return result;
     }
 
-    public static List<List<T>> Split<T>(this List<T> list, Func<T, bool> splitCondition)
+    public static List<List<T>> Split<T>(this List<T> list, Func<T, bool> splitCondition, bool includeSatisfier = true)
     {
         var result = new List<List<T>>();
         var temp = new List<T>();
 
         foreach (var item in list)
         {
-            temp.Add(item);
-
             if (splitCondition(item))
             {
+                if (includeSatisfier)
+                    temp.Add(item);
+
                 result.Add(temp);
                 temp = [];
             }
+            else
+                temp.Add(item);
         }
 
         if (temp.Any())

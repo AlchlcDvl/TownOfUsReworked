@@ -74,7 +74,8 @@ public static class MapPickerPatch
         if (mapId == 7 && !LILoaded)
             mapId = SubLoaded ? 6 : 5;
 
-        Generate.Map.Set(mapId);
+        // Generate.Map.Set(mapId);
+        CustomGameOptions2.Map = (MapEnum)mapId;
     }
 }
 

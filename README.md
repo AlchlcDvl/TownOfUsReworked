@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-    <img src="https://badgen.net/static/AmongUs/2023.10.24/yellow">
+    <img src="https://badgen.net/static/AmongUs/2024.6.18/yellow">
     <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a>
     <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/AlchlcDvl/TownOfUsReworked/total"></a>
     <a href="https://discord.gg/cd27aDQDY9"> <img src="https://img.shields.io/discord/1039196456667582555.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2"></a>
@@ -153,7 +153,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 
 | Among Us           | Mod Version | Download Link                                                                                   |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
-| 2024.3.5 (s & e)   | 0.6.7       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.7/Reworked.zip) |
+| 2024.6.18 (s & e)  | 0.6.7       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.7/Reworked.zip) |
 | 2024.3.5 (s & e)   | 0.6.6       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.6/Reworked.zip) |
 | 2023.11.28 (s & e) | 0.6.5       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.5/Reworked.zip) |
 | 2023.11.28 (s & e) | 0.6.4       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.4/Reworked.zip) |

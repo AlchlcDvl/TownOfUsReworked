@@ -43,7 +43,7 @@ public static class Generate
     public static CustomNumberOption SmallMapIncreasedLongTasks;
     public static CustomNumberOption LargeMapDecreasedShortTasks;
     public static CustomNumberOption LargeMapDecreasedLongTasks;
-    public static CustomStringOption Map;
+    // public static CustomStringOption Map;
     public static CustomStringOption RandomSpawns;
 
     // Game Modifier Options
@@ -1644,18 +1644,18 @@ public static class Generate
         KillerReports = new(MultiMenu.Main, "Every Body's Killer's <color=#FFD700FF>Role</color>/<color=#00E66DFF>Faction</color> Is Announced", ["Never", "Role", "Faction"],
             GameAnnouncements);
 
-        var maps = new List<string>() { "Skeld", "Mira HQ", "Polus", "dlekS", "Airship", "Fungle" };
+        // var maps = new List<string>() { "Skeld", "Mira HQ", "Polus", "dlekS", "Airship", "Fungle" };
 
-        if (SubLoaded)
-            maps.Add("Submerged");
+        // if (SubLoaded)
+        //     maps.Add("Submerged");
 
-        if (LILoaded)
-            maps.Add("LevelImpostor");
+        // if (LILoaded)
+        //     maps.Add("LevelImpostor");
 
-        maps.Add("Random");
+        // maps.Add("Random");
 
         MapSettings = new(MultiMenu.Main, "Map Settings");
-        Map = new(MultiMenu.Main, "Map", [..maps]);
+        // Map = new(MultiMenu.Main, "Map", [..maps]);
         RandomMapSkeld = new(MultiMenu.Main, "Skeld Chance", 10, 0, 100, 10, PercentFormat, MapEnum.Random);
         RandomMapMira = new(MultiMenu.Main, "Mira Chance", 10, 0, 100, 10, PercentFormat, MapEnum.Random);
         RandomMapPolus = new(MultiMenu.Main, "Polus Chance", 10, 0, 100, 10, PercentFormat, MapEnum.Random);

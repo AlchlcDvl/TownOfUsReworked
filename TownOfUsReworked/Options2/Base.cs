@@ -307,9 +307,3 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static T GetOption<T>(string title) where T : OptionAttribute => GetOption(title) as T;
 }
-
-// Just a way to combine em ig, I needed to separate presets and buttons from being attributes
-public interface IOption
-{
-    public void OptionCreated();
-}

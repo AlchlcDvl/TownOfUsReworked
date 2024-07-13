@@ -29,6 +29,7 @@ public partial class TownOfUsReworked
         if (!File.Exists(text))
             File.WriteAllText(text, "945360");
 
+        NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
         AllMonos.RegisterMonos();
         SetUpConfigs();
         LoadAssets();
