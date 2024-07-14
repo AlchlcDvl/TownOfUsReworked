@@ -14,11 +14,11 @@ public class CustomButtonOption(MultiMenu menu, string name, Action toDo = null)
 
     private static IEnumerator StartSaving()
     {
-        if (!SettingsPatches.SaveSettings.Setting)
-            yield break;
+        // if (!SettingsPatches.SaveSettings.Setting)
+        //     yield break;
 
-        SettingsPatches.SaveSettings.Do = BlankVoid;
-        SettingsPatches.SaveSettings.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
+        // SettingsPatches.SaveSettings.Do = BlankVoid;
+        // SettingsPatches.SaveSettings.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
         var filePath = Path.Combine(TownOfUsReworked.Options, "SavedSettings");
         var i = 0;
         var pathoverridden = false;
@@ -32,11 +32,11 @@ public class CustomButtonOption(MultiMenu menu, string name, Action toDo = null)
 
         SaveText($"SavedSettings{(pathoverridden ? i : "")}", SettingsToString(), TownOfUsReworked.Options);
         yield return Wait(0.5f);
-        SettingsPatches.SaveSettings.Setting.Cast<ToggleOption>().TitleText.text = "Save Current Settings";
-        SettingsPatches.SaveSettings.Setting.Cast<ToggleOption>().TitleText.color = UColor.green;
-        yield return Wait(0.5f);
-        SettingsPatches.SaveSettings.Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
-        SettingsPatches.SaveSettings.Do = SaveSettings;
+        // SettingsPatches.SaveSettings.Setting.Cast<ToggleOption>().TitleText.text = "Save Current Settings";
+        // SettingsPatches.SaveSettings.Setting.Cast<ToggleOption>().TitleText.color = UColor.green;
+        // yield return Wait(0.5f);
+        // SettingsPatches.SaveSettings.Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
+        // SettingsPatches.SaveSettings.Do = SaveSettings;
         yield return EndFrame();
         yield break;
     }

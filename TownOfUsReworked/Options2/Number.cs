@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options2;
 
-public class NumberOptionAttribute(MultiMenu menu, float min, float max, float increment, Format format = Format.None) : OptionAttribute(menu,CustomOptionType.Number)
+public class NumberOptionAttribute(MultiMenu2 menu, float min, float max, float increment, Format format = Format.None) : OptionAttribute(menu,CustomOptionType.Number)
 {
     private float Min { get; } = min;
     private float Max { get; } = max;
@@ -9,7 +9,7 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     public bool IsInt { get; set; } // I have to do some black magic fuckery to make this work
     public bool AllowHalf { get; set; }
 
-    // This whole thing is being held by hopes and dreams, if I or anyone touches this, chances are it's been broken....BECAUSE FOR SOME FUCKING REASON IT HAS DECIDED TO ONLY CAST TO INT TO FLOAT AND VICE VERSA WHEN IT FUCKING WANTS TO
+    // This whole thing is being held by hopes and dreams, if I or anyone touches this, chances are it's broken....BECAUSE FOR SOME FUCKING REASON IT HAS DECIDED TO CAST INT TO FLOAT AND VICE VERSA ONLY WHEN IT FUCKING WANTS TO
 
     public float GetFloat() => (float)Value;
 

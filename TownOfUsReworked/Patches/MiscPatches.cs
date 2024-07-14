@@ -612,6 +612,12 @@ public static class BegoneModstamp
     }
 }
 
+[HarmonyPatch(typeof(GameData), nameof(GameData.DirtyAllData))]
+public static class DirtyAllDataPatch
+{
+    public static bool Prefix() => false;
+}
+
 /*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
 public static class DebuggingClassForRandomStuff
 {

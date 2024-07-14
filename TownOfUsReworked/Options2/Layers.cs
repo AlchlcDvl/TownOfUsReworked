@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options2;
 
-public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum layer, string[] groupMemberStrings = null) : OptionAttribute(menu, CustomOptionType.Layers)
+public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum layer, string[] groupMemberStrings = null) : OptionAttribute(menu, CustomOptionType.Layers)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
@@ -16,8 +16,8 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
     private GameObject Chance { get; set; }
     private GameObject Count { get; set; }
     private GameObject Cog { get; set; }
-    private SpriteRenderer UniqueCheck { get; set; }
-    private SpriteRenderer ActiveCheck { get; set; }
+    public SpriteRenderer UniqueCheck { get; set; }
+    public SpriteRenderer ActiveCheck { get; set; }
     private GameMode SavedMode { get; set; } = GameMode.None;
     private static Vector3 Left { get; set; }
     private static Vector3 Right { get; set; }
@@ -36,12 +36,18 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         role.roleChance = GetChance();
         role.labelSprite.color = LayerColor.Shadow().Shadow();
 
-        Chance = role.transform.GetChild(1).gameObject;
-        Count = role.transform.GetChild(2).gameObject;
+        Count = role.transform.GetChild(1).gameObject;
+        Chance = role.transform.GetChild(2).gameObject;
         Divider = role.transform.GetChild(4).gameObject;
         Cog = role.transform.GetChild(5).gameObject;
         Unique = role.transform.GetChild(6).gameObject;
         Active1 = role.transform.GetChild(7).gameObject;
+
+        UniqueCheck = Unique.transform.GetChild(2).GetComponent<SpriteRenderer>();
+        ActiveCheck = Active1.transform.GetChild(2).GetComponent<SpriteRenderer>();
+
+        UniqueCheck.enabled = tuple.Unique;
+        ActiveCheck.enabled = tuple.Active;
 
         if (Left == default)
             Left = Count.transform.localPosition;
@@ -53,7 +59,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
             Diff = (Left - Right) / 2;
 
         Unique.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
-        Active1.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
+        Active1.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleActive);
 
         UpdateParts();
     }
@@ -145,8 +151,8 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
 
     public void UpdateParts()
     {
-        Cog.SetActive(GroupMembers != null && GroupMembers.Length > 0 && (((IsClassic || IsCustom || IsKilling) && GetChance() > 0) || (IsAA && GetActive()) || (IsRoleList &&
-            GetOptions<RoleListEntryAttribute>().Any(x => x.Get() == Layer))));
+        // Cog.SetActive(GroupMembers != null && GroupMembers.Length > 0 && (((IsClassic || IsCustom || IsKilling) && GetChance() > 0) || (IsAA && GetActive()) || (IsRoleList &&
+        //     GetOptions<RoleListEntryAttribute>().Any(x => x.Get() == Layer))));
 
         if (SavedMode == CustomGameOptions2.GameMode)
             return;
@@ -158,7 +164,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
         Active1.SetActive(SavedMode == GameMode.AllAny);
 
-        switch(SavedMode)
+        switch (SavedMode)
         {
             case GameMode.Classic:
                 Chance.transform.localPosition = Right + Diff;

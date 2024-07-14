@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options2;
 
-public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : OptionAttribute(menu, CustomOptionType.Toggle)
+public class ToggleOptionAttribute(MultiMenu2 menu, string onChanged = null) : OptionAttribute(menu, CustomOptionType.Toggle)
 {
     public Func<bool> OnClick { get; set; }
     private string OnClickName { get; } = onChanged;

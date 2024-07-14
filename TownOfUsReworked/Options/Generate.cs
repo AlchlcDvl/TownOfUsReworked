@@ -1542,8 +1542,8 @@ public static class Generate
     private static void GenerateGameOptions()
     {
         // Option saving stuff
-        SettingsPatches.PresetButton = new();
-        SettingsPatches.SaveSettings = new(MultiMenu.Main, "Save Current Settings", CustomButtonOption.SaveSettings);
+        // SettingsPatches.PresetButton = new();
+        // SettingsPatches.SaveSettings = new(MultiMenu.Main, "Save Current Settings", CustomButtonOption.SaveSettings);
 
         /*Just a template for me to use
         ExampleLayers = new(MultiMenu.Main, "Example Layers Option");

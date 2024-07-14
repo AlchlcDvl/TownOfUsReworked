@@ -61,8 +61,8 @@ public class DebuggerBehaviour : MonoBehaviour
                     TownOfUsReworked.MCIActive = false;
                 }
 
-                if (GUILayout.Button("Load Last Settings"))
-                    SettingsPatches.PresetButton.LoadPreset("Last Used");
+                // if (GUILayout.Button("Load Last Settings"))
+                //     SettingsPatches.PresetButton.LoadPreset("Last Used");
             }
             else if (TownOfUsReworked.MCIActive)
             {

@@ -1,12 +1,12 @@
 namespace TownOfUsReworked.Options2;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : Attribute, IOption
+public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : Attribute, IOption
 {
     public static readonly List<OptionAttribute> AllOptions = [];
     private static string LastChangedSetting = "";
     public string ID { get; set; }
-    public MultiMenu Menu { get; } = menu;
+    public MultiMenu2 Menu { get; } = menu;
     public object Value { get; set; }
     public object DefaultValue { get; set; }
     public MonoBehaviour Setting { get; set; }
@@ -79,8 +79,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             result = CustomGameOptions2.Map == map;
         else if (option is GameMode mode)
             result = CustomGameOptions2.GameMode == mode;
-        else if (option is LayerEnum layer)
-            result = GetOptions<RoleListEntryAttribute>().Any(x => x.ID.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
+        // else if (option is LayerEnum layer)
+        //     result = GetOptions<RoleListEntryAttribute>().Any(x => x.ID.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
         // else if (option.GetType() == typeof((string, string)))
         // {
         //     var tuple = ((string, string))option;
@@ -154,10 +154,10 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
         if (Setting is ToggleOption toggle)
         {
-            if (this is RoleListEntryAttribute)
-                toggle.TitleText.text = Format();
-            else
-            {
+            // if (this is RoleListEntryAttribute)
+            //     toggle.TitleText.text = Format();
+            // else
+            // {
                 var newValue = (bool)Value;
                 toggle.oldValue = newValue;
 
@@ -165,7 +165,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
                     toggle.CheckMark.enabled = newValue;
 
                 stringValue = newValue ? "On" : "Off";
-            }
+            // }
         }
         else if (Setting is NumberOption number)
         {
@@ -175,21 +175,23 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         else if (Setting is StringOption str)
         {
             var stringOption = (StringOptionAttribute)this;
-            stringOption.Index = Mathf.Clamp((int)Value, 0, stringOption.Values.Length - 1);
-            str.Value = str.oldValue = stringOption.Index;
+            str.Value = str.oldValue = stringOption.Index = Mathf.Clamp((int)Value, 0, stringOption.Values.Length - 1);
             str.ValueText.text = stringValue = Format();
         }
         else if (Setting is RoleOptionSetting role)
         {
             var data = (RoleOptionData)Value;
+            var layer = (LayersOptionAttribute)this;
             role.chanceText.text = $"{data.Chance}%";
             role.countText.text = $"x{data.Count}";
+            layer.UniqueCheck.enabled = data.Unique;
+            layer.ActiveCheck.enabled = data.Active;
             stringValue = Format();
         }
 
         SettingsPatches.OnValueChanged();
 
-        if (!notify)
+        if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
             return;
 
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{TranslationManager.Translate(ID)}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";

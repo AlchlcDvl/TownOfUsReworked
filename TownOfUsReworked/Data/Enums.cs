@@ -187,6 +187,16 @@ public enum MultiMenu
     Layer
 }
 
+public enum MultiMenu2
+{
+    Main,
+    RoleList,
+    Client,
+    Presets,
+    RoleListEntry,
+    Layer
+}
+
 public enum WhoCanVentOptions
 {
     Everyone,

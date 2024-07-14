@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options2;
 
-public class StringOptionAttribute(MultiMenu menu, Type enumType, string[] ignoreStrings = null) : OptionAttribute(menu, CustomOptionType.String)
+public class StringOptionAttribute(MultiMenu2 menu, Type enumType, string[] ignoreStrings = null) : OptionAttribute(menu, CustomOptionType.String)
 {
     public string[] Values { get; set; }
     public int Index { get; set; }

@@ -11,15 +11,19 @@ public static class Generate2
 
         Generated = true;
 
+        // Since I can't really get a default value at compile time for client options (since they save externally), I just do this to set their "defaults" and move on from there
         ClientGameOptions2.SetDefaults();
 
-        AccessTools.GetDeclaredProperties(typeof(CustomGameOptions2))?.ForEach(x => x.GetCustomAttribute<OptionAttribute>()?.SetProperty(x));
-        AccessTools.GetDeclaredProperties(typeof(ClientGameOptions2))?.ForEach(x => x.GetCustomAttribute<OptionAttribute>()?.SetProperty(x));
+        // Might lead to initial performance issues trying to look through like, 200+ types
+        // Could it be improved? Probably
+        // Do I care enough to do that? Hell no until it becomes a problem
+        AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ForEach(y => AccessTools.GetDeclaredProperties(y).ForEach(x => x.GetCustomAttribute<OptionAttribute>()?.SetProperty(x)));
 
+        // Simple enough, I'm too cautious to let something fuck me up while I set the properties
         OptionAttribute.AllOptions.ForEach(x => x.PostLoadSetup());
 
         OptionAttribute.SaveSettings("Default");
 
-        LogMessage($"There exist {OptionAttribute.AllOptions.Count + 2} total options lmao (number jumpscare)");
+        LogMessage($"There exist {OptionAttribute.AllOptions.Count} total options lmao (number jumpscare)");
     }
 }

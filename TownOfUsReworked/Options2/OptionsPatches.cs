@@ -2,12 +2,12 @@ namespace TownOfUsReworked.Options2;
 
 public static class SettingsPatches
 {
-    private static readonly string[] Menus = [ "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List", "Client", "Presets",
-        "Role List Entry" ];
+    // private static readonly string[] Menus = [ "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List", "Client", "Presets",
+    //     "Role List Entry" ];
     private static readonly List<int> CreatedPages = [];
 
-    public static PresetOption PresetButton = new();
-    public static ButtonOption SaveSettings = new(MultiMenu.Main, "Save Current Settings", ButtonOption.SaveSettings);
+    // public static PresetOption PresetButton = new();
+    // public static ButtonOption SaveSettings = new(MultiMenu2.Main, "Save Current Settings", ButtonOption.SaveSettings);
 
     public static int SettingsPage;
 
@@ -16,8 +16,8 @@ public static class SettingsPatches
     {
         public static void Postfix(GameSettingMenu __instance)
         {
-            __instance.GamePresetsButton.gameObject.SetActive(false);
-            __instance.PresetsTab.gameObject.SetActive(false);
+            // __instance.GamePresetsButton.gameObject.SetActive(false);
+            // __instance.PresetsTab.gameObject.SetActive(false);
 
             if (SettingsPage == 9)
             {
@@ -38,12 +38,16 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.ChangeTab))]
     public static class OnChangingTabs
     {
-        public static void Postfix(ref int tabNum)
+        public static void Postfix(GameSettingMenu __instance, ref int tabNum, ref bool previewOnly)
         {
+            if (previewOnly)
+                return;
+
             if (tabNum == 1)
                 SettingsPage = 0;
-            else if (tabNum == 2 && SettingsPage == 0)
-                SettingsPage = 1;
+            else if (tabNum == 2)
+                SettingsPage = 13;
+                // ToggleTabs(__instance.RoleSettingsTab, 1);
         }
     }
 
@@ -58,7 +62,7 @@ public static class SettingsPatches
                 SettingsPage = 0;
             }
 
-            PresetButton.SlotButtons.Clear();
+            // PresetButton.SlotButtons.Clear();
             LobbyConsole.ClientOptionsActive = false;
             CreatedPages.Clear();
         }
@@ -74,33 +78,32 @@ public static class SettingsPatches
     private static readonly List<MonoBehaviour> Prefabs1 = [];
     private static readonly List<MonoBehaviour> Prefabs2 = [];
 
-    public static Dictionary<IOption, MonoBehaviour> CreateOptions(Transform parent = null)
+    public static List<MonoBehaviour> CreateOptions(Transform parent)
     {
-        var options = new Dictionary<IOption, MonoBehaviour>();
+        var options = new List<MonoBehaviour>();
 
         if (SettingsPage == 10)
             return options;
 
-        var type = (MultiMenu)SettingsPage;
-        parent ??= GameObject.Find($"Main Camera/{(type == MultiMenu.Client ? "ClientOptionsMenu" : "PlayerOptionsMenu(Clone)")}/MainArea/{(type is MultiMenu.Main or MultiMenu.Client or MultiMenu.Presets ? "GAME SETTINGS" : "ROLES")} TAB/Scroller/SliderInner").transform;
+        var type = (MultiMenu2)SettingsPage;
 
-        if (type == MultiMenu.Main)
-        {
-            if (!SaveSettings.Setting)
-            {
-                SaveSettings.Setting = UObject.Instantiate(ButtonPrefab, parent);
-                SaveSettings.OptionCreated();
-            }
+        // if (type == MultiMenu2.Main)
+        // {
+        //     if (!SaveSettings.Setting)
+        //     {
+        //         SaveSettings.Setting = UObject.Instantiate(ButtonPrefab, parent);
+        //         SaveSettings.OptionCreated();
+        //     }
 
-            if (!PresetButton.Setting)
-            {
-                PresetButton.Setting = UObject.Instantiate(ButtonPrefab, parent);
-                PresetButton.OptionCreated();
-            }
+        //     if (!PresetButton.Setting)
+        //     {
+        //         PresetButton.Setting = UObject.Instantiate(ButtonPrefab, parent);
+        //         PresetButton.OptionCreated();
+        //     }
 
-            options.Add(SaveSettings, SaveSettings.Setting);
-            options.Add(PresetButton, PresetButton.Setting);
-        }
+        //     options.Add(SaveSettings.Setting);
+        //     options.Add(PresetButton.Setting);
+        // }
 
         foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menu == type))
         {
@@ -139,7 +142,7 @@ public static class SettingsPatches
                 option.OptionCreated();
             }
 
-            options.Add(option, option.Setting);
+            options.Add(option.Setting);
         }
 
         return options;
@@ -355,29 +358,19 @@ public static class SettingsPatches
 
             // TODO: Make a better fix for this for example caching the options or creating it ourself.
             // AD Says: Done, kinda.
-            var allOptions = CreateOptions();
-            var (customOptions, behaviours) = (allOptions.Keys.ToList(), allOptions.Values.ToList());
-            var y = 0.713f;
+            var behaviours = CreateOptions(__instance.settingsContainer);
 
-            for (var i = 0; i < allOptions.Count; i++)
+            foreach (var behave in behaviours)
             {
-                var isHeader = customOptions[i] is HeaderAttribute;
-                behaviours[i].transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
-                behaviours[i].gameObject.SetActive(true);
-
-                if (behaviours[i] is OptionBehaviour option)
+                if (behave is OptionBehaviour option)
                 {
                     option.SetClickMask(__instance.ButtonClickMask);
                     __instance.Children.Add(option);
                 }
-
-                y -= isHeader ? 0.63f : 0.45f;
             }
 
-            __instance.scrollBar.SetYBoundsMax(-1.65f - y);
-            __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
-            __instance.InitializeControllerNavigation();
             OnValueChanged();
+            __instance.scrollBar.ScrollToTop();
             return false;
         }
     }
@@ -392,18 +385,21 @@ public static class SettingsPatches
 
         if (__instance)
         {
-            var color = GetSettingColor(pos);
-            __instance.quotaHeader.Background.color = color.Shadow();
-            __instance.roleTabs[pos - 1].SelectButton(true);
+            // var color = GetSettingColor(pos);
+            // __instance.quotaHeader.Background.color = color.Shadow();
+            // __instance.roleTabs[pos - 1].SelectButton(true);
 
-            if (previous > 0)
-                __instance.roleTabs[previous - 1].SelectButton(false);
+            // if (previous > 0)
+            //     __instance.roleTabs[previous - 1].SelectButton(false);
 
-            __instance.scrollBar.ScrollToTop();
-            __instance.quotaHeader.gameObject.SetActive(false);
+            // __instance.scrollBar.ScrollToTop();
+            // __instance.quotaHeader.gameObject.SetActive(false);
 
             if (CreatedPages.Contains(pos))
+            {
+                OnValueChanged();
                 return;
+            }
 
             foreach (var option in OptionAttribute.AllOptions)
             {
@@ -411,31 +407,15 @@ public static class SettingsPatches
                     option.Setting.gameObject.SetActive(false);
             }
 
-            var allOptions = CreateOptions(__instance.RoleChancesSettings.transform);
-            OnValueChanged();
-            var (customOptions, behaviours) = (allOptions.Keys.ToList(), allOptions.Values.ToList());
-            var y = 0.61f;
+            var behaviours = CreateOptions(__instance.RoleChancesSettings.transform);
 
-            for (var i = 0; i < allOptions.Count; i++)
+            foreach (var behave in behaviours)
             {
-                var isHeader = customOptions[i] is HeaderOptionAttribute;
-                var header = isHeader ? (HeaderOptionAttribute)customOptions[i] : null;
-                var isGen = header?.HeaderType == HeaderType.General;
-                var isLayer = customOptions[i] is LayersOptionAttribute;
-
-                if (i > 0)
-                    y -= isHeader ? (isGen ? 0.63f : 0.6f) : (isLayer ? 0.47f : 0.45f);
-
-                behaviours[i].transform.localPosition = new(isLayer ? -0.15f : (isHeader ? (isGen ? -0.623f : 4.986f) : 1.232f), y, -2f);
-                behaviours[i].gameObject.SetActive(true);
-
-                if (behaviours[i] is OptionBehaviour option)
+                if (behave is OptionBehaviour option)
                     option.SetClickMask(__instance.ButtonClickMask);
             }
 
-            __instance.scrollBar.SetYBoundsMax(-1.65f - y);
-            __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
-            __instance.InitializeControllerNavigation();
+            OnValueChanged();
             CreatedPages.Add(pos);
         }
     }
@@ -458,37 +438,37 @@ public static class SettingsPatches
     {
         public static bool Prefix(RolesSettingsMenu __instance)
         {
-            // var num = 0.662f;
-            var tabXPos = -2.69f;
-            __instance.roleTabs = new();
+            // var tabXPos = -2.69f;
+            // __instance.roleTabs = new();
             __instance.AllButton.gameObject.SetActive(false);
+            __instance.transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
 
-            for (var i = 1; i < 9; i++)
-            {
-                var tab = UObject.Instantiate(i % 2 == 0 ? __instance.roleSettingsTabButtonOrigin : __instance.roleSettingsTabButtonOriginImpostor, __instance.tabParent);
-                tab.transform.localPosition = new(tabXPos, 2.27f, -2f);
-                var cache = i;
-                tab.icon.sprite =  GameManager.Instance.GameSettingsList.AllRoles.ToSystem().Find(cat => cat.Role.Role == Icons(i)).Role.RoleIconWhite;
-                tab.icon.color = GetSettingColor(i).Light();
-                tab.button.OverrideOnClickListeners(() => ToggleTabs(__instance, cache));
-                tabXPos += 0.762f;
-                __instance.roleTabs.Add(tab.Button);
-            }
+            // for (var i = 1; i < 9; i++)
+            // {
+            //     var tab = UObject.Instantiate(i % 2 == 0 ? __instance.roleSettingsTabButtonOrigin : __instance.roleSettingsTabButtonOriginImpostor, __instance.tabParent);
+            //     tab.transform.localPosition = new(tabXPos, 2.27f, -2f);
+            //     var cache = i;
+            //     tab.icon.sprite =  GameManager.Instance.GameSettingsList.AllRoles.ToSystem().Find(cat => cat.Role.Role == Icons(i)).Role.RoleIconWhite;
+            //     tab.icon.color = GetSettingColor(i).Light();
+            //     tab.button.OverrideOnClickListeners(() => ToggleTabs(__instance, cache));
+            //     tabXPos += 0.762f;
+            //     __instance.roleTabs.Add(tab.Button);
+            // }
 
-            ToggleTabs(__instance, SettingsPage);
+            // ToggleTabs(__instance, SettingsPage);
             return false;
         }
 
-        private static RoleTypes Icons(int index) => index switch
-        {
-            1 => RoleTypes.GuardianAngel,
-            2 => RoleTypes.Phantom,
-            3 => RoleTypes.Shapeshifter,
-            4 => RoleTypes.Tracker,
-            5 or 6 or 7 => RoleTypes.Noisemaker,
-            8 => RoleTypes.Engineer,
-            _ => RoleTypes.Crewmate
-        };
+        // private static RoleTypes Icons(int index) => index switch
+        // {
+        //     1 => RoleTypes.GuardianAngel,
+        //     2 => RoleTypes.Phantom,
+        //     3 => RoleTypes.Shapeshifter,
+        //     4 => RoleTypes.Tracker,
+        //     5 or 6 or 7 => RoleTypes.Noisemaker,
+        //     8 => RoleTypes.Engineer,
+        //     _ => RoleTypes.Crewmate
+        // };
     }
 
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
@@ -543,23 +523,23 @@ public static class SettingsPatches
             GameSettingMenu.Instance.GameSettingsTab.Children = new();
             GameSettingMenu.Instance.GameSettingsTab.Children.Add(GameSettingMenu.Instance.GameSettingsTab.MapPicker);
 
-            if (SettingsPage == 0)
-            {
-                SaveSettings.Setting.gameObject.SetActive(true);
-                SaveSettings.Setting.transform.localPosition = new(0.952f, y, -2f);
-                y -= 0.45f;
+            // if (SettingsPage == 0)
+            // {
+            //     SaveSettings.Setting.gameObject.SetActive(true);
+            //     SaveSettings.Setting.transform.localPosition = new(0.952f, y, -2f);
+            //     y -= 0.45f;
 
 
-                PresetButton.Setting.gameObject.SetActive(true);
-                PresetButton.Setting.transform.localPosition = new(0.952f, y, -2f);
-                y -= 0.45f;
-            }
+            //     PresetButton.Setting.gameObject.SetActive(true);
+            //     PresetButton.Setting.transform.localPosition = new(0.952f, y, -2f);
+            //     y -= 0.45f;
+            // }
 
             foreach (var option in OptionAttribute.AllOptions)
             {
                 if (option != null && option.Setting && option.Setting.gameObject)
                 {
-                    if (option.Menu != (MultiMenu)SettingsPage || !option.Active())
+                    if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
                     {
                         option.Setting.gameObject.SetActive(false);
                         continue;
@@ -581,7 +561,7 @@ public static class SettingsPatches
         }
         else
         {
-            var y = 0.61f;
+            var y = 1.06f;
             GameSettingMenu.Instance.RoleSettingsTab.quotaHeader.gameObject.SetActive(false);
             // GameSettingMenu.Instance.RoleSettingsTab.quotaHeader.Title.text = $"{Menus[SettingsPage]} Settings";
             // GameSettingMenu.Instance.RoleSettingsTab.quotaHeader.Title.color = GameSettingMenu.Instance.RoleSettingsTab.quotaHeader.Background.color.Light().Light();
@@ -593,19 +573,21 @@ public static class SettingsPatches
                 if (option != null && option.Setting && option.Setting.gameObject)
                 {
                     var isLayer = option is LayersOptionAttribute;
+                    var isHeader = option is HeaderOptionAttribute;
+                    var header = isHeader ? (HeaderOptionAttribute)option : null;
+                    var isGen = header?.HeaderType == HeaderType.General;
 
                     if (isLayer)
                         ((LayersOptionAttribute)option).UpdateParts();
 
-                    if (option.Menu != (MultiMenu)SettingsPage || !option.Active())
+                    if (header?.HeaderType == HeaderType.Layer)
+                        header.UpdateParts();
+
+                    if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
                     {
                         option.Setting.gameObject.SetActive(false);
                         continue;
                     }
-
-                    var isHeader = option is HeaderOptionAttribute;
-                    var header = isHeader ? (HeaderOptionAttribute)option : null;
-                    var isGen = header?.HeaderType == HeaderType.General;
 
                     if (i > 0)
                         y -= isHeader ? (isGen ? 0.63f : 0.6f) : (isLayer ? 0.47f : 0.45f);
@@ -621,116 +603,26 @@ public static class SettingsPatches
         }
     }
 
-    // private static float Timer;
-
-    // [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.Update))]
-    // public static class RolesSettingsMenu_Update
-    // {
-    //     public static bool Prefix(RolesSettingsMenu __instance)
-    //     {
-    //         if (IsHnS || SettingsPage is 0 or 9 or 10 or 12)
-    //             return true;
-
-    //         Timer += Time.deltaTime;
-
-    //         if (Timer < 0.1f)
-    //             return false;
-
-    //         Timer = 0f;
-    //         var y = 0.65f;
-    //         __instance.quotaHeader.Title.text = $"{Menus[SettingsPage]} Settings";
-    //         __instance.quotaHeader.Title.color = __instance.quotaHeader.Background.color.Light().Light();
-
-    //         foreach (var option in OptionAttribute.AllOptions)
-    //         {
-    //             if (option.Setting && option.Setting.gameObject && option is LayersOptionAttribute layer)
-    //                 layer.UpdateParts();
-    //         }
-
-    //         return false;
-    //     }
-    // }
-
-    // [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
-    // public static class GameOptionsMenu_Update
-    // {
-    //     public static bool Prefix(GameOptionsMenu __instance)
-    //     {
-    //         if (IsHnS || SettingsPage is not (0 or 9 or 10 or 12))
-    //             return true;
-
-    //         Timer += Time.deltaTime;
-
-    //         if (Timer < 0.1f)
-    //             return false;
-
-    //         Timer = 0f;
-    //         var y = 0.713f;
-    //         __instance.Children = new();
-    //         __instance.Children.Add(__instance.MapPicker);
-
-    //         if (SettingsPage == 0)
-    //         {
-    //             SaveSettings.Setting.gameObject.SetActive(true);
-    //             SaveSettings.Setting.transform.localPosition = new(0.952f, y, -2f);
-    //             y -= 0.45f;
-
-
-    //             PresetButton.Setting.gameObject.SetActive(true);
-    //             PresetButton.Setting.transform.localPosition = new(0.952f, y, -2f);
-    //             y -= 0.45f;
-    //         }
-
-    //         foreach (var option in OptionAttribute.AllOptions)
-    //         {
-    //             if (option != null && option.Setting && option.Setting.gameObject)
-    //             {
-    //                 if (option.Menu != (MultiMenu)SettingsPage || !option.Active())
-    //                 {
-    //                     option.Setting.gameObject.SetActive(false);
-    //                     continue;
-    //                 }
-
-    //                 var isHeader = option is HeaderOptionAttribute;
-    //                 option.Setting.gameObject.SetActive(true);
-    //                 option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
-    //                 y -= isHeader ? 0.63f : 0.45f;
-
-    //                 if (option.Setting is OptionBehaviour setting)
-    //                     __instance.Children.Add(setting);
-    //             }
-    //         }
-
-    //         __instance.scrollBar.SetYBoundsMax(-1.65f - y);
-    //         __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
-    //         __instance.InitializeControllerNavigation();
-    //         return false;
-    //     }
-    // }
-
     private static bool Initialize(OptionBehaviour opt)
     {
-        if (opt == PresetButton.Setting)
-        {
-            PresetButton.OptionCreated();
-            return false;
-        }
+        // if (opt == PresetButton.Setting)
+        // {
+        //     PresetButton.OptionCreated();
+        //     return false;
+        // }
 
-        if (opt == SaveSettings.Setting)
-        {
-            SaveSettings.OptionCreated();
-            return false;
-        }
+        // if (opt == SaveSettings.Setting)
+        // {
+        //     SaveSettings.OptionCreated();
+        //     return false;
+        // }
 
-        var customOption = (OptionAttribute.AllOptions.Find(option => option.Setting == opt) as IOption
-            ?? PresetButton.SlotButtons.Find(option => option.Setting == opt))
-            ?? RoleListEntryAttribute.EntryButtons.Find(option => option.Setting == opt);
+        var customOption = OptionAttribute.AllOptions.Find(option => option.Setting == opt);
+            // ?? PresetButton.SlotButtons.Find(option => option.Setting == opt))
+            // ?? RoleListEntryAttribute.EntryButtons.Find(option => option.Setting == opt);
 
-        if (customOption == null)
-            return true;
-
-        customOption.OptionCreated();
-        return false;
+        customOption?.OptionCreated();
+        return customOption == null;
     }
 
     [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.Initialize))]
@@ -762,9 +654,6 @@ public static class SettingsPatches
     {
         public static bool Prefix(ToggleOption __instance)
         {
-            if (!AmongUsClient.Instance.AmHost)
-                return false;
-
             var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
 
             if (option is ToggleOptionAttribute toggle)
@@ -773,39 +662,39 @@ public static class SettingsPatches
                 return false;
             }
 
-            if (option is RoleListEntryAttribute role)
-            {
-                role.ToDo();
-                return false;
-            }
+            // if (option is RoleListEntryAttribute role)
+            // {
+            //     role.ToDo();
+            //     return false;
+            // }
 
-            if (__instance == PresetButton.Setting)
-            {
-                PresetButton.Do();
-                return false;
-            }
+            // if (__instance == PresetButton.Setting)
+            // {
+            //     PresetButton.Do();
+            //     return false;
+            // }
 
-            if (__instance == SaveSettings.Setting)
-            {
-                SaveSettings.Do();
-                return false;
-            }
+            // if (__instance == SaveSettings.Setting)
+            // {
+            //     SaveSettings.Do();
+            //     return false;
+            // }
 
-            var option1 = PresetButton.SlotButtons.Find(option => option.Setting == __instance);
+            // var option1 = PresetButton.SlotButtons.Find(option => option.Setting == __instance);
 
-            if (option1 is ButtonOption button)
-            {
-                button.Do();
-                return false;
-            }
+            // if (option1 is ButtonOption button)
+            // {
+            //     button.Do();
+            //     return false;
+            // }
 
-            var option2 = RoleListEntryAttribute.EntryButtons.Find(option => option.Setting == __instance);
+            // var option2 = RoleListEntryAttribute.EntryButtons.Find(option => option.Setting == __instance);
 
-            if (option2 is ButtonOption button1)
-            {
-                button1.Do();
-                return false;
-            }
+            // if (option2 is ButtonOption button1)
+            // {
+            //     button1.Do();
+            //     return false;
+            // }
 
             return true;
         }
@@ -1090,7 +979,7 @@ public static class SettingsPatches
             var num = 1.44f;
             var num2 = -8.95f;
 
-            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menu == MultiMenu.Main).Cast<HeaderOptionAttribute>())
+            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menu == MultiMenu2.Main).Cast<HeaderOptionAttribute>())
             {
                 var categoryHeaderMasked = UObject.Instantiate(__instance.categoryHeaderOrigin, __instance.settingsContainer);
                 categoryHeaderMasked.transform.localScale = Vector3.one;

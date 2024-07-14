@@ -2,6 +2,7 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomButton
 {
+    // TODO: Make the Owner field a list instead and have each layer have one singular static member that handles all of the buttons for this particular button, might help with some potential lag with having too many ability buttons :thonk:
     public static readonly List<CustomButton> AllButtons = [];
 
     // Params
