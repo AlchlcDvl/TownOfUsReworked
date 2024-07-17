@@ -28,7 +28,7 @@ public static class CustomGameOptions2
     [NumberOption(MultiMenu2.Main, 5, 600, 15, Format.Time)]
     public static float VotingTime { get; set; } = 60;
 
-    [StringOption(MultiMenu2.Main, typeof(AmongUs.GameOptions.TaskBarMode))]
+    [StringOption(MultiMenu2.Main)]
     private static AmongUs.GameOptions.TaskBarMode TaskBar { get; set; } = AmongUs.GameOptions.TaskBarMode.MeetingOnly;
     public static AmongUs.GameOptions.TaskBarMode TaskBarMode => GameMode switch
     {
@@ -76,7 +76,7 @@ public static class CustomGameOptions2
     [HeaderOption(MultiMenu2.Main, [ "GameMode" ])]
     public static object GameModeSettings { get; set; }
 
-    [StringOption(MultiMenu2.Main, typeof(GameMode), [ "None" ])]
+    [StringOption(MultiMenu2.Main, [ "None" ])]
     public static GameMode GameMode { get; set; } = GameMode.Classic;
 
     // Classic/Custom Settings
@@ -92,12 +92,9 @@ public static class CustomGameOptions2
     [ToggleOption(MultiMenu2.Main)]
     public static bool IgnoreLayerCaps { get; set; } = false;
 
-    // All Any/Role List Settings
-    [HeaderOption(MultiMenu2.Main, [ "EnableUniques" ])]
-    public static object AARLSettings { get; set; }
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool EnableUniques { get; set; } = false;
+    // Role List Settings
+    [HeaderOption(MultiMenu2.Main, [ "" ])]
+    public static object RLSettings { get; set; }
 
     // Killing Only Settings
     [HeaderOption(MultiMenu2.Main, [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ])]
@@ -119,7 +116,7 @@ public static class CustomGameOptions2
     [HeaderOption(MultiMenu2.Main, [ "HnSMode", "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HunterFlashlight", "HuntedFlashlight", "HuntedChat" ])]
     public static object HnSSettings { get; set; }
 
-    [StringOption(MultiMenu2.Main, typeof(HnSMode))]
+    [StringOption(MultiMenu2.Main)]
     public static HnSMode HnSMode { get; set; } = HnSMode.Classic;
 
     [NumberOption(MultiMenu2.Main, 0, 13, 1)]
@@ -175,13 +172,13 @@ public static class CustomGameOptions2
     [HeaderOption(MultiMenu2.Main, [ "WhoCanVent", "AnonymousVoting", "NoSkipping" ])]
     public static object GameModifiers { get; set; }
 
-    [StringOption(MultiMenu2.Main, typeof(WhoCanVentOptions))]
+    [StringOption(MultiMenu2.Main)]
     public static WhoCanVentOptions WhoCanVent { get; set; } = WhoCanVentOptions.Default;
 
-    [StringOption(MultiMenu2.Main, typeof(AnonVotes))]
+    [StringOption(MultiMenu2.Main)]
     public static AnonVotes AnonymousVoting { get; set; } = AnonVotes.Enabled;
 
-    [StringOption(MultiMenu2.Main, typeof(DisableSkipButtonMeetings))]
+    [StringOption(MultiMenu2.Main)]
     public static DisableSkipButtonMeetings NoSkipping { get; set; } = DisableSkipButtonMeetings.No;
 
     // Map Settings

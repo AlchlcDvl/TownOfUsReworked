@@ -1,10 +1,10 @@
 namespace TownOfUsReworked.Options2;
 
-public class StringOptionAttribute(MultiMenu2 menu, Type enumType, string[] ignoreStrings = null) : OptionAttribute(menu, CustomOptionType.String)
+public class StringOptionAttribute(MultiMenu2 menu, string[] ignoreStrings = null) : OptionAttribute(menu, CustomOptionType.String)
 {
     public string[] Values { get; set; }
     public int Index { get; set; }
-    public Type TargetType { get; } = enumType;
+    public Type TargetType { get; set; }
     private string[] IgnoreStrings { get; } = ignoreStrings;
 
     public int GetInt() => Index;
@@ -40,6 +40,7 @@ public class StringOptionAttribute(MultiMenu2 menu, Type enumType, string[] igno
     public override void SetProperty(PropertyInfo property)
     {
         base.SetProperty(property);
+        TargetType = property.PropertyType;
         var baseValues = Enum.GetNames(TargetType).ToList();
 
         if (IgnoreStrings != null)

@@ -1482,12 +1482,12 @@ public static class Generate
     public static CustomToggleOption HideOtherGhosts;
     public static CustomToggleOption OptimisationMode;
 
-    /*For Testing
-    public static CustomToggleOption ExampleToggle;
-    public static CustomNumberOption ExampleNumber;
-    public static CustomStringOption ExampleString;
-    public static CustomHeaderOption ExampleHeader;
-    public static CustomLayersOption ExampleLayers;*/
+    // For Testing
+    // public static CustomToggleOption ExampleToggle;
+    // public static CustomNumberOption ExampleNumber;
+    // public static CustomStringOption ExampleString;
+    // public static CustomHeaderOption ExampleHeader;
+    // public static CustomLayersOption ExampleLayers;
 
     private static Func<object, string> PercentFormat => value => $"{value:0}%";
     private static Func<object, string> CooldownFormat => value => $"{value:0.##}s";
@@ -1545,12 +1545,12 @@ public static class Generate
         // SettingsPatches.PresetButton = new();
         // SettingsPatches.SaveSettings = new(MultiMenu.Main, "Save Current Settings", CustomButtonOption.SaveSettings);
 
-        /*Just a template for me to use
-        ExampleLayers = new(MultiMenu.Main, "Example Layers Option");
-        ExampleHeader = new(MultiMenu.Main, "Example Header Option");
-        ExampleToggle = new(MultiMenu.Main, "Example Toggle Option", true/false);
-        ExampleNumber = new(MultiMenu.Main, "Example Number Option", 1, 1, 5, 1);
-        ExampleString = new(MultiMenu.Main, "Example String Option", ["Something", "Something Else", "Something Else Else"]);*/
+        // Just a template for me to use
+        // ExampleLayers = new(MultiMenu.Main, "Example Layers Option");
+        // ExampleHeader = new(MultiMenu.Main, "Example Header Option");
+        // ExampleToggle = new(MultiMenu.Main, "Example Toggle Option", true/false);
+        // ExampleNumber = new(MultiMenu.Main, "Example Number Option", 1, 1, 5, 1);
+        // ExampleString = new(MultiMenu.Main, "Example String Option", [ "Something", "Something Else", "Something Else Else" ]);
 
         GameSettings = new(MultiMenu.Main, "Game Settings");
         PlayerSpeed = new(MultiMenu.Main, "Player Speed", 1.25f, 0.25f, 10, 0.25f, MultiplierFormat);

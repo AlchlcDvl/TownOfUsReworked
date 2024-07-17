@@ -5,29 +5,29 @@ public class ChatCommand
     private string[] Aliases { get; }
     private ExecuteArgsCommand ExecuteArgs { get; }
     private ExecuteArglessCommand ExecuteArgless { get; }
+    private ExecuteArgsMessageCommand ExecuteArgsMessage { get; }
 
-    private delegate void ExecuteArgsCommand(string[] args);
     private delegate void ExecuteArglessCommand();
+    private delegate void ExecuteArgsCommand(string[] args);
+    private delegate void ExecuteArgsMessageCommand(string[] args, string arg);
 
     private static readonly List<ChatCommand> AllCommands =
     [
-        new(["controls", "ctrl", "mci"], Controls),
-        new(["kick", "k", "ban", "b"], KickBan),
-        new(["summary", "sum"], Summary),
-        new(["clearlobby", "cl", "clear"], Clear),
-        new(["setname", "sn", "name"], SetName),
-        new(["setcolor", "setcolour", "sc", "color", "colour"], SetColor),
-        new(["whisper", "w"], Whisper),
-        new(["help", "h"], Help)/*,
-        new(["testargs", "targ"], TestArgs),
-        new(["testargless", "targless"], TestArgless),
-        new(["translate", "trans"], Translate),
-        new(["rpc"], SendRPC)*/
+        new([ "controls", "ctrl", "mci" ], Controls),
+        new([ "kick", "k", "ban", "b" ], KickBan),
+        new([ "summary", "sum" ], Summary),
+        new([ "clearlobby", "cl", "clear" ], Clear),
+        new([ "setname", "sn", "name" ], SetName),
+        new([ "setcolor", "setcolour", "sc", "color", "colour" ], SetColor),
+        new([ "whisper", "w"] , Whisper),
+        new([ "ignore", "i" ], Whisper),
+        new([ "help", "h" ], Help),
+        // new([ "testargs", "targ" ], TestArgs),
+        // new([ "testargless", "targless" ], TestArgless),
+        // new([ "testargmessage", "targmess" ], TestArgsMessage),
+        // new([ "translate", "trans", "t" ], Translate),
+        // new([ "rpc" ], SendRPC)
     ];
-
-    // As much as I hate to do this, people will take advantage of this function so we're better off doing this early
-    private static readonly string[] Profanities = [ "fuck", "bastard", "cunt", "nigg", "nig", "neg", "whore", "negro", "yiff", "rape", "rapist" ];
-    private const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
 
     private ChatCommand(string[] aliases) => Aliases = aliases;
 
@@ -35,22 +35,33 @@ public class ChatCommand
     {
         ExecuteArgs = executeArgs;
         ExecuteArgless = null;
+        ExecuteArgsMessage = null;
     }
 
     private ChatCommand(string[] aliases, ExecuteArglessCommand executeArgless) : this(aliases)
     {
-        ExecuteArgless = executeArgless;
         ExecuteArgs = null;
+        ExecuteArgless = executeArgless;
+        ExecuteArgsMessage = null;
     }
 
-    public static void Execute(ChatCommand command, string[] args)
+    private ChatCommand(string[] aliases, ExecuteArgsMessageCommand executeArgsMessage) : this(aliases)
+    {
+        ExecuteArgs = null;
+        ExecuteArgless = null;
+        ExecuteArgsMessage = executeArgsMessage;
+    }
+
+    public static void Execute(ChatCommand command, string[] args, string message)
     {
         if (command == null)
             Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
-        else if (command.ExecuteArgs == null)
+        else if (command.ExecuteArgless != null)
             command.ExecuteArgless();
-        else if (command.ExecuteArgless == null)
+        else if (command.ExecuteArgs != null)
             command.ExecuteArgs(args);
+        else if (command.ExecuteArgsMessage != null)
+            command.ExecuteArgsMessage(args, message);
         else
             Run("<color=#FFFF00FF>⚠ Huh? ⚠</color>", "Weird...");
     }
@@ -96,7 +107,7 @@ public class ChatCommand
         }
     }
 
-    private static void Whisper(string[] args)
+    private static void Whisper(string[] args, string arg)
     {
         if (!CustomGameOptions.Whispers && IsInGame)
         {
@@ -104,15 +115,18 @@ public class ChatCommand
             return;
         }
 
+        var args2 = arg.Split('\'');
+
         if (args.Length < 3 || IsNullEmptyOrWhiteSpace(args[1]) || IsNullEmptyOrWhiteSpace(args[2]))
         {
-            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number> <message>");
+            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number | (player name in \'\')> <message>");
             return;
         }
 
         var message = "";
-        args[2..].ForEach(arg => message += $"{arg} ");
-        message = message.Remove(message.Length - 1);
+        var invalid = "";
+        var first = args2[0].Split(' ').Length;
+        PlayerControl whispered = null;
 
         if (CustomPlayer.LocalCustom.Dead)
             Run("<color=#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
@@ -122,25 +136,29 @@ public class ChatCommand
             Run("<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         else if (byte.TryParse(args[1], out var id))
         {
-            var whispered = PlayerById(id);
-
-            if (whispered == CustomPlayer.Local)
-                Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
-            else if (whispered)
-            {
-                if (whispered.HasDied())
-                    Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
-                else
-                {
-                    Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"You whisper to {whispered.name}: {message}");
-                    CallRpc(CustomRPC.Misc, MiscRPC.Whisper, CustomPlayer.Local, whispered, message);
-                }
-            }
-            else
-                Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Who are you trying to whisper?");
+            whispered = PlayerById(id);
+            args[2..].ForEach(arg2 => message += $"{arg2} ");
+            message = message.Remove(message.Length - 1);
+        }
+        else if (args2.Length == 3 && first == 0)
+        {
+            whispered = CustomPlayer.AllPlayers.Find(x => x.name == args2[1]);
+            message = args2[2][1..];
         }
         else
-            Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{args[1]} is not a valid number.");
+            invalid = first > 0 ? args[1] : args2[1];
+
+        if (!whispered)
+            Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"Who are you trying to whisper? {invalid} is invalid.");
+        else if (whispered == CustomPlayer.Local)
+            Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
+        else if (whispered.HasDied())
+            Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
+        else
+        {
+            Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"You whisper to {whispered.name}: {message}");
+            CallRpc(CustomRPC.Misc, MiscRPC.Whisper, CustomPlayer.Local, whispered, message);
+        }
     }
 
     private static void SetColor(string[] args)
@@ -302,35 +320,43 @@ public class ChatCommand
         var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
         var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
         var lobby = setColor + kickBan != "" ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "";
-        Run("<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n{lobby}");
+        Run("<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n/ignore{lobby}");
     }
 
-    private static void Controls() => Run("<color=#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Start up the MCI control panel (local only)\nF2 - Toggle the visibility of "
-        + "the control panel (local only)\nTab/Backspace - Change pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu\n1 - 9 - Jump between "
-        + "setting pages (in lobby)");
+    private static void Controls() => Run("<color=#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Toggle the visibility of the MCI control panel (local only)\nF2 - Toggle the"
+        + " visibility of the MCI cooldowns panel (local only)\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu");
 
-    /*private static void TestArgs(string[] args)
-    {
-        var message = "You entered the following params:\n";
-        args[1..].ForEach(arg => message += $"{arg}, ");
-        message = message.Remove(message.Length - 2);
-        Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", message);
-    }
+    // private static void TestArgs(string[] args)
+    // {
+    //     var message = "You entered the following params:\n";
+    //     args[1..].ForEach(arg => message += $"{arg}, ");
+    //     message = message.Remove(message.Length - 2);
+    //     Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", message);
+    // }
 
-    private static void TestArgless() => Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", "Test.");
+    // private static void TestArgsMessage(string[] args, string arg)
+    // {
+    //     var message = "You entered the following params:\n";
+    //     args[1..].ForEach(arg => message += $"{arg}, ");
+    //     message = message.Remove(message.Length - 2);
+    //     message += $"\nAnd this is the while thing you sent:\n{arg}";
+    //     Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", message);
+    // }
 
-    private static void SendRPC()
-    {
-        CallRpc(CustomRPC.Test);
-        LogMessage("RPC Sent!");
-        Run("<color=#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
-    }
+    // private static void TestArgless() => Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", "Test.");
 
-    private static void Translate(string[] args)
-    {
-        if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
-            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<translate | trans> <text id>");
-        else
-            Run("<color=#B148E2FF>◈ Success ◈</color>", TranslationManager.Test(args[1]));
-    }*/
+    // private static void SendRPC()
+    // {
+    //     CallRpc(CustomRPC.Test);
+    //     LogMessage("RPC Sent!");
+    //     Run("<color=#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
+    // }
+
+    // private static void Translate(string[] args)
+    // {
+    //     if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
+    //         Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<translate | trans> <text id>");
+    //     else
+    //         Run("<color=#B148E2FF>◈ Success ◈</color>", TranslationManager.Test(args[1]));
+    // }
 }

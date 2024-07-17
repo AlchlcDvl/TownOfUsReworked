@@ -37,6 +37,9 @@ public static class References
         { "%github%", $"[{TownOfUsReworked.GitHubLink}]GitHub[]" },
         { "%assets%", $"[{TownOfUsReworked.AssetsLink}]Assets[]" }
     };
+    // As much as I hate to do this, people will take advantage so we're better off doing this early
+    public static readonly string[] Profanities = [ "fuck", "bastard", "cunt", "nigg", "nig", "neg", "whore", "negro", "yiff", "rape", "rapist" ];
+    public const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
     // public static readonly char[] Lowercase = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
     // public static readonly char[] Uppercase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
     public static readonly Vector2[] SkeldSpawns =

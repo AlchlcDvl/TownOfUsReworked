@@ -188,7 +188,7 @@ public static class ChatCommands
         {
             chatHandled = true;
             var args = __instance.freeChatField.Text.Split(' ');
-            Execute(Find(args), args);
+            Execute(Find(args), args, __instance.freeChatField.Text);
         }
         else if (CustomPlayer.Local.IsBlackmailed() && text != "i am blackmailed.")
         {

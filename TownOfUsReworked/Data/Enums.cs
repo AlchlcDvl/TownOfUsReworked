@@ -190,11 +190,11 @@ public enum MultiMenu
 public enum MultiMenu2
 {
     Main,
-    RoleList,
-    Client,
+    Layer,
     Presets,
-    RoleListEntry,
-    Layer
+    Client,
+    RoleList,
+    LayerSubOptions
 }
 
 public enum WhoCanVentOptions
@@ -354,21 +354,21 @@ public enum CustomRPC
 public enum VanillaRPC
 {
     SnapTo,
-    SetColor/*,
-    SetScanner,
-    EndGame,
-    StartMeeting,
-    UpdateSystem,
-    SetName,
-    CompleteTask,
-    MeetingClose,
-    SyncSettings,
-    ClimbLadder,
-    VotingComplete,
-    SendChat,
-    EnterVent,
-    ExitVent,
-    StartCounter*/
+    SetColor,
+    // SetScanner,
+    // EndGame,
+    // StartMeeting,
+    // UpdateSystem,
+    // SetName,
+    // CompleteTask,
+    // MeetingClose,
+    // SyncSettings,
+    // ClimbLadder,
+    // VotingComplete,
+    // SendChat,
+    // EnterVent,
+    // ExitVent,
+    // StartCounter
 }
 
 public enum PlayerLayerEnum

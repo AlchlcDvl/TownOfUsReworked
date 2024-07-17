@@ -230,7 +230,7 @@ public static class MCIUtils
         Chat.SetVisible(newPlayer.CanChat());
         newPlayer.RpcCustomSnapTo(pos2);
         savedPlayer.RpcCustomSnapTo(pos);
-        Role.LocalRole.UpdateButtons();
+        Role.LocalRole?.UpdateButtons();
     }
 
     public static void SetForegroundForAlive(this MeetingHud __instance)
