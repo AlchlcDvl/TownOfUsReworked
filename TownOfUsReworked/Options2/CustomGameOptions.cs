@@ -5,7 +5,7 @@ public static class CustomGameOptions2
 {
     // Global Options
     [HeaderOption(MultiMenu2.Main, [ "PlayerSpeed", "GhostSpeed", "InteractionDistance", "EmergencyButtonCount", "TaskBar", "VotingTime", "DiscussionTime", "EmergencyButtonCooldown", "ConfirmEjects", "EjectionRevealsRoles", "EnableInitialCds", "InitialCooldowns", "EnableMeetingCds", "MeetingCooldowns", "EnableFailCds", "FailCooldowns", "ReportDistance", "ChatCooldown", "ChatCharacterLimit", "LobbySize" ])]
-    public static object GameSettings { get; set; }
+    public static bool GameSettings { get; set; } = true;
 
     [NumberOption(MultiMenu2.Main, 0.25f, 10, 0.25f, Format.Multiplier)]
     public static float PlayerSpeed { get; set; } = 1.25f;
@@ -29,10 +29,10 @@ public static class CustomGameOptions2
     public static float VotingTime { get; set; } = 60;
 
     [StringOption(MultiMenu2.Main)]
-    private static AmongUs.GameOptions.TaskBarMode TaskBar { get; set; } = AmongUs.GameOptions.TaskBarMode.MeetingOnly;
-    public static AmongUs.GameOptions.TaskBarMode TaskBarMode => GameMode switch
+    private static TBMode TaskBar { get; set; } = TBMode.MeetingOnly;
+    public static TBMode TaskBarMode => GameMode switch
     {
-        GameMode.TaskRace or GameMode.HideAndSeek => AmongUs.GameOptions.TaskBarMode.Normal,
+        GameMode.TaskRace or GameMode.HideAndSeek => TBMode.Normal,
         _ => TaskBar
     };
 
@@ -74,14 +74,14 @@ public static class CustomGameOptions2
 
     // Game Modes
     [HeaderOption(MultiMenu2.Main, [ "GameMode" ])]
-    public static object GameModeSettings { get; set; }
+    public static bool GameModeSettings { get; set; } = true;
 
     [StringOption(MultiMenu2.Main, [ "None" ])]
     public static GameMode GameMode { get; set; } = GameMode.Classic;
 
     // Classic/Custom Settings
     [HeaderOption(MultiMenu2.Main, [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ])]
-    public static object ClassCustSettings { get; set; }
+    public static bool ClassCustSettings { get; set; } = true;
 
     [ToggleOption(MultiMenu2.Main)]
     public static bool IgnoreFactionCaps { get; set; } = false;
@@ -94,11 +94,11 @@ public static class CustomGameOptions2
 
     // Role List Settings
     [HeaderOption(MultiMenu2.Main, [ "" ])]
-    public static object RLSettings { get; set; }
+    public static bool RLSettings { get; set; } = true;
 
     // Killing Only Settings
     [HeaderOption(MultiMenu2.Main, [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ])]
-    public static object KOSettings { get; set; }
+    public static bool KOSettings { get; set; } = true;
 
     [NumberOption(MultiMenu2.Main, 0, 13, 1)]
     public static int NeutralsCount { get; set; } = 1;
@@ -114,7 +114,7 @@ public static class CustomGameOptions2
 
     // Hide And Seek Settings
     [HeaderOption(MultiMenu2.Main, [ "HnSMode", "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HunterFlashlight", "HuntedFlashlight", "HuntedChat" ])]
-    public static object HnSSettings { get; set; }
+    public static bool HnSSettings { get; set; } = true;
 
     [StringOption(MultiMenu2.Main)]
     public static HnSMode HnSMode { get; set; } = HnSMode.Classic;
@@ -160,7 +160,7 @@ public static class CustomGameOptions2
 
     // Task Race Settings
     [HeaderOption(MultiMenu2.Main, [ "TRShortTasks", "TRCommonTasks" ])]
-    public static object TRSettings { get; set; }
+    public static bool TRSettings { get; set; } = true;
 
     [NumberOption(MultiMenu2.Main, 0, 13, 1)]
     public static int TRShortTasks { get; set; } = 4;
@@ -170,7 +170,7 @@ public static class CustomGameOptions2
 
     // Game Modifiers
     [HeaderOption(MultiMenu2.Main, [ "WhoCanVent", "AnonymousVoting", "NoSkipping" ])]
-    public static object GameModifiers { get; set; }
+    public static bool GameModifiers { get; set; } = true;
 
     [StringOption(MultiMenu2.Main)]
     public static WhoCanVentOptions WhoCanVent { get; set; } = WhoCanVentOptions.Default;
@@ -185,7 +185,7 @@ public static class CustomGameOptions2
     public static MapEnum Map { get; set; }
 
     [HeaderOption(MultiMenu2.Layer, [ "Test" ], HeaderType.Layer)]
-    public static object tEST { get; set; }
+    public static bool tEST { get; set; } = true;
 
     [LayersOption(MultiMenu2.Layer, "#837456FF", LayerEnum.Altruist)]
     public static RoleOptionData Test { get; set; } = new(0, 0, false, false);

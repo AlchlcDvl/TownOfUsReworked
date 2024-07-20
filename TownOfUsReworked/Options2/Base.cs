@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Options2;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : Attribute, IOption
+public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];
     private static string LastChangedSetting = "";
@@ -21,28 +21,22 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     // public string OnChangedName { get; set; }
 
     // Apparently, setting the parents in the attibutes doesn't seem to work
-    private static readonly Dictionary<string, object[]> OptionParents1 = new()
-    {
-        { "TaskBar", [ GameMode.Classic, GameMode.Custom, GameMode.AllAny, GameMode.KillingOnly, GameMode.RoleList, GameMode.Vanilla ] },
-        { "EjectionRevealsRole", [ "ConfirmEjects" ] },
-        { "InitialCooldowns", [ "EnableInitialCds" ] },
-        { "MeetingCooldowns", [ "EnableMeetingCds" ] },
-        { "FailCooldowns", [ "EnableFailCds" ] },
-        { "AARLSettings", [ GameMode.RoleList, GameMode.AllAny ] },
-        { "EnableUniques", [ "AARLSettings" ] },
-        { "ClassCustSettings", [ GameMode.Classic, GameMode.Custom ] },
-        { "KOSettings", [ GameMode.KillingOnly ] },
-        { "HnSSettings", [ GameMode.HideAndSeek ] },
-        { "TRSettings", [ GameMode.TaskRace ] },
-    };
-    // Too lazy to constantly have to copy paste one-to-one parents for a lot of the options, here's a collection of options having the same parents :]
-    private static readonly List<(string[], object[])> OptionParents2 =
+    public static readonly List<(string[], object[])> OptionParents1 =
     [
-        ( [ "AddArsonist", "AddCryomaniac", "AddPlaguebearer", "NeutralsCount",  ], [ "KOSettings" ] ),
-        ( [ "IgnoreFactionCaps", "IgnoreAlignmentCaps", "IgnoreLayerCaps" ], [ "ClassCustSettings" ] ),
-        ( [ "HnSMode", "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier",
-            "HunterFlashlight", "HuntedFlashlight", "HuntedChat" ], [ "HnSSettings" ] ),
-        ( [ "TRShortTasks", "TRCommonTasks" ], [ "TRSettings" ] ),
+        ( [ "EjectionRevealsRole" ], [ "ConfirmEjects" ] ),
+        ( [ "InitialCooldowns" ], [ "EnableInitialCds" ] ),
+        ( [ "MeetingCooldowns" ], [ "EnableMeetingCds" ] ),
+        ( [ "FailCooldowns" ], [ "EnableFailCds" ] ),
+        ( [ "RLSettings" ], [ GameMode.RoleList ] ),
+        ( [ "ClassCustSettings" ], [ GameMode.Classic, GameMode.Custom ] ),
+        ( [ "KOSettings" ], [ GameMode.KillingOnly ] ),
+        ( [ "HnSSettings" ], [ GameMode.HideAndSeek ] ),
+        ( [ "TRSettings" ], [ GameMode.TaskRace ] ),
+    ];
+    // I need a second one because for some dumb reason the game likes crashing
+    public static readonly List<(string[], object[])> OptionParents2 =
+    [
+        ( [ "TaskBar" ], [ GameMode.Classic, GameMode.Custom, GameMode.AllAny, GameMode.KillingOnly, GameMode.RoleList, GameMode.Vanilla ] ),
     ];
 
     public virtual void SetProperty(PropertyInfo property)
@@ -58,15 +52,21 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
     public bool Active()
     {
-        if (!OptionParents1.TryGetValue(Property.Name, out var parents))
+        if (!OptionParents1.Any(x => x.Item1.Contains(Property.Name)))
+            return true;
+        else
         {
-            if (!OptionParents2.Any(x => x.Item1.Contains(Property.Name)))
-                return true;
-            else
-                parents = OptionParents2.Find(x => x.Item1.Contains(Property.Name)).Item2;
-        }
+            var parents = OptionParents1.Find(x => x.Item1.Contains(Property.Name)).Item2;
+            var result = parents.Length == 0 || (All ? parents.All(IsActive) : parents.Any(IsActive));
 
-        return parents.Length == 0 || (All ? parents.All(IsActive) : parents.Any(IsActive));
+            if (OptionParents2.Any(x => x.Item1.Contains(Property.Name)))
+            {
+                parents = OptionParents2.Find(x => x.Item1.Contains(Property.Name)).Item2;
+                result &= parents.Length == 0 || (All ? parents.All(IsActive) : parents.Any(IsActive));
+            }
+
+            return result;
+        }
     }
 
     private bool IsActive(object option)
@@ -100,8 +100,10 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
                 if (optionatt is ToggleOptionAttribute toggle)
                     result &= toggle.Get();
+                else if (optionatt is HeaderOptionAttribute header)
+                    result &= header.Get();
                 else if (optionatt is LayersOptionAttribute layers)
-                    result &= layers.GetChance() > 0 && !IsRoleList && !IsVanilla;
+                    result &= (layers.GetChance() > 0 && (IsCustom || IsCustom)) || (layers.GetActive() && (IsKilling || IsAA));
             }
             else
                 result = true;
@@ -115,7 +117,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
     public virtual void OptionCreated()
     {
-        Setting.name = Setting.gameObject.name = ID;
+        Setting.name = ID;
 
         if (Setting is OptionBehaviour option)
         {
@@ -126,11 +128,10 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
     public virtual void ViewOptionCreated()
     {
-        ViewSetting.name = ViewSetting.gameObject.name = ID;
+        ViewSetting.name = ID;
 
-        if (Type != CustomOptionType.Header)
+        if (ViewSetting is ViewSettingsInfoPanel viewSettingsInfoPanel)
         {
-            var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
             viewSettingsInfoPanel.SetMaskLayer(61);
             viewSettingsInfoPanel.titleText.text = TranslationManager.Translate(ID);
             viewSettingsInfoPanel.background.gameObject.SetActive(true);
@@ -143,8 +144,9 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     {
         Value = value;
         Property.SetValue(null, value);
+        // OnChanged.Invoke(value);
 
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || Type == CustomOptionType.Header || !ID.Contains("CustomOption")))
+        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption")))
             SendOptionRPC(this);
 
         if (!Setting)
@@ -189,7 +191,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
             stringValue = Format();
         }
 
-        SettingsPatches.OnValueChanged();
+        SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
 
         if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
             return;

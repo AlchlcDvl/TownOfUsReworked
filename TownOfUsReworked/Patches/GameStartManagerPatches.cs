@@ -56,7 +56,7 @@ public static class GameStartManagerPatches
                 {
                     Name = (MapNames)8,
                     MapImage = GetSprite("RandomMapBackground"),
-                    MapIcon = GetSprite("RandomLobby"),
+                    MapIcon = GetSprite("RandomMapLobby"),
                     NameImage = GetSprite("Random")
                 });
             }

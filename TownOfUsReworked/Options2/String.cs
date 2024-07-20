@@ -5,7 +5,7 @@ public class StringOptionAttribute(MultiMenu2 menu, string[] ignoreStrings = nul
     public string[] Values { get; set; }
     public int Index { get; set; }
     public Type TargetType { get; set; }
-    private string[] IgnoreStrings { get; } = ignoreStrings;
+    private string[] IgnoreStrings { get; } = ignoreStrings ?? [];
 
     public int GetInt() => Index;
 
@@ -41,12 +41,12 @@ public class StringOptionAttribute(MultiMenu2 menu, string[] ignoreStrings = nul
     {
         base.SetProperty(property);
         TargetType = property.PropertyType;
-        var baseValues = Enum.GetNames(TargetType).ToList();
+    }
 
-        if (IgnoreStrings != null)
-            baseValues.RemoveAll(IgnoreStrings.Contains);
-
-        Values = [ .. baseValues ];
+    public override void PostLoadSetup()
+    {
+        base.PostLoadSetup();
+        Values = [ .. Enum.GetNames(TargetType).Where(x => !IgnoreStrings.Contains(x)) ];
         Index = (int)Value;
     }
 

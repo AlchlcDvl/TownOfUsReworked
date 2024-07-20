@@ -115,11 +115,11 @@ public class ChatCommand
             return;
         }
 
-        var args2 = arg.Split('\'');
+        var args2 = arg.Split("|");
 
         if (args.Length < 3 || IsNullEmptyOrWhiteSpace(args[1]) || IsNullEmptyOrWhiteSpace(args[2]))
         {
-            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number | (player name in \'\')> <message>");
+            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number | (player name in ||)> <message>");
             return;
         }
 

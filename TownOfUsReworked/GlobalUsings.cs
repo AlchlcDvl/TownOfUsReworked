@@ -1,5 +1,6 @@
 global using AmongUs.Data;
 global using AmongUs.GameOptions;
+global using TBMode = AmongUs.GameOptions.TaskBarMode;
 
 global using BepInEx;
 global using BepInEx.Unity.IL2CPP;
