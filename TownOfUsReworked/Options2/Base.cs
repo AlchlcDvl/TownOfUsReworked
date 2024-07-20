@@ -39,7 +39,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "TaskBar" ], [ GameMode.Classic, GameMode.Custom, GameMode.AllAny, GameMode.KillingOnly, GameMode.RoleList, GameMode.Vanilla ] ),
     ];
 
-    public virtual void SetProperty(PropertyInfo property)
+    public void SetProperty(PropertyInfo property)
     {
         Property = property;
         Value = DefaultValue = property.GetValue(null);
@@ -52,21 +52,21 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
     public bool Active()
     {
-        if (!OptionParents1.Any(x => x.Item1.Contains(Property.Name)))
-            return true;
-        else
+        var result = true;
+
+        if (OptionParents1.Any(x => x.Item1.Contains(Property.Name)))
         {
             var parents = OptionParents1.Find(x => x.Item1.Contains(Property.Name)).Item2;
-            var result = parents.Length == 0 || (All ? parents.All(IsActive) : parents.Any(IsActive));
+            result = parents.Length == 0 || (All ? parents.All(IsActive) : parents.Any(IsActive));
 
             if (OptionParents2.Any(x => x.Item1.Contains(Property.Name)))
             {
                 parents = OptionParents2.Find(x => x.Item1.Contains(Property.Name)).Item2;
                 result &= parents.Length == 0 || (All ? parents.All(IsActive) : parents.Any(IsActive));
             }
-
-            return result;
         }
+
+        return result;
     }
 
     private bool IsActive(object option)

@@ -37,15 +37,10 @@ public class StringOptionAttribute(MultiMenu2 menu, string[] ignoreStrings = nul
 
     public override string Format() => TranslationManager.Translate($"{ID}.{GetString()}");
 
-    public override void SetProperty(PropertyInfo property)
-    {
-        base.SetProperty(property);
-        TargetType = property.PropertyType;
-    }
-
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
+        TargetType = Property.PropertyType;
         Values = [ .. Enum.GetNames(TargetType).Where(x => !IgnoreStrings.Contains(x)) ];
         Index = (int)Value;
     }

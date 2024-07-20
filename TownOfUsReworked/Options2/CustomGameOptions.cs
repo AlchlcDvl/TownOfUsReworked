@@ -187,6 +187,9 @@ public static class CustomGameOptions2
     [HeaderOption(MultiMenu2.Layer, [ "Test" ], HeaderType.Layer)]
     public static bool tEST { get; set; } = true;
 
-    [LayersOption(MultiMenu2.Layer, "#837456FF", LayerEnum.Altruist)]
+    [LayersOption(MultiMenu2.Layer, "#837456FF", LayerEnum.Altruist, [ "AnonymousVoting2" ])]
     public static RoleOptionData Test { get; set; } = new(0, 0, false, false);
+
+    [StringOption(MultiMenu2.LayerSubOptions)]
+    public static AnonVotes AnonymousVoting2 { get; set; } = AnonVotes.Enabled;
 }

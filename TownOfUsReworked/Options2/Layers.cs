@@ -8,7 +8,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     private int Min { get; set; } = 1;
     private LayerEnum Layer { get; } = layer;
     public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
-    public string[] GroupMemberStrings { get; } = groupMemberStrings;
+    public string[] GroupMemberStrings { get; } = groupMemberStrings ?? [];
     public OptionAttribute[] GroupMembers { get; set; }
     private GameObject Unique { get; set; }
     private GameObject Active1 { get; set; }
@@ -29,12 +29,13 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         var role = Setting.Cast<RoleOptionSetting>();
         role.titleText.text = TranslationManager.Translate(ID);
         role.roleMaxCount = Max;
-        var tuple = (RoleOptionData)Value;
+        var tuple = Get();
         role.chanceText.text = $"{tuple.Chance}%";
         role.countText.text = $"x{tuple.Count}";
         role.role = null;
-        role.roleChance = GetChance();
-        role.labelSprite.color = LayerColor.Shadow().Shadow();
+        role.roleChance = tuple.Chance;
+        role.roleMaxCount = Max;
+        role.labelSprite.color = LayerColor.Shadow();
 
         Count = role.transform.GetChild(1).gameObject;
         Chance = role.transform.GetChild(2).gameObject;
@@ -60,6 +61,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
         Unique.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
         Active1.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleActive);
+        Cog.GetComponent<PassiveButton>().OverrideOnClickListeners(SetUpOptionsMenu);
 
         UpdateParts();
     }
@@ -70,18 +72,20 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         var view = ViewSetting.Cast<ViewSettingsInfoPanelRoleVariant>();
         view.iconSprite.gameObject.SetActive(false);
         view.titleText.text = TranslationManager.Translate(ID);
-        var tuple = (RoleOptionData)Value;
+        var tuple = Get();
         view.chanceText.text = $"{tuple.Chance}%";
         view.settingText.text = $"x{tuple.Count}";
     }
 
-    public int GetChance() => IsClassic ? ((RoleOptionData)Value).Chance : 0;
+    public int GetChance() => IsClassic ? Get().Chance : 0;
 
-    public int GetCount() => IsCustom ? ((RoleOptionData)Value).Count : 1;
+    public int GetCount() => IsCustom ? Get().Count : 1;
 
-    public bool GetUnique() => (IsAA || IsRoleList) && ((RoleOptionData)Value).Unique;
+    public bool GetUnique() => (IsAA || IsRoleList) && Get().Unique;
 
-    public bool GetActive() => (IsAA || IsKilling) && ((RoleOptionData)Value).Unique;
+    public bool GetActive() => (IsAA || IsKilling) && Get().Unique;
+
+    public RoleOptionData Get() => (RoleOptionData)Value;
 
     public void IncreaseCount()
     {
@@ -151,7 +155,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
     public void UpdateParts()
     {
-        // Cog.SetActive(GroupMembers != null && GroupMembers.Length > 0 && (((IsClassic || IsCustom || IsKilling) && GetChance() > 0) || (IsAA && GetActive()) || (IsRoleList &&
+        // Cog.SetActive(GroupMembers != null && GroupMembers.Length > 0 && (((IsClassic || IsCustom) && GetChance() > 0) || ((IsAA || IsKilling) && GetActive()) || (IsRoleList &&
         //     GetOptions<RoleListEntryAttribute>().Any(x => x.Get() == Layer))));
 
         if (SavedMode == CustomGameOptions2.GameMode)
@@ -192,7 +196,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
     public void ToggleActive()
     {
-        var val = (RoleOptionData)Value;
+        var val = Get();
         val.Active = !val.Active;
         ActiveCheck.enabled = val.Active;
         Set(val);
@@ -200,27 +204,49 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
     public void ToggleUnique()
     {
-        var val = (RoleOptionData)Value;
+        var val = Get();
         val.Unique = !val.Unique;
         UniqueCheck.enabled = val.Unique;
         Set(val);
     }
 
-    public override string Format() => CustomGameOptions2.GameMode switch
+    public override string Format()
     {
-        GameMode.Classic => $"{((RoleOptionData)Value).Chance}%",
-        GameMode.Custom => $"{((RoleOptionData)Value).Chance}% x{((RoleOptionData)Value).Count}",
-        GameMode.KillingOnly => $"{(((RoleOptionData)Value).Active ? "A" : "Ina")}ctive",
-        GameMode.AllAny => $"{(((RoleOptionData)Value).Active ? "A" : "Ina")}ctive & {(((RoleOptionData)Value).Unique ? "" : "Non-")}Unique",
-        GameMode.RoleList => $"{(((RoleOptionData)Value).Unique ? "" : "Non-")}Unique",
-        _ => "Invalid"
-    };
+        var val = Get();
+        return CustomGameOptions2.GameMode switch
+        {
+            GameMode.Classic => $"{val.Chance}%",
+            GameMode.Custom => $"{val.Chance}% x{val.Count}",
+            GameMode.KillingOnly => $"{(val.Active ? "A" : "Ina")}ctive",
+            GameMode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
+            GameMode.RoleList => $"{(val.Unique ? "" : "Non-")}Unique",
+            _ => "Invalid"
+        };
+    }
 
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
+        GroupMembers = AllOptions.Where(x => GroupMemberStrings.Contains(x.Property.Name)).ToArray();
 
-        if (GroupMemberStrings != null)
-            GroupMembers = AllOptions.Where(x => GroupMemberStrings.Contains(x.Property.Name)).ToArray();
+        if (GroupMembers.Length > 0)
+            OptionParents1.Add((GroupMemberStrings, [ Property.Name ]));
+    }
+
+    public void SetUpOptionsMenu()
+    {
+        SettingsPatches.SettingsPage = 5;
+        SettingsPatches.ActiveLayer = Layer;
+        var __instance = GameSettingMenu.Instance.RoleSettingsTab;
+        var options = SettingsPatches.CreateOptions(__instance.RoleChancesSettings.transform);
+
+        foreach (var option in options)
+        {
+            if (option is OptionBehaviour behave)
+                behave.SetClickMask(__instance.ButtonClickMask);
+        }
+
+        SettingsPatches.OnValueChanged();
+        SettingsPatches.ReturnButton.SetActive(true);
     }
 }

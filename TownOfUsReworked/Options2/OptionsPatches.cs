@@ -3,6 +3,7 @@ namespace TownOfUsReworked.Options2;
 public static class SettingsPatches
 {
     public static int SettingsPage;
+    public static LayerEnum ActiveLayer = LayerEnum.None;
 
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Start))]
     public static class OptionsMenuBehaviour_Start
@@ -10,6 +11,13 @@ public static class SettingsPatches
         public static void Postfix(GameSettingMenu __instance)
         {
             __instance.transform.GetChild(3).gameObject.SetActive(false);
+            __instance.transform.GetChild(7).gameObject.Destroy();
+            ReturnButton = UObject.Instantiate(__instance.transform.FindChild("CloseButton").gameObject, __instance.transform);
+            ReturnButton.name = "ReturnButton";
+            ReturnButton.GetComponent<PassiveButton>().OverrideOnClickListeners(Return);
+            ReturnButton.GetComponent<CloseButtonConsoleBehaviour>().Destroy();
+            ReturnButton.transform.localPosition += new Vector3(-6.7f, 0f, 0f);
+            ReturnButton.gameObject.SetActive(false);
             OnValueChanged(__instance);
         }
     }
@@ -28,6 +36,7 @@ public static class SettingsPatches
                 2 => 1,
                 _ => 0
             };
+            ActiveLayer = LayerEnum.None;
             OnValueChanged(__instance);
         }
     }
@@ -217,7 +226,6 @@ public static class SettingsPatches
                 newButton.GetComponentInChildren<TextMeshPro>().text = "-";
                 newButton.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
                 newButton.name = "Collapse";
-                // Move by 1.5, -0.09
 
                 Prefabs1.Add(BaseHeaderPrefab);
             }
@@ -284,9 +292,6 @@ public static class SettingsPatches
             {
                 LayerHeaderPrefab = UObject.Instantiate(__instance.categoryHeaderEditRoleOrigin, null).DontUnload().DontDestroy();
                 LayerHeaderPrefab.name = "CustomHeaderOptionLayerPrefab";
-
-                // Expand by 0.5
-                // Move by -0.956
 
                 var quota = LayerHeaderPrefab.transform.GetChild(2);
 
@@ -357,7 +362,7 @@ public static class SettingsPatches
             }
 
             __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
-            OnValueChanged(GameSettingMenu.Instance);
+            OnValueChanged();
             __instance.scrollBar.ScrollToTop();
             return false;
         }
@@ -392,7 +397,7 @@ public static class SettingsPatches
             }
 
             __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
-            OnValueChanged(GameSettingMenu.Instance);
+            OnValueChanged();
             __instance.scrollBar.ScrollToTop();
             return false;
         }
@@ -439,16 +444,17 @@ public static class SettingsPatches
         public static bool Prefix() => false;
     }
 
-    public static void OnValueChanged(GameSettingMenu __instance)
+    public static void OnValueChanged(GameSettingMenu __instance = null)
     {
         if (IsHnS)
             return;
 
+        __instance ??= GameSettingMenu.Instance;
         __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3);
-        __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage == 1);
+        __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage is 1 or 5);
         __instance.PresetsTab.gameObject.SetActive(SettingsPage == 2);
         __instance.GamePresetsButton.SelectButton(SettingsPage is 0 or 3);
-        __instance.RoleSettingsButton.SelectButton(SettingsPage == 1);
+        __instance.RoleSettingsButton.SelectButton(SettingsPage is 1 or 5);
         __instance.GamePresetsButton.SelectButton(SettingsPage == 2);
 
         if (SettingsPage == 3)
@@ -461,12 +467,18 @@ public static class SettingsPatches
         if (SettingsPage is 0 or 3)
         {
             var y = 0.713f;
+
+            try
+            {
+                __instance.GameSettingsTab.Children.Clear();
+            } catch {}
+
             __instance.GameSettingsTab.Children = new();
             __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
             foreach (var option in OptionAttribute.AllOptions)
             {
-                if (option != null && option.Setting && option.Setting.gameObject)
+                if (option.Setting)
                 {
                     if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
                     {
@@ -487,17 +499,23 @@ public static class SettingsPatches
             __instance.GameSettingsTab.scrollBar.SetYBoundsMax(-1.65f - y);
             __instance.GameSettingsTab.InitializeControllerNavigation();
         }
-        else if (SettingsPage == 1)
+        else if (SettingsPage is 1 or 5)
         {
             var y = 1.66f;
             __instance.RoleSettingsTab.quotaHeader.gameObject.SetActive(false);
+
+            try
+            {
+                __instance.RoleSettingsTab.advancedSettingChildren.Clear();
+            } catch {}
+
             __instance.RoleSettingsTab.advancedSettingChildren = new();
 
             for (var i = 0; i < OptionAttribute.AllOptions.Count; i++)
             {
                 var option = OptionAttribute.AllOptions[i];
 
-                if (option != null && option.Setting && option.Setting.gameObject)
+                if (option.Setting)
                 {
                     var isLayer = option is LayersOptionAttribute;
                     var isHeader = option is HeaderOptionAttribute;
@@ -530,6 +548,16 @@ public static class SettingsPatches
             __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-1.65f - y);
             __instance.RoleSettingsTab.InitializeControllerNavigation();
         }
+    }
+
+    public static GameObject ReturnButton;
+
+    private static void Return()
+    {
+        ActiveLayer = LayerEnum.None;
+        SettingsPage = 1;
+        OnValueChanged();
+        ReturnButton.SetActive(false);
     }
 
     private static bool Initialize(OptionBehaviour opt)
