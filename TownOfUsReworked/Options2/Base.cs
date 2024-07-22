@@ -19,24 +19,41 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     // public MethodInfo OnChanged { get; set; }
     // public Type OnChangedType { get; set; }
     // public string OnChangedName { get; set; }
+    // ^ Code for when I do actually need it :]
 
     // Apparently, setting the parents in the attibutes doesn't seem to work
+    // This one is for those depending on other options
     public static readonly List<(string[], object[])> OptionParents1 =
     [
         ( [ "EjectionRevealsRole" ], [ "ConfirmEjects" ] ),
         ( [ "InitialCooldowns" ], [ "EnableInitialCds" ] ),
         ( [ "MeetingCooldowns" ], [ "EnableMeetingCds" ] ),
         ( [ "FailCooldowns" ], [ "EnableFailCds" ] ),
-        ( [ "RLSettings" ], [ GameMode.RoleList ] ),
-        ( [ "ClassCustSettings" ], [ GameMode.Classic, GameMode.Custom ] ),
-        ( [ "KOSettings" ], [ GameMode.KillingOnly ] ),
-        ( [ "HnSSettings" ], [ GameMode.HideAndSeek ] ),
-        ( [ "TRSettings" ], [ GameMode.TaskRace ] ),
+        ( [ "WhoSeesFirstKillShield" ], [ "FirstKillShield" ] ),
+        ( [ "WhispersAnnouncement" ], [ "Whispers" ] ),
+        ( [ "KillerReports", "RoleFactionReports", "LocationReports" ], [ "GameAnnouncements" ] ),
+        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks",
+            "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ] ),
+        ( [ "EvilsIgnoreNV" ], [ "NightVision" ] ),
     ];
     // I need a second one because for some dumb reason the game likes crashing
+    // This is for everything else
     public static readonly List<(string[], object[])> OptionParents2 =
     [
         ( [ "TaskBar" ], [ GameMode.Classic, GameMode.Custom, GameMode.AllAny, GameMode.KillingOnly, GameMode.RoleList, GameMode.Vanilla ] ),
+        ( [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic, GameMode.Custom ] ),
+        ( [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ], [ GameMode.KillingOnly ] ),
+        ( [ "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier",
+            "HunterFlashlight", "HuntedFlashlight", "HuntedChat", "HnSMode" ], [ GameMode.HideAndSeek ] ),
+        ( [ "TRShortTasks", "TRCommonTasks" ], [ GameMode.TaskRace ] ),
+        ( [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ] ),
+        ( [ "RandomMapSubmerged" ], [ MapEnum.Random, ("ModCompatibility", "SubLoaded") ] ),
+        ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, ("ModCompatibility", "LILoaded") ] ),
+        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS,
+            MapEnum.Random, MapEnum.MiraHQ ] ),
+        ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random,
+            MapEnum.Fungle ] ),
+        ( [ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ] ),
     ];
 
     public void SetProperty(PropertyInfo property)
@@ -81,12 +98,12 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
             result = CustomGameOptions2.GameMode == mode;
         // else if (option is LayerEnum layer)
         //     result = GetOptions<RoleListEntryAttribute>().Any(x => x.ID.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
-        // else if (option.GetType() == typeof((string, string)))
-        // {
-        //     var tuple = ((string, string))option;
-        //     var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).Find(x => x.Name == tuple.Item1);
-        //     result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
-        // }
+        else if (option is (string, string))
+        {
+            var tuple = ((string, string))option;
+            var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).Find(x => x.Name == tuple.Item1);
+            result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
+        }
         else if (option is string id)
         {
             if (id == Property.Name)
@@ -226,6 +243,22 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         }
 
         return builder.ToString();
+    }
+
+    public static void SaveSettings()
+    {
+        var filePath = Path.Combine(TownOfUsReworked.Options, "SavedSettings");
+        var i = 0;
+        var pathoverridden = false;
+
+        while (File.Exists(filePath))
+        {
+            filePath = Path.Combine(TownOfUsReworked.Options, $"SavedSettings{i}");
+            i++;
+            pathoverridden = true;
+        }
+
+        SaveSettings($"SavedSettings{(pathoverridden ? i : "")}");
     }
 
     public static void SaveSettings(string fileName) => SaveText(fileName, SettingsToString(), TownOfUsReworked.Options);

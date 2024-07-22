@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options2;
 
-// DO NOT OVERRIDE VALUES OF ANY OF THESE PROPERTIES OR ELSE THE OPTIONS WILL START TO FUCK OFF
+// DO NOT OVERRIDE VALUES OF ANY OF THESE PROPERTIES ANY WHERE IN THE CODE OR ELSE THE OPTIONS WILL START TO FUCK OFF
 public static class CustomGameOptions2
 {
     // Global Options
@@ -73,15 +73,13 @@ public static class CustomGameOptions2
     public static int LobbySize { get; set; } = 15;
 
     // Game Modes
-    [HeaderOption(MultiMenu2.Main, [ "GameMode" ])]
+    [HeaderOption(MultiMenu2.Main, [ "GameMode", "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps", "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer", "HnSMode",
+        "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HunterFlashlight",
+        "HuntedFlashlight", "HuntedChat", "TRShortTasks", "TRCommonTasks" ])]
     public static bool GameModeSettings { get; set; } = true;
 
     [StringOption(MultiMenu2.Main, [ "None" ])]
     public static GameMode GameMode { get; set; } = GameMode.Classic;
-
-    // Classic/Custom Settings
-    [HeaderOption(MultiMenu2.Main, [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ])]
-    public static bool ClassCustSettings { get; set; } = true;
 
     [ToggleOption(MultiMenu2.Main)]
     public static bool IgnoreFactionCaps { get; set; } = false;
@@ -91,14 +89,6 @@ public static class CustomGameOptions2
 
     [ToggleOption(MultiMenu2.Main)]
     public static bool IgnoreLayerCaps { get; set; } = false;
-
-    // Role List Settings
-    [HeaderOption(MultiMenu2.Main, [ "" ])]
-    public static bool RLSettings { get; set; } = true;
-
-    // Killing Only Settings
-    [HeaderOption(MultiMenu2.Main, [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ])]
-    public static bool KOSettings { get; set; } = true;
 
     [NumberOption(MultiMenu2.Main, 0, 13, 1)]
     public static int NeutralsCount { get; set; } = 1;
@@ -111,10 +101,6 @@ public static class CustomGameOptions2
 
     [ToggleOption(MultiMenu2.Main)]
     public static bool AddPlaguebearer { get; set; } = false;
-
-    // Hide And Seek Settings
-    [HeaderOption(MultiMenu2.Main, [ "HnSMode", "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HunterFlashlight", "HuntedFlashlight", "HuntedChat" ])]
-    public static bool HnSSettings { get; set; } = true;
 
     [StringOption(MultiMenu2.Main)]
     public static HnSMode HnSMode { get; set; } = HnSMode.Classic;
@@ -158,10 +144,6 @@ public static class CustomGameOptions2
     [ToggleOption(MultiMenu2.Main)]
     public static bool HuntedChat { get; set; } = true;
 
-    // Task Race Settings
-    [HeaderOption(MultiMenu2.Main, [ "TRShortTasks", "TRCommonTasks" ])]
-    public static bool TRSettings { get; set; } = true;
-
     [NumberOption(MultiMenu2.Main, 0, 13, 1)]
     public static int TRShortTasks { get; set; } = 4;
 
@@ -169,7 +151,9 @@ public static class CustomGameOptions2
     public static int TRCommonTasks { get; set; } = 4;
 
     // Game Modifiers
-    [HeaderOption(MultiMenu2.Main, [ "WhoCanVent", "AnonymousVoting", "NoSkipping" ])]
+    [HeaderOption(MultiMenu2.Main, [ "WhoCanVent", "AnonymousVoting", "NoSkipping", "FirstKillShield", "WhoSeesFirstKillShield", "FactionSeeRoles", "VisualTasks",
+        "PlayerNames", "Whispers", "WhispersAnnouncement", "AppearanceAnimation", "EnableAbilities", "EnableModifiers", "EnableObjectifiers", "VentTargeting",
+        "CooldownInVent", "DeadSeeEverything", "ParallelMedScans", "HideVentAnims", "JaniCanMutuallyExclusive", "IndicateReportedBodies", "RandomSpawns" ])]
     public static bool GameModifiers { get; set; } = true;
 
     [StringOption(MultiMenu2.Main)]
@@ -181,15 +165,177 @@ public static class CustomGameOptions2
     [StringOption(MultiMenu2.Main)]
     public static DisableSkipButtonMeetings NoSkipping { get; set; } = DisableSkipButtonMeetings.No;
 
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool FirstKillShield { get; set; } = false;
+
+    [StringOption(MultiMenu2.Main)]
+    public static WhoCanSeeFirstKillShield WhoSeesFirstKillShield { get; set; } = WhoCanSeeFirstKillShield.Everyone;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool FactionSeeRoles { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool VisualTasks { get; set; } = false;
+
+    [StringOption(MultiMenu2.Main)]
+    public static PlayerNames PlayerNames { get; set; } = PlayerNames.Obstructed;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool Whispers { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool WhispersAnnouncement { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool AppearanceAnimation { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableAbilities { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableModifiers { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableObjectifiers { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool VentTargeting { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool CooldownInVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool DeadSeeEverything { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool ParallelMedScans { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool HideVentAnims { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool JaniCanMutuallyExclusive { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool IndicateReportedBodies { get; set; } = false;
+
+    [StringOption(MultiMenu2.Main)]
+    public static RandomSpawning RandomSpawns { get; set; } = RandomSpawning.Disabled;
+
+    // Game Announcements
+    [HeaderOption(MultiMenu2.Main, [ "GameAnnouncements", "LocationReports", "RoleFactionReports", "KillerReports" ])]
+    public static bool GameAnnouncementSettings { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool GameAnnouncements { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool LocationReports { get; set; } = false;
+
+    [StringOption(MultiMenu2.Main)]
+    public static RoleFactionReports RoleFactionReports { get; set; } = RoleFactionReports.Neither;
+
+    [StringOption(MultiMenu2.Main)]
+    public static RoleFactionReports KillerReports { get; set; } = RoleFactionReports.Neither;
+
     // Map Settings
     public static MapEnum Map { get; set; }
 
-    [HeaderOption(MultiMenu2.Layer, [ "Test" ], HeaderType.Layer)]
-    public static bool tEST { get; set; } = true;
+    [HeaderOption(MultiMenu2.Main, [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle", "RandomMapSubmerged",
+        "RandomMapLevelImpostor", "AutoAdjustSettings", "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks",
+        "SmallMapIncreasedLongTasks", "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks"])]
+    public static bool MapSettings { get; set; } = true;
 
-    [LayersOption(MultiMenu2.Layer, "#837456FF", LayerEnum.Altruist, [ "AnonymousVoting2" ])]
-    public static RoleOptionData Test { get; set; } = new(0, 0, false, false);
+    [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent)]
+    public static int RandomMapSkeld { get; set; } = 10;
 
-    [StringOption(MultiMenu2.LayerSubOptions)]
-    public static AnonVotes AnonymousVoting2 { get; set; } = AnonVotes.Enabled;
+    [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent)]
+    public static int RandomMapMira { get; set; } = 10;
+
+    [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent)]
+    public static int RandomMapPolus { get; set; } = 10;
+
+    [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent)]
+    public static int RandomMapdlekS { get; set; } = 10;
+
+    [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent)]
+    public static int RandomMapAirship { get; set; } = 10;
+
+    [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent)]
+    public static int RandomMapFungle { get; set; } = 10;
+
+    [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent, All = true)]
+    public static int RandomMapSubmerged { get; set; } = 10;
+
+    [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent, All = true)]
+    public static int RandomMapLevelImpostor { get; set; } = 10;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool AutoAdjustSettings { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool SmallMapHalfVision { get; set; } = false;
+
+    [NumberOption(MultiMenu2.Main, 0f, 15f, 2.5f, Format.Time)]
+    public static float SmallMapDecreasedCooldown { get; set; } = 0f;
+
+    [NumberOption(MultiMenu2.Main, 0f, 15f, 2.5f, Format.Time)]
+    public static float LargeMapIncreasedCooldown { get; set; } = 0f;
+
+    [NumberOption(MultiMenu2.Main, 0, 5, 1)]
+    public static int SmallMapIncreasedShortTasks { get; set; } = 0;
+
+    [NumberOption(MultiMenu2.Main, 0, 3, 1)]
+    public static int SmallMapIncreasedLongTasks { get; set; } = 0;
+
+    [NumberOption(MultiMenu2.Main, 0, 5, 1)]
+    public static int LargeMapDecreasedShortTasks { get; set; } = 0;
+
+    [NumberOption(MultiMenu2.Main, 0, 3, 1)]
+    public static int LargeMapDecreasedLongTasks { get; set; } = 0;
+
+    [HeaderOption(MultiMenu2.Main, [ "CamouflagedComms", "CamouflagedMeetings", "NightVision", "EvilsIgnoreNV", "OxySlow", "ReactorShake" ])]
+    public static bool BetterSabotages { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool CamouflagedComms { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool CamouflagedMeetings { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool NightVision { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EvilsIgnoreNV { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool OxySlow { get; set; } = true;
+
+    [NumberOption(MultiMenu2.Main, 0, 100, 5, Format.Percent)]
+    public static int ReactorShake { get; set; } = 30;
+
+    [HeaderOption(MultiMenu2.Main, [ "EnableBetterSkeld", "SkeldVentImprovements", "SkeldReactorTimer", "SkeldO2Timer" ])]
+    public static bool BetterSkeld { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterSkeld { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool SkeldVentImprovements { get; set; } = false;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float SkeldReactorTimer { get; set; } = 60f;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float SkeldO2Timer { get; set; } = 60f;
+
+    // [HeaderOption(MultiMenu2.Layer, [ "Test" ], HeaderType.Layer)]
+    // public static bool tEST { get; set; } = true;
+
+    // [LayersOption(MultiMenu2.Layer, "#837456FF", LayerEnum.Altruist, [ "AnonymousVoting2" ])]
+    // public static RoleOptionData Test { get; set; } = new(0, 0, false, false);
+
+    // [StringOption(MultiMenu2.LayerSubOptions)]
+    // public static AnonVotes AnonymousVoting2 { get; set; } = AnonVotes.Enabled;
 }

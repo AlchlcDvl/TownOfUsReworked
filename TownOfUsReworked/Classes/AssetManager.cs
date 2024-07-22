@@ -232,7 +232,7 @@ public static class AssetManager
 
     private static T LoadAsset<T>(AssetBundle assetBundle, string name) where T : UObject
     {
-        var asset = assetBundle.LoadAsset(name, Il2CppType.Of<T>())?.Cast<T>().DontUnload();
+        var asset = assetBundle.LoadAsset<T>(name)?.DontUnload();
         LoadedObjects.TryAdd(name, []);
         LoadedObjects[name].Add(asset);
         return asset;

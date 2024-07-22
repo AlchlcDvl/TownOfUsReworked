@@ -57,9 +57,13 @@ public class HeaderOptionAttribute(MultiMenu2 menu, string[] groupMemberStrings,
             UpdateParts();
         }
 
-        Collapse = header.transform.FindChild("Collapse").gameObject;
-        Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
-        Collapse.GetComponentInChildren<TextMeshPro>().text = Get() ? "-" : "+";
+        Collapse = header.transform.FindChild("Collapse")?.gameObject;
+
+        if (Collapse)
+        {
+            Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
+            Collapse.GetComponentInChildren<TextMeshPro>().text = Get() ? "-" : "+";
+        }
     }
 
     public override void PostLoadSetup()

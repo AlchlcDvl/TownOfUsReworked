@@ -8,6 +8,7 @@ If you want to know more try using the other info commands, visiting the %github
 
 New!
 - Addition: Colorblind now has grayscale vision
+- Addition: Options can now be collapsed using the header they are a part of
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
@@ -24,6 +25,7 @@ Fixes!
 - Critical: Fixed the rare instance where the host may lag a lot when a round starts
 - Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
 - Ability: Fixed the edge case where Swapper swaps didn't appear to be correctly selected
+- Ability: Fixed a tiny issue with handling Assassin
 - Visual: Fixed ability buttons appearing and disappearing incorrectly
 - General: Fixed spawning in forbidden places with Random Spawns on (somewhat)
 - General: Fixed dead players not being able to see roles even with the setting turned on

@@ -3,7 +3,9 @@ namespace TownOfUsReworked.Options2;
 public static class SettingsPatches
 {
     public static int SettingsPage;
+    public static int SettingsPage2;
     public static LayerEnum ActiveLayer = LayerEnum.None;
+    public static string CurrentPreset = "Custom";
 
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Start))]
     public static class OptionsMenuBehaviour_Start
@@ -159,6 +161,7 @@ public static class SettingsPatches
                 var title = StringPrefab.transform.GetChild(2);
                 title.localPosition += new Vector3(-3.1f, 0f, 0f);
                 title.GetComponent<RectTransform>().sizeDelta = new(10f, 0.458f);
+                title.GetComponent<TextMeshPro>().fontSize = 2.9f; // Why is it different for string options??
 
                 var minus = StringPrefab.transform.GetChild(3);
                 minus.GetComponentInChildren<TextMeshPro>().text = "<";
@@ -879,6 +882,8 @@ public static class SettingsPatches
         public static bool Prefix() => false;
     }
 
+    // public static CategoryHeaderMasked ViewHeaderPrefab;
+
     [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawNormalTab))]
     public static class OverrideNormalViewSettingsTab
     {
@@ -887,7 +892,7 @@ public static class SettingsPatches
             var num = 1.44f;
             var num2 = -8.95f;
 
-            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menu == MultiMenu2.Main).Cast<HeaderOptionAttribute>())
+            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menu is MultiMenu2.Main or MultiMenu2.Client).Cast<HeaderOptionAttribute>())
             {
                 var categoryHeaderMasked = UObject.Instantiate(__instance.categoryHeaderOrigin, __instance.settingsContainer);
                 categoryHeaderMasked.transform.localScale = Vector3.one;
@@ -923,6 +928,78 @@ public static class SettingsPatches
             }
 
             __instance.scrollBar.SetYBoundsMax(-num);
+            return false;
+        }
+    }
+
+    // public static void OnValueChanged(LobbyViewSettingsPane __instance)
+    // {
+    //     var num = 1.44f;
+    //     var num2 = -8.95f;
+
+    //     foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menu == MultiMenu2.Main).Cast<HeaderOptionAttribute>())
+    //     {
+    //         var categoryHeaderMasked = UObject.Instantiate(__instance.categoryHeaderOrigin, __instance.settingsContainer);
+    //         categoryHeaderMasked.transform.localScale = Vector3.one;
+    //         categoryHeaderMasked.transform.localPosition = new(-9.77f, num, -2f);
+    //         header.ViewSetting = categoryHeaderMasked;
+    //         header.ViewOptionCreated();
+    //         __instance.settingsInfo.Add(categoryHeaderMasked.gameObject);
+    //         num -= 0.85f;
+
+    //         for (var i = 0; i < header.GroupMembers.Length; i++)
+    //         {
+    //             var option = header.GroupMembers[i];
+    //             var viewSettingsInfoPanel = UObject.Instantiate(__instance.infoPanelOrigin, __instance.settingsContainer);
+    //             viewSettingsInfoPanel.transform.localScale = Vector3.one;
+
+    //             if (i % 2 == 0)
+    //             {
+    //                 num2 = -8.95f;
+
+    //                 if (i > 0)
+    //                     num -= 0.59f;
+    //             }
+    //             else
+    //                 num2 = -3f;
+
+    //             viewSettingsInfoPanel.transform.localPosition = new(num2, num, -2f);
+    //             option.ViewSetting = viewSettingsInfoPanel;
+    //             option.ViewOptionCreated();
+    //             __instance.settingsInfo.Add(viewSettingsInfoPanel.gameObject);
+    //         }
+
+    //         num -= 0.59f;
+    //     }
+
+    //     __instance.scrollBar.SetYBoundsMax(-num);
+    // }
+
+    [HarmonyPatch(typeof(GamePresetsTab), nameof(GamePresetsTab.Start))]
+    public static class GamePresetsStart
+    {
+        public static bool Prefix(GamePresetsTab __instance)
+        {
+            __instance.StandardRulesSprites.ForEach(x => x.gameObject.SetActive(false));
+            __instance.AlternateRulesSprites.ForEach(x => x.gameObject.SetActive(false));
+            __instance.SpritesToDesaturate.ForEach(x => x.gameObject.SetActive(false));
+            __instance.StandardPresetButton.gameObject.SetActive(false);
+            __instance.StandardRulesText.gameObject.SetActive(false);
+            __instance.AlternateRulesText.gameObject.SetActive(false);
+            __instance.SecondPresetButton.gameObject.SetActive(false);
+            __instance.PresetDescriptionText.gameObject.SetActive(false);
+
+            var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).OrderBy(x => x).Where(x => !x.EndsWith(".json")).Select(x => x.SanitisePath());
+            var saveButton = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
+            saveButton.OverrideOnClickListeners(OptionAttribute.SaveSettings);
+            saveButton.name = "SaveSettingsButton";
+            saveButton.transform.localPosition = new(0.6909f, 2.6164f, -2f);
+            saveButton.transform.localScale = new(0.64f, 0.84f, 1f);
+            var saveText = saveButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>();
+            saveText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
+            saveText.transform.localScale = new(1.4f, 0.9f, 1f);
+            saveText.text = "Save Settings"; // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
+            saveText.alignment = TextAlignmentOptions.Center;
             return false;
         }
     }
