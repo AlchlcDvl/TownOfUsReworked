@@ -330,6 +330,85 @@ public static class CustomGameOptions2
     [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
     public static float SkeldO2Timer { get; set; } = 60f;
 
+    [HeaderOption(MultiMenu2.Main, [ "EnableBetterMiraHQ", "MiraHQVentImprovements", "MiraReactorTimer", "MiraO2Timer" ])]
+    public static bool BetterMiraHQ { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterMiraHQ { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool MiraHQVentImprovements { get; set; } = false;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float MiraReactorTimer { get; set; } = 60f;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float MiraO2Timer { get; set; } = 60f;
+
+    [HeaderOption(MultiMenu2.Main, [ "EnableBetterPolus", "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ])]
+    public static bool BetterPolus { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterPolus { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool PolusVentImprovements { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool VitalsLab { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool ColdTempDeathValley { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool WifiChartCourseSwap { get; set; } = false;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float SeismicTimer { get; set; } = 60f;
+
+    [HeaderOption(MultiMenu2.Main, [ "EnableBetterAirship", "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime",
+        "CrashTimer" ])]
+    public static bool BetterAirship { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterAirship { get; set; } = true;
+
+    [StringOption(MultiMenu2.Main)]
+    public static AirshipSpawnType SpawnType { get; set; } = AirshipSpawnType.Normal;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool MoveVitals { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool MoveFuel { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool MoveDivert { get; set; } = false;
+
+    [StringOption(MultiMenu2.Main)]
+    public static MoveAdmin MoveAdmin { get; set; } = MoveAdmin.DontMove;
+
+    [StringOption(MultiMenu2.Main)]
+    public static MoveElectrical MoveElectrical { get; set; } = MoveElectrical.DontMove;
+
+    [NumberOption(MultiMenu2.Main, 0f, 10f, 0.1f)]
+    public static float MinDoorSwipeTime { get; set; } = 0.4f;
+
+    [NumberOption(MultiMenu2.Main, 30f, 100f, 5f, Format.Time)]
+    public static float CrashTimer { get; set; } = 90f;
+
+    [HeaderOption(MultiMenu2.Main, [ "EnableBetterFungle", "FungleReactorTimer", "FungleMixupTimer" ])]
+    public static bool BetterFungle { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterFungle { get; set; } = true;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float FungleReactorTimer { get; set; } = 60f;
+
+    [NumberOption(MultiMenu2.Main, 4f, 20f, 1f, Format.Time)]
+    public static float FungleMixupTimer { get; set; } = 8f;
+
     // [HeaderOption(MultiMenu2.Layer, [ "Test" ], HeaderType.Layer)]
     // public static bool tEST { get; set; } = true;
 

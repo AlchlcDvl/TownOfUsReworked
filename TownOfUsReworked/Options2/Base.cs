@@ -35,6 +35,11 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks",
             "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ] ),
         ( [ "EvilsIgnoreNV" ], [ "NightVision" ] ),
+        ( [ "SkeldVentImprovements" , "SkeldReactorTimer", "SkeldO2Timer" ], [ "EnableBetterSkeld" ] ),
+        ( [ "MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer" ], [ "EnableBetterMiraHQ" ] ),
+        ( [ "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ], [ "EnableBetterPolus" ] ),
+        ( [ "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer" ], [ "EnableBetterAirship" ] ),
+        ( [ "FungleReactorTimer", "FungleMixupTimer" ], [ "EnableBetterFungle" ] ),
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
@@ -54,7 +59,12 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random,
             MapEnum.Fungle ] ),
         ( [ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ] ),
+        ( [ "BetterMiraHQ" ], [ MapEnum.MiraHQ, MapEnum.Random ] ),
+        ( [ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ] ),
+        ( [ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ] ),
+        ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
     ];
+    private static readonly Dictionary<string, bool> MapToLoaded = [];
 
     public void SetProperty(PropertyInfo property)
     {
@@ -100,14 +110,18 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         //     result = GetOptions<RoleListEntryAttribute>().Any(x => x.ID.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
         else if (option is (string, string))
         {
-            var tuple = ((string, string))option;
-            var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).Find(x => x.Name == tuple.Item1);
-            result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
+            if (!MapToLoaded.TryGetValue(ID, out result))
+            {
+                var tuple = ((string, string))option;
+                var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).Find(x => x.Name == tuple.Item1);
+                result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
+                MapToLoaded[ID] = result;
+            }
         }
         else if (option is string id)
         {
             if (id == Property.Name)
-                return true; // To prevent accidental stack overflows
+                return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them with this line active
 
             var optionatt = GetOptionFromPropertyName(id);
 
