@@ -2,6 +2,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Altruist : Crew
 {
+    // Altruist Options
+    [HeaderOption(MultiMenu2.LayerSubOptions, [ "MaxRevives", "ReviveCd", "ReviveDur", "AltruistTargetBody" ])]
+    public static bool AltruistHeader { get; set; } = true;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 14, 1)]
+    public static int MaxRevives { get; set; } = 5;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ReviveCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
+    public static float ReviveDur { get; set; } = 10f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool AltruistTargetBody { get; set; } = false;
+
     public CustomButton ReviveButton { get; set; }
     public DeadBody RevivingBody { get; set; }
 

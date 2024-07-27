@@ -63,6 +63,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ] ),
         ( [ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ] ),
         ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
+        ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom, GameMode.Vanilla, GameMode.KillingOnly, GameMode.RoleList ] ),
+        ( [ "CrewMax", "CrewMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -133,8 +135,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
                     result &= toggle.Get();
                 else if (optionatt is HeaderOptionAttribute header)
                     result &= header.Get();
-                else if (optionatt is LayersOptionAttribute layers)
-                    result &= (layers.GetChance() > 0 && (IsCustom || IsCustom)) || (layers.GetActive() && (IsKilling || IsAA));
+                // else if (optionatt is LayersOptionAttribute layers)
+                //     result &= (layers.GetChance() > 0 && (IsCustom || IsCustom)) || (layers.GetActive() && (IsKilling || IsAA));
             }
             else
                 result = true;

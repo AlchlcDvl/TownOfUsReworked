@@ -3,7 +3,6 @@ namespace TownOfUsReworked.Options2;
 public static class SettingsPatches
 {
     public static int SettingsPage;
-    public static int SettingsPage2;
     public static LayerEnum ActiveLayer = LayerEnum.None;
     public static string CurrentPreset = "Custom";
 
@@ -19,8 +18,19 @@ public static class SettingsPatches
             ReturnButton.GetComponent<PassiveButton>().OverrideOnClickListeners(Return);
             ReturnButton.GetComponent<CloseButtonConsoleBehaviour>().Destroy();
             ReturnButton.transform.localPosition += new Vector3(-6.7f, 0f, 0f);
-            ReturnButton.gameObject.SetActive(false);
-            OnValueChanged(__instance);
+            ReturnButton.transform.FindChild("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnInactive");
+            ReturnButton.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnActive");
+            ReturnButton.SetActive(false);
+
+            var pos1 = __instance.GamePresetsButton.transform.localPosition;
+            var pos2 = __instance.GameSettingsButton.transform.localPosition;
+            var pos3 = __instance.RoleSettingsButton.transform.localPosition;
+
+            __instance.GameSettingsButton.transform.localPosition = pos1;
+            __instance.RoleSettingsButton.transform.localPosition = pos2;
+            __instance.GamePresetsButton.transform.localPosition = pos3;
+
+            __instance.ChangeTab(1, false);
         }
     }
 
@@ -263,6 +273,10 @@ public static class SettingsPatches
             __instance.roleChances = new();
             __instance.roleTabs = new();
 
+            var bg = __instance.transform.FindChild("Scroller").FindChild("MaskBg");
+            bg.localPosition += new Vector3(0f, 0.4f, 0f);
+            bg.localScale += new Vector3(0f, 0.8f, 0f);
+
             if (!LayersPrefab)
             {
                 // Title = 0, Role # = 1, Chance % = 2, Background = 3, Divider = 4
@@ -280,13 +294,17 @@ public static class SettingsPatches
                 newButton.transform.FindChild("ActiveSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("CogActive");
                 newButton.OverrideOnClickListeners(BlankVoid);
 
-                var unique = UObject.Instantiate(__instance.checkboxOrigin.transform.GetChild(1), LayersPrefab.transform);
+                var check = __instance.checkboxOrigin.transform.GetChild(1);
+
+                var unique = UObject.Instantiate(check, LayersPrefab.transform);
                 unique.name = "Unique";
                 unique.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
+                unique.transform.localScale = new(0.6f, 0.6f, 1f);
 
-                var active = UObject.Instantiate(__instance.checkboxOrigin.transform.GetChild(1), LayersPrefab.transform);
+                var active = UObject.Instantiate(check, LayersPrefab.transform);
                 active.name = "Active";
                 active.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
+                active.transform.localScale = new(0.6f, 0.6f, 1f);
 
                 Prefabs2.Add(LayersPrefab);
             }
@@ -453,12 +471,13 @@ public static class SettingsPatches
             return;
 
         __instance ??= GameSettingMenu.Instance;
-        __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3);
-        __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage is 1 or 5);
+        __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3 or 5);
+        __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage == 1);
         __instance.PresetsTab.gameObject.SetActive(SettingsPage == 2);
         __instance.GamePresetsButton.SelectButton(SettingsPage is 0 or 3);
-        __instance.RoleSettingsButton.SelectButton(SettingsPage is 1 or 5);
+        __instance.RoleSettingsButton.SelectButton(SettingsPage == 1);
         __instance.GamePresetsButton.SelectButton(SettingsPage == 2);
+        ReturnButton?.SetActive(SettingsPage == 5);
 
         if (SettingsPage == 3)
         {
@@ -467,7 +486,7 @@ public static class SettingsPatches
             __instance.GamePresetsButton.gameObject.SetActive(false);
         }
 
-        if (SettingsPage is 0 or 3)
+        if (SettingsPage is 0 or 3 or 5)
         {
             var y = 0.713f;
 
@@ -477,7 +496,12 @@ public static class SettingsPatches
             } catch {}
 
             __instance.GameSettingsTab.Children = new();
-            __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
+            __instance.GameSettingsTab.MapPicker.gameObject.SetActive(SettingsPage == 0);
+
+            if (SettingsPage == 5)
+                y = __instance.GameSettingsTab.MapPicker.transform.localPosition.y;
+            else
+                __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
             foreach (var option in OptionAttribute.AllOptions)
             {
@@ -487,6 +511,18 @@ public static class SettingsPatches
                     {
                         option.Setting.gameObject.SetActive(false);
                         continue;
+                    }
+
+                    if (SettingsPage == 5)
+                    {
+                        var layerOption = OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.GroupHeader.Property.Name == option.ID ||
+                            x.GroupHeader.GroupMemberStrings.Contains(option.ID));
+
+                        if (layerOption == null || layerOption.Layer != ActiveLayer)
+                        {
+                            option.Setting.gameObject.SetActive(false);
+                            continue;
+                        }
                     }
 
                     var isHeader = option is HeaderOptionAttribute;
@@ -504,7 +540,7 @@ public static class SettingsPatches
         }
         else if (SettingsPage is 1 or 5)
         {
-            var y = 1.66f;
+            var y = 2.56f;
             __instance.RoleSettingsTab.quotaHeader.gameObject.SetActive(false);
 
             try
@@ -548,7 +584,7 @@ public static class SettingsPatches
                 }
             }
 
-            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-1.65f - y);
+            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-1.85f - y);
             __instance.RoleSettingsTab.InitializeControllerNavigation();
         }
     }
@@ -989,7 +1025,7 @@ public static class SettingsPatches
             __instance.SecondPresetButton.gameObject.SetActive(false);
             __instance.PresetDescriptionText.gameObject.SetActive(false);
 
-            var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).OrderBy(x => x).Where(x => !x.EndsWith(".json")).Select(x => x.SanitisePath());
+            // var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).OrderBy(x => x).Where(x => !x.EndsWith(".json")).Select(x => x.SanitisePath());
             var saveButton = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
             saveButton.OverrideOnClickListeners(OptionAttribute.SaveSettings);
             saveButton.name = "SaveSettingsButton";

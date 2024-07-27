@@ -1,15 +1,15 @@
 namespace TownOfUsReworked.Options2;
 
-public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum layer, string[] groupMemberStrings = null) : OptionAttribute(menu, CustomOptionType.Layers)
+public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum layer, string groupHeaderString = null) : OptionAttribute(menu, CustomOptionType.Layers)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
     private int Max { get; set; } = 15;
     private int Min { get; set; } = 1;
-    private LayerEnum Layer { get; } = layer;
+    public LayerEnum Layer { get; } = layer;
     public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
-    public string[] GroupMemberStrings { get; } = groupMemberStrings ?? [];
-    public OptionAttribute[] GroupMembers { get; set; }
+    public string GroupHeaderString { get; } = groupHeaderString ?? $"{layer}header";
+    public HeaderOptionAttribute GroupHeader { get; set; }
     private GameObject Unique { get; set; }
     private GameObject Active1 { get; set; }
     private GameObject Divider { get; set; }
@@ -180,12 +180,12 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
                 break;
 
             case GameMode.AllAny:
-                Unique.transform.localPosition = Right;
-                Active1.transform.localPosition = Left;
+                Unique.transform.localPosition = Right + new Vector3(0.75f, 0f, 0f);
+                Active1.transform.localPosition = Left + new Vector3(0.75f, 0f, 0f);
                 break;
 
             case GameMode.RoleList:
-                Unique.transform.localPosition = Right + Diff;
+                Unique.transform.localPosition = Right + Diff + new Vector3(0.91f, 0f, 0f);
                 break;
 
             case GameMode.KillingOnly:
@@ -227,10 +227,10 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        GroupMembers = AllOptions.Where(x => GroupMemberStrings.Contains(x.Property.Name)).ToArray();
+        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Property.Name == GroupHeaderString);
 
-        if (GroupMembers.Length > 0)
-            OptionParents1.Add((GroupMemberStrings, [ Property.Name ]));
+        if (GroupHeader != null)
+            OptionParents1.Add(([ GroupHeader.Property.Name ], [ Property.Name ]));
     }
 
     public void SetUpOptionsMenu()

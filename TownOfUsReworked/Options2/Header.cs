@@ -69,7 +69,7 @@ public class HeaderOptionAttribute(MultiMenu2 menu, string[] groupMemberStrings,
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        GroupMembers = AllOptions.Where(x => GroupMemberStrings.Contains(x.Property.Name)).ToArray();
+        GroupMembers = [ .. AllOptions.Where(x => GroupMemberStrings.Contains(x.Property.Name)) ];
         OptionParents1.Add((GroupMemberStrings, [ Property.Name ]));
     }
 
