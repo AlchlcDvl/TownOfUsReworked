@@ -1045,9 +1045,9 @@ public static class SettingsPatches
             var saveText = saveButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>();
             saveText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
             saveText.transform.localScale = new(1.4f, 0.9f, 1f);
-            saveText.text = "Save Settings"; // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
             saveText.alignment = TextAlignmentOptions.Center;
             saveText.GetComponent<TextTranslatorTMP>().Destroy(); // Yeah because this darn thing exists
+            saveText.text = "Save Settings"; // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
             return false;
         }
     }
