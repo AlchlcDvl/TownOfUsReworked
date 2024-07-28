@@ -8,7 +8,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     private int Min { get; set; } = 1;
     public LayerEnum Layer { get; } = layer;
     public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
-    public string GroupHeaderString { get; } = groupHeaderString ?? $"{layer}header";
+    public string GroupHeaderString { get; } = groupHeaderString ?? $"{layer}Header";
     public HeaderOptionAttribute GroupHeader { get; set; }
     private GameObject Unique { get; set; }
     private GameObject Active1 { get; set; }
@@ -247,6 +247,5 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         }
 
         SettingsPatches.OnValueChanged();
-        SettingsPatches.ReturnButton.SetActive(true);
     }
 }

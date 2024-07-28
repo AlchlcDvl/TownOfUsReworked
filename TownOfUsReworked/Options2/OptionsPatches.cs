@@ -277,6 +277,8 @@ public static class SettingsPatches
             bg.localPosition += new Vector3(0f, 0.4f, 0f);
             bg.localScale += new Vector3(0f, 0.8f, 0f);
 
+            __instance.ButtonClickMask.transform.localScale += new Vector3(0f, 0.5f, 0f);
+
             if (!LayersPrefab)
             {
                 // Title = 0, Role # = 1, Chance % = 2, Background = 3, Divider = 4
@@ -285,6 +287,7 @@ public static class SettingsPatches
                 LayersPrefab.name = "CustomLayersOptionPrefab";
                 LayersPrefab.titleText.alignment = TextAlignmentOptions.Left;
                 LayersPrefab.buttons = LayersPrefab.GetComponentsInChildren<PassiveButton>().ToArray();
+                LayersPrefab.transform.GetChild(3).localScale += new Vector3(0.001f, 0f, 0f); // WHY THE FUCK IS THE BACKGROUND EVER SO SLIGHTLY SMALLER THAN THE HEADER?!
 
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayersPrefab.transform);
                 newButton.name = "LayersSubSettingsButton";
@@ -325,10 +328,12 @@ public static class SettingsPatches
 
                 var active = UObject.Instantiate(count, quota);
                 active.name = "Active";
+                active.GetComponent<TextTranslatorTMP>().Destroy();
                 active.text = "Active?";
 
                 var unique = UObject.Instantiate(count, quota);
                 unique.name = "Unique";
+                unique.GetComponent<TextTranslatorTMP>().Destroy();
                 unique.text = "Unique?";
 
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayerHeaderPrefab.transform);
@@ -471,13 +476,18 @@ public static class SettingsPatches
             return;
 
         __instance ??= GameSettingMenu.Instance;
-        __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3 or 5);
-        __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage == 1);
+        __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3);
+        __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage is 1 or 5);
         __instance.PresetsTab.gameObject.SetActive(SettingsPage == 2);
-        __instance.GamePresetsButton.SelectButton(SettingsPage is 0 or 3);
+        __instance.GameSettingsButton.SelectButton(SettingsPage == 0);
         __instance.RoleSettingsButton.SelectButton(SettingsPage == 1);
         __instance.GamePresetsButton.SelectButton(SettingsPage == 2);
-        ReturnButton?.SetActive(SettingsPage == 5);
+
+        if (!ReturnButton)
+            ReturnButton = __instance.transform.FindChild("ReturnButton")?.gameObject; // For some reason this damn thing is becoming null even though it definitely exists???
+
+        if (ReturnButton)
+            ReturnButton.SetActive(SettingsPage == 5);
 
         if (SettingsPage == 3)
         {
@@ -497,11 +507,7 @@ public static class SettingsPatches
 
             __instance.GameSettingsTab.Children = new();
             __instance.GameSettingsTab.MapPicker.gameObject.SetActive(SettingsPage == 0);
-
-            if (SettingsPage == 5)
-                y = __instance.GameSettingsTab.MapPicker.transform.localPosition.y;
-            else
-                __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
+            __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
             foreach (var option in OptionAttribute.AllOptions)
             {
@@ -511,18 +517,6 @@ public static class SettingsPatches
                     {
                         option.Setting.gameObject.SetActive(false);
                         continue;
-                    }
-
-                    if (SettingsPage == 5)
-                    {
-                        var layerOption = OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.GroupHeader.Property.Name == option.ID ||
-                            x.GroupHeader.GroupMemberStrings.Contains(option.ID));
-
-                        if (layerOption == null || layerOption.Layer != ActiveLayer)
-                        {
-                            option.Setting.gameObject.SetActive(false);
-                            continue;
-                        }
                     }
 
                     var isHeader = option is HeaderOptionAttribute;
@@ -540,7 +534,7 @@ public static class SettingsPatches
         }
         else if (SettingsPage is 1 or 5)
         {
-            var y = 2.56f;
+            var y = 1.96f;
             __instance.RoleSettingsTab.quotaHeader.gameObject.SetActive(false);
 
             try
@@ -556,35 +550,52 @@ public static class SettingsPatches
 
                 if (option.Setting)
                 {
-                    var isLayer = option is LayersOptionAttribute;
                     var isHeader = option is HeaderOptionAttribute;
-                    var header = isHeader ? (HeaderOptionAttribute)option : null;
-                    var isGen = header?.HeaderType == HeaderType.General;
 
-                    if (isLayer)
-                        ((LayersOptionAttribute)option).UpdateParts();
-
-                    if (header?.HeaderType == HeaderType.Layer)
-                        header.UpdateParts();
-
-                    if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
+                    if (SettingsPage == 5)
                     {
-                        option.Setting.gameObject.SetActive(false);
-                        continue;
+                        var layerOption = OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.Layer == ActiveLayer && (x.GroupHeader.Property.Name == option.ID ||
+                            x.GroupHeader.GroupMemberStrings.Contains(option.ID)));
+
+                        if (layerOption == null)
+                        {
+                            option.Setting.gameObject.SetActive(false);
+                            continue;
+                        }
+
+                        option.Setting.transform.localPosition = new(isHeader ? -0.703f : 1.152f, y, -2f);
+                        y -= isHeader ? 0.63f : 0.45f;
+                    }
+                    else
+                    {
+                        var isLayer = option is LayersOptionAttribute;
+                        var header = isHeader ? (HeaderOptionAttribute)option : null;
+                        var isGen = header?.HeaderType == HeaderType.General;
+
+                        if (isLayer)
+                            ((LayersOptionAttribute)option).UpdateParts();
+
+                        if (header?.HeaderType == HeaderType.Layer)
+                            header.UpdateParts();
+
+                        if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
+                        {
+                            option.Setting.gameObject.SetActive(false);
+                            continue;
+                        }
+
+                        option.Setting.transform.localPosition = new(isHeader ? 4.986f : -0.15f, y, -2f);
+                        y -= isHeader ? 0.6f : 0.404f; // +0.082
                     }
 
-                    if (i > 0)
-                        y -= isHeader ? (isGen ? 0.63f : 0.6f) : (isLayer ? 0.47f : 0.45f);
-
                     option.Setting.gameObject.SetActive(true);
-                    option.Setting.transform.localPosition = new(isHeader ? 4.986f : -0.15f, y, -2f);
 
                     if (option.Setting is OptionBehaviour setting)
                         __instance.RoleSettingsTab.advancedSettingChildren.Add(setting);
                 }
             }
 
-            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-1.85f - y);
+            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y);
             __instance.RoleSettingsTab.InitializeControllerNavigation();
         }
     }
@@ -1036,6 +1047,7 @@ public static class SettingsPatches
             saveText.transform.localScale = new(1.4f, 0.9f, 1f);
             saveText.text = "Save Settings"; // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
             saveText.alignment = TextAlignmentOptions.Center;
+            saveText.GetComponent<TextTranslatorTMP>().Destroy(); // Yeah because this darn thing exists
             return false;
         }
     }

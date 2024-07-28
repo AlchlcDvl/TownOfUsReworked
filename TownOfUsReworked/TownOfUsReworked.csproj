@@ -15,7 +15,7 @@
         <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
         <Description>Town Of Us but better! (hopefully)</Description>
-        <AmongUs>C:\Users\Guest User\Documents\GitHub\TownOfUsReworked\Test</AmongUs>
+        <AmongUs>C:\Users\AlchlcSystm\Documents\GitHub\TownOfUsReworked\Test</AmongUs>
     </PropertyGroup>
 
     <ItemGroup>

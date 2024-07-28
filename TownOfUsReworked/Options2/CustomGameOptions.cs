@@ -712,7 +712,7 @@ public static class CustomGameOptions2
     public static RoleOptionData Volatile { get; set; } = new(0, 0, false, false);
 
     [LayersOption(MultiMenu2.Layer, "#DCEE85FF", LayerEnum.VIP)]
-    public static RoleOptionData VIP { get; set; }
+    public static RoleOptionData VIP { get; set; } = new(0, 0, false, false);
 
     [LayersOption(MultiMenu2.Layer, "#1002C5FF", LayerEnum.Shy)]
     public static RoleOptionData Shy { get; set; } = new(0, 0, false, false);
