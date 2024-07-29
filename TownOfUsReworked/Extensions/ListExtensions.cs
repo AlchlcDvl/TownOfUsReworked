@@ -106,8 +106,6 @@ public static class ListExtensions
         return result;
     }
 
-    public static T Find<T>(this IEnumerable<T> source, Func<T, bool> predicate) => source.ToList().Find(predicate);
-
     public static List<T> GetRandomRange<T>(this List<T> list, int count)
     {
         var temp = new List<T>();
@@ -123,6 +121,8 @@ public static class ListExtensions
         temp.Shuffle();
         return temp;
     }
+
+    public static bool AllAnyOrEmpty<T>(this IEnumerable<T> source, Func<T, bool> predicate, bool all = false) => !source.Any() || (all ? source.All(predicate) : source.Any(predicate));
 
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {

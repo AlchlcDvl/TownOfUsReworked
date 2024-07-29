@@ -389,7 +389,6 @@ public static class SettingsPatches
 
             __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
             OnValueChanged();
-            __instance.scrollBar.ScrollToTop();
             return false;
         }
     }
@@ -424,7 +423,6 @@ public static class SettingsPatches
 
             __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
             OnValueChanged();
-            __instance.scrollBar.ScrollToTop();
             return false;
         }
     }
@@ -476,6 +474,10 @@ public static class SettingsPatches
             return;
 
         __instance ??= GameSettingMenu.Instance;
+
+        if (!__instance)
+            return;
+
         __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3);
         __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage is 1 or 5);
         __instance.PresetsTab.gameObject.SetActive(SettingsPage == 2);
@@ -544,10 +546,8 @@ public static class SettingsPatches
 
             __instance.RoleSettingsTab.advancedSettingChildren = new();
 
-            for (var i = 0; i < OptionAttribute.AllOptions.Count; i++)
+            foreach (var option in OptionAttribute.AllOptions)
             {
-                var option = OptionAttribute.AllOptions[i];
-
                 if (option.Setting)
                 {
                     var isHeader = option is HeaderOptionAttribute;
@@ -584,6 +584,9 @@ public static class SettingsPatches
                             continue;
                         }
 
+                        if (isHeader)
+                            y -= 0.1f;
+
                         option.Setting.transform.localPosition = new(isHeader ? 4.986f : -0.15f, y, -2f);
                         y -= isHeader ? 0.6f : 0.404f; // +0.082
                     }
@@ -607,7 +610,6 @@ public static class SettingsPatches
         ActiveLayer = LayerEnum.None;
         SettingsPage = 1;
         OnValueChanged();
-        ReturnButton.SetActive(false);
     }
 
     private static bool Initialize(OptionBehaviour opt)
@@ -908,6 +910,7 @@ public static class SettingsPatches
     private static void SetMap(int mapId)
     {
         CustomGameOptions2.Map = (MapEnum)mapId;
+        OnValueChanged();
 
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[mapId]}</font>";
 

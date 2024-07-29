@@ -3,7 +3,8 @@ namespace TownOfUsReworked.Options2;
 public static class ClientGameOptions2
 {
     // Client Settings
-    [HeaderOption(MultiMenu2.Client, [ "LighterDarker", "WhiteNameplates", "NoLevels", "CustomCrewColors", "CustomNeutColors", "CustomIntColors", "CustomSynColors", "CustomModColors", "CustomObjColors", "CustomAbColors", "CustomEjects", "OptimisationMode", "HideOtherGhosts" ], ClientOnly = true)]
+    [HeaderOption(MultiMenu2.Client, [ "LighterDarker", "WhiteNameplates", "NoLevels", "CustomCrewColors", "CustomNeutColors", "CustomIntColors", "CustomSynColors", "CustomModColors",
+        "CustomObjColors", "CustomAbColors", "CustomEjects", "OptimisationMode", "HideOtherGhosts" ], ClientOnly = true)]
     public static object ClientOptions { get; set; }
 
     [ToggleOption(MultiMenu2.Client, "ToggleLighterDarker", ClientOnly = true)]

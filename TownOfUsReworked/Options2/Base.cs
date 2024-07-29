@@ -32,8 +32,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "WhoSeesFirstKillShield" ], [ "FirstKillShield" ] ),
         ( [ "WhispersAnnouncement" ], [ "Whispers" ] ),
         ( [ "KillerReports", "RoleFactionReports", "LocationReports" ], [ "GameAnnouncements" ] ),
-        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks",
-            "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ] ),
+        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "LargeMapDecreasedShortTasks",
+            "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ] ),
         ( [ "EvilsIgnoreNV" ], [ "NightVision" ] ),
         ( [ "SkeldVentImprovements" , "SkeldReactorTimer", "SkeldO2Timer" ], [ "EnableBetterSkeld" ] ),
         ( [ "MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer" ], [ "EnableBetterMiraHQ" ] ),
@@ -48,16 +48,15 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "TaskBar" ], [ GameMode.Classic, GameMode.Custom, GameMode.AllAny, GameMode.KillingOnly, GameMode.RoleList, GameMode.Vanilla ] ),
         ( [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic, GameMode.Custom ] ),
         ( [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ], [ GameMode.KillingOnly ] ),
-        ( [ "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier",
-            "HunterFlashlight", "HuntedFlashlight", "HuntedChat", "HnSMode" ], [ GameMode.HideAndSeek ] ),
+        ( [ "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat",
+            "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [ GameMode.HideAndSeek ] ),
         ( [ "TRShortTasks", "TRCommonTasks" ], [ GameMode.TaskRace ] ),
         ( [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ] ),
         ( [ "RandomMapSubmerged" ], [ MapEnum.Random, ("ModCompatibility", "SubLoaded") ] ),
         ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, ("ModCompatibility", "LILoaded") ] ),
-        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS,
-            MapEnum.Random, MapEnum.MiraHQ ] ),
-        ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random,
-            MapEnum.Fungle ] ),
+        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
+            MapEnum.MiraHQ ] ),
+        ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle ] ),
         ( [ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ] ),
         ( [ "BetterMiraHQ" ], [ MapEnum.MiraHQ, MapEnum.Random ] ),
         ( [ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ] ),
@@ -86,12 +85,12 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         if (OptionParents1.Any(x => x.Item1.Contains(Property.Name)))
         {
             var parents = OptionParents1.Find(x => x.Item1.Contains(Property.Name)).Item2;
-            result = parents.Length == 0 || (All ? parents.All(IsActive) : parents.Any(IsActive));
+            result = parents.AllAnyOrEmpty(IsActive, All);
 
             if (OptionParents2.Any(x => x.Item1.Contains(Property.Name)))
             {
                 parents = OptionParents2.Find(x => x.Item1.Contains(Property.Name)).Item2;
-                result &= parents.Length == 0 || (All ? parents.All(IsActive) : parents.Any(IsActive));
+                result &= parents.AllAnyOrEmpty(IsActive, All);
             }
         }
 
@@ -115,7 +114,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
             if (!MapToLoaded.TryGetValue(ID, out result))
             {
                 var tuple = ((string, string))option;
-                var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).Find(x => x.Name == tuple.Item1);
+                var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ToList().Find(x => x.Name == tuple.Item1);
                 result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
                 MapToLoaded[ID] = result;
             }
@@ -123,7 +122,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         else if (option is string id)
         {
             if (id == Property.Name)
-                return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them with this line active
+                return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them even with this line active
 
             var optionatt = GetOptionFromPropertyName(id);
 
