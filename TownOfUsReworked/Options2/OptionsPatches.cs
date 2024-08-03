@@ -292,7 +292,7 @@ public static class SettingsPatches
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayersPrefab.transform);
                 newButton.name = "LayersSubSettingsButton";
                 newButton.transform.localPosition = new(0.3419f, -0.2582f, -2f);
-                newButton.transform.FindChild("Plus_TMP").gameObject.Destroy();
+                newButton.transform.GetChild(0).gameObject.Destroy();
                 newButton.transform.FindChild("InactiveSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("Cog");
                 newButton.transform.FindChild("ActiveSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("CogActive");
                 newButton.OverrideOnClickListeners(BlankVoid);
@@ -329,12 +329,12 @@ public static class SettingsPatches
                 var active = UObject.Instantiate(count, quota);
                 active.name = "Active";
                 active.GetComponent<TextTranslatorTMP>().Destroy();
-                active.text = "Active?";
+                active.text = "Is Active?";
 
                 var unique = UObject.Instantiate(count, quota);
                 unique.name = "Unique";
                 unique.GetComponent<TextTranslatorTMP>().Destroy();
-                unique.text = "Unique?";
+                unique.text = "Is Unique?";
 
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayerHeaderPrefab.transform);
                 newButton.name = "Collapse";
@@ -536,9 +536,8 @@ public static class SettingsPatches
         }
         else if (SettingsPage is 1 or 5)
         {
-            var y = SettingsPage == 5 ? 0 : 1.96f;
+            var y = SettingsPage == 5 ? 1.513f : 1.96f;
             __instance.RoleSettingsTab.quotaHeader.gameObject.SetActive(false);
-            __instance.RoleSettingsTab.RoleChancesSettings.transform.localPosition = new(SettingsPage == 5 ? 0.35f : 0f, 0f, -5f);
 
             try
             {
@@ -580,7 +579,7 @@ public static class SettingsPatches
                             y -= 0.1f;
 
                         option.Setting.transform.localPosition = new(isHeader ? 4.986f : -0.15f, y, -2f);
-                        y -= isHeader ? 0.496f : 0.404f; // +0.082
+                        y -= isHeader ? 0.496f : 0.404f;
                     }
 
                     option.Setting.gameObject.SetActive(true);
@@ -590,7 +589,7 @@ public static class SettingsPatches
                 }
             }
 
-            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y);
+            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y + (SettingsPage == 5 ? -1.65f : 0f));
             __instance.RoleSettingsTab.InitializeControllerNavigation();
         }
     }
@@ -602,6 +601,12 @@ public static class SettingsPatches
         ActiveLayer = LayerEnum.None;
         SettingsPage = 1;
         OnValueChanged();
+    }
+
+    [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.Update))]
+    public static class RolesSettingsMenu_Update
+    {
+        public static void Postfix(RolesSettingsMenu __instance) => __instance.RoleChancesSettings.transform.localPosition = new(SettingsPage == 5 ? 0.35f : 0f, 0f, -5f);
     }
 
     private static bool Initialize(OptionBehaviour opt)

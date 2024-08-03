@@ -75,9 +75,9 @@ public static class CustomGameOptions2
     public static int LobbySize { get; set; } = 15;
 
     // Game Modes
-    [HeaderOption(MultiMenu2.Main, [ "GameMode", "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps", "NeutralsCount", "AddArsonist", "AddCryomaniac", "TRCommonTasks",
-        "AddPlaguebearer", "HnSMode", "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedChat", "HuntedVision",
-        "HunterSpeedModifier", "HunterFlashlight", "HuntedFlashlight", "TRShortTasks" ])]
+    [HeaderOption(MultiMenu2.Main, [ "GameMode", "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps", "NeutralsCount", "AddArsonist", "AddCryomaniac", "TRCommonTasks", "HnSMode",
+        "AddPlaguebearer", "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedChat", "HuntedVision", "TRShortTasks",
+        "HunterSpeedModifier", "HunterFlashlight", "HuntedFlashlight" ])]
     public static bool GameModeSettings { get; set; } = true;
 
     [StringOption(MultiMenu2.Main, [ "None" ])]

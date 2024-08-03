@@ -1,43 +1,37 @@
+using Assets.CoreScripts;
+
 namespace TownOfUsReworked.Patches;
 
 public static class OnGameEndPatches
 {
-    private static readonly List<CachedPlayerData> PotentialWinners = [];
     private static readonly List<SummaryInfo> PlayerRoles = [];
     public static readonly List<SummaryInfo> Disconnected = [];
+    private static readonly List<NetworkedPlayerInfo> Winners = [];
 
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
     public static class AmongUsClient_OnGameEnd
     {
         public static void Postfix()
         {
-            PotentialWinners.Clear();
-            CustomPlayer.AllPlayers.ForEach(x => PotentialWinners.Add(new(x.Data)));
-
             if (CameraEffect.Instance)
                 CameraEffect.Instance.Materials.Clear();
-        }
-    }
 
-    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-    public static class ShipStatus_SetEverythingUp
-    {
-        public static void Prefix()
-        {
-            var winners = new List<CachedPlayerData>();
+            EndGameResult.CachedGameOverReason = (GameOverReason)9;
+            EndGameResult.CachedWinners.Clear();
+            Winners.Clear();
 
             if (Role.AllNeutralsWin)
             {
                 foreach (var role2 in Role.GetRoles(Faction.Neutral))
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!defect.Disconnected && defect.Side == Faction.Neutral && !defect.Player.IsBase(defect.Side))
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
+                        Winners.Add(defect.Data);
                 }
             }
             else if (Role.NKWins)
@@ -45,13 +39,13 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(Alignment.NeutralKill))
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!defect.Disconnected && defect.Side == Faction.Neutral && !defect.Player.IsBase(defect.Side))
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
+                        Winners.Add(defect.Data);
                 }
             }
             else if (Role.CrewWin)
@@ -59,19 +53,19 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(Faction.Crew))
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
 
                 foreach (var ally in PlayerLayer.GetLayers<Allied>())
                 {
                     if (!ally.Disconnected && ally.Side == Faction.Crew)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == ally.PlayerName));
+                        Winners.Add(ally.Data);
                 }
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!defect.Disconnected && defect.Side == Faction.Crew && !defect.Player.IsBase(defect.Side))
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
+                        Winners.Add(defect.Data);
                 }
             }
             else if (Role.IntruderWin)
@@ -79,31 +73,31 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(Faction.Intruder))
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
 
                 foreach (var ally in PlayerLayer.GetLayers<Allied>())
                 {
                     if (!ally.Disconnected && ally.Side == Faction.Intruder)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == ally.PlayerName));
+                        Winners.Add(ally.Data);
                 }
 
                 foreach (var traitor in PlayerLayer.GetLayers<Traitor>())
                 {
                     if (!traitor.Disconnected && traitor.Side == Faction.Intruder)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == traitor.PlayerName));
+                        Winners.Add(traitor.Data);
                 }
 
                 foreach (var fanatic in PlayerLayer.GetLayers<Fanatic>())
                 {
                     if (!fanatic.Disconnected && fanatic.Side == Faction.Intruder)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == fanatic.PlayerName));
+                        Winners.Add(fanatic.Data);
                 }
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!defect.Disconnected && defect.Side == Faction.Intruder && !defect.Player.IsBase(defect.Side))
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
+                        Winners.Add(defect.Data);
                 }
             }
             else if (Role.SyndicateWin)
@@ -111,31 +105,31 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(Faction.Syndicate))
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
 
                 foreach (var ally in PlayerLayer.GetLayers<Allied>())
                 {
                     if (!ally.Disconnected && ally.Side == Faction.Syndicate)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == ally.PlayerName));
+                        Winners.Add(ally.Data);
                 }
 
                 foreach (var traitor in PlayerLayer.GetLayers<Traitor>())
                 {
                     if (!traitor.Disconnected && traitor.Side == Faction.Syndicate)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == traitor.PlayerName));
+                        Winners.Add(traitor.Data);
                 }
 
                 foreach (var fanatic in PlayerLayer.GetLayers<Fanatic>())
                 {
                     if (!fanatic.Disconnected && fanatic.Side == Faction.Syndicate)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == fanatic.PlayerName));
+                        Winners.Add(fanatic.Data);
                 }
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!defect.Disconnected && defect.Side == Faction.Syndicate && !defect.Player.IsBase(defect.Side))
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
+                        Winners.Add(defect.Data);
                 }
             }
             else if (Role.UndeadWin)
@@ -143,7 +137,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(SubFaction.Undead))
                 {
                     if (!role2.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.CabalWin)
@@ -151,7 +145,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(SubFaction.Cabal))
                 {
                     if (!role2.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.SectWin)
@@ -159,7 +153,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(SubFaction.Sect))
                 {
                     if (!role2.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.ReanimatedWin)
@@ -167,7 +161,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(SubFaction.Reanimated))
                 {
                     if (!role2.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.ApocalypseWins)
@@ -175,13 +169,13 @@ public static class OnGameEndPatches
                 foreach (var role2 in Role.GetRoles(Alignment.NeutralApoc))
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
 
                 foreach (var role2 in Role.GetRoles(Alignment.NeutralHarb))
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.GlitchWins)
@@ -189,7 +183,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Glitch>())
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.JuggernautWins)
@@ -197,7 +191,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Juggernaut>())
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.ArsonistWins)
@@ -205,7 +199,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Arsonist>())
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.SerialKillerWins)
@@ -213,7 +207,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<SerialKiller>())
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.MurdererWins)
@@ -221,7 +215,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Murderer>())
                 {
                     if (!role2.Disconnected && role2.Faithful)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.WerewolfWins)
@@ -229,7 +223,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Werewolf>())
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.CryomaniacWins)
@@ -237,7 +231,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Cryomaniac>())
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.PhantomWins)
@@ -245,7 +239,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Phantom>())
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.TasksDone && !role2.Caught)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.TaskRunnerWins)
@@ -253,7 +247,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Runner>())
                 {
                     if (!role2.Disconnected && role2.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.HunterWins)
@@ -261,7 +255,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Hunter>())
                 {
                     if (!role2.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.HuntedWins)
@@ -269,7 +263,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Hunted>())
                 {
                     if (!role2.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Role.BetrayerWins)
@@ -277,7 +271,7 @@ public static class OnGameEndPatches
                 foreach (var role2 in PlayerLayer.GetLayers<Betrayer>())
                 {
                     if (!role2.Disconnected && role2.Faction == Faction.Neutral)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
+                        Winners.Add(role2.Data);
                 }
             }
             else if (Objectifier.LoveWins)
@@ -285,7 +279,7 @@ public static class OnGameEndPatches
                 foreach (var lover in PlayerLayer.GetLayers<Lovers>())
                 {
                     if (!lover.Disconnected && lover.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == lover.PlayerName));
+                        Winners.Add(lover.Data);
                 }
             }
             else if (Objectifier.RivalWins)
@@ -293,7 +287,7 @@ public static class OnGameEndPatches
                 foreach (var rival in PlayerLayer.GetLayers<Rivals>())
                 {
                     if (!rival.Disconnected && rival.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == rival.PlayerName));
+                        Winners.Add(rival.Data);
                 }
             }
             else if (Objectifier.TaskmasterWins)
@@ -301,7 +295,7 @@ public static class OnGameEndPatches
                 foreach (var tm in PlayerLayer.GetLayers<Taskmaster>())
                 {
                     if (!tm.Disconnected && tm.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == tm.PlayerName));
+                        Winners.Add(tm.Data);
                 }
             }
             else if (Objectifier.OverlordWins)
@@ -309,7 +303,7 @@ public static class OnGameEndPatches
                 foreach (var ov in PlayerLayer.GetLayers<Overlord>())
                 {
                     if (ov.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == ov.PlayerName));
+                        Winners.Add(ov.Data);
                 }
             }
             else if (Objectifier.CorruptedWins)
@@ -317,7 +311,7 @@ public static class OnGameEndPatches
                 foreach (var corr in PlayerLayer.GetLayers<Corrupted>())
                 {
                     if (!corr.Disconnected && corr.Winner)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == corr.PlayerName));
+                        Winners.Add(corr.Data);
                 }
             }
             else if (Objectifier.MafiaWins)
@@ -325,7 +319,7 @@ public static class OnGameEndPatches
                 foreach (var maf in PlayerLayer.GetLayers<Mafia>())
                 {
                     if (!maf.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == maf.PlayerName));
+                        Winners.Add(maf.Data);
                 }
             }
             else if (Objectifier.DefectorWins)
@@ -333,7 +327,7 @@ public static class OnGameEndPatches
                 foreach (var def in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!def.Disconnected && def.Side == Faction.Neutral)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == def.PlayerName));
+                        Winners.Add(def.Data);
                 }
             }
 
@@ -345,77 +339,127 @@ public static class OnGameEndPatches
                     foreach (var surv in PlayerLayer.GetLayers<Survivor>())
                     {
                         if (surv.Alive)
-                            winners.Add(PotentialWinners.First(x => x.PlayerName == surv.PlayerName));
+                            Winners.Add(surv.Data);
                     }
 
                     foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
                     {
                         if (!ga.Failed && ga.TargetPlayer && ga.TargetAlive)
-                            winners.Add(PotentialWinners.First(x => x.PlayerName == ga.PlayerName));
+                            Winners.Add(ga.Data);
                     }
                 }
 
                 foreach (var jest in PlayerLayer.GetLayers<Jester>())
                 {
                     if (jest.VotedOut && !jest.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == jest.PlayerName));
+                        Winners.Add(jest.Data);
                 }
 
                 foreach (var exe in PlayerLayer.GetLayers<Executioner>())
                 {
                     if (exe.TargetVotedOut && !exe.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == exe.PlayerName));
+                        Winners.Add(exe.Data);
                 }
 
                 foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
                 {
                     if (bh.TargetKilled && !bh.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == bh.PlayerName));
+                        Winners.Add(bh.Data);
                 }
 
                 foreach (var act in PlayerLayer.GetLayers<Actor>())
                 {
                     if (act.Guessed && !act.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == act.PlayerName));
+                        Winners.Add(act.Data);
                 }
 
                 foreach (var cann in PlayerLayer.GetLayers<Cannibal>())
                 {
                     if (cann.Eaten && !cann.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == cann.PlayerName));
+                        Winners.Add(cann.Data);
                 }
 
                 foreach (var guess in PlayerLayer.GetLayers<Guesser>())
                 {
                     if (guess.TargetGuessed && !guess.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == guess.PlayerName));
+                        Winners.Add(guess.Data);
                 }
 
                 foreach (var troll in PlayerLayer.GetLayers<Troll>())
                 {
                     if (troll.Killed && !troll.Disconnected)
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == troll.PlayerName));
+                        Winners.Add(troll.Data);
                 }
 
                 foreach (var link in PlayerLayer.GetLayers<Linked>())
                 {
-                    if (winners.Any(x => x.PlayerName == link.PlayerName) && !winners.Any(x => x.PlayerName == link.OtherLink.Data.PlayerName))
-                        winners.Add(PotentialWinners.First(x => x.PlayerName == link.OtherLink.Data.PlayerName));
+                    if (EndGameResult.CachedWinners.Any(x => x.PlayerName == link.PlayerName) && !EndGameResult.CachedWinners.Any(x => x.PlayerName == link.OtherLink.Data.PlayerName))
+                        Winners.Add(link.OtherLink.Data);
                 }
             }
 
-            EndGameResult.CachedWinners.Clear();
-            winners.RemoveAll(x => x == null);
-            winners = [ .. winners.Distinct() ];
-            EndGameResult.CachedWinners = winners.ToIl2Cpp();
+            EndGameResult.CachedWinners = Winners.Select(x => new CachedPlayerData(x)).ToList().ToIl2Cpp();
         }
     }
 
-    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-    public static class Outro
+    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
+    public static class ShipStatus_SetEverythingUp
     {
-        public static void Postfix(EndGameManager __instance)
+        public static bool Prefix(EndGameManager __instance)
         {
+            StatsManager.Instance.IncrementStat(StringNames.StatsGamesFinished);
+            __instance.Navigation.HideButtons();
+            var cachedPlayerData = EndGameResult.CachedWinners.ToSystem().FirstOrDefault(h => h.IsYou);
+
+            if (cachedPlayerData != null)
+            {
+				StatsManager.Instance.AddWinReason((GameOverReason)9, MapPatches.CurrentMap, EndGameResult.CachedLocalPlayer.RoleWhenAlive);
+                AchievementManager.Instance.SetWinMap(MapPatches.CurrentMap);
+                UnityTelemetry.Instance.WonGame(cachedPlayerData.ColorId, cachedPlayerData.HatId, cachedPlayerData.SkinId, cachedPlayerData.PetId, cachedPlayerData.VisorId,
+                    cachedPlayerData.NamePlateId);
+				__instance.WinText.text = TranslationController.Instance.GetString(StringNames.Victory);
+                __instance.WinText.color = UColor.blue;
+            }
+            else
+            {
+				StatsManager.Instance.AddLoseReason(EndGameResult.CachedGameOverReason);
+				__instance.WinText.text = TranslationController.Instance.GetString(StringNames.Defeat);
+                __instance.WinText.color = UColor.red;
+            }
+
+            var num = Mathf.CeilToInt(7.5f);
+            var list = EndGameResult.CachedWinners.ToSystem().OrderBy(b => b.IsYou).ToList();
+
+            for (var i = 0; i < list.Count; i++)
+            {
+                var cachedPlayerData2 = list[i];
+                var num2 = i % 2 != 0 ? 1 : -1;
+                var num3 = (i + 1) / 2;
+                var t = num3 / (float)num;
+                var num4 = Mathf.Lerp(1f, 0.75f, t);
+                var num5 = i == 0 ? -8 : -1;
+                var poolablePlayer = UObject.Instantiate(__instance.PlayerPrefab, __instance.transform);
+                poolablePlayer.transform.localPosition = new Vector3(1f * num2 * num3 * num4, FloatRange.SpreadToEdges(-1.125f, 0f, num3, num), (num5 + num3) * 0.01f) * 0.9f;
+                var num6 = Mathf.Lerp(1f, 0.65f, t) * 0.9f;
+                var vector = new Vector3(num6, num6, 1f);
+                poolablePlayer.transform.localScale = vector;
+
+                if (cachedPlayerData2.IsDead)
+                {
+                    poolablePlayer.SetBodyAsGhost();
+                    poolablePlayer.SetDeadFlipX(i % 2 == 0);
+                }
+                else
+                    poolablePlayer.SetFlipX(i % 2 == 0);
+
+                poolablePlayer.UpdateFromPlayerOutfit(cachedPlayerData2.Outfit, PlayerMaterial.MaskType.None, cachedPlayerData2.IsDead, true);
+                poolablePlayer.ToggleName(true);
+                var playerInfo = Winners[i];
+                var role = Role.AllRoles.Find(x => x.Data == playerInfo);
+                poolablePlayer.SetName($"<size=75%>{role}</size>\n<size=90%>{cachedPlayerData2.PlayerName}</size>", vector.Inv(), role.Color, -15f);
+                poolablePlayer.SetNamePosition(new(0f, -1.31f, -0.5f));
+            }
+
             SoundEffects.TryAdd("CrewWin", __instance.CrewStinger);
             SoundEffects.TryAdd("IntruderWin", __instance.ImpostorStinger);
             SoundEffects.TryAdd("Stalemate", __instance.DisconnectStinger);
@@ -424,12 +468,6 @@ public static class OnGameEndPatches
             var winsound = "IntruderWin";
             UColor? color = CustomColorManager.Stalemate;
             var texttext = "Stalemate";
-
-            foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
-            {
-                var local = Role.AllRoles.Find(x => x.PlayerName == player.NameText().text);
-                player.NameText().text = $"{local.ColorString}<size=75%>{local}</size>\n<size=90%>{player.NameText().text}</size></color>";
-            }
 
             if (PlayerLayer.NobodyWins)
                 winsound = "Stalemate";
@@ -616,6 +654,7 @@ public static class OnGameEndPatches
             __instance.WinText.transform.localPosition = pos;
             text.text = $"<size=50%>{texttext}!</size>";
             Play(winsound);
+            return false;
         }
     }
 
