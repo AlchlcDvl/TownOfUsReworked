@@ -536,8 +536,9 @@ public static class SettingsPatches
         }
         else if (SettingsPage is 1 or 5)
         {
-            var y = 1.96f;
+            var y = SettingsPage == 5 ? 0 : 1.96f;
             __instance.RoleSettingsTab.quotaHeader.gameObject.SetActive(false);
+            __instance.RoleSettingsTab.RoleChancesSettings.transform.localPosition = new(SettingsPage == 5 ? 0.35f : 0f, 0f, -5f);
 
             try
             {
@@ -554,16 +555,7 @@ public static class SettingsPatches
 
                     if (SettingsPage == 5)
                     {
-                        var layerOption = OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.Layer == ActiveLayer && (x.GroupHeader.Property.Name == option.ID ||
-                            x.GroupHeader.GroupMemberStrings.Contains(option.ID)));
-
-                        if (layerOption == null)
-                        {
-                            option.Setting.gameObject.SetActive(false);
-                            continue;
-                        }
-
-                        option.Setting.transform.localPosition = new(isHeader ? -0.703f : 1.152f, y, -2f);
+                        option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
                         y -= isHeader ? 0.63f : 0.45f;
                     }
                     else
@@ -588,7 +580,7 @@ public static class SettingsPatches
                             y -= 0.1f;
 
                         option.Setting.transform.localPosition = new(isHeader ? 4.986f : -0.15f, y, -2f);
-                        y -= isHeader ? 0.6f : 0.404f; // +0.082
+                        y -= isHeader ? 0.496f : 0.404f; // +0.082
                     }
 
                     option.Setting.gameObject.SetActive(true);

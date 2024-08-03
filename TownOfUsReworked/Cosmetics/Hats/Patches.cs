@@ -172,7 +172,7 @@ public static class PopulateFromHatViewDataPatch
             __instance.BackLayer.sprite = asset.MainImage;
         }
 
-        if (__instance.options.Initialized && __instance.HideHat())
+        if (__instance.HideHat())
         {
             __instance.FrontLayer.enabled = false;
             __instance.BackLayer.enabled = false;

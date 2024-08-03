@@ -546,9 +546,6 @@ public static class CustomGameOptions2
     [LayersOption(MultiMenu2.Layer, "#CFFE61FF", LayerEnum.Plaguebearer)]
     public static RoleOptionData Plaguebearer { get; set; } = new(0, 0, false, false);
 
-    [LayersOption(MultiMenu2.Layer, "#424242FF", LayerEnum.Pestilence)]
-    public static RoleOptionData Pestilence { get; set; } = new(0, 0, false, false);
-
     [LayersOption(MultiMenu2.Layer, "#9F703AFF", LayerEnum.Werewolf)]
     public static RoleOptionData Werewolf { get; set; } = new(0, 0, false, false);
 

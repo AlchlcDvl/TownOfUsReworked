@@ -44,6 +44,7 @@ public static class PingTracker_Update
 
         DeltaTime += (Time.deltaTime - DeltaTime) * 0.1f;
         var fps = Mathf.Ceil(1f / DeltaTime);
+        __instance.GetComponent<AspectPosition>().Alignment = AspectPosition.EdgeAlignments.Top;
 
         // try catch my beloved <3
         try

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options2;
 
-public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum layer, string groupHeaderString = null) : OptionAttribute(menu, CustomOptionType.Layers)
+public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum layer) : OptionAttribute(menu, CustomOptionType.Layers)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
@@ -8,7 +8,6 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     private int Min { get; set; } = 1;
     public LayerEnum Layer { get; } = layer;
     public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
-    public string GroupHeaderString { get; } = groupHeaderString ?? $"{layer}Header";
     public HeaderOptionAttribute GroupHeader { get; set; }
     private GameObject Unique { get; set; }
     private GameObject Active1 { get; set; }
@@ -62,6 +61,8 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         Unique.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
         Active1.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleActive);
         Cog.GetComponent<PassiveButton>().OverrideOnClickListeners(SetUpOptionsMenu);
+
+        Cog.SetActive(GroupHeader != null);
 
         UpdateParts();
     }
@@ -155,9 +156,6 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
     public void UpdateParts()
     {
-        // Cog.SetActive(GroupMembers != null && GroupMembers.Length > 0 && (((IsClassic || IsCustom) && GetChance() > 0) || ((IsAA || IsKilling) && GetActive()) || (IsRoleList &&
-        //     GetOptions<RoleListEntryAttribute>().Any(x => x.Get() == Layer))));
-
         if (SavedMode == CustomGameOptions2.GameMode)
             return;
 
@@ -227,10 +225,10 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Property.Name == GroupHeaderString);
+        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Property.Name == $"{Layer}Header");
 
         if (GroupHeader != null)
-            OptionParents1.Add(([ GroupHeader.Property.Name ], [ Property.Name ]));
+            OptionParents1.Add(([ $"{Layer}Header" ], [ Layer ]));
     }
 
     public void SetUpOptionsMenu()

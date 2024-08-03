@@ -107,8 +107,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
             result = CustomGameOptions2.Map == map;
         else if (option is GameMode mode)
             result = CustomGameOptions2.GameMode == mode;
-        // else if (option is LayerEnum layer)
-        //     result = GetOptions<RoleListEntryAttribute>().Any(x => x.ID.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
+        else if (option is LayerEnum layer)
+            result = SettingsPatches.ActiveLayer == layer;
         else if (option is (string, string))
         {
             if (!MapToLoaded.TryGetValue(ID, out result))
@@ -134,8 +134,6 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
                     result &= toggle.Get();
                 else if (optionatt is HeaderOptionAttribute header)
                     result &= header.Get();
-                // else if (optionatt is LayersOptionAttribute layers)
-                //     result &= (layers.GetChance() > 0 && (IsCustom || IsCustom)) || (layers.GetActive() && (IsKilling || IsAA));
             }
             else
                 result = true;
