@@ -15,7 +15,7 @@ public class Warper : Syndicate
     public bool WasInVent { get; set; }
     public Vent Vent { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Warper : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Warper : CustomColorManager.Syndicate;
     public override string Name => "Warper";
     public override LayerEnum Type => LayerEnum.Warper;
     public override Func<string> StartText => () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";

@@ -6,7 +6,7 @@ public class Mayor : Crew
     public CustomButton RevealButton { get; set; }
     public bool Revealed { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Mayor : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mayor : CustomColorManager.Crew;
     public override string Name => "Mayor";
     public override LayerEnum Type => LayerEnum.Mayor;
     public override Func<string> StartText => () => "Reveal Yourself To Commit Voter Fraud";

@@ -6,7 +6,7 @@ public class Consigliere : Intruder
     public CustomButton InvestigateButton { get; set; }
     private static string Option => CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
 
-    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Consigliere : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consigliere : CustomColorManager.Intruder;
     public override string Name => "Consigliere";
     public override LayerEnum Type => LayerEnum.Consigliere;
     public override Func<string> StartText => () => "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";

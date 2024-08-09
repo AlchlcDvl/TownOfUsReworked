@@ -5,7 +5,7 @@ public class Ambusher : Intruder
     public PlayerControl AmbushedPlayer { get; set; }
     public CustomButton AmbushButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Ambusher : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Ambusher : CustomColorManager.Intruder;
     public override string Name => "Ambusher";
     public override LayerEnum Type => LayerEnum.Ambusher;
     public override Func<string> StartText => () => "Spook The <color=#8CFFFFFF>Crew</color>";

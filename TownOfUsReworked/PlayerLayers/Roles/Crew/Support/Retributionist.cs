@@ -57,7 +57,7 @@ public class Retributionist : Crew
     {
         get
         {
-            if (!ClientGameOptions.CustomCrewColors)
+            if (!ClientOptions.CustomCrewColors)
                 return CustomColorManager.Crew;
             else if (RevivedRole)
                 return RevivedRole.Color;

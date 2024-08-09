@@ -4,7 +4,7 @@ public class Engineer : Crew
 {
     public CustomButton FixButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Engineer : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Engineer : CustomColorManager.Crew;
     public override string Name => "Engineer";
     public override LayerEnum Type => LayerEnum.Engineer;
     public override Func<string> StartText => () => "Just Fix It";

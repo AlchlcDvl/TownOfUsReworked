@@ -7,7 +7,7 @@ public class Revealer : Crew
     public bool Faded { get; set; }
     public Role FormerRole { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Revealer : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Revealer : CustomColorManager.Crew;
     public override string Name => "Revealer";
     public override LayerEnum Type => LayerEnum.Revealer;
     public override Func<string> StartText => () => "OOOOOOO";

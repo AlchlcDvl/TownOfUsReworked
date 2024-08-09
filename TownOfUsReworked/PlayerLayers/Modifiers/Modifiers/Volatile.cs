@@ -8,7 +8,7 @@ public class Volatile : Modifier
 
     private static bool LMAO;
 
-    public override UColor Color => ClientGameOptions.CustomModColors ? CustomColorManager.Volatile : CustomColorManager.Modifier;
+    public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Volatile : CustomColorManager.Modifier;
     public override string Name => "Volatile";
     public override LayerEnum Type => LayerEnum.Volatile;
     public override Func<string> Description => () => "- You experience hallucinations";

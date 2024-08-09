@@ -39,7 +39,7 @@ public abstract class Assassin : Ability
     private Transform Next;
     private Transform Back;
 
-    public override UColor Color => ClientGameOptions.CustomAbColors ? CustomColorManager.Assassin : CustomColorManager.Ability;
+    public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Assassin : CustomColorManager.Ability;
     public override Func<string> Description => () => "- You can guess players mid-meetings";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 

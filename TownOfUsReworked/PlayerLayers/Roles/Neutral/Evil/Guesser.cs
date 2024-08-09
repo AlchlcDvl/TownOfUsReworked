@@ -26,7 +26,7 @@ public class Guesser : Neutral
     private Transform Next;
     private Transform Back;
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Guesser : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Guesser : CustomColorManager.Neutral;
     public override string Name => "Guesser";
     public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText => () => "Guess What Someone Might Be";

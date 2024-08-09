@@ -9,7 +9,7 @@ public class Whisperer : Neutral
     public int WhisperConversion { get; set; }
     public List<byte> Persuaded { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Whisperer : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : CustomColorManager.Neutral;
     public override string Name => "Whisperer";
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";

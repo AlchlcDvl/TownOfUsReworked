@@ -4,7 +4,7 @@ public class Pestilence : Neutral
 {
     private CustomButton ObliterateButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Pestilence : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Pestilence : CustomColorManager.Neutral;
     public override string Name => "Pestilence";
     public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> StartText => () => "THE APOCALYPSE IS NIGH";

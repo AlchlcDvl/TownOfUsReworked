@@ -18,11 +18,11 @@ public class Defector : Objectifier
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Neutral => CustomColorManager.Neutral,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientGameOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Objectifier
+                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Objectifier
                 };
             }
             else
-                return ClientGameOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Objectifier;
+                return ClientOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Objectifier;
         }
     }
     public override string Name => "Defector";

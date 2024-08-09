@@ -183,7 +183,7 @@ public static class VisibleOverride
         if (__instance.IsPostmortal() && !__instance.Caught())
             value = !__instance.inVent;
         else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && __instance != CustomPlayer.Local)
-            value = !ClientGameOptions.HideOtherGhosts;
+            value = !ClientOptions.HideOtherGhosts;
         else if (((CustomPlayer.Local.TryGetLayer<Medium>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId)) || (CustomPlayer.Local.TryGetLayer<Retributionist>(out var
             ret) && ret.MediatedPlayers.Contains(__instance.PlayerId))) && __instance != CustomPlayer.Local)
         {

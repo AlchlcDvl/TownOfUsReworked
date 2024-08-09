@@ -422,7 +422,7 @@ public static class OnGameEndPatches
             }
             else
             {
-				StatsManager.Instance.AddLoseReason(EndGameResult.CachedGameOverReason);
+				StatsManager.Instance.AddLoseReason((GameOverReason)10);
 				__instance.WinText.text = TranslationController.Instance.GetString(StringNames.Defeat);
                 __instance.WinText.color = UColor.red;
             }
@@ -464,7 +464,6 @@ public static class OnGameEndPatches
             SoundEffects.TryAdd("IntruderWin", __instance.ImpostorStinger);
             SoundEffects.TryAdd("Stalemate", __instance.DisconnectStinger);
             var text = UObject.Instantiate(__instance.WinText, __instance.WinText.transform.parent);
-            SoundManager.Instance.StopSound(__instance.ImpostorStinger);
             var winsound = "IntruderWin";
             UColor? color = CustomColorManager.Stalemate;
             var texttext = "Stalemate";
@@ -649,9 +648,7 @@ public static class OnGameEndPatches
             }
 
             __instance.BackgroundBar.material.color = text.color = color ?? CustomColorManager.Stalemate;
-            var pos = __instance.WinText.transform.localPosition;
-            pos.y += 1.5f;
-            __instance.WinText.transform.localPosition = pos;
+            __instance.WinText.transform.localPosition += new Vector3(0f, 1.5f, 0f);
             text.text = $"<size=50%>{texttext}!</size>";
             Play(winsound);
             return false;

@@ -5,7 +5,7 @@ public class Tracker : Crew
     public Dictionary<byte, CustomArrow> TrackerArrows { get; set; }
     public CustomButton TrackButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Tracker : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Tracker : CustomColorManager.Crew;
     public override string Name => "Tracker";
     public override LayerEnum Type => LayerEnum.Tracker;
     public override Func<string> StartText => () => "Track Everyone's Movements";

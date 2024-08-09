@@ -5,7 +5,7 @@ public class Miner : Intruder
     public CustomButton MineButton { get; set; }
     public List<Vent> Vents { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Miner : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Miner : CustomColorManager.Intruder;
     public override string Name => MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner";
     public override LayerEnum Type => LayerEnum.Miner;
     public override Func<string> StartText => () => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <color=#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :

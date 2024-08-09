@@ -1,14 +1,10 @@
 namespace TownOfUsReworked.Options2;
 
 // DO NOT OVERRIDE VALUES OF ANY OF THESE PROPERTIES ANY WHERE IN THE CODE OR ELSE THE OPTIONS WILL START TO FUCK OFF
-public static class CustomGameOptions2
-{
-    // Global Options
-    [HeaderOption(MultiMenu2.Main, [ "PlayerSpeed", "GhostSpeed", "InteractionDistance", "EmergencyButtonCount", "TaskBar", "VotingTime", "DiscussionTime", "LobbySize", "ReportDistance",
-        "EmergencyButtonCooldown", "ConfirmEjects", "EjectionRevealsRoles", "EnableInitialCds", "InitialCooldowns", "EnableMeetingCds", "MeetingCooldowns", "EnableFailCds", "ChatCooldown",
-        "FailCooldowns", "ChatCharacterLimit" ])]
-    public static bool GameSettings { get; set; } = true;
 
+[HeaderOption(MultiMenu2.Main)]
+public class GameSettings
+{
     [NumberOption(MultiMenu2.Main, 0.25f, 10, 0.25f, Format.Multiplier)]
     public static float PlayerSpeed { get; set; } = 1.25f;
 
@@ -32,7 +28,7 @@ public static class CustomGameOptions2
 
     [StringOption(MultiMenu2.Main)]
     private static TBMode TaskBar { get; set; } = TBMode.MeetingOnly;
-    public static TBMode TaskBarMode => GameMode switch
+    public static TBMode TaskBarMode => GameModeSettings.GameMode switch
     {
         GameMode.TaskRace or GameMode.HideAndSeek => TBMode.Normal,
         _ => TaskBar
@@ -74,12 +70,11 @@ public static class CustomGameOptions2
     [NumberOption(MultiMenu2.Main, 2, 127, 1)]
     public static int LobbySize { get; set; } = 15;
 
-    // Game Modes
-    [HeaderOption(MultiMenu2.Main, [ "GameMode", "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps", "NeutralsCount", "AddArsonist", "AddCryomaniac", "TRCommonTasks", "HnSMode",
-        "AddPlaguebearer", "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedChat", "HuntedVision", "TRShortTasks",
-        "HunterSpeedModifier", "HunterFlashlight", "HuntedFlashlight" ])]
-    public static bool GameModeSettings { get; set; } = true;
+}
 
+[HeaderOption(MultiMenu2.Main)]
+public static class GameModeSettings
+{
     [StringOption(MultiMenu2.Main, [ "None" ])]
     public static GameMode GameMode { get; set; } = GameMode.Classic;
 
@@ -152,12 +147,11 @@ public static class CustomGameOptions2
     [NumberOption(MultiMenu2.Main, 0, 13, 1)]
     public static int TRCommonTasks { get; set; } = 4;
 
-    // Game Modifiers
-    [HeaderOption(MultiMenu2.Main, [ "WhoCanVent", "AnonymousVoting", "NoSkipping", "FirstKillShield", "WhoSeesFirstKillShield", "FactionSeeRoles", "VisualTasks", "HideVentAnims",
-        "PlayerNames", "Whispers", "WhispersAnnouncement", "AppearanceAnimation", "EnableAbilities", "EnableModifiers", "EnableObjectifiers", "VentTargeting", "RandomSpawns",
-        "CooldownInVent", "DeadSeeEverything", "ParallelMedScans", "JaniCanMutuallyExclusive", "IndicateReportedBodies" ])]
-    public static bool GameModifiers { get; set; } = true;
+}
 
+[HeaderOption(MultiMenu2.Main)]
+public static class GameModifiers
+{
     [StringOption(MultiMenu2.Main)]
     public static WhoCanVentOptions WhoCanVent { get; set; } = WhoCanVentOptions.Default;
 
@@ -223,11 +217,11 @@ public static class CustomGameOptions2
 
     [StringOption(MultiMenu2.Main)]
     public static RandomSpawning RandomSpawns { get; set; } = RandomSpawning.Disabled;
+}
 
-    // Game Announcements
-    [HeaderOption(MultiMenu2.Main, [ "GameAnnouncements", "LocationReports", "RoleFactionReports", "KillerReports" ])]
-    public static bool GameAnnouncementSettings { get; set; } = true;
-
+[HeaderOption(MultiMenu2.Main)]
+public static class GameAnnouncementSettings
+{
     [ToggleOption(MultiMenu2.Main)]
     public static bool GameAnnouncements { get; set; } = false;
 
@@ -239,14 +233,12 @@ public static class CustomGameOptions2
 
     [StringOption(MultiMenu2.Main)]
     public static RoleFactionReports KillerReports { get; set; } = RoleFactionReports.Neither;
+}
 
-    // Map Settings
+[HeaderOption(MultiMenu2.Main)]
+public static class MapSettings
+{
     public static MapEnum Map { get; set; }
-
-    [HeaderOption(MultiMenu2.Main, [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle", "RandomMapSubmerged",
-        "RandomMapLevelImpostor", "AutoAdjustSettings", "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks",
-        "SmallMapIncreasedLongTasks", "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks"])]
-    public static bool MapSettings { get; set; } = true;
 
     [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent)]
     public static int RandomMapSkeld { get; set; } = 10;
@@ -295,10 +287,11 @@ public static class CustomGameOptions2
 
     [NumberOption(MultiMenu2.Main, 0, 3, 1)]
     public static int LargeMapDecreasedLongTasks { get; set; } = 0;
+}
 
-    [HeaderOption(MultiMenu2.Main, [ "CamouflagedComms", "CamouflagedMeetings", "NightVision", "EvilsIgnoreNV", "OxySlow", "ReactorShake" ])]
-    public static bool BetterSabotages { get; set; } = true;
-
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterSabotages
+{
     [ToggleOption(MultiMenu2.Main)]
     public static bool CamouflagedComms { get; set; } = true;
 
@@ -316,10 +309,12 @@ public static class CustomGameOptions2
 
     [NumberOption(MultiMenu2.Main, 0, 100, 5, Format.Percent)]
     public static int ReactorShake { get; set; } = 30;
+}
 
-    [HeaderOption(MultiMenu2.Main, [ "EnableBetterSkeld", "SkeldVentImprovements", "SkeldReactorTimer", "SkeldO2Timer" ])]
-    public static bool BetterSkeld { get; set; } = true;
-
+// Better Skeld Settings
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterSkeldOptions
+{
     [ToggleOption(MultiMenu2.Main)]
     public static bool EnableBetterSkeld { get; set; } = true;
 
@@ -331,10 +326,11 @@ public static class CustomGameOptions2
 
     [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
     public static float SkeldO2Timer { get; set; } = 60f;
+}
 
-    [HeaderOption(MultiMenu2.Main, [ "EnableBetterMiraHQ", "MiraHQVentImprovements", "MiraReactorTimer", "MiraO2Timer" ])]
-    public static bool BetterMiraHQ { get; set; } = true;
-
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterMiraHQOptions
+{
     [ToggleOption(MultiMenu2.Main)]
     public static bool EnableBetterMiraHQ { get; set; } = true;
 
@@ -346,10 +342,11 @@ public static class CustomGameOptions2
 
     [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
     public static float MiraO2Timer { get; set; } = 60f;
+}
 
-    [HeaderOption(MultiMenu2.Main, [ "EnableBetterPolus", "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ])]
-    public static bool BetterPolus { get; set; } = true;
-
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterPolusOptions
+{
     [ToggleOption(MultiMenu2.Main)]
     public static bool EnableBetterPolus { get; set; } = true;
 
@@ -367,10 +364,11 @@ public static class CustomGameOptions2
 
     [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
     public static float SeismicTimer { get; set; } = 60f;
+}
 
-    [HeaderOption(MultiMenu2.Main, [ "EnableBetterAirship", "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer" ])]
-    public static bool BetterAirship { get; set; } = true;
-
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterAirshipOptions
+{
     [ToggleOption(MultiMenu2.Main)]
     public static bool EnableBetterAirship { get; set; } = true;
 
@@ -398,9 +396,11 @@ public static class CustomGameOptions2
     [NumberOption(MultiMenu2.Main, 30f, 100f, 5f, Format.Time)]
     public static float CrashTimer { get; set; } = 90f;
 
-    [HeaderOption(MultiMenu2.Main, [ "EnableBetterFungle", "FungleReactorTimer", "FungleMixupTimer" ])]
-    public static bool BetterFungle { get; set; } = true;
+}
 
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterFungleOptions
+{
     [ToggleOption(MultiMenu2.Main)]
     public static bool EnableBetterFungle { get; set; } = true;
 
@@ -410,10 +410,11 @@ public static class CustomGameOptions2
     [NumberOption(MultiMenu2.Main, 4f, 20f, 1f, Format.Time)]
     public static float FungleMixupTimer { get; set; } = 8f;
 
-    // Crew Settings
-    [HeaderOption(MultiMenu2.Main, [ "CommonTasks", "LongTasks", "ShortTasks", "GhostTasksCountToWin", "CrewVision", "CrewFlashlight", "CrewMax", "CrewMin", "CrewVent" ])]
-    public static bool CrewSettings { get; set; } = true;
+}
 
+[HeaderOption(MultiMenu2.Main)]
+public static class CrewSettings
+{
     [NumberOption(MultiMenu2.Main, 0, 100, 1)]
     public static int CommonTasks { get; set; } = 2;
 
@@ -441,11 +442,12 @@ public static class CustomGameOptions2
     [ToggleOption(MultiMenu2.Main)]
     public static bool CrewVent { get; set; } = false;
 
-    [HeaderOption(MultiMenu2.Layer, [ "Altruist", "Bastion", "Chameleon", "Coroner", "Crewmate", "Detective", "Dictator", "Engineer", "Escort", "Mayor", "Medic", "Medium", "Monarch",
-        "Mystic", "Operative", "Retributionist", "Revealer", "Seer", "Sheriff", "Shifter", "Tracker", "Transporter", "Trapper", "VampireHunter", "Veteran", "Vigilante", "Actor", "Amnesiac", "Arsonist", "BountyHunter", "Cannibal", "Cryomaniac", "Dracula", "Executioner", "Glitch", "GuardianAngel", "Guesser", "Jackal", "Jester", "Juggernaut", "Murderer", "Necromancer", "Pestilence", "Phantom", "Plaguebearer", "SerialKiller", "Survivor", "Thief", "Troll", "Werewolf", "Whisperer", "Ambusher", "Blackmailer", "Camouflager", "Consigliere", "Consort", "Disguiser", "Enforcer", "Ghoul", "Godfather", "Grenadier", "Impostor", "Janitor", "Miner", "Morphling", "Teleporter", "Wraith", "Anarchist", "Banshee", "Bomber", "Collider", "Concealer", "Crusader", "Drunkard", "Framer", "Poisoner", "Rebel", "Shapeshifter", "Silencer", "Spellslinger", "Stalker", "Timekeeper", "Warper", "Hunter", "Hunted", "Runner", "NoneRole", "Astral", "Bait", "Colorblind", "Coward", "Diseased", "Drunk", "Dwarf", "Giant", "Indomitable", "Professional", "Shy", "VIP", "Volatile", "Yeller", "NoneModifier", "Allied", "Corrupted", "Defector", "Fanatic", "Linked", "Lovers", "Mafia", "Overlord", "Rivals", "Taskmaster", "Traitor", "ButtonBarry", "CrewAssassin", "Insider", "IntruderAssassin", "Multitasker", "NeutralAssassin", "Ninja", "Politician", "Radar", "Ruthless", "Snitch", "Swapper", "SyndicateAssassin", "Tiebreaker", "Torch", "Tunneler", "Underdog" ], HeaderType.Layer)] // Don't ask, it's currently for testing
-    public static bool Roles { get; set; } = true;
+}
 
-    // Crew Options
+[HeaderOption(MultiMenu2.Layer)]
+public static class Roles
+{
+    // Crew
     [LayersOption(MultiMenu2.Layer, "#704FA8FF", LayerEnum.Mayor)]
     public static RoleOptionData Mayor { get; set; } = new(0, 0, false, false);
 
@@ -521,7 +523,7 @@ public static class CustomGameOptions2
     [LayersOption(MultiMenu2.Layer, "#BE1C8CFF", LayerEnum.Trapper)]
     public static RoleOptionData Trapper { get; set; } = new(0, 0, false, false);
 
-    // Neutral Options
+    // Neutral
     [LayersOption(MultiMenu2.Layer, "#F7B3DAFF", LayerEnum.Jester)]
     public static RoleOptionData Jester { get; set; } = new(0, 0, false, false);
 
@@ -594,7 +596,7 @@ public static class CustomGameOptions2
     [LayersOption(MultiMenu2.Layer, "#B51E39FF", LayerEnum.BountyHunter)]
     public static RoleOptionData BountyHunter { get; set; } = new(0, 0, false, false);
 
-    // Intruder Options
+    // Intruder
     [LayersOption(MultiMenu2.Layer, "#FFFF99FF", LayerEnum.Consigliere)]
     public static RoleOptionData Consigliere { get; set; } = new(0, 0, false, false);
 
@@ -640,7 +642,7 @@ public static class CustomGameOptions2
     [LayersOption(MultiMenu2.Layer, "#005643FF", LayerEnum.Enforcer)]
     public static RoleOptionData Enforcer { get; set; } = new(0, 0, false, false);
 
-    // Syndicate Options
+    // Syndicate
     [LayersOption(MultiMenu2.Layer, "#8C7140FF", LayerEnum.Warper)]
     public static RoleOptionData Warper { get; set; } = new(0, 0, false, false);
 
@@ -686,7 +688,7 @@ public static class CustomGameOptions2
     [LayersOption(MultiMenu2.Layer, "#AAB43EFF", LayerEnum.Silencer)]
     public static RoleOptionData Silencer { get; set; } = new(0, 0, false, false);
 
-    // Modifier Options
+    // Modifier
     [LayersOption(MultiMenu2.Layer, "#00B3B3FF", LayerEnum.Bait)]
     public static RoleOptionData Bait { get; set; } = new(0, 0, false, false);
 
@@ -729,7 +731,7 @@ public static class CustomGameOptions2
     [LayersOption(MultiMenu2.Layer, "#B34D99FF", LayerEnum.Colorblind)]
     public static RoleOptionData Colorblind { get; set; } = new(0, 0, false, false);
 
-    // Ability Options
+    // Ability
     [LayersOption(MultiMenu2.Layer, "#FFFF99FF", LayerEnum.Torch)]
     public static RoleOptionData Torch { get; set; } = new(0, 0, false, false);
 
@@ -769,7 +771,7 @@ public static class CustomGameOptions2
     [LayersOption(MultiMenu2.Layer, "#66E666FF", LayerEnum.Swapper)]
     public static RoleOptionData Swapper { get; set; } = new(0, 0, false, false);
 
-    // Objectifier Options
+    // Objectifier
     [LayersOption(MultiMenu2.Layer, "#FF66CCFF", LayerEnum.Lovers)]
     public static RoleOptionData Lovers { get; set; } = new(0, 0, false, false);
 

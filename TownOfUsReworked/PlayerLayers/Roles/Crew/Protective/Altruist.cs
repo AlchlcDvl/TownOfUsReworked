@@ -1,11 +1,8 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Altruist : Crew
 {
-    // Altruist Options
-    [HeaderOption(MultiMenu2.LayerSubOptions, [ "MaxRevives", "ReviveCd", "ReviveDur", "AltruistTargetBody" ])]
-    public static bool AltruistHeader { get; set; } = true;
-
     [NumberOption(MultiMenu2.LayerSubOptions, 1, 14, 1)]
     public static int MaxRevives { get; set; } = 5;
 
@@ -21,7 +18,7 @@ public class Altruist : Crew
     public CustomButton ReviveButton { get; set; }
     public DeadBody RevivingBody { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Altruist : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Altruist : CustomColorManager.Crew;
     public override string Name => "Altruist";
     public override LayerEnum Type => LayerEnum.Altruist;
     public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";

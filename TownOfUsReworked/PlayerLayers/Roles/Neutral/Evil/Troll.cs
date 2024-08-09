@@ -5,7 +5,7 @@ public class Troll : Neutral
     public bool Killed => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public CustomButton InteractButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Troll : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Troll : CustomColorManager.Neutral;
     public override string Name => "Troll";
     public override LayerEnum Type => LayerEnum.Troll;
     public override Func<string> StartText => () => "Troll Everyone With Your Death";

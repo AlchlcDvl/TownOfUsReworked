@@ -1,9 +1,10 @@
 namespace TownOfUsReworked.Options2;
 
-public class HeaderOptionAttribute(MultiMenu2 menu, string[] groupMemberStrings, HeaderType type = HeaderType.General) : OptionAttribute(menu, CustomOptionType.Header)
+[AttributeUsage(AttributeTargets.Class)]
+public class HeaderOptionAttribute(MultiMenu2 menu, HeaderType type = HeaderType.General) : OptionAttribute(menu, CustomOptionType.Header)
 {
     public HeaderType HeaderType { get; } = type;
-    public string[] GroupMemberStrings { get; } = groupMemberStrings;
+    public string[] GroupMemberStrings { get; set; }
     public OptionAttribute[] GroupMembers { get; set; }
     private GameObject Chance { get; set; }
     private GameObject Count { get; set; }
@@ -11,6 +12,7 @@ public class HeaderOptionAttribute(MultiMenu2 menu, string[] groupMemberStrings,
     private GameObject Unique { get; set; }
     private GameObject Single { get; set; }
     private GameObject Collapse { get; set; }
+    private Type ClassType { get; set; }
     private GameMode SavedMode { get; set; } = GameMode.None;
     private static Vector3 Left { get; set; }
     private static Vector3 Right { get; set; }
@@ -66,27 +68,19 @@ public class HeaderOptionAttribute(MultiMenu2 menu, string[] groupMemberStrings,
         }
     }
 
-    public override void PostLoadSetup()
-    {
-        base.PostLoadSetup();
-        GroupMembers = [ .. AllOptions.Where(x => GroupMemberStrings.Contains(x.Property.Name)) ];
-        OptionParents1.Add((GroupMemberStrings, [ Property.Name ]));
-    }
-
     public void Toggle()
     {
         Value = !Get();
-        Property.SetValue(null, Value);
         Collapse.GetComponentInChildren<TextMeshPro>().text = (bool)Value ? "-" : "+";
         SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
     }
 
     public void UpdateParts()
     {
-        if (SavedMode == CustomGameOptions2.GameMode || HeaderType == HeaderType.General)
+        if (SavedMode == GameModeSettings.GameMode || HeaderType == HeaderType.General)
             return;
 
-        SavedMode = CustomGameOptions2.GameMode;
+        SavedMode = GameModeSettings.GameMode;
         Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
         Count.SetActive(SavedMode == GameMode.Custom);
         Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
@@ -117,5 +111,33 @@ public class HeaderOptionAttribute(MultiMenu2 menu, string[] groupMemberStrings,
                 Chance.transform.localPosition = Right + Diff;
                 break;
         }
+    }
+
+    public void SetTypeAndOptions(Type type)
+    {
+        ClassType = type;
+        Name = ClassType.Name;
+        var members = new List<OptionAttribute>();
+        var strings = new List<string>();
+
+        foreach (var prop in  AccessTools.GetDeclaredProperties(type))
+        {
+            var att = prop.GetCustomAttribute<OptionAttribute>();
+
+            if (att != null)
+            {
+                att.SetProperty(prop);
+                members.Add(att);
+                strings.Add(prop.Name);
+            }
+        }
+
+        GroupMemberStrings = [ .. strings ];
+        GroupMembers = [ .. members ];
+        OptionParents1.Add((GroupMemberStrings, [ type.Name ]));
+        Value = DefaultValue = true;
+        ID = $"CustomOption.{type.Name}";
+        // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
+        AllOptions.Add(this);
     }
 }

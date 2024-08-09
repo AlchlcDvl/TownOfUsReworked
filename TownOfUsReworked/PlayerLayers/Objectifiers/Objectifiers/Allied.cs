@@ -9,7 +9,7 @@ public class Allied : Objectifier
         Faction.Crew => CustomColorManager.Crew,
         Faction.Syndicate => CustomColorManager.Syndicate,
         Faction.Intruder => CustomColorManager.Intruder,
-        _ => ClientGameOptions.CustomObjColors ? CustomColorManager.Allied : CustomColorManager.Objectifier,
+        _ => ClientOptions.CustomObjColors ? CustomColorManager.Allied : CustomColorManager.Objectifier,
     };
     public override string Name => "Allied";
     public override string Symbol => "ζ";

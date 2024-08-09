@@ -5,7 +5,7 @@ public class Godfather : Intruder
     public bool HasDeclared { get; set; }
     public CustomButton DeclareButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Godfather : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Godfather : CustomColorManager.Intruder;
     public override string Name => "Godfather";
     public override LayerEnum Type => LayerEnum.Godfather;
     public override Func<string> StartText => () => "Promote Your Fellow <color=#FF1919FF>Intruder</color> To Do Better";

@@ -8,7 +8,7 @@ public class Silencer : Syndicate
     public Sprite PrevOverlay { get; set; }
     public UColor? PrevColor { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Silencer : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Silencer : CustomColorManager.Syndicate;
     public override string Name => "Silencer";
     public override LayerEnum Type => LayerEnum.Silencer;
     public override Func<string> StartText => () => "You Are The One Who Hushes";

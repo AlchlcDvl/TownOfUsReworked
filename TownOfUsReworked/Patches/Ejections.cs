@@ -9,7 +9,7 @@ public static class ConfirmEjects
 
         if (exiled == null)
         {
-            if (ClientGameOptions.CustomEjects)
+            if (ClientOptions.CustomEjects)
                 __instance.completeString = $"Everyone's safe...for now. ({(tie ? "Tie" : "Skipped")})";
 
             return;
@@ -27,7 +27,7 @@ public static class ConfirmEjects
 
         if (!CustomGameOptions.ConfirmEjects)
         {
-            if (ClientGameOptions.CustomEjects)
+            if (ClientOptions.CustomEjects)
             {
                 ejectString = $"{player.Data.PlayerName} " + (MapPatches.CurrentMap switch
                 {

@@ -29,7 +29,7 @@ public class PromotedGodfather : Intruder
     {
         get
         {
-            if (!ClientGameOptions.CustomIntColors)
+            if (!ClientOptions.CustomIntColors)
                 return CustomColorManager.Intruder;
             else
                 return FormerRole?.Color ?? CustomColorManager.Rebel;

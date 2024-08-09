@@ -5,7 +5,7 @@ public class Phantom : Neutral
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Phantom : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Phantom : CustomColorManager.Neutral;
     public override string Name => "Phantom";
     public override LayerEnum Type => LayerEnum.Phantom;
     public override Func<string> StartText => () => "Peek-A-Boo!";

@@ -6,7 +6,7 @@ public class Enforcer : Intruder
     public PlayerControl BombedPlayer { get; set; }
     public bool BombSuccessful { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Enforcer : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Enforcer : CustomColorManager.Intruder;
     public override string Name => "Enforcer";
     public override LayerEnum Type => LayerEnum.Enforcer;
     public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";

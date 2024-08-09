@@ -4,7 +4,7 @@ public class Murderer : Neutral
 {
     public CustomButton MurderButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Murderer : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Murderer : CustomColorManager.Neutral;
     public override string Name => "Murderer";
     public override LayerEnum Type => LayerEnum.Murderer;
     public override Func<string> StartText => () => "I Got Murder On My Mind";

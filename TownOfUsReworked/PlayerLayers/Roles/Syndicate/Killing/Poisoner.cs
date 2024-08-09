@@ -7,7 +7,7 @@ public class Poisoner : Syndicate
     public PlayerControl PoisonedPlayer { get; set; }
     public CustomMenu PoisonMenu { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Poisoner : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Poisoner : CustomColorManager.Syndicate;
     public override string Name => "Poisoner";
     public override LayerEnum Type => LayerEnum.Poisoner;
     public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";

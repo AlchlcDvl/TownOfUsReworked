@@ -17,11 +17,11 @@ public class Fanatic : Objectifier
                 {
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier
+                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier
                 };
             }
             else
-                return ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier;
+                return ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier;
         }
     }
     public override string Name => "Fanatic";

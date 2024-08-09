@@ -6,7 +6,7 @@ public class Dracula : Neutral
     public List<byte> Converted { get; set; }
     public static int AliveCount => CustomPlayer.AllPlayers.Count(x => !x.HasDied());
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Dracula : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : CustomColorManager.Neutral;
     public override string Name => "Dracula";
     public override LayerEnum Type => LayerEnum.Dracula;
     public override Func<string> StartText => () => "Lead The <color=#7B8968FF>Undead</color> To Victory";

@@ -15,7 +15,7 @@ public class Thief : Neutral
     private Transform Next;
     private Transform Back;
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Thief : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Thief : CustomColorManager.Neutral;
     public override string Name => "Thief";
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";

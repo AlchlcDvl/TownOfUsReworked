@@ -452,7 +452,7 @@ public abstract class Role : PlayerLayer
 
         var ld = playerControl.Data.DefaultOutfit.ColorId.IsLighter() ? "L" : "D";
 
-        if (ClientGameOptions.LighterDarker)
+        if (ClientOptions.LighterDarker)
             nameText.text += $"({ld})";
         else
             nameText.text = nameText.text.Replace($"({ld})", "");

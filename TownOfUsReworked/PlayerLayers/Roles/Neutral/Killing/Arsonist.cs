@@ -8,7 +8,7 @@ public class Arsonist : Neutral
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CustomGameOptions.ArsoLastKillerBoost;
     public List<byte> Doused { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Arsonist : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist : CustomColorManager.Neutral;
     public override string Name => "Arsonist";
     public override LayerEnum Type => LayerEnum.Arsonist;
     public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";

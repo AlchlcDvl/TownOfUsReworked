@@ -5,7 +5,7 @@ public class Amnesiac : Neutral
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
     public CustomButton RememberButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Amnesiac : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Amnesiac : CustomColorManager.Neutral;
     public override string Name => "Amnesiac";
     public override LayerEnum Type => LayerEnum.Amnesiac;
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";

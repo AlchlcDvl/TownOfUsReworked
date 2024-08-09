@@ -20,10 +20,10 @@ public static class MeetingPatches
             }
             else
             {
-                if (ClientGameOptions.WhiteNameplates)
+                if (ClientOptions.WhiteNameplates)
                     __instance.Background.sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
 
-                if (ClientGameOptions.NoLevels)
+                if (ClientOptions.NoLevels)
                 {
                     __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
                     __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);

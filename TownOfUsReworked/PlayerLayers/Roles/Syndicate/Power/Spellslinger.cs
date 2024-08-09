@@ -6,7 +6,7 @@ public class Spellslinger : Syndicate
     public List<byte> Spelled { get; set; }
     public int SpellCount { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Spellslinger : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Spellslinger : CustomColorManager.Syndicate;
     public override string Name => "Spellslinger";
     public override LayerEnum Type => LayerEnum.Spellslinger;
     public override Func<string> StartText => () => "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";

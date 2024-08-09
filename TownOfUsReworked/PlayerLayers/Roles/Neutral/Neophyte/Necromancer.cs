@@ -9,7 +9,7 @@ public class Necromancer : Neutral
     public int ResurrectedCount { get; set; }
     public int KillCount { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Necromancer : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Necromancer : CustomColorManager.Neutral;
     public override string Name => "Necromancer";
     public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";

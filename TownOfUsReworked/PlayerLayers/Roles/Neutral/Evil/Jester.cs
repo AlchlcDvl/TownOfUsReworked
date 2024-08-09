@@ -8,7 +8,7 @@ public class Jester : Neutral
     public CustomButton HauntButton { get; set; }
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !CustomGameOptions.AvoidNeutralKingmakers;
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Jester : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Jester : CustomColorManager.Neutral;
     public override string Name => "Jester";
     public override LayerEnum Type => LayerEnum.Jester;
     public override Func<string> StartText => () => "It Was Jest A Prank Bro";

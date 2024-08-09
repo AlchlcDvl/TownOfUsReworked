@@ -6,7 +6,7 @@ public class Plaguebearer : Neutral
     public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || CustomGameOptions.PestSpawn;
     public CustomButton InfectButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Plaguebearer : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Plaguebearer : CustomColorManager.Neutral;
     public override string Name => "Plaguebearer";
     public override LayerEnum Type => LayerEnum.Plaguebearer;
     public override Func<string> StartText => () => "Spread Disease To Summon <color=#424242FF>Pestilence</color>";

@@ -5,7 +5,7 @@ public class Stalker : Syndicate
     public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
     public CustomButton StalkButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Stalker : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Stalker : CustomColorManager.Syndicate;
     public override string Name => "Stalker";
     public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";

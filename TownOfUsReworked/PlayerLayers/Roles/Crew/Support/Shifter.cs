@@ -5,7 +5,7 @@ public class Shifter : Crew
     public CustomButton ShiftButton { get; set; }
     public CustomMenu ShifterMenu { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Shifter : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Shifter : CustomColorManager.Crew;
     public override string Name => "Shifter";
     public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText => () => "Shift Around Roles";

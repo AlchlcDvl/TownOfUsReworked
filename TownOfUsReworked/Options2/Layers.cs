@@ -14,7 +14,6 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     private GameObject Divider { get; set; }
     private GameObject Chance { get; set; }
     private GameObject Count { get; set; }
-    private GameObject Cog { get; set; }
     public SpriteRenderer UniqueCheck { get; set; }
     public SpriteRenderer ActiveCheck { get; set; }
     private GameMode SavedMode { get; set; } = GameMode.None;
@@ -39,7 +38,6 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         Count = role.transform.GetChild(1).gameObject;
         Chance = role.transform.GetChild(2).gameObject;
         Divider = role.transform.GetChild(4).gameObject;
-        Cog = role.transform.GetChild(5).gameObject;
         Unique = role.transform.GetChild(6).gameObject;
         Active1 = role.transform.GetChild(7).gameObject;
 
@@ -60,9 +58,10 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
         Unique.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
         Active1.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleActive);
-        Cog.GetComponent<PassiveButton>().OverrideOnClickListeners(SetUpOptionsMenu);
 
-        Cog.SetActive(GroupHeader != null);
+        var cog = role.transform.GetChild(5).gameObject;
+        cog.GetComponent<PassiveButton>().OverrideOnClickListeners(SetUpOptionsMenu);
+        cog.SetActive(GroupHeader != null);
 
         UpdateParts();
     }
@@ -156,10 +155,10 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
     public void UpdateParts()
     {
-        if (SavedMode == CustomGameOptions2.GameMode)
+        if (SavedMode == GameModeSettings.GameMode)
             return;
 
-        SavedMode = CustomGameOptions2.GameMode;
+        SavedMode = GameModeSettings.GameMode;
         Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
         Count.SetActive(SavedMode == GameMode.Custom);
         Divider.SetActive(SavedMode is GameMode.Custom or GameMode.AllAny);
@@ -211,7 +210,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     public override string Format()
     {
         var val = Get();
-        return CustomGameOptions2.GameMode switch
+        return GameModeSettings.GameMode switch
         {
             GameMode.Classic => $"{val.Chance}%",
             GameMode.Custom => $"{val.Chance}% x{val.Count}",
@@ -225,10 +224,11 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Property.Name == $"{Layer}Header");
+        ID += "Spawn";
+        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
 
         if (GroupHeader != null)
-            OptionParents1.Add(([ $"{Layer}Header" ], [ Layer ]));
+            OptionParents1.Add(([ Layer.ToString() ], [ Layer ]));
     }
 
     public void SetUpOptionsMenu()

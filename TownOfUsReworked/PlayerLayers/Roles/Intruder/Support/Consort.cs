@@ -6,7 +6,7 @@ public class Consort : Intruder
     public PlayerControl BlockTarget { get; set; }
     public CustomMenu BlockMenu { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Consort : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consort : CustomColorManager.Intruder;
     public override string Name => "Consort";
     public override LayerEnum Type => LayerEnum.Consort;
     public override Func<string> StartText => () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";

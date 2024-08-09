@@ -4,7 +4,7 @@ public class Corrupted : Objectifier
 {
     private CustomButton CorruptButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomObjColors ? CustomColorManager.Corrupted : CustomColorManager.Objectifier;
+    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Corrupted : CustomColorManager.Objectifier;
     public override string Name => "Corrupted";
     public override string Symbol => "δ";
     public override LayerEnum Type => LayerEnum.Corrupted;

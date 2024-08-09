@@ -5,7 +5,7 @@ public class Juggernaut : Neutral
     public int JuggKills { get; set; }
     public CustomButton AssaultButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Juggernaut : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Juggernaut : CustomColorManager.Neutral;
     public override string Name => "Juggernaut";
     public override LayerEnum Type => LayerEnum.Juggernaut;
     public override Func<string> StartText => () => "Your Power Grows With Every Kill";

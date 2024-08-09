@@ -4,7 +4,7 @@ public class Veteran : Crew
 {
     public CustomButton AlertButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Veteran : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Veteran : CustomColorManager.Crew;
     public override string Name => "Veteran";
     public override LayerEnum Type => LayerEnum.Veteran;
     public override Func<string> StartText => () => "Alert To Kill Anyone Who Dares To Touch You";

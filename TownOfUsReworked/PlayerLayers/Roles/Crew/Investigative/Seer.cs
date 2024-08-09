@@ -8,7 +8,7 @@ public class Seer : Crew
         x.Is(LayerEnum.BountyHunter) || x.Is(LayerEnum.PromotedGodfather) || x.Is(LayerEnum.PromotedRebel)));
     public CustomButton SeerButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Seer : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Seer : CustomColorManager.Crew;
     public override string Name => "Seer";
     public override LayerEnum Type => LayerEnum.Seer;
     public override Func<string> StartText => () => "You Can See People's Histories";

@@ -48,7 +48,7 @@ public class PromotedRebel : Syndicate
     {
         get
         {
-            if (!ClientGameOptions.CustomSynColors)
+            if (!ClientOptions.CustomSynColors)
                 return CustomColorManager.Syndicate;
             else
                 return FormerRole?.Color ?? CustomColorManager.Rebel;

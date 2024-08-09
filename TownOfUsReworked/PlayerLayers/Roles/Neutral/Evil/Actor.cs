@@ -10,7 +10,7 @@ public class Actor : Neutral
     public bool TargetFailed => !Targeted && Rounds > 0;
     public bool Targeted { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Actor : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Actor : CustomColorManager.Neutral;
     public override string Name => "Actor";
     public override LayerEnum Type => LayerEnum.Actor;
     public override Func<string> StartText => () => "Play Pretend With The Others";

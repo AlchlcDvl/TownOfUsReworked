@@ -6,7 +6,7 @@ public class Concealer : Syndicate
     public PlayerControl ConcealedPlayer { get; set; }
     public CustomMenu ConcealMenu { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Concealer : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Concealer : CustomColorManager.Syndicate;
     public override string Name => "Concealer";
     public override LayerEnum Type => LayerEnum.Concealer;
     public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";

@@ -906,7 +906,7 @@ public static class SettingsPatches
 
     private static void SetMap(int mapId)
     {
-        CustomGameOptions2.Map = (MapEnum)mapId;
+        MapSettings.Map = (MapEnum)mapId;
         OnValueChanged();
 
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[mapId]}</font>";

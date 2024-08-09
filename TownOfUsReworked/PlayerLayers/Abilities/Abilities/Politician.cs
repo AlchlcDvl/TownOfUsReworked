@@ -10,7 +10,7 @@ public class Politician : Ability
     public bool CanVote => VoteBank > 0 && !SelfVote;
     public bool CanKill => Player.CanKill();
 
-    public override UColor Color => ClientGameOptions.CustomAbColors ? CustomColorManager.Politician : CustomColorManager.Ability;
+    public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Politician : CustomColorManager.Ability;
     public override string Name => "Politician";
     public override LayerEnum Type => LayerEnum.Politician;
     public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +

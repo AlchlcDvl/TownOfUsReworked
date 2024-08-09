@@ -18,7 +18,7 @@ public static class TranslationManager
 
         try
         {
-            return AllTranslations.Find(x => x.ID == id)[language];
+            return AllTranslations.Find(x => x.ID == id || x.IDs.Contains(id))[language];
         }
         catch
         {

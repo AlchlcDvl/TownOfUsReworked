@@ -5,7 +5,7 @@ public class SerialKiller : Neutral
     public CustomButton BloodlustButton { get; set; }
     public CustomButton StabButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.SerialKiller : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.SerialKiller : CustomColorManager.Neutral;
     public override string Name => "Serial Killer";
     public override LayerEnum Type => LayerEnum.SerialKiller;
     public override Func<string> StartText => () => "You Like To Play With Knives";

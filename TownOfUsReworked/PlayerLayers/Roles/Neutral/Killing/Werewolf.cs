@@ -6,7 +6,7 @@ public class Werewolf : Neutral
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Werewolf : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Werewolf : CustomColorManager.Neutral;
     public override string Name => "Werewolf";
     public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText => () => "AWOOOOOOOOOO";

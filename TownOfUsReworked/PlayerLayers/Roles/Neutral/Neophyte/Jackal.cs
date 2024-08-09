@@ -11,7 +11,7 @@ public class Jackal : Neutral
     public bool AllRecruitsDead => Recruit1 && Recruit1.HasDied() && Recruit2 && Recruit2.HasDied() && Recruit3 && Recruit3.HasDied();
     public List<byte> Recruited { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Jackal : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Jackal : CustomColorManager.Neutral;
     public override string Name => "Jackal";
     public override LayerEnum Type => LayerEnum.Jackal;
     public override Func<string> StartText => () => "Gain A Majority";

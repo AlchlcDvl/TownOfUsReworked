@@ -13,7 +13,7 @@ public class Executioner : Neutral
     public CustomButton TargetButton { get; set; }
     public bool TargetFailed => !TargetPlayer && Rounds > 2;
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Executioner : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Executioner : CustomColorManager.Neutral;
     public override string Name => "Executioner";
     public override LayerEnum Type => LayerEnum.Executioner;
     public override Func<string> StartText => () => "Find Someone To Eject";

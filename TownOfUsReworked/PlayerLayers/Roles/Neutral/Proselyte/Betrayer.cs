@@ -4,7 +4,7 @@ public class Betrayer : Neutral
 {
     public CustomButton KillButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Betrayer : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Betrayer : CustomColorManager.Neutral;
     public override string Name => "Betrayer";
     public override LayerEnum Type => LayerEnum.Betrayer;
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";

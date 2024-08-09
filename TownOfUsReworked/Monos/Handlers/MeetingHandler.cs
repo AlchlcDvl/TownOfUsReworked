@@ -43,7 +43,7 @@ public class MeetingHandler : MonoBehaviour
         var revealed = false;
 
         if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
-            name = ClientGameOptions.OptimisationMode ? "" : GetRandomisedName();
+            name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
         else
             name = PlayerHandler.Instance.PlayerNames.FirstOrDefault(x => x.Key == player.TargetPlayerId).Value;
 

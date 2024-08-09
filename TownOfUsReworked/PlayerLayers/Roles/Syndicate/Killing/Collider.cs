@@ -9,7 +9,7 @@ public class Collider : Syndicate
     public PlayerControl Negative { get; set; }
     private float Range => CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
 
-    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Collider : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Collider : CustomColorManager.Syndicate;
     public override string Name => "Collider";
     public override LayerEnum Type => LayerEnum.Collider;
     public override Func<string> StartText => () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";

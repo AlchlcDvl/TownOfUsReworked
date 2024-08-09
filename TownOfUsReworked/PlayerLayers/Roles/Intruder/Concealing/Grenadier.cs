@@ -5,7 +5,7 @@ public class Grenadier : Intruder
     public CustomButton FlashButton { get; set; }
     public List<byte> FlashedPlayers { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Grenadier : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Grenadier : CustomColorManager.Intruder;
     public override string Name => "Grenadier";
     public override LayerEnum Type => LayerEnum.Grenadier;
     public override Func<string> StartText => () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";

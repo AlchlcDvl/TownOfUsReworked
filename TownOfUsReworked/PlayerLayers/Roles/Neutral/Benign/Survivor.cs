@@ -4,7 +4,7 @@ public class Survivor : Neutral
 {
     public CustomButton VestButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.Survivor : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Survivor : CustomColorManager.Neutral;
     public override string Name => "Survivor";
     public override LayerEnum Type => LayerEnum.Survivor;
     public override Func<string> StartText => () => "Do Whatever It Takes To Live";

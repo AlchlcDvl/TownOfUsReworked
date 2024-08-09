@@ -17,11 +17,11 @@ public class Traitor : Objectifier
                 {
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientGameOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier
+                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier
                 };
             }
             else
-                return ClientGameOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Objectifier;
+                return ClientOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Objectifier;
         }
     }
     public override string Name => "Traitor";

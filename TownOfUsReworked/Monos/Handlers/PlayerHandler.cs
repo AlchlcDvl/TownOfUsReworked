@@ -51,7 +51,7 @@ public class PlayerHandler : MonoBehaviour
 
         var name = "";
 
-        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead && !ClientGameOptions.OptimisationMode)
+        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead && !ClientOptions.OptimisationMode)
             name = GetRandomisedName();
         else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
@@ -64,7 +64,7 @@ public class PlayerHandler : MonoBehaviour
 
         var ld = player.CurrentOutfit.ColorId.IsLighter() ? "L" : "D";
 
-        if (ClientGameOptions.LighterDarker)
+        if (ClientOptions.LighterDarker)
             name += $" ({ld})";
 
         return name;
@@ -91,7 +91,7 @@ public class PlayerHandler : MonoBehaviour
         var revealed = false;
 
         if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
-            name = ClientGameOptions.OptimisationMode ? "" : GetRandomisedName();
+            name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
         else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
         else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)

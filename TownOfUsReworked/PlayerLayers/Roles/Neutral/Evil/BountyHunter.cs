@@ -21,7 +21,7 @@ public class BountyHunter : Neutral
     public bool Assigned { get; set; }
     public int Rounds { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomNeutColors ? CustomColorManager.BountyHunter : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.BountyHunter : CustomColorManager.Neutral;
     public override string Name => "Bounty Hunter";
     public override LayerEnum Type => LayerEnum.BountyHunter;
     public override Func<string> StartText => () => "Find And Kill Your Target";

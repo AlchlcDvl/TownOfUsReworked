@@ -5,7 +5,7 @@ public class Crusader : Syndicate
     public PlayerControl CrusadedPlayer { get; set; }
     public CustomButton CrusadeButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomSynColors ? CustomColorManager.Crusader : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Crusader : CustomColorManager.Syndicate;
     public override string Name => "Crusader";
     public override LayerEnum Type => LayerEnum.Crusader;
     public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";

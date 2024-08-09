@@ -8,7 +8,7 @@ public class Blackmailer : Intruder
     public Sprite PrevOverlay { get; set; }
     public UColor? PrevColor { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomIntColors ? CustomColorManager.Blackmailer : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Blackmailer : CustomColorManager.Intruder;
     public override string Name => "Blackmailer";
     public override LayerEnum Type => LayerEnum.Blackmailer;
     public override Func<string> StartText => () => "You Know Their Secrets";

@@ -6,7 +6,7 @@ public class Medic : Crew
     public bool ShieldBroken { get; set; }
     public CustomButton ShieldButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Medic : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medic : CustomColorManager.Crew;
     public override string Name => "Medic";
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";

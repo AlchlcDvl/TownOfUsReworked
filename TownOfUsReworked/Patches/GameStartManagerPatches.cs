@@ -83,7 +83,7 @@ public static class GameStartManagerPatches
             if (!AmongUsClient.Instance || !GameData.Instance || !GameManager.Instance)
                 return;
 
-            __instance.UpdateMapImage((MapNames)CustomGameOptions2.Map);
+            __instance.UpdateMapImage((MapNames)MapSettings.Map);
             __instance.CheckSettingsDiffs();
             __instance.RulesPresetText.text = TranslationController.Instance.GetString(GameOptionsManager.Instance.CurrentGameOptions.GetRulesPresetTitle());
             __instance.privatePublicPanelText.text = TranslationController.Instance.GetString(GameCode.IntToGameName(AmongUsClient.Instance.GameId) == null ? StringNames.LocalButton :
@@ -110,7 +110,7 @@ public static class GameStartManagerPatches
                 else if (__instance.LastPlayerCount == __instance.MinPlayers)
                     arg = "#FFFF00FF";
 
-                __instance.PlayerCounter.text = $"<color={arg}>{__instance.LastPlayerCount}/{CustomGameOptions2.LobbySize}</color>";
+                __instance.PlayerCounter.text = $"<color={arg}>{__instance.LastPlayerCount}/{GameSettings.LobbySize}</color>";
                 __instance.PlayerCounter.enableWordWrapping = false;
                 __instance.StartButton.SetButtonEnableState(__instance.LastPlayerCount >= __instance.MinPlayers);
                 __instance.StartButtonGlyph?.SetColor(__instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear);
@@ -120,9 +120,9 @@ public static class GameStartManagerPatches
                 if (DiscordManager.InstanceExists)
                 {
                     if (AmongUsClient.Instance.AmHost && IsOnlineGame)
-                        DiscordManager.Instance.SetInLobbyHost(__instance.LastPlayerCount, CustomGameOptions2.LobbySize, AmongUsClient.Instance.GameId);
+                        DiscordManager.Instance.SetInLobbyHost(__instance.LastPlayerCount, GameSettings.LobbySize, AmongUsClient.Instance.GameId);
                     else
-                        DiscordManager.Instance.SetInLobbyClient(__instance.LastPlayerCount, CustomGameOptions2.LobbySize, AmongUsClient.Instance.GameId);
+                        DiscordManager.Instance.SetInLobbyClient(__instance.LastPlayerCount, GameSettings.LobbySize, AmongUsClient.Instance.GameId);
                 }
             }
 

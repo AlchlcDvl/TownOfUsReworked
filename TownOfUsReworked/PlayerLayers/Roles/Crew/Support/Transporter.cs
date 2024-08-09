@@ -19,7 +19,7 @@ public class Transporter : Crew
     public Vent Vent1 { get; set; }
     public Vent Vent2 { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Transporter : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Transporter : CustomColorManager.Crew;
     public override string Name => "Transporter";
     public override LayerEnum Type => LayerEnum.Transporter;
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";

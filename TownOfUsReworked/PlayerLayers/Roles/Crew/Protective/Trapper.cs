@@ -10,7 +10,7 @@ public class Trapper : Crew
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Trapper : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Trapper : CustomColorManager.Crew;
     public override string Name => "Trapper";
     public override LayerEnum Type => LayerEnum.Trapper;
     public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <color=#FF0000FF>Evildoers</color></size>";

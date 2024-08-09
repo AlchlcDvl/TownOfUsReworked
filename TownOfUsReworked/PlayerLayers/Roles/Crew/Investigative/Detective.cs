@@ -7,7 +7,7 @@ public class Detective : Crew
     public List<Footprint> AllPrints { get; set; }
     public List<byte> Investigated { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Detective : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Detective : CustomColorManager.Crew;
     public override string Name => "Detective";
     public override LayerEnum Type => LayerEnum.Detective;
     public override Func<string> StartText => () => "Examine Players For <color=#AA0000FF>Blood</color>";

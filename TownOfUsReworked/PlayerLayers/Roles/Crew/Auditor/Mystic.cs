@@ -5,7 +5,7 @@ public class Mystic : Crew
     private bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None) && !x.Is(SubFaction));
     private CustomButton RevealButton { get; set; }
 
-    public override UColor Color => ClientGameOptions.CustomCrewColors ? CustomColorManager.Mystic : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mystic : CustomColorManager.Crew;
     public override string Name => "Mystic";
     public override LayerEnum Type => LayerEnum.Mystic;
     public override Func<string> StartText => () => "You Know When Converts Happen";

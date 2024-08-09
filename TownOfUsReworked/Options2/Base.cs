@@ -15,6 +15,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     public bool All { get; set; }
     public bool ClientOnly { get; set; }
     public PropertyInfo Property { get; set; }
+    public string Name { get; set; } // Not actually the setting text, just the property/class name :]
     // public bool Invert { get; set; }
     // public MethodInfo OnChanged { get; set; }
     // public Type OnChangedType { get; set; }
@@ -72,6 +73,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         Property = property;
         Value = DefaultValue = property.GetValue(null);
         ID = $"CustomOption.{property.Name}";
+        Name = property.Name;
         // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
         AllOptions.Add(this);
     }
@@ -82,14 +84,14 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     {
         var result = true;
 
-        if (OptionParents1.Any(x => x.Item1.Contains(Property.Name)))
+        if (OptionParents1.Any(x => x.Item1.Contains(Name)))
         {
-            var parents = OptionParents1.Find(x => x.Item1.Contains(Property.Name)).Item2;
+            var parents = OptionParents1.Find(x => x.Item1.Contains(Name)).Item2;
             result = parents.AllAnyOrEmpty(IsActive, All);
 
-            if (OptionParents2.Any(x => x.Item1.Contains(Property.Name)))
+            if (OptionParents2.Any(x => x.Item1.Contains(Name)))
             {
-                parents = OptionParents2.Find(x => x.Item1.Contains(Property.Name)).Item2;
+                parents = OptionParents2.Find(x => x.Item1.Contains(Name)).Item2;
                 result &= parents.AllAnyOrEmpty(IsActive, All);
             }
         }
@@ -104,9 +106,9 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         if (option == null)
             result = true;
         else if (option is MapEnum map)
-            result = CustomGameOptions2.Map == map;
+            result = MapSettings.Map == map;
         else if (option is GameMode mode)
-            result = CustomGameOptions2.GameMode == mode;
+            result = GameModeSettings.GameMode == mode;
         else if (option is LayerEnum layer)
             result = SettingsPatches.ActiveLayer == layer;
         else if (option is (string, string))
@@ -115,13 +117,12 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
             {
                 var tuple = ((string, string))option;
                 var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ToList().Find(x => x.Name == tuple.Item1);
-                result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
-                MapToLoaded[ID] = result;
+                MapToLoaded[ID] = result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
             }
         }
         else if (option is string id)
         {
-            if (id == Property.Name)
+            if (id == Name)
                 return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them even with this line active
 
             var optionatt = GetOptionFromPropertyName(id);
@@ -173,10 +174,10 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     public void Set(object value, bool rpc = true, bool notify = true)
     {
         Value = value;
-        Property.SetValue(null, value);
+        Property?.SetValue(null, value);
         // OnChanged.Invoke(value);
 
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption")))
+        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type == CustomOptionType.Header))
             SendOptionRPC(this);
 
         if (!Setting)
@@ -353,7 +354,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
     public static OptionAttribute GetOption(string title) => AllOptions.Find(x => x.ID == title);
 
-    public static OptionAttribute GetOptionFromPropertyName(string propertyName) => AllOptions.Find(x => x.Property.Name == propertyName);
+    public static OptionAttribute GetOptionFromPropertyName(string propertyName) => AllOptions.Find(x => x.Name == propertyName);
 
     public static T GetOption<T>(string title) where T : OptionAttribute => GetOption(title) as T;
 }
