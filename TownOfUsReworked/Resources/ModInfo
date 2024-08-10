@@ -12,11 +12,12 @@ New!
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
-- Update: Updated the mod to Among Us v2024.6.18
-- Update: Updated BepInEx to 6.0.0-be.692
-- Update: Updated Reactor to 2.3.0
+- Update: Updated to Among Us 2024.6.18
+- Update: Updated to BepInEx 6.0.0-be.692
+- Update: Updated to Reactor 2.3.0
 - Change: Jackal recruits can now need to only be of opposite factions so it's more flexible
 - Change: Shifter now has a player menu to swap through to prevent auto confirms
+- Change: Bastion can now spawn in Killing Only
 - Improvement: Improved some button handling
 - Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
 - Recode: The custom options have been given a full recode to work even better than before

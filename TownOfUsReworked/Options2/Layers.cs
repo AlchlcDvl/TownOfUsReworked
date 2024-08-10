@@ -101,7 +101,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
             chance = 0;
         }
 
-        Set(new RoleOptionData(chance, count, GetUnique(), GetActive()));
+        Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }
 
     public void DecreaseCount()
@@ -118,7 +118,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
             chance = 0;
         }
 
-        Set(new RoleOptionData(chance, count, GetUnique(), GetActive()));
+        Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }
 
     public void IncreaseChance()
@@ -134,7 +134,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsCustom ? Min : CachedCount;
 
-        Set(new RoleOptionData(chance, count, GetUnique(), GetActive()));
+        Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }
 
     public void DecreaseChance()
@@ -150,7 +150,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsCustom ? Min : CachedCount;
 
-        Set(new RoleOptionData(chance, count, GetUnique(), GetActive()));
+        Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }
 
     public void UpdateParts()
@@ -224,8 +224,10 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        ID += "Spawn";
+        ID =  $"CustomOption.{Layer}Spawn";
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
+        Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
+        Property.SetValue(null, Value);
 
         if (GroupHeader != null)
             OptionParents1.Add(([ Layer.ToString() ], [ Layer ]));

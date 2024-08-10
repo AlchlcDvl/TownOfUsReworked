@@ -1,7 +1,5 @@
 namespace TownOfUsReworked.Modules;
 
-public record class GenerationData(int Chance, LayerEnum ID, bool Unique);
-
 public record class SummaryInfo(string PlayerName, string History, string CachedHistory);
 
 public readonly struct PointInTime(Vector3 position)
@@ -45,18 +43,19 @@ public class Asset
     public string ID { get; set; }
 }
 
-public class RoleOptionData(int chance, int count, bool unique, bool active)
+public class RoleOptionData(int chance, int count, bool unique, bool active, LayerEnum layer)
 {
-    public int Chance { get; } = chance;
-    public int Count { get; } = count;
+    public int Chance { get; set; } = chance;
+    public int Count { get; set; } = count;
     public bool Unique { get; set; } = unique;
     public bool Active { get; set; } = active;
+    public LayerEnum ID { get; set; } = layer;
 
-    public override string ToString() => $"{Chance},{Count},{Unique},{Active}";
+    public override string ToString() => $"{Chance},{Count},{Unique},{Active},{ID}";
 
     public static RoleOptionData Parse(string input)
     {
         var parts = input.Split(',');
-        return new(int.Parse(parts[0]), int.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]));
+        return new(int.Parse(parts[0]), int.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
     }
 }

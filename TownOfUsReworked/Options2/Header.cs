@@ -117,6 +117,10 @@ public class HeaderOptionAttribute(MultiMenu2 menu, HeaderType type = HeaderType
     {
         ClassType = type;
         Name = ClassType.Name;
+        Value = DefaultValue = true;
+        ID = $"CustomOption.{Name}";
+        // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
+        AllOptions.Add(this);
         var members = new List<OptionAttribute>();
         var strings = new List<string>();
 
@@ -134,10 +138,6 @@ public class HeaderOptionAttribute(MultiMenu2 menu, HeaderType type = HeaderType
 
         GroupMemberStrings = [ .. strings ];
         GroupMembers = [ .. members ];
-        OptionParents1.Add((GroupMemberStrings, [ type.Name ]));
-        Value = DefaultValue = true;
-        ID = $"CustomOption.{type.Name}";
-        // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
-        AllOptions.Add(this);
+        OptionParents1.Add((GroupMemberStrings, [ Name ]));
     }
 }

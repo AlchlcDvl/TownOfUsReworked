@@ -9,7 +9,7 @@ public class Language : Asset
     public string SChinese { get; set; }
 
     [JsonPropertyName("ids")]
-    public List<string> IDs { get; set; } // For when I want multiple IDs to point to the same thing but I'm too lazy to add their own entries to the json
+    public string[] IDs { get; set; } // For when I want multiple IDs to point to the same thing but I'm too lazy to add their own entries to the json
 
     public string this[string lang]
     {

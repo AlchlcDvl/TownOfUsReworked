@@ -2,38 +2,38 @@ namespace TownOfUsReworked.Classes;
 
 public static class RoleGen
 {
-    private static List<GenerationData> CrewAuditorRoles = [];
-    private static List<GenerationData> CrewKillingRoles = [];
-    private static List<GenerationData> CrewSupportRoles = [];
-    private static List<GenerationData> CrewSovereignRoles = [];
-    private static List<GenerationData> CrewProtectiveRoles = [];
-    private static List<GenerationData> CrewInvestigativeRoles = [];
-    private static List<GenerationData> CrewRoles = [];
+    private static List<RoleOptionData> CrewAuditorRoles = [];
+    private static List<RoleOptionData> CrewKillingRoles = [];
+    private static List<RoleOptionData> CrewSupportRoles = [];
+    private static List<RoleOptionData> CrewSovereignRoles = [];
+    private static List<RoleOptionData> CrewProtectiveRoles = [];
+    private static List<RoleOptionData> CrewInvestigativeRoles = [];
+    private static List<RoleOptionData> CrewRoles = [];
 
-    private static List<GenerationData> NeutralEvilRoles = [];
-    private static List<GenerationData> NeutralBenignRoles = [];
-    private static List<GenerationData> NeutralKillingRoles = [];
-    private static List<GenerationData> NeutralNeophyteRoles = [];
-    private static List<GenerationData> NeutralHarbingerRoles = [];
-    private static List<GenerationData> NeutralRoles = [];
+    private static List<RoleOptionData> NeutralEvilRoles = [];
+    private static List<RoleOptionData> NeutralBenignRoles = [];
+    private static List<RoleOptionData> NeutralKillingRoles = [];
+    private static List<RoleOptionData> NeutralNeophyteRoles = [];
+    private static List<RoleOptionData> NeutralHarbingerRoles = [];
+    private static List<RoleOptionData> NeutralRoles = [];
 
-    private static List<GenerationData> IntruderHeadRoles = [];
-    private static List<GenerationData> IntruderKillingRoles = [];
-    private static List<GenerationData> IntruderSupportRoles = [];
-    private static List<GenerationData> IntruderDeceptionRoles = [];
-    private static List<GenerationData> IntruderConcealingRoles = [];
-    private static List<GenerationData> IntruderRoles = [];
+    private static List<RoleOptionData> IntruderHeadRoles = [];
+    private static List<RoleOptionData> IntruderKillingRoles = [];
+    private static List<RoleOptionData> IntruderSupportRoles = [];
+    private static List<RoleOptionData> IntruderDeceptionRoles = [];
+    private static List<RoleOptionData> IntruderConcealingRoles = [];
+    private static List<RoleOptionData> IntruderRoles = [];
 
-    private static List<GenerationData> SyndicatePowerRoles = [];
-    private static List<GenerationData> SyndicateSupportRoles = [];
-    private static List<GenerationData> SyndicateKillingRoles = [];
-    private static List<GenerationData> SyndicateDisruptionRoles = [];
-    private static List<GenerationData> SyndicateRoles = [];
+    private static List<RoleOptionData> SyndicatePowerRoles = [];
+    private static List<RoleOptionData> SyndicateSupportRoles = [];
+    private static List<RoleOptionData> SyndicateKillingRoles = [];
+    private static List<RoleOptionData> SyndicateDisruptionRoles = [];
+    private static List<RoleOptionData> SyndicateRoles = [];
 
-    private static List<GenerationData> AllModifiers = [];
-    private static List<GenerationData> AllAbilities = [];
-    private static List<GenerationData> AllObjectifiers = [];
-    private static List<GenerationData> AllRoles = [];
+    private static List<RoleOptionData> AllModifiers = [];
+    private static List<RoleOptionData> AllAbilities = [];
+    private static List<RoleOptionData> AllObjectifiers = [];
+    private static List<RoleOptionData> AllRoles = [];
 
     public static PlayerControl PureCrew;
     public static int Convertible;
@@ -108,9 +108,9 @@ public static class RoleGen
         return URandom.RandomRangeInt(1, 100) <= probability;
     }
 
-    private static List<GenerationData> Sort(List<GenerationData> items, int amount)
+    private static List<RoleOptionData> Sort(List<RoleOptionData> items, int amount)
     {
-        var newList = new List<GenerationData>();
+        var newList = new List<RoleOptionData>();
         items.Shuffle();
 
         if (amount != CustomPlayer.AllPlayers.Count && IsAA)
@@ -430,10 +430,11 @@ public static class RoleGen
 
         if (crew > 0)
         {
-            var vigis = crew / 2;
-            var vets = crew / 2;
+            var vigis = crew / 3;
+            var vets = crew / 3;
+            var basts = crew / 3;
 
-            while (vigis > 0 || vets > 0)
+            while (vigis > 0 || vets > 0 || basts > 0)
             {
                 if (vigis > 0)
                 {
@@ -445,6 +446,12 @@ public static class RoleGen
                 {
                     CrewRoles.Add(GenerateSpawnItem(LayerEnum.Veteran));
                     vets--;
+                }
+
+                if (basts > 0)
+                {
+                    CrewRoles.Add(GenerateSpawnItem(LayerEnum.Bastion));
+                    basts--;
                 }
             }
 
@@ -1967,137 +1974,18 @@ public static class RoleGen
             AllRoles.Add(GenerateSpawnItem(LayerEnum.Hunted));
     }
 
-    private static GenerationData GenerateSpawnItem(LayerEnum id)
+    private static RoleOptionData GenerateSpawnItem(LayerEnum id) => id switch
     {
-        var (chance, unique) = id switch
-        {
-            LayerEnum.Mayor => (CustomGameOptions.MayorOn, CustomGameOptions.UniqueMayor),
-            LayerEnum.Sheriff => (CustomGameOptions.SheriffOn, CustomGameOptions.UniqueSheriff),
-            LayerEnum.Vigilante => (IsKilling ? 100 : CustomGameOptions.VigilanteOn, CustomGameOptions.UniqueVigilante),
-            LayerEnum.Engineer => (CustomGameOptions.EngineerOn, CustomGameOptions.UniqueEngineer),
-            LayerEnum.Monarch => (CustomGameOptions.MonarchOn, CustomGameOptions.UniqueMonarch),
-            LayerEnum.Dictator => (CustomGameOptions.DictatorOn, CustomGameOptions.UniqueDictator),
-            LayerEnum.Collider => (CustomGameOptions.ColliderOn, CustomGameOptions.UniqueCollider),
-            LayerEnum.Medic => (CustomGameOptions.MedicOn, CustomGameOptions.UniqueMedic),
-            LayerEnum.Stalker => (CustomGameOptions.StalkerOn, CustomGameOptions.UniqueStalker),
-            LayerEnum.Altruist => (CustomGameOptions.AltruistOn, CustomGameOptions.UniqueAltruist),
-            LayerEnum.Veteran => (IsKilling ? 100 : CustomGameOptions.VeteranOn, CustomGameOptions.UniqueVeteran),
-            LayerEnum.Tracker => (CustomGameOptions.TrackerOn, CustomGameOptions.UniqueTracker),
-            LayerEnum.Transporter => (CustomGameOptions.TransporterOn, CustomGameOptions.UniqueTransporter),
-            LayerEnum.Medium => (CustomGameOptions.MediumOn, CustomGameOptions.UniqueMedium),
-            LayerEnum.Coroner => (CustomGameOptions.CoronerOn, CustomGameOptions.UniqueCoroner),
-            LayerEnum.Operative => (CustomGameOptions.OperativeOn, CustomGameOptions.UniqueOperative),
-            LayerEnum.Detective => (CustomGameOptions.DetectiveOn, CustomGameOptions.UniqueDetective),
-            LayerEnum.Escort => (CustomGameOptions.EscortOn, CustomGameOptions.UniqueDetective),
-            LayerEnum.Shifter => (CustomGameOptions.ShifterOn, CustomGameOptions.UniqueShifter),
-            LayerEnum.Crewmate => (IsCustom ? CustomGameOptions.CrewmateOn : 100, false),
-            LayerEnum.VampireHunter => (CustomGameOptions.VampireHunterOn, CustomGameOptions.UniqueVampireHunter),
-            LayerEnum.Jester => (CustomGameOptions.JesterOn, CustomGameOptions.UniqueJester),
-            LayerEnum.Amnesiac => (CustomGameOptions.AmnesiacOn, CustomGameOptions.UniqueAmnesiac),
-            LayerEnum.Executioner => (CustomGameOptions.ExecutionerOn, CustomGameOptions.UniqueExecutioner),
-            LayerEnum.Survivor => (CustomGameOptions.SurvivorOn, CustomGameOptions.UniqueSurvivor),
-            LayerEnum.GuardianAngel => (CustomGameOptions.GuardianAngelOn, CustomGameOptions.UniqueGuardianAngel),
-            LayerEnum.Glitch => (CustomGameOptions.GlitchOn, CustomGameOptions.UniqueGlitch),
-            LayerEnum.Murderer => (IsKilling ? 5 : CustomGameOptions.MurdererOn, CustomGameOptions.UniqueMurderer),
-            LayerEnum.Cryomaniac => (CustomGameOptions.CryomaniacOn, CustomGameOptions.UniqueCryomaniac),
-            LayerEnum.Werewolf => (CustomGameOptions.WerewolfOn, CustomGameOptions.UniqueWerewolf),
-            LayerEnum.Arsonist => (CustomGameOptions.ArsonistOn, CustomGameOptions.UniqueArsonist),
-            LayerEnum.Jackal => (CustomGameOptions.JackalOn, CustomGameOptions.UniqueJackal),
-            LayerEnum.Plaguebearer => (CustomGameOptions.PlaguebearerOn, CustomGameOptions.UniquePlaguebearer),
-            LayerEnum.Pestilence => (CustomGameOptions.PlaguebearerOn, CustomGameOptions.UniquePlaguebearer),
-            LayerEnum.SerialKiller => (CustomGameOptions.SerialKillerOn, CustomGameOptions.UniqueSerialKiller),
-            LayerEnum.Juggernaut => (CustomGameOptions.JuggernautOn, CustomGameOptions.UniqueJuggernaut),
-            LayerEnum.Cannibal => (CustomGameOptions.CannibalOn, CustomGameOptions.UniqueCannibal),
-            LayerEnum.Thief => (CustomGameOptions.ThiefOn, CustomGameOptions.UniqueThief),
-            LayerEnum.Dracula => (CustomGameOptions.DraculaOn, CustomGameOptions.UniqueDracula),
-            LayerEnum.Troll => (CustomGameOptions.TrollOn, CustomGameOptions.UniqueTroll),
-            LayerEnum.Enforcer => (CustomGameOptions.EnforcerOn, CustomGameOptions.UniqueEnforcer),
-            LayerEnum.Morphling => (CustomGameOptions.MorphlingOn, CustomGameOptions.UniqueMorphling),
-            LayerEnum.Blackmailer => (CustomGameOptions.BlackmailerOn, CustomGameOptions.UniqueBlackmailer),
-            LayerEnum.Miner => (CustomGameOptions.MinerOn, CustomGameOptions.UniqueMiner),
-            LayerEnum.Teleporter => (CustomGameOptions.TeleporterOn, CustomGameOptions.UniqueTeleporter),
-            LayerEnum.Wraith => (CustomGameOptions.WraithOn, CustomGameOptions.UniqueWraith),
-            LayerEnum.Consort => (CustomGameOptions.ConsortOn, CustomGameOptions.UniqueConsort),
-            LayerEnum.Janitor => (CustomGameOptions.JanitorOn, CustomGameOptions.UniqueJanitor),
-            LayerEnum.Camouflager => (CustomGameOptions.CamouflagerOn, CustomGameOptions.UniqueCamouflager),
-            LayerEnum.Grenadier => (CustomGameOptions.GrenadierOn, CustomGameOptions.UniqueGrenadier),
-            LayerEnum.Poisoner => (CustomGameOptions.PoisonerOn, CustomGameOptions.UniquePoisoner),
-            LayerEnum.Impostor => (IsKilling ? 5 : (IsCustom ? CustomGameOptions.ImpostorOn : 100), false),
-            LayerEnum.Consigliere => (CustomGameOptions.ConsigliereOn, CustomGameOptions.UniqueConsigliere),
-            LayerEnum.Disguiser => (CustomGameOptions.DisguiserOn, CustomGameOptions.UniqueDisguiser),
-            LayerEnum.Spellslinger => (CustomGameOptions.SpellslingerOn, CustomGameOptions.UniqueSpellslinger),
-            LayerEnum.Godfather => (CustomGameOptions.GodfatherOn, CustomGameOptions.UniqueGodfather),
-            LayerEnum.Anarchist => (IsKilling ? 5 : (IsCustom ? CustomGameOptions.AnarchistOn : 100), false),
-            LayerEnum.Shapeshifter => (CustomGameOptions.ShapeshifterOn, CustomGameOptions.UniqueShapeshifter),
-            LayerEnum.Drunkard => (CustomGameOptions.DrunkardOn, CustomGameOptions.UniqueDrunk),
-            LayerEnum.Framer => (CustomGameOptions.FramerOn, CustomGameOptions.UniqueFramer),
-            LayerEnum.Rebel => (CustomGameOptions.RebelOn, CustomGameOptions.UniqueRebel),
-            LayerEnum.Concealer => (CustomGameOptions.ConcealerOn, CustomGameOptions.UniqueConcealer),
-            LayerEnum.Warper => (CustomGameOptions.WarperOn, CustomGameOptions.UniqueConcealer),
-            LayerEnum.Bomber => (CustomGameOptions.BomberOn, CustomGameOptions.UniqueBomber),
-            LayerEnum.Chameleon => (CustomGameOptions.ChameleonOn, CustomGameOptions.UniqueChameleon),
-            LayerEnum.Guesser => (CustomGameOptions.GuesserOn, CustomGameOptions.UniqueGuesser),
-            LayerEnum.Whisperer => (CustomGameOptions.WhispererOn, CustomGameOptions.UniqueWhisperer),
-            LayerEnum.Retributionist => (CustomGameOptions.RetributionistOn, CustomGameOptions.UniqueRetributionist),
-            LayerEnum.Actor => (CustomGameOptions.ActorOn, CustomGameOptions.UniqueActor),
-            LayerEnum.BountyHunter => (CustomGameOptions.BountyHunterOn, CustomGameOptions.UniqueBountyHunter),
-            LayerEnum.Mystic => (CustomGameOptions.MysticOn, CustomGameOptions.UniqueMystic),
-            LayerEnum.Seer => (CustomGameOptions.SeerOn, CustomGameOptions.UniqueSeer),
-            LayerEnum.Necromancer => (CustomGameOptions.NecromancerOn, CustomGameOptions.UniqueNecromancer),
-            LayerEnum.Timekeeper => (CustomGameOptions.TimekeeperOn, CustomGameOptions.UniqueTimekeeper),
-            LayerEnum.Ambusher => (CustomGameOptions.AmbusherOn, CustomGameOptions.UniqueAmbusher),
-            LayerEnum.Crusader => (CustomGameOptions.CrusaderOn, CustomGameOptions.UniqueCrusader),
-            LayerEnum.Silencer => (CustomGameOptions.SilencerOn, CustomGameOptions.UniqueSilencer),
-            LayerEnum.CrewAssassin => (CustomGameOptions.CrewAssassinOn, CustomGameOptions.UniqueCrewAssassin),
-            LayerEnum.IntruderAssassin => (CustomGameOptions.IntruderAssassinOn, CustomGameOptions.UniqueIntruderAssassin),
-            LayerEnum.SyndicateAssassin => (CustomGameOptions.SyndicateAssassinOn, CustomGameOptions.UniqueSyndicateAssassin),
-            LayerEnum.NeutralAssassin => (CustomGameOptions.NeutralAssassinOn, CustomGameOptions.UniqueNeutralAssassin),
-            LayerEnum.ButtonBarry => (CustomGameOptions.ButtonBarryOn, CustomGameOptions.UniqueCrewAssassin),
-            LayerEnum.Insider => (CustomGameOptions.InsiderOn, CustomGameOptions.UniqueButtonBarry),
-            LayerEnum.Multitasker => (CustomGameOptions.MultitaskerOn, CustomGameOptions.UniqueMultitasker),
-            LayerEnum.Ninja => (CustomGameOptions.NinjaOn, CustomGameOptions.UniqueNinja),
-            LayerEnum.Politician => (CustomGameOptions.PoliticianOn, CustomGameOptions.UniquePolitician),
-            LayerEnum.Radar => (CustomGameOptions.RadarOn, CustomGameOptions.UniqueRadar),
-            LayerEnum.Ruthless => (CustomGameOptions.RuthlessOn, CustomGameOptions.UniqueRuthless),
-            LayerEnum.Snitch => (CustomGameOptions.SnitchOn, CustomGameOptions.UniqueSnitch),
-            LayerEnum.Swapper => (CustomGameOptions.SwapperOn, CustomGameOptions.UniqueSwapper),
-            LayerEnum.Tiebreaker => (CustomGameOptions.TiebreakerOn, CustomGameOptions.UniqueTiebreaker),
-            LayerEnum.Torch => (CustomGameOptions.TorchOn, CustomGameOptions.UniqueTorch),
-            LayerEnum.Tunneler => (CustomGameOptions.TunnelerOn, CustomGameOptions.UniqueTunneler),
-            LayerEnum.Underdog => (CustomGameOptions.UnderdogOn, CustomGameOptions.UniqueUnderdog),
-            LayerEnum.Astral => (CustomGameOptions.AstralOn, CustomGameOptions.UniqueAstral),
-            LayerEnum.Bait => (CustomGameOptions.BaitOn, CustomGameOptions.UniqueBait),
-            LayerEnum.Coward => (CustomGameOptions.CowardOn, CustomGameOptions.UniqueCoward),
-            LayerEnum.Diseased => (CustomGameOptions.DiseasedOn, CustomGameOptions.UniqueDiseased),
-            LayerEnum.Drunk => (CustomGameOptions.DrunkOn, CustomGameOptions.UniqueDrunk),
-            LayerEnum.Dwarf => (CustomGameOptions.DwarfOn, CustomGameOptions.UniqueDwarf),
-            LayerEnum.Giant => (CustomGameOptions.GiantOn, CustomGameOptions.UniqueGiant),
-            LayerEnum.Indomitable => (CustomGameOptions.IndomitableOn, CustomGameOptions.UniqueIndomitable),
-            LayerEnum.Professional => (CustomGameOptions.ProfessionalOn, CustomGameOptions.UniqueProfessional),
-            LayerEnum.Shy => (CustomGameOptions.ShyOn, CustomGameOptions.UniqueShy),
-            LayerEnum.VIP => (CustomGameOptions.VIPOn, CustomGameOptions.UniqueVIP),
-            LayerEnum.Volatile => (CustomGameOptions.VolatileOn, CustomGameOptions.UniqueVolatile),
-            LayerEnum.Yeller => (CustomGameOptions.YellerOn, CustomGameOptions.UniqueYeller),
-            LayerEnum.Allied => (CustomGameOptions.AlliedOn, CustomGameOptions.UniqueAllied),
-            LayerEnum.Corrupted => (CustomGameOptions.CorruptedOn, CustomGameOptions.UniqueCorrupted),
-            LayerEnum.Defector => (CustomGameOptions.DefectorOn, CustomGameOptions.UniqueDefector),
-            LayerEnum.Fanatic => (CustomGameOptions.FanaticOn, CustomGameOptions.UniqueFanatic),
-            LayerEnum.Linked => (CustomGameOptions.LinkedOn, CustomGameOptions.UniqueLinked),
-            LayerEnum.Lovers => (CustomGameOptions.LoversOn, CustomGameOptions.UniqueLovers),
-            LayerEnum.Mafia => (CustomGameOptions.MafiaOn, CustomGameOptions.UniqueMafia),
-            LayerEnum.Overlord => (CustomGameOptions.OverlordOn, CustomGameOptions.UniqueOverlord),
-            LayerEnum.Rivals => (CustomGameOptions.RivalsOn, CustomGameOptions.UniqueRivals),
-            LayerEnum.Taskmaster => (CustomGameOptions.TaskmasterOn, CustomGameOptions.UniqueTaskmaster),
-            LayerEnum.Traitor => (CustomGameOptions.TraitorOn, CustomGameOptions.UniqueTraitor),
-            LayerEnum.Colorblind => (CustomGameOptions.ColorblindOn, CustomGameOptions.UniqueColorblind),
-            LayerEnum.Bastion => (CustomGameOptions.BastionOn, CustomGameOptions.UniqueBastion),
-            LayerEnum.Trapper => (CustomGameOptions.TrapperOn, CustomGameOptions.UniqueTrapper),
-            LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => (100, false),
-            _ => throw new NotImplementedException(),
-        };
-
-        return new(chance, id, unique);
-    }
+        LayerEnum.Anarchist => SyndicateUtilities.Anarchist,
+        LayerEnum.Impostor => IntruderUtilities.Impostor,
+        LayerEnum.Murderer => NeutralKillings.Murderer,
+        LayerEnum.Vigilante => CrewKillings.Vigilante,
+        LayerEnum.Veteran => CrewKillings.Veteran,
+        LayerEnum.Bastion => CrewKillings.Bastion,
+        LayerEnum.Crewmate => CrewUtilities.Crewmate,
+        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 100, false, false, id),
+        _ => OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.Layer == id)?.Get() ?? throw new NotImplementedException(id.ToString())
+    };
 
     private static void GenAbilities()
     {

@@ -1,7 +1,23 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Detective : Crew
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ExamineCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 60f, 2.5f, Format.Time)]
+    public static float RecentKill { get; set; } = 10f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 0.05f, 2f, 0.05f, Format.Time)]
+    public static float FootprintInterval { get; set; } = 0.15f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1f, 10f, 0.5f, Format.Time)]
+    public static float FootprintDur { get; set; } = 10f;
+
+    [StringOption(MultiMenu2.LayerSubOptions)]
+    public static FootprintVisibility AnonymousFootPrint { get; set; } = FootprintVisibility.OnlyWhenCamouflaged;
+
     public CustomButton ExamineButton { get; set; }
     private static float _time;
     public List<Footprint> AllPrints { get; set; }

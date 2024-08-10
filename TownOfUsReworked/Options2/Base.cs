@@ -72,8 +72,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     {
         Property = property;
         Value = DefaultValue = property.GetValue(null);
-        ID = $"CustomOption.{property.Name}";
         Name = property.Name;
+        ID = $"CustomOption.{Name}";
         // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
         AllOptions.Add(this);
     }
@@ -83,17 +83,18 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     public bool Active()
     {
         var result = true;
+        var parents = Array.Empty<object>();
 
         if (OptionParents1.Any(x => x.Item1.Contains(Name)))
         {
-            var parents = OptionParents1.Find(x => x.Item1.Contains(Name)).Item2;
-            result = parents.AllAnyOrEmpty(IsActive, All);
+            parents = OptionParents1.Find(x => x.Item1.Contains(Name)).Item2;
+            result &= parents.AllAnyOrEmpty(IsActive, All);
+        }
 
-            if (OptionParents2.Any(x => x.Item1.Contains(Name)))
-            {
-                parents = OptionParents2.Find(x => x.Item1.Contains(Name)).Item2;
-                result &= parents.AllAnyOrEmpty(IsActive, All);
-            }
+        if (OptionParents2.Any(x => x.Item1.Contains(Name)))
+        {
+            parents = OptionParents2.Find(x => x.Item1.Contains(Name)).Item2;
+            result &= parents.AllAnyOrEmpty(IsActive, All);
         }
 
         return result;
@@ -249,7 +250,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
         foreach (var option in list)
         {
-            if (option.Type is CustomOptionType.Button or CustomOptionType.Header || option.ClientOnly || !option.ID.Contains("CustomOption"))
+            if (option.Type == CustomOptionType.Header || option.ClientOnly || !option.ID.Contains("CustomOption"))
                 continue;
 
             builder.AppendLine(option.ID);

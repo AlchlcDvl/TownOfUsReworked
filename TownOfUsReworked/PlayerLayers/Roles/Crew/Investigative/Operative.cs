@@ -1,7 +1,32 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Operative : Crew
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float BugCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
+    public static float MinAmountOfTimeInBug { get; set; } = 0f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool BugsRemoveOnNewRound { get; set; } = true;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    public static int MaxBugs { get; set; } = 5;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
+    public static float BugRange { get; set; } = 1.5f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 5, 1)]
+    public static int MinAmountOfPlayersInBug { get; set; } = 1;
+
+    [StringOption(MultiMenu2.LayerSubOptions)]
+    public static AdminDeadPlayers WhoSeesDead { get; set; } = AdminDeadPlayers.Nobody;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool PreciseOperativeInfo { get; set; } = false;
+
     public List<Bug> Bugs { get; set; }
     public List<LayerEnum> BuggedPlayers { get; set; }
     public CustomButton BugButton { get; set; }

@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Options2;
 // DO NOT OVERRIDE VALUES OF ANY OF THESE PROPERTIES ANY WHERE IN THE CODE OR ELSE THE OPTIONS WILL START TO FUCK OFF
 
 [HeaderOption(MultiMenu2.Main)]
-public class GameSettings
+public static class GameSettings
 {
     [NumberOption(MultiMenu2.Main, 0.25f, 10, 0.25f, Format.Multiplier)]
     public static float PlayerSpeed { get; set; } = 1.25f;
@@ -32,7 +32,7 @@ public class GameSettings
     {
         GameMode.TaskRace or GameMode.HideAndSeek => TBMode.Normal,
         _ => TaskBar
-    };
+    }; // I want this to actually change according to the game modes
 
     [ToggleOption(MultiMenu2.Main)]
     public static bool ConfirmEjects { get; set; } = false;
@@ -69,7 +69,6 @@ public class GameSettings
 
     [NumberOption(MultiMenu2.Main, 2, 127, 1)]
     public static int LobbySize { get; set; } = 15;
-
 }
 
 [HeaderOption(MultiMenu2.Main)]
@@ -146,7 +145,6 @@ public static class GameModeSettings
 
     [NumberOption(MultiMenu2.Main, 0, 13, 1)]
     public static int TRCommonTasks { get; set; } = 4;
-
 }
 
 [HeaderOption(MultiMenu2.Main)]
@@ -441,367 +439,560 @@ public static class CrewSettings
 
     [ToggleOption(MultiMenu2.Main)]
     public static bool CrewVent { get; set; } = false;
-
 }
 
-[HeaderOption(MultiMenu2.Layer)]
-public static class Roles
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class CrewAuditors
 {
-    // Crew
-    [LayersOption(MultiMenu2.Layer, "#704FA8FF", LayerEnum.Mayor)]
-    public static RoleOptionData Mayor { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#FFFF00FF", LayerEnum.Vigilante)]
-    public static RoleOptionData Vigilante { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#FFA60AFF", LayerEnum.Engineer)]
-    public static RoleOptionData Engineer { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#006600FF", LayerEnum.Medic)]
-    public static RoleOptionData Medic { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#FFCC80FF", LayerEnum.Sheriff)]
-    public static RoleOptionData Sheriff { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#660000FF", LayerEnum.Altruist)]
-    public static RoleOptionData Altruist { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#998040FF", LayerEnum.Veteran)]
-    public static RoleOptionData Veteran { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#009900FF", LayerEnum.Tracker)]
-    public static RoleOptionData Tracker { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#00EEFFFF", LayerEnum.Transporter)]
-    public static RoleOptionData Transporter { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#A680FFFF", LayerEnum.Medium)]
-    public static RoleOptionData Medium { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#4D99E6FF", LayerEnum.Coroner)]
-    public static RoleOptionData Coroner { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#A7D1B3FF", LayerEnum.Operative)]
-    public static RoleOptionData Operative { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#4D4DFFFF", LayerEnum.Detective)]
-    public static RoleOptionData Detective { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#DF851FFF", LayerEnum.Shifter)]
-    public static RoleOptionData Shifter { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#708EEFFF", LayerEnum.Mystic)]
+    public static RoleOptionData Mystic { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#C0C0C0FF", LayerEnum.VampireHunter)]
-    public static RoleOptionData VampireHunter { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData VampireHunter { get; set; }
+}
 
-    [LayersOption(MultiMenu2.Layer, "#803333FF", LayerEnum.Escort)]
-    public static RoleOptionData Escort { get; set; } = new(0, 0, false, false);
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class CrewInvestigatives
+{
+    [LayersOption(MultiMenu2.Layer, "#4D99E6FF", LayerEnum.Coroner)]
+    public static RoleOptionData Coroner { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#7E3C64FF", LayerEnum.Bastion)]
-    public static RoleOptionData Bastion { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#4D4DFFFF", LayerEnum.Detective)]
+    public static RoleOptionData Detective { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#D3D3D3FF", LayerEnum.Revealer)]
-    public static RoleOptionData Revealer { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#A680FFFF", LayerEnum.Medium)]
+    public static RoleOptionData Medium { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#708EEFFF", LayerEnum.Mystic)]
-    public static RoleOptionData Mystic { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#8D0F8CFF", LayerEnum.Retributionist)]
-    public static RoleOptionData Retributionist { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#5411F8FF", LayerEnum.Chameleon)]
-    public static RoleOptionData Chameleon { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#A7D1B3FF", LayerEnum.Operative)]
+    public static RoleOptionData Operative { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#71368AFF", LayerEnum.Seer)]
-    public static RoleOptionData Seer { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Seer { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#FF004EFF", LayerEnum.Monarch)]
-    public static RoleOptionData Monarch { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#FFCC80FF", LayerEnum.Sheriff)]
+    public static RoleOptionData Sheriff { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#00CB97FF", LayerEnum.Dictator)]
-    public static RoleOptionData Dictator { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#009900FF", LayerEnum.Tracker)]
+    public static RoleOptionData Tracker { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class CrewKillings
+{
+    [LayersOption(MultiMenu2.Layer, "#7E3C64FF", LayerEnum.Bastion)]
+    private static RoleOptionData BastionPriv { get; set; }
+    public static RoleOptionData Bastion
+    {
+        get
+        {
+            var result = BastionPriv;
+
+            if (IsKilling)
+                result.Chance = 100;
+
+            return result;
+        }
+    }
+
+    [LayersOption(MultiMenu2.Layer, "#998040FF", LayerEnum.Veteran)]
+    private static RoleOptionData VeteranPriv { get; set; }
+    public static RoleOptionData Veteran
+    {
+        get
+        {
+            var result = VeteranPriv;
+
+            if (IsKilling)
+                result.Chance = 100;
+
+            return result;
+        }
+    }
+
+    [LayersOption(MultiMenu2.Layer, "#FFFF00FF", LayerEnum.Vigilante)]
+    private static RoleOptionData VigilantePriv { get; set; }
+    public static RoleOptionData Vigilante
+    {
+        get
+        {
+            var result = VigilantePriv;
+
+            if (IsKilling)
+                result.Chance = 100;
+
+            return result;
+        }
+    }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class CrewProtectives
+{
+    [LayersOption(MultiMenu2.Layer, "#660000FF", LayerEnum.Altruist)]
+    public static RoleOptionData Altruist { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#006600FF", LayerEnum.Medic)]
+    public static RoleOptionData Medic { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#BE1C8CFF", LayerEnum.Trapper)]
-    public static RoleOptionData Trapper { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Trapper { get; set; }
+}
 
-    // Neutral
-    [LayersOption(MultiMenu2.Layer, "#F7B3DAFF", LayerEnum.Jester)]
-    public static RoleOptionData Jester { get; set; } = new(0, 0, false, false);
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class CrewSovereigns
+{
+    [LayersOption(MultiMenu2.Layer, "#00CB97FF", LayerEnum.Dictator)]
+    public static RoleOptionData Dictator { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#CCCCCCFF", LayerEnum.Executioner)]
-    public static RoleOptionData Executioner { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#704FA8FF", LayerEnum.Mayor)]
+    public static RoleOptionData Mayor { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#00FF00FF", LayerEnum.Glitch)]
-    public static RoleOptionData Glitch { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#FF004EFF", LayerEnum.Monarch)]
+    public static RoleOptionData Monarch { get; set; }
+}
 
-    [LayersOption(MultiMenu2.Layer, "#EE7600FF", LayerEnum.Arsonist)]
-    public static RoleOptionData Arsonist { get; set; } = new(0, 0, false, false);
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class CrewSupports
+{
+    [LayersOption(MultiMenu2.Layer, "#5411F8FF", LayerEnum.Chameleon)]
+    public static RoleOptionData Chameleon { get; set; }
 
+    [LayersOption(MultiMenu2.Layer, "#FFA60AFF", LayerEnum.Engineer)]
+    public static RoleOptionData Engineer { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#803333FF", LayerEnum.Escort)]
+    public static RoleOptionData Escort { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#8D0F8CFF", LayerEnum.Retributionist)]
+    public static RoleOptionData Retributionist { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#DF851FFF", LayerEnum.Shifter)]
+    public static RoleOptionData Shifter { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#00EEFFFF", LayerEnum.Transporter)]
+    public static RoleOptionData Transporter { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class CrewUtilities
+{
+    [LayersOption(MultiMenu2.Layer, "#8CFFFFFF", LayerEnum.Crewmate)]
+    private static RoleOptionData CrewmatePriv { get; set; }
+    public static RoleOptionData Crewmate
+    {
+        get
+        {
+            var result = CrewmatePriv;
+
+            if (!IsCustom)
+                result.Chance = 100;
+
+            return result;
+        }
+    }
+
+    [LayersOption(MultiMenu2.Layer, "#D3D3D3FF", LayerEnum.Revealer)]
+    public static RoleOptionData Revealer { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class NeutralBenigns
+{
     [LayersOption(MultiMenu2.Layer, "#22FFFFFF", LayerEnum.Amnesiac)]
-    public static RoleOptionData Amnesiac { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#DDDD00FF", LayerEnum.Survivor)]
-    public static RoleOptionData Survivor { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Amnesiac { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#FFFFFFFF", LayerEnum.GuardianAngel)]
-    public static RoleOptionData GuardianAngel { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData GuardianAngel { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#CFFE61FF", LayerEnum.Plaguebearer)]
-    public static RoleOptionData Plaguebearer { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#9F703AFF", LayerEnum.Werewolf)]
-    public static RoleOptionData Werewolf { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#8C4005FF", LayerEnum.Cannibal)]
-    public static RoleOptionData Cannibal { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#A12B56FF", LayerEnum.Juggernaut)]
-    public static RoleOptionData Juggernaut { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#AC8A00FF", LayerEnum.Dracula)]
-    public static RoleOptionData Dracula { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#6F7BEAFF", LayerEnum.Murderer)]
-    public static RoleOptionData Murderer { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#336EFFFF", LayerEnum.SerialKiller)]
-    public static RoleOptionData SerialKiller { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#642DEAFF", LayerEnum.Cryomaniac)]
-    public static RoleOptionData Cryomaniac { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#DDDD00FF", LayerEnum.Survivor)]
+    public static RoleOptionData Survivor { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#80FF00FF", LayerEnum.Thief)]
-    public static RoleOptionData Thief { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Thief { get; set; }
+}
 
-    [LayersOption(MultiMenu2.Layer, "#678D36FF", LayerEnum.Troll)]
-    public static RoleOptionData Troll { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#45076AFF", LayerEnum.Jackal)]
-    public static RoleOptionData Jackal { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#662962FF", LayerEnum.Phantom)]
-    public static RoleOptionData Phantom { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#BF5FFFFF", LayerEnum.Necromancer)]
-    public static RoleOptionData Necromancer { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#2D6AA5FF", LayerEnum.Whisperer)]
-    public static RoleOptionData Whisperer { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#EEE5BEFF", LayerEnum.Guesser)]
-    public static RoleOptionData Guesser { get; set; } = new(0, 0, false, false);
-
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class NeutralEvils
+{
     [LayersOption(MultiMenu2.Layer, "#00ACC2FF", LayerEnum.Actor)]
-    public static RoleOptionData Actor { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Actor { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#B51E39FF", LayerEnum.BountyHunter)]
-    public static RoleOptionData BountyHunter { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData BountyHunter { get; set; }
 
-    // Intruder
-    [LayersOption(MultiMenu2.Layer, "#FFFF99FF", LayerEnum.Consigliere)]
-    public static RoleOptionData Consigliere { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#8C4005FF", LayerEnum.Cannibal)]
+    public static RoleOptionData Cannibal { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#85AA5BFF", LayerEnum.Grenadier)]
-    public static RoleOptionData Grenadier { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#CCCCCCFF", LayerEnum.Executioner)]
+    public static RoleOptionData Executioner { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#BB45B0FF", LayerEnum.Morphling)]
-    public static RoleOptionData Morphling { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#EEE5BEFF", LayerEnum.Guesser)]
+    public static RoleOptionData Guesser { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#5C4F75FF", LayerEnum.Wraith)]
-    public static RoleOptionData Wraith { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#F7B3DAFF", LayerEnum.Jester)]
+    public static RoleOptionData Jester { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#678D36FF", LayerEnum.Troll)]
+    public static RoleOptionData Troll { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class NeutralHarbingers
+{
+    [LayersOption(MultiMenu2.Layer, "#CFFE61FF", LayerEnum.Plaguebearer)]
+    public static RoleOptionData Plaguebearer { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class NeutralKillings
+{
+    [LayersOption(MultiMenu2.Layer, "#EE7600FF", LayerEnum.Arsonist)]
+    public static RoleOptionData Arsonist { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#642DEAFF", LayerEnum.Cryomaniac)]
+    public static RoleOptionData Cryomaniac { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#00FF00FF", LayerEnum.Glitch)]
+    public static RoleOptionData Glitch { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#A12B56FF", LayerEnum.Juggernaut)]
+    public static RoleOptionData Juggernaut { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#6F7BEAFF", LayerEnum.Murderer)]
+    private static RoleOptionData MurdererPriv { get; set; }
+    public static RoleOptionData Murderer
+    {
+        get
+        {
+            var result = MurdererPriv;
+
+            if (IsKilling)
+                result.Chance = 5;
+
+            return result;
+        }
+    }
+
+    [LayersOption(MultiMenu2.Layer, "#336EFFFF", LayerEnum.SerialKiller)]
+    public static RoleOptionData SerialKiller { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#9F703AFF", LayerEnum.Werewolf)]
+    public static RoleOptionData Werewolf { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class NeutralNeophytes
+{
+    [LayersOption(MultiMenu2.Layer, "#AC8A00FF", LayerEnum.Dracula)]
+    public static RoleOptionData Dracula { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#45076AFF", LayerEnum.Jackal)]
+    public static RoleOptionData Jackal { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#BF5FFFFF", LayerEnum.Necromancer)]
+    public static RoleOptionData Necromancer { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#2D6AA5FF", LayerEnum.Whisperer)]
+    public static RoleOptionData Whisperer { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class NeutralProselytes
+{
+    [LayersOption(MultiMenu2.Layer, "#662962FF", LayerEnum.Phantom)]
+    public static RoleOptionData Phantom { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class IntruderConcealings
+{
+    [LayersOption(MultiMenu2.Layer, "#02A752FF", LayerEnum.Blackmailer)]
+    public static RoleOptionData Blackmailer { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#378AC0FF", LayerEnum.Camouflager)]
-    public static RoleOptionData Camouflager { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Camouflager { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#85AA5BFF", LayerEnum.Grenadier)]
+    public static RoleOptionData Grenadier { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#2647A2FF", LayerEnum.Janitor)]
-    public static RoleOptionData Janitor { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Janitor { get; set; }
+}
 
-    [LayersOption(MultiMenu2.Layer, "#AA7632FF", LayerEnum.Miner)]
-    public static RoleOptionData Miner { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#02A752FF", LayerEnum.Blackmailer)]
-    public static RoleOptionData Blackmailer { get; set; } = new(0, 0, false, false);
-
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class IntruderDeceptions
+{
     [LayersOption(MultiMenu2.Layer, "#40B4FFFF", LayerEnum.Disguiser)]
-    public static RoleOptionData Disguiser { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Disguiser { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#801780FF", LayerEnum.Consort)]
-    public static RoleOptionData Consort { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#BB45B0FF", LayerEnum.Morphling)]
+    public static RoleOptionData Morphling { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#939593FF", LayerEnum.Teleporter)]
-    public static RoleOptionData Teleporter { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#5C4F75FF", LayerEnum.Wraith)]
+    public static RoleOptionData Wraith { get; set; }
+}
 
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class IntruderHeads
+{
     [LayersOption(MultiMenu2.Layer, "#404C08FF", LayerEnum.Godfather)]
-    public static RoleOptionData Godfather { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Godfather { get; set; }
+}
 
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class IntruderKillings
+{
     [LayersOption(MultiMenu2.Layer, "#2BD29CFF", LayerEnum.Ambusher)]
-    public static RoleOptionData Ambusher { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#F1C40FFF", LayerEnum.Ghoul)]
-    public static RoleOptionData Ghoul { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Ambusher { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#005643FF", LayerEnum.Enforcer)]
-    public static RoleOptionData Enforcer { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Enforcer { get; set; }
+}
 
-    // Syndicate
-    [LayersOption(MultiMenu2.Layer, "#8C7140FF", LayerEnum.Warper)]
-    public static RoleOptionData Warper { get; set; } = new(0, 0, false, false);
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class IntruderSupports
+{
+    [LayersOption(MultiMenu2.Layer, "#FFFF99FF", LayerEnum.Consigliere)]
+    public static RoleOptionData Consigliere { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#00FFFFFF", LayerEnum.Framer)]
-    public static RoleOptionData Framer { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#801780FF", LayerEnum.Consort)]
+    public static RoleOptionData Consort { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#FFFCCEFF", LayerEnum.Rebel)]
-    public static RoleOptionData Rebel { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#AA7632FF", LayerEnum.Miner)]
+    public static RoleOptionData Miner { get; set; }
 
+    [LayersOption(MultiMenu2.Layer, "#939593FF", LayerEnum.Teleporter)]
+    public static RoleOptionData Teleporter { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class IntruderUtilities
+{
+    [LayersOption(MultiMenu2.Layer, "#F1C40FFF", LayerEnum.Ghoul)]
+    public static RoleOptionData Ghoul { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#FF1919FF", LayerEnum.Linked)]
+    private static RoleOptionData ImpostorPriv { get; set; }
+    public static RoleOptionData Impostor
+    {
+        get
+        {
+            var result = ImpostorPriv;
+
+            if (IsKilling)
+                result.Chance = 5;
+            else if (!IsCustom)
+                result.Chance = 100;
+
+            return result;
+        }
+    }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class SyndicateDisruptions
+{
     [LayersOption(MultiMenu2.Layer, "#C02525FF", LayerEnum.Concealer)]
-    public static RoleOptionData Concealer { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#2DFF00FF", LayerEnum.Shapeshifter)]
-    public static RoleOptionData Shapeshifter { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#C9CC3FFF", LayerEnum.Bomber)]
-    public static RoleOptionData Bomber { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#B5004CFF", LayerEnum.Poisoner)]
-    public static RoleOptionData Poisoner { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#DF7AE8FF", LayerEnum.Crusader)]
-    public static RoleOptionData Crusader { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#E67E22FF", LayerEnum.Banshee)]
-    public static RoleOptionData Banshee { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#B345FFFF", LayerEnum.Collider)]
-    public static RoleOptionData Collider { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#7E4D00FF", LayerEnum.Stalker)]
-    public static RoleOptionData Stalker { get; set; } = new(0, 0, false, false);
-
-    [LayersOption(MultiMenu2.Layer, "#0028F5FF", LayerEnum.Spellslinger)]
-    public static RoleOptionData Spellslinger { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Concealer { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#FF7900FF", LayerEnum.Drunkard)]
-    public static RoleOptionData Drunkard { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Drunkard { get; set; }
 
-    [LayersOption(MultiMenu2.Layer, "#3769FEFF", LayerEnum.Timekeeper)]
-    public static RoleOptionData Timekeeper { get; set; } = new(0, 0, false, false);
+    [LayersOption(MultiMenu2.Layer, "#00FFFFFF", LayerEnum.Framer)]
+    public static RoleOptionData Framer { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#2DFF00FF", LayerEnum.Shapeshifter)]
+    public static RoleOptionData Shapeshifter { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#AAB43EFF", LayerEnum.Silencer)]
-    public static RoleOptionData Silencer { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Silencer { get; set; }
 
-    // Modifier
+    [LayersOption(MultiMenu2.Layer, "#3769FEFF", LayerEnum.Timekeeper)]
+    public static RoleOptionData Timekeeper { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class SyndicateKillings
+{
+    [LayersOption(MultiMenu2.Layer, "#C9CC3FFF", LayerEnum.Bomber)]
+    public static RoleOptionData Bomber { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#B345FFFF", LayerEnum.Collider)]
+    public static RoleOptionData Collider { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#DF7AE8FF", LayerEnum.Crusader)]
+    public static RoleOptionData Crusader { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#B5004CFF", LayerEnum.Poisoner)]
+    public static RoleOptionData Poisoner { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class SyndicatePowers
+{
+    [LayersOption(MultiMenu2.Layer, "#FFFCCEFF", LayerEnum.Rebel)]
+    public static RoleOptionData Rebel { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#0028F5FF", LayerEnum.Spellslinger)]
+    public static RoleOptionData Spellslinger { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class SyndicateSupports
+{
+    [LayersOption(MultiMenu2.Layer, "#7E4D00FF", LayerEnum.Stalker)]
+    public static RoleOptionData Stalker { get; set; }
+
+    [LayersOption(MultiMenu2.Layer, "#8C7140FF", LayerEnum.Warper)]
+    public static RoleOptionData Warper { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class SyndicateUtilities
+{
+    [LayersOption(MultiMenu2.Layer, "#008000FF", LayerEnum.Linked)]
+    private static RoleOptionData AnarchistPriv { get; set; }
+    public static RoleOptionData Anarchist
+    {
+        get
+        {
+            var result = AnarchistPriv;
+
+            if (IsKilling)
+                result.Chance = 5;
+            else if (!IsCustom)
+                result.Chance = 100;
+
+            return result;
+        }
+    }
+
+    [LayersOption(MultiMenu2.Layer, "#E67E22FF", LayerEnum.Banshee)]
+    public static RoleOptionData Banshee { get; set; }
+}
+
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class Modifiers
+{
     [LayersOption(MultiMenu2.Layer, "#00B3B3FF", LayerEnum.Bait)]
-    public static RoleOptionData Bait { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Bait { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#456BA8FF", LayerEnum.Coward)]
-    public static RoleOptionData Coward { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Coward { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#374D1EFF", LayerEnum.Diseased)]
-    public static RoleOptionData Diseased { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Diseased { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#758000FF", LayerEnum.Drunk)]
-    public static RoleOptionData Drunk { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Drunk { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#FF8080FF", LayerEnum.Dwarf)]
-    public static RoleOptionData Dwarf { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Dwarf { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#FFB34DFF", LayerEnum.Giant)]
-    public static RoleOptionData Giant { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Giant { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#FFA60AFF", LayerEnum.Volatile)]
-    public static RoleOptionData Volatile { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Volatile { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#DCEE85FF", LayerEnum.VIP)]
-    public static RoleOptionData VIP { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData VIP { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#1002C5FF", LayerEnum.Shy)]
-    public static RoleOptionData Shy { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Shy { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#860B7AFF", LayerEnum.Professional)]
-    public static RoleOptionData Professional { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Professional { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#2DE5BEFF", LayerEnum.Indomitable)]
-    public static RoleOptionData Indomitable { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Indomitable { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#612BEFFF", LayerEnum.Astral)]
-    public static RoleOptionData Astral { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Astral { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#F6AAB7FF", LayerEnum.Yeller)]
-    public static RoleOptionData Yeller { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Yeller { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#B34D99FF", LayerEnum.Colorblind)]
-    public static RoleOptionData Colorblind { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Colorblind { get; set; }
+}
 
-    // Ability
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class Abilities
+{
     [LayersOption(MultiMenu2.Layer, "#FFFF99FF", LayerEnum.Torch)]
-    public static RoleOptionData Torch { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Torch { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#E91E63FF", LayerEnum.Tunneler)]
-    public static RoleOptionData Tunneler { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Tunneler { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#E600FFFF", LayerEnum.ButtonBarry)]
-    public static RoleOptionData ButtonBarry { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData ButtonBarry { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#99E699FF", LayerEnum.Tiebreaker)]
-    public static RoleOptionData Tiebreaker { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Tiebreaker { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#D4AF37FF", LayerEnum.Snitch)]
-    public static RoleOptionData Snitch { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Snitch { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#841A7FFF", LayerEnum.Underdog)]
-    public static RoleOptionData Underdog { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Underdog { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#26FCFBFF", LayerEnum.Insider)]
-    public static RoleOptionData Insider { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Insider { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#FF0080FF", LayerEnum.Radar)]
-    public static RoleOptionData Radar { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Radar { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#FF804DFF", LayerEnum.Multitasker)]
-    public static RoleOptionData Multitasker { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Multitasker { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#2160DDFF", LayerEnum.Ruthless)]
-    public static RoleOptionData Ruthless { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Ruthless { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#A84300FF", LayerEnum.Ninja)]
-    public static RoleOptionData Ninja { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Ninja { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#CCA3CCFF", LayerEnum.Politician)]
-    public static RoleOptionData Politician { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Politician { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#66E666FF", LayerEnum.Swapper)]
-    public static RoleOptionData Swapper { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Swapper { get; set; }
+}
 
-    // Objectifier
+[HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
+public static class Objectifiers
+{
     [LayersOption(MultiMenu2.Layer, "#FF66CCFF", LayerEnum.Lovers)]
-    public static RoleOptionData Lovers { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Lovers { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#370D43FF", LayerEnum.Traitor)]
-    public static RoleOptionData Traitor { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Traitor { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#3D2D2CFF", LayerEnum.Rivals)]
-    public static RoleOptionData Rivals { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Rivals { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#678D36FF", LayerEnum.Fanatic)]
-    public static RoleOptionData Fanatic { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Fanatic { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#ABABFFFF", LayerEnum.Taskmaster)]
-    public static RoleOptionData Taskmaster { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Taskmaster { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#008080FF", LayerEnum.Overlord)]
-    public static RoleOptionData Overlord { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Overlord { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#4545FFFF", LayerEnum.Corrupted)]
-    public static RoleOptionData Corrupted { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Corrupted { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#4545A9FF", LayerEnum.Allied)]
-    public static RoleOptionData Allied { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Allied { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#00EEFFFF", LayerEnum.Mafia)]
-    public static RoleOptionData Mafia { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Mafia { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#E1C849FF", LayerEnum.Defector)]
-    public static RoleOptionData Defector { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Defector { get; set; }
 
     [LayersOption(MultiMenu2.Layer, "#FF351FFF", LayerEnum.Linked)]
-    public static RoleOptionData Linked { get; set; } = new(0, 0, false, false);
+    public static RoleOptionData Linked { get; set; }
 }

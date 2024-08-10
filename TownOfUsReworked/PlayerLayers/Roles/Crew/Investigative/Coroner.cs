@@ -1,7 +1,26 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Coroner : Crew
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 0f, 2f, 0.05f, Format.Time)]
+    public static float CoronerArrowDur { get; set; } = 0.1f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool CoronerReportRole { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool CoronerReportName { get; set; } = false;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 0.5f, 15f, 0.5f, Format.Time)]
+    public static float CoronerKillerNameTime { get; set; } = 1f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float CompareCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float AutopsyCd { get; set; } = 25f;
+
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
     public List<byte> Reported { get; set; }
     public CustomButton CompareButton { get; set; }

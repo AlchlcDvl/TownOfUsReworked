@@ -1,7 +1,11 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class VampireHunter : Crew
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float StakeCd { get; set; } = 25f;
+
     public static bool VampsDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && x.Is(SubFaction.Undead));
     private CustomButton StakeButton { get; set; }
 

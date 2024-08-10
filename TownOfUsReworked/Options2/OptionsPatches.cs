@@ -281,12 +281,13 @@ public static class SettingsPatches
 
             if (!LayersPrefab)
             {
-                // Title = 0, Role # = 1, Chance % = 2, Background = 3, Divider = 4
+                // Title = 0, Role # = 1, Chance % = 2, Background = 3, Divider = 4, Cog = 5, Unique = 6, Active = 7
                 //            ┗------------┗----------- Value = 0, - = 1, + = 2, Value Box = 3
                 LayersPrefab = UObject.Instantiate(__instance.roleOptionSettingOrigin, null).DontUnload().DontDestroy();
                 LayersPrefab.name = "CustomLayersOptionPrefab";
                 LayersPrefab.titleText.alignment = TextAlignmentOptions.Left;
                 LayersPrefab.buttons = LayersPrefab.GetComponentsInChildren<PassiveButton>().ToArray();
+                LayersPrefab.transform.GetChild(0).localPosition += new Vector3(-0.1f, 0f, 0f);
                 LayersPrefab.transform.GetChild(3).localScale += new Vector3(0.001f, 0f, 0f); // WHY THE FUCK IS THE BACKGROUND EVER SO SLIGHTLY SMALLER THAN THE HEADER?!
 
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayersPrefab.transform);
