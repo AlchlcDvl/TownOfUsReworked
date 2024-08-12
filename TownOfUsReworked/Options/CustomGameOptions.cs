@@ -22,11 +22,6 @@ public static class CustomGameOptions
     public static int VotingTime => Generate.VotingTime;
     public static bool EjectionRevealsRole => Generate.EjectionRevealsRole;
     public static int LobbySize => Generate.LobbySize;
-    public static TaskBar TaskBarMode => GameMode switch
-    {
-        GameMode.TaskRace or GameMode.HideAndSeek => TaskBar.Normal,
-        _ => (TaskBar)Generate.TaskBarMode.GetInt()
-    };
 
     // Game Modifiers
     public static WhoCanVentOptions WhoCanVent => (WhoCanVentOptions)Generate.WhoCanVent.GetInt();

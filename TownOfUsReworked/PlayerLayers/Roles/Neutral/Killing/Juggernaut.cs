@@ -1,5 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Juggernaut : Neutral
 {
     public int JuggKills { get; set; }

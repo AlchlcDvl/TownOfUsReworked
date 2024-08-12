@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Volatile : Modifier
 {
     private float _time;

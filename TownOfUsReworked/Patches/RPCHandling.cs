@@ -80,8 +80,8 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.VersionHandshake:
-                        // VersionHandshake(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
-                        //     reader.ReadString(), new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
+                        VersionHandshake(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
+                            reader.ReadString(), new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
                         break;
 
                     case MiscRPC.SubmergedFixOxygen:
@@ -131,8 +131,7 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.VisualTasks = CustomGameOptions.VisualTasks;
                         TownOfUsReworked.NormalOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
                         TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                        TownOfUsReworked.NormalOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)reader.ReadByte();
-                        // TownOfUsReworked.NormalOptions.TaskBarMode = CustomGameOptions2.TaskBarMode;
+                        TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
                         TownOfUsReworked.NormalOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
                         TownOfUsReworked.NormalOptions.VotingTime = CustomGameOptions.VotingTime;
                         TownOfUsReworked.NormalOptions.DiscussionTime = CustomGameOptions.DiscussionTime;

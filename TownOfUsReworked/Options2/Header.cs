@@ -56,7 +56,7 @@ public class HeaderOptionAttribute(MultiMenu2 menu, HeaderType type = HeaderType
             if (Diff == default)
                 Diff = (Left - Right) / 2;
 
-            UpdateParts();
+            Update();
         }
 
         Collapse = header.transform.FindChild("Collapse")?.gameObject;
@@ -75,7 +75,7 @@ public class HeaderOptionAttribute(MultiMenu2 menu, HeaderType type = HeaderType
         SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
     }
 
-    public void UpdateParts()
+    public override void Update()
     {
         if (SavedMode == GameModeSettings.GameMode || HeaderType == HeaderType.General)
             return;

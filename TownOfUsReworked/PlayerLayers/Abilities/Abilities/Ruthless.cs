@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Ruthless : Ability
 {
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Ruthless : CustomColorManager.Ability;

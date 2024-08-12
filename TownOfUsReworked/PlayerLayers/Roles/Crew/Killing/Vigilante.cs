@@ -1,7 +1,29 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Vigilante : Crew
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool MisfireKillsInno { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool VigiKillAgain { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RoundOneNoShot { get; set; } = true;
+
+    [StringOption(MultiMenu2.LayerSubOptions)]
+    public static VigiOptions HowDoesVigilanteDie { get; set; } = VigiOptions.Immediate;
+
+    [StringOption(MultiMenu2.LayerSubOptions)]
+    public static VigiNotif HowIsVigilanteNotified { get; set; } = VigiNotif.Never;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    public static int MaxBullets { get; set; } = 5;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ShootCd { get; set; } = 25f;
+
     public bool KilledInno { get; set; }
     public bool PreMeetingDie { get; set; }
     public bool PostMeetingDie { get; set; }

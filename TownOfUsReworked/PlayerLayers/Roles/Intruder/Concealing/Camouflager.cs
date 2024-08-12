@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Camouflager : Intruder
 {
     public CustomButton CamouflageButton { get; set; }

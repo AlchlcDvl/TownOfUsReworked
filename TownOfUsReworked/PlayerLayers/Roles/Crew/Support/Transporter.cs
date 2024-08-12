@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Transporter : Crew
 {
     public PlayerControl TransportPlayer1 { get; set; }

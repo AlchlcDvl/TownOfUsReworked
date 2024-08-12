@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Stalker : Syndicate
 {
     public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }

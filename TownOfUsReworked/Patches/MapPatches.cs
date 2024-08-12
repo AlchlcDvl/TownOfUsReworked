@@ -6,7 +6,6 @@ namespace TownOfUsReworked.Patches;
 public static class MapPatches
 {
     public static byte CurrentMap;
-    private static readonly byte[] TBModes = [1, 0, 2];
 
     public static void Prefix()
     {
@@ -15,7 +14,6 @@ public static class MapPatches
 
         if (AmongUsClient.Instance.AmHost)
         {
-            var tbMode = TBModes[(int)CustomGameOptions.TaskBarMode];
             CurrentMap = GetSelectedMap();
             TownOfUsReworked.NormalOptions.MapId = CurrentMap;
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
@@ -31,8 +29,7 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.VisualTasks = CustomGameOptions.VisualTasks;
             TownOfUsReworked.NormalOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
             TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
-            TownOfUsReworked.NormalOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)tbMode;
-            // TownOfUsReworked.NormalOptions.TaskBarMode = CustomGameOptions2.TaskBarMode;
+            TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
             TownOfUsReworked.NormalOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
             TownOfUsReworked.NormalOptions.VotingTime = CustomGameOptions.VotingTime;
             TownOfUsReworked.NormalOptions.DiscussionTime = CustomGameOptions.DiscussionTime;

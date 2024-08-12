@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Professional : Modifier
 {
     public bool LifeUsed { get; set; }

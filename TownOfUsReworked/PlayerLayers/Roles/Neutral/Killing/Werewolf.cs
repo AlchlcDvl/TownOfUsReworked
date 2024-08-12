@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Werewolf : Neutral
 {
     public bool CanMaul => Rounds is not (0 or 2) || CustomGameOptions.CanStillAttack;

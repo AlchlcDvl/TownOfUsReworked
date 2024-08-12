@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Linked : Objectifier
 {
     public PlayerControl OtherLink { get; set; }

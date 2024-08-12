@@ -58,4 +58,6 @@ public class RoleOptionData(int chance, int count, bool unique, bool active, Lay
         var parts = input.Split(',');
         return new(int.Parse(parts[0]), int.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
     }
+
+    public RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
 }

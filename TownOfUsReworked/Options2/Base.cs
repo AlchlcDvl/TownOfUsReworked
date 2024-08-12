@@ -80,6 +80,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
     public virtual string Format() => "";
 
+    public virtual void Update() {}
+
     public bool Active()
     {
         var result = true;

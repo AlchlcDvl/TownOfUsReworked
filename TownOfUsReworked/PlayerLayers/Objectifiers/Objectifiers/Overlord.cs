@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Overlord : Objectifier
 {
     public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Overlord : CustomColorManager.Objectifier;

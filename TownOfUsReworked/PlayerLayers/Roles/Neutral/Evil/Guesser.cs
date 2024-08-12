@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Guesser : Neutral
 {
     public PlayerControl TargetPlayer { get; set; }

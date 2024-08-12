@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Giant : Modifier
 {
     private static bool Chonk => CustomGameOptions.GiantScale != 1;

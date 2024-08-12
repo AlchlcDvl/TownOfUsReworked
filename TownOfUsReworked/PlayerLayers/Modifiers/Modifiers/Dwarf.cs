@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Dwarf : Modifier
 {
     private static bool Smol => CustomGameOptions.DwarfScale != 1;

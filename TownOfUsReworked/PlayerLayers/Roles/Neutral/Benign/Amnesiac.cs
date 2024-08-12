@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Amnesiac : Neutral
 {
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }

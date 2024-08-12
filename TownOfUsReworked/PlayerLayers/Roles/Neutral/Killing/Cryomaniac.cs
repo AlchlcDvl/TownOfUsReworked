@@ -1,5 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Cryomaniac : Neutral
 {
     public CustomButton FreezeButton { get; set; }

@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Tunneler : Ability
 {
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Tunneler : CustomColorManager.Ability;

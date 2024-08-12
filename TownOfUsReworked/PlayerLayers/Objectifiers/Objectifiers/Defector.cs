@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Defector : Objectifier
 {
     private bool Turned { get; set; }

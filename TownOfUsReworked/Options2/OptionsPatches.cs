@@ -492,14 +492,7 @@ public static class SettingsPatches
         if (ReturnButton)
             ReturnButton.SetActive(SettingsPage == 5);
 
-        if (SettingsPage == 3)
-        {
-            __instance.GameSettingsButton.gameObject.SetActive(false);
-            __instance.RoleSettingsButton.gameObject.SetActive(false);
-            __instance.GamePresetsButton.gameObject.SetActive(false);
-        }
-
-        if (SettingsPage is 0 or 3 or 5)
+        if (SettingsPage is 0 or 3)
         {
             var y = 0.713f;
 
@@ -509,7 +502,6 @@ public static class SettingsPatches
             } catch {}
 
             __instance.GameSettingsTab.Children = new();
-            __instance.GameSettingsTab.MapPicker.gameObject.SetActive(SettingsPage == 0);
             __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
             foreach (var option in OptionAttribute.AllOptions)
@@ -526,6 +518,7 @@ public static class SettingsPatches
                     option.Setting.gameObject.SetActive(true);
                     option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
                     y -= isHeader ? 0.63f : 0.45f;
+                    option.Update();
 
                     if (option.Setting is OptionBehaviour setting)
                         __instance.GameSettingsTab.Children.Add(setting);
@@ -534,6 +527,13 @@ public static class SettingsPatches
 
             __instance.GameSettingsTab.scrollBar.SetYBoundsMax(-1.65f - y);
             __instance.GameSettingsTab.InitializeControllerNavigation();
+
+            if (SettingsPage == 3)
+            {
+                __instance.GameSettingsButton.gameObject.SetActive(false);
+                __instance.RoleSettingsButton.gameObject.SetActive(false);
+                __instance.GamePresetsButton.gameObject.SetActive(false);
+            }
         }
         else if (SettingsPage is 1 or 5)
         {
@@ -551,6 +551,12 @@ public static class SettingsPatches
             {
                 if (option.Setting)
                 {
+                    if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
+                    {
+                        option.Setting.gameObject.SetActive(false);
+                        continue;
+                    }
+
                     var isHeader = option is HeaderOptionAttribute;
 
                     if (SettingsPage == 5)
@@ -560,22 +566,6 @@ public static class SettingsPatches
                     }
                     else
                     {
-                        var isLayer = option is LayersOptionAttribute;
-                        var header = isHeader ? (HeaderOptionAttribute)option : null;
-                        var isGen = header?.HeaderType == HeaderType.General;
-
-                        if (isLayer)
-                            ((LayersOptionAttribute)option).UpdateParts();
-
-                        if (header?.HeaderType == HeaderType.Layer)
-                            header.UpdateParts();
-
-                        if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
-                        {
-                            option.Setting.gameObject.SetActive(false);
-                            continue;
-                        }
-
                         if (isHeader)
                             y -= 0.1f;
 
@@ -584,6 +574,7 @@ public static class SettingsPatches
                     }
 
                     option.Setting.gameObject.SetActive(true);
+                    option.Update();
 
                     if (option.Setting is OptionBehaviour setting)
                         __instance.RoleSettingsTab.advancedSettingChildren.Add(setting);

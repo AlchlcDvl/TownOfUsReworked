@@ -272,13 +272,6 @@ public enum MapEnum
     Random
 }
 
-public enum TaskBar
-{
-    MeetingOnly,
-    Normal,
-    Invisible
-}
-
 public enum PlayerNames
 {
     Obstructed,
@@ -512,19 +505,19 @@ public enum LayerEnum : byte
     NoneObjectifier,
 
     Assassin,
+    Bullseye,
     ButtonBarry,
-    CrewAssassin,
+    Hitman,
     Insider,
-    IntruderAssassin,
     Multitasker,
-    NeutralAssassin,
     Ninja,
     Politician,
     Radar,
     Ruthless,
+    Slayer,
+    Sniper,
     Snitch,
     Swapper,
-    SyndicateAssassin,
     Tiebreaker,
     Torch,
     Tunneler,

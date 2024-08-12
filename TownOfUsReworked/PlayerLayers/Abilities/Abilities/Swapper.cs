@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Swapper : Ability
 {
     public PlayerVoteArea Swap1 { get; set; }

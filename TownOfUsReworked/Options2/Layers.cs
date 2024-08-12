@@ -4,8 +4,8 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
-    private int Max { get; set; } = 15;
-    private int Min { get; set; } = 1;
+    public int Max { get; set; } = 15;
+    public int Min { get; set; } = 1;
     public LayerEnum Layer { get; } = layer;
     public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
     public HeaderOptionAttribute GroupHeader { get; set; }
@@ -63,7 +63,8 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         cog.GetComponent<PassiveButton>().OverrideOnClickListeners(SetUpOptionsMenu);
         cog.SetActive(GroupHeader != null);
 
-        UpdateParts();
+        SavedMode = GameMode.None;
+        Update();
     }
 
     public override void ViewOptionCreated()
@@ -153,7 +154,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }
 
-    public void UpdateParts()
+    public override void Update()
     {
         if (SavedMode == GameModeSettings.GameMode)
             return;
@@ -224,13 +225,13 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        ID =  $"CustomOption.{Layer}Spawn";
+        ID =  $"CustomOption.{Layer}On";
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
         Property.SetValue(null, Value);
 
         if (GroupHeader != null)
-            OptionParents1.Add(([ Layer.ToString() ], [ Layer ]));
+            OptionParents1.Add(([ GroupHeader.Name ], [ Layer ]));
     }
 
     public void SetUpOptionsMenu()

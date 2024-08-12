@@ -2,28 +2,29 @@
 
 public class CrewAssassin : Assassin
 {
-    public override LayerEnum Type => LayerEnum.CrewAssassin;
+    public override LayerEnum Type => LayerEnum.Bullseye;
     public override string Name => "Bullseye";
 }
 
 public class IntruderAssassin : Assassin
 {
-    public override LayerEnum Type => LayerEnum.IntruderAssassin;
+    public override LayerEnum Type => LayerEnum.Hitman;
     public override string Name => "Hitman";
 }
 
 public class NeutralAssassin : Assassin
 {
-    public override LayerEnum Type => LayerEnum.NeutralAssassin;
+    public override LayerEnum Type => LayerEnum.Slayer;
     public override string Name => "Slayer";
 }
 
 public class SyndicateAssassin : Assassin
 {
-    public override LayerEnum Type => LayerEnum.SyndicateAssassin;
+    public override LayerEnum Type => LayerEnum.Sniper;
     public override string Name => "Sniper";
 }
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public abstract class Assassin : Ability
 {
     private Dictionary<string, UColor> ColorMapping { get; set; }

@@ -91,7 +91,7 @@ public static class RoleGen
     private static readonly LayerEnum[] CrewObj = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
     private static readonly LayerEnum[] NeutralObj = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
 
-    private static readonly LayerEnum[] CrewAb = [ LayerEnum.CrewAssassin, LayerEnum.Swapper ];
+    private static readonly LayerEnum[] CrewAb = [ LayerEnum.Bullseye, LayerEnum.Swapper ];
     private static readonly LayerEnum[] Tasked = [ LayerEnum.Insider, LayerEnum.Multitasker ];
     private static readonly LayerEnum[] GlobalAb = [ LayerEnum.Radar, LayerEnum.Tiebreaker ];
 
@@ -1976,13 +1976,13 @@ public static class RoleGen
 
     private static RoleOptionData GenerateSpawnItem(LayerEnum id) => id switch
     {
-        LayerEnum.Anarchist => SyndicateUtilities.Anarchist,
-        LayerEnum.Impostor => IntruderUtilities.Impostor,
-        LayerEnum.Murderer => NeutralKillings.Murderer,
-        LayerEnum.Vigilante => CrewKillings.Vigilante,
-        LayerEnum.Veteran => CrewKillings.Veteran,
-        LayerEnum.Bastion => CrewKillings.Bastion,
-        LayerEnum.Crewmate => CrewUtilities.Crewmate,
+        LayerEnum.Anarchist => SyndicateUtilityRoles.Anarchist,
+        LayerEnum.Impostor => IntruderUtilityRoles.Impostor,
+        LayerEnum.Murderer => Options2.NeutralKillingRoles.Murderer,
+        LayerEnum.Vigilante => Options2.CrewKillingRoles.Vigilante,
+        LayerEnum.Veteran => Options2.CrewKillingRoles.Veteran,
+        LayerEnum.Bastion => Options2.CrewKillingRoles.Bastion,
+        LayerEnum.Crewmate => CrewUtilityRoles.Crewmate,
         LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 100, false, false, id),
         _ => OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.Layer == id)?.Get() ?? throw new NotImplementedException(id.ToString())
     };
@@ -1997,7 +1997,7 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateSpawnItem(LayerEnum.CrewAssassin));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Bullseye));
                 num--;
             }
 
@@ -2010,7 +2010,7 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateSpawnItem(LayerEnum.SyndicateAssassin));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Sniper));
                 num--;
             }
 
@@ -2023,7 +2023,7 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateSpawnItem(LayerEnum.IntruderAssassin));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Hitman));
                 num--;
             }
 
@@ -2036,7 +2036,7 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateSpawnItem(LayerEnum.NeutralAssassin));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Slayer));
                 num--;
             }
 
@@ -2311,13 +2311,13 @@ public static class RoleGen
 
             if (canHaveSnitch.Any() && id == LayerEnum.Snitch)
                 assigned = canHaveSnitch.TakeFirst();
-            else if (canHaveSyndicateAbility.Any() && id == LayerEnum.SyndicateAssassin)
+            else if (canHaveSyndicateAbility.Any() && id == LayerEnum.Sniper)
                 assigned = canHaveSyndicateAbility.TakeFirst();
             else if (canHaveCrewAbility.Any() && CrewAb.Contains(id))
                 assigned = canHaveCrewAbility.TakeFirst();
-            else if (canHaveNeutralAbility.Any() && id == LayerEnum.NeutralAssassin)
+            else if (canHaveNeutralAbility.Any() && id == LayerEnum.Slayer)
                 assigned = canHaveNeutralAbility.TakeFirst();
-            else if (canHaveIntruderAbility.Any() && id == LayerEnum.IntruderAssassin)
+            else if (canHaveIntruderAbility.Any() && id == LayerEnum.Hitman)
                 assigned = canHaveIntruderAbility.TakeFirst();
             else if (canHaveKillingAbility.Any() && id == LayerEnum.Ninja)
                 assigned = canHaveKillingAbility.TakeFirst();
@@ -2860,7 +2860,7 @@ public static class RoleGen
         canHaveDiseased.RemoveAll(x => x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll));
         canHaveDiseased.Shuffle();
 
-        canHaveProfessional.RemoveAll(x => !(x.Is(LayerEnum.CrewAssassin) || x.Is(LayerEnum.NeutralAssassin) || x.Is(LayerEnum.IntruderAssassin) || x.Is(LayerEnum.SyndicateAssassin)));
+        canHaveProfessional.RemoveAll(x => !(x.Is(LayerEnum.Bullseye) || x.Is(LayerEnum.Slayer) || x.Is(LayerEnum.Hitman) || x.Is(LayerEnum.Sniper)));
         canHaveProfessional.Shuffle();
 
         canHaveShy.RemoveAll(x => (x.Is(LayerEnum.Mayor) && !CustomGameOptions.MayorButton) || (x.Is(LayerEnum.Jester) && !CustomGameOptions.JesterButton) || (x.Is(LayerEnum.Swapper) &&
@@ -3606,10 +3606,10 @@ public static class RoleGen
         LayerEnum.Hunted => new Hunted(),
         LayerEnum.Bastion => new Bastion(),
         LayerEnum.Trapper => new Trapper(),
-        LayerEnum.CrewAssassin => new CrewAssassin(),
-        LayerEnum.IntruderAssassin => new IntruderAssassin(),
-        LayerEnum.NeutralAssassin => new NeutralAssassin(),
-        LayerEnum.SyndicateAssassin => new SyndicateAssassin(),
+        LayerEnum.Bullseye => new CrewAssassin(),
+        LayerEnum.Hitman => new IntruderAssassin(),
+        LayerEnum.Slayer => new NeutralAssassin(),
+        LayerEnum.Sniper => new SyndicateAssassin(),
         LayerEnum.ButtonBarry => new ButtonBarry(),
         LayerEnum.Insider => new Insider(),
         LayerEnum.Multitasker => new Multitasker(),

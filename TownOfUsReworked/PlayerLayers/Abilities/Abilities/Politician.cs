@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Politician : Ability
 {
     public List<byte> ExtraVotes { get; set; }

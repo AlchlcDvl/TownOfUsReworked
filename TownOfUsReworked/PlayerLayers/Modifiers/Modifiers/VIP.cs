@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class VIP : Modifier
 {
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.VIP : CustomColorManager.Modifier;

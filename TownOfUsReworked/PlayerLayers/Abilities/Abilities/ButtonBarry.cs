@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class ButtonBarry : Ability
 {
     private bool ButtonUsed { get; set; }

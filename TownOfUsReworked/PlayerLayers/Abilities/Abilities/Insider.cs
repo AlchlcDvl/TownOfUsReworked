@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
+[HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Insider : Ability
 {
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Insider : CustomColorManager.Ability;
