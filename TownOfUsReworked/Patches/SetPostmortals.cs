@@ -52,7 +52,7 @@ public static class SetPostmortals
             }
         }
 
-        var exiled = __instance.exiled?.Object;
+        var exiled = __instance.initData?.networkedPlayer?.Object;
 
         if (exiled)
         {

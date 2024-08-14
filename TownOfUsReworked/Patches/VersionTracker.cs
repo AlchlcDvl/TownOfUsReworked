@@ -42,19 +42,16 @@ public static class PingTracker_Update
             logo.transform.localScale *= 0.5f;
         }
 
-        DeltaTime += (Time.deltaTime - DeltaTime) * 0.1f;
-        var fps = Mathf.Ceil(1f / DeltaTime);
         __instance.GetComponent<AspectPosition>().Alignment = AspectPosition.EdgeAlignments.Top;
 
         // try catch my beloved <3
         try
         {
+            DeltaTime += (Time.deltaTime - DeltaTime) * 0.1f;
+            var fps = Mathf.Ceil(1f / DeltaTime);
             var host = GameData.Instance?.GetHost();
-            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n" +
-                "<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
-                $"{(!Meeting ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
-                (TownOfUsReworked.MCIActive ? (IsLobby ? $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist\n" : "") :
-                "") + (host != null ? $"Host: {host.PlayerName}</size>" : "");
+            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b> " +
+                TownOfUsReworked.VersionFinal + (host !=  null ? $"\nHost: {host.PlayerName}" : "") + "</size>";
         } catch {}
 
         return false;

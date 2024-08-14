@@ -904,7 +904,7 @@ public enum SkipEnum
 
 public enum WerewolfVentOptions
 {
-    Allways,
+    Always,
     Attacking,
     NotAttacking,
     Never

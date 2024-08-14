@@ -3,8 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Jackal : Neutral
 {
-    public PlayerControl Recruit2 { get; set; }
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float RecruitCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool JackalVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RecruitVent { get; set; } = false;
+
     public PlayerControl Recruit1 { get; set; }
+    public PlayerControl Recruit2 { get; set; }
     public PlayerControl Recruit3 { get; set; }
     public CustomButton RecruitButton { get; set; }
     public CustomButton KillButton { get; set; }

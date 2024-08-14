@@ -3,6 +3,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Jester : Neutral
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool JesterButton { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool JesterVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool JestSwitchVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool JestEjectScreen { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool VigiKillsJester { get; set; } = false;
+
     public bool VotedOut { get; set; }
     public List<byte> ToHaunt { get; set; }
     public bool HasHaunted { get; set; }

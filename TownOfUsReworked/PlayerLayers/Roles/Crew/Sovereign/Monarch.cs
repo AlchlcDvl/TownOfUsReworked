@@ -3,8 +3,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Monarch : Crew
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float KnightingCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RoundOneNoKnighting { get; set; } = false;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 14, 1)]
+    public static int KnightCount { get; set; } = 2;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 10, 1)]
+    public static int KnightVoteCount { get; set; } = 1;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool MonarchButton { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool KnightButton { get; set; } = true;
+
     public bool RoundOne { get; set; }
-    public CustomButton KnightButton { get; set; }
+    public CustomButton KnightingButton { get; set; }
     public List<byte> ToBeKnighted { get; set; }
     public List<byte> Knighted { get; set; }
     public bool Protected => Knighted.Any();
@@ -23,21 +41,21 @@ public class Monarch : Crew
         Alignment = Alignment.CrewSov;
         Knighted = [];
         ToBeKnighted = [];
-        KnightButton = CreateButton(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Knight, new Cooldown(CustomGameOptions.KnightingCd),
+        KnightingButton = CreateButton(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Knight, new Cooldown(CustomGameOptions.KnightingCd),
             (PlayerBodyExclusion)Exception, CustomGameOptions.KnightCount, (UsableFunc)Usable);
     }
 
     public void Knight()
     {
-        var cooldown = Interact(Player, KnightButton.TargetPlayer);
+        var cooldown = Interact(Player, KnightingButton.TargetPlayer);
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, KnightButton.TargetPlayer.PlayerId);
-            ToBeKnighted.Add(KnightButton.TargetPlayer.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, KnightingButton.TargetPlayer.PlayerId);
+            ToBeKnighted.Add(KnightingButton.TargetPlayer.PlayerId);
         }
 
-        KnightButton.StartCooldown(cooldown);
+        KnightingButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();

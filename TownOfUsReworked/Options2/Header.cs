@@ -14,9 +14,9 @@ public class HeaderOptionAttribute(MultiMenu2 menu, HeaderType type = HeaderType
     private GameObject Collapse { get; set; }
     private Type ClassType { get; set; }
     private GameMode SavedMode { get; set; } = GameMode.None;
-    private static Vector3 Left { get; set; }
-    private static Vector3 Right { get; set; }
-    private static Vector3 Diff { get; set; }
+    private static Vector3 Left;
+    private static Vector3 Right;
+    private static Vector3 Diff;
 
     public bool Get() => (bool)Value;
 
@@ -39,7 +39,6 @@ public class HeaderOptionAttribute(MultiMenu2 menu, HeaderType type = HeaderType
 
         if (HeaderType == HeaderType.Layer)
         {
-            header.Background.color = SettingsPatches.GetSettingColor(SettingsPatches.SettingsPage).Shadow().Shadow();
             var quota = header.transform.GetChild(2);
             Count = quota.GetChild(1).gameObject;
             Chance = quota.GetChild(4).gameObject;

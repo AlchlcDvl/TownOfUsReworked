@@ -3,6 +3,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Plaguebearer : Neutral
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float InfectCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool PBVent { get; set; } = false;
+
     public List<byte> Infected { get; set; }
     public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || CustomGameOptions.PestSpawn;
     public CustomButton InfectButton { get; set; }

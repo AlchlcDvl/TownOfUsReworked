@@ -3,6 +3,21 @@
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Cryomaniac : Neutral
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float CryoDouseCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool CryoFreezeAll { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool CryoLastKillerBoost { get; set; } = false;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float CryoKillCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool CryoVent { get; set; } = false;
+
     public CustomButton FreezeButton { get; set; }
     public CustomButton DouseButton { get; set; }
     public CustomButton KillButton { get; set; }

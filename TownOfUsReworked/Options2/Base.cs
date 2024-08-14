@@ -6,7 +6,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     public static readonly List<OptionAttribute> AllOptions = [];
     private static string LastChangedSetting = "";
     public string ID { get; set; }
-    public MultiMenu2 Menu { get; } = menu;
+    public MultiMenu2 Menu { get; set; } = menu;
     public object Value { get; set; }
     public object DefaultValue { get; set; }
     public MonoBehaviour Setting { get; set; }
@@ -113,7 +113,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         else if (option is GameMode mode)
             result = GameModeSettings.GameMode == mode;
         else if (option is LayerEnum layer)
-            result = SettingsPatches.ActiveLayer == layer;
+            result = SettingsPatches.SettingsPage == 5 + (int)layer;
         else if (option is (string, string))
         {
             if (!MapToLoaded.TryGetValue(ID, out result))

@@ -3,6 +3,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Werewolf : Neutral
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float MaulCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
+    public static float MaulRadius { get; set; } = 1.5f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool CanStillAttack { get; set; } = false;
+
+    [StringOption(MultiMenu2.LayerSubOptions)]
+    public static WerewolfVentOptions WerewolfVent { get; set; } = WerewolfVentOptions.Always;
+
     public bool CanMaul => Rounds is not (0 or 2) || CustomGameOptions.CanStillAttack;
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }

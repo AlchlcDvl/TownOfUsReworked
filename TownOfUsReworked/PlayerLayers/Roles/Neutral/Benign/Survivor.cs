@@ -3,6 +3,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Survivor : Neutral
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float VestCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float VestDur { get; set; } = 10f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    public static int MaxVests { get; set; } = 5;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool SurvVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool SurvSwitchVent { get; set; } = false;
+
     public CustomButton VestButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Survivor : CustomColorManager.Neutral;

@@ -3,6 +3,15 @@
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Juggernaut : Neutral
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float AssaultCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
+    public static float AssaultBonus { get; set; } = 5f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool JuggVent { get; set; } = false;
+
     public int JuggKills { get; set; }
     public CustomButton AssaultButton { get; set; }
 

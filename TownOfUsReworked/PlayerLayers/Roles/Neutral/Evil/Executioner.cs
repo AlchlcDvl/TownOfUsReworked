@@ -3,6 +3,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Executioner : Neutral
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExecutionerCanPickTargets { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExecutionerButton { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExeVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExeSwitchVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExeTargetKnows { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExeKnowsTargetRole { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExeEjectScreen { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExeCanWinBeyondDeath { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool VigiKillsExecutioner { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ExeToJest { get; set; } = true;
+
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetVotedOut { get; set; }
     public List<byte> ToDoom { get; set; }

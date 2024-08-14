@@ -3,6 +3,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Camouflager : Intruder
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float CamouflageCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float CamouflageDur { get; set; } = 10f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool CamoHideSize { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool CamoHideSpeed { get; set; } = false;
+
     public CustomButton CamouflageButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Camouflager : CustomColorManager.Intruder;

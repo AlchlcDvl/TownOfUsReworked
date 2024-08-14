@@ -23,7 +23,7 @@ public class CustomHeaderOption : CustomOption
         var header = Setting.Cast<CategoryHeaderMasked>();
         header.Title.text = $"<b>{Name}</b>";
 
-        if (HeaderType == HeaderType.Layer)
-            header.Background.color = SettingsPatches.GetSettingColor(SettingsPatches.SettingsPage).Shadow().Shadow();
+        // if (HeaderType == HeaderType.Layer)
+        //     header.Background.color = SettingsPatches.GetSettingColor(SettingsPatches.SettingsPage).Shadow().Shadow();
     }
 }

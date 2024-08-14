@@ -3,6 +3,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class BountyHunter : Neutral
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool BountyHunterCanPickTargets { get; set; } = false;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    public static int BountyHunterGuesses { get; set; } = 5;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float GuessCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool BHVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool VigiKillsBH { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool BHToTroll { get; set; } = true;
+
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetKilled { get; set; }
     public bool ColorHintGiven { get; set; }

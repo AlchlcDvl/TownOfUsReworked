@@ -59,9 +59,9 @@ public static class SaveZiplinePlayer
             else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Colorblind)
                 hand.handRenderer.color = UColor.grey;
             else if (player.IsMimicking(out var mimicked))
-                hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None);
+                hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None, mimicked.cosmetics.GetPhantomRoleAlpha());
             else
-                hand.SetPlayerColor(player.GetCurrentOutfit(), PlayerMaterial.MaskType.None);
+                hand.SetPlayerColor(player.GetCurrentOutfit(), PlayerMaterial.MaskType.None, player.cosmetics.GetPhantomRoleAlpha());
         }
         catch (Exception e)
         {

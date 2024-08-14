@@ -1508,7 +1508,7 @@ public static class Generate
 
         CustomOption.SaveSettings("Default");
 
-        LogMessage($"There exist {CustomOption.AllOptions.Count + 2} total options lmao (number jumpscare)");
+        LogMessage($"There exist {CustomOption.AllOptions.Count(x => !x.Name.Contains("Unique"))} total options lmao (number jumpscare)");
     }
 
     private static void GenerateClientOptions()

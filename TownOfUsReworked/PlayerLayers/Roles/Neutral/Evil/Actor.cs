@@ -3,6 +3,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Actor : Neutral
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ActorCanPickRole { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ActorButton { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ActorVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ActSwitchVent { get; set; } = false;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 5, 1)]
+    public static int ActorRoleCount { get; set; } = 3;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool VigiKillsActor { get; set; } = false;
+
     public bool Guessed { get; set; }
     public List<Role> PretendRoles { get; set; }
     public bool Failed => !Ability.GetAssassins().Any(x => x.Alive);

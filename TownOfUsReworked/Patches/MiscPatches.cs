@@ -301,16 +301,21 @@ public static class OverlayKillAnimationPatch
 {
     private static int CurrentOutfitTypeCache;
 
-    public static void Prefix(ref NetworkedPlayerInfo kInfo)
+    public static void Prefix(ref KillOverlayInitData initData)
     {
-        var playerControl = kInfo.Object;
+        var data = initData;
+        var playerControl = CustomPlayer.AllPlayers.Find(x => x.GetCurrentOutfit() == data.killerOutfit);
         CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
         if (!CustomGameOptions.AppearanceAnimation)
             playerControl.CurrentOutfitType = PlayerOutfitType.Default;
     }
 
-    public static void Postfix(NetworkedPlayerInfo kInfo) => kInfo.Object.CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
+    public static void Postfix(ref KillOverlayInitData initData)
+    {
+        var data = initData;
+        CustomPlayer.AllPlayers.Find(x => x.GetCurrentOutfit() == data.killerOutfit).CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
+    }
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]

@@ -3,6 +3,27 @@
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Arsonist : Neutral
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ArsoDouseCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 60f, 2.5f, Format.Time)]
+    public static float IgniteCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ArsoLastKillerBoost { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ArsoIgniteAll { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ArsoCooldownsLinked { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool IgnitionCremates { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ArsoVent { get; set; } = false;
+
     public CustomButton IgniteButton { get; set; }
     public CustomButton DouseButton { get; set; }
     public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||

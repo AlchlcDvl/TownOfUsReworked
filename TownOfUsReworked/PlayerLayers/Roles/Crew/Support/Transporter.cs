@@ -3,6 +3,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Transporter : Crew
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    public static int MaxTransports { get; set; } = 5;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float TransportCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
+    public static float TransportDur { get; set; } = 5f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool TransSelf { get; set; } = true;
+
     public PlayerControl TransportPlayer1 { get; set; }
     public PlayerControl TransportPlayer2 { get; set; }
     public CustomButton TransportButton { get; set; }

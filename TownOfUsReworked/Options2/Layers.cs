@@ -61,7 +61,7 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
         var cog = role.transform.GetChild(5).gameObject;
         cog.GetComponent<PassiveButton>().OverrideOnClickListeners(SetUpOptionsMenu);
-        cog.SetActive(GroupHeader != null);
+        cog.SetActive(GroupHeader != null || OptionParents1.Any(x => x.Item2.Contains(Layer)) || OptionParents2.Any(x => x.Item2.Contains(Layer)));
 
         SavedMode = GameMode.None;
         Update();
@@ -231,21 +231,24 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         Property.SetValue(null, Value);
 
         if (GroupHeader != null)
-            OptionParents1.Add(([ GroupHeader.Name ], [ Layer ]));
+        {
+            GroupHeader.Menu = (MultiMenu2)(5 + (int)Layer);
+            GroupHeader.GroupMembers.ForEach(x => x.Menu = (MultiMenu2)(5 + (int)Layer));
+        }
     }
 
     public void SetUpOptionsMenu()
     {
-        SettingsPatches.SettingsPage = 5;
-        SettingsPatches.ActiveLayer = Layer;
-        var __instance = GameSettingMenu.Instance.RoleSettingsTab;
-        var options = SettingsPatches.CreateOptions(__instance.RoleChancesSettings.transform);
+        SettingsPatches.SettingsPage = 5 + (int)Layer;
+        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
+        // var __instance = GameSettingMenu.Instance.RoleSettingsTab;
+        // var options = SettingsPatches.CreateOptions(__instance.RoleChancesSettings.transform);
 
-        foreach (var option in options)
-        {
-            if (option is OptionBehaviour behave)
-                behave.SetClickMask(__instance.ButtonClickMask);
-        }
+        // foreach (var option in options)
+        // {
+        //     if (option is OptionBehaviour behave)
+        //         behave.SetClickMask(__instance.ButtonClickMask);
+        // }
 
         SettingsPatches.OnValueChanged();
     }

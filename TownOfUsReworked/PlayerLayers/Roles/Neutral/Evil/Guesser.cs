@@ -3,6 +3,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Guesser : Neutral
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GuesserCanPickTargets { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GuesserButton { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GuessVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GuessSwitchVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GuessTargetKnows { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool MultipleGuesses { get; set; } = true;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    public static int MaxGuesses { get; set; } = 5;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GuesserAfterVoting { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool VigiKillsGuesser { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GuessToAct { get; set; } = true;
+
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetGuessed { get; set; }
     public int RemainingGuesses { get; set; }

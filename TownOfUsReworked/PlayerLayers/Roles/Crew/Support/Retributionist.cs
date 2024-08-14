@@ -3,6 +3,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Retributionist : Crew
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ReviveAfterVoting { get; set; } = true;
+
     public override void Init()
     {
         BaseStart();

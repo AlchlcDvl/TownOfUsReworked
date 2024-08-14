@@ -3,6 +3,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Dictator : Crew
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RoundOneNoDictReveal { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool DictateAfterVoting { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool DictatorButton { get; set; } = true;
+
     public bool RoundOne { get; set; }
     public bool Revealed { get; set; }
     public List<byte> ToBeEjected { get; set; }

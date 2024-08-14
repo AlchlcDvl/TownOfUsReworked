@@ -361,9 +361,9 @@ public static class RPCHandling
                                 else if (playerfromid.GetCustomOutfitType() == CustomPlayerOutfitType.Colorblind)
                                     hand.handRenderer.color = UColor.grey;
                                 else if (playerfromid.IsMimicking(out var mimicked))
-                                    hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None);
+                                    hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None, mimicked.cosmetics.GetPhantomRoleAlpha());
                                 else
-                                    hand.SetPlayerColor(playerfromid.GetCurrentOutfit(), PlayerMaterial.MaskType.None);
+                                    hand.SetPlayerColor(playerfromid.GetCurrentOutfit(), PlayerMaterial.MaskType.None, playerfromid.cosmetics.GetPhantomRoleAlpha());
                             }
                         }
                         catch (Exception e)

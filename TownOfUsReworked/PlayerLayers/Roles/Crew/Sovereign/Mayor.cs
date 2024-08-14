@@ -3,6 +3,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Mayor : Crew
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 10, 1)]
+    public static int MayorVoteCount { get; set; } = 2;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RoundOneNoMayorReveal { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool MayorButton { get; set; } = true;
+
     public bool RoundOne { get; set; }
     public CustomButton RevealButton { get; set; }
     public bool Revealed { get; set; }

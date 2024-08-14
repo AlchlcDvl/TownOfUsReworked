@@ -27,15 +27,15 @@ public class PlayerHandler : MonoBehaviour
         if (IsInGame)
         {
             (player.NameText().text, player.NameText().color) = UpdateGameName(player);
-            (player.ColorBlindText().text, player.ColorBlindText().color) = (UpdateColorblind(player), player.NameText().color);
+            (player.ColorBlindText().text, player.ColorBlindText().color) = UpdateColorblind(player);
             player.transform.localScale = CustomPlayer.Custom(player).SizeFactor;
         }
     }
 
-    private static string UpdateColorblind(PlayerControl player)
+    private static (string, UColor) UpdateColorblind(PlayerControl player)
     {
         if (!DataManager.Settings.Accessibility.ColorBlindMode)
-            return "";
+            return ("", UColor.white);
 
         var distance = Vector2.Distance(CustomPlayer.Local.transform.position, player.transform.position);
         var vector = player.transform.position - CustomPlayer.Local.transform.position;
@@ -43,7 +43,7 @@ public class PlayerHandler : MonoBehaviour
         if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && player != CustomPlayer.Local &&
             !CustomPlayer.LocalCustom.Dead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
         {
-            return "";
+            return ("", UColor.white);
         }
 
         if (!TransitioningSize.ContainsKey(player.PlayerId))
@@ -67,7 +67,7 @@ public class PlayerHandler : MonoBehaviour
         if (ClientOptions.LighterDarker)
             name += $" ({ld})";
 
-        return name;
+        return (name, player.GetCurrentOutfit().ColorId.GetColor(false));
     }
 
     public static (string, UColor) UpdateGameName(PlayerControl player)

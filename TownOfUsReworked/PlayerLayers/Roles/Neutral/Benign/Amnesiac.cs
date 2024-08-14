@@ -3,6 +3,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Amnesiac : Neutral
 {
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RememberArrows { get; set; } = false;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
+    public static float RememberArrowDelay { get; set; } = 5f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool AmneVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool AmneSwitchVent { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool AmneToThief { get; set; } = true;
+
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
     public CustomButton RememberButton { get; set; }
 

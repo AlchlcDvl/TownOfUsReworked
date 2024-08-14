@@ -3,6 +3,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Revealer : Crew
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 10, 1)]
+    public static int RevealerTasksRemainingClicked { get; set; } = 5;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 1, 5, 1)]
+    public static int RevealerTasksRemainingAlert { get; set; } = 1;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RevealerRevealsNeutrals { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RevealerRevealsCrew { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool RevealerRevealsRoles { get; set; } = false;
+
+    [StringOption(MultiMenu2.LayerSubOptions)]
+    public static RevealerCanBeClickedBy RevealerCanBeClickedBy { get; set; } = RevealerCanBeClickedBy.All;
+
     public bool Caught { get; set; }
     public bool Revealed { get; set; }
     public bool Faded { get; set; }

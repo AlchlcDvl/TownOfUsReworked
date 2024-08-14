@@ -3,6 +3,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Janitor : Intruder
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float CleanCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool JaniCooldownsLinked { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool SoloBoost { get; set; } = false;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float DragCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 0.25f, 3f, 0.25f, Format.Multiplier)]
+    public static float DragModifier { get; set; } = 0.5f;
+
+    [StringOption(MultiMenu2.LayerSubOptions)]
+    public static JanitorOptions JanitorVentOptions { get; set; } = JanitorOptions.Never;
+
     public CustomButton CleanButton { get; set; }
     public CustomButton DragButton { get; set; }
     public CustomButton DropButton { get; set; }

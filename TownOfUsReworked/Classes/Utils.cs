@@ -96,10 +96,10 @@ public static class Utils
         {
             player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit1(player));
             var rend = player.MyRend();
-            var a = rend.color.a;
+            var a = player.cosmetics.GetPhantomRoleAlpha();
             yield return PerformTimedAction(1, p =>
             {
-                rend.color = new(1f, 1f, 1f, Mathf.Clamp(p, a, 1));
+                player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(p, a, 1));
 
                 if (player != CustomPlayer.Local)
                 {
@@ -227,11 +227,7 @@ public static class Utils
             player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit1(player));
             HUD.StartCoroutine(PerformTimedAction(1, p =>
             {
-                var rend = player.MyRend();
-                rend.color = new(1f, 1f, 1f, Mathf.Clamp(1 - p, ca, 1));
-                player.SetHatAndVisorAlpha(1 - p);
-                var color2 = player.cosmetics.skin.layer.color;
-                player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
+                player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(1 - p, ca, 1));
                 var color = UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), 37.GetColor(false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
 

@@ -3,14 +3,14 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
 public static class ConfirmEjects
 {
-    public static void Postfix(ExileController __instance, ref bool tie)
+    public static void Postfix(ExileController __instance, ref ExileController.InitProperties init)
     {
-        var exiled = __instance.exiled;
+        var exiled = init?.networkedPlayer;
 
         if (exiled == null)
         {
             if (ClientOptions.CustomEjects)
-                __instance.completeString = $"Everyone's safe...for now. ({(tie ? "Tie" : "Skipped")})";
+                __instance.completeString = $"Everyone's safe...for now. ({(init.voteTie ? "Tie" : "Skipped")})";
 
             return;
         }

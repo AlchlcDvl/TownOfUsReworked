@@ -3,6 +3,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Grenadier : Intruder
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float FlashCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float FlashDur { get; set; } = 10f;
+
+    [NumberOption(MultiMenu2.LayerSubOptions, 0.5f, 10f, 0.5f, Format.Distance)]
+    public static float FlashRadius { get; set; } = 4.5f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GrenadierIndicators { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool SaboFlash { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool GrenadierVent { get; set; } = false;
+
     public CustomButton FlashButton { get; set; }
     public List<byte> FlashedPlayers { get; set; }
 

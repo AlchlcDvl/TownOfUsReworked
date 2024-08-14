@@ -3,6 +3,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Thief : Neutral
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float StealCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ThiefSteals { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ThiefCanGuess { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ThiefCanGuessAfterVoting { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool ThiefVent { get; set; } = false;
+
     public CustomButton StealButton { get; set; }
     public Dictionary<string, UColor> ColorMapping { get; set; }
     public Dictionary<string, UColor> SortedColorMapping { get; set; }

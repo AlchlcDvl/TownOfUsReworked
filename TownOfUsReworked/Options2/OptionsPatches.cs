@@ -3,8 +3,8 @@ namespace TownOfUsReworked.Options2;
 public static class SettingsPatches
 {
     public static int SettingsPage;
-    public static LayerEnum ActiveLayer = LayerEnum.None;
     public static string CurrentPreset = "Custom";
+    public static int SettingsPage2;
 
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Start))]
     public static class OptionsMenuBehaviour_Start
@@ -48,7 +48,6 @@ public static class SettingsPatches
                 2 => 1,
                 _ => 0
             };
-            ActiveLayer = LayerEnum.None;
             OnValueChanged(__instance);
         }
     }
@@ -62,6 +61,8 @@ public static class SettingsPatches
                 SettingsPage = 0;
 
             LobbyConsole.ClientOptionsActive = false;
+            SpawnOptionsCreated = false;
+            LayerOptionsCreated.Keys.ForEach(x => LayerOptionsCreated[x] = false);
         }
     }
 
@@ -75,54 +76,6 @@ public static class SettingsPatches
     private static readonly List<MonoBehaviour> Prefabs1 = [];
     private static readonly List<MonoBehaviour> Prefabs2 = [];
 
-    public static List<MonoBehaviour> CreateOptions(Transform parent)
-    {
-        var options = new List<MonoBehaviour>();
-        var type = (MultiMenu2)SettingsPage;
-
-        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menu == type))
-        {
-            if (!option.Setting)
-            {
-                MonoBehaviour setting = null;
-
-                switch (option.Type)
-                {
-                    case CustomOptionType.Number:
-                        setting = UObject.Instantiate(NumberPrefab, parent);
-                        break;
-
-                    case CustomOptionType.String:
-                        setting = UObject.Instantiate(StringPrefab, parent);
-                        break;
-
-                    case CustomOptionType.Layers:
-                        setting = UObject.Instantiate(LayersPrefab, parent);
-                        break;
-
-                    case CustomOptionType.Toggle:
-                        setting = UObject.Instantiate(TogglePrefab, parent);
-                        break;
-
-                    case CustomOptionType.Header:
-                        setting = UObject.Instantiate(((HeaderOptionAttribute)option).HeaderType == HeaderType.General ? BaseHeaderPrefab : LayerHeaderPrefab, parent);
-                        break;
-
-                    case CustomOptionType.Entry:
-                        setting = UObject.Instantiate(ButtonPrefab, parent);
-                        break;
-                }
-
-                option.Setting = setting;
-                option.OptionCreated();
-            }
-
-            options.Add(option.Setting);
-        }
-
-        return options;
-    }
-
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Awake))]
     public static class DefinePrefabs1
     {
@@ -130,6 +83,8 @@ public static class SettingsPatches
 
         public static void Postfix(GameOptionsMenu __instance)
         {
+            __instance.Children = new();
+
             if (!NumberPrefab)
             {
                 // Background = 0, Value Text = 1, Title = 2, - = 3, + = 4, Value Box = 5
@@ -210,20 +165,20 @@ public static class SettingsPatches
             if (!ButtonPrefab)
             {
                 // Title = 0, Toggle = 1, Background = 2
-                ButtonPrefab = UObject.Instantiate(__instance.checkboxOrigin, null).DontUnload().DontDestroy();
-                ButtonPrefab.name = "ButtonPrefab";
+                // ButtonPrefab = UObject.Instantiate(__instance.checkboxOrigin, null).DontUnload().DontDestroy();
+                // ButtonPrefab.name = "ButtonPrefab";
 
-                ButtonPrefab.transform.GetChild(0).localPosition += new Vector3(0.3f, 0f, 0f);
+                // ButtonPrefab.transform.GetChild(0).localPosition += new Vector3(0.3f, 0f, 0f);
 
-                var click = ButtonPrefab.transform.GetChild(1);
-                click.GetChild(2).gameObject.SetActive(false);
-                click.localPosition += new Vector3(-15f, 0f, 0f);
-                click.localScale += new Vector3(14f, 0f, 0f);
+                // var click = ButtonPrefab.transform.GetChild(1);
+                // click.GetChild(2).gameObject.SetActive(false);
+                // click.localPosition += new Vector3(-15f, 0f, 0f);
+                // click.localScale += new Vector3(14f, 0f, 0f);
 
-                ButtonPrefab.transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
-                ButtonPrefab.transform.GetChild(2).gameObject.SetActive(false);
+                // ButtonPrefab.transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
+                // ButtonPrefab.transform.GetChild(2).gameObject.SetActive(false);
 
-                Prefabs1.Add(ButtonPrefab);
+                // Prefabs1.Add(ButtonPrefab);
             }
 
             if (!BaseHeaderPrefab)
@@ -272,12 +227,16 @@ public static class SettingsPatches
         {
             __instance.roleChances = new();
             __instance.roleTabs = new();
+            __instance.advancedSettingChildren = new();
 
             var bg = __instance.transform.FindChild("Scroller").FindChild("MaskBg");
             bg.localPosition += new Vector3(0f, 0.4f, 0f);
             bg.localScale += new Vector3(0f, 0.8f, 0f);
 
             __instance.ButtonClickMask.transform.localScale += new Vector3(0f, 0.5f, 0f);
+            __instance.AllButton.gameObject.SetActive(false);
+            __instance.transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+            __instance.quotaHeader.gameObject.SetActive(false);
 
             if (!LayersPrefab)
             {
@@ -292,10 +251,9 @@ public static class SettingsPatches
 
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayersPrefab.transform);
                 newButton.name = "LayersSubSettingsButton";
-                newButton.transform.localPosition = new(0.3419f, -0.2582f, -2f);
+                newButton.transform.localPosition = new(0.4719f, -0.2982f, -2f);
                 newButton.transform.GetChild(0).gameObject.Destroy();
-                newButton.transform.FindChild("InactiveSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("Cog");
-                newButton.transform.FindChild("ActiveSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("CogActive");
+                newButton.transform.FindChild("ButtonSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("Cog");
                 newButton.OverrideOnClickListeners(BlankVoid);
 
                 var check = __instance.checkboxOrigin.transform.GetChild(1);
@@ -339,7 +297,7 @@ public static class SettingsPatches
 
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayerHeaderPrefab.transform);
                 newButton.name = "Collapse";
-                newButton.transform.localPosition = new(-5.639f, -0.44f, -2f);
+                newButton.transform.localPosition = new(-5.539f, -0.45f, -2f);
                 newButton.GetComponentInChildren<TextMeshPro>().text = "-";
                 newButton.OverrideOnClickListeners(BlankVoid);
                 newButton.transform.localScale *= 0.7f;
@@ -367,6 +325,57 @@ public static class SettingsPatches
         }
     }
 
+    private static bool SpawnOptionsCreated;
+    private static readonly Dictionary<int, bool> LayerOptionsCreated = [];
+
+    public static List<MonoBehaviour> CreateOptions(Transform parent)
+    {
+        var options = new List<MonoBehaviour>();
+        var type = (MultiMenu2)SettingsPage;
+
+        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menu == type))
+        {
+            if (!option.Setting)
+            {
+                MonoBehaviour setting = null;
+
+                switch (option.Type)
+                {
+                    case CustomOptionType.Number:
+                        setting = UObject.Instantiate(NumberPrefab, parent);
+                        break;
+
+                    case CustomOptionType.String:
+                        setting = UObject.Instantiate(StringPrefab, parent);
+                        break;
+
+                    case CustomOptionType.Layers:
+                        setting = UObject.Instantiate(LayersPrefab, parent);
+                        break;
+
+                    case CustomOptionType.Toggle:
+                        setting = UObject.Instantiate(TogglePrefab, parent);
+                        break;
+
+                    case CustomOptionType.Header:
+                        setting = UObject.Instantiate(((HeaderOptionAttribute)option).HeaderType == HeaderType.General ? BaseHeaderPrefab : LayerHeaderPrefab, parent);
+                        break;
+
+                    case CustomOptionType.Entry:
+                        setting = UObject.Instantiate(ButtonPrefab, parent);
+                        break;
+                }
+
+                option.Setting = setting;
+                option.OptionCreated();
+            }
+
+            options.Add(option.Setting);
+        }
+
+        return options;
+    }
+
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Initialize))]
     public static class GameOptionsMenu_Initialize
     {
@@ -380,7 +389,7 @@ public static class SettingsPatches
 
             // TODO: Make a better fix for this for example caching the options or creating it ourself.
             // AD Says: Done, kinda.
-            var behaviours = CreateOptions(__instance.settingsContainer);
+            var behaviours = CreateOptions(__instance.MapPicker.transform.parent);
 
             foreach (var behave in behaviours)
             {
@@ -394,38 +403,11 @@ public static class SettingsPatches
         }
     }
 
-    public static UColor GetSettingColor(int index) => index switch
-    {
-        1 => CustomColorManager.Crew,
-        2 => CustomColorManager.Neutral,
-        3 => CustomColorManager.Intruder,
-        4 => CustomColorManager.Syndicate,
-        5 => CustomColorManager.Modifier,
-        6 => CustomColorManager.Objectifier,
-        7 => CustomColorManager.Abilities,
-        8 => CustomColorManager.RoleList,
-        _ => UColor.white
-    };
-
     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.SetQuotaTab))]
-    public static class RolesSettingsMenu_SetQuotaTab
+    [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.OpenChancesTab))]
+    public static class RolesSettingsMenuPatches
     {
-        public static bool Prefix(RolesSettingsMenu __instance)
-        {
-            __instance.AllButton.gameObject.SetActive(false);
-            __instance.transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
-            var behaviours = CreateOptions(__instance.RoleChancesSettings.transform);
-
-            foreach (var behave in behaviours)
-            {
-                if (behave is OptionBehaviour option)
-                    option.SetClickMask(__instance.ButtonClickMask);
-            }
-
-            __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
-            OnValueChanged();
-            return false;
-        }
+        public static bool Prefix() => false;
     }
 
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
@@ -444,27 +426,8 @@ public static class SettingsPatches
     }
 
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.ValueChanged))]
-    public static class DisableCustomNotify1
-    {
-        public static bool Prefix(ref OptionBehaviour option)
-        {
-            var optionn = option;
-            return OptionAttribute.AllOptions.Any(x => x.Setting == optionn);
-        }
-    }
-
     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.ValueChanged))]
-    public static class DisableCustomNotify2
-    {
-        public static bool Prefix(ref OptionBehaviour obj)
-        {
-            var optionn = obj;
-            return OptionAttribute.AllOptions.Any(x => x.Setting == optionn);
-        }
-    }
-
-    [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.OpenChancesTab))]
-    public static class RandomNullRefBOOOOOOOO
+    public static class DisableCustomNotify
     {
         public static bool Prefix() => false;
     }
@@ -480,7 +443,7 @@ public static class SettingsPatches
             return;
 
         __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3);
-        __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage is 1 or 5);
+        __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage is 1 or >= 5);
         __instance.PresetsTab.gameObject.SetActive(SettingsPage == 2);
         __instance.GameSettingsButton.SelectButton(SettingsPage == 0);
         __instance.RoleSettingsButton.SelectButton(SettingsPage == 1);
@@ -490,18 +453,46 @@ public static class SettingsPatches
             ReturnButton = __instance.transform.FindChild("ReturnButton")?.gameObject; // For some reason this damn thing is becoming null even though it definitely exists???
 
         if (ReturnButton)
-            ReturnButton.SetActive(SettingsPage == 5);
+            ReturnButton.SetActive(SettingsPage >= 5);
+
+        if (!SpawnOptionsCreated && SettingsPage == 1)
+        {
+            var behaviours = CreateOptions(__instance.RoleSettingsTab.RoleChancesSettings.transform);
+
+            foreach (var behave in behaviours)
+            {
+                if (behave is OptionBehaviour option)
+                    option.SetClickMask(__instance.RoleSettingsTab.ButtonClickMask);
+            }
+
+            __instance.RoleSettingsTab.ControllerSelectable.AddRange(new(__instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
+            __instance.RoleSettingsTab.scrollBar.ScrollToTop();
+            SpawnOptionsCreated = true;
+        }
+
+        if ((!LayerOptionsCreated.TryGetValue(SettingsPage, out var layerOptions) || !layerOptions) && SettingsPage >= 5)
+        {
+            var options = CreateOptions(__instance.RoleSettingsTab.RoleChancesSettings.transform);
+
+            foreach (var option in options)
+            {
+                if (option is OptionBehaviour behave)
+                    behave.SetClickMask(__instance.RoleSettingsTab.ButtonClickMask);
+            }
+
+            foreach (var elem in __instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>())
+            {
+                if (!__instance.RoleSettingsTab.ControllerSelectable.Contains(elem))
+                    __instance.RoleSettingsTab.ControllerSelectable.Add(elem);
+            }
+
+            LayerOptionsCreated[SettingsPage] = true;
+        }
 
         if (SettingsPage is 0 or 3)
         {
             var y = 0.713f;
-
-            try
-            {
-                __instance.GameSettingsTab.Children.Clear();
-            } catch {}
-
-            __instance.GameSettingsTab.Children = new();
+            __instance.GameSettingsTab.Children.Clear();
             __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
             foreach (var option in OptionAttribute.AllOptions)
@@ -535,17 +526,10 @@ public static class SettingsPatches
                 __instance.GamePresetsButton.gameObject.SetActive(false);
             }
         }
-        else if (SettingsPage is 1 or 5)
+        else if (SettingsPage is 1 or >= 5)
         {
-            var y = SettingsPage == 5 ? 1.513f : 1.96f;
-            __instance.RoleSettingsTab.quotaHeader.gameObject.SetActive(false);
-
-            try
-            {
-                __instance.RoleSettingsTab.advancedSettingChildren.Clear();
-            } catch {}
-
-            __instance.RoleSettingsTab.advancedSettingChildren = new();
+            var y = SettingsPage >= 5 ? 1.513f : 1.96f;
+            __instance.RoleSettingsTab.advancedSettingChildren.Clear();
 
             foreach (var option in OptionAttribute.AllOptions)
             {
@@ -559,7 +543,7 @@ public static class SettingsPatches
 
                     var isHeader = option is HeaderOptionAttribute;
 
-                    if (SettingsPage == 5)
+                    if (SettingsPage >= 5)
                     {
                         option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
                         y -= isHeader ? 0.63f : 0.45f;
@@ -581,7 +565,7 @@ public static class SettingsPatches
                 }
             }
 
-            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y + (SettingsPage == 5 ? -1.65f : 0f));
+            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y + (SettingsPage >= 5 ? -1.65f : 0f));
             __instance.RoleSettingsTab.InitializeControllerNavigation();
         }
     }
@@ -590,15 +574,15 @@ public static class SettingsPatches
 
     private static void Return()
     {
-        ActiveLayer = LayerEnum.None;
         SettingsPage = 1;
+        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         OnValueChanged();
     }
 
     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.Update))]
     public static class RolesSettingsMenu_Update
     {
-        public static void Postfix(RolesSettingsMenu __instance) => __instance.RoleChancesSettings.transform.localPosition = new(SettingsPage == 5 ? 0.35f : 0f, 0f, -5f);
+        public static void Postfix(RolesSettingsMenu __instance) => __instance.RoleChancesSettings.transform.localPosition = new(SettingsPage >= 5 ? 0.35f : -0.06f, 0f, -5f);
     }
 
     private static bool Initialize(OptionBehaviour opt)
@@ -1028,7 +1012,7 @@ public static class SettingsPatches
             __instance.SecondPresetButton.gameObject.SetActive(false);
             __instance.PresetDescriptionText.gameObject.SetActive(false);
 
-            // var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).OrderBy(x => x).Where(x => !x.EndsWith(".json")).Select(x => x.SanitisePath());
+            // var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).Where(x => !x.EndsWith(".json")).OrderBy(x => x).Select(x => x.SanitisePath());
             var saveButton = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
             saveButton.OverrideOnClickListeners(OptionAttribute.SaveSettings);
             saveButton.name = "SaveSettingsButton";

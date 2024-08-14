@@ -3,6 +3,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu2.LayerSubOptions)]
 public class Blackmailer : Intruder
 {
+    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float BlackmailCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool WhispersNotPrivate { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool BlackmailMates { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    public static bool BMRevealed { get; set; } = true;
+
     public CustomButton BlackmailButton { get; set; }
     public PlayerControl BlackmailedPlayer { get; set; }
     public bool ShookAlready { get; set; }
