@@ -499,7 +499,9 @@ public static class SettingsPatches
             {
                 if (option.Setting)
                 {
-                    if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
+                    var menu = (MultiMenu2)SettingsPage;
+
+                    if ((option.Menu != menu && !option.Menus.Contains(menu)) || !option.Active())
                     {
                         option.Setting.gameObject.SetActive(false);
                         continue;
@@ -528,14 +530,16 @@ public static class SettingsPatches
         }
         else if (SettingsPage is 1 or >= 5)
         {
-            var y = SettingsPage >= 5 ? 1.513f : 1.96f;
+            var y = SettingsPage >= 5 ? 1.515f : 1.96f;
             __instance.RoleSettingsTab.advancedSettingChildren.Clear();
 
             foreach (var option in OptionAttribute.AllOptions)
             {
                 if (option.Setting)
                 {
-                    if (option.Menu != (MultiMenu2)SettingsPage || !option.Active())
+                    var menu = (MultiMenu2)SettingsPage;
+
+                    if ((option.Menu != menu && !option.Menus.Contains(menu)) || !option.Active())
                     {
                         option.Setting.gameObject.SetActive(false);
                         continue;

@@ -7,6 +7,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     private static string LastChangedSetting = "";
     public string ID { get; set; }
     public MultiMenu2 Menu { get; set; } = menu;
+    public readonly List<MultiMenu2> Menus = [ menu ];
     public object Value { get; set; }
     public object DefaultValue { get; set; }
     public MonoBehaviour Setting { get; set; }
@@ -65,6 +66,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
         ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom, GameMode.Vanilla, GameMode.KillingOnly, GameMode.RoleList ] ),
         ( [ "CrewMax", "CrewMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
+        ( [ "Pestilence" ], [ LayerEnum.Plaguebearer ] ),
+        ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] )
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -104,11 +107,9 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
 
     private bool IsActive(object option)
     {
-        var result = false;
+        var result = option == null;
 
-        if (option == null)
-            result = true;
-        else if (option is MapEnum map)
+        if (option is MapEnum map)
             result = MapSettings.Map == map;
         else if (option is GameMode mode)
             result = GameModeSettings.GameMode == mode;
@@ -358,6 +359,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     public static OptionAttribute GetOption(string title) => AllOptions.Find(x => x.ID == title);
 
     public static OptionAttribute GetOptionFromPropertyName(string propertyName) => AllOptions.Find(x => x.Name == propertyName);
+
+    public static T GetOptionFromPropertyName<T>(string propertyName) where T : OptionAttribute => GetOptionFromPropertyName(propertyName) as T;
 
     public static T GetOption<T>(string title) where T : OptionAttribute => GetOption(title) as T;
 }

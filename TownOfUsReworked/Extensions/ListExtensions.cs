@@ -124,6 +124,20 @@ public static class ListExtensions
 
     public static bool AllAnyOrEmpty<T>(this IEnumerable<T> source, Func<T, bool> predicate, bool all = false) => !source.Any() || (all ? source.All(predicate) : source.Any(predicate));
 
+    public static bool TryFinding<T>(this IEnumerable<T> source, Func<T, bool> predicate, out T value)
+    {
+        try
+        {
+            value = source.First(predicate);
+            return true;
+        }
+        catch
+        {
+            value = default;
+            return false;
+        }
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)

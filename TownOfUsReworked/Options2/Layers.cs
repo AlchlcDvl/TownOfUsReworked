@@ -17,9 +17,9 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     public SpriteRenderer UniqueCheck { get; set; }
     public SpriteRenderer ActiveCheck { get; set; }
     private GameMode SavedMode { get; set; } = GameMode.None;
-    private static Vector3 Left { get; set; }
-    private static Vector3 Right { get; set; }
-    private static Vector3 Diff { get; set; }
+    private static Vector3 Left;
+    private static Vector3 Right;
+    private static Vector3 Diff;
 
     public override void OptionCreated()
     {
@@ -228,12 +228,45 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         ID =  $"CustomOption.{Layer}On";
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
+        var menu = (MultiMenu2)(5 + (int)Layer);
         Property.SetValue(null, Value);
 
         if (GroupHeader != null)
         {
-            GroupHeader.Menu = (MultiMenu2)(5 + (int)Layer);
-            GroupHeader.GroupMembers.ForEach(x => x.Menu = (MultiMenu2)(5 + (int)Layer));
+            GroupHeader.Menu = menu;
+            GroupHeader.Menus.Add(menu);
+
+            foreach (var elem in GroupHeader.GroupMembers)
+            {
+                elem.Menu = menu;
+                elem.Menus.Add(menu);
+            }
+        }
+
+        if (OptionParents1.TryFinding(x => x.Item2.Contains(Layer), out var option1))
+        {
+            var option = GetOptionFromPropertyName<HeaderOptionAttribute>(option1.Item1.First());
+            option.Menu = menu;
+            option.Menus.Add(menu);
+
+            foreach (var elem in option.GroupMembers)
+            {
+                elem.Menu = menu;
+                elem.Menus.Add(menu);
+            }
+        }
+
+        if (OptionParents2.TryFinding(x => x.Item2.Contains(Layer), out option1))
+        {
+            var option = GetOptionFromPropertyName<HeaderOptionAttribute>(option1.Item1.First());
+            option.Menu = menu;
+            option.Menus.Add(menu);
+
+            foreach (var elem in option.GroupMembers)
+            {
+                elem.Menu = menu;
+                elem.Menus.Add(menu);
+            }
         }
     }
 
@@ -241,15 +274,6 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
     {
         SettingsPatches.SettingsPage = 5 + (int)Layer;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
-        // var __instance = GameSettingMenu.Instance.RoleSettingsTab;
-        // var options = SettingsPatches.CreateOptions(__instance.RoleChancesSettings.transform);
-
-        // foreach (var option in options)
-        // {
-        //     if (option is OptionBehaviour behave)
-        //         behave.SetClickMask(__instance.ButtonClickMask);
-        // }
-
         SettingsPatches.OnValueChanged();
     }
 }

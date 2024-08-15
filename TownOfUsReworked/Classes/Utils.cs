@@ -398,6 +398,7 @@ public static class Utils
         AchievementManager.Instance.OnMurder(killer == CustomPlayer.Local, target == CustomPlayer.Local, CachedMorphs.ContainsKey(killer.PlayerId),
             CachedMorphs.TryGetValue(killer.PlayerId, out var id) ? id : 255, target.PlayerId);
         lunge &= !killer.Is(LayerEnum.Ninja) && killer != target;
+        Pestilence.Infected.Remove(target.PlayerId);
 
         if (IsCustomHnS || CustomPlayer.LocalCustom.Dead)
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD.transform.parent).Show(target, 0);

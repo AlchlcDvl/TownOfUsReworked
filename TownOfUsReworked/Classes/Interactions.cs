@@ -51,11 +51,11 @@ public static class Interactions
         Pestilence.Infected[targetId]++;
 
         if (interacter.Is(LayerEnum.Pestilence))
-            Pestilence.Infected[target.PlayerId] = 4;
+            Pestilence.Infected[target.PlayerId] = Pestilence.MaxStacks;
 
-        if (Pestilence.Infected.TryGetValue(target.PlayerId, out var count) && count >= 3)
+        if (Pestilence.Infected.TryGetValue(target.PlayerId, out var count) && count >= Pestilence.MaxStacks)
             RpcMurderPlayer(interacter, target, DeathReasonEnum.Infected, false);
-        else if (Pestilence.Infected.TryGetValue(interacter.PlayerId, out count) && count >= 3)
+        else if (Pestilence.Infected.TryGetValue(interacter.PlayerId, out count) && count >= Pestilence.MaxStacks)
             RpcMurderPlayer(target, interacter, DeathReasonEnum.Infected, false);
         else
             CallRpc(CustomRPC.Action, ActionsRPC.Infect, targetId, Pestilence.Infected[targetId]);
