@@ -42,16 +42,14 @@ public static class PingTracker_Update
             logo.transform.localScale *= 0.5f;
         }
 
-        __instance.GetComponent<AspectPosition>().Alignment = AspectPosition.EdgeAlignments.Top;
-
         // try catch my beloved <3
         try
         {
             DeltaTime += (Time.deltaTime - DeltaTime) * 0.1f;
             var fps = Mathf.Ceil(1f / DeltaTime);
             var host = GameData.Instance?.GetHost();
-            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b> " +
-                TownOfUsReworked.VersionFinal + (host !=  null ? $"\nHost: {host.PlayerName}" : "") + "</size>";
+            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}" + (host !=  null ? $"\nHost: {host.PlayerName}" : "") +
+                "</size>";
         } catch {}
 
         return false;

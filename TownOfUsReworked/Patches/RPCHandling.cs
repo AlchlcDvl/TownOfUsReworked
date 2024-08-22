@@ -80,8 +80,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.VersionHandshake:
-                        VersionHandshake(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
-                            reader.ReadString(), new(reader.ReadBytesAndSize()), reader.ReadPackedInt32());
+                        VersionHandshake(reader.ReadPlayerVersion(), reader.ReadPackedInt32());
                         break;
 
                     case MiscRPC.SubmergedFixOxygen:

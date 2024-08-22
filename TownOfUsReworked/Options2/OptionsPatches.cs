@@ -500,15 +500,13 @@ public static class SettingsPatches
                 if (option.Setting)
                 {
                     var menu = (MultiMenu2)SettingsPage;
+                    var flag = (option.Menu == menu || option.Menus.Contains(menu)) && option.Active();
+                    option.Setting.gameObject.SetActive(flag);
 
-                    if ((option.Menu != menu && !option.Menus.Contains(menu)) || !option.Active())
-                    {
-                        option.Setting.gameObject.SetActive(false);
+                    if (!flag)
                         continue;
-                    }
 
                     var isHeader = option is HeaderOptionAttribute;
-                    option.Setting.gameObject.SetActive(true);
                     option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
                     y -= isHeader ? 0.63f : 0.45f;
                     option.Update();
@@ -538,12 +536,11 @@ public static class SettingsPatches
                 if (option.Setting)
                 {
                     var menu = (MultiMenu2)SettingsPage;
+                    var flag = (option.Menu == menu || option.Menus.Contains(menu)) && option.Active();
+                    option.Setting.gameObject.SetActive(flag);
 
-                    if ((option.Menu != menu && !option.Menus.Contains(menu)) || !option.Active())
-                    {
-                        option.Setting.gameObject.SetActive(false);
+                    if (!flag)
                         continue;
-                    }
 
                     var isHeader = option is HeaderOptionAttribute;
 
@@ -561,7 +558,6 @@ public static class SettingsPatches
                         y -= isHeader ? 0.496f : 0.404f;
                     }
 
-                    option.Setting.gameObject.SetActive(true);
                     option.Update();
 
                     if (option.Setting is OptionBehaviour setting)

@@ -14,10 +14,10 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 5;
+    public const int DevBuild = 6;
 
     public static bool IsTest { get; set; }
-    private readonly static string VersionS = VersionString.Remove(VersionString.Length - 2);
+    private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
     private static string TestString => IsTest ? "_test" : "";
     private static string StreamString => IsStream ? "s" : "";
@@ -25,26 +25,26 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
-    public readonly static string DataPath = Path.GetDirectoryName(Application.dataPath);
-    public readonly static string Assets = Path.Combine(DataPath, "ReworkedAssets");
-    public readonly static string Hats = Path.Combine(Assets, "CustomHats");
-    public readonly static string Visors = Path.Combine(Assets, "CustomVisors");
-    public readonly static string Nameplates = Path.Combine(Assets, "CustomNameplates");
-    public readonly static string Colors = Path.Combine(Assets, "CustomColors");
-    public readonly static string Options = Path.Combine(Assets, "CustomOptions");
-    public readonly static string Images = Path.Combine(Assets, "CustomImages");
-    public readonly static string Sounds = Path.Combine(Assets, "CustomSounds");
-    public readonly static string Misc = Path.Combine(Assets, "MiscAssets");
-    public readonly static string Portal = Path.Combine(Assets, "PortalAnim");
-    public readonly static string Logs = Path.Combine(Assets, "ModLogs");
-    public readonly static string Other = Path.Combine(Assets, "Other");
-    public readonly static string ModsFolder = Path.Combine(DataPath, "BepInEx", "plugins");
+    public static readonly string DataPath = Path.GetDirectoryName(Application.dataPath);
+    public static readonly string Assets = Path.Combine(DataPath, "ReworkedAssets");
+    public static readonly string Hats = Path.Combine(Assets, "CustomHats");
+    public static readonly string Visors = Path.Combine(Assets, "CustomVisors");
+    public static readonly string Nameplates = Path.Combine(Assets, "CustomNameplates");
+    public static readonly string Colors = Path.Combine(Assets, "CustomColors");
+    public static readonly string Options = Path.Combine(Assets, "CustomOptions");
+    public static readonly string Images = Path.Combine(Assets, "CustomImages");
+    public static readonly string Sounds = Path.Combine(Assets, "CustomSounds");
+    public static readonly string Misc = Path.Combine(Assets, "MiscAssets");
+    public static readonly string Portal = Path.Combine(Assets, "PortalAnim");
+    public static readonly string Logs = Path.Combine(Assets, "ModLogs");
+    public static readonly string Other = Path.Combine(Assets, "Other");
+    public static readonly string ModsFolder = Path.Combine(DataPath, "BepInEx", "plugins");
 
     public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
     public const string GitHubLink = "https://github.com/AlchlcDvl/TownOfUsReworked";
     public const string AssetsLink = "https://github.com/AlchlcDvl/ReworkedAssets";
 
-    public readonly static Assembly Core = typeof(TownOfUsReworked).Assembly;
+    public static readonly Assembly Core = typeof(TownOfUsReworked).Assembly;
 
     public static NormalGameOptionsV08 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV08 HNSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;

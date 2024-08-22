@@ -149,24 +149,24 @@ public static class GameStartManagerPatches
                         if (pv.Diff > 0)
                         {
                             versionMismatch = true;
-                            message += $"{client.PlayerName} has an older version of Town Of Us Reworked (v{pv.VersionString})\n";
+                            message += $"{client.PlayerName} has an older version of Town Of Us Reworked (v{pv.VersionFinal})\n";
                         }
                         else if (pv.Diff < 0)
                         {
                             versionMismatch = true;
-                            message += $"{client.PlayerName} has a newer version of Town Of Us Reworked (v{pv.VersionString})\n";
+                            message += $"{client.PlayerName} has a newer version of Town Of Us Reworked (v{pv.VersionFinal})\n";
                         }
                         else if (!pv.DevMatches || !pv.StreamMatches || !pv.DevBuildMatches)
                         {
                             // Version presumably matches, check if Dev/Stream matches
                             versionMismatch = true;
-                            message += $"{client.PlayerName} has a mismatching non-public version of Town Of Us Reworked (v{pv.VersionString})\n";
+                            message += $"{client.PlayerName} has a mismatching non-public version of Town Of Us Reworked (v{pv.VersionFinal})\n";
                         }
                         else if (!pv.GuidMatches || !pv.VersionStringMatches)
                         {
                             // Version presumably matches, check if Guid or Version string matches
                             versionMismatch = true;
-                            message += $"{client.PlayerName} has a modified version of Town Of Us Reworked (v{pv.VersionString})\n";
+                            message += $"{client.PlayerName} has a modified version of Town Of Us Reworked (v{pv.VersionFinal})\n";
                         }
                         else if (!pv.EverythingMatches)
                         {
@@ -174,8 +174,8 @@ public static class GameStartManagerPatches
                             versionMismatch = true;
                             message += $"You or {client.PlayerName} somehow still has a version mismatch, please share logs\n";
                             LogWarning($"{client.PlayerName}\nGuid - {pv.GuidMatches} Dev - {pv.DevMatches} Stream - {pv.StreamMatches} Dev Build - {pv.DevBuildMatches} Version String - " +
-                                $"{pv.VersionString} Version - {pv.Version}\n\n{CustomPlayer.Local.Data.PlayerName}\nGuid - {SelfVersion.GuidMatches} Dev - {SelfVersion.DevMatches} Stream" +
-                                $" - {SelfVersion.StreamMatches} Dev Build - {SelfVersion.DevBuildMatches} Version String - {SelfVersion.VersionString} Version - {SelfVersion.Version}");
+                                $"{pv.VersionFinal} Version - {pv.Version}\n\n{CustomPlayer.Local.Data.PlayerName}\nGuid - {SelfVersion.GuidMatches} Dev - {SelfVersion.DevMatches} Stream" +
+                                $" - {SelfVersion.StreamMatches} Dev Build - {SelfVersion.DevBuildMatches} Version String - {SelfVersion.VersionFinal} Version - {SelfVersion.Version}");
                         }
                     }
                 }

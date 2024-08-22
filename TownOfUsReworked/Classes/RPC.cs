@@ -159,19 +159,14 @@ public static class RPC
         if (TownOfUsReworked.MCIActive)
             return null;
 
-        var writer = CallOpenRpc(CustomRPC.Misc, MiscRPC.VersionHandshake, TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build,
-            TownOfUsReworked.Version.Revision, TownOfUsReworked.IsDev, TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream, TownOfUsReworked.VersionFinal,
-            TownOfUsReworked.Core.ManifestModule.ModuleVersionId.ToByteArray());
+        var version = new PlayerVersion(TownOfUsReworked.VersionString, TownOfUsReworked.IsDev, TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream,
+            TownOfUsReworked.Core.ManifestModule.ModuleVersionId, TownOfUsReworked.VersionFinal, TownOfUsReworked.Version);
+        var writer = CallOpenRpc(CustomRPC.Misc, MiscRPC.VersionHandshake, version);
         writer.WritePacked(AmongUsClient.Instance.ClientId);
         writer.EndRpc();
-        var version = new PlayerVersion(TownOfUsReworked.Version, TownOfUsReworked.IsDev, TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream,
-            TownOfUsReworked.Core.ManifestModule.ModuleVersionId, TownOfUsReworked.VersionFinal);
         VersionHandshake(version, AmongUsClient.Instance.ClientId);
         return version;
     }
-
-    public static void VersionHandshake(int major, int minor, int build, int revision, bool dev, int devBuild, bool stream, string version, Guid guid, int clientId) =>
-        VersionHandshake(new(new(major, minor, build, revision), dev, devBuild, stream, guid, version), clientId);
 
     public static void VersionHandshake(PlayerVersion version, int clientId) => GameStartManagerPatches.PlayerVersions.TryAdd(clientId, version);
 
@@ -224,6 +219,11 @@ public static class RPC
 
     public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Parse(reader.ReadString());
 
+    public static Version ReadVersion(this MessageReader reader) => new(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+
+    public static PlayerVersion ReadPlayerVersion(this MessageReader reader) => new(reader.ReadString(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
+        new(reader.ReadBytesAndSize()), reader.ReadString(), reader.ReadVersion());
+
     public static void Write(this MessageWriter writer, PlayerLayer layer)
     {
         writer.Write(layer.PlayerId);
@@ -233,6 +233,25 @@ public static class RPC
     public static void Write(this MessageWriter writer, LayerEnum layer) => writer.Write((byte)layer);
 
     public static void Write(this MessageWriter writer, RoleOptionData data) => writer.Write(data.ToString());
+
+    public static void Write(this MessageWriter writer, Version version)
+    {
+        writer.Write(version.Major);
+        writer.Write(version.Minor);
+        writer.Write(version.Build);
+        writer.Write(version.Revision);
+    }
+
+    public static void Write(this MessageWriter writer, PlayerVersion pv)
+    {
+        writer.Write(pv.Version);
+        writer.Write(pv.Dev);
+        writer.Write(pv.DevBuild);
+        writer.Write(pv.Stream);
+        writer.Write(pv.Guid.ToByteArray());
+        writer.Write(pv.VersionFinal);
+        writer.Write(pv.SVersion);
+    }
 
     public static void Write(this MessageWriter writer, object item, object[] data)
     {
@@ -316,6 +335,10 @@ public static class RPC
             writer.Write((byte)vanilla);
         else if (item is CustomButton button)
             writer.Write(button.ID);
+        else if (item is PlayerVersion pv)
+            writer.Write(pv);
+        else if (item is Version version)
+            writer.Write(version);
         else if (item is List<Role> roles)
         {
             writer.Write(roles.Count);

@@ -234,12 +234,16 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         if (GroupHeader != null)
         {
             GroupHeader.Menu = menu;
-            GroupHeader.Menus.Add(menu);
+
+            if (!GroupHeader.Menus.Contains(menu))
+                GroupHeader.Menus.Add(menu);
 
             foreach (var elem in GroupHeader.GroupMembers)
             {
                 elem.Menu = menu;
-                elem.Menus.Add(menu);
+
+                if (!elem.Menus.Contains(menu))
+                    elem.Menus.Add(menu);
             }
         }
 
@@ -247,12 +251,16 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         {
             var option = GetOptionFromPropertyName<HeaderOptionAttribute>(option1.Item1.First());
             option.Menu = menu;
-            option.Menus.Add(menu);
+
+            if (!option.Menus.Contains(menu))
+                option.Menus.Add(menu);
 
             foreach (var elem in option.GroupMembers)
             {
                 elem.Menu = menu;
-                elem.Menus.Add(menu);
+
+                if (!elem.Menus.Contains(menu))
+                    elem.Menus.Add(menu);
             }
         }
 
@@ -260,12 +268,16 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         {
             var option = GetOptionFromPropertyName<HeaderOptionAttribute>(option1.Item1.First());
             option.Menu = menu;
-            option.Menus.Add(menu);
+
+            if (!option.Menus.Contains(menu))
+                option.Menus.Add(menu);
 
             foreach (var elem in option.GroupMembers)
             {
                 elem.Menu = menu;
-                elem.Menus.Add(menu);
+
+                if (!elem.Menus.Contains(menu))
+                    elem.Menus.Add(menu);
             }
         }
     }

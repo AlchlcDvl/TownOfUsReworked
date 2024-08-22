@@ -23,6 +23,7 @@ public partial class TownOfUsReworked
 
     public void LoadComponents()
     {
+        ReactorCredits.Register<TownOfUsReworked>(location => location == ReactorCredits.Location.MainMenu || LobbyBehaviour.Instance);
         Harmony.PatchAll();
         var text = Path.Combine(DataPath, "steam_appid.txt");
 
