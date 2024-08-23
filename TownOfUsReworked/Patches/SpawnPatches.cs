@@ -33,16 +33,16 @@ public static class SpawnPatches
         if (MapPatches.CurrentMap is not (4 or 6))
             HUD.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
 
-        Sprites.TryAdd("DefaultVent", HUD.ImpostorVentButton.graphic.sprite);
-        Sprites.TryAdd("DefaultSabotage", HUD.SabotageButton.graphic.sprite);
+        AddAsset("DefaultVent", HUD.ImpostorVentButton.graphic.sprite);
+        AddAsset("DefaultSabotage", HUD.SabotageButton.graphic.sprite);
         HUD.ImpostorVentButton.buttonLabelText.fontSharedMaterial = HUD.ReportButton.buttonLabelText.fontSharedMaterial = HUD.UseButton.buttonLabelText.fontSharedMaterial =
             HUD.PetButton.buttonLabelText.fontSharedMaterial = HUD.SabotageButton.buttonLabelText.fontSharedMaterial;
     }
 
     private static void RandomSpawn(bool intro, bool meeting)
     {
-        if (!AmongUsClient.Instance.AmHost || CustomGameOptions.RandomSpawns == RandomSpawning.Disabled || MapPatches.CurrentMap is 4 or 5 || (meeting && CustomGameOptions.RandomSpawns ==
-            RandomSpawning.GameStart) || (intro && CustomGameOptions.RandomSpawns == RandomSpawning.PostMeeting))
+        if (!AmongUsClient.Instance.AmHost || GameModifiers.RandomSpawns == RandomSpawning.Disabled || MapPatches.CurrentMap is 4 or 5 || (meeting && GameModifiers.RandomSpawns ==
+            RandomSpawning.GameStart) || (intro && GameModifiers.RandomSpawns == RandomSpawning.PostMeeting))
         {
             return;
         }

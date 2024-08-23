@@ -132,7 +132,7 @@ public static class ButtonUtils
         {
             op.BuggedPlayers.Clear();
 
-            if (CustomGameOptions.BugsRemoveOnNewRound && meeting)
+            if (Operative.BugsRemoveOnNewRound && meeting)
             {
                 op.Bugs.ForEach(x => x.Destroy());
                 op.Bugs.Clear();
@@ -140,7 +140,7 @@ public static class ButtonUtils
         }
         else if (role is Tracker track)
         {
-            if (CustomGameOptions.ResetOnNewRound)
+            if (Tracker.ResetOnNewRound)
             {
                 track.TrackButton.Uses = track.TrackButton.MaxUses;
                 track.OnLobby();
@@ -152,9 +152,9 @@ public static class ButtonUtils
             trans.TransportPlayer2 = null;
         }
         else if (role is Mayor mayor)
-            mayor.RoundOne = start && CustomGameOptions.RoundOneNoMayorReveal;
+            mayor.RoundOne = start && Mayor.RoundOneNoMayorReveal;
         else if (role is Monarch mon)
-            mon.RoundOne = start && CustomGameOptions.RoundOneNoKnighting;
+            mon.RoundOne = start && Monarch.RoundOneNoKnighting;
         else if (role is Medium)
             role.OnLobby();
         else if (role is Retributionist ret)
@@ -167,13 +167,13 @@ public static class ButtonUtils
             ret.MediateArrows.Clear();
             ret.MediatedPlayers.Clear();
 
-            if (CustomGameOptions.BugsRemoveOnNewRound && meeting)
+            if (Operative.BugsRemoveOnNewRound && meeting)
             {
                 ret.Bugs.ForEach(x => x.Destroy());
                 ret.Bugs.Clear();
             }
 
-            if (CustomGameOptions.ResetOnNewRound)
+            if (Tracker.ResetOnNewRound)
             {
                 ret.TrackerArrows.Values.ToList().DestroyAll();
                 ret.TrackerArrows.Clear();

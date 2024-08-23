@@ -34,7 +34,7 @@ public static class RecomputeTaskCounts
             if (mostRole2)
                 __instance.CompletedTasks = mostRole2.TasksCompleted;
 
-            __instance.TotalTasks = CustomGameOptions.ShortTasks + CustomGameOptions.CommonTasks;
+            __instance.TotalTasks = TaskSettings.ShortTasks + TaskSettings.CommonTasks;
         }
         else if (IsCustomHnS)
         {
@@ -61,7 +61,7 @@ public static class RecomputeTaskCounts
                 var pc = playerInfo.Object;
 
                 if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.CanDoTasks() && pc.Is(Faction.Crew) && !pc.Is(LayerEnum.Revealer) && (!playerInfo.IsDead ||
-                    CustomGameOptions.GhostTasksCountToWin))
+                    CrewSettings.GhostTasksCountToWin))
                 {
                     foreach (var task in playerInfo.Tasks)
                     {
@@ -162,7 +162,7 @@ public static class CompleteTasksPatch
         {
             var role = __instance.GetLayer<Phantom>();
 
-            if (role.TasksLeft == CustomGameOptions.PhantomTasksRemaining && CustomGameOptions.PhantomPlayersAlerted && !role.Caught)
+            if (role.TasksLeft == Phantom.PhantomTasksRemaining && Phantom.PhantomPlayersAlerted && !role.Caught)
                 Flash(role.Color);
         }
         else if (__instance.Is(LayerEnum.Runner))
@@ -176,12 +176,11 @@ public static class CompleteTasksPatch
         {
             var role = __instance.GetLayer<Revealer>();
 
-            if (role.TasksLeft == CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
+            if (role.TasksLeft == Revealer.RevealerTasksRemainingAlert && !role.Caught)
             {
                 if (CustomPlayer.Local.Is(LayerEnum.Revealer))
                     Flash(role.Color);
-                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) &&
-                    CustomGameOptions.RevealerRevealsNeutrals))
+                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && Revealer.RevealerRevealsNeutrals))
                 {
                     role.Revealed = true;
                     Flash(role.Color);
@@ -191,7 +190,7 @@ public static class CompleteTasksPatch
             else if (role.TasksDone && !role.Caught)
             {
                 if (CustomPlayer.Local.Is(LayerEnum.Revealer) || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) &&
-                    CustomGameOptions.RevealerRevealsNeutrals))
+                    Revealer.RevealerRevealsNeutrals))
                 {
                     Flash(role.Color);
                 }

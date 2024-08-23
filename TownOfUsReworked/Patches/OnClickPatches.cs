@@ -33,20 +33,20 @@ public static class PlayerControlOnClick
 
         if (role is Phantom phantom)
         {
-            if (role.TasksLeft <= CustomGameOptions.PhantomTasksRemaining)
+            if (role.TasksLeft <= Phantom.PhantomTasksRemaining)
                 phantom.Caught = true;
             else
                 return;
         }
         else if (role is Revealer revealer)
         {
-            if ((CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
-                (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && CustomPlayer.Local.Is(Faction.Crew)))
+            if ((Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
+                (Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && CustomPlayer.Local.Is(Faction.Crew)))
             {
                 return;
             }
 
-            if (role.TasksLeft <= CustomGameOptions.RevealerTasksRemainingClicked)
+            if (role.TasksLeft <= Revealer.RevealerTasksRemainingClicked)
                 revealer.Caught = true;
             else
                 return;

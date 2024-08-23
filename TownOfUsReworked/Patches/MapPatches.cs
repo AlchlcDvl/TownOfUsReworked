@@ -23,26 +23,25 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
-            TownOfUsReworked.NormalOptions.CrewLightMod = CustomGameOptions.CrewVision;
+            TownOfUsReworked.NormalOptions.CrewLightMod = CrewSettings.CrewVision;
             TownOfUsReworked.NormalOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
-            TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting != AnonVotes.Disabled;
-            TownOfUsReworked.NormalOptions.VisualTasks = CustomGameOptions.VisualTasks;
-            TownOfUsReworked.NormalOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
+            TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
+            TownOfUsReworked.NormalOptions.VisualTasks = GameModifiers.VisualTasks;
+            TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameSettings.PlayerSpeed;
             TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
             TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
-            TownOfUsReworked.NormalOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
-            TownOfUsReworked.NormalOptions.VotingTime = CustomGameOptions.VotingTime;
-            TownOfUsReworked.NormalOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
-            TownOfUsReworked.NormalOptions.KillDistance = CustomGameOptions.InteractionDistance;
-            TownOfUsReworked.NormalOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
-            TownOfUsReworked.NormalOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
+            TownOfUsReworked.NormalOptions.ConfirmImpostor = GameSettings.ConfirmEjects;
+            TownOfUsReworked.NormalOptions.VotingTime = GameSettings.VotingTime;
+            TownOfUsReworked.NormalOptions.DiscussionTime = GameSettings.DiscussionTime;
+            TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
+            TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
             TownOfUsReworked.NormalOptions.KillCooldown = CustomGameOptions.IntKillCd;
-            TownOfUsReworked.NormalOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-            TownOfUsReworked.NormalOptions.MaxPlayers = CustomGameOptions.LobbySize;
-            TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
-            TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
-            TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
-            CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
+            TownOfUsReworked.NormalOptions.GhostsDoTasks = CrewSettings.GhostTasksCountToWin;
+            TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
+            TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
+            TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
+            TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
+            CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
         }
@@ -50,20 +49,20 @@ public static class MapPatches
 
     private static byte GetSelectedMap()
     {
-        var map = (byte)CustomGameOptions.Map;
+        var map = (byte)MapSettings.Map;
 
         if (map < 8)
             return map;
 
         var totalWeight = 0;
-        totalWeight += CustomGameOptions.RandomMapSkeld;
-        totalWeight += CustomGameOptions.RandomMapMira;
-        totalWeight += CustomGameOptions.RandomMapPolus;
-        totalWeight += CustomGameOptions.RandomMapdlekS;
-        totalWeight += CustomGameOptions.RandomMapAirship;
-        totalWeight += CustomGameOptions.RandomMapFungle;
-        totalWeight += CustomGameOptions.RandomMapSubmerged;
-        totalWeight += CustomGameOptions.RandomMapLevelImpostor;
+        totalWeight += MapSettings.RandomMapSkeld;
+        totalWeight += MapSettings.RandomMapMira;
+        totalWeight += MapSettings.RandomMapPolus;
+        totalWeight += MapSettings.RandomMapdlekS;
+        totalWeight += MapSettings.RandomMapAirship;
+        totalWeight += MapSettings.RandomMapFungle;
+        totalWeight += MapSettings.RandomMapSubmerged;
+        totalWeight += MapSettings.RandomMapLevelImpostor;
         var maps = new List<byte>() { 0, 1, 2, 3, 4, 5 };
 
         if (SubLoaded)
@@ -78,7 +77,7 @@ public static class MapPatches
             return maps.Random();
 
         var randoms = new List<byte>();
-        var num = CustomGameOptions.RandomMapSkeld / 5;
+        var num = MapSettings.RandomMapSkeld / 5;
 
         while (num > 0)
         {
@@ -86,7 +85,7 @@ public static class MapPatches
             num--;
         }
 
-        num = CustomGameOptions.RandomMapMira / 5;
+        num = MapSettings.RandomMapMira / 5;
 
         while (num > 0)
         {
@@ -94,7 +93,7 @@ public static class MapPatches
             num--;
         }
 
-        num = CustomGameOptions.RandomMapPolus / 5;
+        num = MapSettings.RandomMapPolus / 5;
 
         while (num > 0)
         {
@@ -102,7 +101,7 @@ public static class MapPatches
             num--;
         }
 
-        num = CustomGameOptions.RandomMapdlekS / 5;
+        num = MapSettings.RandomMapdlekS / 5;
 
         while (num > 0)
         {
@@ -110,7 +109,7 @@ public static class MapPatches
             num--;
         }
 
-        num = CustomGameOptions.RandomMapAirship / 5;
+        num = MapSettings.RandomMapAirship / 5;
 
         while (num > 0)
         {
@@ -118,7 +117,7 @@ public static class MapPatches
             num--;
         }
 
-        num = CustomGameOptions.RandomMapFungle / 5;
+        num = MapSettings.RandomMapFungle / 5;
 
         while (num > 0)
         {
@@ -128,7 +127,7 @@ public static class MapPatches
 
         if (SubLoaded)
         {
-            num = CustomGameOptions.RandomMapSubmerged / 5;
+            num = MapSettings.RandomMapSubmerged / 5;
 
             while (num > 0)
             {
@@ -139,7 +138,7 @@ public static class MapPatches
 
         if (LILoaded)
         {
-            num = CustomGameOptions.RandomMapLevelImpostor / 5;
+            num = MapSettings.RandomMapLevelImpostor / 5;
 
             while (num > 0)
             {
@@ -154,21 +153,21 @@ public static class MapPatches
 
     public static void AdjustSettings()
     {
-        if (!CustomGameOptions.AutoAdjustSettings)
+        if (!MapSettings.AutoAdjustSettings)
             return;
 
         if (CurrentMap is 0 or 1 or 3)
         {
-            TownOfUsReworked.NormalOptions.NumShortTasks += CustomGameOptions.SmallMapIncreasedShortTasks;
-            TownOfUsReworked.NormalOptions.NumLongTasks += CustomGameOptions.SmallMapIncreasedLongTasks;
-            AdjustCooldowns(-CustomGameOptions.SmallMapDecreasedCooldown);
+            TownOfUsReworked.NormalOptions.NumShortTasks += MapSettings.SmallMapIncreasedShortTasks;
+            TownOfUsReworked.NormalOptions.NumLongTasks += MapSettings.SmallMapIncreasedLongTasks;
+            AdjustCooldowns(-MapSettings.SmallMapDecreasedCooldown);
         }
 
         if (CurrentMap is 4 or 5 or 6)
         {
-            TownOfUsReworked.NormalOptions.NumShortTasks -= CustomGameOptions.LargeMapDecreasedShortTasks;
-            TownOfUsReworked.NormalOptions.NumLongTasks -= CustomGameOptions.LargeMapDecreasedLongTasks;
-            AdjustCooldowns(CustomGameOptions.LargeMapIncreasedCooldown);
+            TownOfUsReworked.NormalOptions.NumShortTasks -= MapSettings.LargeMapDecreasedShortTasks;
+            TownOfUsReworked.NormalOptions.NumLongTasks -= MapSettings.LargeMapDecreasedLongTasks;
+            AdjustCooldowns(MapSettings.LargeMapIncreasedCooldown);
         }
     }
 

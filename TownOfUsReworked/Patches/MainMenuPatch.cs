@@ -187,8 +187,8 @@ public static class MainMenuStartPatch
             credObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
         }));
 
-        SoundEffects.TryAdd("Hover", __instance.playButton.HoverSound);
-        SoundEffects.TryAdd("Click", __instance.playButton.ClickSound);
+        AddAsset("Hover", __instance.playButton.HoverSound);
+        AddAsset("Click", __instance.playButton.ClickSound);
     }
 }
 

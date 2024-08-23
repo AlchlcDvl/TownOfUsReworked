@@ -27,7 +27,7 @@ public class DeadPlayer(byte killer, byte player)
                 report += "\nThere is evidence of self-harm!";
             else
             {
-                if (CustomGameOptions.CoronerReportRole)
+                if (Coroner.CoronerReportRole)
                     report += $"\nThey were killed by a {killerRole.Name}!";
                 else if (Killer.Is(Faction.Crew))
                     report += "\nThe killer is from the Crew!";
@@ -40,7 +40,7 @@ public class DeadPlayer(byte killer, byte player)
 
                 report += $"\nThe killer is a {(Killer.Data.DefaultOutfit.ColorId.IsLighter() ? "lighter" : "darker")} color!";
 
-                if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(KillAge / 1000))
+                if (Coroner.CoronerReportName && Coroner.CoronerKillerNameTime <= (KillAge / 1000))
                     report += $"\nThey were killed by {Killer.name}!";
             }
         }

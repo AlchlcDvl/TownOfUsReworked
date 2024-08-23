@@ -340,8 +340,8 @@ public class Guesser : Neutral
         passive.OverrideOnMouseOverListeners(() => rend.color = UColor.green);
         passive.OverrideOnMouseOutListeners(() => rend.color = SelectedButton == button ? UColor.red : UColor.white);
         passive.OverrideOnClickListeners(onClick);
-        passive.ClickSound = SoundEffects["Click"];
-        passive.HoverSound = SoundEffects["Hover"];
+        passive.ClickSound = GetAudio("Click");
+        passive.HoverSound = GetAudio("Hover");
     }
 
     public void TurnAct()

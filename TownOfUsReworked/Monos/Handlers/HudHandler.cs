@@ -85,7 +85,7 @@ public class HudHandler : MonoBehaviour
                 UninteractiblePlayers.Remove(player.PlayerId);
         }
 
-        if (CustomGameOptions.CamouflagedComms)
+        if (BetterSabotages.CamouflagedComms)
         {
             if (Ship.Systems.TryGetValue(SystemTypes.Comms, out var comms))
             {

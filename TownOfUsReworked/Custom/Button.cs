@@ -171,7 +171,7 @@ public class CustomButton
         Base.gameObject.name = Base.name = ID;
         var passive = Base.GetComponent<PassiveButton>();
         passive.OverrideOnClickListeners(Clicked);
-        passive.HoverSound = SoundEffects["Hover"];
+        passive.HoverSound = GetAudio("Hover");
         Block = new($"{Base}Block");
         Block.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
         Block.transform.localScale *= 0.75f;
@@ -221,9 +221,9 @@ public class CustomButton
 
     public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f) => CooldownTime = type switch
     {
-        CooldownType.Start => CustomGameOptions.EnableInitialCds ? CustomGameOptions.InitialCooldowns : MaxCooldown(),
-        CooldownType.Meeting => CustomGameOptions.EnableMeetingCds ? CustomGameOptions.MeetingCooldowns : MaxCooldown(),
-        CooldownType.Fail => CustomGameOptions.EnableFailCds ? CustomGameOptions.FailCooldowns : MaxCooldown(),
+        CooldownType.Start => GameSettings.EnableInitialCds ? GameSettings.InitialCooldowns : MaxCooldown(),
+        CooldownType.Meeting => GameSettings.EnableMeetingCds ? GameSettings.MeetingCooldowns : MaxCooldown(),
+        CooldownType.Fail => GameSettings.EnableFailCds ? GameSettings.FailCooldowns : MaxCooldown(),
         CooldownType.Custom => cooldown,
         _ => MaxCooldown()
     };
@@ -313,7 +313,7 @@ public class CustomButton
         if (!Owner || !Owner.Player || !Local)
             return;
 
-        if (!((Owner.Player.inVent && !CustomGameOptions.CooldownInVent) || Owner.Player.inMovingPlat || Owner.Player.onLadder))
+        if (!((Owner.Player.inVent && !GameModifiers.CooldownInVent) || Owner.Player.inMovingPlat || Owner.Player.onLadder))
             CooldownTime -= Time.deltaTime;
 
         if (CooldownTime < 0f)

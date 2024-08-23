@@ -109,7 +109,7 @@ public class ChatCommand
 
     private static void Whisper(string[] args, string arg)
     {
-        if (!CustomGameOptions.Whispers && IsInGame)
+        if (!GameModifiers.Whispers && IsInGame)
         {
             Run("<color=#00FF00FF>⚠ No Whispering ⚠</color>", "Whispering is not turned on.");
             return;

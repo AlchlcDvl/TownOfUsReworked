@@ -45,7 +45,7 @@ public static class UpdateSplashPatch
         TMP.fontStyle = FontStyles.Bold;
         TMP.color = UColor.clear;
         TMP.transform.localScale /= 2f;
-        Fonts.Add("Placeholder", TMP.font);
+        AddAsset("Placeholder", TMP.font);
 
         SetText("Loading...");
         yield return EndFrame();

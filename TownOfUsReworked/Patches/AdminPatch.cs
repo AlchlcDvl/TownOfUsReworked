@@ -76,8 +76,8 @@ public static class AdminPatch
                 var player = collider.GetComponent<PlayerControl>();
                 var data = player?.Data;
 
-                if (collider.tag == "DeadBody" && ((isOp && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOp && (int)CustomGameOptions.WhoSeesDead is 2) || DeadSeeEverything ||
-                    CustomGameOptions.WhoSeesDead == 0))
+                if (collider.tag == "DeadBody" && ((isOp && (int)Operative.WhoSeesDead is 1) || (!isOp && (int)Operative.WhoSeesDead is 2) || DeadSeeEverything ||  Operative.WhoSeesDead ==
+                    0))
                 {
                     var playerId = collider.GetComponent<DeadBody>().ParentId;
                     colorMap.Add(playerId);

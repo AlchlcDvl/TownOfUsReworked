@@ -18,13 +18,13 @@ public static class GameSettings
     public static int EmergencyButtonCount { get; set; } = 1;
 
     [NumberOption(MultiMenu2.Main, 0, 300, 2.5f, Format.Time)]
-    public static float EmergencyButtonCooldown { get; set; } = 25;
+    public static int EmergencyButtonCooldown { get; set; } = 25;
 
     [NumberOption(MultiMenu2.Main, 0, 300, 5, Format.Time)]
-    public static float DiscussionTime { get; set; } = 30;
+    public static int DiscussionTime { get; set; } = 30;
 
     [NumberOption(MultiMenu2.Main, 5, 600, 15, Format.Time)]
-    public static float VotingTime { get; set; } = 60;
+    public static int VotingTime { get; set; } = 60;
 
     [StringOption(MultiMenu2.Main)]
     private static TBMode TaskBar { get; set; } = TBMode.MeetingOnly;
@@ -145,6 +145,33 @@ public static class GameModeSettings
 
     [NumberOption(MultiMenu2.Main, 0, 13, 1)]
     public static int TRCommonTasks { get; set; } = 4;
+
+    [NumberOption(MultiMenu2.Main, 0, 13, 1)]
+    public static int TRLongTasks { get; set; } = 1;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool BanCrewmate { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool BanMurderer { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool BanImpostor { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool BanAnarchist { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableRevealer { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnablePhantom { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableGhoul { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBanshee { get; set; } = false;
 }
 
 [HeaderOption(MultiMenu2.Main)]
@@ -257,10 +284,12 @@ public static class MapSettings
     public static int RandomMapFungle { get; set; } = 10;
 
     [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent, All = true)]
-    public static int RandomMapSubmerged { get; set; } = 10;
+    private static int RandomMapSubmergedPriv { get; set; } = 10;
+    public static int RandomMapSubmerged => SubLoaded ? RandomMapSubmergedPriv : 0;
 
     [NumberOption(MultiMenu2.Main, 0, 100, 10, Format.Percent, All = true)]
-    public static int RandomMapLevelImpostor { get; set; } = 10;
+    private static int RandomMapLevelImpostorPriv { get; set; } = 10;
+    public static int RandomMapLevelImpostor => LILoaded ? RandomMapLevelImpostorPriv : 0;
 
     [ToggleOption(MultiMenu2.Main)]
     public static bool AutoAdjustSettings { get; set; } = false;
@@ -285,129 +314,6 @@ public static class MapSettings
 
     [NumberOption(MultiMenu2.Main, 0, 3, 1)]
     public static int LargeMapDecreasedLongTasks { get; set; } = 0;
-}
-
-[HeaderOption(MultiMenu2.Main)]
-public static class BetterSabotages
-{
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool CamouflagedComms { get; set; } = true;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool CamouflagedMeetings { get; set; } = false;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool NightVision { get; set; } = false;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool EvilsIgnoreNV { get; set; } = false;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool OxySlow { get; set; } = true;
-
-    [NumberOption(MultiMenu2.Main, 0, 100, 5, Format.Percent)]
-    public static int ReactorShake { get; set; } = 30;
-}
-
-// Better Skeld Settings
-[HeaderOption(MultiMenu2.Main)]
-public static class BetterSkeldOptions
-{
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool EnableBetterSkeld { get; set; } = true;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool SkeldVentImprovements { get; set; } = false;
-
-    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
-    public static float SkeldReactorTimer { get; set; } = 60f;
-
-    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
-    public static float SkeldO2Timer { get; set; } = 60f;
-}
-
-[HeaderOption(MultiMenu2.Main)]
-public static class BetterMiraHQOptions
-{
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool EnableBetterMiraHQ { get; set; } = true;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool MiraHQVentImprovements { get; set; } = false;
-
-    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
-    public static float MiraReactorTimer { get; set; } = 60f;
-
-    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
-    public static float MiraO2Timer { get; set; } = 60f;
-}
-
-[HeaderOption(MultiMenu2.Main)]
-public static class BetterPolusOptions
-{
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool EnableBetterPolus { get; set; } = true;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool PolusVentImprovements { get; set; } = false;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool VitalsLab { get; set; } = false;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool ColdTempDeathValley { get; set; } = false;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool WifiChartCourseSwap { get; set; } = false;
-
-    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
-    public static float SeismicTimer { get; set; } = 60f;
-}
-
-[HeaderOption(MultiMenu2.Main)]
-public static class BetterAirshipOptions
-{
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool EnableBetterAirship { get; set; } = true;
-
-    [StringOption(MultiMenu2.Main)]
-    public static AirshipSpawnType SpawnType { get; set; } = AirshipSpawnType.Normal;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool MoveVitals { get; set; } = false;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool MoveFuel { get; set; } = false;
-
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool MoveDivert { get; set; } = false;
-
-    [StringOption(MultiMenu2.Main)]
-    public static MoveAdmin MoveAdmin { get; set; } = MoveAdmin.DontMove;
-
-    [StringOption(MultiMenu2.Main)]
-    public static MoveElectrical MoveElectrical { get; set; } = MoveElectrical.DontMove;
-
-    [NumberOption(MultiMenu2.Main, 0f, 10f, 0.1f)]
-    public static float MinDoorSwipeTime { get; set; } = 0.4f;
-
-    [NumberOption(MultiMenu2.Main, 30f, 100f, 5f, Format.Time)]
-    public static float CrashTimer { get; set; } = 90f;
-
-}
-
-[HeaderOption(MultiMenu2.Main)]
-public static class BetterFungleOptions
-{
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool EnableBetterFungle { get; set; } = true;
-
-    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
-    public static float FungleReactorTimer { get; set; } = 60f;
-
-    [NumberOption(MultiMenu2.Main, 4f, 20f, 1f, Format.Time)]
-    public static float FungleMixupTimer { get; set; } = 8f;
-
 }
 
 [HeaderOption(MultiMenu2.Main)]
@@ -437,8 +343,30 @@ public static class CrewSettings
     [NumberOption(MultiMenu2.Main, 0, 14, 1)]
     public static int CrewMin { get; set; } = 5;
 
-    [ToggleOption(MultiMenu2.Main)]
-    public static bool CrewVent { get; set; } = false;
+    [StringOption(MultiMenu2.Main)]
+    public static CrewVenting CrewVent { get; set; } = CrewVenting.Never;
+}
+
+public static class TaskSettings
+{
+    public static int ShortTasks => GameModeSettings.GameMode switch
+    {
+        GameMode.TaskRace => GameModeSettings.TRShortTasks,
+        GameMode.HideAndSeek => GameModeSettings.HnSShortTasks,
+        _ => CrewSettings.ShortTasks
+    };
+    public static int LongTasks => GameModeSettings.GameMode switch
+    {
+        GameMode.TaskRace => GameModeSettings.TRLongTasks,
+        GameMode.HideAndSeek => GameModeSettings.HnSLongTasks,
+        _ => CrewSettings.LongTasks
+    };
+    public static int CommonTasks => GameModeSettings.GameMode switch
+    {
+        GameMode.TaskRace => GameModeSettings.TRCommonTasks,
+        GameMode.HideAndSeek => GameModeSettings.HnSCommonTasks,
+        _ => CrewSettings.CommonTasks
+    };
 }
 
 [HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
@@ -592,7 +520,19 @@ public static class CrewUtilityRoles
     }
 
     [LayersOption(MultiMenu2.Layer, "#D3D3D3FF", LayerEnum.Revealer)]
-    public static RoleOptionData Revealer { get; set; }
+    public static RoleOptionData RevealerPriv { get; set; }
+    public static RoleOptionData Revealer
+    {
+        get
+        {
+            var result = RevealerPriv.Clone();
+
+            if (IsRoleList)
+                result.Count = 1;
+
+            return result;
+        }
+    }
 }
 
 [HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
@@ -700,7 +640,19 @@ public static class NeutralNeophyteRoles
 public static class NeutralProselyteRoles
 {
     [LayersOption(MultiMenu2.Layer, "#662962FF", LayerEnum.Phantom)]
-    public static RoleOptionData Phantom { get; set; }
+    public static RoleOptionData PhantomPriv { get; set; }
+    public static RoleOptionData Phantom
+    {
+        get
+        {
+            var result = PhantomPriv.Clone();
+
+            if (IsRoleList)
+                result.Count = 1;
+
+            return result;
+        }
+    }
 }
 
 [HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]
@@ -769,7 +721,19 @@ public static class IntruderSupportRoles
 public static class IntruderUtilityRoles
 {
     [LayersOption(MultiMenu2.Layer, "#F1C40FFF", LayerEnum.Ghoul)]
-    public static RoleOptionData Ghoul { get; set; }
+    public static RoleOptionData GhoulPriv { get; set; }
+    public static RoleOptionData Ghoul
+    {
+        get
+        {
+            var result = GhoulPriv.Clone();
+
+            if (IsRoleList)
+                result.Count = 1;
+
+            return result;
+        }
+    }
 
     [LayersOption(MultiMenu2.Layer, "#FF1919FF", LayerEnum.Impostor)]
     private static RoleOptionData ImpostorPriv { get; set; }
@@ -868,7 +832,19 @@ public static class SyndicateUtilityRoles
     }
 
     [LayersOption(MultiMenu2.Layer, "#E67E22FF", LayerEnum.Banshee)]
-    public static RoleOptionData Banshee { get; set; }
+    public static RoleOptionData BansheePriv { get; set; }
+    public static RoleOptionData Banshee
+    {
+        get
+        {
+            var result = BansheePriv.Clone();
+
+            if (IsRoleList)
+                result.Count = 1;
+
+            return result;
+        }
+    }
 }
 
 [HeaderOption(MultiMenu2.Layer, HeaderType.Layer)]

@@ -1,7 +1,20 @@
 namespace TownOfUsReworked.BetterMaps;
 
-public static class SkeldShipStatusPatch
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterSkeld
 {
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterSkeld { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool SkeldVentImprovements { get; set; } = false;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float SkeldReactorTimer { get; set; } = 60f;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float SkeldO2Timer { get; set; } = 60f;
+
     private static readonly Vector3 ReactorVentNewPos = new(-2.95f, -10.95f, 2f);
     private static readonly Vector3 ShieldsVentNewPos = new(2f, -15f, 2f);
     private static readonly Vector3 BigYVentNewPos = new(5.2f, -4.85f, 2f);
@@ -46,7 +59,7 @@ public static class SkeldShipStatusPatch
 
     private static void ApplyChanges(ShipStatus __instance)
     {
-        if (!CustomGameOptions.EnableBetterSkeld)
+        if (!EnableBetterSkeld)
             return;
 
         if (__instance.Type == ShipStatus.MapType.Ship && MapPatches.CurrentMap != 3)
@@ -58,7 +71,7 @@ public static class SkeldShipStatusPatch
 
     private static void AdjustSkeld()
     {
-        if (IsVentsFetched && CustomGameOptions.SkeldVentImprovements)
+        if (IsVentsFetched && SkeldVentImprovements)
             AdjustVents();
 
         IsAdjustmentsDone = true;

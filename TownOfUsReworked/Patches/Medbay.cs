@@ -29,7 +29,7 @@ public static class MedScanMinigameFixedUpdatePatch
 {
     public static void Prefix(MedScanMinigame __instance)
     {
-        if (CustomGameOptions.ParallelMedScans)
+        if (GameModifiers.ParallelMedScans)
         {
             // Allows multiple medbay scans at once
             __instance.medscan.CurrentUser = CustomPlayer.Local.PlayerId;

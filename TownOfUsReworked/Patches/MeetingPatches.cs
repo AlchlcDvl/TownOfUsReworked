@@ -12,7 +12,7 @@ public static class MeetingPatches
     {
         public static void Postfix(PlayerVoteArea __instance)
         {
-            if (CustomGameOptions.CamouflagedMeetings && HudHandler.Instance.IsCamoed)
+            if (BetterSabotages.CamouflagedMeetings && HudHandler.Instance.IsCamoed)
             {
                 __instance.Background.sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
@@ -79,7 +79,7 @@ public static class MeetingPatches
             GivingAnnouncements = true;
             yield return Wait(5f);
 
-            if (CustomGameOptions.GameAnnouncements)
+            if (GameAnnouncementSettings.GameAnnouncements)
             {
                 PlayerControl check = null;
 
@@ -90,16 +90,16 @@ public static class MeetingPatches
                     var report = $"{player.name} was found dead last round.";
                     Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
-                    report = CustomGameOptions.LocationReports && BodyLocations.TryGetValue(Reported.PlayerId, out var location) ? $"Their body was found in {location}." :
+                    report = GameAnnouncementSettings.LocationReports && BodyLocations.TryGetValue(Reported.PlayerId, out var location) ? $"Their body was found in {location}." :
                         "It is unknown where they died.";
                     Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
                     var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
                     var killerRole = killer.GetRole();
 
-                    if (CustomGameOptions.KillerReports == RoleFactionReports.Role)
+                    if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
                         report = $"They were killed by the <b>{killerRole}</b>.";
-                    else if (CustomGameOptions.KillerReports == RoleFactionReports.Faction)
+                    else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
                         report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
                     else
                         report = "They were killed by an unknown assailant.";
@@ -108,9 +108,9 @@ public static class MeetingPatches
                     yield return Wait(2f);
                     var role = player.GetRole();
 
-                    if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
+                    if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
                         report = $"They were the <b>{role}</b>.";
-                    else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Faction)
+                    else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
                         report = $"They were the <b>{role.FactionName}</b>.";
                     else
                         report = $"We could not determine what {player.name} was.";
@@ -139,9 +139,9 @@ public static class MeetingPatches
 
                         if (Role.Cleaned.Contains(player.PlayerId))
                             report = "They were killed by an unknown assailant.";
-                        else if (CustomGameOptions.KillerReports == RoleFactionReports.Role)
+                        else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
                             report = $"They were killed by the <b>{killerRole.Name}</b>.";
-                        else if (CustomGameOptions.KillerReports == RoleFactionReports.Faction)
+                        else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
                             report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
                         else
                             report = "They were killed by an unknown assailant.";
@@ -152,9 +152,9 @@ public static class MeetingPatches
 
                         if (Role.Cleaned.Contains(player.PlayerId))
                             report = $"We could not determine what {player} was.";
-                        else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
+                        else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
                             report = $"They were the <b>{role}</b>.";
-                        else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Faction)
+                        else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
                             report = $"They were the <b>{role.FactionName}</b>.";
                         else
                             report = $"We could not determine what {player} was.";
@@ -384,7 +384,7 @@ public static class MeetingPatches
         {
             ReportedBodies.Clear();
 
-            if (!CustomGameOptions.IndicateReportedBodies)
+            if (!GameModifiers.IndicateReportedBodies)
                 return;
 
             foreach (var player in __instance.playerStates)
@@ -560,9 +560,9 @@ public static class MeetingPatches
             if (role.Revealed)
             {
                 if (dictionary.TryGetValue(VoteAreaByPlayer(role.Player).VotedFor, out var num))
-                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = num + CustomGameOptions.MayorVoteCount;
+                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = num + Mayor.MayorVoteCount;
                 else
-                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = 1 + CustomGameOptions.MayorVoteCount;
+                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = 1 + Mayor.MayorVoteCount;
             }
         }
 
@@ -577,9 +577,9 @@ public static class MeetingPatches
                     var area = VoteAreaById(id);
 
                     if (dictionary.TryGetValue(area.VotedFor, out var num))
-                        dictionary[area.VotedFor] = num + CustomGameOptions.KnightVoteCount;
+                        dictionary[area.VotedFor] = num + Monarch.KnightVoteCount;
                     else
-                        dictionary[area.VotedFor] = 1 + CustomGameOptions.KnightVoteCount;
+                        dictionary[area.VotedFor] = 1 + Monarch.KnightVoteCount;
 
                     knighted.Add(id);
                 }

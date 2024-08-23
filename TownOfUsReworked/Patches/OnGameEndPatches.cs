@@ -460,9 +460,9 @@ public static class OnGameEndPatches
                 poolablePlayer.SetNamePosition(new(0f, -1.31f, -0.5f));
             }
 
-            SoundEffects.TryAdd("CrewWin", __instance.CrewStinger);
-            SoundEffects.TryAdd("IntruderWin", __instance.ImpostorStinger);
-            SoundEffects.TryAdd("Stalemate", __instance.DisconnectStinger);
+            AddAsset("CrewWin", __instance.CrewStinger);
+            AddAsset("IntruderWin", __instance.ImpostorStinger);
+            AddAsset("Stalemate", __instance.DisconnectStinger);
             var text = UObject.Instantiate(__instance.WinText, __instance.WinText.transform.parent);
             var winsound = "IntruderWin";
             UColor? color = CustomColorManager.Stalemate;

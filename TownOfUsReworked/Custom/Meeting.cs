@@ -85,8 +85,8 @@ public class CustomMeeting
         button.OverrideOnClickListeners(() => Click(voteArea, __instance));
         button.OverrideOnMouseOverListeners(() => renderer.color = UColor.red);
         button.OverrideOnMouseOutListeners(() => renderer.color = Type == MeetingTypes.Toggle && Actives[voteArea.TargetPlayerId] ? UColor.green : UColor.white);
-        button.ClickSound = SoundEffects["Click"];
-        button.HoverSound = SoundEffects["Hover"];
+        button.ClickSound = GetAudio("Click");
+        button.HoverSound = GetAudio("Hover");
         var collider = targetBox.GetComponent<BoxCollider2D>();
         collider.size = renderer.sprite.bounds.size;
         collider.offset = Vector2.zero;

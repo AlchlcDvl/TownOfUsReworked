@@ -29,7 +29,7 @@ public class ImageLoader : AssetLoader<Asset>
         for (var i = 0; i < buttons.Count; i++)
         {
             var image = buttons[i];
-            Sprites[image.ID] = CreateSprite(textures[i], image.ID);
+            AddAsset(image.ID, CreateSprite(textures[i], image.ID));
             time += Time.deltaTime;
 
             if (time > 1f)

@@ -25,7 +25,7 @@ public static class ConfirmEjects
         role.DeathReason = DeathReasonEnum.Ejected;
         role.KilledBy = " ";
 
-        if (!CustomGameOptions.ConfirmEjects)
+        if (!GameSettings.ConfirmEjects)
         {
             if (ClientOptions.CustomEjects)
             {
@@ -45,11 +45,11 @@ public static class ConfirmEjects
         }
         else
         {
-            if (CustomGameOptions.EjectionRevealsRole)
+            if (GameSettings.EjectionRevealsRoles)
             {
-                if (player.Is(LayerEnum.Jester) && CustomGameOptions.JestEjectScreen)
+                if (player.Is(LayerEnum.Jester) && Jester.JestEjectScreen)
                     ejectString = "The <color=#F7B3DAFF>Jester</color> will get his revenge from beyond the grave!";
-                else if (PlayerLayer.GetLayers<Executioner>().Any(x => x.TargetPlayer == player) && CustomGameOptions.ExeEjectScreen)
+                else if (PlayerLayer.GetLayers<Executioner>().Any(x => x.TargetPlayer == player) && Executioner.ExeEjectScreen)
                     ejectString = "The <color=#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
                 else
                     ejectString = $"{player.Data.PlayerName} was the {role.ColorString}{role.Name}</color>.";

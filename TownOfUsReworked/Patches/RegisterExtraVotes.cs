@@ -110,7 +110,7 @@ public static class PopulateResults
         foreach (var politician in PlayerLayer.GetLayers<Politician>())
         {
             var playerInfo = politician.Data;
-            TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting is AnonVotes.PoliticianOnly or AnonVotes.Enabled;
+            TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting is AnonVotes.PoliticianOnly or AnonVotes.Enabled;
 
             foreach (var extraVote in politician.ExtraVotes)
             {
@@ -137,7 +137,7 @@ public static class PopulateResults
                 }
             }
 
-            TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting != AnonVotes.Disabled;
+            TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
         }
 
         foreach (var mayor in PlayerLayer.GetLayers<Mayor>())
@@ -148,7 +148,7 @@ public static class PopulateResults
             if (voterArea.VotedFor == PlayerVoteArea.HasNotVoted || voterArea.VotedFor == PlayerVoteArea.MissedVote || voterArea.VotedFor == PlayerVoteArea.DeadVote)
                 continue;
 
-            for (var j = 0; j < CustomGameOptions.MayorVoteCount; j++)
+            for (var j = 0; j < Mayor.MayorVoteCount; j++)
             {
                 if (voterArea.VotedFor == PlayerVoteArea.SkippedVote)
                 {
@@ -187,7 +187,7 @@ public static class PopulateResults
                 if (voterArea.VotedFor == PlayerVoteArea.HasNotVoted || voterArea.VotedFor == PlayerVoteArea.MissedVote || voterArea.VotedFor == PlayerVoteArea.DeadVote)
                     continue;
 
-                for (var j = 0; j < CustomGameOptions.KnightVoteCount; j++)
+                for (var j = 0; j < Monarch.KnightVoteCount; j++)
                 {
                     if (voterArea.VotedFor == PlayerVoteArea.SkippedVote)
                     {
@@ -221,9 +221,9 @@ public static class PatchVoteBloops
     public static bool Prefix(MeetingHud __instance, ref NetworkedPlayerInfo voterPlayer, ref int index, ref Transform parent)
     {
         var insiderFlag = CustomPlayer.Local.Is(LayerEnum.Insider) && Role.LocalRole.TasksDone;
-        var deadFlag = CustomGameOptions.DeadSeeEverything && CustomPlayer.LocalCustom.Dead;
+        var deadFlag = GameModifiers.DeadSeeEverything && CustomPlayer.LocalCustom.Dead;
 
-        if (CustomGameOptions.AnonymousVoting == AnonVotes.NotVisible && !(deadFlag || insiderFlag))
+        if (GameModifiers.AnonymousVoting == AnonVotes.NotVisible && !(deadFlag || insiderFlag))
             return false;
 
         var spriteRenderer = UObject.Instantiate(__instance.PlayerVotePrefab, parent);

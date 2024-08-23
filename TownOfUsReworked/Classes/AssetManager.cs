@@ -2,51 +2,32 @@ namespace TownOfUsReworked.Classes;
 
 public static class AssetManager
 {
-    public static readonly Dictionary<string, AudioClip> SoundEffects = [];
-    public static readonly Dictionary<string, Sprite> Sprites = [];
     public static readonly List<Sprite> PortalAnimation = [];
-    public static readonly Dictionary<string, TMP_FontAsset> Fonts = [];
     public static readonly Dictionary<string, AssetBundle> Bundles = [];
     public static readonly Dictionary<string, string> ObjectToBundle = [];
     public static readonly Dictionary<string, List<UObject>> LoadedObjects = [];
 
-    public static AudioClip GetAudio(string path)
+    public static AudioClip GetAudio(string path) => Get<AudioClip>(path) ?? Get<AudioClip>("Placeholder");
+
+    public static Sprite GetSprite(string path) => Get<Sprite>(path) ?? Get<Sprite>((Meeting ? "Meeting" : "") + "Placeholder");
+
+    public static void Play(string path, bool loop = false, float volume = 1f) => Play(GetAudio(path), loop, volume);
+
+    public static void Play(AudioClip audio, bool loop = false, float volume = 1f)
     {
-        if (!SoundEffects.TryGetValue(path, out var sound))
-        {
-            // LogError($"{path} does not exist");
-            return SoundEffects["Placeholder"];
-        }
-
-        return sound ?? SoundEffects["Placeholder"];
-    }
-
-    public static Sprite GetSprite(string path)
-    {
-        if (!Sprites.TryGetValue(path, out var sprite))
-        {
-            // LogError($"{path} does not exist");
-            return Sprites[(Meeting ? "Meeting" : "") + "Placeholder"];
-        }
-
-        return sprite ?? Sprites[(Meeting ? "Meeting" : "") + "Placeholder"];
-    }
-
-    public static void Play(string path, bool loop = false, float volume = 1f)
-    {
-        Stop(path);
+        Stop(audio);
 
         if (Constants.ShouldPlaySfx())
-            SoundManager.Instance.PlaySound(GetAudio(path), loop, volume);
+            SoundManager.Instance.PlaySound(audio, loop, volume);
     }
 
-    public static void Stop(string path)
+    public static void Stop(AudioClip audio)
     {
         if (Constants.ShouldPlaySfx())
-            SoundManager.Instance.StopSound(GetAudio(path));
+            SoundManager.Instance.StopSound(audio);
     }
 
-    public static void StopAll() => SoundEffects.Keys.ForEach(Stop);
+    public static void StopAll() => GetAll<AudioClip>().ForEach(Stop);
 
     public static Texture2D LoadDiskTexture(string path)
     {
@@ -155,16 +136,14 @@ public static class AssetManager
 
     public static void LoadAssets()
     {
-        SoundEffects.Clear();
-        Sprites.Clear();
         PortalAnimation.Clear();
 
         foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
         {
             if (resourceName.StartsWith(TownOfUsReworked.Resources) && resourceName.EndsWith(".png"))
-                Sprites.Add(resourceName.SanitisePath(), CreateResourceSprite(resourceName));
+                AddAsset(resourceName.SanitisePath(), CreateResourceSprite(resourceName));
             else if (resourceName.StartsWith(TownOfUsReworked.Resources) && resourceName.EndsWith(".raw"))
-                SoundEffects.Add(resourceName.SanitisePath(), CreateResourceAudio(resourceName));
+                AddAsset(resourceName.SanitisePath(), CreateResourceAudio(resourceName));
         }
 
         Cursor.SetCursor(GetSprite("Cursor").texture, Vector2.zero, CursorMode.Auto);
@@ -172,14 +151,14 @@ public static class AssetManager
 
     public static void LoadVanillaSounds()
     {
-        SoundEffects.TryAdd("EngineerIntro", GetIntroSound(RoleTypes.Engineer));
-        SoundEffects.TryAdd("MorphlingIntro", GetIntroSound(RoleTypes.Shapeshifter));
-        SoundEffects.TryAdd("MedicIntro", GetIntroSound(RoleTypes.Scientist));
-        SoundEffects.TryAdd("CrewmateIntro", GetIntroSound(RoleTypes.Crewmate));
-        SoundEffects.TryAdd("ImpostorIntro", GetIntroSound(RoleTypes.Impostor));
-        SoundEffects.TryAdd("TrollIntro", GetIntroSound(RoleTypes.Noisemaker));
-        SoundEffects.TryAdd("TrackerIntro", GetIntroSound(RoleTypes.Tracker));
-        SoundEffects.TryAdd("WraithIntro", GetIntroSound(RoleTypes.Phantom));
+        AddAsset("EngineerIntro", GetIntroSound(RoleTypes.Engineer));
+        AddAsset("MorphlingIntro", GetIntroSound(RoleTypes.Shapeshifter));
+        AddAsset("MedicIntro", GetIntroSound(RoleTypes.Scientist));
+        AddAsset("CrewmateIntro", GetIntroSound(RoleTypes.Crewmate));
+        AddAsset("ImpostorIntro", GetIntroSound(RoleTypes.Impostor));
+        AddAsset("TrollIntro", GetIntroSound(RoleTypes.Noisemaker));
+        AddAsset("TrackerIntro", GetIntroSound(RoleTypes.Tracker));
+        AddAsset("WraithIntro", GetIntroSound(RoleTypes.Phantom));
     }
 
     public static float GetSize(string path)
@@ -208,16 +187,7 @@ public static class AssetManager
             return 48000;
     }
 
-    public static TMP_FontAsset GetFont(string path)
-    {
-        if (!Fonts.TryGetValue(path, out var sound))
-        {
-            // LogError($"{path} does not exist");
-            return Fonts["Placeholder"];
-        }
-
-        return sound ?? Fonts["Placeholder"];
-    }
+    public static TMP_FontAsset GetFont(string path) => Get<TMP_FontAsset>(path) ?? Get<TMP_FontAsset>("Placeholder");
 
     public static T Get<T>(string name) where T : UObject
     {
@@ -227,7 +197,24 @@ public static class AssetManager
         if (ObjectToBundle.TryGetValue(name.ToLower(), out var bundle))
             return LoadAsset<T>(Bundles[bundle], name);
 
+        // LogError($"{path} does not exist");
         return null;
+    }
+
+    public static List<T> GetAll<T>() where T : UObject
+    {
+        var result = new List<T>();
+
+        foreach (var (_, objList) in LoadedObjects)
+        {
+            foreach (var obj in objList)
+            {
+                if (obj is T t)
+                    result.Add(t);
+            }
+        }
+
+        return result;
     }
 
     private static T LoadAsset<T>(AssetBundle assetBundle, string name) where T : UObject
@@ -239,4 +226,12 @@ public static class AssetManager
     }
 
     public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.ToList().Find(x => x.Role == roleType).IntroSound;
+
+    public static void AddAsset(string name, UObject obj)
+    {
+        if (!LoadedObjects.ContainsKey(name))
+            LoadedObjects[name] = [ obj ];
+        else if (!LoadedObjects[name].Contains(obj))
+            LoadedObjects[name].Add(obj);
+    }
 }

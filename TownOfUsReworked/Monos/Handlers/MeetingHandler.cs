@@ -16,8 +16,8 @@ public class MeetingHandler : MonoBehaviour
         // Deactivate skip Button if skipping on emergency meetings is disabled
         if (!CustomPlayer.LocalCustom.Dead)
         {
-            Meeting.SkipVoteButton.gameObject.SetActive(!((MeetingPatches.Reported == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) ||
-                (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always)) && Meeting.state == MeetingHud.VoteStates.NotVoted && !Ability.GetAssassins().Any(x => x.Phone) &&
+            Meeting.SkipVoteButton.gameObject.SetActive(!((MeetingPatches.Reported == null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping
+                == DisableSkipButtonMeetings.Always)) && Meeting.state == MeetingHud.VoteStates.NotVoted && !Ability.GetAssassins().Any(x => x.Phone) &&
                 !PlayerLayer.GetLayers<Guesser>().Any(x => x.Phone) && !PlayerLayer.GetLayers<Thief>().Any(x => x.Phone));
         }
         else
@@ -183,7 +183,7 @@ public class MeetingHandler : MonoBehaviour
         {
             var medic = localinfo[0] as Medic;
 
-            if (medic.ShieldedPlayer && medic.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            if (medic.ShieldedPlayer && medic.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)Medic.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Trapper))
@@ -205,7 +205,7 @@ public class MeetingHandler : MonoBehaviour
                 revealed = true;
             }
 
-            if (ret.ShieldedPlayer && ret.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            if (ret.ShieldedPlayer && ret.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)Medic.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
 
             if (ret.Trapped.Contains(player.TargetPlayerId))
@@ -247,7 +247,7 @@ public class MeetingHandler : MonoBehaviour
             {
                 name += " <color=#CCCCCCFF>§</color>";
 
-                if (CustomGameOptions.ExeKnowsTargetRole && !revealed)
+                if (Executioner.ExeKnowsTargetRole && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -276,7 +276,7 @@ public class MeetingHandler : MonoBehaviour
             {
                 name += " <color=#FFFFFFFF>★</color>";
 
-                if (CustomGameOptions.GAKnowsTargetRole && !revealed)
+                if (GuardianAngel.GAKnowsTargetRole && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;

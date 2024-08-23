@@ -241,7 +241,7 @@ public static class ConsoleUsePatch
 [HarmonyPatch(typeof(DoorCardSwipeGame), nameof(DoorCardSwipeGame.Begin))]
 public static class DoorSwipePatch
 {
-    public static void Prefix(DoorCardSwipeGame __instance) => __instance.minAcceptedTime = CustomGameOptions.MinDoorSwipeTime;
+    public static void Prefix(DoorCardSwipeGame __instance) => __instance.minAcceptedTime = BetterAirship.MinDoorSwipeTime;
 }
 
 [HarmonyPatch(typeof(Console), nameof(Console.SetOutline))]

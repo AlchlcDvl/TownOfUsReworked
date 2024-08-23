@@ -17,17 +17,17 @@ public static class ChatUpdate
 
     private static void UpdateChatTimer(ChatController __instance)
     {
-        __instance.freeChatField.textArea.characterLimit = CustomGameOptions.ChatCharacterLimit;
+        __instance.freeChatField.textArea.characterLimit = GameSettings.ChatCharacterLimit;
         __instance.timeSinceLastMessage += Time.deltaTime;
 
         if (!__instance.sendRateMessageText.isActiveAndEnabled)
             return;
 
-        if (__instance.timeSinceLastMessage >= CustomGameOptions.ChatCooldown)
+        if (__instance.timeSinceLastMessage >= GameSettings.ChatCooldown)
             __instance.sendRateMessageText.gameObject.SetActive(false);
         else
         {
-            __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(CustomGameOptions.ChatCooldown -
+            __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
                 __instance.timeSinceLastMessage));
         }
     }
@@ -49,22 +49,22 @@ public static class ChatUpdate
                         if (role)
                         {
                             if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral)) || (!player.Is(SubFaction.None) &&
-                                CustomPlayer.Local.GetSubFaction() == player.GetSubFaction())) && CustomGameOptions.FactionSeeRoles) || player == CustomPlayer.Local)
+                                CustomPlayer.Local.GetSubFaction() == player.GetSubFaction())) && GameModifiers.FactionSeeRoles) || player == CustomPlayer.Local)
                             {
                                 chat.NameText.color = role.Color;
                             }
                             else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) &&
-                                !CustomGameOptions.FactionSeeRoles)
+                                !GameModifiers.FactionSeeRoles)
                             {
                                 chat.NameText.color = role.FactionColor;
                             }
-                            else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !CustomGameOptions.FactionSeeRoles)
+                            else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !GameModifiers.FactionSeeRoles)
                                 chat.NameText.color = role.SubFactionColor;
                             else
                                 chat.NameText.color = UColor.white;
                         }
 
-                        if (CustomGameOptions.Whispers && !chat.NameText.text.Contains($"[{player.PlayerId}] "))
+                        if (GameModifiers.Whispers && !chat.NameText.text.Contains($"[{player.PlayerId}] "))
                             chat.NameText.text = $"[{player.PlayerId}] " + chat.NameText.text;
                     }
                 }
@@ -123,13 +123,13 @@ public static class OverrideCharCountPatch
     public static bool Prefix(FreeChatInputField __instance)
     {
         var length = __instance.Text.Length;
-        __instance.charCountText.text = $"{length}/{CustomGameOptions.ChatCharacterLimit}";
+        __instance.charCountText.text = $"{length}/{GameSettings.ChatCharacterLimit}";
 
-        if (length <= CustomGameOptions.ChatCharacterLimit / 2)
+        if (length <= GameSettings.ChatCharacterLimit / 2)
             __instance.charCountText.color = UColor.black;
-        else if (length < CustomGameOptions.ChatCharacterLimit)
+        else if (length < GameSettings.ChatCharacterLimit)
             __instance.charCountText.color = UColor.yellow;
-        else if (length >= CustomGameOptions.ChatCharacterLimit)
+        else if (length >= GameSettings.ChatCharacterLimit)
             __instance.charCountText.color = UColor.red;
 
         return false;
@@ -215,10 +215,10 @@ public static class ChatCommands
             Clear(__instance);
         else
         {
-            if (CustomGameOptions.ChatCooldown > __instance.timeSinceLastMessage)
+            if (GameSettings.ChatCooldown > __instance.timeSinceLastMessage)
             {
                 __instance.sendRateMessageText.gameObject.SetActive(true);
-                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(CustomGameOptions.ChatCooldown -
+                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
                     __instance.timeSinceLastMessage));
             }
             else if (!IsNullEmptyOrWhiteSpace(text))
@@ -292,7 +292,7 @@ public static class ChatControllerAwakePatch
             DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
     }
 
-    public static void Postfix(ChatController __instance) => SoundEffects.TryAdd("Chat", __instance.messageSound);
+    public static void Postfix(ChatController __instance) => AddAsset("Chat", __instance.messageSound);
 }
 
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]
@@ -300,9 +300,7 @@ public static class ChatFontPatch
 {
     public static void Postfix(ChatController __instance)
     {
-        if (!Fonts.ContainsKey("ChatFont"))
-            Fonts.Add("ChatFont", __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font);
-
+        AddAsset("ChatFont", __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font);
         __instance.freeChatField.textArea.GetComponent<TextMeshPro>().font = GetFont("ChatFont");
     }
 }

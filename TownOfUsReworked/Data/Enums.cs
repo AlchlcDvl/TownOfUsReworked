@@ -932,3 +932,10 @@ public enum HeaderType
     General,
     Layer
 }
+
+public enum CrewVenting
+{
+    Never,
+    OnTasksDone,
+    Always
+}

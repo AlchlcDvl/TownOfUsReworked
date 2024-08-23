@@ -52,7 +52,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ], [ GameMode.KillingOnly ] ),
         ( [ "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat",
             "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [ GameMode.HideAndSeek ] ),
-        ( [ "TRShortTasks", "TRCommonTasks" ], [ GameMode.TaskRace ] ),
+        ( [ "TRShortTasks", "TRCommonTasks", "TRLongTasks" ], [ GameMode.TaskRace ] ),
         ( [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ] ),
         ( [ "RandomMapSubmerged" ], [ MapEnum.Random, ("ModCompatibility", "SubLoaded") ] ),
         ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, ("ModCompatibility", "LILoaded") ] ),
@@ -67,7 +67,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom, GameMode.Vanilla, GameMode.KillingOnly, GameMode.RoleList ] ),
         ( [ "CrewMax", "CrewMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
         ( [ "Pestilence" ], [ LayerEnum.Plaguebearer ] ),
-        ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] )
+        ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] ),
+        ( [ "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "EnableRevealer", "EnablePhantom", "EnableGhoul", "EnableBanshee" ], [ GameMode.RoleList ] )
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -76,7 +77,7 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
         Property = property;
         Value = DefaultValue = property.GetValue(null);
         Name = property.Name;
-        ID = $"CustomOption.{Name}";
+        ID = $"CustomOption.{Name.Replace("Priv", "")}";
         // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
         AllOptions.Add(this);
     }

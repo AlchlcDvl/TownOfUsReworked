@@ -307,7 +307,7 @@ public static class OverlayKillAnimationPatch
         var playerControl = CustomPlayer.AllPlayers.Find(x => x.GetCurrentOutfit() == data.killerOutfit);
         CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
-        if (!CustomGameOptions.AppearanceAnimation)
+        if (!GameModifiers.AppearanceAnimation)
             playerControl.CurrentOutfitType = PlayerOutfitType.Default;
     }
 
@@ -324,7 +324,7 @@ public static class AddCustomPlayerPatch
     public static void Postfix(PlayerControl __instance)
     {
         CustomPlayer.Custom(__instance);
-        SoundEffects.TryAdd("Kill", __instance.KillSfx);
+        AddAsset("Kill", __instance.KillSfx);
     }
 }
 
@@ -341,7 +341,7 @@ public static class LobbySizePatch
     {
         if (IsLobby)
         {
-            while (CustomPlayer.AllPlayers.Count > CustomGameOptions.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+            while (CustomPlayer.AllPlayers.Count > GameSettings.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
                 AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(CustomPlayer.AllPlayers.Last().OwnerId).Id, DisconnectReasons.GameFull);
         }
     }
@@ -466,7 +466,7 @@ public static class DeathPopUpPatch
     public static void Prefix(HideAndSeekDeathPopup __instance)
     {
         if (IsCustomHnS)
-            __instance.StartCoroutine(PerformTimedAction(0.01f, _ => __instance.text.text = $"Was {(CustomGameOptions.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}"));
+            __instance.StartCoroutine(PerformTimedAction(0.01f, _ => __instance.text.text = $"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}"));
     }
 }
 

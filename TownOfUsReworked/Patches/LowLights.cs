@@ -42,9 +42,9 @@ public static class CalculateLightRadiusPatch
         else if (pc.Is(LayerEnum.Runner))
             __result = __instance.MaxLightRadius;
         else if (pc.Is(LayerEnum.Hunted))
-            __result = __instance.MaxLightRadius * CustomGameOptions.HuntedVision;
+            __result = __instance.MaxLightRadius * GameModeSettings.HuntedVision;
         else if (pc.Is(LayerEnum.Hunter))
-            __result = __instance.MaxLightRadius * (pc.GetLayer<Hunter>().Starting ? 0f : CustomGameOptions.HunterVision);
+            __result = __instance.MaxLightRadius * (pc.GetLayer<Hunter>().Starting ? 0f : GameModeSettings.HunterVision);
         else
         {
             var t = __instance.MaxLightRadius;
@@ -52,10 +52,10 @@ public static class CalculateLightRadiusPatch
             if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system))
                 t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, system.Cast<SwitchSystem>().Value / 255f);
 
-            __result = t * (pc.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision : CustomGameOptions.CrewVision);
+            __result = t * (pc.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision : CrewSettings.CrewVision);
         }
 
-        if (MapPatches.CurrentMap is 0 or 3 or 6 && CustomGameOptions.SmallMapHalfVision && !IsTaskRace && !IsCustomHnS)
+        if (MapPatches.CurrentMap is 0 or 3 or 6 && MapSettings.SmallMapHalfVision && !IsTaskRace && !IsCustomHnS)
             __result *= 0.5f;
 
         return false;
@@ -74,7 +74,7 @@ public static class AdjustLightingPatch
         var size = Ship.CalculateLightRadius(__instance.Data);
 
         if (__instance.Is(Faction.Crew))
-            flashlights = CustomGameOptions.CrewFlashlight;
+            flashlights = CrewSettings.CrewFlashlight;
         else if (__instance.Is(Faction.Intruder))
             flashlights = CustomGameOptions.IntruderFlashlight;
         else if (__instance.Is(Faction.Syndicate))
@@ -82,9 +82,9 @@ public static class AdjustLightingPatch
         else if (__instance.Is(Faction.Neutral))
             flashlights = CustomGameOptions.NeutralFlashlight;
         else if (__instance.Is(LayerEnum.Hunted))
-            flashlights = CustomGameOptions.HuntedFlashlight;
+            flashlights = GameModeSettings.HuntedFlashlight;
         else if (__instance.Is(LayerEnum.Hunter))
-            flashlights = CustomGameOptions.HunterFlashlight;
+            flashlights = GameModeSettings.HunterFlashlight;
 
         flashlights &= !__instance.Data.IsDead;
 

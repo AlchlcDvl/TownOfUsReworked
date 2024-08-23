@@ -56,7 +56,7 @@ public class Volatile : Modifier
             }
             // Hear random things
             else if (randomNumber == 3)
-                Play(SoundEffects.Keys.Random());
+                Play(GetAll<AudioClip>().Random());
         }
     }
 }

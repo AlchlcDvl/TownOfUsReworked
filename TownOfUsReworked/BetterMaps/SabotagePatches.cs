@@ -7,10 +7,10 @@ public static class ReactorPatch
     {
         var flag = MapPatches.CurrentMap switch
         {
-            0 or 3 => CustomGameOptions.EnableBetterSkeld,
-            1 => CustomGameOptions.EnableBetterMiraHQ,
-            2 => CustomGameOptions.EnableBetterPolus,
-            5 => CustomGameOptions.EnableBetterFungle,
+            0 or 3 => BetterSkeld.EnableBetterSkeld,
+            1 => BetterMiraHQ.EnableBetterMiraHQ,
+            2 => BetterPolus.EnableBetterPolus,
+            5 => BetterFungle.EnableBetterFungle,
             _ => false
         };
 
@@ -24,10 +24,10 @@ public static class ReactorPatch
         {
             __instance.Countdown = MapPatches.CurrentMap switch
             {
-                0 or 3 => CustomGameOptions.SkeldReactorTimer,
-                1 => CustomGameOptions.MiraReactorTimer,
-                2 => CustomGameOptions.SeismicTimer,
-                5 => CustomGameOptions.FungleReactorTimer,
+                0 or 3 => BetterSkeld.SkeldReactorTimer,
+                1 => BetterMiraHQ.MiraReactorTimer,
+                2 => BetterPolus.SeismicTimer,
+                5 => BetterFungle.FungleReactorTimer,
                 _ => __instance.ReactorDuration
             };
             __instance.UserConsolePairs.Clear();
@@ -56,8 +56,8 @@ public static class O2Patch
     {
         var flag = MapPatches.CurrentMap switch
         {
-            0 or 3 => CustomGameOptions.EnableBetterSkeld,
-            1 => CustomGameOptions.EnableBetterMiraHQ,
+            0 or 3 => BetterSkeld.EnableBetterSkeld,
+            1 => BetterMiraHQ.EnableBetterMiraHQ,
             _ => false
         };
 
@@ -71,8 +71,8 @@ public static class O2Patch
         {
             __instance.Countdown = MapPatches.CurrentMap switch
             {
-                0 or 3 => CustomGameOptions.SkeldO2Timer,
-                1 => CustomGameOptions.MiraO2Timer,
+                0 or 3 => BetterSkeld.SkeldO2Timer,
+                1 => BetterMiraHQ.MiraO2Timer,
                 _ => __instance.LifeSuppDuration
             };
             __instance.CompletedConsoles.Clear();

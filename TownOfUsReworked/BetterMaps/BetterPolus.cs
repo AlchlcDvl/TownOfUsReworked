@@ -1,7 +1,26 @@
 namespace TownOfUsReworked.BetterMaps;
 
-public static class PolusShipStatusPatch
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterPolus
 {
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterPolus { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool PolusVentImprovements { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool VitalsLab { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool ColdTempDeathValley { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool WifiChartCourseSwap { get; set; } = false;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float SeismicTimer { get; set; } = 60f;
+
     private static readonly Vector3 DvdScreenNewPos = new(26.635f, -15.92f, 1f);
     private static readonly Vector3 VitalsNewPos = new(31.275f, -6.45f, 1f);
     private static readonly Vector3 WifiNewPos = new(15.975f, 0.084f, 1f);
@@ -63,7 +82,7 @@ public static class PolusShipStatusPatch
 
         public static void Postfix(ShipStatus __instance)
         {
-            if (!CustomGameOptions.EnableBetterPolus)
+            if (!EnableBetterPolus)
                 return;
 
             if (!IsVentModified && __instance.Type == ShipStatus.MapType.Pb && SpeciVent)
@@ -79,7 +98,7 @@ public static class PolusShipStatusPatch
 
     private static void ApplyChanges(ShipStatus __instance)
     {
-        if (!CustomGameOptions.EnableBetterPolus)
+        if (!EnableBetterPolus)
             return;
 
         if (__instance.Type == ShipStatus.MapType.Pb)
@@ -100,20 +119,20 @@ public static class PolusShipStatusPatch
     {
         if (IsObjectsFetched && IsRoomsFetched)
         {
-            if (CustomGameOptions.VitalsLab)
+            if (VitalsLab)
                 MoveVitals();
 
-            if (!CustomGameOptions.ColdTempDeathValley && CustomGameOptions.VitalsLab)
+            if (!ColdTempDeathValley && VitalsLab)
                 MoveTempCold();
 
-            if (CustomGameOptions.ColdTempDeathValley)
+            if (ColdTempDeathValley)
                 MoveTempColdDV();
 
-            if (CustomGameOptions.WifiChartCourseSwap)
+            if (WifiChartCourseSwap)
                 SwitchNavWifi();
         }
 
-        if (IsVentsFetched && CustomGameOptions.PolusVentImprovements)
+        if (IsVentsFetched && PolusVentImprovements)
             AdjustVents();
 
         IsAdjustmentsDone = true;
@@ -298,51 +317,51 @@ public static class PolusShipStatusPatch
             DvdScreenOffice.SetActive(true);
         }
     }
-}
 
-[HarmonyPatch(typeof(NormalPlayerTask), nameof(NormalPlayerTask.AppendTaskText))]
-public static class NormalPlayerTaskPatches
-{
-    public static bool Prefix(NormalPlayerTask __instance, ref Il2CppSystem.Text.StringBuilder sb)
+    [HarmonyPatch(typeof(NormalPlayerTask), nameof(NormalPlayerTask.AppendTaskText))]
+    public static class NormalPlayerTaskPatches
     {
-        if (!CustomGameOptions.EnableBetterPolus || !Ship || MapPatches.CurrentMap != 2 || (int)__instance.TaskType is not (42 or 41 or 3))
-            return true;
-
-        var flag = __instance.ShouldYellowText();
-
-        if (flag)
-            sb.Append(__instance.IsComplete ? "<color=#00DD00FF>" : "<color=#FFFF00FF>");
-
-        var room = __instance.TaskType switch
+        public static bool Prefix(NormalPlayerTask __instance, ref Il2CppSystem.Text.StringBuilder sb)
         {
-            TaskTypes.RecordTemperature => SystemTypes.Outside,
-            TaskTypes.RebootWifi => SystemTypes.Dropship,
-            TaskTypes.ChartCourse => SystemTypes.Comms,
-            _ => __instance.StartAt
-        };
-        sb.Append(TranslationController.Instance.GetString(room));
-        sb.Append(": ");
-        sb.Append(TranslationController.Instance.GetString(__instance.TaskType));
+            if (!EnableBetterPolus || !Ship || MapPatches.CurrentMap != 2 || (int)__instance.TaskType is not (42 or 41 or 3))
+                return true;
 
-        if (__instance is { ShowTaskTimer: true, TimerStarted: NormalPlayerTask.TimerState.Started })
-        {
-            sb.Append(" (");
-            sb.Append(TranslationController.Instance.GetString(StringNames.SecondsAbbv, (int)__instance.TaskTimer));
-            sb.Append(')');
+            var flag = __instance.ShouldYellowText();
+
+            if (flag)
+                sb.Append(__instance.IsComplete ? "<color=#00DD00FF>" : "<color=#FFFF00FF>");
+
+            var room = __instance.TaskType switch
+            {
+                TaskTypes.RecordTemperature => SystemTypes.Outside,
+                TaskTypes.RebootWifi => SystemTypes.Dropship,
+                TaskTypes.ChartCourse => SystemTypes.Comms,
+                _ => __instance.StartAt
+            };
+            sb.Append(TranslationController.Instance.GetString(room));
+            sb.Append(": ");
+            sb.Append(TranslationController.Instance.GetString(__instance.TaskType));
+
+            if (__instance is { ShowTaskTimer: true, TimerStarted: NormalPlayerTask.TimerState.Started })
+            {
+                sb.Append(" (");
+                sb.Append(TranslationController.Instance.GetString(StringNames.SecondsAbbv, (int)__instance.TaskTimer));
+                sb.Append(')');
+            }
+            else if (__instance.ShowTaskStep)
+            {
+                sb.Append(" (");
+                sb.Append(__instance.taskStep);
+                sb.Append('/');
+                sb.Append(__instance.MaxStep);
+                sb.Append(')');
+            }
+
+            if (flag)
+                sb.Append("</color>");
+
+            sb.AppendLine();
+            return false;
         }
-        else if (__instance.ShowTaskStep)
-        {
-            sb.Append(" (");
-            sb.Append(__instance.taskStep);
-            sb.Append('/');
-            sb.Append(__instance.MaxStep);
-            sb.Append(')');
-        }
-
-        if (flag)
-            sb.Append("</color>");
-
-        sb.AppendLine();
-        return false;
     }
 }

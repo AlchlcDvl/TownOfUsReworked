@@ -36,12 +36,12 @@ public static class RPCHandling
 
                         if (whispered == CustomPlayer.Local)
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
-                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer)
+                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivate) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer)
                             && CustomGameOptions.WhispersNotPrivateSilencer))
                         {
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name} : {message}");
                         }
-                        else if (CustomGameOptions.WhispersAnnouncement)
+                        else if (GameModifiers.WhispersAnnouncement)
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
 
                         break;
@@ -59,11 +59,11 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.AttemptSound:
-                        Role.BreakShield(reader.ReadPlayer(), CustomGameOptions.ShieldBreaks);
+                        Role.BreakShield(reader.ReadPlayer(), Medic.ShieldBreaks);
                         break;
 
                     case MiscRPC.BastionBomb:
-                        Role.BastionBomb(reader.ReadVent(), CustomGameOptions.BombRemovedOnKill);
+                        Role.BastionBomb(reader.ReadVent(), Bastion.BombRemovedOnKill);
                         break;
 
                     case MiscRPC.Catch:
@@ -124,26 +124,25 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
-                        TownOfUsReworked.NormalOptions.CrewLightMod = CustomGameOptions.CrewVision;
+                        TownOfUsReworked.NormalOptions.CrewLightMod = CrewSettings.CrewVision;
                         TownOfUsReworked.NormalOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
-                        TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting != AnonVotes.Disabled;
-                        TownOfUsReworked.NormalOptions.VisualTasks = CustomGameOptions.VisualTasks;
-                        TownOfUsReworked.NormalOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
+                        TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
+                        TownOfUsReworked.NormalOptions.VisualTasks = GameModifiers.VisualTasks;
+                        TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameSettings.PlayerSpeed;
                         TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
                         TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
-                        TownOfUsReworked.NormalOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
-                        TownOfUsReworked.NormalOptions.VotingTime = CustomGameOptions.VotingTime;
-                        TownOfUsReworked.NormalOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
-                        TownOfUsReworked.NormalOptions.KillDistance = CustomGameOptions.InteractionDistance;
-                        TownOfUsReworked.NormalOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
-                        TownOfUsReworked.NormalOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
+                        TownOfUsReworked.NormalOptions.ConfirmImpostor = GameSettings.ConfirmEjects;
+                        TownOfUsReworked.NormalOptions.VotingTime = GameSettings.VotingTime;
+                        TownOfUsReworked.NormalOptions.DiscussionTime = GameSettings.DiscussionTime;
+                        TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
+                        TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
                         TownOfUsReworked.NormalOptions.KillCooldown = CustomGameOptions.IntKillCd;
-                        TownOfUsReworked.NormalOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                        TownOfUsReworked.NormalOptions.MaxPlayers = CustomGameOptions.LobbySize;
-                        TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
-                        TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
-                        TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
-                        CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
+                        TownOfUsReworked.NormalOptions.GhostsDoTasks = CrewSettings.GhostTasksCountToWin;
+                        TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
+                        TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
+                        TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
+                        TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
+                        CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
                         MapPatches.AdjustSettings();
                         break;
 

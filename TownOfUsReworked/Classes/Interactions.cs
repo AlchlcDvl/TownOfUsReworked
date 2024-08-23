@@ -187,7 +187,7 @@ public static class Interactions
             else if (bastion)
                 RpcMurderPlayer(bastion.Player, player, DeathReasonEnum.Bombed, false);
 
-            Role.BastionBomb(target, CustomGameOptions.BombRemovedOnKill);
+            Role.BastionBomb(target, Bastion.BombRemovedOnKill);
             CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);
         }
 

@@ -1,7 +1,35 @@
 namespace TownOfUsReworked.BetterMaps;
 
+[HeaderOption(MultiMenu2.Main)]
 public static class BetterAirship
 {
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterAirship { get; set; } = true;
+
+    [StringOption(MultiMenu2.Main)]
+    public static AirshipSpawnType SpawnType { get; set; } = AirshipSpawnType.Normal;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool MoveVitals { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool MoveFuel { get; set; } = false;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool MoveDivert { get; set; } = false;
+
+    [StringOption(MultiMenu2.Main)]
+    public static MoveAdmin MoveAdmin { get; set; } = MoveAdmin.DontMove;
+
+    [StringOption(MultiMenu2.Main)]
+    public static MoveElectrical MoveElectrical { get; set; } = MoveElectrical.DontMove;
+
+    [NumberOption(MultiMenu2.Main, 0f, 10f, 0.1f)]
+    public static float MinDoorSwipeTime { get; set; } = 0.4f;
+
+    [NumberOption(MultiMenu2.Main, 30f, 100f, 5f, Format.Time)]
+    public static float CrashTimer { get; set; } = 90f;
+
     private static bool GameStarted;
     public static readonly List<byte> SpawnPoints = [];
 
@@ -10,15 +38,15 @@ public static class BetterAirship
     {
         public static void Postfix()
         {
-            if (!CustomGameOptions.EnableBetterAirship)
+            if (!EnableBetterAirship)
                 return;
 
-            if (CustomGameOptions.MoveAdmin != 0)
+            if (MoveAdmin != 0)
             {
                 var adminTable = UObject.FindObjectOfType<MapConsole>();
                 var mapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
 
-                if ((int)CustomGameOptions.MoveAdmin == 1)
+                if ((int)MoveAdmin == 1)
                 {
                     adminTable.transform.position = new(-17.269f, 1.375f, 0f);
                     adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 350.316f));
@@ -28,7 +56,7 @@ public static class BetterAirship
                     mapFloating.transform.rotation = Quaternion.Euler(new(0, 0, 350));
                     mapFloating.transform.localScale = new(1, 1, 1);
                 }
-                else if ((int)CustomGameOptions.MoveAdmin == 2)
+                else if ((int)MoveAdmin == 2)
                 {
                     // New Admin
                     adminTable.transform.position = new(5.078f, 3.4f, 1);
@@ -38,11 +66,11 @@ public static class BetterAirship
                 }
             }
 
-            if (CustomGameOptions.MoveElectrical != 0)
+            if (MoveElectrical != 0)
             {
                 var electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
 
-                if ((int)CustomGameOptions.MoveElectrical == 1)
+                if ((int)MoveElectrical == 1)
                 {
                     electrical.transform.position = new(-8.818f, 13.184f, 0f);
                     electrical.transform.localScale = new(0.909f, 0.818f, 1);
@@ -53,20 +81,20 @@ public static class BetterAirship
                     supportElectrical.transform.position = new(-8.792f, 13.242f);
                     supportElectrical.transform.localScale = new(1, 1, 1);
                 }
-                else if ((int)CustomGameOptions.MoveElectrical == 2)
+                else if ((int)MoveElectrical == 2)
                     electrical.transform.position = new(19.339f, -3.665f, 0f);
             }
 
-            if (CustomGameOptions.MoveVitals)
+            if (MoveVitals)
             {
                 GameObject.Find("Medbay/panel_vitals").transform.position = new(24.55f, -4.780f, 0f);
                 GameObject.Find("Medbay/panel_data").transform.position = new(25.240f, -7.938f, 0f);
             }
 
-            if (CustomGameOptions.MoveFuel)
+            if (MoveFuel)
                 GameObject.Find("Storage/task_gas").transform.position = new(36.070f, 1.897f, 0f);
 
-            if (CustomGameOptions.MoveDivert)
+            if (MoveDivert)
                 GameObject.Find("HallwayMain/DivertRecieve").transform.position = new(13.35f, -1.659f, 0f);
         }
     }
@@ -95,17 +123,17 @@ public static class BetterAirship
                 }
             }
 
-            if (!CustomGameOptions.EnableBetterAirship || IsSubmerged())
+            if (!EnableBetterAirship || IsSubmerged())
                 return true;
 
-            if (!GameStarted && CustomGameOptions.SpawnType != AirshipSpawnType.Meeting)
+            if (!GameStarted && SpawnType != AirshipSpawnType.Meeting)
             {
                 GameStarted = true;
                 var spawn = __instance.Locations.ToArray();
 
-                if (CustomGameOptions.SpawnType == AirshipSpawnType.Fixed)
+                if (SpawnType == AirshipSpawnType.Fixed)
                     __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
-                else if (CustomGameOptions.SpawnType == AirshipSpawnType.RandomSynchronized)
+                else if (SpawnType == AirshipSpawnType.RandomSynchronized)
                 {
                     try
                     {
@@ -149,38 +177,38 @@ public static class BetterAirship
     {
         public static void Prefix() => GameStarted = false;
     }
-}
 
-[HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]
-public static class HeliCountdownPatch
-{
-    public static bool Prefix(HeliSabotageSystem __instance, ref PlayerControl player, ref MessageReader msgReader)
+    [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]
+    public static class HeliCountdownPatch
     {
-        if (!CustomGameOptions.EnableBetterAirship || MapPatches.CurrentMap != 4)
-            return true;
-
-        var b = msgReader.ReadByte();
-        var b2 = (byte)(b & 15);
-        var tags = (HeliSabotageSystem.Tags)(b & 240);
-
-        if (tags == HeliSabotageSystem.Tags.FixBit)
+        public static bool Prefix(HeliSabotageSystem __instance, ref PlayerControl player, ref MessageReader msgReader)
         {
-            __instance.codeResetTimer = 10f;
-            __instance.CompletedConsoles.Add(b2);
-        }
-        else if (tags == HeliSabotageSystem.Tags.DeactiveBit)
-            __instance.ActiveConsoles.Remove(new(player.PlayerId, b2));
-        else if (tags == HeliSabotageSystem.Tags.ActiveBit)
-            __instance.ActiveConsoles.Add(new(player.PlayerId, b2));
-        else if (tags == HeliSabotageSystem.Tags.DamageBit)
-        {
-            __instance.codeResetTimer = -1f;
-            __instance.Countdown = CustomGameOptions.CrashTimer;
-            __instance.CompletedConsoles.Clear();
-            __instance.ActiveConsoles.Clear();
-        }
+            if (!EnableBetterAirship || MapPatches.CurrentMap != 4)
+                return true;
 
-        __instance.IsDirty = true;
-        return false;
+            var b = msgReader.ReadByte();
+            var b2 = (byte)(b & 15);
+            var tags = (HeliSabotageSystem.Tags)(b & 240);
+
+            if (tags == HeliSabotageSystem.Tags.FixBit)
+            {
+                __instance.codeResetTimer = 10f;
+                __instance.CompletedConsoles.Add(b2);
+            }
+            else if (tags == HeliSabotageSystem.Tags.DeactiveBit)
+                __instance.ActiveConsoles.Remove(new(player.PlayerId, b2));
+            else if (tags == HeliSabotageSystem.Tags.ActiveBit)
+                __instance.ActiveConsoles.Add(new(player.PlayerId, b2));
+            else if (tags == HeliSabotageSystem.Tags.DamageBit)
+            {
+                __instance.codeResetTimer = -1f;
+                __instance.Countdown = CrashTimer;
+                __instance.CompletedConsoles.Clear();
+                __instance.ActiveConsoles.Clear();
+            }
+
+            __instance.IsDirty = true;
+            return false;
+        }
     }
 }

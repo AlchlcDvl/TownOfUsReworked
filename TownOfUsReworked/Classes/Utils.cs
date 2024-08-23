@@ -1026,11 +1026,11 @@ public static class Utils
         allPlayers ??= CustomPlayer.AllPlayers;
 
         if (maxDistance == 0f)
-            maxDistance = CustomGameOptions.InteractionDistance;
+            maxDistance = GameSettings.InteractionDistance;
 
         foreach (var player in allPlayers)
         {
-            if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargeting) || player.walkingToVent)
+            if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !GameModifiers.VentTargeting) || player.walkingToVent)
                 continue;
 
             var distance = Vector2.Distance(position, player.transform.position);
@@ -1089,7 +1089,7 @@ public static class Utils
         allBodies ??= AllBodies;
 
         if (maxDistance == 0f)
-            maxDistance = CustomGameOptions.InteractionDistance;
+            maxDistance = GameSettings.InteractionDistance;
 
         foreach (var body in allBodies)
         {
@@ -1269,7 +1269,7 @@ public static class Utils
 
     public static void RpcBreakShield(PlayerControl target)
     {
-        Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
+        Role.BreakShield(target, Medic.ShieldBreaks);
         CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
     }
 

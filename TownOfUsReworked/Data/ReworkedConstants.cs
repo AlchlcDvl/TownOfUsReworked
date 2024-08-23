@@ -14,14 +14,14 @@ public static class ReworkedConstants
     public static bool IsLocalGame => AmongUsClient.Instance?.NetworkMode == NetworkModes.LocalGame;
     public static bool IsFreePlay => AmongUsClient.Instance?.NetworkMode == NetworkModes.FreePlay;
     public static bool IsMeeting => IsInGame && Meeting;
-    public static bool IsAA => CustomGameOptions.GameMode == GameMode.AllAny;
-    public static bool IsCustom => CustomGameOptions.GameMode == GameMode.Custom;
-    public static bool IsClassic => CustomGameOptions.GameMode == GameMode.Classic;
-    public static bool IsKilling => CustomGameOptions.GameMode == GameMode.KillingOnly;
-    public static bool IsVanilla => CustomGameOptions.GameMode == GameMode.Vanilla;
-    public static bool IsRoleList => CustomGameOptions.GameMode == GameMode.RoleList;
-    public static bool IsTaskRace => CustomGameOptions.GameMode == GameMode.TaskRace;
-    public static bool IsCustomHnS => CustomGameOptions.GameMode == GameMode.HideAndSeek;
+    public static bool IsAA => GameModeSettings.GameMode == GameMode.AllAny;
+    public static bool IsCustom => GameModeSettings.GameMode == GameMode.Custom;
+    public static bool IsClassic => GameModeSettings.GameMode == GameMode.Classic;
+    public static bool IsKilling => GameModeSettings.GameMode == GameMode.KillingOnly;
+    public static bool IsVanilla => GameModeSettings.GameMode == GameMode.Vanilla;
+    public static bool IsRoleList => GameModeSettings.GameMode == GameMode.RoleList;
+    public static bool IsTaskRace => GameModeSettings.GameMode == GameMode.TaskRace;
+    public static bool IsCustomHnS => GameModeSettings.GameMode == GameMode.HideAndSeek;
     public static bool NoLobby => !(IsInGame || IsLobby || IsEnded || IsMeeting);
     public static bool LastImp => CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.HasDied()) == 1;
     public static bool LastSyn => CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.HasDied()) == 1;
@@ -32,13 +32,13 @@ public static class ReworkedConstants
     {
         get
         {
-            if (!CustomPlayer.LocalCustom.Dead || !CustomGameOptions.DeadSeeEverything || !Role.LocalRole.TrulyDead)
+            if (!CustomPlayer.LocalCustom.Dead || !GameModifiers.DeadSeeEverything || !Role.LocalRole.TrulyDead)
                 return false;
 
             var otherFlag = false;
 
             if (CustomPlayer.Local.TryGetLayer<GuardianAngel>(out var ga))
-                otherFlag = !ga.Failed && ga.TargetAlive && CustomGameOptions.ProtectBeyondTheGrave && ga.GraveProtectButton.Usable();
+                otherFlag = !ga.Failed && ga.TargetAlive && GuardianAngel.ProtectBeyondTheGrave && ga.GraveProtectButton.Usable();
             else if (CustomPlayer.Local.TryGetLayer<Jester>(out var jest))
                 otherFlag = jest.CanHaunt;
 

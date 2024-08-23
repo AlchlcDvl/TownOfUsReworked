@@ -1,7 +1,20 @@
 namespace TownOfUsReworked.BetterMaps;
 
-public static class MiraShipStatusPatch
+[HeaderOption(MultiMenu2.Main)]
+public static class BetterMiraHQ
 {
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool EnableBetterMiraHQ { get; set; } = true;
+
+    [ToggleOption(MultiMenu2.Main)]
+    public static bool MiraHQVentImprovements { get; set; } = false;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float MiraReactorTimer { get; set; } = 60f;
+
+    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    public static float MiraO2Timer { get; set; } = 60f;
+
     private static readonly Vector3 CommsPos = new(14.5f, 3.1f, 2f);
 
     private static bool IsAdjustmentsDone;
@@ -47,7 +60,7 @@ public static class MiraShipStatusPatch
 
         public static void Postfix(ShipStatus __instance)
         {
-            if (!CustomGameOptions.EnableBetterMiraHQ)
+            if (!EnableBetterMiraHQ)
                 return;
 
             if (!IsVentModified && __instance.Type == ShipStatus.MapType.Hq)
@@ -63,7 +76,7 @@ public static class MiraShipStatusPatch
 
     private static void ApplyChanges(ShipStatus __instance)
     {
-        if (!CustomGameOptions.EnableBetterMiraHQ)
+        if (!EnableBetterMiraHQ)
             return;
 
         if (__instance.Type == ShipStatus.MapType.Hq)
@@ -76,7 +89,7 @@ public static class MiraShipStatusPatch
 
     private static void AdjustMira()
     {
-        if (IsVentsFetched && CustomGameOptions.MiraHQVentImprovements && IsRoomsFetched)
+        if (IsVentsFetched && MiraHQVentImprovements && IsRoomsFetched)
             AdjustVents();
 
         IsAdjustmentsDone = true;

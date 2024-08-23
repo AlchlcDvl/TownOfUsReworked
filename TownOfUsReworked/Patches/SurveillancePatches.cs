@@ -72,7 +72,7 @@ public static class SurveillancePatches
 
     private static void NightVisionUpdate(SurveillanceMinigame __instance1, PlanetSurveillanceMinigame __instance2 = null)
     {
-        if (!CustomGameOptions.NightVision)
+        if (!BetterSabotages.NightVision)
             return;
 
         if (Overlays.Count == 0)
@@ -110,11 +110,11 @@ public static class SurveillancePatches
             }
         }
 
-        var ignoreNightVision = CustomGameOptions.EvilsIgnoreNV && (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Faction.Neutral) &&
+        var ignoreNightVision = BetterSabotages.EvilsIgnoreNV && (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Faction.Neutral) &&
             !CustomGameOptions.LightsAffectNeutrals) || (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || (CustomPlayer.Local.Is(Alignment.NeutralNeo) &&
             CustomGameOptions.NNHasImpVision));
 
-        if (LightsOut && !NVActive && CustomGameOptions.NightVision && !ignoreNightVision)
+        if (LightsOut && !NVActive && !ignoreNightVision)
         {
             NVActive = true;
             Overlays.ForEach(x => x.SetActive(true));

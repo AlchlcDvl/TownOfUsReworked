@@ -127,7 +127,7 @@ public static class RoleGen
                 items.Shuffle();
                 newList.Add(items[0]);
 
-                if (items[0].Unique && CustomGameOptions.EnableUniques)
+                if (items[0].Unique)
                     items.Remove(items[0]);
                 else
                     rate++;
@@ -159,7 +159,7 @@ public static class RoleGen
         var players = GameData.Instance.PlayerCount;
         impostors = CustomGameOptions.IntruderCount;
         syndicate = CustomGameOptions.SyndicateCount;
-        neutrals = IsKilling ? CustomGameOptions.NeutralRoles : URandom.RandomRangeInt(CustomGameOptions.NeutralMin, CustomGameOptions.NeutralMax + 1);
+        neutrals = IsKilling ? GameModeSettings.NeutralsCount : URandom.RandomRangeInt(CustomGameOptions.NeutralMin, CustomGameOptions.NeutralMax + 1);
 
         if (impostors == 0 && syndicate == 0 && neutrals == 0)
         {
@@ -416,14 +416,14 @@ public static class RoleGen
             NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Murderer));
             NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Thief));
 
-            if (CustomGameOptions.AddArsonist)
+            if (GameModeSettings.AddArsonist)
                 NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Arsonist));
 
-            if (CustomGameOptions.AddCryomaniac)
+            if (GameModeSettings.AddCryomaniac)
                 NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Cryomaniac));
 
-            if (CustomGameOptions.AddPlaguebearer)
-                NeutralRoles.Add(GenerateSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
+            if (GameModeSettings.AddPlaguebearer)
+                NeutralRoles.Add(GenerateSpawnItem(Pestilence.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
 
             NeutralRoles = Sort(NeutralRoles, neut);
         }
@@ -469,18 +469,18 @@ public static class RoleGen
 
     private static void GenClassicCustomAA()
     {
-        SetPostmortals.PhantomOn = Check(CustomGameOptions.PhantomOn);
-        SetPostmortals.RevealerOn = Check(CustomGameOptions.RevealerOn);
-        SetPostmortals.BansheeOn = Check(CustomGameOptions.BansheeOn);
-        SetPostmortals.GhoulOn = Check(CustomGameOptions.GhoulOn);
+        SetPostmortals.PhantomOn = Check(NeutralProselyteRoles.Phantom.Chance);
+        SetPostmortals.RevealerOn = Check(CrewUtilityRoles.Revealer.Chance);
+        SetPostmortals.BansheeOn = Check(SyndicateUtilityRoles.Banshee.Chance);
+        SetPostmortals.GhoulOn = Check(IntruderUtilityRoles.Ghoul.Chance);
         GetAdjustedFactions(out var imps, out var syn, out var neut, out var crew);
         var num = 0;
 
         if (crew > 0)
         {
-            if (CustomGameOptions.MayorOn > 0)
+            if (CustomGameOptions.Mayor > 0)
             {
-                num = CustomGameOptions.MayorCount;
+                num = CustomGameOptions.Mayor.Count;
 
                 while (num > 0)
                 {
@@ -491,9 +491,9 @@ public static class RoleGen
                 LogInfo("Mayor Done");
             }
 
-            if (CustomGameOptions.MonarchOn > 0)
+            if (CustomGameOptions.Monarch > 0)
             {
-                num = CustomGameOptions.MonarchCount;
+                num = CustomGameOptions.Monarch.Count;
 
                 while (num > 0)
                 {
@@ -504,9 +504,9 @@ public static class RoleGen
                 LogInfo("Monarch Done");
             }
 
-            if (CustomGameOptions.DictatorOn > 0)
+            if (CustomGameOptions.Dictator > 0)
             {
-                num = CustomGameOptions.DictatorCount;
+                num = CustomGameOptions.Dictator.Count;
 
                 while (num > 0)
                 {
@@ -517,9 +517,9 @@ public static class RoleGen
                 LogInfo("Dictator Done");
             }
 
-            if (CustomGameOptions.SheriffOn > 0)
+            if (CustomGameOptions.Sheriff > 0)
             {
-                num = CustomGameOptions.SheriffCount;
+                num = CustomGameOptions.Sheriff.Count;
 
                 while (num > 0)
                 {
@@ -530,9 +530,9 @@ public static class RoleGen
                 LogInfo("Sheriff Done");
             }
 
-            if (CustomGameOptions.VigilanteOn > 0)
+            if (CustomGameOptions.Vigilante > 0)
             {
-                num = CustomGameOptions.VigilanteCount;
+                num = CustomGameOptions.Vigilante.Count;
 
                 while (num > 0)
                 {
@@ -543,9 +543,9 @@ public static class RoleGen
                 LogInfo("Vigilante Done");
             }
 
-            if (CustomGameOptions.EngineerOn > 0)
+            if (CustomGameOptions.Engineer > 0)
             {
-                num = CustomGameOptions.EngineerCount;
+                num = CustomGameOptions.Engineer.Count;
 
                 while (num > 0)
                 {
@@ -556,9 +556,9 @@ public static class RoleGen
                 LogInfo("Engineer Done");
             }
 
-            if (CustomGameOptions.MedicOn > 0)
+            if (CustomGameOptions.Medic > 0)
             {
-                num = CustomGameOptions.MedicCount;
+                num = CustomGameOptions.Medic.Count;
 
                 while (num > 0)
                 {
@@ -569,9 +569,9 @@ public static class RoleGen
                 LogInfo("Medic Done");
             }
 
-            if (CustomGameOptions.AltruistOn > 0)
+            if (CustomGameOptions.Altruist > 0)
             {
-                num = CustomGameOptions.AltruistCount;
+                num = CustomGameOptions.Altruist.Count;
 
                 while (num > 0)
                 {
@@ -582,9 +582,9 @@ public static class RoleGen
                 LogInfo("Altruist Done");
             }
 
-            if (CustomGameOptions.VeteranOn > 0)
+            if (CustomGameOptions.Veteran > 0)
             {
-                num = CustomGameOptions.VeteranCount;
+                num = CustomGameOptions.Veteran.Count;
 
                 while (num > 0)
                 {
@@ -595,9 +595,9 @@ public static class RoleGen
                 LogInfo("Veteran Done");
             }
 
-            if (CustomGameOptions.BastionOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.NoOne)
+            if (CustomGameOptions.Bastion > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.Noe)
             {
-                num = CustomGameOptions.BastionCount;
+                num = CustomGameOptions.Bastion.Count;
 
                 while (num > 0)
                 {
@@ -608,9 +608,9 @@ public static class RoleGen
                 LogInfo("Bastion Done");
             }
 
-            if (CustomGameOptions.TrackerOn > 0)
+            if (CustomGameOptions.Tracker > 0)
             {
-                num = CustomGameOptions.TrackerCount;
+                num = CustomGameOptions.Tracker.Count;
 
                 while (num > 0)
                 {
@@ -621,9 +621,9 @@ public static class RoleGen
                 LogInfo("Tracker Done");
             }
 
-            if (CustomGameOptions.TransporterOn > 0)
+            if (CustomGameOptions.Transporter > 0)
             {
-                num = CustomGameOptions.TransporterCount;
+                num = CustomGameOptions.Transporter.Count;
 
                 while (num > 0)
                 {
@@ -634,9 +634,9 @@ public static class RoleGen
                 LogInfo("Transporter Done");
             }
 
-            if (CustomGameOptions.MediumOn > 0)
+            if (CustomGameOptions.Medium > 0)
             {
-                num = CustomGameOptions.MediumCount;
+                num = CustomGameOptions.Medium.Count;
 
                 while (num > 0)
                 {
@@ -647,9 +647,9 @@ public static class RoleGen
                 LogInfo("Medium Done");
             }
 
-            if (CustomGameOptions.CoronerOn > 0)
+            if (CustomGameOptions.Coroner > 0)
             {
-                num = CustomGameOptions.CoronerCount;
+                num = CustomGameOptions.Coroner.Count;
 
                 while (num > 0)
                 {
@@ -660,9 +660,9 @@ public static class RoleGen
                 LogInfo("Coroner Done");
             }
 
-            if (CustomGameOptions.OperativeOn > 0)
+            if (CustomGameOptions.Operative > 0)
             {
-                num = CustomGameOptions.OperativeCount;
+                num = CustomGameOptions.Operative.Count;
 
                 while (num > 0)
                 {
@@ -673,9 +673,9 @@ public static class RoleGen
                 LogInfo("Operative Done");
             }
 
-            if (CustomGameOptions.DetectiveOn > 0)
+            if (CustomGameOptions.Detective > 0)
             {
-                num = CustomGameOptions.DetectiveCount;
+                num = CustomGameOptions.Detective.Count;
 
                 while (num > 0)
                 {
@@ -686,9 +686,9 @@ public static class RoleGen
                 LogInfo("Detective Done");
             }
 
-            if (CustomGameOptions.EscortOn > 0)
+            if (CustomGameOptions.Escort > 0)
             {
-                num = CustomGameOptions.EscortCount;
+                num = CustomGameOptions.Escort.Count;
 
                 while (num > 0)
                 {
@@ -699,9 +699,9 @@ public static class RoleGen
                 LogInfo("Escort Done");
             }
 
-            if (CustomGameOptions.ShifterOn > 0)
+            if (CustomGameOptions.Shifter > 0)
             {
-                num = CustomGameOptions.ShifterCount;
+                num = CustomGameOptions.Shifter.Count;
 
                 while (num > 0)
                 {
@@ -712,9 +712,9 @@ public static class RoleGen
                 LogInfo("Shifter Done");
             }
 
-            if (CustomGameOptions.ChameleonOn > 0)
+            if (CustomGameOptions.Chameleon > 0)
             {
-                num = CustomGameOptions.ChameleonCount;
+                num = CustomGameOptions.Chameleon.Count;
 
                 while (num > 0)
                 {
@@ -725,9 +725,9 @@ public static class RoleGen
                 LogInfo("Chameleon Done");
             }
 
-            if (CustomGameOptions.RetributionistOn > 0)
+            if (CustomGameOptions.Retributionist > 0)
             {
-                num = CustomGameOptions.RetributionistCount;
+                num = CustomGameOptions.Retributionist.Count;
 
                 while (num > 0)
                 {
@@ -738,9 +738,9 @@ public static class RoleGen
                 LogInfo("Retributionist Done");
             }
 
-            if (CustomGameOptions.TrapperOn > 0)
+            if (CustomGameOptions.Trapper > 0)
             {
-                num = CustomGameOptions.TrapperCount;
+                num = CustomGameOptions.Trapper.Count;
 
                 while (num > 0)
                 {
@@ -751,9 +751,9 @@ public static class RoleGen
                 LogInfo("Trapper Done");
             }
 
-            if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
+            if (CustomGameOptions.Crewmate > 0 && IsCustom)
             {
-                num = CustomGameOptions.CrewCount;
+                num = CustomGameOptions.Crew.Count;
 
                 while (num > 0)
                 {
@@ -764,9 +764,9 @@ public static class RoleGen
                 LogInfo("Crewmate Done");
             }
 
-            if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
+            if (CustomGameOptions.VampireHunter > 0 && CustomGameOptions.Dracula > 0)
             {
-                num = CustomGameOptions.VampireHunterCount;
+                num = CustomGameOptions.VampireHunter.Count;
 
                 while (num > 0)
                 {
@@ -777,10 +777,10 @@ public static class RoleGen
                 LogInfo("Vampire Hunter Done");
             }
 
-            if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.NecromancerOn > 0 || CustomGameOptions.WhispererOn > 0 || CustomGameOptions.JackalOn
+            if (CustomGameOptions.Mystic > 0 && (CustomGameOptions.Dracula > 0 || CustomGameOptions.Necromancer > 0 || CustomGameOptions.Whisperer > 0 || CustomGameOptions.Jackal
                 > 0))
             {
-                num = CustomGameOptions.MysticCount;
+                num = CustomGameOptions.Mystic.Count;
 
                 while (num > 0)
                 {
@@ -791,12 +791,12 @@ public static class RoleGen
                 LogInfo("Mystic Done");
             }
 
-            if (CustomGameOptions.SeerOn > 0 && ((CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) || CustomGameOptions.BountyHunterOn > 0 ||
-                CustomGameOptions.GodfatherOn > 0 || CustomGameOptions.RebelOn > 0 || CustomGameOptions.PlaguebearerOn > 0 || CustomGameOptions.MysticOn > 0 ||  CustomGameOptions.TraitorOn
-                > 0 || CustomGameOptions.AmnesiacOn > 0 || CustomGameOptions.ThiefOn > 0 || CustomGameOptions.ExecutionerOn > 0 || CustomGameOptions.GuardianAngelOn > 0 ||
-                CustomGameOptions.GuesserOn > 0 || CustomGameOptions.ShifterOn > 0))
+            if (CustomGameOptions.Seer > 0 && ((CustomGameOptions.VampireHunter > 0 && CustomGameOptions.Dracula > 0) || CustomGameOptions.BountyHunter > 0 ||
+                CustomGameOptions.Godfather > 0 || CustomGameOptions.Rebel > 0 || CustomGameOptions.Plaguebearer > 0 || CustomGameOptions.Mystic > 0 ||  CustomGameOptions.Traitor
+                > 0 || CustomGameOptions.Amnesiac > 0 || CustomGameOptions.Thief > 0 || CustomGameOptions.Executioner > 0 || CustomGameOptions.GuardianAngel > 0 ||
+                CustomGameOptions.Guesser > 0 || CustomGameOptions.Shifter > 0))
             {
-                num = CustomGameOptions.SeerCount;
+                num = CustomGameOptions.Seer.Count;
 
                 while (num > 0)
                 {
@@ -810,9 +810,9 @@ public static class RoleGen
 
         if (neut > 0)
         {
-            if (CustomGameOptions.JesterOn > 0)
+            if (CustomGameOptions.Jester > 0)
             {
-                num = CustomGameOptions.JesterCount;
+                num = CustomGameOptions.Jester.Count;
 
                 while (num > 0)
                 {
@@ -823,9 +823,9 @@ public static class RoleGen
                 LogInfo("Jester Done");
             }
 
-            if (CustomGameOptions.AmnesiacOn > 0)
+            if (CustomGameOptions.Amnesiac > 0)
             {
-                num = CustomGameOptions.AmnesiacCount;
+                num = CustomGameOptions.Amnesiac.Count;
 
                 while (num > 0)
                 {
@@ -836,9 +836,9 @@ public static class RoleGen
                 LogInfo("Amnesiac Done");
             }
 
-            if (CustomGameOptions.ExecutionerOn > 0)
+            if (CustomGameOptions.Executioner > 0)
             {
-                num = CustomGameOptions.ExecutionerCount;
+                num = CustomGameOptions.Executioner.Count;
 
                 while (num > 0)
                 {
@@ -849,9 +849,9 @@ public static class RoleGen
                 LogInfo("Executioner Done");
             }
 
-            if (CustomGameOptions.SurvivorOn > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
+            if (CustomGameOptions.Survivor > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
             {
-                num = CustomGameOptions.SurvivorCount;
+                num = CustomGameOptions.Survivor.Count;
 
                 while (num > 0)
                 {
@@ -862,9 +862,9 @@ public static class RoleGen
                 LogInfo("Survivor Done");
             }
 
-            if (CustomGameOptions.GuardianAngelOn > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
+            if (CustomGameOptions.GuardianAngel > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
             {
-                num = CustomGameOptions.GuardianAngelCount;
+                num = CustomGameOptions.GuardianAngel.Count;
 
                 while (num > 0)
                 {
@@ -875,9 +875,9 @@ public static class RoleGen
                 LogInfo("Guardian Angel Done");
             }
 
-            if (CustomGameOptions.GlitchOn > 0)
+            if (CustomGameOptions.Glitch > 0)
             {
-                num = CustomGameOptions.GlitchCount;
+                num = CustomGameOptions.Glitch.Count;
 
                 while (num > 0)
                 {
@@ -888,9 +888,9 @@ public static class RoleGen
                 LogInfo("Glitch Done");
             }
 
-            if (CustomGameOptions.MurdererOn > 0)
+            if (CustomGameOptions.Murderer > 0)
             {
-                num = CustomGameOptions.MurdCount;
+                num = CustomGameOptions.Murd.Count;
 
                 while (num > 0)
                 {
@@ -901,9 +901,9 @@ public static class RoleGen
                 LogInfo("Murderer Done");
             }
 
-            if (CustomGameOptions.CryomaniacOn > 0)
+            if (CustomGameOptions.Cryomaniac > 0)
             {
-                num = CustomGameOptions.CryomaniacCount;
+                num = CustomGameOptions.Cryomaniac.Count;
 
                 while (num > 0)
                 {
@@ -914,9 +914,9 @@ public static class RoleGen
                 LogInfo("Cryomaniac Done");
             }
 
-            if (CustomGameOptions.WerewolfOn > 0)
+            if (CustomGameOptions.Werewolf > 0)
             {
-                num = CustomGameOptions.WerewolfCount;
+                num = CustomGameOptions.Werewolf.Count;
 
                 while (num > 0)
                 {
@@ -927,9 +927,9 @@ public static class RoleGen
                 LogInfo("Werewolf Done");
             }
 
-            if (CustomGameOptions.ArsonistOn > 0)
+            if (CustomGameOptions.Arsonist > 0)
             {
-                num = CustomGameOptions.ArsonistCount;
+                num = CustomGameOptions.Arsonist.Count;
 
                 while (num > 0)
                 {
@@ -940,9 +940,9 @@ public static class RoleGen
                 LogInfo("Arsonist Done");
             }
 
-            if (CustomGameOptions.JackalOn > 0 && GameData.Instance.PlayerCount > 5)
+            if (CustomGameOptions.Jackal > 0 && GameData.Instance.Player.Count > 5)
             {
-                num = CustomGameOptions.JackalCount;
+                num = CustomGameOptions.Jackal.Count;
 
                 while (num > 0)
                 {
@@ -953,9 +953,9 @@ public static class RoleGen
                 LogInfo("Jackal Done");
             }
 
-            if (CustomGameOptions.NecromancerOn > 0)
+            if (CustomGameOptions.Necromancer > 0)
             {
-                num = CustomGameOptions.NecromancerCount;
+                num = CustomGameOptions.Necromancer.Count;
 
                 while (num > 0)
                 {
@@ -966,9 +966,9 @@ public static class RoleGen
                 LogInfo("Necromancer Done");
             }
 
-            if (CustomGameOptions.PlaguebearerOn > 0)
+            if (CustomGameOptions.Plaguebearer > 0)
             {
-                num = CustomGameOptions.PlaguebearerCount;
+                num = CustomGameOptions.Plaguebearer.Count;
 
                 while (num > 0)
                 {
@@ -980,9 +980,9 @@ public static class RoleGen
                 LogInfo($"{PBorPest} Done");
             }
 
-            if (CustomGameOptions.SerialKillerOn > 0)
+            if (CustomGameOptions.SerialKiller > 0)
             {
-                num = CustomGameOptions.SKCount;
+                num = CustomGameOptions.SK.Count;
 
                 while (num > 0)
                 {
@@ -993,9 +993,9 @@ public static class RoleGen
                 LogInfo("Serial Killer Done");
             }
 
-            if (CustomGameOptions.JuggernautOn > 0)
+            if (CustomGameOptions.Juggernaut > 0)
             {
-                num = CustomGameOptions.JuggernautCount;
+                num = CustomGameOptions.Juggernaut.Count;
 
                 while (num > 0)
                 {
@@ -1006,9 +1006,9 @@ public static class RoleGen
                 LogInfo("Juggeraut Done");
             }
 
-            if (CustomGameOptions.CannibalOn > 0)
+            if (CustomGameOptions.Cannibal > 0)
             {
-                num = CustomGameOptions.CannibalCount;
+                num = CustomGameOptions.Cannibal.Count;
 
                 while (num > 0)
                 {
@@ -1019,9 +1019,9 @@ public static class RoleGen
                 LogInfo("Cannibal Done");
             }
 
-            if (CustomGameOptions.GuesserOn > 0)
+            if (CustomGameOptions.Guesser > 0)
             {
-                num = CustomGameOptions.GuesserCount;
+                num = CustomGameOptions.Guesser.Count;
 
                 while (num > 0)
                 {
@@ -1032,10 +1032,10 @@ public static class RoleGen
                 LogInfo("Guesser Done");
             }
 
-            if (CustomGameOptions.ActorOn > 0 && (CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.NeutralAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
-                CustomGameOptions.IntruderAssassinOn > 0))
+            if (CustomGameOptions.Actor > 0 && (CustomGameOptions.CrewAssassin > 0 || CustomGameOptions.NeutralAssassin > 0 || CustomGameOptions.SyndicateAssassin > 0 ||
+                CustomGameOptions.IntruderAssassin > 0))
             {
-                num = CustomGameOptions.ActorCount;
+                num = CustomGameOptions.Actor.Count;
 
                 while (num > 0)
                 {
@@ -1046,9 +1046,9 @@ public static class RoleGen
                 LogInfo("Actor Done");
             }
 
-            if (CustomGameOptions.ThiefOn > 0)
+            if (CustomGameOptions.Thief > 0)
             {
-                num = CustomGameOptions.ThiefCount;
+                num = CustomGameOptions.Thief.Count;
 
                 while (num > 0)
                 {
@@ -1059,9 +1059,9 @@ public static class RoleGen
                 LogInfo("Thief Done");
             }
 
-            if (CustomGameOptions.DraculaOn > 0)
+            if (CustomGameOptions.Dracula > 0)
             {
-                num = CustomGameOptions.DraculaCount;
+                num = CustomGameOptions.Dracula.Count;
 
                 while (num > 0)
                 {
@@ -1072,9 +1072,9 @@ public static class RoleGen
                 LogInfo("Dracula Done");
             }
 
-            if (CustomGameOptions.WhispererOn > 0)
+            if (CustomGameOptions.Whisperer > 0)
             {
-                num = CustomGameOptions.WhispererCount;
+                num = CustomGameOptions.Whisperer.Count;
 
                 while (num > 0)
                 {
@@ -1085,9 +1085,9 @@ public static class RoleGen
                 LogInfo("Whisperer Done");
             }
 
-            if (CustomGameOptions.TrollOn > 0)
+            if (CustomGameOptions.Troll > 0)
             {
-                num = CustomGameOptions.TrollCount;
+                num = CustomGameOptions.Troll.Count;
 
                 while (num > 0)
                 {
@@ -1098,9 +1098,9 @@ public static class RoleGen
                 LogInfo("Troll Done");
             }
 
-            if (CustomGameOptions.BountyHunterOn > 0)
+            if (CustomGameOptions.BountyHunter > 0)
             {
-                num = CustomGameOptions.BHCount;
+                num = CustomGameOptions.BH.Count;
 
                 while (num > 0)
                 {
@@ -1114,9 +1114,9 @@ public static class RoleGen
 
         if (imps > 0)
         {
-            if (CustomGameOptions.MorphlingOn > 0)
+            if (CustomGameOptions.Morphling > 0)
             {
-                num = CustomGameOptions.MorphlingCount;
+                num = CustomGameOptions.Morphling.Count;
 
                 while (num > 0)
                 {
@@ -1127,9 +1127,9 @@ public static class RoleGen
                 LogInfo("Morphling Done");
             }
 
-            if (CustomGameOptions.BlackmailerOn > 0)
+            if (CustomGameOptions.Blackmailer > 0)
             {
-                num = CustomGameOptions.BlackmailerCount;
+                num = CustomGameOptions.Blackmailer.Count;
 
                 while (num > 0)
                 {
@@ -1140,9 +1140,9 @@ public static class RoleGen
                 LogInfo("Blackmailer Done");
             }
 
-            if (CustomGameOptions.MinerOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.NoOne && !(!CustomGameOptions.MinerSpawnOnMira && MapPatches.CurrentMap == 2))
+            if (CustomGameOptions.Miner > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.Noe && !(!CustomGameOptions.MinerSpawnMira && MapPatches.CurrentMap == 2))
             {
-                num = CustomGameOptions.MinerCount;
+                num = CustomGameOptions.Miner.Count;
 
                 while (num > 0)
                 {
@@ -1153,9 +1153,9 @@ public static class RoleGen
                 LogInfo("Miner Done");
             }
 
-            if (CustomGameOptions.TeleporterOn > 0)
+            if (CustomGameOptions.Teleporter > 0)
             {
-                num = CustomGameOptions.TeleporterCount;
+                num = CustomGameOptions.Teleporter.Count;
 
                 while (num > 0)
                 {
@@ -1166,9 +1166,9 @@ public static class RoleGen
                 LogInfo("Teleporter Done");
             }
 
-            if (CustomGameOptions.AmbusherOn > 0)
+            if (CustomGameOptions.Ambusher > 0)
             {
-                num = CustomGameOptions.AmbusherCount;
+                num = CustomGameOptions.Ambusher.Count;
 
                 while (num > 0)
                 {
@@ -1179,9 +1179,9 @@ public static class RoleGen
                 LogInfo("Ambusher Done");
             }
 
-            if (CustomGameOptions.WraithOn > 0)
+            if (CustomGameOptions.Wraith > 0)
             {
-                num = CustomGameOptions.WraithCount;
+                num = CustomGameOptions.Wraith.Count;
 
                 while (num > 0)
                 {
@@ -1192,9 +1192,9 @@ public static class RoleGen
                 LogInfo("Wraith Done");
             }
 
-            if (CustomGameOptions.ConsortOn > 0)
+            if (CustomGameOptions.Consort > 0)
             {
-                num = CustomGameOptions.ConsortCount;
+                num = CustomGameOptions.Consort.Count;
 
                 while (num > 0)
                 {
@@ -1205,9 +1205,9 @@ public static class RoleGen
                 LogInfo("Consort Done");
             }
 
-            if (CustomGameOptions.JanitorOn > 0)
+            if (CustomGameOptions.Janitor > 0)
             {
-                num = CustomGameOptions.JanitorCount;
+                num = CustomGameOptions.Janitor.Count;
 
                 while (num > 0)
                 {
@@ -1218,9 +1218,9 @@ public static class RoleGen
                 LogInfo("Janitor Done");
             }
 
-            if (CustomGameOptions.CamouflagerOn > 0)
+            if (CustomGameOptions.Camouflager > 0)
             {
-                num = CustomGameOptions.CamouflagerCount;
+                num = CustomGameOptions.Camouflager.Count;
 
                 while (num > 0)
                 {
@@ -1231,9 +1231,9 @@ public static class RoleGen
                 LogInfo("Camouflager Done");
             }
 
-            if (CustomGameOptions.GrenadierOn > 0)
+            if (CustomGameOptions.Grenadier > 0)
             {
-                num = CustomGameOptions.GrenadierCount;
+                num = CustomGameOptions.Grenadier.Count;
 
                 while (num > 0)
                 {
@@ -1244,9 +1244,9 @@ public static class RoleGen
                 LogInfo("Grenadier Done");
             }
 
-            if (CustomGameOptions.ImpostorOn > 0 && IsCustom)
+            if (CustomGameOptions.Impostor > 0 && IsCustom)
             {
-                num = CustomGameOptions.ImpCount;
+                num = CustomGameOptions.Imp.Count;
 
                 while (num > 0)
                 {
@@ -1257,9 +1257,9 @@ public static class RoleGen
                 LogInfo("Impostor Done");
             }
 
-            if (CustomGameOptions.ConsigliereOn > 0)
+            if (CustomGameOptions.Consigliere > 0)
             {
-                num = CustomGameOptions.ConsigliereCount;
+                num = CustomGameOptions.Consigliere.Count;
 
                 while (num > 0)
                 {
@@ -1270,9 +1270,9 @@ public static class RoleGen
                 LogInfo("Consigliere Done");
             }
 
-            if (CustomGameOptions.DisguiserOn > 0)
+            if (CustomGameOptions.Disguiser > 0)
             {
-                num = CustomGameOptions.DisguiserCount;
+                num = CustomGameOptions.Disguiser.Count;
 
                 while (num > 0)
                 {
@@ -1283,9 +1283,9 @@ public static class RoleGen
                 LogInfo("Disguiser Done");
             }
 
-            if (CustomGameOptions.EnforcerOn > 0)
+            if (CustomGameOptions.Enforcer > 0)
             {
-                num = CustomGameOptions.EnforcerCount;
+                num = CustomGameOptions.Enforcer.Count;
 
                 while (num > 0)
                 {
@@ -1296,9 +1296,9 @@ public static class RoleGen
                 LogInfo("Enforcer Done");
             }
 
-            if (CustomGameOptions.GodfatherOn > 0 && imps >= 3)
+            if (CustomGameOptions.Godfather > 0 && imps >= 3)
             {
-                num = CustomGameOptions.GodfatherCount;
+                num = CustomGameOptions.Godfather.Count;
 
                 while (num > 0)
                 {
@@ -1312,9 +1312,9 @@ public static class RoleGen
 
         if (syn > 0)
         {
-            if (CustomGameOptions.AnarchistOn > 0 && IsCustom)
+            if (CustomGameOptions.Anarchist > 0 && IsCustom)
             {
-                num = CustomGameOptions.AnarchistCount;
+                num = CustomGameOptions.Anarchist.Count;
 
                 while (num > 0)
                 {
@@ -1325,9 +1325,9 @@ public static class RoleGen
                 LogInfo("Anarchist Done");
             }
 
-            if (CustomGameOptions.ShapeshifterOn > 0)
+            if (CustomGameOptions.Shapeshifter > 0)
             {
-                num = CustomGameOptions.ShapeshifterCount;
+                num = CustomGameOptions.Shapeshifter.Count;
 
                 while (num > 0)
                 {
@@ -1338,9 +1338,9 @@ public static class RoleGen
                 LogInfo("Shapeshifter Done");
             }
 
-            if (CustomGameOptions.FramerOn > 0)
+            if (CustomGameOptions.Framer > 0)
             {
-                num = CustomGameOptions.FramerCount;
+                num = CustomGameOptions.Framer.Count;
 
                 while (num > 0)
                 {
@@ -1351,9 +1351,9 @@ public static class RoleGen
                 LogInfo("Framer Done");
             }
 
-            if (CustomGameOptions.CrusaderOn > 0)
+            if (CustomGameOptions.Crusader > 0)
             {
-                num = CustomGameOptions.CrusaderCount;
+                num = CustomGameOptions.Crusader.Count;
 
                 while (num > 0)
                 {
@@ -1364,9 +1364,9 @@ public static class RoleGen
                 LogInfo("Crusader Done");
             }
 
-            if (CustomGameOptions.RebelOn > 0 && syn >= 3)
+            if (CustomGameOptions.Rebel > 0 && syn >= 3)
             {
-                num = CustomGameOptions.RebelCount;
+                num = CustomGameOptions.Rebel.Count;
 
                 while (num > 0)
                 {
@@ -1377,9 +1377,9 @@ public static class RoleGen
                 LogInfo("Rebel Done");
             }
 
-            if (CustomGameOptions.PoisonerOn > 0)
+            if (CustomGameOptions.Poisoner > 0)
             {
-                num = CustomGameOptions.PoisonerCount;
+                num = CustomGameOptions.Poisoner.Count;
 
                 while (num > 0)
                 {
@@ -1390,9 +1390,9 @@ public static class RoleGen
                 LogInfo("Poisoner Done");
             }
 
-            if (CustomGameOptions.ColliderOn > 0)
+            if (CustomGameOptions.Collider > 0)
             {
-                num = CustomGameOptions.ColliderCount;
+                num = CustomGameOptions.Collider.Count;
 
                 while (num > 0)
                 {
@@ -1403,9 +1403,9 @@ public static class RoleGen
                 LogInfo("Collider Done");
             }
 
-            if (CustomGameOptions.ConcealerOn > 0)
+            if (CustomGameOptions.Concealer > 0)
             {
-                num = CustomGameOptions.ConcealerCount;
+                num = CustomGameOptions.Concealer.Count;
 
                 while (num > 0)
                 {
@@ -1416,9 +1416,9 @@ public static class RoleGen
                 LogInfo("Concealer Done");
             }
 
-            if (CustomGameOptions.WarperOn > 0)
+            if (CustomGameOptions.Warper > 0)
             {
-                num = CustomGameOptions.WarperCount;
+                num = CustomGameOptions.Warper.Count;
 
                 while (num > 0)
                 {
@@ -1429,9 +1429,9 @@ public static class RoleGen
                 LogInfo("Warper Done");
             }
 
-            if (CustomGameOptions.BomberOn > 0)
+            if (CustomGameOptions.Bomber > 0)
             {
-                num = CustomGameOptions.BomberCount;
+                num = CustomGameOptions.Bomber.Count;
 
                 while (num > 0)
                 {
@@ -1442,9 +1442,9 @@ public static class RoleGen
                 LogInfo("Bomber Done");
             }
 
-            if (CustomGameOptions.SpellslingerOn > 0)
+            if (CustomGameOptions.Spellslinger > 0)
             {
-                num = CustomGameOptions.SpellslingerCount;
+                num = CustomGameOptions.Spellslinger.Count;
 
                 while (num > 0)
                 {
@@ -1455,9 +1455,9 @@ public static class RoleGen
                 LogInfo("Spellslinger Done");
             }
 
-            if (CustomGameOptions.StalkerOn > 0)
+            if (CustomGameOptions.Stalker > 0)
             {
-                num = CustomGameOptions.StalkerCount;
+                num = CustomGameOptions.Stalker.Count;
 
                 while (num > 0)
                 {
@@ -1468,9 +1468,9 @@ public static class RoleGen
                 LogInfo("Stalker Done");
             }
 
-            if (CustomGameOptions.DrunkardOn > 0)
+            if (CustomGameOptions.Drunkard > 0)
             {
-                num = CustomGameOptions.DrunkardCount;
+                num = CustomGameOptions.Drunkard.Count;
 
                 while (num > 0)
                 {
@@ -1481,9 +1481,9 @@ public static class RoleGen
                 LogInfo("Drunkard Done");
             }
 
-            if (CustomGameOptions.TimekeeperOn > 0)
+            if (CustomGameOptions.Timekeeper > 0)
             {
-                num = CustomGameOptions.TimekeeperCount;
+                num = CustomGameOptions.Timekeeper.Count;
 
                 while (num > 0)
                 {
@@ -1494,9 +1494,9 @@ public static class RoleGen
                 LogInfo("Timekeeper Done");
             }
 
-            if (CustomGameOptions.SilencerOn > 0)
+            if (CustomGameOptions.Silencer > 0)
             {
-                num = CustomGameOptions.SilencerCount;
+                num = CustomGameOptions.Silencer.Count;
 
                 while (num > 0)
                 {
@@ -1967,7 +1967,7 @@ public static class RoleGen
 
     private static void GenHideAndSeek()
     {
-        while (AllRoles.Count < CustomGameOptions.HunterCount)
+        while (AllRoles.Count < CustomGameOptions.Hunter.Count)
             AllRoles.Add(GenerateSpawnItem(LayerEnum.Hunter));
 
         while (AllRoles.Count < CustomPlayer.AllPlayers.Count)
@@ -1991,7 +1991,7 @@ public static class RoleGen
     {
         var num = 0;
 
-        if (CustomGameOptions.CrewAssassinOn > 0)
+        if (CustomGameOptions.CrewAssassin > 0)
         {
             num = CustomGameOptions.NumberOfCrewAssassins;
 
@@ -2004,7 +2004,7 @@ public static class RoleGen
             LogInfo("Crew Assassin Done");
         }
 
-        if (CustomGameOptions.SyndicateAssassinOn > 0)
+        if (CustomGameOptions.SyndicateAssassin > 0)
         {
             num = CustomGameOptions.NumberOfSyndicateAssassins;
 
@@ -2017,7 +2017,7 @@ public static class RoleGen
             LogInfo("Syndicate Assassin Done");
         }
 
-        if (CustomGameOptions.IntruderAssassinOn > 0)
+        if (CustomGameOptions.IntruderAssassin > 0)
         {
             num = CustomGameOptions.NumberOfIntruderAssassins;
 
@@ -2030,7 +2030,7 @@ public static class RoleGen
             LogInfo("Intruder Assassin Done");
         }
 
-        if (CustomGameOptions.NeutralAssassinOn > 0)
+        if (CustomGameOptions.NeutralAssassin > 0)
         {
             num = CustomGameOptions.NumberOfNeutralAssassins;
 
@@ -2043,9 +2043,9 @@ public static class RoleGen
             LogInfo("Neutral Assassin Done");
         }
 
-        if (CustomGameOptions.RuthlessOn > 0)
+        if (CustomGameOptions.Ruthless > 0)
         {
-            num = CustomGameOptions.RuthlessCount;
+            num = CustomGameOptions.Ruthless.Count;
 
             while (num > 0)
             {
@@ -2056,9 +2056,9 @@ public static class RoleGen
             LogInfo("Ruthless Done");
         }
 
-        if (CustomGameOptions.SnitchOn > 0)
+        if (CustomGameOptions.Snitch > 0)
         {
-            num = CustomGameOptions.SnitchCount;
+            num = CustomGameOptions.Snitch.Count;
 
             while (num > 0)
             {
@@ -2069,9 +2069,9 @@ public static class RoleGen
             LogInfo("Snitch Done");
         }
 
-        if (CustomGameOptions.InsiderOn > 0 && CustomGameOptions.AnonymousVoting != AnonVotes.Disabled)
+        if (CustomGameOptions.Insider > 0 && CustomGameOptions.AnonymousVoting != AnonVotes.Disabled)
         {
-            num = CustomGameOptions.InsiderCount;
+            num = CustomGameOptions.Insider.Count;
 
             while (num > 0)
             {
@@ -2082,9 +2082,9 @@ public static class RoleGen
             LogInfo("Insider Done");
         }
 
-        if (CustomGameOptions.MultitaskerOn > 0)
+        if (CustomGameOptions.Multitasker > 0)
         {
-            num = CustomGameOptions.MultitaskerCount;
+            num = CustomGameOptions.Multitasker.Count;
 
             while (num > 0)
             {
@@ -2095,9 +2095,9 @@ public static class RoleGen
             LogInfo("Multitasker Done");
         }
 
-        if (CustomGameOptions.RadarOn > 0)
+        if (CustomGameOptions.Radar > 0)
         {
-            num = CustomGameOptions.RadarCount;
+            num = CustomGameOptions.Radar.Count;
 
             while (num > 0)
             {
@@ -2108,9 +2108,9 @@ public static class RoleGen
             LogInfo("Radar Done");
         }
 
-        if (CustomGameOptions.TiebreakerOn > 0)
+        if (CustomGameOptions.Tiebreaker > 0)
         {
-            num = CustomGameOptions.TiebreakerCount;
+            num = CustomGameOptions.Tiebreaker.Count;
 
             while (num > 0)
             {
@@ -2121,9 +2121,9 @@ public static class RoleGen
             LogInfo("Tiebreaker Done");
         }
 
-        if (CustomGameOptions.TorchOn > 0)
+        if (CustomGameOptions.Torch > 0)
         {
-            num = CustomGameOptions.TorchCount;
+            num = CustomGameOptions.Torch.Count;
 
             while (num > 0)
             {
@@ -2134,9 +2134,9 @@ public static class RoleGen
             LogInfo("Torch Done");
         }
 
-        if (CustomGameOptions.UnderdogOn > 0)
+        if (CustomGameOptions.Underdog > 0)
         {
-            num = CustomGameOptions.UnderdogCount;
+            num = CustomGameOptions.Underdog.Count;
 
             while (num > 0)
             {
@@ -2147,9 +2147,9 @@ public static class RoleGen
             LogInfo("Underdog Done");
         }
 
-        if (CustomGameOptions.TunnelerOn > 0 && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && !CustomGameOptions.CrewVent)
+        if (CustomGameOptions.Tunneler > 0 && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && !CustomGameOptions.CrewVent)
         {
-            num = CustomGameOptions.TunnelerCount;
+            num = CustomGameOptions.Tunneler.Count;
 
             while (num > 0)
             {
@@ -2160,9 +2160,9 @@ public static class RoleGen
             LogInfo("Tunneler Done");
         }
 
-        if (CustomGameOptions.NinjaOn > 0)
+        if (CustomGameOptions.Ninja > 0)
         {
-            num = CustomGameOptions.NinjaCount;
+            num = CustomGameOptions.Ninja.Count;
 
             while (num > 0)
             {
@@ -2173,9 +2173,9 @@ public static class RoleGen
             LogInfo("Ninja Done");
         }
 
-        if (CustomGameOptions.ButtonBarryOn > 0)
+        if (CustomGameOptions.ButtonBarry > 0)
         {
-            num = CustomGameOptions.ButtonBarryCount;
+            num = CustomGameOptions.ButtonBarry.Count;
 
             while (num > 0)
             {
@@ -2186,9 +2186,9 @@ public static class RoleGen
             LogInfo("Button Barry Done");
         }
 
-        if (CustomGameOptions.PoliticianOn > 0)
+        if (CustomGameOptions.Politician > 0)
         {
-            num = CustomGameOptions.PoliticianCount;
+            num = CustomGameOptions.Politician.Count;
 
             while (num > 0)
             {
@@ -2199,9 +2199,9 @@ public static class RoleGen
             LogInfo("Politician Done");
         }
 
-        if (CustomGameOptions.SwapperOn > 0)
+        if (CustomGameOptions.Swapper > 0)
         {
-            num = CustomGameOptions.SwapperCount;
+            num = CustomGameOptions.Swapper.Count;
 
             while (num > 0)
             {
@@ -2384,9 +2384,9 @@ public static class RoleGen
     {
         var num = 0;
 
-        if (CustomGameOptions.LoversOn > 0 && GameData.Instance.PlayerCount > 4)
+        if (CustomGameOptions.Lovers > 0 && GameData.Instance.Player.Count > 4)
         {
-            num = CustomGameOptions.LoversCount * 2;
+            num = CustomGameOptions.Lovers.Count * 2;
 
             while (num > 0)
             {
@@ -2397,9 +2397,9 @@ public static class RoleGen
             LogInfo("Lovers Done");
         }
 
-        if (CustomGameOptions.RivalsOn > 0 && GameData.Instance.PlayerCount > 3)
+        if (CustomGameOptions.Rivals > 0 && GameData.Instance.Player.Count > 3)
         {
-            num = CustomGameOptions.RivalsCount * 2;
+            num = CustomGameOptions.Rivals.Count * 2;
 
             while (num > 0)
             {
@@ -2410,9 +2410,9 @@ public static class RoleGen
             LogInfo("Rivals Done");
         }
 
-        if (CustomGameOptions.FanaticOn > 0)
+        if (CustomGameOptions.Fanatic > 0)
         {
-            num = CustomGameOptions.FanaticCount;
+            num = CustomGameOptions.Fanatic.Count;
 
             while (num > 0)
             {
@@ -2423,9 +2423,9 @@ public static class RoleGen
             LogInfo("Fanatic Done");
         }
 
-        if (CustomGameOptions.CorruptedOn > 0)
+        if (CustomGameOptions.Corrupted > 0)
         {
-            num = CustomGameOptions.CorruptedCount;
+            num = CustomGameOptions.Corrupted.Count;
 
             while (num > 0)
             {
@@ -2436,9 +2436,9 @@ public static class RoleGen
             LogInfo("Corrupted Done");
         }
 
-        if (CustomGameOptions.OverlordOn > 0)
+        if (CustomGameOptions.Overlord > 0)
         {
-            num = CustomGameOptions.OverlordCount;
+            num = CustomGameOptions.Overlord.Count;
 
             while (num > 0)
             {
@@ -2449,9 +2449,9 @@ public static class RoleGen
             LogInfo("Overlord Done");
         }
 
-        if (CustomGameOptions.AlliedOn > 0)
+        if (CustomGameOptions.Allied > 0)
         {
-            num = CustomGameOptions.AlliedCount;
+            num = CustomGameOptions.Allied.Count;
 
             while (num > 0)
             {
@@ -2462,9 +2462,9 @@ public static class RoleGen
             LogInfo("Allied Done");
         }
 
-        if (CustomGameOptions.TraitorOn > 0)
+        if (CustomGameOptions.Traitor > 0)
         {
-            num = CustomGameOptions.TraitorCount;
+            num = CustomGameOptions.Traitor.Count;
 
             while (num > 0)
             {
@@ -2475,9 +2475,9 @@ public static class RoleGen
             LogInfo("Traitor Done");
         }
 
-        if (CustomGameOptions.TaskmasterOn > 0)
+        if (CustomGameOptions.Taskmaster > 0)
         {
-            num = CustomGameOptions.TaskmasterCount;
+            num = CustomGameOptions.Taskmaster.Count;
 
             while (num > 0)
             {
@@ -2488,9 +2488,9 @@ public static class RoleGen
             LogInfo("Taskmaster Done");
         }
 
-        if (CustomGameOptions.MafiaOn > 0)
+        if (CustomGameOptions.Mafia > 0)
         {
-            num = CustomGameOptions.MafiaCount;
+            num = CustomGameOptions.Mafia.Count;
 
             while (num > 0)
             {
@@ -2501,9 +2501,9 @@ public static class RoleGen
             LogInfo("Mafia Done");
         }
 
-        if (CustomGameOptions.DefectorOn > 0)
+        if (CustomGameOptions.Defector > 0)
         {
-            num = CustomGameOptions.DefectorCount;
+            num = CustomGameOptions.Defector.Count;
 
             while (num > 0)
             {
@@ -2514,9 +2514,9 @@ public static class RoleGen
             LogInfo("Defector Done");
         }
 
-        if (CustomGameOptions.LinkedOn > 0 && Role.GetRoles(Faction.Neutral).Count > 1 && GameData.Instance.PlayerCount > 3)
+        if (CustomGameOptions.Linked > 0 && Role.GetRoles(Faction.Neutral).Count > 1 && GameData.Instance.Player.Count > 3)
         {
-            num = CustomGameOptions.LinkedCount * 2;
+            num = CustomGameOptions.Linked.Count * 2;
 
             while (num > 0)
             {
@@ -2654,9 +2654,9 @@ public static class RoleGen
     {
         var num = 0;
 
-        if (CustomGameOptions.DiseasedOn > 0)
+        if (CustomGameOptions.Diseased > 0)
         {
-            num = CustomGameOptions.DiseasedCount;
+            num = CustomGameOptions.Diseased.Count;
 
             while (num > 0)
             {
@@ -2667,9 +2667,9 @@ public static class RoleGen
             LogInfo("Diseased Done");
         }
 
-        if (CustomGameOptions.BaitOn > 0)
+        if (CustomGameOptions.Bait > 0)
         {
-            num = CustomGameOptions.BaitCount;
+            num = CustomGameOptions.Bait.Count;
 
             while (num > 0)
             {
@@ -2680,9 +2680,9 @@ public static class RoleGen
             LogInfo("Bait Done");
         }
 
-        if (CustomGameOptions.DwarfOn > 0)
+        if (CustomGameOptions.Dwarf > 0)
         {
-            num = CustomGameOptions.DwarfCount;
+            num = CustomGameOptions.Dwarf.Count;
 
             while (num > 0)
             {
@@ -2693,9 +2693,9 @@ public static class RoleGen
             LogInfo("Dwarf Done");
         }
 
-        if (CustomGameOptions.VIPOn > 0)
+        if (CustomGameOptions.VIP > 0)
         {
-            num = CustomGameOptions.VIPCount;
+            num = CustomGameOptions.VIP.Count;
 
             while (num > 0)
             {
@@ -2706,9 +2706,9 @@ public static class RoleGen
             LogInfo("VIP Done");
         }
 
-        if (CustomGameOptions.ShyOn > 0)
+        if (CustomGameOptions.Shy > 0)
         {
-            num = CustomGameOptions.ShyCount;
+            num = CustomGameOptions.Shy.Count;
 
             while (num > 0)
             {
@@ -2719,9 +2719,9 @@ public static class RoleGen
             LogInfo("Shy Done");
         }
 
-        if (CustomGameOptions.GiantOn > 0)
+        if (CustomGameOptions.Giant > 0)
         {
-            num = CustomGameOptions.GiantCount;
+            num = CustomGameOptions.Giant.Count;
 
             while (num > 0)
             {
@@ -2732,9 +2732,9 @@ public static class RoleGen
             LogInfo("Giant Done");
         }
 
-        if (CustomGameOptions.DrunkOn > 0)
+        if (CustomGameOptions.Drunk > 0)
         {
-            num = CustomGameOptions.DrunkCount;
+            num = CustomGameOptions.Drunk.Count;
 
             while (num > 0)
             {
@@ -2745,9 +2745,9 @@ public static class RoleGen
             LogInfo("Drunk Done");
         }
 
-        if (CustomGameOptions.CowardOn > 0)
+        if (CustomGameOptions.Coward > 0)
         {
-            num = CustomGameOptions.CowardCount;
+            num = CustomGameOptions.Coward.Count;
 
             while (num > 0)
             {
@@ -2758,9 +2758,9 @@ public static class RoleGen
             LogInfo("Coward Done");
         }
 
-        if (CustomGameOptions.VolatileOn > 0)
+        if (CustomGameOptions.Volatile > 0)
         {
-            num = CustomGameOptions.VolatileCount;
+            num = CustomGameOptions.Volatile.Count;
 
             while (num > 0)
             {
@@ -2771,9 +2771,9 @@ public static class RoleGen
             LogInfo("Volatile Done");
         }
 
-        if (CustomGameOptions.IndomitableOn > 0)
+        if (CustomGameOptions.Indomitable > 0)
         {
-            num = CustomGameOptions.IndomitableCount;
+            num = CustomGameOptions.Indomitable.Count;
 
             while (num > 0)
             {
@@ -2784,9 +2784,9 @@ public static class RoleGen
             LogInfo("Indomitable Done");
         }
 
-        if (CustomGameOptions.ProfessionalOn > 0)
+        if (CustomGameOptions.Professional > 0)
         {
-            num = CustomGameOptions.ProfessionalCount;
+            num = CustomGameOptions.Professional.Count;
 
             while (num > 0)
             {
@@ -2797,9 +2797,9 @@ public static class RoleGen
             LogInfo("Professional Done");
         }
 
-        if (CustomGameOptions.AstralOn > 0)
+        if (CustomGameOptions.Astral > 0)
         {
-            num = CustomGameOptions.AstralCount;
+            num = CustomGameOptions.Astral.Count;
 
             while (num > 0)
             {
@@ -2810,9 +2810,9 @@ public static class RoleGen
             LogInfo("Astral Done");
         }
 
-        if (CustomGameOptions.YellerOn > 0)
+        if (CustomGameOptions.Yeller > 0)
         {
-            num = CustomGameOptions.YellerCount;
+            num = CustomGameOptions.Yeller.Count;
 
             while (num > 0)
             {
@@ -2823,9 +2823,9 @@ public static class RoleGen
             LogInfo("Yeller Done");
         }
 
-        if (CustomGameOptions.ColorblindOn > 0)
+        if (CustomGameOptions.Colorblind > 0)
         {
-            num = CustomGameOptions.ColorblindCount;
+            num = CustomGameOptions.Colorblind.Count;
 
             while (num > 0)
             {
@@ -2931,7 +2931,7 @@ public static class RoleGen
 
     private static void SetTargets()
     {
-        if (CustomGameOptions.AlliedOn > 0)
+        if (CustomGameOptions.Allied > 0)
         {
             foreach (var ally in PlayerLayer.GetLayers<Allied>())
             {
@@ -2968,7 +2968,7 @@ public static class RoleGen
             LogMessage("Allied Faction Set Done");
         }
 
-        if (CustomGameOptions.LoversOn > 0)
+        if (CustomGameOptions.Lovers > 0)
         {
             var lovers = PlayerLayer.GetLayers<Lovers>();
             lovers.Shuffle();
@@ -2998,7 +2998,7 @@ public static class RoleGen
             LogMessage("Lovers Set");
         }
 
-        if (CustomGameOptions.RivalsOn > 0)
+        if (CustomGameOptions.Rivals > 0)
         {
             var rivals = PlayerLayer.GetLayers<Rivals>();
             rivals.Shuffle();
@@ -3028,7 +3028,7 @@ public static class RoleGen
             LogMessage("Rivals Set");
         }
 
-        if (CustomGameOptions.LinkedOn > 0)
+        if (CustomGameOptions.Linked > 0)
         {
             var linked = PlayerLayer.GetLayers<Linked>();
             linked.Shuffle();
@@ -3058,7 +3058,7 @@ public static class RoleGen
             LogMessage("Linked Set");
         }
 
-        if (CustomGameOptions.MafiaOn > 0)
+        if (CustomGameOptions.Mafia > 0)
         {
             if (PlayerLayer.GetLayers<Mafia>().Count == 1)
             {
@@ -3069,7 +3069,7 @@ public static class RoleGen
             LogMessage("Mafia Set");
         }
 
-        if (CustomGameOptions.ExecutionerOn > 0 && !CustomGameOptions.ExecutionerCanPickTargets)
+        if (CustomGameOptions.Executioner > 0 && !CustomGameOptions.ExecutionerCanPickTargets)
         {
             foreach (var exe in PlayerLayer.GetLayers<Executioner>())
             {
@@ -3094,7 +3094,7 @@ public static class RoleGen
             LogMessage("Exe Targets Set");
         }
 
-        if (CustomGameOptions.GuesserOn > 0 && !CustomGameOptions.GuesserCanPickTargets)
+        if (CustomGameOptions.Guesser > 0 && !CustomGameOptions.GuesserCanPickTargets)
         {
             foreach (var guess in PlayerLayer.GetLayers<Guesser>())
             {
@@ -3113,7 +3113,7 @@ public static class RoleGen
             LogMessage("Guess Targets Set");
         }
 
-        if (CustomGameOptions.GuardianAngelOn > 0 && !CustomGameOptions.GuardianAngelCanPickTargets)
+        if (CustomGameOptions.GuardianAngel > 0 && !CustomGameOptions.GuardianAngelCanPickTargets)
         {
             foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
             {
@@ -3131,7 +3131,7 @@ public static class RoleGen
             LogMessage("GA Target Set");
         }
 
-        if (CustomGameOptions.BountyHunterOn > 0 && !CustomGameOptions.BountyHunterCanPickTargets)
+        if (CustomGameOptions.BountyHunter > 0 && !CustomGameOptions.BountyHunterCanPickTargets)
         {
             foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
             {
@@ -3149,7 +3149,7 @@ public static class RoleGen
             LogMessage("BH Targets Set");
         }
 
-        if (CustomGameOptions.ActorOn > 0 && !CustomGameOptions.ActorCanPickRole)
+        if (CustomGameOptions.Actor > 0 && !CustomGameOptions.ActorCanPickRole)
         {
             foreach (var act in PlayerLayer.GetLayers<Actor>())
             {
@@ -3163,7 +3163,7 @@ public static class RoleGen
             LogMessage("Act Variables Set");
         }
 
-        if (CustomGameOptions.JackalOn > 0)
+        if (CustomGameOptions.Jackal > 0)
         {
             foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
             {
@@ -3352,7 +3352,7 @@ public static class RoleGen
             return;
 
         LogMessage("RPC SET ROLE");
-        LogMessage($"Current Mode = {CustomGameOptions.GameMode}");
+        LogMessage($"Current Mode = {GameModeSettings.GameMode}");
         ResetEverything();
         CallRpc(CustomRPC.Misc, MiscRPC.Start);
         LogMessage("Cleared Variables");
@@ -3398,7 +3398,7 @@ public static class RoleGen
                 AllRoles.Add(GenerateSpawnItem(LayerEnum.Sheriff));
         }
 
-        if (AllRoles.Any(x => x.ID == LayerEnum.Cannibal) && AllRoles.Any(x => x.ID == LayerEnum.Janitor) && CustomGameOptions.JaniCanMutuallyExclusive)
+        if (AllRoles.Any(x => x.ID == LayerEnum.Cannibal) && AllRoles.Any(x => x.ID == LayerEnum.Janitor) && GameModifiers.JaniCanMutuallyExclusive)
         {
             var chance = URandom.RandomRangeInt(0, 2);
             var count = AllRoles.RemoveAll(x => x.ID == (chance == 0 ? LayerEnum.Cannibal : LayerEnum.Janitor));
@@ -3459,13 +3459,13 @@ public static class RoleGen
         {
             if (!IsRoleList && !IsTaskRace && !IsCustomHnS)
             {
-                if (CustomGameOptions.EnableObjectifiers)
+                if (GameModifiers.EnableObjectifiers)
                     GenObjectifiers();
 
-                if (CustomGameOptions.EnableAbilities)
+                if (GameModifiers.EnableAbilities)
                     GenAbilities();
 
-                if (CustomGameOptions.EnableModifiers)
+                if (GameModifiers.EnableModifiers)
                     GenModifiers();
             }
 

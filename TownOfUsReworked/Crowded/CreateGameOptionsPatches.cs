@@ -82,7 +82,7 @@ public static class MapPickerPatch
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
 public static class LobbySizePatch
 {
-    public static void Postfix(ref int maxPlayers) => Generate.LobbySize.Set(maxPlayers);
+    public static void Postfix(ref int maxPlayers) => OptionAttribute.GetOptionFromPropertyName("LobbySize").Set(maxPlayers);
 }
 
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]

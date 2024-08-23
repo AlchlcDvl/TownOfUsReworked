@@ -176,7 +176,7 @@ public static class SetPostmortals
     {
         foreach (var exe in PlayerLayer.GetLayers<Executioner>())
         {
-            if (!exe.TargetPlayer || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.Dead))
+            if (!exe.TargetPlayer || (!Executioner.ExeCanWinBeyondDeath && exe.Dead))
                 continue;
 
             if (player == exe.TargetPlayer)
@@ -257,10 +257,7 @@ public static class SetPostmortals
 
     private static void TryAddRevealer(PlayerControl dead)
     {
-        if (!dead.HasDied())
-            return;
-
-        if (dead && !WillBeRevealers.Contains(dead.PlayerId) && WillBeRevealers.Count < CustomGameOptions.RevealerCount && dead.IsBase(Faction.Crew))
+        if (dead.HasDied() && dead && !WillBeRevealers.Contains(dead.PlayerId) && WillBeRevealers.Count < CrewUtilityRoles.Revealer.Count && dead.IsBase(Faction.Crew))
             WillBeRevealers.Add(dead.PlayerId);
     }
 
@@ -310,11 +307,11 @@ public static class SetPostmortals
 
     private static void TryAddPhantom(PlayerControl dead)
     {
-        if (!dead.HasDied())
-            return;
-
-        if (dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < CustomGameOptions.PhantomCount && dead.IsBase(Faction.Neutral) && !NeutralHasUnfinishedBusiness(dead))
+        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < NeutralProselyteRoles.Phantom.Count && dead.IsBase(Faction.Neutral) &&
+            !NeutralHasUnfinishedBusiness(dead))
+        {
             WillBePhantoms.Add(dead.PlayerId);
+        }
     }
 
     public static readonly List<byte> WillBeBanshees = [];
@@ -362,10 +359,7 @@ public static class SetPostmortals
 
     private static void TryAddBanshee(PlayerControl dead)
     {
-        if (!dead.HasDied())
-            return;
-
-        if (dead && !WillBeBanshees.Contains(dead.PlayerId) && WillBeBanshees.Count < CustomGameOptions.BansheeCount && dead.IsBase(Faction.Syndicate))
+        if (dead.HasDied() && dead && !WillBeBanshees.Contains(dead.PlayerId) && WillBeBanshees.Count < SyndicateUtilityRoles.Banshee.Count && dead.IsBase(Faction.Syndicate))
             WillBeBanshees.Add(dead.PlayerId);
     }
 
@@ -414,10 +408,7 @@ public static class SetPostmortals
 
     private static void TryAddGhoul(PlayerControl dead)
     {
-        if (!dead.HasDied())
-            return;
-
-        if (dead && !WillBeGhouls.Contains(dead.PlayerId) && WillBeGhouls.Count < CustomGameOptions.GhoulCount && dead.IsBase(Faction.Intruder))
+        if (dead.HasDied() && dead && !WillBeGhouls.Contains(dead.PlayerId) && WillBeGhouls.Count < IntruderUtilityRoles.Ghoul.Count && dead.IsBase(Faction.Intruder))
             WillBeGhouls.Add(dead.PlayerId);
     }
 
