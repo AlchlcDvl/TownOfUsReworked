@@ -520,7 +520,7 @@ public static class CrewUtilityRoles
     }
 
     [LayersOption(MultiMenu2.Layer, "#D3D3D3FF", LayerEnum.Revealer)]
-    public static RoleOptionData RevealerPriv { get; set; }
+    private static RoleOptionData RevealerPriv { get; set; }
     public static RoleOptionData Revealer
     {
         get
@@ -640,7 +640,7 @@ public static class NeutralNeophyteRoles
 public static class NeutralProselyteRoles
 {
     [LayersOption(MultiMenu2.Layer, "#662962FF", LayerEnum.Phantom)]
-    public static RoleOptionData PhantomPriv { get; set; }
+    private static RoleOptionData PhantomPriv { get; set; }
     public static RoleOptionData Phantom
     {
         get
@@ -721,7 +721,7 @@ public static class IntruderSupportRoles
 public static class IntruderUtilityRoles
 {
     [LayersOption(MultiMenu2.Layer, "#F1C40FFF", LayerEnum.Ghoul)]
-    public static RoleOptionData GhoulPriv { get; set; }
+    private static RoleOptionData GhoulPriv { get; set; }
     public static RoleOptionData Ghoul
     {
         get
@@ -832,7 +832,7 @@ public static class SyndicateUtilityRoles
     }
 
     [LayersOption(MultiMenu2.Layer, "#E67E22FF", LayerEnum.Banshee)]
-    public static RoleOptionData BansheePriv { get; set; }
+    private static RoleOptionData BansheePriv { get; set; }
     public static RoleOptionData Banshee
     {
         get

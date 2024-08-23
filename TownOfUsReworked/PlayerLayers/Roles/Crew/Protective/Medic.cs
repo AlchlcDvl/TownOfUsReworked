@@ -20,8 +20,8 @@ public class Medic : Crew
     public override string Name => "Medic";
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
-    public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (CustomGameOptions.NotificationShield is ShieldOptions.Everyone or
-        ShieldOptions.Medic or ShieldOptions.SelfAndMedic ? "\n- If your target is attacked, you will be notified of it" : "");
+    public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification is ShieldOptions.Everyone or ShieldOptions.Medic or
+        ShieldOptions.SelfAndMedic ? "\n- If your target is attacked, you will be notified of it" : "");
 
     public override void Init()
     {

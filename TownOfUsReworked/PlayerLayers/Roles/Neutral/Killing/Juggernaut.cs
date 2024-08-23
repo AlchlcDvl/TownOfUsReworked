@@ -29,8 +29,8 @@ public class Juggernaut : Neutral
         Objectives = () => "- Assault anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         JuggKills = 0;
-        AssaultButton = CreateButton(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(CustomGameOptions.AssaultCd),
-            (PlayerBodyExclusion)Exception, "ASSAULT", (DifferenceFunc)Difference);
+        AssaultButton = CreateButton(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
+            (PlayerBodyExclusion)Exception, "ASSAULT");
     }
 
     public void Assault()
@@ -49,5 +49,5 @@ public class Juggernaut : Neutral
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 
-    public float Difference() => -(CustomGameOptions.AssaultBonus * JuggKills);
+    public float Difference() => -(AssaultBonus * JuggKills);
 }

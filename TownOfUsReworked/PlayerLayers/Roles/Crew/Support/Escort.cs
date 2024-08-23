@@ -26,7 +26,7 @@ public class Escort : Crew
         RoleBlockImmune = true;
         BlockTarget = null;
         BlockButton = CreateButton(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Roleblock, (EffectVoid)Block,
-            new Cooldown(CustomGameOptions.EscortCd), new Duration(CustomGameOptions.EscortDur), (EffectEndVoid)UnBlock, (EndFunc)EndEffect);
+            new Cooldown(EscortCd), new Duration(EscortDur), (EffectEndVoid)UnBlock, (EndFunc)EndEffect);
     }
 
     public void UnBlock()

@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Objects;
 
-public class Bug(PlayerControl owner) : Range(owner, CustomColorManager.Operative, CustomGameOptions.BugRange, "Bug")
+public class Bug(PlayerControl owner) : Range(owner, CustomColorManager.Operative, Operative.BugRange, "Bug")
 {
     private Dictionary<byte, float> Players { get; } = [];
     private Dictionary<byte, LayerEnum> Results { get; } = [];
@@ -30,7 +30,7 @@ public class Bug(PlayerControl owner) : Range(owner, CustomColorManager.Operativ
 
             Players[player.PlayerId] += Time.deltaTime;
 
-            if (Players[player.PlayerId] >= CustomGameOptions.MinAmountOfTimeInBug && player != Owner && !Results.ContainsKey(player.PlayerId))
+            if (Players[player.PlayerId] >= Operative.MinAmountOfTimeInBug && player != Owner && !Results.ContainsKey(player.PlayerId))
             {
                 var role = player.GetRole();
                 var type = role.Type;
@@ -52,7 +52,7 @@ public class Bug(PlayerControl owner) : Range(owner, CustomColorManager.Operativ
         results.ForEach(role => result += $"{PlayerLayer.GetLayers(role)[0]}, ");
         result = result.Remove(result.Length - 2);
 
-        if (CustomGameOptions.PreciseOperativeInfo)
+        if (Operative.PreciseOperativeInfo)
             result = $"Bug {Number}: {result}";
 
         Results.Clear();

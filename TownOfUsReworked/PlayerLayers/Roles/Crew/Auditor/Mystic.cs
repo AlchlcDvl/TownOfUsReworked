@@ -21,7 +21,7 @@ public class Mystic : Crew
         BaseStart();
         Alignment = Alignment.CrewAudit;
         RevealButton = CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (PlayerBodyExclusion)Exception,
-            new Cooldown(CustomGameOptions.MysticRevealCd));
+            new Cooldown(MysticRevealCd));
     }
 
     public void TurnSeer() => new Seer().Start<Role>(Player).RoleUpdate(this);

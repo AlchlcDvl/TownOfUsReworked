@@ -25,8 +25,8 @@ public class Amnesiac : Neutral
     public override string Name => "Amnesiac";
     public override LayerEnum Type => LayerEnum.Amnesiac;
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
-    public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? ("\n- When someone dies, you" +
-        " get an arrow pointing to their body") : "") + "\n- If there are less than 6 players alive, you will become a <color=#80FF00FF>Thief</color>";
+    public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"
+        + " to their body") : "") + "\n- If there are less than 6 players alive, you will become a <color=#80FF00FF>Thief</color>";
 
     public override void Init()
     {
@@ -187,7 +187,7 @@ public class Amnesiac : Neutral
             ((Jackal)role).Recruit3 = null;
         }
 
-        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && (CustomGameOptions.SnitchSeesNeutrals || CustomGameOptions.RevealerRevealsNeutrals)))
+        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && (CustomGameOptions.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))
         {
             foreach (var snitch in GetLayers<Snitch>())
             {
@@ -212,9 +212,9 @@ public class Amnesiac : Neutral
     {
         base.UpdateHud(__instance);
 
-        if (CustomGameOptions.RememberArrows && !Dead)
+        if (RememberArrows && !Dead)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(CustomGameOptions.RememberArrowDelay) < DateTime.UtcNow));
+            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(RememberArrowDelay) < DateTime.UtcNow));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {
@@ -233,7 +233,7 @@ public class Amnesiac : Neutral
         else if (BodyArrows.Count > 0 || CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 4)
             OnLobby();
 
-        if (CustomGameOptions.AmneToThief && CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 4 && !Dead)
+        if (AmneToThief && CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 4 && !Dead)
         {
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnThief();

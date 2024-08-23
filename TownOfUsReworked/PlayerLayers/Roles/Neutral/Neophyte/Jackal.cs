@@ -39,9 +39,9 @@ public class Jackal : Neutral
         Alignment = Alignment.NeutralNeo;
         Recruited = [ Player.PlayerId ];
         RecruitButton = CreateButton(this, new SpriteName("Recruit"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Recruit, (PlayerBodyExclusion)Exception, "RECRUIT",
-            (UsableFunc)Usable1);
+            (UsableFunc)Usable1, new Cooldown(RecruitCd));
         KillButton = CreateButton(this, new SpriteName("JackalKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, (PlayerBodyExclusion)Exception, "KILL",
-            (UsableFunc)Usable2);
+            (UsableFunc)Usable2, new Cooldown(RecruitCd));
         Data.Role.IntroSound = GetAudio("JackalIntro");
     }
 

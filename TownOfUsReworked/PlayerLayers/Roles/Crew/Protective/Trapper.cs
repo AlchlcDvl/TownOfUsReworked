@@ -27,8 +27,8 @@ public class Trapper : Crew
     public override string Name => "Trapper";
     public override LayerEnum Type => LayerEnum.Trapper;
     public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <color=#FF0000FF>Evildoers</color></size>";
-    public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles ineractors on " +
-        "them\nor protect from an attack once and kill the attacker";
+    public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
+        "them\nor protect from an attack once and attack the attacker in return";
 
     public override void Init()
     {
@@ -36,10 +36,10 @@ public class Trapper : Crew
         Alignment = Alignment.IntruderSupport;
         Trapped = [];
         TriggeredRoles = [];
-        BuildButton = CreateButton(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling,
-            new Cooldown(CustomGameOptions.BuildCd), new Duration(CustomGameOptions.BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), (UsableFunc)Usable);
-        TrapButton = CreateButton(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(CustomGameOptions.TrapCd),
-            (PlayerBodyExclusion)Exception, CustomGameOptions.MaxTraps);
+        BuildButton = CreateButton(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling, new Cooldown(BuildCd),
+            new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), (UsableFunc)Usable);
+        TrapButton = CreateButton(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(TrapCd), MaxTraps,
+            (PlayerBodyExclusion)Exception);
         TrapsMade = 0;
         TrapButton.Uses = 0;
     }
@@ -72,7 +72,7 @@ public class Trapper : Crew
 
     private bool Exception(PlayerControl player) => Trapped.Contains(player.PlayerId);
 
-    public bool Usable() => TrapsMade < CustomGameOptions.MaxTraps;
+    public bool Usable() => TrapsMade < MaxTraps;
 
     public void TriggerTrap(PlayerControl trapped, PlayerControl trigger, bool isAttack)
     {

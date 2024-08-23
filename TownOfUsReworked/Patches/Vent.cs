@@ -43,22 +43,22 @@ public static class EnterVentPatch
         var player = CustomPlayer.Local;
         var flag = !player.IsMoving();
 
-        if (player.Is(LayerEnum.Jester) && CustomGameOptions.JesterVent)
-            flag = CustomGameOptions.JestVentSwitch;
-        else if (player.Is(LayerEnum.Executioner) && CustomGameOptions.ExeVent)
-            flag = CustomGameOptions.ExeVentSwitch;
-        else if (player.Is(LayerEnum.Survivor) && CustomGameOptions.SurvVent)
-            flag = CustomGameOptions.SurvVentSwitch;
-        else if (player.Is(LayerEnum.Amnesiac) && CustomGameOptions.AmneVent)
-            flag = CustomGameOptions.AmneVentSwitch;
-        else if (player.Is(LayerEnum.GuardianAngel) && CustomGameOptions.GAVent)
-            flag = CustomGameOptions.GAVentSwitch;
-        else if (player.Is(LayerEnum.Guesser) && CustomGameOptions.GuessVent)
-            flag = CustomGameOptions.GuessVentSwitch;
-        else if (player.Is(LayerEnum.Troll) && CustomGameOptions.TrollVent)
-            flag = CustomGameOptions.TrollVentSwitch;
-        else if (player.Is(LayerEnum.Actor) && CustomGameOptions.ActorVent)
-            flag = CustomGameOptions.ActVentSwitch;
+        if (player.Is(LayerEnum.Jester) && Jester.JesterVent)
+            flag = Jester.JestSwitchVent;
+        else if (player.Is(LayerEnum.Executioner) && Executioner.ExeVent)
+            flag = Executioner.ExeSwitchVent;
+        else if (player.Is(LayerEnum.Survivor) && Survivor.SurvVent)
+            flag = Survivor.SurvSwitchVent;
+        else if (player.Is(LayerEnum.Amnesiac) && Amnesiac.AmneVent)
+            flag = Amnesiac.AmneSwitchVent;
+        else if (player.Is(LayerEnum.GuardianAngel) && GuardianAngel.GAVent)
+            flag = GuardianAngel.GASwitchVent;
+        else if (player.Is(LayerEnum.Guesser) && Guesser.GuessVent)
+            flag = Guesser.GuessSwitchVent;
+        else if (player.Is(LayerEnum.Troll) && Troll.TrollVent)
+            flag = Troll.TrollSwitchVent;
+        else if (player.Is(LayerEnum.Actor) && Actor.ActorVent)
+            flag = Actor.ActSwitchVent;
         else if (player.IsPostmortal())
             flag = false;
 
@@ -138,7 +138,7 @@ public static class UseVent
         if (__instance.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
         {
             RpcMurderPlayer(CustomPlayer.Local);
-            Role.BastionBomb(__instance, CustomGameOptions.BombRemovedOnKill);
+            Role.BastionBomb(__instance, Bastion.BombRemovedOnKill);
             CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, __instance);
             return false;
         }
@@ -158,7 +158,7 @@ public static class MoveToVentPatch
         if (otherVent.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
         {
             RpcMurderPlayer(CustomPlayer.Local);
-            Role.BastionBomb(otherVent, CustomGameOptions.BombRemovedOnKill);
+            Role.BastionBomb(otherVent, Bastion.BombRemovedOnKill);
             CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, otherVent);
             return false;
         }
@@ -206,7 +206,7 @@ public static class HideVentAnims1
 {
     public static bool Prefix(Vent __instance, ref PlayerControl pc)
     {
-        if (!__instance.ExitVentAnim || !CustomGameOptions.HideVentAnims)
+        if (!__instance.ExitVentAnim || !GameModifiers.HideVentAnims)
             return true;
 
         var truePosition = CustomPlayer.Local.GetTruePosition();
@@ -221,7 +221,7 @@ public static class HideVentAnims2
 {
     public static bool Prefix(Vent __instance, ref PlayerControl pc)
     {
-        if (!__instance.ExitVentAnim || !CustomGameOptions.HideVentAnims)
+        if (!__instance.ExitVentAnim || !GameModifiers.HideVentAnims)
             return true;
 
         var truePosition = CustomPlayer.Local.GetTruePosition();

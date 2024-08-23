@@ -6,10 +6,10 @@ public class Seer : Crew
     [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float SeerCd { get; set; } = 25f;
 
-    public bool ChangedDead => !AllRoles.Any(x => x.Player && !x.Player.HasDied() && (x.RoleHistory.Any() || x.Is(LayerEnum.Amnesiac) || x.Is(LayerEnum.Thief) || x.Is(LayerEnum.Actor) ||
-        x.Player.Is(LayerEnum.Traitor) || x.Is(LayerEnum.VampireHunter) || x.Is(LayerEnum.Godfather) || x.Is(LayerEnum.Mafioso) || x.Is(LayerEnum.Shifter) || x.Is(LayerEnum.Guesser) ||
-        x.Is(LayerEnum.Rebel) || x.Is(LayerEnum.Mystic) || x.Is(LayerEnum.Sidekick) || x.Is(LayerEnum.GuardianAngel) || x.Is(LayerEnum.Executioner) || x.Player.Is(LayerEnum.Fanatic) ||
-        x.Is(LayerEnum.BountyHunter) || x.Is(LayerEnum.PromotedGodfather) || x.Is(LayerEnum.PromotedRebel)));
+    public static bool ChangedDead => !AllRoles.Any(x => !x.Player.HasDied() && (x.RoleHistory.Any() || x.Type is LayerEnum.Amnesiac or LayerEnum.Thief or LayerEnum.Actor or
+        LayerEnum.VampireHunter or LayerEnum.Godfather or LayerEnum.Mafioso or LayerEnum.Shifter or LayerEnum.Guesser or LayerEnum.Rebel or LayerEnum.Mystic or LayerEnum.Sidekick or
+        LayerEnum.GuardianAngel or LayerEnum.Executioner or LayerEnum.BountyHunter or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel || x.LinkedObjectifier is LayerEnum.Traitor or
+        LayerEnum.Fanatic));
     public CustomButton SeerButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Seer : CustomColorManager.Crew;
@@ -23,7 +23,7 @@ public class Seer : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewInvest;
-        SeerButton = CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(CustomGameOptions.SeerCd));
+        SeerButton = CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(SeerCd));
         Data.Role.IntroSound = GetAudio("SeerIntro");
     }
 

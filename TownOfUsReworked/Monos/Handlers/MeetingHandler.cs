@@ -293,7 +293,7 @@ public class MeetingHandler : MonoBehaviour
 
             if (whisperer.Persuaded.Contains(player.TargetPlayerId))
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -312,7 +312,7 @@ public class MeetingHandler : MonoBehaviour
 
             if (dracula.Converted.Contains(player.TargetPlayerId))
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -329,7 +329,7 @@ public class MeetingHandler : MonoBehaviour
 
             if (jackal.Recruited.Contains(player.TargetPlayerId))
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -346,7 +346,7 @@ public class MeetingHandler : MonoBehaviour
 
             if (necromancer.Resurrected.Contains(player.TargetPlayerId))
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -375,7 +375,7 @@ public class MeetingHandler : MonoBehaviour
 
             if (dracula.Converted.Contains(player.TargetPlayerId) && !dracula.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -407,7 +407,7 @@ public class MeetingHandler : MonoBehaviour
 
             if (jackal.Recruited.Contains(player.TargetPlayerId) && !jackal.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -439,7 +439,7 @@ public class MeetingHandler : MonoBehaviour
 
             if (necromancer.Resurrected.Contains(player.TargetPlayerId) && !necromancer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -471,7 +471,7 @@ public class MeetingHandler : MonoBehaviour
 
             if (whisperer.Persuaded.Contains(player.TargetPlayerId) && !whisperer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -688,7 +688,7 @@ public class MeetingHandler : MonoBehaviour
         {
             var role = info[0] as Role;
 
-            if (CustomGameOptions.FactionSeeRoles && !revealed)
+            if (GameModifiers.FactionSeeRoles && !revealed)
             {
                 color = role.Color;
                 name += $"\n{role}";
@@ -731,18 +731,18 @@ public class MeetingHandler : MonoBehaviour
         {
             var role = info[0] as Role;
 
-            if (CustomGameOptions.RevealerRevealsRoles)
+            if (Revealer.RevealerRevealsRoles)
             {
-                if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) || (player.Is(Faction.Crew) &&
-                    CustomGameOptions.RevealerRevealsCrew))
+                if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && Revealer.RevealerRevealsNeutrals) || (player.Is(Faction.Crew) &&
+                    Revealer.RevealerRevealsCrew))
                 {
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
                 }
             }
-            else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) || (player.Is(Faction.Crew) &&
-                CustomGameOptions.RevealerRevealsCrew))
+            else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && Revealer.RevealerRevealsNeutrals) || (player.Is(Faction.Crew) &&
+                Revealer.RevealerRevealsCrew))
             {
                 if (!(player.Is(LayerEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(LayerEnum.Fanatic) &&
                     CustomGameOptions.RevealerRevealsFanatic))
@@ -762,19 +762,19 @@ public class MeetingHandler : MonoBehaviour
 
         if (player.TargetPlayerId == CustomPlayer.Local.PlayerId && !player.AmDead)
         {
-            if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 0 or 2)
+            if (player.IsShielded() && (int)Medic.ShowShielded is 0 or 2)
                 name += " <color=#006600FF>✚</color>";
 
             if (player.IsBHTarget())
                 name += " <color=#B51E39FF>Θ</color>";
 
-            if (player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
+            if (player.IsExeTarget() && Executioner.ExeTargetKnows)
                 name += " <color=#CCCCCCFF>§</color>";
 
-            if (player.IsGATarget() && CustomGameOptions.GATargetKnows)
+            if (player.IsGATarget() && GuardianAngel.GATargetKnows)
                 name += " <color=#FFFFFFFF>★</color>";
 
-            if (player.IsGuessTarget() && CustomGameOptions.GuesserTargetKnows)
+            if (player.IsGuessTarget() && Guesser.GuessTargetKnows)
                 name += " <color=#EEE5BEFF>π</color>";
 
             if (player.IsBitten())
@@ -792,7 +792,7 @@ public class MeetingHandler : MonoBehaviour
 
         if (DeadSeeEverything)
         {
-            if (player.IsShielded() && CustomGameOptions.ShowShielded != ShieldOptions.Everyone)
+            if (player.IsShielded() && Medic.ShowShielded != ShieldOptions.Everyone)
                 name += " <color=#006600FF>✚</color>";
 
             if (player.IsTrapped())
@@ -838,7 +838,7 @@ public class MeetingHandler : MonoBehaviour
                 name += " <<color=#642DEAFF>λ</color>";
         }
 
-        if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 3 && !DeadSeeEverything)
+        if (player.IsShielded() && (int)Medic.ShowShielded is 3 && !DeadSeeEverything)
             name += " <color=#006600FF>✚</color>";
 
         if ((DeadSeeEverything || CustomPlayer.Local.Is(LayerEnum.Pestilence)) && Pestilence.Infected.TryGetValue(player.TargetPlayerId, out var count))

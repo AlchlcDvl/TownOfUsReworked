@@ -38,7 +38,7 @@ public static class LayerExtentions
 
     public static bool Is(this PlayerVoteArea player, Faction faction) => PlayerByVoteArea(player).Is(faction);
 
-    public static bool IsAssassin(this PlayerControl player) => player.GetAbility() is NeutralAssassin or IntruderAssassin or SyndicateAssassin or IntruderAssassin;
+    public static bool IsAssassin(this PlayerControl player) => player.GetAbility() is Bullseye or Hitman or Sniper or Slayer;
 
     public static Faction GetFaction(this PlayerControl player)
     {

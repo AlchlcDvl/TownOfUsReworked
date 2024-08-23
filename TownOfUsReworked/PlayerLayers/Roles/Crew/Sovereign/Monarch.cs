@@ -31,8 +31,8 @@ public class Monarch : Crew
     public override string Name => "Monarch";
     public override LayerEnum Type => LayerEnum.Monarch;
     public override Func<string> StartText => () => "Knight Those Who You Trust";
-    public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {CustomGameOptions.KnightVoteCount + 1} times\n- As long as "
-        + "a knight is alive, you cannot be killed";
+    public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"
+        + " you cannot be killed";
     public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;
 
     public override void Init()
@@ -41,8 +41,8 @@ public class Monarch : Crew
         Alignment = Alignment.CrewSov;
         Knighted = [];
         ToBeKnighted = [];
-        KnightingButton = CreateButton(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Knight, new Cooldown(CustomGameOptions.KnightingCd),
-            (PlayerBodyExclusion)Exception, CustomGameOptions.KnightCount, (UsableFunc)Usable);
+        KnightingButton = CreateButton(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Knight, new Cooldown(KnightingCd), KnightCount,
+            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 
     public void Knight()

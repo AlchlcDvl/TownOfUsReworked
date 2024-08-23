@@ -25,7 +25,7 @@ public class Sheriff : Crew
         BaseStart();
         Alignment = Alignment.CrewKill;
         InterrogateButton = CreateButton(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Interrogate,
-            new Cooldown(CustomGameOptions.InterrogateCd), (PlayerBodyExclusion)Exception);
+            new Cooldown(InterrogateCd), (PlayerBodyExclusion)Exception);
     }
 
     public void Interrogate()
@@ -39,6 +39,6 @@ public class Sheriff : Crew
     }
 
     public bool Exception(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
-        CustomGameOptions.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) || (Player.IsOtherRival(player) && CustomGameOptions.RivalsRoles) ||
+        GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) || (Player.IsOtherRival(player) && CustomGameOptions.RivalsRoles) ||
         (player.Is(LayerEnum.Mafia) && Player.Is(LayerEnum.Mafia) && CustomGameOptions.MafiaRoles) || (Player.IsOtherLink(player) && CustomGameOptions.LinkedRoles);
 }

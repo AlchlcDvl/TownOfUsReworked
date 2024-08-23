@@ -27,8 +27,8 @@ public class Bastion : Crew
         BaseStart();
         Alignment = Alignment.CrewKill;
         BombedIDs = [];
-        BombButton = CreateButton(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClick)Bomb,
-            new Cooldown(CustomGameOptions.BastionCd), (VentExclusion)Exception, CustomGameOptions.MaxBombs);
+        BombButton = CreateButton(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClick)Bomb, new Cooldown(BastionCd),
+            MaxBombs, (VentExclusion)Exception);
     }
 
     public static string SpriteName => MapPatches.CurrentMap switch

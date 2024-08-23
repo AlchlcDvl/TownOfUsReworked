@@ -27,7 +27,7 @@ public class SoundLoader : AssetLoader<Asset>
         for (var i = 0; i < sounds.Count; i++)
         {
             var sound = sounds[i];
-           AddAsset(sound.ID, CreateDiskAudio(sound.ID, File.Open(Path.Combine(DirectoryInfo, $"{sound.ID}.wav"), FileMode.Open)));
+            AddAsset(sound.ID, CreateDiskAudio(sound.ID, File.Open(Path.Combine(DirectoryInfo, $"{sound.ID}.wav"), FileMode.Open)));
             time += Time.deltaTime;
 
             if (time > 1f)

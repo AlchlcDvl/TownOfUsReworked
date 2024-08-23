@@ -28,7 +28,7 @@ public class Detective : Crew
     public override LayerEnum Type => LayerEnum.Detective;
     public override Func<string> StartText => () => "Examine Players For <color=#AA0000FF>Blood</color>";
     public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
-        $"{CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
+        $"{RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
 
     public override void Init()
     {
@@ -36,7 +36,7 @@ public class Detective : Crew
         AllPrints = [];
         Investigated = [];
         Alignment = Alignment.CrewInvest;
-        ExamineButton = CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(CustomGameOptions.ExamineCd));
+        ExamineButton = CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
     }
 
     public override void OnLobby()
@@ -66,7 +66,7 @@ public class Detective : Crew
         if (cooldown != CooldownType.Fail)
         {
             Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
-                CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
+                RecentKill) ? UColor.red : UColor.green);
             Investigated.Add(ExamineButton.TargetPlayer.PlayerId);
         }
 
@@ -81,9 +81,9 @@ public class Detective : Crew
         {
             _time += Time.deltaTime;
 
-            if (_time >= CustomGameOptions.FootprintInterval)
+            if (_time >= FootprintInterval)
             {
-                _time -= CustomGameOptions.FootprintInterval;
+                _time -= FootprintInterval;
 
                 foreach (var id in Investigated)
                 {

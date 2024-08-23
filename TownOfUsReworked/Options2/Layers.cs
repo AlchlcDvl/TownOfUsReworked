@@ -78,13 +78,13 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
         view.settingText.text = $"x{tuple.Count}";
     }
 
-    public int GetChance() => IsClassic ? Get().Chance : 0;
+    public int GetChance() => IsClassic || IsCustom || IsKilling ? Get().Chance : 0;
 
     public int GetCount() => IsCustom ? Get().Count : 1;
 
     public bool GetUnique() => (IsAA || IsRoleList) && Get().Unique;
 
-    public bool GetActive() => (IsAA || IsKilling) && Get().Unique;
+    public bool GetActive() => IsAA && Get().Active;
 
     public RoleOptionData Get() => (RoleOptionData)Value;
 

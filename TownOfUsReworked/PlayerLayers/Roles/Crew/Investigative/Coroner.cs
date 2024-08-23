@@ -41,9 +41,8 @@ public class Coroner : Crew
         BodyArrows = [];
         Reported = [];
         ReferenceBodies = [];
-        AutopsyButton = CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, new Cooldown(CustomGameOptions.AutopsyCd));
-        CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(CustomGameOptions.CompareCd),
-            (UsableFunc)Usable);
+        AutopsyButton = CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, new Cooldown(AutopsyCd));
+        CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -67,7 +66,7 @@ public class Coroner : Crew
 
         if (!Dead)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDur)));
+            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CoronerArrowDur)));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {

@@ -15,7 +15,7 @@ public class Werewolf : Neutral
     [StringOption(MultiMenu2.LayerSubOptions)]
     public static WerewolfVentOptions WerewolfVent { get; set; } = WerewolfVentOptions.Always;
 
-    public bool CanMaul => Rounds is not (0 or 2) || CustomGameOptions.CanStillAttack;
+    public bool CanMaul => Rounds is not (0 or 2) || CanStillAttack;
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 
@@ -23,7 +23,7 @@ public class Werewolf : Neutral
     public override string Name => "Werewolf";
     public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText => () => "AWOOOOOOOOOO";
-    public override Func<string> Description => () => $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
+    public override Func<string> Description => () => $"- You kill everyone within {MaulRadius}m";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
 
@@ -32,14 +32,14 @@ public class Werewolf : Neutral
         BaseStart();
         Objectives = () => "- Maul anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        MaulButton = CreateButton(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitMaul, new Cooldown(CustomGameOptions.MaulCd), "MAUL",
-            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
+        MaulButton = CreateButton(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitMaul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
+            (PlayerBodyExclusion)Exception);
         Data.Role.IntroSound = GetAudio("WerewolfIntro");
     }
 
     public void Maul()
     {
-        foreach (var player in GetClosestPlayers(Player.transform.position, CustomGameOptions.MaulRadius))
+        foreach (var player in GetClosestPlayers(Player.transform.position, MaulRadius))
         {
             Spread(Player, player);
 

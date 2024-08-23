@@ -55,12 +55,11 @@ public class BountyHunter : Neutral
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;
-        GuessButton = CreateButton(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Guess, new Cooldown(CustomGameOptions.GuessCd), (UsableFunc)Usable1,
-            CustomGameOptions.BountyHunterGuesses, "GUESS");
-        HuntButton = CreateButton(this, new SpriteName("Hunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(CustomGameOptions.GuessCd), "HUNT",
-            (UsableFunc)Usable2);
+        GuessButton = CreateButton(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
+            BountyHunterGuesses);
+        HuntButton = CreateButton(this, new SpriteName("Hunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GuessCd), "HUNT", (UsableFunc)Usable2);
 
-        if (CustomGameOptions.BountyHunterCanPickTargets)
+        if (BountyHunterCanPickTargets)
         {
             RequestButton = CreateButton(this, new SpriteName("Request"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
                 (UsableFunc)Usable3);
@@ -186,12 +185,12 @@ public class BountyHunter : Neutral
 
         if (Failed && !Dead)
         {
-            if (CustomGameOptions.BHToTroll)
+            if (BHToTroll)
             {
                 CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
                 TurnTroll();
             }
-            else if (CustomGameOptions.BountyHunterCanPickTargets)
+            else if (BountyHunterCanPickTargets)
             {
                 TargetPlayer = null;
                 Rounds = 0;

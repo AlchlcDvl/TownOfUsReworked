@@ -32,8 +32,8 @@ public class Cannibal : Neutral
     public override string Name => "Cannibal";
     public override LayerEnum Type => LayerEnum.Cannibal;
     public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
-    public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
-        + "an arrow pointing to their body" : "");
+    public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their "
+        + "body" : "");
 
     public override void Init()
     {
@@ -41,8 +41,8 @@ public class Cannibal : Neutral
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = [];
-        EatNeed = Math.Min(CustomGameOptions.BodiesNeeded, CustomPlayer.AllPlayers.Count / 2);
-        EatButton = CreateButton(this, new SpriteName("Eat"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Eat, new Cooldown(CustomGameOptions.EatCd), "EAT", (UsableFunc)Usable);
+        EatNeed = Math.Min(BodiesNeeded, CustomPlayer.AllPlayers.Count / 2);
+        EatButton = CreateButton(this, new SpriteName("Eat"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -64,9 +64,9 @@ public class Cannibal : Neutral
     {
         base.UpdateHud(__instance);
 
-        if (CustomGameOptions.EatArrows && !Dead)
+        if (EatArrows && !Dead)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(CustomGameOptions.EatArrowDelay) < DateTime.UtcNow));
+            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(EatArrowDelay) < DateTime.UtcNow));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {

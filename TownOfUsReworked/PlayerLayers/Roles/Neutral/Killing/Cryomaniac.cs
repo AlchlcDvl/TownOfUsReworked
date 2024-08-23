@@ -24,7 +24,7 @@ public class Cryomaniac : Neutral
     public List<byte> Doused { get; set; }
     public bool FreezeUsed { get; set; }
     public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
-        x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CustomGameOptions.CryoLastKillerBoost;
+        x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CryoLastKillerBoost;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac : CustomColorManager.Neutral;
     public override string Name => "Cryomaniac";
@@ -41,14 +41,14 @@ public class Cryomaniac : Neutral
         Objectives = () => "- Freeze anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         Doused = [];
-        DouseButton = CreateButton(this, new SpriteName("CryoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(CustomGameOptions.CryoDouseCd), "DOUSE",
+        DouseButton = CreateButton(this, new SpriteName("CryoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(CryoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
         FreezeButton = CreateButton(this, new SpriteName("Freeze"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)FreezeUnFreeze, (LabelFunc)Label, (UsableFunc)Doused.Any);
 
-        if (CustomGameOptions.CryoLastKillerBoost)
+        if (CryoLastKillerBoost)
         {
-            KillButton = CreateButton(this, new SpriteName("CryoKill"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Kill, new Cooldown(CustomGameOptions.CryoKillCd), "KILL",
-                (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
+            KillButton = CreateButton(this, new SpriteName("CryoKill"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Kill, new Cooldown(CryoKillCd), "KILL", (UsableFunc)Usable,
+                (PlayerBodyExclusion)Exception);
         }
 
     }
@@ -72,7 +72,7 @@ public class Cryomaniac : Neutral
         {
             foreach (var cryo in GetLayers<Cryomaniac>())
             {
-                if (cryo != this && !CustomGameOptions.CryoFreezeAll)
+                if (cryo != this && !CryoFreezeAll)
                     continue;
 
                 foreach (var player in cryo.Doused)

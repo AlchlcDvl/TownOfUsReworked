@@ -44,8 +44,8 @@ public class Operative : Crew
         Alignment = Alignment.CrewInvest;
         BuggedPlayers = [];
         Bugs = [];
-        BugButton = CreateButton(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(CustomGameOptions.BugCd),
-            CustomGameOptions.MaxBugs, (ConditionFunc)Condition);
+        BugButton = CreateButton(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(BugCd),  MaxBugs,
+            (ConditionFunc)Condition);
     }
 
     public override void OnLobby()
@@ -66,7 +66,7 @@ public class Operative : Crew
 
         if (BuggedPlayers.Count == 0)
             message = "No one triggered your bugs.";
-        else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
+        else if (BuggedPlayers.Count < MinAmountOfPlayersInBug)
             message = "Not enough players triggered your bugs.";
         else if (BuggedPlayers.Count == 1)
         {
@@ -75,7 +75,7 @@ public class Operative : Crew
                 LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
             message = $"A{a_an} {result} triggered your bug.";
         }
-        else if (CustomGameOptions.PreciseOperativeInfo)
+        else if (PreciseOperativeInfo)
         {
             message = "Your bugs returned the following results:";
             Bugs.ForEach(bug => message += $"\n{bug.GetResults()}");

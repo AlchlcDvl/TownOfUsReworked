@@ -46,7 +46,7 @@ public class Retributionist : Crew
         Transport2.SetActive(true);
         TransportMenu1 = new(Player, Click1, TransException1);
         TransportMenu2 = new(Player, Click2, TransException2);
-        RetMenu = new(Player, "RetActive", "RetDisabled", CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
+        RetMenu = new(Player, "RetActive", "RetDisabled", ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
         TrapsMade = 0;
         TrapButton.Uses = 0;
     }
@@ -164,7 +164,7 @@ public class Retributionist : Crew
             OnLobby();
         else if (IsCor)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDur)));
+            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(Coroner.CoronerArrowDur)));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {
@@ -186,9 +186,9 @@ public class Retributionist : Crew
             {
                 if (MediateArrows.ContainsKey(player.PlayerId))
                 {
-                    MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
+                    MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, Medium.ShowMediatePlayer));
 
-                    if (!CustomGameOptions.ShowMediatePlayer)
+                    if (!Medium.ShowMediatePlayer)
                     {
                         player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
                         PlayerMaterial.SetColors(UColor.grey, player.MyRend());
@@ -213,9 +213,9 @@ public class Retributionist : Crew
         {
             _time += Time.deltaTime;
 
-            if (_time >= CustomGameOptions.FootprintInterval)
+            if (_time >= Detective.FootprintInterval)
             {
-                _time -= CustomGameOptions.FootprintInterval;
+                _time -= Detective.FootprintInterval;
 
                 foreach (var id in Investigated)
                 {
@@ -282,7 +282,7 @@ public class Retributionist : Crew
                 var playerid2 = reader.ReadByte();
                 MediatedPlayers.Add(playerid2);
 
-                if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && CustomGameOptions.ShowMediumToDead == ShowMediumToDead.AllDead))
+                if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && Medium.ShowMediumToDead == ShowMediumToDead.AllDead))
                     LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
 
                 break;
@@ -351,7 +351,7 @@ public class Retributionist : Crew
 
             if (BuggedPlayers.Count == 0)
                 message = "No one triggered your bugs.";
-            else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
+            else if (BuggedPlayers.Count < Operative.MinAmountOfPlayersInBug)
                 message = "Not enough players triggered your bugs.";
             else if (BuggedPlayers.Count == 1)
             {
@@ -360,7 +360,7 @@ public class Retributionist : Crew
                     LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
                 message = $"A{a_an} {result} triggered your bug.";
             }
-            else if (CustomGameOptions.PreciseOperativeInfo)
+            else if (Operative.PreciseOperativeInfo)
             {
                 message = "Your bugs returned the following results:";
                 Bugs.ForEach(bug => message += $"\n{bug.GetResults()}");
@@ -440,71 +440,71 @@ public class Retributionist : Crew
         if (IsMys)
         {
             RevealButton ??= CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (UsableFunc)MysUsable,
-                (PlayerBodyExclusion)MysticException, new Cooldown(CustomGameOptions.MysticRevealCd));
+                (PlayerBodyExclusion)MysticException, new Cooldown(Mystic.MysticRevealCd));
         }
         else if (IsVH)
         {
-            StakeButton ??= CreateButton(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stake, new Cooldown(CustomGameOptions.StakeCd),
+            StakeButton ??= CreateButton(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stake, new Cooldown(VampireHunter.StakeCd),
                 (UsableFunc)VHUsable);
         }
         else if (IsCor)
         {
             AutopsyButton ??= CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, (UsableFunc)CorUsable1,
-                new Cooldown(CustomGameOptions.AutopsyCd));
-            CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(CustomGameOptions.CompareCd),
+                new Cooldown(Coroner.AutopsyCd));
+            CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(Coroner.CompareCd),
                 (UsableFunc)CorUsable2);
         }
         else if (IsDet)
         {
             ExamineButton ??= CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, (UsableFunc)DetUsable,
-                new Cooldown(CustomGameOptions.ExamineCd));
+                new Cooldown(Detective.ExamineCd));
         }
         else if (IsMed)
         {
             MediateButton ??= CreateButton(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, (UsableFunc)MedUsable,
-                new Cooldown(CustomGameOptions.MediateCd));/*
+                new Cooldown(Medium.MediateCd));/*
             SeanceButton ??= CreateButton(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, (UsableFunc)MedUsable,
-                new Cooldown(CustomGameOptions.SeanceCd), new PostDeath(true));*/
+                new Cooldown(Medium.SeanceCd), new PostDeath(true));*/
         }
         else if (IsOp)
         {
-            BugButton ??= CreateButton(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(CustomGameOptions.BugCd),
-                CustomGameOptions.MaxBugs, (ConditionFunc)OpCondition, (UsableFunc)OpUsable);
+            BugButton ??= CreateButton(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(Operative.BugCd),
+                Operative.MaxBugs, (ConditionFunc)OpCondition, (UsableFunc)OpUsable);
         }
         else if (IsSeer)
         {
-            SeerButton ??= CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(CustomGameOptions.SeerCd),
+            SeerButton ??= CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(Seer.SeerCd),
                 (UsableFunc)SeerUsable);
         }
         else if (IsSher)
         {
             InterrogateButton ??= CreateButton(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Interrogate,
-                new Cooldown(CustomGameOptions.InterrogateCd), (PlayerBodyExclusion)SherException, (UsableFunc)SherUsable);
+                new Cooldown(Sheriff.InterrogateCd), (PlayerBodyExclusion)SherException, (UsableFunc)SherUsable);
         }
         else if (IsTrack)
         {
-            TrackButton ??= CreateButton(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(CustomGameOptions.TrackCd),
-                (PlayerBodyExclusion)TrackException, CustomGameOptions.MaxTracks, (UsableFunc)TrackUsable);
+            TrackButton ??= CreateButton(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(Tracker.TrackCd),
+                (PlayerBodyExclusion)TrackException, Tracker.MaxTracks, (UsableFunc)TrackUsable);
         }
         else if (IsBast)
         {
             BombButton ??= CreateButton(this, "PLACE BOMB", new SpriteName($"{Bastion.SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClick)Bomb,
-                new Cooldown(CustomGameOptions.BastionCd), (VentExclusion)BastException, CustomGameOptions.MaxBombs, (UsableFunc)BastUsable);
+                new Cooldown(Bastion.BastionCd), (VentExclusion)BastException, Bastion.MaxBombs, (UsableFunc)BastUsable);
         }
         else if (IsVet)
         {
             AlertButton ??= CreateButton(this, "ALERT", new SpriteName("Alert"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Alert, (UsableFunc)VetUsable,
-                new Cooldown(CustomGameOptions.AlertCd), new Duration(CustomGameOptions.AlertDur), CustomGameOptions.MaxAlerts, (EndFunc)AlertEnd);
+                new Cooldown(Veteran.AlertCd), new Duration(Veteran.AlertDur), Veteran.MaxAlerts, (EndFunc)AlertEnd);
         }
         else if (IsVig)
         {
-            ShootButton ??= CreateButton(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Shoot, new Cooldown(CustomGameOptions.ShootCd),
-                (PlayerBodyExclusion)VigiException, CustomGameOptions.MaxBullets, (UsableFunc)VigUsable);
+            ShootButton ??= CreateButton(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Shoot, new Cooldown(Vigilante.ShootCd),
+                (PlayerBodyExclusion)VigiException, Vigilante.MaxBullets, (UsableFunc)VigUsable);
         }
         else if (IsAlt)
         {
-            ReviveButton = CreateButton(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Revive, new Cooldown(CustomGameOptions.ReviveCd),
-                new Duration(CustomGameOptions.ReviveDur), (EffectEndVoid)UponEnd, CustomGameOptions.MaxRevives, (EndFunc)ReviveEnd, (UsableFunc)AltUsable);
+            ReviveButton = CreateButton(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Revive, new Cooldown(Altruist.ReviveCd),
+                new Duration(Altruist.ReviveDur), (EffectEndVoid)UponEnd, Altruist.MaxRevives, (EndFunc)ReviveEnd, (UsableFunc)AltUsable);
         }
         else if (IsMedic)
         {
@@ -514,10 +514,10 @@ public class Retributionist : Crew
         else if (IsTrap)
         {
             BuildButton ??= CreateButton(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling, (UsableFunc)TrapUsable1,
-                new Cooldown(CustomGameOptions.BuildCd), new Duration(CustomGameOptions.BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
+                new Cooldown(Trapper.BuildCd), new Duration(Trapper.BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
             var wasnull = TrapButton == null;
             TrapButton ??= CreateButton(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, (UsableFunc)TrapUsable2,
-                new Cooldown(CustomGameOptions.TrapCd), (PlayerBodyExclusion)TrapException, CustomGameOptions.MaxTraps);
+                new Cooldown(Trapper.TrapCd), (PlayerBodyExclusion)TrapException, Trapper.MaxTraps);
 
             if (wasnull)
                 TrapButton.Uses = 0;
@@ -525,18 +525,17 @@ public class Retributionist : Crew
         else if (IsCham)
         {
             SwoopButton ??= CreateButton(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Swoop, (UsableFunc)ChamUsable,
-                new Cooldown(CustomGameOptions.SwoopCd), new Duration(CustomGameOptions.SwoopDur), (EffectVoid)Invis, (EffectEndVoid)UnInvis, (EndFunc)SwoopEnd,
-                CustomGameOptions.MaxSwoops);
+                new Cooldown(Chameleon.SwoopCd), new Duration(Chameleon.SwoopDur), (EffectVoid)Invis, (EffectEndVoid)UnInvis, (EndFunc)SwoopEnd, Chameleon.MaxSwoops);
         }
         else if (IsEngi)
         {
-            FixButton ??= CreateButton(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Fix, CustomGameOptions.MaxFixes,
-                new Cooldown(CustomGameOptions.FixCd), (ConditionFunc)EngiCondition, (UsableFunc)EngiUsable);
+            FixButton ??= CreateButton(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Fix, Engineer.MaxFixes,
+                new Cooldown(Engineer.FixCd), (ConditionFunc)EngiCondition, (UsableFunc)EngiUsable);
         }
         else if (IsTrans)
         {
-            TransportButton ??= CreateButton(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, CustomGameOptions.MaxTransports,
-                (LabelFunc)TransLabel, new Cooldown(CustomGameOptions.TransportCd), (UsableFunc)TransUsable);
+            TransportButton ??= CreateButton(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, Transporter.MaxTransports,
+                (LabelFunc)TransLabel, new Cooldown(Transporter.TransportCd), (UsableFunc)TransUsable);
         }
     }
 
@@ -586,7 +585,7 @@ public class Retributionist : Crew
         if (cooldown != CooldownType.Fail)
         {
             Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
-                CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
+                Detective.RecentKill) ? UColor.red : UColor.green);
             Investigated.Add(ExamineButton.TargetPlayer.PlayerId);
         }
 
@@ -618,9 +617,9 @@ public class Retributionist : Crew
         if (playersDead.Count == 0)
             return;
 
-        if (CustomGameOptions.DeadRevealed != DeadRevealed.Random)
+        if (Medium.DeadRevealed != DeadRevealed.Random)
         {
-            if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
+            if (Medium.DeadRevealed == DeadRevealed.Newest)
                 playersDead.Reverse();
 
             foreach (var dead in playersDead)
@@ -631,7 +630,7 @@ public class Retributionist : Crew
                     MediatedPlayers.Add(dead.PlayerId);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
 
-                    if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
+                    if (Medium.DeadRevealed != DeadRevealed.All)
                         break;
                 }
             }
@@ -684,7 +683,7 @@ public class Retributionist : Crew
     }
 
     public bool SherException(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) || (Player.IsOtherRival(player) &&
+        SubFaction.None)) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) || (Player.IsOtherRival(player) &&
         CustomGameOptions.RivalsRoles) || (player.Is(LayerEnum.Mafia) && Player.Is(LayerEnum.Mafia) && CustomGameOptions.MafiaRoles) || (Player.IsOtherLink(player) &&
         CustomGameOptions.LinkedRoles);
 
@@ -700,7 +699,7 @@ public class Retributionist : Crew
         var cooldown = Interact(Player, TrackButton.TargetPlayer);
 
         if (cooldown != CooldownType.Fail)
-            TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), CustomGameOptions.UpdateInterval));
+            TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), Tracker.UpdateInterval));
 
         TrackButton.StartCooldown(cooldown);
     }
@@ -729,12 +728,7 @@ public class Retributionist : Crew
     public CustomButton StakeButton { get; set; }
     public bool IsVH => RevivedRole?.Type == LayerEnum.VampireHunter;
 
-    public void Stake()
-    {
-        var cooldown = Interact(Player, StakeButton.TargetPlayer, StakeButton.TargetPlayer.Is(SubFaction.Undead) || StakeButton.TargetPlayer.IsFramed());
-
-        StakeButton.StartCooldown(cooldown);
-    }
+    public void Stake() => StakeButton.StartCooldown(Interact(Player, StakeButton.TargetPlayer, StakeButton.TargetPlayer.Is(SubFaction.Undead) || StakeButton.TargetPlayer.IsFramed()));
 
     public bool VHUsable() => IsVH && !VampireHunter.VampsDead;
 
@@ -806,9 +800,9 @@ public class Retributionist : Crew
         Spread(Player, PlayerByBody(RevivingBody));
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ReviveButton, RetActionsRPC.Revive, RevivingBody);
         ReviveButton.Begin();
-        Flash(Color, CustomGameOptions.ReviveDur);
+        Flash(Color, Altruist.ReviveDur);
 
-        if (CustomGameOptions.AltruistTargetBody)
+        if (Altruist.AltruistTargetBody)
             ReviveButton.TargetBody?.gameObject.Destroy();
     }
 
@@ -873,7 +867,7 @@ public class Retributionist : Crew
         FixButton.StartCooldown(CooldownType.Start);
     }
 
-    public bool EngiUsable() => IsEngi && CustomGameOptions.MaxFixes > 0;
+    public bool EngiUsable() => IsEngi && Engineer.MaxFixes > 0;
 
     public bool EngiCondition() => Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
 
@@ -964,10 +958,10 @@ public class Retributionist : Crew
     public bool Transporting { get; set; }
     public bool IsTrans => RevivedRole?.Type == LayerEnum.Transporter;
 
-    public bool TransException1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
+    public bool TransException1(PlayerControl player) => (player == Player && !Transporter.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
         (!BodyById(player.PlayerId) && player.Data.IsDead) || player == TransportPlayer2;
 
-    public bool TransException2(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
+    public bool TransException2(PlayerControl player) => (player == Player && !Transporter.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
         (!BodyById(player.PlayerId) && player.Data.IsDead) || player == TransportPlayer1;
 
     public bool TransUsable() => IsTrans;
@@ -1042,7 +1036,7 @@ public class Retributionist : Crew
         }
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
-            Flash(Color, CustomGameOptions.TransportDur);
+            Flash(Color, Transporter.TransportDur);
 
         if (!Player1Body && !WasInVent1)
             AnimateTransport1();
@@ -1056,7 +1050,7 @@ public class Retributionist : Crew
         {
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
-            if (seconds < CustomGameOptions.TransportDur)
+            if (seconds < Transporter.TransportDur)
                 yield return EndFrame();
             else
                 break;
@@ -1154,7 +1148,7 @@ public class Retributionist : Crew
         AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
         AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.TransportDur, p =>
+        HUD.StartCoroutine(PerformTimedAction(Transporter.TransportDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -1172,7 +1166,7 @@ public class Retributionist : Crew
         AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
         AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.TransportDur, p =>
+        HUD.StartCoroutine(PerformTimedAction(Transporter.TransportDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -1302,5 +1296,5 @@ public class Retributionist : Crew
 
     public bool TrapUsable1() => IsTrap;
 
-    public bool TrapUsable2() => IsTrap && TrapsMade < CustomGameOptions.MaxTraps;
+    public bool TrapUsable2() => IsTrap && TrapsMade < Trapper.MaxTraps;
 }

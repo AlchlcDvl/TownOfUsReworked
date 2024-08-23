@@ -69,7 +69,7 @@ public class Guesser : Neutral
     {
         BaseStart();
         Alignment = Alignment.NeutralEvil;
-        RemainingGuesses = CustomGameOptions.MaxGuesses;
+        RemainingGuesses = MaxGuesses;
         SortedColorMapping = [];
         SelectedButton = null;
         Page = 0;
@@ -80,11 +80,11 @@ public class Guesser : Neutral
         Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer.Data.PlayerName} was" : (!TargetPlayer ? "- Find someone to be guessed by you" : ("- Guess " +
             $"{TargetPlayer?.name}'s role"));
         SetLists();
-        GuessMenu = new(Player, "Guess", CustomGameOptions.GuesserAfterVoting, Guess, IsExempt, SetLists);
+        GuessMenu = new(Player, "Guess", GuesserAfterVoting, Guess, IsExempt, SetLists);
         Rounds = 0;
         Letters = [];
 
-        if (CustomGameOptions.GuesserCanPickTargets)
+        if (GuesserCanPickTargets)
         {
             TargetButton = CreateButton(this, new SpriteName("GuessTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception,
                 (UsableFunc)Usable, "AGONISE");
@@ -293,7 +293,7 @@ public class Guesser : Neutral
                     Exit(__instance);
                     RpcMurderPlayer(toDie, guess, targetPlayer);
 
-                    if (RemainingGuesses <= 0 || !CustomGameOptions.MultipleGuesses)
+                    if (RemainingGuesses <= 0 || !MultipleGuesses)
                         GuessMenu.HideButtons();
                     else
                         GuessMenu.HideSingle(targetId);
@@ -358,12 +358,12 @@ public class Guesser : Neutral
 
         if (Failed && !Dead)
         {
-            if (CustomGameOptions.GuessToAct)
+            if (GuessToAct)
             {
                 CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
                 TurnAct();
             }
-            else if (CustomGameOptions.GuesserCanPickTargets)
+            else if (GuesserCanPickTargets)
             {
                 TargetPlayer = null;
                 Rounds = 0;

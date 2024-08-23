@@ -46,8 +46,8 @@ public class Transporter : Crew
         Alignment = Alignment.CrewSupport;
         TransportMenu1 = new(Player, Click1, Exception1);
         TransportMenu2 = new(Player, Click2, Exception2);
-        TransportButton = CreateButton(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, CustomGameOptions.MaxTransports,
-            (LabelFunc)Label, new Cooldown(CustomGameOptions.TransportCd));
+        TransportButton = CreateButton(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, MaxTransports, new Cooldown(TransportCd),
+            (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;
         WasInVent1 = false;
@@ -138,7 +138,7 @@ public class Transporter : Crew
         }
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
-            Flash(Color, CustomGameOptions.TransportDur);
+            Flash(Color, TransportDur);
 
         if (!Player1Body && !WasInVent1)
             AnimateTransport1();
@@ -152,7 +152,7 @@ public class Transporter : Crew
         {
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
-            if (seconds < CustomGameOptions.TransportDur)
+            if (seconds < TransportDur)
                 yield return EndFrame();
             else
                 break;
@@ -269,7 +269,7 @@ public class Transporter : Crew
         AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
         AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.TransportDur, p =>
+        HUD.StartCoroutine(PerformTimedAction(TransportDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -287,7 +287,7 @@ public class Transporter : Crew
         AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
         AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.TransportDur, p =>
+        HUD.StartCoroutine(PerformTimedAction(TransportDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -299,11 +299,11 @@ public class Transporter : Crew
         }));
     }
 
-    public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || (BodyById(player.PlayerId) ==
-        null && player.Data.IsDead) || player == TransportPlayer2 || player.IsMoving();
+    public bool Exception1(PlayerControl player) => (player == Player && !TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId)
+        && player.Data.IsDead) || player == TransportPlayer2;
 
-    public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || (BodyById(player.PlayerId) ==
-        null && player.Data.IsDead) || player == TransportPlayer1 || player.IsMoving();
+    public bool Exception2(PlayerControl player) => (player == Player && !TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId)
+        && player.Data.IsDead) || player == TransportPlayer1;
 
     public void Transport()
     {

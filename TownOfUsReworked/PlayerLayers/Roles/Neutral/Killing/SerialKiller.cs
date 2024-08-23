@@ -33,10 +33,10 @@ public class SerialKiller : Neutral
         Objectives = () => "- Stab anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         RoleBlockImmune = true;
-        BloodlustButton = CreateButton(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Lust, new Cooldown(CustomGameOptions.BloodlustCd),
-            new Duration(CustomGameOptions.BloodlustDur), "BLOODLUST", (EndFunc)EndEffect);
-        StabButton = CreateButton(this, new SpriteName("Stab"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stab, new Cooldown(CustomGameOptions.StabCd), "STAB",
-            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
+        BloodlustButton = CreateButton(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Lust, new Cooldown(BloodlustCd), new Duration(BloodlustDur),
+            "BLOODLUST", (EndFunc)EndEffect);
+        StabButton = CreateButton(this, new SpriteName("Stab"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stab, new Cooldown(StabCd), "STAB", (PlayerBodyExclusion)Exception,
+            (UsableFunc)Usable);
     }
 
     public void Lust()

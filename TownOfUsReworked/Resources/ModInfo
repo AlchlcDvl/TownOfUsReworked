@@ -9,21 +9,24 @@ If you want to know more try using the other info commands, visiting the %github
 New!
 - Addition: Colorblind now has grayscale vision
 - Addition: Options can now be collapsed using the header they are a part of
+- Addition: Added some more options
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
-- Update: Updated to Among Us 2024.6.18
+- Update: Updated to Among Us 2024.8.13
 - Update: Updated to BepInEx 6.0.0-be.692
-- Update: Updated to Reactor 2.3.0
-- Change: Jackal recruits can now need to only be of opposite factions so it's more flexible
+- Update: Updated to Reactor 2.3.1
+- Change: Jackal recruits can now need to only be of opposite factions so it has more flexible matchups
 - Change: Shifter now has a player menu to swap through to prevent auto confirms
 - Change: Bastion can now spawn in Killing Only
+- Change: Raised the min player requirement for Jackal spawn from 6 to 7
 - Improvement: Improved some button handling
 - Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
 - Recode: The custom options have been given a full recode to work even better than before
 
 Fixes!
 - Critical: Fixed the rare instance where the host may lag a lot when a round starts
+- Critical: Fixed Jackal having no cooldown
 - Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
 - Ability: Fixed the edge case where Swapper swaps didn't appear to be correctly selected
 - Ability: Fixed a tiny issue with handling Assassin

@@ -42,9 +42,9 @@ public class Vigilante : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewKill;
-        ShootButton = CreateButton(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Shoot, new Cooldown(CustomGameOptions.ShootCd),
-            (PlayerBodyExclusion)Exception, CustomGameOptions.MaxBullets, (UsableFunc)Usable);
-        RoundOne = CustomGameOptions.RoundOneNoShot;
+        ShootButton = CreateButton(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Shoot, new Cooldown(ShootCd),
+            (PlayerBodyExclusion)Exception, MaxBullets, (UsableFunc)Usable);
+        RoundOne = RoundOneNoShot;
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -67,10 +67,10 @@ public class Vigilante : Crew
     {
         var target = ShootButton.TargetPlayer;
         var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or
-            Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || (target.Is(LayerEnum.Jester) && CustomGameOptions.VigiKillsJester) ||
-            (target.Is(LayerEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) || (target.Is(LayerEnum.Cannibal) && CustomGameOptions.VigiKillsCannibal) || target.IsFramed() ||
-            (target.Is(Alignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() ||
-            Player.Is(LayerEnum.Corrupted) || (target.Is(LayerEnum.Actor) && CustomGameOptions.VigiKillsActor) || (target.Is(LayerEnum.BountyHunter) && CustomGameOptions.VigiKillsBH);
+            Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || (target.Is(LayerEnum.Jester) && Jester.VigiKillsJester) || Player.IsFramed() ||
+            (target.Is(LayerEnum.Executioner) && Executioner.VigiKillsExecutioner) || (target.Is(LayerEnum.Cannibal) && Cannibal.VigiKillsCannibal) || target.IsFramed() ||
+            (target.Is(Alignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.Is(LayerEnum.Corrupted) ||
+            (target.Is(LayerEnum.Actor) && Actor.VigiKillsActor) || (target.Is(LayerEnum.BountyHunter) && BountyHunter.VigiKillsBH);
         var cooldown = Interact(Player, target, flag4);
 
         if (cooldown != CooldownType.Fail)
@@ -79,18 +79,18 @@ public class Vigilante : Crew
                 KilledInno = false;
             else
             {
-                if (CustomGameOptions.MisfireKillsInno)
+                if (MisfireKillsInno)
                     RpcMurderPlayer(Player, target);
 
-                if (Local && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
+                if (Local && HowIsVigilanteNotified == VigiNotif.Flash && HowDoesVigilanteDie != VigiOptions.Immediate)
                     Flash(Color);
 
-                KilledInno = !CustomGameOptions.VigiKillAgain;
-                InnoMessage = CustomGameOptions.VigiNotifOptions == VigiNotif.Message && CustomGameOptions.VigiOptions != VigiOptions.Immediate;
-                PreMeetingDie = CustomGameOptions.VigiOptions == VigiOptions.PreMeeting;
-                PostMeetingDie = CustomGameOptions.VigiOptions == VigiOptions.PostMeeting;
+                KilledInno = !VigiKillAgain;
+                InnoMessage = HowIsVigilanteNotified == VigiNotif.Message && HowDoesVigilanteDie != VigiOptions.Immediate;
+                PreMeetingDie = HowDoesVigilanteDie == VigiOptions.PreMeeting;
+                PostMeetingDie = HowDoesVigilanteDie == VigiOptions.PostMeeting;
 
-                if (CustomGameOptions.VigiOptions == VigiOptions.Immediate)
+                if (HowDoesVigilanteDie == VigiOptions.Immediate)
                     RpcMurderPlayer(Player);
             }
         }

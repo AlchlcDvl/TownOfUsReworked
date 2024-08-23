@@ -160,10 +160,10 @@ public abstract class Role : PlayerLayer
 
         if (!IsCustomHnS && !IsTaskRace)
         {
-            if (CustomGameOptions.EnforcerOn > 0)
+            if (RoleGen.GetSpawnItem(LayerEnum.Enforcer).IsActive())
                 BombKillButton = CreateButton(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
 
-            if (CustomGameOptions.BountyHunterOn > 0 && CustomGameOptions.BountyHunterCanPickTargets)
+            if (RoleGen.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
                 PlaceHitButton = CreateButton(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
         }
     }
@@ -434,7 +434,7 @@ public abstract class Role : PlayerLayer
         if (!PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText))
             return;
 
-        if ((DataManager.Settings.Accessibility.ColorBlindMode && Type is LayerEnum.Operative or LayerEnum.Retributionist) || CustomGameOptions.Whispers)
+        if ((DataManager.Settings.Accessibility.ColorBlindMode && Type is LayerEnum.Operative or LayerEnum.Retributionist) || GameModifiers.Whispers)
             nameText.text = $"{voteArea.TargetPlayerId} ";
         else
             nameText.text = nameText.text.Replace($"{voteArea.TargetPlayerId} ", "");
@@ -537,8 +537,8 @@ public abstract class Role : PlayerLayer
             if (!role2.IsMedic || !role2.ShieldedPlayer)
                 continue;
 
-            if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || (int)CustomGameOptions.NotificationShield == 3 ||
-                (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+            if (role2.ShieldedPlayer == player && ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (CustomPlayer.Local == player &&
+                (int)Medic.WhoGetsNotification is 1 or 2)))
             {
                 var roleEffectAnimation = UObject.Instantiate(RoleManager.Instance.protectAnim, player.gameObject.transform);
                 roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
@@ -552,8 +552,8 @@ public abstract class Role : PlayerLayer
             if (!role2.ShieldedPlayer)
                 continue;
 
-            if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || (int)CustomGameOptions.NotificationShield == 3 ||
-                (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+            if (role2.ShieldedPlayer == player && ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (CustomPlayer.Local == player &&
+                (int)Medic.WhoGetsNotification is 1 or 2)))
             {
                 var roleEffectAnimation = UObject.Instantiate(RoleManager.Instance.protectAnim, player.gameObject.transform);
                 roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);

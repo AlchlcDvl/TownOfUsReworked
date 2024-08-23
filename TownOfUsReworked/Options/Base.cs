@@ -59,9 +59,9 @@ public class CustomOption
         else if (option is CustomHeaderOption header)
             result = header.Active();
         else if (option is MapEnum map)
-            result = CustomGameOptions.Map == map;
+            result = MapSettings.Map == map;
         else if (option is GameMode mode)
-            result = CustomGameOptions.GameMode == mode;
+            result = GameModeSettings.GameMode == mode;
         else if (option is LayerEnum layer)
             result = GetOptions<RoleListEntryOption>().Any(x => x.Name.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
         else if (option is CustomOption custom)

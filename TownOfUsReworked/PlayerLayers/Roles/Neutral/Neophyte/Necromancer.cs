@@ -67,10 +67,9 @@ public class Necromancer : Neutral
         ResurrectedCount = 0;
         KillCount = 0;
         Resurrected = [ Player.PlayerId ];
-        ResurrectButton = CreateButton(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(CustomGameOptions.ResurrectCd),
-            new Duration(CustomGameOptions.ResurrectDur), (EffectEndVoid)UponEnd, CustomGameOptions.MaxResurrections, (PlayerBodyExclusion)Exception, "RESURRECT",
-            (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
-        SacrificeButton = CreateButton(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, CustomGameOptions.NecroKillCd, "SACRIFICE",
+        ResurrectButton = CreateButton(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
+            new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, "RESURRECT", (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
+        SacrificeButton = CreateButton(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, new Cooldown(NecroKillCd), "SACRIFICE",
             (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
     }
 
@@ -118,12 +117,12 @@ public class Necromancer : Neutral
             Spread(Player, PlayerByBody(ResurrectingBody));
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ResurrectButton, ResurrectingBody);
             ResurrectButton.Begin();
-            Flash(Color, CustomGameOptions.ResurrectDur);
+            Flash(Color, ResurrectDur);
 
-            if (CustomGameOptions.NecromancerTargetBody)
+            if (NecromancerTargetBody)
                 ResurrectButton.TargetBody?.gameObject.Destroy();
 
-            if (CustomGameOptions.NecroCooldownsLinked)
+            if (NecroCooldownsLinked)
                 SacrificeButton.StartCooldown();
         }
     }
@@ -139,13 +138,13 @@ public class Necromancer : Neutral
 
         SacrificeButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.NecroCooldownsLinked)
+        if (NecroCooldownsLinked)
             ResurrectButton.StartCooldown(cooldown);
     }
 
-    public float Difference1() => CustomGameOptions.ResurrectCdIncreases ? (ResurrectedCount * CustomGameOptions.ResurrectCdIncrease) : 0;
+    public float Difference1() => ResurrectCdIncreases ? (ResurrectedCount * ResurrectCdIncrease) : 0;
 
-    public float Difference2() => CustomGameOptions.NecroKillCdIncreases ? (KillCount * CustomGameOptions.NecroKillCdIncrease) : 0;
+    public float Difference2() => NecroKillCdIncreases ? (KillCount * NecroKillCdIncrease) : 0;
 
     public bool EndEffect() => Dead;
 
@@ -154,9 +153,9 @@ public class Necromancer : Neutral
         ResurrectingBody = reader.ReadBody();
 
         if (CustomPlayer.Local.PlayerId == ResurrectingBody.ParentId)
-            Flash(CustomColorManager.Necromancer, CustomGameOptions.ResurrectDur);
+            Flash(CustomColorManager.Necromancer, ResurrectDur);
 
-        if (CustomGameOptions.NecromancerTargetBody)
+        if (NecromancerTargetBody)
             ResurrectingBody.gameObject.Destroy();
     }
 }

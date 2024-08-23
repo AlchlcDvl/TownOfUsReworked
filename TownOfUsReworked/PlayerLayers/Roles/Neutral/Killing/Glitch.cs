@@ -45,11 +45,11 @@ public class Glitch : Neutral
         MimicMenu = new(Player, Click, Exception3);
         RoleBlockImmune = true;
         NeutraliseButton = CreateButton(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Neutralise, (PlayerBodyExclusion)Exception1,
-            new Cooldown(CustomGameOptions.NeutraliseCd), "NEUTRALISE");
-        HackButton = CreateButton(this, new SpriteName("Hack"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitHack, new Cooldown(CustomGameOptions.HackCd), (EffectVoid)Hack,
-            new Duration(CustomGameOptions.HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK", (EndFunc)EndHack);
-        MimicButton = CreateButton(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMimic, new Cooldown(CustomGameOptions.MimicCd), "MIMIC",
-            new Duration(CustomGameOptions.MimicDur), (EffectVoid)Mimic, (EffectEndVoid)UnMimic, (EndFunc)EndMimic);
+            new Cooldown(NeutraliseCd), "NEUTRALISE");
+        HackButton = CreateButton(this, new SpriteName("Hack"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
+            new Duration(HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
+        MimicButton = CreateButton(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
+            new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic);
         Data.Role.IntroSound = GetAudio("GlitchIntro");
     }
 

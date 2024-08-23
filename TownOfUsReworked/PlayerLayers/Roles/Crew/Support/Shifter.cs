@@ -23,8 +23,7 @@ public class Shifter : Crew
         BaseStart();
         Alignment = Alignment.CrewSupport;
         ShifterMenu = new(Player, Shift, Exception);
-        ShiftButton = CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open,
-            new Cooldown(CustomGameOptions.ShiftCd));
+        ShiftButton = CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
     }
 
     public void Shift()
@@ -102,7 +101,7 @@ public class Shifter : Crew
         };
 
         newRole.Start<Role>(player).RoleUpdate(this);
-        Role newRole2 = CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
+        Role newRole2 = ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
         newRole2.Start<Role>(other).RoleUpdate(role);
         ShifterMenu.Destroy();
         CustomMenu.AllMenus.Remove(ShifterMenu);

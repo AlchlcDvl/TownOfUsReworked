@@ -143,6 +143,9 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
             }
             else
                 result = true;
+
+            if (this is HeaderOptionAttribute header2)
+                result &= header2.GroupMembers.Any(x => x.Active());
         }
 
         // if (Invert && option != null)

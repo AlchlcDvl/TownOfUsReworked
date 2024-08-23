@@ -1,24 +1,24 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-public class CrewAssassin : Assassin
+public class Bullseye : Assassin
 {
     public override LayerEnum Type => LayerEnum.Bullseye;
     public override string Name => "Bullseye";
 }
 
-public class IntruderAssassin : Assassin
+public class Hitman : Assassin
 {
     public override LayerEnum Type => LayerEnum.Hitman;
     public override string Name => "Hitman";
 }
 
-public class NeutralAssassin : Assassin
+public class Slayer : Assassin
 {
     public override LayerEnum Type => LayerEnum.Slayer;
     public override string Name => "Slayer";
 }
 
-public class SyndicateAssassin : Assassin
+public class Sniper : Assassin
 {
     public override LayerEnum Type => LayerEnum.Sniper;
     public override string Name => "Sniper";
@@ -67,7 +67,7 @@ public abstract class Assassin : Ability
         {
             ColorMapping.Add("Crewmate", CustomColorManager.Crew);
 
-            if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
+            if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
             {
                 if (CustomGameOptions.MayorOn > 0) ColorMapping.Add("Mayor", CustomColorManager.Mayor);
                 if (CustomGameOptions.EngineerOn > 0) ColorMapping.Add("Engineer", CustomColorManager.Engineer);

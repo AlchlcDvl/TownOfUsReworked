@@ -27,7 +27,7 @@ public class Arsonist : Neutral
     public CustomButton IgniteButton { get; set; }
     public CustomButton DouseButton { get; set; }
     public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
-        x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CustomGameOptions.ArsoLastKillerBoost;
+        x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && ArsoLastKillerBoost;
     public List<byte> Doused { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist : CustomColorManager.Neutral;
@@ -45,17 +45,16 @@ public class Arsonist : Neutral
         Objectives = () => "- Burn anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         Doused = [];
-        DouseButton = CreateButton(this, new SpriteName("ArsoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(CustomGameOptions.ArsoDouseCd), "DOUSE",
+        DouseButton = CreateButton(this, new SpriteName("ArsoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
-        IgniteButton = CreateButton(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Ignite, new Cooldown(CustomGameOptions.IgniteCd), "IGNITE",
-            (UsableFunc)Doused.Any);
+        IgniteButton = CreateButton(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Ignite, new Cooldown(IgniteCd), "IGNITE", (UsableFunc)Doused.Any);
     }
 
     public void Ignite()
     {
         foreach (var arso in GetLayers<Arsonist>())
         {
-            if (arso.Player != Player && !CustomGameOptions.ArsoIgniteAll)
+            if (arso.Player != Player && !ArsoIgniteAll)
                 continue;
 
             foreach (var playerId in arso.Doused)
@@ -66,7 +65,7 @@ public class Arsonist : Neutral
                     RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
             }
 
-            if (CustomGameOptions.IgnitionCremates)
+            if (IgnitionCremates)
             {
                 CallRpc(CustomRPC.Action, ActionsRPC.Burn, arso);
 
@@ -83,7 +82,7 @@ public class Arsonist : Neutral
         if (!LastKiller)
             IgniteButton.StartCooldown();
 
-        if (CustomGameOptions.ArsoCooldownsLinked)
+        if (ArsoCooldownsLinked)
             DouseButton.StartCooldown();
     }
 
@@ -96,7 +95,7 @@ public class Arsonist : Neutral
 
         DouseButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.ArsoCooldownsLinked)
+        if (ArsoCooldownsLinked)
             IgniteButton.StartCooldown();
     }
 

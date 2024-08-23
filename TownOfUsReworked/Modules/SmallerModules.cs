@@ -60,4 +60,6 @@ public class RoleOptionData(int chance, int count, bool unique, bool active, Lay
     }
 
     public RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
+
+    public bool IsActive(int? relatedCount = null) => ((Chance > 0 && (IsClassic || IsCustom)) || (Active && IsAA)) && ID.IsValid(relatedCount);
 }

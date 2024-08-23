@@ -10,7 +10,7 @@ public class Plaguebearer : Neutral
     public static bool PBVent { get; set; } = false;
 
     public List<byte> Infected { get; set; }
-    public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || CustomGameOptions.PestSpawn;
+    public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || Pestilence.PestSpawn;
     public CustomButton InfectButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Plaguebearer : CustomColorManager.Neutral;
@@ -27,7 +27,7 @@ public class Plaguebearer : Neutral
         Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Alignment = Alignment.NeutralHarb;
         Infected = [Player.PlayerId];
-        InfectButton = CreateButton(this, new SpriteName("Infect"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Infect, new Cooldown(CustomGameOptions.InfectCd), "INFECT",
+        InfectButton = CreateButton(this, new SpriteName("Infect"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Infect, new Cooldown(InfectCd), "INFECT",
             (PlayerBodyExclusion)Exception);
     }
 
@@ -63,7 +63,7 @@ public class Plaguebearer : Neutral
     {
         new Pestilence().Start<Role>(Player).RoleUpdate(this);
 
-        if (CustomGameOptions.PlayersAlerted)
+        if (Pestilence.PlayersAlerted)
             Flash(Color);
 
         foreach (var player in CustomPlayer.AllPlayers)

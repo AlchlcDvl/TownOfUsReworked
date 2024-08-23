@@ -23,9 +23,9 @@ public class Dracula : Neutral
     public override string Name => "Dracula";
     public override LayerEnum Type => LayerEnum.Dracula;
     public override Func<string> StartText => () => "Lead The <color=#7B8968FF>Undead</color> To Victory";
-    public override Func<string> Description => () => "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the " +
-        $"number of alive <color=#7B8968FF>Undead</color> exceeds {CustomGameOptions.AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire " +
-        "Hunter</color> will force them to kill you";
+    public override Func<string> Description => () => "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of " +
+        $"alive <color=#7B8968FF>Undead</color> exceeds {AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire Hunter</color> will force them to " +
+        "kill you";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()
@@ -36,7 +36,7 @@ public class Dracula : Neutral
         Alignment = Alignment.NeutralNeo;
         SubFactionColor = CustomColorManager.Undead;
         Converted = [ Player.PlayerId ];
-        BiteButton = CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(CustomGameOptions.BiteCd), "BITE",
+        BiteButton = CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
             (PlayerBodyExclusion)Exception);
     }
 
@@ -45,7 +45,7 @@ public class Dracula : Neutral
         var cooldown = Interact(Player, BiteButton.TargetPlayer);
 
         if (cooldown != CooldownType.Fail)
-            RoleGen.RpcConvert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= CustomGameOptions.AliveVampCount);
+            RoleGen.RpcConvert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= AliveVampCount);
 
         BiteButton.StartCooldown(cooldown);
     }

@@ -42,7 +42,7 @@ public class Thief : Neutral
     {
         BaseStart();
         Alignment = Alignment.NeutralBen;
-        StealButton = CreateButton(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(CustomGameOptions.StealCd), "STEAL",
+        StealButton = CreateButton(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);
         ColorMapping = [];
         SortedColorMapping = [];
@@ -51,7 +51,7 @@ public class Thief : Neutral
         MaxPage = 0;
         GuessButtons = [];
         Sorted = [];
-        GuessMenu = new(Player, "Guess", CustomGameOptions.ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
+        GuessMenu = new(Player, "Guess", ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
         SetLists();
     }
 
@@ -338,7 +338,7 @@ public class Thief : Neutral
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        GuessMenu.GenButtons(__instance, CustomGameOptions.ThiefCanGuess);
+        GuessMenu.GenButtons(__instance, ThiefCanGuess);
     }
 
     public override void ReadRPC(MessageReader reader)
@@ -475,7 +475,7 @@ public class Thief : Neutral
             ((Jackal)role).Recruit3 = null;
         }
 
-        if (CustomGameOptions.ThiefSteals)
+        if (ThiefSteals)
         {
             if (CustomPlayer.Local == other && other.Is(Faction.Intruder))
                 other.Data.Role.TeamType = RoleTeamTypes.Crewmate;

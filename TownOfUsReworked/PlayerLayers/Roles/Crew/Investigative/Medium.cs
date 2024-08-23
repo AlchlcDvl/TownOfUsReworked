@@ -6,6 +6,9 @@ public class Medium : Crew
     [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float MediateCd { get; set; } = 25f;
 
+    // [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    // public static float SeanceCd { get; set; } = 25f;
+
     [ToggleOption(MultiMenu2.LayerSubOptions)]
     public static bool ShowMediatePlayer { get; set; } = true;
 
@@ -24,8 +27,8 @@ public class Medium : Crew
     public override string Name => "Medium";
     public override LayerEnum Type => LayerEnum.Medium;
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
-    public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead == ShowMediumToDead.No ? "" : ("\n- When" +
-        " mediating, dead players will be able to see you"));
+    public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.No ? "" : ("\n- When mediating, dead " +
+        "players will be able to see you"));
 
     public override void Init()
     {
@@ -33,13 +36,13 @@ public class Medium : Crew
         MediatedPlayers = [];
         MediateArrows = [];
         Alignment = Alignment.CrewInvest;
-        MediateButton = CreateButton(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate,
-            new Cooldown(CustomGameOptions.MediateCd));/*
-        SeanceButton = CreateButton(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, new Cooldown(CustomGameOptions.SeanceCd),
-            new PostDeath(true));*/
+        MediateButton = CreateButton(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, new Cooldown(MediateCd));
+        // SeanceButton = CreateButton(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, new Cooldown(SeanceCd),
+        //     new PostDeath(true));
     }
 
     // private void Seance() { Currently blank, gonna work on this later }
+    // Can you believe this guy? Over a year and this mofo still hasn't worked on it :skull:
 
     public override void OnLobby()
     {
@@ -59,9 +62,9 @@ public class Medium : Crew
             {
                 if (MediateArrows.ContainsKey(player.PlayerId))
                 {
-                    MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
+                    MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, ShowMediatePlayer));
 
-                    if (!CustomGameOptions.ShowMediatePlayer)
+                    if (!ShowMediatePlayer)
                     {
                         player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
                         PlayerMaterial.SetColors(UColor.grey, player.MyRend());
@@ -79,9 +82,9 @@ public class Medium : Crew
         if (playersDead.Count == 0)
             return;
 
-        if (CustomGameOptions.DeadRevealed != DeadRevealed.Random)
+        if (DeadRevealed != DeadRevealed.Random)
         {
-            if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
+            if (DeadRevealed == DeadRevealed.Newest)
                 playersDead.Reverse();
 
             foreach (var dead in playersDead)
@@ -92,7 +95,7 @@ public class Medium : Crew
                     MediatedPlayers.Add(dead.PlayerId);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
 
-                    if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
+                    if (DeadRevealed != DeadRevealed.All)
                         break;
                 }
             }
@@ -115,7 +118,7 @@ public class Medium : Crew
         var playerid2 = reader.ReadByte();
         MediatedPlayers.Add(playerid2);
 
-        if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && CustomGameOptions.ShowMediumToDead == ShowMediumToDead.AllDead))
+        if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && ShowMediumToDead == ShowMediumToDead.AllDead))
             LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
     }
 }

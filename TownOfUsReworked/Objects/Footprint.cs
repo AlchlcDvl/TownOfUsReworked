@@ -10,7 +10,7 @@ public class Footprint
     private Vector2 Velocity { get; }
     public UColor Color { get; set; }
     public Vector3 Position { get; }
-    private static bool Grey => CustomGameOptions.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (HudHandler.Instance.IsCamoed && CustomGameOptions.AnonymousFootPrint ==
+    private static bool Grey => Detective.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (HudHandler.Instance.IsCamoed && Detective.AnonymousFootPrint ==
         FootprintVisibility.OnlyWhenCamouflaged);
 
     public static readonly Dictionary<byte, int> OddEven = [];
@@ -46,11 +46,11 @@ public class Footprint
     public bool Update()
     {
         var currentTime = Time.time;
-        var alpha = Mathf.Clamp(Mathf.Max(1f - ((currentTime - Time2) / CustomGameOptions.FootprintDur), 0f), 0f, 1f);
+        var alpha = Mathf.Clamp(Mathf.Max(1f - ((currentTime - Time2) / Detective.FootprintDur), 0f), 0f, 1f);
         Color = Player.GetPlayerColor(false, Grey);
         Color = new(Color.r, Color.g, Color.b, alpha);
         Sprite.color = Color;
-        var result = (Time2 + CustomGameOptions.FootprintDur) < currentTime;
+        var result = (Time2 + Detective.FootprintDur) < currentTime;
 
         if (result)
         {

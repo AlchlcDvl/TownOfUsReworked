@@ -20,8 +20,7 @@ public class Mayor : Crew
     public override string Name => "Mayor";
     public override LayerEnum Type => LayerEnum.Mayor;
     public override Func<string> StartText => () => "Reveal Yourself To Commit Voter Fraud";
-    public override Func<string> Description => () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you cannot "
-        + "be protected";
+    public override Func<string> Description => () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {MayorVoteCount + 1} times but you cannot be protected";
 
     public override void Init()
     {

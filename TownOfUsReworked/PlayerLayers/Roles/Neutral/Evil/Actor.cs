@@ -191,7 +191,7 @@ public class Actor : Neutral
 
         foreach (var player in targets)
         {
-            if (PretendRoles.Count >= CustomGameOptions.ActorRoleCount)
+            if (PretendRoles.Count >= ActorRoleCount)
                 break;
 
             PretendRoles.Add(player.GetRole());

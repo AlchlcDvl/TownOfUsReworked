@@ -20,7 +20,7 @@ public class VampireHunter : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewAudit;
-        StakeButton = CreateButton(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stake, new Cooldown(CustomGameOptions.StakeCd));
+        StakeButton = CreateButton(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stake, new Cooldown(StakeCd));
     }
 
     public void TurnVigilante() => new Vigilante().Start<Role>(Player).RoleUpdate(this);

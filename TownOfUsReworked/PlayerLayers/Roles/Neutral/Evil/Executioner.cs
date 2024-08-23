@@ -59,7 +59,7 @@ public class Executioner : Neutral
         Alignment = Alignment.NeutralEvil;
         ToDoom = [];
 
-        if (CustomGameOptions.ExecutionerCanPickTargets)
+        if (ExecutionerCanPickTargets)
         {
             TargetButton = CreateButton(this, new SpriteName("ExeTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
                 (UsableFunc)Usable2);
@@ -124,12 +124,12 @@ public class Executioner : Neutral
 
         if ((TargetFailed || (TargetPlayer && Failed)) && !Dead)
         {
-            if (CustomGameOptions.ExeToJest)
+            if (ExeToJest)
             {
                 CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
                 TurnJest();
             }
-            else if (CustomGameOptions.ExecutionerCanPickTargets)
+            else if (ExecutionerCanPickTargets)
             {
                 TargetPlayer = null;
                 Rounds = 0;

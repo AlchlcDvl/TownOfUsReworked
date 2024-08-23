@@ -52,10 +52,10 @@ public class Whisperer : Neutral
         Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Sect;
         SubFactionColor = CustomColorManager.Sect;
-        WhisperConversion = CustomGameOptions.WhisperRate;
+        WhisperConversion = WhisperRate;
         Persuaded = [ Player.PlayerId ];
-        WhisperButton = CreateButton(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Whisper, new Cooldown(CustomGameOptions.WhisperCd),
-            "WHISPER", (DifferenceFunc)Difference);
+        WhisperButton = CreateButton(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Whisper, new Cooldown(WhisperCd), "WHISPER",
+            (DifferenceFunc)Difference);
         PlayerConversion = [];
         CustomPlayer.AllPlayers.ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
         Persuaded.ForEach(x => PlayerConversion.Remove(x));
@@ -63,7 +63,7 @@ public class Whisperer : Neutral
 
     public void Whisper()
     {
-        var closestPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.WhisperRadius);
+        var closestPlayers = GetClosestPlayers(Player.transform.position, WhisperRadius);
         closestPlayers.RemoveAll(x => x == Player || Persuaded.Contains(x.PlayerId));
 
         foreach (var player in closestPlayers)
@@ -80,8 +80,8 @@ public class Whisperer : Neutral
         {
             if (stat <= 0)
             {
-                if (CustomGameOptions.WhisperRateDecreases)
-                    WhisperConversion -= CustomGameOptions.WhisperRateDecrease;
+                if (WhisperRateDecreases)
+                    WhisperConversion -= WhisperRateDecrease;
 
                 if (WhisperConversion < 2)
                     WhisperConversion = 2;
@@ -107,7 +107,7 @@ public class Whisperer : Neutral
         writer.EndRpc();
     }
 
-    public float Difference() => CustomGameOptions.WhisperCdIncreases ? (CustomGameOptions.WhisperCdIncrease * WhisperCount) : 0;
+    public float Difference() => WhisperCdIncreases ? (WhisperCdIncrease * WhisperCount) : 0;
 
     public override void ReadRPC(MessageReader reader)
     {

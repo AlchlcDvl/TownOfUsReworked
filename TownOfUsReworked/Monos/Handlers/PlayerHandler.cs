@@ -41,7 +41,7 @@ public class PlayerHandler : MonoBehaviour
         var vector = player.transform.position - CustomPlayer.Local.transform.position;
 
         if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && player != CustomPlayer.Local &&
-            !CustomPlayer.LocalCustom.Dead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
+            !CustomPlayer.LocalCustom.Dead && GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
         {
             return ("", UColor.white);
         }
@@ -53,7 +53,7 @@ public class PlayerHandler : MonoBehaviour
 
         if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead && !ClientOptions.OptimisationMode)
             name = GetRandomisedName();
-        else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
+        else if (GameModifiers.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
         else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
             name = Instance.ColorNames.FirstOrDefault(x => x.Key == cache).Value;
@@ -76,7 +76,7 @@ public class PlayerHandler : MonoBehaviour
         var vector = player.transform.position - CustomPlayer.Local.transform.position;
 
         if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && player != CustomPlayer.Local &&
-            !CustomPlayer.LocalCustom.Dead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
+            !CustomPlayer.LocalCustom.Dead && GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
         {
             return ("", UColor.clear);
         }
@@ -92,7 +92,7 @@ public class PlayerHandler : MonoBehaviour
 
         if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
             name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
-        else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
+        else if (GameModifiers.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
         else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
             name = Instance.PlayerNames.FirstOrDefault(x => x.Key == cache).Value;
@@ -116,11 +116,8 @@ public class PlayerHandler : MonoBehaviour
         if (player.IsMarked())
             name += " <color=#F1C40FFF>χ</color>";
 
-        if (player.Data.PlayerName == CachedFirstDead && ((player == CustomPlayer.Local && (int)CustomGameOptions.WhoSeesFirstKillShield == 1) || CustomGameOptions.WhoSeesFirstKillShield ==
-            0))
-        {
+        if (player.Data.PlayerName == CachedFirstDead && ((player == CustomPlayer.Local && (int)GameModifiers.WhoSeesFirstKillShield == 1) || GameModifiers.WhoSeesFirstKillShield == 0))
             name += " <color=#C2185BFF>Γ</color>";
-        }
 
         if (player.Is(LayerEnum.Mayor) && !DeadSeeEverything && CustomPlayer.Local != player)
         {
@@ -257,7 +254,7 @@ public class PlayerHandler : MonoBehaviour
         {
             var medic = localinfo[0] as Medic;
 
-            if (medic.ShieldedPlayer && medic.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            if (medic.ShieldedPlayer && medic.ShieldedPlayer == player && (int)Medic.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Trapper))
@@ -271,7 +268,7 @@ public class PlayerHandler : MonoBehaviour
         {
             var ret = localinfo[0] as Retributionist;
 
-            if (ret.ShieldedPlayer && ret.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
+            if (ret.ShieldedPlayer && ret.ShieldedPlayer == player && (int)Medic.ShowShielded is 1 or 2)
             {
                 name += " <color=#006600FF>✚</color>";
                 color = ret.Color;
@@ -326,7 +323,7 @@ public class PlayerHandler : MonoBehaviour
             {
                 name += " <color=#CCCCCCFF>§</color>";
 
-                if (CustomGameOptions.ExeKnowsTargetRole && !revealed)
+                if (Executioner.ExeKnowsTargetRole && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -355,10 +352,10 @@ public class PlayerHandler : MonoBehaviour
             {
                 name += " <color=#FFFFFFFF>★</color>";
 
-                if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 1 or 2)
+                if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 1 or 2)
                     name += " <color=#FFFFFFFF>η</color>";
 
-                if (CustomGameOptions.GAKnowsTargetRole && !revealed)
+                if (GuardianAngel.GAKnowsTargetRole && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -375,7 +372,7 @@ public class PlayerHandler : MonoBehaviour
 
             if (whisperer.Persuaded.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -394,7 +391,7 @@ public class PlayerHandler : MonoBehaviour
 
             if (dracula.Converted.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -411,7 +408,7 @@ public class PlayerHandler : MonoBehaviour
 
             if (jackal.Recruited.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -428,7 +425,7 @@ public class PlayerHandler : MonoBehaviour
 
             if (necromancer.Resurrected.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -513,7 +510,7 @@ public class PlayerHandler : MonoBehaviour
 
             if (dracula.Converted.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -545,7 +542,7 @@ public class PlayerHandler : MonoBehaviour
 
             if (jackal.Recruited.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -577,7 +574,7 @@ public class PlayerHandler : MonoBehaviour
 
             if (necromancer.Resurrected.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles && !revealed)
+                if (GameModifiers.FactionSeeRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -609,7 +606,7 @@ public class PlayerHandler : MonoBehaviour
 
             if (whisperer.Persuaded.Contains(player.PlayerId) && player != CustomPlayer.Local)
             {
-                if (CustomGameOptions.FactionSeeRoles)
+                if (GameModifiers.FactionSeeRoles)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -825,7 +822,7 @@ public class PlayerHandler : MonoBehaviour
         {
             var role = info[0] as Role;
 
-            if (CustomGameOptions.FactionSeeRoles && !revealed)
+            if (GameModifiers.FactionSeeRoles && !revealed)
             {
                 color = role.Color;
                 name += $"\n{role}";
@@ -868,18 +865,18 @@ public class PlayerHandler : MonoBehaviour
         {
             var role = info[0] as Role;
 
-            if (CustomGameOptions.RevealerRevealsRoles)
+            if (Revealer.RevealerRevealsRoles)
             {
-                if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) || (player.Is(Faction.Crew)
-                    && CustomGameOptions.RevealerRevealsCrew))
+                if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && Revealer.RevealerRevealsNeutrals) || (player.Is(Faction.Crew) &&
+                    Revealer.RevealerRevealsCrew))
                 {
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
                 }
             }
-            else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) || (player.Is(Faction.Crew)
-                && CustomGameOptions.RevealerRevealsCrew))
+            else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && Revealer.RevealerRevealsNeutrals) || (player.Is(Faction.Crew) &&
+                Revealer.RevealerRevealsCrew))
             {
                 if (!(player.Is(LayerEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(LayerEnum.Fanatic) && CustomGameOptions.RevealerRevealsFanatic))
                 {
@@ -904,22 +901,22 @@ public class PlayerHandler : MonoBehaviour
 
         if (player == CustomPlayer.Local && !DeadSeeEverything)
         {
-            if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 0 or 2)
+            if (player.IsShielded() && (int)Medic.ShowShielded is 0 or 2)
                 name += " <color=#006600FF>✚</color>";
 
-            if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 0 or 2)
+            if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 0 or 2)
                 name += " <color=#FFFFFFFF>η</color>";
 
             if (player.IsBHTarget())
                 name += " <color=#B51E39FF>Θ</color>";
 
-            if (player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
+            if (player.IsExeTarget() && Executioner.ExeTargetKnows)
                 name += " <color=#CCCCCCFF>§</color>";
 
-            if (player.IsGATarget() && CustomGameOptions.GATargetKnows)
+            if (player.IsGATarget() && GuardianAngel.GATargetKnows)
                 name += " <color=#FFFFFFFF>★</color>";
 
-            if (player.IsGuessTarget() && CustomGameOptions.GuesserTargetKnows)
+            if (player.IsGuessTarget() && Guesser.GuessTargetKnows)
                 name += " <color=#EEE5BEFF>π</color>";
 
             if (player.IsBitten())
@@ -937,10 +934,10 @@ public class PlayerHandler : MonoBehaviour
 
         if (DeadSeeEverything)
         {
-            if (player.IsShielded() && CustomGameOptions.ShowShielded != ShieldOptions.Everyone)
+            if (player.IsShielded() && Medic.ShowShielded != ShieldOptions.Everyone)
                 name += " <color=#006600FF>✚</color>";
 
-            if (player.IsProtected() && CustomGameOptions.ShowProtect != ProtectOptions.Everyone)
+            if (player.IsProtected() && GuardianAngel.ShowProtect != ProtectOptions.Everyone)
                 name += " <color=#FFFFFFFF>η</color>";
 
             if (player.IsTrapped())
@@ -992,10 +989,10 @@ public class PlayerHandler : MonoBehaviour
                 name += " <color=#0028F5FF>ø</color>";
         }
 
-        if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 3 && !DeadSeeEverything)
+        if (player.IsShielded() && (int)Medic.ShowShielded is 3 && !DeadSeeEverything)
             name += " <color=#006600FF>✚</color>";
 
-        if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 3 && !DeadSeeEverything)
+        if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 3 && !DeadSeeEverything)
             name += " <color=#FFFFFFFF>η</color>";
 
         if ((DeadSeeEverything || CustomPlayer.Local.Is(LayerEnum.Pestilence)) && Pestilence.Infected.TryGetValue(player.PlayerId, out var count))
