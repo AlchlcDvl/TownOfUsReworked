@@ -233,15 +233,11 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
         if (GroupHeader != null)
         {
-            GroupHeader.Menu = menu;
-
             if (!GroupHeader.Menus.Contains(menu))
                 GroupHeader.Menus.Add(menu);
 
             foreach (var elem in GroupHeader.GroupMembers)
             {
-                elem.Menu = menu;
-
                 if (!elem.Menus.Contains(menu))
                     elem.Menus.Add(menu);
             }
@@ -249,35 +245,41 @@ public class LayersOptionAttribute(MultiMenu2 menu, string hexCode, LayerEnum la
 
         if (OptionParents1.TryFinding(x => x.Item2.Contains(Layer), out var option1))
         {
-            var option = GetOptionFromPropertyName<HeaderOptionAttribute>(option1.Item1.First());
-            option.Menu = menu;
+            var options = option1.Item1.Select(x => GetOptionFromPropertyName(x));
 
-            if (!option.Menus.Contains(menu))
-                option.Menus.Add(menu);
-
-            foreach (var elem in option.GroupMembers)
+            foreach (var option in options)
             {
-                elem.Menu = menu;
+                if (!option.Menus.Contains(menu))
+                    option.Menus.Add(menu);
 
-                if (!elem.Menus.Contains(menu))
-                    elem.Menus.Add(menu);
+                if (option is HeaderOptionAttribute header)
+                {
+                    foreach (var elem in header.GroupMembers)
+                    {
+                        if (!elem.Menus.Contains(menu))
+                            elem.Menus.Add(menu);
+                    }
+                }
             }
         }
 
         if (OptionParents2.TryFinding(x => x.Item2.Contains(Layer), out option1))
         {
-            var option = GetOptionFromPropertyName<HeaderOptionAttribute>(option1.Item1.First());
-            option.Menu = menu;
+            var options = option1.Item1.Select(x => GetOptionFromPropertyName(x));
 
-            if (!option.Menus.Contains(menu))
-                option.Menus.Add(menu);
-
-            foreach (var elem in option.GroupMembers)
+            foreach (var option in options)
             {
-                elem.Menu = menu;
+                if (!option.Menus.Contains(menu))
+                    option.Menus.Add(menu);
 
-                if (!elem.Menus.Contains(menu))
-                    elem.Menus.Add(menu);
+                if (option is HeaderOptionAttribute header)
+                {
+                    foreach (var elem in header.GroupMembers)
+                    {
+                        if (!elem.Menus.Contains(menu))
+                            elem.Menus.Add(menu);
+                    }
+                }
             }
         }
     }

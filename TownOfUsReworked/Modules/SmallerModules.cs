@@ -63,3 +63,5 @@ public class RoleOptionData(int chance, int count, bool unique, bool active, Lay
 
     public bool IsActive(int? relatedCount = null) => ((Chance > 0 && (IsClassic || IsCustom)) || (Active && IsAA)) && ID.IsValid(relatedCount);
 }
+
+public record class LayerDictionaryEntry(Type LayerType, UColor Color, string Name);

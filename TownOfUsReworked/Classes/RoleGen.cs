@@ -533,7 +533,9 @@ public static class RoleGen
                 var layer = (LayerEnum)i;
                 var spawn = GetSpawnItem(layer);
 
-                if (spawn.IsActive())
+                if (layer == LayerEnum.Revealer)
+                    SetPostmortals.RevealerOn = Check(spawn);
+                else if (spawn.IsActive())
                 {
                     num = spawn.Count;
 
@@ -553,8 +555,6 @@ public static class RoleGen
                             CrewSupportRoles.Add(spawn);
                         else if (layer == LayerEnum.Crewmate)
                             CrewRoles.Add(spawn);
-                        else if (layer == LayerEnum.Revealer)
-                            SetPostmortals.RevealerOn = Check(spawn);
 
                         num--;
                     }
@@ -575,7 +575,9 @@ public static class RoleGen
 
                 var spawn = GetSpawnItem(layer);
 
-                if (spawn.IsActive())
+                if (layer == LayerEnum.Phantom)
+                    SetPostmortals.PhantomOn = Check(spawn);
+                else if (spawn.IsActive())
                 {
                     num = spawn.Count;
 
@@ -597,8 +599,6 @@ public static class RoleGen
                         }
                         else if (layer is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer)
                             NeutralNeophyteRoles.Add(spawn);
-                        else if (layer == LayerEnum.Phantom)
-                            SetPostmortals.PhantomOn = Check(spawn);
 
                         num--;
                     }
@@ -619,7 +619,9 @@ public static class RoleGen
 
                 var spawn = GetSpawnItem(layer);
 
-                if (spawn.IsActive(imps))
+                if (layer == LayerEnum.Ghoul)
+                    SetPostmortals.GhoulOn = Check(spawn);
+                else if (spawn.IsActive(imps))
                 {
                     num = spawn.Count;
 
@@ -637,8 +639,6 @@ public static class RoleGen
                             IntruderSupportRoles.Add(spawn);
                         else if (layer == LayerEnum.Impostor)
                             IntruderRoles.Add(spawn);
-                        else if (layer == LayerEnum.Ghoul)
-                            SetPostmortals.GhoulOn = Check(spawn);
 
                         num--;
                     }
@@ -659,7 +659,9 @@ public static class RoleGen
 
                 var spawn = GetSpawnItem(layer);
 
-                if (spawn.IsActive(syn))
+                if (layer == LayerEnum.Banshee)
+                    SetPostmortals.BansheeOn = Check(spawn);
+                else if (spawn.IsActive(syn))
                 {
                     num = spawn.Count;
 
@@ -1167,7 +1169,7 @@ public static class RoleGen
         LayerEnum.Phantom => NeutralProselyteRoles.Phantom,
         LayerEnum.Pestilence => Options2.NeutralHarbingerRoles.Plaguebearer,
         LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 100, false, false, id),
-        _ => OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.Layer == id)?.Get() ?? throw new NotImplementedException(id.ToString())
+        _ => OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.Layer == id)?.Get() ?? new(0, 0, false, false, id)
     };
 
     private static void GenAbilities()
@@ -2189,8 +2191,8 @@ public static class RoleGen
 
     public static PlayerLayer SetLayer(LayerEnum id, PlayerLayerEnum rpc)
     {
-        if (LayerEnumToType.TryGetValue(id, out var layerType))
-            return (PlayerLayer)Activator.CreateInstance(layerType);
+        if (LayerDictionary.TryGetValue(id, out var dictEntry))
+            return (PlayerLayer)Activator.CreateInstance(dictEntry.LayerType);
         else
             return rpc switch
             {

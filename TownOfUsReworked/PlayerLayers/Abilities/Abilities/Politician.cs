@@ -68,7 +68,7 @@ public class Politician : Ability
 
         if (__instance.state == MeetingHud.VoteStates.Discussion)
         {
-            if (__instance.discussionTimer < CustomGameOptions.DiscussionTime || CanKill)
+            if (__instance.discussionTimer < GameSettings.DiscussionTime || CanKill)
                 Abstain?.SetDisabled();
             else
                 Abstain?.SetEnabled();

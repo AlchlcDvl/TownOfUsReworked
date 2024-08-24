@@ -62,77 +62,77 @@ public class Thief : Neutral
         Sorted.Clear();
 
         // Adds all the roles that have a non-zero chance of being in the game
-        if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
+        if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
         {
-            if (CustomGameOptions.VeteranOn > 0) ColorMapping.Add("Veteran", CustomColorManager.Veteran);
-            if (CustomGameOptions.VigilanteOn > 0) ColorMapping.Add("Vigilante", CustomColorManager.Vigilante);
-            if (CustomGameOptions.BastionOn > 0) ColorMapping.Add("Bastion", CustomColorManager.Bastion);
-            if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) ColorMapping.Add("Vampire Hunter", CustomColorManager.VampireHunter);
+            var nks = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.Bastion, LayerEnum.Veteran, LayerEnum.Vigilante };
+
+            foreach (var layer in nks)
+            {
+                if (RoleGen.GetSpawnItem(layer).IsActive())
+                {
+                    var entry = LayerDictionary[layer];
+                    ColorMapping.Add(entry.Name, entry.Color);
+                }
+                else if (layer == LayerEnum.Vigilante && !ColorMapping.ContainsKey("Vigilante") && ColorMapping.ContainsKey("Vampire Hunter"))
+                    ColorMapping.Add("Vigilante", CustomColorManager.Vigilante);
+            }
         }
 
-        if (!CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
+        if (!CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0 && CustomGameOptions.IntruderMax > 0 && CustomGameOptions.IntruderMin > 0)
         {
-            ColorMapping.Add("Impostor", CustomColorManager.Intruder);
-
-            if (CustomGameOptions.IntruderMax > 0 && CustomGameOptions.IntruderMin > 0)
+            for (var h = 52; h < 70; h++)
             {
-                if (CustomGameOptions.JanitorOn > 0) ColorMapping.Add("Janitor", CustomColorManager.Janitor);
-                if (CustomGameOptions.MorphlingOn > 0) ColorMapping.Add("Morphling", CustomColorManager.Morphling);
-                if (CustomGameOptions.MinerOn > 0) ColorMapping.Add("Miner", CustomColorManager.Miner);
-                if (CustomGameOptions.WraithOn > 0) ColorMapping.Add("Wraith", CustomColorManager.Wraith);
-                if (CustomGameOptions.GrenadierOn > 0) ColorMapping.Add("Grenadier", CustomColorManager.Grenadier);
-                if (CustomGameOptions.BlackmailerOn > 0) ColorMapping.Add("Blackmailer", CustomColorManager.Blackmailer);
-                if (CustomGameOptions.CamouflagerOn > 0) ColorMapping.Add("Camouflager", CustomColorManager.Camouflager);
-                if (CustomGameOptions.DisguiserOn > 0) ColorMapping.Add("Disguiser", CustomColorManager.Disguiser);
-                if (CustomGameOptions.DisguiserOn > 0) ColorMapping.Add("Consigliere", CustomColorManager.Consigliere);
-                if (CustomGameOptions.ConsortOn > 0) ColorMapping.Add("Consort", CustomColorManager.Consort);
+                var layer = (LayerEnum)h;
 
-                if (CustomGameOptions.GodfatherOn > 0)
-                {
-                    ColorMapping.Add("Godfather", CustomColorManager.Godfather);
+                if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather)
+                    continue;
+
+                var entry = LayerDictionary[layer];
+
+                if (RoleGen.GetSpawnItem(layer).IsActive())
+                    ColorMapping.Add(entry.Name, entry.Color);
+                else if (layer == LayerEnum.Mafioso && !ColorMapping.ContainsKey("Mafioso") && ColorMapping.ContainsKey("Godfather"))
                     ColorMapping.Add("Mafioso", CustomColorManager.Mafioso);
-                }
+            }
+
+            if (ColorMapping.ContainsKey("Miner") && MapPatches.CurrentMap == 5)
+            {
+                ColorMapping["Herbalist"] = ColorMapping["Miner"];
+                ColorMapping.Remove("Miner");
             }
         }
 
         if (CustomGameOptions.SyndicateCount > 0)
         {
-            ColorMapping.Add("Anarchist", CustomColorManager.Syndicate);
-
-            if (CustomGameOptions.SyndicateMax > 0 && CustomGameOptions.SyndicateMin > 0)
+            for (var h = 70; h < 88; h++)
             {
-                if (CustomGameOptions.WarperOn > 0) ColorMapping.Add("Warper", CustomColorManager.Warper);
-                if (CustomGameOptions.ConcealerOn > 0) ColorMapping.Add("Concealer", CustomColorManager.Concealer);
-                if (CustomGameOptions.ShapeshifterOn > 0) ColorMapping.Add("Shapeshifter", CustomColorManager.Shapeshifter);
-                if (CustomGameOptions.FramerOn > 0) ColorMapping.Add("Framer", CustomColorManager.Framer);
-                if (CustomGameOptions.BomberOn > 0) ColorMapping.Add("Bomber", CustomColorManager.Bomber);
-                if (CustomGameOptions.PoisonerOn > 0) ColorMapping.Add("Poisoner", CustomColorManager.Poisoner);
-                if (CustomGameOptions.CrusaderOn > 0) ColorMapping.Add("Crusader", CustomColorManager.Crusader);
-                if (CustomGameOptions.StalkerOn > 0) ColorMapping.Add("Stalker", CustomColorManager.Stalker);
-                if (CustomGameOptions.ColliderOn > 0) ColorMapping.Add("Collider", CustomColorManager.Collider);
-                if (CustomGameOptions.SpellslingerOn > 0) ColorMapping.Add("Spellslinger", CustomColorManager.Spellslinger);
-                if (CustomGameOptions.TimekeeperOn > 0) ColorMapping.Add("Timekeeper", CustomColorManager.Timekeeper);
-                if (CustomGameOptions.SilencerOn > 0) ColorMapping.Add("Silencer", CustomColorManager.Silencer);
+                var layer = (LayerEnum)h;
 
-                if (CustomGameOptions.RebelOn > 0)
-                {
-                    ColorMapping.Add("Rebel", CustomColorManager.Rebel);
+                if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel)
+                    continue;
+
+                var entry = LayerDictionary[layer];
+
+                if (RoleGen.GetSpawnItem(layer).IsActive())
+                    ColorMapping.Add(entry.Name, entry.Color);
+                else if (layer == LayerEnum.Sidekick && !ColorMapping.ContainsKey("Sidekick") && ColorMapping.ContainsKey("Rebel"))
                     ColorMapping.Add("Sidekick", CustomColorManager.Sidekick);
-                }
             }
         }
 
         if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
         {
-            if (CustomGameOptions.ArsonistOn > 0) ColorMapping.Add("Arsonist", CustomColorManager.Arsonist);
-            if (CustomGameOptions.GlitchOn > 0) ColorMapping.Add("Glitch", CustomColorManager.Glitch);
-            if (CustomGameOptions.SerialKillerOn > 0) ColorMapping.Add("Serial Killer", CustomColorManager.SerialKiller);
-            if (CustomGameOptions.JuggernautOn > 0) ColorMapping.Add("Juggernaut", CustomColorManager.Juggernaut);
-            if (CustomGameOptions.MurdererOn > 0) ColorMapping.Add("Murderer", CustomColorManager.Murderer);
-            if (CustomGameOptions.CryomaniacOn > 0) ColorMapping.Add("Cryomaniac", CustomColorManager.Cryomaniac);
-            if (CustomGameOptions.WerewolfOn > 0) ColorMapping.Add("Werewolf", CustomColorManager.Werewolf);
-            if (CustomGameOptions.PlaguebearerOn > 0) ColorMapping.Add("Plaguebearer", CustomColorManager.Plaguebearer);
-            if (CustomGameOptions.BountyHunterOn > 0) ColorMapping.Add("Bounty Hunter", CustomColorManager.BountyHunter);
+            var nks = new List<LayerEnum>() { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac,
+                LayerEnum.Werewolf, LayerEnum.BountyHunter, LayerEnum.Plaguebearer };
+
+            foreach (var layer in nks)
+            {
+                if (RoleGen.GetSpawnItem(layer).IsActive())
+                {
+                    var entry = LayerDictionary[layer];
+                    ColorMapping.Add(entry.Name, entry.Color);
+                }
+            }
         }
 
         // Sorts the list alphabetically.

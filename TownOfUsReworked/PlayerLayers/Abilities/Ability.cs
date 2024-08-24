@@ -36,7 +36,7 @@ public abstract class Ability : PlayerLayer
         }
     }
 
-    public static List<Assassin> GetAssassins() => [ .. AllAbilities.Where(x => x is CrewAssassin or NeutralAssassin or IntruderAssassin or SyndicateAssassin).Cast<Assassin>() ];
+    public static List<Assassin> GetAssassins() => [ .. AllAbilities.Where(x => x is Bullseye or Slayer or Hitman or Sniper).Cast<Assassin>() ];
 
     public static T LocalAbilityAs<T>() where T : Ability => LocalAbility as T;
 }

@@ -34,12 +34,8 @@ public class Miner : Intruder
         MineButton.StartCooldown();
     }
 
-    public bool Condition()
-    {
-        var hits = Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0);
-        hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)).ToArray();
-        return hits.Count == 0 && Player.moveable && !GetPlayerElevator(Player).IsInElevator && !Vents.Any(x => x.transform.position == Player.transform.position);
-    }
+    public bool Condition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
+        Player.moveable && !GetPlayerElevator(Player).IsInElevator && !Vents.Any(x => x.transform.position == Player.transform.position);
 
     public static string Label() => MapPatches.CurrentMap == 5 ? "PLANT" : "MINE VENT";
 }

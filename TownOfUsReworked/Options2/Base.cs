@@ -89,20 +89,20 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
     public bool Active()
     {
         var result = true;
-        var parents = Array.Empty<object>();
 
-        if (OptionParents1.Any(x => x.Item1.Contains(Name)))
+        if (OptionParents1.TryFinding(x => x.Item1.Contains(Name), out var parents))
         {
-            parents = OptionParents1.Find(x => x.Item1.Contains(Name)).Item2;
-            result &= parents.AllAnyOrEmpty(IsActive, All);
+            LogFatal("1");
+            result &= parents.Item2.AllAnyOrEmpty(IsActive, All);
         }
 
-        if (OptionParents2.Any(x => x.Item1.Contains(Name)))
+        if (OptionParents2.TryFinding(x => x.Item1.Contains(Name), out parents))
         {
-            parents = OptionParents2.Find(x => x.Item1.Contains(Name)).Item2;
-            result &= parents.AllAnyOrEmpty(IsActive, All);
+            LogFatal("2");
+            result &= parents.Item2.AllAnyOrEmpty(IsActive, All);
         }
 
+        LogFatal(Name);
         return result;
     }
 
@@ -116,6 +116,8 @@ public abstract class OptionAttribute(MultiMenu2 menu, CustomOptionType type) : 
             result = GameModeSettings.GameMode == mode;
         else if (option is LayerEnum layer)
             result = SettingsPatches.SettingsPage == 5 + (int)layer;
+        else if (option is int num)
+            result = SettingsPatches.SettingsPage == num;
         else if (option is (string, string))
         {
             if (!MapToLoaded.TryGetValue(ID, out result))

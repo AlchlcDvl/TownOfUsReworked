@@ -9,7 +9,7 @@ public partial class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
     public const string Name = "Reworked";
-    public const string VersionString = "0.6.7.0";
+    public const string VersionString = "0.7.0.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = true;

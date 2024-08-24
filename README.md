@@ -153,20 +153,20 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 
 | Among Us           | Mod Version | Download Link                                                                                   |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
-| 2024.6.18 (s & e)  | 0.6.7       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.7/Reworked.zip) |
-| 2024.3.5 (s & e)   | 0.6.6       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.6/Reworked.zip) |
-| 2023.11.28 (s & e) | 0.6.5       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.5/Reworked.zip) |
-| 2023.11.28 (s & e) | 0.6.4       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.4/Reworked.zip) |
-| 2023.11.28 (s & e) | 0.6.3       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.3/Reworked.zip) |
-| 2023.10.24 (s & e) | 0.6.2       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.2/Reworked.zip) |
-| 2023.10.24 (s & e) | 0.6.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.1/Reworked.zip) |
-| 2023.10.24 (s & e) | 0.6.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.0/Reworked.zip) |
+| 2024.8.13 (s & e)  | 0.7.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.7/Reworked.zip) |
 
 <details>
 <summary>Older Versions</summary>
 
 | Among Us           | Mod Version  | Download Link                                                                                                         |
 |--------------------|--------------|-----------------------------------------------------------------------------------------------------------------------|
+| 2024.3.5 (s & e)   | 0.6.6        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.6/Reworked.zip)                       |
+| 2023.11.28 (s & e) | 0.6.5        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.5/Reworked.zip)                       |
+| 2023.11.28 (s & e) | 0.6.4        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.4/Reworked.zip)                       |
+| 2023.11.28 (s & e) | 0.6.3        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.3/Reworked.zip)                       |
+| 2023.10.24 (s & e) | 0.6.2        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.2/Reworked.zip)                       |
+| 2023.10.24 (s & e) | 0.6.1        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.1/Reworked.zip)                       |
+| 2023.10.24 (s & e) | 0.6.0        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.0/Reworked.zip)                       |
 | 2023.7.12 (s & e)  | 0.5.4        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.4/Reworked.zip)                       |
 | 2023.7.12 (s & e)  | 0.5.3        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.3/Reworked.zip)                       |
 | 2023.7.12 (s & e)  | 0.5.2        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.2/Reworked.zip)                       |

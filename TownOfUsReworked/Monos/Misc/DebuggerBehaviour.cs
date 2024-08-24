@@ -37,7 +37,7 @@ public class DebuggerBehaviour : MonoBehaviour
 
                 if (GUILayout.Button("Spawn Bot"))
                 {
-                    if ((CustomPlayer.AllPlayers.Count < CustomGameOptions.LobbySize && TownOfUsReworked.LobbyCapped) || !TownOfUsReworked.LobbyCapped)
+                    if ((CustomPlayer.AllPlayers.Count < GameSettings.LobbySize && TownOfUsReworked.LobbyCapped) || (!TownOfUsReworked.LobbyCapped && CustomPlayer.AllPlayers.Count < 128))
                     {
                         MCIUtils.CleanUpLoad();
                         MCIUtils.CreatePlayerInstance();

@@ -333,7 +333,7 @@ public static class SettingsPatches
         var options = new List<MonoBehaviour>();
         var type = (MultiMenu2)SettingsPage;
 
-        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menu == type))
+        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menus.Contains(type)))
         {
             if (!option.Setting)
             {
@@ -500,7 +500,7 @@ public static class SettingsPatches
                 if (option.Setting)
                 {
                     var menu = (MultiMenu2)SettingsPage;
-                    var flag = (option.Menu == menu || option.Menus.Contains(menu)) && option.Active();
+                    var flag = option.Menus.Contains(menu) && option.Active();
                     option.Setting.gameObject.SetActive(flag);
 
                     if (!flag)
@@ -536,7 +536,7 @@ public static class SettingsPatches
                 if (option.Setting)
                 {
                     var menu = (MultiMenu2)SettingsPage;
-                    var flag = (option.Menu == menu || option.Menus.Contains(menu)) && option.Active();
+                    var flag = option.Menus.Contains(menu) && option.Active();
                     option.Setting.gameObject.SetActive(flag);
 
                     if (!flag)
@@ -915,7 +915,8 @@ public static class SettingsPatches
             var num = 1.44f;
             var num2 = -8.95f;
 
-            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menu is MultiMenu2.Main or MultiMenu2.Client).Cast<HeaderOptionAttribute>())
+            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menus.Any(y => y is MultiMenu2.Main or MultiMenu2.Client))
+                .Cast<HeaderOptionAttribute>())
             {
                 var categoryHeaderMasked = UObject.Instantiate(__instance.categoryHeaderOrigin, __instance.settingsContainer);
                 categoryHeaderMasked.transform.localScale = Vector3.one;
