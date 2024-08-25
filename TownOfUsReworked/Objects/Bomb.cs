@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Objects;
 
-public class Bomb(PlayerControl bomb, bool drived) : Range(bomb, CustomColorManager.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f), "Bomb")
+public class Bomb(PlayerControl bomb, bool drived) : Range(bomb, CustomColorManager.Bomber, Bomber.BombRange + (drived ? Bomber.ChaosDriveBombRange : 0f), "Bomb")
 {
     public bool Drived { get; set; } = drived;
 

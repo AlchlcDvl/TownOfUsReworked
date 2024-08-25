@@ -1,24 +1,24 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class BountyHunter : Neutral
 {
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BountyHunterCanPickTargets { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
     public static int BountyHunterGuesses { get; set; } = 5;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float GuessCd { get; set; } = 25f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BHVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool VigiKillsBH { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BHToTroll { get; set; } = true;
 
     public PlayerControl TargetPlayer { get; set; }
@@ -35,7 +35,7 @@ public class BountyHunter : Neutral
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private List<string> Letters { get; set; }
-    public bool CanHunt => TargetPlayer && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers));
+    public bool CanHunt => TargetPlayer && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !NeutralSettings.AvoidNeutralKingmakers));
     public bool CanRequest => RequestingPlayer.HasDied() && !TargetPlayer;
     public bool Assigned { get; set; }
     public int Rounds { get; set; }

@@ -1,8 +1,20 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Silencer : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float SilenceCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool WhispersNotPrivateSilencer { get; set; } = true;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool SilenceMates { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool SilenceRevealed { get; set; } = true;
+
     public CustomButton SilenceButton { get; set; }
     public PlayerControl SilencedPlayer { get; set; }
     public bool ShookAlready { get; set; }
@@ -13,16 +25,15 @@ public class Silencer : Syndicate
     public override string Name => "Silencer";
     public override LayerEnum Type => LayerEnum.Silencer;
     public override Func<string> StartText => () => "You Are The One Who Hushes";
-    public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say" + (CustomGameOptions.SilenceRevealed ? "\n- Everyone will be"  +
-        "alerted at the start of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") +
-        CommonAbilities;
+    public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say" + (SilenceRevealed ? "\n- Everyone will be alerted at the "  +
+        "start of the meeting that someone has been silenced " : "") + (WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
 
     public override void Init()
     {
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         SilencedPlayer = null;
-        SilenceButton = CreateButton(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(CustomGameOptions.SilenceCd), "SILENCE",
+        SilenceButton = CreateButton(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(SilenceCd), "SILENCE",
             (PlayerBodyExclusion)Exception1);
     }
 
@@ -39,8 +50,8 @@ public class Silencer : Syndicate
         SilenceButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !CustomGameOptions.SilenceMates) ||
-        (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.SilenceMates);
+    public bool Exception1(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !SilenceMates) ||
+        (player.Is(SubFaction) && SubFaction != SubFaction.None && !SilenceMates);
 
     public override void ReadRPC(MessageReader reader) => SilencedPlayer = reader.ReadPlayer();
 }

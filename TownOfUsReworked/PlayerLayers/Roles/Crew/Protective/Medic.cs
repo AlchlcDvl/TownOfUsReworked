@@ -1,15 +1,15 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Medic : Crew
 {
-    [StringOption(MultiMenu2.LayerSubOptions)]
+    [StringOption(MultiMenu.LayerSubOptions)]
     public static ShieldOptions ShowShielded { get; set; } = ShieldOptions.Self;
 
-    [StringOption(MultiMenu2.LayerSubOptions)]
+    [StringOption(MultiMenu.LayerSubOptions)]
     public static ShieldOptions WhoGetsNotification { get; set; } = ShieldOptions.Medic;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ShieldBreaks { get; set; } = true;
 
     public PlayerControl ShieldedPlayer { get; set; }

@@ -1,18 +1,18 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Dracula : Neutral
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float BiteCd { get; set; } = 25f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool DracVent { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 14, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
     public static int AliveVampCount { get; set; } = 3;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool UndeadVent { get; set; } = false;
 
     public CustomButton BiteButton { get; set; }

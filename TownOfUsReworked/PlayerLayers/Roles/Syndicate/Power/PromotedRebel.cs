@@ -150,7 +150,7 @@ public class PromotedRebel : Syndicate
                 shouldReset = true;
             }
 
-            if (CustomGameOptions.CollideResetsCooldown && shouldReset)
+            if (Collider.CollideResetsCooldown && shouldReset)
             {
                 PositiveButton.StartCooldown();
                 NegativeButton.StartCooldown();
@@ -164,78 +164,78 @@ public class PromotedRebel : Syndicate
     {
         if (IsConc)
         {
-            ConcealButton ??= CreateButton(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(CustomGameOptions.ConcealCd),
-                (LabelFunc)ConcLabel, new Duration(CustomGameOptions.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal, (UsableFunc)ConcealUsable);
+            ConcealButton ??= CreateButton(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(Concealer.ConcealCd),
+                (LabelFunc)ConcLabel, new Duration(Concealer.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal, (UsableFunc)ConcealUsable);
         }
         else if (IsDrunk)
         {
-            ConfuseButton ??= CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(CustomGameOptions.ConfuseCd),
-                new Duration(CustomGameOptions.ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (LabelFunc)DrunkLabel, (EndFunc)ConfuseEnd, (UsableFunc)DrunkUsable);
+            ConfuseButton ??= CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(Drunkard.ConfuseCd),
+                new Duration(Drunkard.ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (LabelFunc)DrunkLabel, (EndFunc)ConfuseEnd, (UsableFunc)DrunkUsable);
         }
         else if (IsFram)
         {
-            FrameButton ??= CreateButton(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(CustomGameOptions.FrameCd), "FRAME",
+            FrameButton ??= CreateButton(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(Framer.FrameCd), "FRAME",
                 (PlayerBodyExclusion)FrameException, (UsableFunc)FrameUsable1);
             RadialFrameButton ??= CreateButton(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, (UsableFunc)FrameUsable2, "FRAME",
-                new Cooldown(CustomGameOptions.FrameCd));
+                new Cooldown(Framer.FrameCd));
         }
         else if (IsSS)
         {
-            ShapeshiftButton ??= CreateButton(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(CustomGameOptions.ShapeshiftCd),
-                new Duration(CustomGameOptions.ShapeshiftDur), (EffectVoid)Shift, (EffectEndVoid)UnShapeshift, (LabelFunc)SSLabel, (UsableFunc)SSUsable);
+            ShapeshiftButton ??= CreateButton(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(Shapeshifter.ShapeshiftCd),
+                new Duration(Shapeshifter.ShapeshiftDur), (EffectVoid)Shift, (EffectEndVoid)UnShapeshift, (LabelFunc)SSLabel, (UsableFunc)SSUsable);
         }
         else if (IsSil)
         {
-            SilenceButton ??= CreateButton(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(CustomGameOptions.SilenceCd),
+            SilenceButton ??= CreateButton(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(Silencer.SilenceCd),
                 "SILENCE", (PlayerBodyExclusion)SilenceException, (UsableFunc)SilUsable);
         }
         else if (IsTK)
         {
-            TimeButton ??= CreateButton(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(CustomGameOptions.TimeCd),
-                (LabelFunc)TKLabel, new Duration(CustomGameOptions.TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl, (UsableFunc)TKUsable);
+            TimeButton ??= CreateButton(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(Timekeeper.TimeCd),
+                (LabelFunc)TKLabel, new Duration(Timekeeper.TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl, (UsableFunc)TKUsable);
         }
         else if (IsBomb)
         {
-            BombButton ??= CreateButton(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(CustomGameOptions.BombCd),
+            BombButton ??= CreateButton(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(Bomber.BombCd),
                 "PLACE BOMB", (ConditionFunc)BombCondition, (UsableFunc)BombUsable1);
-            DetonateButton ??= CreateButton(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(CustomGameOptions.DetonateCd),
+            DetonateButton ??= CreateButton(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(Bomber.DetonateCd),
                 "DETONATE", (UsableFunc)BombUsable2);
         }
         else if (IsCol)
         {
             PositiveButton ??= CreateButton(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetPositive, "SET POSITIVE", (UsableFunc)ColUsable1,
-                new Cooldown(CustomGameOptions.CollideCd), (PlayerBodyExclusion)PlusException);
-            NegativeButton ??= CreateButton(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)SetNegative, new Cooldown(CustomGameOptions.CollideCd),
+                new Cooldown(Collider.CollideCd), (PlayerBodyExclusion)PlusException);
+            NegativeButton ??= CreateButton(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)SetNegative, new Cooldown(Collider.CollideCd),
                 (PlayerBodyExclusion)MinusException, "SET NEGATIVE", (UsableFunc)ColUsable1);
-            ChargeButton ??= CreateButton(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Charge, new Cooldown(CustomGameOptions.ChargeCd), "CHARGE",
-                new Duration(CustomGameOptions.ChargeDur), (UsableFunc)ColUsable2, (EndFunc)ChargeEnd);
+            ChargeButton ??= CreateButton(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Charge, new Cooldown(Collider.ChargeCd), "CHARGE",
+                new Duration(Collider.ChargeDur), (UsableFunc)ColUsable2, (EndFunc)ChargeEnd);
         }
         else if (IsCrus)
         {
-            CrusadeButton ??= CreateButton(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Crusade, new Cooldown(CustomGameOptions.CrusadeCd),
-                "CRUSADE", new Duration(CustomGameOptions.CrusadeDur), (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)CrusadeException, (EndFunc)CrusadeEnd, (UsableFunc)CrusUsable);
+            CrusadeButton ??= CreateButton(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Crusade, new Cooldown(Crusader.CrusadeCd),
+                "CRUSADE", new Duration(Crusader.CrusadeDur), (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)CrusadeException, (EndFunc)CrusadeEnd, (UsableFunc)CrusUsable);
         }
         else if (IsPois)
         {
-            PoisonButton ??= CreateButton(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(CustomGameOptions.PoisonCd),
-                "POISON", new Duration(CustomGameOptions.PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)PoisonException, (UsableFunc)PoisUsable1, (EndFunc)PoisonEnd);
+            PoisonButton ??= CreateButton(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(Poisoner.PoisonCd),
+                "POISON", new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)PoisonException, (UsableFunc)PoisUsable1, (EndFunc)PoisonEnd);
             GlobalPoisonButton ??= CreateButton(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)PoisLabel,
-                new Cooldown(CustomGameOptions.PoisonCd), CustomGameOptions.PoisonDur, (EffectEndVoid)UnPoison, (UsableFunc)PoisUsable2, (EndFunc)PoisonEnd);
+                new Cooldown(Poisoner.PoisonCd), new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)PoisUsable2, (EndFunc)PoisonEnd);
         }
         else if (IsSpell)
         {
-            SpellButton ??= CreateButton(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(CustomGameOptions.SpellCd),
+            SpellButton ??= CreateButton(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(Spellslinger.SpellCd),
                 "SPELLBIND", (PlayerBodyExclusion)SpellException, (DifferenceFunc)SpellDifference, (UsableFunc)SpellUsable);
         }
         else if (IsStalk)
         {
-            StalkButton ??= CreateButton(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(CustomGameOptions.StalkCd), "STALK",
+            StalkButton ??= CreateButton(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(Stalker.StalkCd), "STALK",
                 (PlayerBodyExclusion)StalkException, (UsableFunc)StalkUsable);
         }
         else if (IsWarp)
         {
-            WarpButton ??= CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(CustomGameOptions.WarpCd),
-                (LabelFunc)WarpLabel, (UsableFunc)WarpUsable);
+            WarpButton ??= CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, (LabelFunc)WarpLabel, new Cooldown(Warper.WarpCd),
+                (UsableFunc)WarpUsable);
         }
     }
 
@@ -256,7 +256,7 @@ public class PromotedRebel : Syndicate
     {
         base.OnMeetingStart(__instance);
 
-        if (CustomGameOptions.BombsDetonateOnMeetingStart && IsBomb)
+        if (Bomber.BombsDetonateOnMeetingStart && IsBomb)
         {
             Bombs.ForEach(x => x.Detonate());
             Bombs.Clear();
@@ -333,8 +333,8 @@ public class PromotedRebel : Syndicate
     public CustomMenu ConcealMenu { get; set; }
     public bool IsConc => FormerRole?.Type == LayerEnum.Concealer;
 
-    public bool ConcealException(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !CustomGameOptions.ConcealMates && Faction is
-        Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.ConcealMates);
+    public bool ConcealException(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !Concealer.ConcealMates && Faction is Faction.Intruder or
+        Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !Concealer.ConcealMates);
 
     public void Conceal()
     {
@@ -416,7 +416,7 @@ public class PromotedRebel : Syndicate
 
     public void RadialFrame()
     {
-        GetClosestPlayers(Player.transform.position, CustomGameOptions.ChaosDriveFrameRadius).ForEach(RpcFrame);
+        GetClosestPlayers(Player.transform.position, Framer.ChaosDriveFrameRadius).ForEach(RpcFrame);
         RadialFrameButton.StartCooldown();
     }
 
@@ -494,12 +494,10 @@ public class PromotedRebel : Syndicate
     public bool IsSS => FormerRole?.Type == LayerEnum.Shapeshifter;
 
     public bool SSException1(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) &&
-        !CustomGameOptions.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&
-        !CustomGameOptions.ShapeshiftMates);
+        !Shapeshifter.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !Shapeshifter.ShapeshiftMates);
 
     public bool SSException2(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) &&
-        !CustomGameOptions.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&
-        !CustomGameOptions.ShapeshiftMates);
+        !Shapeshifter.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&  !Shapeshifter.ShapeshiftMates);
 
     public void Shift() => Shapeshifter.Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
 
@@ -580,7 +578,7 @@ public class PromotedRebel : Syndicate
         Bombs.Add(new(Player, HoldsDrive));
         BombButton.StartCooldown();
 
-        if (CustomGameOptions.BombCooldownsLinked)
+        if (Bomber.BombCooldownsLinked)
             DetonateButton.StartCooldown();
     }
 
@@ -590,7 +588,7 @@ public class PromotedRebel : Syndicate
         Bombs.Clear();
         DetonateButton.StartCooldown();
 
-        if (CustomGameOptions.BombCooldownsLinked)
+        if (Bomber.BombCooldownsLinked)
             BombButton.StartCooldown();
     }
 
@@ -615,10 +613,10 @@ public class PromotedRebel : Syndicate
     public Vent Vent { get; set; }
     public bool IsWarp => FormerRole?.Type == LayerEnum.Warper;
 
-    public bool WarpException1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
+    public bool WarpException1(PlayerControl player) => (player == Player && !Warper.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
         (!BodyById(player.PlayerId) && player.Data.IsDead) || player.IsMoving();
 
-    public bool WarpException2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
+    public bool WarpException2(PlayerControl player) => (player == Player && !Warper.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
         (!BodyById(player.PlayerId) && player.Data.IsDead) || player.IsMoving();
 
     public IEnumerator WarpPlayers()
@@ -670,7 +668,7 @@ public class PromotedRebel : Syndicate
         }
 
         if (CustomPlayer.Local == WarpPlayer1)
-            Flash(Color, CustomGameOptions.WarpDur);
+            Flash(Color, Warper.WarpDur);
 
         if (!Player1Body && !WasInVent)
             AnimateWarp();
@@ -681,7 +679,7 @@ public class PromotedRebel : Syndicate
         {
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
-            if (seconds < CustomGameOptions.WarpDur)
+            if (seconds < Warper.WarpDur)
                 yield return EndFrame();
             else
                 break;
@@ -756,7 +754,7 @@ public class PromotedRebel : Syndicate
         AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
         AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.WarpDur, p =>
+        HUD.StartCoroutine(PerformTimedAction(Warper.WarpDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -825,8 +823,8 @@ public class PromotedRebel : Syndicate
     public CustomButton CrusadeButton { get; set; }
     public bool IsCrus => FormerRole?.Type == LayerEnum.Crusader;
 
-    public bool CrusadeException(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !CustomGameOptions.CrusadeMates && Faction is Faction.Intruder or
-        Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.CrusadeMates);
+    public bool CrusadeException(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !Crusader.CrusadeMates && Faction is Faction.Intruder or Faction.Syndicate) ||
+        (player.Is(SubFaction) && SubFaction != SubFaction.None && !Crusader.CrusadeMates);
 
     public void UnCrusade() => CrusadedPlayer = null;
 
@@ -854,7 +852,7 @@ public class PromotedRebel : Syndicate
     public CustomButton ChargeButton { get; set; }
     public PlayerControl Positive { get; set; }
     public PlayerControl Negative { get; set; }
-    private float Range => CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
+    private float Range => Collider.CollideRange + (HoldsDrive ? Collider.CollideRangeIncrease : 0);
     public bool IsCol => FormerRole?.Type == LayerEnum.Collider;
 
     public bool PlusException(PlayerControl player) => player == Negative || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction
@@ -874,7 +872,7 @@ public class PromotedRebel : Syndicate
 
         PositiveButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.ChargeCooldownsLinked)
+        if (Collider.ChargeCooldownsLinked)
             NegativeButton.StartCooldown(cooldown);
     }
 
@@ -887,7 +885,7 @@ public class PromotedRebel : Syndicate
 
         NegativeButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.ChargeCooldownsLinked)
+        if (Collider.ChargeCooldownsLinked)
             PositiveButton.StartCooldown(cooldown);
     }
 
@@ -931,7 +929,7 @@ public class PromotedRebel : Syndicate
 
     public bool SpellUsable() => IsSpell;
 
-    public float SpellDifference() => SpellCount * CustomGameOptions.SpellCdIncrease;
+    public float SpellDifference() => SpellCount * Spellslinger.SpellCdIncrease;
 
     // Stalker Stuff
     public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
@@ -966,7 +964,7 @@ public class PromotedRebel : Syndicate
     public bool IsDrunk => FormerRole?.Type == LayerEnum.Drunkard;
 
     public bool DrunkException(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
-        !CustomGameOptions.ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.ConfuseImmunity);
+        !Drunkard.ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !Drunkard.ConfuseImmunity);
 
     public void StartConfusion()
     {
@@ -1013,7 +1011,7 @@ public class PromotedRebel : Syndicate
     public CustomButton TimeButton { get; set; }
     public bool IsTK => FormerRole?.Type == LayerEnum.Timekeeper;
 
-    public void ControlStart() => Flash(Color, CustomGameOptions.TimeDur);
+    public void ControlStart() => Flash(Color, Timekeeper.TimeDur);
 
     public void Control()
     {
@@ -1041,8 +1039,8 @@ public class PromotedRebel : Syndicate
     public UColor? PrevColor { get; set; }
     public bool IsSil => FormerRole?.Type == LayerEnum.Silencer;
 
-    public bool SilenceException(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
-        !CustomGameOptions.SilenceMates) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.SilenceMates);
+    public bool SilenceException(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !Silencer.SilenceMates) ||
+        (player.Is(SubFaction) && SubFaction != SubFaction.None && !Silencer.SilenceMates);
 
     public void Silence()
     {

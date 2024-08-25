@@ -1,39 +1,39 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class GuardianAngel : Neutral
 {
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuardianAngelCanPickTargets { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float ProtectCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static float ProtectDur { get; set; } = 10f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
     public static int MaxProtects { get; set; } = 5;
 
-    [StringOption(MultiMenu2.LayerSubOptions)]
+    [StringOption(MultiMenu.LayerSubOptions)]
     public static ProtectOptions ShowProtect { get; set; } = ProtectOptions.Self;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GATargetKnows { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ProtectBeyondTheGrave { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GAKnowsTargetRole { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GAVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GASwitchVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GAToSurv { get; set; } = true;
 
     public PlayerControl TargetPlayer { get; set; }

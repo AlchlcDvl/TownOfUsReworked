@@ -1,8 +1,20 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Teleporter : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float TeleportCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float TeleMarkCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool TeleCooldownsLinked { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool TeleVent { get; set; } = false;
+
     public CustomButton TeleportButton { get; set; }
     public CustomButton MarkButton { get; set; }
     public Vector3 TeleportPoint { get; set; }
@@ -18,10 +30,10 @@ public class Teleporter : Intruder
         BaseStart();
         Alignment = Alignment.IntruderSupport;
         TeleportPoint = Vector3.zero;
-        MarkButton = CreateButton(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(CustomGameOptions.TeleMarkCd), "MARK POSITION",
+        MarkButton = CreateButton(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(TeleMarkCd), "MARK POSITION",
             (ConditionFunc)Condition1);
-        TeleportButton = CreateButton(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(CustomGameOptions.TeleportCd),
-            "TELEPORT", (UsableFunc)Usable, (ConditionFunc)Condition2);
+        TeleportButton = CreateButton(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(TeleportCd), "TELEPORT",
+            (UsableFunc)Usable, (ConditionFunc)Condition2);
     }
 
     public void Mark()
@@ -29,7 +41,7 @@ public class Teleporter : Intruder
         TeleportPoint = Player.transform.position;
         MarkButton.StartCooldown();
 
-        if (CustomGameOptions.TeleCooldownsLinked)
+        if (TeleCooldownsLinked)
             TeleportButton.StartCooldown();
     }
 
@@ -39,7 +51,7 @@ public class Teleporter : Intruder
         Flash(Color);
         TeleportButton.StartCooldown();
 
-        if (CustomGameOptions.TeleCooldownsLinked)
+        if (TeleCooldownsLinked)
             MarkButton.StartCooldown();
     }
 

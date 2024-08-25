@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Politician : Ability
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 10, 1)]
+    public static int PoliticianVoteBank { get; set; } = 0;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool PoliticianButton { get; set; } = true;
+
     public List<byte> ExtraVotes { get; set; }
     public int VoteBank { get; set; }
     public bool SelfVote { get; set; }
@@ -19,7 +25,7 @@ public class Politician : Ability
 
     public override void Init()
     {
-        VoteBank = CustomGameOptions.PoliticianVoteBank;
+        VoteBank = PoliticianVoteBank;
         ExtraVotes = [];
     }
 

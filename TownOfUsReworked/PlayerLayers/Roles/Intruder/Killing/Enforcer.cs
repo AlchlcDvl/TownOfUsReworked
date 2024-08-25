@@ -1,8 +1,20 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Enforcer : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float EnforceCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float EnforceDur { get; set; } = 10f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
+    public static float EnforceDelay { get; set; } = 5f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
+    public static float EnforceRadius { get; set; } = 1.5f;
+
     public CustomButton BombButton { get; set; }
     public PlayerControl BombedPlayer { get; set; }
     public bool BombSuccessful { get; set; }
@@ -12,16 +24,15 @@ public class Enforcer : Intruder
     public override LayerEnum Type => LayerEnum.Enforcer;
     public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
-        $"{CustomGameOptions.EnforceDur}s, the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
+        $"{EnforceDur}s, the bomb will detonate and kill everyone within a {EnforceRadius}m radius\n{CommonAbilities}";
 
     public override void Init()
     {
         BaseStart();
         Alignment = Alignment.IntruderKill;
         BombedPlayer = null;
-        BombButton = CreateButton(this, new SpriteName("Enforce"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Bomb, new Cooldown(CustomGameOptions.EnforceCd),
-            new Duration(CustomGameOptions.EnforceDur), (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(CustomGameOptions.EnforceDelay), (PlayerBodyExclusion)Exception1,
-            new CanClickAgain(false), (EndFunc)EndEffect, "SET BOMB");
+        BombButton = CreateButton(this, new SpriteName("Enforce"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Bomb, new Cooldown(EnforceCd), "SET BOMB", new Duration(EnforceDur),
+            (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(EnforceDelay), (PlayerBodyExclusion)Exception1, new CanClickAgain(false), (EndFunc)EndEffect);
     }
 
     public void BoomStart()
@@ -45,7 +56,7 @@ public class Enforcer : Intruder
 
     public static void Explode(PlayerControl centre, PlayerControl enf)
     {
-        foreach (var player in GetClosestPlayers(centre.transform.position, CustomGameOptions.EnforceRadius))
+        foreach (var player in GetClosestPlayers(centre.transform.position, EnforceRadius))
         {
             if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
                 RpcMurderPlayer(enf, player, DeathReasonEnum.Bombed, false);

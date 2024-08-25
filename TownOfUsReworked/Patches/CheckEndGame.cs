@@ -85,11 +85,11 @@ public static class CheckEndGame
             CallRpc(CustomRPC.WinLose, winLose);
             EndGame();
         }
-        else if (Sabotaged() && CustomGameOptions.IntrudersCanSabotage)
+        else if (Sabotaged() && IntruderSettings.IntrudersCanSabotage)
         {
             var winLose = WinLoseRPC.NobodyWins;
 
-            if (CustomGameOptions.AltImps)
+            if (SyndicateSettings.AltImps)
             {
                 winLose = WinLoseRPC.SyndicateWin;
                 Role.SyndicateWin = true;
@@ -122,7 +122,7 @@ public static class CheckEndGame
         {
             var player1 = players[0];
             var player2 = players[1];
-            var nosolo = CustomGameOptions.NoSolo == NoSolo.Never;
+            var nosolo = NeutralSettings.NoSolo == NoSolo.Never;
             var nobuttons1 = player1.RemainingEmergencies == 0;
             var nobuttons2 = player2.RemainingEmergencies == 0;
             var nobuttons = nobuttons1 && nobuttons2;

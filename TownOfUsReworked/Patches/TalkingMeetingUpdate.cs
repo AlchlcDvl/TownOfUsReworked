@@ -45,7 +45,7 @@ public static class MeetingHud_Update
 
     public static void Postfix(MeetingHud __instance)
     {
-        if (CustomGameOptions.BMRevealed)
+        if (Blackmailer.BMRevealed)
         {
             foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
             {
@@ -96,7 +96,7 @@ public static class MeetingHud_Update
             }
         }
 
-        if (CustomGameOptions.SilenceRevealed)
+        if (Silencer.SilenceRevealed)
         {
             foreach (var role in PlayerLayer.GetLayers<Silencer>())
             {

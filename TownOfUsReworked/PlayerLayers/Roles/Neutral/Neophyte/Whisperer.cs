@@ -1,33 +1,33 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Whisperer : Neutral
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float WhisperCd { get; set; } = 25f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool WhisperCdIncreases { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
     public static float WhisperCdIncrease { get; set; } = 5f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
     public static float WhisperRadius { get; set; } = 1.5f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 5, 50, 5, Format.Percent)]
+    [NumberOption(MultiMenu.LayerSubOptions, 5, 50, 5, Format.Percent)]
     public static int WhisperRate { get; set; } = 5;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool WhisperRateDecreases { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 5, 50, 5, Format.Percent)]
+    [NumberOption(MultiMenu.LayerSubOptions, 5, 50, 5, Format.Percent)]
     public static int WhisperRateDecrease { get; set; } = 5;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool WhispVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PersuadedVent { get; set; } = false;
 
     public CustomButton WhisperButton { get; set; }

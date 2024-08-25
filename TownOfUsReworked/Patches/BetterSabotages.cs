@@ -1,25 +1,25 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-[HeaderOption(MultiMenu2.Main)]
+[HeaderOption(MultiMenu.Main)]
 public static class BetterSabotages
 {
-    [ToggleOption(MultiMenu2.Main)]
+    [ToggleOption(MultiMenu.Main)]
     public static bool CamouflagedComms { get; set; } = true;
 
-    [ToggleOption(MultiMenu2.Main)]
+    [ToggleOption(MultiMenu.Main)]
     public static bool CamouflagedMeetings { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.Main)]
+    [ToggleOption(MultiMenu.Main)]
     public static bool NightVision { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.Main)]
+    [ToggleOption(MultiMenu.Main)]
     public static bool EvilsIgnoreNV { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.Main)]
+    [ToggleOption(MultiMenu.Main)]
     public static bool OxySlow { get; set; } = true;
 
-    [NumberOption(MultiMenu2.Main, 0, 100, 5, Format.Percent)]
+    [NumberOption(MultiMenu.Main, 0, 100, 5, Format.Percent)]
     public static int ReactorShake { get; set; } = 30;
 
     public static void Postfix(HudManager __instance)

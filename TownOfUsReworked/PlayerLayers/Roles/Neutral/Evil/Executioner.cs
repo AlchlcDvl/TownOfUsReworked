@@ -1,36 +1,36 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Executioner : Neutral
 {
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExecutionerCanPickTargets { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExecutionerButton { get; set; } = true;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExeVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExeSwitchVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExeTargetKnows { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExeKnowsTargetRole { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExeEjectScreen { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExeCanWinBeyondDeath { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool VigiKillsExecutioner { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExeToJest { get; set; } = true;
 
     public PlayerControl TargetPlayer { get; set; }
@@ -38,7 +38,7 @@ public class Executioner : Neutral
     public List<byte> ToDoom { get; set; }
     public bool HasDoomed { get; set; }
     public CustomButton DoomButton { get; set; }
-    public bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !CustomGameOptions.AvoidNeutralKingmakers;
+    public bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !NeutralSettings.AvoidNeutralKingmakers;
     public bool Failed => !TargetVotedOut && TargetPlayer.HasDied();
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
@@ -65,7 +65,7 @@ public class Executioner : Neutral
                 (UsableFunc)Usable2);
         }
 
-        if (!CustomGameOptions.AvoidNeutralKingmakers)
+        if (!NeutralSettings.AvoidNeutralKingmakers)
         {
             DoomButton = CreateButton(this, new SpriteName("Doom"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Doom, (PlayerBodyExclusion)Exception1, "DOOM",
                 (UsableFunc)Usable1);

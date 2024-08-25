@@ -1,27 +1,27 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Vigilante : Crew
 {
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool MisfireKillsInno { get; set; } = true;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool VigiKillAgain { get; set; } = true;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RoundOneNoShot { get; set; } = true;
 
-    [StringOption(MultiMenu2.LayerSubOptions)]
+    [StringOption(MultiMenu.LayerSubOptions)]
     public static VigiOptions HowDoesVigilanteDie { get; set; } = VigiOptions.Immediate;
 
-    [StringOption(MultiMenu2.LayerSubOptions)]
+    [StringOption(MultiMenu.LayerSubOptions)]
     public static VigiNotif HowIsVigilanteNotified { get; set; } = VigiNotif.Never;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
     public static int MaxBullets { get; set; } = 5;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float ShootCd { get; set; } = 25f;
 
     public bool KilledInno { get; set; }
@@ -69,7 +69,7 @@ public class Vigilante : Crew
         var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or
             Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || (target.Is(LayerEnum.Jester) && Jester.VigiKillsJester) || Player.IsFramed() ||
             (target.Is(LayerEnum.Executioner) && Executioner.VigiKillsExecutioner) || (target.Is(LayerEnum.Cannibal) && Cannibal.VigiKillsCannibal) || target.IsFramed() ||
-            (target.Is(Alignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.Is(LayerEnum.Corrupted) ||
+            (target.Is(Alignment.NeutralBen) && NeutralBenignSettings.VigilanteKillsBenigns) || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.Is(LayerEnum.Corrupted) ||
             (target.Is(LayerEnum.Actor) && Actor.VigiKillsActor) || (target.Is(LayerEnum.BountyHunter) && BountyHunter.VigiKillsBH);
         var cooldown = Interact(Player, target, flag4);
 

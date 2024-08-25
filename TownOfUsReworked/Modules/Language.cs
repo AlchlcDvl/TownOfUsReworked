@@ -26,14 +26,14 @@ public class Language : Asset
             {
                 if (English != null)
                 {
-                    LogError($"Selected language is unsupported {lang}");
+                    LogError($"Selected language is unsupported {lang} ({GetIDs()})");
                     return English;
                 }
                 else
                     throw new UnsupportedLanguageException(lang);
             }
             else
-                return result;
+                return result ?? English ?? "Error";
         }
         set
         {
@@ -44,6 +44,20 @@ public class Language : Asset
             else
                 throw new UnsupportedLanguageException(lang);
         }
+    }
+
+    public string GetIDs()
+    {
+        if (ID != null)
+            return ID;
+        else if (IDs != null)
+        {
+            var result = "";
+            IDs.ForEach(x => result += $"{x} ");
+            return result;
+        }
+
+        return "Error";
     }
 
     public override string ToString()

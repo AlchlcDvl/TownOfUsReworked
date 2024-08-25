@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Fanatic : Objectifier
 {
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool FanaticKnows { get; set; } = true;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool FanaticColourSwap { get; set; } = false;
+
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }
     public Faction Side { get; set; }
@@ -30,7 +36,7 @@ public class Fanatic : Objectifier
     public override LayerEnum Type => LayerEnum.Fanatic;
     public override Func<string> Description => () => !Turned ? "- Get attacked by either an <color=#FF1919FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side" :
         "";
-    public override bool Hidden => !CustomGameOptions.FanaticKnows && !Turned && !Dead;
+    public override bool Hidden => !FanaticKnows && !Turned && !Dead;
 
     public override void Init()
     {
@@ -63,9 +69,9 @@ public class Fanatic : Objectifier
 
         foreach (var snitch in GetLayers<Snitch>())
         {
-            if (CustomGameOptions.SnitchSeesFanatic)
+            if (Snitch.SnitchSeesFanatic)
             {
-                if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && Local)
+                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
                     Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                     snitch.Player.GetRole().AllArrows.Add(PlayerId, new(snitch.Player, CustomColorManager.Snitch));
@@ -74,7 +80,7 @@ public class Fanatic : Objectifier
 
         foreach (var revealer in GetLayers<Revealer>())
         {
-            if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && Local)
+            if (revealer.Revealed && Revealer.RevealerRevealsTraitor && Local)
                 Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
         }
 

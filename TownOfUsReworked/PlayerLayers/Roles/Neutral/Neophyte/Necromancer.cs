@@ -1,45 +1,45 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Necromancer : Neutral
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float ResurrectCd { get; set; } = 25f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ResurrectCdIncreases { get; set; } = true;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
     public static float ResurrectCdIncrease { get; set; } = 5f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 14, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
     public static int MaxResurrections { get; set; } = 5;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float NecroKillCd { get; set; } = 25f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool NecroKillCdIncreases { get; set; } = true;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
     public static float NecroKillCdIncrease { get; set; } = 5f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 14, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
     public static int MaxNecroKills { get; set; } = 5;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool NecroCooldownsLinked { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool NecromancerTargetBody { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
     public static float ResurrectDur { get; set; } = 10f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool NecroVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ResurrectVent { get; set; } = false;
 
     public DeadBody ResurrectingBody { get; set; }
@@ -93,7 +93,7 @@ public class Necromancer : Neutral
         ResurrectedCount++;
         player.Revive();
 
-        if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+        if (player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
         {
             var lover = player.GetOtherLover();
             var loverRole = lover.GetRole();

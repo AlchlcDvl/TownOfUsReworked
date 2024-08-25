@@ -1,18 +1,18 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Camouflager : Intruder
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float CamouflageCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static float CamouflageDur { get; set; } = 10f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CamoHideSize { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CamoHideSpeed { get; set; } = false;
 
     public CustomButton CamouflageButton { get; set; }
@@ -29,7 +29,7 @@ public class Camouflager : Intruder
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         CamouflageButton = CreateButton(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
-            new Cooldown(CustomGameOptions.CamouflagerCd), new Duration(CustomGameOptions.CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage);
+            new Cooldown(CamouflageCd), new Duration(CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage);
         Data.Role.IntroSound = GetAudio("CamouflagerIntro");
     }
 

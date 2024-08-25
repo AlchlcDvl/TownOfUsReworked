@@ -79,10 +79,10 @@ public static class ButtonUtils
         if (!player.Is(LayerEnum.Underdog))
             return 0f;
 
-        if (CustomGameOptions.UnderdogIncreasedKC && !Last(player))
-            return CustomGameOptions.UnderdogKillBonus;
+        if (Underdog.UnderdogIncreasedKC && !Last(player))
+            return Underdog.UnderdogKillBonus;
         else if (Last(player))
-            return -CustomGameOptions.UnderdogKillBonus;
+            return -Underdog.UnderdogKillBonus;
         else
             return 0f;
     }
@@ -99,12 +99,12 @@ public static class ButtonUtils
         var num = 1f;
 
         if (player.Is(LayerEnum.PromotedGodfather))
-            num *= CustomGameOptions.GFPromotionCdDecrease;
+            num *= Godfather.GFPromotionCdDecrease;
         if (player.Is(LayerEnum.PromotedRebel))
-            num *= CustomGameOptions.RebPromotionCdDecrease;
+            num *= Rebel.RebPromotionCdDecrease;
 
         if (player.Diseased())
-            num *= CustomGameOptions.DiseasedMultiplier;
+            num *= Diseased.DiseasedMultiplier;
 
         return num;
     }
@@ -226,7 +226,7 @@ public static class ButtonUtils
             conc.ConcealedPlayer = null;
         else if (role is Silencer sil)
             sil.SilencedPlayer = null;
-        else if (role is Bomber bomb && CustomGameOptions.BombsRemoveOnNewRound && meeting)
+        else if (role is Bomber bomb && Bomber.BombsRemoveOnNewRound && meeting)
         {
             bomb.Bombs.ForEach(x => x.Destroy());
             bomb.Bombs.Clear();
@@ -250,7 +250,7 @@ public static class ButtonUtils
             reb.SilencedPlayer = null;
             reb.CrusadedPlayer = null;
 
-            if (CustomGameOptions.BombsRemoveOnNewRound && meeting)
+            if (Bomber.BombsRemoveOnNewRound && meeting)
             {
                 reb.Bombs.ForEach(x => x.Destroy());
                 reb.Bombs.Clear();

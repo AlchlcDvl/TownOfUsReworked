@@ -100,11 +100,11 @@ public static class CompleteTasksPatch
         {
             var role = __instance.GetLayer<Snitch>();
 
-            if (role.TasksLeft == CustomGameOptions.SnitchTasksRemaining)
+            if (role.TasksLeft == Snitch.SnitchTasksRemaining)
             {
                 if (CustomPlayer.Local == __instance)
                     Flash(role.Color);
-                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
+                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))
                 {
                     Flash(role.Color);
                     Role.LocalRole.AllArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
@@ -115,10 +115,10 @@ public static class CompleteTasksPatch
                 if (CustomPlayer.Local == __instance)
                 {
                     Flash(UColor.green);
-                    CustomPlayer.AllPlayers.Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
+                    CustomPlayer.AllPlayers.Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))
                         .ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(__instance, role.Color)));
                 }
-                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
+                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))
                     Flash(UColor.red);
             }
         }
@@ -138,7 +138,7 @@ public static class CompleteTasksPatch
         {
             var role = __instance.GetLayer<Taskmaster>();
 
-            if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
+            if (role.TasksLeft == Taskmaster.TMTasksRemaining)
             {
                 if (CustomPlayer.Local == __instance || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is Alignment.NeutralBen or Alignment.NeutralEvil)
                     Flash(role.Color);

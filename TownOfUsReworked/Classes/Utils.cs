@@ -130,10 +130,10 @@ public static class Utils
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
 
-                if (CustomGameOptions.CamoHideSize)
+                if (Camouflager.CamoHideSize)
                     TransitioningSize[player.PlayerId] = Mathf.Lerp(1f, player.GetSize(), p);
 
-                if (CustomGameOptions.CamoHideSpeed)
+                if (Camouflager.CamoHideSpeed)
                     TransitioningSpeed[player.PlayerId] = Mathf.Lerp(1f, player.GetSpeed(), p);
 
                 if (p == 1)
@@ -203,10 +203,10 @@ public static class Utils
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
 
-                if (CustomGameOptions.CamoHideSize)
+                if (Camouflager.CamoHideSize)
                     TransitioningSize[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), 1f, p);
 
-                if (CustomGameOptions.CamoHideSpeed)
+                if (Camouflager.CamoHideSpeed)
                     TransitioningSpeed[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), 1f, p);
 
                 if (p == 1)
@@ -488,7 +488,7 @@ public static class Utils
         {
             var lover = target.GetOtherLover();
 
-            if (!lover.Is(Alignment.NeutralApoc) && CustomGameOptions.BothLoversDie && !lover.HasDied())
+            if (!lover.Is(Alignment.NeutralApoc) && Lovers.BothLoversDie && !lover.HasDied())
                 RpcMurderPlayer(lover);
         }
 
@@ -500,14 +500,8 @@ public static class Utils
         if (killer.TryGetLayer<Politician>(out var poli))
             poli.VoteBank++;
 
-        if (target.TryGetLayer<Troll>(out var troll) && AmongUsClient.Instance.AmHost)
-        {
-            // troll.Killed = true;
-            // CallRpc(CustomRPC.WinLose, WinLoseRPC.TrollWin, troll);
-
-            if (!CustomGameOptions.AvoidNeutralKingmakers)
-                RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
-        }
+        if (target.TryGetLayer<Troll>(out var troll) && AmongUsClient.Instance.AmHost && !NeutralSettings.AvoidNeutralKingmakers)
+            RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
 
         if (Meeting)
             MarkMeetingDead(target, killer);
@@ -716,7 +710,7 @@ public static class Utils
         if (!killer || !target || killer == target)
             yield break;
 
-        yield return Wait(URandom.RandomRange(CustomGameOptions.BaitMinDelay, CustomGameOptions.BaitMaxDelay));
+        yield return Wait(URandom.RandomRange(Bait.BaitMinDelay, Bait.BaitMaxDelay));
 
         if (BodyById(target.PlayerId))
         {

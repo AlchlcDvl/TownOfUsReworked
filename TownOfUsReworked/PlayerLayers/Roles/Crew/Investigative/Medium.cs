@@ -1,21 +1,21 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Medium : Crew
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float MediateCd { get; set; } = 25f;
 
-    // [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    // [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     // public static float SeanceCd { get; set; } = 25f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ShowMediatePlayer { get; set; } = true;
 
-    [StringOption(MultiMenu2.LayerSubOptions)]
+    [StringOption(MultiMenu.LayerSubOptions)]
     public static ShowMediumToDead ShowMediumToDead { get; set; } = ShowMediumToDead.No;
 
-    [StringOption(MultiMenu2.LayerSubOptions)]
+    [StringOption(MultiMenu.LayerSubOptions)]
     public static DeadRevealed DeadRevealed { get; set; } = DeadRevealed.Oldest;
 
     public Dictionary<byte, CustomArrow> MediateArrows { get; set; }

@@ -1,21 +1,21 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Pestilence : Neutral
 {
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PestSpawn { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PlayersAlerted { get; set; } = true;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float ObliterateCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 2, 10, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 2, 10, 1)]
     public static int MaxStacks { get; set; } = 4;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PestVent { get; set; } = true;
 
     private CustomButton ObliterateButton { get; set; }

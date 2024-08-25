@@ -63,7 +63,7 @@ public static class SetPostmortals
             {
                 var lover = exiled.GetOtherLover();
 
-                if (!lover.Is(LayerEnum.Pestilence) && CustomGameOptions.BothLoversDie)
+                if (!lover.Is(Alignment.NeutralApoc) && Lovers.BothLoversDie)
                     lover?.Exiled();
             }
         }

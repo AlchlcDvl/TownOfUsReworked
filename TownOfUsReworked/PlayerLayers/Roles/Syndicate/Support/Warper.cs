@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Warper : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float WarpCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
+    public static float WarpDur { get; set; } = 5f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool WarpSelf { get; set; } = true;
+
     public CustomButton WarpButton { get; set; }
     public PlayerControl WarpPlayer1 { get; set; }
     public PlayerControl WarpPlayer2 { get; set; }
@@ -31,7 +40,7 @@ public class Warper : Syndicate
         WarpPlayer2 = null;
         WarpMenu1 = new(Player, Click1, Exception1);
         WarpMenu2 = new(Player, Click2, Exception2);
-        WarpButton = CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(CustomGameOptions.WarpCd), (LabelFunc)Label);
+        WarpButton = CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;
         WasInVent = false;
@@ -95,7 +104,7 @@ public class Warper : Syndicate
         }
 
         if (CustomPlayer.Local == WarpPlayer1)
-            Flash(Color, CustomGameOptions.WarpDur);
+            Flash(Color, WarpDur);
 
         if (!Player1Body && !WasInVent)
             AnimateWarp();
@@ -106,7 +115,7 @@ public class Warper : Syndicate
         {
             var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
-            if (seconds < CustomGameOptions.WarpDur)
+            if (seconds < WarpDur)
                 yield return EndFrame();
             else
                 break;
@@ -195,11 +204,11 @@ public class Warper : Syndicate
             WarpButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
-        (!BodyById(player.PlayerId) && player.Data.IsDead) || player.IsMoving();
+    public bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 || player.IsMoving() ||
+        (!BodyById(player.PlayerId) && player.Data.IsDead);
 
-    public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
-        (!BodyById(player.PlayerId) && player.Data.IsDead) || player.IsMoving();
+    public bool Exception2(PlayerControl player) => (player == Player && !WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 || player.IsMoving() ||
+        (!BodyById(player.PlayerId) && player.Data.IsDead);
 
     public void AnimateWarp()
     {
@@ -207,7 +216,7 @@ public class Warper : Syndicate
         AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
         AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(CustomGameOptions.WarpDur, p =>
+        HUD.StartCoroutine(PerformTimedAction(WarpDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);

@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Miner : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float MineCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool MinerSpawnOnMira { get; set; } = true;
+
     public CustomButton MineButton { get; set; }
     public List<Vent> Vents { get; set; }
 
@@ -17,7 +23,7 @@ public class Miner : Intruder
     {
         BaseStart();
         Alignment = Alignment.IntruderSupport;
-        MineButton = CreateButton(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mine, new Cooldown(CustomGameOptions.MineCd), (LabelFunc)Label,
+        MineButton = CreateButton(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mine, new Cooldown(MineCd), (LabelFunc)Label,
             (ConditionFunc)Condition);
         Vents = [];
     }

@@ -1,21 +1,21 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Thief : Neutral
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float StealCd { get; set; } = 25f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ThiefSteals { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ThiefCanGuess { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ThiefCanGuessAfterVoting { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ThiefVent { get; set; } = false;
 
     public CustomButton StealButton { get; set; }
@@ -78,7 +78,7 @@ public class Thief : Neutral
             }
         }
 
-        if (!CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0 && CustomGameOptions.IntruderMax > 0 && CustomGameOptions.IntruderMin > 0)
+        if (!SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
         {
             for (var h = 52; h < 70; h++)
             {
@@ -102,7 +102,7 @@ public class Thief : Neutral
             }
         }
 
-        if (CustomGameOptions.SyndicateCount > 0)
+        if (SyndicateSettings.SyndicateCount > 0)
         {
             for (var h = 70; h < 88; h++)
             {
@@ -120,7 +120,7 @@ public class Thief : Neutral
             }
         }
 
-        if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
+        if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0)
         {
             var nks = new List<LayerEnum>() { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac,
                 LayerEnum.Werewolf, LayerEnum.BountyHunter, LayerEnum.Plaguebearer };
@@ -483,11 +483,11 @@ public class Thief : Neutral
             new Thief().Start<Role>(other).RoleUpdate(role, true);
         }
 
-        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals))
+        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals))
         {
             foreach (var snitch in GetLayers<Snitch>())
             {
-                if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == player)
+                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && CustomPlayer.Local == player)
                     LocalRole.AllArrows.Add(snitch.PlayerId, new(player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                     snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
@@ -551,7 +551,7 @@ public class Thief : Neutral
         {
             MarkMeetingDead(player, Player);
 
-            if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+            if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
             {
                 var otherLover = player.GetOtherLover();
 

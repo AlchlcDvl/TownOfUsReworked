@@ -1,24 +1,24 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Janitor : Intruder
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float CleanCd { get; set; } = 25f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool JaniCooldownsLinked { get; set; } = true;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool SoloBoost { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float DragCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 0.25f, 3f, 0.25f, Format.Multiplier)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0.25f, 3f, 0.25f, Format.Multiplier)]
     public static float DragModifier { get; set; } = 0.5f;
 
-    [StringOption(MultiMenu2.LayerSubOptions)]
+    [StringOption(MultiMenu.LayerSubOptions)]
     public static JanitorOptions JanitorVentOptions { get; set; } = JanitorOptions.Never;
 
     public CustomButton CleanButton { get; set; }
@@ -38,11 +38,10 @@ public class Janitor : Intruder
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
-        DragButton = CreateButton(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(CustomGameOptions.DragCd), "DRAG BODY",
-            (UsableFunc)Usable1);
+        DragButton = CreateButton(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
         DropButton = CreateButton(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
-        CleanButton = CreateButton(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CustomGameOptions.CleanCd), "CLEAN BODY",
-            (UsableFunc)Usable1, (DifferenceFunc)Difference);
+        CleanButton = CreateButton(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
+            (UsableFunc)Usable1);
     }
 
     public void Clean()
@@ -52,7 +51,7 @@ public class Janitor : Intruder
         FadeBody(CleanButton.TargetBody);
         CleanButton.StartCooldown();
 
-        if (CustomGameOptions.JaniCooldownsLinked)
+        if (JaniCooldownsLinked)
             KillButton.StartCooldown();
     }
 
@@ -79,7 +78,7 @@ public class Janitor : Intruder
 
     public bool Usable2() => DragHandler.Instance.Dragging.ContainsKey(PlayerId);
 
-    public float Difference() => LastImp && CustomGameOptions.SoloBoost && !Dead ? -CustomGameOptions.UnderdogKillBonus : 0;
+    public float Difference() => LastImp && SoloBoost && !Dead ? -Underdog.UnderdogKillBonus : 0;
 
     public override void ReadRPC(MessageReader reader)
     {

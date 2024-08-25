@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Concealer : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ConcealCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float ConcealDur { get; set; } = 10f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool ConcealMates { get; set; } = false;
+
     public CustomButton ConcealButton { get; set; }
     public PlayerControl ConcealedPlayer { get; set; }
     public CustomMenu ConcealMenu { get; set; }
@@ -19,8 +28,8 @@ public class Concealer : Syndicate
         Alignment = Alignment.SyndicateDisrup;
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;
-        ConcealButton = CreateButton(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(CustomGameOptions.ConcealCd),
-            (LabelFunc)Label, new Duration(CustomGameOptions.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal);
+        ConcealButton = CreateButton(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(ConcealCd), (EffectVoid)Conceal,
+            (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal);
     }
 
     public void Conceal()
@@ -67,8 +76,8 @@ public class Concealer : Syndicate
         }
     }
 
-    public bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !CustomGameOptions.ConcealMates && Faction is Faction.Intruder or
-        Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.ConcealMates);
+    public bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !ConcealMates && Faction is Faction.Intruder or Faction.Syndicate)
+        || (player.Is(SubFaction) && SubFaction != SubFaction.None && !ConcealMates);
 
     public string Label() => ConcealedPlayer || HoldsDrive ? "CONCEAL" : "SET TARGET";
 

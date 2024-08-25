@@ -133,7 +133,6 @@ public static class UpdateSplashPatch
         ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
 
         Generate.GenerateAll();
-        Generate2.GenerateAll();
         Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();
 

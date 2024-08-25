@@ -36,8 +36,8 @@ public static class RPCHandling
 
                         if (whispered == CustomPlayer.Local)
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
-                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivate) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer)
-                            && CustomGameOptions.WhispersNotPrivateSilencer))
+                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivate) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
+                            Silencer.WhispersNotPrivateSilencer))
                         {
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name} : {message}");
                         }
@@ -125,18 +125,18 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
                         TownOfUsReworked.NormalOptions.CrewLightMod = CrewSettings.CrewVision;
-                        TownOfUsReworked.NormalOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
+                        TownOfUsReworked.NormalOptions.ImpostorLightMod = IntruderSettings.IntruderVision;
                         TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
                         TownOfUsReworked.NormalOptions.VisualTasks = GameModifiers.VisualTasks;
                         TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameSettings.PlayerSpeed;
-                        TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
+                        TownOfUsReworked.NormalOptions.NumImpostors = IntruderSettings.IntruderCount;
                         TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
                         TownOfUsReworked.NormalOptions.ConfirmImpostor = GameSettings.ConfirmEjects;
                         TownOfUsReworked.NormalOptions.VotingTime = GameSettings.VotingTime;
                         TownOfUsReworked.NormalOptions.DiscussionTime = GameSettings.DiscussionTime;
                         TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
                         TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
-                        TownOfUsReworked.NormalOptions.KillCooldown = CustomGameOptions.IntKillCd;
+                        TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
                         TownOfUsReworked.NormalOptions.GhostsDoTasks = CrewSettings.GhostTasksCountToWin;
                         TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
                         TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
@@ -559,7 +559,7 @@ public static class RPCHandling
                     case WinLoseRPC.CorruptedWin:
                         Objectifier.CorruptedWins = true;
 
-                        if (CustomGameOptions.AllCorruptedWin)
+                        if (Corrupted.AllCorruptedWin)
                             PlayerLayer.GetLayers<Corrupted>().ForEach(x => x.Winner = true);
 
                         reader.ReadLayer().Winner = true;

@@ -181,7 +181,7 @@ public class PlayerHandler : MonoBehaviour
                 var role = info[0] as Role;
                 revealed = true;
 
-                if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
+                if (Consigliere.ConsigInfo == ConsigInfo.Role)
                 {
                     color = role.Color;
                     name += $"\n{role}";
@@ -189,7 +189,7 @@ public class PlayerHandler : MonoBehaviour
                     if (consigliere.Player.GetSubFaction() == player.GetSubFaction() && player.GetSubFaction() != SubFaction.None)
                         consigliere.Investigated.Remove(player.PlayerId);
                 }
-                else if (CustomGameOptions.ConsigInfo == ConsigInfo.Faction)
+                else if (Consigliere.ConsigInfo == ConsigInfo.Faction)
                 {
                     color = role.FactionColor;
                     name += $"\n{role.FactionName}";
@@ -205,7 +205,7 @@ public class PlayerHandler : MonoBehaviour
                 var role = info[0] as Role;
                 revealed = true;
 
-                if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
+                if (Consigliere.ConsigInfo == ConsigInfo.Role)
                 {
                     color = role.Color;
                     name += $"\n{role}";
@@ -213,7 +213,7 @@ public class PlayerHandler : MonoBehaviour
                     if (godfather.Player.GetSubFaction() == player.GetSubFaction() && player.GetSubFaction() != SubFaction.None)
                         godfather.Investigated.Remove(player.PlayerId);
                 }
-                else if (CustomGameOptions.ConsigInfo == ConsigInfo.Faction)
+                else if (Consigliere.ConsigInfo == ConsigInfo.Faction)
                 {
                     color = role.FactionColor;
                     name += $"\n{role.FactionName}";
@@ -229,7 +229,7 @@ public class PlayerHandler : MonoBehaviour
                 name += " <color=#2BD29CFF>人</color>";
                 color = godfather.Color;
             }
-            if (godfather.FlashedPlayers.Contains(player.PlayerId) && CustomGameOptions.GrenadierIndicators)
+            if (godfather.FlashedPlayers.Contains(player.PlayerId) && Grenadier.GrenadierIndicators)
             {
                 name += " <color=#85AA5BFF>ㅇ</color>";
                 color = godfather.Color;
@@ -436,10 +436,10 @@ public class PlayerHandler : MonoBehaviour
                     color = necromancer.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything && CustomGameOptions.NKsKnow)
+        else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything && NeutralKillingSettings.KnowEachOther)
         {
-            if (((player.GetRole().Type == Role.LocalRole.Type && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
-                CustomGameOptions.NoSolo == NoSolo.AllNKs)) && !revealed)
+            if (((player.GetRole().Type == Role.LocalRole.Type && NeutralSettings.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
+                NeutralSettings.NoSolo == NoSolo.AllNKs)) && !revealed)
             {
                 var role = info[0] as Role;
                 color = role.Color;
@@ -451,7 +451,7 @@ public class PlayerHandler : MonoBehaviour
         {
             var grenadier = localinfo[0] as Grenadier;
 
-            if (grenadier.FlashedPlayers.Contains(player.PlayerId) && CustomGameOptions.GrenadierIndicators)
+            if (grenadier.FlashedPlayers.Contains(player.PlayerId) && Grenadier.GrenadierIndicators)
             {
                 name += " <color=#85AA5BFF>ㅇ</color>";
                 color = grenadier.Color;
@@ -644,7 +644,7 @@ public class PlayerHandler : MonoBehaviour
             {
                 name += $" {lover.ColoredSymbol}";
 
-                if (CustomGameOptions.LoversRoles && !revealed)
+                if (Lovers.LoversRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -677,7 +677,7 @@ public class PlayerHandler : MonoBehaviour
             {
                 name += $" {rival.ColoredSymbol}";
 
-                if (CustomGameOptions.RivalsRoles && !revealed)
+                if (Rivals.RivalsRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -710,7 +710,7 @@ public class PlayerHandler : MonoBehaviour
             {
                 name += $" {link.ColoredSymbol}";
 
-                if (CustomGameOptions.LinkedRoles && !revealed)
+                if (Linked.LinkedRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -742,7 +742,7 @@ public class PlayerHandler : MonoBehaviour
             {
                 name += $" {mafia.ColoredSymbol}";
 
-                if (CustomGameOptions.MafiaRoles && !revealed)
+                if (Mafia.MafiaRoles && !revealed)
                 {
                     var role = info[0] as Role;
                     color = role.Color;
@@ -775,20 +775,20 @@ public class PlayerHandler : MonoBehaviour
             {
                 var role2 = info[0] as Role;
 
-                if (CustomGameOptions.SnitchSeesRoles)
+                if (Snitch.SnitchSeesRoles)
                 {
-                    if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
-                        (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                    if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals) || (player.Is(Faction.Crew) &&
+                        Snitch.SnitchSeesCrew))
                     {
                         color = role2.Color;
                         name += $"\n{role2.Name}";
                         revealed = true;
                     }
                 }
-                else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) || (player.Is(Faction.Crew) &&
-                    CustomGameOptions.SnitchSeesCrew))
+                else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals) || (player.Is(Faction.Crew) &&
+                    Snitch.SnitchSeesCrew))
                 {
-                    if (!(player.Is(LayerEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor) && !(player.Is(LayerEnum.Fanatic) && CustomGameOptions.SnitchSeesFanatic))
+                    if (!(player.Is(LayerEnum.Traitor) && Snitch.SnitchSeesTraitor) && !(player.Is(LayerEnum.Fanatic) && Snitch.SnitchSeesFanatic))
                     {
                         color = role2.FactionColor;
                         name += $"\n{role2.FactionName}";
@@ -805,11 +805,11 @@ public class PlayerHandler : MonoBehaviour
         }
 
         if (player.Is(LayerEnum.Snitch) && !DeadSeeEverything && player != CustomPlayer.Local && (CustomPlayer.Local.Is(Faction.Syndicate) || CustomPlayer.Local.Is(Faction.Intruder) ||
-            (CustomPlayer.Local.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals)))
+            (CustomPlayer.Local.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals)))
         {
             var role = info[0] as Role;
 
-            if (role.TasksDone || role.TasksLeft <= CustomGameOptions.SnitchTasksRemaining)
+            if (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining)
             {
                 var ability = info[2] as Ability;
                 color = ability.Color;
@@ -855,7 +855,7 @@ public class PlayerHandler : MonoBehaviour
                 name += $" {role.FactionColorString}ξ</color>";
         }
 
-        if ((CustomPlayer.Local.Is(Faction.Syndicate) || DeadSeeEverything) && (player == Role.DriveHolder || (CustomGameOptions.GlobalDrive && Role.SyndicateHasChaosDrive &&
+        if ((CustomPlayer.Local.Is(Faction.Syndicate) || DeadSeeEverything) && (player == Role.DriveHolder || (SyndicateSettings.GlobalDrive && Role.SyndicateHasChaosDrive &&
             player.Is(Faction.Syndicate))))
         {
             name += " <color=#008000FF>Δ</color>";
@@ -878,7 +878,7 @@ public class PlayerHandler : MonoBehaviour
             else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && Revealer.RevealerRevealsNeutrals) || (player.Is(Faction.Crew) &&
                 Revealer.RevealerRevealsCrew))
             {
-                if (!(player.Is(LayerEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(LayerEnum.Fanatic) && CustomGameOptions.RevealerRevealsFanatic))
+                if (!(player.Is(LayerEnum.Traitor) && Revealer.RevealerRevealsTraitor) && !(player.Is(LayerEnum.Fanatic) && Revealer.RevealerRevealsFanatic))
                 {
                     color = role.FactionColor;
                     name += $"\n{role.FactionName}";

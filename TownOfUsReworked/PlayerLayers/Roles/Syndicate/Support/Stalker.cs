@@ -1,8 +1,11 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Stalker : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float StalkCd { get; set; } = 25f;
+
     public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
     public CustomButton StalkButton { get; set; }
 
@@ -18,8 +21,8 @@ public class Stalker : Syndicate
         BaseStart();
         StalkerArrows = [];
         Alignment = Alignment.SyndicateSupport;
-        StalkButton = CreateButton(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(CustomGameOptions.StalkCd), "STALK",
-            (PlayerBodyExclusion)Exception1, (UsableFunc)Usable);
+        StalkButton = CreateButton(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
+            (PlayerBodyExclusion)Exception1);
     }
 
     public void DestroyArrow(byte targetPlayerId)

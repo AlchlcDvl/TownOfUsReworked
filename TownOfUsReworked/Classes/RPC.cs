@@ -4,49 +4,6 @@ public static class RPC
 {
     private const byte CustomRPCCallID = 254;
 
-    public static void SendOptionRPC(CustomOption setting = null, int targetClientId = -1)
-    {
-        // if (TownOfUsReworked.MCIActive)
-        //     return;
-
-        // List<CustomOption> options;
-
-        // if (setting != null)
-        //     options = [ setting ];
-        // else
-        //     options = [ .. CustomOption.AllOptions ];
-
-        // options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Button || x.ClientOnly);
-        // var split = options.Split(50);
-        // LogInfo($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
-
-        // foreach (var list in split)
-        // {
-        //     var writer = CallTargetedOpenRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, list.Count);
-
-        //     foreach (var option in list)
-        //     {
-        //         // LogInfo($"Sending {option}");
-        //         writer.Write(option.ID);
-
-        //         if (option.Type == CustomOptionType.Toggle)
-        //             writer.Write((bool)option.Value);
-        //         else if (option.Type == CustomOptionType.Number)
-        //             writer.Write((float)option.Value);
-        //         else if (option.Type == CustomOptionType.String)
-        //             writer.Write((int)option.Value);
-        //         else if (option.Type == CustomOptionType.Entry)
-        //             writer.Write((LayerEnum)option.Value);
-        //         else if (option.Type == CustomOptionType.Layers)
-        //             writer.Write(((int, int))option.Value);
-        //     }
-
-        //     writer.EndRpc();
-        // }
-
-        // CustomOption.SaveSettings("Last Used");
-    }
-
     public static void SendOptionRPC(OptionAttribute setting = null, int targetClientId = -1)
     {
         if (TownOfUsReworked.MCIActive)
@@ -96,7 +53,7 @@ public static class RPC
             writer.EndRpc();
         }
 
-        OptionAttribute.SaveSettings("LastUsed");
+        OptionAttribute.SaveSettings("Last Used");
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)
@@ -106,29 +63,6 @@ public static class RPC
 
         var count = reader.ReadInt32();
         LogInfo($"{count} options received:");
-
-        // for (var i = 0; i < count; i++)
-        // {
-        //     var id = reader.ReadInt32();
-        //     var customOption = CustomOption.AllOptions.Find(option => option.ID == id);
-        //     object value = null;
-
-        //     if (customOption.Type == CustomOptionType.Toggle)
-        //         value = reader.ReadBoolean();
-        //     else if (customOption.Type == CustomOptionType.Number)
-        //         value = reader.ReadSingle();
-        //     else if (customOption.Type == CustomOptionType.String)
-        //         value = reader.ReadInt32();
-        //     else if (customOption.Type == CustomOptionType.Entry)
-        //         value = (LayerEnum)reader.ReadByte();
-        //     else if (customOption.Type == CustomOptionType.Layers)
-        //         value = reader.ReadTuple();
-
-        //     customOption.Set(value, false);
-        //     // LogInfo(customOption);
-        // }
-
-        // CustomOption.SaveSettings("Last Used");
 
         for (var i = 0; i < count; i++)
         {
@@ -151,7 +85,7 @@ public static class RPC
             // LogInfo(customOption);
         }
 
-        OptionAttribute.SaveSettings("LastUsed");
+        OptionAttribute.SaveSettings("Last Used");
     }
 
     public static PlayerVersion ShareGameVersion()

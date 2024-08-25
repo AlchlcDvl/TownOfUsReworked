@@ -1,9 +1,9 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Retributionist : Crew
 {
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ReviveAfterVoting { get; set; } = true;
 
     public override void Init()
@@ -682,10 +682,9 @@ public class Retributionist : Crew
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    public bool SherException(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None)) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) || (Player.IsOtherRival(player) &&
-        CustomGameOptions.RivalsRoles) || (player.Is(LayerEnum.Mafia) && Player.Is(LayerEnum.Mafia) && CustomGameOptions.MafiaRoles) || (Player.IsOtherLink(player) &&
-        CustomGameOptions.LinkedRoles);
+    public bool SherException(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None))
+        && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is(LayerEnum.Mafia) &&
+        Player.Is(LayerEnum.Mafia) && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 
     public bool SherUsable() => IsSher;
 
@@ -775,7 +774,7 @@ public class Retributionist : Crew
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
 
-        if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+        if (player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
         {
             var lover = player.GetOtherLover();
             var loverRole = lover.GetRole();

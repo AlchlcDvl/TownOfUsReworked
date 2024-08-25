@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Framer : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float FrameCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
+    public static float ChaosDriveFrameRadius { get; set; } = 1.5f;
+
     public CustomButton FrameButton { get; set; }
     public CustomButton RadialFrameButton { get; set; }
     public List<byte> Framed { get; set; }
@@ -11,18 +17,18 @@ public class Framer : Syndicate
     public override string Name => "Framer";
     public override LayerEnum Type => LayerEnum.Framer;
     public override Func<string> StartText => () => "Make Everyone Suspicious";
-    public override Func<string> Description => () => $"- You can frame a{(HoldsDrive ? $"ll players within a {CustomGameOptions.ChaosDriveFrameRadius}m radius" : " player")}\n- Till you " +
-        $"are dead, framed targets will die easily to killing roles and have the wrong investigative results\n{CommonAbilities}";
+    public override Func<string> Description => () => $"- You can frame a{(HoldsDrive ? $"ll players within a {ChaosDriveFrameRadius}m radius" : " player")}\n- Till you are dead, framed " +
+        $"targets will die easily to killing roles and have the wrong investigative results\n{CommonAbilities}";
 
     public override void Init()
     {
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         Framed = [];
-        FrameButton = CreateButton(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(CustomGameOptions.FrameCd), "FRAME",
-            (PlayerBodyExclusion)Exception1, (UsableFunc)Usable1);
-        RadialFrameButton = CreateButton(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, new Cooldown(CustomGameOptions.FrameCd),
-            "FRAME", (UsableFunc)Usable2);
+        FrameButton = CreateButton(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
+            (PlayerBodyExclusion)Exception1);
+        RadialFrameButton = CreateButton(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, new Cooldown(FrameCd), (UsableFunc)Usable2,
+            "FRAME");
     }
 
     public void RpcFrame(PlayerControl player)
@@ -46,7 +52,7 @@ public class Framer : Syndicate
 
     public void RadialFrame()
     {
-        GetClosestPlayers(Player.transform.position, CustomGameOptions.ChaosDriveFrameRadius).ForEach(RpcFrame);
+        GetClosestPlayers(Player.transform.position, ChaosDriveFrameRadius).ForEach(RpcFrame);
         RadialFrameButton.StartCooldown();
     }
 

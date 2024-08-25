@@ -24,9 +24,39 @@ public class Sniper : Assassin
     public override string Name => "Sniper";
 }
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public abstract class Assassin : Ability
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
+    public static int AssassinKills { get; set; } = 1;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinMultiKill { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinGuessNeutralBenign { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinGuessNeutralEvil { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinGuessInvestigative { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinGuessPest { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinGuessModifiers { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinGuessObjectifiers { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinGuessAbilities { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AssassinateAfterVoting { get; set; } = false;
+
     private Dictionary<string, UColor> ColorMapping { get; set; }
     private Dictionary<string, UColor> SortedColorMapping { get; set; }
     public static int RemainingKills { get; set; }
@@ -53,7 +83,7 @@ public abstract class Assassin : Ability
         MaxPage = 0;
         Buttons = [];
         Sorted = [];
-        AssassinMenu = new(Player, "Guess", CustomGameOptions.AssassinateAfterVoting, Guess, IsExempt, SetLists);
+        AssassinMenu = new(Player, "Guess", AssassinateAfterVoting, Guess, IsExempt, SetLists);
     }
 
     private void SetLists()
@@ -73,7 +103,7 @@ public abstract class Assassin : Ability
                 var layer = (LayerEnum)h;
 
                 if (layer is LayerEnum.Revealer or LayerEnum.Crewmate || (layer is LayerEnum.Coroner or LayerEnum.Detective or LayerEnum.Medium or LayerEnum.Operative or LayerEnum.Seer or
-                    LayerEnum.Sheriff or LayerEnum.Tracker && !CustomGameOptions.AssassinGuessInvestigative))
+                    LayerEnum.Sheriff or LayerEnum.Tracker && !AssassinGuessInvestigative))
                 {
                     continue;
                 }
@@ -91,8 +121,7 @@ public abstract class Assassin : Ability
             }
         }
 
-        if ((!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)) && !CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0 && CustomGameOptions.IntruderMax > 0 &&
-            CustomGameOptions.IntruderMin > 0)
+        if ((!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)) && !SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
         {
             if (!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None))
                 ColorMapping.Add("Impostor", CustomColorManager.Intruder);
@@ -119,7 +148,7 @@ public abstract class Assassin : Ability
             }
         }
 
-        if ((!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None)) && CustomGameOptions.SyndicateCount > 0)
+        if ((!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None)) && SyndicateSettings.SyndicateCount > 0)
         {
             if (!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None))
                 ColorMapping.Add("Anarchist", CustomColorManager.Syndicate);
@@ -140,7 +169,7 @@ public abstract class Assassin : Ability
             }
         }
 
-        if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
+        if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0)
         {
             var nks = new List<LayerEnum>() { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac,
                 LayerEnum.Werewolf };
@@ -158,7 +187,7 @@ public abstract class Assassin : Ability
             {
                 ColorMapping.Add("Plaguebearer", CustomColorManager.Plaguebearer);
 
-                if (CustomGameOptions.AssassinGuessPest)
+                if (AssassinGuessPest)
                     ColorMapping.Add("Pestilence", CustomColorManager.Pestilence);
             }
 
@@ -187,7 +216,7 @@ public abstract class Assassin : Ability
             }
 
             // Add certain Neutral roles if enabled
-            if (CustomGameOptions.AssassinGuessNeutralBenign)
+            if (AssassinGuessNeutralBenign)
             {
                 var nbs = new List<LayerEnum>() { LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief };
 
@@ -204,7 +233,7 @@ public abstract class Assassin : Ability
                 }
             }
 
-            if (CustomGameOptions.AssassinGuessNeutralEvil)
+            if (AssassinGuessNeutralEvil)
             {
                 var nes = new List<LayerEnum>() { LayerEnum.Cannibal, LayerEnum.Executioner, LayerEnum.Guesser, LayerEnum.BountyHunter, LayerEnum.Troll, LayerEnum.Actor, LayerEnum.Jester };
 
@@ -226,7 +255,7 @@ public abstract class Assassin : Ability
         }
 
         // Add Modifiers if enabled
-        if (CustomGameOptions.AssassinGuessModifiers)
+        if (AssassinGuessModifiers)
         {
             var mods = new List<LayerEnum>() { LayerEnum.Bait, LayerEnum.Diseased, LayerEnum.Professional, LayerEnum.VIP };
 
@@ -241,7 +270,7 @@ public abstract class Assassin : Ability
         }
 
         // Add Objectifiers if enabled
-        if (CustomGameOptions.AssassinGuessObjectifiers)
+        if (AssassinGuessObjectifiers)
         {
             for (var h = 107; h < 118; h++)
             {
@@ -250,8 +279,8 @@ public abstract class Assassin : Ability
 
                 if (RoleGen.GetSpawnItem(layer).IsActive())
                 {
-                    if ((layer is LayerEnum.Lovers or LayerEnum.Rivals or LayerEnum.Linked or LayerEnum.Mafia && !Player.Is(layer)) || (Player.Is(layer) && layer == LayerEnum.Corrupted &&
-                        CustomGameOptions.AllCorruptedWin))
+                    if ((layer is LayerEnum.Lovers or LayerEnum.Rivals or LayerEnum.Linked or LayerEnum.Mafia && Player.Is(layer)) || (Player.Is(layer) && layer == LayerEnum.Corrupted &&
+                        Corrupted.AllCorruptedWin))
                     {
                         continue;
                     }
@@ -262,7 +291,7 @@ public abstract class Assassin : Ability
         }
 
         // Add Abilities if enabled
-        if (CustomGameOptions.AssassinGuessAbilities)
+        if (AssassinGuessAbilities)
         {
             for (var h = 107; h < 118; h++)
             {
@@ -352,9 +381,9 @@ public abstract class Assassin : Ability
                     var playerObjectifier = voteArea.GetObjectifier();
 
                     var roleflag = playerRole?.Name == guess;
-                    var modifierflag = playerModifier?.Name == guess && CustomGameOptions.AssassinGuessModifiers;
-                    var abilityflag = playerAbility?.Name == guess && CustomGameOptions.AssassinGuessAbilities;
-                    var objectifierflag = playerObjectifier?.Name == guess && CustomGameOptions.AssassinGuessObjectifiers;
+                    var modifierflag = playerModifier?.Name == guess;
+                    var abilityflag = playerAbility?.Name == guess;
+                    var objectifierflag = playerObjectifier?.Name == guess;
                     var recruitflag = targetPlayer.IsRecruit() && guess == "Recruit";
                     var sectflag = targetPlayer.IsPersuaded() && guess == "Persuaded";
                     var reanimatedflag = targetPlayer.IsResurrected() && guess == "Resurrected";
@@ -370,7 +399,7 @@ public abstract class Assassin : Ability
                             actor.Guessed = true;
                             CallRpc(CustomRPC.WinLose, WinLoseRPC.ActorWin, actor);
 
-                            if (!CustomGameOptions.AvoidNeutralKingmakers)
+                            if (!NeutralSettings.AvoidNeutralKingmakers)
                                 RpcMurderPlayer(Player, guess, targetPlayer);
                         }
                     }
@@ -380,7 +409,7 @@ public abstract class Assassin : Ability
                     RpcMurderPlayer(toDie, guess, targetPlayer);
                     Exit(__instance);
 
-                    if (RemainingKills <= 0 || !CustomGameOptions.AssassinMultiKill)
+                    if (RemainingKills <= 0 || !AssassinMultiKill)
                         AssassinMenu.HideButtons();
                     else
                         AssassinMenu.HideSingle(targetId);
@@ -590,7 +619,7 @@ public abstract class Assassin : Ability
             RemainingKills--;
             MarkMeetingDead(player, Player);
 
-            if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+            if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
             {
                 var otherLover = player.GetOtherLover();
 

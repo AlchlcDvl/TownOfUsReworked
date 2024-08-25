@@ -111,8 +111,8 @@ public static class SurveillancePatches
         }
 
         var ignoreNightVision = BetterSabotages.EvilsIgnoreNV && (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Faction.Neutral) &&
-            !CustomGameOptions.LightsAffectNeutrals) || (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || (CustomPlayer.Local.Is(Alignment.NeutralNeo) &&
-            CustomGameOptions.NNHasImpVision));
+            !NeutralSettings.LightsAffectNeutrals) || (CustomPlayer.Local.Is(Alignment.NeutralKill) && NeutralKillingSettings.HasImpVision) || (CustomPlayer.Local.Is(Alignment.NeutralNeo) &&
+            NeutralNeophyteSettings.HasImpVision));
 
         if (LightsOut && !NVActive && !ignoreNightVision)
         {

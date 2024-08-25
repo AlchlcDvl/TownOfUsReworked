@@ -1,15 +1,15 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Veteran : Crew
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
     public static int MaxAlerts { get; set; } = 5;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float AlertCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static float AlertDur { get; set; } = 10f;
 
     public CustomButton AlertButton { get; set; }

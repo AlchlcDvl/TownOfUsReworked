@@ -1,15 +1,15 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Chameleon : Crew
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
     public static int MaxSwoops { get; set; } = 5;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float SwoopCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static float SwoopDur { get; set; } = 10f;
 
     public CustomButton SwoopButton { get; set; }

@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Consort : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ConsortCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float ConsortDur { get; set; } = 10f;
+
     public CustomButton BlockButton { get; set; }
     public PlayerControl BlockTarget { get; set; }
     public CustomMenu BlockMenu { get; set; }
@@ -21,8 +27,8 @@ public class Consort : Intruder
         RoleBlockImmune = true;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
-        BlockButton = CreateButton(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, new Cooldown(CustomGameOptions.ConsortCd),
-            new Duration(CustomGameOptions.ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock, (LabelFunc)Label);
+        BlockButton = CreateButton(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
+            new Duration(ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock);
     }
 
     public void UnBlock()

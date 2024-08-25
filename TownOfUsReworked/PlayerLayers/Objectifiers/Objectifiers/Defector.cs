@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Defector : Objectifier
 {
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool DefectorKnows { get; set; } = true;
+
+    [StringOption(MultiMenu.LayerSubOptions)]
+    public static DefectorFaction DefectorFaction { get; set; } = DefectorFaction.Random;
+
     private bool Turned { get; set; }
     public Faction Side { get; set; }
     private bool Defect => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !Dead && !Turned;
@@ -30,7 +36,7 @@ public class Defector : Objectifier
     public override string Symbol => "ε";
     public override LayerEnum Type => LayerEnum.Defector;
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
-    public override bool Hidden => !CustomGameOptions.DefectorKnows && !Turned;
+    public override bool Hidden => !DefectorKnows && !Turned;
 
     public override void Init()
     {
@@ -40,30 +46,30 @@ public class Defector : Objectifier
 
     public static void GetFactionChoice(out bool crew, out bool evil, out bool neut)
     {
-        crew = CustomGameOptions.DefectorFaction == DefectorFaction.Crew;
-        neut = CustomGameOptions.DefectorFaction == DefectorFaction.Neutral;
-        evil = CustomGameOptions.DefectorFaction == DefectorFaction.OpposingEvil;
+        crew = DefectorFaction == DefectorFaction.Crew;
+        neut = DefectorFaction == DefectorFaction.Neutral;
+        evil = DefectorFaction == DefectorFaction.OpposingEvil;
 
-        if (CustomGameOptions.DefectorFaction == DefectorFaction.Random)
+        if (DefectorFaction == DefectorFaction.Random)
         {
             var random = URandom.RandomRangeInt(0, 3);
             evil = random == 0;
             crew = random == 1;
             neut = random == 2;
         }
-        else if (CustomGameOptions.DefectorFaction == DefectorFaction.NonCrew)
+        else if (DefectorFaction == DefectorFaction.NonCrew)
         {
             var random = URandom.RandomRangeInt(0, 2);
             evil = random == 0;
             neut = random == 1;
         }
-        else if (CustomGameOptions.DefectorFaction == DefectorFaction.NonNeutral)
+        else if (DefectorFaction == DefectorFaction.NonNeutral)
         {
             var random = URandom.RandomRangeInt(0, 2);
             evil = random == 0;
             crew = random == 1;
         }
-        else if (CustomGameOptions.DefectorFaction == DefectorFaction.NonFaction)
+        else if (DefectorFaction == DefectorFaction.NonFaction)
         {
             var random = URandom.RandomRangeInt(0, 2);
             crew = random == 0;

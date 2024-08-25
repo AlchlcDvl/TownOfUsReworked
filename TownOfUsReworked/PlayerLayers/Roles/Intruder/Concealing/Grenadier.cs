@@ -1,24 +1,24 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Grenadier : Intruder
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float FlashCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static float FlashDur { get; set; } = 10f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 0.5f, 10f, 0.5f, Format.Distance)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 10f, 0.5f, Format.Distance)]
     public static float FlashRadius { get; set; } = 4.5f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GrenadierIndicators { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool SaboFlash { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GrenadierVent { get; set; } = false;
 
     public CustomButton FlashButton { get; set; }
@@ -35,8 +35,8 @@ public class Grenadier : Intruder
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         FlashedPlayers = [];
-        FlashButton = CreateButton(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(CustomGameOptions.FlashCd),
-            new Duration(CustomGameOptions.FlashDur), (EffectVoid)Flash, (EffectStartVoid)StartFlash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, "FLASH");
+        FlashButton = CreateButton(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
+            new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, "FLASH");
     }
 
     public void Flash()
@@ -47,9 +47,9 @@ public class Grenadier : Intruder
 
             if (CustomPlayer.Local == player)
             {
-                if (FlashButton.EffectTime > CustomGameOptions.FlashDur - 0.5f)
+                if (FlashButton.EffectTime > FlashDur - 0.5f)
                 {
-                    var fade = (FlashButton.EffectTime - CustomGameOptions.FlashDur) * -2f;
+                    var fade = (FlashButton.EffectTime - FlashDur) * -2f;
 
                     if (ShouldPlayerBeBlinded(player))
                         HUD.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.BlindVision, fade);
@@ -58,7 +58,7 @@ public class Grenadier : Intruder
                     else
                         HUD.FullScreen.color = CustomColorManager.NormalVision;
                 }
-                else if (FlashButton.EffectTime.IsInRange(0.5f, CustomGameOptions.FlashDur - 0.5f, true, true))
+                else if (FlashButton.EffectTime.IsInRange(0.5f, FlashDur - 0.5f, true, true))
                 {
                     if (ShouldPlayerBeBlinded(player))
                         HUD.FullScreen.color = CustomColorManager.BlindVision;
@@ -105,7 +105,7 @@ public class Grenadier : Intruder
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius).Select(x => x.PlayerId) ];
+    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player.transform.position, FlashRadius).Select(x => x.PlayerId) ];
 
-    public bool Condition() => !Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !CustomGameOptions.SaboFlash;
+    public bool Condition() => !Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !SaboFlash;
 }

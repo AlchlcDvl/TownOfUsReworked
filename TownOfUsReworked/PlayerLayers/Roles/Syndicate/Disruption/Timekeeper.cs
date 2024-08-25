@@ -1,8 +1,20 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Timekeeper : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float TimeCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float TimeDur { get; set; } = 10f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool TimeFreezeImmunity { get; set; } = true;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool TimeRewindImmunity { get; set; } = true;
+
     public CustomButton TimeButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Timekeeper : CustomColorManager.Syndicate;
@@ -16,12 +28,12 @@ public class Timekeeper : Syndicate
     {
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
-        TimeButton = CreateButton(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(CustomGameOptions.TimeCd), (LabelFunc)Label,
-            new Duration(CustomGameOptions.TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl);
+        TimeButton = CreateButton(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
+            new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl);
         Data.Role.IntroSound = GetAudio("TimekeeperIntro");
     }
 
-    public void ControlStart() => Flash(Color, CustomGameOptions.TimeDur);
+    public void ControlStart() => Flash(Color, TimeDur);
 
     public void Control()
     {

@@ -1,8 +1,11 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Allied : Objectifier
 {
+    [StringOption(MultiMenu.LayerSubOptions)]
+    public static AlliedFaction AlliedFaction { get; set; } = AlliedFaction.Random;
+
     public Faction Side { get; set; }
 
     public override UColor Color => Side switch

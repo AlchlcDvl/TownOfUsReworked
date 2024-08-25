@@ -107,7 +107,7 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.PhantomWin);
                 EndGame();
             }
-            else if (LayerType == PlayerLayerEnum.Role && ((Role)this).Alignment == Alignment.NeutralEvil && CustomGameOptions.NeutralEvilsEndGame)
+            else if (LayerType == PlayerLayerEnum.Role && ((Role)this).Alignment == Alignment.NeutralEvil && NeutralEvilSettings.NeutralEvilsEndGame)
             {
                 if (Type == LayerEnum.Jester && ((Jester)this).VotedOut)
                 {
@@ -141,7 +141,7 @@ public abstract class PlayerLayer
             {
                 Objectifier.CorruptedWins = true;
 
-                if (CustomGameOptions.AllCorruptedWin)
+                if (Corrupted.AllCorruptedWin)
                     GetLayers<Corrupted>().ForEach(x => x.Winner = true);
 
                 Winner = true;
@@ -182,7 +182,7 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.DefectorWins);
                 EndGame();
             }
-            else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && Alive)
+            else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= Overlord.OverlordMeetingWinCount && Alive)
             {
                 Objectifier.OverlordWins = true;
                 GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
@@ -289,7 +289,7 @@ public abstract class PlayerLayer
                         break;
                 }
 
-                if (CustomGameOptions.NoSolo == NoSolo.SameNKs)
+                if (NeutralSettings.NoSolo == NoSolo.SameNKs)
                 {
                     foreach (var role2 in GetLayers<Neutral>().Where(x => x.Type == role.Type))
                     {
@@ -299,10 +299,10 @@ public abstract class PlayerLayer
                 }
 
                 Winner = true;
-                CallRpc(CustomRPC.WinLose, CustomGameOptions.NoSolo == NoSolo.SameNKs ? WinLoseRPC.SameNKWins : WinLoseRPC.SoloNKWins, this);
+                CallRpc(CustomRPC.WinLose, NeutralSettings.NoSolo == NoSolo.SameNKs ? WinLoseRPC.SameNKWins : WinLoseRPC.SoloNKWins, this);
                 EndGame();
             }
-            else if (CustomGameOptions.NeutralEvilsEndGame && role.Alignment == Alignment.NeutralEvil)
+            else if (NeutralEvilSettings.NeutralEvilsEndGame && role.Alignment == Alignment.NeutralEvil)
             {
                 if (Type == LayerEnum.Executioner && ((Executioner)role).TargetVotedOut)
                 {

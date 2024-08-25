@@ -28,7 +28,7 @@ Fixes!
 - Critical: Fixed the rare instance where the host may lag a lot when a round starts
 - Critical: Fixed Jackal having no cooldown
 - Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
-- Role + Ability: Fixed Harbalists (Fungle Miners) being unguessable
+- Role + Ability: Fixed Herbalists (Fungle Miners) being unguessable
 - Ability: Fixed the edge case where Swapper swaps didn't appear to be correctly selected
 - Ability: Fixed a tiny issue with handling Assassin
 - Visual: Fixed ability buttons appearing and disappearing incorrectly
@@ -40,6 +40,7 @@ Fixes!
 - General: Fixed Submerged updater not actually checking for updates
 - General: Fixed not being able to get achievements for kills (why would you even want this only god knows)
 - General: Fixed body locations being shown of players who have been revived
+- General: Fixed the accidental usage of the wrong options in a lot of places
 
 Credits-
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi

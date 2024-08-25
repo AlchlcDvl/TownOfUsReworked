@@ -212,7 +212,7 @@ public static class MinigameBeginPatch
         if (__instance is null or TaskAdderGame or HauntMenuMinigame or SpawnInMinigame || !CustomPlayer.Local.Is(LayerEnum.Multitasker))
             return;
 
-        __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, CustomGameOptions.Transparancy / 100f));
+        __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, Multitasker.Transparancy / 100f));
     }
 }
 
@@ -276,7 +276,7 @@ public static class ExitGamePatch
         }
 
         SaveText($"{filePath.SanitisePath()}.log", SavedLogs, TownOfUsReworked.Logs);
-        CustomOption.SaveSettings("Last Used");
+        OptionAttribute.SaveSettings("Last Used");
     }
 }
 

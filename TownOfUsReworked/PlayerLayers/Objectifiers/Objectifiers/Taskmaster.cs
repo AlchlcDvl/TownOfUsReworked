@@ -1,8 +1,11 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Taskmaster : Objectifier
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
+    public static int TMTasksRemaining { get; set; } = 1;
+
     public bool WinTasksDone { get; set; }
 
     public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Taskmaster : CustomColorManager.Objectifier;

@@ -28,7 +28,6 @@ global using TownOfUsReworked.Patches;
 global using TownOfUsReworked.Objects;
 global using TownOfUsReworked.Modules;
 global using TownOfUsReworked.Options;
-global using TownOfUsReworked.Options2;
 global using TownOfUsReworked.BetterMaps;
 global using TownOfUsReworked.Extensions;
 global using TownOfUsReworked.PlayerLayers;

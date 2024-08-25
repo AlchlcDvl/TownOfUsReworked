@@ -334,7 +334,7 @@ public static class OnGameEndPatches
             if (!Objectifier.ObjectifierWins)
             {
                 if (!(Role.ActorWins || Role.BountyHunterWins || Role.CannibalWins || Role.ExecutionerWins || Role.GuesserWins || Role.JesterWins || Role.TrollWins) ||
-                    !CustomGameOptions.NeutralEvilsEndGame)
+                    !NeutralEvilSettings.NeutralEvilsEndGame)
                 {
                     foreach (var surv in PlayerLayer.GetLayers<Survivor>())
                     {
@@ -738,7 +738,7 @@ public static class OnGameEndPatches
             cache += " π";
         }
 
-        if (player == Role.DriveHolder && !CustomGameOptions.GlobalDrive)
+        if (player == Role.DriveHolder && !SyndicateSettings.GlobalDrive)
         {
             summary += " <color=#008000FF>Δ</color>";
             cache += " Δ";

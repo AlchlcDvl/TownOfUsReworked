@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Ambusher : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float AmbushCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float AmbushDur { get; set; } = 10f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AmbushMates { get; set; } = false;
+
     public PlayerControl AmbushedPlayer { get; set; }
     public CustomButton AmbushButton { get; set; }
 
@@ -17,8 +26,8 @@ public class Ambusher : Intruder
         BaseStart();
         Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
-        AmbushButton = CreateButton(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(CustomGameOptions.AmbushCd), (EndFunc)EndEffect,
-            new Duration(CustomGameOptions.AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1, "AMBUSH");
+        AmbushButton = CreateButton(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
+            new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);
     }
 
     public void UnAmbush() => AmbushedPlayer = null;
@@ -37,8 +46,8 @@ public class Ambusher : Intruder
             AmbushButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !CustomGameOptions.AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) ||
-        (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.AmbushMates);
+    public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) ||
+        (player.Is(SubFaction) && SubFaction != SubFaction.None && !AmbushMates);
 
     public bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 

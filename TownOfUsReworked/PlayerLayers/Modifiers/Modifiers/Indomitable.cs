@@ -1,13 +1,16 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Indomitable : Modifier
 {
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool IndomitableKnows { get; set; } = true;
+
     public bool AttemptedGuess { get; set; }
 
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Indomitable : CustomColorManager.Modifier;
     public override string Name => "Indomitable";
     public override LayerEnum Type => LayerEnum.Indomitable;
     public override Func<string> Description => () => "- You cannot be guessed";
-    public override bool Hidden => !CustomGameOptions.IndomitableKnows && !AttemptedGuess && !Dead;
+    public override bool Hidden => !IndomitableKnows && !AttemptedGuess && !Dead;
 }

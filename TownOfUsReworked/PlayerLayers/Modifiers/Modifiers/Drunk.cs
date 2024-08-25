@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Drunk : Modifier
 {
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool DrunkControlsSwap { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool DrunkKnows { get; set; } = true;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
+    public static float DrunkInterval { get; set; } = 10f;
+
     private static float _time;
     public int Modify { get; set; }
     private bool Exposed { get; set; }
@@ -10,26 +19,26 @@ public class Drunk : Modifier
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Drunk : CustomColorManager.Modifier;
     public override string Name => "Drunk";
     public override LayerEnum Type => LayerEnum.Drunk;
-    public override Func<string> Description => () => CustomGameOptions.DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
-    public override bool Hidden => !CustomGameOptions.DrunkKnows && !Exposed && !Dead && CustomGameOptions.DrunkControlsSwap;
+    public override Func<string> Description => () => DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
+    public override bool Hidden => !DrunkKnows && !Exposed && !Dead;
 
     public override void Init()
     {
         Modify = Hidden ? 1 : -1;
-        Exposed = false;
+        Exposed = DrunkKnows;
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (CustomGameOptions.DrunkControlsSwap)
+        if (DrunkControlsSwap)
         {
             _time += Time.deltaTime;
 
-            if (_time >= CustomGameOptions.DrunkInterval)
+            if (_time >= DrunkInterval)
             {
-                _time -= CustomGameOptions.DrunkInterval;
+                _time -= DrunkInterval;
                 Modify *= -1;
                 Exposed = true;
             }

@@ -1,12 +1,12 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Phantom : Neutral
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 10, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
     public static int PhantomTasksRemaining { get; set; } = 5;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PhantomPlayersAlerted { get; set; } = false;
 
     public bool Caught { get; set; }

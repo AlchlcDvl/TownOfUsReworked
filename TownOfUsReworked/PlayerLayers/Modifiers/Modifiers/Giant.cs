@@ -1,10 +1,16 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Giant : Modifier
 {
-    private static bool Chonk => CustomGameOptions.GiantScale != 1;
-    private static bool Snail => CustomGameOptions.GiantSpeed != 1;
+    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 1f, 0.05f, Format.Multiplier)]
+    public static float GiantSpeed { get; set; } = 0.75f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 1f, 3f, 0.025f, Format.Multiplier)]
+    public static float GiantScale { get; set; } = 1.5f;
+
+    private static bool Chonk => GiantScale != 1;
+    private static bool Snail => GiantSpeed != 1;
     private static bool Useless => !Chonk && !Snail;
     private static string Text => Chonk && Snail ? "big and slow" : (Chonk ? "big" : (Snail ? "slow" : ""));
 

@@ -1,36 +1,36 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Guesser : Neutral
 {
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuesserCanPickTargets { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuesserButton { get; set; } = true;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuessVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuessSwitchVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuessTargetKnows { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool MultipleGuesses { get; set; } = true;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
     public static int MaxGuesses { get; set; } = 5;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuesserAfterVoting { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool VigiKillsGuesser { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuessToAct { get; set; } = true;
 
     public PlayerControl TargetPlayer { get; set; }
@@ -133,7 +133,7 @@ public class Guesser : Neutral
             }
         }
 
-        if (!CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0 && CustomGameOptions.IntruderMax > 0 && CustomGameOptions.IntruderMin > 0)
+        if (!SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
         {
             for (var h = 52; h < 70; h++)
             {
@@ -157,7 +157,7 @@ public class Guesser : Neutral
             }
         }
 
-        if (CustomGameOptions.SyndicateCount > 0)
+        if (SyndicateSettings.SyndicateCount > 0)
         {
             for (var h = 70; h < 88; h++)
             {
@@ -175,7 +175,7 @@ public class Guesser : Neutral
             }
         }
 
-        if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
+        if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0)
         {
             for (var h = 26; h < 52; h++)
             {
@@ -484,7 +484,7 @@ public class Guesser : Neutral
     {
         var player = PlayerByVoteArea(voteArea);
         return player.HasDied() || (player != TargetPlayer && !TargetGuessed) || player == CustomPlayer.Local || RemainingGuesses <= 0 || Dead || Player.IsLinkedTo(player) || (TargetGuessed
-            && CustomGameOptions.AvoidNeutralKingmakers);
+            && NeutralSettings.AvoidNeutralKingmakers);
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -600,7 +600,7 @@ public class Guesser : Neutral
             {
                 MarkMeetingDead(player, Player);
 
-                if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie && AmongUsClient.Instance.AmHost)
+                if (player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie && AmongUsClient.Instance.AmHost)
                 {
                     var otherLover = player.GetOtherLover();
 

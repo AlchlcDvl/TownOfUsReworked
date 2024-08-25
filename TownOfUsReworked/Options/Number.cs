@@ -1,52 +1,65 @@
 namespace TownOfUsReworked.Options;
 
-public class CustomNumberOption : CustomOption
+public class NumberOptionAttribute(MultiMenu menu, float min, float max, float increment, Format format = Format.None) : OptionAttribute(menu,CustomOptionType.Number)
 {
-    private float Min { get; }
-    private float Max { get; }
-    private float Increment { get; }
+    private float Min { get; } = min;
+    private float Max { get; } = max;
+    private float Increment { get; } = increment;
+    private Format FormatEnum { get; } = format;
+    public bool IsInt { get; set; } // I have to do some black magic fuckery to make this work
+    public bool AllowHalf { get; set; }
 
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object parent) : this(menu, name, defaultValue, min, max, increment,
-        null, parent) {}
+    // This whole thing is being held by hopes and dreams, if I or anyone touches this, chances are it's broken....BECAUSE FOR SOME FUCKING REASON IT HAS DECIDED TO CAST INT TO FLOAT AND VICE VERSA ONLY WHEN IT FUCKING WANTS TO
 
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, object[] parents, bool all = false) : this(menu, name, defaultValue, min,
-        max, increment, null, parents, all) {}
+    public float GetFloat() => (float)Value;
 
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) : this(menu, name, defaultValue, min,
-        max, increment, format, parent: null) {}
+    public int GetInt() => (int)Value;
 
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format, object parent) : this(menu, name,
-        defaultValue, min, max, increment, format, [parent], false) {}
-
-    public CustomNumberOption(MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format, object[] parents, bool all = false)
-        : base(menu, name, CustomOptionType.Number, defaultValue, parents, all)
+    public void Change(bool incrementing)
     {
-        Min = min;
-        Max = max;
-        Increment = increment;
-        Format = format ?? Blank;
+        var newVal = CycleFloat(Max, Min, IsInt ? GetInt() : GetFloat(), incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f));
+
+        if (IsInt)
+            Set((int)newVal);
+        else
+            Set(newVal);
     }
 
-    private static Func<object, string> Blank => (val) => $"{val}";
+    public void Increase() => Change(true);
 
-    public float Get() => (float)Value;
-
-    public void Increase() => Set(CycleFloat(Max, Min, Get(), true, Increment / (Input.GetKeyInt(KeyCode.LeftShift) ? 2f : 1f)));
-
-    public void Decrease() => Set(CycleFloat(Max, Min, Get(), false, Increment / (Input.GetKeyInt(KeyCode.LeftShift) ? 2f : 1f)));
+    public void Decrease() => Change(false);
 
     public override void OptionCreated()
     {
         base.OptionCreated();
         var number = Setting.Cast<NumberOption>();
-        number.TitleText.text = Name;
+        number.TitleText.text = TranslationManager.Translate(ID);
         number.ValidRange = new(Min, Max);
         number.Increment = Increment;
-        number.Value = number.oldValue = Get();
-        number.ValueText.text = Format(Value);
+        number.Value = number.oldValue = IsInt ? GetInt() : GetFloat();
+        number.ValueText.text = Format();
     }
 
-    public static implicit operator float(CustomNumberOption option) => option == null ? 0f : option.Get();
+    public override string Format() => FormatEnum switch
+    {
+        Data.Format.Time => $"{Value:0.##}s",
+        Data.Format.Distance => $"{Value:0.##}m",
+        Data.Format.Percent => $"{Value:0}%",
+        Data.Format.Multiplier => $"x{Value:0.##}",
+        _ => $"{Value:0.##}"
+    };
 
-    public static implicit operator int(CustomNumberOption option) => option == null ? 0 : (int)option.Get();
+    public override void ViewOptionCreated()
+    {
+        base.ViewOptionCreated();
+        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
+        viewSettingsInfoPanel.settingText.text = Format();
+        viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
+    }
+
+    public override void PostLoadSetup()
+    {
+        base.PostLoadSetup();
+        IsInt = Property.PropertyType == typeof(int);
+    }
 }

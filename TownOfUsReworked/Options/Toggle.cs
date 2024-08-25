@@ -1,37 +1,42 @@
 namespace TownOfUsReworked.Options;
 
-public class CustomToggleOption : CustomOption
+public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : OptionAttribute(menu, CustomOptionType.Toggle)
 {
-    public Func<bool> OnClick { get; }
-
-    public CustomToggleOption(MultiMenu menu, string name, bool value, object parent = null) : this(menu, name, value, [parent], false) {}
-
-    public CustomToggleOption(MultiMenu menu, string name, bool value, object[] parents, bool all = false) : base(menu, name, CustomOptionType.Toggle, value, parents, all) => Format = Blank;
-
-    public CustomToggleOption(MultiMenu menu, string name, Func<bool> onClick, bool defaultValue, object parent = null, bool clientOnly = false) : base(menu, name, CustomOptionType.Toggle,
-        defaultValue, parent: parent, clientOnly: clientOnly)
-    {
-        OnClick = onClick;
-        Format = Blank;
-    }
+    public Func<bool> OnClick { get; set; }
+    private string OnClickName { get; } = onChanged;
 
     public bool Get() => (bool)Value;
 
     public void Toggle() => Set(OnClick == null ? !Get() : OnClick());
 
-    private static Func<object, string> Blank = val => (bool)val ? "On" : "Off";
+    public override string Format() => Get() ? "On" : "Off";
+
+    public override void PostLoadSetup()
+    {
+        base.PostLoadSetup();
+
+        if (OnClickName != null)
+            OnClick = (Func<bool>)AccessTools.GetDeclaredProperties(typeof(ToggleOptionAttribute)).Find(x => x.Name == OnClickName)?.GetValue(null);
+    }
 
     public override void OptionCreated()
     {
         base.OptionCreated();
         var toggle = Setting.Cast<ToggleOption>();
-        toggle.TitleText.text = Name;
+        toggle.TitleText.text = TranslationManager.Translate(ID);
         toggle.CheckMark.enabled = Get();
     }
 
-    public static implicit operator bool(CustomToggleOption option) => option?.Get() == true;
+    public override void ViewOptionCreated()
+    {
+        base.ViewOptionCreated();
+        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
+        viewSettingsInfoPanel.settingText.text = "";
+        viewSettingsInfoPanel.checkMark.gameObject.SetActive(Get());
+        viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Get());
+    }
 
-    public static bool LighterDarker()
+    private static bool LighterDarkerMethod()
     {
         TownOfUsReworked.LighterDarker.Value = !TownOfUsReworked.LighterDarker.Value;
 
@@ -41,7 +46,7 @@ public class CustomToggleOption : CustomOption
         return TownOfUsReworked.LighterDarker.Value;
     }
 
-    public static bool WhiteNameplates()
+    private static bool WhiteNameplatesMethod()
     {
         TownOfUsReworked.WhiteNameplates.Value = !TownOfUsReworked.WhiteNameplates.Value;
 
@@ -51,7 +56,7 @@ public class CustomToggleOption : CustomOption
         return TownOfUsReworked.WhiteNameplates.Value;
     }
 
-    public static bool NoLevels()
+    private static bool NoLevelsMethod()
     {
         TownOfUsReworked.NoLevels.Value = !TownOfUsReworked.NoLevels.Value;
 
@@ -67,4 +72,30 @@ public class CustomToggleOption : CustomOption
 
         return TownOfUsReworked.NoLevels.Value;
     }
+
+    public static Func<bool> ToggleLighterDarker => LighterDarkerMethod;
+
+    public static Func<bool> ToggleWhiteNameplates => WhiteNameplatesMethod;
+
+    public static Func<bool> ToggleNoLevels => NoLevelsMethod;
+
+    public static Func<bool> ToggleCrewColors => () => TownOfUsReworked.CustomCrewColors.Value = !TownOfUsReworked.CustomCrewColors.Value;
+
+    public static Func<bool> ToggleNeutColors => () => TownOfUsReworked.CustomNeutColors.Value = !TownOfUsReworked.CustomNeutColors.Value;
+
+    public static Func<bool> ToggleIntColors => () => TownOfUsReworked.CustomIntColors.Value = !TownOfUsReworked.CustomIntColors.Value;
+
+    public static Func<bool> ToggleSynColors => () => TownOfUsReworked.CustomSynColors.Value = !TownOfUsReworked.CustomSynColors.Value;
+
+    public static Func<bool> ToggleModColors => () => TownOfUsReworked.CustomModColors.Value = !TownOfUsReworked.CustomModColors.Value;
+
+    public static Func<bool> ToggleAbColors => () => TownOfUsReworked.CustomAbColors.Value = !TownOfUsReworked.CustomAbColors.Value;
+
+    public static Func<bool> ToggleObjColors => () => TownOfUsReworked.CustomObjColors.Value = !TownOfUsReworked.CustomObjColors.Value;
+
+    public static Func<bool> ToggleCustomEjects => () => TownOfUsReworked.CustomEjects.Value = !TownOfUsReworked.CustomEjects.Value;
+
+    public static Func<bool> ToggleOptimisationMode => () => TownOfUsReworked.OptimisationMode.Value = !TownOfUsReworked.OptimisationMode.Value;
+
+    public static Func<bool> ToggleHideOtherGhosts => () => TownOfUsReworked.HideOtherGhosts.Value = !TownOfUsReworked.HideOtherGhosts.Value;
 }

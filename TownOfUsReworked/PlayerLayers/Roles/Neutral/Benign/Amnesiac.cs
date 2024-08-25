@@ -1,21 +1,21 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Amnesiac : Neutral
 {
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RememberArrows { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
     public static float RememberArrowDelay { get; set; } = 5f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AmneVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AmneSwitchVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AmneToThief { get; set; } = true;
 
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
@@ -187,11 +187,11 @@ public class Amnesiac : Neutral
             ((Jackal)role).Recruit3 = null;
         }
 
-        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && (CustomGameOptions.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))
+        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && (Snitch.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))
         {
             foreach (var snitch in GetLayers<Snitch>())
             {
-                if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == player)
+                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && CustomPlayer.Local == player)
                     LocalRole.AllArrows.Add(snitch.PlayerId, new(player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                     snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));

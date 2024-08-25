@@ -5,7 +5,7 @@ public abstract class Syndicate : Role
     public CustomButton KillButton { get; set; }
     public string CommonAbilities => "<color=#008000FF>" + (Type is not LayerEnum.Anarchist and not LayerEnum.Sidekick && Alignment != Alignment.SyndicateKill && HoldsDrive ? ("- You can "
         + "kill players directly") : "- You can kill") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <color=#8CFFFFFF>Crew</color>" : "") + "</color>";
-    public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive) || GetLayers<PromotedRebel>().Any(x => x.HoldsDrive && IsPromoted);
+    public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive) || GetLayers<PromotedRebel>().Any(x => x.HoldsDrive && IsPromoted);
     public bool IsPromoted;
 
     public override UColor Color => CustomColorManager.Syndicate;
@@ -18,7 +18,7 @@ public abstract class Syndicate : Role
         Faction = Faction.Syndicate;
         FactionColor = CustomColorManager.Syndicate;
         Objectives = () => SyndicateWinCon;
-        KillButton = CreateButton(this, new SpriteName("SyndicateKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(CustomGameOptions.CDKillCd), "KILL",
+        KillButton = CreateButton(this, new SpriteName("SyndicateKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
             (PlayerBodyExclusion)Exception);
         Player.SetImpostor(true);
         IsPromoted = false;

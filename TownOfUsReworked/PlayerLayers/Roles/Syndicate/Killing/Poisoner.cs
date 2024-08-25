@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Poisoner : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float PoisonCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
+    public static float PoisonDur { get; set; } = 5f;
+
     public CustomButton PoisonButton { get; set; }
     public CustomButton GlobalPoisonButton { get; set; }
     public PlayerControl PoisonedPlayer { get; set; }
@@ -12,7 +18,7 @@ public class Poisoner : Syndicate
     public override string Name => "Poisoner";
     public override LayerEnum Type => LayerEnum.Poisoner;
     public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
-    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {CustomGameOptions.PoisonDur}s\n" +
+    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" +
         CommonAbilities;
 
     public override void Init()
@@ -21,10 +27,10 @@ public class Poisoner : Syndicate
         PoisonedPlayer = null;
         Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);
-        PoisonButton = CreateButton(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(CustomGameOptions.PoisonCd), "POISON",
-            new Duration(CustomGameOptions.PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (UsableFunc)Usable1, (EndFunc)EndEffect);
+        PoisonButton = CreateButton(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
+            new Duration(PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
         GlobalPoisonButton = CreateButton(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)Label,
-            new Cooldown(CustomGameOptions.PoisonCd), CustomGameOptions.PoisonDur, (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);
+            new Cooldown(PoisonCd), new Duration(PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);
     }
 
     public bool EndEffect() => PoisonedPlayer.HasDied() || Dead;

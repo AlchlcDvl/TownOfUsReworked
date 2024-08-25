@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Drunkard : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ConfuseCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float ConfuseDur { get; set; } = 10f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool ConfuseImmunity { get; set; } = true;
+
     public CustomButton ConfuseButton { get; set; }
     public float Modifier => ConfuseButton.EffectActive ? -1 : 1;
     public PlayerControl ConfusedPlayer { get; set; }
@@ -20,8 +29,8 @@ public class Drunkard : Syndicate
         Alignment = Alignment.SyndicateDisrup;
         ConfuseMenu = new(Player, Click, Exception1);
         ConfusedPlayer = null;
-        ConfuseButton = CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(CustomGameOptions.ConfuseCd),
-            new Duration(CustomGameOptions.ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (LabelFunc)Label, (EndFunc)EndEffect);
+        ConfuseButton = CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,
+            new Duration(ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (EndFunc)EndEffect);
     }
 
     public void StartConfusion()
@@ -59,7 +68,7 @@ public class Drunkard : Syndicate
     }
 
     public bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
-        CustomGameOptions.ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && CustomGameOptions.ConfuseImmunity);
+        ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && ConfuseImmunity);
 
     public string Label() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
 

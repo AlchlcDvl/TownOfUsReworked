@@ -1,18 +1,18 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Altruist : Crew
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 14, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
     public static int MaxRevives { get; set; } = 5;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float ReviveCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
     public static float ReviveDur { get; set; } = 10f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AltruistTargetBody { get; set; } = false;
 
     public CustomButton ReviveButton { get; set; }
@@ -54,7 +54,7 @@ public class Altruist : Crew
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
 
-        if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
+        if (player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
         {
             var lover = player.GetOtherLover();
             var loverRole = lover.GetRole();

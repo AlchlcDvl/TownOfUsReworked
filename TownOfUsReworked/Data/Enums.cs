@@ -146,6 +146,10 @@ public enum Alignment
     GameModeTaskRace,
     GameModeHideAndSeek,
 
+    Ability,
+    Modifier,
+    Objectifier,
+
     None
 }
 
@@ -167,34 +171,19 @@ public enum CustomOptionType
     String,
     Button,
     Layers,
-    Entry
+    Entry,
+    Alignment
 }
 
 public enum MultiMenu
-{
-    Main,
-    Crew,
-    Neutral,
-    Intruder,
-    Syndicate,
-    Modifier,
-    Objectifier,
-    Ability,
-    RoleList,
-    Client,
-    Presets,
-    RoleListEntry,
-    Layer
-}
-
-public enum MultiMenu2
 {
     Main,
     Layer,
     Presets,
     Client,
     RoleList,
-    LayerSubOptions
+    LayerSubOptions,
+    AlignmentSubOptions = 250
 }
 
 public enum WhoCanVentOptions
@@ -925,12 +914,6 @@ public enum Format
     Distance,
     Percent,
     Multiplier
-}
-
-public enum HeaderType
-{
-    General,
-    Layer
 }
 
 public enum CrewVenting

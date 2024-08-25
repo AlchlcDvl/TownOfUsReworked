@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Rivals : Objectifier
 {
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool RivalsChat { get; set; } = true;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool RivalsRoles { get; set; } = true;
+
     public PlayerControl OtherRival { get; set; }
     public bool IsWinningRival =>  OtherRival.HasDied() && !Player.HasDied();
 

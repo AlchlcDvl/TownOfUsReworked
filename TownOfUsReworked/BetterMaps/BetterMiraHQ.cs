@@ -1,18 +1,18 @@
 namespace TownOfUsReworked.BetterMaps;
 
-[HeaderOption(MultiMenu2.Main)]
+[HeaderOption(MultiMenu.Main)]
 public static class BetterMiraHQ
 {
-    [ToggleOption(MultiMenu2.Main)]
+    [ToggleOption(MultiMenu.Main)]
     public static bool EnableBetterMiraHQ { get; set; } = true;
 
-    [ToggleOption(MultiMenu2.Main)]
+    [ToggleOption(MultiMenu.Main)]
     public static bool MiraHQVentImprovements { get; set; } = false;
 
-    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
     public static float MiraReactorTimer { get; set; } = 60f;
 
-    [NumberOption(MultiMenu2.Main, 30f, 90f, 5f, Format.Time)]
+    [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
     public static float MiraO2Timer { get; set; } = 60f;
 
     private static readonly Vector3 CommsPos = new(14.5f, 3.1f, 2f);

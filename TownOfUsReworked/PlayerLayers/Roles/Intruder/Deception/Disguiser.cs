@@ -1,8 +1,26 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Disguiser : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float DisguiseCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 15f, 2.5f, Format.Time)]
+    public static float DisguiseDelay { get; set; } = 5f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 2.5f, Format.Time)]
+    public static float DisguiseDur { get; set; } = 10f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float MeasureCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool DisgCooldownsLinked { get; set; } = false;
+
+    [StringOption(MultiMenu.LayerSubOptions)]
+    public static DisguiserTargets DisguiseTarget { get; set; } = DisguiserTargets.Everyone;
+
     public CustomButton DisguiseButton { get; set; }
     public CustomButton MeasureButton { get; set; }
     public PlayerControl MeasuredPlayer { get; set; }
@@ -20,11 +38,10 @@ public class Disguiser : Intruder
     {
         BaseStart();
         Alignment = Alignment.IntruderDecep;
-        MeasureButton = CreateButton(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(CustomGameOptions.MeasureCd), "MEASURE",
+        MeasureButton = CreateButton(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(MeasureCd), "MEASURE",
             (PlayerBodyExclusion)Exception2);
-        DisguiseButton = CreateButton(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitDisguise, new Cooldown(CustomGameOptions.DisguiseCd),
-            new Duration(CustomGameOptions.DisguiseDur), (EffectVoid)Disguise, (EffectEndVoid)UnDisguise, new Delay(CustomGameOptions.DisguiseDelay), (PlayerBodyExclusion)Exception1,
-            (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE");
+        DisguiseButton = CreateButton(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
+            new Duration(DisguiseDur), (EffectVoid)Disguise, new Delay(DisguiseDelay), (PlayerBodyExclusion)Exception1, (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE");
         DisguisedPlayer = null;
         MeasuredPlayer = null;
         CopiedPlayer = null;
@@ -53,7 +70,7 @@ public class Disguiser : Intruder
         else
             DisguiseButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.DisgCooldownsLinked)
+        if (DisgCooldownsLinked)
             DisguiseButton.StartCooldown(cooldown);
     }
 
@@ -66,12 +83,12 @@ public class Disguiser : Intruder
 
         MeasureButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.DisgCooldownsLinked)
+        if (DisgCooldownsLinked)
             DisguiseButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => Exception2(player) || (((player.Is(Faction) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction)
-        && CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders)) && Faction is Faction.Intruder or Faction.Syndicate);
+    public bool Exception1(PlayerControl player) => Exception2(player) || (((player.Is(Faction) && DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) && DisguiseTarget
+        == DisguiserTargets.Intruders)) && Faction is Faction.Intruder or Faction.Syndicate);
 
     public bool Exception2(PlayerControl player) => player == MeasuredPlayer;
 

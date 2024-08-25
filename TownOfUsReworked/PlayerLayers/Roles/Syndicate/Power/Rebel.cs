@@ -1,8 +1,11 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Rebel : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 0.25f, 0.9f, 0.05f, Format.Multiplier)]
+    public static float RebPromotionCdDecrease { get; set; } = 0.75f;
+
     public bool HasDeclared { get; set; }
     public CustomButton SidekickButton { get; set; }
 

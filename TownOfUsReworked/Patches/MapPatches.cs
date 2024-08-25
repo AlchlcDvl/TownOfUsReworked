@@ -24,18 +24,18 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
             TownOfUsReworked.NormalOptions.CrewLightMod = CrewSettings.CrewVision;
-            TownOfUsReworked.NormalOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
+            TownOfUsReworked.NormalOptions.ImpostorLightMod = IntruderSettings.IntruderVision;
             TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
             TownOfUsReworked.NormalOptions.VisualTasks = GameModifiers.VisualTasks;
             TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameSettings.PlayerSpeed;
-            TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
+            TownOfUsReworked.NormalOptions.NumImpostors = IntruderSettings.IntruderCount;
             TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
             TownOfUsReworked.NormalOptions.ConfirmImpostor = GameSettings.ConfirmEjects;
             TownOfUsReworked.NormalOptions.VotingTime = GameSettings.VotingTime;
             TownOfUsReworked.NormalOptions.DiscussionTime = GameSettings.DiscussionTime;
             TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
             TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
-            TownOfUsReworked.NormalOptions.KillCooldown = CustomGameOptions.IntKillCd;
+            TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
             TownOfUsReworked.NormalOptions.GhostsDoTasks = CrewSettings.GhostTasksCountToWin;
             TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
             TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
@@ -173,7 +173,7 @@ public static class MapPatches
 
     private static void AdjustCooldowns(float change)
     {
-        foreach (var option in CustomOption.AllOptions.Where(x => x.Name.Contains("Cooldown") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
+        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Name.Contains("Cooldown") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
         {
             if (option.Type == CustomOptionType.Number)
                 option.Set((float)option.Value + change);

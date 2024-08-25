@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Intruder : Role
 {
     public CustomButton KillButton { get; set; }
-    public string CommonAbilities => "<color=#FF1919FF>- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (Dead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can " +
+    public string CommonAbilities => "<color=#FF1919FF>- You can kill players" + (IntruderSettings.IntrudersCanSabotage || (Dead && IntruderSettings.GhostsCanSabotage) ? ("\n- You can " +
         "call sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "") + "</color>";
 
     public override UColor Color => CustomColorManager.Intruder;
@@ -16,7 +16,7 @@ public abstract class Intruder : Role
         Faction = Faction.Intruder;
         FactionColor = CustomColorManager.Intruder;
         Objectives = () => IntrudersWinCon;
-        KillButton = CreateButton(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(CustomGameOptions.IntKillCd), "KILL",
+        KillButton = CreateButton(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception);
         Player.SetImpostor(true);
     }
@@ -60,12 +60,12 @@ public abstract class Intruder : Role
 
         if (this is Janitor jani)
         {
-            if (CustomGameOptions.JaniCooldownsLinked)
+            if (Janitor.JaniCooldownsLinked)
                 jani.CleanButton.StartCooldown(cooldown);
         }
         else if (this is PromotedGodfather gf)
         {
-            if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
+            if (Janitor.JaniCooldownsLinked && gf.IsJani)
                 gf.CleanButton.StartCooldown(cooldown);
         }
 

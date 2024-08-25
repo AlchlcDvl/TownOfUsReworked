@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Corrupted : Objectifier
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float CorruptCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool AllCorruptedWin { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool CorruptedVent { get; set; } = false;
+
     private CustomButton CorruptButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Corrupted : CustomColorManager.Objectifier;
@@ -15,7 +24,7 @@ public class Corrupted : Objectifier
     public override void Init()
     {
         base.Init();
-        CorruptButton = CreateButton(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)Corrupt, new Cooldown(CustomGameOptions.CorruptCd));
+        CorruptButton = CreateButton(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)Corrupt, new Cooldown(CorruptCd));
         Player.GetRole().Alignment = Player.GetRole().Alignment.GetNewAlignment(Faction.Neutral);
     }
 

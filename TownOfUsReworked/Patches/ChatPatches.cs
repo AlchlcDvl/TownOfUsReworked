@@ -153,9 +153,9 @@ public static class ChatChannels
             return true;
 
         var sourcerole = sourcePlayer.GetRole();
-        var shouldSeeMessage = (sourcePlayer.IsOtherLover(localPlayer) && CustomGameOptions.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) ||
-            (sourcePlayer.IsOtherRival(localPlayer) && CustomGameOptions.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) &&
-            CustomGameOptions.LinkedChat && sourcerole.CurrentChannel == ChatChannel.Linked);
+        var shouldSeeMessage = (sourcePlayer.IsOtherLover(localPlayer) && Lovers.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) || (sourcePlayer.IsOtherRival(localPlayer) &&
+            Rivals.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) && Linked.LinkedChat && sourcerole.CurrentChannel ==
+            ChatChannel.Linked);
 
         if (DateTime.UtcNow - MeetingStart.MeetingStartTime < TimeSpan.FromSeconds(1))
             return shouldSeeMessage;

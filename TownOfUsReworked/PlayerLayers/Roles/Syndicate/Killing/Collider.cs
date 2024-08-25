@@ -1,14 +1,35 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Collider : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float CollideCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ChargeCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float ChargeDur { get; set; } = 10f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
+    public static float CollideRange { get; set; } = 1.5f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
+    public static float CollideRangeIncrease { get; set; } = 0.5f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool ChargeCooldownsLinked { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool CollideResetsCooldown { get; set; } = false;
+
     public CustomButton PositiveButton { get; set; }
     public CustomButton NegativeButton { get; set; }
     public CustomButton ChargeButton { get; set; }
     public PlayerControl Positive { get; set; }
     public PlayerControl Negative { get; set; }
-    private float Range => CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
+    private float Range => CollideRange + (HoldsDrive ? CollideRangeIncrease : 0);
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Collider : CustomColorManager.Syndicate;
     public override string Name => "Collider";
@@ -23,12 +44,12 @@ public class Collider : Syndicate
         Alignment = Alignment.SyndicateKill;
         Positive = null;
         Negative = null;
-        PositiveButton = CreateButton(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetPositive, new Cooldown(CustomGameOptions.CollideCd),
-            (PlayerBodyExclusion)Exception1, "SET POSITIVE");
-        NegativeButton = CreateButton(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)SetNegative, new Cooldown(CustomGameOptions.CollideCd),
-            (PlayerBodyExclusion)Exception2, "SET NEGATIVE");
-        ChargeButton = CreateButton(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Charge, new Cooldown(CustomGameOptions.ChargeCd), "CHARGE",
-            new Duration(CustomGameOptions.ChargeDur), (UsableFunc)Usable, (EndFunc)EndEffect);
+        PositiveButton = CreateButton(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",
+            (PlayerBodyExclusion)Exception1);
+        NegativeButton = CreateButton(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)SetNegative, new Cooldown(CollideCd), "SET NEGATIVE",
+            (PlayerBodyExclusion)Exception2);
+        ChargeButton = CreateButton(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Charge, new Cooldown(ChargeCd), "CHARGE", (UsableFunc)Usable,
+            new Duration(ChargeDur), (EndFunc)EndEffect);
     }
 
     public void Charge() => ChargeButton.Begin();
@@ -54,7 +75,7 @@ public class Collider : Syndicate
 
         PositiveButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.ChargeCooldownsLinked)
+        if (ChargeCooldownsLinked)
             NegativeButton.StartCooldown(cooldown);
     }
 
@@ -67,7 +88,7 @@ public class Collider : Syndicate
 
         NegativeButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.ChargeCooldownsLinked)
+        if (ChargeCooldownsLinked)
             PositiveButton.StartCooldown(cooldown);
     }
 
@@ -117,7 +138,7 @@ public class Collider : Syndicate
             shouldReset = true;
         }
 
-        if (CustomGameOptions.CollideResetsCooldown && shouldReset)
+        if (CollideResetsCooldown && shouldReset)
         {
             PositiveButton.StartCooldown();
             NegativeButton.StartCooldown();

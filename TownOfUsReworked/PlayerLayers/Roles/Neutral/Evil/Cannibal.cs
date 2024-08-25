@@ -1,24 +1,24 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Cannibal : Neutral
 {
-    [NumberOption(MultiMenu2.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float EatCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 1, 5, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
     public static int BodiesNeeded { get; set; } = 1;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool EatArrows { get; set; } = false;
 
-    [NumberOption(MultiMenu2.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
     public static float EatArrowDelay { get; set; } = 5f;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CannibalVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu2.LayerSubOptions)]
+    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool VigiKillsCannibal { get; set; } = false;
 
     public CustomButton EatButton { get; set; }
@@ -26,7 +26,7 @@ public class Cannibal : Neutral
     public bool Eaten { get; set; }
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
     public bool EatWin => EatNeed == 0;
-    public bool CanEat => !Eaten || (Eaten && !CustomGameOptions.AvoidNeutralKingmakers);
+    public bool CanEat => !Eaten || (Eaten && !NeutralSettings.AvoidNeutralKingmakers);
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cannibal : CustomColorManager.Neutral;
     public override string Name => "Cannibal";

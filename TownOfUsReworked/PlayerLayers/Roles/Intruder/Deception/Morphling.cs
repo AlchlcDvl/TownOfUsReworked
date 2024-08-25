@@ -1,8 +1,23 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Morphling : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float MorphCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float MorphDur { get; set; } = 10f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float SampleCd { get; set; } = 25f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool MorphCooldownsLinked { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool MorphlingVent { get; set; } = false;
+
     public CustomButton MorphButton { get; set; }
     public CustomButton SampleButton { get; set; }
     public PlayerControl MorphedPlayer { get; set; }
@@ -21,10 +36,10 @@ public class Morphling : Intruder
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
-        SampleButton = CreateButton(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (CustomGameOptions.SampleCd), "SAMPLE",
+        SampleButton = CreateButton(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (SampleCd), "SAMPLE",
             (PlayerBodyExclusion)Exception1);
-        MorphButton = CreateButton(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(CustomGameOptions.MorphCd), "MORPH",
-            new Duration(CustomGameOptions.MorphDur), (EffectVoid)Morph, (EffectEndVoid)UnMorph, (EndFunc)EndEffect, (UsableFunc)Usable);
+        MorphButton = CreateButton(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
+            new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("MorphlingIntro");
     }
 
@@ -35,7 +50,7 @@ public class Morphling : Intruder
         MorphedPlayer = null;
         DefaultOutfit(Player);
 
-        if (CustomGameOptions.MorphCooldownsLinked)
+        if (MorphCooldownsLinked)
             SampleButton.StartCooldown();
     }
 
@@ -55,7 +70,7 @@ public class Morphling : Intruder
 
         SampleButton.StartCooldown(cooldown);
 
-        if (CustomGameOptions.DisgCooldownsLinked)
+        if (MorphCooldownsLinked)
             MorphButton.StartCooldown(cooldown);
     }
 

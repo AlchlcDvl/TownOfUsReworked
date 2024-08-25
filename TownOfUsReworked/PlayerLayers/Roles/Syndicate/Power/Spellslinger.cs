@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Spellslinger : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float SpellCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
+    public static float SpellCdIncrease { get; set; } = 5f;
+
     public CustomButton SpellButton { get; set; }
     public List<byte> Spelled { get; set; }
     public int SpellCount { get; set; }
@@ -20,7 +26,7 @@ public class Spellslinger : Syndicate
         Alignment = Alignment.SyndicatePower;
         Spelled = [];
         SpellCount = 0;
-        SpellButton = CreateButton(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(CustomGameOptions.SpellCd), "SPELLBIND",
+        SpellButton = CreateButton(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(SpellCd), "SPELLBIND",
             (PlayerBodyExclusion)Exception1, (DifferenceFunc)Difference);
     }
 
@@ -46,5 +52,5 @@ public class Spellslinger : Syndicate
 
     public override void ReadRPC(MessageReader reader) => Spelled.Add(reader.ReadByte());
 
-    public float Difference() => SpellCount * CustomGameOptions.SpellCdIncrease;
+    public float Difference() => SpellCount * SpellCdIncrease;
 }

@@ -1,8 +1,11 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Ghoul : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float GhoulMarkCd { get; set; } = 25f;
+
     public CustomButton MarkButton { get; set; }
     public bool Caught { get; set; }
     public bool Faded { get; set; }
@@ -20,8 +23,8 @@ public class Ghoul : Intruder
         BaseStart();
         Alignment = Alignment.IntruderUtil;
         MarkedPlayer = null;
-        MarkButton = CreateButton(this, new SpriteName("GhoulMark"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Mark, new Cooldown(CustomGameOptions.GhoulMarkCd), "MARK",
-            (PlayerBodyExclusion)Exception1, new PostDeath(true), (UsableFunc)Usable);
+        MarkButton = CreateButton(this, new SpriteName("GhoulMark"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Mark, new Cooldown(GhoulMarkCd), "MARK", new PostDeath(true),
+            (PlayerBodyExclusion)Exception1, (UsableFunc)Usable);
     }
 
     public void Fade()

@@ -1,8 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Banshee : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ScreamCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float ScreamDur { get; set; } = 10f;
+
     public CustomButton ScreamButton { get; set; }
     public List<byte> Blocked { get; set; }
     public bool Caught { get; set; }
@@ -20,8 +26,8 @@ public class Banshee : Syndicate
         Alignment = Alignment.SyndicateUtil;
         Blocked = [];
         RoleBlockImmune = true; // Not taking chances
-        ScreamButton = CreateButton(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitScream, new Cooldown(CustomGameOptions.ScreamCd),
-            new Duration(CustomGameOptions.ScreamDur), (EffectVoid)Scream, (EffectEndVoid)UnScream, new PostDeath(true), "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
+        ScreamButton = CreateButton(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
+            new Duration(ScreamDur), (EffectVoid)Scream, (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
     }
 
     public void Scream() => Blocked.ForEach(y => PlayerById(y).GetLayers().ForEach(x => x.IsBlocked = !PlayerById(y).GetRole().RoleBlockImmune));

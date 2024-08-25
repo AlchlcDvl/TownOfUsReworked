@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Wraith : Intruder
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float InvisCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float InvisDur { get; set; } = 10f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool WraithVent { get; set; } = false;
+
     public CustomButton InvisButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Wraith : CustomColorManager.Intruder;
@@ -16,8 +25,8 @@ public class Wraith : Intruder
         BaseStart();
         Alignment = Alignment.IntruderDecep;
         Data.Role.IntroSound = GetAudio("WraithIntro");
-        InvisButton = CreateButton(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitInvis, new Cooldown(CustomGameOptions.InvisCd),
-            (EffectVoid)Invis, new Duration(CustomGameOptions.InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
+        InvisButton = CreateButton(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitInvis, new Cooldown(InvisCd),
+            (EffectVoid)Invis, new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
     public void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));

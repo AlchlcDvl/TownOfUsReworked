@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Shapeshifter : Syndicate
 {
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static float ShapeshiftCd { get; set; } = 25f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
+    public static float ShapeshiftDur { get; set; } = 10f;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool ShapeshiftMates { get; set; } = false;
+
     public CustomButton ShapeshiftButton { get; set; }
     public PlayerControl ShapeshiftPlayer1 { get; set; }
     public PlayerControl ShapeshiftPlayer2 { get; set; }
@@ -23,8 +32,8 @@ public class Shapeshifter : Syndicate
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Exception1);
         ShapeshiftMenu2 = new(Player, Click2, Exception2);
-        ShapeshiftButton = CreateButton(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(CustomGameOptions.ShapeshiftCd),
-            new Duration(CustomGameOptions.ShapeshiftDur), (EffectVoid)Shift, (EffectEndVoid)UnShapeshift, (LabelFunc)Label);
+        ShapeshiftButton = CreateButton(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(ShapeshiftCd), (EffectEndVoid)UnShapeshift,
+            new Duration(ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)Label);
     }
 
     public void Shift() => Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
@@ -120,7 +129,7 @@ public class Shapeshifter : Syndicate
     public bool Exception2(PlayerControl player) => player == ShapeshiftPlayer1 || CommonException(player);
 
     public bool CommonException(PlayerControl player) => player == Player || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) && Faction is Faction.Intruder or
-        Faction.Syndicate && !CustomGameOptions.ShapeshiftMates) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.ShapeshiftMates);
+        Faction.Syndicate && !ShapeshiftMates) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !ShapeshiftMates);
 
     public override void UpdateHud(HudManager __instance)
     {

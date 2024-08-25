@@ -1,10 +1,16 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Dwarf : Modifier
 {
-    private static bool Smol => CustomGameOptions.DwarfScale != 1;
-    private static bool Sped => CustomGameOptions.DwarfSpeed != 1;
+    [NumberOption(MultiMenu.LayerSubOptions, 1f, 2f, 0.05f, Format.Multiplier)]
+    public static float DwarfSpeed { get; set; } = 1.5f;
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0.3f, 1f, 0.025f, Format.Multiplier)]
+    public static float DwarfScale { get; set; } = 0.5f;
+
+    private static bool Smol => DwarfScale != 1;
+    private static bool Sped => DwarfSpeed != 1;
     private static bool Useless => !Smol && !Sped;
     private static string Text => Smol && Sped ? "tiny and speedy" : (Smol ? "tiny" : (Sped ? "speedy" : ""));
 

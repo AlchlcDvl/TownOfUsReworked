@@ -62,10 +62,10 @@ public static class MeetingPatches
             MeetingCount++;
             Coroutines.Start(Announcements());
 
-            if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount)
+            if (Role.ChaosDriveMeetingTimerCount < SyndicateSettings.ChaosDriveMeetingCount)
                 Role.ChaosDriveMeetingTimerCount++;
 
-            if ((Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount || IsKilling) && !Role.SyndicateHasChaosDrive)
+            if ((Role.ChaosDriveMeetingTimerCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling) && !Role.SyndicateHasChaosDrive)
             {
                 Role.SyndicateHasChaosDrive = true;
                 RoleGen.AssignChaosDrive();
@@ -203,13 +203,13 @@ public static class MeetingPatches
 
             var message = "";
 
-            if (CustomGameOptions.SyndicateCount > 0)
+            if (SyndicateSettings.SyndicateCount > 0)
             {
-                if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount - 1)
-                    message = $"{CustomGameOptions.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-                else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount - 1)
+                if (Role.ChaosDriveMeetingTimerCount < SyndicateSettings.ChaosDriveMeetingCount - 1)
+                    message = $"{SyndicateSettings.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
+                else if (Role.ChaosDriveMeetingTimerCount == SyndicateSettings.ChaosDriveMeetingCount - 1)
                     message = "This is the last meeting before the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-                else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount && MeetingCount == Role.ChaosDriveMeetingTimerCount)
+                else if (Role.ChaosDriveMeetingTimerCount == SyndicateSettings.ChaosDriveMeetingCount && MeetingCount == Role.ChaosDriveMeetingTimerCount)
                     message = "The <b>Syndicate</b> now possesses the Chaos Drive!";
                 else
                     message = "The <b>Syndicate</b> possesses the Chaos Drive.";
@@ -221,9 +221,9 @@ public static class MeetingPatches
 
             if (PlayerLayer.GetLayers<Overlord>().Any(x => x.Alive))
             {
-                if (MeetingCount == CustomGameOptions.OverlordMeetingWinCount - 1)
+                if (MeetingCount == Overlord.OverlordMeetingWinCount - 1)
                     message = "This is the last meeting to find and kill the <b>Overlord</b>. Should you fail, you will all lose!";
-                else if (MeetingCount < CustomGameOptions.OverlordMeetingWinCount - 1)
+                else if (MeetingCount < Overlord.OverlordMeetingWinCount - 1)
                     message = "There seems to be an <b>Overlord</b> bent on dominating the mission! Kill them before they are successful!";
 
                 if (message != "")

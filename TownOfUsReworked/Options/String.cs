@@ -1,36 +1,55 @@
 namespace TownOfUsReworked.Options;
 
-public class CustomStringOption : CustomOption
+public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null) : OptionAttribute(menu, CustomOptionType.String)
 {
-    public string[] Values { get; }
+    public string[] Values { get; set; }
+    public int Index { get; set; }
+    public Type TargetType { get; set; }
+    private string[] IgnoreStrings { get; } = ignoreStrings ?? [];
 
-    public CustomStringOption(MultiMenu menu, string name, string[] values, object parent = null) : this(menu, name, values, [parent], false) {}
+    public int GetInt() => Index;
 
-    public CustomStringOption(MultiMenu menu, string name, string[] values, object[] parents, bool all = false) : base(menu, name, CustomOptionType.String, 0, parents, all)
+    public string GetString() => Values[Index];
+
+    public object GetEnumValue() => Enum.Parse(TargetType, $"{Index}");
+
+    public void Increase()
     {
-        Values = values;
-        Format = val => Values[(int)val];
+        Index = CycleInt(Values.Length - 1, 0, Index, true);
+        Set(Enum.Parse(TargetType, $"{Index}"));
     }
 
-    public int GetInt() => (int)Value;
-
-    public string GetString() => Values[(int)Value];
-
-    public void Increase() => Set(CycleInt(Values.Length - 1, 0, GetInt(), true));
-
-    public void Decrease() => Set(CycleInt(Values.Length - 1, 0, GetInt(), false));
+    public void Decrease()
+    {
+        Index = CycleInt(Values.Length - 1, 0, Index, false);
+        Set(Enum.Parse(TargetType, $"{Index}"));
+    }
 
     public override void OptionCreated()
     {
         base.OptionCreated();
         var str = Setting.Cast<StringOption>();
-        str.TitleText.text = Name;
+        str.TitleText.text = TranslationManager.Translate(ID);
         str.Value = str.oldValue = GetInt();
-        str.ValueText.text = GetString();
+        str.ValueText.text = Format();
         str.Values = new(0);
     }
 
-    public static implicit operator string(CustomStringOption option) => option == null ? "" : option.GetString();
+    public override string Format() => TranslationManager.Translate($"{ID}.{GetString()}");
 
-    public static implicit operator int(CustomStringOption option) => option == null ? 0 : option.GetInt();
+    public override void PostLoadSetup()
+    {
+        base.PostLoadSetup();
+        TargetType = Property.PropertyType;
+        Values = [ .. Enum.GetNames(TargetType).Where(x => !IgnoreStrings.Contains(x)) ];
+        Index = (int)Value;
+    }
+
+    public override void ViewOptionCreated()
+    {
+        base.ViewOptionCreated();
+        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
+        viewSettingsInfoPanel.settingText.text = Format();
+        viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
+    }
 }

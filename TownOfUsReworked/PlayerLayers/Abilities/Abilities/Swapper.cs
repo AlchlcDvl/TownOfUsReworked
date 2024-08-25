@@ -1,8 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu2.LayerSubOptions)]
+[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Swapper : Ability
 {
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool SwapperButton { get; set; } = true;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool SwapAfterVoting { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool SwapSelf { get; set; } = true;
+
     public PlayerVoteArea Swap1 { get; set; }
     public PlayerVoteArea Swap2 { get; set; }
     public CustomMeeting SwapMenu { get; set; }
@@ -16,7 +25,7 @@ public class Swapper : Ability
     {
         Swap1 = null;
         Swap2 = null;
-        SwapMenu = new(Player, "SwapActive", "SwapDisabled", CustomGameOptions.SwapAfterVoting, SetActive, IsExempt, position: null);
+        SwapMenu = new(Player, "SwapActive", "SwapDisabled", SwapAfterVoting, SetActive, IsExempt, position: null);
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -77,7 +86,7 @@ public class Swapper : Ability
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (Local && Player == player && !CustomGameOptions.SwapSelf) || Dead;
+        return player.HasDied() || (Local && Player == player && !SwapSelf) || Dead;
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)

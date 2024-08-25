@@ -1,83 +1,160 @@
 namespace TownOfUsReworked.Options;
 
-public class CustomOption
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : Attribute
 {
-    public static readonly List<CustomOption> AllOptions = [];
-    private static int LastChangedSetting = -1;
-    public int ID { get; }
-    public MultiMenu Menu { get; }
-    public Func<object, string> Format { get; set; }
-    public string Name { get; }
-    public Action<object> OnChanged { get; }
+    public static readonly List<OptionAttribute> AllOptions = [];
+    private static string LastChangedSetting = "";
+    public string ID { get; set; }
+    public MultiMenu Menu { get; set; } = menu;
+    public readonly List<MultiMenu> Menus = [ menu ];
     public object Value { get; set; }
-    public object DefaultValue { get; }
+    public object DefaultValue { get; set; }
     public MonoBehaviour Setting { get; set; }
-    public CustomOptionType Type { get; }
-    public object[] Parents { get; set; }
-    public bool All { get; }
-    public bool Invert { get; }
-    public bool ClientOnly { get; }
-    public bool Active() => All ? Parents.All(IsActive) : Parents.Any(IsActive);
+    public MonoBehaviour ViewSetting { get; set; }
+    public CustomOptionType Type { get; } = type;
+    public bool All { get; set; }
+    public bool ClientOnly { get; set; }
+    public PropertyInfo Property { get; set; }
+    public string Name { get; set; } // Not actually the setting text, just the property/class name :]
+    // public bool Invert { get; set; }
+    // public MethodInfo OnChanged { get; set; }
+    // public Type OnChangedType { get; set; }
+    // public string OnChangedName { get; set; }
+    // ^ Code for when I do actually need it :]
 
-    public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object[] parent, bool all = false, Action<object> onChanged = null, bool clientOnly = false)
+    // Apparently, setting the parents in the attibutes doesn't seem to work
+    // This one is for those depending on other options
+    public static readonly List<(string[], object[])> OptionParents1 =
+    [
+        ( [ "EjectionRevealsRole" ], [ "ConfirmEjects" ] ),
+        ( [ "InitialCooldowns" ], [ "EnableInitialCds" ] ),
+        ( [ "MeetingCooldowns" ], [ "EnableMeetingCds" ] ),
+        ( [ "FailCooldowns" ], [ "EnableFailCds" ] ),
+        ( [ "WhoSeesFirstKillShield" ], [ "FirstKillShield" ] ),
+        ( [ "WhispersAnnouncement" ], [ "Whispers" ] ),
+        ( [ "KillerReports", "RoleFactionReports", "LocationReports" ], [ "GameAnnouncements" ] ),
+        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "LargeMapDecreasedShortTasks",
+            "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ] ),
+        ( [ "EvilsIgnoreNV" ], [ "NightVision" ] ),
+        ( [ "SkeldVentImprovements" , "SkeldReactorTimer", "SkeldO2Timer" ], [ "EnableBetterSkeld" ] ),
+        ( [ "MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer" ], [ "EnableBetterMiraHQ" ] ),
+        ( [ "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ], [ "EnableBetterPolus" ] ),
+        ( [ "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer" ], [ "EnableBetterAirship" ] ),
+        ( [ "FungleReactorTimer", "FungleMixupTimer" ], [ "EnableBetterFungle" ] ),
+        ( [ "CoronerKillerNameTime" ], [ "CoronerReportName" ] )
+    ];
+    // I need a second one because for some dumb reason the game likes crashing
+    // This is for everything else
+    public static readonly List<(string[], object[])> OptionParents2 =
+    [
+        ( [ "TaskBar" ], [ GameMode.Classic, GameMode.Custom, GameMode.AllAny, GameMode.KillingOnly, GameMode.RoleList, GameMode.Vanilla ] ),
+        ( [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic, GameMode.Custom ] ),
+        ( [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ], [ GameMode.KillingOnly ] ),
+        ( [ "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat",
+            "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [ GameMode.HideAndSeek ] ),
+        ( [ "TRShortTasks", "TRCommonTasks", "TRLongTasks" ], [ GameMode.TaskRace ] ),
+        ( [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ] ),
+        ( [ "RandomMapSubmerged" ], [ MapEnum.Random, ("ModCompatibility", "SubLoaded") ] ),
+        ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, ("ModCompatibility", "LILoaded") ] ),
+        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
+            MapEnum.MiraHQ ] ),
+        ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle ] ),
+        ( [ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ] ),
+        ( [ "BetterMiraHQ" ], [ MapEnum.MiraHQ, MapEnum.Random ] ),
+        ( [ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ] ),
+        ( [ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ] ),
+        ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
+        ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom, GameMode.Vanilla, GameMode.KillingOnly, GameMode.RoleList ] ),
+        ( [ "CrewMax", "CrewMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
+        ( [ "Pestilence" ], [ LayerEnum.Plaguebearer ] ),
+        ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] ),
+        ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
+        ( [ "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "EnableRevealer", "EnablePhantom", "EnableGhoul", "EnableBanshee" ], [ GameMode.RoleList ] )
+    ];
+    private static readonly Dictionary<string, bool> MapToLoaded = [];
+
+    public void SetProperty(PropertyInfo property)
     {
-        Menu = menu;
-        Name = name;
-        Type = type;
-        Parents = parent;
-        All = all;
-        Value = DefaultValue = defaultValue;
-        OnChanged = onChanged ?? BlankVoid;
-        ClientOnly = clientOnly;
-        ID = Type is CustomOptionType.Header or CustomOptionType.Button || ClientOnly ? -1 : AllOptions.Count(x => x.Type is not (CustomOptionType.Header or CustomOptionType.Button));
-
-        if (Type != CustomOptionType.Button)
-            AllOptions.Add(this);
+        Property = property;
+        Value = DefaultValue = property.GetValue(null);
+        Name = property.Name;
+        ID = $"CustomOption.{Name.Replace("Priv", "")}";
+        // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
+        AllOptions.Add(this);
     }
 
-    public CustomOption(MultiMenu menu, string name, CustomOptionType type, object defaultValue, object parent = null, Action<object> onChanged = null, bool clientOnly = false) :
-        this(menu, name, type, defaultValue, [parent], false, onChanged, clientOnly) {}
+    public virtual string Format() => "";
 
-    public override string ToString()
+    public virtual void Update() {}
+
+    public bool Active()
     {
-        var n = this is CustomHeaderOption ? "\n" : "";
-        var colon = this is CustomHeaderOption ? "" : ": ";
-        var name = this is CustomHeaderOption ? $"<b>{Name}</b>" : Name;
-        return n + name + colon + Format(Value);
+        var result = true;
+
+        if (OptionParents1.TryFinding(x => x.Item1.Contains(Name), out var parents))
+            result &= parents.Item2.AllAnyOrEmpty(IsActive, All);
+
+        if (OptionParents2.TryFinding(x => x.Item1.Contains(Name), out parents))
+            result &= parents.Item2.AllAnyOrEmpty(IsActive, All);
+
+        return result;
     }
 
     private bool IsActive(object option)
     {
-        var result = false;
+        var result = option == null;
 
-        if (option == null)
-            result = true;
-        else if (option is CustomToggleOption toggle)
-            result = toggle && toggle.Active();
-        else if (option is CustomLayersOption layers)
-            result = layers.GetChance() > 0 && !IsRoleList && !IsVanilla && layers.Active();
-        else if (option is CustomHeaderOption header)
-            result = header.Active();
-        else if (option is MapEnum map)
+        if (option is MapEnum map)
             result = MapSettings.Map == map;
         else if (option is GameMode mode)
             result = GameModeSettings.GameMode == mode;
         else if (option is LayerEnum layer)
-            result = GetOptions<RoleListEntryOption>().Any(x => x.Name.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
-        else if (option is CustomOption custom)
-            result = custom.Active();
-        else if (option is bool boolean)
-            result = boolean;
+            result = SettingsPatches.SettingsPage == 5 + (int)layer + 1;
+        else if (option is Alignment align)
+            result = SettingsPatches.SettingsPage == 250 + (int)align + 1;
+        else if (option is int num)
+            result = SettingsPatches.SettingsPage == num;
+        else if (option is VigiOptions vigiop)
+            result = Vigilante.HowDoesVigilanteDie == vigiop;
+        else if (option is (string, string))
+        {
+            if (!MapToLoaded.TryGetValue(ID, out result))
+            {
+                var tuple = ((string, string))option;
+                var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ToList().Find(x => x.Name == tuple.Item1);
+                MapToLoaded[ID] = result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
+            }
+        }
+        else if (option is string id)
+        {
+            if (id == Name)
+                return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them even with this line active
 
-        if (Invert && option != null)
-            result = !result;
+            var optionatt = GetOptionFromPropertyName(id);
+
+            if (optionatt != null)
+            {
+                result = optionatt.Active();
+
+                if (optionatt is ToggleOptionAttribute toggle)
+                    result &= toggle.Get();
+                else if (optionatt is HeaderOptionAttribute header)
+                    result &= header.Get();
+            }
+            else
+                result = true;
+        }
+
+        // if (Invert && option != null)
+        //     result = !result;
 
         return result;
     }
 
     public virtual void OptionCreated()
     {
-        Setting.name = Setting.gameObject.name = Name.Replace(" ", "_");
+        Setting.name = ID;
 
         if (Setting is OptionBehaviour option)
         {
@@ -86,12 +163,27 @@ public class CustomOption
         }
     }
 
-    public void Set(object value, bool rpc = true)
+    public virtual void ViewOptionCreated()
+    {
+        ViewSetting.name = ID;
+
+        if (ViewSetting is ViewSettingsInfoPanel viewSettingsInfoPanel)
+        {
+            viewSettingsInfoPanel.SetMaskLayer(61);
+            viewSettingsInfoPanel.titleText.text = TranslationManager.Translate(ID);
+            viewSettingsInfoPanel.background.gameObject.SetActive(true);
+        }
+    }
+
+    public virtual void PostLoadSetup() {}
+
+    public void Set(object value, bool rpc = true, bool notify = true)
     {
         Value = value;
-        OnChanged(Value);
+        Property?.SetValue(null, value);
+        // OnChanged.Invoke(value);
 
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || ID == -1 || Type is CustomOptionType.Header or CustomOptionType.Button))
+        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type == CustomOptionType.Header))
             SendOptionRPC(this);
 
         if (!Setting)
@@ -101,10 +193,10 @@ public class CustomOption
 
         if (Setting is ToggleOption toggle)
         {
-            if (this is RoleListEntryOption entry)
-                toggle.TitleText.text = stringValue = entry.GetString(Value);
-            else
-            {
+            // if (this is RoleListEntryAttribute)
+            //     toggle.TitleText.text = Format();
+            // else
+            // {
                 var newValue = (bool)Value;
                 toggle.oldValue = newValue;
 
@@ -112,28 +204,36 @@ public class CustomOption
                     toggle.CheckMark.enabled = newValue;
 
                 stringValue = newValue ? "On" : "Off";
-            }
+            // }
         }
         else if (Setting is NumberOption number)
         {
-            number.Value = number.oldValue = (float)Value;
-            number.ValueText.text = stringValue = Format(Value);
+            number.Value = number.oldValue = Value is int v ? v : (float)Value; // Part 2 of my mental breakdown
+            number.ValueText.text = stringValue = Format();
         }
         else if (Setting is StringOption str)
         {
-            Value = Mathf.Clamp((int)Value, 0, ((CustomStringOption)this).Values.Length - 1);
-            str.Value = str.oldValue = (int)Value;
-            str.ValueText.text = stringValue = Format(Value);
+            var stringOption = (StringOptionAttribute)this;
+            str.Value = str.oldValue = stringOption.Index = Mathf.Clamp((int)Value, 0, stringOption.Values.Length - 1);
+            str.ValueText.text = stringValue = Format();
         }
         else if (Setting is RoleOptionSetting role)
         {
-            var tuple = ((int, int))Value;
-            role.chanceText.text = $"{tuple.Item1}%";
-            role.countText.text = $"x{tuple.Item2}";
-            stringValue = IsCustom ? $"({tuple.Item1}%, x{tuple.Item2})" : $"{tuple.Item1}%";
+            var data = (RoleOptionData)Value;
+            var layer = (LayersOptionAttribute)this;
+            role.chanceText.text = $"{data.Chance}%";
+            role.countText.text = $"x{data.Count}";
+            layer.UniqueCheck.enabled = data.Unique;
+            layer.ActiveCheck.enabled = data.Active;
+            stringValue = Format();
         }
 
-        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Name}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
+        SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
+
+        if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
+            return;
+
+        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{TranslationManager.Translate(ID)}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
 
         if (LastChangedSetting == ID && HUD.Notifier.activeMessages.Count > 0)
             HUD.Notifier.activeMessages[^1].UpdateMessage(changed);
@@ -148,28 +248,37 @@ public class CustomOption
         }
     }
 
-    public static string SettingsToString(List<CustomOption> list = null)
+    public static string SettingsToString(List<OptionAttribute> list = null)
     {
         list ??= AllOptions;
         var builder = new StringBuilder();
 
         foreach (var option in list)
         {
-            if (option.Type is CustomOptionType.Button or CustomOptionType.Header || option.ClientOnly || option.ID == -1)
+            if (option.Type == CustomOptionType.Header || option.ClientOnly || !option.ID.Contains("CustomOption"))
                 continue;
 
-            builder.AppendLine(option.Name.Trim());
-
-            if (option.Value.GetType() == typeof((int, int)))
-            {
-                var tuple = ((int, int))option.Value;
-                builder.AppendLine($"{tuple.Item1.ToString().Trim()},{tuple.Item2.ToString().Trim()}");
-            }
-            else
-                builder.AppendLine(option.Value.ToString().Trim());
+            builder.AppendLine(option.ID);
+            builder.AppendLine(option.Value.ToString());
         }
 
         return builder.ToString();
+    }
+
+    public static void SaveSettings()
+    {
+        var filePath = Path.Combine(TownOfUsReworked.Options, "SavedSettings");
+        var i = 0;
+        var pathoverridden = false;
+
+        while (File.Exists(filePath))
+        {
+            filePath = Path.Combine(TownOfUsReworked.Options, $"SavedSettings{i}");
+            i++;
+            pathoverridden = true;
+        }
+
+        SaveSettings($"SavedSettings{(pathoverridden ? i : "")}");
     }
 
     public static void SaveSettings(string fileName) => SaveText(fileName, SettingsToString(), TownOfUsReworked.Options);
@@ -185,7 +294,7 @@ public class CustomOption
         while (splitText.Any())
         {
             pos++;
-            var name = splitText[0].Trim();
+            var name = splitText[0];
             splitText.RemoveAt(0);
             var option = GetOption(name);
 
@@ -209,25 +318,23 @@ public class CustomOption
                 switch (option.Type)
                 {
                     case CustomOptionType.Number:
-                        option.Set(float.Parse(value), rpc: false);
+                        option.Set(float.Parse(value), false);
                         break;
 
                     case CustomOptionType.Toggle:
-                        option.Set(bool.Parse(value), rpc: false);
+                        option.Set(bool.Parse(value), false);
                         break;
 
                     case CustomOptionType.String:
-                        option.Set(int.Parse(value), rpc: false);
+                        option.Set(int.Parse(value), false);
                         break;
 
                     case CustomOptionType.Entry:
-                        option.Set(Enum.Parse<LayerEnum>(value), rpc: false);
+                        option.Set(Enum.Parse<LayerEnum>(value), false);
                         break;
 
                     case CustomOptionType.Layers:
-                        var values = value.Split(',');
-                        splitText.RemoveAt(0);
-                        option.Set((int.Parse(values[0]), int.Parse(values[1])), false);
+                        option.Set(RoleOptionData.Parse(value), false);
                         break;
                 }
             }
@@ -243,15 +350,19 @@ public class CustomOption
             }
         }
 
-        SendOptionRPC(setting: (CustomOption)null);
+        SendOptionRPC(setting: (OptionAttribute)null);
         yield break;
     }
 
-    public static List<CustomOption> GetOptions(CustomOptionType type) => AllOptions.Where(x => x.Type == type).ToList();
+    public static List<OptionAttribute> GetOptions(CustomOptionType type) => AllOptions.Where(x => x.Type == type).ToList();
 
-    public static List<T> GetOptions<T>() where T : CustomOption => AllOptions.Where(x => x.GetType() == typeof(T)).Cast<T>().ToList();
+    public static List<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x.GetType() == typeof(T)).Cast<T>().ToList();
 
-    public static CustomOption GetOption(string title) => AllOptions.Find(x => x.Name.Trim() == title.Trim());
+    public static OptionAttribute GetOption(string title) => AllOptions.Find(x => x.ID == title);
 
-    public static T GetOption<T>(string title) where T : CustomOption => GetOption(title) as T;
+    public static OptionAttribute GetOptionFromPropertyName(string propertyName) => AllOptions.Find(x => x.Name == propertyName);
+
+    public static T GetOptionFromPropertyName<T>(string propertyName) where T : OptionAttribute => GetOptionFromPropertyName(propertyName) as T;
+
+    public static T GetOption<T>(string title) where T : OptionAttribute => GetOption(title) as T;
 }

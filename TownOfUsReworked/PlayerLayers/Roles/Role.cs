@@ -262,7 +262,7 @@ public abstract class Role : PlayerLayer
             tabText.SetText(text);
         }
 
-        if (!Dead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity) && Faction != Faction.GameMode && CustomPlayer.AllPlayers.Any(x => x.Is(LayerEnum.Timekeeper)))
+        if (!Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode && CustomPlayer.AllPlayers.Any(x => x.Is(LayerEnum.Timekeeper)))
         {
             if (!Rewinding)
             {
@@ -273,7 +273,7 @@ public abstract class Role : PlayerLayer
                 {
                     var seconds = (DateTime.UtcNow - pair.Value).TotalSeconds;
 
-                    if (seconds > CustomGameOptions.TimeDur + 1)
+                    if (seconds > Timekeeper.TimeDur + 1)
                         toBeRemoved.Add(pair.Key);
                 }
 
@@ -502,7 +502,7 @@ public abstract class Role : PlayerLayer
     }
 
     public const string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
-    public static string SyndicateWinCon => (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes the " +
+    public static string SyndicateWinCon => (SyndicateSettings.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes the " +
         "<color=#008000FF>Syndicate</color>";
     public const string CrewWinCon = "- Finish all tasks\n- Eject all <color=#FF0000FF>evildoers</color>";
 
