@@ -35,7 +35,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
         str.Values = new(0);
     }
 
-    public override string Format() => TranslationManager.Translate($"{ID}.{GetString()}");
+    public override string Format() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{GetString()}");
 
     public override void PostLoadSetup()
     {

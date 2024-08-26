@@ -58,9 +58,7 @@ public class CustomMeeting
         if (!Buttons.TryGetValue(targetId, out var button) || !button)
             return;
 
-        button.GetComponent<PassiveButton>().OnClick = new();
-        button.GetComponent<PassiveButton>().OnMouseOut = new();
-        button.GetComponent<PassiveButton>().OnMouseOver = new();
+        button.GetComponent<PassiveButton>().WipeListeners();
         button.SetActive(false);
         button.Destroy();
         Buttons[targetId] = null;

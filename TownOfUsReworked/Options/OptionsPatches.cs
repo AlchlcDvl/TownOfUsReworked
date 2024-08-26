@@ -247,7 +247,10 @@ public static class SettingsPatches
                 LayersPrefab.titleText.alignment = TextAlignmentOptions.Left;
                 LayersPrefab.buttons = LayersPrefab.GetComponentsInChildren<PassiveButton>().ToArray();
                 LayersPrefab.transform.GetChild(0).localPosition += new Vector3(-0.1f, 0f, 0f);
-                LayersPrefab.transform.GetChild(3).localScale += new Vector3(0.001f, 0f, 0f); // WHY THE FUCK IS THE BACKGROUND EVER SO SLIGHTLY SMALLER THAN THE HEADER?!
+
+                var label = LayersPrefab.transform.GetChild(3);
+                label.localScale += new Vector3(0.001f, 0f, 0f); // WHY THE FUCK IS THE BACKGROUND EVER SO SLIGHTLY SMALLER THAN THE HEADER?!
+                label.localPosition = new(-0.3998f, -0.2953f, 4f);
 
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], LayersPrefab.transform);
                 newButton.name = "LayersSubSettingsButton";
@@ -274,7 +277,7 @@ public static class SettingsPatches
             if (!AlignmentPrefab)
             {
                 // Header Label = 0, Header Text = 1, Quota Header = 2, Collapse = 3, Cog = 4
-                //                                    ┗---------------- Left Dark Label = 0, Count Text = 1, Left Label = 2, Right Label = 3, Chance Text = 4, Large Label = 5, Active = 6,
+                //                                    ┗---------------- Dark Label = 0, Count Text = 1, Left Label = 2, Right Label = 3, Chance Text = 4, Long Label = 5, Active = 6,
                 //                                                          Unique = 7
                 AlignmentPrefab = UObject.Instantiate(__instance.categoryHeaderEditRoleOrigin, null).DontUnload().DontDestroy();
                 AlignmentPrefab.name = "CustomHeaderOptionLayerPrefab";
@@ -570,7 +573,7 @@ public static class SettingsPatches
                             y -= 0.1f;
 
                         option.Setting.transform.localPosition = new(isAlign ? 4.986f : -0.15f, y, -2f);
-                        y -= isAlign ? 0.496f : 0.404f;
+                        y -= isAlign ? 0.4957f : 0.404f;
                     }
 
                     option.Update();

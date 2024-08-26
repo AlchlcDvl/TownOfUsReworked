@@ -496,11 +496,8 @@ public static class MeetingPatches
             var overlaydest2 = (Vector2)overlay2.position;
             var reportdest2 = (Vector2)report2.position;
 
-            foreach (var vote in votes2)
-                vote.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap1.MaskLayer);
-
-            foreach (var vote in votes1)
-                vote.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap2.MaskLayer);
+            votes2.ForEach(x => x.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap1.MaskLayer));
+            votes1.ForEach(x => x.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap2.MaskLayer));
 
             var duration = 1f / (PlayerLayer.GetLayers<Swapper>().Count + 1);
 

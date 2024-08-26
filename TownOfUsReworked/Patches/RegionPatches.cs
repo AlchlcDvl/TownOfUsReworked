@@ -38,7 +38,7 @@ public static class RegionInfoOpenPatch
                 IPField.characterLimit = 30;
                 IPField.AllowSymbols = true;
                 IPField.ForceUppercase = false;
-                __instance.StartCoroutine(PerformTimedAction(0.1f, _ =>
+                Coroutines.Start(PerformTimedAction(0.1f, _ =>
                 {
                     IPField.outputText.SetText(TownOfUsReworked.Ip.Value, true);
                     IPField.SetText(TownOfUsReworked.Ip.Value);
@@ -62,7 +62,7 @@ public static class RegionInfoOpenPatch
                 child1.gameObject.DestroyImmediate();
                 PortField.transform.localPosition = new(2.8f, -1.55f, -100f);
                 PortField.characterLimit = 5;
-                __instance.StartCoroutine(PerformTimedAction(0.1f, _ =>
+                Coroutines.Start(PerformTimedAction(0.1f, _ =>
                 {
                     PortField.outputText.SetText($"{TownOfUsReworked.Port.Value}", true);
                     PortField.SetText($"{TownOfUsReworked.Port.Value}");

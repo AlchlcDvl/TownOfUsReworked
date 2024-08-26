@@ -466,7 +466,7 @@ public static class DeathPopUpPatch
     public static void Prefix(HideAndSeekDeathPopup __instance)
     {
         if (IsCustomHnS)
-            __instance.StartCoroutine(PerformTimedAction(0.01f, _ => __instance.text.text = $"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}"));
+            Coroutines.Start(PerformTimedAction(0.01f, _ => __instance.text.text = $"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}"));
     }
 }
 
@@ -588,13 +588,12 @@ public static class WaitForFinishPatch
 {
     public static bool Prefix(OverlayKillAnimation __instance, ref Il2CppSystem.Collections.IEnumerator __result)
     {
-        var customKillAnim = __instance.GetComponent<CustomKillAnimationPlayer>();
+        var flag = __instance.TryGetComponent<CustomKillAnimationPlayer>(out var customKillAnim);
 
-        if (!customKillAnim)
-            return true;
+        if (customKillAnim)
+            __result = customKillAnim.WaitForFinish().WrapToIl2Cpp();
 
-        __result = customKillAnim.WaitForFinish().WrapToIl2Cpp();
-        return false;
+        return !flag;
     }
 }
 

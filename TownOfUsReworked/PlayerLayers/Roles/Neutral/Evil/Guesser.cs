@@ -528,9 +528,7 @@ public class Guesser : Neutral
                 if (!item)
                     continue;
 
-                item.GetComponent<PassiveButton>().OnClick = new();
-                item.GetComponent<PassiveButton>().OnMouseOut = new();
-                item.GetComponent<PassiveButton>().OnMouseOver = new();
+                item.GetComponent<PassiveButton>().WipeListeners();
                 item.gameObject.SetActive(false);
                 item.gameObject.Destroy();
                 item.Destroy();
@@ -541,16 +539,12 @@ public class Guesser : Neutral
 
         if (MaxPage > 0)
         {
-            Next.GetComponent<PassiveButton>().OnClick = new();
-            Next.GetComponent<PassiveButton>().OnMouseOut = new();
-            Next.GetComponent<PassiveButton>().OnMouseOver = new();
+            Next.GetComponent<PassiveButton>().WipeListeners();
             Next.gameObject.SetActive(false);
             Next.gameObject.Destroy();
             Next.Destroy();
 
-            Back.GetComponent<PassiveButton>().OnClick = new();
-            Back.GetComponent<PassiveButton>().OnMouseOut = new();
-            Back.GetComponent<PassiveButton>().OnMouseOver = new();
+            Back.GetComponent<PassiveButton>().WipeListeners();
             Back.gameObject.SetActive(false);
             Back.gameObject.Destroy();
             Back.Destroy();

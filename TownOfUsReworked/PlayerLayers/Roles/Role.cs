@@ -242,7 +242,6 @@ public abstract class Role : PlayerLayer
 
         if (__instance.TaskPanel)
         {
-            var tabText = __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>();
             var text = "";
 
             if (Player.CanDoTasks())
@@ -259,7 +258,7 @@ public abstract class Role : PlayerLayer
             else
                 text = "<color=#FF0000FF>Fake Tasks</color>";
 
-            tabText.SetText(text);
+            __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
         }
 
         if (!Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode && CustomPlayer.AllPlayers.Any(x => x.Is(LayerEnum.Timekeeper)))

@@ -23,7 +23,7 @@ public static class PlayerTabOnEnablePatch
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
             title.gameObject.SetActive(true);
-            __instance.StartCoroutine(PerformTimedAction(0.1f, _ => title.SetText(packageName, true)));
+            Coroutines.Start(PerformTimedAction(0.1f, _ => title.SetText(packageName, true)));
             offset -= 0.8f * __instance.YOffset;
         }
 

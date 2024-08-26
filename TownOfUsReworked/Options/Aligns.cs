@@ -24,18 +24,7 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment) : Option
     public override void OptionCreated()
     {
         base.OptionCreated();
-        Created(Setting);
-    }
-
-    public override void ViewOptionCreated()
-    {
-        base.ViewOptionCreated();
-        Created(ViewSetting);
-    }
-
-    private void Created(MonoBehaviour setting)
-    {
-        var header = setting.Cast<CategoryHeaderMasked>();
+        var header = Setting.Cast<CategoryHeaderMasked>();
         header.Title.text = $"<b>{TranslationManager.Translate(ID)}</b>";
         var quota = header.transform.GetChild(2);
         Count = quota.GetChild(1).gameObject;
@@ -61,15 +50,30 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment) : Option
         if (!flag)
             header.transform.GetChild(3).localPosition = new(-5.539f, -0.45f, -2f);
 
-        Update();
+        Collapse = header.transform.FindChild("Collapse").gameObject;
+        Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
+        Collapse.GetComponentInChildren<TextMeshPro>().text = Get() ? "-" : "+";
 
-        Collapse = header.transform.FindChild("Collapse")?.gameObject;
-
-        if (Collapse)
+        var color = Alignment switch
         {
-            Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
-            Collapse.GetComponentInChildren<TextMeshPro>().text = Get() ? "-" : "+";
-        }
+            Alignment.CrewSupport or Alignment.CrewInvest or Alignment.CrewProt or Alignment.CrewKill or Alignment.CrewUtil or Alignment.CrewSov or Alignment.CrewAudit =>
+                CustomColorManager.Crew,
+            Alignment.IntruderSupport or Alignment.IntruderConceal or Alignment.IntruderDecep or Alignment.IntruderKill or Alignment.IntruderUtil or Alignment.IntruderHead =>
+                CustomColorManager.Intruder,
+            Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralEvil or Alignment.NeutralBen or Alignment.NeutralPros or Alignment.NeutralApoc or Alignment.NeutralHarb =>
+                CustomColorManager.Neutral,
+            Alignment.SyndicateKill or Alignment.SyndicateSupport or Alignment.SyndicateDisrup or Alignment.SyndicatePower or Alignment.SyndicateUtil => CustomColorManager.Syndicate,
+            Alignment.Ability => CustomColorManager.Ability,
+            Alignment.Modifier => CustomColorManager.Modifier,
+            Alignment.Objectifier => CustomColorManager.Objectifier,
+            _ => UColor.white
+        };
+
+        quota.GetChild(0).GetComponent<SpriteRenderer>().color = color.Shadow(0.35f);
+        quota.GetChild(2).GetComponent<SpriteRenderer>().color = quota.GetChild(3).GetComponent<SpriteRenderer>().color = quota.GetChild(5).GetComponent<SpriteRenderer>().color =
+            color.Shadow();
+
+        Update();
     }
 
     public void Toggle()
@@ -153,6 +157,8 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment) : Option
 
         if (GroupHeader != null)
         {
+            GroupHeader.ID = ID;
+
             if (!GroupHeader.Menus.Contains(menu))
                 GroupHeader.Menus.Add(menu);
 

@@ -45,7 +45,7 @@ public static class NameplatesTabOnEnablePatch
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
-            __instance.StartCoroutine(PerformTimedAction(0.1f, _ => title.SetText(packageName, true)));
+            Coroutines.Start(PerformTimedAction(0.1f, _ => title.SetText(packageName, true)));
             offset -= 0.8f * __instance.YOffset;
         }
 

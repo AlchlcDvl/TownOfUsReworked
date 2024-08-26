@@ -225,7 +225,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        ID =  $"CustomOption.{Layer}On";
+        ID =  $"CustomOption.{Layer}";
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
         Property.SetValue(null, Value);

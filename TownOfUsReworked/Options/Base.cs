@@ -255,7 +255,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
         foreach (var option in list)
         {
-            if (option.Type == CustomOptionType.Header || option.ClientOnly || !option.ID.Contains("CustomOption"))
+            if (option.Type is CustomOptionType.Header or CustomOptionType.Alignment || option.ClientOnly || !option.ID.Contains("CustomOption"))
                 continue;
 
             builder.AppendLine(option.ID);
@@ -296,7 +296,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             pos++;
             var name = splitText[0];
             splitText.RemoveAt(0);
-            var option = GetOption(name);
+            var option = AllOptions.Where(x => x is not HeaderOptionAttribute or AlignsOptionAttribute).FirstOrDefault(x => x.ID == name);
 
             if (option == null)
             {
@@ -350,7 +350,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             }
         }
 
-        SendOptionRPC(setting: (OptionAttribute)null);
+        SendOptionRPC(null);
         yield break;
     }
 

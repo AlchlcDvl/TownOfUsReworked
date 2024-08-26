@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Mystic : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float MysticRevealCd { get; set; } = 25f;
+    public static float RevealCd { get; set; } = 25f;
 
     private bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None) && !x.Is(SubFaction));
     private CustomButton RevealButton { get; set; }
@@ -21,7 +21,7 @@ public class Mystic : Crew
         BaseStart();
         Alignment = Alignment.CrewAudit;
         RevealButton = CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (PlayerBodyExclusion)Exception,
-            new Cooldown(MysticRevealCd));
+            new Cooldown(RevealCd));
     }
 
     public void TurnSeer() => new Seer().Start<Role>(Player).RoleUpdate(this);

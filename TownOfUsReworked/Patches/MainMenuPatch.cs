@@ -99,7 +99,7 @@ public static class MainMenuStartPatch
             button.SetActive(false);
         });
 
-        __instance.StartCoroutine(PerformTimedAction(0.1f, _ =>
+        Coroutines.Start(PerformTimedAction(0.1f, _ =>
         {
             button.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
             pos.AdjustPosition();
@@ -162,7 +162,7 @@ public static class MainMenuStartPatch
             PopUp = UObject.Instantiate(template);
             PopUp.gameObject.SetActive(true);
 
-            __instance.StartCoroutine(PerformTimedAction(0.1f, p =>
+            Coroutines.Start(PerformTimedAction(0.1f, p =>
             {
                 if (p == 1)
                 {
@@ -180,7 +180,7 @@ public static class MainMenuStartPatch
         });
         credObj.transform.localPosition = pos;
 
-        __instance.StartCoroutine(PerformTimedAction(0.01f, _ =>
+        Coroutines.Start(PerformTimedAction(0.01f, _ =>
         {
             discObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Discord");
             ghObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod GitHub");

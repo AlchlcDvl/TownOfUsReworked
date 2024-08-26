@@ -260,7 +260,7 @@ public static class ChatCommands
         chat.sprite = GetSprite("Chat");
         chat.gameObject.SetActive(true);
         Notifs.Add(targetPlayerId, chat);
-        HUD.StartCoroutine(PerformTimedAction(2, p =>
+        Coroutines.Start(PerformTimedAction(2, p =>
         {
             if (p == 1)
             {

@@ -78,20 +78,17 @@ public class CustomKillAnimationPlayer : MonoBehaviour
 
     public void UpdateVisuals(float sampleTime, Vector2 characterOffset, int animation)
     {
-        var animCosmetics = HudManager.Instance.KillOverlay.KillAnims[animation].victimParts.cosmetics;
-        var bodyClip = animCosmetics.bodySprites[0].BodySprite.GetComponent<SpriteAnim>().m_defaultAnim;
-
         var skinData = Overlay.victimParts.cosmetics.skin.skin;
-        var skinClip = animation switch
-        {
-            0 => skinData.KillStabVictim,
-            1 => skinData.KillNeckVictim,
-            2 => skinData.KillTongueVictim,
-            3 => skinData.KillShootVictim,
-            _ => null
-        };
-
-        UpdateVisuals(sampleTime, characterOffset, bodyClip, skinClip);
+        UpdateVisuals(sampleTime, characterOffset, HudManager.Instance.KillOverlay.KillAnims[animation].victimParts.cosmetics.bodySprites[0].BodySprite.GetComponent<SpriteAnim>()
+            .m_defaultAnim, animation switch
+            {
+                0 => skinData.KillStabVictim,
+                1 => skinData.KillNeckVictim,
+                2 => skinData.KillTongueVictim,
+                3 => skinData.KillShootVictim,
+                _ => null
+            }
+        );
     }
 
     public void UpdateVisuals(float sampleTime, Vector2 characterOffset, AnimationClip bodyAnimClip, AnimationClip skinAnimClip)

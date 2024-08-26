@@ -754,7 +754,7 @@ public class PromotedRebel : Syndicate
         AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
         AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(Warper.WarpDur, p =>
+        Coroutines.Start(PerformTimedAction(Warper.WarpDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);

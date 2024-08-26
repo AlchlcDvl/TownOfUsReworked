@@ -26,11 +26,11 @@ public static class AdminPatch
             var sprite = icon.GetComponent<SpriteRenderer>();
             var text = icon.GetComponentInChildren<TextMeshPro>(true);
 
-            if (HudHandler.Instance.IsCamoed)
-                sprite.color = UColor.grey;
-
             if (sprite)
             {
+                if (HudHandler.Instance.IsCamoed)
+                    sprite.color = UColor.grey;
+
                 if (isOp)
                     PlayerMaterial.SetColors(colorMapping[i], sprite);
                 else

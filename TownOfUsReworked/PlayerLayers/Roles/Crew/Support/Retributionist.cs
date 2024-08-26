@@ -440,7 +440,7 @@ public class Retributionist : Crew
         if (IsMys)
         {
             RevealButton ??= CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (UsableFunc)MysUsable,
-                (PlayerBodyExclusion)MysticException, new Cooldown(Mystic.MysticRevealCd));
+                (PlayerBodyExclusion)MysticException, new Cooldown(Mystic.RevealCd));
         }
         else if (IsVH)
         {
@@ -1147,7 +1147,7 @@ public class Retributionist : Crew
         AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
         AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(Transporter.TransportDur, p =>
+        Coroutines.Start(PerformTimedAction(Transporter.TransportDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
@@ -1165,7 +1165,7 @@ public class Retributionist : Crew
         AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
         AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
-        HUD.StartCoroutine(PerformTimedAction(Transporter.TransportDur, p =>
+        Coroutines.Start(PerformTimedAction(Transporter.TransportDur, p =>
         {
             var index = (int)(p * PortalAnimation.Count);
             index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);

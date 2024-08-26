@@ -692,11 +692,11 @@ public static class RoleGen
         {
             if (!SyndicateSettings.AltImps && imps > 0)
             {
-                var maxIC = IntruderConcealingSettings.MaxConcealers;
-                var maxID = IntruderDeceptionSettings.MaxDeceivers;
-                var maxIK = IntruderKillingSettings.MaxKillers;
-                var maxIS = IntruderSupportSettings.MaxSupporters;
-                var maxIH = IntruderHeadSettings.MaxHeads;
+                var maxIC = IntruderConcealingSettings.MaxIC;
+                var maxID = IntruderDeceptionSettings.MaxID;
+                var maxIK = IntruderKillingSettings.MaxIK;
+                var maxIS = IntruderSupportSettings.MaxIS;
+                var maxIH = IntruderHeadSettings.MaxIH;
                 var minInt = IntruderSettings.IntruderMin;
                 var maxInt = IntruderSettings.IntruderMax;
 
@@ -758,10 +758,10 @@ public static class RoleGen
 
             if (syn > 0)
             {
-                var maxSSu = SyndicateSupportSettings.MaxSupporters;
-                var maxSD = SyndicateDisruptionSettings.MaxDisruptors;
-                var maxSyK = SyndicateKillingSettings.MaxKillers;
-                var maxSP = SyndicatePowerSettings.MaxPowers;
+                var maxSSu = SyndicateSupportSettings.MaxSSu;
+                var maxSD = SyndicateDisruptionSettings.MaxSD;
+                var maxSyK = SyndicateKillingSettings.MaxSyK;
+                var maxSP = SyndicatePowerSettings.MaxSP;
                 var minSyn = SyndicateSettings.SyndicateMin;
                 var maxSyn = SyndicateSettings.SyndicateMax;
 
@@ -818,11 +818,11 @@ public static class RoleGen
 
             if (neut > 0)
             {
-                var maxNE = NeutralEvilSettings.MaxEvils;
-                var maxNB = NeutralBenignSettings.MaxBenigns;
-                var maxNK = NeutralKillingSettings.MaxKillers;
-                var maxNN = NeutralNeophyteSettings.MaxNeophytes;
-                var maxNH = NeutralHarbingerSettings.MaxHarbingers;
+                var maxNE = NeutralEvilSettings.MaxNE;
+                var maxNB = NeutralBenignSettings.MaxNB;
+                var maxNK = NeutralKillingSettings.MaxNK;
+                var maxNN = NeutralNeophyteSettings.MaxNN;
+                var maxNH = NeutralHarbingerSettings.MaxNE;
                 var minNeut = NeutralSettings.NeutralMin;
                 var maxNeut = NeutralSettings.NeutralMax;
 
@@ -881,12 +881,12 @@ public static class RoleGen
 
             if (crew > 0)
             {
-                var maxCI = CrewInvestigativeSettings.MaxInvestigatives;
-                var maxCS = CrewSupportSettings.MaxSupporters;
-                var maxCA = CrewAuditorSettings.MaxAuditors;
-                var maxCK = CrewKillingSettings.MaxKillers;
-                var maxCrP = CrewProtectiveSettings.MaxProtectives;
-                var maxCSv = CrewSovereignSettings.MaxSovereigns;
+                var maxCI = CrewInvestigativeSettings.MaxCI;
+                var maxCS = CrewSupportSettings.MaxCS;
+                var maxCA = CrewAuditorSettings.MaxCA;
+                var maxCK = CrewKillingSettings.MaxCK;
+                var maxCrP = CrewProtectiveSettings.MaxCrP;
+                var maxCSv = CrewSovereignSettings.MaxCsV;
                 var minCrew = CrewSettings.CrewMin;
                 var maxCrew = CrewSettings.CrewMax;
 

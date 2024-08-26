@@ -54,7 +54,7 @@ public static class Utils
 
             CachedMorphs.TryAdd(player.PlayerId, morphTarget.PlayerId);
 
-            HUD.StartCoroutine(PerformTimedAction(1, p =>
+            Coroutines.Start(PerformTimedAction(1, p =>
             {
                 var color = UColor.Lerp(player.Data.DefaultOutfit.ColorId.GetColor(false), morphTarget.Data.DefaultOutfit.ColorId.GetColor(false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
@@ -147,7 +147,7 @@ public static class Utils
         {
             var morphTarget = CachedMorphs.TryGetValue(player.PlayerId, out var otherId) ? PlayerById(otherId) : player;
 
-            HUD.StartCoroutine(PerformTimedAction(1, p =>
+            Coroutines.Start(PerformTimedAction(1, p =>
             {
                 var color = UColor.Lerp(morphTarget.Data.DefaultOutfit.ColorId.GetColor(false), player.Data.DefaultOutfit.ColorId.GetColor(false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
@@ -195,7 +195,7 @@ public static class Utils
         if ((int)player.GetCustomOutfitType() is not (4 or 5 or 6 or 7) && !player.Data.IsDead && !CustomPlayer.LocalCustom.Dead && player != CustomPlayer.Local)
         {
             player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
-            HUD.StartCoroutine(PerformTimedAction(1, p =>
+            Coroutines.Start(PerformTimedAction(1, p =>
             {
                 var color = UColor.Lerp(player.Data.DefaultOutfit.ColorId.GetColor(false), UColor.grey, p);
                 PlayerMaterial.SetColors(color, player.MyRend());
@@ -225,7 +225,7 @@ public static class Utils
         if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
         {
             player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit1(player));
-            HUD.StartCoroutine(PerformTimedAction(1, p =>
+            Coroutines.Start(PerformTimedAction(1, p =>
             {
                 player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(1 - p, ca, 1));
                 var color = UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), 37.GetColor(false), p);
@@ -769,7 +769,7 @@ public static class Utils
         if (!body)
             return;
 
-        HUD.StartCoroutine(PerformTimedAction(1f, p =>
+        Coroutines.Start(PerformTimedAction(1f, p =>
         {
             foreach (var renderer in body.bodyRenderers)
             {
@@ -1428,4 +1428,14 @@ public static class Utils
     }
 
     public static bool HasTask(params TaskTypes[] types) => CustomPlayer.Local.myTasks.Any(x => types.Contains(x.TaskType));
+
+    public static void WipeListeners(this PassiveButton passive)
+    {
+        passive.OnClick.RemoveAllListeners();
+        passive.OnMouseOut.RemoveAllListeners();
+        passive.OnMouseOver.RemoveAllListeners();
+        passive.OnClick = new();
+        passive.OnMouseOut = new();
+        passive.OnMouseOver = new();
+    }
 }

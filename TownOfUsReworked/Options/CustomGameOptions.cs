@@ -1083,49 +1083,49 @@ public static class Objectifiers
 public static class CrewAuditorSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxAuditors { get; set; } = 1;
+    public static int MaxCA { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewInvestigativeSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxInvestigatives { get; set; } = 1;
+    public static int MaxCI { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewKillingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxKillers { get; set; } = 1;
+    public static int MaxCK { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewProtectiveSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxProtectives { get; set; } = 1;
+    public static int MaxCrP { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewSovereignSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxSovereigns { get; set; } = 1;
+    public static int MaxCsV { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewSupportSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxSupporters { get; set; } = 1;
+    public static int MaxCS { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralBenignSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxBenigns { get; set; } = 1;
+    public static int MaxNB { get; set; } = 1;
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool VigilanteKillsBenigns { get; set; } = true;
@@ -1135,7 +1135,7 @@ public static class NeutralBenignSettings
 public static class NeutralEvilSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxEvils { get; set; } = 1;
+    public static int MaxNE { get; set; } = 1;
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool NeutralEvilsEndGame { get; set; } = false;
@@ -1145,14 +1145,14 @@ public static class NeutralEvilSettings
 public static class NeutralHarbingerSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxHarbingers { get; set; } = 1;
+    public static int MaxNE { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralKillingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxKillers { get; set; } = 1;
+    public static int MaxNK { get; set; } = 1;
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool HasImpVision { get; set; } = true;
@@ -1165,7 +1165,7 @@ public static class NeutralKillingSettings
 public static class NeutralNeophyteSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxNeophytes { get; set; } = 1;
+    public static int MaxNN { get; set; } = 1;
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool HasImpVision { get; set; } = true;
@@ -1175,63 +1175,63 @@ public static class NeutralNeophyteSettings
 public static class IntruderConcealingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxConcealers { get; set; } = 1;
+    public static int MaxIC { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderDeceptionSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxDeceivers { get; set; } = 1;
+    public static int MaxID { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderHeadSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxHeads { get; set; } = 1;
+    public static int MaxIH { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderKillingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxKillers { get; set; } = 1;
+    public static int MaxIK { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderSupportSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxSupporters { get; set; } = 1;
+    public static int MaxIS { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateDisruptionSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxDisruptors { get; set; } = 1;
+    public static int MaxSD { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateKillingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxKillers { get; set; } = 1;
+    public static int MaxSyK { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicatePowerSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxPowers { get; set; } = 1;
+    public static int MaxSP { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateSupportSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxSupporters { get; set; } = 1;
+    public static int MaxSSu { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]

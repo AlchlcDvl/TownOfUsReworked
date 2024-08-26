@@ -228,9 +228,8 @@ public static class PatchVoteBloops
 
         var spriteRenderer = UObject.Instantiate(__instance.PlayerVotePrefab, parent);
         spriteRenderer.transform.localScale = Vector3.zero;
-        var voteArea = parent.GetComponent<PlayerVoteArea>();
 
-        if (voteArea)
+        if (parent.TryGetComponent<PlayerVoteArea>(out var voteArea))
             spriteRenderer.material.SetInt(PlayerMaterial.MaskLayer, voteArea.MaskLayer);
 
         if (TownOfUsReworked.NormalOptions.AnonymousVotes && !(deadFlag || insiderFlag))

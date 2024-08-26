@@ -190,9 +190,11 @@ public static class CustomColorManager
         };
     }
 
-    public static UColor Shadow(this UColor color) => new(Mathf.Clamp(color.r - 0.2f, 0f, 1f), Mathf.Clamp(color.g - 0.2f, 0f, 1f), Mathf.Clamp(color.b - 0.2f, 0f, 1f), color.a);
+    public static UColor Shadow(this UColor color, float val = 0.2f) => new(Mathf.Clamp(color.r - val, 0f, 1f), Mathf.Clamp(color.g - val, 0f, 1f), Mathf.Clamp(color.b - val, 0f, 1f),
+        color.a);
 
-    public static UColor Light(this UColor color) => new(Mathf.Clamp(color.r + 0.2f, 0f, 1f), Mathf.Clamp(color.g + 0.2f, 0f, 1f), Mathf.Clamp(color.b + 0.2f, 0f, 1f), color.a);
+    public static UColor Light(this UColor color, float val = 0.2f) => new(Mathf.Clamp(color.r + val, 0f, 1f), Mathf.Clamp(color.g + val, 0f, 1f), Mathf.Clamp(color.b + val, 0f, 1f),
+        color.a);
 
     public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
 
