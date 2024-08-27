@@ -1,5 +1,6 @@
 using AmongUs.Data.Player;
 using AmongUs.Data.Legacy;
+using AmongUs.Data.Settings;
 using Discord;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 
@@ -65,12 +66,8 @@ public static class AmBanned
 }
 
 [HarmonyPatch(typeof(PlayerData), nameof(PlayerData.FileName), MethodType.Getter)]
-public static class SaveManagerPatch
-{
-    public static void Postfix(ref string __result) => __result += "_ToU-Rew";
-}
-
 [HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
+[HarmonyPatch(typeof(SettingsData), nameof(SettingsData.FileName), MethodType.Getter)]
 public static class LegacySaveManagerPatch
 {
     public static void Postfix(ref string __result) => __result += "_ToU-Rew";

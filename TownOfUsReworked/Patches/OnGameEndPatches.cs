@@ -20,7 +20,7 @@ public static class OnGameEndPatches
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();
 
-            if (Role.AllNeutralsWin)
+            if (WinState == WinLose.AllNeutralsWin)
             {
                 foreach (var role2 in Role.GetRoles(Faction.Neutral))
                 {
@@ -34,7 +34,7 @@ public static class OnGameEndPatches
                         Winners.Add(defect.Data);
                 }
             }
-            else if (Role.NKWins)
+            else if (WinState == WinLose.AllNKsWin)
             {
                 foreach (var role2 in Role.GetRoles(Alignment.NeutralKill))
                 {
@@ -48,7 +48,7 @@ public static class OnGameEndPatches
                         Winners.Add(defect.Data);
                 }
             }
-            else if (Role.CrewWin)
+            else if (WinState == WinLose.CrewWins)
             {
                 foreach (var role2 in Role.GetRoles(Faction.Crew))
                 {
@@ -68,7 +68,7 @@ public static class OnGameEndPatches
                         Winners.Add(defect.Data);
                 }
             }
-            else if (Role.IntruderWin)
+            else if (WinState == WinLose.IntrudersWin)
             {
                 foreach (var role2 in Role.GetRoles(Faction.Intruder))
                 {
@@ -100,7 +100,7 @@ public static class OnGameEndPatches
                         Winners.Add(defect.Data);
                 }
             }
-            else if (Role.SyndicateWin)
+            else if (WinState == WinLose.SyndicateWins)
             {
                 foreach (var role2 in Role.GetRoles(Faction.Syndicate))
                 {
@@ -132,7 +132,7 @@ public static class OnGameEndPatches
                         Winners.Add(defect.Data);
                 }
             }
-            else if (Role.UndeadWin)
+            else if (WinState == WinLose.UndeadWins)
             {
                 foreach (var role2 in Role.GetRoles(SubFaction.Undead))
                 {
@@ -140,7 +140,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.CabalWin)
+            else if (WinState == WinLose.CabalWins)
             {
                 foreach (var role2 in Role.GetRoles(SubFaction.Cabal))
                 {
@@ -148,7 +148,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.SectWin)
+            else if (WinState == WinLose.SectWins)
             {
                 foreach (var role2 in Role.GetRoles(SubFaction.Sect))
                 {
@@ -156,7 +156,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.ReanimatedWin)
+            else if (WinState == WinLose.ReanimatedWins)
             {
                 foreach (var role2 in Role.GetRoles(SubFaction.Reanimated))
                 {
@@ -164,7 +164,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.ApocalypseWins)
+            else if (WinState == WinLose.ApocalypseWins)
             {
                 foreach (var role2 in Role.GetRoles(Alignment.NeutralApoc))
                 {
@@ -178,7 +178,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.GlitchWins)
+            else if (WinState == WinLose.GlitchWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Glitch>())
                 {
@@ -186,7 +186,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.JuggernautWins)
+            else if (WinState == WinLose.JuggernautWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Juggernaut>())
                 {
@@ -194,7 +194,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.ArsonistWins)
+            else if (WinState == WinLose.ArsonistWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Arsonist>())
                 {
@@ -202,7 +202,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.SerialKillerWins)
+            else if (WinState == WinLose.SerialKillerWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<SerialKiller>())
                 {
@@ -210,7 +210,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.MurdererWins)
+            else if (WinState == WinLose.MurdererWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Murderer>())
                 {
@@ -218,7 +218,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.WerewolfWins)
+            else if (WinState == WinLose.WerewolfWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Werewolf>())
                 {
@@ -226,7 +226,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.CryomaniacWins)
+            else if (WinState == WinLose.CryomaniacWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Cryomaniac>())
                 {
@@ -234,7 +234,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.PhantomWins)
+            else if (WinState == WinLose.PhantomWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Phantom>())
                 {
@@ -242,7 +242,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.TaskRunnerWins)
+            else if (WinState == WinLose.TaskRunnerWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Runner>())
                 {
@@ -250,7 +250,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.HunterWins)
+            else if (WinState == WinLose.HunterWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Hunter>())
                 {
@@ -258,7 +258,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.HuntedWins)
+            else if (WinState == WinLose.HuntedWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Hunted>())
                 {
@@ -266,7 +266,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Role.BetrayerWins)
+            else if (WinState == WinLose.BetrayerWins)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Betrayer>())
                 {
@@ -274,7 +274,7 @@ public static class OnGameEndPatches
                         Winners.Add(role2.Data);
                 }
             }
-            else if (Objectifier.LoveWins)
+            else if (WinState == WinLose.LoveWins)
             {
                 foreach (var lover in PlayerLayer.GetLayers<Lovers>())
                 {
@@ -282,7 +282,7 @@ public static class OnGameEndPatches
                         Winners.Add(lover.Data);
                 }
             }
-            else if (Objectifier.RivalWins)
+            else if (WinState == WinLose.RivalWins)
             {
                 foreach (var rival in PlayerLayer.GetLayers<Rivals>())
                 {
@@ -290,7 +290,7 @@ public static class OnGameEndPatches
                         Winners.Add(rival.Data);
                 }
             }
-            else if (Objectifier.TaskmasterWins)
+            else if (WinState == WinLose.TaskmasterWins)
             {
                 foreach (var tm in PlayerLayer.GetLayers<Taskmaster>())
                 {
@@ -298,7 +298,7 @@ public static class OnGameEndPatches
                         Winners.Add(tm.Data);
                 }
             }
-            else if (Objectifier.OverlordWins)
+            else if (WinState == WinLose.OverlordWins)
             {
                 foreach (var ov in PlayerLayer.GetLayers<Overlord>())
                 {
@@ -306,7 +306,7 @@ public static class OnGameEndPatches
                         Winners.Add(ov.Data);
                 }
             }
-            else if (Objectifier.CorruptedWins)
+            else if (WinState == WinLose.CorruptedWins)
             {
                 foreach (var corr in PlayerLayer.GetLayers<Corrupted>())
                 {
@@ -314,7 +314,7 @@ public static class OnGameEndPatches
                         Winners.Add(corr.Data);
                 }
             }
-            else if (Objectifier.MafiaWins)
+            else if (WinState == WinLose.MafiaWins)
             {
                 foreach (var maf in PlayerLayer.GetLayers<Mafia>())
                 {
@@ -322,7 +322,7 @@ public static class OnGameEndPatches
                         Winners.Add(maf.Data);
                 }
             }
-            else if (Objectifier.DefectorWins)
+            else if (WinState == WinLose.DefectorWins)
             {
                 foreach (var def in PlayerLayer.GetLayers<Defector>())
                 {
@@ -333,8 +333,8 @@ public static class OnGameEndPatches
 
             if (!Objectifier.ObjectifierWins)
             {
-                if (!(Role.ActorWins || Role.BountyHunterWins || Role.CannibalWins || Role.ExecutionerWins || Role.GuesserWins || Role.JesterWins || Role.TrollWins) ||
-                    !NeutralEvilSettings.NeutralEvilsEndGame)
+                if (!(WinState is WinLose.ActorWins or WinLose.BountyHunterWins or WinLose.CannibalWins or WinLose.ExecutionerWins or WinLose.GuesserWins or WinLose.JesterWins or
+                    WinLose.TrollWins) || !NeutralEvilSettings.NeutralEvilsEndGame)
                 {
                     foreach (var surv in PlayerLayer.GetLayers<Survivor>())
                     {
@@ -464,190 +464,48 @@ public static class OnGameEndPatches
             AddAsset("IntruderWin", __instance.ImpostorStinger);
             AddAsset("Stalemate", __instance.DisconnectStinger);
             var text = UObject.Instantiate(__instance.WinText, __instance.WinText.transform.parent);
-            var winsound = "IntruderWin";
-            UColor? color = CustomColorManager.Stalemate;
-            var texttext = "Stalemate";
-
-            if (PlayerLayer.NobodyWins)
-                winsound = "Stalemate";
-            else if (Role.SyndicateWin)
+            var (texttext, winsound, color) = WinState switch
             {
-                texttext = "The Syndicate Wins";
-                color = CustomColorManager.Syndicate;
-            }
-            else if (Role.IntruderWin)
-            {
-                texttext = "Intruders Win";
-                color = CustomColorManager.Intruder;
-            }
-            else if (Role.AllNeutralsWin)
-            {
-                texttext = "Neutrals Win";
-                color = CustomColorManager.Neutral;
-            }
-            else if (Role.CrewWin)
-            {
-                texttext = "Crew Wins";
-                color = CustomColorManager.Crew;
-                winsound = "CrewWin";
-            }
-            else if (Role.NKWins)
-            {
-                texttext = "Neutral Killers Win";
-                color = CustomColorManager.Alignment;
-            }
-            else if (Role.ApocalypseWins)
-            {
-                texttext = "The Apocalypse Is Nigh";
-                color = CustomColorManager.Apocalypse;
-            }
-            else if (Role.UndeadWin)
-            {
-                texttext = "The Undead Win";
-                color = CustomColorManager.Undead;
-            }
-            else if (Role.CabalWin)
-            {
-                texttext = "The Cabal Wins";
-                color = CustomColorManager.Cabal;
-            }
-            else if (Role.SectWin)
-            {
-                texttext = "The Sect Wins";
-                color = CustomColorManager.Sect;
-            }
-            else if (Role.ReanimatedWin)
-            {
-                texttext = "The Reanimated Win";
-                color = CustomColorManager.Reanimated;
-            }
-            else if (Role.CryomaniacWins)
-            {
-                texttext = "Cryomaniac Wins";
-                color = CustomColorManager.Cryomaniac;
-            }
-            else if (Role.ArsonistWins)
-            {
-                texttext = "Aronist Wins";
-                color = CustomColorManager.Arsonist;
-            }
-            else if (Role.GlitchWins)
-            {
-                texttext = "Glitch Wins";
-                color = CustomColorManager.Glitch;
-            }
-            else if (Role.JuggernautWins)
-            {
-                texttext = "Juggernaut Wins";
-                color = CustomColorManager.Juggernaut;
-            }
-            else if (Role.MurdererWins)
-            {
-                texttext = "Murderer Wins";
-                color = CustomColorManager.Murderer;
-            }
-            else if (Role.SerialKillerWins)
-            {
-                texttext = "Serial Killer Wins";
-                color = CustomColorManager.SerialKiller;
-            }
-            else if (Role.WerewolfWins)
-            {
-                texttext = "Werewolf Wins";
-                color = CustomColorManager.Werewolf;
-            }
-            else if (Role.PhantomWins)
-            {
-                texttext = "Phantom Wins";
-                color = CustomColorManager.Phantom;
-            }
-            else if (Role.ActorWins)
-            {
-                texttext = "Actor Wins";
-                color = CustomColorManager.Actor;
-            }
-            else if (Role.BountyHunterWins)
-            {
-                texttext = "Bounty Hunter Wins";
-                color = CustomColorManager.BountyHunter;
-            }
-            else if (Role.CannibalWins)
-            {
-                texttext = "Cannibal Wins";
-                color = CustomColorManager.Cannibal;
-            }
-            else if (Role.ExecutionerWins)
-            {
-                texttext = "Executioner Wins";
-                color = CustomColorManager.Executioner;
-            }
-            else if (Role.GuesserWins)
-            {
-                texttext = "Guesser Wins";
-                color = CustomColorManager.Guesser;
-            }
-            else if (Role.JesterWins)
-            {
-                texttext = "Jester Wins";
-                color = CustomColorManager.Jester;
-            }
-            else if (Role.TrollWins)
-            {
-                texttext = "Troll Wins";
-                color = CustomColorManager.Troll;
-            }
-            else if (Role.TaskRunnerWins)
-            {
-                texttext = "Tasks Completed";
-                color = CustomColorManager.TaskRace;
-            }
-            else if (Role.HuntedWins)
-            {
-                texttext = "The Hunted Survived";
-                color = CustomColorManager.Hunted;
-            }
-            else if (Role.HunterWins)
-            {
-                texttext = "Every One Was Hunted";
-                color = CustomColorManager.Hunter;
-            }
-            else if (Objectifier.CorruptedWins)
-            {
-                texttext = "Corrupted Wins";
-                color = CustomColorManager.Corrupted;
-            }
-            else if (Objectifier.LoveWins)
-            {
-                texttext = "Love Wins";
-                color = CustomColorManager.Lovers;
-            }
-            else if (Objectifier.RivalWins)
-            {
-                texttext = "Rival Wins";
-                color = CustomColorManager.Rivals;
-            }
-            else if (Objectifier.TaskmasterWins)
-            {
-                texttext = "Taskmaster Wins";
-                color = CustomColorManager.Taskmaster;
-            }
-            else if (Objectifier.OverlordWins)
-            {
-                texttext = "Overlord Wins";
-                color = CustomColorManager.Overlord;
-            }
-            else if (Objectifier.MafiaWins)
-            {
-                texttext = "The Mafia Wins";
-                color = CustomColorManager.Mafia;
-            }
-            else if (Objectifier.DefectorWins)
-            {
-                texttext = "Defectors Win";
-                color = CustomColorManager.Defector;
-            }
-
-            __instance.BackgroundBar.material.color = text.color = color ?? CustomColorManager.Stalemate;
+                WinLose.ActorWins => ("Actor Wins", "IntruderWin", CustomColorManager.Actor),
+                WinLose.JesterWins => ("Jester Wins", "Stalemate", CustomColorManager.Jester),
+                WinLose.ExecutionerWins => ("Executioner Wins", "IntruderWin", CustomColorManager.Executioner),
+                WinLose.CannibalWins => ("Cannibal Wins", "IntruderWin", CustomColorManager.Cannibal),
+                WinLose.TrollWins => ("Troll Wins", "IntruderWin", CustomColorManager.Troll),
+                WinLose.PhantomWins => ("Phantom Wins", "IntruderWin", CustomColorManager.Phantom),
+                WinLose.GuesserWins => ("Guesser Wins", "IntruderWin", CustomColorManager.Guesser),
+                WinLose.BountyHunterWins => ("Bounty Hunter Wins", "IntruderWin", CustomColorManager.BountyHunter),
+                WinLose.BetrayerWins => ("Betrayer Wins", "IntruderWin", CustomColorManager.Betrayer),
+                WinLose.CrewWins => ("The Crew Wins", "CrewWin", CustomColorManager.Crew),
+                WinLose.IntrudersWin => ("Intruders Win", "IntruderWin", CustomColorManager.Intruder),
+                WinLose.SyndicateWins => ("Syndicate Wins", "IntruderWin", CustomColorManager.Syndicate),
+                WinLose.AllNeutralsWin => ("Neutrals Win", "IntruderWin", CustomColorManager.Neutral),
+                WinLose.UndeadWins => ("The Undead Win", "IntruderWin", CustomColorManager.Undead),
+                WinLose.CabalWins => ("The Cabal Wins", "IntruderWin", CustomColorManager.Cabal),
+                WinLose.ReanimatedWins => ("The Reanimated Win", "IntruderWin", CustomColorManager.Reanimated),
+                WinLose.SectWins => ("The Sect Wins", "IntruderWin", CustomColorManager.Sect),
+                WinLose.AllNKsWin => ("Neutral Killers Win", "IntruderWin", CustomColorManager.Intruder),
+                WinLose.ApocalypseWins => ("The Apocalypse Is Neigh", "IntruderWin", CustomColorManager.Apocalypse),
+                WinLose.ArsonistWins => ("Arsonist Wins", "IntruderWin", CustomColorManager.Arsonist),
+                WinLose.CryomaniacWins => ("Cryomaniac Wins", "IntruderWin", CustomColorManager.Cryomaniac),
+                WinLose.GlitchWins => ("Glitch Wins", "IntruderWin", CustomColorManager.Glitch),
+                WinLose.JuggernautWins => ("Juggernaut Wins", "IntruderWin", CustomColorManager.Juggernaut),
+                WinLose.MurdererWins => ("Murderer Wins", "IntruderWin", CustomColorManager.Murderer),
+                WinLose.SerialKillerWins => ("Serial Killer Wins", "IntruderWin", CustomColorManager.SerialKiller),
+                WinLose.WerewolfWins => ("Werewolf Wins", "IntruderWin", CustomColorManager.Werewolf),
+                WinLose.LoveWins => ("Love Wins", "IntruderWin", CustomColorManager.Lovers),
+                WinLose.TaskmasterWins => ("Taskmaster Wins", "IntruderWin", CustomColorManager.Taskmaster),
+                WinLose.RivalWins => ("Rival Wins", "IntruderWin", CustomColorManager.Rivals),
+                WinLose.CorruptedWins => ("Corrupted Wins", "IntruderWin", CustomColorManager.Corrupted),
+                WinLose.OverlordWins => ("Overlords Win", "IntruderWin", CustomColorManager.Overlord),
+                WinLose.MafiaWins => ("The Mafia Wins", "IntruderWin", CustomColorManager.Mafia),
+                WinLose.DefectorWins => ("Defector Wins", "IntruderWin", CustomColorManager.Defector),
+                WinLose.TaskRunnerWins => ("Tasks Completed", "IntruderWin", CustomColorManager.TaskRace),
+                WinLose.HunterWins => ("Hunters Win", "IntruderWin", CustomColorManager.Hunter),
+                WinLose.HuntedWins => ("The Hunted Win", "IntruderWin", CustomColorManager.Hunted),
+                WinLose.EveryoneWins => ("Everyone Wins", "Stalemate", CustomColorManager.Stalemate),
+                _ => ("Stalemate", "Stalemate", CustomColorManager.Stalemate)
+            };
+            __instance.BackgroundBar.material.color = text.color = color;
             __instance.WinText.transform.localPosition += new Vector3(0f, 1.5f, 0f);
             text.text = $"<size=50%>{texttext}!</size>";
             Play(winsound);
@@ -673,7 +531,7 @@ public static class OnGameEndPatches
         var ability = info[2] as Ability;
         var objectifier = info[3] as Objectifier;
 
-        if (info[0])
+        if (role.Type != LayerEnum.NoneRole)
         {
             if (role.RoleHistory.Any())
             {

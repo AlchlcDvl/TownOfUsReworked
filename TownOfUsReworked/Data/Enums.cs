@@ -586,38 +586,44 @@ public enum DeathReasonEnum
     None
 }
 
-public enum WinLoseRPC
+public enum WinLose
 {
-    JesterWin,
-    ExecutionerWin,
-    CannibalWin,
-    TrollWin,
-    PhantomWin,
-    GuesserWin,
-    ActorWin,
-    BountyHunterWin,
-    BetrayerWin,
+    JesterWins,
+    ExecutionerWins,
+    CannibalWins,
+    TrollWins,
+    PhantomWins,
+    GuesserWins,
+    ActorWins,
+    BountyHunterWins,
+    BetrayerWins,
 
-    CrewWin,
-    IntruderWin,
-    SyndicateWin,
+    CrewWins,
+    IntrudersWin,
+    SyndicateWins,
     AllNeutralsWin,
 
-    UndeadWin,
-    CabalWin,
-    SectWin,
-    ReanimatedWin,
+    UndeadWins,
+    CabalWins,
+    SectWins,
+    ReanimatedWins,
 
     AllNKsWin,
-    SoloNKWins,
-    SameNKWins,
     ApocalypseWins,
 
-    LoveWin,
-    TaskmasterWin,
-    RivalWin,
-    CorruptedWin,
-    OverlordWin,
+    ArsonistWins,
+    CryomaniacWins,
+    GlitchWins,
+    JuggernautWins,
+    MurdererWins,
+    SerialKillerWins,
+    WerewolfWins,
+
+    LoveWins,
+    TaskmasterWins,
+    RivalWins,
+    CorruptedWins,
+    OverlordWins,
     MafiaWins,
     DefectorWins,
 
@@ -627,6 +633,8 @@ public enum WinLoseRPC
 
     HunterWins,
     HuntedWins,
+
+    EveryoneWins,
 
     None
 }

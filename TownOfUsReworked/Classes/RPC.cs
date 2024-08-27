@@ -158,6 +158,8 @@ public static class RPC
     public static PlayerVersion ReadPlayerVersion(this MessageReader reader) => new(reader.ReadString(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
         new(reader.ReadBytesAndSize()), reader.ReadString(), reader.ReadVersion());
 
+    public static T ReadEnum<T>(this MessageReader reader) where T : struct => Enum.Parse<T>($"{reader.ReadByte()}");
+
     public static void Write(this MessageWriter writer, PlayerLayer layer)
     {
         writer.Write(layer.PlayerId);
@@ -245,7 +247,7 @@ public static class RPC
             writer.Write((byte)layer);
         else if (item is DeathReasonEnum death)
             writer.Write((byte)death);
-        else if (item is WinLoseRPC winlose)
+        else if (item is WinLose winlose)
             writer.Write((byte)winlose);
         else if (item is RetActionsRPC retAction)
             writer.Write((byte)retAction);

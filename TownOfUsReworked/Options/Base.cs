@@ -366,3 +366,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static T GetOption<T>(string title) where T : OptionAttribute => GetOption(title) as T;
 }
+
+// public class OptionAttribute : Attribute
+// {
+
+// }

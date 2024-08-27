@@ -429,90 +429,15 @@ public static class RPCHandling
                 break;
 
             case CustomRPC.WinLose:
-                var winlose = (WinLoseRPC)reader.ReadByte();
+                WinState = reader.ReadEnum<WinLose>();
 
-                switch (winlose)
+                switch (WinState)
                 {
-                    case WinLoseRPC.CrewWin:
-                        Role.CrewWin = true;
-                        break;
-
-                    case WinLoseRPC.IntruderWin:
-                        Role.IntruderWin = true;
-                        break;
-
-                    case WinLoseRPC.SyndicateWin:
-                        Role.SyndicateWin = true;
-                        break;
-
-                    case WinLoseRPC.UndeadWin:
-                        Role.UndeadWin = true;
-                        break;
-
-                    case WinLoseRPC.ReanimatedWin:
-                        Role.ReanimatedWin = true;
-                        break;
-
-                    case WinLoseRPC.SectWin:
-                        Role.SectWin = true;
-                        break;
-
-                    case WinLoseRPC.CabalWin:
-                        Role.CabalWin = true;
-                        break;
-
-                    case WinLoseRPC.NobodyWins:
-                        PlayerLayer.NobodyWins = true;
-                        break;
-
-                    case WinLoseRPC.AllNeutralsWin:
-                        Role.AllNeutralsWin = true;
-                        break;
-
-                    case WinLoseRPC.AllNKsWin:
-                        Role.NKWins = true;
-                        break;
-
-                    case WinLoseRPC.BetrayerWin:
-                        Role.BetrayerWins = true;
-                        break;
-
-                    case WinLoseRPC.SameNKWins:
-                    case WinLoseRPC.SoloNKWins:
+                    case WinLose.ArsonistWins or WinLose.CryomaniacWins or WinLose.GlitchWins or WinLose.MurdererWins or WinLose.JuggernautWins or WinLose.SerialKillerWins or
+                        WinLose.WerewolfWins:
                         var nkRole = reader.ReadLayer<Role>();
 
-                        switch (nkRole.Type)
-                        {
-                            case LayerEnum.Glitch:
-                                Role.GlitchWins = true;
-                                break;
-
-                            case LayerEnum.Arsonist:
-                                Role.ArsonistWins = true;
-                                break;
-
-                            case LayerEnum.Cryomaniac:
-                                Role.CryomaniacWins = true;
-                                break;
-
-                            case LayerEnum.Juggernaut:
-                                Role.JuggernautWins = true;
-                                break;
-
-                            case LayerEnum.Murderer:
-                                Role.MurdererWins = true;
-                                break;
-
-                            case LayerEnum.Werewolf:
-                                Role.WerewolfWins = true;
-                                break;
-
-                            case LayerEnum.SerialKiller:
-                                Role.SerialKillerWins = true;
-                                break;
-                        }
-
-                        if (winlose == WinLoseRPC.SameNKWins)
+                        if (NeutralSettings.NoSolo == NoSolo.SameNKs)
                         {
                             foreach (var role in PlayerLayer.GetLayers<Neutral>().Where(x => x.Type == nkRole.Type))
                             {
@@ -520,44 +445,40 @@ public static class RPCHandling
                                     role.Winner = true;
                             }
                         }
+                        else
+                            nkRole.Winner = true;
 
-                        nkRole.Winner = true;
                         break;
 
-                    case WinLoseRPC.ApocalypseWins:
-                        Role.ApocalypseWins = true;
-                        break;
-
-                    case WinLoseRPC.JesterWin:
+                    case WinLose.JesterWins:
                         reader.ReadLayer<Jester>().VotedOut = true;
                         break;
 
-                    case WinLoseRPC.CannibalWin:
+                    case WinLose.CannibalWins:
                         reader.ReadLayer<Cannibal>().Eaten = true;
                         break;
 
-                    case WinLoseRPC.ExecutionerWin:
+                    case WinLose.ExecutionerWins:
                         reader.ReadLayer<Executioner>().TargetVotedOut = true;
                         break;
 
-                    case WinLoseRPC.BountyHunterWin:
+                    case WinLose.BountyHunterWins:
                         reader.ReadLayer<BountyHunter>().TargetKilled = true;
                         break;
 
-                    /*case WinLoseRPC.TrollWin:
+                    /*case WinLose.TrollWins:
                         reader.ReadLayer<Troll>().Killed = true;
                         break;*/
 
-                    case WinLoseRPC.ActorWin:
+                    case WinLose.ActorWins:
                         reader.ReadLayer<Actor>().Guessed = true;
                         break;
 
-                    case WinLoseRPC.GuesserWin:
+                    case WinLose.GuesserWins:
                         reader.ReadLayer<Guesser>().TargetGuessed = true;
                         break;
 
-                    case WinLoseRPC.CorruptedWin:
-                        Objectifier.CorruptedWins = true;
+                    case WinLose.CorruptedWins:
 
                         if (Corrupted.AllCorruptedWin)
                             PlayerLayer.GetLayers<Corrupted>().ForEach(x => x.Winner = true);
@@ -565,55 +486,26 @@ public static class RPCHandling
                         reader.ReadLayer().Winner = true;
                         break;
 
-                    case WinLoseRPC.LoveWin:
-                        Objectifier.LoveWins = true;
+                    case WinLose.LoveWins:
                         var lover = reader.ReadLayer<Lovers>();
                         lover.Winner = true;
                         lover.OtherLover.GetObjectifier().Winner = true;
                         break;
 
-                    case WinLoseRPC.OverlordWin:
-                        Objectifier.OverlordWins = true;
+                    case WinLose.OverlordWins:
                         PlayerLayer.GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
                         break;
 
-                    case WinLoseRPC.MafiaWins:
-                        Objectifier.MafiaWins = true;
-                        break;
-
-                    case WinLoseRPC.DefectorWins:
-                        Objectifier.DefectorWins = true;
-                        break;
-
-                    case WinLoseRPC.TaskmasterWin:
-                        Objectifier.TaskmasterWins = true;
+                    case WinLose.TaskmasterWins:
                         reader.ReadLayer().Winner = true;
                         break;
 
-                    case WinLoseRPC.RivalWin:
-                        Objectifier.RivalWins = true;
+                    case WinLose.RivalWins:
                         reader.ReadLayer().Winner = true;
                         break;
 
-                    case WinLoseRPC.PhantomWin:
-                        Role.PhantomWins = true;
-                        break;
-
-                    case WinLoseRPC.TaskRunnerWins:
-                        Role.TaskRunnerWins = true;
+                    case WinLose.TaskRunnerWins:
                         reader.ReadLayer<Runner>().Winner = true;
-                        break;
-
-                    case WinLoseRPC.HuntedWins:
-                        Role.HuntedWins = true;
-                        break;
-
-                    case WinLoseRPC.HunterWins:
-                        Role.HunterWins = true;
-                        break;
-
-                    default:
-                        LogError($"Received unknown RPC - {(int)winlose}");
                         break;
                 }
 

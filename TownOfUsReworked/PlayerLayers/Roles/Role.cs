@@ -17,56 +17,18 @@ public abstract class Role : PlayerLayer
 
     public virtual List<PlayerControl> Team() => [ Player ];
 
-    public static bool UndeadWin { get; set; }
-    public static bool CabalWin { get; set; }
-    public static bool ReanimatedWin { get; set; }
-    public static bool SectWin { get; set; }
-
-    public static bool ApocalypseWins { get; set; }
-
-    public static bool NKWins { get; set; }
-
-    public static bool CrewWin { get; set; }
-    public static bool IntruderWin { get; set; }
-    public static bool SyndicateWin { get; set; }
-    public static bool AllNeutralsWin { get; set; }
-
-    public static bool GlitchWins { get; set; }
-    public static bool JuggernautWins { get; set; }
-    public static bool SerialKillerWins { get; set; }
-    public static bool ArsonistWins { get; set; }
-    public static bool CryomaniacWins { get; set; }
-    public static bool MurdererWins { get; set; }
-    public static bool WerewolfWins { get; set; }
-
-    public static bool PhantomWins { get; set; }
-    public static bool BetrayerWins { get; set; }
-
-    public static bool JesterWins { get; set; }
-    public static bool ActorWins { get; set; }
-    public static bool ExecutionerWins { get; set; }
-    public static bool GuesserWins { get; set; }
-    public static bool BountyHunterWins { get; set; }
-    public static bool CannibalWins { get; set; }
-    public static bool TrollWins { get; set; }
-
-    public static bool TaskRunnerWins { get; set; }
-
-    public static bool HuntedWins { get; set; }
-    public static bool HunterWins { get; set; }
-
     /*private static bool PlateformIsUsed;
     public static bool IsLeft;
     private static bool PlayerIsLeft;
     public CustomButton CallButton { get; set; }*/
 
-    public static bool RoleWins => UndeadWin || CabalWin || ApocalypseWins || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins ||
-        JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins || ActorWins || BountyHunterWins || CannibalWins || TrollWins ||
-        ExecutionerWins || GuesserWins || JesterWins || TaskRunnerWins || HuntedWins || HunterWins || BetrayerWins;
+    public static bool RoleWins => WinState is WinLose.SerialKillerWins or WinLose.ArsonistWins or WinLose.CryomaniacWins or WinLose.MurdererWins or WinLose.BetrayerWins or
+        WinLose.PhantomWins or WinLose.WerewolfWins or WinLose.ActorWins or WinLose.BountyHunterWins or WinLose.CannibalWins or WinLose.TrollWins or WinLose.ExecutionerWins or
+        WinLose.GuesserWins or WinLose.JesterWins or WinLose.TaskRunnerWins or WinLose.HuntedWins or WinLose.HunterWins;
 
-    public static bool FactionWins => CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin;
+    public static bool FactionWins => WinState is WinLose.CrewWins or WinLose.IntrudersWin or WinLose.SyndicateWins or WinLose.AllNeutralsWin;
 
-    public static bool SubFactionWins => UndeadWin || CabalWin || ReanimatedWin || SectWin;
+    public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.SectWins or WinLose.UndeadWins;
 
     public static int ChaosDriveMeetingTimerCount { get; set; }
     public static bool SyndicateHasChaosDrive { get; set; }
@@ -82,7 +44,6 @@ public abstract class Role : PlayerLayer
     public Dictionary<byte, CustomArrow> AllArrows { get; set; }
     public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
     public Dictionary<PointInTime, DateTime> Positions { get; set; }
-    public List<PointInTime> PointsInTime => [ .. Positions.Keys ];
     public Dictionary<byte, CustomArrow> YellerArrows { get; set; }
     public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
     public LayerEnum LinkedObjectifier { get; set; }
@@ -280,7 +241,7 @@ public abstract class Role : PlayerLayer
             }
             else if (Positions.Any())
             {
-                var point = PointsInTime[^1];
+                var point = Positions.Keys.Last();
                 Player.RpcCustomSnapTo(point.Position);
                 Positions.Remove(point);
             }

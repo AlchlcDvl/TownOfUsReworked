@@ -27,7 +27,8 @@ public static class References
     public static Minigame ActiveTask => Minigame.Instance;
     public static LobbyBehaviour Lobby => LobbyBehaviour.Instance;
     public static ChatController Chat => HUD.Chat;
-    public static bool Shapeshifted;
+    public static bool Shapeshifted { get; set; }
+    public static WinLose WinState { get; set; } = WinLose.None;
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +
         "乂⁂¤∮彡个「」人요〖〗ロ米卄王īl【】·ㅇ°◈◆◇◥◤◢◣《》︵︶☆☀☂☹☺♡♩♪♫♬✓☜☞☟☯☃✿❀÷º¿※⁑∞≠";
     public static readonly Dictionary<string, string> KeyWords = new()

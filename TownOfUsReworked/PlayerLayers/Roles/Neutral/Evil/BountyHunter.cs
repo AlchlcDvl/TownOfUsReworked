@@ -238,7 +238,7 @@ public class BountyHunter : Neutral
         {
             TargetKilled = true;
             HuntButton.StartCooldown(Interact(Player, HuntButton.TargetPlayer, true, bypass: true));
-            CallRpc(CustomRPC.WinLose, WinLoseRPC.BountyHunterWin, this);
+            CallRpc(CustomRPC.WinLose, WinLose.BountyHunterWins, this);
         }
         else
             HuntButton.StartCooldown(Interact(Player, HuntButton.TargetPlayer, true));

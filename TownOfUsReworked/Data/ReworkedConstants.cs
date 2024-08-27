@@ -83,7 +83,7 @@ public static class ReworkedConstants
         x.Is(Alignment.NeutralKill) || (x.Is(Alignment.NeutralNeo) && !x.Is(LayerEnum.Necromancer)) || x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralHarb) || (x.Is(Faction.Neutral) &&
         NeutralSettings.NoSolo == NoSolo.AllNeutrals) || x.Is(Alignment.NeutralApoc)) && !x.IsResurrected());
 
-    public static bool GameHasEnded => Role.RoleWins || Objectifier.ObjectifierWins || PlayerLayer.NobodyWins;
+    public static bool GameHasEnded => Role.RoleWins || Objectifier.ObjectifierWins || WinState is WinLose.NobodyWins or WinLose.EveryoneWins;
 
     public static bool SameNKWins(LayerEnum nk) => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) || x.Is(Faction.Syndicate) || (!x.Is(nk) &&
         x.Is(Alignment.NeutralKill)) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralHarb) || x.Is(Alignment.NeutralApoc) || x.Is(Alignment.NeutralPros) || x.NotOnTheSameSide())) &&
@@ -112,4 +112,6 @@ public static class ReworkedConstants
     public static bool DefectorWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(LayerEnum.Defector) && !x.Is(Faction.Neutral));
 
     public static bool BetrayerWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(LayerEnum.Betrayer) && !(x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralEvil)));
+
+    public static bool OverlordWins => MeetingPatches.MeetingCount >= Overlord.OverlordMeetingWinCount;
 }

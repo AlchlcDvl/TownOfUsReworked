@@ -167,7 +167,7 @@ public static class SetPostmortals
             if (jest.Player == player)
             {
                 jest.VotedOut = true;
-                CallRpc(CustomRPC.WinLose, WinLoseRPC.JesterWin, jest);
+                CallRpc(CustomRPC.WinLose, WinLose.JesterWins, jest);
             }
         }
     }
@@ -182,7 +182,7 @@ public static class SetPostmortals
             if (player == exe.TargetPlayer)
             {
                 exe.TargetVotedOut = true;
-                CallRpc(CustomRPC.WinLose, WinLoseRPC.ExecutionerWin, exe);
+                CallRpc(CustomRPC.WinLose, WinLose.ExecutionerWins, exe);
             }
         }
     }

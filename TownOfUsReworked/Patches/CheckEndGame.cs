@@ -8,100 +8,56 @@ public static class CheckEndGame
         if (IsFreePlay || IsHnS || !AmongUsClient.Instance.AmHost)
             return false;
 
+        if (WinState != WinLose.None)
+        {
+            EndGame();
+            return false;
+        }
+
         var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
         var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
 
         if (TasksDone())
         {
-            var winLose = WinLoseRPC.NobodyWins;
-
-            if (IsCustomHnS)
-            {
-                winLose = WinLoseRPC.HuntedWins;
-                Role.HuntedWins = true;
-            }
-            else
-            {
-                winLose = WinLoseRPC.CrewWin;
-                Role.CrewWin = true;
-            }
-
-            CallRpc(CustomRPC.WinLose, winLose);
-            EndGame();
+            WinState = IsCustomHnS ? WinLose.HuntedWins : WinLose.CrewWins;
+            CallRpc(CustomRPC.WinLose, WinState);
         }
         else if (spell)
         {
-            var winLose = WinLoseRPC.NobodyWins;
+            WinState = spell.Faction switch
+            {
+                Faction.Crew => WinLose.CrewWins,
+                Faction.Intruder => WinLose.IntrudersWin,
+                Faction.Neutral => spell.LinkedObjectifier == LayerEnum.Defector ? WinLose.DefectorWins : WinLose.AllNeutralsWin,
+                Faction.Syndicate => WinLose.SyndicateWins,
+                _ => WinLose.NobodyWins
+            };
 
-            if (spell.Faction == Faction.Syndicate)
-            {
-                winLose = WinLoseRPC.SyndicateWin;
-                Role.SyndicateWin = true;
-            }
-            else if (spell.Faction == Faction.Intruder)
-            {
-                winLose = WinLoseRPC.IntruderWin;
-                Role.IntruderWin = true;
-            }
-            else if (spell.Faction == Faction.Crew)
-            {
-                winLose = WinLoseRPC.CrewWin;
-                Role.CrewWin = true;
-            }
-            else if (spell.Faction == Faction.Neutral)
-            {
-                winLose = WinLoseRPC.AllNeutralsWin;
-                Role.AllNeutralsWin = true;
-            }
+            if (spell.LinkedObjectifier == LayerEnum.Defector)
+                spell.Winner = true;
 
-            CallRpc(CustomRPC.WinLose, winLose);
-            EndGame();
+            CallRpc(CustomRPC.WinLose, WinState, spell);
         }
         else if (reb)
         {
-            var winLose = WinLoseRPC.NobodyWins;
+            WinState = reb.Faction switch
+            {
+                Faction.Crew => WinLose.CrewWins,
+                Faction.Intruder => WinLose.IntrudersWin,
+                Faction.Neutral => reb.LinkedObjectifier == LayerEnum.Defector ? WinLose.DefectorWins : WinLose.AllNeutralsWin,
+                Faction.Syndicate => WinLose.SyndicateWins,
+                _ => WinLose.NobodyWins
+            };
 
-            if (reb.Faction == Faction.Syndicate)
-            {
-                winLose = WinLoseRPC.SyndicateWin;
-                Role.SyndicateWin = true;
-            }
-            else if (reb.Faction == Faction.Intruder)
-            {
-                winLose = WinLoseRPC.IntruderWin;
-                Role.IntruderWin = true;
-            }
-            else if (reb.Faction == Faction.Crew)
-            {
-                winLose = WinLoseRPC.CrewWin;
-                Role.CrewWin = true;
-            }
-            else if (reb.Faction == Faction.Neutral)
-            {
-                winLose = WinLoseRPC.AllNeutralsWin;
-                Role.AllNeutralsWin = true;
-            }
+            if (reb.LinkedObjectifier == LayerEnum.Defector)
+                reb.Winner = true;
 
-            CallRpc(CustomRPC.WinLose, winLose);
-            EndGame();
+            CallRpc(CustomRPC.WinLose, WinState, reb);
         }
         else if (Sabotaged() && IntruderSettings.IntrudersCanSabotage)
         {
-            var winLose = WinLoseRPC.NobodyWins;
-
-            if (SyndicateSettings.AltImps)
-            {
-                winLose = WinLoseRPC.SyndicateWin;
-                Role.SyndicateWin = true;
-            }
-            else
-            {
-                winLose = WinLoseRPC.IntruderWin;
-                Role.IntruderWin = true;
-            }
-
-            EndGame();
-            CallRpc(CustomRPC.WinLose, winLose);
+            WinState = SyndicateSettings.AltImps ? WinLose.SyndicateWins : WinLose.IntrudersWin;
+            CallRpc(CustomRPC.WinLose, WinState);
         }
         else
         {
@@ -150,9 +106,8 @@ public static class CheckEndGame
 
     public static void PerformStalemate()
     {
-        CallRpc(CustomRPC.WinLose, WinLoseRPC.NobodyWins);
-        PlayerLayer.NobodyWins = true;
-        EndGame();
+        CallRpc(CustomRPC.WinLose, WinLose.NobodyWins);
+        WinState = WinLose.NobodyWins;
     }
 
     private static bool TasksDone()

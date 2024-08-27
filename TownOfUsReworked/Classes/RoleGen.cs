@@ -1869,50 +1869,7 @@ public static class RoleGen
 
     public static void ResetEverything()
     {
-        PlayerLayer.NobodyWins = false;
-
-        Role.CrewWin = false;
-        Role.SyndicateWin = false;
-        Role.IntruderWin = false;
-        Role.AllNeutralsWin = false;
-
-        Role.UndeadWin = false;
-        Role.CabalWin = false;
-        Role.SectWin = false;
-        Role.ReanimatedWin = false;
-        Role.ApocalypseWins = false;
-
-        Role.NKWins = false;
-
-        Role.GlitchWins = false;
-        Role.WerewolfWins = false;
-        Role.JuggernautWins = false;
-        Role.ArsonistWins = false;
-        Role.MurdererWins = false;
-        Role.SerialKillerWins = false;
-
-        Role.PhantomWins = false;
-
-        Role.JesterWins = false;
-        Role.ActorWins = false;
-        Role.ExecutionerWins = false;
-        Role.GuesserWins = false;
-        Role.BountyHunterWins = false;
-        Role.CannibalWins = false;
-        Role.TrollWins = false;
-
-        Role.TaskRunnerWins = false;
-
-        Role.HunterWins = false;
-        Role.HuntedWins = false;
-
-        Objectifier.LoveWins = false;
-        Objectifier.RivalWins = false;
-        Objectifier.TaskmasterWins = false;
-        Objectifier.OverlordWins = false;
-        Objectifier.CorruptedWins = false;
-        Objectifier.MafiaWins = false;
-        Objectifier.DefectorWins = false;
+        WinState = WinLose.None;
 
         Role.SyndicateHasChaosDrive = false;
         Role.ChaosDriveMeetingTimerCount = 0;

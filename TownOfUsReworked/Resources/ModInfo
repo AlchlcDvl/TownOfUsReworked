@@ -13,20 +13,21 @@ New!
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
-- Update: Updated to Among Us 2024.8.13
-- Update: Updated to BepInEx 6.0.0-be.692
-- Update: Updated to Reactor 2.3.1
+- Recode: The custom options have been given a full recode to work even better than before
+- Improvement: Touched up on oudated code to ensure they all function better
 - Change: Jackal recruits can now need to only be of opposite factions so it has more flexible matchups
 - Change: Shifter now has a player menu to swap through to prevent auto confirms
 - Change: Bastion can now spawn in Killing Only
 - Change: Raised the min player requirement for Jackal spawn from 6 to 7
-- Improvement: Improved some button handling
+- Change: Neutral defecting Spellslingers and Rebel-Spellslingers can now win solo by spellbinding everyone
 - Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
-- Recode: The custom options have been given a full recode to work even better than before
+- Update: Updated to Among Us 2024.8.13
+- Update: Updated to BepInEx 6.0.0-be.697
+- Update: Updated to Reactor 2.3.1
 
 Fixes!
 - Critical: Fixed the rare instance where the host may lag a lot when a round starts
-- Critical: Fixed Jackal having no cooldown
+- Critical: Fixed some roles having no ability cooldown
 - Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
 - Role + Ability: Fixed Herbalists (Fungle Miners) being unguessable
 - Ability: Fixed the edge case where Swapper swaps didn't appear to be correctly selected

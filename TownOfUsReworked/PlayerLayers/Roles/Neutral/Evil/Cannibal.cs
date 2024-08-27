@@ -97,7 +97,7 @@ public class Cannibal : Neutral
         if (EatWin && !Eaten)
         {
             Eaten = true;
-            CallRpc(CustomRPC.WinLose, WinLoseRPC.CannibalWin, this);
+            CallRpc(CustomRPC.WinLose, WinLose.CannibalWins, this);
         }
     }
 }

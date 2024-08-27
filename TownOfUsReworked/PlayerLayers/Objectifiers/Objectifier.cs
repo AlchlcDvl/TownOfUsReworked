@@ -12,15 +12,8 @@ public abstract class Objectifier : PlayerLayer
 
     public virtual string Symbol => "φ";
 
-    public static bool LoveWins { get; set; }
-    public static bool RivalWins { get; set; }
-    public static bool TaskmasterWins { get; set; }
-    public static bool CorruptedWins { get; set; }
-    public static bool OverlordWins { get; set; }
-    public static bool MafiaWins { get; set; }
-    public static bool DefectorWins { get; set; }
-
-    public static bool ObjectifierWins => LoveWins || RivalWins || TaskmasterWins || CorruptedWins || OverlordWins || MafiaWins || DefectorWins;
+    public static bool ObjectifierWins => WinState is WinLose.LoveWins or WinLose.RivalWins or WinLose.OverlordWins or WinLose.CorruptedWins or WinLose.DefectorWins or WinLose.MafiaWins or
+        WinLose.TaskmasterWins;
 
     public string ColoredSymbol => $"{ColorString}{Symbol}</color>";
 

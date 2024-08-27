@@ -397,7 +397,7 @@ public abstract class Assassin : Ability
                         if (actor.PretendRoles.Any(x => x.Name == guess))
                         {
                             actor.Guessed = true;
-                            CallRpc(CustomRPC.WinLose, WinLoseRPC.ActorWin, actor);
+                            CallRpc(CustomRPC.WinLose, WinLose.ActorWins, actor);
 
                             if (!NeutralSettings.AvoidNeutralKingmakers)
                                 RpcMurderPlayer(Player, guess, targetPlayer);
