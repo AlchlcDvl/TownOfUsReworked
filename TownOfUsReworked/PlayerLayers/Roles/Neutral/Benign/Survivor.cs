@@ -9,7 +9,7 @@ public class Survivor : Neutral
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static float VestDur { get; set; } = 10f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int MaxVests { get; set; } = 5;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]

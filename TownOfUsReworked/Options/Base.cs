@@ -17,6 +17,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     public bool ClientOnly { get; set; }
     public PropertyInfo Property { get; set; }
     public string Name { get; set; } // Not actually the setting text, just the property/class name :]
+    public Type TargetType { get; set; }
     // public bool Invert { get; set; }
     // public MethodInfo OnChanged { get; set; }
     // public Type OnChangedType { get; set; }
@@ -80,6 +81,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         Value = DefaultValue = property.GetValue(null);
         Name = property.Name;
         ID = $"CustomOption.{Name.Replace("Priv", "")}";
+        TargetType = property.PropertyType;
         // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
         AllOptions.Add(this);
     }
@@ -177,6 +179,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public virtual void PostLoadSetup() {}
 
+    public virtual void ModifySetting(out string stringValue) => stringValue = "";
+
     public void Set(object value, bool rpc = true, bool notify = true)
     {
         Value = value;
@@ -189,45 +193,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         if (!Setting)
             return;
 
-        var stringValue = "";
-
-        if (Setting is ToggleOption toggle)
-        {
-            // if (this is RoleListEntryAttribute)
-            //     toggle.TitleText.text = Format();
-            // else
-            // {
-                var newValue = (bool)Value;
-                toggle.oldValue = newValue;
-
-                if (toggle.CheckMark)
-                    toggle.CheckMark.enabled = newValue;
-
-                stringValue = newValue ? "On" : "Off";
-            // }
-        }
-        else if (Setting is NumberOption number)
-        {
-            number.Value = number.oldValue = Value is int v ? v : (float)Value; // Part 2 of my mental breakdown
-            number.ValueText.text = stringValue = Format();
-        }
-        else if (Setting is StringOption str)
-        {
-            var stringOption = (StringOptionAttribute)this;
-            str.Value = str.oldValue = stringOption.Index = Mathf.Clamp((int)Value, 0, stringOption.Values.Length - 1);
-            str.ValueText.text = stringValue = Format();
-        }
-        else if (Setting is RoleOptionSetting role)
-        {
-            var data = (RoleOptionData)Value;
-            var layer = (LayersOptionAttribute)this;
-            role.chanceText.text = $"{data.Chance}%";
-            role.countText.text = $"x{data.Count}";
-            layer.UniqueCheck.enabled = data.Unique;
-            layer.ActiveCheck.enabled = data.Active;
-            stringValue = Format();
-        }
-
+        ModifySetting(out var stringValue);
         SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
 
         if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
@@ -366,8 +332,3 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static T GetOption<T>(string title) where T : OptionAttribute => GetOption(title) as T;
 }
-
-// public class OptionAttribute : Attribute
-// {
-
-// }

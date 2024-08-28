@@ -12,7 +12,7 @@ public class Necromancer : Neutral
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
     public static float ResurrectCdIncrease { get; set; } = 5f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int MaxResurrections { get; set; } = 5;
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
@@ -24,7 +24,7 @@ public class Necromancer : Neutral
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
     public static float NecroKillCdIncrease { get; set; } = 5f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int MaxNecroKills { get; set; } = 5;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]

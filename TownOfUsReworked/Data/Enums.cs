@@ -169,7 +169,6 @@ public enum CustomOptionType
     Toggle,
     Number,
     String,
-    Button,
     Layers,
     Entry,
     Alignment

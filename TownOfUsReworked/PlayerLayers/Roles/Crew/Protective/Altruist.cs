@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Altruist : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int MaxRevives { get; set; } = 5;
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]

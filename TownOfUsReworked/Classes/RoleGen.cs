@@ -1945,7 +1945,7 @@ public static class RoleGen
 
         SettingsPatches.SettingsPage = 0;
 
-        Assassin.RemainingKills = Assassin.AssassinKills;
+        Assassin.RemainingKills = Assassin.AssassinKills == 0 ? 10000 : Assassin.AssassinKills;
 
         OnGameEndPatches.Disconnected.Clear();
 

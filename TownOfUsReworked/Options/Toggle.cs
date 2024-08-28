@@ -36,6 +36,19 @@ public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : Op
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Get());
     }
 
+    public override void ModifySetting(out string stringValue)
+    {
+        base.ModifySetting(out stringValue);
+        var toggle = Setting.Cast<ToggleOption>();
+        var newValue = Get();
+        toggle.oldValue = newValue;
+
+        if (toggle.CheckMark)
+            toggle.CheckMark.enabled = newValue;
+
+        stringValue = newValue ? "On" : "Off";
+    }
+
     private static bool LighterDarkerMethod()
     {
         TownOfUsReworked.LighterDarker.Value = !TownOfUsReworked.LighterDarker.Value;

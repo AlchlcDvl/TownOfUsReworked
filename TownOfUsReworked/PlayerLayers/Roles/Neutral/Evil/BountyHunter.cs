@@ -6,7 +6,7 @@ public class BountyHunter : Neutral
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BountyHunterCanPickTargets { get; set; } = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int BountyHunterGuesses { get; set; } = 5;
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]

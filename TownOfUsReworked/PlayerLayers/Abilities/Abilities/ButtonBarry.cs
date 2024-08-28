@@ -7,7 +7,7 @@ public class ButtonBarry : Ability
     public static float ButtonCooldown { get; set; } = 25f;
 
     private bool ButtonUsed { get; set; }
-    private CustomButton ButtonButton { get; set; }
+    public CustomButton ButtonButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.ButtonBarry : CustomColorManager.Ability;
     public override string Name => "Button Barry";

@@ -64,7 +64,7 @@ public static class GameSettings
     [NumberOption(MultiMenu.Main, 0, 3, 0.1f, Format.Time)]
     public static float ChatCooldown { get; set; } = 3;
 
-    [NumberOption(MultiMenu.Main, 50, 2000, 50)]
+    [NumberOption(MultiMenu.Main, 0, 2000, 50, ZeroIsInfinity = true)]
     public static int ChatCharacterLimit { get; set; } = 200;
 
     [NumberOption(MultiMenu.Main, 2, 127, 1)]

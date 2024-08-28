@@ -26,7 +26,7 @@ public class DebuggerBehaviour : MonoBehaviour
             if (GUILayout.Button("Close Testing Menu"))
                 TestWindow.Enabled = false;
 
-            if (CustomPlayer.Local && !NoLobby && !CustomPlayer.LocalCustom.Dead && !IsEnded && !GameHasEnded)
+            if (CustomPlayer.Local && !NoLobby && !CustomPlayer.LocalCustom.Dead && !IsEnded && WinState == WinLose.None)
                 CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Enable Player Collider");
 
             if (IsLobby)

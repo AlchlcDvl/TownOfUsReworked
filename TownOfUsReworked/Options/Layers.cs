@@ -290,4 +290,16 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         SettingsPatches.OnValueChanged();
     }
+
+    public override void ModifySetting(out string stringValue)
+    {
+        base.ModifySetting(out stringValue);
+        var data = Get();
+        var role = Setting.Cast<RoleOptionSetting>();
+        role.chanceText.text = $"{data.Chance}%";
+        role.countText.text = $"x{data.Count}";
+        UniqueCheck.enabled = data.Unique;
+        ActiveCheck.enabled = data.Active;
+        stringValue = Format();
+    }
 }

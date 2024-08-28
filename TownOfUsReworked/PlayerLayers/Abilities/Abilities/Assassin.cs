@@ -27,7 +27,7 @@ public class Sniper : Assassin
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public abstract class Assassin : Ability
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int AssassinKills { get; set; } = 1;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]

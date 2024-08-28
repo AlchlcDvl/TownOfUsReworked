@@ -9,7 +9,7 @@ public class Monarch : Crew
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RoundOneNoKnighting { get; set; } = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int KnightCount { get; set; } = 2;
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]

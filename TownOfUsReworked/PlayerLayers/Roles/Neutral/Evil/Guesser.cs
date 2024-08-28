@@ -21,7 +21,7 @@ public class Guesser : Neutral
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool MultipleGuesses { get; set; } = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int MaxGuesses { get; set; } = 5;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
@@ -69,7 +69,7 @@ public class Guesser : Neutral
     {
         BaseStart();
         Alignment = Alignment.NeutralEvil;
-        RemainingGuesses = MaxGuesses;
+        RemainingGuesses = MaxGuesses == 0 ? 10000 : MaxGuesses;
         SortedColorMapping = [];
         SelectedButton = null;
         Page = 0;

@@ -12,13 +12,13 @@ public class Operative : Crew
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BugsRemoveOnNewRound { get; set; } = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int MaxBugs { get; set; } = 5;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
     public static float BugRange { get; set; } = 1.5f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
     public static int MinAmountOfPlayersInBug { get; set; } = 1;
 
     [StringOption(MultiMenu.LayerSubOptions)]

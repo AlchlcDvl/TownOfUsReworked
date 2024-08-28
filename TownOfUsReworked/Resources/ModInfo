@@ -10,6 +10,7 @@ New!
 - Addition: Colorblind now has grayscale vision
 - Addition: Options can now be collapsed using the header they are a part of
 - Addition: Added some more options
+- Addition: Some options now change to ∞ when set to 0
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!

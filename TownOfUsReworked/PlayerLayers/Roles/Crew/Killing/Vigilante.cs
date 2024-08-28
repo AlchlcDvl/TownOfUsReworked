@@ -18,7 +18,7 @@ public class Vigilante : Crew
     [StringOption(MultiMenu.LayerSubOptions)]
     public static VigiNotif HowIsVigilanteNotified { get; set; } = VigiNotif.Never;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int MaxBullets { get; set; } = 5;
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]

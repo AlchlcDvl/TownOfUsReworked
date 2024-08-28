@@ -17,7 +17,7 @@ public static class ChatUpdate
 
     private static void UpdateChatTimer(ChatController __instance)
     {
-        __instance.freeChatField.textArea.characterLimit = GameSettings.ChatCharacterLimit;
+        __instance.freeChatField.textArea.characterLimit = GameSettings.ChatCharacterLimit == 0 ? 1000000000 : GameSettings.ChatCharacterLimit;
         __instance.timeSinceLastMessage += Time.deltaTime;
 
         if (!__instance.sendRateMessageText.isActiveAndEnabled)
@@ -122,6 +122,12 @@ public static class OverrideCharCountPatch
 {
     public static bool Prefix(FreeChatInputField __instance)
     {
+        if (GameSettings.ChatCharacterLimit == 0)
+        {
+            __instance.charCountText.text = "";
+            return false;
+        }
+
         var length = __instance.Text.Length;
         __instance.charCountText.text = $"{length}/{GameSettings.ChatCharacterLimit}";
 

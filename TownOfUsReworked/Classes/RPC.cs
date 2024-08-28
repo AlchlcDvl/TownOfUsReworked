@@ -16,7 +16,7 @@ public static class RPC
         else
             options = [ .. OptionAttribute.AllOptions ];
 
-        options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Button || x.ClientOnly);
+        options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Alignment || x.ClientOnly);
         var split = options.Split(50);
         LogInfo($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
 
@@ -68,19 +68,15 @@ public static class RPC
         {
             var id = reader.ReadString();
             var customOption = OptionAttribute.AllOptions.Find(option => option.ID == id);
-            object value = null;
-
-            if (customOption.Type == CustomOptionType.Toggle)
-                value = reader.ReadBoolean();
-            else if (customOption.Type == CustomOptionType.Number)
-                value = reader.ReadBoolean() ? reader.ReadInt32() : reader.ReadSingle();
-            else if (customOption is StringOptionAttribute stringOption)
-                value = Enum.Parse(stringOption.TargetType, $"{reader.ReadInt32()}");
-            else if (customOption.Type == CustomOptionType.Entry)
-                value = (LayerEnum)reader.ReadByte();
-            else if (customOption.Type == CustomOptionType.Layers)
-                value = reader.ReadRoleOptionData();
-
+            var value = customOption.Type switch
+            {
+                CustomOptionType.Toggle => reader.ReadBoolean(),
+                CustomOptionType.Number => reader.ReadBoolean() ? reader.ReadInt32() : reader.ReadSingle(),
+                CustomOptionType.String => Enum.Parse(customOption.TargetType, $"{reader.ReadInt32()}"),
+                CustomOptionType.Layers => reader.ReadEnum<LayerEnum>(),
+                CustomOptionType.Entry => reader.ReadRoleOptionData(),
+                _ => null
+            };
             customOption.Set(value, false);
             // LogInfo(customOption);
         }

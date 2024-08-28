@@ -1,13 +1,14 @@
 namespace TownOfUsReworked.Options;
 
-public class NumberOptionAttribute(MultiMenu menu, float min, float max, float increment, Format format = Format.None) : OptionAttribute(menu,CustomOptionType.Number)
+// May I know who the fuck thought it was a good idea not to let int be casted to float explicitly??? Implicit casting bloody works but explicit doesn't seem to
+public class NumberOptionAttribute(MultiMenu menu, float min, float max, float increment, Format format = Format.None) : OptionAttribute(menu, CustomOptionType.Number)
 {
     private float Min { get; } = min;
     private float Max { get; } = max;
     private float Increment { get; } = increment;
     private Format FormatEnum { get; } = format;
-    public bool IsInt { get; set; } // I have to do some black magic fuckery to make this work
-    public bool AllowHalf { get; set; }
+    public bool AllowHalf { get; set; } = true;
+    public bool ZeroIsInfinity { get; set; }
 
     // This whole thing is being held by hopes and dreams, if I or anyone touches this, chances are it's broken....BECAUSE FOR SOME FUCKING REASON IT HAS DECIDED TO CAST INT TO FLOAT AND VICE VERSA ONLY WHEN IT FUCKING WANTS TO
 
@@ -17,9 +18,10 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
 
     public void Change(bool incrementing)
     {
-        var newVal = CycleFloat(Max, Min, IsInt ? GetInt() : GetFloat(), incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f));
+        var flag = Value is int;
+        var newVal = CycleFloat(Max, Min, flag ? GetInt() : GetFloat(), incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f));
 
-        if (IsInt)
+        if (flag)
             Set((int)newVal);
         else
             Set(newVal);
@@ -36,18 +38,28 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
         number.TitleText.text = TranslationManager.Translate(ID);
         number.ValidRange = new(Min, Max);
         number.Increment = Increment;
-        number.Value = number.oldValue = IsInt ? GetInt() : GetFloat();
+        number.Value = number.oldValue = Value is int v ? v : GetFloat();
         number.ValueText.text = Format();
     }
 
-    public override string Format() => FormatEnum switch
+    public override string Format()
     {
-        Data.Format.Time => $"{Value:0.##}s",
-        Data.Format.Distance => $"{Value:0.##}m",
-        Data.Format.Percent => $"{Value:0}%",
-        Data.Format.Multiplier => $"x{Value:0.##}",
-        _ => $"{Value:0.##}"
-    };
+        if (Value is int v && v == 0 && ZeroIsInfinity)
+            return "<b>∞</b>";
+        else if (Value is float f && f == 0 && ZeroIsInfinity)
+            return "<b>∞</b>";
+        else
+        {
+            return FormatEnum switch
+            {
+                Data.Format.Time => $"{Value:0.##}s",
+                Data.Format.Distance => $"{Value:0.##}m",
+                Data.Format.Percent => $"{Value:0}%",
+                Data.Format.Multiplier => $"x{Value:0.##}",
+                _ => $"{Value:0.##}"
+            };
+        }
+    }
 
     public override void ViewOptionCreated()
     {
@@ -60,6 +72,14 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        IsInt = Property.PropertyType == typeof(int);
+        AllowHalf &= Value is not int;
+    }
+
+    public override void ModifySetting(out string stringValue)
+    {
+        base.ModifySetting(out stringValue);
+        var number = Setting.Cast<NumberOption>();
+        number.Value = number.oldValue = Value is int v ? v : GetFloat(); // Part 2 of my mental breakdown
+        number.ValueText.text = stringValue = Format();
     }
 }

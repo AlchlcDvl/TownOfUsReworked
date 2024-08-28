@@ -12,7 +12,7 @@ public class GuardianAngel : Neutral
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static float ProtectDur { get; set; } = 10f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 15, 1)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static int MaxProtects { get; set; } = 5;
 
     [StringOption(MultiMenu.LayerSubOptions)]
