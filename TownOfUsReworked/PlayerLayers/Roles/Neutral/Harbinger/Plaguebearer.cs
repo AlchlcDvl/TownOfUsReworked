@@ -10,7 +10,7 @@ public class Plaguebearer : Neutral
     public static bool PBVent { get; set; } = false;
 
     public List<byte> Infected { get; set; }
-    public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || Pestilence.PestSpawn;
+    public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || NeutralApocalypseSettings.DirectSpawn;
     public CustomButton InfectButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Plaguebearer : CustomColorManager.Neutral;
@@ -63,7 +63,7 @@ public class Plaguebearer : Neutral
     {
         new Pestilence().Start<Role>(Player).RoleUpdate(this);
 
-        if (Pestilence.PlayersAlerted)
+        if (NeutralApocalypseSettings.PlayersAlerted)
             Flash(Color);
 
         foreach (var player in CustomPlayer.AllPlayers)

@@ -18,9 +18,6 @@ public class Cannibal : Neutral
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CannibalVent { get; set; } = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool VigiKillsCannibal { get; set; } = false;
-
     public CustomButton EatButton { get; set; }
     public int EatNeed { get; set; }
     public bool Eaten { get; set; }

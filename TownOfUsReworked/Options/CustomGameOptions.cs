@@ -184,7 +184,7 @@ public static class GameModifiers
     public static AnonVotes AnonymousVoting { get; set; } = AnonVotes.Enabled;
 
     [StringOption(MultiMenu.Main)]
-    public static DisableSkipButtonMeetings NoSkipping { get; set; } = DisableSkipButtonMeetings.No;
+    public static DisableSkipButtonMeetings NoSkipping { get; set; } = DisableSkipButtonMeetings.Never;
 
     [ToggleOption(MultiMenu.Main)]
     public static bool FirstKillShield { get; set; } = false;
@@ -629,6 +629,13 @@ public static class CrewUtilityRoles
     }
 }
 
+[AlignsOption(MultiMenu.Layer, Alignment.NeutralApoc, true)]
+public static class NeutralApocalypseRoles
+{
+    [LayersOption(MultiMenu.Layer, "#424242FF", LayerEnum.Pestilence, true)]
+    public static RoleOptionData Pestilence { get; set; }
+}
+
 [AlignsOption(MultiMenu.Layer, Alignment.NeutralBen)]
 public static class NeutralBenignRoles
 {
@@ -733,6 +740,9 @@ public static class NeutralNeophyteRoles
 [AlignsOption(MultiMenu.Layer, Alignment.NeutralPros)]
 public static class NeutralProselyteRoles
 {
+    [LayersOption(MultiMenu.Layer, "#11806AFF", LayerEnum.Betrayer)]
+    public static RoleOptionData Betrayer { get; set; }
+
     [LayersOption(MultiMenu.Layer, "#662962FF", LayerEnum.Phantom)]
     private static RoleOptionData PhantomPriv { get; set; }
     public static RoleOptionData Phantom
@@ -1111,7 +1121,7 @@ public static class CrewProtectiveSettings
 public static class CrewSovereignSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxCsV { get; set; } = 1;
+    public static int MaxCSv { get; set; } = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1119,6 +1129,16 @@ public static class CrewSupportSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
     public static int MaxCS { get; set; } = 1;
+}
+
+[HeaderOption(MultiMenu.AlignmentSubOptions)]
+public static class NeutralApocalypseSettings
+{
+    [ToggleOption(MultiMenu.AlignmentSubOptions)]
+    public static bool DirectSpawn { get; set; } = false;
+
+    [ToggleOption(MultiMenu.AlignmentSubOptions)]
+    public static bool PlayersAlerted { get; set; } = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1139,13 +1159,22 @@ public static class NeutralEvilSettings
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool NeutralEvilsEndGame { get; set; } = false;
+
+    [ToggleOption(MultiMenu.AlignmentSubOptions)]
+    public static bool VigilanteKillsEvils { get; set; } = true;
+
+    [ToggleOption(MultiMenu.AlignmentSubOptions)]
+    public static bool NEHasImpVision { get; set; } = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralHarbingerSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxNE { get; set; } = 1;
+    public static int MaxNH { get; set; } = 1;
+
+    [ToggleOption(MultiMenu.AlignmentSubOptions)]
+    public static bool NHHasImpVision { get; set; } = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1155,7 +1184,7 @@ public static class NeutralKillingSettings
     public static int MaxNK { get; set; } = 1;
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool HasImpVision { get; set; } = true;
+    public static bool NKHasImpVision { get; set; } = true;
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool KnowEachOther { get; set; } = false;
@@ -1168,7 +1197,7 @@ public static class NeutralNeophyteSettings
     public static int MaxNN { get; set; } = 1;
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool HasImpVision { get; set; } = true;
+    public static bool NNHasImpVision { get; set; } = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]

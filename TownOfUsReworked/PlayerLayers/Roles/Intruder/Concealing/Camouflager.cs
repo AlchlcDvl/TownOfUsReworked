@@ -9,12 +9,6 @@ public class Camouflager : Intruder
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static float CamouflageDur { get; set; } = 10f;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CamoHideSize { get; set; } = false;
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CamoHideSpeed { get; set; } = false;
-
     public CustomButton CamouflageButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Camouflager : CustomColorManager.Intruder;

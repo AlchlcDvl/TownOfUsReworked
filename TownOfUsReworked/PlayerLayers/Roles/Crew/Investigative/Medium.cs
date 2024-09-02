@@ -13,7 +13,7 @@ public class Medium : Crew
     public static bool ShowMediatePlayer { get; set; } = true;
 
     [StringOption(MultiMenu.LayerSubOptions)]
-    public static ShowMediumToDead ShowMediumToDead { get; set; } = ShowMediumToDead.No;
+    public static ShowMediumToDead ShowMediumToDead { get; set; } = ShowMediumToDead.Never;
 
     [StringOption(MultiMenu.LayerSubOptions)]
     public static DeadRevealed DeadRevealed { get; set; } = DeadRevealed.Oldest;
@@ -27,7 +27,7 @@ public class Medium : Crew
     public override string Name => "Medium";
     public override LayerEnum Type => LayerEnum.Medium;
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
-    public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.No ? "" : ("\n- When mediating, dead " +
+    public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? "" : ("\n- When mediating, dead " +
         "players will be able to see you"));
 
     public override void Init()
@@ -95,7 +95,7 @@ public class Medium : Crew
                     MediatedPlayers.Add(dead.PlayerId);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
 
-                    if (DeadRevealed != DeadRevealed.All)
+                    if (DeadRevealed != DeadRevealed.Everyone)
                         break;
                 }
             }

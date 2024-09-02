@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public class ButtonBarry : Ability
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ButtonCooldown { get; set; } = 25f;
+    public static float ButtonCd { get; set; } = 25f;
 
     private bool ButtonUsed { get; set; }
     public CustomButton ButtonButton { get; set; }
@@ -15,7 +15,7 @@ public class ButtonBarry : Ability
     public override Func<string> Description => () => "- You can call a button from anywhere";
 
     public override void Init() => ButtonButton = CreateButton(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClick)Call, (UsableFunc)Usable,
-        new Cooldown(ButtonCooldown));
+        new Cooldown(ButtonCd));
 
     private void Call()
     {

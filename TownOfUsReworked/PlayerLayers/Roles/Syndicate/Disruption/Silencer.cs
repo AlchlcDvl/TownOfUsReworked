@@ -7,7 +7,7 @@ public class Silencer : Syndicate
     public static float SilenceCd { get; set; } = 25f;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool WhispersNotPrivateSilencer { get; set; } = true;
+    public static bool WhispersNotPrivateS { get; set; } = true;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool SilenceMates { get; set; } = false;
@@ -26,7 +26,7 @@ public class Silencer : Syndicate
     public override LayerEnum Type => LayerEnum.Silencer;
     public override Func<string> StartText => () => "You Are The One Who Hushes";
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say" + (SilenceRevealed ? "\n- Everyone will be alerted at the "  +
-        "start of the meeting that someone has been silenced " : "") + (WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
+        "start of the meeting that someone has been silenced " : "") + (WhispersNotPrivateS ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
 
     public override void Init()
     {

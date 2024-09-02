@@ -425,7 +425,7 @@ public static class LayerExtentions
     {
         var result = 1f;
 
-        if (player.HasDied() || Lobby || (HudHandler.Instance.IsCamoed && Camouflager.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
+        if (player.HasDied() || Lobby || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
             return result;
 
         if (IntroCutscene.Instance)
@@ -497,7 +497,7 @@ public static class LayerExtentions
                 return 1f;
         }
 
-        if (Lobby || (HudHandler.Instance.IsCamoed && Camouflager.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
+        if (Lobby || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
         else if (player.Is(LayerEnum.Dwarf))
             return Dwarf.DwarfScale;

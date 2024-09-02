@@ -30,8 +30,9 @@ public static class CalculateLightRadiusPatch
 
         if (player.IsDead)
             __result = __instance.MaxLightRadius;
-        else if (pc.Is(Faction.Intruder) || (pc.Is(Alignment.NeutralKill) && NeutralKillingSettings.HasImpVision) || pc.Is(LayerEnum.Torch) || (pc.Is(Alignment.NeutralNeo) &&
-            NeutralNeophyteSettings.HasImpVision))
+        else if (pc.Is(Faction.Intruder) || (pc.Is(Alignment.NeutralKill) && NeutralKillingSettings.NKHasImpVision) || pc.Is(LayerEnum.Torch) || (pc.Is(Alignment.NeutralNeo) &&
+            NeutralNeophyteSettings.NNHasImpVision) || (pc.Is(Alignment.NeutralHarb) && NeutralHarbingerSettings.NHHasImpVision) || (pc.Is(Alignment.NeutralEvil) &&
+            NeutralEvilSettings.NEHasImpVision))
         {
             __result = __instance.MaxLightRadius * IntruderSettings.IntruderVision;
         }

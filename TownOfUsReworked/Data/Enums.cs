@@ -194,7 +194,7 @@ public enum WhoCanVentOptions
 
 public enum DisableSkipButtonMeetings
 {
-    No,
+    Never,
     Emergency,
     Always
 }
@@ -643,7 +643,7 @@ public enum DeadRevealed
     Oldest,
     Newest,
     Random,
-    All
+    Everyone
 }
 
 public enum VigiOptions
@@ -670,9 +670,9 @@ public enum AdminDeadPlayers
 
 public enum ShieldOptions
 {
-    Self,
+    Shielded,
     Medic,
-    SelfAndMedic,
+    ShieldedAndMedic,
     Everyone,
     Nobody
 }
@@ -718,7 +718,7 @@ public enum ConsigInfo
 
 public enum RevealerCanBeClickedBy
 {
-    All,
+    Everyone,
     NonCrew,
     EvilsOnly
 }
@@ -763,9 +763,9 @@ public enum RebActionsRPC
 
 public enum ProtectOptions
 {
-    Self,
+    Protected,
     GA,
-    SelfAndGA,
+    ProtectedAndGA,
     Everyone,
     Nobody
 }
@@ -791,12 +791,17 @@ public enum ChatChannel
     Lovers,
     Rivals,
     Linked,
+
     Intruders,
     Syndicate,
+
     Undead,
     Sect,
     Cabal,
     Reanimated,
+
+    Dead,
+
     All
 }
 
@@ -813,7 +818,7 @@ public enum DefectorFaction
 
 public enum ShowMediumToDead
 {
-    No,
+    Never,
     Target,
     AllDead
 }
@@ -886,17 +891,17 @@ public enum CosmeticTypeEnum
     Nameplate
 }
 
-public enum SkipEnum
-{
-    Map,
-    RoleCard,
-    Zooming,
-    Wiki,
-    Settings,
-    Task,
-    Client,
-    None
-}
+// public enum SkipEnum
+// {
+//     Map,
+//     RoleCard,
+//     Zooming,
+//     Wiki,
+//     Settings,
+//     Task,
+//     Client,
+//     None
+// }
 
 public enum WerewolfVentOptions
 {

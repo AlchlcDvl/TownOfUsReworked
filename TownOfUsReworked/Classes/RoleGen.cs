@@ -428,7 +428,7 @@ public static class RoleGen
                 NeutralRoles.Add(GetSpawnItem(LayerEnum.Cryomaniac));
 
             if (GameModeSettings.AddPlaguebearer)
-                NeutralRoles.Add(GetSpawnItem(Pestilence.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
+                NeutralRoles.Add(GetSpawnItem(NeutralApocalypseSettings.DirectSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
 
             NeutralRoles = Sort(NeutralRoles, neut);
         }
@@ -491,9 +491,9 @@ public static class RoleGen
                     GetSpawnItem(x).IsActive());
         }
         else if (layer == LayerEnum.Plaguebearer)
-            result = !Pestilence.PestSpawn;
+            result = !NeutralApocalypseSettings.DirectSpawn;
         else if (layer == LayerEnum.Pestilence)
-            result = Pestilence.PestSpawn;
+            result = NeutralApocalypseSettings.DirectSpawn;
         else if (layer is LayerEnum.Amnesiac or LayerEnum.GuardianAngel or LayerEnum.Survivor or LayerEnum.Thief)
             result = !NeutralSettings.AvoidNeutralKingmakers;
         else if (layer == LayerEnum.Jackal)
@@ -822,7 +822,7 @@ public static class RoleGen
                 var maxNB = NeutralBenignSettings.MaxNB;
                 var maxNK = NeutralKillingSettings.MaxNK;
                 var maxNN = NeutralNeophyteSettings.MaxNN;
-                var maxNH = NeutralHarbingerSettings.MaxNE;
+                var maxNH = NeutralHarbingerSettings.MaxNH;
                 var minNeut = NeutralSettings.NeutralMin;
                 var maxNeut = NeutralSettings.NeutralMax;
 
@@ -886,7 +886,7 @@ public static class RoleGen
                 var maxCA = CrewAuditorSettings.MaxCA;
                 var maxCK = CrewKillingSettings.MaxCK;
                 var maxCrP = CrewProtectiveSettings.MaxCrP;
-                var maxCSv = CrewSovereignSettings.MaxCsV;
+                var maxCSv = CrewSovereignSettings.MaxCSv;
                 var minCrew = CrewSettings.CrewMin;
                 var maxCrew = CrewSettings.CrewMax;
 
@@ -1242,8 +1242,9 @@ public static class RoleGen
         canHaveTaskedAbility.RemoveAll(x => !x.CanDoTasks());
         canHaveTaskedAbility.Shuffle();
 
-        canHaveTorch.RemoveAll(x => (x.Is(Alignment.NeutralKill) && !NeutralKillingSettings.HasImpVision) || x.Is(Faction.Syndicate) || x.Is(Faction.Intruder) || (x.Is(Faction.Neutral) &&
-            !NeutralSettings.LightsAffectNeutrals));
+        canHaveTorch.RemoveAll(x => (x.Is(Alignment.NeutralKill) && !NeutralKillingSettings.NKHasImpVision) || x.Is(Faction.Syndicate) || x.Is(Faction.Intruder) || (x.Is(Faction.Neutral) &&
+            !NeutralSettings.LightsAffectNeutrals) || (x.Is(Alignment.NeutralNeo) && !NeutralNeophyteSettings.NNHasImpVision) || (x.Is(Alignment.NeutralEvil) &&
+            !NeutralEvilSettings.NEHasImpVision) || (x.Is(Alignment.NeutralHarb) && !NeutralHarbingerSettings.NHHasImpVision));
         canHaveTorch.Shuffle();
 
         canHaveEvilAbility.RemoveAll(x => !(x.Is(Faction.Intruder) || x.Is(Faction.Syndicate)));

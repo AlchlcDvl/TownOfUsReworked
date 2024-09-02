@@ -13,7 +13,7 @@ public class Cryomaniac : Neutral
     public static bool CryoLastKillerBoost { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float CryoKillCd { get; set; } = 25f;
+    public static float VaporiseCd { get; set; } = 25f;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CryoVent { get; set; } = false;
@@ -47,7 +47,7 @@ public class Cryomaniac : Neutral
 
         if (CryoLastKillerBoost)
         {
-            KillButton = CreateButton(this, new SpriteName("CryoKill"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Kill, new Cooldown(CryoKillCd), "KILL", (UsableFunc)Usable,
+            KillButton = CreateButton(this, new SpriteName("CryoKill"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Kill, new Cooldown(VaporiseCd), "VAPORISE", (UsableFunc)Usable,
                 (PlayerBodyExclusion)Exception);
         }
 

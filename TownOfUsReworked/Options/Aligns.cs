@@ -1,9 +1,10 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment) : OptionAttribute(menu, CustomOptionType.Alignment)
+public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment, bool noParts = false) : OptionAttribute(menu, CustomOptionType.Alignment)
 {
     public Alignment Alignment { get; } = alignment;
+    private bool NoParts { get; set; } = noParts;
     public HeaderOptionAttribute GroupHeader { get; set; }
     public string[] GroupMemberStrings { get; set; }
     public OptionAttribute[] GroupMembers { get; set; }
@@ -89,35 +90,47 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment) : Option
             return;
 
         SavedMode = GameModeSettings.GameMode;
-        Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
-        Count.SetActive(SavedMode == GameMode.Custom);
-        Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
-        Active1.SetActive(SavedMode == GameMode.AllAny);
-        Single.SetActive(SavedMode is not (GameMode.Custom or GameMode.AllAny));
 
-        switch (SavedMode)
+        if (NoParts)
         {
-            case GameMode.Classic:
-                Chance.transform.localPosition = Right + Diff;
-                break;
+            Chance.SetActive(false);
+            Count.SetActive(false);
+            Single.SetActive(true);
+            Unique.SetActive(false);
+            Active1.SetActive(false);
+        }
+        else
+        {
+            Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
+            Count.SetActive(SavedMode == GameMode.Custom);
+            Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
+            Active1.SetActive(SavedMode == GameMode.AllAny);
+            Single.SetActive(SavedMode is not (GameMode.Custom or GameMode.AllAny));
 
-            case GameMode.Custom:
-                Chance.transform.localPosition = Right;
-                Count.transform.localPosition = Left;
-                break;
+            switch (SavedMode)
+            {
+                case GameMode.Classic:
+                    Chance.transform.localPosition = Right + Diff;
+                    break;
 
-            case GameMode.AllAny:
-                Unique.transform.localPosition = Right;
-                Active1.transform.localPosition = Left;
-                break;
+                case GameMode.Custom:
+                    Chance.transform.localPosition = Right;
+                    Count.transform.localPosition = Left;
+                    break;
 
-            case GameMode.RoleList:
-                Unique.transform.localPosition = Right + Diff;
-                break;
+                case GameMode.AllAny:
+                    Unique.transform.localPosition = Right;
+                    Active1.transform.localPosition = Left;
+                    break;
 
-            case GameMode.KillingOnly:
-                Chance.transform.localPosition = Right + Diff;
-                break;
+                case GameMode.RoleList:
+                    Unique.transform.localPosition = Right + Diff;
+                    break;
+
+                case GameMode.KillingOnly:
+                    Chance.transform.localPosition = Right + Diff;
+                    break;
+            }
         }
     }
 
@@ -129,7 +142,6 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment) : Option
         ID = $"CustomOption.{Name}";
         // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
         AllOptions.Add(this);
-        var menu = (MultiMenu)(250 + (int)Alignment + 1);
         var members = new List<OptionAttribute>();
         var strings = new List<string>();
 
@@ -152,62 +164,15 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment) : Option
 
     public override void PostLoadSetup()
     {
-        var menu = (MultiMenu)(250 + (int)Alignment + 1);
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Name.Replace("Roles", "") + "Settings");
-
-        if (GroupHeader != null)
-        {
-            GroupHeader.ID = ID;
-
-            if (!GroupHeader.Menus.Contains(menu))
-                GroupHeader.Menus.Add(menu);
-
-            foreach (var elem in GroupHeader.GroupMembers)
-            {
-                if (!elem.Menus.Contains(menu))
-                    elem.Menus.Add(menu);
-            }
-        }
+        var menu = 5 + (int)Alignment + 1;
+        GroupHeader?.AddMenuIndex(menu);
 
         if (OptionParents1.TryFinding(x => x.Item2.Contains(Alignment), out var option1))
-        {
-            var options = option1.Item1.Select(GetOptionFromPropertyName);
-
-            foreach (var option in options)
-            {
-                if (!option.Menus.Contains(menu))
-                    option.Menus.Add(menu);
-
-                if (option is HeaderOptionAttribute header)
-                {
-                    foreach (var elem in header.GroupMembers)
-                    {
-                        if (!elem.Menus.Contains(menu))
-                            elem.Menus.Add(menu);
-                    }
-                }
-            }
-        }
+            option1.Item1.Select(GetOptionFromName).ForEach(x => x?.AddMenuIndex(menu));
 
         if (OptionParents2.TryFinding(x => x.Item2.Contains(Alignment), out option1))
-        {
-            var options = option1.Item1.Select(GetOptionFromPropertyName);
-
-            foreach (var option in options)
-            {
-                if (!option.Menus.Contains(menu))
-                    option.Menus.Add(menu);
-
-                if (option is HeaderOptionAttribute header)
-                {
-                    foreach (var elem in header.GroupMembers)
-                    {
-                        if (!elem.Menus.Contains(menu))
-                            elem.Menus.Add(menu);
-                    }
-                }
-            }
-        }
+            option1.Item1.Select(GetOptionFromName).ForEach(x => x?.AddMenuIndex(menu));
     }
 
     public void SetUpOptionsMenu()
@@ -215,5 +180,11 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment) : Option
         SettingsPatches.SettingsPage = 250 + (int)Alignment + 1;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         SettingsPatches.OnValueChanged();
+    }
+
+    public override void AddMenuIndex(int index)
+    {
+        base.AddMenuIndex(index);
+        GroupHeader?.AddMenuIndex(index);
     }
 }

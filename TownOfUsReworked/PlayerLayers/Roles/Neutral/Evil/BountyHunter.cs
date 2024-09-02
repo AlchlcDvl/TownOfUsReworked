@@ -16,9 +16,6 @@ public class BountyHunter : Neutral
     public static bool BHVent { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool VigiKillsBH { get; set; } = false;
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BHToTroll { get; set; } = true;
 
     public PlayerControl TargetPlayer { get; set; }

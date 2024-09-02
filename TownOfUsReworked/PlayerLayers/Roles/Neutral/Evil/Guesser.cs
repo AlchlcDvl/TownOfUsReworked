@@ -28,9 +28,6 @@ public class Guesser : Neutral
     public static bool GuesserAfterVoting { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool VigiKillsGuesser { get; set; } = false;
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuessToAct { get; set; } = true;
 
     public PlayerControl TargetPlayer { get; set; }

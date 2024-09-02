@@ -3,12 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Pestilence : Neutral
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool PestSpawn { get; set; } = false;
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool PlayersAlerted { get; set; } = true;
-
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float ObliterateCd { get; set; } = 25f;
 

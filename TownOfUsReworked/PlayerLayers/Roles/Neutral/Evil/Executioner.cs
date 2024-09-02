@@ -28,9 +28,6 @@ public class Executioner : Neutral
     public static bool ExeCanWinBeyondDeath { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool VigiKillsExecutioner { get; set; } = false;
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExeToJest { get; set; } = true;
 
     public PlayerControl TargetPlayer { get; set; }

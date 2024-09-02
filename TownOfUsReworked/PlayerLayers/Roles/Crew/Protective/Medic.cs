@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Medic : Crew
 {
     [StringOption(MultiMenu.LayerSubOptions)]
-    public static ShieldOptions ShowShielded { get; set; } = ShieldOptions.Self;
+    public static ShieldOptions ShowShielded { get; set; } = ShieldOptions.Shielded;
 
     [StringOption(MultiMenu.LayerSubOptions)]
     public static ShieldOptions WhoGetsNotification { get; set; } = ShieldOptions.Medic;
@@ -21,7 +21,7 @@ public class Medic : Crew
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
     public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification is ShieldOptions.Everyone or ShieldOptions.Medic or
-        ShieldOptions.SelfAndMedic ? "\n- If your target is attacked, you will be notified of it" : "");
+        ShieldOptions.ShieldedAndMedic ? "\n- If your target is attacked, you will be notified of it" : "");
 
     public override void Init()
     {

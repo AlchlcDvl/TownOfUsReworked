@@ -65,10 +65,3 @@ public class RoleOptionData(int chance, int count, bool unique, bool active, Lay
 }
 
 public record class LayerDictionaryEntry(Type LayerType, UColor Color, string Name);
-
-// public record class ValuePair(float FloatValue, int IntValue)
-// {
-//     public static implicit operator float(ValuePair valuePair) => valuePair.FloatValue;
-
-//     public static implicit operator int(ValuePair valuePair) => valuePair.IntValue;
-// }

@@ -21,6 +21,7 @@ Changes!
 - Change: Bastion can now spawn in Killing Only
 - Change: Raised the min player requirement for Jackal spawn from 6 to 7
 - Change: Neutral defecting Spellslingers and Rebel-Spellslingers can now win solo by spellbinding everyone
+- Nerf: Dracula can now only convert once per round (because it was the only NN role that wasn't limited in its conversions)
 - Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
 - Update: Updated to Among Us 2024.8.13
 - Update: Updated to BepInEx 6.0.0-be.697

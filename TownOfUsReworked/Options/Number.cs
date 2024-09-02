@@ -10,8 +10,6 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     public bool AllowHalf { get; set; } = true;
     public bool ZeroIsInfinity { get; set; }
 
-    // This whole thing is being held by hopes and dreams, if I or anyone touches this, chances are it's broken....BECAUSE FOR SOME FUCKING REASON IT HAS DECIDED TO CAST INT TO FLOAT AND VICE VERSA ONLY WHEN IT FUCKING WANTS TO
-
     public float GetFloat() => (float)Value;
 
     public int GetInt() => (int)Value;

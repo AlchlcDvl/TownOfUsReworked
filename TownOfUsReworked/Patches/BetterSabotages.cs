@@ -22,6 +22,12 @@ public static class BetterSabotages
     [NumberOption(MultiMenu.Main, 0, 100, 5, Format.Percent)]
     public static int ReactorShake { get; set; } = 30;
 
+    [ToggleOption(MultiMenu.Main)]
+    public static bool CamoHideSize { get; set; } = false;
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool CamoHideSpeed { get; set; } = false;
+
     public static void Postfix(HudManager __instance)
     {
         if (!IsInGame || !Ship)

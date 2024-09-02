@@ -69,4 +69,10 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute(menu, Custo
         GroupMembers = [ .. members ];
         OptionParents1.Add((GroupMemberStrings, [ Name ]));
     }
+
+    public override void AddMenuIndex(int index)
+    {
+        base.AddMenuIndex(index);
+        GroupMembers.ForEach(x => x.AddMenuIndex(index));
+    }
 }

@@ -630,7 +630,7 @@ public class Retributionist : Crew
                     MediatedPlayers.Add(dead.PlayerId);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
 
-                    if (Medium.DeadRevealed != DeadRevealed.All)
+                    if (Medium.DeadRevealed != DeadRevealed.Everyone)
                         break;
                 }
             }

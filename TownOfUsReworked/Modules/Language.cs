@@ -60,6 +60,8 @@ public class Language : Asset
         return "Error";
     }
 
+    public bool HasID(string id) => (ID == id || IDs?.Contains(id) == true) && !IsNullEmptyOrWhiteSpace(English);
+
     public override string ToString()
     {
         if (ID != null)

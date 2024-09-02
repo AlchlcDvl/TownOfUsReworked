@@ -16,6 +16,7 @@ public class Dracula : Neutral
     public static bool UndeadVent { get; set; } = false;
 
     public CustomButton BiteButton { get; set; }
+    public bool HasConverted { get; set; }
     public List<byte> Converted { get; set; }
     public static int AliveCount => CustomPlayer.AllPlayers.Count(x => !x.HasDied());
 
@@ -37,7 +38,13 @@ public class Dracula : Neutral
         SubFactionColor = CustomColorManager.Undead;
         Converted = [ Player.PlayerId ];
         BiteButton = CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
-            (PlayerBodyExclusion)Exception);
+            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
+    }
+
+    public override void OnMeetingEnd(MeetingHud __instance)
+    {
+        base.OnMeetingEnd(__instance);
+        HasConverted = false;
     }
 
     public void Convert()
@@ -45,10 +52,15 @@ public class Dracula : Neutral
         var cooldown = Interact(Player, BiteButton.TargetPlayer);
 
         if (cooldown != CooldownType.Fail)
+        {
             RoleGen.RpcConvert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= AliveVampCount);
+            HasConverted = true;
+        }
 
         BiteButton.StartCooldown(cooldown);
     }
+
+    public bool Usable() => !HasConverted;
 
     public bool Exception(PlayerControl player) => Converted.Contains(player.PlayerId);
 }

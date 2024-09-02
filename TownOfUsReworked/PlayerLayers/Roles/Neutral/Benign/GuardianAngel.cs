@@ -16,7 +16,7 @@ public class GuardianAngel : Neutral
     public static int MaxProtects { get; set; } = 5;
 
     [StringOption(MultiMenu.LayerSubOptions)]
-    public static ProtectOptions ShowProtect { get; set; } = ProtectOptions.Self;
+    public static ProtectOptions ShowProtect { get; set; } = ProtectOptions.Protected;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GATargetKnows { get; set; } = false;

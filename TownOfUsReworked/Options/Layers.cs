@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum layer) : OptionAttribute(menu, CustomOptionType.Layers)
+public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum layer, bool noParts = false) : OptionAttribute(menu, CustomOptionType.Layers)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
@@ -8,6 +8,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
     public int Min { get; set; } = 1;
     public LayerEnum Layer { get; } = layer;
     public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
+    private bool NoParts { get; set; } = noParts;
     public HeaderOptionAttribute GroupHeader { get; set; }
     private GameObject Unique { get; set; }
     private GameObject Active1 { get; set; }
@@ -160,35 +161,47 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
             return;
 
         SavedMode = GameModeSettings.GameMode;
-        Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
-        Count.SetActive(SavedMode == GameMode.Custom);
-        Divider.SetActive(SavedMode is GameMode.Custom or GameMode.AllAny);
-        Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
-        Active1.SetActive(SavedMode == GameMode.AllAny);
 
-        switch (SavedMode)
+        if (NoParts)
         {
-            case GameMode.Classic:
-                Chance.transform.localPosition = Right + Diff;
-                break;
+            Chance.SetActive(false);
+            Count.SetActive(false);
+            Divider.SetActive(false);
+            Unique.SetActive(false);
+            Active1.SetActive(false);
+        }
+        else
+        {
+            Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
+            Count.SetActive(SavedMode == GameMode.Custom);
+            Divider.SetActive(SavedMode is GameMode.Custom or GameMode.AllAny);
+            Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
+            Active1.SetActive(SavedMode == GameMode.AllAny);
 
-            case GameMode.Custom:
-                Chance.transform.localPosition = Right;
-                Count.transform.localPosition = Left;
-                break;
+            switch (SavedMode)
+            {
+                case GameMode.Classic:
+                    Chance.transform.localPosition = Right + Diff;
+                    break;
 
-            case GameMode.AllAny:
-                Unique.transform.localPosition = Right + new Vector3(0.75f, 0f, 0f);
-                Active1.transform.localPosition = Left + new Vector3(0.75f, 0f, 0f);
-                break;
+                case GameMode.Custom:
+                    Chance.transform.localPosition = Right;
+                    Count.transform.localPosition = Left;
+                    break;
 
-            case GameMode.RoleList:
-                Unique.transform.localPosition = Right + Diff + new Vector3(0.91f, 0f, 0f);
-                break;
+                case GameMode.AllAny:
+                    Unique.transform.localPosition = Right + new Vector3(0.75f, 0f, 0f);
+                    Active1.transform.localPosition = Left + new Vector3(0.75f, 0f, 0f);
+                    break;
 
-            case GameMode.KillingOnly:
-                Chance.transform.localPosition = Right + Diff;
-                break;
+                case GameMode.RoleList:
+                    Unique.transform.localPosition = Right + Diff + new Vector3(0.91f, 0f, 0f);
+                    break;
+
+                case GameMode.KillingOnly:
+                    Chance.transform.localPosition = Right + Diff;
+                    break;
+            }
         }
     }
 
@@ -229,59 +242,14 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
         Property.SetValue(null, Value);
-        var menu = (MultiMenu)(5 + (int)Layer + 1);
-
-        if (GroupHeader != null)
-        {
-            if (!GroupHeader.Menus.Contains(menu))
-                GroupHeader.Menus.Add(menu);
-
-            foreach (var elem in GroupHeader.GroupMembers)
-            {
-                if (!elem.Menus.Contains(menu))
-                    elem.Menus.Add(menu);
-            }
-        }
+        var menu = 5 + (int)Layer + 1;
+        GroupHeader?.AddMenuIndex(menu);
 
         if (OptionParents1.TryFinding(x => x.Item2.Contains(Layer), out var option1))
-        {
-            var options = option1.Item1.Select(GetOptionFromPropertyName);
-
-            foreach (var option in options)
-            {
-                if (!option.Menus.Contains(menu))
-                    option.Menus.Add(menu);
-
-                if (option is HeaderOptionAttribute header)
-                {
-                    foreach (var elem in header.GroupMembers)
-                    {
-                        if (!elem.Menus.Contains(menu))
-                            elem.Menus.Add(menu);
-                    }
-                }
-            }
-        }
+            option1.Item1.Select(GetOptionFromName).ForEach(x => x?.AddMenuIndex(menu));
 
         if (OptionParents2.TryFinding(x => x.Item2.Contains(Layer), out option1))
-        {
-            var options = option1.Item1.Select(GetOptionFromPropertyName);
-
-            foreach (var option in options)
-            {
-                if (!option.Menus.Contains(menu))
-                    option.Menus.Add(menu);
-
-                if (option is HeaderOptionAttribute header)
-                {
-                    foreach (var elem in header.GroupMembers)
-                    {
-                        if (!elem.Menus.Contains(menu))
-                            elem.Menus.Add(menu);
-                    }
-                }
-            }
-        }
+            option1.Item1.Select(GetOptionFromName).ForEach(x => x?.AddMenuIndex(menu));
     }
 
     public void SetUpOptionsMenu()

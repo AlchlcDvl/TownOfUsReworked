@@ -67,10 +67,9 @@ public class Vigilante : Crew
     {
         var target = ShootButton.TargetPlayer;
         var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or
-            Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || (target.Is(LayerEnum.Jester) && Jester.VigiKillsJester) || Player.IsFramed() ||
-            (target.Is(LayerEnum.Executioner) && Executioner.VigiKillsExecutioner) || (target.Is(LayerEnum.Cannibal) && Cannibal.VigiKillsCannibal) || target.IsFramed() ||
-            (target.Is(Alignment.NeutralBen) && NeutralBenignSettings.VigilanteKillsBenigns) || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.Is(LayerEnum.Corrupted) ||
-            (target.Is(LayerEnum.Actor) && Actor.VigiKillsActor) || (target.Is(LayerEnum.BountyHunter) && BountyHunter.VigiKillsBH);
+            Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.IsFramed() ||
+            (target.Is(Alignment.NeutralEvil) && NeutralEvilSettings.VigilanteKillsEvils) || Player.Is(LayerEnum.Corrupted) || target.IsFramed() || (target.Is(Alignment.NeutralBen) &&
+            NeutralBenignSettings.VigilanteKillsBenigns);
         var cooldown = Interact(Player, target, flag4);
 
         if (cooldown != CooldownType.Fail)

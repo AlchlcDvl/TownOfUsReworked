@@ -7,7 +7,7 @@ public class Blackmailer : Intruder
     public static float BlackmailCd { get; set; } = 25f;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool WhispersNotPrivate { get; set; } = true;
+    public static bool WhispersNotPrivateB { get; set; } = true;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BlackmailMates { get; set; } = false;
@@ -26,7 +26,7 @@ public class Blackmailer : Intruder
     public override LayerEnum Type => LayerEnum.Blackmailer;
     public override Func<string> StartText => () => "You Know Their Secrets";
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say\n" + (BMRevealed ? ("- Everyone will be alerted at the start " +
-        "of the meeting that someone has been silenced ") : "") + (WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
+        "of the meeting that someone has been silenced ") : "") + (WhispersNotPrivateB ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
 
     public override void Init()
     {

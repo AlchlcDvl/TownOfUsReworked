@@ -18,9 +18,6 @@ public class Actor : Neutral
     [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
     public static int ActorRoleCount { get; set; } = 3;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool VigiKillsActor { get; set; } = false;
-
     public bool Guessed { get; set; }
     public List<Role> PretendRoles { get; set; }
     public bool Failed => !Ability.GetAssassins().Any(x => x.Alive);

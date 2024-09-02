@@ -15,9 +15,6 @@ public class Jester : Neutral
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool JestEjectScreen { get; set; } = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool VigiKillsJester { get; set; } = false;
-
     public bool VotedOut { get; set; }
     public List<byte> ToHaunt { get; set; }
     public bool HasHaunted { get; set; }

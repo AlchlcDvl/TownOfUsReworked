@@ -36,8 +36,8 @@ public static class RPCHandling
 
                         if (whispered == CustomPlayer.Local)
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
-                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivate) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
-                            Silencer.WhispersNotPrivateSilencer))
+                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
+                            Silencer.WhispersNotPrivateS))
                         {
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name} : {message}");
                         }

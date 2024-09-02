@@ -25,7 +25,7 @@ public class Revealer : Crew
     public static bool RevealerRevealsFanatic { get; set; } = false;
 
     [StringOption(MultiMenu.LayerSubOptions)]
-    public static RevealerCanBeClickedBy RevealerCanBeClickedBy { get; set; } = RevealerCanBeClickedBy.All;
+    public static RevealerCanBeClickedBy RevealerCanBeClickedBy { get; set; } = RevealerCanBeClickedBy.Everyone;
 
     public bool Caught { get; set; }
     public bool Revealed { get; set; }

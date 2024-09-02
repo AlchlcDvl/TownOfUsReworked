@@ -573,7 +573,7 @@ public static class SettingsPatches
                             y -= 0.1f;
 
                         option.Setting.transform.localPosition = new(isAlign ? 4.986f : -0.15f, y, -2f);
-                        y -= isAlign ? 0.4957f : 0.404f;
+                        y -= isAlign ? 0.5f : 0.43f;
                     }
 
                     option.Update();

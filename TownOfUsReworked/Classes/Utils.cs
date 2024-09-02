@@ -130,10 +130,10 @@ public static class Utils
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
 
-                if (Camouflager.CamoHideSize)
+                if (BetterSabotages.CamoHideSize)
                     TransitioningSize[player.PlayerId] = Mathf.Lerp(1f, player.GetSize(), p);
 
-                if (Camouflager.CamoHideSpeed)
+                if (BetterSabotages.CamoHideSpeed)
                     TransitioningSpeed[player.PlayerId] = Mathf.Lerp(1f, player.GetSpeed(), p);
 
                 if (p == 1)
@@ -203,10 +203,10 @@ public static class Utils
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
 
-                if (Camouflager.CamoHideSize)
+                if (BetterSabotages.CamoHideSize)
                     TransitioningSize[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), 1f, p);
 
-                if (Camouflager.CamoHideSpeed)
+                if (BetterSabotages.CamoHideSpeed)
                     TransitioningSpeed[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), 1f, p);
 
                 if (p == 1)

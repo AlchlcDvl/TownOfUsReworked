@@ -16,16 +16,16 @@ public class Necromancer : Neutral
     public static int MaxResurrections { get; set; } = 5;
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float NecroKillCd { get; set; } = 25f;
+    public static float SacrificeCd { get; set; } = 25f;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool NecroKillCdIncreases { get; set; } = true;
+    public static bool SacrificeCdIncreases { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static float NecroKillCdIncrease { get; set; } = 5f;
+    public static float SacrificeCdIncrease { get; set; } = 5f;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxNecroKills { get; set; } = 5;
+    public static int MaxSacrifices { get; set; } = 5;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool NecroCooldownsLinked { get; set; } = false;
@@ -69,7 +69,7 @@ public class Necromancer : Neutral
         Resurrected = [ Player.PlayerId ];
         ResurrectButton = CreateButton(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
             new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, "RESURRECT", (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
-        SacrificeButton = CreateButton(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, new Cooldown(NecroKillCd), "SACRIFICE",
+        SacrificeButton = CreateButton(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
             (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
     }
 
@@ -144,7 +144,7 @@ public class Necromancer : Neutral
 
     public float Difference1() => ResurrectCdIncreases ? (ResurrectedCount * ResurrectCdIncrease) : 0;
 
-    public float Difference2() => NecroKillCdIncreases ? (KillCount * NecroKillCdIncrease) : 0;
+    public float Difference2() => SacrificeCdIncreases ? (KillCount * SacrificeCdIncrease) : 0;
 
     public bool EndEffect() => Dead;
 

@@ -70,6 +70,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         ( [ "CrewMax", "CrewMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
         ( [ "Pestilence" ], [ LayerEnum.Plaguebearer ] ),
         ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] ),
+        ( [ "Assassin" ], [ LayerEnum.Hitman, LayerEnum.Bullseye, LayerEnum.Sniper, LayerEnum.Slayer ] ),
         ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
         ( [ "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "EnableRevealer", "EnablePhantom", "EnableGhoul", "EnableBanshee" ], [ GameMode.RoleList ] )
     ];
@@ -79,8 +80,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     {
         Property = property;
         Value = DefaultValue = property.GetValue(null);
-        Name = property.Name;
-        ID = $"CustomOption.{Name.Replace("Priv", "")}";
+        Name = property.Name.Replace("Priv", "");
+        ID = $"CustomOption.{Name}";
         TargetType = property.PropertyType;
         // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
         AllOptions.Add(this);
@@ -112,9 +113,15 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         else if (option is GameMode mode)
             result = GameModeSettings.GameMode == mode;
         else if (option is LayerEnum layer)
-            result = SettingsPatches.SettingsPage == 5 + (int)layer + 1;
+        {
+            AddMenuIndex(5 + (int)layer + 1);
+            result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage);
+        }
         else if (option is Alignment align)
-            result = SettingsPatches.SettingsPage == 250 + (int)align + 1;
+        {
+            AddMenuIndex(250 + (int)align + 1);
+            result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage);
+        }
         else if (option is int num)
             result = SettingsPatches.SettingsPage == num;
         else if (option is VigiOptions vigiop)
@@ -133,7 +140,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             if (id == Name)
                 return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them even with this line active
 
-            var optionatt = GetOptionFromPropertyName(id);
+            var optionatt = GetOptionFromName(id);
 
             if (optionatt != null)
             {
@@ -180,6 +187,14 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     public virtual void PostLoadSetup() {}
 
     public virtual void ModifySetting(out string stringValue) => stringValue = "";
+
+    public virtual void AddMenuIndex(int index)
+    {
+        var menu = (MultiMenu)index;
+
+        if (!Menus.Contains(menu))
+            Menus.Add(menu);
+    }
 
     public void Set(object value, bool rpc = true, bool notify = true)
     {
@@ -320,15 +335,13 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         yield break;
     }
 
-    public static List<OptionAttribute> GetOptions(CustomOptionType type) => AllOptions.Where(x => x.Type == type).ToList();
-
     public static List<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x.GetType() == typeof(T)).Cast<T>().ToList();
 
-    public static OptionAttribute GetOption(string title) => AllOptions.Find(x => x.ID == title);
+    public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == id);
 
-    public static OptionAttribute GetOptionFromPropertyName(string propertyName) => AllOptions.Find(x => x.Name == propertyName);
+    public static T GetOption<T>(string id) where T : OptionAttribute => GetOption(id) as T;
 
-    public static T GetOptionFromPropertyName<T>(string propertyName) where T : OptionAttribute => GetOptionFromPropertyName(propertyName) as T;
+    public static OptionAttribute GetOptionFromName(string name) => GetOption($"CustomOption.{name}");
 
-    public static T GetOption<T>(string title) where T : OptionAttribute => GetOption(title) as T;
+    public static T GetOptionFromName<T>(string name) where T : OptionAttribute => GetOptionFromName(name) as T;
 }
