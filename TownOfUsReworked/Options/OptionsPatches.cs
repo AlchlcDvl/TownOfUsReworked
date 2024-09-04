@@ -292,6 +292,9 @@ public static class SettingsPatches
 
                 var count = quota.GetChild(1).GetComponent<TextMeshPro>();
 
+                count.GetComponent<TextTranslatorTMP>().Destroy();
+                count.text = "# Layer Count";
+
                 var active = UObject.Instantiate(count, quota);
                 active.name = "Active";
                 active.GetComponent<TextTranslatorTMP>().Destroy();
@@ -449,6 +452,9 @@ public static class SettingsPatches
         public static bool Prefix() => false;
     }
 
+    private static PassiveButton RolesButton;
+    private static PassiveButton AlignmentsButton;
+
     public static void OnValueChanged(GameSettingMenu __instance = null)
     {
         if (IsHnS)
@@ -474,6 +480,37 @@ public static class SettingsPatches
 
         if (!SpawnOptionsCreated && SettingsPage == 1)
         {
+            var buttons = new List<PassiveButton>();
+
+            RolesButton = UObject.Instantiate(__instance.GamePresetsButton, __instance.RoleSettingsTab.RoleChancesSettings.transform);
+            RolesButton.OverrideOnClickListeners(AllRoles);
+            RolesButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+            RolesButton.buttonText.alignment = TextAlignmentOptions.Center;
+            RolesButton.buttonText.text = TranslationManager.Translate("View.AllRoles");
+            RolesButton.name = "AllRoles";
+            RolesButton.transform.localPosition = new(0.1117f, 1.626f, -2f);
+            buttons.Add(RolesButton);
+
+            AlignmentsButton = UObject.Instantiate(__instance.GamePresetsButton, __instance.RoleSettingsTab.transform);
+            AlignmentsButton.OverrideOnClickListeners(AllAlignments);
+            AlignmentsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+            AlignmentsButton.buttonText.alignment = TextAlignmentOptions.Center;
+            AlignmentsButton.buttonText.text = TranslationManager.Translate("View.AllAlignments");
+            AlignmentsButton.name = "AllAlignments";
+            AlignmentsButton.transform.localPosition = new(3.4727f, 1.626f, -2f);
+            buttons.Add(AlignmentsButton);
+
+            foreach (var mono in buttons)
+            {
+                mono.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+
+                foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
+                {
+                    obj.fontMaterial.SetFloat("_StencilComp", 3f);
+                    obj.fontMaterial.SetFloat("_Stencil", 20);
+                }
+            }
+
             var behaviours = CreateOptions(__instance.RoleSettingsTab.RoleChancesSettings.transform);
 
             foreach (var behave in behaviours)
@@ -545,7 +582,9 @@ public static class SettingsPatches
         }
         else if (SettingsPage is 1 or >= 5)
         {
-            var y = SettingsPage >= 5 ? 1.515f : 1.96f;
+            var y = SettingsPage >= 5 ? 1.515f : 1.36f;
+            RolesButton.gameObject.SetActive(SettingsPage == 1);
+            AlignmentsButton.gameObject.SetActive(SettingsPage == 1);
             __instance.RoleSettingsTab.advancedSettingChildren.Clear();
 
             foreach (var option in OptionAttribute.AllOptions)
@@ -593,6 +632,20 @@ public static class SettingsPatches
     private static void Return()
     {
         SettingsPage = 1;
+        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
+        OnValueChanged();
+    }
+
+    private static void AllRoles()
+    {
+        SettingsPage = 5;
+        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
+        OnValueChanged();
+    }
+
+    private static void AllAlignments()
+    {
+        SettingsPage = 250;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         OnValueChanged();
     }
@@ -1037,12 +1090,11 @@ public static class SettingsPatches
             saveButton.name = "SaveSettingsButton";
             saveButton.transform.localPosition = new(0.6909f, 2.6164f, -2f);
             saveButton.transform.localScale = new(0.64f, 0.84f, 1f);
-            var saveText = saveButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>();
-            saveText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
-            saveText.transform.localScale = new(1.4f, 0.9f, 1f);
-            saveText.alignment = TextAlignmentOptions.Center;
-            saveText.GetComponent<TextTranslatorTMP>().Destroy(); // Yeah because this darn thing exists
-            saveText.text = "Save Settings"; // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
+            saveButton.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
+            saveButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
+            saveButton.buttonText.alignment = TextAlignmentOptions.Center;
+            saveButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy(); // Yeah because this darn thing exists
+            saveButton.buttonText.text = TranslationManager.Translate("ImportExport.Save"); // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
             return false;
         }
     }

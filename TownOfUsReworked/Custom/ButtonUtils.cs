@@ -79,10 +79,10 @@ public static class ButtonUtils
         if (!player.Is(LayerEnum.Underdog))
             return 0f;
 
-        if (Underdog.UnderdogIncreasedKC && !Last(player))
-            return Underdog.UnderdogKillBonus;
+        if (Underdog.UnderdogIncreasedCd && !Last(player))
+            return Underdog.UnderdogCdBonus;
         else if (Last(player))
-            return -Underdog.UnderdogKillBonus;
+            return -Underdog.UnderdogCdBonus;
         else
             return 0f;
     }

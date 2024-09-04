@@ -39,6 +39,7 @@ public class PromotedRebel : Syndicate
         PoisonMenu = new(Player, PoisonClick, PoisonException);
         ShapeshiftMenu1 = new(Player, ShapeshiftClick1, SSException1);
         ShapeshiftMenu2 = new(Player, ShapeshiftClick2, SSException2);
+        Data.Role.IntroSound = GetAudio("RebelIntro");
     }
 
     // Rebel Stuff

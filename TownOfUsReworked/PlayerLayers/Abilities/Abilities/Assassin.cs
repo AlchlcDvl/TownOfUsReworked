@@ -43,7 +43,7 @@ public abstract class Assassin : Ability
     public static bool AssassinGuessInvestigative { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessPest { get; set; } = false;
+    public static bool AssassinGuessApoc { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AssassinGuessModifiers { get; set; } = false;
@@ -187,7 +187,7 @@ public abstract class Assassin : Ability
             {
                 ColorMapping.Add("Plaguebearer", CustomColorManager.Plaguebearer);
 
-                if (AssassinGuessPest)
+                if (AssassinGuessApoc)
                     ColorMapping.Add("Pestilence", CustomColorManager.Pestilence);
             }
 

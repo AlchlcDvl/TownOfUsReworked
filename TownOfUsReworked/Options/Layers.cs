@@ -103,6 +103,9 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
             chance = 0;
         }
 
+        if (count.IsInRange(0, Min))
+            count = Min;
+
         Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }
 
@@ -119,6 +122,9 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
             CachedChance = chance;
             chance = 0;
         }
+
+        if (count.IsInRange(0, Min))
+            count = Min;
 
         Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }
@@ -242,7 +248,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
         Property.SetValue(null, Value);
-        var menu = 5 + (int)Layer + 1;
+        var menu = 6 + (int)Layer;
         GroupHeader?.AddMenuIndex(menu);
 
         if (OptionParents1.TryFinding(x => x.Item2.Contains(Layer), out var option1))
@@ -254,7 +260,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
 
     public void SetUpOptionsMenu()
     {
-        SettingsPatches.SettingsPage = 5 + (int)Layer + 1;
+        SettingsPatches.SettingsPage = 6 + (int)Layer;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         SettingsPatches.OnValueChanged();
     }

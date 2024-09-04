@@ -3,8 +3,8 @@ namespace TownOfUsReworked.Options;
 // May I know who the fuck thought it was a good idea not to let int be casted to float explicitly??? Implicit casting bloody works but explicit doesn't seem to
 public class NumberOptionAttribute(MultiMenu menu, float min, float max, float increment, Format format = Format.None) : OptionAttribute(menu, CustomOptionType.Number)
 {
-    private float Min { get; } = min;
-    private float Max { get; } = max;
+    public float Min { get; } = min;
+    public float Max { get; } = max;
     private float Increment { get; } = increment;
     private Format FormatEnum { get; } = format;
     public bool AllowHalf { get; set; } = true;

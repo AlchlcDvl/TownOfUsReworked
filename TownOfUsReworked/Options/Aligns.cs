@@ -1,9 +1,9 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment, bool noParts = false) : OptionAttribute(menu, CustomOptionType.Alignment)
+public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noParts = false) : OptionAttribute(menu, CustomOptionType.Alignment)
 {
-    public Alignment Alignment { get; } = alignment;
+    public LayerEnum Alignment { get; } = alignment;
     private bool NoParts { get; set; } = noParts;
     public HeaderOptionAttribute GroupHeader { get; set; }
     public string[] GroupMemberStrings { get; set; }
@@ -57,16 +57,16 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment, bool noP
 
         var color = Alignment switch
         {
-            Alignment.CrewSupport or Alignment.CrewInvest or Alignment.CrewProt or Alignment.CrewKill or Alignment.CrewUtil or Alignment.CrewSov or Alignment.CrewAudit =>
+            LayerEnum.CrewSupport or LayerEnum.CrewInvest or LayerEnum.CrewProt or LayerEnum.CrewKill or LayerEnum.CrewUtil or LayerEnum.CrewSov or LayerEnum.CrewAudit =>
                 CustomColorManager.Crew,
-            Alignment.IntruderSupport or Alignment.IntruderConceal or Alignment.IntruderDecep or Alignment.IntruderKill or Alignment.IntruderUtil or Alignment.IntruderHead =>
+            LayerEnum.IntruderSupport or LayerEnum.IntruderConceal or LayerEnum.IntruderDecep or LayerEnum.IntruderKill or LayerEnum.IntruderUtil or LayerEnum.IntruderHead =>
                 CustomColorManager.Intruder,
-            Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralEvil or Alignment.NeutralBen or Alignment.NeutralPros or Alignment.NeutralApoc or Alignment.NeutralHarb =>
+            LayerEnum.NeutralKill or LayerEnum.NeutralNeo or LayerEnum.NeutralEvil or LayerEnum.NeutralBen or LayerEnum.NeutralPros or LayerEnum.NeutralApoc or LayerEnum.NeutralHarb =>
                 CustomColorManager.Neutral,
-            Alignment.SyndicateKill or Alignment.SyndicateSupport or Alignment.SyndicateDisrup or Alignment.SyndicatePower or Alignment.SyndicateUtil => CustomColorManager.Syndicate,
-            Alignment.Ability => CustomColorManager.Ability,
-            Alignment.Modifier => CustomColorManager.Modifier,
-            Alignment.Objectifier => CustomColorManager.Objectifier,
+            LayerEnum.SyndicateKill or LayerEnum.SyndicateSupport or LayerEnum.SyndicateDisrup or LayerEnum.SyndicatePower or LayerEnum.SyndicateUtil => CustomColorManager.Syndicate,
+            LayerEnum.Ability => CustomColorManager.Ability,
+            LayerEnum.Modifier => CustomColorManager.Modifier,
+            LayerEnum.Objectifier => CustomColorManager.Objectifier,
             _ => UColor.white
         };
 
@@ -165,7 +165,7 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment, bool noP
     public override void PostLoadSetup()
     {
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Name.Replace("Roles", "") + "Settings");
-        var menu = 5 + (int)Alignment + 1;
+        var menu = 6 + (int)Alignment;
         GroupHeader?.AddMenuIndex(menu);
 
         if (OptionParents1.TryFinding(x => x.Item2.Contains(Alignment), out var option1))
@@ -177,7 +177,7 @@ public class AlignsOptionAttribute(MultiMenu menu, Alignment alignment, bool noP
 
     public void SetUpOptionsMenu()
     {
-        SettingsPatches.SettingsPage = 250 + (int)Alignment + 1;
+        SettingsPatches.SettingsPage = 6 + (int)Alignment;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         SettingsPatches.OnValueChanged();
     }

@@ -211,6 +211,7 @@ public enum AirshipSpawnType
     Normal,
     Fixed,
     RandomSynchronized,
+    Random,
     Meeting
 }
 
@@ -551,6 +552,10 @@ public enum LayerEnum : byte
     SyndicatePower,
     SyndicateUtil,
     RegularSyndicate,
+
+    Ability,
+    Modifier,
+    Objectifier,
 
     None
 }

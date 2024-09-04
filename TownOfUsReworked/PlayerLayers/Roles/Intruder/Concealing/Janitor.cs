@@ -78,7 +78,7 @@ public class Janitor : Intruder
 
     public bool Usable2() => DragHandler.Instance.Dragging.ContainsKey(PlayerId);
 
-    public float Difference() => LastImp && SoloBoost && !Dead ? -Underdog.UnderdogKillBonus : 0;
+    public float Difference() => LastImp && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
     public override void ReadRPC(MessageReader reader)
     {

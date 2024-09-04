@@ -632,7 +632,7 @@ public class MeetingHandler : MonoBehaviour
             }
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Snitch) && Snitch.SnitchSeestargetsInMeeting && !DeadSeeEverything && player.TargetPlayerId != CustomPlayer.Local.PlayerId)
+        if (CustomPlayer.Local.Is(LayerEnum.Snitch) && Snitch.SnitchSeesTargetsInMeeting && !DeadSeeEverything && player.TargetPlayerId != CustomPlayer.Local.PlayerId)
         {
             var role = localinfo[0] as Role;
 

@@ -36,6 +36,7 @@ public class Medium : Crew
         MediatedPlayers = [];
         MediateArrows = [];
         Alignment = Alignment.CrewInvest;
+        Data.Role.IntroSound = GetAudio("MediumIntro");
         MediateButton = CreateButton(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, new Cooldown(MediateCd));
         // SeanceButton = CreateButton(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, new Cooldown(SeanceCd),
         //     new PostDeath(true));

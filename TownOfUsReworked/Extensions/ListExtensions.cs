@@ -106,11 +106,11 @@ public static class ListExtensions
         return result;
     }
 
-    public static List<T> GetRandomRange<T>(this List<T> list, int count)
+    public static List<T> GetRandomRange<T>(this IEnumerable<T> list, int count)
     {
         var temp = new List<T>();
 
-        if (list.Count <= count)
+        if (list.Count() <= count)
             temp.AddRange(list);
         else
         {

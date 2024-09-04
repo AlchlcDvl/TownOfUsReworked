@@ -59,8 +59,9 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         ( [ "RandomMapSubmerged" ], [ MapEnum.Random, ("ModCompatibility", "SubLoaded") ] ),
         ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, ("ModCompatibility", "LILoaded") ] ),
         ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
-            MapEnum.MiraHQ ] ),
-        ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle ] ),
+            MapEnum.MiraHQ, MapEnum.LevelImpostor ] ),
+        ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
+            MapEnum.LevelImpostor ] ),
         ( [ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ] ),
         ( [ "BetterMiraHQ" ], [ MapEnum.MiraHQ, MapEnum.Random ] ),
         ( [ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ] ),
@@ -114,12 +115,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             result = GameModeSettings.GameMode == mode;
         else if (option is LayerEnum layer)
         {
-            AddMenuIndex(5 + (int)layer + 1);
-            result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage);
-        }
-        else if (option is Alignment align)
-        {
-            AddMenuIndex(250 + (int)align + 1);
+            AddMenuIndex(6 + (int)layer);
             result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage);
         }
         else if (option is int num)
@@ -259,7 +255,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             pathoverridden = true;
         }
 
-        SaveSettings($"SavedSettings{(pathoverridden ? i : "")}");
+        SaveSettings($"SavedSettings{(pathoverridden ? i : "")}.json");
     }
 
     public static void SaveSettings(string fileName) => SaveText(fileName, SettingsToString(), TownOfUsReworked.Options);
@@ -299,7 +295,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
                 switch (option.Type)
                 {
                     case CustomOptionType.Number:
-                        option.Set(float.Parse(value), false);
+                        option.Set(option.TargetType == typeof(int) ? int.Parse(value) : float.Parse(value), false);
                         break;
 
                     case CustomOptionType.Toggle:
@@ -307,7 +303,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
                         break;
 
                     case CustomOptionType.String:
-                        option.Set(int.Parse(value), false);
+                        option.Set(Enum.Parse(option.TargetType, value), false);
                         break;
 
                     case CustomOptionType.Entry:
@@ -331,7 +327,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             }
         }
 
-        SendOptionRPC(null);
+        SendOptionRPC();
         yield break;
     }
 

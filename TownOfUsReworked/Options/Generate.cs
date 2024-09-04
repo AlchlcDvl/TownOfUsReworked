@@ -47,33 +47,8 @@ public static class Generate
             opt.ID += $"{(index == 0 ? "" : index.ToString())}";
         }
 
-        // Debugging code to log which settings haven't I given translations to
-        var done = new List<string>();
-
-        foreach (var opt in OptionAttribute.AllOptions)
-        {
-            if (!done.Contains(opt.ID) && !TranslationManager.AllTranslations.Any(x => x.HasID(opt.ID)))
-            {
-                done.Add(opt.ID);
-                LogFatal(opt.ID);
-
-                if (opt is StringOptionAttribute stringOpt)
-                {
-                    foreach (var val in stringOpt.Values)
-                    {
-                        var h = $"CustomOption.{stringOpt.TargetType.Name}.{val}";
-
-                        if (!done.Contains(h) && !TranslationManager.AllTranslations.Any(x => x.HasID(h)))
-                        {
-                            done.Add(h);
-                            LogFatal(h);
-                        }
-                    }
-                }
-            }
-        }
-
-        done.Clear();
+        opts.Clear();
+        d.Clear();
 
         LogMessage($"There exist {OptionAttribute.AllOptions.Count} total options lmao (number jumpscare)");
     }
