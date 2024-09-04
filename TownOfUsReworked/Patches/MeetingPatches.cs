@@ -40,7 +40,7 @@ public static class MeetingPatches
             Reported = target;
             Reporter = __instance;
 
-            if (target == null)
+            if (!target)
                 return;
 
             var data = target;
@@ -83,7 +83,7 @@ public static class MeetingPatches
             {
                 PlayerControl check = null;
 
-                if (Reported != null)
+                if (Reported)
                 {
                     var player = Reported.Object;
                     check = player;
@@ -291,7 +291,7 @@ public static class MeetingPatches
     {
         public static void Postfix(MeetingHud __instance, ref NetworkedPlayerInfo exiled, ref bool tie)
         {
-            var exiledString = exiled == null ? "null" : exiled.PlayerName;
+            var exiledString = !exiled ? "null" : exiled.PlayerName;
             LogInfo($"Exiled PlayerName = {exiledString}");
             LogInfo($"Was a tie = {tie}");
             PlayerLayer.LocalLayers.ForEach(x => x?.VoteComplete(__instance));
@@ -333,7 +333,7 @@ public static class MeetingPatches
 
             var playerInfo = GameData.Instance.GetPlayerById(playerVoteArea.TargetPlayerId);
 
-            if (playerInfo == null)
+            if (!playerInfo)
                 return true;
 
             var playerControl = playerInfo.Object;

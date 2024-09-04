@@ -48,7 +48,7 @@ public static class AdminPatch
 
                 if (useCompactText)
                     text.transform.localPosition = new(0, 0, -20);
-                else if (i / area.MaxWidth == 0)
+                else if ((i / area.MaxWidth) == 0)
                     text.transform.localPosition = new(0, -area.YOffset, -20);
                 else
                     text.transform.localPosition = new(0, area.YOffset, -20);
@@ -73,9 +73,6 @@ public static class AdminPatch
             {
                 var collider = __instance.buffer[i];
 
-                var player = collider.GetComponent<PlayerControl>();
-                var data = player?.Data;
-
                 if (collider.tag == "DeadBody" && ((isOp && (int)Operative.WhoSeesDead is 1) || (!isOp && (int)Operative.WhoSeesDead is 2) || DeadSeeEverything ||  Operative.WhoSeesDead ==
                     0))
                 {
@@ -86,8 +83,9 @@ public static class AdminPatch
                 else
                 {
                     var component = collider.GetComponent<PlayerControl>();
+                    var data = component?.Data;
 
-                    if (component && component.Data != null && !component.HasDied() && (__instance.showLivePlayerPosition || !component.AmOwner) && !colorMapDuplicate.Contains(data.PlayerId))
+                    if (!component.HasDied() && (__instance.showLivePlayerPosition || !component.AmOwner) && !colorMapDuplicate.Contains(data.PlayerId))
                     {
                         colorMap.Add(data.PlayerId);
                         colorMapDuplicate.Add(data.PlayerId);

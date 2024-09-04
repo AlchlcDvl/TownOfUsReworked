@@ -5,7 +5,7 @@ public static class CalculateLightRadiusPatch
 {
     public static bool Prefix(ShipStatus __instance, ref NetworkedPlayerInfo player, ref float __result)
     {
-        if (player == null)
+        if (!player)
             return false;
 
         if (IsHnS)

@@ -565,7 +565,7 @@ public static class LayerExtentions
     {
         var playerInfo = player?.Data;
 
-        if (!player || playerInfo == null)
+        if (!player || !playerInfo)
             return false;
         else if (IsHnS)
             return !playerInfo.IsImpostor();
@@ -668,7 +668,7 @@ public static class LayerExtentions
     {
         var playerInfo = player?.Data;
 
-        if (!player || playerInfo == null)
+        if (!player || !playerInfo)
             return false;
         else if (playerInfo.IsDead || Meeting || Lobby)
             return true;

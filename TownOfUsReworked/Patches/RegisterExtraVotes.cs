@@ -92,7 +92,7 @@ public static class PopulateResults
                 var voteState = states[stateIdx];
                 var playerInfo = GameData.Instance.GetPlayerById(voteState.VoterId);
 
-                if (playerInfo == null)
+                if (!playerInfo)
                     LogError($"Couldn't find player info for voter: {voteState.VoterId}");
                 else if (i == 0 && voteState.SkippedVote)
                 {

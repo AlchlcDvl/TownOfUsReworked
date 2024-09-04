@@ -2,7 +2,7 @@
 
 public static class Utils
 {
-    public static bool HasDied(this PlayerControl player) => !player || player.Data == null || player.Data.IsDead || player.Data.Disconnected;
+    public static bool HasDied(this PlayerControl player) => !player || !player.Data || player.Data.IsDead || player.Data.Disconnected;
 
     public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
@@ -392,7 +392,7 @@ public static class Utils
 
         var data = target.Data;
 
-        if (data == null || data.IsDead || killer.Data == null)
+        if (!data || data.IsDead || !killer.Data)
             return;
 
         AchievementManager.Instance.OnMurder(killer == CustomPlayer.Local, target == CustomPlayer.Local, CachedMorphs.ContainsKey(killer.PlayerId),

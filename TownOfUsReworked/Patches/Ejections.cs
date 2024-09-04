@@ -7,7 +7,7 @@ public static class ConfirmEjects
     {
         var exiled = init?.networkedPlayer;
 
-        if (exiled == null)
+        if (!exiled)
         {
             if (ClientOptions.CustomEjects)
                 __instance.completeString = $"Everyone's safe...for now. ({(init.voteTie ? "Tie" : "Skipped")})";

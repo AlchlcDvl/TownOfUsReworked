@@ -5,7 +5,7 @@ public static class PlayerControlOnClick
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        if (!CustomPlayer.Local || CustomPlayer.Local.Data == null || __instance.Data == null || Meeting || Lobby)
+        if (!CustomPlayer.Local ||! CustomPlayer.Local.Data || !__instance.Data || Meeting || Lobby)
             return false;
 
         if (IsHnS)

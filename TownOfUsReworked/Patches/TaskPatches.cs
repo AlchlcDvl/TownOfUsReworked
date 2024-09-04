@@ -19,7 +19,7 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (!pc || playerInfo == null || playerInfo.Tasks == null || pc.HasDied())
+                if (!pc || !playerInfo || playerInfo.Tasks == null || pc.HasDied())
                     continue;
 
                 var mostRole = most.GetRole();

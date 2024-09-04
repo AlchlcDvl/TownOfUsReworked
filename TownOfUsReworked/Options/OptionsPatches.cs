@@ -864,7 +864,7 @@ public static class SettingsPatches
             if (CustomPlayer.AllPlayers.Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive)
                 return;
 
-            SendOptionRPC(setting: (OptionAttribute)null);
+            SendOptionRPC();
             CallRpc(CustomRPC.Misc, MiscRPC.SyncSummary, ReadDiskText("Summary", TownOfUsReworked.Other));
 
             if (CachedFirstDead != null)
