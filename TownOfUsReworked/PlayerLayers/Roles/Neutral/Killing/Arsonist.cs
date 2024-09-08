@@ -26,7 +26,7 @@ public class Arsonist : Neutral
 
     public CustomButton IgniteButton { get; set; }
     public CustomButton DouseButton { get; set; }
-    public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
+    public bool LastKiller => !AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && ArsoLastKillerBoost;
     public List<byte> Doused { get; set; }
 

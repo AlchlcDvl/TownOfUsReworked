@@ -127,7 +127,7 @@ public static class RegionInfoOpenPatch
 [HarmonyPatch(typeof(RegionMenu), nameof(RegionMenu.ChooseOption))]
 public static class RegionMenuChooseOptionPatch
 {
-    public static bool Prefix(RegionMenu __instance, ref IRegionInfo region)
+    public static bool Prefix(RegionMenu __instance, IRegionInfo region)
     {
         if (region.Name != "Custom" || ServerManager.Instance.CurrentRegion.Name == "Custom")
             return true;

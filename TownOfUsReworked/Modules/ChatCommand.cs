@@ -109,7 +109,7 @@ public class ChatCommand
 
     private static void Whisper(string[] args, string arg)
     {
-        if (!GameModifiers.Whispers && IsInGame)
+        if (!GameModifiers.Whispers && IsInGame())
         {
             Run("<color=#00FF00FF>⚠ No Whispering ⚠</color>", "Whispering is not turned on.");
             return;
@@ -142,7 +142,7 @@ public class ChatCommand
         }
         else if (args2.Length == 3 && first == 0)
         {
-            whispered = CustomPlayer.AllPlayers.Find(x => x.name == args2[1]);
+            whispered = AllPlayers.Find(x => x.name == args2[1]);
             message = args2[2][1..];
         }
         else
@@ -163,7 +163,7 @@ public class ChatCommand
 
     private static void SetColor(string[] args)
     {
-        if (!TownOfUsReworked.IsTest || !IsLobby)
+        if (!TownOfUsReworked.IsTest || !IsLobby())
         {
             Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
@@ -195,7 +195,7 @@ public class ChatCommand
 
     private static void SetName(string[] args)
     {
-        if (!TownOfUsReworked.IsTest || !IsLobby)
+        if (!TownOfUsReworked.IsTest || !IsLobby())
         {
             Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
@@ -236,7 +236,7 @@ public class ChatCommand
 
     private static void Clear()
     {
-        if (!IsLobby)
+        if (!IsLobby())
         {
             Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
@@ -248,7 +248,7 @@ public class ChatCommand
             return;
         }
 
-        foreach (var player2 in CustomPlayer.AllPlayers)
+        foreach (var player2 in AllPlayers)
         {
             if (player2 != CustomPlayer.Local)
             {
@@ -264,7 +264,7 @@ public class ChatCommand
 
     private static void KickBan(string[] args)
     {
-        if (!IsLobby)
+        if (!IsLobby())
         {
             Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
@@ -287,7 +287,7 @@ public class ChatCommand
         var arg = "";
         args[1..].ForEach(arg2 => arg += $"{arg2} ");
         arg = arg.Remove(arg.Length - 1);
-        var target = CustomPlayer.AllPlayers.Find(x => x.Data.PlayerName == arg);
+        var target = AllPlayers.Find(x => x.Data.PlayerName == arg);
 
         if (!target)
         {

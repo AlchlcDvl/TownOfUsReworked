@@ -139,20 +139,19 @@ public static class NameplatesTabOnEnablePatch
 [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetNameplate))]
 public static class CosmeticsCacheGetNameplatePatch
 {
-    public static bool Prefix(CosmeticsCache __instance, ref string id, ref NamePlateViewData __result)
+    public static bool Prefix(CosmeticsCache __instance, string id, ref NamePlateViewData __result)
     {
         if (!CustomNameplateViewDatas.TryGetValue(id, out __result))
             return true;
 
-        __result ??= __instance.nameplates["nameplate_NoPlate"].GetAsset();
-        return false;
+        return __result ??= __instance.nameplates["nameplate_NoPlate"].GetAsset();
     }
 }
 
 [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
 public static class PreviewNameplatesPatch
 {
-    public static bool Prefix(PlayerVoteArea __instance, ref string plateID)
+    public static bool Prefix(PlayerVoteArea __instance, string plateID)
     {
         if (!CustomNameplateViewDatas.TryGetValue(plateID, out var viewData))
             return true;

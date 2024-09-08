@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
 public static class ConfirmEjects
 {
-    public static void Postfix(ExileController __instance, ref ExileController.InitProperties init)
+    public static void Postfix(ExileController __instance, ExileController.InitProperties init)
     {
         var exiled = init?.networkedPlayer;
 
@@ -59,9 +59,9 @@ public static class ConfirmEjects
             else
                 ejectString = $"{player.Data.PlayerName} was {role.FactionColorString}{role.FactionName}</color>.";
 
-            var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
+            var totalEvilsCount = AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
                 !x.HasDied());
-            var totalEvilsRemaining = IsAA ? "an unknown number of" : $"{totalEvilsCount}";
+            var totalEvilsRemaining = IsAA() ? "an unknown number of" : $"{totalEvilsCount}";
             var s = totalEvilsCount > 1 ? "s" : "";
             var isAre = totalEvilsCount > 1 ? "are" : "is";
             __instance.ImpostorText.text = $"There {isAre} {totalEvilsRemaining} <color=#FF0000FF>evil{s}</color> remaining.";

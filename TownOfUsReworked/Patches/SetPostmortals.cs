@@ -148,7 +148,7 @@ public static class SetPostmortals
         }
 
         BeginPostmortals(exiled, true);
-        CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
+        AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
         AllBodies.ForEach(x => x?.gameObject?.Destroy());
     }
 

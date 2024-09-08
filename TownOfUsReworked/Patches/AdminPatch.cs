@@ -73,7 +73,7 @@ public static class AdminPatch
             {
                 var collider = __instance.buffer[i];
 
-                if (collider.tag == "DeadBody" && ((isOp && (int)Operative.WhoSeesDead is 1) || (!isOp && (int)Operative.WhoSeesDead is 2) || DeadSeeEverything ||  Operative.WhoSeesDead ==
+                if (collider.tag == "DeadBody" && ((isOp && (int)Operative.WhoSeesDead is 1) || (!isOp && (int)Operative.WhoSeesDead is 2) || DeadSeeEverything() ||  Operative.WhoSeesDead ==
                     0))
                 {
                     var playerId = collider.GetComponent<DeadBody>().ParentId;
@@ -100,7 +100,7 @@ public static class AdminPatch
     public static bool Prefix(MapCountOverlay __instance)
     {
         var localPlayer = CustomPlayer.Local;
-        var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything;
+        var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything();
 
         if (!isOp)
             isOp = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOp;

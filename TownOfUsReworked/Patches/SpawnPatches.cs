@@ -23,7 +23,7 @@ public static class SpawnPatches
         if (intro)
             PlayerLayer.LocalLayers.ForEach(x => x?.OnIntroEnd());
 
-        CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
+        AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
         AllBodies.ForEach(x => x?.gameObject?.Destroy());
         ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);
@@ -62,7 +62,7 @@ public static class SpawnPatches
         if (tobeadded != null)
             allLocations.AddRange(tobeadded);
 
-        foreach (var player in CustomPlayer.AllPlayers)
+        foreach (var player in AllPlayers)
         {
             if (player.HasDied())
                 continue;

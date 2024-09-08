@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
 public static class RPCHandling
 {
-    public static void Postfix(ref byte callId, ref MessageReader reader)
+    public static void Postfix(byte callId, MessageReader reader)
     {
         if (callId != 254)
             return;
@@ -36,7 +36,7 @@ public static class RPCHandling
 
                         if (whispered == CustomPlayer.Local)
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
-                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
+                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
                             Silencer.WhispersNotPrivateS))
                         {
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name} : {message}");
@@ -142,7 +142,7 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
                         TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
                         TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-                        CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
+                        AllPlayers.ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
                         MapPatches.AdjustSettings();
                         break;
 
@@ -163,7 +163,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.EndRoleGen:
-                        foreach (var player2 in CustomPlayer.AllPlayers)
+                        foreach (var player2 in AllPlayers)
                         {
                             var role = player2.GetRole() ?? new Roleless().Start<Role>(player2);
                             var mod = player2.GetModifier() ?? new Modifierless().Start<Modifier>(player2);

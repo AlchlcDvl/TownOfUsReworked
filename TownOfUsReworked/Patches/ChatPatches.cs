@@ -38,9 +38,9 @@ public static class ChatUpdate
         {
             var chat = bubble.Cast<ChatBubble>();
 
-            if (chat.NameText && IsInGame)
+            if (chat.NameText && IsInGame())
             {
-                foreach (var player in CustomPlayer.AllPlayers)
+                foreach (var player in AllPlayers)
                 {
                     if (chat.NameText.text.Contains(player.Data.PlayerName))
                     {

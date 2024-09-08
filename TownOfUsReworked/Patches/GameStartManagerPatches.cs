@@ -27,7 +27,7 @@ public static class GameStartManagerPatches
             // Lobby size requirements
             __instance.MinPlayers = 1;
 
-            if (!IsHnS)
+            if (!IsHnS())
             {
                 // Trigger version refresh
                 VersionSent = false;
@@ -96,7 +96,7 @@ public static class GameStartManagerPatches
 
             if (DiscordManager.InstanceExists)
             {
-                __instance.ShareOnDiscordButton.gameObject.SetActive(AmongUsClient.Instance.AmHost && IsOnlineGame && DiscordManager.Instance.CanShareGameOnDiscord() &&
+                __instance.ShareOnDiscordButton.gameObject.SetActive(AmongUsClient.Instance.AmHost && IsOnlineGame() && DiscordManager.Instance.CanShareGameOnDiscord() &&
                     DiscordManager.Instance.HasValidPartyID());
             }
 
@@ -119,7 +119,7 @@ public static class GameStartManagerPatches
 
                 if (DiscordManager.InstanceExists)
                 {
-                    if (AmongUsClient.Instance.AmHost && IsOnlineGame)
+                    if (AmongUsClient.Instance.AmHost && IsOnlineGame())
                         DiscordManager.Instance.SetInLobbyHost(__instance.LastPlayerCount, GameSettings.LobbySize, AmongUsClient.Instance.GameId);
                     else
                         DiscordManager.Instance.SetInLobbyClient(__instance.LastPlayerCount, GameSettings.LobbySize, AmongUsClient.Instance.GameId);
@@ -137,7 +137,7 @@ public static class GameStartManagerPatches
                 SelfVersion = ShareGameVersion();
             }
 
-            if (!TownOfUsReworked.MCIActive && !IsHnS)
+            if (!TownOfUsReworked.MCIActive && !IsHnS())
             {
                 foreach (var client in AmongUsClient.Instance.allClients)
                 {
@@ -189,7 +189,7 @@ public static class GameStartManagerPatches
                         __instance.GameStartText.text = message;
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                     }
-                    else if (!IsCountDown)
+                    else if (!IsCountDown())
                         __instance.StartButton.SetButtonEnableState(true);
                 }
                 // Client update with handshake infos
@@ -215,7 +215,7 @@ public static class GameStartManagerPatches
             }
 
             if (!versionMismatch)
-                __instance.GameStartText.text = IsCountDown ? TranslationController.Instance.GetString(StringNames.GameStarting, Seconds) : "";
+                __instance.GameStartText.text = IsCountDown() ? TranslationController.Instance.GetString(StringNames.GameStarting, Seconds) : "";
 
             if (__instance.LobbyInfoPane.gameObject.activeSelf && Chat.IsOpenOrOpening)
                 __instance.LobbyInfoPane.DeactivatePane();
@@ -225,7 +225,7 @@ public static class GameStartManagerPatches
             if (!AmongUsClient.Instance.AmHost)
                 return;
 
-            if (IsCountDown)
+            if (IsCountDown())
             {
                 var num = Mathf.CeilToInt(__instance.countDownTimer);
                 __instance.countDownTimer -= Time.deltaTime;

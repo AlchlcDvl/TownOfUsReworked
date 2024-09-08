@@ -9,7 +9,7 @@ public static class MapPatches
 
     public static void Prefix()
     {
-        if (IsHnS)
+        if (IsHnS())
             return;
 
         if (AmongUsClient.Instance.AmHost)
@@ -41,7 +41,7 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
             TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-            CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
+            AllPlayers.ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
         }

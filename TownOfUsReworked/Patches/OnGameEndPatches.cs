@@ -634,7 +634,7 @@ public static class OnGameEndPatches
             PlayerRoles.Clear();
             // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             // AD says "Done".
-            CustomPlayer.AllPlayers.ForEach(x => AddSummaryInfo(x));
+            AllPlayers.ForEach(x => AddSummaryInfo(x));
         }
     }
 
@@ -643,7 +643,7 @@ public static class OnGameEndPatches
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (IsHnS)
+            if (IsHnS())
                 return;
 
             var position = Camera.main.ViewportToWorldPoint(new(0f, 1f, Camera.main.nearClipPlane));

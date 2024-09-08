@@ -57,7 +57,7 @@ public class Whisperer : Neutral
         WhisperButton = CreateButton(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);
         PlayerConversion = [];
-        CustomPlayer.AllPlayers.ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
+        AllPlayers.ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
         Persuaded.ForEach(x => PlayerConversion.Remove(x));
     }
 

@@ -32,7 +32,7 @@ public abstract class Intruder : Role
             team.Add(jackal.Recruit1);
         }
 
-        foreach (var player in CustomPlayer.AllPlayers)
+        foreach (var player in AllPlayers)
         {
             if (player.Is(Faction) && player != Player)
                 team.Add(player);
@@ -44,7 +44,7 @@ public abstract class Intruder : Role
             team.Add(Player.GetOtherRival());
         else if (Player.Is(LayerEnum.Mafia))
         {
-            foreach (var player in CustomPlayer.AllPlayers)
+            foreach (var player in AllPlayers)
             {
                 if (player != Player && player.Is(LayerEnum.Mafia))
                     team.Add(player);

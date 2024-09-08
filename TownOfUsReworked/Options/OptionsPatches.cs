@@ -37,7 +37,7 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.ChangeTab))]
     public static class OnChangingTabs
     {
-        public static void Postfix(GameSettingMenu __instance, ref int tabNum, ref bool previewOnly)
+        public static void Postfix(GameSettingMenu __instance, int tabNum, bool previewOnly)
         {
             if (previewOnly)
                 return;
@@ -401,7 +401,7 @@ public static class SettingsPatches
     {
         public static bool Prefix(GameOptionsMenu __instance)
         {
-            if (IsHnS)
+            if (IsHnS())
                 return true;
 
             __instance.MapPicker.Initialize(20);
@@ -457,7 +457,7 @@ public static class SettingsPatches
 
     public static void OnValueChanged(GameSettingMenu __instance = null)
     {
-        if (IsHnS)
+        if (IsHnS())
             return;
 
         __instance ??= GameSettingMenu.Instance;
@@ -483,15 +483,15 @@ public static class SettingsPatches
             var buttons = new List<PassiveButton>();
 
             RolesButton = UObject.Instantiate(__instance.GamePresetsButton, __instance.RoleSettingsTab.RoleChancesSettings.transform);
-            RolesButton.OverrideOnClickListeners(AllRoles);
+            RolesButton.OverrideOnClickListeners(AllLayers);
             RolesButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             RolesButton.buttonText.alignment = TextAlignmentOptions.Center;
-            RolesButton.buttonText.text = TranslationManager.Translate("View.AllRoles");
-            RolesButton.name = "AllRoles";
+            RolesButton.buttonText.text = TranslationManager.Translate("View.AllLayers");
+            RolesButton.name = "AllLayers";
             RolesButton.transform.localPosition = new(0.1117f, 1.626f, -2f);
             buttons.Add(RolesButton);
 
-            AlignmentsButton = UObject.Instantiate(__instance.GamePresetsButton, __instance.RoleSettingsTab.transform);
+            AlignmentsButton = UObject.Instantiate(__instance.GamePresetsButton, __instance.RoleSettingsTab.RoleChancesSettings.transform);
             AlignmentsButton.OverrideOnClickListeners(AllAlignments);
             AlignmentsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             AlignmentsButton.buttonText.alignment = TextAlignmentOptions.Center;
@@ -545,7 +545,7 @@ public static class SettingsPatches
 
         if (SettingsPage is 0 or 3)
         {
-            var y = 0.713f;
+            var y = 0.863f;
             __instance.GameSettingsTab.Children.Clear();
             __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
@@ -562,7 +562,7 @@ public static class SettingsPatches
 
                     var isHeader = option is HeaderOptionAttribute;
                     option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
-                    y -= isHeader ? 0.63f : 0.45f;
+                    y -= isHeader ? 0.53f : 0.45f;
                     option.Update();
 
                     if (option.Setting is OptionBehaviour setting)
@@ -602,7 +602,7 @@ public static class SettingsPatches
                     {
                         var isHeader = option is HeaderOptionAttribute;
                         option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
-                        y -= isHeader ? 0.63f : 0.45f;
+                        y -= isHeader ? 0.53f : 0.45f;
                     }
                     else
                     {
@@ -612,7 +612,7 @@ public static class SettingsPatches
                             y -= 0.1f;
 
                         option.Setting.transform.localPosition = new(isAlign ? 4.986f : -0.15f, y, -2f);
-                        y -= isAlign ? 0.5f : 0.43f;
+                        y -= isAlign ? 0.525f : 0.43f;
                     }
 
                     option.Update();
@@ -622,7 +622,7 @@ public static class SettingsPatches
                 }
             }
 
-            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y + (SettingsPage >= 5 ? -1.65f : 0f));
+            __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y + (SettingsPage >= 5 ? -1.65f : -1.2f));
             __instance.RoleSettingsTab.InitializeControllerNavigation();
         }
     }
@@ -636,7 +636,7 @@ public static class SettingsPatches
         OnValueChanged();
     }
 
-    private static void AllRoles()
+    private static void AllLayers()
     {
         SettingsPage = 5;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
@@ -861,7 +861,7 @@ public static class SettingsPatches
                 return;
             }
 
-            if (CustomPlayer.AllPlayers.Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive)
+            if (AllPlayers.Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive)
                 return;
 
             SendOptionRPC();
@@ -875,7 +875,7 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.Initialize))]
     public static class GameOptionsMapPickerInitializePatch
     {
-        public static void Postfix(GameOptionsMapPicker __instance, ref int maskLayer)
+        public static void Postfix(GameOptionsMapPicker __instance, int maskLayer)
         {
             if (!__instance.AllMapIcons.Any(x => x.Name == MapNames.Dleks))
             {
@@ -939,13 +939,13 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.SelectMap), typeof(int))]
     public static class GameOptionsMapPickerSelectMapPatch1
     {
-        public static void Postfix(ref int mapId) => SetMap(mapId);
+        public static void Postfix(int mapId) => SetMap(mapId);
     }
 
     [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
     public static class GameOptionsMapPickerSelectMapPatch2
     {
-        public static void Postfix(ref MapIconByName mapInfo) => SetMap((int)mapInfo.Name);
+        public static void Postfix(MapIconByName mapInfo) => SetMap((int)mapInfo.Name);
     }
 
     private static readonly string[] Maps = [ "The Skeld", "Mira HQ", "Polus", "ehT dlekS", "Airship", "Fungle", "Submerged", "Level Impostor", "Random" ];
@@ -1070,6 +1070,8 @@ public static class SettingsPatches
     //     __instance.scrollBar.SetYBoundsMax(-num);
     // }
 
+    private static readonly List<PassiveButton> PresetsButtons = [];
+
     [HarmonyPatch(typeof(GamePresetsTab), nameof(GamePresetsTab.Start))]
     public static class GamePresetsStart
     {
@@ -1084,7 +1086,6 @@ public static class SettingsPatches
             __instance.SecondPresetButton.gameObject.SetActive(false);
             __instance.PresetDescriptionText.gameObject.SetActive(false);
 
-            // var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).Where(x => !x.EndsWith(".json")).OrderBy(x => x).Select(x => x.SanitisePath());
             var saveButton = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
             saveButton.OverrideOnClickListeners(OptionAttribute.SaveSettings);
             saveButton.name = "SaveSettingsButton";
@@ -1095,6 +1096,28 @@ public static class SettingsPatches
             saveButton.buttonText.alignment = TextAlignmentOptions.Center;
             saveButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy(); // Yeah because this darn thing exists
             saveButton.buttonText.text = TranslationManager.Translate("ImportExport.Save"); // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
+
+            var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).Where(x => !x.EndsWith(".json")).OrderBy(x => x).Select(x => x.SanitisePath()).ToList();
+
+            for (var i = 0; i < presets.Count; i++)
+            {
+                var preset = presets[i];
+                var row = i / 3;
+                var col = 1 % 3;
+                var presetButton = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
+                presetButton.transform.localScale = new(0.64f, 0.84f, 1f);
+                presetButton.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
+                presetButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
+                presetButton.buttonText.alignment = TextAlignmentOptions.Center;
+                presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+                presetButton.buttonText.text = presetButton.name = preset;
+                presetButton.transform.localPosition = new(-2.731f + (col * 2.5911f), 1.7828f - (row * 0.65136f), -2);
+                presetButton.OverrideOnClickListeners(() => OptionAttribute.LoadPreset(preset));
+                PresetsButtons.Add(presetButton);
+                // x start = -2.2731, x diff = 2.5911
+                // y start = 1.7828, y diff = 0.65136
+            }
+
             return false;
         }
     }

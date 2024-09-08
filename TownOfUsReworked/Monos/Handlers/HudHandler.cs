@@ -14,10 +14,10 @@ public class HudHandler : MonoBehaviour
 
     public void Update()
     {
-        if (IsLobby || IsEnded || NoPlayers || IsHnS || !HUD || !Ship || IntroCutscene.Instance)
+        if (IsLobby() || IsEnded() || NoPlayers() || IsHnS() || !HUD || !Ship || IntroCutscene.Instance)
             return;
 
-        if (LocalBlocked && ActiveTask)
+        if (LocalBlocked() && ActiveTask)
             ActiveTask.Close();
 
         CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ForEach(x => x.Update());

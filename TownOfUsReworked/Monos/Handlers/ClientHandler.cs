@@ -77,7 +77,7 @@
 
 //     public void Update()
 //     {
-//         if (IsHnS || !HUD || !CustomPlayer.Local || !HUD.SettingsButton || !HUD.MapButton || !ButtonsSet)
+//         if (IsHnS() || !HUD || !CustomPlayer.Local || !HUD.SettingsButton || !HUD.MapButton || !ButtonsSet)
 //             return;
 
 //         var pos = HUD.SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -HUD.SettingsButton.transform.localPosition.z - 51f);
@@ -108,10 +108,10 @@
 //         ZoomButton.transform.localPosition = pos;
 
 //         ClientStuff.ResetButtonPos();
-//         WikiRCButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay);
-//         SettingsButton.gameObject.SetActive(HUD.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal && !IsFreePlay && IsInGame);
-//         ClientOptionsButton.gameObject.SetActive(HUD.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal && !IsFreePlay && IsInGame);
-//         ZoomButton.gameObject.SetActive(HUD.MapButton.gameObject.active && IsNormal && CustomPlayer.LocalCustom.Dead && !IntroCutscene.Instance && !IsFreePlay && IsInGame &&
+//         WikiRCButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay());
+//         SettingsButton.gameObject.SetActive(HUD.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
+//         ClientOptionsButton.gameObject.SetActive(HUD.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
+//         ZoomButton.gameObject.SetActive(HUD.MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && !IntroCutscene.Instance && !IsFreePlay() && IsInGame() &&
 //             (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()));
 //         ZoomButton.GetComponent<SpriteRenderer>().sprite = GetSprite(Zooming ? "Plus" : "Minus");
 
@@ -130,10 +130,10 @@
 //             }
 //         }
 
-//         if (!IsInGame)
+//         if (!IsInGame())
 //             return;
 
-//         HUD?.TaskPanel?.gameObject?.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting && !(Map && Map.IsOpen) && !WikiActive && !IsCustomHnS);
+//         HUD?.TaskPanel?.gameObject?.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting && !(Map && Map.IsOpen) && !WikiActive && !IsCustomHnS());
 //         var taskBar = FindObjectOfType<ProgressTracker>(true);
 
 //         if (taskBar)

@@ -16,7 +16,7 @@ public class ColorHandler : MonoBehaviour
 
     public void Update()
     {
-        if (!IsLobby && !IsInGame && !IsEnded)
+        if (!IsLobby() && !IsInGame() && !IsEnded())
             return;
 
         foreach (var (id, rend) in IDToRends)

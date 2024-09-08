@@ -244,7 +244,7 @@ public static class HatParentLateUpdatePatch
 [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
 public static class SetHatPrefix
 {
-    public static bool Prefix(HatParent __instance, ref int color)
+    public static bool Prefix(HatParent __instance, int color)
     {
         if (!CustomHatViewDatas.ContainsKey(__instance.Hat.ProductId))
             return true;
@@ -283,7 +283,7 @@ public static class HatParentSetFloorAnimPatch
 [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetIdleAnim))]
 public static class HatParentSetIdleAnimPatch
 {
-    public static bool Prefix(HatParent __instance, ref int colorId)
+    public static bool Prefix(HatParent __instance, int colorId)
     {
         if (!__instance.Hat)
             return false;
@@ -327,13 +327,12 @@ public static class HatParentSetClimbAnimPatch
 [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetHat))]
 public static class CosmeticsCacheGetHatPatch
 {
-    public static bool Prefix(CosmeticsCache __instance, ref string id, ref HatViewData __result)
+    public static bool Prefix(CosmeticsCache __instance, string id, ref HatViewData __result)
     {
         if (!CustomHatViewDatas.TryGetValue(id, out __result))
             return true;
 
-        __result ??= __instance.hats["hat_NoHat"].GetAsset();
-        return false;
+        return __result ??= __instance.hats["hat_NoHat"].GetAsset();
     }
 }
 

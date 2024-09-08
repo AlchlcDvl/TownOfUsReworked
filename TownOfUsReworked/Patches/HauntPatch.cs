@@ -5,10 +5,10 @@ public static class HauntPatch
 {
     public static bool Prefix(HauntMenuMinigame __instance)
     {
-        if (IsHnS)
+        if (IsHnS())
             return true;
 
-        if (!DeadSeeEverything)
+        if (!DeadSeeEverything())
         {
             __instance.FilterText.text = " ";
             return false;

@@ -12,7 +12,7 @@ public class Fanatic : Objectifier
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }
     public Faction Side { get; set; }
-    private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !Dead && Turned && !Betrayed;
+    private bool Betray => ((Side == Faction.Intruder && LastImp()) || (Side == Faction.Syndicate && LastSyn())) && !Dead && Turned && !Betrayed;
 
     public override UColor Color
     {

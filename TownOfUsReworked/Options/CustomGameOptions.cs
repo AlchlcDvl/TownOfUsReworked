@@ -515,7 +515,7 @@ public static class CrewKillingRoles
         {
             var result = BastionPriv.Clone();
 
-            if (IsKilling)
+            if (IsKilling())
                 result.Chance = 100;
 
             return result;
@@ -530,7 +530,7 @@ public static class CrewKillingRoles
         {
             var result = VeteranPriv.Clone();
 
-            if (IsKilling)
+            if (IsKilling())
                 result.Chance = 100;
 
             return result;
@@ -545,7 +545,7 @@ public static class CrewKillingRoles
         {
             var result = VigilantePriv.Clone();
 
-            if (IsKilling)
+            if (IsKilling())
                 result.Chance = 100;
 
             return result;
@@ -612,7 +612,7 @@ public static class CrewUtilityRoles
         {
             var result = CrewmatePriv.Clone();
 
-            if (!IsCustom)
+            if (!IsCustom())
                 result.Chance = 100;
 
             return result;
@@ -627,7 +627,7 @@ public static class CrewUtilityRoles
         {
             var result = RevealerPriv.Clone();
 
-            if (IsRoleList)
+            if (IsRoleList())
                 result.Count = 1;
 
             return result;
@@ -713,7 +713,7 @@ public static class NeutralKillingRoles
         {
             var result = MurdererPriv.Clone();
 
-            if (IsKilling)
+            if (IsKilling())
                 result.Chance = 5;
 
             return result;
@@ -757,7 +757,7 @@ public static class NeutralProselyteRoles
         {
             var result = PhantomPriv.Clone();
 
-            if (IsRoleList)
+            if (IsRoleList())
                 result.Count = 1;
 
             return result;
@@ -838,7 +838,7 @@ public static class IntruderUtilityRoles
         {
             var result = GhoulPriv.Clone();
 
-            if (IsRoleList)
+            if (IsRoleList())
                 result.Count = 1;
 
             return result;
@@ -853,9 +853,9 @@ public static class IntruderUtilityRoles
         {
             var result = ImpostorPriv.Clone();
 
-            if (IsKilling)
+            if (IsKilling())
                 result.Chance = 5;
-            else if (!IsCustom)
+            else if (!IsCustom())
                 result.Chance = 100;
 
             return result;
@@ -932,9 +932,9 @@ public static class SyndicateUtilityRoles
         {
             var result = AnarchistPriv.Clone();
 
-            if (IsKilling)
+            if (IsKilling())
                 result.Chance = 5;
-            else if (!IsCustom)
+            else if (!IsCustom())
                 result.Chance = 100;
 
             return result;
@@ -949,7 +949,7 @@ public static class SyndicateUtilityRoles
         {
             var result = BansheePriv.Clone();
 
-            if (IsRoleList)
+            if (IsRoleList())
                 result.Count = 1;
 
             return result;

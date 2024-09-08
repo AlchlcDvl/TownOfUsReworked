@@ -3,14 +3,14 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
 public static class VentCanUsePatch
 {
-    public static void Postfix(Vent __instance, ref NetworkedPlayerInfo pc, ref bool canUse, ref bool couldUse, ref float __result)
+    public static void Postfix(Vent __instance, NetworkedPlayerInfo pc, bool canUse, bool couldUse, float __result)
     {
         var num = float.MaxValue;
         var playerControl = pc.Object;
 
-        if (IsNormal)
+        if (IsNormal())
             couldUse = playerControl.CanVent();
-        else if (IsHnS)
+        else if (IsHnS())
             couldUse = !pc.IsImpostor();
 
         var ventitaltionSystem = Ship.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
@@ -38,7 +38,7 @@ public static class VentCanUsePatch
 [HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
 public static class EnterVentPatch
 {
-    public static bool Prefix(Vent __instance, ref bool enabled)
+    public static bool Prefix(Vent __instance, bool enabled)
     {
         var player = CustomPlayer.Local;
         var flag = !player.IsMoving();
@@ -85,7 +85,7 @@ public static class EnterVentPatch
                         var ventilationSystem = Ship.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
                         var flag1 = ventilationSystem != null && ventilationSystem.IsVentCurrentlyBeingCleaned(vent.Id);
                         var gameObject = __instance.CleaningIndicators.Any() ? __instance.CleaningIndicators[i] : null;
-                        __instance.ToggleNeighborVentBeingCleaned(flag1 || LocalBlocked, buttonBehavior, gameObject);
+                        __instance.ToggleNeighborVentBeingCleaned(flag1 || LocalBlocked(), buttonBehavior, gameObject);
                         var vector2 = vent.transform.position - __instance.transform.position;
                         var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
                         vector3.x *= Mathf.Sign(Ship.transform.localScale.x);
@@ -115,7 +115,7 @@ public static class EnterVentPatch
 [HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
 public static class SetVentOutlinePatch
 {
-    public static void Postfix(Vent __instance, ref bool mainTarget)
+    public static void Postfix(Vent __instance, bool mainTarget)
     {
         var active = CustomPlayer.Local && !Meeting && CustomPlayer.Local.CanVent();
 
@@ -132,7 +132,7 @@ public static class UseVent
 {
     public static bool Prefix(Vent __instance)
     {
-        if (NoPlayers || !CustomPlayer.Local.CanVent() || LocalBlocked)
+        if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
             return false;
 
         if (__instance.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
@@ -150,9 +150,9 @@ public static class UseVent
 [HarmonyPatch(typeof(Vent), nameof(Vent.TryMoveToVent))]
 public static class MoveToVentPatch
 {
-    public static bool Prefix(ref Vent otherVent)
+    public static bool Prefix(Vent otherVent)
     {
-        if (NoPlayers || !CustomPlayer.Local.CanVent() || LocalBlocked)
+        if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
             return false;
 
         if (otherVent.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
@@ -170,7 +170,7 @@ public static class MoveToVentPatch
 [HarmonyPatch(typeof(Vent), nameof(Vent.UpdateArrows))]
 public static class FixdlekSVents1
 {
-    public static bool Prefix(Vent __instance, ref VentilationSystem ventSystem)
+    public static bool Prefix(Vent __instance, VentilationSystem ventSystem)
     {
         if (__instance != Vent.currentVent || ventSystem == null)
             return false;
@@ -181,7 +181,7 @@ public static class FixdlekSVents1
 
             if (vent)
             {
-                __instance.ToggleNeighborVentBeingCleaned(ventSystem.IsVentCurrentlyBeingCleaned(vent.Id) || LocalBlocked, __instance.Buttons[i], __instance.CleaningIndicators.Any() ?
+                __instance.ToggleNeighborVentBeingCleaned(ventSystem.IsVentCurrentlyBeingCleaned(vent.Id) || LocalBlocked(), __instance.Buttons[i], __instance.CleaningIndicators.Any() ?
                     __instance.CleaningIndicators[i] : null);
             }
         }
@@ -193,7 +193,7 @@ public static class FixdlekSVents1
 [HarmonyPatch(typeof(Vent), nameof(Vent.ToggleNeighborVentBeingCleaned))]
 public static class FixdlekSVents2
 {
-    public static bool Prefix(ref bool ventBeingCleaned, ref ButtonBehavior b, ref GameObject c)
+    public static bool Prefix(bool ventBeingCleaned, ButtonBehavior b, GameObject c)
     {
         b.enabled = !ventBeingCleaned;
         c?.SetActive(ventBeingCleaned);
@@ -204,7 +204,7 @@ public static class FixdlekSVents2
 [HarmonyPatch(typeof(Vent), nameof(Vent.EnterVent))]
 public static class HideVentAnims1
 {
-    public static bool Prefix(Vent __instance, ref PlayerControl pc)
+    public static bool Prefix(Vent __instance, PlayerControl pc)
     {
         if (!__instance.ExitVentAnim || !GameModifiers.HideVentAnims)
             return true;
@@ -219,7 +219,7 @@ public static class HideVentAnims1
 [HarmonyPatch(typeof(Vent), nameof(Vent.ExitVent))]
 public static class HideVentAnims2
 {
-    public static bool Prefix(Vent __instance, ref PlayerControl pc)
+    public static bool Prefix(Vent __instance, PlayerControl pc)
     {
         if (!__instance.ExitVentAnim || !GameModifiers.HideVentAnims)
             return true;

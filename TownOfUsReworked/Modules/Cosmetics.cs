@@ -94,18 +94,6 @@ public class CustomColor : CustomCosmetic
     [JsonPropertyName("stringid")]
     public int StringID { get; set; }
 
-    /*[JsonPropertyName("rgbmain")]
-    public string RGBMain { get; set; }
-
-    [JsonPropertyName("rgbshadow")]
-    public string RGBShadow { get; set; }
-
-    [JsonPropertyName("hsbmain")]
-    public string HSBMain { get; set; }
-
-    [JsonPropertyName("hsbshadow")]
-    public string HSBShadow { get; set; }*/
-
     [JsonPropertyName("default")]
     public bool Default { get; set; }
 
@@ -115,19 +103,31 @@ public class CustomColor : CustomCosmetic
     [JsonPropertyName("lighter")]
     public bool Lighter { get; set; }
 
-    /*[JsonPropertyName("noshadow")]
-    public bool NoShadow { get; set; }
-
-    [JsonPropertyName("title")]
-    public string Title { get; set; }*/
-
     [JsonPropertyName("changing")]
     public bool Changing { get; set; }
 
     [JsonIgnore]
     public int ColorID { get; set; }
 
-    /*[JsonIgnore]
+    /*[JsonPropertyName("noshadow")]
+    public bool NoShadow { get; set; }
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; }
+
+    [JsonPropertyName("rgbmain")]
+    public string RGBMain { get; set; }
+
+    [JsonPropertyName("rgbshadow")]
+    public string RGBShadow { get; set; }
+
+    [JsonPropertyName("hsbmain")]
+    public string HSBMain { get; set; }
+
+    [JsonPropertyName("hsbshadow")]
+    public string HSBShadow { get; set; }
+
+    [JsonIgnore]
     public bool Changing => HSBMain != null;
 
     [JsonIgnore]

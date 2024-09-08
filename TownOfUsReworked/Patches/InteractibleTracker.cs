@@ -43,7 +43,7 @@ public static class SavePlatformPlayer
 [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), typeof(PlayerControl), typeof(bool))]
 public static class SaveZiplinePlayer
 {
-    public static void Prefix(ZiplineBehaviour __instance, ref PlayerControl player, ref bool fromTop)
+    public static void Prefix(ZiplineBehaviour __instance, PlayerControl player, bool fromTop)
     {
         try
         {

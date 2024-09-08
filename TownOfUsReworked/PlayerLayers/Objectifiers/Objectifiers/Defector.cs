@@ -11,7 +11,7 @@ public class Defector : Objectifier
 
     private bool Turned { get; set; }
     public Faction Side { get; set; }
-    private bool Defect => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !Dead && !Turned;
+    private bool Defect => ((Side == Faction.Intruder && LastImp()) || (Side == Faction.Syndicate && LastSyn())) && !Dead && !Turned;
 
     public override UColor Color
     {

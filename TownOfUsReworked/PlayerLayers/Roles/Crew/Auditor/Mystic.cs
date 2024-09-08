@@ -6,7 +6,7 @@ public class Mystic : Crew
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float RevealCd { get; set; } = 25f;
 
-    private bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None) && !x.Is(SubFaction));
+    private bool ConvertedDead => !AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None) && !x.Is(SubFaction));
     private CustomButton RevealButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mystic : CustomColorManager.Crew;

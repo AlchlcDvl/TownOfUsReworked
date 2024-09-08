@@ -65,7 +65,7 @@ public class Colorblind : Modifier
 
     private static void AllToNormal()
     {
-        foreach (var p in CustomPlayer.AllPlayers)
+        foreach (var p in AllPlayers)
         {
             DefaultOutfit(p);
             p.MyRend().color = UColor.white;
@@ -74,7 +74,7 @@ public class Colorblind : Modifier
 
     private void ColorAll()
     {
-        foreach (var player in CustomPlayer.AllPlayers)
+        foreach (var player in AllPlayers)
         {
             if (player == Player)
                 continue;

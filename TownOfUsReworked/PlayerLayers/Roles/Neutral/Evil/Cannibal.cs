@@ -38,7 +38,7 @@ public class Cannibal : Neutral
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = [];
-        EatNeed = Math.Min(BodiesNeeded, CustomPlayer.AllPlayers.Count / 2);
+        EatNeed = Math.Min(BodiesNeeded, AllPlayers.Count / 2);
         EatButton = CreateButton(this, new SpriteName("Eat"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
     }
 

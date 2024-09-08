@@ -26,7 +26,7 @@ public class DragHandler : MonoBehaviour
 
     public void Update()
     {
-        if (!IsInGame || IsHnS || (!PlayerLayer.GetLayers<Janitor>().Any() && !PlayerLayer.GetLayers<PromotedGodfather>().Any(x => x.IsJani)))
+        if (!IsInGame() || IsHnS() || (!PlayerLayer.GetLayers<Janitor>().Any() && !PlayerLayer.GetLayers<PromotedGodfather>().Any(x => x.IsJani)))
             return;
 
         var toRemove = new List<byte>();

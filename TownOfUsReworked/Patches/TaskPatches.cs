@@ -5,13 +5,13 @@ public static class RecomputeTaskCounts
 {
     public static bool Prefix(GameData __instance)
     {
-        if (IsHnS)
+        if (IsHnS())
             return true;
 
         __instance.TotalTasks = 0;
         __instance.CompletedTasks = 0;
 
-        if (IsTaskRace)
+        if (IsTaskRace())
         {
             PlayerControl most = null;
 
@@ -36,7 +36,7 @@ public static class RecomputeTaskCounts
 
             __instance.TotalTasks = TaskSettings.ShortTasks + TaskSettings.CommonTasks;
         }
-        else if (IsCustomHnS)
+        else if (IsCustomHnS())
         {
             foreach (var playerInfo in __instance.AllPlayers)
             {
@@ -83,7 +83,7 @@ public static class PlayerControl_SetTasks
 {
     public static void Postfix(PlayerControl._CoSetTasks_d__141 __instance)
     {
-        if (!IsHnS)
+        if (!IsHnS())
             __instance.__4__this.RegenTask();
     }
 }
@@ -91,10 +91,9 @@ public static class PlayerControl_SetTasks
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
 public static class CompleteTasksPatch
 {
-    public static void Postfix(PlayerControl __instance, ref uint idx)
+    public static void Postfix(PlayerControl __instance, uint idx)
     {
-        var id = idx;
-        PlayerLayer.AllLayers.ForEach(x => x.UponTaskComplete(__instance, id));
+        PlayerLayer.AllLayers.ForEach(x => x.UponTaskComplete(__instance, idx));
 
         if (__instance.Is(LayerEnum.Snitch) && !__instance.Data.IsDead)
         {
@@ -115,7 +114,7 @@ public static class CompleteTasksPatch
                 if (CustomPlayer.Local == __instance)
                 {
                     Flash(UColor.green);
-                    CustomPlayer.AllPlayers.Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))
+                    AllPlayers.Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))
                         .ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(__instance, role.Color)));
                 }
                 else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))

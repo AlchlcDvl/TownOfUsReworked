@@ -107,7 +107,7 @@ public class PromotedRebel : Syndicate
 
                 if (HoldsDrive)
                 {
-                    foreach (var player in CustomPlayer.AllPlayers)
+                    foreach (var player in AllPlayers)
                     {
                         if (!StalkerArrows.ContainsKey(player.PlayerId))
                             StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));
@@ -340,7 +340,7 @@ public class PromotedRebel : Syndicate
     public void Conceal()
     {
         if (HoldsDrive)
-            CustomPlayer.AllPlayers.ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
+            AllPlayers.ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
         else
             Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
     }
@@ -1017,10 +1017,10 @@ public class PromotedRebel : Syndicate
     public void Control()
     {
         if (HoldsDrive)
-            CustomPlayer.AllPlayers.ForEach(x => x.GetRole().Rewinding = true);
+            AllPlayers.ForEach(x => x.GetRole().Rewinding = true);
     }
 
-    public void UnControl() => CustomPlayer.AllPlayers.ForEach(x => x.GetRole().Rewinding = false);
+    public void UnControl() => AllPlayers.ForEach(x => x.GetRole().Rewinding = false);
 
     public void TimeControl()
     {

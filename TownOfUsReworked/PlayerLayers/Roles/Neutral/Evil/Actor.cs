@@ -183,7 +183,7 @@ public class Actor : Neutral
         if (!target.Is(LayerEnum.Actor))
             PretendRoles.Add(target.GetRole());
 
-        var targets = CustomPlayer.AllPlayers.Where(x => x != Player && x != target && !x.Is(LayerEnum.Actor)).ToList();
+        var targets = AllPlayers.Where(x => x != Player && x != target && !x.Is(LayerEnum.Actor)).ToList();
         targets.Shuffle();
 
         foreach (var player in targets)

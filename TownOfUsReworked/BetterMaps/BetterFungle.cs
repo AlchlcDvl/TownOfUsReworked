@@ -15,7 +15,7 @@ public static class BetterFungle
     [HarmonyPatch(typeof(MushroomMixupSabotageSystem), nameof(MushroomMixupSabotageSystem.UpdateSystem))]
     public static class MushroomFungle
     {
-        public static bool Prefix(MushroomMixupSabotageSystem __instance, ref MessageReader msgReader)
+        public static bool Prefix(MushroomMixupSabotageSystem __instance, MessageReader msgReader)
         {
             if (!EnableBetterFungle || MapPatches.CurrentMap != 5)
                 return true;
@@ -40,7 +40,7 @@ public static class BetterFungle
     [HarmonyPatch(typeof(MushroomMixupSabotageSystem), nameof(MushroomMixupSabotageSystem.GenerateRandomOutfit))]
     public static class MushroomMixupSabFix
     {
-        public static void Postfix(MushroomMixupSabotageSystem __instance, ref MushroomMixupSabotageSystem.CondensedOutfit __result)
+        public static void Postfix(MushroomMixupSabotageSystem __instance, MushroomMixupSabotageSystem.CondensedOutfit __result)
         {
             List<byte> list = [ .. __instance.cachedOutfitsByPlayerId.keys ];
             list.RemoveAll(x => __instance.cachedOutfitsByPlayerId[x].ColorId.IsChanging());

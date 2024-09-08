@@ -3,7 +3,7 @@ namespace TownOfUsReworked.BetterMaps;
 [HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.UpdateSystem))]
 public static class ReactorPatch
 {
-    public static bool Prefix(ReactorSystemType __instance, ref PlayerControl player, ref MessageReader msgReader)
+    public static bool Prefix(ReactorSystemType __instance, PlayerControl player, MessageReader msgReader)
     {
         var flag = MapPatches.CurrentMap switch
         {
@@ -52,7 +52,7 @@ public static class ReactorPatch
 [HarmonyPatch(typeof(LifeSuppSystemType), nameof(LifeSuppSystemType.UpdateSystem))]
 public static class O2Patch
 {
-    public static bool Prefix(LifeSuppSystemType __instance, ref MessageReader msgReader)
+    public static bool Prefix(LifeSuppSystemType __instance, MessageReader msgReader)
     {
         var flag = MapPatches.CurrentMap switch
         {

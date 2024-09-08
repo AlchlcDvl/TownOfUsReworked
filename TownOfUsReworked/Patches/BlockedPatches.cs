@@ -5,13 +5,13 @@ public static class PerformVent
 {
     public static bool Prefix()
     {
-        if (NoPlayers || IsLobby)
+        if (NoPlayers() || IsLobby())
             return true;
 
         if (!CustomPlayer.Local.CanVent())
             return false;
 
-        return LocalNotBlocked;
+        return LocalNotBlocked();
     }
 }
 
@@ -24,13 +24,13 @@ public static class PerformReport
     {
         ReportPressed = true;
 
-        if (NoPlayers || IsLobby)
+        if (NoPlayers() || IsLobby())
             return true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coward))
             return false;
 
-        return LocalNotBlocked;
+        return LocalNotBlocked();
     }
 
     public static void Postfix() => ReportPressed = false;
@@ -41,13 +41,13 @@ public static class ReportClosest
 {
     public static bool Prefix()
     {
-        if (NoPlayers || IsLobby)
+        if (NoPlayers() || IsLobby())
             return true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coward))
             return false;
 
-        return LocalNotBlocked;
+        return LocalNotBlocked();
     }
 }
 
@@ -56,13 +56,13 @@ public static class ReportDeadBody
 {
     public static bool Prefix()
     {
-        if (NoPlayers || IsLobby)
+        if (NoPlayers() || IsLobby())
             return true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coward))
             return false;
 
-        return LocalNotBlocked;
+        return LocalNotBlocked();
     }
 }
 
@@ -71,10 +71,10 @@ public static class PerformUse
 {
     public static bool Prefix()
     {
-        if (NoPlayers || IsLobby)
+        if (NoPlayers() || IsLobby())
             return true;
 
-        return LocalNotBlocked;
+        return LocalNotBlocked();
     }
 }
 
@@ -83,10 +83,10 @@ public static class PerformSabotage
 {
     public static bool Prefix()
     {
-        if (NoPlayers || IsLobby)
+        if (NoPlayers() || IsLobby())
             return true;
 
-        return LocalNotBlocked && CustomPlayer.Local.CanSabotage();
+        return LocalNotBlocked() && CustomPlayer.Local.CanSabotage();
     }
 }
 
@@ -95,10 +95,10 @@ public static class PerformAdmin
 {
     public static bool Prefix()
     {
-        if (NoPlayers || IsLobby)
+        if (NoPlayers() || IsLobby())
             return true;
 
-        return LocalNotBlocked;
+        return LocalNotBlocked();
     }
 }
 
@@ -107,17 +107,17 @@ public static class PerformPet
 {
     public static bool Prefix()
     {
-        if (NoPlayers || IsLobby)
+        if (NoPlayers() || IsLobby())
             return true;
 
-        return LocalNotBlocked; // No petting for you lmao
+        return LocalNotBlocked(); // No petting for you lmao
     }
 }
 
 [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
 public static class PerformKill
 {
-    public static bool Prefix() => IsHnS;
+    public static bool Prefix() => IsHnS();
 }
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -131,7 +131,7 @@ public static class Blocked
 
     public static void Postfix(HudManager __instance)
     {
-        if (!CustomPlayer.Local || IsLobby)
+        if (!CustomPlayer.Local || IsLobby())
             return;
 
         if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
@@ -151,7 +151,7 @@ public static class Blocked
             var pos = __instance.UseButton.transform.position;
             pos.z = 50f;
             UseBlock.transform.position = pos;
-            UseBlock.SetActive(LocalBlocked && __instance.UseButton.isActiveAndEnabled);
+            UseBlock.SetActive(LocalBlocked() && __instance.UseButton.isActiveAndEnabled && BlockIsExposed());
         }
 
         if (!PetBlock && __instance.PetButton.isActiveAndEnabled)
@@ -171,7 +171,7 @@ public static class Blocked
             var pos = __instance.PetButton.transform.position;
             pos.z = 50f;
             PetBlock.transform.position = pos;
-            PetBlock.SetActive(LocalBlocked && __instance.PetButton.isActiveAndEnabled);
+            PetBlock.SetActive(LocalBlocked() && __instance.PetButton.isActiveAndEnabled);
         }
 
         if (!SaboBlock && __instance.SabotageButton.isActiveAndEnabled)
@@ -191,7 +191,7 @@ public static class Blocked
             var pos = __instance.SabotageButton.transform.position;
             pos.z = 50f;
             SaboBlock.transform.position = pos;
-            SaboBlock.SetActive(LocalBlocked && __instance.SabotageButton.isActiveAndEnabled);
+            SaboBlock.SetActive(LocalBlocked() && __instance.SabotageButton.isActiveAndEnabled);
         }
 
         if (!VentBlock && __instance.ImpostorVentButton.isActiveAndEnabled)
@@ -211,7 +211,7 @@ public static class Blocked
             var pos = __instance.ImpostorVentButton.transform.position;
             pos.z = 50f;
             VentBlock.transform.position = pos;
-            VentBlock.SetActive(LocalBlocked && __instance.ImpostorVentButton.isActiveAndEnabled);
+            VentBlock.SetActive(LocalBlocked() && __instance.ImpostorVentButton.isActiveAndEnabled);
         }
 
         if (!ReportBlock && __instance.ReportButton.isActiveAndEnabled)
@@ -231,21 +231,21 @@ public static class Blocked
             var pos = __instance.ReportButton.transform.position;
             pos.z = 50f;
             ReportBlock.transform.position = pos;
-            ReportBlock.SetActive(LocalBlocked && __instance.ReportButton.isActiveAndEnabled);
+            ReportBlock.SetActive(LocalBlocked() && __instance.ReportButton.isActiveAndEnabled);
         }
 
-        if (!IsHnS)
+        if (!IsHnS())
         {
             __instance.KillButton.SetTarget(null);
             __instance.KillButton.gameObject.SetActive(false);
         }
 
-        if (!__instance.ImpostorVentButton.currentTarget || LocalBlocked)
+        if (!__instance.ImpostorVentButton.currentTarget || LocalBlocked())
             __instance.ImpostorVentButton.SetDisabled();
         else
             __instance.ImpostorVentButton.SetEnabled();
 
-        __instance.ImpostorVentButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "VENT";
+        __instance.ImpostorVentButton.buttonLabelText.text = LocalBlocked() ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map && Map.IsOpen) && !ActiveTask);
         var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: GameSettings.ReportDistance);
 
@@ -254,33 +254,33 @@ public static class Blocked
         else
             __instance.ReportButton.SetEnabled();
 
-        __instance.ReportButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "REPORT";
+        __instance.ReportButton.buttonLabelText.text = LocalBlocked() ? "BLOCKED" : "REPORT";
 
-        if (CustomPlayer.Local.closest == null || LocalBlocked)
+        if (CustomPlayer.Local.closest == null || LocalBlocked())
             __instance.UseButton.SetDisabled();
         else
             __instance.UseButton.SetEnabled();
 
-        __instance.UseButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "USE";
+        __instance.UseButton.buttonLabelText.text = LocalBlocked() ? "BLOCKED" : "USE";
 
-        if (LocalBlocked || CustomPlayer.Local.CannotUse())
+        if (LocalBlocked() || CustomPlayer.Local.CannotUse())
             __instance.PetButton.SetDisabled();
         else
             __instance.PetButton.SetEnabled();
 
-        __instance.PetButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "PET";
+        __instance.PetButton.buttonLabelText.text = LocalBlocked() ? "BLOCKED" : "PET";
 
         if (CustomPlayer.Local.CannotUse() || !CustomPlayer.Local.CanSabotage())
             __instance.SabotageButton.SetDisabled();
         else
             __instance.SabotageButton.SetEnabled();
 
-        __instance.SabotageButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "SABOTAGE";
+        __instance.SabotageButton.buttonLabelText.text = LocalBlocked() ? "BLOCKED" : "SABOTAGE";
         __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map && Map.IsOpen) && !ActiveTask);
 
-        if (!IsInGame || IsLobby)
+        if (!IsInGame() || IsLobby())
             __instance.AbilityButton.gameObject.SetActive(false);
-        else if (IsHnS)
+        else if (IsHnS())
             __instance.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
         else
             __instance.AbilityButton.gameObject.SetActive(!Meeting && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.Dead);

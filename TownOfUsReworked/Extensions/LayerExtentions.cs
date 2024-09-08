@@ -117,7 +117,7 @@ public static class LayerExtentions
 
     public static bool CanSabotage(this PlayerControl player)
     {
-        if (IsHnS)
+        if (IsHnS())
             return false;
 
         var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps)) && !Meeting && IntruderSettings.IntrudersCanSabotage;
@@ -383,7 +383,7 @@ public static class LayerExtentions
 
     public static bool CrewSided(this PlayerVoteArea player) => player.IsCrewAlly();
 
-    public static bool Last(PlayerControl player) => (LastImp && player.Is(Faction.Intruder)) || (LastSyn && player.Is(Faction.Syndicate));
+    public static bool Last(PlayerControl player) => (LastImp() && player.Is(Faction.Intruder)) || (LastSyn() && player.Is(Faction.Syndicate));
 
     public static bool CanKill(this PlayerControl player) => player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || player.Is(Alignment.NeutralKill) ||
         player.Is(Alignment.NeutralHarb) || player.Is(Alignment.NeutralApoc) || player.Is(LayerEnum.Corrupted) || player.Is(LayerEnum.Fanatic) || player.Is(LayerEnum.Traitor) ||
@@ -567,7 +567,7 @@ public static class LayerExtentions
 
         if (!player || !playerInfo)
             return false;
-        else if (IsHnS)
+        else if (IsHnS())
             return !playerInfo.IsImpostor();
         else if (playerInfo.Disconnected || (int)GameModifiers.WhoCanVent is 3 || player.inMovingPlat || player.onLadder || Meeting)
             return false;
@@ -1139,7 +1139,7 @@ public static class LayerExtentions
             name = "Knight";
             result = Monarch.KnightButton;
         }
-        else if (IsTaskRace || IsCustomHnS)
+        else if (IsTaskRace() || IsCustomHnS())
         {
             name = "GameMode";
             result = false;

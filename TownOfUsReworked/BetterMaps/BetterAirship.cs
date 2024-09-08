@@ -112,7 +112,7 @@ public static class BetterAirship
 
             if (TownOfUsReworked.MCIActive)
             {
-                foreach (var player in CustomPlayer.AllPlayers)
+                foreach (var player in AllPlayers)
                 {
                     if (!player.Data.PlayerName.Contains("Robot"))
                         continue;
@@ -158,14 +158,12 @@ public static class BetterAirship
 
         public static Vector3 GetMeetingPosition(byte playerId)
         {
-            var halfPlayerValue = (int)Mathf.Round(CustomPlayer.AllPlayers.Count / 2);
             var position = new Vector3(9f, 16f, 0);
 
-            var xIndex = (playerId - (playerId % 2)) / 2;
             var yIndex = playerId % 2;
+            var xIndex = (playerId - yIndex) / 2;
 
-            var marge = (13f - 9f) / halfPlayerValue;
-            position.x += marge * xIndex;
+            position.x += xIndex * (13f - 9f) * 2 / AllPlayers.Count;
 
             if (yIndex == 1)
                 position.y = 14.4f;
@@ -183,7 +181,7 @@ public static class BetterAirship
     [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]
     public static class HeliCountdownPatch
     {
-        public static bool Prefix(HeliSabotageSystem __instance, ref PlayerControl player, ref MessageReader msgReader)
+        public static bool Prefix(HeliSabotageSystem __instance, PlayerControl player, MessageReader msgReader)
         {
             if (!EnableBetterAirship || MapPatches.CurrentMap != 4)
                 return true;

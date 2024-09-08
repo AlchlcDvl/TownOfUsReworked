@@ -165,17 +165,17 @@ public abstract class PlayerLayer
                 Winner = true;
                 CallRpc(CustomRPC.WinLose, WinLose.TaskmasterWins, this);
             }
-            else if (Type == LayerEnum.Mafia && MafiaWin)
+            else if (Type == LayerEnum.Mafia && MafiaWin())
             {
                 WinState = WinLose.MafiaWins;
                 CallRpc(CustomRPC.WinLose, WinLose.MafiaWins);
             }
-            else if (Type == LayerEnum.Defector && DefectorWins)
+            else if (Type == LayerEnum.Defector && DefectorWins())
             {
                 WinState = WinLose.DefectorWins;
                 CallRpc(CustomRPC.WinLose, WinLose.DefectorWins);
             }
-            else if (Type == LayerEnum.Overlord && OverlordWins && Alive)
+            else if (Type == LayerEnum.Overlord && OverlordWins() && Alive)
             {
                 WinState = WinLose.OverlordWins;
                 GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
@@ -184,54 +184,54 @@ public abstract class PlayerLayer
         }
         else if (this is Role role)
         {
-            if ((role.IsRecruit || Type == LayerEnum.Jackal) && CabalWin)
+            if ((role.IsRecruit || Type == LayerEnum.Jackal) && CabalWin())
             {
                 WinState = WinLose.CabalWins;
                 CallRpc(CustomRPC.WinLose, WinLose.CabalWins, this);
             }
-            else if ((role.IsPersuaded || Type == LayerEnum.Whisperer) && SectWin)
+            else if ((role.IsPersuaded || Type == LayerEnum.Whisperer) && SectWin())
             {
                 WinState = WinLose.SectWins;
                 CallRpc(CustomRPC.WinLose, WinLose.SectWins);
             }
-            else if ((role.IsBitten || Type == LayerEnum.Dracula) && UndeadWin)
+            else if ((role.IsBitten || Type == LayerEnum.Dracula) && UndeadWin())
             {
                 WinState = WinLose.UndeadWins;
                 CallRpc(CustomRPC.WinLose, WinLose.UndeadWins);
             }
-            else if ((role.IsResurrected || Type == LayerEnum.Necromancer) && ReanimatedWin)
+            else if ((role.IsResurrected || Type == LayerEnum.Necromancer) && ReanimatedWin())
             {
                 WinState = WinLose.ReanimatedWins;
                 CallRpc(CustomRPC.WinLose, WinLose.ReanimatedWins);
             }
             else if (role.Faction == Faction.Syndicate && (role.Faithful || Type == LayerEnum.Betrayer || role.IsSynAlly || role.IsSynDefect || role.IsSynFanatic || role.IsSynTraitor) &&
-                SyndicateWins)
+                SyndicateWins())
             {
                 WinState = WinLose.SyndicateWins;
                 CallRpc(CustomRPC.WinLose, WinLose.SyndicateWins);
             }
             else if (role.Faction == Faction.Intruder && (role.Faithful || Type == LayerEnum.Betrayer || role.IsIntDefect || role.IsIntAlly || role.IsIntFanatic || role.IsIntTraitor) &&
-                IntrudersWin)
+                IntrudersWin())
             {
                 WinState = WinLose.IntrudersWin;
                 CallRpc(CustomRPC.WinLose, WinLose.IntrudersWin);
             }
-            else if (role.Faction == Faction.Crew && (role.Faithful || role.IsCrewAlly || role.IsCrewDefect) && CrewWins)
+            else if (role.Faction == Faction.Crew && (role.Faithful || role.IsCrewAlly || role.IsCrewDefect) && CrewWins())
             {
                 WinState = WinLose.CrewWins;
                 CallRpc(CustomRPC.WinLose, WinLose.CrewWins);
             }
-            else if (role.Faithful && ApocWins && role.Alignment is Alignment.NeutralApoc or Alignment.NeutralHarb)
+            else if (role.Faithful && ApocWins() && role.Alignment is Alignment.NeutralApoc or Alignment.NeutralHarb)
             {
                 WinState = WinLose.ApocalypseWins;
                 CallRpc(CustomRPC.WinLose, WinLose.ApocalypseWins);
             }
-            else if (AllNeutralsWin && role.Faithful)
+            else if (AllNeutralsWin() && role.Faithful)
             {
                 WinState = WinLose.AllNeutralsWin;
                 CallRpc(CustomRPC.WinLose, WinLose.AllNeutralsWin);
             }
-            else if (AllNKsWin && role.Faithful && role.Alignment == Alignment.NeutralKill)
+            else if (AllNKsWin() && role.Faithful && role.Alignment == Alignment.NeutralKill)
             {
                 WinState = WinLose.AllNKsWin;
                 CallRpc(CustomRPC.WinLose, WinLose.AllNKsWin);
@@ -291,12 +291,12 @@ public abstract class PlayerLayer
                 Winner = true;
                 CallRpc(CustomRPC.WinLose, WinLose.TaskRunnerWins, this);
             }
-            else if (Type == LayerEnum.Hunter && HunterWins)
+            else if (Type == LayerEnum.Hunter && HunterWins())
             {
                 WinState = WinLose.HunterWins;
                 CallRpc(CustomRPC.WinLose, WinLose.HunterWins);
             }
-            else if (Type == LayerEnum.Hunted && HuntedWins)
+            else if (Type == LayerEnum.Hunted && HuntedWins())
             {
                 WinState = WinLose.HuntedWins;
                 CallRpc(CustomRPC.WinLose, WinLose.HuntedWins);

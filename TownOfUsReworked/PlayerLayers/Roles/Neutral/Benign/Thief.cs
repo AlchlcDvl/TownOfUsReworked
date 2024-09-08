@@ -563,7 +563,7 @@ public class Thief : Neutral
         }
         else if (Player != player && CustomPlayer.Local == player)
             Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessTarget}!");
-        else if (DeadSeeEverything)
+        else if (DeadSeeEverything())
         {
             if (Player != player)
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!");

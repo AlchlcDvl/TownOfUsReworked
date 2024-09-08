@@ -20,7 +20,7 @@ public static class MapBehaviourPatch
         PlayerLayer.LocalLayers.ForEach(x => x.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x.UpdateArrowBlip(__instance));
 
-        if (LocalBlocked)
+        if (LocalBlocked())
             __instance.Close();
     }
 }
@@ -76,13 +76,13 @@ public static class LegacySaveManagerPatch
 [HarmonyPatch(typeof(SecurityLogger), nameof(SecurityLogger.Awake))]
 public static class SecurityLoggerPatch
 {
-    public static void Postfix(ref SecurityLogger __instance) => __instance.Timers = new float[127];
+    public static void Postfix(SecurityLogger __instance) => __instance.Timers = new float[127];
 }
 
 [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
 public static class OpenMapMenuPatch
 {
-    public static bool Prefix(MapBehaviour __instance, ref MapOptions opts)
+    public static bool Prefix(MapBehaviour __instance, MapOptions opts)
     {
         // if (ClientHandler.Instance.SettingsActive)
         //     return false;
@@ -96,12 +96,12 @@ public static class OpenMapMenuPatch
 
         if (opts.Mode is not (MapOptions.Modes.None or MapOptions.Modes.CountOverlay))
         {
-            if (CustomPlayer.Local.CanSabotage() && !CustomPlayer.AllPlayers.Any(x => x.IsFlashed()))
+            if (CustomPlayer.Local.CanSabotage() && !AllPlayers.Any(x => x.IsFlashed()))
                 __instance.ShowSabotageMap();
             else
                 __instance.ShowNormalMap();
 
-            __instance.taskOverlay.gameObject.SetActive(CustomPlayer.Local.CanDoTasks() && !IsTaskRace && !IsCustomHnS);
+            __instance.taskOverlay.gameObject.SetActive(CustomPlayer.Local.CanDoTasks() && !IsTaskRace() && !IsCustomHnS());
             notmodified = false;
         }
 
@@ -142,7 +142,7 @@ public static class DisconnectHandler
             DebuggerBehaviour.Instance.ControllingFigure = 0;
         }
 
-        if (IsLobby)
+        if (IsLobby())
             return;
 
         SetPostmortals.RemoveFromPostmortals(player);
@@ -298,21 +298,17 @@ public static class OverlayKillAnimationPatch
 {
     private static int CurrentOutfitTypeCache;
 
-    public static void Prefix(ref KillOverlayInitData initData)
+    public static void Prefix(KillOverlayInitData initData)
     {
-        var data = initData;
-        var playerControl = CustomPlayer.AllPlayers.Find(x => x.GetCurrentOutfit() == data.killerOutfit);
+        var playerControl = AllPlayers.Find(x => x.GetCurrentOutfit() == initData.killerOutfit);
         CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
         if (!GameModifiers.AppearanceAnimation)
             playerControl.CurrentOutfitType = PlayerOutfitType.Default;
     }
 
-    public static void Postfix(ref KillOverlayInitData initData)
-    {
-        var data = initData;
-        CustomPlayer.AllPlayers.Find(x => x.GetCurrentOutfit() == data.killerOutfit).CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
-    }
+    public static void Postfix(KillOverlayInitData initData) => AllPlayers.Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType =
+        (PlayerOutfitType)CurrentOutfitTypeCache;
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
@@ -336,10 +332,10 @@ public static class LobbySizePatch
 {
     public static void Postfix()
     {
-        if (IsLobby)
+        if (IsLobby())
         {
-            while (CustomPlayer.AllPlayers.Count > GameSettings.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
-                AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(CustomPlayer.AllPlayers.Last().OwnerId).Id, DisconnectReasons.GameFull);
+            while (AllPlayers.Count > GameSettings.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+                AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(AllPlayers.Last().OwnerId).Id, DisconnectReasons.GameFull);
         }
     }
 }
@@ -369,7 +365,7 @@ public static class SpeedNetworkPatch
 // {
 //     public static void Postfix(ref int __result)
 //     {
-//         if (IsOnlineGame && __result % 50 < 25)
+//         if (IsOnlineGame() && __result % 50 < 25)
 //             __result += 25;
 //     }
 // }
@@ -383,7 +379,7 @@ public static class IsModdedPatch
 [HarmonyPatch(typeof(ActivityManager), nameof(ActivityManager.UpdateActivity))]
 public static class DiscordPatch
 {
-    public static void Prefix(ref Activity activity) => activity.Details += " Town Of Us Reworked";
+    public static void Prefix(Activity activity) => activity.Details += " Town Of Us Reworked";
 }
 
 [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
@@ -427,21 +423,21 @@ public static class LobbyBehaviourPatch
     {
         SetFullScreenHUD();
         RoleGen.ResetEverything();
-        TownOfUsReworked.IsTest = IsLocalGame && (TownOfUsReworked.IsDev || (TownOfUsReworked.IsTest && TownOfUsReworked.MCIActive));
+        TownOfUsReworked.IsTest = IsLocalGame() && (TownOfUsReworked.IsDev || (TownOfUsReworked.IsTest && TownOfUsReworked.MCIActive));
         StopAll();
         DefaultOutfitAll();
         var count = MCIUtils.Clients.Count;
         MCIUtils.Clients.Clear();
         MCIUtils.PlayerClientIDs.Clear();
-        // ClientHandler.Instance.OnLobbyStart();
-        DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame;
+        DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame();
         DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
+        // ClientHandler.Instance.OnLobbyStart();
         // ClientHandler.Instance.Page = 0;
         // ClientHandler.Instance.Buttons.Clear();
         // ClientStuff.CloseMenus();
         // FreeplayPatches.PreviouslySelected.Clear();
 
-        if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame)
+        if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame())
             MCIUtils.CreatePlayerInstances(count);
 
         var lobbyTransform = References.Lobby.transform;
@@ -452,7 +448,7 @@ public static class LobbyBehaviourPatch
 
         var consoleObj = rewConsoleObj.transform.GetChild(0).gameObject;
         consoleObj.GetComponent<OptionsConsole>().Destroy();
-        consoleObj.AddComponent<LobbyConsole>().SetRenderer(rewConsoleObj.GetComponent<SpriteRenderer>());
+        consoleObj.AddComponent<LobbyConsole>();
         rewConsoleObj.GetComponentInChildren<BoxCollider2D>().size = new(0.01f, 0.01f);
     }
 }
@@ -462,7 +458,7 @@ public static class DeathPopUpPatch
 {
     public static void Prefix(HideAndSeekDeathPopup __instance)
     {
-        if (IsCustomHnS)
+        if (IsCustomHnS())
             Coroutines.Start(PerformTimedAction(0.01f, _ => __instance.text.text = $"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}"));
     }
 }
@@ -489,7 +485,7 @@ public static class FixLogSpam
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetKinematic))]
 public static class LadderFix
 {
-    public static bool Prefix(PlayerControl __instance, ref bool b)
+    public static bool Prefix(PlayerControl __instance, bool b)
     {
         if (__instance != CustomPlayer.Local || !__instance.onLadder || b || __instance.GetModifier() is not (Giant or Dwarf) || MapPatches.CurrentMap is not (5 or 4))
             return true;
@@ -513,7 +509,7 @@ public static class RefreshPatch
 [HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]
 public static class MeetingCooldowns
 {
-    public static void Postfix(ref UObject obj)
+    public static void Postfix(UObject obj)
     {
         if (!obj)
             return;
@@ -570,7 +566,7 @@ public static class ShowCustomAnim
         }
     }
 
-    public static bool Prefix(KillOverlay __instance, ref NetworkedPlayerInfo killer, ref NetworkedPlayerInfo victim)
+    public static bool Prefix(KillOverlay __instance, NetworkedPlayerInfo killer, NetworkedPlayerInfo victim)
     {
         if (killer.PlayerId != victim.PlayerId || AprilFoolsMode.ShouldHorseAround() || AprilFoolsMode.ShouldLongAround() || IsSubmerged())
             return true;
@@ -606,7 +602,7 @@ public static class BegoneModstamp
             __instance.localCamera = !HudManager.InstanceExists ? Camera.main : HUD.GetComponentInChildren<Camera>();
             __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
                 __instance.localCamera.nearClipPlane));
-            __instance.ModStamp.gameObject.SetActive(IsEnded || NoLobby || IsLobby);
+            __instance.ModStamp.gameObject.SetActive(IsEnded() || NoLobby() || IsLobby());
         } catch {}
 
         return false;

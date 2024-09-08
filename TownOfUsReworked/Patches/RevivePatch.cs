@@ -15,9 +15,9 @@ public static class PlayerControlRevivePatch
         __instance.Collider.enabled = true;
         __instance.cosmetics.SetPetSource(__instance);
         __instance.cosmetics.SetNameMask(true);
-        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x.PlayerId));
-        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x));
-        Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || !CustomPlayer.AllPlayers.Any(y => y.PlayerId == x) || !PlayerById(x));
+        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || !AllPlayers.Any(y => y.PlayerId == x.PlayerId));
+        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || !AllPlayers.Any(y => y.PlayerId == x));
+        Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || !AllPlayers.Any(y => y.PlayerId == x) || !PlayerById(x));
         BodyLocations.Remove(__instance.PlayerId);
         SetPostmortals.RemoveFromPostmortals(__instance);
         __instance.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
@@ -38,7 +38,7 @@ public static class PlayerControlRevivePatch
 
         HUD.ShadowQuad.gameObject.SetActive(true);
         HUD.KillButton.gameObject.SetActive(false);
-        HUD.AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS);
+        HUD.AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS());
         HUD.SabotageButton.gameObject.SetActive(__instance.CanSabotage());
         HUD.ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
         ButtonUtils.Reset(player: __instance);

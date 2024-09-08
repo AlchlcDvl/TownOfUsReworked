@@ -102,7 +102,7 @@ public static class FreeplayPatches
     [HarmonyPatch(typeof(TaskAdderGame), nameof(TaskAdderGame.PopulateRoot))]
     public static class PopulatRootPatch
     {
-        public static void Postfix(TaskAdderGame __instance, ref ISystem.Dictionary<SystemTypes, TaskFolder> folders, ref TaskFolder rootFolder)
+        public static void Postfix(TaskAdderGame __instance, ISystem.Dictionary<SystemTypes, TaskFolder> folders, TaskFolder rootFolder)
         {
             if (!folders.TryGetValue(LayersType, out var taskFolder))
             {
@@ -125,7 +125,7 @@ public static class FreeplayPatches
     [HarmonyPatch(typeof(TaskAdderGame), nameof(TaskAdderGame.ShowFolder))]
     public static class ShowFolderPatch
     {
-        public static bool Prefix(TaskAdderGame __instance, ref TaskFolder taskFolder)
+        public static bool Prefix(TaskAdderGame __instance, TaskFolder taskFolder)
         {
             RoleButtons.Clear();
             var stringBuilder = new StringBuilder();

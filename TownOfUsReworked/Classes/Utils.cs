@@ -188,7 +188,7 @@ public static class Utils
         yield break;
     }
 
-    public static void Camouflage() => CustomPlayer.AllPlayers.ForEach(CamoSingle);
+    public static void Camouflage() => AllPlayers.ForEach(CamoSingle);
 
     public static void CamoSingle(PlayerControl player)
     {
@@ -322,7 +322,7 @@ public static class Utils
         PetId = "pet_EmptyPet"
     };
 
-    public static void DefaultOutfitAll() => CustomPlayer.AllPlayers.ForEach(DefaultOutfit);
+    public static void DefaultOutfitAll() => AllPlayers.ForEach(DefaultOutfit);
 
     public static void AddUnique<T>(this ISystem.List<T> self, T item) where T : IDisconnectHandler
     {
@@ -346,7 +346,7 @@ public static class Utils
             return player.Data.DefaultOutfit.ColorId.GetColor(false);
     }
 
-    public static PlayerControl PlayerById(byte id) => CustomPlayer.AllPlayers.Find(x => x.PlayerId == id);
+    public static PlayerControl PlayerById(byte id) => AllPlayers.Find(x => x.PlayerId == id);
 
     public static PlayerVoteArea VoteAreaById(byte id) => AllVoteAreas.Find(x => x.TargetPlayerId == id);
 
@@ -400,10 +400,10 @@ public static class Utils
         lunge &= !killer.Is(LayerEnum.Ninja) && killer != target;
         Pestilence.Infected.Remove(target.PlayerId);
 
-        if (IsCustomHnS || CustomPlayer.LocalCustom.Dead)
+        if (IsCustomHnS() || CustomPlayer.LocalCustom.Dead)
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD.transform.parent).Show(target, 0);
 
-        if (IsCustomHnS)
+        if (IsCustomHnS())
             GameData.Instance.RecomputeTaskCounts();
 
         if (killer == CustomPlayer.Local || target == CustomPlayer.Local)
@@ -729,7 +729,7 @@ public static class Utils
             GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
     }
 
-    public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => [ .. CustomPlayer.AllPlayers.Where(x =>
+    public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => [ .. AllPlayers.Where(x =>
         Vector2.Distance(truePosition, x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))) ];
 
     public static void StopDragging(byte id)
@@ -958,7 +958,7 @@ public static class Utils
 
     public static Dictionary<byte, Vector2> GenerateWarpCoordinates()
     {
-        var targets = CustomPlayer.AllPlayers.Where(player => !player.HasDied() && !UninteractiblePlayers.ContainsKey(player.PlayerId) && !player.inVent);
+        var targets = AllPlayers.Where(player => !player.HasDied() && !UninteractiblePlayers.ContainsKey(player.PlayerId) && !player.inVent);
         var coordinates = new Dictionary<byte, Vector2>();
         var allLocations = new List<Vector2>();
         targets.ForEach(x => allLocations.Add(x.transform.position));
@@ -1029,7 +1029,7 @@ public static class Utils
     {
         var closestDistance = double.MaxValue;
         PlayerControl closestPlayer = null;
-        allPlayers ??= CustomPlayer.AllPlayers;
+        allPlayers ??= AllPlayers;
 
         if (maxDistance == 0f)
             maxDistance = GameSettings.InteractionDistance;

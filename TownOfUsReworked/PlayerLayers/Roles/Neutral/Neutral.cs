@@ -48,7 +48,7 @@ public abstract class Neutral : Role
             team.Add(Player.GetOtherLink());
         else if (Player.Is(LayerEnum.Mafia))
         {
-            foreach (var player in CustomPlayer.AllPlayers)
+            foreach (var player in AllPlayers)
             {
                 if (player != Player && player.Is(LayerEnum.Mafia))
                     team.Add(player);
@@ -56,7 +56,7 @@ public abstract class Neutral : Role
         }
         else if (Player.Is(LayerEnum.Allied) && !Player.Is(Faction.Crew))
         {
-            foreach (var player in CustomPlayer.AllPlayers)
+            foreach (var player in AllPlayers)
             {
                 if (player.Is(Faction) && player != Player)
                     team.Add(player);

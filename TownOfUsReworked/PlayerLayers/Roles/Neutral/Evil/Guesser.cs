@@ -329,7 +329,7 @@ public class Guesser : Neutral
 
     public void TurnAct()
     {
-        Role role = IsRoleList ? new Jester() : new Actor();
+        Role role = IsRoleList() ? new Jester() : new Actor();
         role.Start<Role>(Player).RoleUpdate(this);
     }
 
@@ -602,7 +602,7 @@ public class Guesser : Neutral
 
             if (CustomPlayer.Local == player)
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
-            else if (DeadSeeEverything)
+            else if (DeadSeeEverything())
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
             else if (CanAttack(AttackVal, player.GetDefenseValue(Player)))
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
@@ -613,12 +613,12 @@ public class Guesser : Neutral
             {
                 RemainingGuesses--;
 
-                if (DeadSeeEverything && !Local)
+                if (DeadSeeEverything() && !Local)
                     Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guess}!");
                 else if (Local && !TargetGuessed)
                     Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess}!");
             }
-            else if (DeadSeeEverything)
+            else if (DeadSeeEverything())
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guess}!");
             else if (Local && !TargetGuessed)
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess}!");

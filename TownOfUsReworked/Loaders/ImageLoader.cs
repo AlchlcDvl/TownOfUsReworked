@@ -21,26 +21,26 @@ public class ImageLoader : AssetLoader<Asset>
 
     public override IEnumerator AfterLoading(object response)
     {
-        var buttons = (List<Asset>)response;
+        var images = (List<Asset>)response;
         var textures = new List<Texture2D>();
-        buttons.Select(x => Path.Combine(TownOfUsReworked.Images, $"{x.ID}.png")).ForEach(x => textures.Add(LoadDiskTexture(x)));
+        images.Select(x => Path.Combine(TownOfUsReworked.Images, $"{x.ID}.png")).ForEach(x => textures.Add(LoadDiskTexture(x)));
         var time = 0f;
 
-        for (var i = 0; i < buttons.Count; i++)
+        for (var i = 0; i < images.Count; i++)
         {
-            var image = buttons[i];
+            var image = images[i];
             AddAsset(image.ID, CreateSprite(textures[i], image.ID));
             time += Time.deltaTime;
 
             if (time > 1f)
             {
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Images ({i + 1}/{buttons.Count})");
+                UpdateSplashPatch.SetText($"Loading Images ({i + 1}/{images.Count})");
                 yield return EndFrame();
             }
         }
 
-        buttons.Clear();
+        images.Clear();
         yield break;
     }
 

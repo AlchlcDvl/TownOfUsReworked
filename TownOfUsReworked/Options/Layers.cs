@@ -79,20 +79,20 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         view.settingText.text = $"x{tuple.Count}";
     }
 
-    public int GetChance() => IsClassic || IsCustom || IsKilling ? Get().Chance : 0;
+    public int GetChance() => IsClassic() || IsCustom() || IsKilling() ? Get().Chance : 0;
 
-    public int GetCount() => IsCustom ? Get().Count : 1;
+    public int GetCount() => IsCustom() ? Get().Count : 1;
 
-    public bool GetUnique() => (IsAA || IsRoleList) && Get().Unique;
+    public bool GetUnique() => (IsAA() || IsRoleList()) && Get().Unique;
 
-    public bool GetActive() => IsAA && Get().Active;
+    public bool GetActive() => IsAA() && Get().Active;
 
     public RoleOptionData Get() => (RoleOptionData)Value;
 
     public void IncreaseCount()
     {
         var chance = GetChance();
-        var max = IsCustom ? Max : Min;
+        var max = IsCustom() ? Max : Min;
         var count = CycleInt(max, 0, GetCount(), true);
 
         if (chance == 0 && count > 0)
@@ -112,7 +112,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
     public void DecreaseCount()
     {
         var chance = GetChance();
-        var max = IsCustom ? Max : Min;
+        var max = IsCustom() ? Max : Min;
         var count = CycleInt(max, 0, GetCount(), false);
 
         if (chance == 0 && count > 0)
@@ -140,7 +140,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
             count = 0;
         }
         else if (count == 0 && chance > 0)
-            count = CachedCount == 0 || !IsCustom ? Min : CachedCount;
+            count = CachedCount == 0 || !IsCustom() ? Min : CachedCount;
 
         Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }
@@ -156,7 +156,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
             count = 0;
         }
         else if (count == 0 && chance > 0)
-            count = CachedCount == 0 || !IsCustom ? Min : CachedCount;
+            count = CachedCount == 0 || !IsCustom() ? Min : CachedCount;
 
         Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
     }

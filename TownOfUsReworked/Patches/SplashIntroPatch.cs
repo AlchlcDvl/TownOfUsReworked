@@ -12,7 +12,7 @@ public static class UpdateSplashPatch
     public static bool Prefix(SplashManager __instance)
     {
         if (__instance.doneLoadingRefdata && !__instance.startedSceneLoad && Time.time - __instance.startTime > 4.2f)
-            __instance.StartCoroutine(LoadingScreen(__instance));
+            Coroutines.Start(LoadingScreen(__instance));
 
         return false;
     }

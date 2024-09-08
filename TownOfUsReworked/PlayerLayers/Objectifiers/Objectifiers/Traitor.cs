@@ -12,7 +12,7 @@ public class Traitor : Objectifier
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }
     public Faction Side { get; set; }
-    private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !Dead && Turned && !Betrayed;
+    private bool Betray => ((Side == Faction.Intruder && LastImp()) || (Side == Faction.Syndicate && LastSyn())) && !Dead && Turned && !Betrayed;
 
     public override UColor Color
     {
@@ -57,8 +57,8 @@ public class Traitor : Objectifier
         turnIntruder = false;
         turnSyndicate = false;
 
-        var intAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.HasDied());
-        var synAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.HasDied());
+        var intAlive = AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.HasDied());
+        var synAlive = AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.HasDied());
 
         if (intAlive > 0 && synAlive > 0)
         {

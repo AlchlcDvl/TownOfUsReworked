@@ -17,8 +17,7 @@ public static class References
     public static List<Console> AllConsoles => [ .. UObject.FindObjectsOfType<Console>() ];
     public static List<SystemConsole> AllSystemConsoles => [ .. UObject.FindObjectsOfType<SystemConsole>() ];
     public static List<PlayerVoteArea> AllVoteAreas => [ .. Meeting.playerStates ];
-    public static string FirstDead;
-    public static string CachedFirstDead;
+    public static List<PlayerControl> AllPlayers => PlayerControl.AllPlayerControls.ToSystem();
     public static HudManager HUD => HudManager.Instance;
     public static MeetingHud Meeting => MeetingHud.Instance;
     public static ExileController Ejection => ExileController.Instance;
@@ -27,6 +26,8 @@ public static class References
     public static Minigame ActiveTask => Minigame.Instance;
     public static LobbyBehaviour Lobby => LobbyBehaviour.Instance;
     public static ChatController Chat => HUD.Chat;
+    public static string FirstDead { get; set; }
+    public static string CachedFirstDead { get; set; }
     public static bool Shapeshifted { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +

@@ -35,7 +35,7 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
     public static class SetReported
     {
-        public static void Postfix(PlayerControl __instance, ref NetworkedPlayerInfo target)
+        public static void Postfix(PlayerControl __instance, NetworkedPlayerInfo target)
         {
             Reported = target;
             Reporter = __instance;
@@ -43,10 +43,10 @@ public static class MeetingPatches
             if (!target)
                 return;
 
-            var data = target;
-            PlayerLayer.GetLayers<Plaguebearer>().ForEach(x => x.RpcSpreadInfection(__instance, data.Object));
-            PlayerLayer.GetLayers<Arsonist>().ForEach(x => x.RpcSpreadDouse(data.Object, __instance));
-            PlayerLayer.GetLayers<Cryomaniac>().ForEach(x => x.RpcSpreadDouse(data.Object, __instance));
+            var pc = Reported.Object;
+            PlayerLayer.GetLayers<Plaguebearer>().ForEach(x => x.RpcSpreadInfection(__instance, pc));
+            PlayerLayer.GetLayers<Arsonist>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
+            PlayerLayer.GetLayers<Cryomaniac>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
         }
     }
 
@@ -65,7 +65,7 @@ public static class MeetingPatches
             if (Role.ChaosDriveMeetingTimerCount < SyndicateSettings.ChaosDriveMeetingCount)
                 Role.ChaosDriveMeetingTimerCount++;
 
-            if ((Role.ChaosDriveMeetingTimerCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling) && !Role.SyndicateHasChaosDrive)
+            if ((Role.ChaosDriveMeetingTimerCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Role.SyndicateHasChaosDrive)
             {
                 Role.SyndicateHasChaosDrive = true;
                 RoleGen.AssignChaosDrive();
@@ -289,7 +289,7 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
     public static class VotingComplete
     {
-        public static void Postfix(MeetingHud __instance, ref NetworkedPlayerInfo exiled, ref bool tie)
+        public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo exiled, bool tie)
         {
             var exiledString = !exiled ? "null" : exiled.PlayerName;
             LogInfo($"Exiled PlayerName = {exiledString}");
@@ -310,11 +310,7 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Select))]
     public static class MeetingHudSelect
     {
-        public static void Postfix(MeetingHud __instance, ref int suspectStateIdx)
-        {
-            var id = suspectStateIdx;
-            PlayerLayer.LocalLayers.ForEach(x => x?.SelectVote(__instance, id));
-        }
+        public static void Postfix(MeetingHud __instance, int suspectStateIdx) => PlayerLayer.LocalLayers.ForEach(x => x?.SelectVote(__instance, suspectStateIdx));
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ClearVote))]
@@ -380,7 +376,7 @@ public static class MeetingPatches
     {
         public static readonly List<byte> ReportedBodies = [];
 
-        public static void Postfix(MeetingHud __instance, ref NetworkedPlayerInfo reportedBody, ref Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
+        public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
         {
             ReportedBodies.Clear();
 

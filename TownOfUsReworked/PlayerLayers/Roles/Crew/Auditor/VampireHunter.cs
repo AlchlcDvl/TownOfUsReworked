@@ -6,7 +6,7 @@ public class VampireHunter : Crew
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static float StakeCd { get; set; } = 25f;
 
-    public static bool VampsDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && x.Is(SubFaction.Undead));
+    public static bool VampsDead => !AllPlayers.Any(x => !x.HasDied() && x.Is(SubFaction.Undead));
     private CustomButton StakeButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.VampireHunter : CustomColorManager.Crew;

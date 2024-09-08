@@ -182,7 +182,7 @@ public class Retributionist : Crew
         }
         else if (IsMed)
         {
-            foreach (var player in CustomPlayer.AllPlayers)
+            foreach (var player in AllPlayers)
             {
                 if (MediateArrows.ContainsKey(player.PlayerId))
                 {

@@ -35,7 +35,7 @@ public class Concealer : Syndicate
     public void Conceal()
     {
         if (HoldsDrive)
-            CustomPlayer.AllPlayers.ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
+            AllPlayers.ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
         else
             Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
     }

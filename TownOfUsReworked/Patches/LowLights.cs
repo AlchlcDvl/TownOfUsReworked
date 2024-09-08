@@ -3,12 +3,12 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius))]
 public static class CalculateLightRadiusPatch
 {
-    public static bool Prefix(ShipStatus __instance, ref NetworkedPlayerInfo player, ref float __result)
+    public static bool Prefix(ShipStatus __instance, NetworkedPlayerInfo player, ref float __result)
     {
         if (!player)
             return false;
 
-        if (IsHnS)
+        if (IsHnS())
         {
             var hns = TownOfUsReworked.HNSOptions;
 
@@ -56,7 +56,7 @@ public static class CalculateLightRadiusPatch
             __result = t * (pc.Is(Faction.Neutral) ? NeutralSettings.NeutralVision : CrewSettings.CrewVision);
         }
 
-        if (MapPatches.CurrentMap is 0 or 3 or 6 && MapSettings.SmallMapHalfVision && !IsTaskRace && !IsCustomHnS)
+        if (MapPatches.CurrentMap is 0 or 3 or 6 && MapSettings.SmallMapHalfVision && !IsTaskRace() && !IsCustomHnS())
             __result *= 0.5f;
 
         return false;

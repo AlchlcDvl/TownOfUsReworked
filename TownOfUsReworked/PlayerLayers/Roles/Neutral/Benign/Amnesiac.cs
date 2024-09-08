@@ -230,10 +230,10 @@ public class Amnesiac : Neutral
                 BodyArrows[body.ParentId]?.Update(body.TruePosition);
             }
         }
-        else if (BodyArrows.Count > 0 || CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 4)
+        else if (BodyArrows.Count > 0 || AllPlayers.Count(x => !x.HasDied()) <= 4)
             OnLobby();
 
-        if (AmneToThief && CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 4 && !Dead)
+        if (AmneToThief && AllPlayers.Count(x => !x.HasDied()) <= 4 && !Dead)
         {
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnThief();

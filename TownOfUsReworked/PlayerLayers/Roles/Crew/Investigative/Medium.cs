@@ -59,7 +59,7 @@ public class Medium : Crew
 
         if (!Dead)
         {
-            foreach (var player in CustomPlayer.AllPlayers)
+            foreach (var player in AllPlayers)
             {
                 if (MediateArrows.ContainsKey(player.PlayerId))
                 {

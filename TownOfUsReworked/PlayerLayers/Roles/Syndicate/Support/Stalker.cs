@@ -73,7 +73,7 @@ public class Stalker : Syndicate
 
             if (HoldsDrive)
             {
-                foreach (var player in CustomPlayer.AllPlayers)
+                foreach (var player in AllPlayers)
                 {
                     if (!StalkerArrows.ContainsKey(player.PlayerId))
                         StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));

@@ -31,7 +31,7 @@ public abstract class Crew : Role
             team.Add(Player.GetOtherRival());
         else if (Player.Is(LayerEnum.Mafia))
         {
-            foreach (var player in CustomPlayer.AllPlayers)
+            foreach (var player in AllPlayers)
             {
                 if (player != Player && player.Is(LayerEnum.Mafia))
                     team.Add(player);

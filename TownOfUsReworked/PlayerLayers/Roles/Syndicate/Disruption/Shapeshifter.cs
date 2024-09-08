@@ -50,8 +50,8 @@ public class Shapeshifter : Syndicate
             if (!Shapeshifted)
             {
                 Shapeshifted = true;
-                var allPlayers = CustomPlayer.AllPlayers;
-                var shuffledPlayers = CustomPlayer.AllPlayers;
+                var allPlayers = AllPlayers;
+                var shuffledPlayers = AllPlayers;
                 shuffledPlayers.Shuffle();
 
                 for (var i = 0; i < allPlayers.Count; i++)
@@ -63,7 +63,7 @@ public class Shapeshifter : Syndicate
             }
             else
             {
-                CustomPlayer.AllPlayers.ForEach(x =>
+                AllPlayers.ForEach(x =>
                 {
                     if (CachedMorphs.TryGetValue(x.PlayerId, out var target))
                         Morph(x, PlayerById(target));

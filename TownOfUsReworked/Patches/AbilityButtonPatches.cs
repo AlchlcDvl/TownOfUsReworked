@@ -16,7 +16,7 @@ public static class AbilityButtonSetCooldown
 {
     public static void Prefix(ActionButton __instance) => __instance.graphic.transform.localPosition = __instance.position;
 
-    public static void Postfix(ActionButton __instance, ref float timer, ref float maxTimer)
+    public static void Postfix(ActionButton __instance, float timer, float maxTimer)
     {
         if (timer > Mathf.FloorToInt(maxTimer / 2f))
             __instance.cooldownTimerText.color = UColor.red;
@@ -30,7 +30,7 @@ public static class AbilityButtonSetCooldown
 [HarmonyPatch(typeof(ActionButton), nameof(ActionButton.SetFillUp))]
 public static class AbilityButtonSetFillUp
 {
-    public static bool Prefix(ActionButton __instance, ref float timer, ref float maxTimer)
+    public static bool Prefix(ActionButton __instance, float timer, float maxTimer)
     {
         var percentCool = Mathf.Clamp((maxTimer - timer) / maxTimer, 0f, 1f);
         var rand = URandom.Range(-0.05f, 0.051f);

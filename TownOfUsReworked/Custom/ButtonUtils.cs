@@ -26,7 +26,7 @@ public static class ButtonUtils
         HUD.ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward));
         HUD.ImpostorVentButton.gameObject.SetActive(player.CanVent());
 
-        if (IsHnS)
+        if (IsHnS())
             HUD.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
         else
             HUD.AbilityButton.gameObject.SetActive(!Meeting && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()));
@@ -111,7 +111,7 @@ public static class ButtonUtils
 
     public static void Reset(CooldownType cooldown = CooldownType.Reset, PlayerControl player = null)
     {
-        if (IsHnS)
+        if (IsHnS())
             return;
 
         player ??= CustomPlayer.Local;
@@ -184,7 +184,7 @@ public static class ButtonUtils
             bm.BlackmailedPlayer = null;
         else if (role is Enforcer enf)
             enf.BombedPlayer = null;
-        else if (role is Consigliere consig && player.HasDied() && DeadSeeEverything)
+        else if (role is Consigliere consig && player.HasDied() && DeadSeeEverything())
             consig.Investigated.Clear();
         else if (role is Consort cons)
             cons.BlockTarget = null;
@@ -208,7 +208,7 @@ public static class ButtonUtils
             gf.CurrentlyDragging = null;
             gf.TeleportPoint = Vector3.zero;
 
-            if (player.HasDied() && DeadSeeEverything)
+            if (player.HasDied() && DeadSeeEverything())
                 gf.Investigated.Clear();
         }
         else if (role is Janitor jani)

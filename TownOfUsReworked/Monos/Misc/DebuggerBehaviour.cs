@@ -26,10 +26,10 @@ public class DebuggerBehaviour : MonoBehaviour
             if (GUILayout.Button("Close Testing Menu"))
                 TestWindow.Enabled = false;
 
-            if (CustomPlayer.Local && !NoLobby && !CustomPlayer.LocalCustom.Dead && !IsEnded && WinState == WinLose.None)
+            if (CustomPlayer.Local && !NoLobby() && !CustomPlayer.LocalCustom.Dead && !IsEnded() && WinState == WinLose.None)
                 CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Enable Player Collider");
 
-            if (IsLobby)
+            if (IsLobby())
             {
                 TownOfUsReworked.IsTest = GUILayout.Toggle(TownOfUsReworked.IsTest, "Toggle Test Mode");
                 TownOfUsReworked.LobbyCapped = GUILayout.Toggle(TownOfUsReworked.LobbyCapped, "Toggle Lobby Cap");
@@ -37,7 +37,7 @@ public class DebuggerBehaviour : MonoBehaviour
 
                 if (GUILayout.Button("Spawn Bot"))
                 {
-                    if ((CustomPlayer.AllPlayers.Count < GameSettings.LobbySize && TownOfUsReworked.LobbyCapped) || (!TownOfUsReworked.LobbyCapped && CustomPlayer.AllPlayers.Count < 128))
+                    if ((AllPlayers.Count < GameSettings.LobbySize && TownOfUsReworked.LobbyCapped) || (!TownOfUsReworked.LobbyCapped && AllPlayers.Count < 128))
                     {
                         MCIUtils.CleanUpLoad();
                         MCIUtils.CreatePlayerInstance();
@@ -76,12 +76,12 @@ public class DebuggerBehaviour : MonoBehaviour
 
                 if (GUILayout.Button("Next Player"))
                 {
-                    ControllingFigure = CycleByte(CustomPlayer.AllPlayers.Count - 1, 0, ControllingFigure, true);
+                    ControllingFigure = CycleByte(AllPlayers.Count - 1, 0, ControllingFigure, true);
                     MCIUtils.SwitchTo(ControllingFigure);
                 }
                 else if (GUILayout.Button("Previous Player"))
                 {
-                    ControllingFigure = CycleByte(CustomPlayer.AllPlayers.Count - 1, 0, ControllingFigure, false);
+                    ControllingFigure = CycleByte(AllPlayers.Count - 1, 0, ControllingFigure, false);
                     MCIUtils.SwitchTo(ControllingFigure);
                 }
 
@@ -98,7 +98,7 @@ public class DebuggerBehaviour : MonoBehaviour
                     CustomPlayer.Local.myTasks.ForEach(x => CustomPlayer.Local.RpcCompleteTask(x.Id));
 
                 if (GUILayout.Button("Complete Everyone's Tasks"))
-                    CustomPlayer.AllPlayers.ForEach(x => x.myTasks.ForEach(y => x.RpcCompleteTask(y.Id)));
+                    AllPlayers.ForEach(x => x.myTasks.ForEach(y => x.RpcCompleteTask(y.Id)));
 
                 if (GUILayout.Button("Redo Intro Sequence"))
                 {
@@ -121,13 +121,13 @@ public class DebuggerBehaviour : MonoBehaviour
                     RpcMurderPlayer(CustomPlayer.Local);
 
                 if (GUILayout.Button("Kill All"))
-                    CustomPlayer.AllPlayers.ForEach(x => RpcMurderPlayer(x));
+                    AllPlayers.ForEach(x => RpcMurderPlayer(x));
 
                 if (GUILayout.Button("Revive Self"))
                     CustomPlayer.Local.Revive();
 
                 if (GUILayout.Button("Revive All"))
-                    CustomPlayer.AllPlayers.ForEach(x => x.Revive());
+                    AllPlayers.ForEach(x => x.Revive());
 
                 if (GUILayout.Button("Log Dump"))
                 {
@@ -195,7 +195,7 @@ public class DebuggerBehaviour : MonoBehaviour
 
     public void Update()
     {
-        if (NoPlayers || !IsLocalGame)
+        if (NoPlayers() || !IsLocalGame())
         {
             if (TestWindow.Enabled)
                 TestWindow.Enabled = false;
@@ -213,14 +213,14 @@ public class DebuggerBehaviour : MonoBehaviour
             if (CooldownsWindow.Enabled && !TestWindow.Enabled)
                 CooldownsWindow.Enabled = false;
 
-            if (!TestWindow.Enabled && IsLobby)
+            if (!TestWindow.Enabled && IsLobby())
             {
                 MCIUtils.RemoveAllPlayers();
                 TownOfUsReworked.MCIActive = false;
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F2) && IsInGame)
+        if (Input.GetKeyDown(KeyCode.F2) && IsInGame())
             CooldownsWindow.Enabled = !CooldownsWindow.Enabled;
     }
 

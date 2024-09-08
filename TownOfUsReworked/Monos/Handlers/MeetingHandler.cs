@@ -10,7 +10,7 @@ public class MeetingHandler : MonoBehaviour
 
     public void Update()
     {
-        if (NoPlayers || IsHnS || !IsInGame || IsCustomHnS || IsTaskRace || !Meeting)
+        if (NoPlayers() || IsHnS() || !IsInGame() || IsCustomHnS() || IsTaskRace() || !Meeting)
             return;
 
         // Deactivate skip Button if skipping on emergency meetings is disabled
@@ -50,7 +50,7 @@ public class MeetingHandler : MonoBehaviour
         if (info.Count != 4 || localinfo.Count != 4)
             return (name, color);
 
-        if (player.CanDoTasks() && (CustomPlayer.Local.PlayerId == player.TargetPlayerId || DeadSeeEverything))
+        if (player.CanDoTasks() && (CustomPlayer.Local.PlayerId == player.TargetPlayerId || DeadSeeEverything()))
         {
             var role = info[0] as Role;
             name = $"{name} ({role.TasksCompleted}/{role.TotalTasks})";
@@ -66,7 +66,7 @@ public class MeetingHandler : MonoBehaviour
         if (player.IsMarked())
             name += " <color=#F1C40FFF>χ</color>";
 
-        if (player.Is(LayerEnum.Mayor) && !DeadSeeEverything && CustomPlayer.Local.PlayerId != player.TargetPlayerId)
+        if (player.Is(LayerEnum.Mayor) && !DeadSeeEverything() && CustomPlayer.Local.PlayerId != player.TargetPlayerId)
         {
             var mayor = info[0] as Mayor;
 
@@ -92,7 +92,7 @@ public class MeetingHandler : MonoBehaviour
                 }
             }
         }
-        else if (player.Is(LayerEnum.Dictator) && !DeadSeeEverything && CustomPlayer.Local.PlayerId != player.TargetPlayerId)
+        else if (player.Is(LayerEnum.Dictator) && !DeadSeeEverything() && CustomPlayer.Local.PlayerId != player.TargetPlayerId)
         {
             var dict = info[0] as Dictator;
 
@@ -119,7 +119,7 @@ public class MeetingHandler : MonoBehaviour
             }
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Coroner) && !DeadSeeEverything)
+        if (CustomPlayer.Local.Is(LayerEnum.Coroner) && !DeadSeeEverything())
         {
             var coroner = localinfo[0] as Coroner;
 
@@ -131,7 +131,7 @@ public class MeetingHandler : MonoBehaviour
                 revealed = true;
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Consigliere) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Consigliere) && !DeadSeeEverything())
         {
             var consigliere = localinfo[0] as Consigliere;
 
@@ -155,7 +155,7 @@ public class MeetingHandler : MonoBehaviour
                 }
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather) && !DeadSeeEverything())
         {
             var godfather = localinfo[0] as PromotedGodfather;
 
@@ -211,35 +211,35 @@ public class MeetingHandler : MonoBehaviour
             if (ret.Trapped.Contains(player.TargetPlayerId))
                 name += " <color=#BE1C8CFF>∮</color>";
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Arsonist) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Arsonist) && !DeadSeeEverything())
         {
             var arsonist = localinfo[0] as Arsonist;
 
             if (arsonist.Doused.Contains(player.TargetPlayerId))
                 name += " <color=#EE7600FF>Ξ</color>";
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Plaguebearer) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Plaguebearer) && !DeadSeeEverything())
         {
             var plaguebearer = localinfo[0] as Plaguebearer;
 
             if (plaguebearer.Infected.Contains(player.TargetPlayerId) && CustomPlayer.Local.PlayerId != player.TargetPlayerId)
                 name += " <color=#CFFE61FF>ρ</color>";
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Cryomaniac) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Cryomaniac) && !DeadSeeEverything())
         {
             var cryomaniac = localinfo[0] as Cryomaniac;
 
             if (cryomaniac.Doused.Contains(player.TargetPlayerId))
                 name += " <color=#642DEAFF>λ</color>";
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Framer) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Framer) && !DeadSeeEverything())
         {
             var framer = localinfo[0] as Framer;
 
             if (framer.Framed.Contains(player.TargetPlayerId))
                 name += " <color=#00FFFFFF>ς</color>";
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Executioner) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Executioner) && !DeadSeeEverything())
         {
             var executioner = localinfo[0] as Executioner;
 
@@ -258,7 +258,7 @@ public class MeetingHandler : MonoBehaviour
                     color = executioner.Color;
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Guesser) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Guesser) && !DeadSeeEverything())
         {
             var guesser = localinfo[0] as Guesser;
 
@@ -268,7 +268,7 @@ public class MeetingHandler : MonoBehaviour
                 name += " <color=#EEE5BEFF>π</color>";
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.GuardianAngel) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.GuardianAngel) && !DeadSeeEverything())
         {
             var guardianAngel = localinfo[0] as GuardianAngel;
 
@@ -287,7 +287,7 @@ public class MeetingHandler : MonoBehaviour
                     color = guardianAngel.Color;
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Whisperer) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Whisperer) && !DeadSeeEverything())
         {
             var whisperer = localinfo[0] as Whisperer;
 
@@ -306,7 +306,7 @@ public class MeetingHandler : MonoBehaviour
             else if (whisperer.PlayerConversion.TryGetValue(player.TargetPlayerId, out var value))
                 name += $" {value}%";
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Dracula) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Dracula) && !DeadSeeEverything())
         {
             var dracula = localinfo[0] as Dracula;
 
@@ -323,7 +323,7 @@ public class MeetingHandler : MonoBehaviour
                     color = dracula.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Jackal) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Jackal) && !DeadSeeEverything())
         {
             var jackal = localinfo[0] as Jackal;
 
@@ -340,7 +340,7 @@ public class MeetingHandler : MonoBehaviour
                     color = jackal.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Necromancer) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Necromancer) && !DeadSeeEverything())
         {
             var necromancer = localinfo[0] as Necromancer;
 
@@ -357,7 +357,7 @@ public class MeetingHandler : MonoBehaviour
                     color = necromancer.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything && NeutralKillingSettings.KnowEachOther)
+        else if (CustomPlayer.Local.Is(Alignment.NeutralKill) && !DeadSeeEverything() && NeutralKillingSettings.KnowEachOther)
         {
             if (((player.GetRole().Type == Role.LocalRole.Type && NeutralSettings.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
                 NeutralSettings.NoSolo == NoSolo.AllNKs)) && !revealed)
@@ -369,7 +369,7 @@ public class MeetingHandler : MonoBehaviour
             }
         }
 
-        if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Dracula))
+        if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything() && !CustomPlayer.Local.Is(LayerEnum.Dracula))
         {
             var dracula = CustomPlayer.Local.GetDracula();
 
@@ -401,7 +401,7 @@ public class MeetingHandler : MonoBehaviour
                     color = dracula.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsRecruit() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Jackal))
+        else if (CustomPlayer.Local.IsRecruit() && !DeadSeeEverything() && !CustomPlayer.Local.Is(LayerEnum.Jackal))
         {
             var jackal = CustomPlayer.Local.GetJackal();
 
@@ -433,7 +433,7 @@ public class MeetingHandler : MonoBehaviour
                     color = jackal.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsResurrected() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Necromancer))
+        else if (CustomPlayer.Local.IsResurrected() && !DeadSeeEverything() && !CustomPlayer.Local.Is(LayerEnum.Necromancer))
         {
             var necromancer = CustomPlayer.Local.GetNecromancer();
 
@@ -465,7 +465,7 @@ public class MeetingHandler : MonoBehaviour
                     color = necromancer.SubFactionColor;
             }
         }
-        else if (CustomPlayer.Local.IsPersuaded() && !DeadSeeEverything && !CustomPlayer.Local.Is(LayerEnum.Whisperer))
+        else if (CustomPlayer.Local.IsPersuaded() && !DeadSeeEverything() && !CustomPlayer.Local.Is(LayerEnum.Whisperer))
         {
             var whisperer = CustomPlayer.Local.GetWhisperer();
 
@@ -500,7 +500,7 @@ public class MeetingHandler : MonoBehaviour
                 name += $" {value}%";
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Lovers) && !DeadSeeEverything)
+        if (CustomPlayer.Local.Is(LayerEnum.Lovers) && !DeadSeeEverything())
         {
             var lover = localinfo[3] as Objectifier;
             var otherLover = CustomPlayer.Local.GetOtherLover();
@@ -533,7 +533,7 @@ public class MeetingHandler : MonoBehaviour
                 }
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Rivals) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Rivals) && !DeadSeeEverything())
         {
             var rival = localinfo[3] as Objectifier;
             var otherRival = CustomPlayer.Local.GetOtherRival();
@@ -566,7 +566,7 @@ public class MeetingHandler : MonoBehaviour
                 }
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Linked) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Linked) && !DeadSeeEverything())
         {
             var link = localinfo[3] as Objectifier;
             var otherLink = CustomPlayer.Local.GetOtherLink();
@@ -599,7 +599,7 @@ public class MeetingHandler : MonoBehaviour
                 }
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Mafia) && !DeadSeeEverything)
+        else if (CustomPlayer.Local.Is(LayerEnum.Mafia) && !DeadSeeEverything())
         {
             var mafia = localinfo[3] as Mafia;
 
@@ -632,7 +632,7 @@ public class MeetingHandler : MonoBehaviour
             }
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Snitch) && Snitch.SnitchSeesTargetsInMeeting && !DeadSeeEverything && player.TargetPlayerId != CustomPlayer.Local.PlayerId)
+        if (CustomPlayer.Local.Is(LayerEnum.Snitch) && Snitch.SnitchSeesTargetsInMeeting && !DeadSeeEverything() && player.TargetPlayerId != CustomPlayer.Local.PlayerId)
         {
             var role = localinfo[0] as Role;
 
@@ -669,7 +669,7 @@ public class MeetingHandler : MonoBehaviour
             }
         }
 
-        if (player.Is(LayerEnum.Snitch) && !DeadSeeEverything && player.TargetPlayerId != CustomPlayer.Local.PlayerId && (CustomPlayer.Local.Is(Faction.Syndicate) ||
+        if (player.Is(LayerEnum.Snitch) && !DeadSeeEverything() && player.TargetPlayerId != CustomPlayer.Local.PlayerId && (CustomPlayer.Local.Is(Faction.Syndicate) ||
             CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals)))
         {
             var role = info[0] as Role;
@@ -684,7 +684,7 @@ public class MeetingHandler : MonoBehaviour
         }
 
         if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.TargetPlayerId != CustomPlayer.Local.PlayerId && player.GetFaction() is Faction.Intruder or Faction.Syndicate &&
-            !DeadSeeEverything)
+            !DeadSeeEverything())
         {
             var role = info[0] as Role;
 
@@ -721,7 +721,7 @@ public class MeetingHandler : MonoBehaviour
                 name += $" {role.FactionColorString}ξ</color>";
         }
 
-        if ((CustomPlayer.Local.Is(Faction.Syndicate) || DeadSeeEverything) && (player.TargetPlayerId == Role.DriveHolder?.PlayerId || (SyndicateSettings.GlobalDrive &&
+        if ((CustomPlayer.Local.Is(Faction.Syndicate) || DeadSeeEverything()) && (player.TargetPlayerId == Role.DriveHolder?.PlayerId || (SyndicateSettings.GlobalDrive &&
             Role.SyndicateHasChaosDrive && player.Is(Faction.Syndicate))))
         {
             name += " <color=#008000FF>Δ</color>";
@@ -789,7 +789,7 @@ public class MeetingHandler : MonoBehaviour
                 name += " <color=#F995FCFF>Λ</color>";
         }
 
-        if (DeadSeeEverything)
+        if (DeadSeeEverything())
         {
             if (player.IsShielded() && Medic.ShowShielded != ShieldOptions.Everyone)
                 name += " <color=#006600FF>✚</color>";
@@ -837,16 +837,16 @@ public class MeetingHandler : MonoBehaviour
                 name += " <<color=#642DEAFF>λ</color>";
         }
 
-        if (player.IsShielded() && (int)Medic.ShowShielded is 3 && !DeadSeeEverything)
+        if (player.IsShielded() && (int)Medic.ShowShielded is 3 && !DeadSeeEverything())
             name += " <color=#006600FF>✚</color>";
 
-        if ((DeadSeeEverything || CustomPlayer.Local.Is(LayerEnum.Pestilence)) && Pestilence.Infected.TryGetValue(player.TargetPlayerId, out var count))
+        if ((DeadSeeEverything() || CustomPlayer.Local.Is(LayerEnum.Pestilence)) && Pestilence.Infected.TryGetValue(player.TargetPlayerId, out var count))
         {
             for (var i = 0; i < count; i++)
                 name += " <color=#424242FF>米</color>";
         }
 
-        if (DeadSeeEverything || player.TargetPlayerId == CustomPlayer.Local.PlayerId)
+        if (DeadSeeEverything() || player.TargetPlayerId == CustomPlayer.Local.PlayerId)
         {
             if (info[3])
             {

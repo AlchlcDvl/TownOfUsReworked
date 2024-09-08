@@ -11,6 +11,8 @@ public static class AssetManager
 
     public static Sprite GetSprite(string path) => Get<Sprite>(path) ?? Get<Sprite>((Meeting ? "Meeting" : "") + "Placeholder");
 
+    public static RoleEffectAnimation GetAnim(string path) => Get<RoleEffectAnimation>(path);
+
     public static void Play(string path, bool loop = false, float volume = 1f) => Play(GetAudio(path), loop, volume);
 
     public static void Play(AudioClip audio, bool loop = false, float volume = 1f)
@@ -159,6 +161,11 @@ public static class AssetManager
         AddAsset("TrollIntro", GetIntroSound(RoleTypes.Noisemaker));
         AddAsset("TrackerIntro", GetIntroSound(RoleTypes.Tracker));
         AddAsset("WraithIntro", GetIntroSound(RoleTypes.Phantom));
+        AddAsset("MorphAnim", RoleManager.Instance.shapeshiftAnim);
+        AddAsset("ProtectAnim", RoleManager.Instance.protectLoopAnim);
+        AddAsset("VanishPoofAnim", RoleManager.Instance.vanish_PoofAnim);
+        AddAsset("PoofChargeAnim", RoleManager.Instance.vanish_ChargeAnim);
+        AddAsset("AppearPoofAnim", RoleManager.Instance.shapeshiftAnim);
     }
 
     public static float GetSize(string path)
@@ -225,7 +232,7 @@ public static class AssetManager
         return asset;
     }
 
-    public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.ToList().Find(x => x.Role == roleType).IntroSound;
+    public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.GetRole(roleType)?.IntroSound;
 
     public static void AddAsset(string name, UObject obj)
     {

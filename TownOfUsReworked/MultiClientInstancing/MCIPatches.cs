@@ -5,13 +5,13 @@ public static class OnGameStart
 {
     public static void Prefix(AmongUsClient __instance)
     {
-        if (TownOfUsReworked.MCIActive)
+        if (!TownOfUsReworked.MCIActive)
+            return;
+
+        foreach (var client in __instance.allClients)
         {
-            foreach (var client in __instance.allClients)
-            {
-                client.IsReady = true;
-                client.Character.gameObject.GetComponent<DummyBehaviour>().enabled = false;
-            }
+            client.IsReady = true;
+            client.Character.gameObject.GetComponent<DummyBehaviour>().enabled = false;
         }
     }
 }
@@ -19,13 +19,12 @@ public static class OnGameStart
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
 public static class SameVoteAll
 {
-    public static void Postfix(MeetingHud __instance, ref byte suspectStateIdx)
+    public static void Postfix(MeetingHud __instance, byte suspectStateIdx)
     {
-        if (!IsLocalGame || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote)
+        if (!IsLocalGame() || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote)
             return;
 
-        var sus = suspectStateIdx;
-        CustomPlayer.AllPlayers.ForEach(x => __instance.CmdCastVote(x.PlayerId, sus));
+        AllPlayers.ForEach(x => __instance.CmdCastVote(x.PlayerId, suspectStateIdx));
     }
 }
 

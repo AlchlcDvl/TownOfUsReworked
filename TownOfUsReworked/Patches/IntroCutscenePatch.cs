@@ -5,7 +5,7 @@ public static class ShowTeamPatch
 {
     public static void Postfix(IntroCutscene._ShowTeam_d__38 __instance)
     {
-        if (IsHnS)
+        if (IsHnS())
             return;
 
         __instance.__4__this.TeamTitle.text = Role.LocalRole.FactionName;
@@ -21,7 +21,7 @@ public static class ShowRolePatch
 {
     public static void Postfix(IntroCutscene._ShowRole_d__41 __instance)
     {
-        if (IsHnS)
+        if (IsHnS())
             return;
 
         var role = Role.LocalRole;
@@ -52,7 +52,7 @@ public static class ShowRolePatch
         __instance.__4__this.YouAreText.color = role.Color;
         __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
         __instance.__4__this.RoleBlurbText.color = role.Color;
-        __instance.__4__this.StartCoroutine(PerformTimedAction(0.01f, _ => __instance.__4__this.YouAreText.text = "You Are The"));
+        Coroutines.Start(PerformTimedAction(0.01f, _ => __instance.__4__this.YouAreText.text = "You Are The"));
     }
 }
 
@@ -61,13 +61,13 @@ public static class CreatePlayerPatch
 {
     public static void Prefix(ref bool impostorPositioning)
     {
-        if (!IsHnS)
+        if (!IsHnS())
             impostorPositioning = true;
     }
 
     public static void Postfix(ref PoolablePlayer __result)
     {
-        if (!IsHnS)
+        if (!IsHnS())
             __result.SetNameColor(Role.LocalRole.FactionColor);
     }
 }
@@ -77,7 +77,7 @@ public static class OverrideShowTeam
 {
     public static void Postfix(ref ISystem.List<PlayerControl> __result)
     {
-        if (!IsHnS)
+        if (!IsHnS())
             __result = Role.LocalRole.Team().ToIl2Cpp();
     }
 }

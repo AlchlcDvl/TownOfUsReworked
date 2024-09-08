@@ -18,7 +18,7 @@ public class Dracula : Neutral
     public CustomButton BiteButton { get; set; }
     public bool HasConverted { get; set; }
     public List<byte> Converted { get; set; }
-    public static int AliveCount => CustomPlayer.AllPlayers.Count(x => !x.HasDied());
+    public static int AliveCount => AllPlayers.Count(x => !x.HasDied());
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : CustomColorManager.Neutral;
     public override string Name => "Dracula";

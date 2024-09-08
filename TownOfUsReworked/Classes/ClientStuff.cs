@@ -36,7 +36,7 @@
 //     {
 //         CloseMenus(SkipEnum.Settings);
 
-//         if (LocalBlocked)
+//         if (LocalBlocked())
 //             return;
 
 //         ClientHandler.Instance.SettingsActive = !ClientHandler.Instance.SettingsActive;
@@ -47,7 +47,7 @@
 //     {
 //         CloseMenus(SkipEnum.RoleCard);
 
-//         if (LocalBlocked)
+//         if (LocalBlocked())
 //             return;
 
 //         if (ClientHandler.Instance.PhoneText)
@@ -74,7 +74,7 @@
 //         ClientHandler.Instance.PhoneText.text = CustomPlayer.Local.RoleCardInfo();
 //         ClientHandler.Instance.PhoneText.gameObject.SetActive(ClientHandler.Instance.RoleCardActive);
 //         ClientHandler.Instance.Phone.gameObject.SetActive(ClientHandler.Instance.RoleCardActive);
-//         ClientHandler.Instance.ToTheWiki.gameObject.SetActive(ClientHandler.Instance.RoleCardActive && IsNormal && IsInGame);
+//         ClientHandler.Instance.ToTheWiki.gameObject.SetActive(ClientHandler.Instance.RoleCardActive && IsNormal() && IsInGame());
 //     }
 
 //     public static void Open()
@@ -88,7 +88,7 @@
 //             ClientHandler.Instance.Phone.transform.localScale *= 1.25f;
 //         }
 
-//         if (IsInGame)
+//         if (IsInGame())
 //             OpenRoleCard();
 //         else
 //             OpenWiki();
@@ -98,7 +98,7 @@
 //     {
 //         CloseMenus(SkipEnum.Wiki);
 
-//         if (LocalBlocked)
+//         if (LocalBlocked())
 //             return;
 
 //         if (!ClientHandler.Instance.PagesSet)
@@ -226,7 +226,7 @@
 //         ClientHandler.Instance.Phone.gameObject.SetActive(ClientHandler.Instance.WikiActive);
 //         ClientHandler.Instance.NextButton.gameObject.SetActive(ClientHandler.Instance.WikiActive);
 //         ClientHandler.Instance.BackButton.gameObject.SetActive(ClientHandler.Instance.WikiActive);
-//         ClientHandler.Instance.YourStatus.gameObject.SetActive(ClientHandler.Instance.WikiActive && IsNormal && IsInGame);
+//         ClientHandler.Instance.YourStatus.gameObject.SetActive(ClientHandler.Instance.WikiActive && IsNormal() && IsInGame());
 //         ResetButtonPos();
 //         ClientHandler.Instance.Selected = null;
 

@@ -95,7 +95,7 @@ public static class MainMenuStartPatch
 
         button.GetComponent<PassiveButton>().OverrideOnClickListeners(() =>
         {
-            __instance.StartCoroutine(ModUpdater.DownloadUpdate(downloadType));
+            Coroutines.Start(ModUpdater.DownloadUpdate(downloadType));
             button.SetActive(false);
         });
 

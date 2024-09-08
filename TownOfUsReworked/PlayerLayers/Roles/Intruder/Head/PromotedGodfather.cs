@@ -346,7 +346,7 @@ public class PromotedGodfather : Intruder
 
     public bool JaniUsable2() => CurrentlyDragging && IsJani;
 
-    public float JaniDifference() => LastImp && Janitor.SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
+    public float JaniDifference() => LastImp() && Janitor.SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
     // Disguiser Stuff
     public CustomButton DisguiseButton { get; set; }

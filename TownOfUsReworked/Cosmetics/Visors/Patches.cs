@@ -145,13 +145,12 @@ public static class VisorsTabOnEnablePatch
 [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetVisor))]
 public static class CosmeticsCacheGetVisorPatch
 {
-    public static bool Prefix(CosmeticsCache __instance, ref string id, ref VisorViewData __result)
+    public static bool Prefix(CosmeticsCache __instance, string id, ref VisorViewData __result)
     {
         if (!CustomVisorViewDatas.TryGetValue(id, out __result))
             return true;
 
-        __result ??= __instance.visors["visor_EmptyVisor"].GetAsset();
-        return false;
+        return __result ??= __instance.visors["visor_EmptyVisor"].GetAsset();
     }
 }
 
@@ -198,7 +197,7 @@ public static class UpdateMaterialPrefix
 [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFlipX))]
 public static class SetFlipXPrefix
 {
-    public static bool Prefix(VisorLayer __instance, ref bool flipX)
+    public static bool Prefix(VisorLayer __instance, bool flipX)
     {
         if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out var asset) || !asset)
             return true;
@@ -216,7 +215,7 @@ public static class SetFlipXPrefix
 [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int))]
 public static class SetVisorPrefix
 {
-    public static bool Prefix(VisorLayer __instance, ref VisorData data, ref int color)
+    public static bool Prefix(VisorLayer __instance, VisorData data, int color)
     {
         if (!CustomVisorViewDatas.TryGetValue(data.ProductId, out var asset) || !asset)
             return true;

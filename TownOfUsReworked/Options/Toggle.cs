@@ -53,7 +53,7 @@ public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : Op
     {
         TownOfUsReworked.LighterDarker.Value = !TownOfUsReworked.LighterDarker.Value;
 
-        if (IsMeeting)
+        if (IsMeeting())
             AllVoteAreas.ForEach(Role.LocalRole.GenText);
 
         return TownOfUsReworked.LighterDarker.Value;
@@ -63,7 +63,7 @@ public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : Op
     {
         TownOfUsReworked.WhiteNameplates.Value = !TownOfUsReworked.WhiteNameplates.Value;
 
-        if (IsMeeting)
+        if (IsMeeting())
             AllVoteAreas.ForEach(x => x.SetCosmetics(PlayerByVoteArea(x).Data));
 
         return TownOfUsReworked.WhiteNameplates.Value;
@@ -73,7 +73,7 @@ public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : Op
     {
         TownOfUsReworked.NoLevels.Value = !TownOfUsReworked.NoLevels.Value;
 
-        if (IsMeeting)
+        if (IsMeeting())
         {
             foreach (var voteArea in AllVoteAreas)
             {

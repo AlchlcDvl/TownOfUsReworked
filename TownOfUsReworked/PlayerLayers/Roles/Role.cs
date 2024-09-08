@@ -119,7 +119,7 @@ public abstract class Role : PlayerLayer
                 (ConditionFunc)CallCondition);
         }*/
 
-        if (!IsCustomHnS && !IsTaskRace)
+        if (!IsCustomHnS() && !IsTaskRace())
         {
             if (RoleGen.GetSpawnItem(LayerEnum.Enforcer).IsActive())
                 BombKillButton = CreateButton(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
@@ -222,7 +222,7 @@ public abstract class Role : PlayerLayer
             __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
         }
 
-        if (!Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode && CustomPlayer.AllPlayers.Any(x => x.Is(LayerEnum.Timekeeper)))
+        if (!Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode && AllPlayers.Any(x => x.Is(LayerEnum.Timekeeper)))
         {
             if (!Rewinding)
             {

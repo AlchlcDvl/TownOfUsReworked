@@ -51,6 +51,7 @@ public class CustomButton
     public float EffectTime { get; set; }
     public float DelayTime { get; set; }
     public float CooldownTime { get; set; }
+    public bool BlockExposed { get; set; }
 
     // Read-onlys (onlies?)
     public bool HasEffect => Duration.Value > 0f;
@@ -153,10 +154,7 @@ public class CustomButton
         button.Disabled = !button.Owner.Local;
         button.CreateButton();
         AllButtons.Add(button);
-
-        foreach (var prop in missing)
-            LogError($"Unassigned proprty of type ({prop.GetType().Name}) was found in the button ({button.ID})");
-
+        missing.ForEach(x => LogError($"Unassigned proprty of type {x.GetType().Name} was found in the button {button.ID}"));
         return button;
     }
 
@@ -195,11 +193,7 @@ public class CustomButton
         button.usesRemainingSprite.enabled = true;
         button.commsDown.Destroy();
         button.commsDown = null;
-        var passive = button.GetComponent<PassiveButton>();
-        passive.OnMouseOut.RemoveAllListeners();
-        passive.OnMouseOver.RemoveAllListeners();
-        passive.OnMouseOut = new();
-        passive.OnMouseOver = new();
+        button.GetComponent<PassiveButton>().WipeListeners();
         return button;
     }
 
@@ -230,6 +224,9 @@ public class CustomButton
 
     public void Clicked()
     {
+        if (Owner.IsBlocked)
+            BlockExposed = true;
+
         if (Clickable())
         {
             DoClick();
@@ -272,7 +269,7 @@ public class CustomButton
         EffectTime -= Time.deltaTime;
         Effect();
 
-        if (End() || Meeting || ClickedAgain || !Local || !IsInGame || !Owner || !Owner.Player)
+        if (End() || Meeting || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
             EffectTime = 0f;
     }
 
@@ -296,7 +293,7 @@ public class CustomButton
         DelayTime -= Time.deltaTime;
         ActionDelay();
 
-        if (End() || Meeting || ClickedAgain || !Local || !IsInGame || !Owner || !Owner.Player)
+        if (End() || Meeting || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
             DelayTime = 0f;
     }
 
@@ -323,7 +320,7 @@ public class CustomButton
     private void SetAliveTarget()
     {
         var previous = TargetPlayer;
-        TargetPlayer = Owner.Player.GetClosestPlayer(CustomPlayer.AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving())));
+        TargetPlayer = Owner.Player.GetClosestPlayer(AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving())));
         Targeting = TargetPlayer;
 
         if (previous != TargetPlayer)
@@ -389,8 +386,8 @@ public class CustomButton
         return result;
     }
 
-    public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner.Dead == PostDeath.Value && !Ejection && Owner.Local && !IsMeeting && !IsLobby &&
-        !NoPlayers && Owner && Owner.Player && !IntroCutscene.Instance;
+    public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner.Dead == PostDeath.Value && !Ejection && Owner.Local && !IsMeeting() && !IsLobby() &&
+        !NoPlayers() && Owner && Owner.Player && !IntroCutscene.Instance;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive &&
         Base.isActiveAndEnabled && !Disabled;
@@ -439,7 +436,7 @@ public class CustomButton
         Base.buttonLabelText.SetOutlineColor(Owner.Color);
         Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
         Base.buttonLabelText.text = Label();
-        Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled);
+        Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && BlockIsExposed());
 
         if (!EffectActive && !DelayActive && !CooldownActive && !Disabled && PostDeath.Value == Owner.Dead)
             SetTarget();

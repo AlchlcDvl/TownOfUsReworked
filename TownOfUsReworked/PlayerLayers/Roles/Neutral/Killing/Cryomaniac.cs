@@ -23,7 +23,7 @@ public class Cryomaniac : Neutral
     public CustomButton KillButton { get; set; }
     public List<byte> Doused { get; set; }
     public bool FreezeUsed { get; set; }
-    public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
+    public bool LastKiller => !AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CryoLastKillerBoost;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac : CustomColorManager.Neutral;

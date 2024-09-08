@@ -52,7 +52,7 @@ public class Volatile : Modifier
             else if (randomNumber == 1)
             {
                 Player.NetTransform.Halt();
-                __instance.KillOverlay.ShowKillAnimation(CustomPlayer.AllPlayers.Random().Data, Data);
+                __instance.KillOverlay.ShowKillAnimation(AllPlayers.Random().Data, Data);
             }
             // Get rick rolled lmao
             else if (randomNumber == 2 && !LMAO && !TownOfUsReworked.IsStream)

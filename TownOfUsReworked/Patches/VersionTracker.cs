@@ -30,7 +30,7 @@ public static class PingTracker_Update
 
     public static bool Prefix(PingTracker __instance)
     {
-        if (__instance.text == null || !AmongUsClient.Instance || IsFreePlay)
+        if (__instance.text == null || !AmongUsClient.Instance || IsFreePlay())
             return true;
 
         if (!__instance.GetComponentInChildren<SpriteRenderer>())

@@ -5,7 +5,7 @@ public static class CheckEndGame
 {
     public static bool Prefix()
     {
-        if (IsFreePlay || IsHnS || !AmongUsClient.Instance.AmHost)
+        if (IsFreePlay() || IsHnS() || !AmongUsClient.Instance.AmHost)
             return false;
 
         if (WinState != WinLose.None)
@@ -14,12 +14,12 @@ public static class CheckEndGame
             return false;
         }
 
-        var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
-        var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
+        var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers.Count(y => !y.HasDied()));
+        var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers.Count(y => !y.HasDied()));
 
         if (TasksDone())
         {
-            WinState = IsCustomHnS ? WinLose.HuntedWins : WinLose.CrewWins;
+            WinState = IsCustomHnS() ? WinLose.HuntedWins : WinLose.CrewWins;
             CallRpc(CustomRPC.WinLose, WinState);
         }
         else if (spell)
@@ -72,7 +72,7 @@ public static class CheckEndGame
     // Stalemate detector for unwinnable situations
     private static void DetectStalemate()
     {
-        var players = CustomPlayer.AllPlayers.Where(x => !x.HasDied()).ToList();
+        var players = AllPlayers.Where(x => !x.HasDied()).ToList();
 
         if (players.Count == 2)
         {
@@ -97,7 +97,7 @@ public static class CheckEndGame
             var rivals = rival1 && rival2;
 
             // NK vs NK when neither can kill each other and Neutrals don't win together
-            if ((player1.Is(LayerEnum.Cryomaniac) && player2.Is(LayerEnum.Cryomaniac) && nosolo && nobuttons && neitherknighted) || NoOneWins || rivals || (cantkill && nobuttons))
+            if ((player1.Is(LayerEnum.Cryomaniac) && player2.Is(LayerEnum.Cryomaniac) && nosolo && nobuttons && neitherknighted) || NoOneWins() || rivals || (cantkill && nobuttons))
                 PerformStalemate();
         }
         else if (players.Count == 0)
@@ -114,12 +114,12 @@ public static class CheckEndGame
     {
         try
         {
-            if (IsCustomHnS)
+            if (IsCustomHnS())
             {
                 var allCrew = new List<PlayerControl>();
                 var crewWithNoTasks = new List<PlayerControl>();
 
-                foreach (var player in CustomPlayer.AllPlayers)
+                foreach (var player in AllPlayers)
                 {
                     if (player.Is(LayerEnum.Hunted))
                     {
@@ -140,7 +140,7 @@ public static class CheckEndGame
                 var allCrew = new List<PlayerControl>();
                 var crewWithNoTasks = new List<PlayerControl>();
 
-                foreach (var player in CustomPlayer.AllPlayers)
+                foreach (var player in AllPlayers)
                 {
                     if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CrewSettings.GhostTasksCountToWin)))
                     {
@@ -214,7 +214,7 @@ public static class OverrideTaskEndGame1
     public static bool Prefix(ref bool __result)
     {
         GameData.Instance.RecomputeTaskCounts();
-        return __result = IsHnS;
+        return __result = IsHnS();
     }
 }
 
@@ -234,6 +234,6 @@ public static class OverrideTaskEndGame2
         else
             GameData.Instance.RecomputeTaskCounts();
 
-        return __result = IsHnS;
+        return __result = IsHnS();
     }
 }

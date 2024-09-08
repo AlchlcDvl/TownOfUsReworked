@@ -80,7 +80,7 @@ public class Banshee : Syndicate
 
     public void HitScream()
     {
-        foreach (var player in CustomPlayer.AllPlayers)
+        foreach (var player in AllPlayers)
         {
             if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
                 Blocked.Add(player.PlayerId);
@@ -96,7 +96,7 @@ public class Banshee : Syndicate
 
     public override void ReadRPC(MessageReader reader)
     {
-        foreach (var player in CustomPlayer.AllPlayers)
+        foreach (var player in AllPlayers)
         {
             if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
                 Blocked.Add(player.PlayerId);

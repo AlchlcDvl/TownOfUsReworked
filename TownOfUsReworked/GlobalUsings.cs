@@ -5,7 +5,6 @@ global using TBMode = AmongUs.GameOptions.TaskBarMode;
 global using BepInEx;
 global using BepInEx.Unity.IL2CPP;
 global using BepInEx.Configuration;
-global using BepInEx.Unity.IL2CPP.Utils;
 
 global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Injection;
@@ -42,12 +41,12 @@ global using static TownOfUsReworked.Data.References;
 global using TownOfUsReworked.PlayerLayers.Abilities;
 global using TownOfUsReworked.PlayerLayers.Modifiers;
 global using TownOfUsReworked.Cosmetics.CustomColors;
+global using static TownOfUsReworked.Classes.GameStates;
 global using TownOfUsReworked.PlayerLayers.Objectifiers;
 global using static TownOfUsReworked.Custom.CustomButton;
 global using static TownOfUsReworked.Modules.ChatCommand;
 global using static TownOfUsReworked.Classes.Interactions;
 global using static TownOfUsReworked.Classes.AssetManager;
-global using static TownOfUsReworked.Data.ReworkedConstants;
 global using static TownOfUsReworked.Classes.ModCompatibility;
 global using static TownOfUsReworked.Extensions.LayerExtentions;
 

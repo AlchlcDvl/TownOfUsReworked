@@ -60,6 +60,10 @@ public abstract class AssetLoader
         yield return EndFrame();
         yield break;
     }
+
+    public virtual IEnumerator BeginDownload(object response) => EndFrame();
+
+    public virtual IEnumerator AfterLoading(object response) => EndFrame();
 }
 
 public abstract class AssetLoader<T> : AssetLoader where T : Asset
@@ -131,8 +135,4 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
         yield return EndFrame();
         yield break;
     }
-
-    public virtual IEnumerator BeginDownload(object response) => EndFrame();
-
-    public virtual IEnumerator AfterLoading(object response) => EndFrame();
 }

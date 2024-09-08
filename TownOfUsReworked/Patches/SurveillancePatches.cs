@@ -143,7 +143,7 @@ public static class SurveillancePatches
 
     private static void EnforceNightVision()
     {
-        foreach (var player in CustomPlayer.AllPlayers)
+        foreach (var player in AllPlayers)
         {
             if (player == CustomPlayer.Local)
                 continue;

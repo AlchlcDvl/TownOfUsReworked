@@ -74,7 +74,6 @@ public static class MapPickerPatch
         if (mapId == 7 && !LILoaded)
             mapId = SubLoaded ? 6 : 5;
 
-        // Generate.Map.Set(mapId);
         MapSettings.Map = (MapEnum)mapId;
     }
 }
@@ -82,13 +81,13 @@ public static class MapPickerPatch
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
 public static class LobbySizePatch
 {
-    public static void Postfix(ref int maxPlayers) => OptionAttribute.GetOptionFromName("LobbySize").Set(maxPlayers);
+    public static void Postfix(int maxPlayers) => OptionAttribute.GetOptionFromName("LobbySize").Set(maxPlayers);
 }
 
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
 public static class CreateOptionsPicker_UpdateMaxPlayersButtons
 {
-    public static bool Prefix(CreateOptionsPicker __instance, ref IGameOptions opts)
+    public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)
     {
         __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
 

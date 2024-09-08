@@ -30,7 +30,7 @@ public static class BetterSabotages
 
     public static void Postfix(HudManager __instance)
     {
-        if (!IsInGame || !Ship)
+        if (!IsInGame() || !Ship)
             return;
 
         if (Ship.Systems.TryGetValue(SystemTypes.Laboratory, out var lab) && MapPatches.CurrentMap == 2)

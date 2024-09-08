@@ -151,19 +151,25 @@ public static class PlayerTabUpdatePatch
 [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
 public static class SetPlayerMaterialPatch1
 {
-    public static void Prefix(ref int colorId, ref Renderer rend) => ColorHandler.Instance.SetRend(rend, colorId);
+    public static void Prefix(int colorId, Renderer rend) => ColorHandler.Instance.SetRend(rend, colorId);
 }
 
 [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(UColor), typeof(Renderer))]
 public static class SetPlayerMaterialPatch2
 {
-    public static void Prefix(ref Renderer rend) => ColorHandler.Instance.SetRend(rend, -1);
+    public static void Prefix(Renderer rend) => ColorHandler.Instance.SetRend(rend, -1);
+}
+
+[HarmonyPatch(typeof(RoleEffectAnimation), nameof(RoleEffectAnimation.SetMaterialColor))]
+public static class SetPlayerMaterialPatch3
+{
+    public static void Prefix(RoleEffectAnimation __instance, int colorId) => ColorHandler.Instance.SetRend(__instance.Renderer, colorId);
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdCheckColor))]
 public static class CmdCheckColorPatch
 {
-    public static bool Prefix(PlayerControl __instance, ref byte bodyColor)
+    public static bool Prefix(PlayerControl __instance, byte bodyColor)
     {
         CallRpc(CustomRPC.Vanilla, VanillaRPC.SetColor, __instance, bodyColor);
         __instance.SetColor(bodyColor);
@@ -192,7 +198,7 @@ public static class UpdateAvailableColorsPatch
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetPlayerMaterialColors))]
 public static class FixPlayerMaterials
 {
-    public static bool Prefix(PlayerControl __instance, ref Renderer rend)
+    public static bool Prefix(PlayerControl __instance, Renderer rend)
     {
         PlayerMaterial.SetColors(__instance.Data.DefaultOutfit.ColorId, rend);
         return false;

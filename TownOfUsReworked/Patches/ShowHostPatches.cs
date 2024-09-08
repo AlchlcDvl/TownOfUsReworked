@@ -5,7 +5,7 @@ public static class ShowHostMeetingUpdatePatch
 {
     public static void Postfix(MeetingHud __instance)
     {
-        if (!IsOnlineGame)
+        if (!IsOnlineGame())
             return;
 
         var host = GameData.Instance.GetHost();
@@ -23,7 +23,7 @@ public static class ShowHostMeetingStartPatch
 {
     public static void Postfix(MeetingHud __instance)
     {
-        if (!IsOnlineGame)
+        if (!IsOnlineGame())
             return;
 
         __instance.ProceedButton.gameObject.transform.localPosition = new(-2.5f, 2.2f, 0);

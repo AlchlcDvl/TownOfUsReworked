@@ -6,7 +6,7 @@ public static class VitalsPatch
     public static void Postfix(VitalsMinigame __instance)
     {
         var localPlayer = CustomPlayer.Local;
-        var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything;
+        var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything();
 
         if (!isOp)
             isOp = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOp;

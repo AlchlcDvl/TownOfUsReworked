@@ -260,6 +260,20 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static void SaveSettings(string fileName) => SaveText(fileName, SettingsToString(), TownOfUsReworked.Options);
 
+    public static void LoadPreset(string presetName)
+    {
+        LogMessage($"Loading - {presetName}");
+        var text = ReadDiskText(presetName, TownOfUsReworked.Options);
+
+        if (IsNullEmptyOrWhiteSpace(text))
+            LogError($"{presetName} no exist");
+        else
+        {
+            CallRpc(CustomRPC.Misc, MiscRPC.LoadPreset, presetName);
+            LoadSettings(text);
+        }
+    }
+
     public static void LoadSettings(string settingsData) => Coroutines.Start(CoLoadSettings(settingsData));
 
     public static IEnumerator CoLoadSettings(string settingsData)

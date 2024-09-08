@@ -17,6 +17,8 @@ public class LobbyConsole : MonoBehaviour
 
     public void Awake()
     {
+        Rend = GetComponent<SpriteRenderer>();
+
         if (Prefab)
             return;
 
@@ -27,8 +29,6 @@ public class LobbyConsole : MonoBehaviour
         Pos = options.CustomPosition;
         Customise = options.CustomUseIcon;
     }
-
-    public void SetRenderer(SpriteRenderer renderer) => Rend = renderer;
 
     public void SetOutline(bool on, bool mainTarget)
     {
