@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Consigliere : Intruder
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float InvestigateCd { get; set; } = 25f;
+    public static Number InvestigateCd { get; set; } = new(25);
 
     [StringOption(MultiMenu.LayerSubOptions)]
     public static ConsigInfo ConsigInfo { get; set; } = ConsigInfo.Role;

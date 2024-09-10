@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Poisoner : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float PoisonCd { get; set; } = 25f;
+    public static Number PoisonCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
-    public static float PoisonDur { get; set; } = 5f;
+    public static Number PoisonDur { get; set; } = new(5);
 
     public CustomButton PoisonButton { get; set; }
     public CustomButton GlobalPoisonButton { get; set; }

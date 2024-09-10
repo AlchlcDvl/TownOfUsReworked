@@ -15,9 +15,9 @@ public static class PlayerControlRevivePatch
         __instance.Collider.enabled = true;
         __instance.cosmetics.SetPetSource(__instance);
         __instance.cosmetics.SetNameMask(true);
-        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || !AllPlayers.Any(y => y.PlayerId == x.PlayerId));
-        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || !AllPlayers.Any(y => y.PlayerId == x));
-        Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || !AllPlayers.Any(y => y.PlayerId == x) || !PlayerById(x));
+        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || !AllPlayers().Any(y => y.PlayerId == x.PlayerId));
+        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || !AllPlayers().Any(y => y.PlayerId == x));
+        Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || !AllPlayers().Any(y => y.PlayerId == x) || !PlayerById(x));
         BodyLocations.Remove(__instance.PlayerId);
         SetPostmortals.RemoveFromPostmortals(__instance);
         __instance.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
@@ -36,17 +36,17 @@ public static class PlayerControlRevivePatch
         if (!__instance.AmOwner)
             return false;
 
-        HUD.ShadowQuad.gameObject.SetActive(true);
-        HUD.KillButton.gameObject.SetActive(false);
-        HUD.AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS());
-        HUD.SabotageButton.gameObject.SetActive(__instance.CanSabotage());
-        HUD.ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
+        HUD().ShadowQuad.gameObject.SetActive(true);
+        HUD().KillButton.gameObject.SetActive(false);
+        HUD().AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS());
+        HUD().SabotageButton.gameObject.SetActive(__instance.CanSabotage());
+        HUD().ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
         ButtonUtils.Reset(player: __instance);
 
-        if (Chat.IsOpenOrOpening)
-            Chat.ForceClosed();
+        if (Chat().IsOpenOrOpening)
+            Chat().ForceClosed();
 
-        Chat.SetVisible(__instance.CanChat());
+        Chat().SetVisible(__instance.CanChat());
         return false;
     }
 }

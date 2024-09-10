@@ -4,22 +4,22 @@
 public class Operative : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float BugCd { get; set; } = 25f;
+    public static Number BugCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
-    public static float MinAmountOfTimeInBug { get; set; } = 0f;
+    public static Number MinAmountOfTimeInBug { get; set; } = new(0);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BugsRemoveOnNewRound { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxBugs { get; set; } = 5;
+    public static Number MaxBugs { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float BugRange { get; set; } = 1.5f;
+    public static Number BugRange { get; set; } = new(1.5f);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
-    public static int MinAmountOfPlayersInBug { get; set; } = 1;
+    public static Number MinAmountOfPlayersInBug { get; set; } = new(1);
 
     [StringOption(MultiMenu.LayerSubOptions)]
     public static AdminDeadPlayers WhoSeesDead { get; set; } = AdminDeadPlayers.Nobody;
@@ -88,7 +88,7 @@ public class Operative : Crew
             message = message.Remove(message.Length - 2);
         }
 
-        if (HUD)
+        if (HUD())
             Run("<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 

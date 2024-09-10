@@ -19,10 +19,10 @@ public class Vigilante : Crew
     public static VigiNotif HowIsVigilanteNotified { get; set; } = VigiNotif.Never;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxBullets { get; set; } = 5;
+    public static Number MaxBullets { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ShootCd { get; set; } = 25f;
+    public static Number ShootCd { get; set; } = new(25);
 
     public bool KilledInno { get; set; }
     public bool PreMeetingDie { get; set; }

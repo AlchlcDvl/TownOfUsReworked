@@ -4,19 +4,19 @@
 public class Glitch : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float MimicCd { get; set; } = 25f;
+    public static Number MimicCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float MimicDur { get; set; } = 10f;
+    public static Number MimicDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float HackCd { get; set; } = 25f;
+    public static Number HackCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float HackDur { get; set; } = 10f;
+    public static Number HackDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float NeutraliseCd { get; set; } = 25f;
+    public static Number NeutraliseCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GlitchVent { get; set; } = false;

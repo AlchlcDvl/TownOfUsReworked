@@ -148,8 +148,8 @@ public static class SetPostmortals
         }
 
         BeginPostmortals(exiled, true);
-        AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
-        AllBodies.ForEach(x => x?.gameObject?.Destroy());
+        AllPlayers().ForEach(x => x?.MyPhysics?.ResetAnimState());
+        AllBodies().ForEach(x => x?.gameObject?.Destroy());
     }
 
     public static void BeginPostmortals(PlayerControl player, bool ejection)
@@ -192,9 +192,9 @@ public static class SetPostmortals
         if (!player.Data.IsDead || !player.IsPostmortal() || player.Caught())
             return;
 
-        var vents = AllMapVents;
+        var vents = AllMapVents();
 
-        if (Ship.Systems.TryGetValue(SystemTypes.Ventilation, out var systemType))
+        if (Ship().Systems.TryGetValue(SystemTypes.Ventilation, out var systemType))
         {
             var ventilationSystem = systemType.TryCast<VentilationSystem>();
 
@@ -203,7 +203,7 @@ public static class SetPostmortals
         }
 
         if (IsSubmerged())
-            vents = [ .. vents.Where(x => AllMapVents.IndexOf(x) is not (0 or 14))];
+            vents = [ .. vents.Where(x => AllMapVents().IndexOf(x) is not (0 or 14))];
 
         vents.Shuffle();
         var startingVent = vents.Random();

@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Troll : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float InteractCd { get; set; } = 25f;
+    public static Number InteractCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool TrollVent { get; set; } = false;

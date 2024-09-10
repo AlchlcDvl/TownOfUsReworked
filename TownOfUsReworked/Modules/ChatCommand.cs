@@ -70,11 +70,11 @@ public class ChatCommand
 
     public static void Run(string title, string text, bool withColor = true, bool hasColor = false, UColor? color = null)
     {
-        var pooledBubble = Chat.GetPooledBubble();
+        var pooledBubble = Chat().GetPooledBubble();
 
         try
         {
-            pooledBubble.transform.SetParent(Chat.scroller.Inner);
+            pooledBubble.transform.SetParent(Chat().scroller.Inner);
             pooledBubble.transform.localScale = Vector3.one;
             pooledBubble.SetLeft();
             pooledBubble.SetCosmetics(CustomPlayer.Local.Data);
@@ -97,13 +97,13 @@ public class ChatCommand
             var pos = pooledBubble.NameText.transform.localPosition;
             pos.y += 0.05f;
             pooledBubble.NameText.transform.localPosition = pos;
-            Chat.AlignAllBubbles();
+            Chat().AlignAllBubbles();
             Play("Chat");
         }
         catch (Exception ex)
         {
             LogError(ex);
-            Chat.chatBubblePool.Reclaim(pooledBubble);
+            Chat().chatBubblePool.Reclaim(pooledBubble);
         }
     }
 
@@ -142,7 +142,7 @@ public class ChatCommand
         }
         else if (args2.Length == 3 && first == 0)
         {
-            whispered = AllPlayers.Find(x => x.name == args2[1]);
+            whispered = AllPlayers().Find(x => x.name == args2[1]);
             message = args2[2][1..];
         }
         else
@@ -248,7 +248,7 @@ public class ChatCommand
             return;
         }
 
-        foreach (var player2 in AllPlayers)
+        foreach (var player2 in AllPlayers())
         {
             if (player2 != CustomPlayer.Local)
             {
@@ -287,7 +287,7 @@ public class ChatCommand
         var arg = "";
         args[1..].ForEach(arg2 => arg += $"{arg2} ");
         arg = arg.Remove(arg.Length - 1);
-        var target = AllPlayers.Find(x => x.Data.PlayerName == arg);
+        var target = AllPlayers().Find(x => x.Data.PlayerName == arg);
 
         if (!target)
         {

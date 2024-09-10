@@ -91,7 +91,7 @@ public static class GameStartManagerPatches
             __instance.HostPrivateButton.gameObject.SetActive(!AmongUsClient.Instance.IsGamePublic);
             __instance.HostPublicButton.gameObject.SetActive(AmongUsClient.Instance.IsGamePublic);
 
-            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !Chat.IsOpenOrOpening)
+            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !Chat().IsOpenOrOpening)
                 ClipboardHelper.PutClipboardString(GameCode.IntToGameName(AmongUsClient.Instance.GameId));
 
             if (DiscordManager.InstanceExists)
@@ -217,10 +217,10 @@ public static class GameStartManagerPatches
             if (!versionMismatch)
                 __instance.GameStartText.text = IsCountDown() ? TranslationController.Instance.GetString(StringNames.GameStarting, Seconds) : "";
 
-            if (__instance.LobbyInfoPane.gameObject.activeSelf && Chat.IsOpenOrOpening)
+            if (__instance.LobbyInfoPane.gameObject.activeSelf && Chat().IsOpenOrOpening)
                 __instance.LobbyInfoPane.DeactivatePane();
 
-            __instance.LobbyInfoPane.gameObject.SetActive(!Chat.IsOpenOrOpening);
+            __instance.LobbyInfoPane.gameObject.SetActive(!Chat().IsOpenOrOpening);
 
             if (!AmongUsClient.Instance.AmHost)
                 return;

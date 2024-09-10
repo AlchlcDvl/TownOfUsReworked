@@ -246,7 +246,7 @@ public static class Blocked
             __instance.ImpostorVentButton.SetEnabled();
 
         __instance.ImpostorVentButton.buttonLabelText.text = LocalBlocked() ? "BLOCKED" : "VENT";
-        __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map && Map.IsOpen) && !ActiveTask);
+        __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
         var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: GameSettings.ReportDistance);
 
         if (!closestDead || CustomPlayer.Local.CannotUse())
@@ -276,13 +276,13 @@ public static class Blocked
             __instance.SabotageButton.SetEnabled();
 
         __instance.SabotageButton.buttonLabelText.text = LocalBlocked() ? "BLOCKED" : "SABOTAGE";
-        __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map && Map.IsOpen) && !ActiveTask);
+        __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
 
         if (!IsInGame() || IsLobby())
             __instance.AbilityButton.gameObject.SetActive(false);
         else if (IsHnS())
             __instance.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
         else
-            __instance.AbilityButton.gameObject.SetActive(!Meeting && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.Dead);
+            __instance.AbilityButton.gameObject.SetActive(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.Dead);
     }
 }

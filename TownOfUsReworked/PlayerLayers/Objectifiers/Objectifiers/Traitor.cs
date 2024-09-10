@@ -57,8 +57,8 @@ public class Traitor : Objectifier
         turnIntruder = false;
         turnSyndicate = false;
 
-        var intAlive = AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.HasDied());
-        var synAlive = AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.HasDied());
+        var intAlive = AllPlayers().Count(x => x.Is(Faction.Intruder) && !x.HasDied());
+        var synAlive = AllPlayers().Count(x => x.Is(Faction.Syndicate) && !x.HasDied());
 
         if (intAlive > 0 && synAlive > 0)
         {

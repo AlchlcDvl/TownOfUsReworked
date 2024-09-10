@@ -107,7 +107,7 @@ public class PromotedRebel : Syndicate
 
                 if (HoldsDrive)
                 {
-                    foreach (var player in AllPlayers)
+                    foreach (var player in AllPlayers())
                     {
                         if (!StalkerArrows.ContainsKey(player.PlayerId))
                             StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));
@@ -340,7 +340,7 @@ public class PromotedRebel : Syndicate
     public void Conceal()
     {
         if (HoldsDrive)
-            AllPlayers.ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
+            AllPlayers().ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
         else
             Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
     }
@@ -685,7 +685,7 @@ public class PromotedRebel : Syndicate
             else
                 break;
 
-            if (Meeting)
+            if (Meeting())
             {
                 AnimationPlaying.sprite = PortalAnimation[0];
                 yield break;
@@ -736,11 +736,11 @@ public class PromotedRebel : Syndicate
 
         if (CustomPlayer.Local == WarpPlayer1)
         {
-            if (ActiveTask)
-                ActiveTask.Close();
+            if (ActiveTask())
+                ActiveTask().Close();
 
             if (MapPatch.MapActive)
-                Map.Close();
+                Map().Close();
         }
 
         WarpPlayer1 = null;
@@ -1017,10 +1017,10 @@ public class PromotedRebel : Syndicate
     public void Control()
     {
         if (HoldsDrive)
-            AllPlayers.ForEach(x => x.GetRole().Rewinding = true);
+            AllPlayers().ForEach(x => x.GetRole().Rewinding = true);
     }
 
-    public void UnControl() => AllPlayers.ForEach(x => x.GetRole().Rewinding = false);
+    public void UnControl() => AllPlayers().ForEach(x => x.GetRole().Rewinding = false);
 
     public void TimeControl()
     {

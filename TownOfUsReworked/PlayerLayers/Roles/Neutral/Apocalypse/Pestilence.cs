@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Pestilence : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ObliterateCd { get; set; } = 25f;
+    public static Number ObliterateCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 2, 10, 1)]
-    public static int MaxStacks { get; set; } = 4;
+    public static Number MaxStacks { get; set; } = new(4);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PestVent { get; set; } = true;

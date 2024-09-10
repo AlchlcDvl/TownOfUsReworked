@@ -24,7 +24,7 @@ public static class SameVoteAll
         if (!IsLocalGame() || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote)
             return;
 
-        AllPlayers.ForEach(x => __instance.CmdCastVote(x.PlayerId, suspectStateIdx));
+        AllPlayers().ForEach(x => __instance.CmdCastVote(x.PlayerId, suspectStateIdx));
     }
 }
 

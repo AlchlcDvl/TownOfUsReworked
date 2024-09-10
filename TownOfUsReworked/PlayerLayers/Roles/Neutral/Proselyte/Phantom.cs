@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Phantom : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
-    public static int PhantomTasksRemaining { get; set; } = 5;
+    public static Number PhantomTasksRemaining { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PhantomPlayersAlerted { get; set; } = false;
@@ -33,7 +33,7 @@ public class Phantom : Neutral
         Faded = true;
         var color = new UColor(1f, 1f, 1f, 0f);
 
-        var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
+        var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
         var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
         var distPercent = distance / maxDistance;

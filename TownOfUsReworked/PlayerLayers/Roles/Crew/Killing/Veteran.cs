@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Veteran : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxAlerts { get; set; } = 5;
+    public static Number MaxAlerts { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float AlertCd { get; set; } = 25f;
+    public static Number AlertCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float AlertDur { get; set; } = 10f;
+    public static Number AlertDur { get; set; } = new(10);
 
     public CustomButton AlertButton { get; set; }
 

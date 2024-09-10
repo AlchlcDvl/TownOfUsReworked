@@ -4,28 +4,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Necromancer : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ResurrectCd { get; set; } = 25f;
+    public static Number ResurrectCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ResurrectCdIncreases { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static float ResurrectCdIncrease { get; set; } = 5f;
+    public static Number ResurrectCdIncrease { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxResurrections { get; set; } = 5;
+    public static Number MaxResurrections { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float SacrificeCd { get; set; } = 25f;
+    public static Number SacrificeCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool SacrificeCdIncreases { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static float SacrificeCdIncrease { get; set; } = 5f;
+    public static Number SacrificeCdIncrease { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxSacrifices { get; set; } = 5;
+    public static Number MaxSacrifices { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool NecroCooldownsLinked { get; set; } = false;
@@ -34,7 +34,7 @@ public class Necromancer : Neutral
     public static bool NecromancerTargetBody { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
-    public static float ResurrectDur { get; set; } = 10f;
+    public static Number ResurrectDur { get; set; } = new(10);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool NecroVent { get; set; } = false;
@@ -76,7 +76,7 @@ public class Necromancer : Neutral
 
     public void UponEnd()
     {
-        if (!(Meeting || Dead))
+        if (!(Meeting() || Dead))
             FinishResurrect();
     }
 

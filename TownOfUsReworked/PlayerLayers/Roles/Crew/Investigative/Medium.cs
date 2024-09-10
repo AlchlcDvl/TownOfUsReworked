@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Medium : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float MediateCd { get; set; } = 25f;
+    public static Number MediateCd { get; set; } = new(25);
 
     // [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    // public static float SeanceCd { get; set; } = 25f;
+    // public static Number SeanceCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ShowMediatePlayer { get; set; } = true;
@@ -59,7 +59,7 @@ public class Medium : Crew
 
         if (!Dead)
         {
-            foreach (var player in AllPlayers)
+            foreach (var player in AllPlayers())
             {
                 if (MediateArrows.ContainsKey(player.PlayerId))
                 {
@@ -90,7 +90,7 @@ public class Medium : Crew
 
             foreach (var dead in playersDead)
             {
-                if (AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+                if (AllBodies().Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                 {
                     MediateArrows.Add(dead.PlayerId, new(Player, Color));
                     MediatedPlayers.Add(dead.PlayerId);
@@ -105,7 +105,7 @@ public class Medium : Crew
         {
             var dead = playersDead.Random();
 
-            if (AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+            if (AllBodies().Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
             {
                 MediateArrows.Add(dead.PlayerId, new(Player, Color));
                 MediatedPlayers.Add(dead.PlayerId);

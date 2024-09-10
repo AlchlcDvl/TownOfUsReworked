@@ -20,7 +20,7 @@ public static class BetterSabotages
     public static bool OxySlow { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 0, 100, 5, Format.Percent)]
-    public static int ReactorShake { get; set; } = 30;
+    public static Number ReactorShake { get; set; } = new(30);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool CamoHideSize { get; set; } = false;
@@ -30,10 +30,10 @@ public static class BetterSabotages
 
     public static void Postfix(HudManager __instance)
     {
-        if (!IsInGame() || !Ship)
+        if (!IsInGame() || !Ship())
             return;
 
-        if (Ship.Systems.TryGetValue(SystemTypes.Laboratory, out var lab) && MapPatches.CurrentMap == 2)
+        if (Ship().Systems.TryGetValue(SystemTypes.Laboratory, out var lab) && MapPatches.CurrentMap == 2)
         {
             var system = lab.Cast<ReactorSystemType>();
 
@@ -42,7 +42,7 @@ public static class BetterSabotages
             else
                 __instance.PlayerCam.ShakeScreen(0, 0);
         }
-        else if (Ship.Systems.TryGetValue(SystemTypes.Reactor, out var reactor) && MapPatches.CurrentMap is 0 or 1 or 3 or 5 or 7)
+        else if (Ship().Systems.TryGetValue(SystemTypes.Reactor, out var reactor) && MapPatches.CurrentMap is 0 or 1 or 3 or 5 or 7)
         {
             var system = reactor.Cast<ReactorSystemType>();
 

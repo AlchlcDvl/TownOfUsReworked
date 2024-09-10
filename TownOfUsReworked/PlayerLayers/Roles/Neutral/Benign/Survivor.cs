@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Survivor : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float VestCd { get; set; } = 25f;
+    public static Number VestCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float VestDur { get; set; } = 10f;
+    public static Number VestDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxVests { get; set; } = 5;
+    public static Number MaxVests { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool SurvVent { get; set; } = false;

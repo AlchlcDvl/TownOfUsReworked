@@ -9,17 +9,14 @@ public static class BetterPolus
     [ToggleOption(MultiMenu.Main)]
     public static bool PolusVentImprovements { get; set; } = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool VitalsLab { get; set; } = false;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool ColdTempDeathValley { get; set; } = false;
+    [StringOption(MultiMenu.Main)]
+    public static TempLocation TempLocation { get; set; } = TempLocation.DontMove;
 
     [ToggleOption(MultiMenu.Main)]
     public static bool WifiChartCourseSwap { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
-    public static float SeismicTimer { get; set; } = 60f;
+    public static Number SeismicTimer { get; set; } = new(60);
 
     private static readonly Vector3 DvdScreenNewPos = new(26.635f, -15.92f, 1f);
     private static readonly Vector3 VitalsNewPos = new(31.275f, -6.45f, 1f);
@@ -89,9 +86,9 @@ public static class BetterPolus
             {
                 SpeciVent.Id = GetAvailableId();
                 IsVentModified = true;
-                var vents = Ship.AllVents.ToList();
+                var vents = Ship().AllVents.ToList();
                 vents.Add(SpeciVent);
-                Ship.AllVents = vents.ToArray();
+                Ship().AllVents = vents.ToArray();
             }
         }
     }
@@ -119,13 +116,12 @@ public static class BetterPolus
     {
         if (IsObjectsFetched && IsRoomsFetched)
         {
-            if (VitalsLab)
+            if (TempLocation == TempLocation.SwappedWithVitals)
+            {
                 MoveVitals();
-
-            if (!ColdTempDeathValley && VitalsLab)
                 MoveTempCold();
-
-            if (ColdTempDeathValley)
+            }
+            else if (TempLocation == TempLocation.DeathValley)
                 MoveTempColdDV();
 
             if (WifiChartCourseSwap)
@@ -140,28 +136,30 @@ public static class BetterPolus
 
     private static void FindVents()
     {
-        if (ElectricBuildingVent)
-            ElectricBuildingVent = AllVents.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
+        var vents = AllVents();
 
-        if (ElectricalVent)
-            ElectricalVent = AllVents.Find(vent => vent.gameObject.name == "ElectricalVent");
+        if (!ElectricBuildingVent)
+            ElectricBuildingVent = vents.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
 
-        if (ScienceBuildingVent)
-            ScienceBuildingVent = AllVents.Find(vent => vent.gameObject.name == "ScienceBuildingVent");
+        if (!ElectricalVent)
+            ElectricalVent = vents.Find(vent => vent.gameObject.name == "ElectricalVent");
 
-        if (StorageVent)
-            StorageVent = AllVents.Find(vent => vent.gameObject.name == "StorageVent");
+        if (!ScienceBuildingVent)
+            ScienceBuildingVent = vents.Find(vent => vent.gameObject.name == "ScienceBuildingVent");
 
-        if (LightCageVent)
-            LightCageVent = AllVents.Find(vent => vent.gameObject.name == "ElecFenceVent");
+        if (!StorageVent)
+            StorageVent = vents.Find(vent => vent.gameObject.name == "StorageVent");
 
-        if (AdminVent)
-            AdminVent = AllVents.Find(vent => vent.gameObject.name == "AdminVent");
+        if (!LightCageVent)
+            LightCageVent = vents.Find(vent => vent.gameObject.name == "ElecFenceVent");
 
-        if (BathroomVent)
-            BathroomVent = AllVents.Find(vent => vent.gameObject.name == "BathroomVent");
+        if (!AdminVent)
+            AdminVent = vents.Find(vent => vent.gameObject.name == "AdminVent");
 
-        if (SpeciVent)
+        if (!BathroomVent)
+            BathroomVent = vents.Find(vent => vent.gameObject.name == "BathroomVent");
+
+        if (!SpeciVent)
         {
             SpeciVent = UObject.Instantiate(AdminVent, Specimen.transform);
             SpeciVent.Right = null;
@@ -175,41 +173,48 @@ public static class BetterPolus
 
     private static void FindRooms()
     {
+        var gos = AllGameObjects();
+
         if (!Comms)
-            Comms = AllGameObjects.Find(o => o.name == "Comms");
+            Comms = gos.Find(o => o.name == "Comms");
 
         if (!DropShip)
-            DropShip = AllGameObjects.Find(o => o.name == "Dropship");
+            DropShip = gos.Find(o => o.name == "Dropship");
 
         if (!Outside)
-            Outside = AllGameObjects.Find(o => o.name == "Outside");
+            Outside = gos.Find(o => o.name == "Outside");
 
         if (!Science)
-            Science = AllGameObjects.Find(o => o.name == "Science");
+            Science = gos.Find(o => o.name == "Science");
 
         if (!Specimen)
-            Specimen = AllGameObjects.Find(o => o.name == "RightPod");
+            Specimen = gos.Find(o => o.name == "RightPod");
 
         if (!Office)
-            Office = AllGameObjects.Find(o => o.name == "Office");
+            Office = gos.Find(o => o.name == "Office");
 
         IsRoomsFetched = Comms && DropShip && Outside && Science && Specimen && Office;
     }
 
     private static void FindObjects()
     {
+        var consoles = AllConsoles();
+
         if (!WifiConsole)
-            WifiConsole = AllConsoles.Find(console => console.name == "panel_wifi");
+            WifiConsole = consoles.Find(console => console.name == "panel_wifi");
 
         if (!NavConsole)
-            NavConsole = AllConsoles.Find(console => console.name == "panel_nav");
+            NavConsole = consoles.Find(console => console.name == "panel_nav");
+
+        if (!TempCold)
+            TempCold = consoles.Find(console => console.name == "panel_tempcold");
 
         if (!Vitals)
-            Vitals = AllSystemConsoles.Find(console => console.name == "panel_vitals");
+            Vitals = AllSystemConsoles().Find(console => console.name == "panel_vitals");
 
         if (!DvdScreenOffice)
         {
-            var dvdScreenAdmin = AllGameObjects.Find(o => o.name == "dvdscreen");
+            var dvdScreenAdmin = AllGameObjects().Find(o => o.name == "dvdscreen");
 
             if (dvdScreenAdmin)
             {
@@ -218,9 +223,6 @@ public static class BetterPolus
                 DvdScreenOffice.SetActive(false);
             }
         }
-
-        if (!TempCold)
-            TempCold = AllConsoles.Find(console => console.name == "panel_tempcold");
 
         IsObjectsFetched = WifiConsole && NavConsole && Vitals && DvdScreenOffice && TempCold;
     }
@@ -259,7 +261,7 @@ public static class BetterPolus
         if (TempCold.transform.position != TempColdNewPos)
         {
             var tempColdTransform = TempCold.transform;
-            tempColdTransform.parent = Outside.transform;
+            tempColdTransform.SetParent(Outside.transform);
             tempColdTransform.position = TempColdNewPos;
             var collider = TempCold.GetComponent<BoxCollider2D>();
             collider.isTrigger = false;
@@ -272,7 +274,7 @@ public static class BetterPolus
         if (TempCold.transform.position != TempColdNewPosDV)
         {
             var tempColdTransform = TempCold.transform;
-            tempColdTransform.parent = Outside.transform;
+            tempColdTransform.SetParent(Outside.transform);
             tempColdTransform.position = TempColdNewPosDV;
             var collider = TempCold.GetComponent<BoxCollider2D>();
             collider.isTrigger = false;
@@ -323,7 +325,7 @@ public static class BetterPolus
     {
         public static bool Prefix(NormalPlayerTask __instance, Il2CppSystem.Text.StringBuilder sb)
         {
-            if (!EnableBetterPolus || !Ship || MapPatches.CurrentMap != 2 || (int)__instance.TaskType is not (42 or 41 or 3))
+            if (!EnableBetterPolus || !Ship() || MapPatches.CurrentMap != 2 || (int)__instance.TaskType is not (42 or 41 or 3))
                 return true;
 
             var flag = __instance.ShouldYellowText();
@@ -331,13 +333,27 @@ public static class BetterPolus
             if (flag)
                 sb.Append(__instance.IsComplete ? "<color=#00DD00FF>" : "<color=#FFFF00FF>");
 
-            var room = __instance.TaskType switch
+            var room = SystemTypes.Hallway;
+
+            if (__instance.TaskType == TaskTypes.RecordTemperature && __instance.StartAt != SystemTypes.Outside)
             {
-                TaskTypes.RecordTemperature => SystemTypes.Outside,
-                TaskTypes.RebootWifi => SystemTypes.Dropship,
-                TaskTypes.ChartCourse => SystemTypes.Comms,
-                _ => __instance.StartAt
-            };
+                room = TempLocation switch
+                {
+                    TempLocation.DeathValley => SystemTypes.Outside,
+                    TempLocation.SwappedWithVitals => SystemTypes.Office,
+                    _ => __instance.StartAt
+                };
+            }
+            else
+            {
+                room = __instance.TaskType switch
+                {
+                    TaskTypes.RebootWifi => SystemTypes.Dropship,
+                    TaskTypes.ChartCourse => SystemTypes.Comms,
+                    _ => __instance.StartAt
+                };
+            }
+
             sb.Append(TranslationController.Instance.GetString(room));
             sb.Append(": ");
             sb.Append(TranslationController.Instance.GetString(__instance.TaskType));

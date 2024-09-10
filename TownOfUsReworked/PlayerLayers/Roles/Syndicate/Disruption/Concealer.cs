@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Concealer : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ConcealCd { get; set; } = 25f;
+    public static Number ConcealCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float ConcealDur { get; set; } = 10f;
+    public static Number ConcealDur { get; set; } = new(10);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ConcealMates { get; set; } = false;
@@ -35,7 +35,7 @@ public class Concealer : Syndicate
     public void Conceal()
     {
         if (HoldsDrive)
-            AllPlayers.ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
+            AllPlayers().ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
         else
             Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
     }

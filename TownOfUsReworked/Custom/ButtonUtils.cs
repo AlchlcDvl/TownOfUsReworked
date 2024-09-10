@@ -6,14 +6,14 @@ public static class ButtonUtils
 
     public static void DisableButtons(this PlayerControl player)
     {
-        Use = HUD.UseButton.isActiveAndEnabled;
+        Use = HUD().UseButton.isActiveAndEnabled;
         player.GetButtons().ForEach(x => x.Disable());
-        HUD.SabotageButton.gameObject.SetActive(false);
-        HUD.ReportButton.gameObject.SetActive(false);
-        HUD.ImpostorVentButton.gameObject.SetActive(false);
-        HUD.UseButton.gameObject.SetActive(false);
-        HUD.PetButton.gameObject.SetActive(false);
-        HUD.AbilityButton.gameObject.SetActive(false);
+        HUD().SabotageButton.gameObject.SetActive(false);
+        HUD().ReportButton.gameObject.SetActive(false);
+        HUD().ImpostorVentButton.gameObject.SetActive(false);
+        HUD().UseButton.gameObject.SetActive(false);
+        HUD().PetButton.gameObject.SetActive(false);
+        HUD().AbilityButton.gameObject.SetActive(false);
     }
 
     public static List<CustomButton> GetButtons(this PlayerControl player) => [ .. AllButtons.Where(x => x.Owner.Player == player) ];
@@ -21,33 +21,33 @@ public static class ButtonUtils
     public static void EnableButtons(this PlayerControl player)
     {
         player.GetButtons().ForEach(x => x.Enable());
-        HUD.KillButton.gameObject.SetActive(false);
-        HUD.SabotageButton.gameObject.SetActive(player.CanSabotage());
-        HUD.ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward));
-        HUD.ImpostorVentButton.gameObject.SetActive(player.CanVent());
+        HUD().KillButton.gameObject.SetActive(false);
+        HUD().SabotageButton.gameObject.SetActive(player.CanSabotage());
+        HUD().ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward));
+        HUD().ImpostorVentButton.gameObject.SetActive(player.CanVent());
 
         if (IsHnS())
-            HUD.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
+            HUD().AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
         else
-            HUD.AbilityButton.gameObject.SetActive(!Meeting && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()));
+            HUD().AbilityButton.gameObject.SetActive(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()));
 
         if (Use)
-            HUD.UseButton.gameObject.SetActive(true);
+            HUD().UseButton.gameObject.SetActive(true);
         else
-            HUD.PetButton.gameObject.SetActive(true);
+            HUD().PetButton.gameObject.SetActive(true);
     }
 
     public static void DisableAllButtons()
     {
-        Use = HUD.UseButton.isActiveAndEnabled;
+        Use = HUD().UseButton.isActiveAndEnabled;
         AllButtons.ForEach(x => x.Disable());
-        HUD.KillButton.gameObject.SetActive(false);
-        HUD.SabotageButton.gameObject.SetActive(false);
-        HUD.ReportButton.gameObject.SetActive(false);
-        HUD.ImpostorVentButton.gameObject.SetActive(false);
-        HUD.UseButton.gameObject.SetActive(false);
-        HUD.PetButton.gameObject.SetActive(false);
-        HUD.AbilityButton.gameObject.SetActive(false);
+        HUD().KillButton.gameObject.SetActive(false);
+        HUD().SabotageButton.gameObject.SetActive(false);
+        HUD().ReportButton.gameObject.SetActive(false);
+        HUD().ImpostorVentButton.gameObject.SetActive(false);
+        HUD().UseButton.gameObject.SetActive(false);
+        HUD().PetButton.gameObject.SetActive(false);
+        HUD().AbilityButton.gameObject.SetActive(false);
     }
 
     public static void SetDelay(this ActionButton button, float timer)

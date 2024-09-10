@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Spellslinger : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float SpellCd { get; set; } = 25f;
+    public static Number SpellCd { get; set; } = new(25f);
 
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static float SpellCdIncrease { get; set; } = 5f;
+    public static Number SpellCdIncrease { get; set; } = new(5);
 
     public CustomButton SpellButton { get; set; }
     public List<byte> Spelled { get; set; }

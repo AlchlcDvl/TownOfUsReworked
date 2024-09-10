@@ -13,7 +13,7 @@ public static class VentCanUsePatch
         else if (IsHnS())
             couldUse = !pc.IsImpostor();
 
-        var ventitaltionSystem = Ship.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
+        var ventitaltionSystem = Ship().Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
         if (ventitaltionSystem != null && ventitaltionSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
             couldUse = false;
@@ -82,13 +82,13 @@ public static class EnterVentPatch
 
                     if (vent)
                     {
-                        var ventilationSystem = Ship.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
+                        var ventilationSystem = Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
                         var flag1 = ventilationSystem != null && ventilationSystem.IsVentCurrentlyBeingCleaned(vent.Id);
                         var gameObject = __instance.CleaningIndicators.Any() ? __instance.CleaningIndicators[i] : null;
                         __instance.ToggleNeighborVentBeingCleaned(flag1 || LocalBlocked(), buttonBehavior, gameObject);
                         var vector2 = vent.transform.position - __instance.transform.position;
                         var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
-                        vector3.x *= Mathf.Sign(Ship.transform.localScale.x);
+                        vector3.x *= Mathf.Sign(Ship().transform.localScale.x);
                         vector3.y -= 0.08f;
                         vector3.z = -10f;
                         buttonBehavior.transform.localPosition = vector3;
@@ -117,7 +117,7 @@ public static class SetVentOutlinePatch
 {
     public static void Postfix(Vent __instance, bool mainTarget)
     {
-        var active = CustomPlayer.Local && !Meeting && CustomPlayer.Local.CanVent();
+        var active = CustomPlayer.Local && !Meeting() && CustomPlayer.Local.CanVent();
 
         if (!Role.LocalRole || !active)
             return;

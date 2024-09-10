@@ -14,14 +14,14 @@ public static class MeetingPatches
         {
             if (BetterSabotages.CamouflagedMeetings && HudHandler.Instance.IsCamoed)
             {
-                __instance.Background.sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+                __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
             }
             else
             {
                 if (ClientOptions.WhiteNameplates)
-                    __instance.Background.sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+                    __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
 
                 if (ClientOptions.NoLevels)
                 {
@@ -260,7 +260,7 @@ public static class MeetingPatches
 
             foreach (var layer in PlayerLayer.LocalLayers)
             {
-                layer.OnMeetingStart(Meeting);
+                layer.OnMeetingStart(Meeting());
 
                 if (layer.Player == Reporter)
                     layer.OnBodyReport(Reported);

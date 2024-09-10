@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Shifter : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ShiftCd { get; set; } = 25f;
+    public static Number ShiftCd { get; set; } = new(25);
 
     [StringOption(MultiMenu.LayerSubOptions)]
     public static BecomeEnum ShiftedBecomes { get; set; } = BecomeEnum.Shifter;

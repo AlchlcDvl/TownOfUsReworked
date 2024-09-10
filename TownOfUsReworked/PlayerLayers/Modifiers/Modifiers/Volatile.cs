@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public class Volatile : Modifier
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 30f, 1f, Format.Time)]
-    public static float VolatileInterval { get; set; } = 15f;
+    public static Number VolatileInterval { get; set; } = new(15);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool VolatileKnows { get; set; } = true;
@@ -29,7 +29,7 @@ public class Volatile : Modifier
     {
         base.UpdateHud(__instance);
 
-        if (ActiveTask || IntroCutscene.Instance || Dead)
+        if (ActiveTask() || IntroCutscene.Instance || Dead)
             return;
 
         _time += Time.deltaTime;
@@ -52,7 +52,7 @@ public class Volatile : Modifier
             else if (randomNumber == 1)
             {
                 Player.NetTransform.Halt();
-                __instance.KillOverlay.ShowKillAnimation(AllPlayers.Random().Data, Data);
+                __instance.KillOverlay.ShowKillAnimation(AllPlayers().Random().Data, Data);
             }
             // Get rick rolled lmao
             else if (randomNumber == 2 && !LMAO && !TownOfUsReworked.IsStream)

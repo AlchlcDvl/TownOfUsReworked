@@ -26,7 +26,7 @@ public class Range
         rend.color = color;
         Item.SetActive(true);
         Number = AllItems.Count + 1;
-        NumberText = UObject.Instantiate(HUD.KillButton.cooldownTimerText, Transform);
+        NumberText = UObject.Instantiate(HUD().KillButton.cooldownTimerText, Transform);
         NumberText.text = $"<size=300%>{Number}</size>";
         NumberText.fontStyle = FontStyles.Bold;
         NumberText.name = $"{name}Number{Number}";

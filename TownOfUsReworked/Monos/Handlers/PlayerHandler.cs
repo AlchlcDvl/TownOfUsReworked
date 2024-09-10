@@ -12,10 +12,10 @@ public class PlayerHandler : MonoBehaviour
 
     public void Update()
     {
-        if (NoPlayers() || IsHnS() || Meeting)
+        if (NoPlayers() || IsHnS() || Meeting())
             return;
 
-        AllPlayers.ForEach(UpdatePlayer);
+        AllPlayers().ForEach(UpdatePlayer);
     }
 
     private static void UpdatePlayer(PlayerControl player)

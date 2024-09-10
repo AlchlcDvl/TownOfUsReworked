@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Thief : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float StealCd { get; set; } = 25f;
+    public static Number StealCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ThiefSteals { get; set; } = false;
@@ -243,7 +243,7 @@ public class Thief : Neutral
         UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), buttonParent);
         var label = UObject.Instantiate(voteArea.NameText, button);
         var rend = button.GetComponent<SpriteRenderer>();
-        rend.sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+        rend.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
         buttonParent.localPosition = position;
         buttonParent.localScale = new(0.55f, 0.55f, 1f);
         label.transform.localPosition = new(0f, 0f, label.transform.localPosition.z);
@@ -270,9 +270,9 @@ public class Thief : Neutral
         if (Phone || __instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
             return;
 
-        AllVoteAreas.ForEach(x => x.gameObject.SetActive(false));
+        AllVoteAreas().ForEach(x => x.gameObject.SetActive(false));
         __instance.TimerText.gameObject.SetActive(false);
-        Chat.SetVisible(false);
+        Chat().SetVisible(false);
         Page = 0;
         var container = UObject.Instantiate(UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI"), __instance.transform);
         container.transform.localPosition = new(0, 0, -5f);
@@ -294,10 +294,10 @@ public class Thief : Neutral
             return;
 
         Phone.Destroy();
-        Chat.SetVisible(true);
+        Chat().SetVisible(true);
         SelectedButton = null;
         __instance.TimerText.gameObject.SetActive(true);
-        AllVoteAreas.ForEach(x => x.gameObject.SetActive(true));
+        AllVoteAreas().ForEach(x => x.gameObject.SetActive(true));
 
         foreach (var pair in GuessButtons)
         {

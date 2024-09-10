@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Classes;
+namespace TownOfUsReworked.Modules;
 
 public delegate bool VentExclusion(Vent vent);
 public delegate bool ConsoleExclusion(Console console);

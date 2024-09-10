@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public class Giant : Modifier
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 1f, 0.05f, Format.Multiplier)]
-    public static float GiantSpeed { get; set; } = 0.75f;
+    public static Number GiantSpeed { get; set; } = new(0.75f);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1f, 3f, 0.025f, Format.Multiplier)]
-    public static float GiantScale { get; set; } = 1.5f;
+    public static Number GiantScale { get; set; } = new(1.5f);
 
     private static bool Chonk => GiantScale != 1;
     private static bool Snail => GiantSpeed != 1;

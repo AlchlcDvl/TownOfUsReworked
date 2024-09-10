@@ -14,8 +14,8 @@ public static class CheckEndGame
             return false;
         }
 
-        var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers.Count(y => !y.HasDied()));
-        var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers.Count(y => !y.HasDied()));
+        var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers().Count(y => !y.HasDied()));
+        var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers().Count(y => !y.HasDied()));
 
         if (TasksDone())
         {
@@ -72,7 +72,7 @@ public static class CheckEndGame
     // Stalemate detector for unwinnable situations
     private static void DetectStalemate()
     {
-        var players = AllPlayers.Where(x => !x.HasDied()).ToList();
+        var players = AllPlayers().Where(x => !x.HasDied()).ToList();
 
         if (players.Count == 2)
         {
@@ -119,7 +119,7 @@ public static class CheckEndGame
                 var allCrew = new List<PlayerControl>();
                 var crewWithNoTasks = new List<PlayerControl>();
 
-                foreach (var player in AllPlayers)
+                foreach (var player in AllPlayers())
                 {
                     if (player.Is(LayerEnum.Hunted))
                     {
@@ -140,7 +140,7 @@ public static class CheckEndGame
                 var allCrew = new List<PlayerControl>();
                 var crewWithNoTasks = new List<PlayerControl>();
 
-                foreach (var player in AllPlayers)
+                foreach (var player in AllPlayers())
                 {
                     if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CrewSettings.GhostTasksCountToWin)))
                     {
@@ -162,28 +162,28 @@ public static class CheckEndGame
     {
         try
         {
-            if (Ship.Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
+            if (Ship().Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
             {
                 var lifeSuppSystemType = life.Cast<LifeSuppSystemType>();
 
                 if (lifeSuppSystemType.Countdown <= 0f)
                     return true;
             }
-            else if (Ship.Systems.TryGetValue(SystemTypes.Laboratory, out var lab))
+            else if (Ship().Systems.TryGetValue(SystemTypes.Laboratory, out var lab))
             {
                 var reactorSystemType = lab.Cast<ReactorSystemType>();
 
                 if (reactorSystemType.Countdown <= 0f)
                     return true;
             }
-            else if (Ship.Systems.TryGetValue(SystemTypes.Reactor, out var reactor))
+            else if (Ship().Systems.TryGetValue(SystemTypes.Reactor, out var reactor))
             {
                 var reactorSystemType = reactor.Cast<ICriticalSabotage>();
 
                 if (reactorSystemType.Countdown <= 0f)
                     return true;
             }
-            else if (Ship.Systems.TryGetValue(SystemTypes.HeliSabotage, out var heli))
+            else if (Ship().Systems.TryGetValue(SystemTypes.HeliSabotage, out var heli))
             {
                 var reactorSystemType = heli.Cast<HeliSabotageSystem>();
 
@@ -227,8 +227,8 @@ public static class OverrideTaskEndGame2
         {
             if (CustomPlayer.Local.myTasks.All(t => t.IsComplete))
             {
-                HUD.ShowPopUp(TranslationController.Instance.GetString(StringNames.GameOverTaskWin));
-                Ship.Begin();
+                HUD().ShowPopUp(TranslationController.Instance.GetString(StringNames.GameOverTaskWin));
+                Ship().Begin();
             }
         }
         else

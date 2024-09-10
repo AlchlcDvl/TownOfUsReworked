@@ -16,7 +16,7 @@ public class Snitch : Ability
     public static bool SnitchSeesRoles { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static int SnitchTasksRemaining { get; set; } = 1;
+    public static Number SnitchTasksRemaining { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool SnitchSeesTargetsInMeeting { get; set; } = true;

@@ -7,13 +7,13 @@ public class GuardianAngel : Neutral
     public static bool GuardianAngelCanPickTargets { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ProtectCd { get; set; } = 25f;
+    public static Number ProtectCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float ProtectDur { get; set; } = 10f;
+    public static Number ProtectDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxProtects { get; set; } = 5;
+    public static Number MaxProtects { get; set; } = new(5);
 
     [StringOption(MultiMenu.LayerSubOptions)]
     public static ProtectOptions ShowProtect { get; set; } = ProtectOptions.Protected;

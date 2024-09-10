@@ -5,7 +5,7 @@ public static class HandleDisconnect
 {
     public static void Prefix(PlayerControl pc)
     {
-        if (AmongUsClient.Instance.AmHost && Meeting)
+        if (AmongUsClient.Instance.AmHost && Meeting())
         {
             foreach (var pol in PlayerLayer.GetLayers<Politician>())
             {

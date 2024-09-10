@@ -4,16 +4,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Tracker : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxTracks { get; set; } = 5;
+    public static Number MaxTracks { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float TrackCd { get; set; } = 25f;
+    public static Number TrackCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ResetOnNewRound { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
-    public static float UpdateInterval { get; set; } = 5f;
+    public static Number UpdateInterval { get; set; } = new(5);
 
     public Dictionary<byte, CustomArrow> TrackerArrows { get; set; }
     public CustomButton TrackButton { get; set; }

@@ -4,16 +4,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Cannibal : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float EatCd { get; set; } = 25f;
+    public static Number EatCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static int BodiesNeeded { get; set; } = 1;
+    public static Number BodiesNeeded { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool EatArrows { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
-    public static float EatArrowDelay { get; set; } = 5f;
+    public static Number EatArrowDelay { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CannibalVent { get; set; } = false;
@@ -38,7 +38,7 @@ public class Cannibal : Neutral
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = [];
-        EatNeed = Math.Min(BodiesNeeded, AllPlayers.Count / 2);
+        EatNeed = Math.Min(BodiesNeeded, AllPlayers().Count / 2);
         EatButton = CreateButton(this, new SpriteName("Eat"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
     }
 
@@ -63,7 +63,7 @@ public class Cannibal : Neutral
 
         if (EatArrows && !Dead)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(EatArrowDelay) < DateTime.UtcNow));
+            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(EatArrowDelay) < DateTime.UtcNow));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {

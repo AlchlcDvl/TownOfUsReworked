@@ -861,7 +861,7 @@ public static class SettingsPatches
                 return;
             }
 
-            if (AllPlayers.Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive)
+            if (AllPlayers().Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive)
                 return;
 
             SendOptionRPC();
@@ -962,11 +962,11 @@ public static class SettingsPatches
             MapChangeNotif.UpdateMessage(changed);
         else
         {
-            MapChangeNotif = UObject.Instantiate(HUD.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD.Notifier.transform);
+            MapChangeNotif = UObject.Instantiate(HUD().Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD().Notifier.transform);
             MapChangeNotif.transform.localPosition = new(0f, 0f, -2f);
-            MapChangeNotif.SetUp(changed, HUD.Notifier.settingsChangeSprite, HUD.Notifier.settingsChangeColor, (Action)(() => HUD.Notifier.OnMessageDestroy(MapChangeNotif)));
-            HUD.Notifier.ShiftMessages();
-            HUD.Notifier.AddMessageToQueue(MapChangeNotif);
+            MapChangeNotif.SetUp(changed, HUD().Notifier.settingsChangeSprite, HUD().Notifier.settingsChangeColor, (Action)(() => HUD().Notifier.OnMessageDestroy(MapChangeNotif)));
+            HUD().Notifier.ShiftMessages();
+            HUD().Notifier.AddMessageToQueue(MapChangeNotif);
         }
     }
 
@@ -986,8 +986,7 @@ public static class SettingsPatches
             var num = 1.44f;
             var num2 = -8.95f;
 
-            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menus.Any(y => y is MultiMenu.Main or MultiMenu.Client))
-                .Cast<HeaderOptionAttribute>())
+            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menus.Any(y => y is MultiMenu.Main or MultiMenu.Client)).Cast<HeaderOptionAttribute>())
             {
                 var categoryHeaderMasked = UObject.Instantiate(__instance.categoryHeaderOrigin, __instance.settingsContainer);
                 categoryHeaderMasked.transform.localScale = Vector3.one;

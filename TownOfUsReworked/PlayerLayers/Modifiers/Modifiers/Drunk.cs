@@ -10,7 +10,7 @@ public class Drunk : Modifier
     public static bool DrunkKnows { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
-    public static float DrunkInterval { get; set; } = 10f;
+    public static Number DrunkInterval { get; set; } = new(10);
 
     private static float _time;
     public int Modify { get; set; }

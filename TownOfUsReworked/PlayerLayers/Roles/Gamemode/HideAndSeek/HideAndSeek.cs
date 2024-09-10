@@ -18,7 +18,7 @@ public abstract class HideAndSeek : Role
     {
         var team = new List<PlayerControl>();
 
-        foreach (var player in AllPlayers)
+        foreach (var player in AllPlayers())
         {
             if (player.Is(LayerEnum.Hunter))
                 team.Add(player);

@@ -634,7 +634,7 @@ public static class OnGameEndPatches
             PlayerRoles.Clear();
             // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             // AD says "Done".
-            AllPlayers.ForEach(x => AddSummaryInfo(x));
+            AllPlayers().ForEach(x => AddSummaryInfo(x));
         }
     }
 

@@ -73,7 +73,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] ),
         ( [ "Assassin" ], [ LayerEnum.Hitman, LayerEnum.Bullseye, LayerEnum.Sniper, LayerEnum.Slayer ] ),
         ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
-        ( [ "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "EnableRevealer", "EnablePhantom", "EnableGhoul", "EnableBanshee" ], [ GameMode.RoleList ] )
+        ( [ "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "EnableRevealer", "EnablePhantom", "EnableGhoul", "EnableBanshee" ], [ GameMode.RoleList ] ),
+        ( [ "RoleList" ], [ GameMode.RoleList ] )
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -198,7 +199,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         Property?.SetValue(null, value);
         // OnChanged.Invoke(value);
 
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type == CustomOptionType.Header))
+        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type is CustomOptionType.Header or CustomOptionType.Alignment))
             SendOptionRPC(this);
 
         if (!Setting)
@@ -212,16 +213,16 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{TranslationManager.Translate(ID)}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
 
-        if (LastChangedSetting == ID && HUD.Notifier.activeMessages.Count > 0)
-            HUD.Notifier.activeMessages[^1].UpdateMessage(changed);
+        if (LastChangedSetting == ID && HUD().Notifier.activeMessages.Count > 0)
+            HUD().Notifier.activeMessages[^1].UpdateMessage(changed);
         else
         {
             LastChangedSetting = ID;
-            var newMessage = UObject.Instantiate(HUD.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD.Notifier.transform);
+            var newMessage = UObject.Instantiate(HUD().Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD().Notifier.transform);
             newMessage.transform.localPosition = new(0f, 0f, -2f);
-            newMessage.SetUp(changed, HUD.Notifier.settingsChangeSprite, HUD.Notifier.settingsChangeColor, (Action)(() => HUD.Notifier.OnMessageDestroy(newMessage)));
-            HUD.Notifier.ShiftMessages();
-            HUD.Notifier.AddMessageToQueue(newMessage);
+            newMessage.SetUp(changed, HUD().Notifier.settingsChangeSprite, HUD().Notifier.settingsChangeColor, (Action)(() => HUD().Notifier.OnMessageDestroy(newMessage)));
+            HUD().Notifier.ShiftMessages();
+            HUD().Notifier.AddMessageToQueue(newMessage);
         }
     }
 

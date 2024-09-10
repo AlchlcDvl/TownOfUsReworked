@@ -4,25 +4,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Whisperer : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float WhisperCd { get; set; } = 25f;
+    public static Number WhisperCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool WhisperCdIncreases { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static float WhisperCdIncrease { get; set; } = 5f;
+    public static Number WhisperCdIncrease { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float WhisperRadius { get; set; } = 1.5f;
+    public static Number WhisperRadius { get; set; } = new(1.5f);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5, 50, 5, Format.Percent)]
-    public static int WhisperRate { get; set; } = 5;
+    public static Number WhisperRate { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool WhisperRateDecreases { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 5, 50, 5, Format.Percent)]
-    public static int WhisperRateDecrease { get; set; } = 5;
+    public static Number WhisperRateDecrease { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool WhispVent { get; set; } = false;
@@ -57,7 +57,7 @@ public class Whisperer : Neutral
         WhisperButton = CreateButton(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);
         PlayerConversion = [];
-        AllPlayers.ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
+        AllPlayers().ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
         Persuaded.ForEach(x => PlayerConversion.Remove(x));
     }
 

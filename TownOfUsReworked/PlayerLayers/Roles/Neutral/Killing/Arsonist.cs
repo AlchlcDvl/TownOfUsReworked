@@ -4,10 +4,10 @@
 public class Arsonist : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ArsoDouseCd { get; set; } = 25f;
+    public static Number ArsoDouseCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 60f, 2.5f, Format.Time)]
-    public static float IgniteCd { get; set; } = 25f;
+    public static Number IgniteCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ArsoLastKillerBoost { get; set; } = false;
@@ -26,7 +26,7 @@ public class Arsonist : Neutral
 
     public CustomButton IgniteButton { get; set; }
     public CustomButton DouseButton { get; set; }
-    public bool LastKiller => !AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
+    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && ArsoLastKillerBoost;
     public List<byte> Doused { get; set; }
 
@@ -69,7 +69,7 @@ public class Arsonist : Neutral
             {
                 CallRpc(CustomRPC.Action, ActionsRPC.Burn, arso);
 
-                foreach (var body in AllBodies)
+                foreach (var body in AllBodies())
                 {
                     if (arso.Doused.Contains(body.ParentId))
                         Ash.CreateAsh(body);

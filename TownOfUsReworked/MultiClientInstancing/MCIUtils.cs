@@ -65,7 +65,7 @@ public static class MCIUtils
         if (SubLoaded)
             ImpartSub(sampleC.Character);
 
-        yield return sampleC.Character.MyPhysics.CoSpawnPlayer(Lobby);
+        yield return sampleC.Character.MyPhysics.CoSpawnPlayer(Lobby());
         yield break;
     }
 
@@ -98,12 +98,12 @@ public static class MCIUtils
         if (!newPlayer)
             return;
 
-        if (ActiveTask)
-            ActiveTask.Close();
+        if (ActiveTask())
+            ActiveTask().Close();
 
-        if (Meeting)
+        if (Meeting())
         {
-            PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingEnd(Meeting));
+            PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingEnd(Meeting()));
             ButtonUtils.DisableAllButtons();
         }
         else
@@ -130,8 +130,8 @@ public static class MCIUtils
         AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
         AmongUsClient.Instance.HostId = newPlayer.OwnerId;
 
-        HUD.SetHudActive(true);
-        HUD.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
+        HUD().SetHudActive(true);
+        HUD().ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
 
         light.transform.SetParent(CustomPlayer.LocalCustom.Transform, false);
         light.transform.localPosition = newPlayer.Collider.offset;
@@ -141,14 +141,14 @@ public static class MCIUtils
         KillAnimation.SetMovement(newPlayer, true);
         newPlayer.MyPhysics.inputHandler.enabled = true;
 
-        if (Meeting)
+        if (Meeting())
         {
-            PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingStart(Meeting));
+            PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingStart(Meeting()));
 
             if (newPlayer.Data.IsDead)
-                Meeting.SetForegroundForDead();
+                Meeting().SetForegroundForDead();
             else
-                Meeting.SetForegroundForAlive();
+                Meeting().SetForegroundForAlive();
         }
         else
         {
@@ -158,7 +158,7 @@ public static class MCIUtils
 
         PlayerLayer.LocalLayers.ForEach(x => x.EnteringLayer());
 
-        Chat.SetVisible(newPlayer.CanChat());
+        Chat().SetVisible(newPlayer.CanChat());
         newPlayer.RpcCustomSnapTo(pos2);
         savedPlayer.RpcCustomSnapTo(pos);
         Role.LocalRole?.UpdateButtons();

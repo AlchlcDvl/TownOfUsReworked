@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Stalker : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float StalkCd { get; set; } = 25f;
+    public static Number StalkCd { get; set; } = new(25);
 
     public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
     public CustomButton StalkButton { get; set; }
@@ -73,7 +73,7 @@ public class Stalker : Syndicate
 
             if (HoldsDrive)
             {
-                foreach (var player in AllPlayers)
+                foreach (var player in AllPlayers())
                 {
                     if (!StalkerArrows.ContainsKey(player.PlayerId))
                         StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));

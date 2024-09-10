@@ -16,7 +16,7 @@ public class Actor : Neutral
     public static bool ActSwitchVent { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static int ActorRoleCount { get; set; } = 3;
+    public static Number ActorRoleCount { get; set; } = new(3);
 
     public bool Guessed { get; set; }
     public List<Role> PretendRoles { get; set; }
@@ -183,7 +183,7 @@ public class Actor : Neutral
         if (!target.Is(LayerEnum.Actor))
             PretendRoles.Add(target.GetRole());
 
-        var targets = AllPlayers.Where(x => x != Player && x != target && !x.Is(LayerEnum.Actor)).ToList();
+        var targets = AllPlayers().Where(x => x != Player && x != target && !x.Is(LayerEnum.Actor)).ToList();
         targets.Shuffle();
 
         foreach (var player in targets)

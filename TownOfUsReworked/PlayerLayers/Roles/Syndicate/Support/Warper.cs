@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Warper : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float WarpCd { get; set; } = 25f;
+    public static Number WarpCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
-    public static float WarpDur { get; set; } = 5f;
+    public static Number WarpDur { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool WarpSelf { get; set; } = true;
@@ -120,7 +120,7 @@ public class Warper : Syndicate
             else
                 break;
 
-            if (Meeting)
+            if (Meeting())
             {
                 AnimationPlaying.sprite = PortalAnimation[0];
                 yield break;
@@ -171,11 +171,11 @@ public class Warper : Syndicate
 
         if (CustomPlayer.Local == WarpPlayer1)
         {
-            if (ActiveTask)
-                ActiveTask.Close();
+            if (ActiveTask())
+                ActiveTask().Close();
 
             if (MapPatch.MapActive)
-                Map.Close();
+                Map().Close();
         }
 
         WarpPlayer1 = null;

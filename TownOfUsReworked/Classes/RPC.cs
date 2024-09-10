@@ -32,16 +32,7 @@ public static class RPC
                 if (option.Type == CustomOptionType.Toggle)
                     writer.Write((bool)option.Value);
                 else if (option.Type == CustomOptionType.Number)
-                {
-                    var isInt = option.Value is int;
-                    var integer = isInt ? (int)option.Value : 0;
-                    writer.Write(isInt);
-
-                    if (isInt)
-                        writer.Write(integer);
-                    else
-                        writer.Write((float)option.Value);
-                }
+                    writer.Write(num: (Number)option.Value);
                 else if (option.Type == CustomOptionType.String)
                     writer.Write((int)option.Value);
                 else if (option.Type == CustomOptionType.Entry)
@@ -71,7 +62,7 @@ public static class RPC
             var value = customOption.Type switch
             {
                 CustomOptionType.Toggle => reader.ReadBoolean(),
-                CustomOptionType.Number => reader.ReadBoolean() ? reader.ReadInt32() : reader.ReadSingle(),
+                CustomOptionType.Number => reader.ReadNumber(),
                 CustomOptionType.String => Enum.Parse(customOption.TargetType, $"{reader.ReadInt32()}"),
                 CustomOptionType.Layers => reader.ReadEnum<LayerEnum>(),
                 CustomOptionType.Entry => reader.ReadRoleOptionData(),
@@ -156,6 +147,8 @@ public static class RPC
 
     public static T ReadEnum<T>(this MessageReader reader) where T : struct => Enum.Parse<T>($"{reader.ReadByte()}");
 
+    public static Number ReadNumber(this MessageReader reader) => new(reader.ReadSingle());
+
     public static void Write(this MessageWriter writer, PlayerLayer layer)
     {
         writer.Write(layer.PlayerId);
@@ -184,6 +177,8 @@ public static class RPC
         writer.Write(pv.VersionFinal);
         writer.Write(pv.SVersion);
     }
+
+    public static void Write(this MessageWriter writer, Number num) => writer.Write(num.Value);
 
     public static void Write(this MessageWriter writer, object item, object[] data)
     {
@@ -271,6 +266,8 @@ public static class RPC
             writer.Write(pv);
         else if (item is Version version)
             writer.Write(version);
+        else if (item is Number num)
+            writer.Write(num: num);
         else if (item is List<Role> roles)
         {
             writer.Write(roles.Count);

@@ -7,7 +7,7 @@ public class Overlord : Objectifier
     public static bool OverlordKnows { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 20, 1)]
-    public static int OverlordMeetingWinCount { get; set; } = 2;
+    public static Number OverlordMeetingWinCount { get; set; } = new(3);
 
     public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Overlord : CustomColorManager.Objectifier;
     public override string Name => "Overlord";

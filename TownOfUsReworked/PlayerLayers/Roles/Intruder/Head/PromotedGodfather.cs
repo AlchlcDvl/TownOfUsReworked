@@ -246,46 +246,46 @@ public class PromotedGodfather : Intruder
                     var fade = (FlashButton.EffectTime - Grenadier.FlashDur) * -2f;
 
                     if (ShouldPlayerBeBlinded(player))
-                        HUD.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.BlindVision, fade);
+                        HUD().FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.BlindVision, fade);
                     else if (ShouldPlayerBeDimmed(player))
-                        HUD.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.DimVision, fade);
+                        HUD().FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.DimVision, fade);
                     else
-                        HUD.FullScreen.color = CustomColorManager.NormalVision;
+                        HUD().FullScreen.color = CustomColorManager.NormalVision;
                 }
                 else if (FlashButton.EffectTime.IsInRange(0.5f, Grenadier.FlashDur - 0.5f, true, true))
                 {
                     if (ShouldPlayerBeBlinded(player))
-                        HUD.FullScreen.color = CustomColorManager.BlindVision;
+                        HUD().FullScreen.color = CustomColorManager.BlindVision;
                     else if (ShouldPlayerBeDimmed(player))
-                        HUD.FullScreen.color = CustomColorManager.DimVision;
+                        HUD().FullScreen.color = CustomColorManager.DimVision;
                     else
-                        HUD.FullScreen.color = CustomColorManager.NormalVision;
+                        HUD().FullScreen.color = CustomColorManager.NormalVision;
                 }
                 else if (FlashButton.EffectTime < 0.5f)
                 {
                     var fade2 = (FlashButton.EffectTime * -2) + 1;
 
                     if (ShouldPlayerBeBlinded(player))
-                        HUD.FullScreen.color = Color32.Lerp(CustomColorManager.BlindVision, CustomColorManager.NormalVision, fade2);
+                        HUD().FullScreen.color = Color32.Lerp(CustomColorManager.BlindVision, CustomColorManager.NormalVision, fade2);
                     else if (ShouldPlayerBeDimmed(player))
-                        HUD.FullScreen.color = Color32.Lerp(CustomColorManager.DimVision, CustomColorManager.NormalVision, fade2);
+                        HUD().FullScreen.color = Color32.Lerp(CustomColorManager.DimVision, CustomColorManager.NormalVision, fade2);
                     else
-                        HUD.FullScreen.color = CustomColorManager.NormalVision;
+                        HUD().FullScreen.color = CustomColorManager.NormalVision;
                 }
 
                 if (MapPatch.MapActive)
-                    Map.Close();
+                    Map().Close();
 
-                if (ActiveTask)
-                    ActiveTask.Close();
+                if (ActiveTask())
+                    ActiveTask().Close();
             }
         }
     }
 
     private bool ShouldPlayerBeDimmed(PlayerControl player) =>  (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None) || player.Data.IsDead) && !Meeting) || player == Player;
+        SubFaction.None) || player.Data.IsDead) && !Meeting()) || player == Player;
 
-    private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player) && !Meeting;
+    private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player) && !Meeting();
 
     public void UnFlash()
     {
@@ -301,7 +301,7 @@ public class PromotedGodfather : Intruder
 
     public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player.transform.position, Grenadier.FlashRadius).Select(x => x.PlayerId) ];
 
-    public bool GrenCondition() => !Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !Grenadier.SaboFlash;
+    public bool GrenCondition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !Grenadier.SaboFlash;
 
     public bool GrenUsable() => IsGren;
 

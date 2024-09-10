@@ -12,7 +12,7 @@ public static class ModCompatibility
     private static Type[] SubTypes { get; set; }
     private static Dictionary<string, Type> SubInjectedTypes { get; set; }
 
-    public static bool IsSubmerged() => SubLoaded && Ship && Ship.Type == SUBMERGED_MAP_TYPE && MapPatches.CurrentMap == 6;
+    public static bool IsSubmerged() => SubLoaded && Ship() && Ship().Type == SUBMERGED_MAP_TYPE && MapPatches.CurrentMap == 6;
 
     private static Type SubmarineStatusType;
 
@@ -188,17 +188,17 @@ public static class ModCompatibility
     public static void ExileRoleChangePostfix()
     {
         Coroutines.Start(WaitMeeting(() => ButtonUtils.Reset(CooldownType.Meeting)));
-        SetPostmortals.ExileControllerPostfix(Ejection);
+        SetPostmortals.ExileControllerPostfix(Ejection());
     }
 
     public static IEnumerator WaitStart(Action next)
     {
-        while (!HUD.UICamera.transform.Find("SpawnInMinigame(Clone)"))
+        while (!HUD().UICamera.transform.Find("SpawnInMinigame(Clone)"))
             yield return EndFrame();
 
         yield return Wait(0.5f);
 
-        while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)"))
+        while (HUD().UICamera.transform.Find("SpawnInMinigame(Clone)"))
             yield return EndFrame();
 
         next();
@@ -212,7 +212,7 @@ public static class ModCompatibility
 
         yield return Wait(0.5f);
 
-        while (HUD.PlayerCam.transform.Find("SpawnInMinigame(Clone)"))
+        while (HUD().PlayerCam.transform.Find("SpawnInMinigame(Clone)"))
             yield return EndFrame();
 
         next();
@@ -276,7 +276,7 @@ public static class ModCompatibility
 
         try
         {
-            Ship.RpcUpdateSystem((SystemTypes)130, 64);
+            Ship().RpcUpdateSystem((SystemTypes)130, 64);
             RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), [ CustomPlayer.Local, 64 ]);
         } catch {}
     }
@@ -314,7 +314,7 @@ public static class ModCompatibility
     private static Assembly LIAssembly { get; set; }
     private static Type[] LITypes { get; set; }
 
-    public static bool IsLevelImpostor() => LILoaded && Ship && Ship.Type == LI_MAP_TYPE && MapPatches.CurrentMap == 7;
+    public static bool IsLevelImpostor() => LILoaded && Ship() && Ship().Type == LI_MAP_TYPE && MapPatches.CurrentMap == 7;
 
     public static bool InitializeLevelImpostor()
     {

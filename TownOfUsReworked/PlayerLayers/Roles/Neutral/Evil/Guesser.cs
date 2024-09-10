@@ -22,7 +22,7 @@ public class Guesser : Neutral
     public static bool MultipleGuesses { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxGuesses { get; set; } = 5;
+    public static Number MaxGuesses { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuesserAfterVoting { get; set; } = false;
@@ -312,7 +312,7 @@ public class Guesser : Neutral
         UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), buttonParent);
         var label = UObject.Instantiate(voteArea.NameText, button);
         var rend = button.GetComponent<SpriteRenderer>();
-        rend.sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+        rend.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
         buttonParent.localPosition = position;
         buttonParent.localScale = new(0.55f, 0.55f, 1f);
         label.transform.localPosition = new(0f, 0f, label.transform.localPosition.z);
@@ -473,7 +473,7 @@ public class Guesser : Neutral
             return;
 
         // Ensures only the Guesser sees this
-        if (HUD && something != "")
+        if (HUD() && something != "")
             Run("<color=#EEE5BEFF>〖 Guess Hint 〗</color>", something);
     }
 
@@ -489,9 +489,9 @@ public class Guesser : Neutral
         if (Phone || __instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
             return;
 
-        AllVoteAreas.ForEach(x => x.gameObject.SetActive(false));
+        AllVoteAreas().ForEach(x => x.gameObject.SetActive(false));
         __instance.TimerText.gameObject.SetActive(false);
-        Chat.SetVisible(false);
+        Chat().SetVisible(false);
         Page = 0;
         var container = UObject.Instantiate(UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI"), __instance.transform);
         container.transform.localPosition = new(0, 0, -5f);
@@ -513,10 +513,10 @@ public class Guesser : Neutral
             return;
 
         Phone.Destroy();
-        Chat.SetVisible(true);
+        Chat().SetVisible(true);
         SelectedButton = null;
         __instance.TimerText.gameObject.SetActive(true);
-        AllVoteAreas.ForEach(x => x.gameObject.SetActive(true));
+        AllVoteAreas().ForEach(x => x.gameObject.SetActive(true));
 
         foreach (var pair in GuessButtons)
         {

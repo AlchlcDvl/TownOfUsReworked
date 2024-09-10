@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Godfather : Intruder
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0.25f, 0.9f, 0.05f, Format.Multiplier)]
-    public static float GFPromotionCdDecrease { get; set; } = 0.75f;
+    public static Number GFPromotionCdDecrease { get; set; } = new(0.75f);
 
     public bool HasDeclared { get; set; }
     public CustomButton DeclareButton { get; set; }

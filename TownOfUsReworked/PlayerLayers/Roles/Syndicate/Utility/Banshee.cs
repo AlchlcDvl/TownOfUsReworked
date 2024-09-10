@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Banshee : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ScreamCd { get; set; } = 25f;
+    public static Number ScreamCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float ScreamDur { get; set; } = 10f;
+    public static Number ScreamDur { get; set; } = new(10);
 
     public CustomButton ScreamButton { get; set; }
     public List<byte> Blocked { get; set; }
@@ -46,7 +46,7 @@ public class Banshee : Syndicate
         Faded = true;
         var color = new UColor(1f, 1f, 1f, 0f);
 
-        var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
+        var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
         var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
         var distPercent = distance / maxDistance;
@@ -80,7 +80,7 @@ public class Banshee : Syndicate
 
     public void HitScream()
     {
-        foreach (var player in AllPlayers)
+        foreach (var player in AllPlayers())
         {
             if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
                 Blocked.Add(player.PlayerId);
@@ -96,7 +96,7 @@ public class Banshee : Syndicate
 
     public override void ReadRPC(MessageReader reader)
     {
-        foreach (var player in AllPlayers)
+        foreach (var player in AllPlayers())
         {
             if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
                 Blocked.Add(player.PlayerId);

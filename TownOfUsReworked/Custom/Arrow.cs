@@ -97,12 +97,12 @@ public class CustomArrow
 
     public void UpdateArrowBlip(MapBehaviour __instance)
     {
-        if (!ArrowObj || !Arrow || !Render || ArrowColor == default || Meeting || Owner != CustomPlayer.Local)
+        if (!ArrowObj || !Arrow || !Render || ArrowColor == default || Meeting() || Owner != CustomPlayer.Local)
             return;
 
         var v = Target;
-        v /= Ship.MapScale;
-        v.x *= Mathf.Sign(Ship.transform.localScale.x);
+        v /= Ship().MapScale;
+        v.x *= Mathf.Sign(Ship().transform.localScale.x);
         v.z = -1f;
 
         if (!Point)

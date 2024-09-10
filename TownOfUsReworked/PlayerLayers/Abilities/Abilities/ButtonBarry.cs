@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public class ButtonBarry : Ability
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ButtonCd { get; set; } = 25f;
+    public static Number ButtonCd { get; set; } = new(25);
 
     private bool ButtonUsed { get; set; }
     public CustomButton ButtonButton { get; set; }

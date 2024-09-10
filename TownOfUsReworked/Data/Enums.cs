@@ -939,3 +939,10 @@ public enum CrewVenting
     OnTasksDone,
     Always
 }
+
+public enum TempLocation
+{
+    DontMove,
+    DeathValley,
+    SwappedWithVitals
+}

@@ -25,12 +25,11 @@ public static class BetterAirship
     public static MoveElectrical MoveElectrical { get; set; } = MoveElectrical.DontMove;
 
     [NumberOption(MultiMenu.Main, 0f, 10f, 0.1f)]
-    public static float MinDoorSwipeTime { get; set; } = 0.4f;
+    public static Number MinDoorSwipeTime { get; set; } = new(0.4f);
 
     [NumberOption(MultiMenu.Main, 30f, 100f, 5f, Format.Time)]
-    public static float CrashTimer { get; set; } = 90f;
+    public static Number CrashTimer { get; set; } = new(90);
 
-    private static bool GameStarted;
     public static readonly List<byte> SpawnPoints = [];
 
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
@@ -112,7 +111,7 @@ public static class BetterAirship
 
             if (TownOfUsReworked.MCIActive)
             {
-                foreach (var player in AllPlayers)
+                foreach (var player in AllPlayers())
                 {
                     if (!player.Data.PlayerName.Contains("Robot"))
                         continue;
@@ -126,9 +125,8 @@ public static class BetterAirship
             if (!EnableBetterAirship || IsSubmerged())
                 return true;
 
-            if (!GameStarted && SpawnType != AirshipSpawnType.Meeting)
+            if (SpawnType != AirshipSpawnType.Meeting)
             {
-                GameStarted = true;
                 var spawn = __instance.Locations.ToArray();
 
                 if (SpawnType == AirshipSpawnType.Fixed)
@@ -163,19 +161,13 @@ public static class BetterAirship
             var yIndex = playerId % 2;
             var xIndex = (playerId - yIndex) / 2;
 
-            position.x += xIndex * (13f - 9f) * 2 / AllPlayers.Count;
+            position.x += xIndex * (13f - 9f) * 2 / AllPlayers().Count;
 
             if (yIndex == 1)
                 position.y = 14.4f;
 
             return position;
         }
-    }
-
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
-    public static class GameEndedPatch
-    {
-        public static void Prefix() => GameStarted = false;
     }
 
     [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]

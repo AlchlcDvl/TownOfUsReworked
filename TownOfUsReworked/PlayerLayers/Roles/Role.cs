@@ -131,14 +131,14 @@ public abstract class Role : PlayerLayer
 
     public void UpdateButtons()
     {
-        HUD.SabotageButton.graphic.sprite = GetSprite(Faction switch
+        HUD().SabotageButton.graphic.sprite = GetSprite(Faction switch
         {
             Faction.Syndicate => "SyndicateSabotage",
             Faction.Intruder => "IntruderSabotage",
             _ => "DefaultSabotage"
         });
-        HUD.SabotageButton.graphic.SetCooldownNormalizedUvs();
-        HUD.ImpostorVentButton.graphic.sprite = GetSprite(Faction switch
+        HUD().SabotageButton.graphic.SetCooldownNormalizedUvs();
+        HUD().ImpostorVentButton.graphic.sprite = GetSprite(Faction switch
         {
             Faction.Syndicate => "SyndicateVent",
             Faction.Intruder => "IntruderVent",
@@ -146,7 +146,7 @@ public abstract class Role : PlayerLayer
             Faction.Neutral => "NeutralVent",
             _ => "DefaultVent"
         });
-        HUD.ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
+        HUD().ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
     }
 
     public override void OnIntroEnd()
@@ -222,7 +222,7 @@ public abstract class Role : PlayerLayer
             __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
         }
 
-        if (!Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode && AllPlayers.Any(x => x.Is(LayerEnum.Timekeeper)))
+        if (!Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode && AllPlayers().Any(x => x.Is(LayerEnum.Timekeeper)))
         {
             if (!Rewinding)
             {
@@ -422,7 +422,7 @@ public abstract class Role : PlayerLayer
     {
         base.OnMeetingStart(__instance);
         TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
-        AllVoteAreas.ForEach(GenText);
+        AllVoteAreas().ForEach(GenText);
         AllRoles.ForEach(x => x.CurrentChannel = ChatChannel.All);
         GetLayers<Thief>().ForEach(x => x.GuessMenu.HideButtons());
         GetLayers<Guesser>().ForEach(x => x.GuessMenu.HideButtons());
@@ -455,7 +455,7 @@ public abstract class Role : PlayerLayer
                 bh.Assigned = true;
 
                 // Ensures only the Bounty Hunter sees this
-                if (HUD && bh.Local)
+                if (HUD() && bh.Local)
                     Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
             }
         }

@@ -7,7 +7,7 @@ public class Diseased : Modifier
     public static bool DiseasedKnows { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 1.5f, 5f, 0.5f, Format.Multiplier)]
-    public static float DiseasedMultiplier { get; set; } = 3f;
+    public static Number DiseasedMultiplier { get; set; } = new(3);
 
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Diseased : CustomColorManager.Modifier;
     public override string Name => "Diseased";

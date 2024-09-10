@@ -7,10 +7,10 @@ public class Bait : Modifier
     public static bool BaitKnows { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
-    public static float BaitMinDelay { get; set; } = 0f;
+    public static Number BaitMinDelay { get; set; } = new(0);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
-    public static float BaitMaxDelay { get; set; } = 1f;
+    public static Number BaitMaxDelay { get; set; } = new(1);
 
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Bait : CustomColorManager.Modifier;
     public override string Name => "Bait";

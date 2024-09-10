@@ -59,7 +59,7 @@ public static class ConfirmEjects
             else
                 ejectString = $"{player.Data.PlayerName} was {role.FactionColorString}{role.FactionName}</color>.";
 
-            var totalEvilsCount = AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
+            var totalEvilsCount = AllPlayers().Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
                 !x.HasDied());
             var totalEvilsRemaining = IsAA() ? "an unknown number of" : $"{totalEvilsCount}";
             var s = totalEvilsCount > 1 ? "s" : "";

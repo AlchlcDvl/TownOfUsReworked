@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Crusader : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float CrusadeCd { get; set; } = 25f;
+    public static Number CrusadeCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float CrusadeDur { get; set; } = 10f;
+    public static Number CrusadeDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float ChaosDriveCrusadeRadius { get; set; } = 1.5f;
+    public static Number ChaosDriveCrusadeRadius { get; set; } = new(1.5f);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CrusadeMates { get; set; } = false;

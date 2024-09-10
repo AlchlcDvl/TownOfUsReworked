@@ -14,17 +14,17 @@ public class HudHandler : MonoBehaviour
 
     public void Update()
     {
-        if (IsLobby() || IsEnded() || NoPlayers() || IsHnS() || !HUD || !Ship || IntroCutscene.Instance)
+        if (IsLobby() || IsEnded() || NoPlayers() || IsHnS() || !HUD() || !Ship() || IntroCutscene.Instance)
             return;
 
-        if (LocalBlocked() && ActiveTask)
-            ActiveTask.Close();
+        if (LocalBlocked() && ActiveTask())
+            ActiveTask().Close();
 
         CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ForEach(x => x.Update());
-        PlayerLayer.LocalLayers.ForEach(x => x.UpdateHud(HUD));
+        PlayerLayer.LocalLayers.ForEach(x => x.UpdateHud(HUD()));
         CustomPlayer.Local.GetButtons().ForEach(x => x.SetActive());
         AllButtons.ForEach(x => x.Timers());
-        HUD?.ReportButton?.gameObject?.SetActive(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is(LayerEnum.Coward) && !CustomPlayer.Local.Is(Faction.GameMode));
+        HUD()?.ReportButton?.gameObject?.SetActive(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is(LayerEnum.Coward) && !CustomPlayer.Local.Is(Faction.GameMode));
 
         foreach (var phantom in PlayerLayer.GetLayers<Phantom>())
         {
@@ -58,7 +58,7 @@ public class HudHandler : MonoBehaviour
                 revealer.UnFade();
         }
 
-        foreach (var body in AllBodies)
+        foreach (var body in AllBodies())
         {
             var renderer = body.MyRend();
             var player = PlayerByBody(body);
@@ -87,7 +87,7 @@ public class HudHandler : MonoBehaviour
 
         if (BetterSabotages.CamouflagedComms)
         {
-            if (Ship.Systems.TryGetValue(SystemTypes.Comms, out var comms))
+            if (Ship().Systems.TryGetValue(SystemTypes.Comms, out var comms))
             {
                 var comms1 = comms.TryCast<HudOverrideSystemType>();
 

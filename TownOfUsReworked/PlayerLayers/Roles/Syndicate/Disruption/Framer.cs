@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Framer : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float FrameCd { get; set; } = 25f;
+    public static Number FrameCd { get; set; } = new(25f);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float ChaosDriveFrameRadius { get; set; } = 1.5f;
+    public static Number ChaosDriveFrameRadius { get; set; } = new(1.5f);
 
     public CustomButton FrameButton { get; set; }
     public CustomButton RadialFrameButton { get; set; }

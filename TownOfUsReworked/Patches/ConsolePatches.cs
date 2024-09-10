@@ -32,7 +32,7 @@ public static class OpenDoorConsoleUse
 
         if (canUse)
         {
-            Ship.RpcUpdateSystem(SystemTypes.Doors, (byte)(__instance.myDoor.Id | 64));
+            Ship().RpcUpdateSystem(SystemTypes.Doors, (byte)(__instance.myDoor.Id | 64));
             CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.myDoor.Id);
             __instance.myDoor.SetDoorway(true);
         }
@@ -249,7 +249,7 @@ public static class SetTaskOutline
 {
     public static void Postfix(Console __instance, bool mainTarget)
     {
-        if (!Role.LocalRole || !(CustomPlayer.Local && !Meeting && CustomPlayer.Local.CanDoTasks()))
+        if (!Role.LocalRole || !(CustomPlayer.Local && !Meeting() && CustomPlayer.Local.CanDoTasks()))
             return;
 
         __instance.Image.material.SetColor("_OutlineColor", Role.LocalRole.Color);

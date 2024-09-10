@@ -32,12 +32,12 @@ public class DebuggerBehaviour : MonoBehaviour
             if (IsLobby())
             {
                 TownOfUsReworked.IsTest = GUILayout.Toggle(TownOfUsReworked.IsTest, "Toggle Test Mode");
-                TownOfUsReworked.LobbyCapped = GUILayout.Toggle(TownOfUsReworked.LobbyCapped, "Toggle Lobby Cap");
+                TownOfUsReworked.LobbyCapped = GUILayout.Toggle(TownOfUsReworked.LobbyCapped, "Toggle Lobby() Cap");
                 TownOfUsReworked.Persistence = GUILayout.Toggle(TownOfUsReworked.Persistence, "Toggle Bot Persistence");
 
                 if (GUILayout.Button("Spawn Bot"))
                 {
-                    if ((AllPlayers.Count < GameSettings.LobbySize && TownOfUsReworked.LobbyCapped) || (!TownOfUsReworked.LobbyCapped && AllPlayers.Count < 128))
+                    if ((AllPlayers().Count < GameSettings.LobbySize && TownOfUsReworked.LobbyCapped) || (!TownOfUsReworked.LobbyCapped && AllPlayers().Count < 128))
                     {
                         MCIUtils.CleanUpLoad();
                         MCIUtils.CreatePlayerInstance();
@@ -76,12 +76,12 @@ public class DebuggerBehaviour : MonoBehaviour
 
                 if (GUILayout.Button("Next Player"))
                 {
-                    ControllingFigure = CycleByte(AllPlayers.Count - 1, 0, ControllingFigure, true);
+                    ControllingFigure = CycleByte(AllPlayers().Count - 1, 0, ControllingFigure, true);
                     MCIUtils.SwitchTo(ControllingFigure);
                 }
                 else if (GUILayout.Button("Previous Player"))
                 {
-                    ControllingFigure = CycleByte(AllPlayers.Count - 1, 0, ControllingFigure, false);
+                    ControllingFigure = CycleByte(AllPlayers().Count - 1, 0, ControllingFigure, false);
                     MCIUtils.SwitchTo(ControllingFigure);
                 }
 
@@ -98,22 +98,22 @@ public class DebuggerBehaviour : MonoBehaviour
                     CustomPlayer.Local.myTasks.ForEach(x => CustomPlayer.Local.RpcCompleteTask(x.Id));
 
                 if (GUILayout.Button("Complete Everyone's Tasks"))
-                    AllPlayers.ForEach(x => x.myTasks.ForEach(y => x.RpcCompleteTask(y.Id)));
+                    AllPlayers().ForEach(x => x.myTasks.ForEach(y => x.RpcCompleteTask(y.Id)));
 
                 if (GUILayout.Button("Redo Intro Sequence"))
                 {
-                    HUD.StartCoroutine(HUD.CoFadeFullScreen(UColor.clear, UColor.black));
-                    HUD.StartCoroutine(HUD.CoShowIntro());
+                    HUD().StartCoroutine(HUD().CoFadeFullScreen(UColor.clear, UColor.black));
+                    HUD().StartCoroutine(HUD().CoShowIntro());
                 }
 
-                if (Meeting)
+                if (Meeting())
                 {
-                    if (GUILayout.Button("End Meeting"))
-                        Meeting.RpcClose();
+                    if (GUILayout.Button("End Meeting()"))
+                        Meeting().RpcClose();
                 }
                 else
                 {
-                    if (GUILayout.Button("Start Meeting"))
+                    if (GUILayout.Button("Start Meeting()"))
                         CallMeeting(CustomPlayer.Local);
                 }
 
@@ -121,13 +121,13 @@ public class DebuggerBehaviour : MonoBehaviour
                     RpcMurderPlayer(CustomPlayer.Local);
 
                 if (GUILayout.Button("Kill All"))
-                    AllPlayers.ForEach(x => RpcMurderPlayer(x));
+                    AllPlayers().ForEach(x => RpcMurderPlayer(x));
 
                 if (GUILayout.Button("Revive Self"))
                     CustomPlayer.Local.Revive();
 
                 if (GUILayout.Button("Revive All"))
-                    AllPlayers.ForEach(x => x.Revive());
+                    AllPlayers().ForEach(x => x.Revive());
 
                 if (GUILayout.Button("Log Dump"))
                 {
@@ -182,7 +182,7 @@ public class DebuggerBehaviour : MonoBehaviour
             if (GUILayout.Button("Reset Initial Cooldown"))
                 CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.Start));
 
-            if (GUILayout.Button("Reset Meeting Cooldown"))
+            if (GUILayout.Button("Reset Meeting() Cooldown"))
                 CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.Meeting));
 
             if (GUILayout.Button("Close Cooldowns Menu"))

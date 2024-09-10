@@ -10,10 +10,10 @@ public static class BetterSkeld
     public static bool SkeldVentImprovements { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
-    public static float SkeldReactorTimer { get; set; } = 60f;
+    public static Number SkeldReactorTimer { get; set; } = new(60);
 
     [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
-    public static float SkeldO2Timer { get; set; } = 60f;
+    public static Number SkeldO2Timer { get; set; } = new(60);
 
     private static readonly Vector3 ReactorVentNewPos = new(-2.95f, -10.95f, 2f);
     private static readonly Vector3 ShieldsVentNewPos = new(2f, -15f, 2f);
@@ -79,35 +79,37 @@ public static class BetterSkeld
 
     private static void FindVents()
     {
+        var vents = AllVents();
+
         if (!NavVentSouth)
-            NavVentSouth = AllVents.Find(vent => vent.gameObject.name == "NavVentSouth");
+            NavVentSouth = vents.Find(vent => vent.gameObject.name == "NavVentSouth");
 
         if (!NavVentNorth)
-            NavVentNorth = AllVents.Find(vent => vent.gameObject.name == "NavVentNorth");
+            NavVentNorth = vents.Find(vent => vent.gameObject.name == "NavVentNorth");
 
         if (!ShieldsVent)
-            ShieldsVent = AllVents.Find(vent => vent.gameObject.name == "ShieldsVent");
+            ShieldsVent = vents.Find(vent => vent.gameObject.name == "ShieldsVent");
 
         if (!WeaponsVent)
-            WeaponsVent = AllVents.Find(vent => vent.gameObject.name == "WeaponsVent");
+            WeaponsVent = vents.Find(vent => vent.gameObject.name == "WeaponsVent");
 
         if (!REngineVent)
-            REngineVent = AllVents.Find(vent => vent.gameObject.name == "REngineVent");
+            REngineVent = vents.Find(vent => vent.gameObject.name == "REngineVent");
 
         if (!UpperReactorVent)
-            UpperReactorVent = AllVents.Find(vent => vent.gameObject.name == "UpperReactorVent");
+            UpperReactorVent = vents.Find(vent => vent.gameObject.name == "UpperReactorVent");
 
         if (!LEngineVent)
-            LEngineVent = AllVents.Find(vent => vent.gameObject.name == "LEngineVent");
+            LEngineVent = vents.Find(vent => vent.gameObject.name == "LEngineVent");
 
         if (!ReactorVent)
-            ReactorVent = AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
+            ReactorVent = vents.Find(vent => vent.gameObject.name == "ReactorVent");
 
         if (!BigYVent)
-            BigYVent = AllVents.Find(vent => vent.gameObject.name == "BigYVent");
+            BigYVent = vents.Find(vent => vent.gameObject.name == "BigYVent");
 
         if (!CafeVent)
-            CafeVent = AllVents.Find(vent => vent.gameObject.name == "CafeVent");
+            CafeVent = vents.Find(vent => vent.gameObject.name == "CafeVent");
 
         IsVentsFetched = NavVentSouth && NavVentNorth && ShieldsVent && WeaponsVent && REngineVent && UpperReactorVent && LEngineVent && ReactorVent && BigYVent && CafeVent;
     }

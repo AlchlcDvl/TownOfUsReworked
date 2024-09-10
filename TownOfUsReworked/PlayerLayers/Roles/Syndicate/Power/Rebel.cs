@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Rebel : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0.25f, 0.9f, 0.05f, Format.Multiplier)]
-    public static float RebPromotionCdDecrease { get; set; } = 0.75f;
+    public static Number RebPromotionCdDecrease { get; set; } = new(0.75f);
 
     public bool HasDeclared { get; set; }
     public CustomButton SidekickButton { get; set; }

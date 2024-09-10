@@ -10,21 +10,21 @@ public class MeetingHandler : MonoBehaviour
 
     public void Update()
     {
-        if (NoPlayers() || IsHnS() || !IsInGame() || IsCustomHnS() || IsTaskRace() || !Meeting)
+        if (NoPlayers() || IsHnS() || !IsInGame() || IsCustomHnS() || IsTaskRace() || !Meeting())
             return;
 
         // Deactivate skip Button if skipping on emergency meetings is disabled
         if (!CustomPlayer.LocalCustom.Dead)
         {
-            Meeting.SkipVoteButton.gameObject.SetActive(!((MeetingPatches.Reported == null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping
-                == DisableSkipButtonMeetings.Always)) && Meeting.state == MeetingHud.VoteStates.NotVoted && !Ability.GetAssassins().Any(x => x.Phone) &&
+            Meeting().SkipVoteButton.gameObject.SetActive(!((MeetingPatches.Reported == null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping
+                == DisableSkipButtonMeetings.Always)) && Meeting().state == MeetingHud.VoteStates.NotVoted && !Ability.GetAssassins().Any(x => x.Phone) &&
                 !PlayerLayer.GetLayers<Guesser>().Any(x => x.Phone) && !PlayerLayer.GetLayers<Thief>().Any(x => x.Phone));
         }
         else
-            Meeting.SkipVoteButton.gameObject.SetActive(false);
+            Meeting().SkipVoteButton.gameObject.SetActive(false);
 
-        AllVoteAreas.ForEach(SetNames);
-        PlayerLayer.LocalLayers.ForEach(x => x.UpdateMeeting(Meeting));
+        AllVoteAreas().ForEach(SetNames);
+        PlayerLayer.LocalLayers.ForEach(x => x.UpdateMeeting(Meeting()));
     }
 
     private static void SetNames(PlayerVoteArea player)

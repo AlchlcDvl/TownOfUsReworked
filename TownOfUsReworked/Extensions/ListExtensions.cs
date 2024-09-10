@@ -138,6 +138,15 @@ public static class ListExtensions
         }
     }
 
+    public static void AddMany<T>(this List<T> list, T item, int count)
+    {
+        while (count > 0)
+        {
+            list.Add(item);
+            count--;
+        }
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)

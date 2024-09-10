@@ -10,10 +10,10 @@ public static class BetterMiraHQ
     public static bool MiraHQVentImprovements { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
-    public static float MiraReactorTimer { get; set; } = 60f;
+    public static Number MiraReactorTimer { get; set; } = new(60);
 
     [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
-    public static float MiraO2Timer { get; set; } = 60f;
+    public static Number MiraO2Timer { get; set; } = new(60);
 
     private static readonly Vector3 CommsPos = new(14.5f, 3.1f, 2f);
 
@@ -67,9 +67,9 @@ public static class BetterMiraHQ
             {
                 CommsVent.Id = GetAvailableId();
                 IsVentModified = true;
-                var vents = Ship.AllVents.ToList();
+                var vents = Ship().AllVents.ToList();
                 vents.Add(CommsVent);
-                Ship.AllVents = vents.ToArray();
+                Ship().AllVents = vents.ToArray();
             }
         }
     }
@@ -97,38 +97,40 @@ public static class BetterMiraHQ
 
     private static void FindVents()
     {
+        var vents = AllVents();
+
         if (!SpawnVent)
-            SpawnVent = AllVents.Find(vent => vent.gameObject.name == "LaunchVent");
+            SpawnVent = vents.Find(vent => vent.gameObject.name == "LaunchVent");
 
         if (!BalcVent)
-            BalcVent = AllVents.Find(vent => vent.gameObject.name == "BalconyVent");
+            BalcVent = vents.Find(vent => vent.gameObject.name == "BalconyVent");
 
         if (!ReactorVent)
-            ReactorVent = AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
+            ReactorVent = vents.Find(vent => vent.gameObject.name == "ReactorVent");
 
         if (!LabVent)
-            LabVent = AllVents.Find(vent => vent.gameObject.name == "LabVent");
+            LabVent = vents.Find(vent => vent.gameObject.name == "LabVent");
 
         if (!LockerVent)
-            LockerVent = AllVents.Find(vent => vent.gameObject.name == "LockerVent");
+            LockerVent = vents.Find(vent => vent.gameObject.name == "LockerVent");
 
         if (!AdminVent)
-            AdminVent = AllVents.Find(vent => vent.gameObject.name == "AdminVent");
+            AdminVent = vents.Find(vent => vent.gameObject.name == "AdminVent");
 
         if (!LightsVent)
-            LightsVent = AllVents.Find(vent => vent.gameObject.name == "OfficeVent");
+            LightsVent = vents.Find(vent => vent.gameObject.name == "OfficeVent");
 
         if (!O2Vent)
-            O2Vent = AllVents.Find(vent => vent.gameObject.name == "AgriVent");
+            O2Vent = vents.Find(vent => vent.gameObject.name == "AgriVent");
 
         if (!DeconVent)
-            DeconVent = AllVents.Find(vent => vent.gameObject.name == "DeconVent");
+            DeconVent = vents.Find(vent => vent.gameObject.name == "DeconVent");
 
         if (!MedicVent)
-            MedicVent = AllVents.Find(vent => vent.gameObject.name == "MedVent");
+            MedicVent = vents.Find(vent => vent.gameObject.name == "MedVent");
 
         if (!YRightVent)
-            YRightVent = AllVents.Find(vent => vent.gameObject.name == "YHallRightVent");
+            YRightVent = vents.Find(vent => vent.gameObject.name == "YHallRightVent");
 
         if (!CommsVent)
         {
@@ -145,7 +147,7 @@ public static class BetterMiraHQ
     private static void FindRooms()
     {
         if (!Comms)
-            Comms = AllGameObjects.Find(o => o.name == "Comms");
+            Comms = AllGameObjects().Find(o => o.name == "Comms");
 
         IsRoomsFetched = Comms;
     }

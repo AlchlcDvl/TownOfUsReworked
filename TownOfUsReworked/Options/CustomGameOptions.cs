@@ -1,30 +1,30 @@
 namespace TownOfUsReworked.Options;
 
-// DO NOT OVERRIDE VALUES OF ANY OF THESE PROPERTIES ANY WHERE IN THE CODE OR ELSE THE OPTIONS WILL START TO FUCK OFF
+// DO NOT OVERRIDE VALUES OF ANY OF THE OPTION PROPERTIES ANY WHERE IN THE CODE OR ELSE THE OPTIONS WILL START TO FUCK OFF
 
 [HeaderOption(MultiMenu.Main)]
 public static class GameSettings
 {
     [NumberOption(MultiMenu.Main, 0.25f, 10, 0.25f, Format.Multiplier)]
-    public static float PlayerSpeed { get; set; } = 1.25f;
+    public static Number PlayerSpeed { get; set; } = new(1.25f);
 
     [NumberOption(MultiMenu.Main, 0.25f, 10, 0.25f, Format.Multiplier)]
-    public static float GhostSpeed { get; set; } = 3;
+    public static Number GhostSpeed { get; set; } = new(3);
 
     [NumberOption(MultiMenu.Main, 0.5f, 5, 0.5f, Format.Distance)]
-    public static float InteractionDistance { get; set; } = 2;
+    public static Number InteractionDistance { get; set; } = new(2);
 
     [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static int EmergencyButtonCount { get; set; } = 1;
+    public static Number EmergencyButtonCount { get; set; } = new(1);
 
     [NumberOption(MultiMenu.Main, 0, 300, 2.5f, Format.Time)]
-    public static int EmergencyButtonCooldown { get; set; } = 25;
+    public static Number EmergencyButtonCooldown { get; set; } = new(25);
 
     [NumberOption(MultiMenu.Main, 0, 300, 5, Format.Time)]
-    public static int DiscussionTime { get; set; } = 30;
+    public static Number DiscussionTime { get; set; } = new(30);
 
     [NumberOption(MultiMenu.Main, 5, 600, 15, Format.Time)]
-    public static int VotingTime { get; set; } = 60;
+    public static Number VotingTime { get; set; } = new(60);
 
     [StringOption(MultiMenu.Main)]
     private static TBMode TaskBar { get; set; } = TBMode.MeetingOnly;
@@ -44,31 +44,31 @@ public static class GameSettings
     public static bool EnableInitialCds { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 0, 30, 2.5f, Format.Time)]
-    public static float InitialCooldowns { get; set; } = 10;
+    public static Number InitialCooldowns { get; set; } = new(10);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool EnableMeetingCds { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 0, 30, 2.5f, Format.Time)]
-    public static float MeetingCooldowns { get; set; } = 15;
+    public static Number MeetingCooldowns { get; set; } = new(15);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool EnableFailCds { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 0, 30, 2.5f, Format.Time)]
-    public static float FailCooldowns { get; set; } = 5;
+    public static Number FailCooldowns { get; set; } = new(5);
 
     [NumberOption(MultiMenu.Main, 1, 20, 0.25f, Format.Distance)]
-    public static float ReportDistance { get; set; } = 3.5f;
+    public static Number ReportDistance { get; set; } = new(3.5f);
 
     [NumberOption(MultiMenu.Main, 0, 3, 0.1f, Format.Time)]
-    public static float ChatCooldown { get; set; } = 3;
+    public static Number ChatCooldown { get; set; } = new(3);
 
     [NumberOption(MultiMenu.Main, 0, 2000, 50, ZeroIsInfinity = true)]
-    public static int ChatCharacterLimit { get; set; } = 200;
+    public static Number ChatCharacterLimit { get; set; } = new(200);
 
     [NumberOption(MultiMenu.Main, 2, 127, 1)]
-    public static int LobbySize { get; set; } = 15;
+    public static Number LobbySize { get; set; } = new(15);
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -87,7 +87,7 @@ public static class GameModeSettings
     public static bool IgnoreLayerCaps { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static int NeutralsCount { get; set; } = 1;
+    public static Number NeutralsCount { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool AddArsonist { get; set; } = false;
@@ -102,34 +102,34 @@ public static class GameModeSettings
     public static HnSMode HnSMode { get; set; } = HnSMode.Classic;
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static int HnSShortTasks { get; set; } = 4;
+    public static Number HnSShortTasks { get; set; } = new(4);
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static int HnSCommonTasks { get; set; } = 4;
+    public static Number HnSCommonTasks { get; set; } = new(4);
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static int HnSLongTasks { get; set; } = 4;
+    public static Number HnSLongTasks { get; set; } = new(4);
 
     [NumberOption(MultiMenu.Main, 1, 13, 1)]
-    public static int HunterCount { get; set; } = 1;
+    public static Number HunterCount { get; set; } = new(1);
 
     [NumberOption(MultiMenu.Main, 5f, 60f, 5f, Format.Time)]
-    public static float HuntCd { get; set; } = 10;
+    public static Number HuntCd { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 5f, 60f, 5f, Format.Time)]
-    public static float StartTime { get; set; } = 10;
+    public static Number StartTime { get; set; } = new(10);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool HunterVent { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 0.1f, 1f, 0.05f, Format.Multiplier)]
-    public static float HunterVision { get; set;} = 0.25f;
+    public static Number HunterVision { get; set;} = new(0.25f);
 
     [NumberOption(MultiMenu.Main, 1f, 2f, 0.05f, Format.Multiplier)]
-    public static float HuntedVision { get; set;} = 1.5f;
+    public static Number HuntedVision { get; set;} = new(1.5f);
 
     [NumberOption(MultiMenu.Main, 1f, 1.5f, 0.05f, Format.Multiplier)]
-    public static float HunterSpeedModifier { get; set; } = 1.25f;
+    public static Number HunterSpeedModifier { get; set; } = new(1.25f);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool HunterFlashlight { get; set; } = false;
@@ -141,13 +141,13 @@ public static class GameModeSettings
     public static bool HuntedChat { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static int TRShortTasks { get; set; } = 4;
+    public static Number TRShortTasks { get; set; } = new(4);
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static int TRCommonTasks { get; set; } = 4;
+    public static Number TRCommonTasks { get; set; } = new(4);
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static int TRLongTasks { get; set; } = 1;
+    public static Number TRLongTasks { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool BanCrewmate { get; set; } = true;
@@ -272,30 +272,30 @@ public static class MapSettings
     public static MapEnum Map { get; set; }
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static int RandomMapSkeld { get; set; } = 10;
+    public static Number RandomMapSkeld { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static int RandomMapMira { get; set; } = 10;
+    public static Number RandomMapMira { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static int RandomMapPolus { get; set; } = 10;
+    public static Number RandomMapPolus { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static int RandomMapdlekS { get; set; } = 10;
+    public static Number RandomMapdlekS { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static int RandomMapAirship { get; set; } = 10;
+    public static Number RandomMapAirship { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static int RandomMapFungle { get; set; } = 10;
+    public static Number RandomMapFungle { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent, All = true)]
-    private static int RandomMapSubmergedPriv { get; set; } = 10;
-    public static int RandomMapSubmerged => SubLoaded ? RandomMapSubmergedPriv : 0;
+    private static Number RandomMapSubmergedPriv { get; set; } = new(10);
+    public static Number RandomMapSubmerged => SubLoaded ? RandomMapSubmergedPriv : new(0);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent, All = true)]
-    private static int RandomMapLevelImpostorPriv { get; set; } = 10;
-    public static int RandomMapLevelImpostor => LILoaded ? RandomMapLevelImpostorPriv : 0;
+    private static Number RandomMapLevelImpostorPriv { get; set; } = new(10);
+    public static Number RandomMapLevelImpostor => LILoaded ? RandomMapLevelImpostorPriv : new(0);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool AutoAdjustSettings { get; set; } = false;
@@ -304,50 +304,50 @@ public static class MapSettings
     public static bool SmallMapHalfVision { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 0f, 15f, 2.5f, Format.Time)]
-    public static float SmallMapDecreasedCooldown { get; set; } = 0f;
+    public static Number SmallMapDecreasedCooldown { get; set; } = new(0);
 
     [NumberOption(MultiMenu.Main, 0f, 15f, 2.5f, Format.Time)]
-    public static float LargeMapIncreasedCooldown { get; set; } = 0f;
+    public static Number LargeMapIncreasedCooldown { get; set; } = new(0);
 
     [NumberOption(MultiMenu.Main, 0, 5, 1)]
-    public static int SmallMapIncreasedShortTasks { get; set; } = 0;
+    public static Number SmallMapIncreasedShortTasks { get; set; } = new(0);
 
     [NumberOption(MultiMenu.Main, 0, 3, 1)]
-    public static int SmallMapIncreasedLongTasks { get; set; } = 0;
+    public static Number SmallMapIncreasedLongTasks { get; set; } = new(0);
 
     [NumberOption(MultiMenu.Main, 0, 5, 1)]
-    public static int LargeMapDecreasedShortTasks { get; set; } = 0;
+    public static Number LargeMapDecreasedShortTasks { get; set; } = new(0);
 
     [NumberOption(MultiMenu.Main, 0, 3, 1)]
-    public static int LargeMapDecreasedLongTasks { get; set; } = 0;
+    public static Number LargeMapDecreasedLongTasks { get; set; } = new(0);
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class CrewSettings
 {
     [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static int CommonTasks { get; set; } = 2;
+    public static Number CommonTasks { get; set; } = new(2);
 
     [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static int LongTasks { get; set; } = 1;
+    public static Number LongTasks { get; set; } = new(1);
 
     [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static int ShortTasks { get; set; } = 4;
+    public static Number ShortTasks { get; set; } = new(4);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool GhostTasksCountToWin { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static float CrewVision { get; set; } = 1f;
+    public static Number CrewVision { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool CrewFlashlight { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 0, 14, 1)]
-    public static int CrewMax { get; set; } = 5;
+    public static Number CrewMax { get; set; } = new(5);
 
     [NumberOption(MultiMenu.Main, 0, 14, 1)]
-    public static int CrewMin { get; set; } = 5;
+    public static Number CrewMin { get; set; } = new(5);
 
     [StringOption(MultiMenu.Main)]
     public static CrewVenting CrewVent { get; set; } = CrewVenting.Never;
@@ -357,7 +357,7 @@ public static class CrewSettings
 public static class NeutralSettings
 {
     [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static float NeutralVision { get; set; } = 1.5f;
+    public static Number NeutralVision { get; set; } = new(1.5f);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool LightsAffectNeutrals { get; set; } = true;
@@ -366,10 +366,10 @@ public static class NeutralSettings
     public static bool NeutralFlashlight { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static int NeutralMax { get; set; } = 5;
+    public static Number NeutralMax { get; set; } = new(3);
 
     [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static int NeutralMin { get; set; } = 5;
+    public static Number NeutralMin { get; set; } = new(3);
 
     [StringOption(MultiMenu.Main)]
     public static NoSolo NoSolo { get; set; } = NoSolo.Never;
@@ -385,16 +385,16 @@ public static class NeutralSettings
 public static class IntruderSettings
 {
     [NumberOption(MultiMenu.Main, 0, 4, 1)]
-    public static int IntruderCount { get; set; } = 1;
+    public static Number IntruderCount { get; set; } = new(1);
 
     [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static float IntruderVision { get; set; } = 2f;
+    public static Number IntruderVision { get; set; } = new(2);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool IntruderFlashlight { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 10f, 60f, 2.5f, Format.Time)]
-    public static float IntKillCd { get; set; } = 25f;
+    public static Number IntKillCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool IntrudersVent { get; set; } = true;
@@ -406,29 +406,29 @@ public static class IntruderSettings
     public static bool GhostsCanSabotage { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static int IntruderMax { get; set; } = 5;
+    public static Number IntruderMax { get; set; } = new(1);
 
     [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static int IntruderMin { get; set; } = 5;
+    public static Number IntruderMin { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class SyndicateSettings
 {
     [NumberOption(MultiMenu.Main, 0, 4, 1)]
-    public static int SyndicateCount { get; set; } = 1;
+    public static Number SyndicateCount { get; set; } = new(1);
 
     [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static float SyndicateVision { get; set; } = 2f;
+    public static Number SyndicateVision { get; set; } = new(2);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool SyndicateFlashlight { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 1, 10, 1)]
-    public static int ChaosDriveMeetingCount { get; set; } = 3;
+    public static Number ChaosDriveMeetingCount { get; set; } = new(3);
 
     [NumberOption(MultiMenu.Main, 10f, 60f, 2.5f, Format.Time)]
-    public static float CDKillCd { get; set; } = 25f;
+    public static Number CDKillCd { get; set; } = new(25);
 
     [StringOption(MultiMenu.Main)]
     public static SyndicateVentOptions SyndicateVent { get; set; } = SyndicateVentOptions.Always;
@@ -441,27 +441,27 @@ public static class SyndicateSettings
     public static bool GlobalDrive { get; set; } = false;
 
     [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static int SyndicateMax { get; set; } = 5;
+    public static Number SyndicateMax { get; set; } = new(1);
 
     [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static int SyndicateMin { get; set; } = 5;
+    public static Number SyndicateMin { get; set; } = new(1);
 }
 
 public static class TaskSettings
 {
-    public static int ShortTasks => GameModeSettings.GameMode switch
+    public static Number ShortTasks => GameModeSettings.GameMode switch
     {
         GameMode.TaskRace => GameModeSettings.TRShortTasks,
         GameMode.HideAndSeek => GameModeSettings.HnSShortTasks,
         _ => CrewSettings.ShortTasks
     };
-    public static int LongTasks => GameModeSettings.GameMode switch
+    public static Number LongTasks => GameModeSettings.GameMode switch
     {
         GameMode.TaskRace => GameModeSettings.TRLongTasks,
         GameMode.HideAndSeek => GameModeSettings.HnSLongTasks,
         _ => CrewSettings.LongTasks
     };
-    public static int CommonTasks => GameModeSettings.GameMode switch
+    public static Number CommonTasks => GameModeSettings.GameMode switch
     {
         GameMode.TaskRace => GameModeSettings.TRCommonTasks,
         GameMode.HideAndSeek => GameModeSettings.HnSCommonTasks,
@@ -1099,42 +1099,42 @@ public static class Objectifiers
 public static class CrewAuditorSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxCA { get; set; } = 1;
+    public static Number MaxCA { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewInvestigativeSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxCI { get; set; } = 1;
+    public static Number MaxCI { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewKillingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxCK { get; set; } = 1;
+    public static Number MaxCK { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewProtectiveSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxCrP { get; set; } = 1;
+    public static Number MaxCrP { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewSovereignSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxCSv { get; set; } = 1;
+    public static Number MaxCSv { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewSupportSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxCS { get; set; } = 1;
+    public static Number MaxCS { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1151,7 +1151,7 @@ public static class NeutralApocalypseSettings
 public static class NeutralBenignSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxNB { get; set; } = 1;
+    public static Number MaxNB { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool VigilanteKillsBenigns { get; set; } = true;
@@ -1161,7 +1161,7 @@ public static class NeutralBenignSettings
 public static class NeutralEvilSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxNE { get; set; } = 1;
+    public static Number MaxNE { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool NeutralEvilsEndGame { get; set; } = false;
@@ -1177,7 +1177,7 @@ public static class NeutralEvilSettings
 public static class NeutralHarbingerSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxNH { get; set; } = 1;
+    public static Number MaxNH { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool NHHasImpVision { get; set; } = true;
@@ -1187,7 +1187,7 @@ public static class NeutralHarbingerSettings
 public static class NeutralKillingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxNK { get; set; } = 1;
+    public static Number MaxNK { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool NKHasImpVision { get; set; } = true;
@@ -1200,7 +1200,7 @@ public static class NeutralKillingSettings
 public static class NeutralNeophyteSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxNN { get; set; } = 1;
+    public static Number MaxNN { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.AlignmentSubOptions)]
     public static bool NNHasImpVision { get; set; } = true;
@@ -1210,91 +1210,91 @@ public static class NeutralNeophyteSettings
 public static class IntruderConcealingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxIC { get; set; } = 1;
+    public static Number MaxIC { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderDeceptionSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxID { get; set; } = 1;
+    public static Number MaxID { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderHeadSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxIH { get; set; } = 1;
+    public static Number MaxIH { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderKillingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxIK { get; set; } = 1;
+    public static Number MaxIK { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderSupportSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxIS { get; set; } = 1;
+    public static Number MaxIS { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateDisruptionSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxSD { get; set; } = 1;
+    public static Number MaxSD { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateKillingSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxSyK { get; set; } = 1;
+    public static Number MaxSyK { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicatePowerSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxSP { get; set; } = 1;
+    public static Number MaxSP { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateSupportSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxSSu { get; set; } = 1;
+    public static Number MaxSSu { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class ModifiersSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxModifiers { get; set; } = 5;
+    public static Number MaxModifiers { get; set; } = new(5);
 
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MinModifiers { get; set; } = 5;
+    public static Number MinModifiers { get; set; } = new(5);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class AbilitiesSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxAbilities { get; set; } = 5;
+    public static Number MaxAbilities { get; set; } = new(5);
 
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MinAbilities { get; set; } = 5;
+    public static Number MinAbilities { get; set; } = new(5);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class ObjectifiersSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MaxObjectifiers { get; set; } = 5;
+    public static Number MaxObjectifiers { get; set; } = new(5);
 
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static int MinObjectifiers { get; set; } = 5;
+    public static Number MinObjectifiers { get; set; } = new(5);
 }

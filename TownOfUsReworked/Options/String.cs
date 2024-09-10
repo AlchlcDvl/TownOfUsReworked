@@ -10,7 +10,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
 
     public string GetString() => Values[Index];
 
-    public object GetEnumValue() => Enum.Parse(TargetType, $"{Index}");
+    public object Get() => Enum.Parse(TargetType, $"{Index}");
 
     public void Increase()
     {

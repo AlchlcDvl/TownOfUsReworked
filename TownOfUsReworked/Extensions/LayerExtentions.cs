@@ -120,7 +120,7 @@ public static class LayerExtentions
         if (IsHnS())
             return false;
 
-        var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps)) && !Meeting && IntruderSettings.IntrudersCanSabotage;
+        var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps)) && !Meeting() && IntruderSettings.IntrudersCanSabotage;
 
         if (!player.Data.IsDead)
             return result;
@@ -425,7 +425,7 @@ public static class LayerExtentions
     {
         var result = 1f;
 
-        if (player.HasDied() || Lobby || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
+        if (player.HasDied() || Lobby() || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
             return result;
 
         if (IntroCutscene.Instance)
@@ -465,7 +465,7 @@ public static class LayerExtentions
             }
         }
 
-        if (Ship && Ship.Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
+        if (Ship() && Ship().Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
         {
             var lifeSuppSystemType = life.Cast<LifeSuppSystemType>();
 
@@ -489,7 +489,7 @@ public static class LayerExtentions
 
     public static float GetSize(this PlayerControl player)
     {
-        if (Ship?.Systems?.TryGetValue(SystemTypes.MushroomMixupSabotage, out var sab) == true)
+        if (Ship()?.Systems?.TryGetValue(SystemTypes.MushroomMixupSabotage, out var sab) == true)
         {
             var mixup = sab.TryCast<MushroomMixupSabotageSystem>();
 
@@ -497,7 +497,7 @@ public static class LayerExtentions
                 return 1f;
         }
 
-        if (Lobby || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
+        if (Lobby() || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
         else if (player.Is(LayerEnum.Dwarf))
             return Dwarf.DwarfScale;
@@ -569,7 +569,7 @@ public static class LayerExtentions
             return false;
         else if (IsHnS())
             return !playerInfo.IsImpostor();
-        else if (playerInfo.Disconnected || (int)GameModifiers.WhoCanVent is 3 || player.inMovingPlat || player.onLadder || Meeting)
+        else if (playerInfo.Disconnected || (int)GameModifiers.WhoCanVent is 3 || player.inMovingPlat || player.onLadder || Meeting())
             return false;
         else if (player.inVent || GameModifiers.WhoCanVent == WhoCanVentOptions.Everyone)
             return true;
@@ -670,7 +670,7 @@ public static class LayerExtentions
 
         if (!player || !playerInfo)
             return false;
-        else if (playerInfo.IsDead || Meeting || Lobby)
+        else if (playerInfo.IsDead || Meeting() || Lobby())
             return true;
         else if (player.Is(LayerEnum.Lovers))
             return Lovers.LoversChat;

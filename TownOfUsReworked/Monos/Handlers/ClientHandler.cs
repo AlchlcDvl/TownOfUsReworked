@@ -43,7 +43,7 @@
 //     {
 //         if (!WikiRCButton)
 //         {
-//             WikiRCButton = Instantiate(HUD.MapButton, HUD.MapButton.transform.parent);
+//             WikiRCButton = Instantiate(HUD().MapButton, HUD().MapButton.transform.parent);
 //             WikiRCButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Wiki");
 //             WikiRCButton.OverrideOnClickListeners(ClientStuff.Open);
 //             WikiRCButton.name = "WikiAndRCButton";
@@ -51,7 +51,7 @@
 
 //         if (!SettingsButton)
 //         {
-//             SettingsButton = Instantiate(HUD.MapButton, HUD.MapButton.transform.parent);
+//             SettingsButton = Instantiate(HUD().MapButton, HUD().MapButton.transform.parent);
 //             SettingsButton.OverrideOnClickListeners(ClientStuff.OpenSettings);
 //             SettingsButton.GetComponent<SpriteRenderer>().sprite = GetSprite("CurrentSettings");
 //             SettingsButton.name = "CustomSettingsButton";
@@ -59,7 +59,7 @@
 
 //         if (!ClientOptionsButton)
 //         {
-//             ClientOptionsButton = Instantiate(HUD.MapButton, HUD.MapButton.transform.parent);
+//             ClientOptionsButton = Instantiate(HUD().MapButton, HUD().MapButton.transform.parent);
 //             ClientOptionsButton.OverrideOnClickListeners(LobbyConsole.CreateMenu);
 //             ClientOptionsButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Client");
 //             ClientOptionsButton.name = "ClientOptionsButton";
@@ -67,7 +67,7 @@
 
 //         if (!ZoomButton)
 //         {
-//             ZoomButton = Instantiate(HUD.MapButton, HUD.MapButton.transform.parent);
+//             ZoomButton = Instantiate(HUD().MapButton, HUD().MapButton.transform.parent);
 //             ZoomButton.OverrideOnClickListeners(ClientStuff.ClickZoom);
 //             ZoomButton.name = "ZoomButton";
 //         }
@@ -77,18 +77,18 @@
 
 //     public void Update()
 //     {
-//         if (IsHnS() || !HUD || !CustomPlayer.Local || !HUD.SettingsButton || !HUD.MapButton || !ButtonsSet)
+//         if (IsHnS() || !HUD() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsSet)
 //             return;
 
-//         var pos = HUD.SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -HUD.SettingsButton.transform.localPosition.z - 51f);
+//         var pos = HUD().SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -HUD().SettingsButton.transform.localPosition.z - 51f);
 //         WikiRCButton.transform.localPosition = pos;
 
 //         pos += new Vector3(0, -0.66f, 0f);
-//         HUD.MapButton.transform.localPosition = pos;
+//         HUD().MapButton.transform.localPosition = pos;
 
 //         if (IsSubmerged() && CustomPlayer.LocalCustom.Dead)
 //         {
-//             var floorButton = HUD.MapButton.transform.parent.Find($"{HUD.MapButton.name}(Clone)");
+//             var floorButton = HUD().MapButton.transform.parent.Find($"{HUD().MapButton.name}(Clone)");
 
 //             if (floorButton)
 //             {
@@ -109,9 +109,9 @@
 
 //         ClientStuff.ResetButtonPos();
 //         WikiRCButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay());
-//         SettingsButton.gameObject.SetActive(HUD.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
-//         ClientOptionsButton.gameObject.SetActive(HUD.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
-//         ZoomButton.gameObject.SetActive(HUD.MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && !IntroCutscene.Instance && !IsFreePlay() && IsInGame() &&
+//         SettingsButton.gameObject.SetActive(HUD().MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
+//         ClientOptionsButton.gameObject.SetActive(HUD().MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
+//         ZoomButton.gameObject.SetActive(HUD().MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && !IntroCutscene.Instance && !IsFreePlay() && IsInGame() &&
 //             (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()));
 //         ZoomButton.GetComponent<SpriteRenderer>().sprite = GetSprite(Zooming ? "Plus" : "Minus");
 
@@ -133,7 +133,7 @@
 //         if (!IsInGame())
 //             return;
 
-//         HUD?.TaskPanel?.gameObject?.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting && !(Map && Map.IsOpen) && !WikiActive && !IsCustomHnS());
+//         HUD()?.TaskPanel?.gameObject?.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting() && !(Map() && Map().IsOpen) && !WikiActive && !IsCustomHnS());
 //         var taskBar = FindObjectOfType<ProgressTracker>(true);
 
 //         if (taskBar)
@@ -141,7 +141,7 @@
 //             if (CustomGameOptions.TaskBarMode == TaskBar.Invisible)
 //                 taskBar.gameObject.SetActive(false);
 //             else
-//                 taskBar.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !(Map && Map.IsOpen) && !WikiActive);
+//                 taskBar.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !(Map() && Map().IsOpen) && !WikiActive);
 //         }
 //     }
 // }

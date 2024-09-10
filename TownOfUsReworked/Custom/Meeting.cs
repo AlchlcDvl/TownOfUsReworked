@@ -100,7 +100,7 @@ public class CustomMeeting
         Parallel();
         Actives.Clear();
         Buttons.Clear();
-        AllVoteAreas.ForEach(x => GenButton(x, __instance));
+        AllVoteAreas().ForEach(x => GenButton(x, __instance));
     }
 
     public void Update(MeetingHud __instance)

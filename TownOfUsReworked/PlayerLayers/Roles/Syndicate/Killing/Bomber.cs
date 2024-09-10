@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Bomber : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float BombCd { get; set; } = 25f;
+    public static Number BombCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float DetonateCd { get; set; } = 25f;
+    public static Number DetonateCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BombCooldownsLinked { get; set; } = false;
@@ -19,10 +19,10 @@ public class Bomber : Syndicate
     public static bool BombsDetonateOnMeetingStart { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float BombRange { get; set; } = 1.5f;
+    public static Number BombRange { get; set; } = new(1.5f);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float ChaosDriveBombRange { get; set; } = 0.5f;
+    public static Number ChaosDriveBombRange { get; set; } = new(0.5f);
 
     public CustomButton BombButton { get; set; }
     public CustomButton DetonateButton { get; set; }

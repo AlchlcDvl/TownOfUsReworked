@@ -7,10 +7,10 @@ public static class BetterFungle
     public static bool EnableBetterFungle { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
-    public static float FungleReactorTimer { get; set; } = 60f;
+    public static Number FungleReactorTimer { get; set; } = new(60);
 
     [NumberOption(MultiMenu.Main, 4f, 20f, 1f, Format.Time)]
-    public static float FungleMixupTimer { get; set; } = 8f;
+    public static Number FungleMixupTimer { get; set; } = new(8);
 
     [HarmonyPatch(typeof(MushroomMixupSabotageSystem), nameof(MushroomMixupSabotageSystem.UpdateSystem))]
     public static class MushroomFungle

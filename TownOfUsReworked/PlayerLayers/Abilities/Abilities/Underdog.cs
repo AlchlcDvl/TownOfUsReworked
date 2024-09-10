@@ -7,7 +7,7 @@ public class Underdog : Ability
     public static bool UnderdogKnows { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static float UnderdogCdBonus { get; set; } = 5f;
+    public static Number UnderdogCdBonus { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool UnderdogIncreasedCd { get; set; } = true;

@@ -114,7 +114,7 @@ public static class CompleteTasksPatch
                 if (CustomPlayer.Local == __instance)
                 {
                     Flash(UColor.green);
-                    AllPlayers.Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))
+                    AllPlayers().Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))
                         .ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(__instance, role.Color)));
                 }
                 else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && Snitch.SnitchSeesNeutrals))

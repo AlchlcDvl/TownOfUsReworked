@@ -4,10 +4,10 @@
 public class Juggernaut : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float AssaultCd { get; set; } = 25f;
+    public static Number AssaultCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static float AssaultBonus { get; set; } = 5f;
+    public static Number AssaultBonus { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool JuggVent { get; set; } = false;

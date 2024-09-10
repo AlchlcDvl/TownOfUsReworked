@@ -65,3 +65,14 @@ public class RoleOptionData(int chance, int count, bool unique, bool active, Lay
 }
 
 public record class LayerDictionaryEntry(Type LayerType, UColor Color, string Name);
+
+public readonly struct Number(float num)
+{
+    public float Value { get; } = num;
+
+    public static implicit operator float(Number number) => number.Value;
+
+    public static implicit operator int(Number number) => (int)number.Value;
+
+    public override string ToString() => Value.ToString();
+}

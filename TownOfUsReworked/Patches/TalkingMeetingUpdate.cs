@@ -19,18 +19,18 @@ public static class MeetingHudStart
 
     private static IEnumerator Shhh(string status)
     {
-        yield return HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
-        var TempPosition = HUD.shhhEmblem.transform.localPosition;
-        var TempDuration = HUD.shhhEmblem.HoldDuration;
-        var pos = HUD.shhhEmblem.transform.localPosition;
+        yield return HUD().CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
+        var TempPosition = HUD().shhhEmblem.transform.localPosition;
+        var TempDuration = HUD().shhhEmblem.HoldDuration;
+        var pos = HUD().shhhEmblem.transform.localPosition;
         pos.z++;
-        HUD.shhhEmblem.transform.localPosition = pos;
-        HUD.shhhEmblem.TextImage.text = status;
-        HUD.shhhEmblem.HoldDuration = 2.5f;
-        yield return HUD.ShowEmblem(true);
-        HUD.shhhEmblem.transform.localPosition = TempPosition;
-        HUD.shhhEmblem.HoldDuration = TempDuration;
-        yield return HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
+        HUD().shhhEmblem.transform.localPosition = pos;
+        HUD().shhhEmblem.TextImage.text = status;
+        HUD().shhhEmblem.HoldDuration = 2.5f;
+        yield return HUD().ShowEmblem(true);
+        HUD().shhhEmblem.transform.localPosition = TempPosition;
+        HUD().shhhEmblem.HoldDuration = TempDuration;
+        yield return HUD().CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         BeingBlackmailed = false;
         BeingSilenced = false;
         yield break;

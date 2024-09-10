@@ -4,16 +4,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Disguiser : Intruder
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float DisguiseCd { get; set; } = 25f;
+    public static Number DisguiseCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 15f, 2.5f, Format.Time)]
-    public static float DisguiseDelay { get; set; } = 5f;
+    public static Number DisguiseDelay { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 2.5f, Format.Time)]
-    public static float DisguiseDur { get; set; } = 10f;
+    public static Number DisguiseDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float MeasureCd { get; set; } = 25f;
+    public static Number MeasureCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool DisgCooldownsLinked { get; set; } = false;

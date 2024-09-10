@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Teleporter : Intruder
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float TeleportCd { get; set; } = 25f;
+    public static Number TeleportCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float TeleMarkCd { get; set; } = 25f;
+    public static Number TeleMarkCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool TeleCooldownsLinked { get; set; } = false;

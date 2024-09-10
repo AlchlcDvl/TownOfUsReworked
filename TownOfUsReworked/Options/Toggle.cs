@@ -54,7 +54,7 @@ public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : Op
         TownOfUsReworked.LighterDarker.Value = !TownOfUsReworked.LighterDarker.Value;
 
         if (IsMeeting())
-            AllVoteAreas.ForEach(Role.LocalRole.GenText);
+            AllVoteAreas().ForEach(Role.LocalRole.GenText);
 
         return TownOfUsReworked.LighterDarker.Value;
     }
@@ -64,7 +64,7 @@ public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : Op
         TownOfUsReworked.WhiteNameplates.Value = !TownOfUsReworked.WhiteNameplates.Value;
 
         if (IsMeeting())
-            AllVoteAreas.ForEach(x => x.SetCosmetics(PlayerByVoteArea(x).Data));
+            AllVoteAreas().ForEach(x => x.SetCosmetics(PlayerByVoteArea(x).Data));
 
         return TownOfUsReworked.WhiteNameplates.Value;
     }
@@ -75,7 +75,7 @@ public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : Op
 
         if (IsMeeting())
         {
-            foreach (var voteArea in AllVoteAreas)
+            foreach (var voteArea in AllVoteAreas())
             {
                 var rend = voteArea.LevelNumberText.GetComponentInParent<SpriteRenderer>();
                 rend.enabled = TownOfUsReworked.NoLevels.Value;

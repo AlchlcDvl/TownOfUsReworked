@@ -27,7 +27,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.Whisper:
-                        if (!Chat)
+                        if (!Chat())
                             break;
 
                         var whisperer = reader.ReadPlayer();
@@ -88,12 +88,12 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.FixLights:
-                        var lights = Ship.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
+                        var lights = Ship().Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
                         lights.ActualSwitches = lights.ExpectedSwitches;
                         break;
 
                     case MiscRPC.FixMixup:
-                        var mixup = Ship.Systems[SystemTypes.MushroomMixupSabotage].Cast<MushroomMixupSabotageSystem>();
+                        var mixup = Ship().Systems[SystemTypes.MushroomMixupSabotage].Cast<MushroomMixupSabotageSystem>();
                         mixup.secondsForAutoHeal = 0.1f;
                         break;
 
@@ -142,7 +142,7 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
                         TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
                         TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-                        AllPlayers.ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
+                        AllPlayers().ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
                         MapPatches.AdjustSettings();
                         break;
 
@@ -163,7 +163,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.EndRoleGen:
-                        foreach (var player2 in AllPlayers)
+                        foreach (var player2 in AllPlayers())
                         {
                             var role = player2.GetRole() ?? new Roleless().Start<Role>(player2);
                             var mod = player2.GetModifier() ?? new Modifierless().Start<Modifier>(player2);
@@ -390,7 +390,7 @@ public static class RPCHandling
                     case ActionsRPC.Burn:
                         var arsoRole = reader.ReadLayer<Arsonist>();
 
-                        foreach (var body in AllBodies)
+                        foreach (var body in AllBodies())
                         {
                             if (arsoRole.Doused.Contains(body.ParentId))
                                 Ash.CreateAsh(body);

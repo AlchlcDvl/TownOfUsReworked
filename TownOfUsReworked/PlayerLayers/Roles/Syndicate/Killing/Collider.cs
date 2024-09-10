@@ -4,19 +4,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Collider : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float CollideCd { get; set; } = 25f;
+    public static Number CollideCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ChargeCd { get; set; } = 25f;
+    public static Number ChargeCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float ChargeDur { get; set; } = 10f;
+    public static Number ChargeDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float CollideRange { get; set; } = 1.5f;
+    public static Number CollideRange { get; set; } = new(1.5f);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float CollideRangeIncrease { get; set; } = 0.5f;
+    public static Number CollideRangeIncrease { get; set; } = new(0.5f);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ChargeCooldownsLinked { get; set; } = false;

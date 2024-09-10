@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Ambusher : Intruder
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float AmbushCd { get; set; } = 25f;
+    public static Number AmbushCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float AmbushDur { get; set; } = 10f;
+    public static Number AmbushDur { get; set; } = new(10);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AmbushMates { get; set; } = false;

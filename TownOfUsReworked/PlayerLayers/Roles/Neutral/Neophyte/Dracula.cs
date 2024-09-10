@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Dracula : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float BiteCd { get; set; } = 25f;
+    public static Number BiteCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool DracVent { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
-    public static int AliveVampCount { get; set; } = 3;
+    public static Number AliveVampCount { get; set; } = new(3);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool UndeadVent { get; set; } = false;
@@ -18,7 +18,7 @@ public class Dracula : Neutral
     public CustomButton BiteButton { get; set; }
     public bool HasConverted { get; set; }
     public List<byte> Converted { get; set; }
-    public static int AliveCount => AllPlayers.Count(x => !x.HasDied());
+    public static int AliveCount => AllPlayers().Count(x => !x.HasDied());
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : CustomColorManager.Neutral;
     public override string Name => "Dracula";

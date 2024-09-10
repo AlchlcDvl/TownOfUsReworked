@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Mayor : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
-    public static int MayorVoteCount { get; set; } = 2;
+    public static Number MayorVoteCount { get; set; } = new(2);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RoundOneNoMayorReveal { get; set; } = false;

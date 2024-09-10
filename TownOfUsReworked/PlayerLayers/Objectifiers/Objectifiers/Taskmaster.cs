@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 public class Taskmaster : Objectifier
 {
     [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static int TMTasksRemaining { get; set; } = 1;
+    public static Number TMTasksRemaining { get; set; } = new(1);
 
     public bool WinTasksDone { get; set; }
 

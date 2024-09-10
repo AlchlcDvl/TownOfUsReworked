@@ -11,7 +11,7 @@ public class VitalsPagingBehaviour : BasePagingBehaviour
 
     public override void Start()
     {
-        PageText = Instantiate(HUD.KillButton.cooldownTimerText, Menu.transform);
+        PageText = Instantiate(HUD().KillButton.cooldownTimerText, Menu.transform);
         PageText.name = "MenuPageCount";
         PageText.enableWordWrapping = false;
         PageText.gameObject.SetActive(true);

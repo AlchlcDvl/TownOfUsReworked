@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 public class Corrupted : Objectifier
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float CorruptCd { get; set; } = 25f;
+    public static Number CorruptCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AllCorruptedWin { get; set; } = false;

@@ -188,7 +188,7 @@ public static class Utils
         yield break;
     }
 
-    public static void Camouflage() => AllPlayers.ForEach(CamoSingle);
+    public static void Camouflage() => AllPlayers().ForEach(CamoSingle);
 
     public static void CamoSingle(PlayerControl player)
     {
@@ -322,7 +322,7 @@ public static class Utils
         PetId = "pet_EmptyPet"
     };
 
-    public static void DefaultOutfitAll() => AllPlayers.ForEach(DefaultOutfit);
+    public static void DefaultOutfitAll() => AllPlayers().ForEach(DefaultOutfit);
 
     public static void AddUnique<T>(this ISystem.List<T> self, T item) where T : IDisconnectHandler
     {
@@ -346,11 +346,11 @@ public static class Utils
             return player.Data.DefaultOutfit.ColorId.GetColor(false);
     }
 
-    public static PlayerControl PlayerById(byte id) => AllPlayers.Find(x => x.PlayerId == id);
+    public static PlayerControl PlayerById(byte id) => AllPlayers().Find(x => x.PlayerId == id);
 
-    public static PlayerVoteArea VoteAreaById(byte id) => AllVoteAreas.Find(x => x.TargetPlayerId == id);
+    public static PlayerVoteArea VoteAreaById(byte id) => AllVoteAreas().Find(x => x.TargetPlayerId == id);
 
-    public static DeadBody BodyById(byte id) => AllBodies.Find(x => x.ParentId == id);
+    public static DeadBody BodyById(byte id) => AllBodies().Find(x => x.ParentId == id);
 
     public static DeadBody BodyByPlayer(PlayerControl player) => BodyById(player.PlayerId);
 
@@ -358,11 +358,11 @@ public static class Utils
 
     public static PlayerVoteArea VoteAreaByPlayer(PlayerControl player) => VoteAreaById(player.PlayerId);
 
-    public static Vent VentById(int id) => AllVents.Find(x => x.Id == id);
+    public static Vent VentById(int id) => AllVents().Find(x => x.Id == id);
 
     public static PlayerControl PlayerByVoteArea(PlayerVoteArea state) => PlayerById(state.TargetPlayerId);
 
-    public static Vector2 GetSize() => Vector2.Scale(AllVents[0].GetComponent<BoxCollider2D>().size, AllVents[0].transform.localScale) * 0.75f;
+    public static Vector2 GetSize() => Vector2.Scale(AllVents()[0].GetComponent<BoxCollider2D>().size, AllVents()[0].transform.localScale) * 0.75f;
 
     public static double GetDistance(PlayerControl player, PlayerControl refplayer)
     {
@@ -401,7 +401,7 @@ public static class Utils
         Pestilence.Infected.Remove(target.PlayerId);
 
         if (IsCustomHnS() || CustomPlayer.LocalCustom.Dead)
-            UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD.transform.parent).Show(target, 0);
+            UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(target, 0);
 
         if (IsCustomHnS())
             GameData.Instance.RecomputeTaskCounts();
@@ -411,7 +411,7 @@ public static class Utils
 
         if (target == CustomPlayer.Local)
         {
-            var tracker = HUD.roomTracker.text;
+            var tracker = HUD().roomTracker.text;
             var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
             BodyLocations[target.PlayerId] = location;
             CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, target, location);
@@ -450,15 +450,15 @@ public static class Utils
 
         if (target.AmOwner)
         {
-            if (ActiveTask)
-                ActiveTask.Close();
+            if (ActiveTask())
+                ActiveTask().Close();
 
             if (MapPatch.MapActive)
-                Map.Close();
+                Map().Close();
 
-            HUD.KillOverlay.ShowKillAnimation(killer.Data, data);
-            HUD.ShadowQuad.gameObject.SetActive(false);
-            Chat.SetVisible(true);
+            HUD().KillOverlay.ShowKillAnimation(killer.Data, data);
+            HUD().ShadowQuad.gameObject.SetActive(false);
+            Chat().SetVisible(true);
             target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
             target.RpcSetScanner(false);
         }
@@ -503,7 +503,7 @@ public static class Utils
         if (target.TryGetLayer<Troll>(out var troll) && AmongUsClient.Instance.AmHost && !NeutralSettings.AvoidNeutralKingmakers)
             RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
 
-        if (Meeting)
+        if (Meeting())
             MarkMeetingDead(target, killer);
         else
             target.GetLayers().ForEach(x => x.OnDeath());
@@ -517,11 +517,11 @@ public static class Utils
 
         if (target == CustomPlayer.Local)
         {
-            HUD.KillOverlay.ShowKillAnimation(killer.Data, target.Data);
-            HUD.ShadowQuad.gameObject.SetActive(false);
+            HUD().KillOverlay.ShowKillAnimation(killer.Data, target.Data);
+            HUD().ShadowQuad.gameObject.SetActive(false);
             target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
             target.RpcSetScanner(false);
-            Meeting.SetForegroundForDead();
+            Meeting().SetForegroundForDead();
 
             if (target.TryGetLayer<Swapper>(out var swapper))
             {
@@ -542,17 +542,17 @@ public static class Utils
             else if (target.IsAssassin())
             {
                 var assassin = target.GetLayer<Assassin>();
-                assassin.Exit(Meeting);
+                assassin.Exit(Meeting());
                 assassin.AssassinMenu.HideButtons();
             }
             else if (target.TryGetLayer<Guesser>(out var guesser))
             {
-                guesser.Exit(Meeting);
+                guesser.Exit(Meeting());
                 guesser.GuessMenu.HideButtons();
             }
             else if (target.TryGetLayer<Thief>(out var thief))
             {
-                thief.Exit(Meeting);
+                thief.Exit(Meeting());
                 thief.GuessMenu.HideButtons();
             }
         }
@@ -611,17 +611,17 @@ public static class Utils
             if (CustomPlayer.Local.IsAssassin())
             {
                 var assassin = Ability.LocalAbilityAs<Assassin>();
-                assassin.Exit(Meeting);
+                assassin.Exit(Meeting());
                 assassin.AssassinMenu.HideSingle(target.PlayerId);
             }
             else if (CustomPlayer.Local.TryGetLayer<Guesser>(out var guesser))
             {
-                guesser.Exit(Meeting);
+                guesser.Exit(Meeting());
                 guesser.GuessMenu.HideSingle(target.PlayerId);
             }
             else if (CustomPlayer.Local.TryGetLayer<Thief>(out var thief))
             {
-                thief.Exit(Meeting);
+                thief.Exit(Meeting());
                 thief.GuessMenu.HideSingle(target.PlayerId);
             }
             else if (CustomPlayer.Local.TryGetLayer<Swapper>(out var swapper))
@@ -652,7 +652,7 @@ public static class Utils
             }
         }
 
-        foreach (var area in AllVoteAreas)
+        foreach (var area in AllVoteAreas())
         {
             if (area.VotedFor != target.PlayerId)
                 continue;
@@ -660,7 +660,7 @@ public static class Utils
             area.UnsetVote();
 
             if (target == CustomPlayer.Local)
-                Meeting.ClearVote();
+                Meeting().ClearVote();
         }
 
         if (AmongUsClient.Instance.AmHost)
@@ -678,7 +678,7 @@ public static class Utils
             }
 
             SetPostmortals.AssassinatedPlayers.Add(target.PlayerId);
-            Meeting.CheckForEndVoting();
+            Meeting().CheckForEndVoting();
         }
 
         if (!noReason)
@@ -729,8 +729,8 @@ public static class Utils
             GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
     }
 
-    public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => [ .. AllPlayers.Where(x =>
-        Vector2.Distance(truePosition, x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))) ];
+    public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => [ .. AllPlayers().Where(x => Vector2.Distance(truePosition,
+        x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))) ];
 
     public static void StopDragging(byte id)
     {
@@ -839,9 +839,9 @@ public static class Utils
         vent.Center = null;
         vent.name = $"{name}{vents.Count}";
 
-        var allVents = AllMapVents;
+        var allVents = AllMapVents();
         allVents.Add(vent);
-        Ship.AllVents = allVents.ToArray();
+        Ship().AllVents = allVents.ToArray();
 
         if (IsSubmerged())
         {
@@ -866,7 +866,7 @@ public static class Utils
 
         while (true)
         {
-            if (AllMapVents.All(v => v.Id != id))
+            if (AllMapVents().All(v => v.Id != id))
                 return id;
 
             id++;
@@ -882,9 +882,9 @@ public static class Utils
 
         color.a = 0.3f;
 
-        if (HudManager.InstanceExists && HUD.FullScreen)
+        if (HudManager.InstanceExists && HUD().FullScreen)
         {
-            var fullscreen = HUD.FullScreen;
+            var fullscreen = HUD().FullScreen;
             fullscreen.enabled = true;
             fullscreen.gameObject.active = true;
             fullscreen.color = color;
@@ -892,7 +892,7 @@ public static class Utils
 
         yield return Wait(duration);
 
-        if (HudManager.InstanceExists && HUD.FullScreen)
+        if (HudManager.InstanceExists && HUD().FullScreen)
             SetFullScreenHUD();
 
         yield break;
@@ -900,56 +900,53 @@ public static class Utils
 
     public static void SetFullScreenHUD()
     {
-        if (!HudManager.InstanceExists || !HUD.FullScreen)
+        var fullscreen = HUD().FullScreen;
+
+        if (!HudManager.InstanceExists || !fullscreen || !Ship() || Lobby())
             return;
 
-        var fullscreen = HUD.FullScreen;
         fullscreen.color = new(0.6f, 0.6f, 0.6f, 0f);
         fullscreen.enabled = true;
         fullscreen.gameObject.active = true;
         var fs = false;
 
-        if (Ship && !Lobby)
+        switch (MapPatches.CurrentMap)
         {
-            switch (MapPatches.CurrentMap)
-            {
-                case 0 or 1 or 3:
-                    var reactor1 = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen1 = Ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    fs = reactor1.IsActive || oxygen1.IsActive;
-                    break;
+            case 0 or 1 or 3:
+                var reactor1 = Ship().Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                var oxygen1 = Ship().Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                fs = reactor1.IsActive || oxygen1.IsActive;
+                break;
 
-                case 2:
-                    var seismic = Ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = seismic.IsActive;
-                    break;
+            case 2:
+                var seismic = Ship().Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                fs = seismic.IsActive;
+                break;
 
-                case 4:
-                    var reactor = Ship.Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>();
-                    fs = reactor.IsActive;
-                    break;
+            case 4:
+                var reactor = Ship().Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>();
+                fs = reactor.IsActive;
+                break;
 
-                case 5:
-                    var reactor2 = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    fs = reactor2.IsActive;
-                    break;
+            case 5:
+                var reactor2 = Ship().Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                fs = reactor2.IsActive;
+                break;
 
-                case 6:
-                    if (!SubLoaded)
-                        break;
-
+            case 6:
+                if (SubLoaded)
                     fs = HasTask(RetrieveOxygenMask);
+
+                break;
+
+            case 7:
+                if (!LILoaded)
                     break;
 
-                case 7:
-                    if (!LILoaded)
-                        break;
-
-                    var reactor3 = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen3 = Ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    fs = reactor3.IsActive || oxygen3.IsActive;
-                    break;
-            }
+                var reactor3 = Ship().Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                var oxygen3 = Ship().Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                fs = reactor3.IsActive || oxygen3.IsActive;
+                break;
         }
 
         if (fs)
@@ -958,13 +955,14 @@ public static class Utils
 
     public static Dictionary<byte, Vector2> GenerateWarpCoordinates()
     {
-        var targets = AllPlayers.Where(player => !player.HasDied() && !UninteractiblePlayers.ContainsKey(player.PlayerId) && !player.inVent);
+        var targets = AllPlayers().Where(player => !player.HasDied() && !UninteractiblePlayers.ContainsKey(player.PlayerId) && !player.inVent);
         var coordinates = new Dictionary<byte, Vector2>();
         var allLocations = new List<Vector2>();
         targets.ForEach(x => allLocations.Add(x.transform.position));
-        AllVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
-        AllConsoles.ForEach(x => allLocations.Add(GetConsolePosition(x)));
-        AllBodies.ForEach(x => allLocations.Add(x.transform.position));
+        AllVents().ForEach(x => allLocations.Add(GetVentPosition(x)));
+        AllConsoles().ForEach(x => allLocations.Add(GetConsolePosition(x)));
+        AllSystemConsoles().ForEach(x => allLocations.Add(GetSystemConsolePosition(x)));
+        AllBodies().ForEach(x => allLocations.Add(x.transform.position));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
@@ -979,7 +977,7 @@ public static class Utils
 
         allLocations.Shuffle();
         targets.ForEach(x => coordinates.Add(x.PlayerId, allLocations.Random()));
-        AllBodies.ForEach(x => coordinates.Add(x.ParentId, allLocations.Random()));
+        AllBodies().ForEach(x => coordinates.Add(x.ParentId, allLocations.Random()));
         return coordinates;
     }
 
@@ -987,15 +985,17 @@ public static class Utils
 
     public static Vector2 GetConsolePosition(Console console) => new(console.transform.position.x, console.transform.position.y - 0.5f);
 
+    public static Vector2 GetSystemConsolePosition(SystemConsole sysConsole) => new(sysConsole.transform.position.x, sysConsole.transform.position.y - 0.5f);
+
     public static IEnumerator Fade(bool fadeAway)
     {
-        HUD.FullScreen.enabled = true;
+        HUD().FullScreen.enabled = true;
 
         if (fadeAway)
         {
             for (var i = 1f; i >= 0; i -= Time.deltaTime)
             {
-                HUD.FullScreen.color = new(0, 0, 0, i);
+                HUD().FullScreen.color = new(0, 0, 0, i);
                 yield return EndFrame();
             }
         }
@@ -1003,7 +1003,7 @@ public static class Utils
         {
             for (var i = 0f; i <= 1; i += Time.deltaTime)
             {
-                HUD.FullScreen.color = new(0, 0, 0, i);
+                HUD().FullScreen.color = new(0, 0, 0, i);
                 yield return EndFrame();
             }
         }
@@ -1029,7 +1029,7 @@ public static class Utils
     {
         var closestDistance = double.MaxValue;
         PlayerControl closestPlayer = null;
-        allPlayers ??= AllPlayers;
+        allPlayers ??= AllPlayers();
 
         if (maxDistance == 0f)
             maxDistance = GameSettings.InteractionDistance;
@@ -1062,10 +1062,10 @@ public static class Utils
     {
         var closestDistance = double.MaxValue;
         Vent closestVent = null;
-        allVents ??= AllMapVents;
+        allVents ??= AllMapVents();
 
         if (maxDistance == 0f)
-            maxDistance = AllMapVents[0].UsableDistance;
+            maxDistance = AllMapVents()[0].UsableDistance;
 
         foreach (var vent in allVents)
         {
@@ -1092,7 +1092,7 @@ public static class Utils
     {
         var closestDistance = double.MaxValue;
         DeadBody closestBody = null;
-        allBodies ??= AllBodies;
+        allBodies ??= AllBodies();
 
         if (maxDistance == 0f)
             maxDistance = GameSettings.InteractionDistance;
@@ -1125,10 +1125,10 @@ public static class Utils
     {
         var closestDistance = double.MaxValue;
         Console closestConsole = null;
-        allConsoles ??= AllConsoles;
+        allConsoles ??= AllConsoles();
 
         if (maxDistance == 0f)
-            maxDistance = AllConsoles[0].UsableDistance;
+            maxDistance = AllConsoles()[0].UsableDistance;
 
         foreach (var console in allConsoles)
         {
@@ -1293,7 +1293,7 @@ public static class Utils
             MeetingRoomManager.Instance.reporter = player;
             MeetingRoomManager.Instance.target = null;
             AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-            HUD.OpenMeetingRoom(player);
+            HUD().OpenMeetingRoom(player);
             player.RpcStartMeeting(null);
         }
         else
@@ -1370,11 +1370,11 @@ public static class Utils
 
         if (player == CustomPlayer.Local)
         {
-            if (ActiveTask)
-                ActiveTask.Close();
+            if (ActiveTask())
+                ActiveTask().Close();
 
             if (MapPatch.MapActive)
-                Map.Close();
+                Map().Close();
 
             if (IsSubmerged())
             {

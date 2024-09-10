@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Timekeeper : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float TimeCd { get; set; } = 25f;
+    public static Number TimeCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float TimeDur { get; set; } = 10f;
+    public static Number TimeDur { get; set; } = new(10);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool TimeFreezeImmunity { get; set; } = true;
@@ -38,10 +38,10 @@ public class Timekeeper : Syndicate
     public void Control()
     {
         if (HoldsDrive)
-            AllPlayers.ForEach(x => x.GetRole().Rewinding = true);
+            AllPlayers().ForEach(x => x.GetRole().Rewinding = true);
     }
 
-    public void UnControl() => AllPlayers.ForEach(x => x.GetRole().Rewinding = false);
+    public void UnControl() => AllPlayers().ForEach(x => x.GetRole().Rewinding = false);
 
     public void TimeControl()
     {

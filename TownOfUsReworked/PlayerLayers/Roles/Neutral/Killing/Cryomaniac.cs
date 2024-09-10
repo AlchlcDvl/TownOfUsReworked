@@ -4,7 +4,7 @@
 public class Cryomaniac : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float CryoDouseCd { get; set; } = 25f;
+    public static Number CryoDouseCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CryoFreezeAll { get; set; } = false;
@@ -13,7 +13,7 @@ public class Cryomaniac : Neutral
     public static bool CryoLastKillerBoost { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float VaporiseCd { get; set; } = 25f;
+    public static Number VaporiseCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CryoVent { get; set; } = false;
@@ -23,7 +23,7 @@ public class Cryomaniac : Neutral
     public CustomButton KillButton { get; set; }
     public List<byte> Doused { get; set; }
     public bool FreezeUsed { get; set; }
-    public bool LastKiller => !AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
+    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CryoLastKillerBoost;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac : CustomColorManager.Neutral;

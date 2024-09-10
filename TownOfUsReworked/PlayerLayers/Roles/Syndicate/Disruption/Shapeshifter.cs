@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Shapeshifter : Syndicate
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float ShapeshiftCd { get; set; } = 25f;
+    public static Number ShapeshiftCd { get; set; } = new(25f);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float ShapeshiftDur { get; set; } = 10f;
+    public static Number ShapeshiftDur { get; set; } = new(10);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ShapeshiftMates { get; set; } = false;
@@ -50,8 +50,8 @@ public class Shapeshifter : Syndicate
             if (!Shapeshifted)
             {
                 Shapeshifted = true;
-                var allPlayers = AllPlayers;
-                var shuffledPlayers = AllPlayers;
+                var allPlayers = AllPlayers();
+                var shuffledPlayers = AllPlayers();
                 shuffledPlayers.Shuffle();
 
                 for (var i = 0; i < allPlayers.Count; i++)
@@ -63,7 +63,7 @@ public class Shapeshifter : Syndicate
             }
             else
             {
-                AllPlayers.ForEach(x =>
+                AllPlayers().ForEach(x =>
                 {
                     if (CachedMorphs.TryGetValue(x.PlayerId, out var target))
                         Morph(x, PlayerById(target));

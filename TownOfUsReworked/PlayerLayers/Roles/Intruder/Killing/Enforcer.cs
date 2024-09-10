@@ -4,16 +4,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Enforcer : Intruder
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float EnforceCd { get; set; } = 25f;
+    public static Number EnforceCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float EnforceDur { get; set; } = 10f;
+    public static Number EnforceDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
-    public static float EnforceDelay { get; set; } = 5f;
+    public static Number EnforceDelay { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static float EnforceRadius { get; set; } = 1.5f;
+    public static Number EnforceRadius { get; set; } = new(1.5f);
 
     public CustomButton BombButton { get; set; }
     public PlayerControl BombedPlayer { get; set; }

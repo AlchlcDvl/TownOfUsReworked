@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Escort : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float EscortCd { get; set; } = 25f;
+    public static Number EscortCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float EscortDur { get; set; } = 10f;
+    public static Number EscortDur { get; set; } = new(10);
 
     public PlayerControl BlockTarget { get; set; }
     public CustomButton BlockButton { get; set; }

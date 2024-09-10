@@ -42,13 +42,13 @@ public static class VoteForMe
             if (!pol.CanVote)
                 return false;
 
-            if (__instance != pol.Abstain)
+            if (__instance == pol.Abstain)
+                pol.SelfVote = true;
+            else
             {
                 pol.VoteBank--;
                 pol.VotedOnce = true;
             }
-            else
-                pol.SelfVote = true;
         }
 
         __instance.Parent.Confirm(__instance.TargetPlayerId);

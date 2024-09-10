@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public class Politician : Ability
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0, 10, 1)]
-    public static int PoliticianVoteBank { get; set; } = 0;
+    public static Number PoliticianVoteBank { get; set; } = new(0);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PoliticianButton { get; set; } = true;

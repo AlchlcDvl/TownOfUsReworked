@@ -17,26 +17,26 @@ public static class SpawnPatches
 
     private static void DoTheThing(bool intro = false, bool meeting = false)
     {
-        // HUD?.GameSettings?.gameObject?.SetActive(false);
-        HUD?.Chat?.SetVisible(CustomPlayer.Local.CanChat());
+        // HUD()?.GameSettings?.gameObject?.SetActive(false);
+        Chat()?.SetVisible(CustomPlayer.Local.CanChat());
 
         if (intro)
             PlayerLayer.LocalLayers.ForEach(x => x?.OnIntroEnd());
 
-        AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
-        AllBodies.ForEach(x => x?.gameObject?.Destroy());
+        AllPlayers().ForEach(x => x?.MyPhysics?.ResetAnimState());
+        AllBodies().ForEach(x => x?.gameObject?.Destroy());
         ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);
-        HUD.FullScreen.enabled = true;
+        HUD().FullScreen.enabled = true;
         Role.LocalRole.UpdateButtons();
 
         if (MapPatches.CurrentMap is not (4 or 6))
-            HUD.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
+            HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
 
-        AddAsset("DefaultVent", HUD.ImpostorVentButton.graphic.sprite);
-        AddAsset("DefaultSabotage", HUD.SabotageButton.graphic.sprite);
-        HUD.ImpostorVentButton.buttonLabelText.fontSharedMaterial = HUD.ReportButton.buttonLabelText.fontSharedMaterial = HUD.UseButton.buttonLabelText.fontSharedMaterial =
-            HUD.PetButton.buttonLabelText.fontSharedMaterial = HUD.SabotageButton.buttonLabelText.fontSharedMaterial;
+        AddAsset("DefaultVent", HUD().ImpostorVentButton.graphic.sprite);
+        AddAsset("DefaultSabotage", HUD().SabotageButton.graphic.sprite);
+        HUD().ImpostorVentButton.buttonLabelText.fontSharedMaterial = HUD().ReportButton.buttonLabelText.fontSharedMaterial = HUD().UseButton.buttonLabelText.fontSharedMaterial =
+            HUD().PetButton.buttonLabelText.fontSharedMaterial = HUD().SabotageButton.buttonLabelText.fontSharedMaterial;
     }
 
     private static void RandomSpawn(bool intro, bool meeting)
@@ -48,8 +48,9 @@ public static class SpawnPatches
         }
 
         var allLocations = new List<Vector2>();
-        AllMapVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
-        AllConsoles.ForEach(x => allLocations.Add(GetConsolePosition(x)));
+        AllMapVents().ForEach(x => allLocations.Add(GetVentPosition(x)));
+        AllConsoles().ForEach(x => allLocations.Add(GetConsolePosition(x)));
+        AllSystemConsoles().ForEach(x => allLocations.Add(GetSystemConsolePosition(x)));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
@@ -62,7 +63,7 @@ public static class SpawnPatches
         if (tobeadded != null)
             allLocations.AddRange(tobeadded);
 
-        foreach (var player in AllPlayers)
+        foreach (var player in AllPlayers())
         {
             if (player.HasDied())
                 continue;

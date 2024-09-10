@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Camouflager : Intruder
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float CamouflageCd { get; set; } = 25f;
+    public static Number CamouflageCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float CamouflageDur { get; set; } = 10f;
+    public static Number CamouflageDur { get; set; } = new(10);
 
     public CustomButton CamouflageButton { get; set; }
 

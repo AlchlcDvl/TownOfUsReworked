@@ -7,10 +7,10 @@ public class BountyHunter : Neutral
     public static bool BountyHunterCanPickTargets { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int BountyHunterGuesses { get; set; } = 5;
+    public static Number BountyHunterGuesses { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float GuessCd { get; set; } = 25f;
+    public static Number GuessCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BHVent { get; set; } = false;
@@ -166,7 +166,7 @@ public class BountyHunter : Neutral
             return;
 
         // Ensures only the Bounty Hunter sees this
-        if (HUD && something != "")
+        if (HUD() && something != "")
             Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", something);
     }
 

@@ -4,16 +4,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Trapper : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxTraps { get; set; } = 5;
+    public static Number MaxTraps { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float BuildCd { get; set; } = 25f;
+    public static Number BuildCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static float BuildDur { get; set; } = 10f;
+    public static Number BuildDur { get; set; } = new(10);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float TrapCd { get; set; } = 25f;
+    public static Number TrapCd { get; set; } = new(25);
 
     private CustomButton BuildButton { get; set; }
     private CustomButton TrapButton { get; set; }
@@ -125,10 +125,10 @@ public class Trapper : Crew
                 return;
 
             // Only Trapper can see this
-            if (HUD)
+            if (HUD())
                 Run("<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", message);
         }
-        else if (AttackedSomeone && HUD)
+        else if (AttackedSomeone && HUD())
             Run("<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
 
         TriggeredRoles.Clear();

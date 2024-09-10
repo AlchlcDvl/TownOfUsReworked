@@ -41,7 +41,7 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
             TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-            AllPlayers.ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
+            AllPlayers().ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
         }
@@ -63,7 +63,7 @@ public static class MapPatches
         totalWeight += MapSettings.RandomMapFungle;
         totalWeight += MapSettings.RandomMapSubmerged;
         totalWeight += MapSettings.RandomMapLevelImpostor;
-        var maps = new List<byte>() { 0, 1, 2, 3, 4, 5 };
+        var maps = new List<int>() { 0, 1, 2, 3, 4, 5 };
 
         if (SubLoaded)
             maps.Add(6);
@@ -74,81 +74,24 @@ public static class MapPatches
         maps.Shuffle();
 
         if (totalWeight == 0)
-            return maps.Random();
+            return (byte)maps.Random();
 
-        var randoms = new List<byte>();
-        var num = MapSettings.RandomMapSkeld / 5;
-
-        while (num > 0)
-        {
-            randoms.Add(0);
-            num--;
-        }
-
-        num = MapSettings.RandomMapMira / 5;
-
-        while (num > 0)
-        {
-            randoms.Add(1);
-            num--;
-        }
-
-        num = MapSettings.RandomMapPolus / 5;
-
-        while (num > 0)
-        {
-            randoms.Add(2);
-            num--;
-        }
-
-        num = MapSettings.RandomMapdlekS / 5;
-
-        while (num > 0)
-        {
-            randoms.Add(3);
-            num--;
-        }
-
-        num = MapSettings.RandomMapAirship / 5;
-
-        while (num > 0)
-        {
-            randoms.Add(4);
-            num--;
-        }
-
-        num = MapSettings.RandomMapFungle / 5;
-
-        while (num > 0)
-        {
-            randoms.Add(5);
-            num--;
-        }
+        var randoms = new List<int>();
+        randoms.AddMany(0, MapSettings.RandomMapSkeld / 5);
+        randoms.AddMany(1, MapSettings.RandomMapMira / 5);
+        randoms.AddMany(2, MapSettings.RandomMapPolus / 5);
+        randoms.AddMany(3, MapSettings.RandomMapdlekS / 5);
+        randoms.AddMany(4, MapSettings.RandomMapAirship / 5);
+        randoms.AddMany(5, MapSettings.RandomMapFungle / 5);
 
         if (SubLoaded)
-        {
-            num = MapSettings.RandomMapSubmerged / 5;
-
-            while (num > 0)
-            {
-                randoms.Add(6);
-                num--;
-            }
-        }
+            randoms.AddMany(6, MapSettings.RandomMapSubmerged / 5);
 
         if (LILoaded)
-        {
-            num = MapSettings.RandomMapLevelImpostor / 5;
-
-            while (num > 0)
-            {
-                randoms.Add(7);
-                num--;
-            }
-        }
+            randoms.AddMany(7, MapSettings.RandomMapSubmerged / 5);
 
         randoms.Shuffle();
-        return (randoms.Any() ? randoms : maps).Random();
+        return (byte)(randoms.Any() ? randoms : maps).Random();
     }
 
     public static void AdjustSettings()
@@ -193,17 +136,16 @@ public static class AmongUsClientCoStartHostPatch2
 
     private static IEnumerator CoStartGameFix()
     {
-        if (Lobby)
-            Lobby.Despawn();
+        if (Lobby())
+            Lobby().Despawn();
 
-        if (!Ship)
+        if (!Ship())
         {
-            AmongUsClient.Instance.ShipLoadingAsyncHandle = AmongUsClient.Instance.ShipPrefabs[MapPatches.CurrentMap].InstantiateAsync();
-            yield return AmongUsClient.Instance.ShipLoadingAsyncHandle;
-            var result = AmongUsClient.Instance.ShipLoadingAsyncHandle.Result;
+            var async = AmongUsClient.Instance.ShipPrefabs[MapPatches.CurrentMap].InstantiateAsync();
+            yield return async;
             AmongUsClient.Instance.ShipLoadingAsyncHandle = default;
-            ShipStatus.Instance = result.GetComponent<ShipStatus>();
-            AmongUsClient.Instance.Spawn(Ship);
+            ShipStatus.Instance = async.Result.GetComponent<ShipStatus>();
+            AmongUsClient.Instance.Spawn(Ship());
         }
 
         var timer = 0f;
@@ -244,7 +186,7 @@ public static class AmongUsClientCoStartHostPatch2
             timer += Time.deltaTime;
         }
 
-        DestroyableSingleton<RoleManager>.Instance.SelectRoles();
+        RoleManager.Instance.SelectRoles();
         ShipStatus.Instance.Begin();
         AmongUsClient.Instance.SendClientReady();
     }

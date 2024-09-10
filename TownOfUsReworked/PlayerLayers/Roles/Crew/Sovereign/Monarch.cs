@@ -4,16 +4,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Monarch : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float KnightingCd { get; set; } = 25f;
+    public static Number KnightingCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RoundOneNoKnighting { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int KnightCount { get; set; } = 2;
+    public static Number KnightCount { get; set; } = new(2);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
-    public static int KnightVoteCount { get; set; } = 1;
+    public static Number KnightVoteCount { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool MonarchButton { get; set; } = true;

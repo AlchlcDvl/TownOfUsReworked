@@ -4,9 +4,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class VampireHunter : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float StakeCd { get; set; } = 25f;
+    public static Number StakeCd { get; set; } = new(25);
 
-    public static bool VampsDead => !AllPlayers.Any(x => !x.HasDied() && x.Is(SubFaction.Undead));
+    public static bool VampsDead => !AllPlayers().Any(x => !x.HasDied() && x.Is(SubFaction.Undead));
     private CustomButton StakeButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.VampireHunter : CustomColorManager.Crew;

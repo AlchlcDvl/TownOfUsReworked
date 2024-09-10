@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Plaguebearer : Neutral
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float InfectCd { get; set; } = 25f;
+    public static Number InfectCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PBVent { get; set; } = false;
 
     public List<byte> Infected { get; set; }
-    public bool CanTransform => AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || NeutralApocalypseSettings.DirectSpawn;
+    public bool CanTransform => AllPlayers().Count(x => !x.HasDied()) <= Infected.Count || NeutralApocalypseSettings.DirectSpawn;
     public CustomButton InfectButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Plaguebearer : CustomColorManager.Neutral;
@@ -19,7 +19,7 @@ public class Plaguebearer : Neutral
     public override Func<string> StartText => () => "Spread Disease To Summon <color=#424242FF>Pestilence</color>";
     public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>\n- Infections spread"
         + " via interaction between players";
-    public override DefenseEnum DefenseVal => Infected.Count < AllPlayers.Count / 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override DefenseEnum DefenseVal => Infected.Count < AllPlayers().Count / 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
     public override void Init()
     {
@@ -66,7 +66,7 @@ public class Plaguebearer : Neutral
         if (NeutralApocalypseSettings.PlayersAlerted)
             Flash(Color);
 
-        foreach (var player in AllPlayers)
+        foreach (var player in AllPlayers())
         {
             if (!player.Is(Alignment.NeutralApoc) || !player.Is(Alignment.NeutralHarb))
                 Pestilence.Infected[player.PlayerId] = 1;

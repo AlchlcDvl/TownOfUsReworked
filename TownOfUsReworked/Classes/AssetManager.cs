@@ -9,7 +9,7 @@ public static class AssetManager
 
     public static AudioClip GetAudio(string path) => Get<AudioClip>(path) ?? Get<AudioClip>("Placeholder");
 
-    public static Sprite GetSprite(string path) => Get<Sprite>(path) ?? Get<Sprite>((Meeting ? "Meeting" : "") + "Placeholder");
+    public static Sprite GetSprite(string path) => Get<Sprite>(path) ?? Get<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder");
 
     public static RoleEffectAnimation GetAnim(string path) => Get<RoleEffectAnimation>(path);
 

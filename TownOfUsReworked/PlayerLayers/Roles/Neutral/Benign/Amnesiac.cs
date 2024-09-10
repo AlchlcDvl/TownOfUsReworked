@@ -7,7 +7,7 @@ public class Amnesiac : Neutral
     public static bool RememberArrows { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
-    public static float RememberArrowDelay { get; set; } = 5f;
+    public static Number RememberArrowDelay { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AmneVent { get; set; } = false;
@@ -214,7 +214,7 @@ public class Amnesiac : Neutral
 
         if (RememberArrows && !Dead)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(RememberArrowDelay) < DateTime.UtcNow));
+            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(RememberArrowDelay) < DateTime.UtcNow));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {
@@ -230,10 +230,10 @@ public class Amnesiac : Neutral
                 BodyArrows[body.ParentId]?.Update(body.TruePosition);
             }
         }
-        else if (BodyArrows.Count > 0 || AllPlayers.Count(x => !x.HasDied()) <= 4)
+        else if (BodyArrows.Count > 0 || AllPlayers().Count(x => !x.HasDied()) <= 4)
             OnLobby();
 
-        if (AmneToThief && AllPlayers.Count(x => !x.HasDied()) <= 4 && !Dead)
+        if (AmneToThief && AllPlayers().Count(x => !x.HasDied()) <= 4 && !Dead)
         {
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnThief();

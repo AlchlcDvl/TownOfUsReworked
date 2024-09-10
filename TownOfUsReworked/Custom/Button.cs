@@ -107,7 +107,7 @@ public class CustomButton
                 button.Duration = duration;
             else if (prop is Delay delay1)
                 button.Delay = delay1;
-            else if (prop is int uses)
+            else if (prop is Number uses)
                 button.Uses = button.MaxUses = uses;
             else if (prop is UsableFunc usable)
                 button.IsUsable = usable;
@@ -185,8 +185,8 @@ public class CustomButton
 
     private static ActionButton InstantiateButton()
     {
-        var button = UObject.Instantiate(HUD.AbilityButton, HUD.AbilityButton.transform.parent);
-        button.buttonLabelText.fontSharedMaterial = HUD.SabotageButton.buttonLabelText.fontSharedMaterial;
+        var button = UObject.Instantiate(HUD().AbilityButton, HUD().AbilityButton.transform.parent);
+        button.buttonLabelText.fontSharedMaterial = HUD().SabotageButton.buttonLabelText.fontSharedMaterial;
         button.graphic.enabled = true;
         button.buttonLabelText.enabled = true;
         button.usesRemainingText.enabled = true;
@@ -269,7 +269,7 @@ public class CustomButton
         EffectTime -= Time.deltaTime;
         Effect();
 
-        if (End() || Meeting || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
+        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
             EffectTime = 0f;
     }
 
@@ -293,7 +293,7 @@ public class CustomButton
         DelayTime -= Time.deltaTime;
         ActionDelay();
 
-        if (End() || Meeting || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
+        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
             DelayTime = 0f;
     }
 
@@ -320,7 +320,7 @@ public class CustomButton
     private void SetAliveTarget()
     {
         var previous = TargetPlayer;
-        TargetPlayer = Owner.Player.GetClosestPlayer(AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving())));
+        TargetPlayer = Owner.Player.GetClosestPlayer(AllPlayers().Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving())));
         Targeting = TargetPlayer;
 
         if (previous != TargetPlayer)
@@ -330,7 +330,7 @@ public class CustomButton
     private void SetDeadTarget()
     {
         var previous = TargetBody;
-        TargetBody = Owner.Player.GetClosestBody(AllBodies.Where(x => !Exception(x)));
+        TargetBody = Owner.Player.GetClosestBody(AllBodies().Where(x => !Exception(x)));
         Targeting = TargetBody;
 
         if (previous != TargetBody)
@@ -340,7 +340,7 @@ public class CustomButton
     private void SetVentTarget()
     {
         var previous = TargetVent;
-        TargetVent = Owner.Player.GetClosestVent(AllMapVents.Where(x => !Exception(x)));
+        TargetVent = Owner.Player.GetClosestVent(AllMapVents().Where(x => !Exception(x)));
         Targeting = TargetVent;
 
         if (previous != TargetVent)
@@ -350,7 +350,7 @@ public class CustomButton
     private void SetConsoleTarget()
     {
         var previous = TargetConsole;
-        TargetConsole = Owner.Player.GetClosestConsole(AllConsoles.Where(x => !Exception(x)));
+        TargetConsole = Owner.Player.GetClosestConsole(AllConsoles().Where(x => !Exception(x)));
         Targeting = TargetConsole;
 
         if (previous != TargetConsole)
@@ -386,8 +386,8 @@ public class CustomButton
         return result;
     }
 
-    public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner.Dead == PostDeath.Value && !Ejection && Owner.Local && !IsMeeting() && !IsLobby() &&
-        !NoPlayers() && Owner && Owner.Player && !IntroCutscene.Instance;
+    public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath.Value && !Ejection() && Owner.Local && !IsMeeting() &&
+        !IsLobby() && !NoPlayers() && Owner.Player && !IntroCutscene.Instance;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive &&
         Base.isActiveAndEnabled && !Disabled;

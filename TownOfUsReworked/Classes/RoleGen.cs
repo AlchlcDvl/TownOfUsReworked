@@ -118,8 +118,8 @@ public static class RoleGen
         var newList = new List<RoleOptionData>();
         items.Shuffle();
 
-        if (amount != AllPlayers.Count && IsAA())
-            amount = AllPlayers.Count;
+        if (amount != AllPlayers().Count && IsAA())
+            amount = AllPlayers().Count;
         else if (items.Count < amount)
             amount = items.Count;
 
@@ -367,7 +367,7 @@ public static class RoleGen
         while (AllRoles.Count < (SyndicateSettings.AltImps ? SyndicateSettings.SyndicateCount : IntruderSettings.IntruderCount))
             AllRoles.Add(GetSpawnItem(SyndicateSettings.AltImps ? LayerEnum.Anarchist : LayerEnum.Impostor));
 
-        while (AllRoles.Count < AllPlayers.Count)
+        while (AllRoles.Count < AllPlayers().Count)
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
@@ -468,7 +468,7 @@ public static class RoleGen
         if (!SyndicateSettings.AltImps)
             AllRoles.AddRange(IntruderRoles);
 
-        while (AllRoles.Count < AllPlayers.Count)
+        while (AllRoles.Count < AllPlayers().Count)
             AllRoles.Add(GetSpawnItem(LayerEnum.Vigilante));
     }
 
@@ -692,13 +692,13 @@ public static class RoleGen
         {
             if (!SyndicateSettings.AltImps && imps > 0)
             {
-                var maxIC = IntruderConcealingSettings.MaxIC;
-                var maxID = IntruderDeceptionSettings.MaxID;
-                var maxIK = IntruderKillingSettings.MaxIK;
-                var maxIS = IntruderSupportSettings.MaxIS;
-                var maxIH = IntruderHeadSettings.MaxIH;
-                var minInt = IntruderSettings.IntruderMin;
-                var maxInt = IntruderSettings.IntruderMax;
+                int maxIC = IntruderConcealingSettings.MaxIC;
+                int maxID = IntruderDeceptionSettings.MaxID;
+                int maxIK = IntruderKillingSettings.MaxIK;
+                int maxIS = IntruderSupportSettings.MaxIS;
+                int maxIH = IntruderHeadSettings.MaxIH;
+                int minInt = IntruderSettings.IntruderMin;
+                int maxInt = IntruderSettings.IntruderMax;
 
                 if (minInt > maxInt)
                     (maxInt, minInt) = (minInt, maxInt);
@@ -758,12 +758,12 @@ public static class RoleGen
 
             if (syn > 0)
             {
-                var maxSSu = SyndicateSupportSettings.MaxSSu;
-                var maxSD = SyndicateDisruptionSettings.MaxSD;
-                var maxSyK = SyndicateKillingSettings.MaxSyK;
-                var maxSP = SyndicatePowerSettings.MaxSP;
-                var minSyn = SyndicateSettings.SyndicateMin;
-                var maxSyn = SyndicateSettings.SyndicateMax;
+                int maxSSu = SyndicateSupportSettings.MaxSSu;
+                int maxSD = SyndicateDisruptionSettings.MaxSD;
+                int maxSyK = SyndicateKillingSettings.MaxSyK;
+                int maxSP = SyndicatePowerSettings.MaxSP;
+                int minSyn = SyndicateSettings.SyndicateMin;
+                int maxSyn = SyndicateSettings.SyndicateMax;
 
                 if (minSyn > maxSyn)
                     (maxSyn, minSyn) = (minSyn, maxSyn);
@@ -818,13 +818,13 @@ public static class RoleGen
 
             if (neut > 0)
             {
-                var maxNE = NeutralEvilSettings.MaxNE;
-                var maxNB = NeutralBenignSettings.MaxNB;
-                var maxNK = NeutralKillingSettings.MaxNK;
-                var maxNN = NeutralNeophyteSettings.MaxNN;
-                var maxNH = NeutralHarbingerSettings.MaxNH;
-                var minNeut = NeutralSettings.NeutralMin;
-                var maxNeut = NeutralSettings.NeutralMax;
+                int maxNE = NeutralEvilSettings.MaxNE;
+                int maxNB = NeutralBenignSettings.MaxNB;
+                int maxNK = NeutralKillingSettings.MaxNK;
+                int maxNN = NeutralNeophyteSettings.MaxNN;
+                int maxNH = NeutralHarbingerSettings.MaxNH;
+                int minNeut = NeutralSettings.NeutralMin;
+                int maxNeut = NeutralSettings.NeutralMax;
 
                 if (minNeut > maxNeut)
                     (maxNeut, minNeut) = (minNeut, maxNeut);
@@ -881,14 +881,14 @@ public static class RoleGen
 
             if (crew > 0)
             {
-                var maxCI = CrewInvestigativeSettings.MaxCI;
-                var maxCS = CrewSupportSettings.MaxCS;
-                var maxCA = CrewAuditorSettings.MaxCA;
-                var maxCK = CrewKillingSettings.MaxCK;
-                var maxCrP = CrewProtectiveSettings.MaxCrP;
-                var maxCSv = CrewSovereignSettings.MaxCSv;
-                var minCrew = CrewSettings.CrewMin;
-                var maxCrew = CrewSettings.CrewMax;
+                int maxCI = CrewInvestigativeSettings.MaxCI;
+                int maxCS = CrewSupportSettings.MaxCS;
+                int maxCA = CrewAuditorSettings.MaxCA;
+                int maxCK = CrewKillingSettings.MaxCK;
+                int maxCrP = CrewProtectiveSettings.MaxCrP;
+                int maxCSv = CrewSovereignSettings.MaxCSv;
+                int minCrew = CrewSettings.CrewMin;
+                int maxCrew = CrewSettings.CrewMax;
 
                 if (minCrew > maxCrew)
                     (maxCrew, minCrew) = (minCrew, maxCrew);
@@ -978,7 +978,7 @@ public static class RoleGen
         if (!SyndicateSettings.AltImps)
             AllRoles.AddRange(IntruderRoles);
 
-        while (AllRoles.Count < AllPlayers.Count)
+        while (AllRoles.Count < AllPlayers().Count)
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
@@ -1135,13 +1135,13 @@ public static class RoleGen
         // // Added rate limits to ensure the loops do not go on forever if roles have been set to unique
 
         // // In case if the ratelimits and bans disallow the spawning of roles from the role list, vanilla Crewmate should spawn
-        // while (AllRoles.Count < AllPlayers.Count)
+        // while (AllRoles.Count < AllPlayers().Count)
         //     AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
     private static void GenTaskRace()
     {
-        while (AllRoles.Count < AllPlayers.Count)
+        while (AllRoles.Count < AllPlayers().Count)
             AllRoles.Add(GetSpawnItem(LayerEnum.Runner));
     }
 
@@ -1150,7 +1150,7 @@ public static class RoleGen
         while (AllRoles.Count < GameModeSettings.HunterCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Hunter));
 
-        while (AllRoles.Count < AllPlayers.Count)
+        while (AllRoles.Count < AllPlayers().Count)
             AllRoles.Add(GetSpawnItem(LayerEnum.Hunted));
     }
 
@@ -1195,31 +1195,31 @@ public static class RoleGen
             LogInfo($"{layer} Done");
         }
 
-        var maxAb = AbilitiesSettings.MaxAbilities;
-        var minAb = AbilitiesSettings.MinAbilities;
+        int maxAb = AbilitiesSettings.MaxAbilities;
+        int minAb = AbilitiesSettings.MinAbilities;
 
-        while (maxAb > AllPlayers.Count)
+        while (maxAb > AllPlayers().Count)
             maxAb--;
 
-        while (minAb > AllPlayers.Count)
+        while (minAb > AllPlayers().Count)
             minAb--;
 
-        AllAbilities = Sort(AllAbilities, GameModeSettings.IgnoreLayerCaps ? AllPlayers.Count : URandom.RandomRangeInt(minAb, maxAb + 1));
+        AllAbilities = Sort(AllAbilities, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minAb, maxAb + 1));
 
-        var canHaveIntruderAbility = AllPlayers;
-        var canHaveNeutralAbility = AllPlayers;
-        var canHaveCrewAbility = AllPlayers;
-        var canHaveSyndicateAbility = AllPlayers;
-        var canHaveTunnelerAbility = AllPlayers;
-        var canHaveSnitch = AllPlayers;
-        var canHaveTaskedAbility = AllPlayers;
-        var canHaveTorch = AllPlayers;
-        var canHaveEvilAbility = AllPlayers;
-        var canHaveKillingAbility = AllPlayers;
-        var canHaveRuthless = AllPlayers;
-        var canHaveAbility = AllPlayers;
-        var canHaveBB = AllPlayers;
-        var canHavePolitician = AllPlayers;
+        var canHaveIntruderAbility = AllPlayers();
+        var canHaveNeutralAbility = AllPlayers();
+        var canHaveCrewAbility = AllPlayers();
+        var canHaveSyndicateAbility = AllPlayers();
+        var canHaveTunnelerAbility = AllPlayers();
+        var canHaveSnitch = AllPlayers();
+        var canHaveTaskedAbility = AllPlayers();
+        var canHaveTorch = AllPlayers();
+        var canHaveEvilAbility = AllPlayers();
+        var canHaveKillingAbility = AllPlayers();
+        var canHaveRuthless = AllPlayers();
+        var canHaveAbility = AllPlayers();
+        var canHaveBB = AllPlayers();
+        var canHavePolitician = AllPlayers();
 
         canHaveIntruderAbility.RemoveAll(x => !x.Is(Faction.Intruder) || (x.Is(LayerEnum.Consigliere) && Consigliere.ConsigInfo == ConsigInfo.Role));
         canHaveIntruderAbility.Shuffle();
@@ -1268,7 +1268,7 @@ public static class RoleGen
 
         AllAbilities = [ .. AllAbilities.OrderBy(x => 100 - x.Chance) ];
 
-        while (AllAbilities.Count > AllPlayers.Count && AllAbilities.Count > 1)
+        while (AllAbilities.Count > AllPlayers().Count && AllAbilities.Count > 1)
             AllAbilities.Remove(AllAbilities.Last());
 
         AllAbilities.Shuffle();
@@ -1387,23 +1387,23 @@ public static class RoleGen
             LogInfo($"{layer} Done");
         }
 
-        var maxObj = ObjectifiersSettings.MaxObjectifiers;
-        var minObj = ObjectifiersSettings.MinObjectifiers;
+        int maxObj = ObjectifiersSettings.MaxObjectifiers;
+        int minObj = ObjectifiersSettings.MinObjectifiers;
 
-        while (maxObj > AllPlayers.Count)
+        while (maxObj > AllPlayers().Count)
             maxObj--;
 
-        while (minObj > AllPlayers.Count)
+        while (minObj > AllPlayers().Count)
             minObj--;
 
-        AllObjectifiers = Sort(AllObjectifiers, GameModeSettings.IgnoreLayerCaps ? AllPlayers.Count : URandom.RandomRangeInt(minObj, maxObj + 1));
+        AllObjectifiers = Sort(AllObjectifiers, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minObj, maxObj + 1));
 
-        var canHaveLoverorRival = AllPlayers;
-        var canHaveNeutralObjectifier = AllPlayers;
-        var canHaveCrewObjectifier = AllPlayers;
-        var canHaveAllied = AllPlayers;
-        var canHaveObjectifier = AllPlayers;
-        var canHaveDefector = AllPlayers;
+        var canHaveLoverorRival = AllPlayers();
+        var canHaveNeutralObjectifier = AllPlayers();
+        var canHaveCrewObjectifier = AllPlayers();
+        var canHaveAllied = AllPlayers();
+        var canHaveObjectifier = AllPlayers();
+        var canHaveDefector = AllPlayers();
 
         canHaveLoverorRival.RemoveAll(x => x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll) || x.Is(LayerEnum.Actor) || x.Is(LayerEnum.Jester) || x.Is(LayerEnum.Shifter) || x == PureCrew);
         canHaveLoverorRival.Shuffle();
@@ -1425,7 +1425,7 @@ public static class RoleGen
 
         AllObjectifiers = [ .. AllObjectifiers.OrderBy(x => 100 - x.Chance) ];
 
-        while (AllObjectifiers.Count > AllPlayers.Count && AllObjectifiers.Count > 1)
+        while (AllObjectifiers.Count > AllPlayers().Count && AllObjectifiers.Count > 1)
             AllObjectifiers.Remove(AllObjectifiers.Last());
 
         AllObjectifiers.Shuffle();
@@ -1532,22 +1532,22 @@ public static class RoleGen
             LogInfo($"{layer} Done");
         }
 
-        var maxMod = ModifiersSettings.MaxModifiers;
-        var minMod = ModifiersSettings.MinModifiers;
+        int maxMod = ModifiersSettings.MaxModifiers;
+        int minMod = ModifiersSettings.MinModifiers;
 
-        while (maxMod > AllPlayers.Count)
+        while (maxMod > AllPlayers().Count)
             maxMod--;
 
-        while (minMod > AllPlayers.Count)
+        while (minMod > AllPlayers().Count)
             minMod--;
 
-        AllModifiers = Sort(AllModifiers, GameModeSettings.IgnoreLayerCaps ? AllPlayers.Count : URandom.RandomRangeInt(minMod, maxMod + 1));
+        AllModifiers = Sort(AllModifiers, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minMod, maxMod + 1));
 
-        var canHaveBait = AllPlayers;
-        var canHaveDiseased = AllPlayers;
-        var canHaveProfessional = AllPlayers;
-        var canHaveModifier = AllPlayers;
-        var canHaveShy = AllPlayers;
+        var canHaveBait = AllPlayers();
+        var canHaveDiseased = AllPlayers();
+        var canHaveProfessional = AllPlayers();
+        var canHaveModifier = AllPlayers();
+        var canHaveShy = AllPlayers();
 
         canHaveBait.RemoveAll(x => x.Is(LayerEnum.Vigilante) || x.Is(LayerEnum.Shifter) || x.Is(LayerEnum.Thief) || x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll));
         canHaveBait.Shuffle();
@@ -1566,7 +1566,7 @@ public static class RoleGen
 
         AllModifiers = [ .. AllModifiers.OrderBy(x => 100 - x.Chance) ];
 
-        while (AllModifiers.Count > AllPlayers.Count && AllModifiers.Count > 1)
+        while (AllModifiers.Count > AllPlayers().Count && AllModifiers.Count > 1)
             AllModifiers.Remove(AllModifiers.Last());
 
         AllModifiers.Shuffle();
@@ -1743,7 +1743,7 @@ public static class RoleGen
 
         if (PlayerLayer.GetLayers<Mafia>().Count == 1)
         {
-            foreach (var player in AllPlayers.Where(x => x.Is(LayerEnum.Mafia)))
+            foreach (var player in AllPlayers().Where(x => x.Is(LayerEnum.Mafia)))
                 NullLayer(player, PlayerLayerEnum.Objectifier);
         }
 
@@ -1758,7 +1758,7 @@ public static class RoleGen
 
                 while ((!exe.TargetPlayer || exe.TargetPlayer == exe.Player || exe.TargetPlayer.IsLinkedTo(exe.Player) || exe.TargetPlayer.Is(Alignment.CrewSov)) && ratelimit < 10000)
                 {
-                    exe.TargetPlayer = AllPlayers.Random();
+                    exe.TargetPlayer = AllPlayers().Random();
                     ratelimit++;
                 }
 
@@ -1778,7 +1778,7 @@ public static class RoleGen
         {
             foreach (var guess in PlayerLayer.GetLayers<Guesser>())
             {
-                guess.TargetPlayer = AllPlayers.Random(x => x == guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.CrewInvest) &&
+                guess.TargetPlayer = AllPlayers().Random(x => x == guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.CrewInvest) &&
                     !x.Is(LayerEnum.Indomitable));
 
                 if (guess.TargetPlayer)
@@ -1797,7 +1797,7 @@ public static class RoleGen
         {
             foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
             {
-                ga.TargetPlayer = AllPlayers.Random(x => x == ga.Player && !x.IsLinkedTo(ga.Player) && !x.Is(Alignment.NeutralEvil));
+                ga.TargetPlayer = AllPlayers().Random(x => x == ga.Player && !x.IsLinkedTo(ga.Player) && !x.Is(Alignment.NeutralEvil));
 
                 if (ga.TargetPlayer)
                 {
@@ -1815,7 +1815,7 @@ public static class RoleGen
         {
             foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
             {
-                bh.TargetPlayer = AllPlayers.Random(x => x != bh.Player && !bh.Player.IsLinkedTo(x));
+                bh.TargetPlayer = AllPlayers().Random(x => x != bh.Player && !bh.Player.IsLinkedTo(x));
 
                 if (bh.TargetPlayer)
                 {
@@ -1833,7 +1833,7 @@ public static class RoleGen
         {
             foreach (var act in PlayerLayer.GetLayers<Actor>())
             {
-                act.FillRoles(AllPlayers.Random(x => x != act.Player));
+                act.FillRoles(AllPlayers().Random(x => x != act.Player));
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, act, act.PretendRoles);
 
                 if (TownOfUsReworked.IsTest)
@@ -1845,11 +1845,11 @@ public static class RoleGen
 
         foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
         {
-            jackal.Recruit1 = AllPlayers.Random(x => !x.Is(Alignment.NeutralNeo) && !x.Is(SubFaction.Cabal) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen));
+            jackal.Recruit1 = AllPlayers().Random(x => !x.Is(Alignment.NeutralNeo) && !x.Is(SubFaction.Cabal) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen));
 
             if (jackal.Recruit1)
             {
-                jackal.Recruit2 = AllPlayers.Random(x => !x.Is(Alignment.NeutralNeo) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen) &&
+                jackal.Recruit2 = AllPlayers().Random(x => !x.Is(Alignment.NeutralNeo) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen) &&
                     !x.Is(SubFaction.Cabal) && jackal.Recruit1.GetFaction() != x.GetFaction());
             }
 
@@ -2005,7 +2005,7 @@ public static class RoleGen
         else
             GenClassicCustomAA();
 
-        var players = AllPlayers;
+        var players = AllPlayers();
 
         if (!AllRoles.Any(x => x.ID == LayerEnum.Dracula))
         {
@@ -2085,7 +2085,7 @@ public static class RoleGen
             LogMessage("Assigned Drive");
         }
 
-        PureCrew = AllPlayers.Where(x => x.Is(Faction.Crew)).Random();
+        PureCrew = AllPlayers().Where(x => x.Is(Faction.Crew)).Random();
         CallRpc(CustomRPC.Misc, MiscRPC.SyncPureCrew, PureCrew);
         LogMessage("Synced Pure Crew");
 
@@ -2103,7 +2103,7 @@ public static class RoleGen
                     GenModifiers();
             }
 
-            Convertible = AllPlayers.Count(x => x.Is(SubFaction.None) && x != PureCrew);
+            Convertible = AllPlayers().Count(x => x.Is(SubFaction.None) && x != PureCrew);
             CallRpc(CustomRPC.Misc, MiscRPC.SyncConvertible, Convertible);
             SetTargets();
         }
@@ -2119,7 +2119,7 @@ public static class RoleGen
 
         CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen);
 
-        foreach (var player in AllPlayers)
+        foreach (var player in AllPlayers())
         {
             var role = player.GetRole() ?? new Roleless().Start<Role>(player);
             var mod = player.GetModifier() ?? new Modifierless().Start<Modifier>(player);
@@ -2166,7 +2166,7 @@ public static class RoleGen
 
     public static void AssignChaosDrive()
     {
-        var all = AllPlayers.Where(x => !x.HasDied() && x.Is(Faction.Syndicate) && x.IsBase(Faction.Syndicate)).ToList();
+        var all = AllPlayers().Where(x => !x.HasDied() && x.Is(Faction.Syndicate) && x.IsBase(Faction.Syndicate)).ToList();
 
         if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost || !all.Any())
             return;

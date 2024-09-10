@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Revealer : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
-    public static int RevealerTasksRemainingClicked { get; set; } = 5;
+    public static Number RevealerTasksRemainingClicked { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static int RevealerTasksRemainingAlert { get; set; } = 1;
+    public static Number RevealerTasksRemainingAlert { get; set; } = new(1);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RevealerRevealsNeutrals { get; set; } = false;
@@ -52,7 +52,7 @@ public class Revealer : Crew
         Faded = true;
         var color = new UColor(1f, 1f, 1f, 0f);
 
-        var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
+        var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
         var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
         var distPercent = distance / maxDistance;

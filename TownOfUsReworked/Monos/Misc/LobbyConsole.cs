@@ -22,7 +22,7 @@ public class LobbyConsole : MonoBehaviour
         if (Prefab)
             return;
 
-        var options = Lobby.transform.FindChild("SmallBox").GetChild(0).GetComponent<OptionsConsole>();
+        var options = Lobby().transform.FindChild("SmallBox").GetChild(0).GetComponent<OptionsConsole>();
         Prefab = Instantiate(options.MenuPrefab, null).DontUnload().DontDestroy();
         Prefab.SetActive(false);
         Prefab.name = "ClientOptionsMenuPrefab";

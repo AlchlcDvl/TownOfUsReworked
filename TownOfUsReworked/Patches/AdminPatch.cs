@@ -58,12 +58,11 @@ public static class AdminPatch
 
     private static void UpdateBlips(MapCountOverlay __instance, bool isOp)
     {
-        var rooms = Ship.FastRooms;
         var colorMapDuplicate = new List<byte>();
 
         foreach (var area in __instance.CountAreas)
         {
-            if (!rooms.TryGetValue(area.RoomType, out var room) || !room.roomArea)
+            if (!Ship().FastRooms.TryGetValue(area.RoomType, out var room) || !room.roomArea)
                 continue;
 
             var objectsInRoom = room.roomArea.OverlapCollider(__instance.filter, __instance.buffer);

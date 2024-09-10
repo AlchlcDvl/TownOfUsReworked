@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Coroner : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 2f, 0.05f, Format.Time)]
-    public static float CoronerArrowDur { get; set; } = 0.1f;
+    public static Number CoronerArrowDur { get; set; } = new(0.1f);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CoronerReportRole { get; set; } = false;
@@ -13,13 +13,13 @@ public class Coroner : Crew
     public static bool CoronerReportName { get; set; } = false;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 15f, 0.5f, Format.Time)]
-    public static float CoronerKillerNameTime { get; set; } = 1f;
+    public static Number CoronerKillerNameTime { get; set; } = new(1);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float CompareCd { get; set; } = 25f;
+    public static Number CompareCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float AutopsyCd { get; set; } = 25f;
+    public static Number AutopsyCd { get; set; } = new(25);
 
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
     public List<byte> Reported { get; set; }
@@ -66,7 +66,7 @@ public class Coroner : Crew
 
         if (!Dead)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CoronerArrowDur)));
+            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CoronerArrowDur)));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {
@@ -125,7 +125,7 @@ public class Coroner : Crew
             return;
 
         // Only Coroner can see this
-        if (HUD)
+        if (HUD())
             Run("<color=#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
     }
 }

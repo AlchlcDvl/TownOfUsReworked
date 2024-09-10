@@ -8,7 +8,7 @@ public class CustomMenu
     public PlayerControl Owner { get; }
     public Select Click { get; }
     public PlayerBodyExclusion Exception { get; }
-    public List<PlayerControl> Targets => [ .. AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
+    public List<PlayerControl> Targets => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 
     public delegate void Select(PlayerControl player);
 

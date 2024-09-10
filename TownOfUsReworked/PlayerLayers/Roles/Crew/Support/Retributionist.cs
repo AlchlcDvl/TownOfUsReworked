@@ -164,7 +164,7 @@ public class Retributionist : Crew
             OnLobby();
         else if (IsCor)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(Coroner.CoronerArrowDur)));
+            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(Coroner.CoronerArrowDur)));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {
@@ -182,7 +182,7 @@ public class Retributionist : Crew
         }
         else if (IsMed)
         {
-            foreach (var player in AllPlayers)
+            foreach (var player in AllPlayers())
             {
                 if (MediateArrows.ContainsKey(player.PlayerId))
                 {
@@ -374,7 +374,7 @@ public class Retributionist : Crew
             }
 
             // Only Retributionist-Operative can see this
-            if (HUD)
+            if (HUD())
                 Run("<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
         }
         else if (IsDet)
@@ -392,10 +392,10 @@ public class Retributionist : Crew
                     return;
 
                 // Only Retributionist-Trapper can see this
-                if (HUD)
+                if (HUD())
                     Run("<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
             }
-            else if (AttackedSomeone && HUD)
+            else if (AttackedSomeone && HUD())
                 Run("<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
 
             TriggeredRoles.Clear();
@@ -427,7 +427,7 @@ public class Retributionist : Crew
                 return;
 
             // Only Retributionist-Coroner can see this
-            if (HUD)
+            if (HUD())
                 Run("<color=#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
         }
     }
@@ -624,7 +624,7 @@ public class Retributionist : Crew
 
             foreach (var dead in playersDead)
             {
-                if (AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+                if (AllBodies().Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                 {
                     MediateArrows.Add(dead.PlayerId, new(Player, Color));
                     MediatedPlayers.Add(dead.PlayerId);
@@ -639,7 +639,7 @@ public class Retributionist : Crew
         {
             var dead = playersDead.Random();
 
-            if (AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+            if (AllBodies().Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
             {
                 MediateArrows.Add(dead.PlayerId, new(Player, Color));
                 MediatedPlayers.Add(dead.PlayerId);
@@ -755,7 +755,7 @@ public class Retributionist : Crew
 
     public void UponEnd()
     {
-        if (!(Meeting || Dead))
+        if (!(Meeting() || Dead))
             FinishRevive();
     }
 
@@ -868,7 +868,7 @@ public class Retributionist : Crew
 
     public bool EngiUsable() => IsEngi && Engineer.MaxFixes > 0;
 
-    public bool EngiCondition() => Ship.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
+    public bool EngiCondition() => Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
 
     // Mystic Stuff
     public CustomButton RevealButton { get; set; }
@@ -1054,7 +1054,7 @@ public class Retributionist : Crew
             else
                 break;
 
-            if (Meeting)
+            if (Meeting())
             {
                 AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
                 yield break;
@@ -1128,11 +1128,11 @@ public class Retributionist : Crew
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
         {
-            if (ActiveTask)
-                ActiveTask.Close();
+            if (ActiveTask())
+                ActiveTask().Close();
 
             if (MapPatch.MapActive)
-                Map.Close();
+                Map().Close();
         }
 
         TransportPlayer1 = null;

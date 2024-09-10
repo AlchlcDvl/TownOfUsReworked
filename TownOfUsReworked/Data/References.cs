@@ -10,22 +10,22 @@ public static class References
     public static readonly Dictionary<byte, DateTime> UninteractiblePlayers = [];
     public static readonly Dictionary<byte, float> UninteractiblePlayers2 = [];
     public static readonly Dictionary<byte, string> BodyLocations = [];
-    public static List<DeadBody> AllBodies => [ .. UObject.FindObjectsOfType<DeadBody>() ];
-    public static List<Vent> AllVents => [ .. UObject.FindObjectsOfType<Vent>() ];
-    public static List<Vent> AllMapVents => [ .. Ship.AllVents ];
-    public static List<GameObject> AllGameObjects => [ .. UObject.FindObjectsOfType<GameObject>() ];
-    public static List<Console> AllConsoles => [ .. UObject.FindObjectsOfType<Console>() ];
-    public static List<SystemConsole> AllSystemConsoles => [ .. UObject.FindObjectsOfType<SystemConsole>() ];
-    public static List<PlayerVoteArea> AllVoteAreas => [ .. Meeting.playerStates ];
-    public static List<PlayerControl> AllPlayers => PlayerControl.AllPlayerControls.ToSystem();
-    public static HudManager HUD => HudManager.Instance;
-    public static MeetingHud Meeting => MeetingHud.Instance;
-    public static ExileController Ejection => ExileController.Instance;
-    public static ShipStatus Ship => ShipStatus.Instance;
-    public static MapBehaviour Map => MapBehaviour.Instance;
-    public static Minigame ActiveTask => Minigame.Instance;
-    public static LobbyBehaviour Lobby => LobbyBehaviour.Instance;
-    public static ChatController Chat => HUD.Chat;
+    public static List<DeadBody> AllBodies() => [ .. UObject.FindObjectsOfType<DeadBody>() ];
+    public static List<Vent> AllVents() => [ .. UObject.FindObjectsOfType<Vent>() ];
+    public static List<Vent> AllMapVents() => [ .. Ship().AllVents ];
+    public static List<GameObject> AllGameObjects() => [ .. UObject.FindObjectsOfType<GameObject>() ];
+    public static List<Console> AllConsoles() => [ .. UObject.FindObjectsOfType<Console>() ];
+    public static List<SystemConsole> AllSystemConsoles() => [ .. UObject.FindObjectsOfType<SystemConsole>() ];
+    public static List<PlayerVoteArea> AllVoteAreas() => [ .. Meeting().playerStates ];
+    public static List<PlayerControl> AllPlayers() => PlayerControl.AllPlayerControls.ToSystem();
+    public static HudManager HUD() => HudManager.Instance;
+    public static MeetingHud Meeting() => MeetingHud.Instance;
+    public static ExileController Ejection() => ExileController.Instance;
+    public static ShipStatus Ship() => ShipStatus.Instance;
+    public static MapBehaviour Map() => MapBehaviour.Instance;
+    public static Minigame ActiveTask() => Minigame.Instance;
+    public static LobbyBehaviour Lobby() => LobbyBehaviour.Instance;
+    public static ChatController Chat() => HUD().Chat;
     public static string FirstDead { get; set; }
     public static string CachedFirstDead { get; set; }
     public static bool Shapeshifted { get; set; }

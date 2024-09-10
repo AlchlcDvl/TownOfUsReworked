@@ -19,7 +19,7 @@
 
 //         for (var i = Camera.main.orthographicSize; inOut ? (i < 12f) : (i > 3f); i += change)
 //         {
-//             var size = Meeting ? 3f : i;
+//             var size = Meeting() ? 3f : i;
 //             Camera.main.orthographicSize = size;
 //             Camera.allCameras.ForEach(x => x.orthographicSize = size);
 //             ResolutionManager.ResolutionChanged.Invoke(Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen);
@@ -40,7 +40,7 @@
 //             return;
 
 //         ClientHandler.Instance.SettingsActive = !ClientHandler.Instance.SettingsActive;
-//         HUD.GameSettings.gameObject.SetActive(ClientHandler.Instance.SettingsActive);
+//         HUD().GameSettings.gameObject.SetActive(ClientHandler.Instance.SettingsActive);
 //     }
 
 //     public static void OpenRoleCard()
@@ -53,7 +53,7 @@
 //         if (ClientHandler.Instance.PhoneText)
 //             ClientHandler.Instance.PhoneText.gameObject.Destroy();
 
-//         ClientHandler.Instance.PhoneText = UObject.Instantiate(HUD.KillButton.cooldownTimerText, ClientHandler.Instance.Phone.transform);
+//         ClientHandler.Instance.PhoneText = UObject.Instantiate(HUD().KillButton.cooldownTimerText, ClientHandler.Instance.Phone.transform);
 //         ClientHandler.Instance.PhoneText.enableWordWrapping = false;
 //         ClientHandler.Instance.PhoneText.transform.localScale = Vector3.one * 0.4f;
 //         ClientHandler.Instance.PhoneText.transform.localPosition = new(0, 0, -50f);
@@ -83,7 +83,7 @@
 //         {
 //             ClientHandler.Instance.Phone = new GameObject("Phone") { layer = 5 }.AddComponent<SpriteRenderer>();
 //             ClientHandler.Instance.Phone.sprite = GetSprite("Phone");
-//             ClientHandler.Instance.Phone.transform.SetParent(HUD.transform);
+//             ClientHandler.Instance.Phone.transform.SetParent(HUD().transform);
 //             ClientHandler.Instance.Phone.transform.localPosition = new(0, 0, -49f);
 //             ClientHandler.Instance.Phone.transform.localScale *= 1.25f;
 //         }
@@ -287,7 +287,7 @@
 
 //         ClientHandler.Instance.Selected.WikiEntry(out var result);
 //         SetEntryText(result);
-//         ClientHandler.Instance.PhoneText = UObject.Instantiate(HUD.TaskPanel.taskText, ClientHandler.Instance.Phone.transform);
+//         ClientHandler.Instance.PhoneText = UObject.Instantiate(HUD().TaskPanel.taskText, ClientHandler.Instance.Phone.transform);
 //         ClientHandler.Instance.PhoneText.color = UColor.white;
 //         ClientHandler.Instance.PhoneText.text = ClientHandler.Instance.Entry[0];
 //         ClientHandler.Instance.PhoneText.enableWordWrapping = false;
@@ -302,11 +302,11 @@
 
 //     public static PassiveButton CreateButton(string name, string labelText, Action onClick, UColor? textColor = null)
 //     {
-//         var button = UObject.Instantiate(HUD.MapButton, ClientHandler.Instance.Phone.transform);
+//         var button = UObject.Instantiate(HUD().MapButton, ClientHandler.Instance.Phone.transform);
 //         button.name = $"{name}Button";
 //         button.transform.localScale = new(0.5f, 0.5f, 1f);
 //         button.GetComponent<BoxCollider2D>().size = new(2.5f, 0.55f);
-//         var label = UObject.Instantiate(HUD.TaskPanel.taskText, button.transform);
+//         var label = UObject.Instantiate(HUD().TaskPanel.taskText, button.transform);
 //         label.color = textColor ?? UColor.white;
 //         label.text = labelText;
 //         label.enableWordWrapping = false;
@@ -338,11 +338,11 @@
 //         if (ClientHandler.Instance.SettingsActive && skip != SkipEnum.Settings)
 //             OpenSettings();
 
-//         if (MapPatch.MapActive && Map && skip != SkipEnum.Map)
-//             Map.Close();
+//         if (MapPatch.MapActive && Map() && skip != SkipEnum.Map)
+//             Map().Close();
 
-//         if (ActiveTask && ActiveTask && skip != SkipEnum.Task)
-//             ActiveTask.Close();
+//         if (ActiveTask() && skip != SkipEnum.Task)
+//             ActiveTask().Close();
 
 //         if (GameSettingMenu.Instance && skip != SkipEnum.Client)
 //             GameSettingMenu.Instance.Close();

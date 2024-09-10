@@ -96,7 +96,7 @@ public static class OpenMapMenuPatch
 
         if (opts.Mode is not (MapOptions.Modes.None or MapOptions.Modes.CountOverlay))
         {
-            if (CustomPlayer.Local.CanSabotage() && !AllPlayers.Any(x => x.IsFlashed()))
+            if (CustomPlayer.Local.CanSabotage() && !AllPlayers().Any(x => x.IsFlashed()))
                 __instance.ShowSabotageMap();
             else
                 __instance.ShowNormalMap();
@@ -156,8 +156,8 @@ public static class CanMove
 {
     public static bool Prefix(PlayerControl __instance, ref bool __result)
     {
-        __result = __instance.moveable && !ActiveTask && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat.IsOpenOrOpening && !HUD.KillOverlay.IsOpen &&
-            !HUD.GameMenu.IsOpen)) && (!Map || !Map.IsOpenStopped) && !Meeting && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
+        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen &&
+            !HUD().GameMenu.IsOpen)) && (!Map() || !Map().IsOpenStopped) && !Meeting() && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
         return false;
     }
 }
@@ -253,8 +253,8 @@ public static class AirshipSpawnInPatch
         if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast) && ast.LastPosition != Vector3.zero)
             ast.SetPosition();
 
-        HUD.FullScreen.enabled = true;
-        HUD.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
+        HUD().FullScreen.enabled = true;
+        HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
     }
 }
 
@@ -300,14 +300,14 @@ public static class OverlayKillAnimationPatch
 
     public static void Prefix(KillOverlayInitData initData)
     {
-        var playerControl = AllPlayers.Find(x => x.GetCurrentOutfit() == initData.killerOutfit);
+        var playerControl = AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit);
         CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
         if (!GameModifiers.AppearanceAnimation)
             playerControl.CurrentOutfitType = PlayerOutfitType.Default;
     }
 
-    public static void Postfix(KillOverlayInitData initData) => AllPlayers.Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType =
+    public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType =
         (PlayerOutfitType)CurrentOutfitTypeCache;
 }
 
@@ -334,8 +334,8 @@ public static class LobbySizePatch
     {
         if (IsLobby())
         {
-            while (AllPlayers.Count > GameSettings.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
-                AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(AllPlayers.Last().OwnerId).Id, DisconnectReasons.GameFull);
+            while (AllPlayers().Count > GameSettings.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+                AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(AllPlayers().Last().OwnerId).Id, DisconnectReasons.GameFull);
         }
     }
 }
@@ -440,7 +440,7 @@ public static class LobbyBehaviourPatch
         if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame())
             MCIUtils.CreatePlayerInstances(count);
 
-        var lobbyTransform = References.Lobby.transform;
+        var lobbyTransform = Lobby().transform;
         var consolePrefab = lobbyTransform.FindChild("panel_Wardrobe").gameObject;
         var rewConsoleObj = UObject.Instantiate(consolePrefab, lobbyTransform);
         rewConsoleObj.name = "panel_Reworked";
@@ -514,12 +514,12 @@ public static class MeetingCooldowns
         if (!obj)
             return;
 
-        if (Ejection && obj == Ejection.gameObject)
+        if (Ejection() && obj == Ejection().gameObject)
         {
             ButtonUtils.Reset(CooldownType.Meeting);
             PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.OnRoleSelected());
         }
-        else if (ActiveTask && obj == ActiveTask.gameObject)
+        else if (ActiveTask() && obj == ActiveTask().gameObject)
             CustomPlayer.Local.EnableButtons();
     }
 }
@@ -599,7 +599,7 @@ public static class BegoneModstamp
         try
         {
             // try catch my beloved <3
-            __instance.localCamera = !HudManager.InstanceExists ? Camera.main : HUD.GetComponentInChildren<Camera>();
+            __instance.localCamera = !HudManager.InstanceExists ? Camera.main : HUD().GetComponentInChildren<Camera>();
             __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
                 __instance.localCamera.nearClipPlane));
             __instance.ModStamp.gameObject.SetActive(IsEnded() || NoLobby() || IsLobby());

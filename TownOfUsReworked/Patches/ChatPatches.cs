@@ -40,7 +40,7 @@ public static class ChatUpdate
 
             if (chat.NameText && IsInGame())
             {
-                foreach (var player in AllPlayers)
+                foreach (var player in AllPlayers())
                 {
                     if (chat.NameText.text.Contains(player.Data.PlayerName))
                     {
@@ -150,7 +150,7 @@ public static class ChatChannels
         if ((ChatUpdate.ChatHistory.Count == 0 || ChatUpdate.ChatHistory[^1].Contains(chatText)) && !chatText.StartsWith("/"))
             ChatUpdate.ChatHistory.Add($"{sourcePlayer.Data.PlayerName}: {chatText}");
 
-        if (__instance != Chat)
+        if (__instance != Chat())
             return true;
 
         var localPlayer = CustomPlayer.Local;
@@ -166,7 +166,7 @@ public static class ChatChannels
         if (DateTime.UtcNow - MeetingStart.MeetingStartTime < TimeSpan.FromSeconds(1))
             return shouldSeeMessage;
 
-        return (Meeting || Lobby || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting
+        return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting()
             && CustomPlayer.Local.IsSilenced());
     }
 }
@@ -256,14 +256,14 @@ public static class ChatCommands
 
     public static void Notify(byte targetPlayerId)
     {
-        if (!Meeting || Notifs.ContainsKey(targetPlayerId))
+        if (!Meeting() || Notifs.ContainsKey(targetPlayerId))
             return;
 
         var playerVoteArea = VoteAreaById(targetPlayerId);
         var chat = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.transform.parent);
         chat.name = $"Notification{targetPlayerId}";
         chat.transform.localPosition = new(-1.3f, 0.1f, -1f);
-        chat.sprite = GetSprite("Chat");
+        chat.sprite = GetSprite("Chat()");
         chat.gameObject.SetActive(true);
         Notifs.Add(targetPlayerId, chat);
         Coroutines.Start(PerformTimedAction(2, p =>
@@ -298,7 +298,7 @@ public static class ChatControllerAwakePatch
             DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
     }
 
-    public static void Postfix(ChatController __instance) => AddAsset("Chat", __instance.messageSound);
+    public static void Postfix(ChatController __instance) => AddAsset("Chat()", __instance.messageSound);
 }
 
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]

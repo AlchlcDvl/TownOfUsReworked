@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Ghoul : Intruder
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float GhoulMarkCd { get; set; } = 25f;
+    public static Number GhoulMarkCd { get; set; } = new(25);
 
     public CustomButton MarkButton { get; set; }
     public bool Caught { get; set; }
@@ -35,7 +35,7 @@ public class Ghoul : Intruder
         Faded = true;
         var color = new UColor(1f, 1f, 1f, 0f);
 
-        var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
+        var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
         var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
         var distPercent = distance / maxDistance;

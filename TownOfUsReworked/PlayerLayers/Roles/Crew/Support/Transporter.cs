@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Transporter : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static int MaxTransports { get; set; } = 5;
+    public static Number MaxTransports { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static float TransportCd { get; set; } = 25f;
+    public static Number TransportCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
-    public static float TransportDur { get; set; } = 5f;
+    public static Number TransportDur { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool TransSelf { get; set; } = true;
@@ -157,7 +157,7 @@ public class Transporter : Crew
             else
                 break;
 
-            if (Meeting)
+            if (Meeting())
             {
                 AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
                 yield break;
@@ -230,11 +230,11 @@ public class Transporter : Crew
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
         {
-            if (ActiveTask)
-                ActiveTask.Close();
+            if (ActiveTask())
+                ActiveTask().Close();
 
             if (MapPatch.MapActive)
-                Map.Close();
+                Map().Close();
         }
 
         TransportPlayer1 = null;
