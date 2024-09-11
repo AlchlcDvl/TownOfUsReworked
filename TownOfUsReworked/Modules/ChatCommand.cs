@@ -18,7 +18,6 @@ public class ChatCommand
         new([ "summary", "sum" ], Summary),
         new([ "clearlobby", "cl", "clear" ], Clear),
         new([ "setname", "sn", "name" ], SetName),
-        new([ "setcolor", "setcolour", "sc", "color", "colour" ], SetColor),
         new([ "whisper", "w"] , Whisper),
         new([ "ignore", "i" ], Whisper),
         new([ "help", "h" ], Help),
@@ -161,38 +160,6 @@ public class ChatCommand
         }
     }
 
-    private static void SetColor(string[] args)
-    {
-        if (!TownOfUsReworked.IsTest || !IsLobby())
-        {
-            Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
-            return;
-        }
-
-        if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
-        {
-            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<setcolour | setcolor | sc> <color id>");
-            return;
-        }
-
-        var spelling = args[0].ToLower().Contains("color") ? "" : "u";
-
-        if (!byte.TryParse(args[1], out var col))
-        {
-            Run($"<color=#FF0000FF>⚠ Colo{spelling}r Error ⚠</color>", $"{args[1]} is an invalid colo{spelling}r.\nYou need to use the colo{spelling}r ID for the colo{spelling}r you want to"
-                + $" be. To find out a colo{spelling}r's ID, go into the colo{spelling}r selection screen and count the number of colo{spelling}rs starting from 0 to the position of the " +
-                $"colo{spelling}r you want to pick, from left to right. The range of colo{spelling}rs is from 0 to {CustomColorManager.AllColors.Count - 1} meaning Red to Rainbow " +
-                "respectively.");
-        }
-        else if (CustomColorManager.OutOfBounds(col))
-            Run($"<color=#FF0000FF>⚠ Colo{spelling}r Error ⚠</color>", $"Invalid colo{spelling}r id.");
-        else
-        {
-            CustomPlayer.Local.CmdCheckColor(col);
-            Run("<color=#B148E2FF>◈ Success ◈</color>", $"Colo{spelling}r changed!");
-        }
-    }
-
     private static void SetName(string[] args)
     {
         if (!TownOfUsReworked.IsTest || !IsLobby())
@@ -315,7 +282,7 @@ public class ChatCommand
 
     private static void Help()
     {
-        var setColor = TownOfUsReworked.IsTest ? "/setcolour or /setcolor, /setname" : "";
+        var setColor = TownOfUsReworked.IsTest ? "/setname" : "";
         var comma = setColor.Length == 0 ? "" : ", ";
         var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
         var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";

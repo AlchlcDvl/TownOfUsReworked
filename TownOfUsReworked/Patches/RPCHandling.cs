@@ -159,7 +159,9 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.LoadPreset:
-                        Run("<color=#00CC99FF>【 Loading Preset 】</color>", $"Loading the {reader.ReadString()} preset!");
+                        var preset = reader.ReadString();
+                        Run("<color=#00CC99FF>【 Loading Preset 】</color>", $"Loading the {preset} preset!");
+                        SettingsPatches.CurrentPreset = preset;
                         break;
 
                     case MiscRPC.EndRoleGen:

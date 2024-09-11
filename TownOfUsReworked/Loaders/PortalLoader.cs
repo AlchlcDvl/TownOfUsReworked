@@ -5,6 +5,7 @@ public class PortalLoader : AssetLoader<Asset>
     public override string DirectoryInfo => TownOfUsReworked.Portal;
     public override bool Downloading => true;
     public override string Manifest => "Portal";
+    public override string FileExtension => "png";
 
     public static PortalLoader Instance { get; set; }
 
@@ -14,9 +15,7 @@ public class PortalLoader : AssetLoader<Asset>
         LogMessage($"Found {mainResponse.Count} frames");
         var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
         LogMessage($"Downloading {toDownload.Count()} frames");
-
-        foreach (var fileName in toDownload)
-            yield return CoDownloadAsset(fileName, this, "png");
+        yield return CoDownloadAsset(toDownload);
     }
 
     public override IEnumerator AfterLoading(object response)

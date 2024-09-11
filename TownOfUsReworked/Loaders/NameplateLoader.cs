@@ -8,6 +8,7 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
     public override string DirectoryInfo => TownOfUsReworked.Nameplates;
     public override bool Downloading => true;
     public override string Manifest => "Nameplates";
+    public override string FileExtension => "png";
 
     public static NameplateLoader Instance { get; set; }
 
@@ -17,11 +18,9 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
         UnregisteredNameplates.AddRange(mainResponse);
         LogMessage($"Found {UnregisteredNameplates.Count} nameplates");
         var toDownload = GenerateDownloadList(UnregisteredNameplates);
-        mainResponse.Clear();
         LogMessage($"Downloading {toDownload.Count} nameplate files");
-
-        foreach (var fileName in toDownload)
-            yield return CoDownloadAsset(fileName, this, "png");
+        yield return CoDownloadAsset(toDownload);
+        mainResponse.Clear();
     }
 
     public override IEnumerator AfterLoading(object response)

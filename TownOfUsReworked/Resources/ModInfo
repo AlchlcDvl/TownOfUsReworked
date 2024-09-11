@@ -8,13 +8,10 @@ If you want to know more try using the other info commands, visiting the %github
 
 New!
 - Addition: Colorblind now has grayscale vision
-- Addition: Options can now be collapsed using the header they are a part of
-- Addition: Added some more options
-- Addition: Some options now change to ∞ when set to 0
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
-- Recode: The custom options have been given a full recode to work even better than before
+- Recode: The custom options have been given a full recode to work even better than before and include many new features
 - Improvement: Touched up on oudated code to ensure they all function better
 - Change: Jackal recruits can now need to only be of opposite factions so it has more flexible matchups
 - Change: Shifter now has a player menu to swap through to prevent auto confirms
@@ -23,6 +20,7 @@ Changes!
 - Change: Neutral defecting Spellslingers and Rebel-Spellslingers can now win solo by spellbinding everyone
 - Nerf: Dracula can now only convert once per round (because it was the only NN role that wasn't limited in its conversions)
 - Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
+- Removed: Removed the /setcolor or /setcolour chat command due to it being essentially useless
 - Update: Updated to Among Us 2024.8.13
 - Update: Updated to BepInEx 6.0.0-be.697
 - Update: Updated to Reactor 2.3.1
@@ -44,6 +42,7 @@ Fixes!
 - General: Fixed not being able to get achievements for kills (why would you even want this only god knows)
 - General: Fixed body locations being shown of players who have been revived
 - General: Fixed the accidental usage of the wrong options in a lot of places
+- General: Fixed the occasional small bugs here and there
 
 Credits-
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi

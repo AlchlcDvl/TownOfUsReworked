@@ -8,6 +8,7 @@ public class VisorLoader : AssetLoader<CustomVisor>
     public override string DirectoryInfo => TownOfUsReworked.Visors;
     public override bool Downloading => true;
     public override string Manifest => "Visors";
+    public override string FileExtension => "png";
 
     public static VisorLoader Instance { get; set; }
 
@@ -16,12 +17,10 @@ public class VisorLoader : AssetLoader<CustomVisor>
         var mainResponse = (List<CustomVisor>)response;
         UnregisteredVisors.AddRange(mainResponse);
         LogMessage($"Found {UnregisteredVisors.Count} visors");
-        mainResponse.Clear();
         var toDownload = GenerateDownloadList(UnregisteredVisors);
         LogMessage($"Downloading {toDownload.Count} visor files");
-
-        foreach (var fileName in toDownload)
-            yield return CoDownloadAsset(fileName, this, "png");
+        yield return CoDownloadAsset(toDownload);
+        mainResponse.Clear();
     }
 
     public override IEnumerator AfterLoading(object response)

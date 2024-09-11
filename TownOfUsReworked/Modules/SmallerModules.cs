@@ -75,4 +75,6 @@ public readonly struct Number(float num)
     public static implicit operator int(Number number) => (int)number.Value;
 
     public override string ToString() => Value.ToString();
+
+    public static Number Parse(string value) => new(float.Parse(value));
 }

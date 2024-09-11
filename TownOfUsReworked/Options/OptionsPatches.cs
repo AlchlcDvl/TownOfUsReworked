@@ -31,6 +31,9 @@ public static class SettingsPatches
             __instance.GamePresetsButton.transform.localPosition = pos3;
 
             __instance.ChangeTab(1, false);
+
+            __instance.RoleSettingsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+            __instance.RoleSettingsButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
         }
     }
 
@@ -460,6 +463,7 @@ public static class SettingsPatches
         if (IsHnS())
             return;
 
+        // UObject.FindObjectOfType<LobbyViewSettingsPane>().gameModeText.text = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
         __instance ??= GameSettingMenu.Instance;
 
         if (!__instance)
@@ -1069,7 +1073,10 @@ public static class SettingsPatches
     //     __instance.scrollBar.SetYBoundsMax(-num);
     // }
 
-    private static readonly List<PassiveButton> PresetsButtons = [];
+    public static readonly List<PassiveButton> PresetsButtons = [];
+    public static PassiveButton Prev;
+    public static PassiveButton Next;
+    public static PassiveButton Save;
 
     [HarmonyPatch(typeof(GamePresetsTab), nameof(GamePresetsTab.Start))]
     public static class GamePresetsStart
@@ -1085,39 +1092,88 @@ public static class SettingsPatches
             __instance.SecondPresetButton.gameObject.SetActive(false);
             __instance.PresetDescriptionText.gameObject.SetActive(false);
 
-            var saveButton = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
-            saveButton.OverrideOnClickListeners(OptionAttribute.SaveSettings);
-            saveButton.name = "SaveSettingsButton";
-            saveButton.transform.localPosition = new(0.6909f, 2.6164f, -2f);
-            saveButton.transform.localScale = new(0.64f, 0.84f, 1f);
-            saveButton.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
-            saveButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
-            saveButton.buttonText.alignment = TextAlignmentOptions.Center;
-            saveButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy(); // Yeah because this darn thing exists
-            saveButton.buttonText.text = TranslationManager.Translate("ImportExport.Save"); // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
+            Save = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
+            Save.OverrideOnClickListeners(OptionAttribute.SaveSettings);
+            Save.name = "SaveSettingsButton";
+            Save.transform.localPosition = new(0.26345f, 2.6164f, -2f);
+            Save.transform.localScale = new(0.64f, 0.84f, 1f);
+            Save.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
+            Save.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
+            Save.buttonText.alignment = TextAlignmentOptions.Center;
+            Save.buttonText.GetComponent<TextTranslatorTMP>().Destroy(); // Yeah because this darn thing exists
+            Save.buttonText.text = TranslationManager.Translate("ImportExport.Save"); // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
 
-            var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).Where(x => !x.EndsWith(".json")).OrderBy(x => x).Select(x => x.SanitisePath()).ToList();
+            Prev = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
+            Prev.OverrideOnClickListeners(() => NextPage(false));
+            Prev.name = "PreviousPageButton";
+            Prev.transform.localPosition = new(-2.2875f, 2.6164f, -2f);
+            Prev.transform.localScale = new(0.64f, 0.84f, 1f);
+            Prev.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
+            Prev.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
+            Prev.buttonText.alignment = TextAlignmentOptions.Center;
+            Prev.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+            Prev.buttonText.text = TranslationManager.Translate("ImportExport.Previous");
+
+            Next = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
+            Next.OverrideOnClickListeners(() => NextPage(true));
+            Next.name = "NextPageButton";
+            Next.transform.localPosition = new(2.9625f, 2.6164f, -2f);
+            Next.transform.localScale = new(0.64f, 0.84f, 1f);
+            Next.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
+            Next.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
+            Next.buttonText.alignment = TextAlignmentOptions.Center;
+            Next.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+            Next.buttonText.text = TranslationManager.Translate("ImportExport.Next");
+
+            var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).OrderBy(x => x).Select(x => x.SanitisePath()).ToList();
 
             for (var i = 0; i < presets.Count; i++)
             {
                 var preset = presets[i];
-                var row = i / 3;
-                var col = 1 % 3;
-                var presetButton = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
-                presetButton.transform.localScale = new(0.64f, 0.84f, 1f);
-                presetButton.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
+                var presetButton = UObject.Instantiate(Save, __instance.StandardPresetButton.transform.parent);
+                presetButton.transform.localScale = new(0.5f, 0.84f, 1f);
                 presetButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
                 presetButton.buttonText.alignment = TextAlignmentOptions.Center;
                 presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
                 presetButton.buttonText.text = presetButton.name = preset;
-                presetButton.transform.localPosition = new(-2.731f + (col * 2.5911f), 1.7828f - (row * 0.65136f), -2);
                 presetButton.OverrideOnClickListeners(() => OptionAttribute.LoadPreset(preset));
+
+                if (i >= (SettingsPage2 * 20) && i < ((SettingsPage2 + 1) * 20))
+                {
+                    var relativeIndex = i % 20;
+                    var row = relativeIndex / 4;
+                    var col = relativeIndex % 4;
+                    presetButton.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
+                }
+                else
+                    presetButton.gameObject.SetActive(false);
+
                 PresetsButtons.Add(presetButton);
-                // x start = -2.2731, x diff = 2.5911
-                // y start = 1.7828, y diff = 0.65136
             }
 
+            Prev.gameObject.SetActive(PresetsButtons.Count > 20);
+            Next.gameObject.SetActive(PresetsButtons.Count > 20);
             return false;
+        }
+    }
+
+    private static void NextPage(bool increment)
+    {
+        SettingsPage2 = CycleInt(PresetsButtons.Count / 20, 0, SettingsPage2, increment);
+
+        for (var i = 0; i < PresetsButtons.Count; i++)
+        {
+            var preset = PresetsButtons[i];
+
+            if (i >= (SettingsPage2 * 20) && i < ((SettingsPage2 + 1) * 20))
+            {
+                var relativeIndex = i % 20;
+                var row = relativeIndex / 4;
+                var col = relativeIndex % 4;
+                preset.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
+            }
+            else
+                preset.gameObject.SetActive(false);
         }
     }
 }

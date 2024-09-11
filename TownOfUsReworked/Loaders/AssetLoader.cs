@@ -6,41 +6,46 @@ public abstract class AssetLoader
 
     public virtual string Manifest => "";
     public virtual string DirectoryInfo => "";
+    public virtual string FileExtension => "";
     public virtual bool Downloading => false;
 
-    public static IEnumerator CoDownloadAsset(string fileName, AssetLoader downloader, string fileType)
+    public IEnumerator CoDownloadAsset(IEnumerable<string> files)
     {
-        fileName = fileName.Replace(" ", "%20");
-        LogMessage($"Downloading: {downloader.Manifest}/{fileName}");
-        var www = UnityWebRequest.Get($"{RepositoryUrl}/{downloader.Manifest}/{fileName}{(IsNullEmptyOrWhiteSpace(fileType) ? "" : $".{fileType}")}");
-        yield return www.SendWebRequest();
-
-        if (www.isNetworkError || www.isHttpError)
+        foreach (var fileName in files)
         {
-            LogError(www.error);
-            www.downloadHandler.Dispose();
-            www.Dispose();
-            yield break;
-        }
+            var trueName = $"{fileName.Replace(" ", "%20")}{(IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}")}";
+            LogMessage($"Downloading: {Manifest}/{fileName}");
+            var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}/{trueName}");
+            yield return www.SendWebRequest();
 
-        var filePath = Path.Combine(downloader.DirectoryInfo, $"{fileName}{(IsNullEmptyOrWhiteSpace(fileType) ? "" : $".{fileType}")}");
-        filePath = filePath.Replace("%20", " ").Replace(".txt", "");
-        var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
-
-        while (!persistTask.IsCompleted)
-        {
-            if (persistTask.Exception != null)
+            if (www.isNetworkError || www.isHttpError)
             {
-                LogError(persistTask.Exception);
-                break;
+                LogError(www.error);
+                www.downloadHandler.Dispose();
+                www.Dispose();
+                yield break;
             }
 
+            var filePath = Path.Combine(DirectoryInfo, trueName);
+            filePath = filePath.Replace("%20", " ");
+            var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
+
+            while (!persistTask.IsCompleted)
+            {
+                if (persistTask.Exception != null)
+                {
+                    LogError(persistTask.Exception);
+                    break;
+                }
+
+                yield return EndFrame();
+            }
+
+            www.downloadHandler.Dispose();
+            www.Dispose();
             yield return EndFrame();
         }
 
-        www.downloadHandler.Dispose();
-        www.Dispose();
-        yield return EndFrame();
         yield break;
     }
 

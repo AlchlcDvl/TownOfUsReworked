@@ -5,6 +5,7 @@ public class SoundLoader : AssetLoader<Asset>
     public override string DirectoryInfo => TownOfUsReworked.Sounds;
     public override bool Downloading => true;
     public override string Manifest => "Sounds";
+    public override string FileExtension => "wav";
 
     public static SoundLoader Instance { get; set; }
 
@@ -14,9 +15,7 @@ public class SoundLoader : AssetLoader<Asset>
         LogMessage($"Found {mainResponse.Count} sounds");
         var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
         LogMessage($"Downloading {toDownload.Count()} sounds");
-
-        foreach (var fileName in toDownload)
-            yield return CoDownloadAsset(fileName, this, "wav");
+        yield return CoDownloadAsset(toDownload);
     }
 
     public override IEnumerator AfterLoading(object response)

@@ -287,14 +287,14 @@ public static class BetterPolus
         if (WifiConsole.transform.position != WifiNewPos)
         {
             var wifiTransform = WifiConsole.transform;
-            wifiTransform.parent = DropShip.transform;
+            wifiTransform.SetParent(DropShip.transform);
             wifiTransform.position = WifiNewPos;
         }
 
         if (NavConsole.transform.position != NavNewPos)
         {
             var navTransform = NavConsole.transform;
-            navTransform.parent = Comms.transform;
+            navTransform.SetParent(NavConsole.transform);
             navTransform.position = NavNewPos;
             NavConsole.checkWalls = true;
         }
@@ -304,8 +304,8 @@ public static class BetterPolus
     {
         if (Vitals.transform.position != VitalsNewPos)
         {
-            var vitalsTransform = Vitals.gameObject.transform;
-            vitalsTransform.parent = Science.transform;
+            var vitalsTransform = Vitals.transform;
+            vitalsTransform.SetParent(Science.transform);
             vitalsTransform.position = VitalsNewPos;
         }
 

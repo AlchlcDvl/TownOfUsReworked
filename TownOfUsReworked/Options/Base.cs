@@ -245,32 +245,63 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static void SaveSettings()
     {
-        var filePath = Path.Combine(TownOfUsReworked.Options, "SavedSettings");
+        var filePath = Path.Combine(TownOfUsReworked.Options, "SavedSettings.txt");
         var i = 0;
         var pathoverridden = false;
 
         while (File.Exists(filePath))
         {
-            filePath = Path.Combine(TownOfUsReworked.Options, $"SavedSettings{i}");
+            filePath = Path.Combine(TownOfUsReworked.Options, $"SavedSettings{i}.txt");
             i++;
             pathoverridden = true;
         }
 
-        SaveSettings($"SavedSettings{(pathoverridden ? i : "")}.json");
+        SaveSettings($"SavedSettings{(pathoverridden ? i : "")}");
     }
 
-    public static void SaveSettings(string fileName) => SaveText(fileName, SettingsToString(), TownOfUsReworked.Options);
+    public static void SaveSettings(string fileName)
+    {
+        SaveText($"{fileName}.txt", SettingsToString(), TownOfUsReworked.Options);
+
+        if (!GameSettingMenu.Instance)
+            return;
+
+        var index = SettingsPatches.PresetsButtons.Count;
+
+        var presetButton = UObject.Instantiate(SettingsPatches.Save, GameSettingMenu.Instance.PresetsTab.StandardPresetButton.transform.parent);
+        presetButton.transform.localScale = new(0.5f, 0.84f, 1f);
+        presetButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
+        presetButton.buttonText.alignment = TextAlignmentOptions.Center;
+        presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+        presetButton.buttonText.text = presetButton.name = fileName;
+        presetButton.OverrideOnClickListeners(() => LoadPreset(fileName));
+        SettingsPatches.PresetsButtons.Add(presetButton);
+
+        if (index >= (SettingsPatches.SettingsPage2 * 20) && index < ((SettingsPatches.SettingsPage2 + 1) * 20))
+        {
+            var relativeIndex = index % 20;
+            var row = relativeIndex / 4;
+            var col = relativeIndex % 4;
+            presetButton.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
+        }
+        else
+            presetButton.gameObject.SetActive(false);
+
+        SettingsPatches.Prev.gameObject.SetActive(SettingsPatches.PresetsButtons.Count > 20);
+        SettingsPatches.Next.gameObject.SetActive(SettingsPatches.PresetsButtons.Count > 20);
+    }
 
     public static void LoadPreset(string presetName)
     {
         LogMessage($"Loading - {presetName}");
-        var text = ReadDiskText(presetName, TownOfUsReworked.Options);
+        var text = ReadDiskText($"{presetName}.txt", TownOfUsReworked.Options);
 
         if (IsNullEmptyOrWhiteSpace(text))
             LogError($"{presetName} no exist");
         else
         {
             CallRpc(CustomRPC.Misc, MiscRPC.LoadPreset, presetName);
+            SettingsPatches.CurrentPreset = presetName;
             LoadSettings(text);
         }
     }
@@ -310,7 +341,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
                 switch (option.Type)
                 {
                     case CustomOptionType.Number:
-                        option.Set(option.TargetType == typeof(int) ? int.Parse(value) : float.Parse(value), false);
+                        option.Set(Number.Parse(value), false);
                         break;
 
                     case CustomOptionType.Toggle:

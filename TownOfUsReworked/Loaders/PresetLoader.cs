@@ -5,6 +5,7 @@ public class PresetLoader : AssetLoader<Asset>
     public override string DirectoryInfo => TownOfUsReworked.Options;
     public override bool Downloading => true;
     public override string Manifest => "Presets";
+    public override string FileExtension => "txt";
 
     public static PresetLoader Instance { get; set; }
 
@@ -13,10 +14,8 @@ public class PresetLoader : AssetLoader<Asset>
         var mainResponse = (List<Asset>)response;
         LogMessage($"Found {mainResponse.Count} presets");
         var toDownload = mainResponse.Select(x => x.ID);
-        mainResponse.Clear();
         LogMessage($"Downloading {toDownload.Count()} presets");
-
-        foreach (var fileName in toDownload)
-            yield return CoDownloadAsset(fileName, this, "txt");
+        yield return CoDownloadAsset(toDownload);
+        mainResponse.Clear();
     }
 }
