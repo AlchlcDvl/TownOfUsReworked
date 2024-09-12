@@ -261,6 +261,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
     public void SetUpOptionsMenu()
     {
         SettingsPatches.SettingsPage = 6 + (int)Layer;
+        SettingsPatches.CachedPage = 1;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         SettingsPatches.OnValueChanged();
     }

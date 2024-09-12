@@ -5,6 +5,7 @@ public static class SettingsPatches
     public static int SettingsPage;
     public static string CurrentPreset = "Custom";
     public static int SettingsPage2;
+    public static int CachedPage;
 
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Start))]
     public static class OptionsMenuBehaviour_Start
@@ -65,6 +66,7 @@ public static class SettingsPatches
 
             LobbyConsole.ClientOptionsActive = false;
             SpawnOptionsCreated = false;
+            PresetsButtons.Clear();
             LayerOptionsCreated.Keys.ForEach(x => LayerOptionsCreated[x] = false);
         }
     }
@@ -72,7 +74,6 @@ public static class SettingsPatches
     public static RoleOptionSetting LayersPrefab;
     public static NumberOption NumberPrefab;
     public static ToggleOption TogglePrefab;
-    public static ToggleOption ButtonPrefab;
     public static StringOption StringPrefab;
     public static CategoryHeaderMasked HeaderPrefab;
     public static CategoryHeaderEditRole AlignmentPrefab;
@@ -93,19 +94,17 @@ public static class SettingsPatches
                 // Background = 0, Value Text = 1, Title = 2, - = 3, + = 4, Value Box = 5
                 NumberPrefab = UObject.Instantiate(__instance.numberOptionOrigin, null).DontUnload().DontDestroy();
                 NumberPrefab.name = "CustomNumbersOptionPrefab";
+                NumberPrefab.transform.GetChild(1).localPosition += new Vector3(1.05f, 0f, 0f);
+                NumberPrefab.transform.GetChild(3).localPosition += new Vector3(0.6f, 0f, 0f);
+                NumberPrefab.transform.GetChild(4).localPosition += new Vector3(1.5f, 0f, 0f);
 
                 var background = NumberPrefab.transform.GetChild(0);
                 background.localPosition += new Vector3(-0.8f, 0f, 0f);
                 background.localScale += new Vector3(1f, 0f, 0f);
 
-                NumberPrefab.transform.GetChild(1).localPosition += new Vector3(1.05f, 0f, 0f);
-
                 var title = NumberPrefab.transform.GetChild(2);
                 title.localPosition += new Vector3(-3.1f, 0f, 0f);
                 title.GetComponent<RectTransform>().sizeDelta = new(10f, 0.458f);
-
-                NumberPrefab.transform.GetChild(3).localPosition += new Vector3(0.6f, 0f, 0f);
-                NumberPrefab.transform.GetChild(4).localPosition += new Vector3(1.5f, 0f, 0f);
 
                 var valueBox = NumberPrefab.transform.GetChild(5);
                 valueBox.localPosition += new Vector3(1.05f, 0f, 0f);
@@ -119,12 +118,11 @@ public static class SettingsPatches
                 // Background = 0, Value Text = 1, Title = 2, < = 3, > = 4, Value Box = 5
                 StringPrefab = UObject.Instantiate(__instance.stringOptionOrigin, null).DontUnload().DontDestroy();
                 StringPrefab.name = "CustomStringOptionPrefab";
+                StringPrefab.transform.GetChild(1).localPosition += new Vector3(1.05f, 0f, 0f);
 
                 var background = StringPrefab.transform.GetChild(0);
                 background.localPosition += new Vector3(-0.8f, 0f, 0f);
                 background.localScale += new Vector3(1f, 0f, 0f);
-
-                StringPrefab.transform.GetChild(1).localPosition += new Vector3(1.05f, 0f, 0f);
 
                 var title = StringPrefab.transform.GetChild(2);
                 title.localPosition += new Vector3(-3.1f, 0f, 0f);
@@ -151,37 +149,17 @@ public static class SettingsPatches
                 // Title = 0, Toggle = 1, Background = 2
                 TogglePrefab = UObject.Instantiate(__instance.checkboxOrigin, null).DontUnload().DontDestroy();
                 TogglePrefab.name = "CustomToggleOptionPrefab";
+                TogglePrefab.transform.GetChild(1).localPosition += new Vector3(2.2f, 0f, 0f);
 
                 var title = TogglePrefab.transform.GetChild(0);
                 title.localPosition += new Vector3(-3.1f, 0f, 0f);
                 title.GetComponent<RectTransform>().sizeDelta = new(10f, 0.458f);
-
-                TogglePrefab.transform.GetChild(1).localPosition += new Vector3(2.2f, 0f, 0f);
 
                 var background = TogglePrefab.transform.GetChild(2);
                 background.localPosition += new Vector3(-0.8f, 0f, 0f);
                 background.localScale += new Vector3(1f, 0f, 0f);
 
                 Prefabs1.Add(TogglePrefab);
-            }
-
-            if (!ButtonPrefab)
-            {
-                // Title = 0, Toggle = 1, Background = 2
-                // ButtonPrefab = UObject.Instantiate(__instance.checkboxOrigin, null).DontUnload().DontDestroy();
-                // ButtonPrefab.name = "ButtonPrefab";
-
-                // ButtonPrefab.transform.GetChild(0).localPosition += new Vector3(0.3f, 0f, 0f);
-
-                // var click = ButtonPrefab.transform.GetChild(1);
-                // click.GetChild(2).gameObject.SetActive(false);
-                // click.localPosition += new Vector3(-15f, 0f, 0f);
-                // click.localScale += new Vector3(14f, 0f, 0f);
-
-                // ButtonPrefab.transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
-                // ButtonPrefab.transform.GetChild(2).gameObject.SetActive(false);
-
-                // Prefabs1.Add(ButtonPrefab);
             }
 
             if (!HeaderPrefab)
@@ -372,7 +350,7 @@ public static class SettingsPatches
                         setting = UObject.Instantiate(LayersPrefab, parent);
                         break;
 
-                    case CustomOptionType.Toggle:
+                    case CustomOptionType.Toggle or CustomOptionType.Entry:
                         setting = UObject.Instantiate(TogglePrefab, parent);
                         break;
 
@@ -382,10 +360,6 @@ public static class SettingsPatches
 
                     case CustomOptionType.Alignment:
                         setting = UObject.Instantiate(AlignmentPrefab, parent);
-                        break;
-
-                    case CustomOptionType.Entry:
-                        setting = UObject.Instantiate(ButtonPrefab, parent);
                         break;
                 }
 
@@ -463,7 +437,6 @@ public static class SettingsPatches
         if (IsHnS())
             return;
 
-        // UObject.FindObjectOfType<LobbyViewSettingsPane>().gameModeText.text = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
         __instance ??= GameSettingMenu.Instance;
 
         if (!__instance)
@@ -480,7 +453,7 @@ public static class SettingsPatches
             ReturnButton = __instance.transform.FindChild("ReturnButton")?.gameObject; // For some reason this damn thing is becoming null even though it definitely exists???
 
         if (ReturnButton)
-            ReturnButton.SetActive(SettingsPage >= 5);
+            ReturnButton.SetActive(SettingsPage >= 4);
 
         if (!SpawnOptionsCreated && SettingsPage == 1)
         {
@@ -635,7 +608,7 @@ public static class SettingsPatches
 
     private static void Return()
     {
-        SettingsPage = 1;
+        SettingsPage = CachedPage;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         OnValueChanged();
     }
@@ -643,6 +616,7 @@ public static class SettingsPatches
     private static void AllLayers()
     {
         SettingsPage = 5;
+        CachedPage = 1;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         OnValueChanged();
     }
@@ -650,6 +624,7 @@ public static class SettingsPatches
     private static void AllAlignments()
     {
         SettingsPage = 250;
+        CachedPage = 1;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         OnValueChanged();
     }
@@ -701,6 +676,12 @@ public static class SettingsPatches
             if (option is ToggleOptionAttribute toggle)
             {
                 toggle.Toggle();
+                return false;
+            }
+
+            if (option is RoleListEntryAttribute roleListEntry)
+            {
+                roleListEntry.ToDo();
                 return false;
             }
 

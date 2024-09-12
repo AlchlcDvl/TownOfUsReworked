@@ -148,18 +148,55 @@ public static class GameModeSettings
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
     public static Number TRLongTasks { get; set; } = new(1);
+}
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool BanCrewmate { get; set; } = true;
+[HeaderOption(MultiMenu.Main)]
+public static class RoleListEntries
+{
+    [RoleListEntry]
+    public static LayerEnum Entry1 { get; set; }
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool BanMurderer { get; set; } = true;
+    [RoleListEntry]
+    public static LayerEnum Entry2 { get; set; }
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool BanImpostor { get; set; } = true;
+    [RoleListEntry]
+    public static LayerEnum Entry3 { get; set; }
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool BanAnarchist { get; set; } = true;
+    [RoleListEntry]
+    public static LayerEnum Entry4 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry5 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry6 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry7 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry8 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry9 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry10 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry11 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry12 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry13 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry14 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Entry15 { get; set; }
 
     [ToggleOption(MultiMenu.Main)]
     public static bool EnableRevealer { get; set; } = false;
@@ -175,9 +212,34 @@ public static class GameModeSettings
 }
 
 [HeaderOption(MultiMenu.Main)]
-public static class RoleList
+public static class RoleListBans
 {
+    [RoleListEntry]
+    public static LayerEnum Ban1 { get; set; }
 
+    [RoleListEntry]
+    public static LayerEnum Ban2 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Ban3 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Ban4 { get; set; }
+
+    [RoleListEntry]
+    public static LayerEnum Ban5 { get; set; }
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool BanCrewmate { get; set; } = true;
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool BanMurderer { get; set; } = true;
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool BanImpostor { get; set; } = true;
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool BanAnarchist { get; set; } = true;
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -248,6 +310,9 @@ public static class GameModifiers
 
     [StringOption(MultiMenu.Main)]
     public static RandomSpawning RandomSpawns { get; set; } = RandomSpawning.Disabled;
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool ShowKillerRoleColor { get; set; } = false;
 }
 
 [HeaderOption(MultiMenu.Main)]

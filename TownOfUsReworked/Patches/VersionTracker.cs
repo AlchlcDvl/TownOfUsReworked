@@ -30,7 +30,7 @@ public static class PingTracker_Update
 
     public static bool Prefix(PingTracker __instance)
     {
-        if (__instance.text == null || !AmongUsClient.Instance || IsFreePlay())
+        if (!__instance.text || !AmongUsClient.Instance || IsFreePlay())
             return true;
 
         if (!__instance.GetComponentInChildren<SpriteRenderer>())
@@ -46,10 +46,8 @@ public static class PingTracker_Update
         try
         {
             DeltaTime += (Time.deltaTime - DeltaTime) * 0.1f;
-            var fps = Mathf.Ceil(1f / DeltaTime);
-            var host = GameData.Instance?.GetHost();
-            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}" + (host !=  null ? $"\nHost: {host.PlayerName}" : "") +
-                "</size>";
+            var fps = Mathf.Round(1f / DeltaTime);
+            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}</size>";
         } catch {}
 
         return false;

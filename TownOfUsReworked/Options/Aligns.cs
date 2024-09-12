@@ -178,6 +178,7 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
     public void SetUpOptionsMenu()
     {
         SettingsPatches.SettingsPage = 6 + (int)Alignment;
+        SettingsPatches.CachedPage = 1;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
         SettingsPatches.OnValueChanged();
     }

@@ -94,20 +94,20 @@ public static class AssetManager
     }
 
     // https://stackoverflow.com/questions/51315918/how-to-encodetopng-compressed-textures-in-unity courtesy of pat from salem mod loader
-    public static Texture2D Decompress(this Texture2D source)
-    {
-        var renderTex = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
-        Graphics.Blit(source, renderTex);
-        var previous = RenderTexture.active;
-        RenderTexture.active = renderTex;
-        var readableText = new Texture2D(source.width, source.height);
-        readableText.ReadPixels(new(0, 0, renderTex.width, renderTex.height), 0, 0);
-        readableText.Apply();
-        RenderTexture.active = previous;
-        RenderTexture.ReleaseTemporary(renderTex);
-        readableText.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-        return readableText;
-    }
+    // public static Texture2D Decompress(this Texture2D source)
+    // {
+    //     var renderTex = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
+    //     Graphics.Blit(source, renderTex);
+    //     var previous = RenderTexture.active;
+    //     RenderTexture.active = renderTex;
+    //     var readableText = new Texture2D(source.width, source.height);
+    //     readableText.ReadPixels(new(0, 0, renderTex.width, renderTex.height), 0, 0);
+    //     readableText.Apply();
+    //     RenderTexture.active = previous;
+    //     RenderTexture.ReleaseTemporary(renderTex);
+    //     readableText.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+    //     return readableText;
+    // }
 
     public static void SaveText(string fileName, string textToSave, string diskLocation) => SaveText(fileName, textToSave, true, diskLocation);
 
@@ -227,8 +227,7 @@ public static class AssetManager
     private static T LoadAsset<T>(AssetBundle assetBundle, string name) where T : UObject
     {
         var asset = assetBundle.LoadAsset<T>(name)?.DontUnload();
-        LoadedObjects.TryAdd(name, []);
-        LoadedObjects[name].Add(asset);
+        AddAsset(name, asset);
         return asset;
     }
 

@@ -141,9 +141,9 @@ public static class AmongUsClientCoStartHostPatch2
 
         if (!Ship())
         {
+            // AmongUsClient.Instance.ShipLoadingAsyncHandle seems to be having an issue in its setter, I wonder what's up with that
             var async = AmongUsClient.Instance.ShipPrefabs[MapPatches.CurrentMap].InstantiateAsync();
             yield return async;
-            AmongUsClient.Instance.ShipLoadingAsyncHandle = default;
             ShipStatus.Instance = async.Result.GetComponent<ShipStatus>();
             AmongUsClient.Instance.Spawn(Ship());
         }

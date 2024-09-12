@@ -168,37 +168,10 @@ public static class MoveToVentPatch
 }
 
 [HarmonyPatch(typeof(Vent), nameof(Vent.UpdateArrows))]
-public static class FixdlekSVents1
-{
-    public static bool Prefix(Vent __instance, VentilationSystem ventSystem)
-    {
-        if (__instance != Vent.currentVent || ventSystem == null)
-            return false;
-
-        for (var i = 0; i < __instance.NearbyVents.Length; i++)
-        {
-            var vent = __instance.NearbyVents[i];
-
-            if (vent)
-            {
-                __instance.ToggleNeighborVentBeingCleaned(ventSystem.IsVentCurrentlyBeingCleaned(vent.Id) || LocalBlocked(), __instance.Buttons[i], __instance.CleaningIndicators.Any() ?
-                    __instance.CleaningIndicators[i] : null);
-            }
-        }
-
-        return false;
-    }
-}
-
 [HarmonyPatch(typeof(Vent), nameof(Vent.ToggleNeighborVentBeingCleaned))]
-public static class FixdlekSVents2
+public static class FixdlekSVents
 {
-    public static bool Prefix(bool ventBeingCleaned, ButtonBehavior b, GameObject c)
-    {
-        b.enabled = !ventBeingCleaned;
-        c?.SetActive(ventBeingCleaned);
-        return false;
-    }
+    public static bool Prefix() => MapPatches.CurrentMap != 3;
 }
 
 [HarmonyPatch(typeof(Vent), nameof(Vent.EnterVent))]

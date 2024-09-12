@@ -615,6 +615,20 @@ public static class DirtyAllDataPatch
     public static bool Prefix() => false;
 }
 
+[HarmonyPatch(typeof(KillOverlay), nameof(KillOverlay.ShowKillAnimation), typeof(NetworkedPlayerInfo), typeof(NetworkedPlayerInfo))]
+public static class OverrideFlameColorPatch
+{
+    public static void Prefix(KillOverlay __instance, NetworkedPlayerInfo killer, NetworkedPlayerInfo victim)
+    {
+        var rend = __instance.flameParent.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+
+        if (victim == CustomPlayer.Local.Data || !GameModifiers.ShowKillerRoleColor)
+            rend.color = Role.LocalRole.Color;
+        else
+            rend.color = killer.Object.GetLayer<Role>().Color;
+    }
+}
+
 /*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
 public static class DebuggingClassForRandomStuff
 {

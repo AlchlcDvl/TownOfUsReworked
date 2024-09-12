@@ -73,8 +73,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] ),
         ( [ "Assassin" ], [ LayerEnum.Hitman, LayerEnum.Bullseye, LayerEnum.Sniper, LayerEnum.Slayer ] ),
         ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
-        ( [ "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "EnableRevealer", "EnablePhantom", "EnableGhoul", "EnableBanshee" ], [ GameMode.RoleList ] ),
-        ( [ "RoleList" ], [ GameMode.RoleList ] )
+        ( [ "RoleListEntries", "RoleListBans" ], [ GameMode.RoleList ] )
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -263,7 +262,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     {
         SaveText($"{fileName}.txt", SettingsToString(), TownOfUsReworked.Options);
 
-        if (!GameSettingMenu.Instance)
+        if (!SettingsPatches.Save)
             return;
 
         var index = SettingsPatches.PresetsButtons.Count;
