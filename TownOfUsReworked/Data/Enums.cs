@@ -690,7 +690,8 @@ public enum BecomeEnum
 
 public enum RetActionsRPC
 {
-    Protect,
+    ProtectAdd,
+    ProtectRemove,
     Roleblock,
     Transport,
     Mediate,

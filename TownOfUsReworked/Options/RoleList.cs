@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class RoleListEntryAttribute() : OptionAttribute(MultiMenu.Main, CustomOptionType.Entry)
+public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Main, CustomOptionType.Entry)
 {
     public bool IsBan { get; set; }
     private string Num { get; set; }
@@ -51,8 +51,6 @@ public class RoleListEntryAttribute() : OptionAttribute(MultiMenu.Main, CustomOp
             return TranslationManager.Translate("RoleList.None");
         }
     }
-
-    public LayerEnum Get() => (LayerEnum)Value;
 
     public void ToDo()
     {

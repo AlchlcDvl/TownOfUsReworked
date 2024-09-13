@@ -1,15 +1,63 @@
 namespace TownOfUsReworked.Options;
 
+public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) : OptionAttribute(menu, type)
+{
+    private static string LastChangedSetting = "";
+
+    public T Value { get; set; }
+    public T DefaultValue { get; set; }
+
+    public T Get() => Value;
+
+    public override void SetProperty(PropertyInfo property)
+    {
+        base.SetProperty(property);
+        Value = DefaultValue = (T)property.GetValue(null);
+    }
+
+    public override string ToString() => $"{ID}:{Value}";
+
+    public void Set(T value, bool rpc = true, bool notify = true)
+    {
+        Value = value;
+        Property?.SetValue(null, value);
+        // OnChanged.Invoke(value);
+
+        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type is CustomOptionType.Header or CustomOptionType.Alignment))
+            SendOptionRPC(this);
+
+        if (!Setting)
+            return;
+
+        ModifySetting(out var stringValue);
+        SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
+
+        if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
+            return;
+
+        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{TranslationManager.Translate(ID)}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
+
+        if (LastChangedSetting == ID && HUD().Notifier.activeMessages.Count > 0)
+            HUD().Notifier.activeMessages[^1].UpdateMessage(changed);
+        else
+        {
+            LastChangedSetting = ID;
+            var newMessage = UObject.Instantiate(HUD().Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD().Notifier.transform);
+            newMessage.transform.localPosition = new(0f, 0f, -2f);
+            newMessage.SetUp(changed, HUD().Notifier.settingsChangeSprite, HUD().Notifier.settingsChangeColor, (Action)(() => HUD().Notifier.OnMessageDestroy(newMessage)));
+            HUD().Notifier.ShiftMessages();
+            HUD().Notifier.AddMessageToQueue(newMessage);
+        }
+    }
+}
+
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];
-    private static string LastChangedSetting = "";
     public string ID { get; set; }
     public MultiMenu Menu { get; set; } = menu;
     public readonly List<MultiMenu> Menus = [ menu ];
-    public object Value { get; set; }
-    public object DefaultValue { get; set; }
     public MonoBehaviour Setting { get; set; }
     public MonoBehaviour ViewSetting { get; set; }
     public CustomOptionType Type { get; } = type;
@@ -77,10 +125,9 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
-    public void SetProperty(PropertyInfo property)
+    public virtual void SetProperty(PropertyInfo property)
     {
         Property = property;
-        Value = DefaultValue = property.GetValue(null);
         Name = property.Name.Replace("Priv", "");
         ID = $"CustomOption.{Name}";
         TargetType = property.PropertyType;
@@ -192,37 +239,18 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             Menus.Add(menu);
     }
 
-    public void Set(object value, bool rpc = true, bool notify = true)
+    public void SetBase(object value, bool rpc = true, bool notify = true)
     {
-        Value = value;
-        Property?.SetValue(null, value);
-        // OnChanged.Invoke(value);
-
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type is CustomOptionType.Header or CustomOptionType.Alignment))
-            SendOptionRPC(this);
-
-        if (!Setting)
-            return;
-
-        ModifySetting(out var stringValue);
-        SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
-
-        if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
-            return;
-
-        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{TranslationManager.Translate(ID)}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
-
-        if (LastChangedSetting == ID && HUD().Notifier.activeMessages.Count > 0)
-            HUD().Notifier.activeMessages[^1].UpdateMessage(changed);
-        else
-        {
-            LastChangedSetting = ID;
-            var newMessage = UObject.Instantiate(HUD().Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD().Notifier.transform);
-            newMessage.transform.localPosition = new(0f, 0f, -2f);
-            newMessage.SetUp(changed, HUD().Notifier.settingsChangeSprite, HUD().Notifier.settingsChangeColor, (Action)(() => HUD().Notifier.OnMessageDestroy(newMessage)));
-            HUD().Notifier.ShiftMessages();
-            HUD().Notifier.AddMessageToQueue(newMessage);
-        }
+        if (this is ToggleOptionAttribute toggle)
+            toggle.Set((bool)value, rpc, notify);
+        else if (this is NumberOptionAttribute number)
+            number.Set((Number)value, rpc, notify);
+        else if (this is StringOptionAttribute stringOpt)
+            stringOpt.Set((Enum)value, rpc, notify);
+        else if (this is RoleListEntryAttribute entry)
+            entry.Set((LayerEnum)value, rpc, notify);
+        else if (this is LayersOptionAttribute layer)
+            layer.Set((RoleOptionData)value, rpc, notify);
     }
 
     public static string SettingsToString(List<OptionAttribute> list = null)
@@ -235,8 +263,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             if (option.Type is CustomOptionType.Header or CustomOptionType.Alignment || option.ClientOnly || !option.ID.Contains("CustomOption"))
                 continue;
 
-            builder.AppendLine(option.ID);
-            builder.AppendLine(option.Value.ToString());
+            builder.AppendLine(option.ToString());
         }
 
         return builder.ToString();
@@ -244,18 +271,18 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static void SaveSettings()
     {
-        var filePath = Path.Combine(TownOfUsReworked.Options, "SavedSettings.txt");
+        var fileName = "SavedSettings.txt";
+        var filePath = Path.Combine(TownOfUsReworked.Options, fileName);
         var i = 0;
-        var pathoverridden = false;
 
         while (File.Exists(filePath))
         {
-            filePath = Path.Combine(TownOfUsReworked.Options, $"SavedSettings{i}.txt");
             i++;
-            pathoverridden = true;
+            fileName = $"SavedSettings{i}.txt";
+            filePath = Path.Combine(TownOfUsReworked.Options, fileName);
         }
 
-        SaveSettings($"SavedSettings{(pathoverridden ? i : "")}");
+        SaveSettings(fileName.Replace(".txt", ""));
     }
 
     public static void SaveSettings(string fileName)
@@ -274,11 +301,10 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
         presetButton.buttonText.text = presetButton.name = fileName;
         presetButton.OverrideOnClickListeners(() => LoadPreset(fileName));
-        SettingsPatches.PresetsButtons.Add(presetButton);
 
-        if (index >= (SettingsPatches.SettingsPage2 * 20) && index < ((SettingsPatches.SettingsPage2 + 1) * 20))
+        if (index >= (SettingsPatches.SettingsPage2 * 25) && index < ((SettingsPatches.SettingsPage2 + 1) * 25))
         {
-            var relativeIndex = index % 20;
+            var relativeIndex = index % 25;
             var row = relativeIndex / 4;
             var col = relativeIndex % 4;
             presetButton.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
@@ -286,8 +312,9 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         else
             presetButton.gameObject.SetActive(false);
 
-        SettingsPatches.Prev.gameObject.SetActive(SettingsPatches.PresetsButtons.Count > 20);
-        SettingsPatches.Next.gameObject.SetActive(SettingsPatches.PresetsButtons.Count > 20);
+        SettingsPatches.PresetsButtons.Add(presetButton);
+        SettingsPatches.Prev.gameObject.SetActive(SettingsPatches.PresetsButtons.Count > 25);
+        SettingsPatches.Next.gameObject.SetActive(SettingsPatches.PresetsButtons.Count > 25);
     }
 
     public static void LoadPreset(string presetName)
@@ -316,8 +343,10 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         while (splitText.Any())
         {
             pos++;
-            var name = splitText[0];
+            var opt = splitText[0];
             splitText.RemoveAt(0);
+            var parts = opt.Split(':');
+            var name = parts[0];
             var option = AllOptions.Where(x => x is not HeaderOptionAttribute or AlignsOptionAttribute).FirstOrDefault(x => x.ID == name);
 
             if (option == null)
@@ -332,37 +361,36 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
                 continue;
             }
 
-            var value = splitText[0];
-            splitText.RemoveAt(0);
+            var value = parts[1];
 
             try
             {
-                switch (option.Type)
+                switch (option)
                 {
-                    case CustomOptionType.Number:
-                        option.Set(Number.Parse(value), false);
+                    case NumberOptionAttribute number:
+                        number.Set(Number.Parse(value), false);
                         break;
 
-                    case CustomOptionType.Toggle:
-                        option.Set(bool.Parse(value), false);
+                    case ToggleOptionAttribute toggle:
+                        toggle.Set(bool.Parse(value), false);
                         break;
 
-                    case CustomOptionType.String:
-                        option.Set(Enum.Parse(option.TargetType, value), false);
+                    case StringOptionAttribute @string:
+                        @string.Set((Enum)Enum.Parse(option.TargetType, value), false);
                         break;
 
-                    case CustomOptionType.Entry:
-                        option.Set(Enum.Parse<LayerEnum>(value), false);
+                    case RoleListEntryAttribute entry:
+                        entry.Set(Enum.Parse<LayerEnum>(value), false);
                         break;
 
-                    case CustomOptionType.Layers:
-                        option.Set(RoleOptionData.Parse(value), false);
+                    case LayersOptionAttribute layer:
+                        layer.Set(RoleOptionData.Parse(value), false);
                         break;
                 }
             }
             catch (Exception e)
             {
-                LogError($"Unable to set - {name} : {value}\nException:\n{e}");
+                LogError($"Unable to set - {opt}\nException:\n{e}");
             }
 
             if (pos >= 50)

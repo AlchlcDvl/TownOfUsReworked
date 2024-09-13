@@ -337,7 +337,7 @@ public class Thief : Neutral
 
     public override void ReadRPC(MessageReader reader)
     {
-        var thiefAction = (ThiefActionsRPC)reader.ReadByte();
+        var thiefAction = reader.ReadEnum<ThiefActionsRPC>();
 
         switch (thiefAction)
         {

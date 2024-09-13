@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noParts = false) : OptionAttribute(menu, CustomOptionType.Alignment)
+public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(menu, CustomOptionType.Alignment)
 {
     public LayerEnum Alignment { get; } = alignment;
     private bool NoParts { get; set; } = noParts;
@@ -19,8 +19,6 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
     private static Vector3 Left;
     private static Vector3 Right;
     private static Vector3 Diff;
-
-    public bool Get() => (bool)Value;
 
     public override void OptionCreated()
     {
@@ -165,14 +163,7 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
     public override void PostLoadSetup()
     {
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Name.Replace("Roles", "") + "Settings");
-        var menu = 6 + (int)Alignment;
-        GroupHeader?.AddMenuIndex(menu);
-
-        if (OptionParents1.TryFinding(x => x.Item2.Contains(Alignment), out var option1))
-            option1.Item1.Select(GetOptionFromName).ForEach(x => x?.AddMenuIndex(menu));
-
-        if (OptionParents2.TryFinding(x => x.Item2.Contains(Alignment), out option1))
-            option1.Item1.Select(GetOptionFromName).ForEach(x => x?.AddMenuIndex(menu));
+        GroupHeader?.AddMenuIndex(6 + (int)Alignment);
     }
 
     public void SetUpOptionsMenu()

@@ -130,7 +130,7 @@ public class Politician : Ability
 
     public override void ReadRPC(MessageReader reader)
     {
-        var polAction = (PoliticianActionsRPC)reader.ReadByte();
+        var polAction = reader.ReadEnum<PoliticianActionsRPC>();
 
         switch(polAction)
         {

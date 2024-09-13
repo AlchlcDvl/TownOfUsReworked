@@ -89,6 +89,7 @@ csharp_style_prefer_index_operator = true:suggestion
 csharp_style_prefer_range_operator = true:suggestion
 csharp_style_throw_expression = true:suggestion
 
+dotnet_diagnostic.CA1416.severity = none
 dotnet_diagnostic.CA1822.severity = none
 dotnet_diagnostic.CA2211.severity = none
 dotnet_diagnostic.IDE0005.severity = warning

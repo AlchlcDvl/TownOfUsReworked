@@ -1,27 +1,26 @@
 namespace TownOfUsReworked.Options;
 
-public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null) : OptionAttribute(menu, CustomOptionType.String)
+public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null) : OptionAttribute<Enum>(menu, CustomOptionType.String)
 {
     public string[] Values { get; set; }
     public int Index { get; set; }
     private string[] IgnoreStrings { get; } = ignoreStrings ?? [];
+    private List<Enum> EnumValues { get; set; }
 
     public int GetInt() => Index;
 
     public string GetString() => Values[Index];
 
-    public object Get() => Enum.Parse(TargetType, $"{Index}");
-
     public void Increase()
     {
         Index = CycleInt(Values.Length - 1, 0, Index, true);
-        Set(Enum.Parse(TargetType, $"{Index}"));
+        Set(EnumValues[Index]);
     }
 
     public void Decrease()
     {
         Index = CycleInt(Values.Length - 1, 0, Index, false);
-        Set(Enum.Parse(TargetType, $"{Index}"));
+        Set(EnumValues[Index]);
     }
 
     public override void OptionCreated()
@@ -40,7 +39,8 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     {
         base.PostLoadSetup();
         Values = [ .. Enum.GetNames(TargetType).Where(x => !IgnoreStrings.Contains(x)) ];
-        Index = (int)Value;
+        EnumValues = [ .. Enum.GetValues(TargetType).Cast<Enum>() ];
+        Index = EnumValues.IndexOf(Value);
     }
 
     public override void ViewOptionCreated()
@@ -55,7 +55,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     {
         base.ModifySetting(out stringValue);
         var str = Setting.Cast<StringOption>();
-        str.Value = str.oldValue = Index = Mathf.Clamp((int)Value, 0, Values.Length - 1);
+        str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Values.Length - 1);
         str.ValueText.text = stringValue = Format();
     }
 }

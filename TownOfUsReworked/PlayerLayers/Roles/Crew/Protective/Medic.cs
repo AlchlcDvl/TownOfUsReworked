@@ -60,5 +60,5 @@ public class Medic : Crew
 
     public bool Usable() => !ShieldBroken;
 
-    public override void ReadRPC(MessageReader reader) => ShieldedPlayer = (MedicActionsRPC)reader.ReadByte() == MedicActionsRPC.Add ? reader.ReadPlayer() : null;
+    public override void ReadRPC(MessageReader reader) => ShieldedPlayer = reader.ReadEnum<MedicActionsRPC>() == MedicActionsRPC.Add ? reader.ReadPlayer() : null;
 }

@@ -1119,9 +1119,9 @@ public static class SettingsPatches
                 presetButton.buttonText.text = presetButton.name = preset;
                 presetButton.OverrideOnClickListeners(() => OptionAttribute.LoadPreset(preset));
 
-                if (i >= (SettingsPage2 * 20) && i < ((SettingsPage2 + 1) * 20))
+                if (i >= (SettingsPage2 * 25) && i < ((SettingsPage2 + 1) * 25))
                 {
-                    var relativeIndex = i % 20;
+                    var relativeIndex = i % 25;
                     var row = relativeIndex / 4;
                     var col = relativeIndex % 4;
                     presetButton.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
@@ -1132,23 +1132,23 @@ public static class SettingsPatches
                 PresetsButtons.Add(presetButton);
             }
 
-            Prev.gameObject.SetActive(PresetsButtons.Count > 20);
-            Next.gameObject.SetActive(PresetsButtons.Count > 20);
+            Prev.gameObject.SetActive(PresetsButtons.Count > 25);
+            Next.gameObject.SetActive(PresetsButtons.Count > 25);
             return false;
         }
     }
 
     private static void NextPage(bool increment)
     {
-        SettingsPage2 = CycleInt(PresetsButtons.Count / 20, 0, SettingsPage2, increment);
+        SettingsPage2 = CycleInt(PresetsButtons.Count / 25, 0, SettingsPage2, increment);
 
         for (var i = 0; i < PresetsButtons.Count; i++)
         {
             var preset = PresetsButtons[i];
 
-            if (i >= (SettingsPage2 * 20) && i < ((SettingsPage2 + 1) * 20))
+            if (i >= (SettingsPage2 * 25) && i < ((SettingsPage2 + 1) * 25))
             {
-                var relativeIndex = i % 20;
+                var relativeIndex = i % 25;
                 var row = relativeIndex / 4;
                 var col = relativeIndex % 4;
                 preset.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);

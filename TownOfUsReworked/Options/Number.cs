@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Options;
 
 // May I know who the fuck thought it was a good idea not to let int be casted to float explicitly??? Implicit casting bloody works but explicit doesn't seem to
 // AD from a couple weeks later: Yeah fuck this, imma just brute force it instead
-public class NumberOptionAttribute(MultiMenu menu, float min, float max, float increment, Format format = Format.None) : OptionAttribute(menu, CustomOptionType.Number)
+public class NumberOptionAttribute(MultiMenu menu, float min, float max, float increment, Format format = Format.None) : OptionAttribute<Number>(menu, CustomOptionType.Number)
 {
     public float Min { get; } = min;
     public float Max { get; } = max;
@@ -11,9 +11,7 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     public bool AllowHalf { get; set; } = true;
     public bool ZeroIsInfinity { get; set; }
 
-    public Number Get() => (Number)Value;
-
-    public void Change(bool incrementing) => Set(new Number(CycleFloat(Max, Min, Get(), incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f))));
+    public void Change(bool incrementing) => Set(new(CycleFloat(Max, Min, Get(), incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f))));
 
     public void Increase() => Change(true);
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum layer, bool noParts = false) : OptionAttribute(menu, CustomOptionType.Layers)
+public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum layer, bool noParts = false) : OptionAttribute<RoleOptionData>(menu, CustomOptionType.Layers)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
@@ -86,8 +86,6 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
     public bool GetUnique() => (IsAA() || IsRoleList()) && Get().Unique;
 
     public bool GetActive() => IsAA() && Get().Active;
-
-    public RoleOptionData Get() => (RoleOptionData)Value;
 
     public void IncreaseCount()
     {
@@ -248,14 +246,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
         Property.SetValue(null, Value);
-        var menu = 6 + (int)Layer;
-        GroupHeader?.AddMenuIndex(menu);
-
-        if (OptionParents1.TryFinding(x => x.Item2.Contains(Layer), out var option1))
-            option1.Item1.Select(GetOptionFromName).ForEach(x => x?.AddMenuIndex(menu));
-
-        if (OptionParents2.TryFinding(x => x.Item2.Contains(Layer), out option1))
-            option1.Item1.Select(GetOptionFromName).ForEach(x => x?.AddMenuIndex(menu));
+        GroupHeader?.AddMenuIndex(6 + (int)Layer);
     }
 
     public void SetUpOptionsMenu()

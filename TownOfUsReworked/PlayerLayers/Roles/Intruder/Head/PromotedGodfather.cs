@@ -137,7 +137,7 @@ public class PromotedGodfather : Intruder
 
     public override void ReadRPC(MessageReader reader)
     {
-        var gfAction = (GFActionsRPC)reader.ReadByte();
+        var gfAction = reader.ReadEnum<GFActionsRPC>();
 
         switch (gfAction)
         {

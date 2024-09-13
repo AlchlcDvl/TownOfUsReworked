@@ -92,7 +92,7 @@ public class Trapper : Crew
 
     public override void ReadRPC(MessageReader reader)
     {
-        var trapAction = (TrapperActionsRPC)reader.ReadByte();
+        var trapAction = reader.ReadEnum<TrapperActionsRPC>();
 
         switch (trapAction)
         {

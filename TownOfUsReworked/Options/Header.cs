@@ -1,14 +1,12 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute(menu, CustomOptionType.Header)
+public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu, CustomOptionType.Header)
 {
     public string[] GroupMemberStrings { get; set; }
     public OptionAttribute[] GroupMembers { get; set; }
     private GameObject Collapse { get; set; }
     private Type ClassType { get; set; }
-
-    public bool Get() => (bool)Value;
 
     public override void OptionCreated()
     {

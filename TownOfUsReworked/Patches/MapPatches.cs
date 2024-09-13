@@ -118,8 +118,8 @@ public static class MapPatches
     {
         foreach (var option in OptionAttribute.AllOptions.Where(x => x.Name.Contains("Cooldown") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
         {
-            if (option.Type == CustomOptionType.Number)
-                option.Set((float)option.Value + change);
+            if (option is NumberOptionAttribute number)
+                number.Set(new(number.Value + change));
         }
     }
 }

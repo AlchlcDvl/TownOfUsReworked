@@ -29,16 +29,16 @@ public static class RPC
                 // LogInfo($"Sending {option}");
                 writer.Write(option.ID);
 
-                if (option.Type == CustomOptionType.Toggle)
-                    writer.Write((bool)option.Value);
-                else if (option.Type == CustomOptionType.Number)
-                    writer.Write(num: (Number)option.Value);
-                else if (option.Type == CustomOptionType.String)
-                    writer.Write((int)option.Value);
-                else if (option.Type == CustomOptionType.Entry)
-                    writer.Write((LayerEnum)option.Value);
-                else if (option.Type == CustomOptionType.Layers)
-                    writer.Write((RoleOptionData)option.Value);
+                if (option is ToggleOptionAttribute toggle)
+                    writer.Write(toggle.Value);
+                else if (option is NumberOptionAttribute number)
+                    writer.Write(num: number.Value);
+                else if (option is StringOptionAttribute stringOpt)
+                    writer.Write(stringOpt.Value);
+                else if (option is RoleListEntryAttribute entry)
+                    writer.Write(entry.Value);
+                else if (option is LayersOptionAttribute layer)
+                    writer.Write(layer.Value);
             }
 
             writer.EndRpc();
@@ -68,7 +68,7 @@ public static class RPC
                 CustomOptionType.Entry => reader.ReadRoleOptionData(),
                 _ => null
             };
-            customOption.Set(value, false);
+            customOption.SetBase(value, false);
             // LogInfo(customOption);
         }
 
@@ -102,7 +102,7 @@ public static class RPC
     public static PlayerLayer ReadLayer(this MessageReader reader)
     {
         var player = reader.ReadPlayer();
-        var type = (LayerEnum)reader.ReadByte();
+        var type = reader.ReadEnum<LayerEnum>();
         return PlayerLayer.AllLayers.Find(x => x.Player == player && x.Type == type);
     }
 
@@ -145,7 +145,7 @@ public static class RPC
     public static PlayerVersion ReadPlayerVersion(this MessageReader reader) => new(reader.ReadString(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
         new(reader.ReadBytesAndSize()), reader.ReadString(), reader.ReadVersion());
 
-    public static T ReadEnum<T>(this MessageReader reader) where T : struct => Enum.Parse<T>($"{reader.ReadByte()}");
+    public static T ReadEnum<T>(this MessageReader reader) where T : struct => Enum.Parse<T>(reader.ReadString());
 
     public static Number ReadNumber(this MessageReader reader) => new(reader.ReadSingle());
 
@@ -154,8 +154,6 @@ public static class RPC
         writer.Write(layer.PlayerId);
         writer.Write(layer.Type);
     }
-
-    public static void Write(this MessageWriter writer, LayerEnum layer) => writer.Write((byte)layer);
 
     public static void Write(this MessageWriter writer, RoleOptionData data) => writer.Write(data.ToString());
 
@@ -180,12 +178,14 @@ public static class RPC
 
     public static void Write(this MessageWriter writer, Number num) => writer.Write(num.Value);
 
+    public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(enumVal.ToString());
+
     public static void Write(this MessageWriter writer, object item, object[] data)
     {
         if (item == null)
             LogError($"Data type used in the rpc was null: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
-        else if (item is CustomRPC custom)
-            writer.Write((byte)custom);
+        else if (item is Enum enumVal)
+            writer.Write(enumVal);
         else if (item is PlayerControl player)
             writer.Write(player.PlayerId);
         else if (item is DeadBody body)
@@ -224,42 +224,6 @@ public static class RPC
             writer.WriteBytesAndSize(array);
         else if (item is List<byte> list)
             writer.WriteBytesAndSize(list.ToArray());
-        else if (item is LayerEnum layerEnum)
-            writer.Write(layerEnum);
-        else if (item is ActionsRPC action)
-            writer.Write((byte)action);
-        else if (item is Faction faction)
-            writer.Write((byte)faction);
-        else if (item is Alignment alignment)
-            writer.Write((byte)alignment);
-        else if (item is SubFaction subfaction)
-            writer.Write((byte)subfaction);
-        else if (item is PlayerLayerEnum layer)
-            writer.Write((byte)layer);
-        else if (item is DeathReasonEnum death)
-            writer.Write((byte)death);
-        else if (item is WinLose winlose)
-            writer.Write((byte)winlose);
-        else if (item is RetActionsRPC retAction)
-            writer.Write((byte)retAction);
-        else if (item is GFActionsRPC gfAction)
-            writer.Write((byte)gfAction);
-        else if (item is RebActionsRPC rebAction)
-            writer.Write((byte)rebAction);
-        else if (item is MedicActionsRPC medicAction)
-            writer.Write((byte)medicAction);
-        else if (item is GlitchActionsRPC glitchAction)
-            writer.Write((byte)glitchAction);
-        else if (item is ThiefActionsRPC thiefAction)
-            writer.Write((byte)thiefAction);
-        else if (item is PoliticianActionsRPC polAction)
-            writer.Write((byte)polAction);
-        else if (item is TrapperActionsRPC trapAction)
-            writer.Write((byte)trapAction);
-        else if (item is MiscRPC misc)
-            writer.Write((byte)misc);
-        else if (item is VanillaRPC vanilla)
-            writer.Write((byte)vanilla);
         else if (item is CustomButton button)
             writer.Write(button.ID);
         else if (item is PlayerVersion pv)

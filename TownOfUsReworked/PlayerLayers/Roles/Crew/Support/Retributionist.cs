@@ -259,7 +259,7 @@ public class Retributionist : Crew
 
     public override void ReadRPC(MessageReader reader)
     {
-        var retAction = (RetActionsRPC)reader.ReadByte();
+        var retAction = reader.ReadEnum<RetActionsRPC>();
 
         switch (retAction)
         {
@@ -274,8 +274,12 @@ public class Retributionist : Crew
                 Coroutines.Start(retRole3.TransportPlayers());
                 break;
 
-            case RetActionsRPC.Protect:
-                ShieldedPlayer = (MedicActionsRPC)reader.ReadByte() == MedicActionsRPC.Add ? reader.ReadPlayer() : null;
+            case RetActionsRPC.ProtectAdd:
+                ShieldedPlayer = reader.ReadPlayer();
+                break;
+
+            case RetActionsRPC.ProtectRemove:
+                ShieldedPlayer = null;
                 break;
 
             case RetActionsRPC.Mediate:
@@ -818,12 +822,12 @@ public class Retributionist : Crew
             if (ShieldedPlayer)
             {
                 ShieldedPlayer = null;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Protect, MedicActionsRPC.Remove);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.ProtectRemove);
             }
             else
             {
                 ShieldedPlayer = ShieldButton.TargetPlayer;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Protect, MedicActionsRPC.Add, ShieldedPlayer);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.ProtectAdd, ShieldedPlayer);
             }
         }
     }

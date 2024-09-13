@@ -8,7 +8,7 @@ public static class RPCHandling
         if (callId != 254)
             return;
 
-        var rpc = (CustomRPC)reader.ReadByte();
+        var rpc = reader.ReadEnum<CustomRPC>();
 
         switch (rpc)
         {
@@ -18,12 +18,12 @@ public static class RPCHandling
                 break;
 
             case CustomRPC.Misc:
-                var misc = (MiscRPC)reader.ReadByte();
+                var misc = reader.ReadEnum<MiscRPC>();
 
                 switch (misc)
                 {
                     case MiscRPC.SetLayer:
-                        RoleGen.SetLayer((LayerEnum)reader.ReadByte(), (PlayerLayerEnum)reader.ReadByte()).Start(reader.ReadPlayer());
+                        RoleGen.SetLayer(reader.ReadEnum<LayerEnum>(), reader.ReadEnum<PlayerLayerEnum>()).Start(reader.ReadPlayer());
                         break;
 
                     case MiscRPC.Whisper:
@@ -198,7 +198,7 @@ public static class RPCHandling
                         {
                             var ally = (Allied)layer;
                             var alliedRole = ally.Player.GetRole();
-                            var faction = (Faction)reader.ReadByte();
+                            var faction = reader.ReadEnum<Faction>();
                             alliedRole.Faction = ally.Side = faction;
                             ally.Player.SetImpostor(faction is Faction.Intruder or Faction.Syndicate);
                             alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(faction);
@@ -251,7 +251,7 @@ public static class RPCHandling
                             if (reader.ReadBoolean())
                                 fanatic.TurnBetrayer();
                             else
-                                fanatic.TurnFanatic((Faction)reader.ReadByte());
+                                fanatic.TurnFanatic(reader.ReadEnum<Faction>());
                         }
                         else if (layer2 is Guesser guess)
                             guess.TurnAct();
@@ -288,7 +288,7 @@ public static class RPCHandling
                 break;
 
             case CustomRPC.Vanilla:
-                var vanilla = (VanillaRPC)reader.ReadByte();
+                var vanilla = reader.ReadEnum<VanillaRPC>();
 
                 switch (vanilla)
                 {
@@ -310,7 +310,7 @@ public static class RPCHandling
                 break;
 
             case CustomRPC.Action:
-                var action = (ActionsRPC)reader.ReadByte();
+                var action = reader.ReadEnum<ActionsRPC>();
 
                 switch (action)
                 {
@@ -319,11 +319,11 @@ public static class RPCHandling
                         break;
 
                     case ActionsRPC.Convert:
-                        RoleGen.Convert(reader.ReadByte(), reader.ReadByte(), (SubFaction)reader.ReadByte(), reader.ReadBoolean());
+                        RoleGen.Convert(reader.ReadByte(), reader.ReadByte(), reader.ReadEnum<SubFaction>(), reader.ReadBoolean());
                         break;
 
                     case ActionsRPC.BypassKill:
-                        MurderPlayer(reader.ReadPlayer(), reader.ReadPlayer(), (DeathReasonEnum)reader.ReadByte(), reader.ReadBoolean());
+                        MurderPlayer(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadEnum<DeathReasonEnum>(), reader.ReadBoolean());
                         break;
 
                     case ActionsRPC.ForceKill:

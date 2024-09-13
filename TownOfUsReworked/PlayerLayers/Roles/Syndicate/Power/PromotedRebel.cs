@@ -268,7 +268,7 @@ public class PromotedRebel : Syndicate
 
     public override void ReadRPC(MessageReader reader)
     {
-        var rebAction = (RebActionsRPC)reader.ReadByte();
+        var rebAction = reader.ReadEnum<RebActionsRPC>();
 
         switch (rebAction)
         {
