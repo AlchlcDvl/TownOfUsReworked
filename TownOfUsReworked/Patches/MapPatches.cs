@@ -61,8 +61,13 @@ public static class MapPatches
         totalWeight += MapSettings.RandomMapdlekS;
         totalWeight += MapSettings.RandomMapAirship;
         totalWeight += MapSettings.RandomMapFungle;
-        totalWeight += MapSettings.RandomMapSubmerged;
-        totalWeight += MapSettings.RandomMapLevelImpostor;
+
+        if (SubLoaded)
+            totalWeight += MapSettings.RandomMapSubmerged;
+
+        if (LILoaded)
+            totalWeight += MapSettings.RandomMapLevelImpostor;
+
         var maps = new List<int>() { 0, 1, 2, 3, 4, 5 };
 
         if (SubLoaded)
@@ -88,7 +93,7 @@ public static class MapPatches
             randoms.AddMany(6, MapSettings.RandomMapSubmerged / 5);
 
         if (LILoaded)
-            randoms.AddMany(7, MapSettings.RandomMapSubmerged / 5);
+            randoms.AddMany(7, MapSettings.RandomMapLevelImpostor / 5);
 
         randoms.Shuffle();
         return (byte)(randoms.Any() ? randoms : maps).Random();
@@ -114,7 +119,7 @@ public static class MapPatches
         }
     }
 
-    private static void AdjustCooldowns(float change)
+    public static void AdjustCooldowns(float change)
     {
         foreach (var option in OptionAttribute.AllOptions.Where(x => x.Name.Contains("Cooldown") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
         {

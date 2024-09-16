@@ -145,7 +145,7 @@ public static class SurveillancePatches
     {
         foreach (var player in AllPlayers())
         {
-            if (player == CustomPlayer.Local)
+            if (player.AmOwner)
                 continue;
 
             if (LightsOut && Overlays.Any() && NVActive && (int)player.GetCustomOutfitType() is not (9 or 6 or 7))

@@ -36,7 +36,7 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
     public void Toggle()
     {
         Value = !Get();
-        Collapse.GetComponentInChildren<TextMeshPro>().text = (bool)Value ? "-" : "+";
+        Collapse.GetComponentInChildren<TextMeshPro>().text = Value ? "-" : "+";
         SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
     }
 

@@ -22,6 +22,7 @@ public static class FixExtentions
 
     private static void FixSubOxygen()
     {
+        Ship().RpcUpdateSystem((SystemTypes)130, 64);
         RepairOxygen();
         CallRpc(CustomRPC.Misc, MiscRPC.SubmergedFixOxygen);
     }

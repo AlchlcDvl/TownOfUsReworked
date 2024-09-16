@@ -49,15 +49,12 @@ public static class ChatUpdate
                         if (role)
                         {
                             if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral)) || (!player.Is(SubFaction.None) &&
-                                CustomPlayer.Local.GetSubFaction() == player.GetSubFaction())) && GameModifiers.FactionSeeRoles) || player == CustomPlayer.Local)
+                                CustomPlayer.Local.GetSubFaction() == player.GetSubFaction())) && GameModifiers.FactionSeeRoles) || player.AmOwner)
                             {
                                 chat.NameText.color = role.Color;
                             }
-                            else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) &&
-                                !GameModifiers.FactionSeeRoles)
-                            {
+                            else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) && !GameModifiers.FactionSeeRoles)
                                 chat.NameText.color = role.FactionColor;
-                            }
                             else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !GameModifiers.FactionSeeRoles)
                                 chat.NameText.color = role.SubFactionColor;
                             else
@@ -166,8 +163,8 @@ public static class ChatChannels
         if (DateTime.UtcNow - MeetingStart.MeetingStartTime < TimeSpan.FromSeconds(1))
             return shouldSeeMessage;
 
-        return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting()
-            && CustomPlayer.Local.IsSilenced());
+        return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting() &&
+            CustomPlayer.Local.IsSilenced());
     }
 }
 
@@ -263,7 +260,7 @@ public static class ChatCommands
         var chat = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.transform.parent);
         chat.name = $"Notification{targetPlayerId}";
         chat.transform.localPosition = new(-1.3f, 0.1f, -1f);
-        chat.sprite = GetSprite("Chat()");
+        chat.sprite = GetSprite("Chat");
         chat.gameObject.SetActive(true);
         Notifs.Add(targetPlayerId, chat);
         Coroutines.Start(PerformTimedAction(2, p =>
@@ -272,7 +269,6 @@ public static class ChatCommands
             {
                 chat.gameObject.SetActive(false);
                 chat.gameObject.Destroy();
-                chat.Destroy();
                 Notifs.Remove(targetPlayerId);
             }
         }));
@@ -298,7 +294,7 @@ public static class ChatControllerAwakePatch
             DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
     }
 
-    public static void Postfix(ChatController __instance) => AddAsset("Chat()", __instance.messageSound);
+    public static void Postfix(ChatController __instance) => AddAsset("Chat", __instance.messageSound);
 }
 
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]

@@ -221,7 +221,7 @@ public class Retributionist : Crew
                 {
                     var player = PlayerById(id);
 
-                    if (player.HasDied() || player == CustomPlayer.Local)
+                    if (player.HasDied() || player.AmOwner)
                         continue;
 
                     if (!AllPrints.Any(print => Vector2.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
@@ -417,9 +417,7 @@ public class Retributionist : Crew
 
         if (IsCor)
         {
-            var body = KilledPlayers.Find(x => x.PlayerId == info.PlayerId);
-
-            if (body == null)
+            if (!KilledPlayers.TryFinding(x => x.PlayerId == info.PlayerId, out var body))
                 return;
 
             Reported.Add(info.PlayerId);

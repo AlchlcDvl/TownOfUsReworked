@@ -7,16 +7,13 @@ public readonly struct PointInTime(Vector3 position)
     public readonly Vector3 Position { get; } = position;
 }
 
-public record class PlayerVersion(string Version, bool Dev, int DevBuild, bool Stream, Guid Guid, string VersionFinal, Version SVersion)
+public record class PlayerVersion(Guid Guid, string VersionFinal, Version Version)
 {
-    public bool GuidMatches => TownOfUsReworked.Core.ManifestModule.ModuleVersionId.Equals(Guid);
-    public bool DevMatches => Dev == TownOfUsReworked.IsDev;
-    public bool StreamMatches => Stream == TownOfUsReworked.IsStream;
-    public bool DevBuildMatches => DevBuild == TownOfUsReworked.DevBuild;
-    public bool VersionStringMatches => VersionFinal.Replace("_test", "") == TownOfUsReworked.VersionFinal.Replace("_test", "");
+    public int Diff => TownOfUsReworked.Version.CompareTo(Version);
     public bool VersionMatches => Diff == 0;
-    public int Diff => TownOfUsReworked.Version.CompareTo(SVersion);
-    public bool EverythingMatches => GuidMatches && DevMatches && DevBuildMatches && StreamMatches && VersionStringMatches && VersionMatches;
+    public bool GuidMatches => TownOfUsReworked.Core.ManifestModule.ModuleVersionId.Equals(Guid);
+    public bool VersionStringMatches => VersionFinal.Replace("_test", "") == TownOfUsReworked.VersionFinal.Replace("_test", "");
+    public bool EverythingMatches => GuidMatches && VersionStringMatches && VersionMatches;
 }
 
 public class GitHubApiObject

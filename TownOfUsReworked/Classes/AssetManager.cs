@@ -11,7 +11,9 @@ public static class AssetManager
 
     public static Sprite GetSprite(string path) => Get<Sprite>(path) ?? Get<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder");
 
-    public static RoleEffectAnimation GetAnim(string path) => Get<RoleEffectAnimation>(path);
+    public static RoleEffectAnimation GetRoleAnim(string path) => Get<RoleEffectAnimation>(path);
+
+    public static AnimationClip GetAnim(string path) => Get<AnimationClip>(path);
 
     public static void Play(string path, bool loop = false, float volume = 1f) => Play(GetAudio(path), loop, volume);
 
@@ -34,7 +36,7 @@ public static class AssetManager
     public static Texture2D LoadDiskTexture(string path)
     {
         var texture = EmptyTexture();
-        ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
+        texture.LoadImage(File.ReadAllBytes(path), false);
         texture.name = path.SanitisePath();
         return texture.DontDestroy();
     }
@@ -142,13 +144,13 @@ public static class AssetManager
 
         foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
         {
-            if (resourceName.StartsWith(TownOfUsReworked.Resources) && resourceName.EndsWith(".png"))
+            if (resourceName.EndsWith(".png"))
                 AddAsset(resourceName.SanitisePath(), CreateResourceSprite(resourceName));
-            else if (resourceName.StartsWith(TownOfUsReworked.Resources) && resourceName.EndsWith(".raw"))
+            else if (resourceName.EndsWith(".raw"))
                 AddAsset(resourceName.SanitisePath(), CreateResourceAudio(resourceName));
         }
 
-        Cursor.SetCursor(GetSprite("Cursor").texture, Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(GetSprite("Cursor").texture, CursorMode.Auto);
     }
 
     public static void LoadVanillaSounds()
@@ -198,8 +200,8 @@ public static class AssetManager
 
     public static T Get<T>(string name) where T : UObject
     {
-        if (LoadedObjects.TryGetValue(name, out var objList))
-            return (T)objList.Find(x => x.GetType() == typeof(T));
+        if (LoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x.GetType() == typeof(T), out var result))
+            return result as T;
 
         if (ObjectToBundle.TryGetValue(name.ToLower(), out var bundle))
             return LoadAsset<T>(Bundles[bundle], name);

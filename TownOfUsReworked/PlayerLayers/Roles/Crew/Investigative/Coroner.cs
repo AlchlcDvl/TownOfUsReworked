@@ -108,12 +108,7 @@ public class Coroner : Crew
     {
         base.OnBodyReport(info);
 
-        if (info == null || !Local)
-            return;
-
-        var body = KilledPlayers.Find(x => x.PlayerId == info.PlayerId);
-
-        if (body == null)
+        if (info == null || !Local || !KilledPlayers.TryFinding(x => x.PlayerId == info.PlayerId, out var body))
             return;
 
         Reported.Add(info.PlayerId);

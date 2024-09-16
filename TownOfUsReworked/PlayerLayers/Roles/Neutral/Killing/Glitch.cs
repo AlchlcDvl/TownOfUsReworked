@@ -124,7 +124,7 @@ public class Glitch : Neutral
 
     public override void ReadRPC(MessageReader reader)
     {
-        var glitchAction = (GlitchActionsRPC)reader.ReadByte();
+        var glitchAction = reader.ReadEnum<GlitchActionsRPC>();
 
         switch (glitchAction)
         {

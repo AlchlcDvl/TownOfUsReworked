@@ -32,4 +32,35 @@ public class Snitch : Ability
     public override LayerEnum Type => LayerEnum.Snitch;
     public override Func<string> Description => () => "- You can finish your tasks to get information on who's evil";
     public override bool Hidden => !SnitchKnows && !TasksDone && !Dead;
+
+    public override void UponTaskComplete(uint taskId)
+    {
+        base.UponTaskComplete(taskId);
+
+        if (TasksLeft == SnitchTasksRemaining)
+        {
+            if (CustomPlayer.Local == Player)
+                Flash(Color);
+            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
+                Alignment.NeutralPros && SnitchSeesNeutrals))
+            {
+                Flash(Color);
+                Role.LocalRole.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+            }
+        }
+        else if (TasksDone)
+        {
+            if (Local)
+            {
+                Flash(UColor.green);
+                AllPlayers().Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros &&
+                    SnitchSeesNeutrals)).ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(Player, Color)));
+            }
+            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
+                Alignment.NeutralPros && SnitchSeesNeutrals))
+            {
+                Flash(UColor.red);
+            }
+        }
+    }
 }

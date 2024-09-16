@@ -19,12 +19,7 @@ public static class VitalsPatch
             var panel = __instance.vitals[i];
             var info = GameData.Instance.AllPlayers[i];
 
-            if (!panel.IsDead)
-                continue;
-
-            var deadBody = KilledPlayers.Find(x => x.PlayerId == info.PlayerId);
-
-            if (deadBody == null)
+            if (!panel.IsDead || !KilledPlayers.TryFinding(x => x.PlayerId == info.PlayerId, out var deadBody))
                 continue;
 
             var num = (float)(DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;

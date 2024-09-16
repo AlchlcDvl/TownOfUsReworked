@@ -30,7 +30,8 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
 
     public override string Format()
     {
-        var val = Get().Value == 0 && ZeroIsInfinity ? "<b>∞</b>" : $"{Value:0.##}";
+        var value = Get();
+        var val = value.Value == 0 && ZeroIsInfinity ? "<b>∞</b>" : $"{value:0.##}";
         return FormatEnum switch
         {
             Data.Format.Time => $"{val}s",
@@ -55,11 +56,19 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
         AllowHalf &= Increment != 1;
     }
 
-    public override void ModifySetting(out string stringValue)
+    public override void ModifySetting()
     {
-        base.ModifySetting(out stringValue);
+        base.ModifySetting();
         var number = Setting.Cast<NumberOption>();
         number.Value = number.oldValue = Get();
-        number.ValueText.text = stringValue = Format();
+        number.ValueText.text = Format();
+    }
+
+    public override void ModifyViewSetting()
+    {
+        base.ModifyViewSetting();
+        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
+        viewSettingsInfoPanel.settingText.text = Format();
+        viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 }

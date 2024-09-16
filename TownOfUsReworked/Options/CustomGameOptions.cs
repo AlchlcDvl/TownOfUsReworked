@@ -154,49 +154,49 @@ public static class GameModeSettings
 public static class RoleListEntries
 {
     [RoleListEntry]
-    public static LayerEnum Entry1 { get; set; }
+    public static LayerEnum Entry1 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry2 { get; set; }
+    public static LayerEnum Entry2 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry3 { get; set; }
+    public static LayerEnum Entry3 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry4 { get; set; }
+    public static LayerEnum Entry4 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry5 { get; set; }
+    public static LayerEnum Entry5 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry6 { get; set; }
+    public static LayerEnum Entry6 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry7 { get; set; }
+    public static LayerEnum Entry7 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry8 { get; set; }
+    public static LayerEnum Entry8 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry9 { get; set; }
+    public static LayerEnum Entry9 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry10 { get; set; }
+    public static LayerEnum Entry10 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry11 { get; set; }
+    public static LayerEnum Entry11 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry12 { get; set; }
+    public static LayerEnum Entry12 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry13 { get; set; }
+    public static LayerEnum Entry13 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry14 { get; set; }
+    public static LayerEnum Entry14 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Entry15 { get; set; }
+    public static LayerEnum Entry15 { get; set; } = LayerEnum.None;
 
     [ToggleOption(MultiMenu.Main)]
     public static bool EnableRevealer { get; set; } = false;
@@ -215,19 +215,19 @@ public static class RoleListEntries
 public static class RoleListBans
 {
     [RoleListEntry]
-    public static LayerEnum Ban1 { get; set; }
+    public static LayerEnum Ban1 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Ban2 { get; set; }
+    public static LayerEnum Ban2 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Ban3 { get; set; }
+    public static LayerEnum Ban3 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Ban4 { get; set; }
+    public static LayerEnum Ban4 { get; set; } = LayerEnum.None;
 
     [RoleListEntry]
-    public static LayerEnum Ban5 { get; set; }
+    public static LayerEnum Ban5 { get; set; } = LayerEnum.None;
 
     [ToggleOption(MultiMenu.Main)]
     public static bool BanCrewmate { get; set; } = true;
@@ -355,12 +355,10 @@ public static class MapSettings
     public static Number RandomMapFungle { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent, All = true)]
-    private static Number RandomMapSubmergedPriv { get; set; } = new(10);
-    public static Number RandomMapSubmerged => SubLoaded ? RandomMapSubmergedPriv : new(0);
+    public static Number RandomMapSubmerged { get; set; } = new(10);
 
     [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent, All = true)]
-    private static Number RandomMapLevelImpostorPriv { get; set; } = new(10);
-    public static Number RandomMapLevelImpostor => LILoaded ? RandomMapLevelImpostorPriv : new(0);
+    public static Number RandomMapLevelImpostor { get; set; } = new(10);
 
     [ToggleOption(MultiMenu.Main)]
     public static bool AutoAdjustSettings { get; set; } = false;

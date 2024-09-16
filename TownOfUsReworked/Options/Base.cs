@@ -26,11 +26,18 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) 
         if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type is CustomOptionType.Header or CustomOptionType.Alignment))
             SendOptionRPC(this);
 
-        if (!Setting)
-            return;
+        if (Setting)
+        {
+            ModifySetting();
+            SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
+        }
 
-        ModifySetting(out var stringValue);
-        SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
+        if (ViewSetting)
+        {
+            ModifyViewSetting();
+        }
+
+        var stringValue = Format();
 
         if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
             return;
@@ -132,6 +139,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         ID = $"CustomOption.{Name}";
         TargetType = property.PropertyType;
         // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
+        // TownOfUsReworked.ModInstance.Harmony.Patch(Property.GetSetMethod(true), null, new(typeof(OptionAttribute), nameof(OptionsPatch)));
         AllOptions.Add(this);
     }
 
@@ -229,7 +237,9 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public virtual void PostLoadSetup() {}
 
-    public virtual void ModifySetting(out string stringValue) => stringValue = "";
+    public virtual void ModifySetting() {}
+
+    public virtual void ModifyViewSetting() {}
 
     public virtual void AddMenuIndex(int index)
     {
@@ -238,6 +248,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         if (!Menus.Contains(menu))
             Menus.Add(menu);
     }
+
+    public static void OptionsPatch(PropertyInfo __instance, ref object value) => GetOptionFromProperty(__instance).SetBase(value);
 
     public void SetBase(object value, bool rpc = true, bool notify = true)
     {
@@ -413,4 +425,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     public static OptionAttribute GetOptionFromName(string name) => GetOption($"CustomOption.{name}");
 
     public static T GetOptionFromName<T>(string name) where T : OptionAttribute => GetOptionFromName(name) as T;
+
+    public static OptionAttribute GetOptionFromProperty(PropertyInfo prop) => AllOptions.Find(x => x.Property == prop);
 }

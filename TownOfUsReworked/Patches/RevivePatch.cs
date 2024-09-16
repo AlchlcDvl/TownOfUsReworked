@@ -30,7 +30,7 @@ public static class PlayerControlRevivePatch
             body.gameObject.Destroy();
         }
 
-        if (IsSubmerged() && CustomPlayer.Local == __instance)
+        if (IsSubmerged() && __instance.AmOwner)
             ChangeFloor(__instance.transform.position.y > -7);
 
         if (!__instance.AmOwner)

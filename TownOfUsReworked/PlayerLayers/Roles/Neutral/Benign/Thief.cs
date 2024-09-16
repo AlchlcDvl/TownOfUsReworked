@@ -261,7 +261,7 @@ public class Thief : Neutral
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || Dead || (player == Player && player == CustomPlayer.Local) ||
+        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || Dead || (player == Player && player.AmOwner) ||
             (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
     }
 
@@ -535,7 +535,7 @@ public class Thief : Neutral
 
         if (player != Player && player.Is(LayerEnum.Indomitable))
         {
-            if (player == CustomPlayer.Local)
+            if (player.AmOwner)
                 Flash(CustomColorManager.Indomitable);
 
             return;

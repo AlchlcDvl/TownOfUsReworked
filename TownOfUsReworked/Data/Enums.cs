@@ -336,21 +336,7 @@ public enum CustomRPC
 public enum VanillaRPC
 {
     SnapTo,
-    SetColor,
-    // SetScanner,
-    // EndGame,
-    // StartMeeting,
-    // UpdateSystem,
-    // SetName,
-    // CompleteTask,
-    // MeetingClose,
-    // SyncSettings,
-    // ClimbLadder,
-    // VotingComplete,
-    // SendChat,
-    // EnterVent,
-    // ExitVent,
-    // StartCounter
+    SetColor
 }
 
 public enum PlayerLayerEnum
@@ -363,7 +349,7 @@ public enum PlayerLayerEnum
     None
 }
 
-public enum LayerEnum : byte
+public enum LayerEnum
 {
     Altruist,
     Bastion,

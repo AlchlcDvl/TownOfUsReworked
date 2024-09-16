@@ -63,9 +63,9 @@ public static class RPC
             {
                 CustomOptionType.Toggle => reader.ReadBoolean(),
                 CustomOptionType.Number => reader.ReadNumber(),
-                CustomOptionType.String => Enum.Parse(customOption.TargetType, $"{reader.ReadInt32()}"),
-                CustomOptionType.Layers => reader.ReadEnum<LayerEnum>(),
-                CustomOptionType.Entry => reader.ReadRoleOptionData(),
+                CustomOptionType.String => reader.ReadEnum(customOption.TargetType),
+                CustomOptionType.Layers => reader.ReadRoleOptionData(),
+                CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
                 _ => null
             };
             customOption.SetBase(value, false);
@@ -80,8 +80,7 @@ public static class RPC
         if (TownOfUsReworked.MCIActive)
             return null;
 
-        var version = new PlayerVersion(TownOfUsReworked.VersionString, TownOfUsReworked.IsDev, TownOfUsReworked.DevBuild, TownOfUsReworked.IsStream,
-            TownOfUsReworked.Core.ManifestModule.ModuleVersionId, TownOfUsReworked.VersionFinal, TownOfUsReworked.Version);
+        var version = new PlayerVersion(TownOfUsReworked.Core.ManifestModule.ModuleVersionId, TownOfUsReworked.VersionFinal, TownOfUsReworked.Version);
         var writer = CallOpenRpc(CustomRPC.Misc, MiscRPC.VersionHandshake, version);
         writer.WritePacked(AmongUsClient.Instance.ClientId);
         writer.EndRpc();
@@ -127,23 +126,15 @@ public static class RPC
         return list;
     }
 
-    public static List<T> ReadLayerList<T>(this MessageReader reader) where T : PlayerLayer
-    {
-        var count = reader.ReadInt32();
-        var list = new List<T>();
-
-        while (list.Count < count)
-            list.Add(reader.ReadLayer<T>());
-
-        return list;
-    }
+    public static List<T> ReadLayerList<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayerList().Cast<T>().ToList();
 
     public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Parse(reader.ReadString());
 
     public static Version ReadVersion(this MessageReader reader) => new(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
 
-    public static PlayerVersion ReadPlayerVersion(this MessageReader reader) => new(reader.ReadString(), reader.ReadBoolean(), reader.ReadInt32(), reader.ReadBoolean(),
-        new(reader.ReadBytesAndSize()), reader.ReadString(), reader.ReadVersion());
+    public static PlayerVersion ReadPlayerVersion(this MessageReader reader) => new(new(reader.ReadString()), reader.ReadString(), reader.ReadVersion());
+
+    public static object ReadEnum(this MessageReader reader, Type type) => Enum.Parse(type, reader.ReadString());
 
     public static T ReadEnum<T>(this MessageReader reader) where T : struct => Enum.Parse<T>(reader.ReadString());
 
@@ -167,13 +158,9 @@ public static class RPC
 
     public static void Write(this MessageWriter writer, PlayerVersion pv)
     {
-        writer.Write(pv.Version);
-        writer.Write(pv.Dev);
-        writer.Write(pv.DevBuild);
-        writer.Write(pv.Stream);
-        writer.Write(pv.Guid.ToByteArray());
+        writer.Write(pv.Guid.ToString());
         writer.Write(pv.VersionFinal);
-        writer.Write(pv.SVersion);
+        writer.Write(pv.Version);
     }
 
     public static void Write(this MessageWriter writer, Number num) => writer.Write(num.Value);
@@ -200,26 +187,14 @@ public static class RPC
             writer.Write(boolean);
         else if (item is int integer)
             writer.Write(integer);
-        else if (item is uint uinteger)
-            writer.Write(uinteger);
         else if (item is float Float)
             writer.Write(Float);
         else if (item is string text)
             writer.Write(text);
-        else if (item is byte Byte)
-            writer.Write(Byte);
-        else if (item is sbyte sByte)
-            writer.Write(sByte);
+        else if (item is byte byt)
+            writer.Write(byt);
         else if (item is Vector2 vector2)
             writer.Write(vector2);
-        else if (item is ulong Ulong)
-            writer.Write(Ulong);
-        else if (item is ushort Ushort)
-            writer.Write(Ushort);
-        else if (item is short Short)
-            writer.Write(Short);
-        else if (item is long Long)
-            writer.Write(Long);
         else if (item is byte[] array)
             writer.WriteBytesAndSize(array);
         else if (item is List<byte> list)
@@ -248,25 +223,7 @@ public static class RPC
 
     public static void CallRpc(params object[] data) => CallOpenRpc(data)?.EndRpc();
 
-    public static MessageWriter CallOpenRpc(params object[] data)
-    {
-        if (TownOfUsReworked.MCIActive)
-            return null;
-
-        // Just to be safe
-        if (data[0] is object[] array)
-            data = array;
-
-        if (data[0] is not CustomRPC)
-        {
-            LogError("The first parameter must be CustomRPC");
-            return null;
-        }
-
-        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable);
-        data.ForEach(x => writer.Write(x, data));
-        return writer;
-    }
+    public static MessageWriter CallOpenRpc(params object[] data) => CallTargetedOpenRpc(-1, data);
 
     public static void CallTargetedRpc(int targetClientId, params object[] data) => CallTargetedOpenRpc(targetClientId, data)?.EndRpc();
 

@@ -174,9 +174,8 @@ public static class Interactions
         if (target.IsBombed())
         {
             abilityUsed = false;
-            var bastion = PlayerLayer.GetLayers<Bastion>().Find(x => x.BombedIDs.Contains(target.Id)) as Role;
 
-            if (!bastion)
+            if (!PlayerLayer.GetLayers<Bastion>().TryFinding(x => ((Bastion)x).BombedIDs.Contains(target.Id), out Role bastion))
                 bastion = PlayerLayer.GetLayers<Retributionist>().Find(x => x.BombedIDs.Contains(target.Id));
 
             if (!CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))

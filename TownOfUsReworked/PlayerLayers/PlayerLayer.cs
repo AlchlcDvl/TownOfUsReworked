@@ -21,7 +21,7 @@ public abstract class PlayerLayer
     public bool Dead => Data?.IsDead ?? true;
     public bool Disconnected => Data?.Disconnected ?? true;
     public bool Alive => !Disconnected && !Dead;
-    public bool Local => Player == CustomPlayer.Local;
+    public bool Local => Player.AmOwner;
 
     public NetworkedPlayerInfo Data => Player?.Data;
     public string PlayerName => Data?.PlayerName ?? "";
@@ -85,7 +85,7 @@ public abstract class PlayerLayer
 
     public virtual void OnBodyReport(NetworkedPlayerInfo info) {}
 
-    public virtual void UponTaskComplete(PlayerControl player, uint taskId) {}
+    public virtual void UponTaskComplete(uint taskId) {}
 
     public virtual void ReadRPC(MessageReader reader) {}
 

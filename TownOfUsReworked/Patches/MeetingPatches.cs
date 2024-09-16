@@ -94,8 +94,7 @@ public static class MeetingPatches
                         "It is unknown where they died.";
                     Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
-                    var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
-                    var killerRole = killer.GetRole();
+                    var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
 
                     if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
                         report = $"They were killed by the <b>{killerRole}</b>.";
@@ -134,8 +133,7 @@ public static class MeetingPatches
                         Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
 
-                        var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
-                        var killerRole = killer.GetRole();
+                        var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
 
                         if (Role.Cleaned.Contains(player.PlayerId))
                             report = "They were killed by an unknown assailant.";

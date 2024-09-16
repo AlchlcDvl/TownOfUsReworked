@@ -257,15 +257,14 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         SettingsPatches.OnValueChanged();
     }
 
-    public override void ModifySetting(out string stringValue)
+    public override void ModifySetting()
     {
-        base.ModifySetting(out stringValue);
+        base.ModifySetting();
         var data = Get();
         var role = Setting.Cast<RoleOptionSetting>();
         role.chanceText.text = $"{data.Chance}%";
         role.countText.text = $"x{data.Count}";
         UniqueCheck.enabled = data.Unique;
         ActiveCheck.enabled = data.Active;
-        stringValue = Format();
     }
 }

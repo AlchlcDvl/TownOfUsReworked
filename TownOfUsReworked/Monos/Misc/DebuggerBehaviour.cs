@@ -111,12 +111,12 @@ public class DebuggerBehaviour : MonoBehaviour
 
                 if (Meeting())
                 {
-                    if (GUILayout.Button("End Meeting()"))
+                    if (GUILayout.Button("End Meeting"))
                         Meeting().RpcClose();
                 }
                 else
                 {
-                    if (GUILayout.Button("Start Meeting()"))
+                    if (GUILayout.Button("Start Meeting"))
                         CallMeeting(CustomPlayer.Local);
                 }
 

@@ -759,7 +759,7 @@ public class MeetingHandler : MonoBehaviour
             }
         }
 
-        if (player.TargetPlayerId == CustomPlayer.Local.PlayerId && !player.AmDead)
+        if (player.AmOwner() && !player.AmDead)
         {
             if (player.IsShielded() && (int)Medic.ShowShielded is 0 or 2)
                 name += " <color=#006600FF>✚</color>";
@@ -846,7 +846,7 @@ public class MeetingHandler : MonoBehaviour
                 name += " <color=#424242FF>米</color>";
         }
 
-        if (DeadSeeEverything() || player.TargetPlayerId == CustomPlayer.Local.PlayerId)
+        if (DeadSeeEverything() || player.AmOwner())
         {
             if (info[3])
             {

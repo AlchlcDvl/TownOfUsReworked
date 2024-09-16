@@ -4,6 +4,7 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
 {
     public bool IsBan { get; set; }
     private string Num { get; set; }
+    public static List<PassiveButton> ChoiceButtons = [];
     // public static readonly Dictionary<LayerEnum, string> Alignments = new()
     // {
     //     { LayerEnum.None, "None"},
@@ -59,16 +60,15 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         SettingsPatches.OnValueChanged();
     }
 
-    public override void ModifySetting(out string stringValue)
+    public override void ModifySetting()
     {
-        base.ModifySetting(out stringValue);
+        base.ModifySetting();
         var toggle = Setting.Cast<ToggleOption>();
 
         if (toggle.CheckMark)
             toggle.CheckMark.enabled = false;
 
-        stringValue = Format();
-        toggle.TitleText.text = TranslationManager.Translate(ID).Replace("%entry%", stringValue).Replace("%num%", Num);
+        toggle.TitleText.text = TranslationManager.Translate(ID).Replace("%entry%", Format()).Replace("%num%", Num);
     }
 
     public static bool IsBanned(LayerEnum id) => GetOptions<RoleListEntryAttribute>().Any(x => x.IsBan && x.Get() == id) || id == LayerEnum.Actor || (id == LayerEnum.Crewmate &&

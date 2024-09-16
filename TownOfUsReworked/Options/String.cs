@@ -51,11 +51,19 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 
-    public override void ModifySetting(out string stringValue)
+    public override void ModifyViewSetting()
     {
-        base.ModifySetting(out stringValue);
+        base.ModifyViewSetting();
+        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
+        viewSettingsInfoPanel.settingText.text = Format();
+        viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
+    }
+
+    public override void ModifySetting()
+    {
+        base.ModifySetting();
         var str = Setting.Cast<StringOption>();
         str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Values.Length - 1);
-        str.ValueText.text = stringValue = Format();
+        str.ValueText.text = Format();
     }
 }

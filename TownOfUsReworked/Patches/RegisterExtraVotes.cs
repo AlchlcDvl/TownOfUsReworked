@@ -15,7 +15,7 @@ public static class HandleDisconnect
             }
         }
 
-        if (pc == CustomPlayer.Local)
+        if (pc.AmOwner && TownOfUsReworked.MCIActive)
         {
             MCIUtils.RemoveAllPlayers();
             DebuggerBehaviour.Instance.ControllingFigure = 0;

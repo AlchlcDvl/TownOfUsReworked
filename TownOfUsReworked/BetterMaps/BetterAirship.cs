@@ -30,6 +30,9 @@ public static class BetterAirship
     [NumberOption(MultiMenu.Main, 30f, 100f, 5f, Format.Time)]
     public static Number CrashTimer { get; set; } = new(90);
 
+    [ToggleOption(MultiMenu.Main)]
+    public static bool EnableCustomSpawns { get; set; } = true;
+
     public static readonly List<byte> SpawnPoints = [];
 
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
@@ -125,6 +128,16 @@ public static class BetterAirship
             if (!EnableBetterAirship || IsSubmerged())
                 return true;
 
+            if (EnableCustomSpawns)
+            {
+                var spawn = __instance.Locations.ToArray();
+                AddAsset("RolloverDefault", spawn[0].RolloverSfx);
+                spawn = AddSpawn(new Vector3(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault.anim"), GetAudio("RolloverDefault"), spawn);
+                spawn = AddSpawn(new Vector3(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cokpit"), GetAnim("Cokpit.anim"), GetAudio("RolloverDefault"), spawn);
+                spawn = AddSpawn(new Vector3(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical.anim"), GetAudio("RolloverDefault"), spawn);
+                __instance.Locations = spawn;
+            }
+
             if (SpawnType != AirshipSpawnType.Meeting)
             {
                 var spawn = __instance.Locations.ToArray();
@@ -167,6 +180,21 @@ public static class BetterAirship
                 position.y = 14.4f;
 
             return position;
+        }
+
+        public static SpawnInMinigame.SpawnLocation[] AddSpawn(Vector3 location, StringNames name, Sprite sprite, AnimationClip rollover, AudioClip sfx, SpawnInMinigame.SpawnLocation[] array)
+        {
+            Array.Resize(ref array, array.Length + 1);
+            array[^1] = new()
+            {
+                Location = location,
+                Name = name,
+                Image = sprite,
+                Rollover = rollover,
+                RolloverSfx = sfx
+            };
+
+            return array;
         }
     }
 

@@ -220,7 +220,7 @@ public static class Utils
 
     public static void Invis(PlayerControl player, bool condition = false)
     {
-        var ca = condition || CustomPlayer.LocalCustom.Dead || player == CustomPlayer.Local || CustomPlayer.Local.Is(LayerEnum.Torch) ? 0.1f : 0f;
+        var ca = condition || CustomPlayer.LocalCustom.Dead || player.AmOwner || CustomPlayer.Local.Is(LayerEnum.Torch) ? 0.1f : 0f;
 
         if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
         {
@@ -395,7 +395,7 @@ public static class Utils
         if (!data || data.IsDead || !killer.Data)
             return;
 
-        AchievementManager.Instance.OnMurder(killer == CustomPlayer.Local, target == CustomPlayer.Local, CachedMorphs.ContainsKey(killer.PlayerId),
+        AchievementManager.Instance.OnMurder(killer.AmOwner, target.AmOwner, CachedMorphs.ContainsKey(killer.PlayerId),
             CachedMorphs.TryGetValue(killer.PlayerId, out var id) ? id : 255, target.PlayerId);
         lunge &= !killer.Is(LayerEnum.Ninja) && killer != target;
         Pestilence.Infected.Remove(target.PlayerId);
@@ -406,10 +406,10 @@ public static class Utils
         if (IsCustomHnS())
             GameData.Instance.RecomputeTaskCounts();
 
-        if (killer == CustomPlayer.Local || target == CustomPlayer.Local)
+        if (killer.AmOwner || target.AmOwner)
             Play("Kill");
 
-        if (target == CustomPlayer.Local)
+        if (target.AmOwner)
         {
             var tracker = HUD().roomTracker.text;
             var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
@@ -431,7 +431,7 @@ public static class Utils
         if (CustomPlayer.LocalCustom.Dead)
             Flash(CustomColorManager.Stalemate);
 
-        if (killer == CustomPlayer.Local && killer.Is(LayerEnum.VampireHunter) && target.Is(SubFaction.Undead))
+        if (killer.AmOwner && killer.Is(LayerEnum.VampireHunter) && target.Is(SubFaction.Undead))
             Flash(CustomColorManager.Undead);
 
         if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(target.PlayerId))
@@ -515,7 +515,7 @@ public static class Utils
     {
         Play("Kill");
 
-        if (target == CustomPlayer.Local)
+        if (target.AmOwner)
         {
             HUD().KillOverlay.ShowKillAnimation(killer.Data, target.Data);
             HUD().ShadowQuad.gameObject.SetActive(false);
@@ -659,7 +659,7 @@ public static class Utils
 
             area.UnsetVote();
 
-            if (target == CustomPlayer.Local)
+            if (target.AmOwner)
                 Meeting().ClearVote();
         }
 
@@ -1285,7 +1285,7 @@ public static class Utils
 
     public static void CallMeeting(PlayerControl player)
     {
-        if (player == CustomPlayer.Local)
+        if (player.AmOwner)
             player.RemainingEmergencies++;
 
         if (AmongUsClient.Instance.AmHost)
@@ -1340,7 +1340,6 @@ public static class Utils
     public static IEnumerator EndFrame()
     {
         yield return new WaitForEndOfFrame();
-        yield break;
     }
 
     public static void RpcCustomSnapTo(this PlayerControl player, Vector2 pos)
@@ -1368,7 +1367,7 @@ public static class Utils
             player.walkingToVent = false;
         }
 
-        if (player == CustomPlayer.Local)
+        if (player.AmOwner)
         {
             if (ActiveTask())
                 ActiveTask().Close();
@@ -1450,4 +1449,6 @@ public static class Utils
         passive.OnMouseOut = new();
         passive.OnMouseOver = new();
     }
+
+    public static bool AmOwner(this PlayerVoteArea pva) => pva.TargetPlayerId == CustomPlayer.Local.PlayerId;
 }

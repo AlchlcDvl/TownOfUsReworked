@@ -34,7 +34,7 @@ public static class RPCHandling
                         var whispered = reader.ReadPlayer();
                         var message = reader.ReadString();
 
-                        if (whispered == CustomPlayer.Local)
+                        if (whispered.AmOwner)
                             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
                         else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
                             Silencer.WhispersNotPrivateS))

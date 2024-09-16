@@ -136,7 +136,7 @@ public static class DisconnectHandler
         var player2 = player;
         CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || !x.Player);
 
-        if (player == CustomPlayer.Local)
+        if (player.AmOwner)
         {
             MCIUtils.RemoveAllPlayers();
             DebuggerBehaviour.Instance.ControllingFigure = 0;
@@ -187,7 +187,7 @@ public static class VisibleOverride
             value = true;
         }
         else
-            value = __instance == CustomPlayer.Local || __instance?.Data?.IsDead == false;
+            value = __instance.AmOwner || __instance?.Data?.IsDead == false;
     }
 }
 
@@ -219,9 +219,8 @@ public static class CustomMenuPatch
     public static bool Prefix(ShapeshifterMinigame __instance)
     {
         __instance.gameObject.AddComponent<MenuPagingBehaviour>().Menu = __instance;
-        var menu = CustomMenu.AllMenus.Find(x => x.Menu == __instance && x.Owner == CustomPlayer.Local);
 
-        if (menu == null)
+        if (!CustomMenu.AllMenus.TryFinding(x => x.Menu == __instance && x.Owner.AmOwner, out var menu))
             return true;
 
         __instance.potentialVictims = new();
@@ -296,19 +295,18 @@ public static class SetPurchasedPatch
 [HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.Initialize))]
 public static class OverlayKillAnimationPatch
 {
-    private static int CurrentOutfitTypeCache;
+    private static int OutfitTypeCache;
 
     public static void Prefix(KillOverlayInitData initData)
     {
         var playerControl = AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit);
-        CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
+        OutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
         if (!GameModifiers.AppearanceAnimation)
             playerControl.CurrentOutfitType = PlayerOutfitType.Default;
     }
 
-    public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType =
-        (PlayerOutfitType)CurrentOutfitTypeCache;
+    public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType = (PlayerOutfitType)OutfitTypeCache;
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
@@ -622,7 +620,7 @@ public static class OverrideFlameColorPatch
     {
         var rend = __instance.flameParent.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
 
-        if (victim == CustomPlayer.Local.Data || !GameModifiers.ShowKillerRoleColor)
+        if (victim.AmOwner || !GameModifiers.ShowKillerRoleColor)
             rend.color = Role.LocalRole.Color;
         else
             rend.color = killer.Object.GetLayer<Role>().Color;

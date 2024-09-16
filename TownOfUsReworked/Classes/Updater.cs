@@ -149,7 +149,7 @@ public static class ModUpdater
         {
             var stars = Mathf.CeilToInt(www.downloadProgress * 10);
             Popup.TextAreaTMP.text = $"{TranslationManager.Translate("Updates.Mod.Updating").Replace("%mod%", updateType)}";
-            Popup.TextAreaTMP.text += $"\n{new string((char)0x25A0, stars) + new string((char)0x25A1, 10 - stars)}";
+            Popup.TextAreaTMP.text += $"\n{new string((char)0x25A0, stars)}{new string((char)0x25A1, 10 - stars)}";
             yield return EndFrame();
         }
 
@@ -164,7 +164,7 @@ public static class ModUpdater
         var filePath = Path.Combine(TownOfUsReworked.ModsFolder, $"{updateType}.dll");
 
         if (File.Exists(filePath + ".old"))
-            File.Delete(filePath + "old");
+            File.Delete(filePath + ".old");
 
         if (File.Exists(filePath))
             File.Move(filePath, filePath + ".old");

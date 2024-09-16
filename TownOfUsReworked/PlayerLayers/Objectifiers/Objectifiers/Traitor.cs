@@ -144,4 +144,16 @@ public class Traitor : Objectifier
             TurnBetrayer();
         }
     }
+
+    public override void UponTaskComplete(uint taskId)
+    {
+        base.UponTaskComplete(taskId);
+
+        if (TasksDone)
+        {
+            GetFactionChoice(out var syndicate, out var intruder);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, false, syndicate, intruder);
+            TurnTraitor(syndicate, intruder);
+        }
+    }
 }

@@ -78,7 +78,7 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
     public void Toggle()
     {
         Value = !Get();
-        Collapse.GetComponentInChildren<TextMeshPro>().text = (bool)Value ? "-" : "+";
+        Collapse.GetComponentInChildren<TextMeshPro>().text = Value ? "-" : "+";
         SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
     }
 

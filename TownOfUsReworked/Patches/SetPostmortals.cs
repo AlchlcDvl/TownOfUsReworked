@@ -245,7 +245,7 @@ public static class SetPostmortals
 
             rev.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
 
-            if (rev == CustomPlayer.Local)
+            if (rev.AmOwner)
             {
                 if (!rev.GetLayer<Revealer>().Caught)
                     SetStartingVent(rev);
@@ -295,7 +295,7 @@ public static class SetPostmortals
 
             phan.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
 
-            if (phan == CustomPlayer.Local)
+            if (phan.AmOwner)
             {
                 if (!phan.GetLayer<Phantom>().Caught)
                     SetStartingVent(phan);
@@ -347,7 +347,7 @@ public static class SetPostmortals
 
             ban.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
 
-            if (ban == CustomPlayer.Local)
+            if (ban.AmOwner)
             {
                 if (!ban.GetLayer<Banshee>().Caught)
                     SetStartingVent(ban);
@@ -396,7 +396,7 @@ public static class SetPostmortals
 
             ghoul.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
 
-            if (ghoul == CustomPlayer.Local)
+            if (ghoul.AmOwner)
             {
                 if (ghoul.GetLayer<Ghoul>().Caught)
                     SetStartingVent(ghoul);

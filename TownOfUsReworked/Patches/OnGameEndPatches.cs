@@ -20,6 +20,23 @@ public static class OnGameEndPatches
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();
 
+            if (MapSettings.AutoAdjustSettings)
+            {
+                if (MapPatches.CurrentMap is 0 or 1 or 3)
+                {
+                    TownOfUsReworked.NormalOptions.NumShortTasks -= MapSettings.SmallMapIncreasedShortTasks;
+                    TownOfUsReworked.NormalOptions.NumLongTasks -= MapSettings.SmallMapIncreasedLongTasks;
+                    MapPatches.AdjustCooldowns(MapSettings.SmallMapDecreasedCooldown);
+                }
+
+                if (MapPatches.CurrentMap is 4 or 5 or 6)
+                {
+                    TownOfUsReworked.NormalOptions.NumShortTasks += MapSettings.LargeMapDecreasedShortTasks;
+                    TownOfUsReworked.NormalOptions.NumLongTasks += MapSettings.LargeMapDecreasedLongTasks;
+                    MapPatches.AdjustCooldowns(-MapSettings.LargeMapIncreasedCooldown);
+                }
+            }
+
             if (WinState == WinLose.AllNeutralsWin)
             {
                 foreach (var role2 in Role.GetRoles(Faction.Neutral))

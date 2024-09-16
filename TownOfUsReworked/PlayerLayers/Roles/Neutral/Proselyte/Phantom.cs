@@ -65,4 +65,12 @@ public class Phantom : Neutral
         if (Local)
             DefaultOutfitAll();
     }
+
+    public override void UponTaskComplete(uint taskId)
+    {
+        base.UponTaskComplete(taskId);
+
+        if (TasksLeft == PhantomTasksRemaining && PhantomPlayersAlerted && !Caught)
+            Flash(Color);
+    }
 }

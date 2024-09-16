@@ -104,7 +104,7 @@ public class PlayerHandler : MonoBehaviour
         if (info.Count != 4 || localinfo.Count != 4)
             return (name, color);
 
-        if (player.CanDoTasks() && (DeadSeeEverything() || player == CustomPlayer.Local || IsCustomHnS() || IsTaskRace()))
+        if (player.CanDoTasks() && (DeadSeeEverything() || player.AmOwner || IsCustomHnS() || IsTaskRace()))
         {
             var role = info[0] as Role;
             name += $" ({role.TasksCompleted}/{role.TotalTasks})";
@@ -116,7 +116,7 @@ public class PlayerHandler : MonoBehaviour
         if (player.IsMarked())
             name += " <color=#F1C40FFF>χ</color>";
 
-        if (player.Data.PlayerName == CachedFirstDead && ((player == CustomPlayer.Local && (int)GameModifiers.WhoSeesFirstKillShield == 1) || GameModifiers.WhoSeesFirstKillShield == 0))
+        if (player.Data.PlayerName == CachedFirstDead && ((player.AmOwner && (int)GameModifiers.WhoSeesFirstKillShield == 1) || GameModifiers.WhoSeesFirstKillShield == 0))
             name += " <color=#C2185BFF>Γ</color>";
 
         if (player.Is(LayerEnum.Mayor) && !DeadSeeEverything() && CustomPlayer.Local != player)
@@ -893,13 +893,13 @@ public class PlayerHandler : MonoBehaviour
             }
         }
 
-        if ((player == CustomPlayer.Local || DeadSeeEverything()) && player.IsVesting())
+        if ((player.AmOwner || DeadSeeEverything()) && player.IsVesting())
             name += " <color=#DDDD00FF>υ</color>";
 
-        if ((player == CustomPlayer.Local || DeadSeeEverything()) && player.IsOnAlert())
+        if ((player.AmOwner || DeadSeeEverything()) && player.IsOnAlert())
             name += " <color=#998040FF>σ</color>";
 
-        if (player == CustomPlayer.Local && !DeadSeeEverything())
+        if (player.AmOwner && !DeadSeeEverything())
         {
             if (player.IsShielded() && (int)Medic.ShowShielded is 0 or 2)
                 name += " <color=#006600FF>✚</color>";
@@ -1001,7 +1001,7 @@ public class PlayerHandler : MonoBehaviour
                 name += " <color=#424242FF>米</color>";
         }
 
-        if (DeadSeeEverything() || player == CustomPlayer.Local)
+        if (DeadSeeEverything() || player.AmOwner)
         {
             var objectifier = info[3] as Objectifier;
 

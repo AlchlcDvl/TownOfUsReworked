@@ -103,8 +103,8 @@ public static class SettingsPatches
                 background.localScale += new Vector3(1f, 0f, 0f);
 
                 var title = NumberPrefab.transform.GetChild(2);
-                title.localPosition += new Vector3(-3.1f, 0f, 0f);
-                title.GetComponent<RectTransform>().sizeDelta = new(10f, 0.458f);
+                title.localPosition = new(-2.0466f, 0f, -2.9968f);
+                title.GetComponent<RectTransform>().sizeDelta = new(5.8f, 0.458f);
 
                 var valueBox = NumberPrefab.transform.GetChild(5);
                 valueBox.localPosition += new Vector3(1.05f, 0f, 0f);
@@ -125,8 +125,8 @@ public static class SettingsPatches
                 background.localScale += new Vector3(1f, 0f, 0f);
 
                 var title = StringPrefab.transform.GetChild(2);
-                title.localPosition += new Vector3(-3.1f, 0f, 0f);
-                title.GetComponent<RectTransform>().sizeDelta = new(10f, 0.458f);
+                title.localPosition = new(-2.0466f, 0f, -2.9968f);
+                title.GetComponent<RectTransform>().sizeDelta = new(5.8f, 0.458f);
                 title.GetComponent<TextMeshPro>().fontSize = 2.9f; // Why is it different for string options??
 
                 var minus = StringPrefab.transform.GetChild(3);
@@ -152,8 +152,8 @@ public static class SettingsPatches
                 TogglePrefab.transform.GetChild(1).localPosition += new Vector3(2.2f, 0f, 0f);
 
                 var title = TogglePrefab.transform.GetChild(0);
-                title.localPosition += new Vector3(-3.1f, 0f, 0f);
-                title.GetComponent<RectTransform>().sizeDelta = new(10f, 0.458f);
+                title.localPosition = new(-2.0466f, 0f, -2.9968f);
+                title.GetComponent<RectTransform>().sizeDelta = new(5.8f, 0.458f);
 
                 var background = TogglePrefab.transform.GetChild(2);
                 background.localPosition += new Vector3(-0.8f, 0f, 0f);
@@ -165,7 +165,7 @@ public static class SettingsPatches
             if (!HeaderPrefab)
             {
                 HeaderPrefab = UObject.Instantiate(__instance.categoryHeaderOrigin, null).DontUnload().DontDestroy();
-                HeaderPrefab.name = "CustomHeaderOptionBasePrefab";
+                HeaderPrefab.name = "CustomHeaderOptionPrefab";
                 HeaderPrefab.transform.localScale = new(0.63f, 0.63f, 0.63f);
                 HeaderPrefab.Background.transform.localScale += new Vector3(0.7f, 0f, 0f);
 
@@ -694,15 +694,12 @@ public static class SettingsPatches
     {
         public static bool Prefix(NumberOption __instance)
         {
-            var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
+            var result = OptionAttribute.GetOptions<NumberOptionAttribute>().TryFinding(option => option.Setting == __instance, out var num);
 
-            if (option is NumberOptionAttribute number)
-            {
-                number.Increase();
-                return false;
-            }
+            if (result)
+                num.Increase();
 
-            return true;
+            return !result;
         }
     }
 
@@ -711,15 +708,12 @@ public static class SettingsPatches
     {
         public static bool Prefix(NumberOption __instance)
         {
-            var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
+            var result = OptionAttribute.GetOptions<NumberOptionAttribute>().TryFinding(option => option.Setting == __instance, out var num);
 
-            if (option is NumberOptionAttribute number)
-            {
-                number.Decrease();
-                return false;
-            }
+            if (result)
+                num.Decrease();
 
-            return true;
+            return !result;
         }
     }
 
@@ -728,15 +722,12 @@ public static class SettingsPatches
     {
         public static bool Prefix(StringOption __instance)
         {
-            var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
+            var result = OptionAttribute.GetOptions<StringOptionAttribute>().TryFinding(option => option.Setting == __instance, out var str);
 
-            if (option is StringOptionAttribute str)
-            {
+            if (result)
                 str.Increase();
-                return false;
-            }
 
-            return true;
+            return !result;
         }
     }
 
@@ -745,15 +736,12 @@ public static class SettingsPatches
     {
         public static bool Prefix(StringOption __instance)
         {
-            var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
+            var result = OptionAttribute.GetOptions<StringOptionAttribute>().TryFinding(option => option.Setting == __instance, out var str);
 
-            if (option is StringOptionAttribute str)
-            {
+            if (result)
                 str.Decrease();
-                return false;
-            }
 
-            return true;
+            return !result;
         }
     }
 
@@ -762,15 +750,12 @@ public static class SettingsPatches
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
-            var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
+            var result = OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(option => option.Setting == __instance, out var layer);
 
-            if (option is LayersOptionAttribute layer)
-            {
+            if (result)
                 layer.IncreaseChance();
-                return false;
-            }
 
-            return true;
+            return !result;
         }
     }
 
@@ -779,15 +764,12 @@ public static class SettingsPatches
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
-            var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
+            var result = OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(option => option.Setting == __instance, out var layer);
 
-            if (option is LayersOptionAttribute layer)
-            {
+            if (result)
                 layer.DecreaseChance();
-                return false;
-            }
 
-            return true;
+            return !result;
         }
     }
 
@@ -796,15 +778,12 @@ public static class SettingsPatches
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
-            var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
+            var result = OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(option => option.Setting == __instance, out var layer);
 
-            if (option is LayersOptionAttribute layer)
-            {
+            if (result)
                 layer.IncreaseCount();
-                return false;
-            }
 
-            return true;
+            return !result;
         }
     }
 
@@ -813,15 +792,12 @@ public static class SettingsPatches
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
-            var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
+            var result = OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(option => option.Setting == __instance, out var layer);
 
-            if (option is LayersOptionAttribute layer)
-            {
+            if (result)
                 layer.DecreaseCount();
-                return false;
-            }
 
-            return true;
+            return !result;
         }
     }
 
@@ -835,7 +811,7 @@ public static class SettingsPatches
             if (!AmongUsClient.Instance || !CustomPlayer.Local || !__instance.myPlayer)
                 return;
 
-            if (__instance.myPlayer == CustomPlayer.Local)
+            if (__instance.myPlayer.AmOwner)
             {
                 if (!SentOnce)
                 {
@@ -1081,8 +1057,8 @@ public static class SettingsPatches
             Save.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
             Save.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
             Save.buttonText.alignment = TextAlignmentOptions.Center;
-            Save.buttonText.GetComponent<TextTranslatorTMP>().Destroy(); // Yeah because this darn thing exists
-            Save.buttonText.text = TranslationManager.Translate("ImportExport.Save"); // WHY ARE THE TMPS NOT CHANGING TEXTS EVEN THROUGH FUCKING COROUTINES AAAAAAAAAAAAAAAAAAAAAAAA
+            Save.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+            Save.buttonText.text = TranslationManager.Translate("ImportExport.Save");
 
             Prev = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
             Prev.OverrideOnClickListeners(() => NextPage(false));

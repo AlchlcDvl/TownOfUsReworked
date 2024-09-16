@@ -149,7 +149,7 @@ public class ChatCommand
 
         if (!whispered)
             Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"Who are you trying to whisper? {invalid} is invalid.");
-        else if (whispered == CustomPlayer.Local)
+        else if (whispered.AmOwner)
             Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
         else if (whispered.HasDied())
             Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
@@ -254,15 +254,14 @@ public class ChatCommand
         var arg = "";
         args[1..].ForEach(arg2 => arg += $"{arg2} ");
         arg = arg.Remove(arg.Length - 1);
-        var target = AllPlayers().Find(x => x.Data.PlayerName == arg);
 
-        if (!target)
+        if (!AllPlayers().TryFinding(x => x.Data.PlayerName == arg, out var target))
         {
             Run($"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
             return;
         }
 
-        if (target == CustomPlayer.Local)
+        if (target.AmOwner)
         {
             Run($"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Don't {(ban ? "ban" : "kick")} yourself.");
             return;

@@ -11,15 +11,13 @@ public static class PlayerControlOnClick
         if (IsHnS())
             return true;
 
-        var button = AllButtons.Find(x => x.Owner.Local && x.Clickable() && ((__instance == CustomPlayer.Local && x.Type == AbilityTypes.Targetless) || x.TargetPlayer == __instance));
-
-        if (button != null)
+        if (AllButtons.TryFinding(x => x.Owner.Local && x.Clickable() && ((__instance.AmOwner && x.Type == AbilityTypes.Targetless) || x.TargetPlayer == __instance), out var button))
         {
             button.Clicked();
             return false;
         }
 
-        if (CustomPlayer.Local.Data.Tasks == null || __instance == CustomPlayer.Local)
+        if (CustomPlayer.Local.Data.Tasks == null || __instance.AmOwner)
             return false;
 
         CallRpc(CustomRPC.Misc, MiscRPC.Catch, __instance, CustomPlayer.Local);
@@ -82,8 +80,8 @@ public static class DeadBodyOnClick
         if (Meeting() || Lobby() || IsHnS() || PerformReport.ReportPressed)
             return true;
 
-        var button = AllButtons.Find(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable() && !x.Owner.IsBlocked);
+        var result = AllButtons.TryFinding(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable() && !x.Owner.IsBlocked, out var button);
         button?.Clicked();
-        return button == null && !IsTaskRace() && !IsCustomHnS();
+        return !result && !IsTaskRace() && !IsCustomHnS();
     }
 }

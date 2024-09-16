@@ -96,6 +96,7 @@ public static class RoleGen
     private static readonly LayerEnum[] GlobalAb = [ LayerEnum.Radar, LayerEnum.Tiebreaker ];
 
     private static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6 ];
+    private static readonly List<byte> CustomSpawns = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
 
     private static bool Check(RoleOptionData data, bool sorting = false)
     {
@@ -1166,7 +1167,7 @@ public static class RoleGen
         LayerEnum.Phantom => NeutralProselyteRoles.Phantom,
         LayerEnum.Pestilence => Options.NeutralHarbingerRoles.Plaguebearer,
         LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 100, false, false, id),
-        _ => OptionAttribute.GetOptions<LayersOptionAttribute>().Find(x => x.Layer == id)?.Get() ?? new(0, 0, false, false, id)
+        _ => OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(x => x.Layer == id, out var result) ? result.Get() : new(0, 0, false, false, id)
     };
 
     private static void GenAbilities()
@@ -2107,7 +2108,7 @@ public static class RoleGen
 
         if (MapPatches.CurrentMap == 4)
         {
-            BetterAirship.SpawnPoints.AddRange(Spawns.GetRandomRange(3));
+            BetterAirship.SpawnPoints.AddRange((BetterAirship.EnableCustomSpawns ? CustomSpawns : Spawns).GetRandomRange(3));
             CallRpc(CustomRPC.Misc, MiscRPC.SetSpawnAirship, BetterAirship.SpawnPoints);
         }
 
@@ -2176,9 +2177,7 @@ public static class RoleGen
 
         if (!Role.DriveHolder || Role.DriveHolder.HasDied())
         {
-            chosen = all.Find(x => x.Is(LayerEnum.PromotedRebel));
-
-            if (!chosen)
+            if (!all.TryFinding(x => x.Is(LayerEnum.PromotedRebel), out chosen))
                 chosen = all.Find(x => x.Is(Alignment.SyndicateDisrup));
 
             if (!chosen)
@@ -2299,7 +2298,7 @@ public static class RoleGen
                 role1.Alignment = role1.Alignment.GetNewAlignment(Faction.Neutral);
                 Convertible--;
 
-                if (CustomPlayer.Local == converted)
+                if (converted.AmOwner)
                     Flash(flash);
                 else if (CustomPlayer.Local.Is(LayerEnum.Mystic))
                     Flash(CustomColorManager.Mystic);

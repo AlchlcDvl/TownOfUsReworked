@@ -72,7 +72,7 @@ public static class ModCompatibility
             SubAssembly = SubPlugin.GetType().Assembly;
             SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly);
 
-            SubInjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Array.Find(SubTypes, t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null, null);
+            SubInjectedTypes = (Dictionary<string, Type>)AccessTools.Property(Array.Find(SubTypes, t => t.Name == "ComponentExtensions"), "RegisteredTypes").GetValue(null);
 
             SubmarineStatusType = SubTypes.First(t => t.Name == "SubmarineStatus");
             SubmergedInstanceField = AccessTools.Field(SubmarineStatusType, "instance");
@@ -271,12 +271,8 @@ public static class ModCompatibility
 
     public static void RepairOxygen()
     {
-        if (!IsSubmerged())
-            return;
-
         try
         {
-            Ship().RpcUpdateSystem((SystemTypes)130, 64);
             RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), [ CustomPlayer.Local, 64 ]);
         } catch {}
     }

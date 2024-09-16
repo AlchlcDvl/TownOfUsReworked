@@ -156,13 +156,13 @@ public static class GameStartManagerPatches
                             versionMismatch = true;
                             message += $"{client.PlayerName} has a newer version of Town Of Us Reworked (v{pv.VersionFinal})\n";
                         }
-                        else if (!pv.DevMatches || !pv.StreamMatches || !pv.DevBuildMatches)
+                        else if (!pv.VersionStringMatches)
                         {
                             // Version presumably matches, check if Dev/Stream matches
                             versionMismatch = true;
                             message += $"{client.PlayerName} has a mismatching non-public version of Town Of Us Reworked (v{pv.VersionFinal})\n";
                         }
-                        else if (!pv.GuidMatches || !pv.VersionStringMatches)
+                        else if (!pv.GuidMatches)
                         {
                             // Version presumably matches, check if Guid or Version string matches
                             versionMismatch = true;
@@ -173,9 +173,8 @@ public static class GameStartManagerPatches
                             // Somehow something's still not matching, so just display that the player has something wrong
                             versionMismatch = true;
                             message += $"You or {client.PlayerName} somehow still has a version mismatch, please share logs\n";
-                            LogWarning($"{client.PlayerName}\nGuid - {pv.GuidMatches} Dev - {pv.DevMatches} Stream - {pv.StreamMatches} Dev Build - {pv.DevBuildMatches} Version String - " +
-                                $"{pv.VersionFinal} Version - {pv.Version}\n\n{CustomPlayer.Local.Data.PlayerName}\nGuid - {SelfVersion.GuidMatches} Dev - {SelfVersion.DevMatches} Stream" +
-                                $" - {SelfVersion.StreamMatches} Dev Build - {SelfVersion.DevBuildMatches} Version String - {SelfVersion.VersionFinal} Version - {SelfVersion.Version}");
+                            LogWarning($"{client.PlayerName}\nGuid - {pv.GuidMatches} Version String - {pv.VersionFinal} Version - {pv.Version}\n\n{CustomPlayer.Local.Data.PlayerName}\nGuid - "
+                                + $"{SelfVersion.GuidMatches} Version String - {SelfVersion.VersionFinal} Version - {SelfVersion.Version}");
                         }
                     }
                 }

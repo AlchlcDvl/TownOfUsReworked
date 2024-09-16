@@ -26,4 +26,12 @@ public class Runner : Role
         __instance.SabotageButton.gameObject.SetActive(false);
         __instance.ImpostorVentButton.gameObject.SetActive(false);
     }
+
+    public override void UponTaskComplete(uint taskId)
+    {
+        base.UponTaskComplete(taskId);
+
+        if (TasksLeft == 1)
+            Flash(Color);
+    }
 }

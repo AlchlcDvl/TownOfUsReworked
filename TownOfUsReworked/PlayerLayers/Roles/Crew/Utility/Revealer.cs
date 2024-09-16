@@ -83,4 +83,30 @@ public class Revealer : Crew
         if (Local)
             DefaultOutfitAll();
     }
+
+    public override void UponTaskComplete(uint taskId)
+    {
+        base.UponTaskComplete(taskId);
+
+        if (TasksLeft == RevealerTasksRemainingAlert && !Caught)
+        {
+            if (Local)
+                Flash(Color);
+            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
+                Alignment.NeutralPros && RevealerRevealsNeutrals))
+            {
+                Revealed = true;
+                Flash(Color);
+                LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+            }
+        }
+        else if (TasksDone && !Caught)
+        {
+            if (Local || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
+                Alignment.NeutralPros && RevealerRevealsNeutrals))
+            {
+                Flash(Color);
+            }
+        }
+    }
 }

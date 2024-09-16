@@ -34,17 +34,24 @@ public class ToggleOptionAttribute(MultiMenu menu, string onChanged = null) : Op
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Get());
     }
 
-    public override void ModifySetting(out string stringValue)
+    public override void ModifyViewSetting()
     {
-        base.ModifySetting(out stringValue);
+        base.ModifyViewSetting();
+        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
+        viewSettingsInfoPanel.settingText.text = "";
+        viewSettingsInfoPanel.checkMark.gameObject.SetActive(Get());
+        viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Get());
+    }
+
+    public override void ModifySetting()
+    {
+        base.ModifySetting();
         var toggle = Setting.Cast<ToggleOption>();
         var newValue = Get();
         toggle.oldValue = newValue;
 
         if (toggle.CheckMark)
             toggle.CheckMark.enabled = newValue;
-
-        stringValue = newValue ? "On" : "Off";
     }
 
     private static bool LighterDarkerMethod()
