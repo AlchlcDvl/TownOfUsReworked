@@ -29,7 +29,6 @@ public static class CustomHatManager
         hat.Free = true;
         hat.NotInStore = true;
         hat.ViewDataRef = new(viewData.Pointer);
-        hat.CreateAddressableAsset();
 
         var extend = new HatExtension()
         {
@@ -39,7 +38,6 @@ public static class CustomHatManager
             StreamOnly = ch.StreamOnly,
             TestOnly = ch.TestOnly
         };
-
         CustomHatRegistry.TryAdd(hat.name, extend);
         CustomHatViewDatas.TryAdd(hat.ProductId, viewData);
         return hat;

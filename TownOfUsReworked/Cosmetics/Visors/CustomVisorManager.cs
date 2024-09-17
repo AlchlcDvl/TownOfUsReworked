@@ -23,9 +23,8 @@ public static class CustomVisorManager
         visor.Free = true;
         visor.behindHats = !cv.InFront;
         visor.NotInStore = true;
-
         visor.ViewDataRef = new(viewData.Pointer);
-        visor.CreateAddressableAsset();
+
         var extend = new VisorExtension()
         {
             Artist = cv.Artist ?? "Unknown",

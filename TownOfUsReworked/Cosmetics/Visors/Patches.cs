@@ -1,3 +1,4 @@
+using Innersloth.Assets;
 using static TownOfUsReworked.Cosmetics.CustomVisors.CustomVisorManager;
 
 namespace TownOfUsReworked.Cosmetics.CustomVisors;
@@ -86,12 +87,27 @@ public static class VisorsTabOnEnablePatch
             colorChip.ProductId = visor.ProductId;
             colorChip.Tag = visor;
             __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
-            visor.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
+            var colorId = __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
+
+            if (CustomVisorViewDatas.TryGetValue(visor.ProductId, out var data))
+                ColorChipFix(colorChip, data.IdleFrame, colorId);
+            else
+                visor.SetPreview(colorChip.Inner.FrontLayer, colorId);
+
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             __instance.ColorChips.Add(colorChip);
         }
 
         return offset - ((visors.Count - 1) / __instance.NumPerRow * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset) - 1.5f;
+    }
+
+    private static void ColorChipFix(ColorChip chip, Sprite sprite, int colorId)
+    {
+        chip.Inner.FrontLayer.sprite = sprite;
+        AddressableAssetHandler.AddToGameObject(chip.Inner.FrontLayer.gameObject);
+
+        if (Application.isPlaying)
+            PlayerMaterial.SetColors(colorId, chip.Inner.FrontLayer);
     }
 
     public static bool Prefix(VisorsTab __instance)
@@ -245,6 +261,7 @@ public static class PopulateFromHatViewDataPatch
         if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out asset) || !asset)
             return true;
 
+        __instance.UpdateMaterial();
         __instance.transform.SetLocalZ(__instance.DesiredLocalZPosition);
         __instance.SetFlipX(__instance.Image.flipX);
         return false;
@@ -274,12 +291,3 @@ public static class HatParentSetFloorAnimPatch
         return false;
     }
 }
-
-/*[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
-public static class PlayerPhysicsVisorPatch
-{
-    public static void Postfix(PlayerPhysics __instance)
-    {
-
-    }
-}*/

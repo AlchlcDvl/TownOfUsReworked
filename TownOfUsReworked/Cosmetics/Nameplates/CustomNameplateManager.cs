@@ -27,7 +27,7 @@ public static class CustomNameplateManager
         nameplate.Free = true;
         nameplate.NotInStore = true;
         nameplate.ViewDataRef = new(viewData.Pointer);
-        nameplate.CreateAddressableAsset();
+
         var extend = new NameplateExtension()
         {
             Artist = cn.Artist ?? "Unknown",

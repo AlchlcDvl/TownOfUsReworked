@@ -249,7 +249,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             Menus.Add(menu);
     }
 
-    public static void OptionsPatch(PropertyInfo __instance, ref object value) => GetOptionFromProperty(__instance).SetBase(value);
+    // public static void OptionsPatch(PropertyInfo __instance, ref object value) => GetOptionFromProperty(__instance).SetBase(value);
 
     public void SetBase(object value, bool rpc = true, bool notify = true)
     {
@@ -426,5 +426,5 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static T GetOptionFromName<T>(string name) where T : OptionAttribute => GetOptionFromName(name) as T;
 
-    public static OptionAttribute GetOptionFromProperty(PropertyInfo prop) => AllOptions.Find(x => x.Property == prop);
+    // public static OptionAttribute GetOptionFromProperty(PropertyInfo prop) => AllOptions.Find(x => x.Property == prop);
 }

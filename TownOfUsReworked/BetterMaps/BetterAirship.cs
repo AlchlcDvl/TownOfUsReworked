@@ -128,43 +128,42 @@ public static class BetterAirship
             if (!EnableBetterAirship || IsSubmerged())
                 return true;
 
+            if (SpawnType == AirshipSpawnType.Meeting)
+            {
+                __instance.Close();
+                CustomPlayer.Local.moveable = true;
+                CustomPlayer.Local.RpcCustomSnapTo(GetMeetingPosition(CustomPlayer.Local.PlayerId));
+                return false;
+            }
+
+            var spawn = __instance.Locations.ToArray();
+            AddAsset("RolloverDefault", spawn[0].RolloverSfx);
+
             if (EnableCustomSpawns)
             {
-                var spawn = __instance.Locations.ToArray();
-                AddAsset("RolloverDefault", spawn[0].RolloverSfx);
-                spawn = AddSpawn(new Vector3(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault.anim"), GetAudio("RolloverDefault"), spawn);
-                spawn = AddSpawn(new Vector3(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cokpit"), GetAnim("Cokpit.anim"), GetAudio("RolloverDefault"), spawn);
-                spawn = AddSpawn(new Vector3(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical.anim"), GetAudio("RolloverDefault"), spawn);
-                __instance.Locations = spawn;
+                AddSpawn(new Vector3(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault.anim"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new Vector3(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cokpit"), GetAnim("Cokpit.anim"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new Vector3(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical.anim"), GetAudio("RolloverDefault"), ref spawn);
             }
 
-            if (SpawnType != AirshipSpawnType.Meeting)
+            if (SpawnType == AirshipSpawnType.Fixed)
+                __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
+            else if (SpawnType == AirshipSpawnType.RandomSynchronized)
             {
-                var spawn = __instance.Locations.ToArray();
-
-                if (SpawnType == AirshipSpawnType.Fixed)
-                    __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
-                else if (SpawnType == AirshipSpawnType.RandomSynchronized)
+                try
                 {
-                    try
-                    {
-                        __instance.Locations = new[] { spawn[SpawnPoints[0]], spawn[SpawnPoints[1]], spawn[SpawnPoints[2]] };
-                    }
-                    catch
-                    {
-                        __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
-                    }
+                    __instance.Locations = new[] { spawn[SpawnPoints[0]], spawn[SpawnPoints[1]], spawn[SpawnPoints[2]] };
                 }
-                else if (SpawnType == AirshipSpawnType.Random)
-                    __instance.Locations = spawn.GetRandomRange(3).ToArray();
-
-                return true;
+                catch
+                {
+                    __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
+                }
             }
+            else if (SpawnType == AirshipSpawnType.Random)
+                __instance.Locations = spawn.GetRandomRange(3).ToArray();
 
-            __instance.Close();
-            CustomPlayer.Local.moveable = true;
-            CustomPlayer.Local.RpcCustomSnapTo(GetMeetingPosition(CustomPlayer.Local.PlayerId));
-            return false;
+            
+            return true;
         }
 
         public static Vector3 GetMeetingPosition(byte playerId)
@@ -182,7 +181,7 @@ public static class BetterAirship
             return position;
         }
 
-        public static SpawnInMinigame.SpawnLocation[] AddSpawn(Vector3 location, StringNames name, Sprite sprite, AnimationClip rollover, AudioClip sfx, SpawnInMinigame.SpawnLocation[] array)
+        private static void AddSpawn(Vector3 location, StringNames name, Sprite sprite, AnimationClip rollover, AudioClip sfx, ref SpawnInMinigame.SpawnLocation[] array)
         {
             Array.Resize(ref array, array.Length + 1);
             array[^1] = new()
@@ -193,8 +192,6 @@ public static class BetterAirship
                 Rollover = rollover,
                 RolloverSfx = sfx
             };
-
-            return array;
         }
     }
 
