@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu, CustomOptionType.Header)
+public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu, CustomOptionType.Header), IOptionGroup
 {
     public string[] GroupMemberStrings { get; set; }
     public OptionAttribute[] GroupMembers { get; set; }
@@ -25,19 +25,16 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
         var header = setting.Cast<CategoryHeaderMasked>();
         header.Title.text = $"<b>{TranslationManager.Translate(ID)}</b>";
         Collapse = header.transform.FindChild("Collapse")?.gameObject;
-
-        if (Collapse)
-        {
-            Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
-            Collapse.GetComponentInChildren<TextMeshPro>().text = Get() ? "-" : "+";
-        }
+        Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
+        Collapse.GetComponentInChildren<TextMeshPro>().text = Get() ? "-" : "+";
     }
 
     public void Toggle()
     {
         Value = !Get();
         Collapse.GetComponentInChildren<TextMeshPro>().text = Value ? "-" : "+";
-        SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
+        SettingsPatches.OnValueChanged();
+        SettingsPatches.OnValueChangedView();
     }
 
     public void SetTypeAndOptions(Type type)
@@ -46,7 +43,6 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
         Name = ClassType.Name;
         Value = DefaultValue = true;
         ID = $"CustomOption.{Name}";
-        // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
         AllOptions.Add(this);
         var members = new List<OptionAttribute>();
         var strings = new List<string>();

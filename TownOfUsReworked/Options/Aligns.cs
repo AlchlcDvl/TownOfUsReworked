@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(menu, CustomOptionType.Alignment)
+public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(menu, CustomOptionType.Alignment), IOptionGroup
 {
     public LayerEnum Alignment { get; } = alignment;
     private bool NoParts { get; set; } = noParts;
@@ -79,7 +79,8 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
     {
         Value = !Get();
         Collapse.GetComponentInChildren<TextMeshPro>().text = Value ? "-" : "+";
-        SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
+        SettingsPatches.OnValueChanged();
+        SettingsPatches.OnValueChangedView();
     }
 
     public override void Update()

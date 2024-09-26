@@ -403,7 +403,7 @@ public static class MeetingPatches
         }
     }
 
-    private static IEnumerator Slide2D(Transform target, Vector2 source, Vector2 dest, float duration)
+    private static IEnumerator Slide2D(Transform target, Vector3 source, Vector3 dest, float duration)
     {
         var temp = (Vector3)default;
         temp.z = target.position.z;
@@ -413,12 +413,14 @@ public static class MeetingPatches
             var t = time / duration;
             temp.x = Mathf.SmoothStep(source.x, dest.x, t);
             temp.y = Mathf.SmoothStep(source.y, dest.y, t);
+            temp.z = Mathf.SmoothStep(source.z, dest.z, t);
             target.position = temp;
             yield return EndFrame();
         }
 
         temp.x = dest.x;
         temp.y = dest.y;
+        temp.z = dest.z;
         target.position = temp;
         yield break;
     }
@@ -453,15 +455,15 @@ public static class MeetingPatches
                     votes1.Add(role.Swap1.transform.GetChild(childI));
             }
 
-            var pooldest1 = (Vector2)pool1.position;
-            var namedest1 = (Vector2)name1.position;
-            var backgroundDest1 = (Vector2)background1.position;
-            var whiteBackgroundDest1 = (Vector2)whiteBackground1.position;
-            var maskdest1 = (Vector2)mask1.position;
-            var leveldest1 = (Vector2)level1.position;
-            var cbdest1 = (Vector2)cb1.position;
-            var overlaydest1 = (Vector2)overlay1.position;
-            var reportdest1 = (Vector2)report1.position;
+            var pooldest1 = pool1.position;
+            var namedest1 = name1.position;
+            var backgroundDest1 = background1.position;
+            var whiteBackgroundDest1 = whiteBackground1.position;
+            var maskdest1 = mask1.position;
+            var leveldest1 = level1.position;
+            var cbdest1 = cb1.position;
+            var overlaydest1 = overlay1.position;
+            var reportdest1 = report1.position;
 
             var pool2 = role.Swap2.PlayerIcon.transform;
             var name2 = role.Swap2.NameText.transform;
@@ -480,15 +482,15 @@ public static class MeetingPatches
                     votes2.Add(role.Swap2.transform.GetChild(childI));
             }
 
-            var pooldest2 = (Vector2)pool2.position;
-            var namedest2 = (Vector2)name2.position;
-            var backgrounddest2 = (Vector2)background2.position;
-            var whiteBackgroundDest2 = (Vector2)whiteBackground2.position;
-            var maskdest2 = (Vector2)mask2.position;
-            var leveldest2 = (Vector2)level2.position;
-            var cbdest2 = (Vector2)cb2.position;
-            var overlaydest2 = (Vector2)overlay2.position;
-            var reportdest2 = (Vector2)report2.position;
+            var pooldest2 = pool2.position;
+            var namedest2 = name2.position;
+            var backgroundDest2 = background2.position;
+            var whiteBackgroundDest2 = whiteBackground2.position;
+            var maskdest2 = mask2.position;
+            var leveldest2 = level2.position;
+            var cbdest2 = cb2.position;
+            var overlaydest2 = overlay2.position;
+            var reportdest2 = report2.position;
 
             votes2.ForEach(x => x.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap1.MaskLayer));
             votes1.ForEach(x => x.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap2.MaskLayer));
@@ -509,6 +511,8 @@ public static class MeetingPatches
             Coroutines.Start(Slide2D(report2, reportdest2, reportdest1, duration));
             Coroutines.Start(Slide2D(overlay1, overlaydest1, overlaydest2, duration));
             Coroutines.Start(Slide2D(overlay2, overlaydest2, overlaydest1, duration));
+            Coroutines.Start(Slide2D(background1, backgroundDest1, backgroundDest2, duration));
+            Coroutines.Start(Slide2D(background2, backgroundDest2, backgroundDest1, duration));
             Coroutines.Start(Slide2D(whiteBackground1, whiteBackgroundDest1, whiteBackgroundDest2, duration));
             Coroutines.Start(Slide2D(whiteBackground2, whiteBackgroundDest2, whiteBackgroundDest1, duration));
 

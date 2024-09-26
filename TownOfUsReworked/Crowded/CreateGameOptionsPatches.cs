@@ -90,10 +90,7 @@ public static class CreateOptionsPicker_UpdateMaxPlayersButtons
     public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)
     {
         __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
-
-        for (var i = 1; i < __instance.MaxPlayerButtons.Count - 1; i++)
-            __instance.MaxPlayerButtons[i].enabled = __instance.MaxPlayerButtons[i].GetComponentInChildren<TextMeshPro>().text == opts.MaxPlayers.ToString();
-
+        __instance.MaxPlayerButtons.ToArray().Skip(1).ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == opts.MaxPlayers.ToString());
         return false;
     }
 }

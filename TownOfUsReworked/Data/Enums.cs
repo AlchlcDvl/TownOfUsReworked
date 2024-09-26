@@ -883,17 +883,17 @@ public enum CosmeticTypeEnum
     Nameplate
 }
 
-// public enum SkipEnum
-// {
-//     Map,
-//     RoleCard,
-//     Zooming,
-//     Wiki,
-//     Settings,
-//     Task,
-//     Client,
-//     None
-// }
+public enum SkipEnum
+{
+    Map,
+    RoleCard,
+    Zooming,
+    Wiki,
+    Settings,
+    Task,
+    Client,
+    None
+}
 
 public enum WerewolfVentOptions
 {

@@ -15,7 +15,7 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) 
         Value = DefaultValue = (T)property.GetValue(null);
     }
 
-    public override string ToString() => $"{ID}:{Value}";
+    public override string ToString() => $"{ID}:{(Value is Number num ? $"{num:0.###}" : $"{Value}")}";
 
     public void Set(T value, bool rpc = true, bool notify = true)
     {
@@ -29,12 +29,13 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) 
         if (Setting)
         {
             ModifySetting();
-            SettingsPatches.OnValueChanged(GameSettingMenu.Instance);
+            SettingsPatches.OnValueChanged();
         }
 
         if (ViewSetting)
         {
             ModifyViewSetting();
+            SettingsPatches.OnValueChangedView();
         }
 
         var stringValue = Format();
@@ -63,7 +64,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 {
     public static readonly List<OptionAttribute> AllOptions = [];
     public string ID { get; set; }
-    public MultiMenu Menu { get; set; } = menu;
     public readonly List<MultiMenu> Menus = [ menu ];
     public MonoBehaviour Setting { get; set; }
     public MonoBehaviour ViewSetting { get; set; }
@@ -278,6 +278,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             builder.AppendLine(option.ToString());
         }
 
+        builder.AppendLine($"Map:{MapSettings.Map}");
         return builder.ToString();
     }
 
@@ -361,7 +362,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             var name = parts[0];
             var option = AllOptions.Where(x => x is not HeaderOptionAttribute or AlignsOptionAttribute).FirstOrDefault(x => x.ID == name);
 
-            if (option == null)
+            if (option == null && name != "Map")
             {
                 LogWarning($"{name} doesn't exist");
 
@@ -377,27 +378,32 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
             try
             {
-                switch (option)
+                if (name == "Map")
+                    MapSettings.Map = Enum.Parse<MapEnum>(value);
+                else
                 {
-                    case NumberOptionAttribute number:
-                        number.Set(Number.Parse(value), false);
-                        break;
+                    switch (option)
+                    {
+                        case NumberOptionAttribute number:
+                            number.Set(Number.Parse(value), false);
+                            break;
 
-                    case ToggleOptionAttribute toggle:
-                        toggle.Set(bool.Parse(value), false);
-                        break;
+                        case ToggleOptionAttribute toggle:
+                            toggle.Set(bool.Parse(value), false);
+                            break;
 
-                    case StringOptionAttribute @string:
-                        @string.Set((Enum)Enum.Parse(option.TargetType, value), false);
-                        break;
+                        case StringOptionAttribute @string:
+                            @string.Set((Enum)Enum.Parse(option.TargetType, value), false);
+                            break;
 
-                    case RoleListEntryAttribute entry:
-                        entry.Set(Enum.Parse<LayerEnum>(value), false);
-                        break;
+                        case RoleListEntryAttribute entry:
+                            entry.Set(Enum.Parse<LayerEnum>(value), false);
+                            break;
 
-                    case LayersOptionAttribute layer:
-                        layer.Set(RoleOptionData.Parse(value), false);
-                        break;
+                        case LayersOptionAttribute layer:
+                            layer.Set(RoleOptionData.Parse(value), false);
+                            break;
+                    }
                 }
             }
             catch (Exception e)
@@ -425,6 +431,9 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     public static OptionAttribute GetOptionFromName(string name) => GetOption($"CustomOption.{name}");
 
     public static T GetOptionFromName<T>(string name) where T : OptionAttribute => GetOptionFromName(name) as T;
+}
 
-    // public static OptionAttribute GetOptionFromProperty(PropertyInfo prop) => AllOptions.Find(x => x.Property == prop);
+public interface IOptionGroup
+{
+    public OptionAttribute[] GroupMembers { get; set; }
 }

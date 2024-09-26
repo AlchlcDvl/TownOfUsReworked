@@ -112,10 +112,8 @@ public class Politician : Ability
     {
         base.ConfirmVotePrefix(__instance);
 
-        if (__instance.state != MeetingHud.VoteStates.Voted)
-            return;
-
-        __instance.state = MeetingHud.VoteStates.NotVoted;
+        if (__instance.state == MeetingHud.VoteStates.Voted)
+            __instance.state = MeetingHud.VoteStates.NotVoted;
     }
 
     public override void SelectVote(MeetingHud __instance, int id)

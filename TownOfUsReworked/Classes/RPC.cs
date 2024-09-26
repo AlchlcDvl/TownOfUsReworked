@@ -218,7 +218,7 @@ public static class RPC
             layers.ForEach(x => writer.Write(layer: x));
         }
         else
-            LogError($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
+            LogError($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}, item - {item}, type - {item.GetType()}");
     }
 
     public static void CallRpc(params object[] data) => CallOpenRpc(data)?.EndRpc();

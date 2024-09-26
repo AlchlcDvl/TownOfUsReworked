@@ -33,7 +33,7 @@ public class Swapper : Ability
         base.VoteComplete(__instance);
         SwapMenu.HideButtons();
 
-        if (Swap1 && Swap2)
+        if (Swap1 && Swap2 && !Dead)
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Swap1, Swap2);
     }
 
@@ -93,9 +93,6 @@ public class Swapper : Ability
     {
         base.ConfirmVotePrefix(__instance);
         SwapMenu.Voted();
-
-        if (Swap1 && Swap2)
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Swap1, Swap2);
     }
 
     public override void UpdateMeeting(MeetingHud __instance)

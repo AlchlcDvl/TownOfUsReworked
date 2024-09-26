@@ -6,13 +6,13 @@ public static class AllMonos
 
     public static void RegisterMonos()
     {
-        var usableInterface = new RegisterTypeOptions() { Interfaces = new(new[] { typeof(IUsable) }) };
+        var usableInterface = new RegisterTypeOptions() { Interfaces = new([ typeof(IUsable) ]) };
 
         // So many monos...AM I THE NEXT SUBMERGED???? o_O
 
         // Handlers
         ClassInjector.RegisterTypeInIl2Cpp<HudHandler>();
-        // ClassInjector.RegisterTypeInIl2Cpp<ClientHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<ClientHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<MeetingHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<DragHandler>();
@@ -40,7 +40,7 @@ public static class AllMonos
         TownOfUsReworked.ModInstance.AddComponent<DebuggerBehaviour>();
 
         TownOfUsReworked.ModInstance.AddComponent<HudHandler>();
-        // TownOfUsReworked.ModInstance.AddComponent<ClientHandler>();
+        TownOfUsReworked.ModInstance.AddComponent<ClientHandler>();
         TownOfUsReworked.ModInstance.AddComponent<PlayerHandler>();
         TownOfUsReworked.ModInstance.AddComponent<MeetingHandler>();
         TownOfUsReworked.ModInstance.AddComponent<DragHandler>();

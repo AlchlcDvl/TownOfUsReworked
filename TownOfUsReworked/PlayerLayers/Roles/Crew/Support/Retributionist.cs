@@ -317,12 +317,6 @@ public class Retributionist : Crew
     {
         base.ConfirmVotePrefix(__instance);
         RetMenu.Voted();
-
-        if (Selected)
-        {
-            Revived = PlayerByVoteArea(Selected);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Revive, Selected);
-        }
     }
 
     public override void UpdateMeeting(MeetingHud __instance)
@@ -336,7 +330,7 @@ public class Retributionist : Crew
         base.VoteComplete(__instance);
         RetMenu.HideButtons();
 
-        if (Selected)
+        if (Selected && !Dead)
         {
             Revived = PlayerByVoteArea(Selected);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Revive, Selected);

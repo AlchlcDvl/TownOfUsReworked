@@ -6,6 +6,7 @@ public static class SettingsPatches
     public static string CurrentPreset = "Custom";
     public static int SettingsPage2;
     public static int CachedPage;
+    public static int SettingsPage3;
 
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Start))]
     public static class OptionsMenuBehaviour_Start
@@ -863,6 +864,7 @@ public static class SettingsPatches
             __instance.mapButtons.ForEach(x => x.gameObject.Destroy());
             __instance.mapButtons.Clear();
             __instance.transform.GetChild(1).localPosition = new(-1.134f, 0.733f, -1);
+            __instance.selectedMapId = (int)MapSettings.Map;
 
             for (var k = 0; k < __instance.AllMapIcons.Count; k++)
             {
@@ -870,6 +872,7 @@ public static class SettingsPatches
                 var mapButton = UObject.Instantiate(__instance.MapButtonOrigin, Vector3.zero, Quaternion.identity, __instance.transform);
                 mapButton.SetImage(thisVal.MapIcon, maskLayer);
                 mapButton.transform.localPosition = new(__instance.StartPosX + (k * __instance.SpacingX) - 0.7f, 0.74f, -2f);
+                mapButton.name = $"{__instance.AllMapIcons[k].Name}";
                 mapButton.Button.ClickMask = __instance.ButtonClickMask;
                 mapButton.Button.OverrideOnClickListeners(() =>
                 {
@@ -887,10 +890,10 @@ public static class SettingsPatches
 
                 __instance.mapButtons.Add(mapButton);
 
-                if (thisVal.Name == (MapNames)__instance.selectedMapId)
+                if (thisVal.Name == (MapNames)MapSettings.Map)
                 {
                     mapButton.Button.SelectButton(true);
-                    __instance.SelectMap(__instance.selectedMapId);
+                    __instance.SelectMap((int)MapSettings.Map);
                     __instance.selectedButton = mapButton;
                 }
             }
@@ -914,7 +917,12 @@ public static class SettingsPatches
 
     private static void SetMap(int mapId)
     {
-        MapSettings.Map = (MapEnum)mapId;
+        var map = (MapEnum)mapId;
+
+        if (MapSettings.Map == map)
+            return;
+
+        MapSettings.Map = map;
         OnValueChanged();
 
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[mapId]}</font>";
@@ -937,98 +945,193 @@ public static class SettingsPatches
         public static bool Prefix() => false;
     }
 
-    // public static CategoryHeaderMasked ViewHeaderPrefab;
+    public static List<MonoBehaviour> CreateViewOptions(Transform parent)
+    {
+        var options = new List<MonoBehaviour>();
+        var type = (MultiMenu)SettingsPage3;
+
+        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menus.Contains(type)))
+        {
+            if (!option.ViewSetting)
+            {
+                MonoBehaviour setting = null;
+
+                switch (option.Type)
+                {
+                    case CustomOptionType.Layers:
+                        setting = UObject.Instantiate(LayerViewPrefab, parent);
+                        break;
+
+                    case CustomOptionType.Alignment or CustomOptionType.Header:
+                        setting = UObject.Instantiate(HeaderViewPrefab, parent);
+                        break;
+
+                    default:
+                        setting = UObject.Instantiate(GenericViewPrefab, parent);
+                        break;
+                };
+
+                option.ViewSetting = setting;
+                option.ViewOptionCreated();
+            }
+
+            options.Add(option.ViewSetting);
+        }
+
+        return options;
+    }
 
     [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawNormalTab))]
+    // [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawRolesTab))]
     public static class OverrideNormalViewSettingsTab
     {
         public static bool Prefix(LobbyViewSettingsPane __instance)
         {
-            var num = 1.44f;
-            var num2 = -8.95f;
-
-            foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menus.Any(y => y is MultiMenu.Main or MultiMenu.Client)).Cast<HeaderOptionAttribute>())
-            {
-                var categoryHeaderMasked = UObject.Instantiate(__instance.categoryHeaderOrigin, __instance.settingsContainer);
-                categoryHeaderMasked.transform.localScale = Vector3.one;
-                categoryHeaderMasked.transform.localPosition = new(-9.77f, num, -2f);
-                header.ViewSetting = categoryHeaderMasked;
-                header.ViewOptionCreated();
-                __instance.settingsInfo.Add(categoryHeaderMasked.gameObject);
-                num -= 0.85f;
-
-                for (var i = 0; i < header.GroupMembers.Length; i++)
-                {
-                    var option = header.GroupMembers[i];
-                    var viewSettingsInfoPanel = UObject.Instantiate(__instance.infoPanelOrigin, __instance.settingsContainer);
-                    viewSettingsInfoPanel.transform.localScale = Vector3.one;
-
-                    if (i % 2 == 0)
-                    {
-                        num2 = -8.95f;
-
-                        if (i > 0)
-                            num -= 0.59f;
-                    }
-                    else
-                        num2 = -3f;
-
-                    viewSettingsInfoPanel.transform.localPosition = new(num2, num, -2f);
-                    option.ViewSetting = viewSettingsInfoPanel;
-                    option.ViewOptionCreated();
-                    __instance.settingsInfo.Add(viewSettingsInfoPanel.gameObject);
-                }
-
-                num -= 0.59f;
-            }
-
-            __instance.scrollBar.SetYBoundsMax(-num);
+            SettingsPage3 = 0;
+            OnValueChangedView(__instance);
             return false;
         }
     }
 
-    // public static void OnValueChanged(LobbyViewSettingsPane __instance)
-    // {
-    //     var num = 1.44f;
-    //     var num2 = -8.95f;
+    public static void OnValueChangedView(LobbyViewSettingsPane __instance = null)
+    {
+        if (IsHnS())
+            return;
 
-    //     foreach (var header in OptionAttribute.AllOptions.Where(x => x is HeaderOptionAttribute && x.Menu == MultiMenu.Main).Cast<HeaderOptionAttribute>())
-    //     {
-    //         var categoryHeaderMasked = UObject.Instantiate(__instance.categoryHeaderOrigin, __instance.settingsContainer);
-    //         categoryHeaderMasked.transform.localScale = Vector3.one;
-    //         categoryHeaderMasked.transform.localPosition = new(-9.77f, num, -2f);
-    //         header.ViewSetting = categoryHeaderMasked;
-    //         header.ViewOptionCreated();
-    //         __instance.settingsInfo.Add(categoryHeaderMasked.gameObject);
-    //         num -= 0.85f;
+        __instance ??= LobbyInfoPane.Instance.LobbyViewSettingsPane;
 
-    //         for (var i = 0; i < header.GroupMembers.Length; i++)
-    //         {
-    //             var option = header.GroupMembers[i];
-    //             var viewSettingsInfoPanel = UObject.Instantiate(__instance.infoPanelOrigin, __instance.settingsContainer);
-    //             viewSettingsInfoPanel.transform.localScale = Vector3.one;
+        if (!__instance)
+            return;
 
-    //             if (i % 2 == 0)
-    //             {
-    //                 num2 = -8.95f;
+        var num = 1.44f;
+        var num2 = -8.95f;
+        var menu = (MultiMenu)SettingsPage3;
+        CreateViewOptions(__instance.settingsContainer);
 
-    //                 if (i > 0)
-    //                     num -= 0.59f;
-    //             }
-    //             else
-    //                 num2 = -3f;
+        foreach (var option in OptionAttribute.AllOptions)
+        {
+            if (option is not IOptionGroup header || !option.ViewSetting)
+                continue;
 
-    //             viewSettingsInfoPanel.transform.localPosition = new(num2, num, -2f);
-    //             option.ViewSetting = viewSettingsInfoPanel;
-    //             option.ViewOptionCreated();
-    //             __instance.settingsInfo.Add(viewSettingsInfoPanel.gameObject);
-    //         }
+            var flag = option.Menus.Contains(menu) && option.Active();
+            option.ViewSetting.gameObject.SetActive(flag);
 
-    //         num -= 0.59f;
-    //     }
+            if (!flag)
+            {
+                header.GroupMembers.ForEach(x =>
+                {
+                    if (x.ViewSetting)
+                        x.ViewSetting.gameObject.SetActive(false);
+                });
+                continue;
+            }
 
-    //     __instance.scrollBar.SetYBoundsMax(-num);
-    // }
+            option.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
+            __instance.settingsInfo.Add(option.ViewSetting.gameObject);
+            num -= 0.85f;
+            var members = header.GroupMembers.Where(x =>
+            {
+                if (!x.ViewSetting)
+                    return false;
+
+                var flag2 = x.Menus.Contains(menu) && x.Active();
+                x.ViewSetting.gameObject.SetActive(flag2);
+                return flag2;
+            }).ToArray();
+            header.GroupMembers.Except(members).ForEach(x =>
+            {
+                if (x.ViewSetting)
+                    x.ViewSetting.gameObject.SetActive(false);
+            });
+
+            for (var i = 0; i < members.Length; i++)
+            {
+                var optionn = members[i];
+
+                if (i % 2 == 0)
+                {
+                    num2 = -8.95f;
+
+                    if (i > 0)
+                        num -= 0.59f;
+                }
+                else
+                    num2 = -3f;
+
+                optionn.ViewSetting.transform.localPosition = new(num2, num, -2f);
+                __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
+            }
+
+            num -= 0.59f;
+        }
+
+        __instance.scrollBar.SetYBoundsMax(-num);
+    }
+
+    private static CategoryHeaderMasked HeaderViewPrefab;
+    private static CategoryHeaderRoleVariant LayerViewPrefab;
+    private static ViewSettingsInfoPanel GenericViewPrefab;
+
+    private static PassiveButton ClientOptionsButton;
+
+    [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.Awake))]
+    public static class DefinePrefabs3
+    {
+        public static void Postfix(LobbyViewSettingsPane __instance)
+        {
+            if (LobbyInfoPane.Instance)
+            {
+                var child = LobbyInfoPane.Instance.gameObject.transform.GetChild(0).GetChild(6).GetChild(1);
+                child.GetComponent<TextTranslatorTMP>()?.Destroy();
+                child.GetComponent<TextMeshPro>().text = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
+            }
+
+            __instance.rolesTabButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+            __instance.rolesTabButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
+
+            if (!ClientOptionsButton)
+            {
+                ClientOptionsButton = UObject.Instantiate(__instance.rolesTabButton, __instance.rolesTabButton.transform.parent);
+                ClientOptionsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+                ClientOptionsButton.name = "ClientOptionsTab";
+                ClientOptionsButton.buttonText.text = TranslationManager.Translate("CustomOption.ClientOptions");
+                ClientOptionsButton.transform.localPosition = __instance.rolesTabButton.transform.localPosition + new Vector3(__instance.rolesTabButton.transform.localPosition.x -
+                    __instance.taskTabButton.transform.localPosition.x, 0f, 0f);
+                ClientOptionsButton.OverrideOnClickListeners(() =>
+                {
+                    SettingsPage3 = 3;
+                    OnValueChangedView(__instance);
+                });
+            }
+
+            if (!HeaderViewPrefab)
+            {
+                HeaderViewPrefab = UObject.Instantiate(__instance.categoryHeaderOrigin, null).DontUnload().DontDestroy();
+                HeaderViewPrefab.transform.localScale = Vector3.one;
+                HeaderViewPrefab.name = "HeaderViewPrefab";
+                HeaderViewPrefab.Title.name = "Collapse";
+                HeaderViewPrefab.Title.gameObject.AddComponent<PassiveButton>();
+
+                HeaderViewPrefab.gameObject.SetActive(false);
+            }
+
+            if (!LayerViewPrefab)
+            {
+                LayerViewPrefab = UObject.Instantiate(__instance.categoryHeaderRoleOrigin, null).DontUnload().DontDestroy();
+                LayerViewPrefab.transform.localScale = Vector3.one;
+                LayerViewPrefab.name = "LayerViewPrefab";
+                LayerViewPrefab.gameObject.SetActive(false);
+            }
+
+            if (!GenericViewPrefab)
+            {
+                GenericViewPrefab = UObject.Instantiate(__instance.infoPanelOrigin, null).DontUnload().DontDestroy();
+                GenericViewPrefab.transform.localScale = Vector3.one;
+                GenericViewPrefab.name = "GenericViewPrefab";
+                GenericViewPrefab.gameObject.SetActive(false);
+            }
+        }
+    }
 
     public static readonly List<PassiveButton> PresetsButtons = [];
     public static PassiveButton Prev;

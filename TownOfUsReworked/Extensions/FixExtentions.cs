@@ -51,17 +51,17 @@ public static class FixExtentions
             switch (MapPatches.CurrentMap)
             {
                 case 1:
-                    var comms2 = Ship().Systems[SystemTypes.Comms].TryCast<HqHudSystemType>();
+                    var comms2 = Ship().Systems[SystemTypes.Comms].TryCast<IActivatable>();
 
                     if (comms2.IsActive)
                         FixMiraComms();
 
-                    var reactor2 = Ship().Systems[SystemTypes.Reactor].TryCast<ReactorSystemType>();
+                    var reactor2 = Ship().Systems[SystemTypes.Reactor].TryCast<IActivatable>();
 
                     if (reactor2.IsActive)
                         FixReactor(SystemTypes.Reactor);
 
-                    var oxygen2 = Ship().Systems[SystemTypes.LifeSupp].TryCast<LifeSuppSystemType>();
+                    var oxygen2 = Ship().Systems[SystemTypes.LifeSupp].TryCast<IActivatable>();
 
                     if (oxygen2.IsActive)
                         FixOxygen();
@@ -74,12 +74,12 @@ public static class FixExtentions
                     break;
 
                 case 2:
-                    var comms3 = Ship().Systems[SystemTypes.Comms].TryCast<HudOverrideSystemType>();
+                    var comms3 = Ship().Systems[SystemTypes.Comms].TryCast<IActivatable>();
 
                     if (comms3.IsActive)
                         FixComms();
 
-                    var seismic = Ship().Systems[SystemTypes.Laboratory].TryCast<ReactorSystemType>();
+                    var seismic = Ship().Systems[SystemTypes.Laboratory].TryCast<IActivatable>();
 
                     if (seismic.IsActive)
                         FixReactor(SystemTypes.Laboratory);
@@ -92,17 +92,17 @@ public static class FixExtentions
                     break;
 
                 case 0 or 3:
-                    var comms1 = Ship().Systems[SystemTypes.Comms].TryCast<HudOverrideSystemType>();
+                    var comms1 = Ship().Systems[SystemTypes.Comms].TryCast<IActivatable>();
 
                     if (comms1.IsActive)
                         FixComms();
 
-                    var reactor1 = Ship().Systems[SystemTypes.Reactor].TryCast<ReactorSystemType>();
+                    var reactor1 = Ship().Systems[SystemTypes.Reactor].TryCast<IActivatable>();
 
                     if (reactor1.IsActive)
                         FixReactor(SystemTypes.Reactor);
 
-                    var oxygen1 = Ship().Systems[SystemTypes.LifeSupp].TryCast<LifeSuppSystemType>();
+                    var oxygen1 = Ship().Systems[SystemTypes.LifeSupp].TryCast<IActivatable>();
 
                     if (oxygen1.IsActive)
                         FixOxygen();
@@ -115,12 +115,12 @@ public static class FixExtentions
                     break;
 
                 case 4:
-                    var comms4 = Ship().Systems[SystemTypes.Comms].TryCast<HudOverrideSystemType>();
+                    var comms4 = Ship().Systems[SystemTypes.Comms].TryCast<IActivatable>();
 
                     if (comms4.IsActive)
                         FixComms();
 
-                    var reactor = Ship().Systems[SystemTypes.HeliSabotage].TryCast<HeliSabotageSystem>();
+                    var reactor = Ship().Systems[SystemTypes.HeliSabotage].TryCast<IActivatable>();
 
                     if (reactor.IsActive)
                         FixHeli();
@@ -133,12 +133,12 @@ public static class FixExtentions
                     break;
 
                 case 5:
-                    var comms7 = Ship().Systems[SystemTypes.Comms].TryCast<HudOverrideSystemType>();
+                    var comms7 = Ship().Systems[SystemTypes.Comms].TryCast<IActivatable>();
 
                     if (comms7.IsActive)
                         FixComms();
 
-                    var reactor3 = Ship().Systems[SystemTypes.Reactor].TryCast<ReactorSystemType>();
+                    var reactor3 = Ship().Systems[SystemTypes.Reactor].TryCast<IActivatable>();
 
                     if (reactor3.IsActive)
                         FixReactor(SystemTypes.Reactor);
@@ -154,7 +154,7 @@ public static class FixExtentions
                     if (!SubLoaded)
                         break;
 
-                    var reactor5 = Ship().Systems[SystemTypes.Reactor].TryCast<ReactorSystemType>();
+                    var reactor5 = Ship().Systems[SystemTypes.Reactor].TryCast<IActivatable>();
 
                     if (reactor5.IsActive)
                         FixReactor(SystemTypes.Reactor);
@@ -164,7 +164,7 @@ public static class FixExtentions
                     if (lights5.IsActive)
                         FixLights(lights5);
 
-                    var comms5 = Ship().Systems[SystemTypes.Comms].TryCast<HudOverrideSystemType>();
+                    var comms5 = Ship().Systems[SystemTypes.Comms].TryCast<IActivatable>();
 
                     if (comms5.IsActive)
                         FixComms();
@@ -178,17 +178,12 @@ public static class FixExtentions
                     if (!LILoaded)
                         break;
 
-                    var comms6 = Ship().Systems[SystemTypes.Comms].TryCast<HudOverrideSystemType>();
+                    var comms6 = Ship().Systems[SystemTypes.Comms].TryCast<IActivatable>();
 
                     if (comms6.IsActive)
                         FixComms();
 
-                    var reactor6 = Ship().Systems[SystemTypes.Laboratory].TryCast<ReactorSystemType>();
-
-                    if (reactor6.IsActive)
-                        FixReactor(SystemTypes.Laboratory);
-
-                    var oxygen6 = Ship().Systems[SystemTypes.LifeSupp].TryCast<LifeSuppSystemType>();
+                    var oxygen6 = Ship().Systems[SystemTypes.LifeSupp].TryCast<IActivatable>();
 
                     if (oxygen6.IsActive)
                         FixOxygen();
@@ -203,10 +198,15 @@ public static class FixExtentions
                     if (mixup2.IsActive)
                         FixMixup(mixup2);
 
-                    var reactor7 = Ship().Systems[SystemTypes.Reactor].TryCast<ReactorSystemType>();
+                    var reactor7 = Ship().Systems[SystemTypes.Reactor].TryCast<IActivatable>();
 
                     if (reactor7.IsActive)
                         FixReactor(SystemTypes.Reactor);
+
+                    var reactor6 = Ship().Systems[SystemTypes.Laboratory].TryCast<IActivatable>();
+
+                    if (reactor6.IsActive)
+                        FixReactor(SystemTypes.Laboratory);
 
                     break;
             }

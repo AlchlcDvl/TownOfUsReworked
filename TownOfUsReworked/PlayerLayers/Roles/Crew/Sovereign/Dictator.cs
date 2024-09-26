@@ -48,7 +48,7 @@ public class Dictator : Crew
         base.VoteComplete(__instance);
         DictMenu.HideButtons();
 
-        if (ToBeEjected.Any() && !Ejected)
+        if (ToBeEjected.Any() && !Ejected && !Dead)
         {
             ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ToDie, ToBeEjected);
@@ -96,12 +96,6 @@ public class Dictator : Crew
     {
         base.ConfirmVotePrefix(__instance);
         DictMenu.Voted();
-
-        if (ToBeEjected.Any() && !Ejected)
-        {
-            ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ToDie, ToBeEjected);
-        }
     }
 
     public override void UpdateMeeting(MeetingHud __instance)

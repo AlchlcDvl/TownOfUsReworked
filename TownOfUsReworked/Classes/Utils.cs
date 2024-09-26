@@ -522,6 +522,7 @@ public static class Utils
             target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
             target.RpcSetScanner(false);
             Meeting().SetForegroundForDead();
+            Meeting().ClearVote();
 
             if (target.TryGetLayer<Swapper>(out var swapper))
             {
@@ -560,10 +561,6 @@ public static class Utils
         target.Die(DeathReason.Kill, false);
         KilledPlayers.Add(new(killer.PlayerId, target.PlayerId));
         var voteArea = VoteAreaByPlayer(target);
-
-        if (voteArea.DidVote)
-            voteArea.UnsetVote();
-
         voteArea.AmDead = true;
         voteArea.Overlay.gameObject.SetActive(true);
         voteArea.Overlay.color = UColor.white;
@@ -654,13 +651,8 @@ public static class Utils
 
         foreach (var area in AllVoteAreas())
         {
-            if (area.VotedFor != target.PlayerId)
-                continue;
-
-            area.UnsetVote();
-
-            if (target.AmOwner)
-                Meeting().ClearVote();
+            if (area.VotedFor == target.PlayerId || area.TargetPlayerId == target.PlayerId)
+                area.UnsetVote();
         }
 
         if (AmongUsClient.Instance.AmHost)

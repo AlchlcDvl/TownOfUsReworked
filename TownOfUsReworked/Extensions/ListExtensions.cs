@@ -81,31 +81,6 @@ public static class ListExtensions
         return result;
     }
 
-    public static List<List<T>> Split<T>(this List<T> list, Func<T, bool> splitCondition, bool includeSatisfier = true)
-    {
-        var result = new List<List<T>>();
-        var temp = new List<T>();
-
-        foreach (var item in list)
-        {
-            if (splitCondition(item))
-            {
-                if (includeSatisfier)
-                    temp.Add(item);
-
-                result.Add(temp);
-                temp = [];
-            }
-            else
-                temp.Add(item);
-        }
-
-        if (temp.Any())
-            result.Add(temp);
-
-        return result;
-    }
-
     public static List<T> GetRandomRange<T>(this IEnumerable<T> list, int count)
     {
         var temp = new List<T>();
@@ -166,6 +141,31 @@ public static class ListExtensions
         }
 
         return -1;
+    }
+
+    public static List<List<T>> Split<T>(this List<T> list, Func<T, bool> splitCondition, bool includeSatisfier = true)
+    {
+        var result = new List<List<T>>();
+        var temp = new List<T>();
+
+        foreach (var item in list)
+        {
+            if (splitCondition(item))
+            {
+                if (includeSatisfier)
+                    temp.Add(item);
+
+                result.Add(temp);
+                temp = [];
+            }
+            else
+                temp.Add(item);
+        }
+
+        if (temp.Any())
+            result.Add(temp);
+
+        return result;
     }
 
     public static Dictionary<int, List<T>> SplitAndGetIndices<T>(this List<T> list, Func<T, int> predicate)
