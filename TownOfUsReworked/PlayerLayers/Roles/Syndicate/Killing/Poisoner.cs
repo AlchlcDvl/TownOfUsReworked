@@ -68,7 +68,7 @@ public class Poisoner : Syndicate
             if (PoisonedPlayer && HoldsDrive && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
                 PoisonedPlayer = null;
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 

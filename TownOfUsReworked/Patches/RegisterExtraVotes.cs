@@ -91,7 +91,7 @@ public static class PopulateResults
                 var playerInfo = GameData.Instance.GetPlayerById(voteState.VoterId);
 
                 if (!playerInfo)
-                    LogError($"Couldn't find player info for voter: {voteState.VoterId}");
+                    Error($"Couldn't find player info for voter: {voteState.VoterId}");
                 else if (i == 0 && voteState.SkippedVote)
                 {
                     __instance.BloopAVoteIcon(playerInfo, amountOfSkippedVoters, __instance.SkippedVoting.transform);

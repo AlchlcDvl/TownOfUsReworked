@@ -142,7 +142,7 @@ public class Politician : Ability
                 break;
 
             default:
-                LogError($"Received unknown RPC - {(int)polAction}");
+                Error($"Received unknown RPC - {(int)polAction}");
                 break;
         }
     }

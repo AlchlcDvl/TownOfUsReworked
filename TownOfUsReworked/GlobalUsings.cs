@@ -42,7 +42,7 @@ global using TownOfUsReworked.PlayerLayers.Abilities;
 global using TownOfUsReworked.PlayerLayers.Modifiers;
 global using TownOfUsReworked.Cosmetics.CustomColors;
 global using static TownOfUsReworked.Classes.GameStates;
-global using TownOfUsReworked.PlayerLayers.Objectifiers;
+global using TownOfUsReworked.PlayerLayers.Dispositions;
 global using static TownOfUsReworked.Custom.CustomButton;
 global using static TownOfUsReworked.Modules.ChatCommand;
 global using static TownOfUsReworked.Classes.Interactions;

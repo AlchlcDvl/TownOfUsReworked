@@ -59,7 +59,7 @@ public enum MeetingTypes
 public enum InfoType
 {
     Role,
-    Objectifier,
+    Disposition,
     Ability,
     Modifier,
     Lore,
@@ -148,7 +148,7 @@ public enum Alignment
 
     Ability,
     Modifier,
-    Objectifier,
+    Disposition,
 
     None
 }
@@ -344,7 +344,7 @@ public enum PlayerLayerEnum
     Role,
     Modifier,
     Ability,
-    Objectifier,
+    Disposition,
 
     None
 }
@@ -477,7 +477,7 @@ public enum LayerEnum
     Rivals,
     Taskmaster,
     Traitor,
-    NoneObjectifier,
+    NoneDisposition,
 
     Assassin,
     Bullseye,
@@ -541,7 +541,7 @@ public enum LayerEnum
 
     Ability,
     Modifier,
-    Objectifier,
+    Disposition,
 
     None
 }

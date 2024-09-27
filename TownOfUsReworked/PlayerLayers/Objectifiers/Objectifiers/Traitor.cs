@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Traitor : Objectifier
+public class Traitor : Disposition
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool TraitorKnows { get; set; } = true;
@@ -24,11 +24,11 @@ public class Traitor : Objectifier
                 {
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier
+                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
                 };
             }
             else
-                return ClientOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Objectifier;
+                return ClientOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Disposition;
         }
     }
     public override string Name => "Traitor";

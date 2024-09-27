@@ -83,7 +83,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 |                                    |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |                               |
 |                                    |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |                               |
 
-| [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Objectifiers](#objectifiers) |
+| [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Dispositions](#dispositions) |
 |-------------------------------|-------------------------------|-------------------------------|
 | [Astral](#astral)             | [Assassin](#assassin)         | [Allied](#allied)             |
 | [Bait](#bait)                 | [Button Barry](#button-barry) | [Corrupted](#corrupted)       |
@@ -955,7 +955,7 @@ When Pestilence first emerges, every player is given one stack of a deadly plagu
 ### Win Condition: Finish your tasks without getting clicked or having the game end
 ### Origin: Ottomated
 
-The Phantom spawns when a Neutral player dies withouth accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
+The Phantom spawns when a Neutral player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
 
 ### Game Options
 
@@ -1609,9 +1609,9 @@ The Runner is a role that only spawns in the Task Race game mode. It has no abil
 
 -----------------------
 
-# Objectifiers
+# Dispositions
 
-Objectifiers are basically a second objective for the player. They can either choose to win the regular way, or win via their Objectifier's condition.
+Dispositions are basically a second objective for the player. They can either choose to win the regular way, or win via their Disposition's condition.
 
 ## Allied
 ### Applied To: Neutral (Killing)
@@ -1945,7 +1945,7 @@ The Assassin can guess the layers of others. If they guess right, the target is 
 | Assassin Guess Crew Investigatives | Whether the Assassin can Guess Crew (Investigative) roles | Toggle | False |
 | Assassin Guess Pestilence | Whether the Assassin can Guess Pestilence | Toggle | False |
 | Assassin Guess Select Modifiers | Whether the Assassin can Guess some non-obvious Modifiers | Toggle | False |
-| Assassin Guess Select Objectifiers | Whether the Assassin can Guess some non-obvious Objectifiers | Toggle | False |
+| Assassin Guess Select Dispositions | Whether the Assassin can Guess some non-obvious Dispositions | Toggle | False |
 | Assassin Guess Select Abilities | Whether the Assassin can Guess some non-obvious Abilities | Toggle | False |
 | Assassin Can Guess After Voting | Whether the Assassin can Guess after voting | Toggle | False |
 

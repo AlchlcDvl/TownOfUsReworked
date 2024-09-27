@@ -12,9 +12,9 @@ public class PortalLoader : AssetLoader<Asset>
     public override IEnumerator BeginDownload(object response)
     {
         var mainResponse = (List<Asset>)response;
-        LogMessage($"Found {mainResponse.Count} frames");
+        Message($"Found {mainResponse.Count} frames");
         var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
-        LogMessage($"Downloading {toDownload.Count()} frames");
+        Message($"Downloading {toDownload.Count()} frames");
         yield return CoDownloadAsset(toDownload);
     }
 

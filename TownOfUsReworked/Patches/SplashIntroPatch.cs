@@ -127,13 +127,13 @@ public static class UpdateSplashPatch
             yield break;
 
         SetText("Setting Mod Data");
-        LogMessage("Setting mod data");
+        Message("Setting mod data");
 
         ModUpdater.CanDownloadSubmerged = !SubLoaded && ModUpdater.URLs.ContainsKey("Submerged");
         ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
 
         Generate.GenerateAll();
-        Info.SetAllInfo();
+        Modules.Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();
 
         DataSet = true;

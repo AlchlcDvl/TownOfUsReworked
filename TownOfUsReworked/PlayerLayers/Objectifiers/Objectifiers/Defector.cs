@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Defector : Objectifier
+public class Defector : Disposition
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool DefectorKnows { get; set; } = true;
@@ -25,11 +25,11 @@ public class Defector : Objectifier
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Neutral => CustomColorManager.Neutral,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Objectifier
+                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Disposition
                 };
             }
             else
-                return ClientOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Objectifier;
+                return ClientOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Disposition;
         }
     }
     public override string Name => "Defector";

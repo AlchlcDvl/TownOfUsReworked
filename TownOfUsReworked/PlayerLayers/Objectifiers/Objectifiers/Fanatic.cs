@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Fanatic : Objectifier
+public class Fanatic : Disposition
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool FanaticKnows { get; set; } = true;
@@ -24,11 +24,11 @@ public class Fanatic : Objectifier
                 {
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier
+                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
                 };
             }
             else
-                return ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Objectifier;
+                return ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition;
         }
     }
     public override string Name => "Fanatic";

@@ -26,7 +26,7 @@ public static class ShowRolePatch
 
         var role = Role.LocalRole;
         var modifier = Modifier.LocalModifier;
-        var objectifier = Objectifier.LocalObjectifier;
+        var disposition = Disposition.LocalDisposition;
         var ability = Ability.LocalAbility;
 
         var statusString = "";
@@ -35,8 +35,8 @@ public static class ShowRolePatch
         if (!modifier.Hidden)
             status += $" {modifier?.ColorString}{modifier?.Name}</color>";
 
-        if (!objectifier.Hidden)
-            status += $" {objectifier?.ColorString}{objectifier?.Name}</color>";
+        if (!disposition.Hidden)
+            status += $" {disposition?.ColorString}{disposition?.Name}</color>";
 
         if (!ability.Hidden)
             status += $" {ability?.ColorString}{ability?.Name}</color>";

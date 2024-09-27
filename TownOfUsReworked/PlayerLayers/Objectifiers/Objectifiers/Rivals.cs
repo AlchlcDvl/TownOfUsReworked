@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Rivals : Objectifier
+public class Rivals : Disposition
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RivalsChat { get; set; } = true;
@@ -12,7 +12,7 @@ public class Rivals : Objectifier
     public PlayerControl OtherRival { get; set; }
     public bool IsWinningRival =>  OtherRival.HasDied() && !Player.HasDied();
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Rivals : CustomColorManager.Objectifier;
+    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Rivals : CustomColorManager.Disposition;
     public override string Name => "Rivals";
     public override string Symbol => "α";
     public override LayerEnum Type => LayerEnum.Rivals;

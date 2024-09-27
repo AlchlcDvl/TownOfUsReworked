@@ -4,7 +4,7 @@ public static class RPC
 {
     private const byte CustomRPCCallID = 254;
 
-    public static void SendOptionRPC(OptionAttribute setting = null, int targetClientId = -1)
+    public static void SendOptionRPC(OptionAttribute setting = null, int targetClientId = -1, bool save = true)
     {
         if (TownOfUsReworked.MCIActive)
             return;
@@ -18,7 +18,7 @@ public static class RPC
 
         options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Alignment || x.ClientOnly);
         var split = options.Split(50);
-        LogInfo($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
+        Info($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
 
         foreach (var list in split)
         {
@@ -26,7 +26,7 @@ public static class RPC
 
             foreach (var option in list)
             {
-                // LogInfo($"Sending {option}");
+                // Info($"Sending {option}");
                 writer.Write(option.ID);
 
                 if (option is ToggleOptionAttribute toggle)
@@ -44,7 +44,10 @@ public static class RPC
             writer.EndRpc();
         }
 
-        OptionAttribute.SaveSettings("Last Used");
+        CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, "Map", MapSettings.Map);
+
+        if (save)
+            OptionAttribute.SaveSettings("Last Used");
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)
@@ -53,23 +56,30 @@ public static class RPC
             return;
 
         var count = reader.ReadInt32();
-        LogInfo($"{count} options received:");
+        Info($"{count} options received:");
 
         for (var i = 0; i < count; i++)
         {
             var id = reader.ReadString();
-            var customOption = OptionAttribute.AllOptions.Find(option => option.ID == id);
-            var value = customOption.Type switch
+
+            if (id == "Map")
+                SettingsPatches.SetMap(reader.ReadEnum<MapEnum>());
+            else
             {
-                CustomOptionType.Toggle => reader.ReadBoolean(),
-                CustomOptionType.Number => reader.ReadNumber(),
-                CustomOptionType.String => reader.ReadEnum(customOption.TargetType),
-                CustomOptionType.Layers => reader.ReadRoleOptionData(),
-                CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
-                _ => null
-            };
-            customOption.SetBase(value, false);
-            // LogInfo(customOption);
+                var customOption = OptionAttribute.AllOptions.Find(option => option.ID == id);
+                var value = customOption.Type switch
+                {
+                    CustomOptionType.Toggle => reader.ReadBoolean(),
+                    CustomOptionType.Number => reader.ReadNumber(),
+                    CustomOptionType.String => reader.ReadEnum(customOption.TargetType),
+                    CustomOptionType.Layers => reader.ReadRoleOptionData(),
+                    CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
+                    _ => null
+                };
+                customOption.SetBase(value, false);
+            }
+
+            // Info(id);
         }
 
         OptionAttribute.SaveSettings("Last Used");
@@ -170,7 +180,7 @@ public static class RPC
     public static void Write(this MessageWriter writer, object item, object[] data)
     {
         if (item == null)
-            LogError($"Data type used in the rpc was null: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
+            Error($"Data type used in the rpc was null: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
         else if (item is Enum enumVal)
             writer.Write(enumVal);
         else if (item is PlayerControl player)
@@ -218,7 +228,7 @@ public static class RPC
             layers.ForEach(x => writer.Write(layer: x));
         }
         else
-            LogError($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}, item - {item}, type - {item.GetType()}");
+            Error($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}, item - {item}, type - {item.GetType()}");
     }
 
     public static void CallRpc(params object[] data) => CallOpenRpc(data)?.EndRpc();
@@ -238,7 +248,7 @@ public static class RPC
 
         if (data[0] is not CustomRPC)
         {
-            LogError("The first parameter must be CustomRPC");
+            Error("The first parameter must be CustomRPC");
             return null;
         }
 
@@ -250,7 +260,7 @@ public static class RPC
     public static void EndRpc(this MessageWriter writer)
     {
         if (writer == null)
-            LogError("RPC writer was null");
+            Error("RPC writer was null");
         else
             AmongUsClient.Instance.FinishRpcImmediately(writer);
     }

@@ -249,8 +249,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             Menus.Add(menu);
     }
 
-    // public static void OptionsPatch(PropertyInfo __instance, ref object value) => GetOptionFromProperty(__instance).SetBase(value);
-
     public void SetBase(object value, bool rpc = true, bool notify = true)
     {
         if (this is ToggleOptionAttribute toggle)
@@ -302,7 +300,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     {
         SaveText($"{fileName}.txt", SettingsToString(), TownOfUsReworked.Options);
 
-        if (!SettingsPatches.Save)
+        if (!SettingsPatches.Save || SettingsPatches.PresetsButtons.Any(x => x.name == fileName))
             return;
 
         var index = SettingsPatches.PresetsButtons.Count;
@@ -332,11 +330,11 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static void LoadPreset(string presetName)
     {
-        LogMessage($"Loading - {presetName}");
+        Message($"Loading - {presetName}");
         var text = ReadDiskText($"{presetName}.txt", TownOfUsReworked.Options);
 
         if (IsNullEmptyOrWhiteSpace(text))
-            LogError($"{presetName} no exist");
+            Error($"{presetName} no exist");
         else
         {
             CallRpc(CustomRPC.Misc, MiscRPC.LoadPreset, presetName);
@@ -360,17 +358,11 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             splitText.RemoveAt(0);
             var parts = opt.Split(':');
             var name = parts[0];
-            var option = AllOptions.Where(x => x is not HeaderOptionAttribute or AlignsOptionAttribute).FirstOrDefault(x => x.ID == name);
+            var option = AllOptions.Where(x => x is not IOptionGroup).FirstOrDefault(x => x.ID == name);
 
             if (option == null && name != "Map")
             {
-                LogWarning($"{name} doesn't exist");
-
-                try
-                {
-                    splitText.RemoveAt(0);
-                } catch {}
-
+                Warning($"{opt} doesn't exist");
                 continue;
             }
 
@@ -379,36 +371,24 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             try
             {
                 if (name == "Map")
-                    MapSettings.Map = Enum.Parse<MapEnum>(value);
+                    SettingsPatches.SetMap(Enum.Parse<MapEnum>(value));
                 else
                 {
-                    switch (option)
+                    var val = option.Type switch
                     {
-                        case NumberOptionAttribute number:
-                            number.Set(Number.Parse(value), false);
-                            break;
-
-                        case ToggleOptionAttribute toggle:
-                            toggle.Set(bool.Parse(value), false);
-                            break;
-
-                        case StringOptionAttribute @string:
-                            @string.Set((Enum)Enum.Parse(option.TargetType, value), false);
-                            break;
-
-                        case RoleListEntryAttribute entry:
-                            entry.Set(Enum.Parse<LayerEnum>(value), false);
-                            break;
-
-                        case LayersOptionAttribute layer:
-                            layer.Set(RoleOptionData.Parse(value), false);
-                            break;
-                    }
+                        CustomOptionType.Toggle => bool.Parse(value),
+                        CustomOptionType.Number => Number.Parse(value),
+                        CustomOptionType.Layers => RoleOptionData.Parse(value),
+                        CustomOptionType.String => Enum.Parse(option.TargetType, value),
+                        CustomOptionType.Entry => Enum.Parse<LayerEnum>(value),
+                        _ => true
+                    };
+                    option.SetBase(val, false);
                 }
             }
             catch (Exception e)
             {
-                LogError($"Unable to set - {opt}\nException:\n{e}");
+                Error($"Unable to set - {opt}\nException:\n{e}");
             }
 
             if (pos >= 50)
@@ -418,7 +398,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             }
         }
 
-        SendOptionRPC();
+        SendOptionRPC(save: false);
         yield break;
     }
 

@@ -90,7 +90,7 @@ public class Concealer : Syndicate
             if (ConcealedPlayer && !HoldsDrive && !ConcealButton.EffectActive)
                 ConcealedPlayer = null;
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 

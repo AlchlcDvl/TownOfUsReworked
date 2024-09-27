@@ -346,7 +346,7 @@ public class Transporter : Crew
                     TransportPlayer1 = null;
             }
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 }

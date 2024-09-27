@@ -252,7 +252,7 @@ public class Retributionist : Crew
                         TransportPlayer1 = null;
                 }
 
-                LogMessage("Removed a target");
+                Message("Removed a target");
             }
         }
     }
@@ -308,7 +308,7 @@ public class Retributionist : Crew
                 break;
 
             default:
-                LogError($"Received unknown RPC - {(int)retAction}");
+                Error($"Received unknown RPC - {(int)retAction}");
                 break;
         }
     }

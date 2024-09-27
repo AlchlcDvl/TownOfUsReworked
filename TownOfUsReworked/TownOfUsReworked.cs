@@ -80,14 +80,14 @@ public partial class TownOfUsReworked : BasePlugin
 
     public override void Load()
     {
-        LogMessage("Loading");
+        Message("Loading");
 
         if (InitialiseMalumMenu())
             return;
 
         if (CheckAbort(out var mod))
         {
-            LogFatal($"Unsupported mod {mod} detected, aborting mod loading");
+            Fatal($"Unsupported mod {mod} detected, aborting mod loading");
             return;
         }
 
@@ -95,11 +95,11 @@ public partial class TownOfUsReworked : BasePlugin
         {
             ModInstance = this;
             LoadComponents();
-            LogMessage($"Mod Loaded - {this}");
+            Message($"Mod Loaded - {this}");
         }
         catch (Exception e)
         {
-            LogFatal($"Couldn't load the mod because:\n{e}");
+            Fatal($"Couldn't load the mod because:\n{e}");
         }
     }
 
@@ -107,7 +107,7 @@ public partial class TownOfUsReworked : BasePlugin
     {
         ModInstance = null;
         Harmony.UnpatchSelf();
-        LogMessage($"Mod Unloaded - {this}");
+        Message($"Mod Unloaded - {this}");
         return base.Unload();
     }
 }

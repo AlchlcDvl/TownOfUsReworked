@@ -22,7 +22,7 @@ public static class TranslationManager
         }
         catch
         {
-            LogError($"Unable to translate {id} to {language}");
+            Error($"Unable to translate {id} to {language}");
             return id;
         }
     }

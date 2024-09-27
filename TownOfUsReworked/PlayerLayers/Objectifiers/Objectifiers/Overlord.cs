@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Overlord : Objectifier
+public class Overlord : Disposition
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool OverlordKnows { get; set; } = true;
@@ -9,7 +9,7 @@ public class Overlord : Objectifier
     [NumberOption(MultiMenu.LayerSubOptions, 1, 20, 1)]
     public static Number OverlordMeetingWinCount { get; set; } = new(3);
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Overlord : CustomColorManager.Objectifier;
+    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Overlord : CustomColorManager.Disposition;
     public override string Name => "Overlord";
     public override string Symbol => "β";
     public override LayerEnum Type => LayerEnum.Overlord;

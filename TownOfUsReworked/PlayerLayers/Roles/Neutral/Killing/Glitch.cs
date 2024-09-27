@@ -114,7 +114,7 @@ public class Glitch : Neutral
             if (MimicTarget && !MimicButton.EffectActive)
                 MimicTarget = null;
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 
@@ -137,7 +137,7 @@ public class Glitch : Neutral
                 break;
 
             default:
-                LogError($"Received unknown RPC - {(int)glitchAction}");
+                Error($"Received unknown RPC - {(int)glitchAction}");
                 break;
         }
     }

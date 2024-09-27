@@ -16,9 +16,9 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
     {
         var mainResponse = (List<CustomNameplate>)response;
         UnregisteredNameplates.AddRange(mainResponse);
-        LogMessage($"Found {UnregisteredNameplates.Count} nameplates");
+        Message($"Found {UnregisteredNameplates.Count} nameplates");
         var toDownload = GenerateDownloadList(UnregisteredNameplates);
-        LogMessage($"Downloading {toDownload.Count} nameplate files");
+        Message($"Downloading {toDownload.Count} nameplate files");
         yield return CoDownloadAsset(toDownload);
         mainResponse.Clear();
     }

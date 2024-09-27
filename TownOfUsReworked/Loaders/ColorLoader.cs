@@ -13,9 +13,9 @@ public class ColorLoader : AssetLoader<CustomColor>
     {
         var colors = (List<CustomColor>)response;
         AllColors.AddRange(colors);
-        // LogMessage($"Found {AllColors.Count} colors");
+        // Message($"Found {AllColors.Count} colors");
         var cache = AllColors.Count;
-        LogMessage($"Found {cache} colors");
+        Message($"Found {cache} colors");
 
         if (TownOfUsReworked.IsStream)
         {
@@ -29,7 +29,7 @@ public class ColorLoader : AssetLoader<CustomColor>
             }
         }
 
-        LogMessage($"Found {AllColors.Count - cache} local colors");
+        Message($"Found {AllColors.Count - cache} local colors");
         AllColors.RemoveAll(x => x.StreamOnly && !TownOfUsReworked.IsStream);
         var time = 0f;
 
@@ -56,7 +56,7 @@ public class ColorLoader : AssetLoader<CustomColor>
         /*Palette.PlayerColors = AllColors.Select(x => x.MainColor).ToArray();
         Palette.ShadowColors = AllColors.Select(x => x.ShadowColor).ToArray();*/
         LoadColors();
-        LogMessage($"Set {AllColors.Count} colors");
+        Message($"Set {AllColors.Count} colors");
         colors.Clear();
         yield break;
     }

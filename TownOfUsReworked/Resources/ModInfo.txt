@@ -13,6 +13,7 @@ New!
 
 Changes!
 - Improvement: Touched up on oudated code to ensure they all function better
+- Rename: Objectifiers have now been renamed to Dispositions, due to the new name being more fitting
 - Change: Jackal recruits can now need to only be of opposite factions so it has more flexible matchups
 - Change: Shifter now has a player menu to swap through to prevent auto confirms
 - Change: Bastion can now spawn in Killing Only
@@ -32,10 +33,12 @@ Fixes!
 - Critical: Fixed some roles having no ability cooldowns
 - Critical: Fixed custom visors being completely broken*
 - Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
+- Role: Fixed Betrayer being unable to kill
 - Role + Ability: Fixed Herbalists (Fungle Miners) being unguessable
 - Role + Ability: Fixed Snitch and Revealer not revealing Neutrals like they should
 - Ability: Fixed the edge case where Swapper swaps didn't appear to be correctly selected
 - Ability: Fixed a tiny issue with handling Assassin
+- Disposition: Fixed Fanatics not being converted upon attacks
 - Visual: Fixed ability buttons appearing and disappearing incorrectly
 - General: Fixed spawning in forbidden places with Random Spawns on (somewhat)
 - General: Fixed dead players not being able to see roles even with the setting turned on

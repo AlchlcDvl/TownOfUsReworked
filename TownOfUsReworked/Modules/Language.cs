@@ -26,7 +26,7 @@ public class Language : Asset
             {
                 if (English != null)
                 {
-                    LogError($"Selected language is unsupported {lang} ({GetIDs()})");
+                    Error($"Selected language is unsupported {lang} ({GetIDs()})");
                     return English;
                 }
                 else

@@ -47,10 +47,10 @@ public static class FreeplayPatches
             if (modifier && !PreviouslySelected.Any(x => x.Type == modifier.Type))
                 PreviouslySelected.Add(modifier);
 
-            var objectifier = Objectifier.LocalObjectifier;
+            var disposition = Disposition.LocalDisposition;
 
-            if (objectifier && !PreviouslySelected.Any(x => x.Type == objectifier.Type))
-                PreviouslySelected.Add(objectifier);
+            if (disposition && !PreviouslySelected.Any(x => x.Type == disposition.Type))
+                PreviouslySelected.Add(disposition);
 
             var selected = PreviouslySelected.Find(x => x.Type == layer);
 
@@ -77,10 +77,10 @@ public static class FreeplayPatches
                 modifier.Player = null;
             }
 
-            if (objectifier?.Type == layer)
+            if (disposition?.Type == layer)
             {
-                objectifier.ExitingLayer();
-                objectifier.Player = null;
+                disposition.ExitingLayer();
+                disposition.Player = null;
             }
 
             ButtonUtils.Reset();
@@ -95,7 +95,7 @@ public static class FreeplayPatches
         public static void Prefix(TaskAdderGame __instance)
         {
             FolderNames.Clear();
-            LogInfo($"File Width: {__instance.fileWidth} Line Width: {__instance.lineWidth} Folder Width {__instance.folderWidth}");
+            Info($"File Width: {__instance.fileWidth} Line Width: {__instance.lineWidth} Folder Width {__instance.folderWidth}");
         }
     }
 
@@ -179,7 +179,7 @@ public static class FreeplayPatches
                 var (start, end) = layerEnum switch
                 {
                     PlayerLayerEnum.Modifier => ((int)LayerEnum.Astral, (int)LayerEnum.Yeller),
-                    PlayerLayerEnum.Objectifier => ((int)LayerEnum.Allied, (int)LayerEnum.Traitor),
+                    PlayerLayerEnum.Disposition => ((int)LayerEnum.Allied, (int)LayerEnum.Traitor),
                     PlayerLayerEnum.Ability => ((int)LayerEnum.ButtonBarry, (int)LayerEnum.Underdog),
                     _ => (-1, -1)
                 };
@@ -212,7 +212,7 @@ public static class FreeplayPatches
                         }
                         catch (Exception e)
                         {
-                            LogError($"Layer: {layer}\n{e}");
+                            Error($"Layer: {layer}\n{e}");
                         }
                     }
                 }

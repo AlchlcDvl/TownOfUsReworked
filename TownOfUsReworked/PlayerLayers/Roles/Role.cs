@@ -46,7 +46,7 @@ public abstract class Role : PlayerLayer
     public Dictionary<PointInTime, DateTime> Positions { get; set; }
     public Dictionary<byte, CustomArrow> YellerArrows { get; set; }
     public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
-    public LayerEnum LinkedObjectifier { get; set; }
+    public LayerEnum LinkedDisposition { get; set; }
 
     public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
     public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
@@ -87,18 +87,18 @@ public abstract class Role : PlayerLayer
     public bool IsResurrected => SubFaction == SubFaction.Reanimated;
     public bool IsPersuaded => SubFaction == SubFaction.Sect;
     public bool IsBitten => SubFaction == SubFaction.Undead;
-    public bool IsIntTraitor => LinkedObjectifier == LayerEnum.Traitor && Faction == Faction.Intruder;
-    public bool IsIntAlly => LinkedObjectifier == LayerEnum.Allied && Faction == Faction.Intruder;
-    public bool IsIntFanatic => LinkedObjectifier == LayerEnum.Fanatic && Faction == Faction.Intruder;
-    public bool IsSynTraitor => LinkedObjectifier == LayerEnum.Traitor && Faction == Faction.Syndicate;
-    public bool IsSynAlly => LinkedObjectifier == LayerEnum.Allied && Faction == Faction.Syndicate;
-    public bool IsSynFanatic => LinkedObjectifier == LayerEnum.Fanatic && Faction == Faction.Syndicate;
-    public bool IsCrewAlly => LinkedObjectifier == LayerEnum.Allied && Faction == Faction.Crew;
-    public bool IsCrewDefect => LinkedObjectifier == LayerEnum.Traitor && Faction == Faction.Crew && BaseFaction != Faction.Crew;
-    public bool IsIntDefect => LinkedObjectifier == LayerEnum.Defector && Faction == Faction.Intruder && BaseFaction != Faction.Intruder;
-    public bool IsSynDefect => LinkedObjectifier == LayerEnum.Defector && Faction == Faction.Syndicate && BaseFaction != Faction.Syndicate;
-    public bool IsNeutDefect => LinkedObjectifier == LayerEnum.Defector && Faction == Faction.Neutral && BaseFaction != Faction.Neutral;
-    public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && LinkedObjectifier is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) &&
+    public bool IsIntTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Intruder;
+    public bool IsIntAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Intruder;
+    public bool IsIntFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Intruder;
+    public bool IsSynTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Syndicate;
+    public bool IsSynAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Syndicate;
+    public bool IsSynFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Syndicate;
+    public bool IsCrewAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Crew;
+    public bool IsCrewDefect => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Crew && BaseFaction != Faction.Crew;
+    public bool IsIntDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Intruder && BaseFaction != Faction.Intruder;
+    public bool IsSynDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Syndicate && BaseFaction != Faction.Syndicate;
+    public bool IsNeutDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Neutral && BaseFaction != Faction.Neutral;
+    public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && LinkedDisposition is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) &&
         !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction && !Player.IsTurnedFanatic() &&
         !Player.IsTurnedTraitor() && !Ignore;
 
@@ -385,7 +385,7 @@ public abstract class Role : PlayerLayer
         }
         catch (Exception e)
         {
-            LogError(e);
+            Error(e);
         }
     }
 
@@ -536,7 +536,7 @@ public abstract class Role : PlayerLayer
                 role2.ShieldBroken = true;
 
                 if (TownOfUsReworked.IsTest)
-                    LogMessage(player.name + " Is Ex-Shielded");
+                    Message(player.name + " Is Ex-Shielded");
             }
         }
 
@@ -551,7 +551,7 @@ public abstract class Role : PlayerLayer
                 role2.ShieldBroken = true;
 
                 if (TownOfUsReworked.IsTest)
-                    LogMessage(player.name + " Is Ex-Shielded");
+                    Message(player.name + " Is Ex-Shielded");
             }
         }
     }

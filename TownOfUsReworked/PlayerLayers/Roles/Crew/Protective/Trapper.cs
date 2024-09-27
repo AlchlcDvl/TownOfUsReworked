@@ -105,7 +105,7 @@ public class Trapper : Crew
                 break;
 
             default:
-                LogError($"Received unknown RPC - {(int)trapAction}");
+                Error($"Received unknown RPC - {(int)trapAction}");
                 break;
         }
     }

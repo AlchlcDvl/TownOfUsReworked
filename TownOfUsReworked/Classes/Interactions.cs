@@ -78,36 +78,39 @@ public static class Interactions
 
         if (CanAttack(attack, defense) && isAttack)
         {
-            if (!bypass)
+            if (bypass)
             {
-                abilityUsed = !(target.IsTrapped() && trapper && !astral);
-
-                if (target.IsTrapped() && trapper && !astral)
-                {
-                    if (source.IsShielded() || source.IsProtected())
-                        abilityUsed = false;
-                    else
-                        RpcMurderPlayer(trapper, source, false);
-                }
-                else if (source.IsShielded() || source.IsProtected())
-                {
-                    abilityUsed = false;
-                    RpcBreakShield(source);
-                }
-                else if (!delayed)
-                    RpcMurderPlayer(source, target);
-            }
-            else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
-            {
-                var fan = target.GetLayer<Fanatic>();
-                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
-                fan.TurnFanatic(faction);
+                RpcMurderPlayer(source, target);
                 abilityUsed = true;
             }
             else
             {
-                RpcMurderPlayer(source, target);
-                abilityUsed = true;
+                if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
+                {
+                    var fan = target.GetLayer<Fanatic>();
+                    CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
+                    fan.TurnFanatic(faction);
+                    abilityUsed = true;
+                }
+                else
+                {
+                    abilityUsed = !(target.IsTrapped() && trapper && !astral);
+
+                    if (target.IsTrapped() && trapper && !astral)
+                    {
+                        if (source.IsShielded() || source.IsProtected())
+                            abilityUsed = false;
+                        else
+                            RpcMurderPlayer(trapper, source, false);
+                    }
+                    else if (source.IsShielded() || source.IsProtected())
+                    {
+                        abilityUsed = false;
+                        RpcBreakShield(source);
+                    }
+                    else if (!delayed)
+                        RpcMurderPlayer(source, target);
+                }
             }
         }
         else if (target.IsShielded() && isAttack)
@@ -129,7 +132,12 @@ public static class Interactions
 
             if (CanAttack(attack, defense) && isAttack)
             {
-                if (!bypass)
+                if (bypass)
+                {
+                    RpcMurderPlayer(source, target);
+                    abilityUsed = true;
+                }
+                else
                 {
                     abilityUsed = !(source.IsTrapped() && trapper && !astral);
 
@@ -147,11 +155,6 @@ public static class Interactions
                     }
                     else if (!delayed)
                         RpcMurderPlayer(target, source);
-                }
-                else
-                {
-                    RpcMurderPlayer(source, target);
-                    abilityUsed = true;
                 }
             }
             else if (source.IsShielded() && isAttack)

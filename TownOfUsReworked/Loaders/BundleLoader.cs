@@ -11,9 +11,9 @@ public class BundleLoader : AssetLoader<Asset>
     public override IEnumerator BeginDownload(object response)
     {
         var mainResponse = (List<Asset>)response;
-        LogMessage($"Found {mainResponse.Count} assets");
+        Message($"Found {mainResponse.Count} assets");
         var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
-        LogMessage($"Downloading {toDownload.Count()} assets");
+        Message($"Downloading {toDownload.Count()} assets");
         yield return CoDownloadAsset(toDownload);
     }
 

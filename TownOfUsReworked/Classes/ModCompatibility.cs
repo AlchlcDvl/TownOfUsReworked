@@ -61,13 +61,13 @@ public static class ModCompatibility
         if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin) || subPlugin == null)
             return false;
 
-        LogMessage("Submerged was detected");
+        Message("Submerged was detected");
 
         try
         {
             SubPlugin = subPlugin.Instance as BasePlugin;
             SubVersion = subPlugin.Metadata.Version;
-            LogMessage(SubVersion);
+            Message(SubVersion);
 
             SubAssembly = SubPlugin.GetType().Assembly;
             SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly);
@@ -121,12 +121,12 @@ public static class ModCompatibility
             TownOfUsReworked.ModInstance.Harmony.Patch(SubmergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
             TownOfUsReworked.ModInstance.Harmony.Patch(GetReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
 
-            LogMessage("Submerged compatibility finished");
+            Message("Submerged compatibility finished");
             return true;
         }
         catch (Exception e)
         {
-            LogError($"Could not load Submerged Compatibility\n{e}");
+            Error($"Could not load Submerged Compatibility\n{e}");
             return false;
         }
     }
@@ -317,23 +317,23 @@ public static class ModCompatibility
         if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(LI_GUID, out var liPlugin) || liPlugin == null)
             return false;
 
-        LogMessage("LevelImpostor was detected");
+        Message("LevelImpostor was detected");
 
         try
         {
             LIPlugin = liPlugin.Instance as BasePlugin;
             LIVersion = liPlugin.Metadata.Version;
-            LogMessage(LIVersion);
+            Message(LIVersion);
 
             LIAssembly = LIPlugin.GetType().Assembly;
             LITypes = AccessTools.GetTypesFromAssembly(LIAssembly);
 
-            LogMessage("LevelImpostor compatibility finished");
+            Message("LevelImpostor compatibility finished");
             return true;
         }
         catch (Exception e)
         {
-            LogError($"Could not load LevelImposter Compatibility\n{e}");
+            Error($"Could not load LevelImposter Compatibility\n{e}");
             return false;
         }
     }
@@ -343,7 +343,7 @@ public static class ModCompatibility
         if (!IL2CPPChainloader.Instance.Plugins.ContainsKey("MalumMenu"))
             return false;
 
-        LogFatal("MalumMenu was detected");
+        Fatal("MalumMenu was detected");
         Harmony.UnpatchAll();
         return true;
     }
@@ -362,11 +362,11 @@ public static class ModCompatibility
             LILoaded = InitializeLevelImpostor();
             SubLoaded = InitializeSubmerged();
 
-            LogMessage(LILoaded || SubLoaded ? "Mod compatibility finished" : "No extra mods detected");
+            Message(LILoaded || SubLoaded ? "Mod compatibility finished" : "No extra mods detected");
         }
         catch (Exception e)
         {
-            LogError($"Couldn't load compatibilies:\n{e}");
+            Error($"Couldn't load compatibilies:\n{e}");
             Initialized = false;
         }
     }

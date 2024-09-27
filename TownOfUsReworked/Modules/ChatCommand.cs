@@ -101,7 +101,7 @@ public class ChatCommand
         }
         catch (Exception ex)
         {
-            LogError(ex);
+            Error(ex);
             Chat().chatBubblePool.Reclaim(pooledBubble);
         }
     }
@@ -314,7 +314,7 @@ public class ChatCommand
     // private static void SendRPC()
     // {
     //     CallRpc(CustomRPC.Test);
-    //     LogMessage("RPC Sent!");
+    //     Message("RPC Sent!");
     //     Run("<color=#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
     // }
 

@@ -16,9 +16,9 @@ public class VisorLoader : AssetLoader<CustomVisor>
     {
         var mainResponse = (List<CustomVisor>)response;
         UnregisteredVisors.AddRange(mainResponse);
-        LogMessage($"Found {UnregisteredVisors.Count} visors");
+        Message($"Found {UnregisteredVisors.Count} visors");
         var toDownload = GenerateDownloadList(UnregisteredVisors);
-        LogMessage($"Downloading {toDownload.Count} visor files");
+        Message($"Downloading {toDownload.Count} visor files");
         yield return CoDownloadAsset(toDownload);
         mainResponse.Clear();
     }

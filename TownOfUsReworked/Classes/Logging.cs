@@ -15,13 +15,13 @@ public static class Logging
         SavedLogs += $"[{type, -7}] {message}\n";
     }
 
-    public static void LogError(object message) => LogSomething(message, LogLevel.Error);
+    public static void Error(object message) => LogSomething(message, LogLevel.Error);
 
-    public static void LogMessage(object message) => LogSomething(message, LogLevel.Message);
+    public static void Message(object message) => LogSomething(message, LogLevel.Message);
 
-    public static void LogFatal(object message) => LogSomething(message, LogLevel.Fatal);
+    public static void Fatal(object message) => LogSomething(message, LogLevel.Fatal);
 
-    public static void LogInfo(object message) => LogSomething(message, LogLevel.Info);
+    public static void Info(object message) => LogSomething(message, LogLevel.Info);
 
-    public static void LogWarning(object message) => LogSomething(message, LogLevel.Warning);
+    public static void Warning(object message) => LogSomething(message, LogLevel.Warning);
 }

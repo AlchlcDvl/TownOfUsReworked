@@ -305,7 +305,7 @@ public class Warper : Syndicate
                     WarpPlayer1 = null;
             }
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 }

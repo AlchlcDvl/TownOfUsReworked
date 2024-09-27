@@ -11,7 +11,7 @@ public class Info(string name, string shortF, string description, UColor color, 
 
     public static readonly List<Info> AllInfo = [];
 
-    public static void SetAllInfo() => AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllObjectifiers, LayerInfo.AllFactions,
+    public static void SetAllInfo() => AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllDispositions, LayerInfo.AllFactions,
         LayerInfo.AllSubFactions, LayerInfo.AllModes, LayerInfo.AllOthers, LayerInfo.AllSymbols);
 
     public static string ColorIt(string result, bool bold = true)
@@ -210,14 +210,13 @@ public class AlignmentInfo : Info
         " end of the game.";
     private const string NKDescription = "Neutral (Killing) roles are roles that have the ability to kill and do not side with anyone. Each role has a special way to kill and gain "
         + "large body counts in one go. Steer clear of them if you don't want to die.";
-    private const string NEDescription = "Neutral (Evil) roles are roles whose objectives clash with those of other roles. As such, you need to ensure they don't have a chance at" +
-        " winning or when they do win, you have their cooperation.";
+    private const string NEDescription = "Neutral (Evil) roles are roles whose objectives clash with those of other roles and factions. As such, you need to ensure they don't have a chance at"
+        + " winning or when they do win, you have their cooperation.";
     private const string NPDescription = "Neutral (Proselyte) roles are special roles that have their specific ways to win and do not spawn in naturally. Each role here is unique in " +
         "its own way and more often than not they are against you.";
-    private const string NNDescription = "Neutral (Neophyte) roles are roles that can convert someone to side with them. Be careful of them, as they can easily overrun you with their" +
-        " numbers.";
-    private const string NADescription = "Neutral (Apocalypse) roles are powerful roles that appear when a Neutral (Harbinger) role has completed their objective. You will be " +
-        "optionally alerted when a Neutral (Apocalypse) role appears.";
+    private const string NNDescription = "Neutral (Neophyte) roles are roles that can convert someone to side with them. Be careful of them, as they can easily overrun you with their numbers.";
+    private const string NADescription = "Neutral (Apocalypse) roles are powerful roles that appear when a Neutral (Harbinger) role has completed their objective. You will be optionally" +
+        " alerted when a Neutral (Apocalypse) role appears. The presence of even one these roles can change the flow of the game.";
     private const string NHDescription = "Neutral (Harbinger) roles are weak roles who only have one goal, complete their objective and become a Neutral (Apocalypse) role.";
     private const string NDiDescription = "Neutral (Disruption) roles are defected Syndicate (Disruption) roles who have broken away from the Syndicate.";
     private const string NPowDescription = "Neutral (Power) roles are defected Syndicate (Power) roles who have broken away from the Syndicate.";
@@ -327,13 +326,13 @@ public class ModifierInfo(string name, string shortF, string description, string
     }
 }
 
-public class ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum objectifier, bool header = false) :
-    Info(name, shortF, description, color, InfoType.Objectifier, header)
+public class DispositionInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum disposition, bool header = false) :
+    Info(name, shortF, description, color, InfoType.Disposition, header)
 {
     public string AppliesTo { get; } = applies;
     public string WinCon { get; } = wincon;
     public string Symbol { get; } = symbol;
-    public LayerEnum Objectifier { get; } = objectifier;
+    public LayerEnum Disposition { get; } = disposition;
 
     public override void WikiEntry(out string result)
     {
@@ -396,7 +395,7 @@ public class GameModeInfo : Info
     private const string AADescription = "This mode has no restrictions on how many instances of a layer can spawn. Each layer has a property called \"Uniqueness\" which is basically if only"
         + " one of that layer can spawn (or two for Lovers, Rivals, Mafia or Linked).";
     private const string RLDescription = "In this mode, you can make a set list of what roles can spawn. You can decide the exact number of a certain alignment/faction. However, other layers"
-        + " like modifiers, abilities and objectifiers cannot spawn in this mode. All Any's \"Uniqueness\" property of roles also applies here.";
+        + " like modifiers, abilities and dispositions cannot spawn in this mode. All Any's \"Uniqueness\" property of roles also applies here.";
     private const string CustomDescription = "This mode is basically Classic but you can decide how many instances of the layer can spawn in the game.";
     private const string HnSDescription = "This mode is the unofficial addition of the Hide And Seek game mode that people used to play before the vanilla Hide And Seek was added. Only two "
         + "roles spawn and this mode can have two types. The Classic type makes it so that the Hunters have to kill everyone else, but their numbers do not increase. In the Infection type, "

@@ -7,7 +7,7 @@ public static class LayerExtentions
     public static string ObjectivesColorString => $"<color=#{CustomColorManager.Objectives.ToHtmlStringRGBA()}>";
     public static string AttributesColorString => $"<color=#{CustomColorManager.Attributes.ToHtmlStringRGBA()}>";
     public static string AbilitiesColorString => $"<color=#{CustomColorManager.Abilities.ToHtmlStringRGBA()}>";
-    public static string ObjectifierColorString => $"<color=#{CustomColorManager.Objectifier.ToHtmlStringRGBA()}>";
+    public static string DispositionColorString => $"<color=#{CustomColorManager.Disposition.ToHtmlStringRGBA()}>";
     public static string ModifierColorString => $"<color=#{CustomColorManager.Modifier.ToHtmlStringRGBA()}>";
     public static string AbilityColorString => $"<color=#{CustomColorManager.Ability.ToHtmlStringRGBA()}>";
     public static string SubFactionColorString => $"<color=#{CustomColorManager.SubFaction.ToHtmlStringRGBA()}>";
@@ -18,7 +18,7 @@ public static class LayerExtentions
 
     public static bool Is(this Role role, LayerEnum roleType) => role?.Type == roleType;
 
-    public static bool Is(this Objectifier obj, LayerEnum objectifiertype) => obj?.Type == objectifiertype;
+    public static bool Is(this Disposition disp, LayerEnum dispositionType) => disp?.Type == dispositionType;
 
     public static bool Is(this PlayerControl player, Role role) => player.GetRole().Player == role.Player;
 
@@ -330,21 +330,21 @@ public static class LayerExtentions
 
     public static bool IsTurnedFanatic(this PlayerVoteArea player) => PlayerByVoteArea(player).IsTurnedFanatic();
 
-    public static bool IsUnturnedFanatic(this PlayerControl player) => player.GetObjectifier() is Fanatic fanatic && fanatic.Side == Faction.Crew;
+    public static bool IsUnturnedFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic fanatic && fanatic.Side == Faction.Crew;
 
-    public static bool IsIntFanatic(this PlayerControl player) => player.GetObjectifier() is Fanatic fanatic && fanatic.Side == Faction.Intruder;
+    public static bool IsIntFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic fanatic && fanatic.Side == Faction.Intruder;
 
-    public static bool IsSynFanatic(this PlayerControl player) => player.GetObjectifier() is Fanatic fanatic && fanatic.Side == Faction.Syndicate;
+    public static bool IsSynFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic fanatic && fanatic.Side == Faction.Syndicate;
 
-    public static bool IsIntTraitor(this PlayerControl player) => player.GetObjectifier() is Traitor traitor && traitor.Side == Faction.Intruder;
+    public static bool IsIntTraitor(this PlayerControl player) => player.GetDisposition() is Traitor traitor && traitor.Side == Faction.Intruder;
 
-    public static bool IsSynTraitor(this PlayerControl player) => player.GetObjectifier() is Traitor traitor && traitor.Side == Faction.Intruder;
+    public static bool IsSynTraitor(this PlayerControl player) => player.GetDisposition() is Traitor traitor && traitor.Side == Faction.Intruder;
 
-    public static bool IsCrewAlly(this PlayerControl player) => player.GetObjectifier() is Allied ally && ally.Side == Faction.Crew;
+    public static bool IsCrewAlly(this PlayerControl player) => player.GetDisposition() is Allied ally && ally.Side == Faction.Crew;
 
-    public static bool IsSynAlly(this PlayerControl player) => player.GetObjectifier() is Allied ally && ally.Side == Faction.Syndicate;
+    public static bool IsSynAlly(this PlayerControl player) => player.GetDisposition() is Allied ally && ally.Side == Faction.Syndicate;
 
-    public static bool IsIntAlly(this PlayerControl player) => player.GetObjectifier() is Allied ally && ally.Side == Faction.Intruder;
+    public static bool IsIntAlly(this PlayerControl player) => player.GetDisposition() is Allied ally && ally.Side == Faction.Intruder;
 
     public static bool IsIntFanatic(this PlayerVoteArea player) => PlayerByVoteArea(player).IsIntFanatic();
 
@@ -742,13 +742,13 @@ public static class LayerExtentions
         var role = info[0] as Role;
         var modifier = info[1] as Modifier;
         var ability = info[2] as Ability;
-        var objectifier = info[3] as Objectifier;
+        var disposition = info[3] as Disposition;
 
         var objectives = $"{ObjectivesColorString}Goal:";
         var abilities = $"{AbilitiesColorString}Abilities:";
         var attributes = $"{AttributesColorString}Attributes:";
         var roleName = $"{RoleColorString}Role: <b>";
-        var objectifierName = $"{ObjectifierColorString}Objectifier: <b>";
+        var dispositionName = $"{DispositionColorString}Disposition: <b>";
         var abilityName = $"{AbilityColorString}Ability: <b>";
         var modifierName = $"{ModifierColorString}Modifier: <b>";
         var alignment = $"{AlignmentColorString}Alignment: <b>";
@@ -776,15 +776,15 @@ public static class LayerExtentions
         subfaction += "</b></color>";
         attdef += "</b></color>";
 
-        if (info[3] && !objectifier.Hidden)
+        if (info[3] && !disposition.Hidden)
         {
-            objectives += $"\n{objectifier.ColorString}{objectifier.Description()}</color>";
-            objectifierName += $"{objectifier.ColorString}{objectifier.Name} {objectifier.Symbol}</color>";
+            objectives += $"\n{disposition.ColorString}{disposition.Description()}</color>";
+            dispositionName += $"{disposition.ColorString}{disposition.Name} {disposition.Symbol}</color>";
         }
         else
-            objectifierName += "None φ";
+            dispositionName += "None φ";
 
-        objectifierName += "</b></color>";
+        dispositionName += "</b></color>";
 
         if (info[2] && !ability.Hidden && ability.Type != LayerEnum.NoneAbility)
             abilityName += $"{ability.ColorString}{ability.Name}</color>";
@@ -867,7 +867,7 @@ public static class LayerExtentions
         else
             attributes = $"\n{attributes}</color>";
 
-        return $"{roleName}\n{attdef}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
+        return $"{roleName}\n{attdef}\n{alignment}\n{subfaction}\n{dispositionName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
     }
 
     public static void RegenTask(this PlayerControl player)
@@ -1164,7 +1164,7 @@ public static class LayerExtentions
         else if (id < 105)
             return PlayerLayerEnum.Modifier;
         else if (id < 116)
-            return PlayerLayerEnum.Objectifier;
+            return PlayerLayerEnum.Disposition;
         else if (id < 133)
             return PlayerLayerEnum.Ability;
         else
@@ -1262,25 +1262,25 @@ public static class LayerExtentions
 
     public static Role GetRole(this PlayerVoteArea area) => PlayerByVoteArea(area).GetRole();
 
-    // public static Objectifier GetObjectifierFromList(this PlayerControl player) => Objectifier.AllObjectifiers.Find(x => x.Player == player);
+    // public static Disposition GetDispositionFromList(this PlayerControl player) => Disposition.AllDispositions.Find(x => x.Player == player);
 
-    public static Objectifier GetObjectifier(this PlayerControl player) => player.GetLayer<Objectifier>();
+    public static Disposition GetDisposition(this PlayerControl player) => player.GetLayer<Disposition>();
     /*{
         if (!player)
             return null;
 
-        Objectifier.ObjectifierLookup.TryGetValue(player.PlayerId, out var obj);
+        Disposition.DispositionLookup.TryGetValue(player.PlayerId, out var disp);
 
-        if (!obj)
+        if (!disp)
         {
-            obj = player.GetLayer(PlayerLayerEnum.Objectifier) as Objectifier ?? new Objectifierless().Start<Objectifier>(player);
-            Objectifier.ObjectifierLookup[player.PlayerId] = obj;
+            disp = player.GetLayer(PlayerLayerEnum.Disposition) as Disposition ?? new Dispositionless().Start<Disposition>(player);
+            Disposition.DispositionLookup[player.PlayerId] = disp;
         }
 
-        return obj;
+        return disp;
     }*/
 
-    public static Objectifier GetObjectifier(this PlayerVoteArea area) => PlayerByVoteArea(area).GetObjectifier();
+    public static Disposition GetDisposition(this PlayerVoteArea area) => PlayerByVoteArea(area).GetDisposition();
 
     // public static Modifier GetModifierFromList(this PlayerControl player) => Modifier.AllModifiers.Find(x => x.Player == player);
 

@@ -89,6 +89,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
 
     public void IncreaseCount()
     {
+        var val = Get();
         var chance = GetChance();
         var max = IsCustom() ? Max : Min;
         var count = CycleInt(max, 0, GetCount(), true);
@@ -104,11 +105,14 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         if (count.IsInRange(0, Min))
             count = Min;
 
-        Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
+        val.Count = count;
+        val.Chance = chance;
+        Set(val);
     }
 
     public void DecreaseCount()
     {
+        var val = Get();
         var chance = GetChance();
         var max = IsCustom() ? Max : Min;
         var count = CycleInt(max, 0, GetCount(), false);
@@ -124,11 +128,14 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         if (count.IsInRange(0, Min))
             count = Min;
 
-        Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
+        val.Count = count;
+        val.Chance = chance;
+        Set(val);
     }
 
     public void IncreaseChance()
     {
+        var val = Get();
         var count = GetCount();
         var chance = CycleInt(100, 0, GetChance(), true, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
 
@@ -140,11 +147,14 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsCustom() ? Min : CachedCount;
 
-        Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
+        val.Count = count;
+        val.Chance = chance;
+        Set(val);
     }
 
     public void DecreaseChance()
     {
+        var val = Get();
         var count = GetCount();
         var chance = CycleInt(100, 0, GetChance(), false, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
 
@@ -156,7 +166,9 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsCustom() ? Min : CachedCount;
 
-        Set(new RoleOptionData(chance, count, GetUnique(), GetActive(), Layer));
+        val.Count = count;
+        val.Chance = chance;
+        Set(val);
     }
 
     public override void Update()

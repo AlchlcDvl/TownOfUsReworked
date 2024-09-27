@@ -14,13 +14,13 @@ public abstract class AssetLoader
         foreach (var fileName in files)
         {
             var trueName = $"{fileName.Replace(" ", "%20")}{(IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}")}";
-            LogMessage($"Downloading: {Manifest}/{fileName}");
+            Message($"Downloading: {Manifest}/{fileName}");
             var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}/{trueName}");
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
             {
-                LogError(www.error);
+                Error(www.error);
                 www.downloadHandler.Dispose();
                 www.Dispose();
                 yield break;
@@ -34,7 +34,7 @@ public abstract class AssetLoader
             {
                 if (persistTask.Exception != null)
                 {
-                    LogError(persistTask.Exception);
+                    Error(persistTask.Exception);
                     break;
                 }
 
@@ -87,7 +87,7 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
         if (!Directory.Exists(DirectoryInfo))
             Directory.CreateDirectory(DirectoryInfo);
 
-        LogMessage($"Downloading manifest at: {RepositoryUrl}/{Manifest}.json");
+        Message($"Downloading manifest at: {RepositoryUrl}/{Manifest}.json");
         var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}.json");
         yield return www.SendWebRequest();
 
@@ -95,7 +95,7 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
         var jsonText = isError ? ReadDiskText($"{Manifest}.json", DirectoryInfo) : www.downloadHandler.text;
 
         if (isError)
-            LogError(www.error);
+            Error(www.error);
         else
         {
             var task = File.WriteAllTextAsync(Path.Combine(DirectoryInfo, $"{Manifest}.json"), www.downloadHandler.text);
@@ -104,7 +104,7 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
             {
                 if (task.Exception != null)
                 {
-                    LogError(task.Exception);
+                    Error(task.Exception);
                     break;
                 }
 
@@ -118,12 +118,12 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
         if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
         {
             jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
-            LogWarning($"Online JSON for {Manifest} was missing");
+            Warning($"Online JSON for {Manifest} was missing");
         }
 
         if (IsNullEmptyOrWhiteSpace(jsonText))
         {
-            LogError($"Unable to load online or local JSON data for {Manifest}");
+            Error($"Unable to load online or local JSON data for {Manifest}");
             yield break;
         }
 

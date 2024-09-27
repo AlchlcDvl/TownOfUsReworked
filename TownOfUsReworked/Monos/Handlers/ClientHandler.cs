@@ -80,8 +80,8 @@ public class ClientHandler : MonoBehaviour
         if (IsHnS() || !HUD() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsSet)
             return;
 
-        var pos = HUD().SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -HUD().SettingsButton.transform.localPosition.z - 51f);
-        WikiRCButton.transform.localPosition = pos;
+        // var pos = HUD().SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -HUD().SettingsButton.transform.localPosition.z - 51f);
+        // WikiRCButton.transform.localPosition = pos;
 
         // pos += new Vector3(0, -0.66f, 0f);
         // HUD().MapButton.transform.localPosition = pos;

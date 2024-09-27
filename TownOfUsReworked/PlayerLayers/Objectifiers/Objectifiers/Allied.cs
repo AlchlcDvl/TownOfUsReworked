@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Allied : Objectifier
+public class Allied : Disposition
 {
     [StringOption(MultiMenu.LayerSubOptions)]
     public static AlliedFaction AlliedFaction { get; set; } = AlliedFaction.Random;
@@ -13,7 +13,7 @@ public class Allied : Objectifier
         Faction.Crew => CustomColorManager.Crew,
         Faction.Syndicate => CustomColorManager.Syndicate,
         Faction.Intruder => CustomColorManager.Intruder,
-        _ => ClientOptions.CustomObjColors ? CustomColorManager.Allied : CustomColorManager.Objectifier,
+        _ => ClientOptions.CustomObjColors ? CustomColorManager.Allied : CustomColorManager.Disposition,
     };
     public override string Name => "Allied";
     public override string Symbol => "ζ";

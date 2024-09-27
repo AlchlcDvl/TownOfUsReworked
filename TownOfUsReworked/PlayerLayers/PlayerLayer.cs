@@ -4,7 +4,7 @@ public abstract class PlayerLayer
 {
     public virtual UColor Color => CustomColorManager.Layer;
     public virtual string Name => "None";
-    public string Short => Info.AllInfo.Find(x => x.Name == Name)?.Short;
+    public string Short => Modules.Info.AllInfo.Find(x => x.Name == Name)?.Short;
     public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
     public virtual LayerEnum Type => LayerEnum.None;
     public virtual Func<string> Description => () => "- None";
@@ -21,7 +21,7 @@ public abstract class PlayerLayer
     public bool Dead => Data?.IsDead ?? true;
     public bool Disconnected => Data?.Disconnected ?? true;
     public bool Alive => !Disconnected && !Dead;
-    public bool Local => Player.AmOwner;
+    public bool Local => Player?.AmOwner == true;
 
     public NetworkedPlayerInfo Data => Player?.Data;
     public string PlayerName => Data?.PlayerName ?? "";
@@ -134,7 +134,7 @@ public abstract class PlayerLayer
                 }
             }
         }
-        else if (LayerType == PlayerLayerEnum.Objectifier)
+        else if (LayerType == PlayerLayerEnum.Disposition)
         {
             if (Type == LayerEnum.Corrupted && CorruptedWin(Player))
             {
@@ -150,7 +150,7 @@ public abstract class PlayerLayer
             {
                 WinState = WinLose.LoveWins;
                 Winner = true;
-                ((Lovers)this).OtherLover.GetObjectifier().Winner = true;
+                ((Lovers)this).OtherLover.GetDisposition().Winner = true;
                 CallRpc(CustomRPC.WinLose, WinLose.LoveWins, this);
             }
             else if (Type == LayerEnum.Rivals && RivalsWin(Player))
@@ -334,7 +334,7 @@ public abstract class PlayerLayer
         if (ReferenceEquals(this, obj))
             return true;
 
-        if (obj.GetType() != typeof(PlayerLayer))
+        if (obj.GetType().IsAssignableTo(typeof(PlayerLayer)))
             return false;
 
         return Equals((PlayerLayer)obj);
@@ -361,7 +361,7 @@ public abstract class PlayerLayer
         /*LayerLookup.Values.ForEach(x => x.Clear());
         LayerLookup.Clear();
         Role.RoleLookup.Clear();
-        Objectifier.ObjectifierLookup.Clear();
+        Disposition.DispositionLookup.Clear();
         Modifier.ModifierLookup.Clear();
         Ability.AbilityLookup.Clear();*/
     }

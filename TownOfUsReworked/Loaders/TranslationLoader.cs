@@ -13,7 +13,7 @@ public class TranslationLoader : AssetLoader<Language>
     {
         var langs = (List<Language>)response;
         AllTranslations.AddRange(langs);
-        LogMessage($"Found {AllTranslations.Count} translations");
+        Message($"Found {AllTranslations.Count} translations");
         langs.Clear();
         yield break;
     }

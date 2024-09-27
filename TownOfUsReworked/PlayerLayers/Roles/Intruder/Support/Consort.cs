@@ -74,7 +74,7 @@ public class Consort : Intruder
             if (BlockTarget && !BlockButton.EffectActive)
                 BlockTarget = null;
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 

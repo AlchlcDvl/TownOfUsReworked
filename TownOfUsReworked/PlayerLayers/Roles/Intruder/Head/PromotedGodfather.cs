@@ -50,7 +50,7 @@ public class PromotedGodfather : Intruder
             if (BlockTarget && !BlockButton.EffectActive && IsCons)
                 BlockTarget = null;
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 
@@ -168,7 +168,7 @@ public class PromotedGodfather : Intruder
                 break;
 
             default:
-                LogError($"Received unknown RPC - {(int)gfAction}");
+                Error($"Received unknown RPC - {(int)gfAction}");
                 break;
         }
     }

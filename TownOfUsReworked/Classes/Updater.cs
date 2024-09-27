@@ -25,7 +25,7 @@ public static class ModUpdater
 
         Running[updateType] = true;
         UpdateSplashPatch.SetText($"Fetching {updateType} Data And Loading Compatibility");
-        LogMessage($"Getting update info for {updateType}");
+        Message($"Getting update info for {updateType}");
         yield return EndFrame();
 
         if (updateType == "Submerged")
@@ -41,7 +41,7 @@ public static class ModUpdater
         var jsonText = isError ? ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other) : www.downloadHandler.text;
 
         if (isError)
-            LogError(www.error);
+            Error(www.error);
         else
         {
             var task = File.WriteAllTextAsync(Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json"), www.downloadHandler.text);
@@ -50,7 +50,7 @@ public static class ModUpdater
             {
                 if (task.Exception != null)
                 {
-                    LogError(task.Exception);
+                    Error(task.Exception);
                     break;
                 }
 
@@ -64,12 +64,12 @@ public static class ModUpdater
         if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
         {
             jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
-            LogWarning($"Online JSON for {updateType} was missing");
+            Warning($"Online JSON for {updateType} was missing");
         }
 
         if (IsNullEmptyOrWhiteSpace(jsonText))
         {
-            LogError($"Unable to load online or local JSON data for {updateType}");
+            Error($"Unable to load online or local JSON data for {updateType}");
             yield break;
         }
 
@@ -77,19 +77,19 @@ public static class ModUpdater
 
         if (data.Tag == null)
         {
-            LogError($"{updateType} tag doesn't exist");
+            Error($"{updateType} tag doesn't exist");
             yield break; // Something went wrong
         }
 
         if (data.Description == null)
         {
-            LogError($"{updateType} description doesn't exist");
+            Error($"{updateType} description doesn't exist");
             yield break; // Something went wrong part 2
         }
 
         if (data.Assets == null)
         {
-            LogError($"No assets found for {updateType}");
+            Error($"No assets found for {updateType}");
             yield break; // Something went wrong part 3
         }
 
@@ -136,7 +136,7 @@ public static class ModUpdater
 
         if (!URLs.TryGetValue(updateType, out var link))
         {
-            LogError($"No link found for {updateType}");
+            Error($"No link found for {updateType}");
             Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Manually");
             button.SetActive(true);
             yield break;
@@ -156,7 +156,7 @@ public static class ModUpdater
         if (www.isNetworkError || www.isHttpError)
         {
             Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.NoSuccess");
-            LogError(www.error);
+            Error(www.error);
             yield break;
         }
 
@@ -191,7 +191,7 @@ public static class ModUpdater
         if (hasError)
         {
             Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.NoSuccess");
-            LogError(error);
+            Error(error);
         }
         else
             Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Success").Replace("%mod%", updateType);

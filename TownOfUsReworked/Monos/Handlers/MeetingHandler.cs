@@ -502,7 +502,7 @@ public class MeetingHandler : MonoBehaviour
 
         if (CustomPlayer.Local.Is(LayerEnum.Lovers) && !DeadSeeEverything())
         {
-            var lover = localinfo[3] as Objectifier;
+            var lover = localinfo[3] as Disposition;
             var otherLover = CustomPlayer.Local.GetOtherLover();
 
             if (otherLover.PlayerId == player.TargetPlayerId)
@@ -535,7 +535,7 @@ public class MeetingHandler : MonoBehaviour
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Rivals) && !DeadSeeEverything())
         {
-            var rival = localinfo[3] as Objectifier;
+            var rival = localinfo[3] as Disposition;
             var otherRival = CustomPlayer.Local.GetOtherRival();
 
             if (otherRival.PlayerId == player.TargetPlayerId)
@@ -568,7 +568,7 @@ public class MeetingHandler : MonoBehaviour
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Linked) && !DeadSeeEverything())
         {
-            var link = localinfo[3] as Objectifier;
+            var link = localinfo[3] as Disposition;
             var otherLink = CustomPlayer.Local.GetOtherLink();
 
             if (otherLink.PlayerId == player.TargetPlayerId)
@@ -714,8 +714,8 @@ public class MeetingHandler : MonoBehaviour
 
             if (player.SyndicateSided() || player.IntruderSided())
             {
-                var objectifier = info[3] as Objectifier;
-                name += $" {objectifier.ColoredSymbol}";
+                var disposition = info[3] as Disposition;
+                name += $" {disposition.ColoredSymbol}";
             }
             else
                 name += $" {role.FactionColorString}ξ</color>";
@@ -850,10 +850,10 @@ public class MeetingHandler : MonoBehaviour
         {
             if (info[3])
             {
-                var objectifier = info[3] as Objectifier;
+                var disposition = info[3] as Disposition;
 
-                if (objectifier.Type != LayerEnum.NoneObjectifier && !objectifier.Hidden)
-                    name += $" {objectifier.ColoredSymbol}";
+                if (disposition.Type != LayerEnum.NoneDisposition && !disposition.Hidden)
+                    name += $" {disposition.ColoredSymbol}";
             }
 
             if (info[0])

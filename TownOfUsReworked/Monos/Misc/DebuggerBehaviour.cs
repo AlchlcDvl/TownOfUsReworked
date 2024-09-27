@@ -32,7 +32,7 @@ public class DebuggerBehaviour : MonoBehaviour
             if (IsLobby())
             {
                 TownOfUsReworked.IsTest = GUILayout.Toggle(TownOfUsReworked.IsTest, "Toggle Test Mode");
-                TownOfUsReworked.LobbyCapped = GUILayout.Toggle(TownOfUsReworked.LobbyCapped, "Toggle Lobby() Cap");
+                TownOfUsReworked.LobbyCapped = GUILayout.Toggle(TownOfUsReworked.LobbyCapped, "Toggle Lobby Cap");
                 TownOfUsReworked.Persistence = GUILayout.Toggle(TownOfUsReworked.Persistence, "Toggle Bot Persistence");
 
                 if (GUILayout.Button("Spawn Bot"))
@@ -134,10 +134,10 @@ public class DebuggerBehaviour : MonoBehaviour
 
                 if (GUILayout.Button("Log Dump"))
                 {
-                    LogMessage(CustomPlayer.Local.Data.PlayerName);
-                    PlayerLayer.LocalLayers.ForEach(LogMessage);
-                    LogMessage("Is Dead - " + CustomPlayer.Local.HasDied());
-                    LogMessage("Location - " + CustomPlayer.LocalCustom.Position);
+                    Message(CustomPlayer.Local.Data.PlayerName);
+                    PlayerLayer.LocalLayers.ForEach(Message);
+                    Message("Is Dead - " + CustomPlayer.Local.HasDied());
+                    Message("Location - " + CustomPlayer.LocalCustom.Position);
                 }
 
                 if (GUILayout.Button("Flash"))

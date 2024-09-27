@@ -17,15 +17,15 @@ public static class HauntPatch
         var role = __instance.HauntTarget.GetRole();
         var modifier = __instance.HauntTarget.GetModifier();
         var ability = __instance.HauntTarget.GetAbility();
-        var objectifier = __instance.HauntTarget.GetObjectifier();
+        var disposition = __instance.HauntTarget.GetDisposition();
         var objectiveString = "";
         var otherString = "";
 
         if (role)
             objectiveString += role.Name;
 
-        if (objectifier && objectifier.Type != LayerEnum.NoneObjectifier)
-            objectiveString += $" {objectifier.ColoredSymbol}";
+        if (disposition && disposition.Type != LayerEnum.NoneDisposition)
+            objectiveString += $" {disposition.ColoredSymbol}";
 
         if (modifier && modifier.Type != LayerEnum.NoneModifier)
             otherString += $" {modifier.Name}";
@@ -33,12 +33,10 @@ public static class HauntPatch
         if (ability && ability.Type != LayerEnum.NoneAbility)
             otherString += $" {ability.Name}";
 
-        var filter = objectiveString;
-
         if (otherString.Length != 0)
-            filter += "\n" + otherString;
+            objectiveString += "\n" + otherString;
 
-        __instance.FilterText.text = $"<size=75%>{filter}</size>";
+        __instance.FilterText.text = $"<size=75%>{objectiveString}</size>";
         return false;
     }
 }

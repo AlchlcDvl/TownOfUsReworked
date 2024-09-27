@@ -1,18 +1,18 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-public abstract class Objectifier : PlayerLayer
+public abstract class Disposition : PlayerLayer
 {
-    public static List<Objectifier> AllObjectifiers => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Objectifier).Cast<Objectifier>() ];
-    // public static readonly Dictionary<byte, Objectifier> ObjectifierLookup = [];
-    public static Objectifier LocalObjectifier => CustomPlayer.Local.GetObjectifier();
+    public static List<Disposition> AllDispositions => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Disposition).Cast<Disposition>() ];
+    // public static readonly Dictionary<byte, Disposition> DispositionLookup = [];
+    public static Disposition LocalDisposition => CustomPlayer.Local.GetDisposition();
 
-    public override UColor Color => CustomColorManager.Objectifier;
-    public override PlayerLayerEnum LayerType => PlayerLayerEnum.Objectifier;
-    public override LayerEnum Type => LayerEnum.NoneObjectifier;
+    public override UColor Color => CustomColorManager.Disposition;
+    public override PlayerLayerEnum LayerType => PlayerLayerEnum.Disposition;
+    public override LayerEnum Type => LayerEnum.NoneDisposition;
 
     public virtual string Symbol => "φ";
 
-    public static bool ObjectifierWins => WinState is WinLose.LoveWins or WinLose.RivalWins or WinLose.OverlordWins or WinLose.CorruptedWins or WinLose.DefectorWins or WinLose.MafiaWins or
+    public static bool DispositionWins => WinState is WinLose.LoveWins or WinLose.RivalWins or WinLose.OverlordWins or WinLose.CorruptedWins or WinLose.DefectorWins or WinLose.MafiaWins or
         WinLose.TaskmasterWins;
 
     public string ColoredSymbol => $"{ColorString}{Symbol}</color>";
@@ -20,6 +20,6 @@ public abstract class Objectifier : PlayerLayer
     public override void Init()
     {
         base.Init();
-        Player.GetRole().LinkedObjectifier = Type;
+        Player.GetRole().LinkedDisposition = Type;
     }
 }

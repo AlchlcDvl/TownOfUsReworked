@@ -1,7 +1,7 @@
-﻿namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+﻿namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Lovers : Objectifier
+public class Lovers : Disposition
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BothLoversDie { get; set; } = true;
@@ -15,7 +15,7 @@ public class Lovers : Objectifier
     public PlayerControl OtherLover { get; set; }
     public bool LoversAlive => !Player.HasDied() && !OtherLover.HasDied();
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Lovers : CustomColorManager.Objectifier;
+    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Lovers : CustomColorManager.Disposition;
     public override string Name => "Lovers";
     public override string Symbol => "♥";
     public override LayerEnum Type => LayerEnum.Lovers;

@@ -12,9 +12,9 @@ public class SoundLoader : AssetLoader<Asset>
     public override IEnumerator BeginDownload(object response)
     {
         var mainResponse = (List<Asset>)response;
-        LogMessage($"Found {mainResponse.Count} sounds");
+        Message($"Found {mainResponse.Count} sounds");
         var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
-        LogMessage($"Downloading {toDownload.Count()} sounds");
+        Message($"Downloading {toDownload.Count()} sounds");
         yield return CoDownloadAsset(toDownload);
     }
 
@@ -26,7 +26,7 @@ public class SoundLoader : AssetLoader<Asset>
         for (var i = 0; i < sounds.Count; i++)
         {
             var sound = sounds[i];
-            AddAsset(sound.ID, CreateDiskAudio(sound.ID, File.Open(Path.Combine(DirectoryInfo, $"{sound.ID}.wav"), FileMode.Open)));
+            AddAsset(sound.ID, CreateDiskAudio(Path.Combine(DirectoryInfo, $"{sound.ID}.wav")));
             time += Time.deltaTime;
 
             if (time > 1f)

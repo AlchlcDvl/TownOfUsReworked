@@ -1,6 +1,6 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-public class Objectifierless : Objectifier
+public class Dispositionless : Disposition
 {
     public override bool Hidden => true;
 }

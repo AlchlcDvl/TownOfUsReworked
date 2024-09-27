@@ -13,7 +13,7 @@ public static class RPCHandling
         switch (rpc)
         {
             case CustomRPC.Test:
-                LogMessage("Received RPC!");
+                Message("Received RPC!");
                 Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
                 break;
 
@@ -170,12 +170,12 @@ public static class RPCHandling
                             var role = player2.GetRole() ?? new Roleless().Start<Role>(player2);
                             var mod = player2.GetModifier() ?? new Modifierless().Start<Modifier>(player2);
                             var ab = player2.GetAbility() ?? new Abilityless().Start<Ability>(player2);
-                            var obj = player2.GetObjectifier() ?? new Objectifierless().Start<Objectifier>(player2);
+                            var disp = player2.GetDisposition() ?? new Dispositionless().Start<Disposition>(player2);
 
-                            /*PlayerLayer.LayerLookup[player2.PlayerId] = [ role, mod, ab, obj ];
+                            /*PlayerLayer.LayerLookup[player2.PlayerId] = [ role, mod, ab, disp ];
                             Role.RoleLookup[player2.PlayerId] = role;
                             Modifier.ModifierLookup[player2.PlayerId] = mod;
-                            Objectifier.ObjectifierLookup[player2.PlayerId] = obj;
+                            Disposition.DispositionLookup[player2.PlayerId] = disp;
                             Ability.AbilityLookup[player2.PlayerId] = ab;*/
                         }
 
@@ -281,7 +281,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogError($"Received unknown RPC - {(int)misc}");
+                        Error($"Received unknown RPC - {(int)misc}");
                         break;
                 }
 
@@ -303,7 +303,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogError($"Received unknown RPC - {(int)vanilla}");
+                        Error($"Received unknown RPC - {(int)vanilla}");
                         break;
                 }
 
@@ -368,7 +368,7 @@ public static class RPCHandling
                         }
                         catch (Exception e)
                         {
-                            LogError(e);
+                            Error(e);
                         }
 
                         break;
@@ -424,7 +424,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogError($"Received unknown RPC - {(int)action}");
+                        Error($"Received unknown RPC - {(int)action}");
                         break;
                 }
 
@@ -491,7 +491,7 @@ public static class RPCHandling
                     case WinLose.LoveWins:
                         var lover = reader.ReadLayer<Lovers>();
                         lover.Winner = true;
-                        lover.OtherLover.GetObjectifier().Winner = true;
+                        lover.OtherLover.GetDisposition().Winner = true;
                         break;
 
                     case WinLose.OverlordWins:
@@ -514,7 +514,7 @@ public static class RPCHandling
                 break;
 
             default:
-                LogError($"Received unknown RPC - {(int)rpc}");
+                Error($"Received unknown RPC - {(int)rpc}");
                 break;
         }
     }

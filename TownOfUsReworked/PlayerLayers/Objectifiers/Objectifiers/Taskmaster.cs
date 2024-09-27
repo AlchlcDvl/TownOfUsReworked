@@ -1,14 +1,14 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Taskmaster : Objectifier
+public class Taskmaster : Disposition
 {
     [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
     public static Number TMTasksRemaining { get; set; } = new(1);
 
     public bool WinTasksDone { get; set; }
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Taskmaster : CustomColorManager.Objectifier;
+    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Taskmaster : CustomColorManager.Disposition;
     public override string Name => "Taskmaster";
     public override string Symbol => "µ";
     public override LayerEnum Type => LayerEnum.Taskmaster;

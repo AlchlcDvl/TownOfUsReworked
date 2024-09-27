@@ -350,7 +350,7 @@ public class Thief : Neutral
                 break;
 
             default:
-                LogError($"Received unknown RPC - {(int)thiefAction}");
+                Error($"Received unknown RPC - {(int)thiefAction}");
                 break;
         }
     }

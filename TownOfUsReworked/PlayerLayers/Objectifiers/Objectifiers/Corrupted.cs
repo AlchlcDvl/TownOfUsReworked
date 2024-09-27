@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Corrupted : Objectifier
+public class Corrupted : Disposition
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number CorruptCd { get; set; } = new(25);
@@ -14,7 +14,7 @@ public class Corrupted : Objectifier
 
     private CustomButton CorruptButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Corrupted : CustomColorManager.Objectifier;
+    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Corrupted : CustomColorManager.Disposition;
     public override string Name => "Corrupted";
     public override string Symbol => "δ";
     public override LayerEnum Type => LayerEnum.Corrupted;

@@ -50,6 +50,6 @@ public static class Generate
         opts.Clear();
         d.Clear();
 
-        LogMessage($"There exist {OptionAttribute.AllOptions.Count} total options lmao (number jumpscare)");
+        Message($"There exist {OptionAttribute.AllOptions.Count} total options lmao (number jumpscare)");
     }
 }

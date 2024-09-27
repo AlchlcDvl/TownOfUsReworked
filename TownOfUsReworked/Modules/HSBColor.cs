@@ -239,26 +239,26 @@ public struct HSBColor
     /*public static void Test()
     {
         var color = new HSBColor(UColor.red);
-        LogInfo("red: " + color);
+        Info("red: " + color);
 
         color = new(UColor.green);
-        LogInfo("green: " + color);
+        Info("green: " + color);
 
         color = new(UColor.blue);
-        LogInfo("blue: " + color);
+        Info("blue: " + color);
 
         color = new(UColor.grey);
-        LogInfo("grey: " + color);
+        Info("grey: " + color);
 
         color = new(UColor.white);
-        LogInfo("white: " + color);
+        Info("white: " + color);
 
         color = new(new(0.4f, 1f, 0.84f, 1f));
-        LogInfo("0.4, 1f, 0.84: " + color);
+        Info("0.4, 1f, 0.84: " + color);
 
         color = Parse("0.54,0.6,1,true;1,0.69,0.23;0.5,1;1");
-        LogInfo("test case : 0.54,0.6,1,true;1,0.69,0.23;0.5,1;1 ->" + color);
+        Info("test case : 0.54,0.6,1,true;1,0.69,0.23;0.5,1;1 ->" + color);
 
-        LogInfo("164, 82, 84 -> 0.643137f, 0.321568f, 0.329411f: " + ToColor(new(new(0.643137f, 0.321568f, 0.329411f))));
+        Info("164, 82, 84 -> 0.643137f, 0.321568f, 0.329411f: " + ToColor(new(new(0.643137f, 0.321568f, 0.329411f))));
     }*/
 }

@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.PlayerLayers.Objectifiers;
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Mafia : Objectifier
+public class Mafia : Disposition
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool MafiaRoles { get; set; } = true;
@@ -9,7 +9,7 @@ public class Mafia : Objectifier
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool MafVent { get; set; } = false;
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Mafia : CustomColorManager.Objectifier;
+    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Mafia : CustomColorManager.Disposition;
     public override string Name => "Mafia";
     public override string Symbol => "ω";
     public override LayerEnum Type => LayerEnum.Mafia;

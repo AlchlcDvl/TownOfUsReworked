@@ -141,9 +141,9 @@ public static class BetterAirship
 
             if (EnableCustomSpawns)
             {
-                AddSpawn(new Vector3(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault.anim"), GetAudio("RolloverDefault"), ref spawn);
-                AddSpawn(new Vector3(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cokpit"), GetAnim("Cokpit.anim"), GetAudio("RolloverDefault"), ref spawn);
-                AddSpawn(new Vector3(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical.anim"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new Vector3(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new Vector3(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cokpit"), GetAnim("Cokpit"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new Vector3(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical"), GetAudio("RolloverDefault"), ref spawn);
             }
 
             if (SpawnType == AirshipSpawnType.Fixed)
@@ -162,7 +162,7 @@ public static class BetterAirship
             else if (SpawnType == AirshipSpawnType.Random)
                 __instance.Locations = spawn.GetRandomRange(3).ToArray();
 
-            
+
             return true;
         }
 

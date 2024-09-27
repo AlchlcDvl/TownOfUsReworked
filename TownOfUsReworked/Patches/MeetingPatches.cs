@@ -290,8 +290,8 @@ public static class MeetingPatches
         public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo exiled, bool tie)
         {
             var exiledString = !exiled ? "null" : exiled.PlayerName;
-            LogInfo($"Exiled PlayerName = {exiledString}");
-            LogInfo($"Was a tie = {tie}");
+            Info($"Exiled PlayerName = {exiledString}");
+            Info($"Was a tie = {tie}");
             PlayerLayer.LocalLayers.ForEach(x => x?.VoteComplete(__instance));
             Coroutines.Start(PerformSwaps());
 

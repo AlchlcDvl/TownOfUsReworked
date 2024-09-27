@@ -16,7 +16,7 @@ public static class MainMenuStartPatch
         SubTitle = "",
         PinState = false,
         Date = "24.03.2024",
-        Text = $"<size=75%>{ReadResourceText("ModInfo")}</size>"
+        Text = $"<size=75%>{GetString("ModInfo")}</size>"
     };
     public static GameObject Logo;
 
@@ -46,7 +46,7 @@ public static class MainMenuStartPatch
         // If there's a possible download, create and show the buttons for it
         if (ModUpdater.ReworkedUpdate)
         {
-            LogInfo("Reworked can be updated");
+            Info("Reworked can be updated");
             CreatDownloadButton(__instance, "Reworked", y, pos, "UpdateReworked");
             y += 0.5f;
             pos += 0.5f;
@@ -54,7 +54,7 @@ public static class MainMenuStartPatch
 
         if (ModUpdater.SubmergedUpdate || ModUpdater.CanDownloadSubmerged)
         {
-            LogInfo($"Submerged can be {(ModUpdater.SubmergedUpdate ? "updated" : "downloaded")}");
+            Info($"Submerged can be {(ModUpdater.SubmergedUpdate ? "updated" : "downloaded")}");
             CreatDownloadButton(__instance, "Submerged", y, pos, $"{(SubLoaded ? "Update" : "Download")}Submerged");
             y += 0.5f;
             pos += 0.5f;
@@ -62,7 +62,7 @@ public static class MainMenuStartPatch
 
         if (ModUpdater.CanDownloadLevelImpostor)
         {
-            LogInfo("LevelImpostor can be downloaded");
+            Info("LevelImpostor can be downloaded");
             CreatDownloadButton(__instance, "LevelImpostor", y, pos, "DownloadLevelImpostor");
         }
 
@@ -155,7 +155,7 @@ public static class MainMenuStartPatch
 
             if (!template)
             {
-                LogError("Pop up was null");
+                Error("Pop up was null");
                 return;
             }
 

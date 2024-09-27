@@ -28,12 +28,12 @@ public static class CheckEndGame
             {
                 Faction.Crew => WinLose.CrewWins,
                 Faction.Intruder => WinLose.IntrudersWin,
-                Faction.Neutral => spell.LinkedObjectifier == LayerEnum.Defector ? WinLose.DefectorWins : WinLose.AllNeutralsWin,
+                Faction.Neutral => spell.LinkedDisposition == LayerEnum.Defector ? WinLose.DefectorWins : WinLose.AllNeutralsWin,
                 Faction.Syndicate => WinLose.SyndicateWins,
                 _ => WinLose.NobodyWins
             };
 
-            if (spell.LinkedObjectifier == LayerEnum.Defector)
+            if (spell.LinkedDisposition == LayerEnum.Defector)
                 spell.Winner = true;
 
             CallRpc(CustomRPC.WinLose, WinState, spell);
@@ -44,12 +44,12 @@ public static class CheckEndGame
             {
                 Faction.Crew => WinLose.CrewWins,
                 Faction.Intruder => WinLose.IntrudersWin,
-                Faction.Neutral => reb.LinkedObjectifier == LayerEnum.Defector ? WinLose.DefectorWins : WinLose.AllNeutralsWin,
+                Faction.Neutral => reb.LinkedDisposition == LayerEnum.Defector ? WinLose.DefectorWins : WinLose.AllNeutralsWin,
                 Faction.Syndicate => WinLose.SyndicateWins,
                 _ => WinLose.NobodyWins
             };
 
-            if (reb.LinkedObjectifier == LayerEnum.Defector)
+            if (reb.LinkedDisposition == LayerEnum.Defector)
                 reb.Winner = true;
 
             CallRpc(CustomRPC.WinLose, WinState, reb);
@@ -61,7 +61,7 @@ public static class CheckEndGame
         }
         else
         {
-            Objectifier.AllObjectifiers.ForEach(x => x.GameEnd());
+            Disposition.AllDispositions.ForEach(x => x.GameEnd());
             Role.AllRoles.ForEach(x => x.GameEnd());
             DetectStalemate();
         }

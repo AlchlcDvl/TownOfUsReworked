@@ -256,7 +256,7 @@ public static class CustomColorManager
 
         if (startColorHex.Length is not (6 or 8) || endColorHex.Length is not (6 or 8))
         {
-            LogError($"Invalid hex length {startColorHex} : {endColorHex}");
+            Error($"Invalid hex length {startColorHex} : {endColorHex}");
             return text;
         }
 
@@ -286,7 +286,7 @@ public static class CustomColorManager
     public static readonly UColor Modifier = FromHex("#7F7F7FFF");
     public static readonly UColor Ability = FromHex("#FF9900FF");
     public static readonly UColor Layer = FromHex("#2684C1FF");
-    public static readonly UColor Objectifier = FromHex("#DD585BFF");
+    public static readonly UColor Disposition = FromHex("#DD585BFF");
 
     // Faction Colors
     public static readonly UColor Crew = FromHex("#8CFFFFFF");
@@ -445,7 +445,7 @@ public static class CustomColorManager
     public static readonly UColor Politician = FromHex("#CCA3CCFF");
     public static readonly UColor Swapper = FromHex("#66E666FF");
 
-    // Objectifier Colors
+    // Disposition Colors
     public static readonly UColor Lovers = FromHex("#FF66CCFF");
     public static readonly UColor Traitor = FromHex("#370D43FF");
     public static readonly UColor Rivals = FromHex("#3D2D2CFF");

@@ -83,7 +83,7 @@ public class Drunkard : Syndicate
             if (ConfusedPlayer && !HoldsDrive && !ConfuseButton.EffectActive)
                 ConfusedPlayer = null;
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 

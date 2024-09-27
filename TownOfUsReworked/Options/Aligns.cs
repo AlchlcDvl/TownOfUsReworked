@@ -64,7 +64,7 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
             LayerEnum.SyndicateKill or LayerEnum.SyndicateSupport or LayerEnum.SyndicateDisrup or LayerEnum.SyndicatePower or LayerEnum.SyndicateUtil => CustomColorManager.Syndicate,
             LayerEnum.Ability => CustomColorManager.Ability,
             LayerEnum.Modifier => CustomColorManager.Modifier,
-            LayerEnum.Objectifier => CustomColorManager.Objectifier,
+            LayerEnum.Disposition => CustomColorManager.Disposition,
             _ => UColor.white
         };
 

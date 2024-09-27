@@ -16,6 +16,7 @@ public class Betrayer : Neutral
     public override LayerEnum Type => LayerEnum.Betrayer;
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
     public override Func<string> Description => () => "- You can kill";
+    public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()
     {

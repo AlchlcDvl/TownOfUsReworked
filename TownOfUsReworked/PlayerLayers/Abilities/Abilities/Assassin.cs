@@ -49,7 +49,7 @@ public abstract class Assassin : Ability
     public static bool AssassinGuessModifiers { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessObjectifiers { get; set; } = false;
+    public static bool AssassinGuessDispositions { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AssassinGuessAbilities { get; set; } = false;
@@ -269,8 +269,8 @@ public abstract class Assassin : Ability
             }
         }
 
-        // Add Objectifiers if enabled
-        if (AssassinGuessObjectifiers)
+        // Add Dispositions if enabled
+        if (AssassinGuessDispositions)
         {
             for (var h = 107; h < 118; h++)
             {
@@ -378,12 +378,12 @@ public abstract class Assassin : Ability
                     var playerRole = voteArea.GetRole();
                     var playerAbility = voteArea.GetAbility();
                     var playerModifier = voteArea.GetModifier();
-                    var playerObjectifier = voteArea.GetObjectifier();
+                    var playerDisposition = voteArea.GetDisposition();
 
                     var roleflag = playerRole?.Name == guess;
                     var modifierflag = playerModifier?.Name == guess;
                     var abilityflag = playerAbility?.Name == guess;
-                    var objectifierflag = playerObjectifier?.Name == guess;
+                    var dispositionflag = playerDisposition?.Name == guess;
                     var recruitflag = targetPlayer.IsRecruit() && guess == "Recruit";
                     var sectflag = targetPlayer.IsPersuaded() && guess == "Persuaded";
                     var reanimatedflag = targetPlayer.IsResurrected() && guess == "Resurrected";
@@ -404,7 +404,7 @@ public abstract class Assassin : Ability
                         }
                     }
 
-                    var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag || undeadflag || framedflag;
+                    var flag = roleflag || modifierflag || abilityflag || dispositionflag || recruitflag || sectflag || reanimatedflag || undeadflag || framedflag;
                     var toDie = flag ? targetPlayer : Player;
                     RpcMurderPlayer(toDie, guess, targetPlayer);
                     Exit(__instance);

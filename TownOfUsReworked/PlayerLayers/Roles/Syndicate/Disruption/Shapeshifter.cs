@@ -145,7 +145,7 @@ public class Shapeshifter : Syndicate
                     ShapeshiftPlayer1 = null;
             }
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
     }
 

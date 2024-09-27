@@ -12,7 +12,7 @@ public static class SaveLadderPlayer
         }
         catch (Exception e)
         {
-            LogError(e);
+            Error(e);
         }
 
         if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
@@ -32,7 +32,7 @@ public static class SavePlatformPlayer
         }
         catch (Exception e)
         {
-            LogError(e);
+            Error(e);
         }
 
         if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
@@ -65,7 +65,7 @@ public static class SaveZiplinePlayer
         }
         catch (Exception e)
         {
-            LogError(e);
+            Error(e);
         }
 
         if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))

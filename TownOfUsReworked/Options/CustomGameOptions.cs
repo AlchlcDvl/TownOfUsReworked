@@ -285,7 +285,7 @@ public static class GameModifiers
     public static bool EnableModifiers { get; set; } = true;
 
     [ToggleOption(MultiMenu.Main)]
-    public static bool EnableObjectifiers { get; set; } = true;
+    public static bool EnableDispositions { get; set; } = true;
 
     [ToggleOption(MultiMenu.Main)]
     public static bool VentTargeting { get; set; } = true;
@@ -1121,8 +1121,8 @@ public static class Abilities
     public static RoleOptionData Underdog { get; set; }
 }
 
-[AlignsOption(MultiMenu.Layer, LayerEnum.Objectifier)]
-public static class Objectifiers
+[AlignsOption(MultiMenu.Layer, LayerEnum.Disposition)]
+public static class Dispositions
 {
     [LayersOption(MultiMenu.Layer, "#4545A9FF", LayerEnum.Allied)]
     public static RoleOptionData Allied { get; set; }
@@ -1353,11 +1353,11 @@ public static class AbilitiesSettings
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
-public static class ObjectifiersSettings
+public static class DispositionsSettings
 {
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxObjectifiers { get; set; } = new(5);
+    public static Number MaxDispositions { get; set; } = new(5);
 
     [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MinObjectifiers { get; set; } = new(5);
+    public static Number MinDispositions { get; set; } = new(5);
 }

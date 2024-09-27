@@ -281,7 +281,7 @@ public static class ColorTheMessage
     public static void Postfix(ChatBubble __instance)
     {
         __instance.TextArea.richText = true;
-        __instance.TextArea.text = Info.ColorIt(__instance.TextArea.text);
+        __instance.TextArea.text = Modules.Info.ColorIt(__instance.TextArea.text);
     }
 }
 

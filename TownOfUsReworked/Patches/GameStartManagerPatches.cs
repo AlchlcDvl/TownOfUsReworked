@@ -106,7 +106,7 @@ public static class GameStartManagerPatches
                 var arg = "#FF0000FF";
 
                 if (__instance.LastPlayerCount > __instance.MinPlayers)
-                    arg = "#00FF00FF>";
+                    arg = "#00FF00FF";
                 else if (__instance.LastPlayerCount == __instance.MinPlayers)
                     arg = "#FFFF00FF";
 
@@ -173,7 +173,7 @@ public static class GameStartManagerPatches
                             // Somehow something's still not matching, so just display that the player has something wrong
                             versionMismatch = true;
                             message += $"You or {client.PlayerName} somehow still has a version mismatch, please share logs\n";
-                            LogWarning($"{client.PlayerName}\nGuid - {pv.GuidMatches} Version String - {pv.VersionFinal} Version - {pv.Version}\n\n{CustomPlayer.Local.Data.PlayerName}\nGuid - "
+                            Warning($"{client.PlayerName}\nGuid - {pv.GuidMatches} Version String - {pv.VersionFinal} Version - {pv.Version}\n\n{CustomPlayer.Local.Data.PlayerName}\nGuid - "
                                 + $"{SelfVersion.GuidMatches} Version String - {SelfVersion.VersionFinal} Version - {SelfVersion.Version}");
                         }
                     }

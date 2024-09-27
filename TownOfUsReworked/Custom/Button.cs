@@ -154,7 +154,7 @@ public class CustomButton
         button.Disabled = !button.Owner.Local;
         button.CreateButton();
         AllButtons.Add(button);
-        missing.ForEach(x => LogError($"Unassigned proprty of type {x.GetType().Name} was found in the button {button.ID}"));
+        missing.ForEach(x => Error($"Unassigned proprty of type {x.GetType().Name} was found in the button {button.ID}"));
         return button;
     }
 

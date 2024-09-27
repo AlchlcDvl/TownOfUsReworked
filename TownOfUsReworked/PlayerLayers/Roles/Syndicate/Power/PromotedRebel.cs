@@ -85,7 +85,7 @@ public class PromotedRebel : Syndicate
             else if (PoisonedPlayer && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
                 PoisonedPlayer = null;
 
-            LogMessage("Removed a target");
+            Message("Removed a target");
         }
 
         if (IsStalk)
@@ -320,7 +320,7 @@ public class PromotedRebel : Syndicate
                 break;
 
             default:
-                LogError($"Received unknown RPC - {(int)rebAction}");
+                Error($"Received unknown RPC - {(int)rebAction}");
                 break;
         }
     }

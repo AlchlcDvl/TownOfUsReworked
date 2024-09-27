@@ -161,9 +161,9 @@ public static class LayerInfo
             "Neutral (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.", Alignment.NeutralApoc, Faction.Neutral, "I am the god of disease, " +
             "nothing can kill me. <i>Voice from the distance</i> Ejections can!", CustomColorManager.Pestilence, LayerEnum.Pestilence, "Unstoppable", "Invincible", "Obliterate anyone who " +
             "can oppose them"),
-        new("Phantom", "Phan", "The Phantom spawns when a Neutral player dies withouth accomplishing their objective. They become half-invisible and have to complete all their tasks " +
-            "without getting clicked on to win.", Alignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. <i>Voice from the distance</i> Get outta " +
-            "here! This is not FNAF!", CustomColorManager.Phantom, LayerEnum.Phantom, "Finish tasks without getting caught"),
+        new("Phantom", "Phan", "The Phantom spawns when a Neutral player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without" +
+            " getting clicked on to win.", Alignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. <i>Voice from the distance</i> Get outta here! This is not " +
+            "FNAF!", CustomColorManager.Phantom, LayerEnum.Phantom, "Finish tasks without getting caught"),
         new("Plaguebearer", "PB", "The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all " +
             "players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.", Alignment.NeutralHarb, Faction.Neutral,
             "<i>Cough</i> This should surely work, right? <i>Cough</i> I sure hope it does.", CustomColorManager.Plaguebearer, LayerEnum.Plaguebearer, "None", "Basic for as long as half " +
@@ -314,9 +314,9 @@ public static class LayerInfo
             CustomColorManager.Volatile, LayerEnum.Volatile)
     ];
 
-    public static readonly List<ObjectifierInfo> AllObjectifiers =
+    public static readonly List<DispositionInfo> AllDispositions =
     [
-        new("Invalid", "Invalid", "Invalid", "Invalid", "Invalid", "φ", CustomColorManager.Objectifier, LayerEnum.NoneObjectifier),
+        new("Invalid", "Invalid", "Invalid", "Invalid", "Invalid", "φ", CustomColorManager.Disposition, LayerEnum.NoneDisposition),
         new("Taskmaster", "TM", "The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate" +
             " and the Crew only sees a flash to indicate the Taskmaster's existence.", "Finish tasks without dying or game ending", "Neutrals", "µ", CustomColorManager.Taskmaster,
             LayerEnum.Taskmaster, true),
@@ -591,8 +591,8 @@ public static class LayerInfo
             "\nSyndicate (Killing)\nOriginal Rebel, Sidekick, Anarchist", true),
         new("Role", "Role", "Roles decide your abilities and goals for the game. Every game, you are guaranteed to have a role as not having one basically means you cannot play the game.",
             CustomColorManager.Role),
-        new("Objectifier", "Obj", "Objectifiers provide an alternate way for you to win, and sometimes they may override the your original win condition (see Corrupted and Mafia) or change" +
-            " your win condition mid-game (see Traitor and Fanatic).", CustomColorManager.Objectifier),
+        new("Disposition", "Obj", "Dispositions provide an alternate way for you to win, and sometimes they may override the your original win condition (see Corrupted and Mafia) or change" +
+            " your win condition mid-game (see Traitor and Fanatic).", CustomColorManager.Disposition),
         new("Modifier", "Mod", "Modifiers are passive afflictions, usually negative or benign in nature, that serve no purpose and are there for fun. It cam alter a player's gameplay based"
             + " on what they might have. For example, Baits and Diseased players would want to die for their modifiers to take effect.", CustomColorManager.Modifier),
         new("Ability", "Ab", "Abilities give you an additional ability on top of your original abilities, to help boost your chances of winning.", CustomColorManager.Ability),
@@ -606,7 +606,7 @@ public static class LayerInfo
     public static readonly List<SymbolInfo> AllSymbols =
     [
         new("Invalid", "Invalid", "Invalid", UColor.red),
-        new("Null", "φ", "This symbol is a placeholder for when one doesn't have an objectifier or a subfaction that they are a part of.", CustomColorManager.SubFaction),
+        new("Null", "φ", "This symbol is a placeholder for when one doesn't have an disposition or a subfaction that they are a part of.", CustomColorManager.SubFaction),
         new("Shield", "✚", "Players who have shield deployed on them through a Medic or a Retributionist-Medic.", CustomColorManager.Medic, true),
         new("Knighted", "κ", "Players who have been knighted by a Monarch recieve this symbol.", CustomColorManager.Monarch),
         new("Trapped", "∮", "Players that have been trapped by a Trapper or a Retributionist-Trapper. Trapped players will have their interactor's roles logged and sent to the relevant " +
@@ -645,16 +645,16 @@ public static class LayerInfo
         new("Crusaded", "τ", "Players being targeted by a Crusader. Crusaded players will attack anyone who interact with them, or if the Crusader holds the drive, everyone in a certain " +
             "radius.", CustomColorManager.Crusader),
         new("Ambushed", "人", "Players being targeted by an Ambusher. AMbushed players will attack anyone who interact with them.", CustomColorManager.Ambusher),
-        new("Allied", "ζ", "Use to denote those who have the Allied objectifier. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Allied),
-        new("Corrupted", "δ", "Use to denote those who have the Corrupted objectifier.", CustomColorManager.Corrupted),
-        new("Defector", "ε", "Use to denote those who have the Defector objectifier. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Defector),
-        new("Fanatic", "♠", "Use to denote those who have the Fanatic objectifier. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Fanatic),
-        new("Linked", "Ψ", "Use to denote those who have the Linked objectifier.", CustomColorManager.Linked),
-        new("Lovers", "♥", "Use to denote those who have the Lovers objectifier.", CustomColorManager.Lovers),
-        new("Mafia", "ω", "Use to denote those who have the Mafia objectifier.", CustomColorManager.Mafia),
-        new("Overlord", "β", "Use to denote those who have the Overlord objectifier.", CustomColorManager.Overlord),
-        new("Rivals", "α", "Use to denote those who have the Rivals objectifier.", CustomColorManager.Rivals),
-        new("Taskmaster", "µ", "Use to denote those who have the Taskmaster objectifier.", CustomColorManager.Taskmaster),
-        new("Traitor", "♣", "Use to denote those who have the Traitor objectifier. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Traitor)
+        new("Allied", "ζ", "Use to denote those who have the Allied disposition. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Allied),
+        new("Corrupted", "δ", "Use to denote those who have the Corrupted disposition.", CustomColorManager.Corrupted),
+        new("Defector", "ε", "Use to denote those who have the Defector disposition. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Defector),
+        new("Fanatic", "♠", "Use to denote those who have the Fanatic disposition. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Fanatic),
+        new("Linked", "Ψ", "Use to denote those who have the Linked disposition.", CustomColorManager.Linked),
+        new("Lovers", "♥", "Use to denote those who have the Lovers disposition.", CustomColorManager.Lovers),
+        new("Mafia", "ω", "Use to denote those who have the Mafia disposition.", CustomColorManager.Mafia),
+        new("Overlord", "β", "Use to denote those who have the Overlord disposition.", CustomColorManager.Overlord),
+        new("Rivals", "α", "Use to denote those who have the Rivals disposition.", CustomColorManager.Rivals),
+        new("Taskmaster", "µ", "Use to denote those who have the Taskmaster disposition.", CustomColorManager.Taskmaster),
+        new("Traitor", "♣", "Use to denote those who have the Traitor disposition. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Traitor)
     ];
 }

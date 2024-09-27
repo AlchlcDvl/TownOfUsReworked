@@ -8,7 +8,7 @@ public class Seer : Crew
 
     public static bool ChangedDead => !AllRoles.Any(x => !x.Player.HasDied() && (x.RoleHistory.Any() || x.Type is LayerEnum.Amnesiac or LayerEnum.Thief or LayerEnum.Actor or
         LayerEnum.VampireHunter or LayerEnum.Godfather or LayerEnum.Mafioso or LayerEnum.Shifter or LayerEnum.Guesser or LayerEnum.Rebel or LayerEnum.Mystic or LayerEnum.Sidekick or
-        LayerEnum.GuardianAngel or LayerEnum.Executioner or LayerEnum.BountyHunter or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel || x.LinkedObjectifier is LayerEnum.Traitor or
+        LayerEnum.GuardianAngel or LayerEnum.Executioner or LayerEnum.BountyHunter or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel || x.LinkedDisposition is LayerEnum.Traitor or
         LayerEnum.Fanatic));
     public CustomButton SeerButton { get; set; }
 

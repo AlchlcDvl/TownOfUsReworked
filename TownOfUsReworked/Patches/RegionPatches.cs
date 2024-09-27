@@ -106,7 +106,7 @@ public static class RegionInfoOpenPatch
         foreach (var iregionInfo2 in iregionInfoArray)
         {
             if (iregionInfo2 == null)
-                LogError("Could not add region");
+                Error("Could not add region");
             else
             {
                 if (iregionInfo1 != null && iregionInfo2.Name.Equals(iregionInfo1.Name, StringComparison.OrdinalIgnoreCase))
@@ -119,7 +119,7 @@ public static class RegionInfoOpenPatch
         if (iregionInfo1 == null)
             return;
 
-        LogInfo("Resetting previous region");
+        Info("Resetting previous region");
         ServerManager.Instance.SetRegion(iregionInfo1);
     }
 }

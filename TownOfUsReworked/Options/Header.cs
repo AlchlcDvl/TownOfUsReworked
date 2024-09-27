@@ -55,7 +55,7 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
             {
                 att.SetProperty(prop);
                 members.Add(att);
-                strings.Add(prop.Name);
+                strings.Add(att.Name);
             }
         }
 

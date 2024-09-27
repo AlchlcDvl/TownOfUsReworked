@@ -107,7 +107,7 @@ public static class ClientStuff
 
         if (!ClientHandler.Instance.PagesSet)
         {
-            var clone = Info.AllInfo.Clone();
+            var clone = Modules.Info.AllInfo.Clone();
             clone.RemoveAll(x => x.Name is "Invalid" or "None" || x.Type == InfoType.Lore);
             clone.Reverse();
             clone = [ .. clone.Distinct() ];
@@ -182,7 +182,7 @@ public static class ClientStuff
             ClientHandler.Instance.LoreButton = CreateButton("WikiLore", "Lore", () =>
             {
                 ClientHandler.Instance.LoreActive = !ClientHandler.Instance.LoreActive;
-                SetEntryText(Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == ClientHandler.Instance.Selected.Name || x.Short == ClientHandler.Instance.Selected.Short)
+                SetEntryText(Modules.Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == ClientHandler.Instance.Selected.Name || x.Short == ClientHandler.Instance.Selected.Short)
                     .Description)));
                 ClientHandler.Instance.PhoneText.text = ClientHandler.Instance.Entry[0];
                 ClientHandler.Instance.PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);

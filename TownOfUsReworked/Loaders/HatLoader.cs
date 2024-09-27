@@ -16,9 +16,9 @@ public class HatLoader : AssetLoader<CustomHat>
     {
         var mainResponse = (List<CustomHat>)response;
         UnregisteredHats.AddRange(mainResponse);
-        LogMessage($"Found {UnregisteredHats.Count} hats");
+        Message($"Found {UnregisteredHats.Count} hats");
         var toDownload = GenerateDownloadList(UnregisteredHats);
-        LogMessage($"Downloading {toDownload.Count} hat files");
+        Message($"Downloading {toDownload.Count} hat files");
         yield return CoDownloadAsset(toDownload);
         mainResponse.Clear();
     }

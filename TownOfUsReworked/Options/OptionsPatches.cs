@@ -915,17 +915,18 @@ public static class SettingsPatches
     private static readonly string[] Maps = [ "The Skeld", "Mira HQ", "Polus", "ehT dlekS", "Airship", "Fungle", "Submerged", "Level Impostor", "Random" ];
     private static LobbyNotificationMessage MapChangeNotif;
 
-    private static void SetMap(int mapId)
-    {
-        var map = (MapEnum)mapId;
+    private static void SetMap(int mapId) => SetMap((MapEnum)mapId);
 
+    public static void SetMap(MapEnum map)
+    {
         if (MapSettings.Map == map)
             return;
 
         MapSettings.Map = map;
+        TownOfUsReworked.NormalOptions.MapId = (byte)map;
         OnValueChanged();
 
-        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[mapId]}</font>";
+        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[(int)map]}</font>";
 
         if (MapChangeNotif != null)
             MapChangeNotif.UpdateMessage(changed);

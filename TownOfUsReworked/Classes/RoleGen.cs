@@ -32,7 +32,7 @@ public static class RoleGen
 
     private static List<RoleOptionData> AllModifiers = [];
     private static List<RoleOptionData> AllAbilities = [];
-    private static List<RoleOptionData> AllObjectifiers = [];
+    private static List<RoleOptionData> AllDispositions = [];
     private static List<RoleOptionData> AllRoles = [];
 
     public static PlayerControl PureCrew;
@@ -151,7 +151,7 @@ public static class RoleGen
                 newList.Add(items.Where(x => x.Chance < 100).Random(x => !newList.Contains(x)));
         }
 
-        newList = [ .. newList.OrderBy(x => 100 - x.Chance) ];
+        newList = [ .. newList.OrderByDescending(x => x.Chance) ];
 
         while (newList.Count > amount && newList.Count > 1)
             newList.Remove(newList.Last());
@@ -206,7 +206,7 @@ public static class RoleGen
         }
 
         if (TownOfUsReworked.IsTest)
-            LogInfo($"Crew = {crew}, Int = {impostors}, Syn = {syndicate}, Neut = {neutrals}");
+            Info($"Crew = {crew}, Int = {impostors}, Syn = {syndicate}, Neut = {neutrals}");
 
         if (!IsAA())
             return;
@@ -251,7 +251,7 @@ public static class RoleGen
         }
 
         if (TownOfUsReworked.IsTest)
-            LogInfo($"Crew = {crew}, Int = {impostors}, Syn = {syndicate}, Neut = {neutrals}");
+            Info($"Crew = {crew}, Int = {impostors}, Syn = {syndicate}, Neut = {neutrals}");
     }
 
     private static int GetRandomCount()
@@ -525,7 +525,6 @@ public static class RoleGen
     private static void GenClassicCustomAA()
     {
         GetAdjustedFactions(out var imps, out var syn, out var neut, out var crew);
-        var num = 0;
 
         if (crew > 0)
         {
@@ -538,7 +537,7 @@ public static class RoleGen
                     SetPostmortals.RevealerOn = Check(spawn);
                 else if (spawn.IsActive())
                 {
-                    num = spawn.Count;
+                    var num = spawn.Count;
 
                     while (num > 0)
                     {
@@ -561,7 +560,7 @@ public static class RoleGen
                     }
                 }
 
-                LogInfo($"{layer} Done");
+                Info($"{layer} Done");
             }
         }
 
@@ -580,7 +579,7 @@ public static class RoleGen
                     SetPostmortals.PhantomOn = Check(spawn);
                 else if (spawn.IsActive())
                 {
-                    num = spawn.Count;
+                    var num = spawn.Count;
 
                     while (num > 0)
                     {
@@ -605,7 +604,7 @@ public static class RoleGen
                     }
                 }
 
-                LogInfo($"{layer} Done");
+                Info($"{layer} Done");
             }
         }
 
@@ -624,7 +623,7 @@ public static class RoleGen
                     SetPostmortals.GhoulOn = Check(spawn);
                 else if (spawn.IsActive(imps))
                 {
-                    num = spawn.Count;
+                    var num = spawn.Count;
 
                     while (num > 0)
                     {
@@ -645,7 +644,7 @@ public static class RoleGen
                     }
                 }
 
-                LogInfo($"{layer} Done");
+                Info($"{layer} Done");
             }
         }
 
@@ -664,7 +663,7 @@ public static class RoleGen
                     SetPostmortals.BansheeOn = Check(spawn);
                 else if (spawn.IsActive(syn))
                 {
-                    num = spawn.Count;
+                    var num = spawn.Count;
 
                     while (num > 0)
                     {
@@ -685,7 +684,7 @@ public static class RoleGen
                     }
                 }
 
-                LogInfo($"{layer} Done");
+                Info($"{layer} Done");
             }
         }
 
@@ -952,7 +951,7 @@ public static class RoleGen
             while (CrewRoles.Count < crew)
                 CrewRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
 
-            LogMessage("Classic/Custom Sorting Done");
+            Message("Classic/Custom Sorting Done");
         }
         else if (IsAA())
         {
@@ -966,7 +965,7 @@ public static class RoleGen
             NeutralRoles = Sort(NeutralRoles, neut);
             SyndicateRoles = Sort(SyndicateRoles, syn);
 
-            LogMessage("All Any Sorting Done");
+            Message("All Any Sorting Done");
         }
 
         CrewRoles.Shuffle();
@@ -1172,8 +1171,6 @@ public static class RoleGen
 
     private static void GenAbilities()
     {
-        var num = 0;
-
         for (var i = 120; i < 137; i++)
         {
             var layer = (LayerEnum)i;
@@ -1181,7 +1178,7 @@ public static class RoleGen
 
             if (spawn.IsActive())
             {
-                num = spawn.Count;
+                var num = spawn.Count;
 
                 while (num > 0)
                 {
@@ -1190,7 +1187,7 @@ public static class RoleGen
                 }
             }
 
-            LogInfo($"{layer} Done");
+            Info($"{layer} Done");
         }
 
         int maxAb = AbilitiesSettings.MaxAbilities;
@@ -1204,67 +1201,10 @@ public static class RoleGen
 
         AllAbilities = Sort(AllAbilities, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minAb, maxAb + 1));
 
-        var canHaveIntruderAbility = AllPlayers();
-        var canHaveNeutralAbility = AllPlayers();
-        var canHaveCrewAbility = AllPlayers();
-        var canHaveSyndicateAbility = AllPlayers();
-        var canHaveTunnelerAbility = AllPlayers();
-        var canHaveSnitch = AllPlayers();
-        var canHaveTaskedAbility = AllPlayers();
-        var canHaveTorch = AllPlayers();
-        var canHaveEvilAbility = AllPlayers();
-        var canHaveKillingAbility = AllPlayers();
-        var canHaveRuthless = AllPlayers();
-        var canHaveAbility = AllPlayers();
-        var canHaveBB = AllPlayers();
-        var canHavePolitician = AllPlayers();
+        var playerList = AllPlayers();
+        playerList.Shuffle();
 
-        canHaveIntruderAbility.RemoveAll(x => !x.Is(Faction.Intruder) || (x.Is(LayerEnum.Consigliere) && Consigliere.ConsigInfo == ConsigInfo.Role));
-        canHaveIntruderAbility.Shuffle();
-
-        canHaveNeutralAbility.RemoveAll(x => !(x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) || x.Is(Alignment.NeutralHarb)));
-        canHaveNeutralAbility.Shuffle();
-
-        canHaveCrewAbility.RemoveAll(x => !x.Is(Faction.Crew));
-        canHaveCrewAbility.Shuffle();
-
-        canHaveSyndicateAbility.RemoveAll(x => !x.Is(Faction.Syndicate));
-        canHaveSyndicateAbility.Shuffle();
-
-        canHaveTunnelerAbility.RemoveAll(x => !x.Is(Faction.Crew) || x.Is(LayerEnum.Engineer));
-        canHaveTunnelerAbility.Shuffle();
-
-        canHaveSnitch.RemoveAll(x => !x.Is(Faction.Crew) || x.Is(LayerEnum.Traitor));
-        canHaveSnitch.Shuffle();
-
-        canHaveTaskedAbility.RemoveAll(x => !x.CanDoTasks());
-        canHaveTaskedAbility.Shuffle();
-
-        canHaveTorch.RemoveAll(x => (x.Is(Alignment.NeutralKill) && !NeutralKillingSettings.NKHasImpVision) || x.Is(Faction.Syndicate) || x.Is(Faction.Intruder) || (x.Is(Faction.Neutral) &&
-            !NeutralSettings.LightsAffectNeutrals) || (x.Is(Alignment.NeutralNeo) && !NeutralNeophyteSettings.NNHasImpVision) || (x.Is(Alignment.NeutralEvil) &&
-            !NeutralEvilSettings.NEHasImpVision) || (x.Is(Alignment.NeutralHarb) && !NeutralHarbingerSettings.NHHasImpVision));
-        canHaveTorch.Shuffle();
-
-        canHaveEvilAbility.RemoveAll(x => !(x.Is(Faction.Intruder) || x.Is(Faction.Syndicate)));
-        canHaveEvilAbility.Shuffle();
-
-        canHaveKillingAbility.RemoveAll(x => !(x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) ||
-            x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted)));
-        canHaveKillingAbility.Shuffle();
-
-        canHaveRuthless.RemoveAll(x => !(x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) ||
-            x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted)) || x.Is(LayerEnum.Juggernaut));
-        canHaveRuthless.Shuffle();
-
-        canHaveBB.RemoveAll(x => (x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Actor) && !Actor.ActorButton) ||
-            (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton && x.Is(LayerEnum.Monarch))
-            || (!Dictator.DictatorButton && x.Is(LayerEnum.Dictator)));
-        canHaveBB.Shuffle();
-
-        canHavePolitician.RemoveAll(x => x.Is(Alignment.NeutralEvil) || x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralNeo));
-        canHavePolitician.Shuffle();
-
-        AllAbilities = [ .. AllAbilities.OrderBy(x => 100 - x.Chance) ];
+        AllAbilities = [ .. AllAbilities.OrderByDescending(x => x.Chance) ];
 
         while (AllAbilities.Count > AllPlayers().Count && AllAbilities.Count > 1)
             AllAbilities.Remove(AllAbilities.Last());
@@ -1278,78 +1218,61 @@ public static class RoleGen
             foreach (var spawn in AllAbilities)
                 ids += $" {spawn.ID}";
 
-            LogMessage("Abilities in the game: " + ids);
+            Message("Abilities in the game: " + ids);
         }
 
-        while (canHaveSnitch.Any() || (GameModifiers.WhoCanVent == WhoCanVentOptions.Default && canHaveTunnelerAbility.Any()) || canHaveIntruderAbility.Any() || canHaveTorch.Any() ||
-            canHaveNeutralAbility.Any() || canHaveCrewAbility.Any() || canHaveSyndicateAbility.Any() || canHaveAbility.Any() || canHaveEvilAbility.Any() || canHaveKillingAbility.Any() ||
-            canHaveTaskedAbility.Any())
+        while (playerList.Any() && AllAbilities.Any())
         {
-            if (AllAbilities.Count == 0)
-                break;
-
             var id = AllAbilities.TakeFirst().ID;
             PlayerControl assigned = null;
 
-            if (canHaveSnitch.Any() && id == LayerEnum.Snitch)
-                assigned = canHaveSnitch.TakeFirst();
-            else if (canHaveSyndicateAbility.Any() && id == LayerEnum.Sniper)
-                assigned = canHaveSyndicateAbility.TakeFirst();
-            else if (canHaveCrewAbility.Any() && CrewAb.Contains(id))
-                assigned = canHaveCrewAbility.TakeFirst();
-            else if (canHaveNeutralAbility.Any() && id == LayerEnum.Slayer)
-                assigned = canHaveNeutralAbility.TakeFirst();
-            else if (canHaveIntruderAbility.Any() && id == LayerEnum.Hitman)
-                assigned = canHaveIntruderAbility.TakeFirst();
-            else if (canHaveKillingAbility.Any() && id == LayerEnum.Ninja)
-                assigned = canHaveKillingAbility.TakeFirst();
-            else if (canHaveTorch.Any() && id == LayerEnum.Torch)
-                assigned = canHaveTorch.TakeFirst();
-            else if (canHaveEvilAbility.Any() && id == LayerEnum.Underdog)
-                assigned = canHaveEvilAbility.TakeFirst();
-            else if (canHaveTaskedAbility.Any() && Tasked.Contains(id))
-                assigned = canHaveTaskedAbility.TakeFirst();
-            else if (canHaveTunnelerAbility.Any() && id == LayerEnum.Tunneler)
-                assigned = canHaveTunnelerAbility.TakeFirst();
-            else if (canHaveBB.Any() && id == LayerEnum.ButtonBarry)
-                assigned = canHaveBB.TakeFirst();
-            else if (canHavePolitician.Any() && id == LayerEnum.Politician)
-                assigned = canHavePolitician.TakeFirst();
-            else if (canHaveAbility.Any() && GlobalAb.Contains(id))
-                assigned = canHaveAbility.TakeFirst();
-            else if (canHaveRuthless.Any() && id == LayerEnum.Ruthless)
-                assigned = canHaveRuthless.TakeFirst();
+            if (id == LayerEnum.Snitch)
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew) && !x.Is(LayerEnum.Traitor) && !x.Is(LayerEnum.Fanatic));
+            else if (id == LayerEnum.Sniper)
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Syndicate));
+            else if (CrewAb.Contains(id))
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew));
+            else if (id == LayerEnum.Slayer)
+                assigned = playerList.FirstOrDefault(x => x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) || x.Is(Alignment.NeutralHarb));
+            else if (id == LayerEnum.Hitman)
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) && !(x.Is(LayerEnum.Consigliere) && Consigliere.ConsigInfo == ConsigInfo.Role));
+            else if (id == LayerEnum.Ninja)
+            {
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) ||
+                    x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted));
+            }
+            else if (id == LayerEnum.Torch)
+            {
+                assigned = playerList.FirstOrDefault(x => !((x.Is(Alignment.NeutralKill) && !NeutralKillingSettings.NKHasImpVision) || x.Is(Faction.Syndicate) || x.Is(Faction.Intruder) ||
+                    (x.Is(Faction.Neutral) && !NeutralSettings.LightsAffectNeutrals) || (x.Is(Alignment.NeutralNeo) && !NeutralNeophyteSettings.NNHasImpVision) ||
+                    (x.Is(Alignment.NeutralEvil) && !NeutralEvilSettings.NEHasImpVision) || (x.Is(Alignment.NeutralHarb) && !NeutralHarbingerSettings.NHHasImpVision)));
+            }
+            else if (id == LayerEnum.Underdog)
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate));
+            else if (Tasked.Contains(id))
+                assigned = playerList.FirstOrDefault(x => x.CanDoTasks());
+            else if (id == LayerEnum.Tunneler)
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew) && !x.Is(LayerEnum.Engineer));
+            else if (id == LayerEnum.ButtonBarry)
+            {
+                assigned = playerList.FirstOrDefault(x => !((x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Actor) &&
+                    !Actor.ActorButton) || (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton &&
+                    x.Is(LayerEnum.Monarch)) || (!Dictator.DictatorButton && x.Is(LayerEnum.Dictator))));
+            }
+            else if (id == LayerEnum.Politician)
+                assigned = playerList.FirstOrDefault(x => !(x.Is(Alignment.NeutralEvil) || x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralNeo)));
+            else if (GlobalAb.Contains(id))
+                assigned = playerList.FirstOrDefault();
+            else if (id == LayerEnum.Ruthless)
+            {
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) &&
+                    !x.Is(LayerEnum.Juggernaut)) || x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted));
+            }
 
             if (assigned)
             {
-                canHaveSnitch.Remove(assigned);
-                canHaveSyndicateAbility.Remove(assigned);
-                canHaveCrewAbility.Remove(assigned);
-                canHaveNeutralAbility.Remove(assigned);
-                canHaveIntruderAbility.Remove(assigned);
-                canHaveKillingAbility.Remove(assigned);
-                canHaveTorch.Remove(assigned);
-                canHaveEvilAbility.Remove(assigned);
-                canHaveTaskedAbility.Remove(assigned);
-                canHaveTunnelerAbility.Remove(assigned);
-                canHaveBB.Remove(assigned);
-                canHavePolitician.Remove(assigned);
-                canHaveAbility.Remove(assigned);
-                canHaveRuthless.Remove(assigned);
-                canHaveSnitch.Shuffle();
-                canHaveSyndicateAbility.Shuffle();
-                canHaveCrewAbility.Shuffle();
-                canHaveNeutralAbility.Shuffle();
-                canHaveIntruderAbility.Shuffle();
-                canHaveKillingAbility.Shuffle();
-                canHaveTorch.Shuffle();
-                canHaveEvilAbility.Shuffle();
-                canHaveTaskedAbility.Shuffle();
-                canHaveTunnelerAbility.Shuffle();
-                canHaveBB.Shuffle();
-                canHavePolitician.Shuffle();
-                canHaveAbility.Shuffle();
-                canHaveRuthless.Shuffle();
+                playerList.Remove(assigned);
+                playerList.Shuffle();
                 AllAbilities.Shuffle();
 
                 if (!assigned.GetAbility())
@@ -1359,13 +1282,11 @@ public static class RoleGen
             }
         }
 
-        LogMessage("Abilities Done");
+        Message("Abilities Done");
     }
 
-    private static void GenObjectifiers()
+    private static void GenDispositions()
     {
-        var num = 0;
-
         for (var i = 107; i < 118; i++)
         {
             var layer = (LayerEnum)i;
@@ -1373,20 +1294,20 @@ public static class RoleGen
 
             if (spawn.IsActive())
             {
-                num = spawn.Count * (layer is LayerEnum.Rivals or LayerEnum.Lovers or LayerEnum.Linked ? 2 : 1);
+                var num = spawn.Count * (layer is LayerEnum.Rivals or LayerEnum.Lovers or LayerEnum.Linked ? 2 : 1);
 
                 while (num > 0)
                 {
-                    AllObjectifiers.Add(spawn);
+                    AllDispositions.Add(spawn);
                     num--;
                 }
             }
 
-            LogInfo($"{layer} Done");
+            Info($"{spawn} Done");
         }
 
-        int maxObj = ObjectifiersSettings.MaxObjectifiers;
-        int minObj = ObjectifiersSettings.MinObjectifiers;
+        int maxObj = DispositionsSettings.MaxDispositions;
+        int minObj = DispositionsSettings.MinDispositions;
 
         while (maxObj > AllPlayers().Count)
             maxObj--;
@@ -1394,123 +1315,64 @@ public static class RoleGen
         while (minObj > AllPlayers().Count)
             minObj--;
 
-        AllObjectifiers = Sort(AllObjectifiers, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minObj, maxObj + 1));
+        AllDispositions = Sort(AllDispositions, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minObj, maxObj + 1));
 
-        var canHaveLoverorRival = AllPlayers();
-        var canHaveNeutralObjectifier = AllPlayers();
-        var canHaveCrewObjectifier = AllPlayers();
-        var canHaveAllied = AllPlayers();
-        var canHaveObjectifier = AllPlayers();
-        var canHaveDefector = AllPlayers();
+        var playerList = AllPlayers().Where(x => x != PureCrew).ToList();
+        playerList.Shuffle();
 
-        canHaveLoverorRival.RemoveAll(x => x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll) || x.Is(LayerEnum.Actor) || x.Is(LayerEnum.Jester) || x.Is(LayerEnum.Shifter) || x == PureCrew);
-        canHaveLoverorRival.Shuffle();
+        AllDispositions = [ .. AllDispositions.OrderByDescending(x => x.Chance) ];
 
-        canHaveNeutralObjectifier.RemoveAll(x => !x.Is(Faction.Neutral) || x == PureCrew);
-        canHaveNeutralObjectifier.Shuffle();
+        while (AllDispositions.Count > AllPlayers().Count && AllDispositions.Count > 1)
+            AllDispositions.Remove(AllDispositions.Last());
 
-        canHaveCrewObjectifier.RemoveAll(x => !x.Is(Faction.Crew) || x == PureCrew);
-        canHaveCrewObjectifier.Shuffle();
-
-        canHaveAllied.RemoveAll(x => !x.Is(Alignment.NeutralKill) || x == PureCrew);
-        canHaveAllied.Shuffle();
-
-        canHaveObjectifier.RemoveAll(x => x == PureCrew);
-        canHaveObjectifier.Shuffle();
-
-        canHaveDefector.RemoveAll(x => x == PureCrew || !(x.Is(Faction.Intruder) || x.Is(Faction.Syndicate)));
-        canHaveDefector.Shuffle();
-
-        AllObjectifiers = [ .. AllObjectifiers.OrderBy(x => 100 - x.Chance) ];
-
-        while (AllObjectifiers.Count > AllPlayers().Count && AllObjectifiers.Count > 1)
-            AllObjectifiers.Remove(AllObjectifiers.Last());
-
-        AllObjectifiers.Shuffle();
+        AllDispositions.Shuffle();
 
         if (TownOfUsReworked.IsTest)
         {
             var ids = "";
 
-            foreach (var spawn in AllObjectifiers)
+            foreach (var spawn in AllDispositions)
                 ids += $" {spawn.ID}";
 
-            LogMessage("Objectifiers in the game: " + ids);
+            Message("Dispositions in the game: " + ids);
         }
 
-        while (canHaveNeutralObjectifier.Any() || canHaveCrewObjectifier.Any() || canHaveLoverorRival.Count > 1 || canHaveObjectifier.Any() || canHaveDefector.Any())
+        while (playerList.Any() && AllDispositions.Any())
         {
-            if (AllObjectifiers.Count == 0)
-                break;
-
-            var id = AllObjectifiers.TakeFirst().ID;
+            var id = AllDispositions.TakeFirst().ID;
             PlayerControl assigned = null;
-            PlayerControl assignedOther = null;
 
-            if (LoverRival.Contains(id) && canHaveLoverorRival.Count > 1)
-            {
-                assigned = canHaveLoverorRival.TakeFirst();
-                assignedOther = canHaveLoverorRival.TakeFirst();
-            }
-            else if (CrewObj.Contains(id) && canHaveCrewObjectifier.Any())
-                assigned = canHaveCrewObjectifier.TakeFirst();
-            else if (NeutralObj.Contains(id) && canHaveNeutralObjectifier.Any())
-            {
-                assigned = canHaveNeutralObjectifier.TakeFirst();
-
-                if (id == LayerEnum.Linked)
-                    assignedOther = canHaveNeutralObjectifier.TakeFirst();
-            }
-            else if (id == LayerEnum.Allied && canHaveAllied.Any())
-                assigned = canHaveAllied.TakeFirst();
-            else if (id == LayerEnum.Mafia && canHaveObjectifier.Count > 1)
-                assigned = canHaveObjectifier.TakeFirst();
-            else if (id == LayerEnum.Defector && canHaveDefector.Count > 1)
-                assigned = canHaveDefector.TakeFirst();
+            if (LoverRival.Contains(id) && playerList.Count > 1)
+                assigned = playerList.FirstOrDefault(x => x.GetRole().Type is not (LayerEnum.Altruist or LayerEnum.Troll or LayerEnum.Actor or LayerEnum.Jester or LayerEnum.Shifter));
+            else if (CrewObj.Contains(id))
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew));
+            else if (NeutralObj.Contains(id))
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Neutral));
+            else if (id == LayerEnum.Allied)
+                assigned = playerList.FirstOrDefault(x => x.Is(Alignment.NeutralKill));
+            else if (id == LayerEnum.Mafia && playerList.Count > 1)
+                assigned = playerList.FirstOrDefault();
+            else if (id == LayerEnum.Defector && playerList.Count > 1)
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate));
 
             if (assigned)
             {
-                canHaveLoverorRival.Remove(assigned);
-                canHaveCrewObjectifier.Remove(assigned);
-                canHaveNeutralObjectifier.Remove(assigned);
-                canHaveAllied.Remove(assigned);
-                canHaveObjectifier.Remove(assigned);
-                canHaveDefector.Remove(assigned);
-                canHaveLoverorRival.Shuffle();
-                canHaveCrewObjectifier.Shuffle();
-                canHaveNeutralObjectifier.Shuffle();
-                canHaveAllied.Shuffle();
-                canHaveObjectifier.Shuffle();
-                canHaveDefector.Shuffle();
-                AllObjectifiers.Shuffle();
+                playerList.Remove(assigned);
+                playerList.Shuffle();
+                AllDispositions.Shuffle();
 
-                if (!assigned.GetObjectifier())
-                    Gen(assigned, id, PlayerLayerEnum.Objectifier);
+                if (!assigned.GetDisposition())
+                    Gen(assigned, id, PlayerLayerEnum.Disposition);
                 else
-                    AllObjectifiers.Add(GetSpawnItem(id));
-            }
-
-            if (assignedOther)
-            {
-                canHaveLoverorRival.Remove(assignedOther);
-                canHaveCrewObjectifier.Remove(assignedOther);
-                canHaveNeutralObjectifier.Remove(assignedOther);
-                canHaveAllied.Remove(assignedOther);
-                canHaveObjectifier.Remove(assignedOther);
-                canHaveDefector.Remove(assignedOther);
-
-                if (!assignedOther.GetObjectifier())
-                    Gen(assignedOther, id, PlayerLayerEnum.Objectifier);
+                    AllDispositions.Add(GetSpawnItem(id));
             }
         }
 
-        LogMessage("Objectifiers Done");
+        Message("Dispositions Done");
     }
 
     private static void GenModifiers()
     {
-        var num = 0;
-
         for (var i = 92; i < 106; i++)
         {
             var layer = (LayerEnum)i;
@@ -1518,7 +1380,7 @@ public static class RoleGen
 
             if (spawn.IsActive())
             {
-                num = spawn.Count;
+                var num = spawn.Count;
 
                 while (num > 0)
                 {
@@ -1527,7 +1389,7 @@ public static class RoleGen
                 }
             }
 
-            LogInfo($"{layer} Done");
+            Info($"{layer} Done");
         }
 
         int maxMod = ModifiersSettings.MaxModifiers;
@@ -1562,7 +1424,7 @@ public static class RoleGen
             x.Is(LayerEnum.Dictator)) || (!Monarch.MonarchButton && x.Is(LayerEnum.Monarch)));
         canHaveShy.Shuffle();
 
-        AllModifiers = [ .. AllModifiers.OrderBy(x => 100 - x.Chance) ];
+        AllModifiers = [ .. AllModifiers.OrderByDescending(x => x.Chance) ];
 
         while (AllModifiers.Count > AllPlayers().Count && AllModifiers.Count > 1)
             AllModifiers.Remove(AllModifiers.Last());
@@ -1576,7 +1438,7 @@ public static class RoleGen
             foreach (var spawn in AllModifiers)
                 ids += $" {spawn.ID}";
 
-            LogMessage("Modifiers in the game: " + ids);
+            Message("Modifiers in the game: " + ids);
         }
 
         while (canHaveBait.Any() || canHaveDiseased.Any() || canHaveProfessional.Any() || canHaveModifier.Any())
@@ -1619,7 +1481,7 @@ public static class RoleGen
             }
         }
 
-        LogMessage("Modifiers Done");
+        Message("Modifiers Done");
     }
 
     private static void SetTargets()
@@ -1656,12 +1518,12 @@ public static class RoleGen
             CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
         }
 
-        LogMessage("Allied Faction Set Done");
+        Message("Allied Faction Set Done");
 
         var lovers = PlayerLayer.GetLayers<Lovers>();
         lovers.Shuffle();
 
-        for (var i = 0; i < lovers.Count; i++)
+        for (var i = 0; i < lovers.Count - 1; i++)
         {
             var lover = lovers[i];
 
@@ -1674,21 +1536,21 @@ public static class RoleGen
             CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, lover, other);
 
             if (TownOfUsReworked.IsTest)
-                LogMessage($"Lovers = {lover.PlayerName} & {other.PlayerName}");
+                Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
         }
 
         foreach (var lover in lovers)
         {
             if (!lover.OtherLover)
-                NullLayer(lover.Player, PlayerLayerEnum.Objectifier);
+                NullLayer(lover.Player, PlayerLayerEnum.Disposition);
         }
 
-        LogMessage("Lovers Set");
+        Message("Lovers Set");
 
         var rivals = PlayerLayer.GetLayers<Rivals>();
         rivals.Shuffle();
 
-        for (var i = 0; i < rivals.Count; i++)
+        for (var i = 0; i < rivals.Count - 1; i++)
         {
             var rival = rivals[i];
 
@@ -1701,21 +1563,21 @@ public static class RoleGen
             CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, rival, other);
 
             if (TownOfUsReworked.IsTest)
-                LogMessage($"Rivals = {rival.PlayerName} & {other.PlayerName}");
+                Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
         }
 
         foreach (var rival in rivals)
         {
             if (!rival.OtherRival)
-                NullLayer(rival.Player, PlayerLayerEnum.Objectifier);
+                NullLayer(rival.Player, PlayerLayerEnum.Disposition);
         }
 
-        LogMessage("Rivals Set");
+        Message("Rivals Set");
 
         var linked = PlayerLayer.GetLayers<Linked>();
         linked.Shuffle();
 
-        for (var i = 0; i < linked.Count; i++)
+        for (var i = 0; i < linked.Count - 1; i++)
         {
             var link = linked[i];
 
@@ -1728,24 +1590,24 @@ public static class RoleGen
             CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, link, other);
 
             if (TownOfUsReworked.IsTest)
-                LogMessage($"Linked = {link.PlayerName} & {other.PlayerName}");
+                Message($"Linked = {link.PlayerName} & {other.PlayerName}");
         }
 
         foreach (var link in linked)
         {
             if (!link.OtherLink)
-                NullLayer(link.Player, PlayerLayerEnum.Objectifier);
+                NullLayer(link.Player, PlayerLayerEnum.Disposition);
         }
 
-        LogMessage("Linked Set");
+        Message("Linked Set");
 
         if (PlayerLayer.GetLayers<Mafia>().Count == 1)
         {
             foreach (var player in AllPlayers().Where(x => x.Is(LayerEnum.Mafia)))
-                NullLayer(player, PlayerLayerEnum.Objectifier);
+                NullLayer(player, PlayerLayerEnum.Disposition);
         }
 
-        LogMessage("Mafia Set");
+        Message("Mafia Set");
 
         if (!Executioner.ExecutionerCanPickTargets)
         {
@@ -1765,11 +1627,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, exe, exe.TargetPlayer);
 
                     if (TownOfUsReworked.IsTest)
-                        LogMessage($"Exe Target = {exe.TargetPlayer?.name}");
+                        Message($"Exe Target = {exe.TargetPlayer?.name}");
                 }
             }
 
-            LogMessage("Exe Targets Set");
+            Message("Exe Targets Set");
         }
 
         if (Guesser.GuesserCanPickTargets)
@@ -1784,11 +1646,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, guess, guess.TargetPlayer);
 
                     if (TownOfUsReworked.IsTest)
-                        LogMessage($"Guess Target = {guess.TargetPlayer?.name}");
+                        Message($"Guess Target = {guess.TargetPlayer?.name}");
                 }
             }
 
-            LogMessage("Guess Targets Set");
+            Message("Guess Targets Set");
         }
 
         if (GuardianAngel.GuardianAngelCanPickTargets)
@@ -1802,11 +1664,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ga, ga.TargetPlayer);
 
                     if (TownOfUsReworked.IsTest)
-                        LogMessage($"GA Target = {ga.TargetPlayer?.name}");
+                        Message($"GA Target = {ga.TargetPlayer?.name}");
                 }
             }
 
-            LogMessage("GA Target Set");
+            Message("GA Target Set");
         }
 
         if (BountyHunter.BountyHunterCanPickTargets)
@@ -1820,11 +1682,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, bh, bh.TargetPlayer);
 
                     if (TownOfUsReworked.IsTest)
-                        LogMessage($"BH Target = {bh.TargetPlayer?.name}");
+                        Message($"BH Target = {bh.TargetPlayer?.name}");
                 }
             }
 
-            LogMessage("BH Targets Set");
+            Message("BH Targets Set");
         }
 
         if (Actor.ActorCanPickRole)
@@ -1835,10 +1697,10 @@ public static class RoleGen
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, act, act.PretendRoles);
 
                 if (TownOfUsReworked.IsTest)
-                    LogMessage($"Act Targets = {act.PretendListString()}");
+                    Message($"Act Targets = {act.PretendListString()}");
             }
 
-            LogMessage("Act Variables Set");
+            Message("Act Variables Set");
         }
 
         foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
@@ -1858,12 +1720,12 @@ public static class RoleGen
                 RpcConvert(jackal.Recruit2.PlayerId, jackal.PlayerId, SubFaction.Cabal);
 
             if (TownOfUsReworked.IsTest)
-                LogMessage($"Recruits = {jackal.Recruit1?.name} (Good) & {jackal.Recruit2?.name} (Evil)");
+                Message($"Recruits = {jackal.Recruit1?.name} (Good) & {jackal.Recruit2?.name} (Evil)");
         }
 
-        LogMessage("Jackal Recruits Set");
+        Message("Jackal Recruits Set");
 
-        LogMessage("Targets Set");
+        Message("Targets Set");
     }
 
     public static void ResetEverything()
@@ -1895,7 +1757,7 @@ public static class RoleGen
         AllRoles.Clear();
         AllModifiers.Clear();
         AllAbilities.Clear();
-        AllObjectifiers.Clear();
+        AllDispositions.Clear();
 
         CrewAuditorRoles.Clear();
         CrewInvestigativeRoles.Clear();
@@ -1983,12 +1845,12 @@ public static class RoleGen
         if (IsHnS() || !AmongUsClient.Instance.AmHost)
             return;
 
-        LogMessage("RPC SET ROLE");
-        LogMessage($"Current Mode = {GameModeSettings.GameMode}");
+        Message("RPC SET ROLE");
+        Message($"Current Mode = {GameModeSettings.GameMode}");
         ResetEverything();
         CallRpc(CustomRPC.Misc, MiscRPC.Start);
-        LogMessage("Cleared Variables");
-        LogMessage("Role Gen Start");
+        Message("Cleared Variables");
+        Message("Role Gen Start");
 
         if (IsKilling())
             GenKilling();
@@ -2052,14 +1914,14 @@ public static class RoleGen
                 AllRoles.Add(GetSpawnItem(LayerEnum.Thief));
         }
 
-        AllRoles = [ .. AllRoles.OrderBy(x => x.Chance) ];
+        AllRoles = [ .. AllRoles.OrderByDescending(x => x.Chance) ];
 
         while (AllRoles.Count > players.Count && AllRoles.Count > 1)
-            AllRoles.Remove(AllRoles.First());
+            AllRoles.Remove(AllRoles.Last());
 
         AllRoles.Shuffle();
         players.Shuffle();
-        LogMessage("Layers Sorted");
+        Message("Layers Sorted");
 
         if (TownOfUsReworked.IsTest)
         {
@@ -2068,31 +1930,31 @@ public static class RoleGen
             foreach (var spawn in AllRoles)
                 ids += $" {spawn.ID}";
 
-            LogMessage("Roles in the game: " + ids);
+            Message("Roles in the game: " + ids);
         }
 
         while (players.Any() && AllRoles.Any())
             Gen(players.TakeFirst(), AllRoles.TakeFirst().ID, PlayerLayerEnum.Role);
 
-        LogMessage("Role Spawn Done");
+        Message("Role Spawn Done");
 
         if (IsKilling())
         {
             Role.SyndicateHasChaosDrive = true;
             AssignChaosDrive();
-            LogMessage("Assigned Drive");
+            Message("Assigned Drive");
         }
 
         PureCrew = AllPlayers().Where(x => x.Is(Faction.Crew)).Random();
         CallRpc(CustomRPC.Misc, MiscRPC.SyncPureCrew, PureCrew);
-        LogMessage("Synced Pure Crew");
+        Message("Synced Pure Crew");
 
         if (!IsVanilla())
         {
             if (!IsRoleList() && !IsTaskRace() && !IsCustomHnS())
             {
-                if (GameModifiers.EnableObjectifiers)
-                    GenObjectifiers();
+                if (GameModifiers.EnableDispositions)
+                    GenDispositions();
 
                 if (GameModifiers.EnableAbilities)
                     GenAbilities();
@@ -2113,7 +1975,7 @@ public static class RoleGen
         }
 
         if (TownOfUsReworked.IsTest)
-            LogMessage("Name -> Role, Objectifier, Modifier, Ability");
+            Message("Name -> Role, Disposition, Modifier, Ability");
 
         CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen);
 
@@ -2122,19 +1984,19 @@ public static class RoleGen
             var role = player.GetRole() ?? new Roleless().Start<Role>(player);
             var mod = player.GetModifier() ?? new Modifierless().Start<Modifier>(player);
             var ab = player.GetAbility() ?? new Abilityless().Start<Ability>(player);
-            var obj = player.GetObjectifier() ?? new Objectifierless().Start<Objectifier>(player);
+            var disp = player.GetDisposition() ?? new Dispositionless().Start<Disposition>(player);
 
-            /*PlayerLayer.LayerLookup[player.PlayerId] = [ role, mod, ab, obj ];
+            /*PlayerLayer.LayerLookup[player.PlayerId] = [ role, mod, ab, disp ];
             Role.RoleLookup[player.PlayerId] = role;
             Modifier.ModifierLookup[player.PlayerId] = mod;
-            Objectifier.ObjectifierLookup[player.PlayerId] = obj;
+            Disposition.DispositionLookup[player.PlayerId] = disp;
             Ability.AbilityLookup[player.PlayerId] = ab;*/
 
             if (TownOfUsReworked.IsTest)
-                LogMessage($"{player.name} -> {role}, {obj}, {mod}, {ab}");
+                Message($"{player.name} -> {role}, {disp}, {mod}, {ab}");
         }
 
-        LogMessage("Gen Ended");
+        Message("Gen Ended");
     }
 
     private static void Gen(PlayerControl player, LayerEnum id, PlayerLayerEnum rpc)
@@ -2159,7 +2021,7 @@ public static class RoleGen
             {
                 PlayerLayerEnum.Role => new Roleless(),
                 PlayerLayerEnum.Modifier => new Modifierless(),
-                PlayerLayerEnum.Objectifier => new Objectifierless(),
+                PlayerLayerEnum.Disposition => new Dispositionless(),
                 PlayerLayerEnum.Ability => new Abilityless(),
                 _ => throw new NotImplementedException($"{id}:{rpc}")
             };
