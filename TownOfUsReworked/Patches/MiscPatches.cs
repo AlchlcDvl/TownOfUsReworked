@@ -17,7 +17,7 @@ public static class MapBehaviourPatch
 {
     public static void Postfix(MapBehaviour __instance)
     {
-        PlayerLayer.LocalLayers.ForEach(x => x.UpdateMap(__instance));
+        PlayerLayer.LocalLayers().ForEach(x => x.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x.UpdateArrowBlip(__instance));
 
         if (LocalBlocked())
@@ -89,7 +89,7 @@ public static class OpenMapMenuPatch
 
         // ClientStuff.CloseMenus(SkipEnum.Map);
 
-        if (PlayerLayer.LocalLayers.All(x => x.IsBlocked))
+        if (PlayerLayer.LocalLayers().All(x => x.IsBlocked))
             return false;
 
         var notmodified = true;
@@ -105,7 +105,7 @@ public static class OpenMapMenuPatch
             notmodified = false;
         }
 
-        PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMap(__instance));
+        PlayerLayer.LocalLayers().ForEach(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
         CustomPlayer.Local.DisableButtons();
         return notmodified;
@@ -186,8 +186,6 @@ public static class VisibleOverride
         {
             value = true;
         }
-        else
-            value = __instance.AmOwner || __instance?.Data?.IsDead == false;
     }
 }
 
@@ -225,10 +223,11 @@ public static class CustomMenuPatch
 
         __instance.potentialVictims = new();
         var list2 = new ISystem.List<UiElement>();
+        var targets = menu.Targets();
 
-        for (var i = 0; i < menu.Targets.Count; i++)
+        for (var i = 0; i < targets.Count; i++)
         {
-            var player = menu.Targets[i];
+            var player = targets[i];
             var num = i % 3;
             var num2 = i / 3;
             var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
@@ -428,14 +427,13 @@ public static class LobbyBehaviourPatch
         MCIUtils.Clients.Clear();
         MCIUtils.PlayerClientIDs.Clear();
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame();
-        DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
         // ClientHandler.Instance.OnLobbyStart();
         // ClientHandler.Instance.Page = 0;
         // ClientHandler.Instance.Buttons.Clear();
         // ClientStuff.CloseMenus();
         // FreeplayPatches.PreviouslySelected.Clear();
 
-        if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame())
+        if (count > 0 && TownOfUsReworked.Persistence.Value && !IsOnlineGame())
             MCIUtils.CreatePlayerInstances(count);
 
         var lobbyTransform = Lobby().transform;

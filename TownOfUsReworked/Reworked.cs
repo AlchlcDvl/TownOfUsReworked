@@ -19,6 +19,13 @@ public partial class TownOfUsReworked
         CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
         HideOtherGhosts = Config.Bind("Custom", "Hide Other Ghosts", true, "Hides other ghosts when you are dead");
         OptimisationMode = Config.Bind("Custom", "Optimisation Mode", false, "Disables things that would be considered resource heavy");
+
+        RedirectLogger = Config.Bind("Debugging", "Redirect Logger", false, "Redirect base game Logger calls into BepInEx logging");
+        AutoPlayAgain = Config.Bind("Debugging", "Auto Play Again", false, "Automatically calls Play Again after game ends");
+        DisableTimeout = Config.Bind("Debugging", "Disable Timeout", false, "Disable the network disconnection timeout");
+        LobbyCapped = Config.Bind("Debugging", "Lobby Capped", false, "Caps the bot count to the lobby size");
+        Persistence = Config.Bind("Debugging", "Persistence", false, "Enables whether or not bots will respawn after each test");
+        SameVote = Config.Bind("Debugging", "Same Vote", false, "Disables whether or not each vote votes for the same player you do");
     }
 
     public void LoadComponents()

@@ -389,7 +389,7 @@ public static class LayerExtentions
         player.Is(Alignment.NeutralHarb) || player.Is(Alignment.NeutralApoc) || player.Is(LayerEnum.Corrupted) || player.Is(LayerEnum.Fanatic) || player.Is(LayerEnum.Traitor) ||
         player.Is(Alignment.CrewKill);
 
-    public static bool IsPostmortal(this PlayerControl player) => player.GetRole() is Revealer or Phantom or Ghoul or Banshee;
+    public static bool IsPostmortal(this PlayerControl player) => player.GetRole() is Revealer or Phantom or Ghoul or Banshee && player.HasDied();
 
     public static bool Caught(this PlayerControl player)
     {
@@ -1262,7 +1262,7 @@ public static class LayerExtentions
 
     public static Role GetRole(this PlayerVoteArea area) => PlayerByVoteArea(area).GetRole();
 
-    // public static Disposition GetDispositionFromList(this PlayerControl player) => Disposition.AllDispositions.Find(x => x.Player == player);
+    // public static Disposition GetDispositionFromList(this PlayerControl player) => Disposition.AllDispositions().Find(x => x.Player == player);
 
     public static Disposition GetDisposition(this PlayerControl player) => player.GetLayer<Disposition>();
     /*{
@@ -1282,7 +1282,7 @@ public static class LayerExtentions
 
     public static Disposition GetDisposition(this PlayerVoteArea area) => PlayerByVoteArea(area).GetDisposition();
 
-    // public static Modifier GetModifierFromList(this PlayerControl player) => Modifier.AllModifiers.Find(x => x.Player == player);
+    // public static Modifier GetModifierFromList(this PlayerControl player) => Modifier.AllModifiers().Find(x => x.Player == player);
 
     public static Modifier GetModifier(this PlayerControl player) => player.GetLayer<Modifier>();
     /*{
@@ -1302,7 +1302,7 @@ public static class LayerExtentions
 
     public static Modifier GetModifier(this PlayerVoteArea area) => PlayerByVoteArea(area).GetModifier();
 
-    // public static Ability GetAbilityFromList(this PlayerControl player) => Ability.AllAbilities.Find(x => x.Player == player);
+    // public static Ability GetAbilityFromList(this PlayerControl player) => Ability.AllAbilities().Find(x => x.Player == player);
 
     public static Ability GetAbility(this PlayerControl player) => player.GetLayer<Ability>();
     /*{

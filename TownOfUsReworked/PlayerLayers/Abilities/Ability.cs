@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public abstract class Ability : PlayerLayer
 {
-    public static List<Ability> AllAbilities => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Ability).Cast<Ability>() ];
+    public static List<Ability> AllAbilities() => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Ability).Cast<Ability>() ];
     // public static readonly Dictionary<byte, Ability> AbilityLookup = [];
     public static Ability LocalAbility => CustomPlayer.Local.GetAbility();
 
@@ -36,7 +36,7 @@ public abstract class Ability : PlayerLayer
         }
     }
 
-    public static List<Assassin> GetAssassins() => [ .. AllAbilities.Where(x => x is Bullseye or Slayer or Hitman or Sniper).Cast<Assassin>() ];
+    public static List<Assassin> GetAssassins() => [ .. AllAbilities().Where(x => x is Bullseye or Slayer or Hitman or Sniper).Cast<Assassin>() ];
 
     public static T LocalAbilityAs<T>() where T : Ability => LocalAbility as T;
 }

@@ -256,7 +256,7 @@ public static class MeetingPatches
                 monarch.ToBeKnighted.Clear();
             }
 
-            foreach (var layer in PlayerLayer.LocalLayers)
+            foreach (var layer in PlayerLayer.LocalLayers())
             {
                 layer.OnMeetingStart(Meeting());
 
@@ -280,7 +280,7 @@ public static class MeetingPatches
         {
             CustomPlayer.Local.EnableButtons();
             ButtonUtils.Reset(CooldownType.Meeting);
-            PlayerLayer.LocalLayers.ForEach(x => x?.OnMeetingEnd(__instance));
+            PlayerLayer.LocalLayers().ForEach(x => x?.OnMeetingEnd(__instance));
         }
     }
 
@@ -292,7 +292,7 @@ public static class MeetingPatches
             var exiledString = !exiled ? "null" : exiled.PlayerName;
             Info($"Exiled PlayerName = {exiledString}");
             Info($"Was a tie = {tie}");
-            PlayerLayer.LocalLayers.ForEach(x => x?.VoteComplete(__instance));
+            PlayerLayer.LocalLayers().ForEach(x => x?.VoteComplete(__instance));
             Coroutines.Start(PerformSwaps());
 
             foreach (var role in Role.AllRoles)
@@ -308,13 +308,13 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Select))]
     public static class MeetingHudSelect
     {
-        public static void Postfix(MeetingHud __instance, int suspectStateIdx) => PlayerLayer.LocalLayers.ForEach(x => x?.SelectVote(__instance, suspectStateIdx));
+        public static void Postfix(MeetingHud __instance, int suspectStateIdx) => PlayerLayer.LocalLayers().ForEach(x => x?.SelectVote(__instance, suspectStateIdx));
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ClearVote))]
     public static class MeetingHudClearVote
     {
-        public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers.ForEach(x => x?.ClearVote(__instance));
+        public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ClearVote(__instance));
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]

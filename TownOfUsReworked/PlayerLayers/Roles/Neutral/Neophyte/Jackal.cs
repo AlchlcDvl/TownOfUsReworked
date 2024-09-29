@@ -62,4 +62,6 @@ public class Jackal : Neutral
     public bool Usable1() => RecruitsDead;
 
     public bool Usable2() => AllRecruitsDead;
+
+    public IEnumerable<PlayerControl> GetOtherRecruits(PlayerControl recruit) => Recruited.Where(x => x != recruit.PlayerId).Select(PlayerById);
 }

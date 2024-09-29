@@ -21,7 +21,7 @@ public static class SpawnPatches
         Chat()?.SetVisible(CustomPlayer.Local.CanChat());
 
         if (intro)
-            PlayerLayer.LocalLayers.ForEach(x => x?.OnIntroEnd());
+            PlayerLayer.LocalLayers().ForEach(x => x?.OnIntroEnd());
 
         AllPlayers().ForEach(x => x?.MyPhysics?.ResetAnimState());
         AllBodies().ForEach(x => x?.gameObject?.Destroy());
@@ -37,6 +37,27 @@ public static class SpawnPatches
         AddAsset("DefaultSabotage", HUD().SabotageButton.graphic.sprite);
         HUD().ImpostorVentButton.buttonLabelText.fontSharedMaterial = HUD().ReportButton.buttonLabelText.fontSharedMaterial = HUD().UseButton.buttonLabelText.fontSharedMaterial =
             HUD().PetButton.buttonLabelText.fontSharedMaterial = HUD().SabotageButton.buttonLabelText.fontSharedMaterial;
+
+        if (HUD().TaskPanel)
+        {
+            var text = "";
+
+            if (CustomPlayer.Local.CanDoTasks())
+            {
+                var color = "FF00";
+
+                if (Role.LocalRole.TasksDone)
+                    color = "00FF";
+                else if (Role.LocalRole.TasksCompleted > 0)
+                    color = "FFFF";
+
+                text = $"Tasks <color=#{color}00FF>({Role.LocalRole.TasksCompleted}/{Role.LocalRole.TotalTasks})</color>";
+            }
+            else
+                text = "<color=#FF0000FF>Fake Tasks</color>";
+
+            HUD().TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
+        }
     }
 
     private static void RandomSpawn(bool intro, bool meeting)

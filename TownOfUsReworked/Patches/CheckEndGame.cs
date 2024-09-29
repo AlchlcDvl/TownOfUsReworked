@@ -61,7 +61,7 @@ public static class CheckEndGame
         }
         else
         {
-            Disposition.AllDispositions.ForEach(x => x.GameEnd());
+            Disposition.AllDispositions().ForEach(x => x.GameEnd());
             Role.AllRoles.ForEach(x => x.GameEnd());
             DetectStalemate();
         }

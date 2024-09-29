@@ -24,7 +24,7 @@ public class MeetingHandler : MonoBehaviour
             Meeting().SkipVoteButton.gameObject.SetActive(false);
 
         AllVoteAreas().ForEach(SetNames);
-        PlayerLayer.LocalLayers.ForEach(x => x.UpdateMeeting(Meeting()));
+        PlayerLayer.LocalLayers().ForEach(x => x.UpdateMeeting(Meeting()));
     }
 
     private static void SetNames(PlayerVoteArea player)

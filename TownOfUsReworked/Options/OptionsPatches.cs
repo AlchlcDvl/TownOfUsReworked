@@ -13,6 +13,7 @@ public static class SettingsPatches
     {
         public static void Postfix(GameSettingMenu __instance)
         {
+            __instance.GameSettingsTab.HideForOnline = new(0);
             __instance.transform.GetChild(3).gameObject.SetActive(false);
             __instance.transform.GetChild(7).gameObject.Destroy();
             ReturnButton = UObject.Instantiate(__instance.transform.FindChild("CloseButton").gameObject, __instance.transform);

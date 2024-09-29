@@ -1403,26 +1403,8 @@ public static class RoleGen
 
         AllModifiers = Sort(AllModifiers, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minMod, maxMod + 1));
 
-        var canHaveBait = AllPlayers();
-        var canHaveDiseased = AllPlayers();
-        var canHaveProfessional = AllPlayers();
-        var canHaveModifier = AllPlayers();
-        var canHaveShy = AllPlayers();
-
-        canHaveBait.RemoveAll(x => x.Is(LayerEnum.Vigilante) || x.Is(LayerEnum.Shifter) || x.Is(LayerEnum.Thief) || x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll));
-        canHaveBait.Shuffle();
-
-        canHaveDiseased.RemoveAll(x => x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll));
-        canHaveDiseased.Shuffle();
-
-        canHaveProfessional.RemoveAll(x => !(x.Is(LayerEnum.Bullseye) || x.Is(LayerEnum.Slayer) || x.Is(LayerEnum.Hitman) || x.Is(LayerEnum.Sniper)));
-        canHaveProfessional.Shuffle();
-
-        canHaveShy.RemoveAll(x => (x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Swapper) &&
-            !Swapper.SwapperButton) || (x.Is(LayerEnum.Actor) && !Actor.ActorButton) || (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) &&
-            !Executioner.ExecutionerButton) || x.Is(LayerEnum.ButtonBarry) || (x.Is(LayerEnum.Politician) && !Politician.PoliticianButton) || (!Dictator.DictatorButton &&
-            x.Is(LayerEnum.Dictator)) || (!Monarch.MonarchButton && x.Is(LayerEnum.Monarch)));
-        canHaveShy.Shuffle();
+        var playerList = AllPlayers();
+        playerList.Shuffle();
 
         AllModifiers = [ .. AllModifiers.OrderByDescending(x => x.Chance) ];
 
@@ -1441,37 +1423,34 @@ public static class RoleGen
             Message("Modifiers in the game: " + ids);
         }
 
-        while (canHaveBait.Any() || canHaveDiseased.Any() || canHaveProfessional.Any() || canHaveModifier.Any())
+        while (playerList.Any() && AllModifiers.Any())
         {
-            if (AllModifiers.Count == 0)
-                break;
-
             var id = AllModifiers.TakeFirst().ID;
             PlayerControl assigned = null;
 
-            if (canHaveBait.Any() && id == LayerEnum.Bait)
-                assigned = canHaveBait.TakeFirst();
-            else if (canHaveDiseased.Any() && id == LayerEnum.Diseased)
-                assigned = canHaveDiseased.TakeFirst();
-            else if (canHaveProfessional.Any() && id == LayerEnum.Professional)
-                assigned = canHaveProfessional.TakeFirst();
-            else if (canHaveModifier.Any() && GlobalMod.Contains(id))
-                assigned = canHaveModifier.TakeFirst();
-            else if (canHaveShy.Any() && id == LayerEnum.Shy)
-                assigned = canHaveShy.TakeFirst();
+            if (id == LayerEnum.Bait)
+            {
+                assigned = playerList.FirstOrDefault(x => !(x.Is(LayerEnum.Vigilante) || x.Is(LayerEnum.Shifter) || x.Is(LayerEnum.Thief) || x.Is(LayerEnum.Altruist) ||
+                    x.Is(LayerEnum.Troll)));
+            }
+            else if (id == LayerEnum.Diseased)
+                assigned = playerList.FirstOrDefault(x => !(x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll)));
+            else if (id == LayerEnum.Professional)
+                assigned = playerList.FirstOrDefault(x => x.Is(LayerEnum.Bullseye) || x.Is(LayerEnum.Slayer) || x.Is(LayerEnum.Hitman) || x.Is(LayerEnum.Sniper));
+            else if (GlobalMod.Contains(id))
+                assigned = playerList.FirstOrDefault();
+            else if (id == LayerEnum.Shy)
+            {
+                assigned = playerList.FirstOrDefault(x => !((x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Swapper) &&
+                    !Swapper.SwapperButton) || (x.Is(LayerEnum.Actor) && !Actor.ActorButton) || (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) &&
+                    !Executioner.ExecutionerButton) || x.Is(LayerEnum.ButtonBarry) || (x.Is(LayerEnum.Politician) && !Politician.PoliticianButton) || (!Dictator.DictatorButton &&
+                    x.Is(LayerEnum.Dictator)) || (!Monarch.MonarchButton && x.Is(LayerEnum.Monarch))));
+            }
 
             if (assigned)
             {
-                canHaveBait.Remove(assigned);
-                canHaveDiseased.Remove(assigned);
-                canHaveProfessional.Remove(assigned);
-                canHaveModifier.Remove(assigned);
-                canHaveShy.Remove(assigned);
-                canHaveBait.Shuffle();
-                canHaveDiseased.Shuffle();
-                canHaveProfessional.Shuffle();
-                canHaveModifier.Shuffle();
-                canHaveShy.Shuffle();
+                playerList.Remove(assigned);
+                playerList.Shuffle();
                 AllModifiers.Shuffle();
 
                 if (!assigned.GetModifier())

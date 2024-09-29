@@ -32,9 +32,9 @@ public static class HandleDisconnect
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
 public static class Confirm
 {
-    public static void Prefix(MeetingHud __instance) => PlayerLayer.LocalLayers.ForEach(x => x?.ConfirmVotePrefix(__instance));
+    public static void Prefix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ConfirmVotePrefix(__instance));
 
-    public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers.ForEach(x => x?.ConfirmVotePostfix(__instance));
+    public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ConfirmVotePostfix(__instance));
 }
 
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CastVote))]

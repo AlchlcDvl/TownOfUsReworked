@@ -22,7 +22,7 @@ public abstract class Crew : Role
         {
             var jackal = Player.GetJackal();
             team.Add(jackal.Player);
-            team.Add(jackal.Recruit2);
+            team.AddRange(jackal.GetOtherRecruits(Player));
         }
 
         if (Player.Is(LayerEnum.Lovers))

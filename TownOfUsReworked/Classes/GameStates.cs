@@ -48,7 +48,7 @@ public static class GameStates
 
     public static bool NoPlayers() => AllPlayers().Count < 1 || !CustomPlayer.Local || !CustomPlayer.LocalCustom.Data || NoLobby();
 
-    public static bool LocalBlocked() => PlayerLayer.LocalLayers.Any(x => x.IsBlocked);
+    public static bool LocalBlocked() => PlayerLayer.LocalLayers().Any(x => x.IsBlocked);
 
     public static bool LocalNotBlocked() => !LocalBlocked();
 

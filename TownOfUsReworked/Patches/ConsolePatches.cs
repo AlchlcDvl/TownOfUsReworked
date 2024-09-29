@@ -9,7 +9,7 @@ public static class OpenDoorConsoleCanUse
         __state = false;
         var playerControl = pc.Object;
 
-        if (playerControl.IsPostmortal() && !playerControl.Caught() && pc.IsDead)
+        if (playerControl.IsPostmortal() && !playerControl.Caught())
         {
             pc.IsDead = false;
             __state = true;
@@ -51,7 +51,7 @@ public static class DoorConsoleCanUse
         __state = false;
         var playerControl = pc.Object;
 
-        if (playerControl.IsPostmortal() && !playerControl.Caught() && pc.IsDead)
+        if (playerControl.IsPostmortal() && !playerControl.Caught())
         {
             pc.IsDead = false;
             __state = true;
@@ -95,7 +95,7 @@ public static class LadderCanUse
         __state = false;
         var playerControl = pc.Object;
 
-        if (playerControl.IsPostmortal() && !playerControl.Caught() && pc.IsDead)
+        if (playerControl.IsPostmortal() && !playerControl.Caught())
         {
             pc.IsDead = false;
             __state = true;
@@ -147,6 +147,42 @@ public static class PlatformConsoleCanUse
             pc.IsDead = true;
     }
 }
+
+[HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.Use))]
+public static class PlatformConsoleUse
+{
+    public static bool Prefix(PlatformConsole __instance)
+    {
+        var data = PlayerControl.LocalPlayer.Data;
+        __instance.CanUse(data, out var flag, out var _);
+
+        if (flag)
+            __instance.Platform.Use();
+
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl))]
+public static class MovingPlatformBehaviourUse
+{
+    public static void Prefix(PlayerControl player, ref bool __state)
+    {
+        __state = false;
+
+        if (player.IsPostmortal() && !player.Caught())
+        {
+            player.Data.IsDead = false;
+            __state = true;
+        }
+    }
+
+    public static void Postfix(PlayerControl player, ref bool __state)
+    {
+        if (__state)
+            player.Data.IsDead = true;
+    }
+}
 #endregion
 
 #region DeconControl
@@ -158,7 +194,7 @@ public static class DeconControlUse
         __state = false;
         var playerControl = pc.Object;
 
-        if (playerControl.IsPostmortal() && !playerControl.Caught() && pc.IsDead)
+        if (playerControl.IsPostmortal() && !playerControl.Caught())
         {
             pc.IsDead = false;
             __state = true;
@@ -237,6 +273,90 @@ public static class ConsoleUsePatch
 }
 #endregion
 
+#region ZiplineConsole
+[HarmonyPatch(typeof(ZiplineConsole), nameof(ZiplineConsole.CanUse))]
+public static class ZiplineConsoleCanUse
+{
+    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state)
+    {
+        __state = false;
+        var playerControl = pc.Object;
+
+        if (playerControl.IsPostmortal() && !playerControl.Caught())
+        {
+            pc.IsDead = false;
+            __state = true;
+        }
+    }
+
+    public static void Postfix([HarmonyArgument(0)] NetworkedPlayerInfo playerInfo, ref bool __state)
+    {
+        if (__state)
+            playerInfo.IsDead = true;
+    }
+}
+
+[HarmonyPatch(typeof(ZiplineConsole), nameof(ZiplineConsole.Use))]
+public static class ZiplineConsoleUse
+{
+    public static bool Prefix(ZiplineConsole __instance)
+    {
+        var data = PlayerControl.LocalPlayer.Data;
+        __instance.CanUse(data, out var flag, out var _);
+
+        if (flag)
+            __instance.zipline.Use(__instance.atTop, __instance);
+
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CheckUseZipline))]
+public static class PlayerControlCheckUseZipline
+{
+    public static void Prefix(PlayerControl target, ref bool __state)
+    {
+        var targetData = target.CachedPlayerData;
+        __state = false;
+
+        if (target.IsPostmortal() && !target.Caught())
+        {
+            targetData.IsDead = false;
+            __state = true;
+        }
+    }
+
+    public static void Postfix(PlayerControl target, ref bool __state)
+    {
+        var targetData = target.CachedPlayerData;
+
+        if (__state)
+            targetData.IsDead = true;
+    }
+}
+
+[HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), typeof(PlayerControl), typeof(bool))]
+public class ZiplineBehaviourUse
+{
+    public static void Prefix(PlayerControl player, ref bool __state)
+    {
+        __state = false;
+
+        if (player.IsPostmortal() && !player.Caught())
+        {
+            player.Data.IsDead = false;
+            __state = true;
+        }
+    }
+
+    public static void Postfix(PlayerControl player, ref bool __state)
+    {
+        if (__state)
+            player.Data.IsDead = true;
+    }
+}
+#endregion
+
 #region Other
 [HarmonyPatch(typeof(DoorCardSwipeGame), nameof(DoorCardSwipeGame.Begin))]
 public static class DoorSwipePatch
@@ -254,6 +374,21 @@ public static class SetTaskOutline
 
         __instance.Image.material.SetColor("_OutlineColor", Role.LocalRole.Color);
         __instance.Image.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
+    }
+}
+
+[HarmonyPatch(typeof(CrewmateGhostRole), nameof(CrewmateGhostRole.CanUse))]
+public class CanUseCrew
+{
+    public static bool Prefix(CrewmateGhostRole __instance, ref bool __result)
+    {
+        if (__instance.Player.IsPostmortal() && !__instance.Player.Caught())
+        {
+            __result = true;
+            return false;
+        }
+
+        return true;
     }
 }
 #endregion

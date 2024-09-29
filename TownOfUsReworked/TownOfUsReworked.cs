@@ -49,9 +49,6 @@ public partial class TownOfUsReworked : BasePlugin
     public static NormalGameOptionsV08 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV08 HNSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
 
-    public static bool LobbyCapped { get; set; } = true;
-    public static bool Persistence { get; set; } = true;
-    public static bool SameVote { get; set; } = true;
     public static bool MCIActive { get; set; }
 
     public readonly Harmony Harmony = new(Id);
@@ -73,6 +70,13 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> CustomEjects { get; set; }
     public static ConfigEntry<bool> OptimisationMode { get; set; }
     public static ConfigEntry<bool> HideOtherGhosts { get; set; }
+
+    public static ConfigEntry<bool> RedirectLogger { get; set; }
+    public static ConfigEntry<bool> AutoPlayAgain { get; set; }
+    public static ConfigEntry<bool> DisableTimeout { get; set; }
+    public static ConfigEntry<bool> LobbyCapped { get; set; }
+    public static ConfigEntry<bool> Persistence { get; set; }
+    public static ConfigEntry<bool> SameVote { get; set; }
 
     public static TownOfUsReworked ModInstance { get; private set; }
 

@@ -162,7 +162,6 @@ public static class BetterAirship
             else if (SpawnType == AirshipSpawnType.Random)
                 __instance.Locations = spawn.GetRandomRange(3).ToArray();
 
-
             return true;
         }
 

@@ -83,7 +83,7 @@ public static class PlayerControl_SetTasks
 {
     public static void Postfix(PlayerControl._CoSetTasks_d__141 __instance)
     {
-        if (!IsHnS())
+        if (!IsHnS() && __instance.__1__state == -1)
             __instance.__4__this.RegenTask();
     }
 }
@@ -102,6 +102,28 @@ public static class CompleteTasksPatch
                 button.Uses++;
                 button.MaxUses++;
             }
+        }
+
+        if (HUD().TaskPanel)
+        {
+            var text = "";
+
+            if (__instance.CanDoTasks())
+            {
+                var color = "FF00";
+                var role = __instance.GetRole();
+
+                if (role.TasksDone)
+                    color = "00FF";
+                else if (role.TasksCompleted > 0)
+                    color = "FFFF";
+
+                text = $"Tasks <color=#{color}00FF>({role.TasksCompleted}/{role.TotalTasks})</color>";
+            }
+            else
+                text = "<color=#FF0000FF>Fake Tasks</color>";
+
+            HUD().TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
         }
     }
 }

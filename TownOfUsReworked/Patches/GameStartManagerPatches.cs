@@ -226,27 +226,32 @@ public static class GameStartManagerPatches
 
             if (IsCountDown())
             {
-                var num = Mathf.CeilToInt(__instance.countDownTimer);
-                __instance.countDownTimer -= Time.deltaTime;
-                Seconds = Mathf.CeilToInt(__instance.countDownTimer);
-
-                if (Input.GetKeyDown(KeyCode.LeftShift))
-                    __instance.countDownTimer = 0;
-
-                if (Input.GetKeyDown(KeyCode.LeftControl))
-                    __instance.ResetStartState();
-
-                if (!__instance.GameStartTextParent.activeSelf)
-                    SoundManager.Instance.PlaySound(__instance.gameStartSound, false);
-
-                if (!versionMismatch)
+                if (TownOfUsReworked.MCIActive)
+                    Seconds = 0;
+                else
                 {
-                    __instance.GameStartTextParent.SetActive(true);
-                    __instance.GameStartText.text = TranslationController.Instance.GetString(StringNames.GameStarting, Seconds);
-                }
+                    var num = Mathf.CeilToInt(__instance.countDownTimer);
+                    __instance.countDownTimer -= Time.deltaTime;
+                    Seconds = Mathf.CeilToInt(__instance.countDownTimer);
 
-                if (num != Seconds)
-                    CustomPlayer.Local.RpcSetStartCounter(Seconds);
+                    if (Input.GetKeyDown(KeyCode.LeftShift))
+                        __instance.countDownTimer = 0;
+
+                    if (Input.GetKeyDown(KeyCode.LeftControl))
+                        __instance.ResetStartState();
+
+                    if (!__instance.GameStartTextParent.activeSelf)
+                        SoundManager.Instance.PlaySound(__instance.gameStartSound, false);
+
+                    if (!versionMismatch)
+                    {
+                        __instance.GameStartTextParent.SetActive(true);
+                        __instance.GameStartText.text = TranslationController.Instance.GetString(StringNames.GameStarting, Seconds);
+                    }
+
+                    if (num != Seconds)
+                        CustomPlayer.Local.RpcSetStartCounter(Seconds);
+                }
 
                 if (Seconds <= 0)
                 {

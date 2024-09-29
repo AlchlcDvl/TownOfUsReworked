@@ -21,14 +21,7 @@ public abstract class Neutral : Role
         {
             var jackal = Player.GetJackal();
             team.Add(jackal.Player);
-
-            foreach (var rec in jackal.Recruited)
-            {
-                if (rec == PlayerId)
-                    continue;
-
-                team.Add(PlayerById(rec));
-            }
+            team.AddRange(jackal.GetOtherRecruits(Player));
         }
         else if (Type == LayerEnum.Jackal)
         {

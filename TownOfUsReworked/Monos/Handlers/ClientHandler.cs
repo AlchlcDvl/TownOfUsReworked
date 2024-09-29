@@ -35,6 +35,18 @@ public class ClientHandler : MonoBehaviour
 
     private bool ButtonsSet;
 
+    private ProgressTracker _taskBar;
+    private ProgressTracker TaskBar
+    {
+        get
+        {
+            if (!_taskBar)
+                _taskBar = FindObjectOfType<ProgressTracker>(true);
+
+            return _taskBar;
+        }
+    }
+
     public static ClientHandler Instance { get; private set; }
 
     public ClientHandler(IntPtr ptr) : base(ptr) => Instance = this;
@@ -134,14 +146,13 @@ public class ClientHandler : MonoBehaviour
             return;
 
         HUD()?.TaskPanel?.gameObject?.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting() && !(Map() && Map().IsOpen) && !WikiActive && !IsCustomHnS());
-        var taskBar = FindObjectOfType<ProgressTracker>(true);
 
-        if (taskBar)
+        if (TaskBar)
         {
             if (GameSettings.TaskBarMode == TBMode.Invisible)
-                taskBar.gameObject.SetActive(false);
+                TaskBar.gameObject.SetActive(false);
             else
-                taskBar.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !(Map() && Map().IsOpen) && !WikiActive);
+                TaskBar.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !(Map() && Map().IsOpen) && !WikiActive);
         }
     }
 }

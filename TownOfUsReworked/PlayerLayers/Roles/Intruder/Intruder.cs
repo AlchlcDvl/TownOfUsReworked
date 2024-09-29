@@ -29,7 +29,7 @@ public abstract class Intruder : Role
         {
             var jackal = Player.GetJackal();
             team.Add(jackal.Player);
-            team.Add(jackal.Recruit1);
+            team.AddRange(jackal.GetOtherRecruits(Player));
         }
 
         foreach (var player in AllPlayers())

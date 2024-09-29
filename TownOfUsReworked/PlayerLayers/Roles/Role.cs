@@ -201,27 +201,6 @@ public abstract class Role : PlayerLayer
                 pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position);
         }
 
-        if (__instance.TaskPanel)
-        {
-            var text = "";
-
-            if (Player.CanDoTasks())
-            {
-                var color = "FF00";
-
-                if (TasksDone)
-                    color = "00FF";
-                else if (TasksCompleted > 0)
-                    color = "FFFF";
-
-                text = $"Tasks <color=#{color}00FF>({TasksCompleted}/{TotalTasks})</color>";
-            }
-            else
-                text = "<color=#FF0000FF>Fake Tasks</color>";
-
-            __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
-        }
-
         if (!Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode && AllPlayers().Any(x => x.Is(LayerEnum.Timekeeper)))
         {
             if (!Rewinding)

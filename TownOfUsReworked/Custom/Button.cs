@@ -236,16 +236,16 @@ public class CustomButton
                 Uses--;
                 Base.SetUsesRemaining(Uses);
             }
-
-            Play("Click");
         }
         else if ((DelayActive || EffectActive) && CanClickAgain.Value)
         {
             ClickedAgain = true;
             CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
-            Play("Click");
         }
+        else
+            return;
 
+        Play("Click");
         DisableTarget();
     }
 

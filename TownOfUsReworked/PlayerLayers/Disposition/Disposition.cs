@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 public abstract class Disposition : PlayerLayer
 {
-    public static List<Disposition> AllDispositions => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Disposition).Cast<Disposition>() ];
+    public static List<Disposition> AllDispositions() => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Disposition).Cast<Disposition>() ];
     // public static readonly Dictionary<byte, Disposition> DispositionLookup = [];
     public static Disposition LocalDisposition => CustomPlayer.Local.GetDisposition();
 

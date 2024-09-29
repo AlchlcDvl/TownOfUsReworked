@@ -21,7 +21,7 @@ public static class SameVoteAll
 {
     public static void Postfix(MeetingHud __instance, byte suspectStateIdx)
     {
-        if (!IsLocalGame() || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote)
+        if (!IsLocalGame() || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote.Value)
             return;
 
         AllPlayers().ForEach(x => __instance.CmdCastVote(x.PlayerId, suspectStateIdx));

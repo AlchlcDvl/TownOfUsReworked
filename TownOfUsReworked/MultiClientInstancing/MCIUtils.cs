@@ -66,7 +66,6 @@ public static class MCIUtils
             ImpartSub(sampleC.Character);
 
         yield return sampleC.Character.MyPhysics.CoSpawnPlayer(Lobby());
-        yield break;
     }
 
     public static void RemovePlayer(byte id)
@@ -103,7 +102,7 @@ public static class MCIUtils
 
         if (Meeting())
         {
-            PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingEnd(Meeting()));
+            PlayerLayer.LocalLayers().ForEach(x => x.OnMeetingEnd(Meeting()));
             ButtonUtils.DisableAllButtons();
         }
         else
@@ -112,7 +111,7 @@ public static class MCIUtils
             CustomPlayer.Local.DisableArrows();
         }
 
-        PlayerLayer.LocalLayers.ForEach(x => x.ExitingLayer());
+        PlayerLayer.LocalLayers().ForEach(x => x.ExitingLayer());
 
         CustomPlayer.Local.RpcCustomSnapTo(CustomPlayer.LocalCustom.Position);
         CustomPlayer.Local.moveable = false;
@@ -143,7 +142,7 @@ public static class MCIUtils
 
         if (Meeting())
         {
-            PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingStart(Meeting()));
+            PlayerLayer.LocalLayers().ForEach(x => x.OnMeetingStart(Meeting()));
 
             if (newPlayer.Data.IsDead)
                 Meeting().SetForegroundForDead();
@@ -156,7 +155,7 @@ public static class MCIUtils
             newPlayer.EnableArrows();
         }
 
-        PlayerLayer.LocalLayers.ForEach(x => x.EnteringLayer());
+        PlayerLayer.LocalLayers().ForEach(x => x.EnteringLayer());
 
         Chat().SetVisible(newPlayer.CanChat());
         newPlayer.RpcCustomSnapTo(pos2);

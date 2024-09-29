@@ -35,7 +35,7 @@ public abstract class PlayerLayer
 
     public static readonly List<PlayerLayer> AllLayers = [];
     // public static readonly Dictionary<byte, List<PlayerLayer>> LayerLookup = [];
-    public static List<PlayerLayer> LocalLayers => CustomPlayer.Local.GetLayers();
+    public static List<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
 
     protected PlayerLayer() => AllLayers.Add(this);
 
