@@ -59,7 +59,7 @@ public struct HSBColor
         else
             ret.h = 0;
 
-        ret.h *= 1f / 360f;
+        ret.h /= 360f;
         ret.s = dif / max * 1f;
         ret.b = max;
         return ret;
@@ -79,49 +79,41 @@ public struct HSBColor
 
             var h = hsbColor.h * 360f;
 
-            switch (h)
+            if (h < 60f)
             {
-                case < 60f:
-                    r = max;
-                    g = h * dif / 60f + min;
-                    b = min;
-                    break;
-
-                case < 120f:
-                    r = -(h - 120f) * dif / 60f + min;
-                    g = max;
-                    b = min;
-                    break;
-
-                case < 180f:
-                    r = min;
-                    g = max;
-                    b = (h - 120f) * dif / 60f + min;
-                    break;
-
-                case < 240f:
-                    r = min;
-                    g = -(h - 240f) * dif / 60f + min;
-                    b = max;
-                    break;
-
-                case < 300f:
-                    r = (h - 240f) * dif / 60f + min;
-                    g = min;
-                    b = max;
-                    break;
-
-                case <= 360f:
-                    r = max;
-                    g = min;
-                    b = -(h - 360f) * dif / 60 + min;
-                    break;
-
-                default:
-                    r = 0;
-                    g = 0;
-                    b = 0;
-                    break;
+                r = max;
+                g = (h * dif / 60f) + min;
+                b = min;
+            }
+            else if (h < 120f)
+            {
+                r = (-(h - 120f) * dif / 60f) + min;
+                g = max;
+                b = min;
+            }
+            else if (h < 180f)
+            {
+                r = min;
+                g = max;
+                b = ((h - 120f) * dif / 60f) + min;
+            }
+            else if (h < 300)
+            {
+                r = min;
+                g = (-(h - 240f) * dif / 60f) + min;
+                b = max;
+            }
+            else if (h <= 360f)
+            {
+                r = max;
+                g = min;
+                b = (-(h - 360f) * dif / 60) + min;
+            }
+            else
+            {
+                r = 0;
+                g = 0;
+                b = 0;
             }
         }
 

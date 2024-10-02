@@ -35,6 +35,8 @@ public class ClientHandler : MonoBehaviour
 
     private bool ButtonsSet;
 
+    private Transform ButtonsParent;
+
     private ProgressTracker _taskBar;
     private ProgressTracker TaskBar
     {
@@ -53,71 +55,69 @@ public class ClientHandler : MonoBehaviour
 
     public void OnLobbyStart()
     {
-        // if (!WikiRCButton)
-        // {
-        //     WikiRCButton = Instantiate(HUD().MapButton, HUD().MapButton.transform.parent);
-        //     WikiRCButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Wiki");
-        //     WikiRCButton.OverrideOnClickListeners(ClientStuff.Open);
-        //     WikiRCButton.name = "WikiAndRCButton";
-        // }
+        if (!ButtonsParent)
+        {
+            var obj = HUD().AbilityButton.transform.parent;
+            ButtonsParent = Instantiate(obj, obj.parent);
+            ButtonsParent.name = "BottomLeft";
+            ButtonsParent.transform.localPosition = new(-obj.localPosition.x, obj.localPosition.y, obj.localPosition.z);
+            var grid = ButtonsParent.GetComponent<GridArrange>();
+            grid.Alignment = GridArrange.StartAlign.Right;
+            grid.MaxColumns = 2;
+            grid.CellSize = new(0.8f, 0.8f);
+            var count = ButtonsParent.GetChildCount();
 
-        // if (!SettingsButton)
-        // {
-        //     SettingsButton = Instantiate(HUD().MapButton, HUD().MapButton.transform.parent);
-        //     SettingsButton.OverrideOnClickListeners(ClientStuff.OpenSettings);
-        //     SettingsButton.GetComponent<SpriteRenderer>().sprite = GetSprite("CurrentSettings");
-        //     SettingsButton.name = "CustomSettingsButton";
-        // }
+            for (var i = 0; i < count; i++)
+                ButtonsParent.GetChild(i).gameObject.Destroy();
+        }
 
-        // if (!ClientOptionsButton)
-        // {
-        //     ClientOptionsButton = Instantiate(HUD().MapButton, HUD().MapButton.transform.parent);
-        //     ClientOptionsButton.OverrideOnClickListeners(LobbyConsole.CreateMenu);
-        //     ClientOptionsButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Client");
-        //     ClientOptionsButton.name = "ClientOptionsButton";
-        // }
+        if (!WikiRCButton)
+        {
+            WikiRCButton = Instantiate(HUD().MapButton, ButtonsParent);
+            WikiRCButton.OverrideOnClickListeners(ClientStuff.Open);
+            WikiRCButton.name = "WikiAndRCButton";
+            WikiRCButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("WikiInactive");
+            WikiRCButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("WikiActive");
+            WikiRCButton.transform.Find("Background").localPosition = Vector3.zero;
+        }
 
-        // if (!ZoomButton)
-        // {
-        //     ZoomButton = Instantiate(HUD().MapButton, HUD().MapButton.transform.parent);
-        //     ZoomButton.OverrideOnClickListeners(ClientStuff.ClickZoom);
-        //     ZoomButton.name = "ZoomButton";
-        // }
+        if (!SettingsButton)
+        {
+            SettingsButton = Instantiate(HUD().MapButton, ButtonsParent);
+            SettingsButton.OverrideOnClickListeners(ClientStuff.OpenSettings);
+            SettingsButton.name = "CustomSettingsButton";
+            SettingsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsInactive");
+            SettingsButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsActive");
+            SettingsButton.transform.Find("Background").localPosition = Vector3.zero;
+        }
+
+        if (!ClientOptionsButton)
+        {
+            ClientOptionsButton = Instantiate(HUD().MapButton, ButtonsParent);
+            ClientOptionsButton.OverrideOnClickListeners(LobbyConsole.CreateMenu);
+            ClientOptionsButton.name = "ClientOptionsButton";
+            ClientOptionsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("ClientInactive");
+            ClientOptionsButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("ClientActive");
+            ClientOptionsButton.transform.Find("Background").localPosition = Vector3.zero;
+        }
+
+        if (!ZoomButton)
+        {
+            ZoomButton = Instantiate(HUD().MapButton, ButtonsParent);
+            ZoomButton.OverrideOnClickListeners(ClientStuff.ClickZoom);
+            ZoomButton.name = "ZoomButton";
+            ZoomButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("MinusInactive");
+            ZoomButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("MinusActive");
+            ZoomButton.transform.Find("Background").localPosition = Vector3.zero;
+        }
 
         ButtonsSet = true;
     }
 
     public void Update()
     {
-        if (IsHnS() || !HUD() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsSet)
+        if (IsHnS() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsSet)
             return;
-
-        // var pos = HUD().SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -HUD().SettingsButton.transform.localPosition.z - 51f);
-        // WikiRCButton.transform.localPosition = pos;
-
-        // pos += new Vector3(0, -0.66f, 0f);
-        // HUD().MapButton.transform.localPosition = pos;
-
-        // if (IsSubmerged() && CustomPlayer.LocalCustom.Dead)
-        // {
-        //     var floorButton = HUD().MapButton.transform.parent.Find($"{HUD().MapButton.name}(Clone)");
-
-        //     if (floorButton)
-        //     {
-        //         pos += new Vector3(0, -0.66f, 0f);
-        //         floorButton.localPosition = pos;
-        //         floorButton.gameObject.SetActive(CustomPlayer.Local.Caught() || !CustomPlayer.Local.IsPostmortal());
-        //     }
-        // }
-
-        // pos += new Vector3(0, -0.66f, 0f);
-        // SettingsButton.transform.localPosition = pos;
-
-        // pos += new Vector3(0, -0.66f, 0f);
-        // ClientOptionsButton.transform.localPosition = pos;
-
-        // pos += new Vector3(0, -0.66f, 0f);
-        // ZoomButton.transform.localPosition = pos;
 
         ClientStuff.ResetButtonPos();
         WikiRCButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay());
@@ -125,7 +125,6 @@ public class ClientHandler : MonoBehaviour
         ClientOptionsButton.gameObject.SetActive(HUD().MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
         ZoomButton.gameObject.SetActive(HUD().MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && !IntroCutscene.Instance && !IsFreePlay() && IsInGame() &&
             (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()));
-        ZoomButton.GetComponent<SpriteRenderer>().sprite = GetSprite(Zooming ? "Plus" : "Minus");
 
         if (PhoneText)
         {

@@ -1,6 +1,6 @@
 using BepInEx.Logging;
 
-// Taken from Reactor.Debugger, it start to get annoying having both mine and Reactor's debuggers open at the same time :/
+// Taken from Reactor.Debugger, it's starting to get annoying having both mine and Reactor's debuggers open at the same time :/
 namespace TownOfUsReworked.Debugger.Patches;
 
 [HarmonyPatch(typeof(Logger))]

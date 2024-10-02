@@ -32,6 +32,7 @@ Fixes!
 - Critical: Fixed the rare instance where the host may lag a lot when a round starts
 - Critical: Fixed some roles having no ability cooldowns
 - Critical: Fixed custom visors being completely broken*
+- Crticial: Fixed venting being broken
 - Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
 - Role: Fixed Betrayer being unable to kill
 - Role + Ability: Fixed Herbalists (Fungle Miners) being unguessable

@@ -357,15 +357,15 @@ public static class SpeedNetworkPatch
     }
 }
 
-[HarmonyPatch(typeof(Constants), nameof(Constants.GetBroadcastVersion))]
-public static class ConstantsPatch
-{
-    public static void Postfix(ref int __result)
-    {
-        if (IsOnlineGame() && __result % 50 < 25)
-            __result += 25;
-    }
-}
+// [HarmonyPatch(typeof(Constants), nameof(Constants.GetBroadcastVersion))]
+// public static class ConstantsPatch
+// {
+//     public static void Postfix(ref int __result)
+//     {
+//         if (IsOnlineGame() && __result % 50 < 25)
+//             __result += 25;
+//     }
+// }
 
 [HarmonyPatch(typeof(Constants), nameof(Constants.IsVersionModded))]
 public static class IsModdedPatch
@@ -427,10 +427,10 @@ public static class LobbyBehaviourPatch
         MCIUtils.Clients.Clear();
         MCIUtils.PlayerClientIDs.Clear();
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame();
-        // ClientHandler.Instance.OnLobbyStart();
-        // ClientHandler.Instance.Page = 0;
-        // ClientHandler.Instance.Buttons.Clear();
-        // ClientStuff.CloseMenus();
+        ClientHandler.Instance.OnLobbyStart();
+        ClientHandler.Instance.Page = 0;
+        ClientHandler.Instance.Buttons.Clear();
+        ClientStuff.CloseMenus();
         // FreeplayPatches.PreviouslySelected.Clear();
 
         if (count > 0 && TownOfUsReworked.Persistence.Value && !IsOnlineGame())

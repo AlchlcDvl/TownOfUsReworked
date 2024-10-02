@@ -72,7 +72,7 @@ public static class ModCompatibility
             SubAssembly = SubPlugin.GetType().Assembly;
             SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly);
 
-            SubInjectedTypes = (Dictionary<string, Type>)AccessTools.Property(Array.Find(SubTypes, t => t.Name == "ComponentExtensions"), "RegisteredTypes").GetValue(null);
+            SubInjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Array.Find(SubTypes, t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null, null);
 
             SubmarineStatusType = SubTypes.First(t => t.Name == "SubmarineStatus");
             SubmergedInstanceField = AccessTools.Field(SubmarineStatusType, "instance");
@@ -346,29 +346,6 @@ public static class ModCompatibility
         Fatal("MalumMenu was detected");
         Harmony.UnpatchAll();
         return true;
-    }
-
-    private static bool Initialized;
-
-    public static void Init()
-    {
-        if (Initialized)
-            return;
-
-        try
-        {
-            Initialized = true;
-
-            LILoaded = InitializeLevelImpostor();
-            SubLoaded = InitializeSubmerged();
-
-            Message(LILoaded || SubLoaded ? "Mod compatibility finished" : "No extra mods detected");
-        }
-        catch (Exception e)
-        {
-            Error($"Couldn't load compatibilies:\n{e}");
-            Initialized = false;
-        }
     }
 
     private static readonly string[] Unsupported = [ "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI" ];

@@ -289,10 +289,10 @@ public static class ZiplineConsoleCanUse
         }
     }
 
-    public static void Postfix([HarmonyArgument(0)] NetworkedPlayerInfo playerInfo, ref bool __state)
+    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state)
     {
         if (__state)
-            playerInfo.IsDead = true;
+            pc.IsDead = true;
     }
 }
 

@@ -5,7 +5,7 @@ public static class AutoPlayAgainPatch
 {
     public static void Postfix(EndGameNavigation __instance)
     {
-        if (TownOfUsReworked.AutoPlayAgain.Value)
+        if (TownOfUsReworked.AutoPlayAgain.Value && TownOfUsReworked.MCIActive)
             __instance.NextGame();
     }
 }

@@ -317,14 +317,14 @@ public abstract class PlayerLayer
         if (a is null || b is null)
             return false;
 
-        return a.Type == b.Type && a.LayerType == b.LayerType && a.Player == b.Player && a.GetHashCode() == b.GetHashCode();
+        return a.Equals(b);
     }
 
     public static bool operator !=(PlayerLayer a, PlayerLayer b) => !(a == b);
 
     public static implicit operator bool(PlayerLayer exists) => exists != null && exists.Player;
 
-    private bool Equals(PlayerLayer other) => Equals(Player, other.Player) && Type == other.Type && GetHashCode() == other.GetHashCode();
+    public bool Equals(PlayerLayer other) => other.Player == Player && other.LayerType == LayerType && Type == other.Type && GetHashCode() == other.GetHashCode();
 
     public override bool Equals(object obj)
     {
@@ -334,7 +334,10 @@ public abstract class PlayerLayer
         if (ReferenceEquals(this, obj))
             return true;
 
-        if (obj.GetType().IsAssignableTo(typeof(PlayerLayer)))
+        var type = obj.GetType();
+        var plType = typeof(PlayerLayer);
+
+        if (!type.IsAssignableTo(plType) && type != plType && !plType.IsAssignableFrom(type))
             return false;
 
         return Equals((PlayerLayer)obj);

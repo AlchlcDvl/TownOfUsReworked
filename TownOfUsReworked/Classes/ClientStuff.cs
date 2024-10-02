@@ -14,21 +14,24 @@ public static class ClientStuff
 
     private static IEnumerator Zoom(bool inOut)
     {
+        ClientHandler.Instance.ZoomButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Inactive");
+        ClientHandler.Instance.ZoomButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Active");
         var change = 0.3f * (inOut ? 1 : -1);
         var limit = inOut ? 12f : 3f;
+        HUD().SetHudActive(false);
 
         for (var i = Camera.main.orthographicSize; inOut ? (i < 12f) : (i > 3f); i += change)
         {
             var size = Meeting() ? 3f : i;
             Camera.main.orthographicSize = size;
             Camera.allCameras.ForEach(x => x.orthographicSize = size);
-            ResolutionManager.ResolutionChanged.Invoke(Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen);
             yield return EndFrame();
         }
 
         Camera.main.orthographicSize = limit;
         Camera.allCameras.ForEach(x => x.orthographicSize = limit);
         ResolutionManager.ResolutionChanged.Invoke(Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen);
+        HUD().SetHudActive(true);
         yield break;
     }
 
@@ -319,12 +322,15 @@ public static class ClientStuff
         label.alignment = TextAlignmentOptions.Center;
         label.fontStyle = FontStyles.Bold;
         label.name = $"{name}Text";
-        var rend = button.GetComponent<SpriteRenderer>();
+        var rend = button.transform.Find("Background").GetComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Plate");
         rend.color = UColor.white;
+        rend.transform.localScale = new(0.9f, 0.9f, 1f);
         button.OverrideOnClickListeners(onClick);
         button.OverrideOnMouseOverListeners(() => rend.color = UColor.yellow);
         button.OverrideOnMouseOutListeners(() => rend.color = UColor.white);
+        button.transform.Find("Active").gameObject.Destroy();
+        button.transform.Find("Inactive").gameObject.Destroy();
         return button;
     }
 
