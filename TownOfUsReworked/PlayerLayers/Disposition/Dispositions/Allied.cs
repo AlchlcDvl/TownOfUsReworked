@@ -13,7 +13,7 @@ public class Allied : Disposition
         Faction.Crew => CustomColorManager.Crew,
         Faction.Syndicate => CustomColorManager.Syndicate,
         Faction.Intruder => CustomColorManager.Intruder,
-        _ => ClientOptions.CustomObjColors ? CustomColorManager.Allied : CustomColorManager.Disposition,
+        _ => ClientOptions.CustomDispColors ? CustomColorManager.Allied : CustomColorManager.Disposition,
     };
     public override string Name => "Allied";
     public override string Symbol => "ζ";

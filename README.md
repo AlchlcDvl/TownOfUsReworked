@@ -848,7 +848,7 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 ### Origin: Better TOS
 ### Attack: Basic
 
-The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the "good" one, meaning they are Crew or Neutral (Benign). The other is the "evil" recruit, who can be either Intruder, Syndicate or Neutral (Killing) or (Harbinger). When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead. Members of the Cabal have a dark grey $ next to their names.
+The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. The two recruits will always have opposing base win conditions. When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead. Members of the Cabal have a dark grey $ next to their names.
 
 ### Game Options
 

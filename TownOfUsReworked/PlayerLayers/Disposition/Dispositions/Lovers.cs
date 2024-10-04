@@ -15,7 +15,7 @@ public class Lovers : Disposition
     public PlayerControl OtherLover { get; set; }
     public bool LoversAlive => !Player.HasDied() && !OtherLover.HasDied();
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Lovers : CustomColorManager.Disposition;
+    public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Lovers : CustomColorManager.Disposition;
     public override string Name => "Lovers";
     public override string Symbol => "♥";
     public override LayerEnum Type => LayerEnum.Lovers;

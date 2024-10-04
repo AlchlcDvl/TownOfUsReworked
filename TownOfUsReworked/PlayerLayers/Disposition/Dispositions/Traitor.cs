@@ -24,11 +24,11 @@ public class Traitor : Disposition
                 {
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
+                    _ => ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
                 };
             }
             else
-                return ClientOptions.CustomObjColors ? CustomColorManager.Traitor : CustomColorManager.Disposition;
+                return ClientOptions.CustomDispColors ? CustomColorManager.Traitor : CustomColorManager.Disposition;
         }
     }
     public override string Name => "Traitor";

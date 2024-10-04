@@ -47,17 +47,18 @@ public static class RoleGen
     private static readonly LayerEnum[] CS = [ LayerEnum.Engineer, LayerEnum.Transporter, LayerEnum.Escort, LayerEnum.Shifter, LayerEnum.Chameleon, LayerEnum.Retributionist ];
     private static readonly LayerEnum[][] Crew = [ CA, CI, CSv, CrP, CK, CS, CU ];
     private static readonly LayerEnum[][] RegCrew = [ CI, CrP, CK, CS ];
+    private static readonly LayerEnum[][][] NonCrew = [ Neutral, Intruders, Syndicate ];
 
     private static readonly LayerEnum[] NB = [ LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief ];
     private static readonly LayerEnum[] NE = [ LayerEnum.Jester, LayerEnum.Actor, LayerEnum.BountyHunter, LayerEnum.Cannibal, LayerEnum.Executioner, LayerEnum.Guesser, LayerEnum.Troll ];
     private static readonly LayerEnum[] NN = [ LayerEnum.Jackal, LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Whisperer ];
     private static readonly LayerEnum[] NH = [ LayerEnum.Plaguebearer ];
     private static readonly LayerEnum[] NA = [ LayerEnum.Pestilence ];
-    private static readonly LayerEnum[] NK = [ LayerEnum.Arsonist, LayerEnum.Cryomaniac, LayerEnum.Glitch, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.SerialKiller,
-        LayerEnum.Werewolf ];
+    private static readonly LayerEnum[] NK = [ LayerEnum.Arsonist, LayerEnum.Cryomaniac, LayerEnum.Glitch, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.SerialKiller, LayerEnum.Werewolf ];
     private static readonly LayerEnum[][] Neutral = [ NB, NE, NN, NH, NK ];
     private static readonly LayerEnum[][] RegNeutral = [ NB, NE ];
     private static readonly LayerEnum[][] HarmNeutral = [ NN, NH, NK ];
+    private static readonly LayerEnum[][][] NonNeutral = [ Crew, Intruders, Syndicate ];
 
     private static readonly LayerEnum[] IC = [ LayerEnum.Blackmailer, LayerEnum.Camouflager, LayerEnum.Grenadier, LayerEnum.Janitor ];
     private static readonly LayerEnum[] ID = [ LayerEnum.Morphling, LayerEnum.Disguiser, LayerEnum.Wraith ];
@@ -67,6 +68,7 @@ public static class RoleGen
     private static readonly LayerEnum[] IU = [ LayerEnum.Impostor ];
     private static readonly LayerEnum[][] Intruders = [ IC, ID, IK, IS, IU, IH ];
     private static readonly LayerEnum[][] RegIntruders = [ IC, ID, IK, IS ];
+    private static readonly LayerEnum[][][] NonIntruders = [ Neutral, Crew, Syndicate ];
 
     private static readonly LayerEnum[] SSu = [ LayerEnum.Warper, LayerEnum.Stalker ];
     private static readonly LayerEnum[] SD = [ LayerEnum.Timekeeper, LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.Silencer] ;
@@ -75,17 +77,19 @@ public static class RoleGen
     private static readonly LayerEnum[] SU = [ LayerEnum.Anarchist ];
     private static readonly LayerEnum[][] Syndicate = [ SSu, SyK, SD, SP, SU ];
     private static readonly LayerEnum[][] RegSyndicate = [ SSu, SyK, SD ];
+    private static readonly LayerEnum[][][] NonSyndicate = [ Neutral, Intruders, Crew ];
 
-    private static readonly LayerEnum[] AlignmentEntries = [ LayerEnum.CrewSupport, LayerEnum.CrewInvest, LayerEnum.CrewSov, LayerEnum.CrewProt, LayerEnum.CrewKill, LayerEnum.CrewAudit,
-        LayerEnum.IntruderSupport, LayerEnum.IntruderConceal, LayerEnum.IntruderDecep, LayerEnum.IntruderKill, LayerEnum.NeutralApoc, LayerEnum.NeutralHarb, LayerEnum.NeutralBen,
-        LayerEnum.NeutralEvil, LayerEnum.NeutralKill, LayerEnum.NeutralNeo, LayerEnum.SyndicateDisrup, LayerEnum.SyndicateKill, LayerEnum.SyndicatePower, LayerEnum.IntruderUtil,
-        LayerEnum.CrewUtil, LayerEnum.SyndicateUtil, LayerEnum.IntruderHead ];
-    private static readonly LayerEnum[] RandomEntries = [ LayerEnum.RandomCrew, LayerEnum.RandomIntruder, LayerEnum.RandomSyndicate, LayerEnum.RandomNeutral, LayerEnum.RegularCrew,
-        LayerEnum.RegularIntruder, LayerEnum.RegularNeutral, LayerEnum.RegularSyndicate, LayerEnum.HarmfulNeutral ];
+    private static readonly LayerEnum[][][] FactionedEvils = [ Neutral, Crew ];
+
+    private static readonly LayerEnum[] AlignmentEntries = [ LayerEnum.CrewSupport, LayerEnum.CrewInvest, LayerEnum.CrewSov, LayerEnum.CrewProt, LayerEnum.CrewKill, LayerEnum.CrewAudit, LayerEnum.IntruderSupport,
+        LayerEnum.IntruderConceal, LayerEnum.IntruderDecep, LayerEnum.IntruderKill, LayerEnum.NeutralApoc, LayerEnum.NeutralHarb, LayerEnum.NeutralBen, LayerEnum.NeutralEvil, LayerEnum.NeutralKill, LayerEnum.NeutralNeo,
+        LayerEnum.SyndicateDisrup, LayerEnum.SyndicateKill, LayerEnum.SyndicatePower, LayerEnum.IntruderUtil, LayerEnum.CrewUtil, LayerEnum.SyndicateUtil, LayerEnum.IntruderHead ];
+    private static readonly LayerEnum[] RandomEntries = [ LayerEnum.RandomCrew, LayerEnum.RandomIntruder, LayerEnum.RandomSyndicate, LayerEnum.RandomNeutral, LayerEnum.RegularCrew, LayerEnum.RegularIntruder,
+        LayerEnum.RegularNeutral, LayerEnum.RegularSyndicate, LayerEnum.HarmfulNeutral, LayerEnum.NonCrew, LayerEnum.NonIntruder, LayerEnum.NonNeutral, LayerEnum.FactionedEvil, LayerEnum.NonSyndicate ];
     private static readonly LayerEnum[][] Alignments = [ CA, CI, CSv, CrP, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, NA ];
 
-    private static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.VIP, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
-        LayerEnum.Indomitable, LayerEnum.Yeller, LayerEnum.Colorblind ];
+    private static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.VIP, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral, LayerEnum.Indomitable, LayerEnum.Yeller,
+        LayerEnum.Colorblind ];
 
     private static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
     private static readonly LayerEnum[] CrewObj = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
@@ -487,9 +491,8 @@ public static class RoleGen
             result = new List<LayerEnum>() { LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Whisperer }.Any(x => GetSpawnItem(x).IsActive());
         else if (layer == LayerEnum.Seer)
         {
-            result = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic,
-                LayerEnum.Traitor, LayerEnum.Amnesiac, LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter }.Any(x =>
-                    GetSpawnItem(x).IsActive());
+            result = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor, LayerEnum.Amnesiac,
+                LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter }.Any(x => GetSpawnItem(x).IsActive());
         }
         else if (layer == LayerEnum.Plaguebearer)
             result = !NeutralApocalypseSettings.DirectSpawn;
@@ -587,16 +590,10 @@ public static class RoleGen
                             NeutralHarbingerRoles.Add(spawn);
                         else if (layer is LayerEnum.Amnesiac or LayerEnum.GuardianAngel or LayerEnum.Survivor or LayerEnum.Thief)
                             NeutralBenignRoles.Add(spawn);
-                        else if (layer is LayerEnum.Actor or LayerEnum.BountyHunter or LayerEnum.Cannibal or LayerEnum.Executioner or LayerEnum.Guesser or LayerEnum.Jester or
-                            LayerEnum.Troll)
-                        {
+                        else if (layer is LayerEnum.Actor or LayerEnum.BountyHunter or LayerEnum.Cannibal or LayerEnum.Executioner or LayerEnum.Guesser or LayerEnum.Jester or LayerEnum.Troll)
                             NeutralEvilRoles.Add(spawn);
-                        }
-                        else if (layer is LayerEnum.Arsonist or LayerEnum.Cryomaniac or LayerEnum.Glitch or LayerEnum.Juggernaut or LayerEnum.Murderer or LayerEnum.SerialKiller or
-                            LayerEnum.Werewolf)
-                        {
+                        else if (layer is LayerEnum.Arsonist or LayerEnum.Cryomaniac or LayerEnum.Glitch or LayerEnum.Juggernaut or LayerEnum.Murderer or LayerEnum.SerialKiller or LayerEnum.Werewolf)
                             NeutralKillingRoles.Add(spawn);
-                        }
                         else if (layer is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer)
                             NeutralNeophyteRoles.Add(spawn);
 
@@ -710,23 +707,33 @@ public static class RoleGen
                     switch (URandom.RandomRangeInt(0, 5))
                     {
                         case 0:
-                            if (maxIC > 0) maxIC--;
+                            if (maxIC > 0)
+                                maxIC--;
+
                             break;
 
                         case 1:
-                            if (maxID > 0) maxID--;
+                            if (maxID > 0)
+                                maxID--;
+
                             break;
 
                         case 2:
-                            if (maxIK > 0) maxIK--;
+                            if (maxIK > 0)
+                                maxIK--;
+
                             break;
 
                         case 3:
-                            if (maxIS > 0) maxIS--;
+                            if (maxIS > 0)
+                                maxIS--;
+
                             break;
 
                         case 4:
-                            if (maxIH > 0) maxIH--;
+                            if (maxIH > 0)
+                                maxIH--;
+
                             break;
                     }
 
@@ -775,19 +782,27 @@ public static class RoleGen
                     switch (URandom.RandomRangeInt(0, 4))
                     {
                         case 0:
-                            if (maxSSu > 0) maxSSu--;
+                            if (maxSSu > 0)
+                                maxSSu--;
+
                             break;
 
                         case 1:
-                            if (maxSD > 0) maxSD--;
+                            if (maxSD > 0)
+                                maxSD--;
+
                             break;
 
                         case 2:
-                            if (maxSyK > 0) maxSyK--;
+                            if (maxSyK > 0)
+                                maxSyK--;
+
                             break;
 
                         case 3:
-                            if (maxSP > 0) maxSP--;
+                            if (maxSP > 0)
+                                maxSP--;
+
                             break;
                     }
 
@@ -836,23 +851,33 @@ public static class RoleGen
                     switch (URandom.RandomRangeInt(0, 5))
                     {
                         case 0:
-                            if (maxNE > 0) maxNE--;
+                            if (maxNE > 0)
+                                maxNE--;
+
                             break;
 
                         case 1:
-                            if (maxNB > 0) maxNB--;
+                            if (maxNB > 0)
+                                maxNB--;
+
                             break;
 
                         case 2:
-                            if (maxNK > 0) maxNK--;
+                            if (maxNK > 0)
+                                maxNK--;
+
                             break;
 
                         case 3:
-                            if (maxNN > 0) maxNN--;
+                            if (maxNN > 0)
+                                maxNN--;
+
                             break;
 
                         case 4:
-                            if (maxNH > 0) maxNH--;
+                            if (maxNH > 0)
+                                maxNH--;
+
                             break;
                     }
 
@@ -900,27 +925,39 @@ public static class RoleGen
                     switch (URandom.RandomRangeInt(0, 6))
                     {
                         case 0:
-                            if (maxCA > 0) maxCA--;
+                            if (maxCA > 0)
+                                maxCA--;
+
                             break;
 
                         case 1:
-                            if (maxCI > 0) maxCI--;
+                            if (maxCI > 0)
+                                maxCI--;
+
                             break;
 
                         case 2:
-                            if (maxCK > 0) maxCK--;
+                            if (maxCK > 0)
+                                maxCK--;
+
                             break;
 
                         case 3:
-                            if (maxCS > 0) maxCS--;
+                            if (maxCS > 0)
+                                maxCS--;
+
                             break;
 
                         case 4:
-                            if (maxCSv > 0) maxCSv--;
+                            if (maxCSv > 0)
+                                maxCSv--;
+
                             break;
 
                         case 5:
-                            if (maxCrP > 0) maxCrP--;
+                            if (maxCrP > 0)
+                                maxCrP--;
+
                             break;
                     }
 
@@ -1018,60 +1055,36 @@ public static class RoleGen
             var cachedCount = AllRoles.Count;
             var id = entry.Get();
             var ratelimit = 0;
-            var random = LayerEnum.None;
 
             while (cachedCount == AllRoles.Count && ratelimit < 10000)
             {
-                if (id == LayerEnum.CrewAudit)
-                    random = CA.Random();
-                else if (id == LayerEnum.CrewInvest)
-                    random = CI.Random();
-                else if (id == LayerEnum.CrewSov)
-                    random = CSv.Random();
-                else if (id == LayerEnum.CrewProt)
-                    random = CrP.Random();
-                else if (id == LayerEnum.CrewKill)
-                    random = CK.Random();
-                else if (id == LayerEnum.CrewSupport)
-                    random = CS.Random();
-                else if (id == LayerEnum.NeutralBen)
-                    random = NB.Random();
-                else if (id == LayerEnum.NeutralEvil)
-                    random = NE.Random();
-                else if (id == LayerEnum.NeutralNeo)
-                    random = NN.Random();
-                else if (id == LayerEnum.NeutralHarb)
-                    random = NH.Random();
-                else if (id == LayerEnum.NeutralApoc)
-                    random = NA.Random();
-                else if (id == LayerEnum.NeutralKill)
-                    random = NK.Random();
-                else if (id == LayerEnum.IntruderConceal)
-                    random = IC.Random();
-                else if (id == LayerEnum.IntruderDecep)
-                    random = ID.Random();
-                else if (id == LayerEnum.IntruderKill)
-                    random = IK.Random();
-                else if (id == LayerEnum.IntruderSupport)
-                    random = IS.Random();
-                else if (id == LayerEnum.SyndicateSupport)
-                    random = SSu.Random();
-                else if (id == LayerEnum.SyndicatePower)
-                    random = SP.Random();
-                else if (id == LayerEnum.SyndicateDisrup)
-                    random = SD.Random();
-                else if (id == LayerEnum.SyndicateKill)
-                    random = SyK.Random();
-                else if (id == LayerEnum.CrewUtil)
-                    random = CU.Random();
-                else if (id == LayerEnum.IntruderUtil)
-                    random = IU.Random();
-                else if (id == LayerEnum.SyndicateUtil)
-                    random = SU.Random();
-                else if (id == LayerEnum.IntruderHead)
-                    random = IH.Random();
+                var random = id switch
+                {
+                    LayerEnum.CrewAudit => CA.Random(),
+                    LayerEnum.CrewInvest => CI.Random(),
+                    LayerEnum.CrewSov => CSv.Random(),
+                    LayerEnum.CrewProt => CrP.Random(),
+                    LayerEnum.CrewKill => CK.Random(),
+                    LayerEnum.CrewSupport => CS.Random(),
+                    LayerEnum.NeutralBen => NB.Random(),
+                    LayerEnum.NeutralEvil => NE.Random(),
+                    LayerEnum.NeutralNeo => NN.Random(),
+                    LayerEnum.NeutralHarb => NH.Random(),
+                    LayerEnum.NeutralApoc => NA.Random(),
+                    LayerEnum.NeutralKill => NK.Random(),
+                    LayerEnum.IntruderConceal => IC.Random(),
+                    LayerEnum.IntruderDecep => ID.Random(),
+                    LayerEnum.IntruderKill => IK.Random(),
+                    LayerEnum.IntruderSupport => IS.Random(),
+                    LayerEnum.SyndicateSupport => SSu.Random(),
+                    LayerEnum.SyndicatePower => SP.Random(),
+                    LayerEnum.SyndicateDisrup => SD.Random(),
+                    LayerEnum.SyndicateKill => SyK.Random(),
+                    LayerEnum.IntruderHead => IH.Random(),
+                    _ => LayerEnum.None
+                };
 
-                if (CannotAdd(id))
+                if (CannotAdd(random))
                     ratelimit++;
                 else
                     AllRoles.Add(GetSpawnItem(random));
@@ -1083,30 +1096,29 @@ public static class RoleGen
             var cachedCount = AllRoles.Count;
             var id = entry.Get();
             var ratelimit = 0;
-            var random = LayerEnum.None;
 
             while (cachedCount == AllRoles.Count && ratelimit < 10000)
             {
-                if (id == LayerEnum.RandomCrew)
-                    random = Crew.Random().Random();
-                else if (id == LayerEnum.RandomNeutral)
-                    random = Neutral.Random().Random();
-                else if (id == LayerEnum.RandomIntruder)
-                    random = Intruders.Random().Random();
-                else if (id == LayerEnum.RandomSyndicate)
-                    random = Syndicate.Random().Random();
-                else if (id == LayerEnum.RegularCrew)
-                    random = RegCrew.Random().Random();
-                else if (id == LayerEnum.RegularIntruder)
-                    random = RegIntruders.Random().Random();
-                else if (id == LayerEnum.RegularNeutral)
-                    random = RegNeutral.Random().Random();
-                else if (id == LayerEnum.HarmfulNeutral)
-                    random = HarmNeutral.Random().Random();
-                else if (id == LayerEnum.RegularSyndicate)
-                    random = RegSyndicate.Random().Random();
+                var random = id switch
+                {
+                    LayerEnum.RandomCrew => Crew.Random().Random(),
+                    LayerEnum.RandomNeutral => Neutral.Random().Random(),
+                    LayerEnum.RandomIntruder => Intruders.Random().Random(),
+                    LayerEnum.RandomSyndicate => Syndicate.Random().Random(),
+                    LayerEnum.RegularCrew => RegCrew.Random().Random(),
+                    LayerEnum.RegularIntruder => RegIntruders.Random().Random(),
+                    LayerEnum.RegularNeutral => RegNeutral.Random().Random(),
+                    LayerEnum.HarmfulNeutral => HarmNeutral.Random().Random(),
+                    LayerEnum.RegularSyndicate => RegSyndicate.Random().Random(),
+                    LayerEnum.NonIntruder => NonIntruders.Random().Random().Random(),
+                    LayerEnum.NonCrew => NonCrew.Random().Random().Random(),
+                    LayerEnum.NonNeutral => NonNeutral.Random().Random().Random(),
+                    LayerEnum.NonSyndicate => NonSyndicate.Random().Random().Random(),
+                    LayerEnum.FactionedEvil => FactionedEvils.Random().Random().Random(),
+                    _ => LayerEnum.None
+                };
 
-                if (CannotAdd(id))
+                if (CannotAdd(random))
                     ratelimit++;
                 else
                     AllRoles.Add(GetSpawnItem(random));
@@ -1165,7 +1177,7 @@ public static class RoleGen
         LayerEnum.Banshee => SyndicateUtilityRoles.Banshee,
         LayerEnum.Phantom => NeutralProselyteRoles.Phantom,
         LayerEnum.Pestilence => Options.NeutralHarbingerRoles.Plaguebearer,
-        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 100, false, false, id),
+        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 15, false, false, id),
         _ => OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(x => x.Layer == id, out var result) ? result.Get() : new(0, 0, false, false, id)
     };
 
@@ -1221,6 +1233,8 @@ public static class RoleGen
             Message("Abilities in the game: " + ids);
         }
 
+        var invalid = new List<LayerEnum>();
+
         while (playerList.Any() && AllAbilities.Any())
         {
             var id = AllAbilities.TakeFirst().ID;
@@ -1238,14 +1252,14 @@ public static class RoleGen
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) && !(x.Is(LayerEnum.Consigliere) && Consigliere.ConsigInfo == ConsigInfo.Role));
             else if (id == LayerEnum.Ninja)
             {
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) ||
-                    x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted));
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) || x.Is(Alignment.CrewKill) ||
+                    x.Is(LayerEnum.Corrupted));
             }
             else if (id == LayerEnum.Torch)
             {
-                assigned = playerList.FirstOrDefault(x => !((x.Is(Alignment.NeutralKill) && !NeutralKillingSettings.NKHasImpVision) || x.Is(Faction.Syndicate) || x.Is(Faction.Intruder) ||
-                    (x.Is(Faction.Neutral) && !NeutralSettings.LightsAffectNeutrals) || (x.Is(Alignment.NeutralNeo) && !NeutralNeophyteSettings.NNHasImpVision) ||
-                    (x.Is(Alignment.NeutralEvil) && !NeutralEvilSettings.NEHasImpVision) || (x.Is(Alignment.NeutralHarb) && !NeutralHarbingerSettings.NHHasImpVision)));
+                assigned = playerList.FirstOrDefault(x => !((x.Is(Alignment.NeutralKill) && !NeutralKillingSettings.NKHasImpVision) || x.Is(Faction.Syndicate) || x.Is(Faction.Intruder) || (x.Is(Faction.Neutral) &&
+                    !NeutralSettings.LightsAffectNeutrals) || (x.Is(Alignment.NeutralNeo) && !NeutralNeophyteSettings.NNHasImpVision) || (x.Is(Alignment.NeutralEvil) && !NeutralEvilSettings.NEHasImpVision) ||
+                    (x.Is(Alignment.NeutralHarb) && !NeutralHarbingerSettings.NHHasImpVision)));
             }
             else if (id == LayerEnum.Underdog)
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate));
@@ -1255,9 +1269,9 @@ public static class RoleGen
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew) && !x.Is(LayerEnum.Engineer));
             else if (id == LayerEnum.ButtonBarry)
             {
-                assigned = playerList.FirstOrDefault(x => !((x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Actor) &&
-                    !Actor.ActorButton) || (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton &&
-                    x.Is(LayerEnum.Monarch)) || (!Dictator.DictatorButton && x.Is(LayerEnum.Dictator))));
+                assigned = playerList.FirstOrDefault(x => !((x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Actor) && !Actor.ActorButton) ||
+                    (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton && x.Is(LayerEnum.Monarch)) ||
+                    (!Dictator.DictatorButton && x.Is(LayerEnum.Dictator))));
             }
             else if (id == LayerEnum.Politician)
                 assigned = playerList.FirstOrDefault(x => !(x.Is(Alignment.NeutralEvil) || x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralNeo)));
@@ -1265,8 +1279,8 @@ public static class RoleGen
                 assigned = playerList.FirstOrDefault();
             else if (id == LayerEnum.Ruthless)
             {
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) &&
-                    !x.Is(LayerEnum.Juggernaut)) || x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted));
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && !x.Is(LayerEnum.Juggernaut)) ||
+                    x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted));
             }
 
             if (assigned)
@@ -1278,8 +1292,18 @@ public static class RoleGen
                 if (!assigned.GetAbility())
                     Gen(assigned, id, PlayerLayerEnum.Ability);
                 else
-                    AllAbilities.Add(GetSpawnItem(id));
+                    invalid.Add(id);
             }
+        }
+
+        if (TownOfUsReworked.IsTest)
+        {
+            var ids = "";
+
+            foreach (var spawn in invalid)
+                ids += $" {spawn}";
+
+            Message("Invalid Abilities in the game: " + ids);
         }
 
         Message("Abilities Done");
@@ -1441,10 +1465,9 @@ public static class RoleGen
                 assigned = playerList.FirstOrDefault();
             else if (id == LayerEnum.Shy)
             {
-                assigned = playerList.FirstOrDefault(x => !((x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Swapper) &&
-                    !Swapper.SwapperButton) || (x.Is(LayerEnum.Actor) && !Actor.ActorButton) || (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) &&
-                    !Executioner.ExecutionerButton) || x.Is(LayerEnum.ButtonBarry) || (x.Is(LayerEnum.Politician) && !Politician.PoliticianButton) || (!Dictator.DictatorButton &&
-                    x.Is(LayerEnum.Dictator)) || (!Monarch.MonarchButton && x.Is(LayerEnum.Monarch))));
+                assigned = playerList.FirstOrDefault(x => !((x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Swapper) && !Swapper.SwapperButton) ||
+                    (x.Is(LayerEnum.Actor) && !Actor.ActorButton) || (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) && !Executioner.ExecutionerButton) || (x.Is(LayerEnum.Politician)
+                    && !Politician.PoliticianButton) ||  x.Is(LayerEnum.ButtonBarry) || (!Dictator.DictatorButton && x.Is(LayerEnum.Dictator)) || (!Monarch.MonarchButton && x.Is(LayerEnum.Monarch))));
             }
 
             if (assigned)
@@ -1592,14 +1615,7 @@ public static class RoleGen
         {
             foreach (var exe in PlayerLayer.GetLayers<Executioner>())
             {
-                exe.TargetPlayer = null;
-                var ratelimit = 0;
-
-                while ((!exe.TargetPlayer || exe.TargetPlayer == exe.Player || exe.TargetPlayer.IsLinkedTo(exe.Player) || exe.TargetPlayer.Is(Alignment.CrewSov)) && ratelimit < 10000)
-                {
-                    exe.TargetPlayer = AllPlayers().Random();
-                    ratelimit++;
-                }
+                exe.TargetPlayer = AllPlayers().Random(x => x != exe.Player && !x.IsLinkedTo(exe.Player) && !x.Is(Alignment.CrewSov));
 
                 if (exe.TargetPlayer)
                 {
@@ -1613,12 +1629,11 @@ public static class RoleGen
             Message("Exe Targets Set");
         }
 
-        if (Guesser.GuesserCanPickTargets)
+        if (!Guesser.GuesserCanPickTargets)
         {
             foreach (var guess in PlayerLayer.GetLayers<Guesser>())
             {
-                guess.TargetPlayer = AllPlayers().Random(x => x == guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.CrewInvest) &&
-                    !x.Is(LayerEnum.Indomitable));
+                guess.TargetPlayer = AllPlayers().Random(x => x != guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.CrewInvest) && !x.Is(LayerEnum.Indomitable));
 
                 if (guess.TargetPlayer)
                 {
@@ -1632,11 +1647,11 @@ public static class RoleGen
             Message("Guess Targets Set");
         }
 
-        if (GuardianAngel.GuardianAngelCanPickTargets)
+        if (!GuardianAngel.GuardianAngelCanPickTargets)
         {
             foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
             {
-                ga.TargetPlayer = AllPlayers().Random(x => x == ga.Player && !x.IsLinkedTo(ga.Player) && !x.Is(Alignment.NeutralEvil));
+                ga.TargetPlayer = AllPlayers().Random(x => x != ga.Player && !x.IsLinkedTo(ga.Player) && !x.Is(Alignment.NeutralEvil));
 
                 if (ga.TargetPlayer)
                 {
@@ -1650,7 +1665,7 @@ public static class RoleGen
             Message("GA Target Set");
         }
 
-        if (BountyHunter.BountyHunterCanPickTargets)
+        if (!BountyHunter.BountyHunterCanPickTargets)
         {
             foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
             {
@@ -1668,7 +1683,7 @@ public static class RoleGen
             Message("BH Targets Set");
         }
 
-        if (Actor.ActorCanPickRole)
+        if (!Actor.ActorCanPickRole)
         {
             foreach (var act in PlayerLayer.GetLayers<Actor>())
             {
@@ -1699,7 +1714,7 @@ public static class RoleGen
                 RpcConvert(jackal.Recruit2.PlayerId, jackal.PlayerId, SubFaction.Cabal);
 
             if (TownOfUsReworked.IsTest)
-                Message($"Recruits = {jackal.Recruit1?.name} (Good) & {jackal.Recruit2?.name} (Evil)");
+                Message($"Recruits = {jackal.Recruit1?.name} & {jackal.Recruit2?.name}");
         }
 
         Message("Jackal Recruits Set");

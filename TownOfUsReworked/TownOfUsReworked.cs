@@ -65,7 +65,7 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> CustomIntColors { get; set; }
     public static ConfigEntry<bool> CustomSynColors { get; set; }
     public static ConfigEntry<bool> CustomModColors { get; set; }
-    public static ConfigEntry<bool> CustomObjColors { get; set; }
+    public static ConfigEntry<bool> CustomDispColors { get; set; }
     public static ConfigEntry<bool> CustomAbColors { get; set; }
     public static ConfigEntry<bool> CustomEjects { get; set; }
     public static ConfigEntry<bool> OptimisationMode { get; set; }

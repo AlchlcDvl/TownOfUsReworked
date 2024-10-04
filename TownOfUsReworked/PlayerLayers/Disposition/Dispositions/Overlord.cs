@@ -9,7 +9,7 @@ public class Overlord : Disposition
     [NumberOption(MultiMenu.LayerSubOptions, 1, 20, 1)]
     public static Number OverlordMeetingWinCount { get; set; } = new(3);
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Overlord : CustomColorManager.Disposition;
+    public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Overlord : CustomColorManager.Disposition;
     public override string Name => "Overlord";
     public override string Symbol => "β";
     public override LayerEnum Type => LayerEnum.Overlord;

@@ -539,6 +539,13 @@ public enum LayerEnum
     SyndicateUtil,
     RegularSyndicate,
 
+    NonCrew,
+    NonIntruder,
+    NonSyndicate,
+    NonNeutral,
+
+    FactionedEvil,
+
     Ability,
     Modifier,
     Disposition,

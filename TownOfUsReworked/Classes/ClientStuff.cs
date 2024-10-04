@@ -18,7 +18,7 @@ public static class ClientStuff
         ClientHandler.Instance.ZoomButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Active");
         var change = 0.3f * (inOut ? 1 : -1);
         var limit = inOut ? 12f : 3f;
-        HUD().SetHudActive(false);
+        // HUD().SetHudActive(false);
 
         for (var i = Camera.main.orthographicSize; inOut ? (i < 12f) : (i > 3f); i += change)
         {
@@ -30,25 +30,25 @@ public static class ClientStuff
 
         Camera.main.orthographicSize = limit;
         Camera.allCameras.ForEach(x => x.orthographicSize = limit);
-        ResolutionManager.ResolutionChanged.Invoke(Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen);
-        HUD().SetHudActive(true);
+        // ResolutionManager.ResolutionChanged.Invoke(Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen);
+        // HUD().SetHudActive(true);
         yield break;
     }
 
-    public static void OpenSettings()
-    {
-        CloseMenus(SkipEnum.Settings);
+    // public static void OpenSettings()
+    // {
+    //     CloseMenus(SkipEnum.Settings);
 
-        if (LocalBlocked())
-            return;
+    //     if (LocalBlocked())
+    //         return;
 
-        ClientHandler.Instance.SettingsActive = !ClientHandler.Instance.SettingsActive;
+    //     ClientHandler.Instance.SettingsActive = !ClientHandler.Instance.SettingsActive;
 
-        if (ClientHandler.Instance.SettingsActive)
-            LobbyInfoPane.Instance.ActivatePane();
-        else
-            LobbyInfoPane.Instance.DeactivatePane();
-    }
+    //     if (ClientHandler.Instance.SettingsActive)
+    //         LobbyInfoPane.Instance.ActivatePane();
+    //     else
+    //         LobbyInfoPane.Instance.DeactivatePane();
+    // }
 
     public static void OpenRoleCard()
     {
@@ -185,8 +185,7 @@ public static class ClientStuff
             ClientHandler.Instance.LoreButton = CreateButton("WikiLore", "Lore", () =>
             {
                 ClientHandler.Instance.LoreActive = !ClientHandler.Instance.LoreActive;
-                SetEntryText(Modules.Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == ClientHandler.Instance.Selected.Name || x.Short == ClientHandler.Instance.Selected.Short)
-                    .Description)));
+                SetEntryText(Modules.Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == ClientHandler.Instance.Selected.Name || x.Short == ClientHandler.Instance.Selected.Short).Description)));
                 ClientHandler.Instance.PhoneText.text = ClientHandler.Instance.Entry[0];
                 ClientHandler.Instance.PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
                 ClientHandler.Instance.SelectionActive = true;
@@ -345,8 +344,8 @@ public static class ClientStuff
         if (ClientHandler.Instance.Zooming && skip != SkipEnum.Zooming)
             ClickZoom();
 
-        if (ClientHandler.Instance.SettingsActive && skip != SkipEnum.Settings)
-            OpenSettings();
+        // if (ClientHandler.Instance.SettingsActive && skip != SkipEnum.Settings)
+        //     OpenSettings();
 
         if (MapPatch.MapActive && Map() && skip != SkipEnum.Map)
             Map().Close();

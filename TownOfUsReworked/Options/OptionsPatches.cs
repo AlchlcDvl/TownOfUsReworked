@@ -33,7 +33,7 @@ public static class SettingsPatches
             __instance.RoleSettingsButton.transform.localPosition = pos2;
             __instance.GamePresetsButton.transform.localPosition = pos3;
 
-            __instance.ChangeTab(1, false);
+            __instance.ChangeTab(LobbyConsole.ClientOptionsActive ? 3 : 1, false);
 
             __instance.RoleSettingsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             __instance.RoleSettingsButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
@@ -43,6 +43,8 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.ChangeTab))]
     public static class OnChangingTabs
     {
+        public static bool Prefix(int tabNum) => tabNum != 3;
+
         public static void Postfix(GameSettingMenu __instance, int tabNum, bool previewOnly)
         {
             if (previewOnly)
@@ -52,6 +54,7 @@ public static class SettingsPatches
             {
                 0 => 2,
                 2 => 1,
+                3 => 3,
                 _ => 0
             };
             OnValueChanged(__instance);
@@ -383,8 +386,13 @@ public static class SettingsPatches
             if (IsHnS())
                 return true;
 
-            __instance.MapPicker.Initialize(20);
-            __instance.MapPicker.SetUpFromData(GameManager.Instance.GameSettingsList.MapNameSetting, 20);
+            if (!LobbyConsole.ClientOptionsActive)
+            {
+                __instance.MapPicker.Initialize(20);
+                __instance.MapPicker.SetUpFromData(GameManager.Instance.GameSettingsList.MapNameSetting, 20);
+            }
+            else
+                __instance.MapPicker.gameObject.SetActive(false);
 
             // TODO: Make a better fix for this for example caching the options or creating it ourself.
             // AD Says: Done, kinda.
@@ -524,7 +532,7 @@ public static class SettingsPatches
 
         if (SettingsPage is 0 or 3)
         {
-            var y = 0.863f;
+            var y = SettingsPage == 3 ? 2.063f : 0.863f;
             __instance.GameSettingsTab.Children.Clear();
             __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
@@ -1136,8 +1144,8 @@ public static class SettingsPatches
     }
 
     public static readonly List<PassiveButton> PresetsButtons = [];
-    public static PassiveButton Prev;
-    public static PassiveButton Next;
+    public static GameObject Prev;
+    public static GameObject Next;
     public static PassiveButton Save;
 
     [HarmonyPatch(typeof(GamePresetsTab), nameof(GamePresetsTab.Start))]
@@ -1165,29 +1173,21 @@ public static class SettingsPatches
             Save.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             Save.buttonText.text = TranslationManager.Translate("ImportExport.Save");
 
-            Prev = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
-            Prev.OverrideOnClickListeners(() => NextPage(false));
+            Prev = UObject.Instantiate(ReturnButton, __instance.StandardPresetButton.transform.parent);
+            Prev.GetComponent<PassiveButton>().OverrideOnClickListeners(() => NextPage(false));
             Prev.name = "PreviousPageButton";
-            Prev.transform.localPosition = new(-2.2875f, 2.6164f, -2f);
-            Prev.transform.localScale = new(0.64f, 0.84f, 1f);
-            Prev.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
-            Prev.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
-            Prev.buttonText.alignment = TextAlignmentOptions.Center;
-            Prev.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-            Prev.buttonText.text = TranslationManager.Translate("ImportExport.Previous");
+            Prev.transform.localPosition = new(-2.8875f, 2.6164f, -2f);
+            Prev.transform.FindChild("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnInactive");
+            Prev.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnActive");
 
-            Next = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
-            Next.OverrideOnClickListeners(() => NextPage(true));
+            Next = UObject.Instantiate(ReturnButton, __instance.StandardPresetButton.transform.parent);
+            Next.GetComponent<PassiveButton>().OverrideOnClickListeners(() => NextPage(true));
             Next.name = "NextPageButton";
             Next.transform.localPosition = new(2.9625f, 2.6164f, -2f);
-            Next.transform.localScale = new(0.64f, 0.84f, 1f);
-            Next.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
-            Next.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
-            Next.buttonText.alignment = TextAlignmentOptions.Center;
-            Next.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-            Next.buttonText.text = TranslationManager.Translate("ImportExport.Next");
+            Next.transform.FindChild("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("NextInactive");
+            Next.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("NextActive");
 
-            var presets = Directory.EnumerateFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).OrderBy(x => x).Select(x => x.SanitisePath()).ToList();
+            var presets = Directory.GetFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).Select(x => x.SanitisePath()).OrderBy(x => x).ToList();
 
             for (var i = 0; i < presets.Count; i++)
             {
@@ -1199,43 +1199,39 @@ public static class SettingsPatches
                 presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
                 presetButton.buttonText.text = presetButton.name = preset;
                 presetButton.OverrideOnClickListeners(() => OptionAttribute.LoadPreset(preset));
-
-                if (i >= (SettingsPage2 * 25) && i < ((SettingsPage2 + 1) * 25))
-                {
-                    var relativeIndex = i % 25;
-                    var row = relativeIndex / 4;
-                    var col = relativeIndex % 4;
-                    presetButton.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
-                }
-                else
-                    presetButton.gameObject.SetActive(false);
-
                 PresetsButtons.Add(presetButton);
             }
 
-            Prev.gameObject.SetActive(PresetsButtons.Count > 25);
-            Next.gameObject.SetActive(PresetsButtons.Count > 25);
+            OnPageChangedOrPresetAdded();
             return false;
         }
     }
 
     private static void NextPage(bool increment)
     {
-        SettingsPage2 = CycleInt(PresetsButtons.Count / 25, 0, SettingsPage2, increment);
+        SettingsPage2 = CycleInt(PresetsButtons.Count / 24, 0, SettingsPage2, increment);
+        OnPageChangedOrPresetAdded();
+    }
 
+    public static void OnPageChangedOrPresetAdded()
+    {
         for (var i = 0; i < PresetsButtons.Count; i++)
         {
             var preset = PresetsButtons[i];
 
-            if (i >= (SettingsPage2 * 25) && i < ((SettingsPage2 + 1) * 25))
+            if (i >= (SettingsPage2 * 24) && i < ((SettingsPage2 + 1) * 24))
             {
-                var relativeIndex = i % 25;
+                var relativeIndex = i % 24;
                 var row = relativeIndex / 4;
                 var col = relativeIndex % 4;
                 preset.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
+                preset.gameObject.SetActive(true);
             }
             else
                 preset.gameObject.SetActive(false);
         }
+
+        Prev.gameObject.SetActive(PresetsButtons.Count > 24);
+        Next.gameObject.SetActive(PresetsButtons.Count > 24);
     }
 }

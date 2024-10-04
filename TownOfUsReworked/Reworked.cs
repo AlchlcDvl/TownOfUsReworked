@@ -14,7 +14,7 @@ public partial class TownOfUsReworked
         CustomIntColors = Config.Bind("Custom", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
         CustomSynColors = Config.Bind("Custom", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
         CustomModColors = Config.Bind("Custom", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
-        CustomObjColors = Config.Bind("Custom", "Custom Disposition Colors", true, "Enables custom colors for Dispositions");
+        CustomDispColors = Config.Bind("Custom", "Custom Disposition Colors", true, "Enables custom colors for Dispositions");
         CustomAbColors = Config.Bind("Custom", "Custom Ability Colors", true, "Enables custom colors for Abilities");
         CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
         HideOtherGhosts = Config.Bind("Custom", "Hide Other Ghosts", true, "Hides other ghosts when you are dead");

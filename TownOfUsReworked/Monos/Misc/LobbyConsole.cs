@@ -79,7 +79,7 @@ public class LobbyConsole : MonoBehaviour
         }
 
         ClientOptionsActive = true;
-        SettingsPatches.SettingsPage = 9;
+        SettingsPatches.SettingsPage = 3;
         CustomPlayer.Local.NetTransform.Halt();
         CurrentMenu = Instantiate(Prefab);
         CurrentMenu.transform.SetParent(Camera.main.transform, false);

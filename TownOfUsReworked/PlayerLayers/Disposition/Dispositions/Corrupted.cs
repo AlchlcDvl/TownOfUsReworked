@@ -14,7 +14,7 @@ public class Corrupted : Disposition
 
     private CustomButton CorruptButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomObjColors ? CustomColorManager.Corrupted : CustomColorManager.Disposition;
+    public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Corrupted : CustomColorManager.Disposition;
     public override string Name => "Corrupted";
     public override string Symbol => "δ";
     public override LayerEnum Type => LayerEnum.Corrupted;

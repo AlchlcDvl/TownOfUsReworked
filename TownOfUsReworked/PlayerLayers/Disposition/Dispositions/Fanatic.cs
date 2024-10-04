@@ -24,11 +24,11 @@ public class Fanatic : Disposition
                 {
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
+                    _ => ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
                 };
             }
             else
-                return ClientOptions.CustomObjColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition;
+                return ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition;
         }
     }
     public override string Name => "Fanatic";

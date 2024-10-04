@@ -9,6 +9,7 @@ If you want to know more try using the other info commands, visiting the %github
 New!
 - Recode: The custom options have been given a full recode to work even better than before and include many new features and different new options
 - Addition: Colorblind now has grayscale vision
+- Addition: Added new role list buckets: Non-Crew, Non-Inrtuder, Non-Syndicate, Non-Neutral and Factioned Evils (Intruders + Syndicate)
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
@@ -35,6 +36,7 @@ Fixes!
 - Crticial: Fixed venting being broken
 - Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
 - Role: Fixed Betrayer being unable to kill
+- Role: Fixed target selection for targeting neutral roles
 - Role + Ability: Fixed Herbalists (Fungle Miners) being unguessable
 - Role + Ability: Fixed Snitch and Revealer not revealing Neutrals like they should
 - Ability: Fixed the edge case where Swapper swaps didn't appear to be correctly selected

@@ -303,29 +303,15 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         if (!SettingsPatches.Save || SettingsPatches.PresetsButtons.Any(x => x.name == fileName))
             return;
 
-        var index = SettingsPatches.PresetsButtons.Count;
-
-        var presetButton = UObject.Instantiate(SettingsPatches.Save, GameSettingMenu.Instance.PresetsTab.StandardPresetButton.transform.parent);
+        var presetButton = UObject.Instantiate(SettingsPatches.Save, SettingsPatches.Save.transform.parent);
         presetButton.transform.localScale = new(0.5f, 0.84f, 1f);
         presetButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
         presetButton.buttonText.alignment = TextAlignmentOptions.Center;
         presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
         presetButton.buttonText.text = presetButton.name = fileName;
         presetButton.OverrideOnClickListeners(() => LoadPreset(fileName));
-
-        if (index >= (SettingsPatches.SettingsPage2 * 25) && index < ((SettingsPatches.SettingsPage2 + 1) * 25))
-        {
-            var relativeIndex = index % 25;
-            var row = relativeIndex / 4;
-            var col = relativeIndex % 4;
-            presetButton.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
-        }
-        else
-            presetButton.gameObject.SetActive(false);
-
         SettingsPatches.PresetsButtons.Add(presetButton);
-        SettingsPatches.Prev.gameObject.SetActive(SettingsPatches.PresetsButtons.Count > 25);
-        SettingsPatches.Next.gameObject.SetActive(SettingsPatches.PresetsButtons.Count > 25);
+        SettingsPatches.OnPageChangedOrPresetAdded();
     }
 
     public static void LoadPreset(string presetName)

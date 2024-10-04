@@ -25,11 +25,11 @@ public class Defector : Disposition
                     Faction.Intruder => CustomColorManager.Intruder,
                     Faction.Neutral => CustomColorManager.Neutral,
                     Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Disposition
+                    _ => ClientOptions.CustomDispColors ? CustomColorManager.Defector : CustomColorManager.Disposition
                 };
             }
             else
-                return ClientOptions.CustomObjColors ? CustomColorManager.Defector : CustomColorManager.Disposition;
+                return ClientOptions.CustomDispColors ? CustomColorManager.Defector : CustomColorManager.Disposition;
         }
     }
     public override string Name => "Defector";

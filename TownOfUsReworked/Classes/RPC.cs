@@ -74,7 +74,7 @@ public static class RPC
                     CustomOptionType.String => reader.ReadEnum(customOption.TargetType),
                     CustomOptionType.Layers => reader.ReadRoleOptionData(),
                     CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
-                    _ => null
+                    _ => true
                 };
                 customOption.SetBase(value, false);
             }

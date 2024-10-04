@@ -8,14 +8,12 @@ public static class Select
         if (!CustomPlayer.Local.Is(LayerEnum.Politician) || CustomPlayer.LocalCustom.Dead || __instance.AmDead || !__instance.Parent || !__instance.Parent.Select(__instance.TargetPlayerId))
             return true;
 
-        if (((Politician)Ability.LocalAbility).CanVote)
+        if (Ability.LocalAbilityAs<Politician>().CanVote)
         {
             __instance.Buttons.SetActive(true);
             var startPos = __instance.AnimateButtonsFromLeft ? 0.2f : 1.95f;
-            Coroutines.Start(PerformTimedAction(0.25f, t => __instance.CancelButton.transform.localPosition = Vector2.Lerp(Vector2.right * startPos, Vector2.right * 1.3f,
-                Effects.ExpOut(t))));
-            Coroutines.Start(PerformTimedAction(0.35f, t => __instance.ConfirmButton.transform.localPosition = Vector2.Lerp(Vector2.right * startPos, Vector2.right * 0.65f,
-                Effects.ExpOut(t))));
+            Coroutines.Start(PerformTimedAction(0.25f, t => __instance.CancelButton.transform.localPosition = Vector2.Lerp(Vector2.right * startPos, Vector2.right * 1.3f, Effects.ExpOut(t))));
+            Coroutines.Start(PerformTimedAction(0.35f, t => __instance.ConfirmButton.transform.localPosition = Vector2.Lerp(Vector2.right * startPos, Vector2.right * 0.65f, Effects.ExpOut(t))));
             var list = new List<UiElement>() { __instance.CancelButton, __instance.ConfirmButton };
             ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.CancelButton, __instance.ConfirmButton, list.ToIl2Cpp(), false);
         }

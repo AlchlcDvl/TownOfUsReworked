@@ -28,8 +28,8 @@ public class ClientHandler : MonoBehaviour
     public readonly List<string> Entry = [];
     // Max page line limit is 20
 
-    public PassiveButton SettingsButton;
-    public bool SettingsActive;
+    // public PassiveButton SettingsButton;
+    // public bool SettingsActive;
 
     public PassiveButton ClientOptionsButton;
 
@@ -64,7 +64,7 @@ public class ClientHandler : MonoBehaviour
             var grid = ButtonsParent.GetComponent<GridArrange>();
             grid.Alignment = GridArrange.StartAlign.Right;
             grid.MaxColumns = 2;
-            grid.CellSize = new(0.8f, 0.8f);
+            grid.CellSize = new(0.85f, 0.8f);
             var count = ButtonsParent.GetChildCount();
 
             for (var i = 0; i < count; i++)
@@ -81,15 +81,15 @@ public class ClientHandler : MonoBehaviour
             WikiRCButton.transform.Find("Background").localPosition = Vector3.zero;
         }
 
-        if (!SettingsButton)
-        {
-            SettingsButton = Instantiate(HUD().MapButton, ButtonsParent);
-            SettingsButton.OverrideOnClickListeners(ClientStuff.OpenSettings);
-            SettingsButton.name = "CustomSettingsButton";
-            SettingsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsInactive");
-            SettingsButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsActive");
-            SettingsButton.transform.Find("Background").localPosition = Vector3.zero;
-        }
+        // if (!SettingsButton)
+        // {
+        //     SettingsButton = Instantiate(HUD().MapButton, ButtonsParent);
+        //     SettingsButton.OverrideOnClickListeners(ClientStuff.OpenSettings);
+        //     SettingsButton.name = "CustomSettingsButton";
+        //     SettingsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsInactive");
+        //     SettingsButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsActive");
+        //     SettingsButton.transform.Find("Background").localPosition = Vector3.zero;
+        // }
 
         if (!ClientOptionsButton)
         {
@@ -120,11 +120,12 @@ public class ClientHandler : MonoBehaviour
             return;
 
         ClientStuff.ResetButtonPos();
-        WikiRCButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay());
-        SettingsButton.gameObject.SetActive(HUD().MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
-        ClientOptionsButton.gameObject.SetActive(HUD().MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame());
-        ZoomButton.gameObject.SetActive(HUD().MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && !IntroCutscene.Instance && !IsFreePlay() && IsInGame() &&
-            (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()));
+        WikiRCButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay() && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance);
+        // SettingsButton.gameObject.SetActive(HUD().MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame() && ActiveTask() is not HauntMenuMinigame);
+        ClientOptionsButton.gameObject.SetActive(HUD().MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame() && ActiveTask() is not HauntMenuMinigame &&
+            !GameSettingMenu.Instance);
+        ZoomButton.gameObject.SetActive(HUD().MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && !IntroCutscene.Instance && !IsFreePlay() && IsInGame() && (!CustomPlayer.Local.IsPostmortal() ||
+            CustomPlayer.Local.Caught()) && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance);
 
         if (PhoneText)
         {
@@ -144,14 +145,8 @@ public class ClientHandler : MonoBehaviour
         if (!IsInGame())
             return;
 
-        HUD()?.TaskPanel?.gameObject?.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting() && !(Map() && Map().IsOpen) && !WikiActive && !IsCustomHnS());
-
-        if (TaskBar)
-        {
-            if (GameSettings.TaskBarMode == TBMode.Invisible)
-                TaskBar.gameObject.SetActive(false);
-            else
-                TaskBar.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !(Map() && Map().IsOpen) && !WikiActive);
-        }
+        var part = !RoleCardActive /*&& !SettingsActive*/ && !Zooming && !(Map() && Map().IsOpen) && !WikiActive && !IsCustomHnS() && !GameSettingMenu.Instance;
+        HUD()?.TaskPanel?.gameObject?.SetActive(part && !Meeting() && !IsCustomHnS());
+        TaskBar?.gameObject?.SetActive(part && GameSettings.TaskBarMode != TBMode.Invisible);
     }
 }

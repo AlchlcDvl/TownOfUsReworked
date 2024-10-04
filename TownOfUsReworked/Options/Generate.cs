@@ -13,9 +13,6 @@ public static class Generate
 
         Generated = true;
 
-        // Since I can't really get a default value at compile time for client options (since they save externally), I just do this to set their "defaults" and move on from there
-        ClientOptions.SetDefaults();
-
         // Might lead to initial performance issues trying to look through like, 200+ types
         // Could it be improved? Probably
         // Do I care enough to do that? Hell no until it becomes a problem
