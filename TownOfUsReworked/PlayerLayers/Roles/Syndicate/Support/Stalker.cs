@@ -21,7 +21,7 @@ public class Stalker : Syndicate
         BaseStart();
         StalkerArrows = [];
         Alignment = Alignment.SyndicateSupport;
-        StalkButton = CreateButton(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
+        StalkButton = CreateButton(this, new SpriteName("Stalk"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception1);
     }
 
@@ -40,10 +40,10 @@ public class Stalker : Syndicate
 
     public void Stalk()
     {
-        var cooldown = Interact(Player, StalkButton.TargetPlayer);
+        var cooldown = Interact(Player, StalkButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            StalkerArrows.Add(StalkButton.TargetPlayer.PlayerId, new(Player, StalkButton.TargetPlayer.GetPlayerColor(!HoldsDrive)));
+            StalkerArrows.Add(StalkButton.GetTarget<PlayerControl>().PlayerId, new(Player, StalkButton.GetTarget<PlayerControl>().GetPlayerColor(!HoldsDrive)));
 
         StalkButton.StartCooldown(cooldown);
     }

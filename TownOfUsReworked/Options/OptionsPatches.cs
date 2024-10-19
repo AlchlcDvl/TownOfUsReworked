@@ -37,6 +37,20 @@ public static class SettingsPatches
 
             __instance.RoleSettingsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             __instance.RoleSettingsButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
+
+            if (!ButtonPrefab)
+            {
+                ButtonPrefab = UObject.Instantiate(__instance.GamePresetsButton, null).DontUnload().DontDestroy();
+                ButtonPrefab.OverrideOnClickListeners(BlankVoid);
+                ButtonPrefab.name = "ButtonPrefab";
+                ButtonPrefab.transform.localScale = new(0.64f, 0.84f, 1f);
+                ButtonPrefab.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
+                ButtonPrefab.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
+                ButtonPrefab.buttonText.alignment = TextAlignmentOptions.Center;
+                ButtonPrefab.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+                ButtonPrefab.buttonText.text = "";
+                ButtonPrefab.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -80,8 +94,10 @@ public static class SettingsPatches
     public static NumberOption NumberPrefab;
     public static ToggleOption TogglePrefab;
     public static StringOption StringPrefab;
+    public static ToggleOption EntryPrefab;
     public static CategoryHeaderMasked HeaderPrefab;
     public static CategoryHeaderEditRole AlignmentPrefab;
+    public static PassiveButton ButtonPrefab;
     private static readonly List<MonoBehaviour> Prefabs1 = [];
     private static readonly List<MonoBehaviour> Prefabs2 = [];
 
@@ -165,6 +181,24 @@ public static class SettingsPatches
                 background.localScale += new Vector3(1f, 0f, 0f);
 
                 Prefabs1.Add(TogglePrefab);
+            }
+
+            if (!EntryPrefab)
+            {
+                // Title = 0, Button = 1, Background = 2, Value Text = 3, Value Box = 4
+                EntryPrefab = UObject.Instantiate(TogglePrefab, null).DontUnload().DontDestroy();
+                EntryPrefab.name = "RoleListEntryPrefab";
+                EntryPrefab.CheckMark.enabled = false;
+                EntryPrefab.oldValue = false;
+
+                EntryPrefab.transform.GetChild(1).localPosition = new(3.8f, 0.042f, -1f);
+
+                UObject.Instantiate(StringPrefab.transform.GetChild(1), EntryPrefab.transform).localPosition = new(2.8f, 0.064f, -1f);
+
+                var valueBox = UObject.Instantiate(StringPrefab.transform.GetChild(5), EntryPrefab.transform);
+                valueBox.localPosition = new(2.8f, 0.05f, 0f);
+
+                Prefabs1.Add(EntryPrefab);
             }
 
             if (!HeaderPrefab)
@@ -328,6 +362,8 @@ public static class SettingsPatches
     }
 
     private static bool SpawnOptionsCreated;
+    public static GameObject OtherPrev;
+    public static GameObject OtherNext;
     private static readonly Dictionary<int, bool> LayerOptionsCreated = [];
 
     public static List<MonoBehaviour> CreateOptions(Transform parent)
@@ -339,35 +375,17 @@ public static class SettingsPatches
         {
             if (!option.Setting)
             {
-                MonoBehaviour setting = null;
-
-                switch (option.Type)
+                var setting = option.Type switch
                 {
-                    case CustomOptionType.Number:
-                        setting = UObject.Instantiate(NumberPrefab, parent);
-                        break;
-
-                    case CustomOptionType.String:
-                        setting = UObject.Instantiate(StringPrefab, parent);
-                        break;
-
-                    case CustomOptionType.Layers:
-                        setting = UObject.Instantiate(LayersPrefab, parent);
-                        break;
-
-                    case CustomOptionType.Toggle or CustomOptionType.Entry:
-                        setting = UObject.Instantiate(TogglePrefab, parent);
-                        break;
-
-                    case CustomOptionType.Header:
-                        setting = UObject.Instantiate(HeaderPrefab, parent);
-                        break;
-
-                    case CustomOptionType.Alignment:
-                        setting = UObject.Instantiate(AlignmentPrefab, parent);
-                        break;
-                }
-
+                    CustomOptionType.Number => UObject.Instantiate(NumberPrefab, parent),
+                    CustomOptionType.String => UObject.Instantiate(StringPrefab, parent),
+                    CustomOptionType.Layers => UObject.Instantiate(LayersPrefab, parent),
+                    CustomOptionType.Toggle => UObject.Instantiate(TogglePrefab, parent),
+                    CustomOptionType.Entry => UObject.Instantiate(EntryPrefab, parent),
+                    CustomOptionType.Header => UObject.Instantiate(HeaderPrefab, parent),
+                    CustomOptionType.Alignment => UObject.Instantiate(AlignmentPrefab, parent),
+                    _ => (MonoBehaviour)null,
+                };
                 option.Setting = setting;
                 option.OptionCreated();
             }
@@ -411,8 +429,13 @@ public static class SettingsPatches
     }
 
     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.SetQuotaTab))]
+    public static class RolesSettingsMenuPatches1
+    {
+        public static bool Prefix() => false;
+    }
+
     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.OpenChancesTab))]
-    public static class RolesSettingsMenuPatches
+    public static class RolesSettingsMenuPatches2
     {
         public static bool Prefix() => false;
     }
@@ -433,8 +456,13 @@ public static class SettingsPatches
     }
 
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.ValueChanged))]
+    public static class DisableCustomNotify1
+    {
+        public static bool Prefix() => false;
+    }
+
     [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.ValueChanged))]
-    public static class DisableCustomNotify
+    public static class DisableCustomNotify2
     {
         public static bool Prefix() => false;
     }
@@ -612,6 +640,8 @@ public static class SettingsPatches
             __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y + (SettingsPage >= 5 ? -1.65f : -1.2f));
             __instance.RoleSettingsTab.InitializeControllerNavigation();
         }
+        else if (SettingsPage == 4)
+        {}
     }
 
     public static GameObject ReturnButton;
@@ -647,9 +677,9 @@ public static class SettingsPatches
 
     private static bool Initialize(OptionBehaviour opt)
     {
-        var customOption = OptionAttribute.AllOptions.Find(option => option.Setting == opt);
+        var result = OptionAttribute.AllOptions.TryFinding(option => option.Setting == opt, out var customOption);
         customOption?.OptionCreated();
-        return customOption == null;
+        return !result;
     }
 
     [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.Initialize))]
@@ -689,9 +719,9 @@ public static class SettingsPatches
                 return false;
             }
 
-            if (option is RoleListEntryAttribute roleListEntry)
+            if (option is RoleListEntryAttribute)
             {
-                roleListEntry.ToDo();
+                RoleListEntryAttribute.ToDo();
                 return false;
             }
 
@@ -964,23 +994,12 @@ public static class SettingsPatches
         {
             if (!option.ViewSetting)
             {
-                MonoBehaviour setting = null;
-
-                switch (option.Type)
+                var setting = option.Type switch
                 {
-                    case CustomOptionType.Layers:
-                        setting = UObject.Instantiate(LayerViewPrefab, parent);
-                        break;
-
-                    case CustomOptionType.Alignment or CustomOptionType.Header:
-                        setting = UObject.Instantiate(HeaderViewPrefab, parent);
-                        break;
-
-                    default:
-                        setting = UObject.Instantiate(GenericViewPrefab, parent);
-                        break;
+                    CustomOptionType.Layers => UObject.Instantiate(LayerViewPrefab, parent),
+                    CustomOptionType.Alignment or CustomOptionType.Header => UObject.Instantiate(HeaderViewPrefab, parent),
+                    _ => (MonoBehaviour)UObject.Instantiate(GenericViewPrefab, parent),
                 };
-
                 option.ViewSetting = setting;
                 option.ViewOptionCreated();
             }
@@ -1009,6 +1028,19 @@ public static class SettingsPatches
             return;
 
         __instance ??= LobbyInfoPane.Instance.LobbyViewSettingsPane;
+
+        if (LobbyInfoPane.Instance)
+        {
+            var aspect = LobbyInfoPane.Instance.gameObject.transform.GetChild(0);
+
+            var child = aspect.GetChild(6).GetChild(1);
+            child.GetComponent<TextTranslatorTMP>()?.Destroy();
+            child.GetComponent<TextMeshPro>().text = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
+
+            var text = aspect.GetChild(9).GetChild(0);
+            text.GetComponent<TextTranslatorTMP>()?.Destroy();
+            text.GetComponent<TextMeshPro>().text = CurrentPreset;
+        }
 
         if (!__instance)
             return;
@@ -1091,9 +1123,15 @@ public static class SettingsPatches
         {
             if (LobbyInfoPane.Instance)
             {
-                var child = LobbyInfoPane.Instance.gameObject.transform.GetChild(0).GetChild(6).GetChild(1);
+                var aspect = LobbyInfoPane.Instance.gameObject.transform.GetChild(0);
+
+                var child = aspect.GetChild(6).GetChild(1);
                 child.GetComponent<TextTranslatorTMP>()?.Destroy();
                 child.GetComponent<TextMeshPro>().text = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
+
+                var text = aspect.GetChild(9).GetChild(0);
+                text.GetComponent<TextTranslatorTMP>()?.Destroy();
+                text.GetComponent<TextMeshPro>().text = CurrentPreset;
             }
 
             __instance.rolesTabButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
@@ -1162,16 +1200,12 @@ public static class SettingsPatches
             __instance.SecondPresetButton.gameObject.SetActive(false);
             __instance.PresetDescriptionText.gameObject.SetActive(false);
 
-            Save = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.StandardPresetButton.transform.parent);
+            Save = UObject.Instantiate(ButtonPrefab, __instance.StandardPresetButton.transform.parent);
             Save.OverrideOnClickListeners(OptionAttribute.SaveSettings);
             Save.name = "SaveSettingsButton";
             Save.transform.localPosition = new(0.26345f, 2.6164f, -2f);
-            Save.transform.localScale = new(0.64f, 0.84f, 1f);
-            Save.buttonText.transform.localPosition = new(0.0115f, 0.0208f, -1f);
-            Save.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
-            Save.buttonText.alignment = TextAlignmentOptions.Center;
-            Save.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             Save.buttonText.text = TranslationManager.Translate("ImportExport.Save");
+            Save.gameObject.SetActive(true);
 
             Prev = UObject.Instantiate(ReturnButton, __instance.StandardPresetButton.transform.parent);
             Prev.GetComponent<PassiveButton>().OverrideOnClickListeners(() => NextPage(false));
@@ -1187,20 +1221,7 @@ public static class SettingsPatches
             Next.transform.FindChild("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("NextInactive");
             Next.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("NextActive");
 
-            var presets = Directory.GetFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).Select(x => x.SanitisePath()).OrderBy(x => x).ToList();
-
-            for (var i = 0; i < presets.Count; i++)
-            {
-                var preset = presets[i];
-                var presetButton = UObject.Instantiate(Save, __instance.StandardPresetButton.transform.parent);
-                presetButton.transform.localScale = new(0.5f, 0.84f, 1f);
-                presetButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
-                presetButton.buttonText.alignment = TextAlignmentOptions.Center;
-                presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-                presetButton.buttonText.text = presetButton.name = preset;
-                presetButton.OverrideOnClickListeners(() => OptionAttribute.LoadPreset(preset));
-                PresetsButtons.Add(presetButton);
-            }
+            Directory.GetFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).Select(x => x.SanitisePath()).ForEach(CreatePresetButton);
 
             OnPageChangedOrPresetAdded();
             return false;
@@ -1233,5 +1254,17 @@ public static class SettingsPatches
 
         Prev.gameObject.SetActive(PresetsButtons.Count > 24);
         Next.gameObject.SetActive(PresetsButtons.Count > 24);
+    }
+
+    public static void CreatePresetButton(string presetName)
+    {
+        var presetButton = UObject.Instantiate(Save, GameSettingMenu.Instance.PresetsTab.StandardPresetButton.transform.parent);
+        presetButton.transform.localScale = new(0.5f, 0.84f, 1f);
+        presetButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
+        presetButton.buttonText.alignment = TextAlignmentOptions.Center;
+        presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+        presetButton.buttonText.text = presetButton.name = presetName;
+        presetButton.OverrideOnClickListeners(() => OptionAttribute.LoadPreset(presetName, presetButton.buttonText));
+        PresetsButtons.Add(presetButton);
     }
 }

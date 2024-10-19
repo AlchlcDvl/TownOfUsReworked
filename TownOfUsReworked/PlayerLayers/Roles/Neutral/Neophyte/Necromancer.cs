@@ -67,9 +67,9 @@ public class Necromancer : Neutral
         ResurrectedCount = 0;
         KillCount = 0;
         Resurrected = [ Player.PlayerId ];
-        ResurrectButton = CreateButton(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
+        ResurrectButton = CreateButton(this, new SpriteName("Revive"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
             new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, "RESURRECT", (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
-        SacrificeButton = CreateButton(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
+        SacrificeButton = CreateButton(this, new SpriteName("NecroKill"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
             (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
         Data.Role.IntroSound = GetAudio("NecromancerIntro");
     }
@@ -107,21 +107,21 @@ public class Necromancer : Neutral
 
     public void Resurrect()
     {
-        if (RoleGen.Convertible <= 0 || !PlayerByBody(ResurrectButton.TargetBody).Is(SubFaction.None))
+        if (RoleGen.Convertible <= 0 || !PlayerByBody(ResurrectButton.GetTarget<DeadBody>()).Is(SubFaction.None))
         {
             Flash(new(255, 0, 0, 255));
             ResurrectButton.StartCooldown();
         }
         else
         {
-            ResurrectingBody = ResurrectButton.TargetBody;
+            ResurrectingBody = ResurrectButton.GetTarget<DeadBody>();
             Spread(Player, PlayerByBody(ResurrectingBody));
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ResurrectButton, ResurrectingBody);
             ResurrectButton.Begin();
             Flash(Color, ResurrectDur);
 
             if (NecromancerTargetBody)
-                ResurrectButton.TargetBody?.gameObject.Destroy();
+                ResurrectButton.GetTarget<DeadBody>()?.gameObject.Destroy();
 
             if (NecroCooldownsLinked)
                 SacrificeButton.StartCooldown();
@@ -132,7 +132,7 @@ public class Necromancer : Neutral
 
     public void Kill()
     {
-        var cooldown = Interact(Player, SacrificeButton.TargetPlayer, true);
+        var cooldown = Interact(Player, SacrificeButton.GetTarget<PlayerControl>(), true);
 
         if (cooldown != CooldownType.Fail)
             KillCount++;

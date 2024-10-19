@@ -12,7 +12,7 @@ public class Poisoner : Syndicate
     public CustomButton PoisonButton { get; set; }
     public CustomButton GlobalPoisonButton { get; set; }
     public PlayerControl PoisonedPlayer { get; set; }
-    public CustomMenu PoisonMenu { get; set; }
+    public CustomPlayerMenu PoisonMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Poisoner : CustomColorManager.Syndicate;
     public override string Name => "Poisoner";
@@ -27,9 +27,9 @@ public class Poisoner : Syndicate
         PoisonedPlayer = null;
         Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);
-        PoisonButton = CreateButton(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
+        PoisonButton = CreateButton(this, new SpriteName("Poison"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
             new Duration(PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
-        GlobalPoisonButton = CreateButton(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)Label,
+        GlobalPoisonButton = CreateButton(this, new SpriteName("GlobalPoison"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)Label,
             new Cooldown(PoisonCd), new Duration(PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);
     }
 
@@ -77,11 +77,11 @@ public class Poisoner : Syndicate
 
     public void HitPoison()
     {
-        var cooldown = Interact(Player, PoisonButton.TargetPlayer, delayed: true);
+        var cooldown = Interact(Player, PoisonButton.GetTarget<PlayerControl>(), delayed: true);
 
         if (cooldown != CooldownType.Fail)
         {
-            PoisonedPlayer = PoisonButton.TargetPlayer;
+            PoisonedPlayer = PoisonButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, PoisonButton, PoisonedPlayer);
             PoisonButton.Begin();
         }

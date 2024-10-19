@@ -34,7 +34,7 @@ public static class ModUpdater
             LILoaded = InitializeLevelImpostor();
 
         // Checks the github api for tags. Compares current version to the latest tag version on GitHub
-        var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=5");
+        var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=1");
         yield return www.SendWebRequest();
 
         var isError = www.result != UnityWebRequest.Result.Success;
@@ -73,7 +73,7 @@ public static class ModUpdater
             yield break;
         }
 
-        var data = JsonSerializer.Deserialize<List<GitHubApiObject>>(jsonText)[0];
+        var data = JsonSerializer.Deserialize<GitHubApiObject[]>(jsonText)[0];
 
         if (data.Tag == null)
         {

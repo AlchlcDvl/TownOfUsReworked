@@ -28,14 +28,14 @@ public class Medic : Crew
         BaseStart();
         ShieldedPlayer = null;
         Alignment = Alignment.CrewProt;
-        ShieldButton = CreateButton(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Protect, (PlayerBodyExclusion)Exception,
+        ShieldButton = CreateButton(this, "SHIELD", new SpriteName("Shield"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Protect, (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("MedicIntro");
     }
 
     public void Protect()
     {
-        if (Interact(Player, ShieldButton.TargetPlayer) != CooldownType.Fail)
+        if (Interact(Player, ShieldButton.GetTarget<PlayerControl>()) != CooldownType.Fail)
         {
             if (ShieldedPlayer)
             {
@@ -44,7 +44,7 @@ public class Medic : Crew
             }
             else
             {
-                ShieldedPlayer = ShieldButton.TargetPlayer;
+                ShieldedPlayer = ShieldButton.GetTarget<PlayerControl>();
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MedicActionsRPC.Add, ShieldedPlayer);
             }
         }

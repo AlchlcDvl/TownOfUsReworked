@@ -30,7 +30,7 @@ public class Tracker : Crew
         TrackerArrows = [];
         Alignment = Alignment.CrewInvest;
         Data.Role.IntroSound = GetAudio("TrackerIntro");
-        TrackButton = CreateButton(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(TrackCd), MaxTracks,
+        TrackButton = CreateButton(this, "TRACK", new SpriteName("Track"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);
     }
 
@@ -51,10 +51,10 @@ public class Tracker : Crew
 
     public void Track()
     {
-        var cooldown = Interact(Player, TrackButton.TargetPlayer);
+        var cooldown = Interact(Player, TrackButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), UpdateInterval));
+            TrackerArrows.Add(TrackButton.GetTarget<PlayerControl>().PlayerId, new(Player, TrackButton.GetTarget<PlayerControl>().GetPlayerColor(), UpdateInterval));
 
         TrackButton.StartCooldown(cooldown);
     }

@@ -18,8 +18,8 @@ public class Transporter : Crew
     public PlayerControl TransportPlayer1 { get; set; }
     public PlayerControl TransportPlayer2 { get; set; }
     public CustomButton TransportButton { get; set; }
-    public CustomMenu TransportMenu1 { get; set; }
-    public CustomMenu TransportMenu2 { get; set; }
+    public CustomPlayerMenu TransportMenu1 { get; set; }
+    public CustomPlayerMenu TransportMenu2 { get; set; }
     public SpriteRenderer AnimationPlaying1 { get; set; }
     public SpriteRenderer AnimationPlaying2 { get; set; }
     public GameObject Transport1 { get; set; }
@@ -46,7 +46,7 @@ public class Transporter : Crew
         Alignment = Alignment.CrewSupport;
         TransportMenu1 = new(Player, Click1, Exception1);
         TransportMenu2 = new(Player, Click2, Exception2);
-        TransportButton = CreateButton(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, MaxTransports, new Cooldown(TransportCd),
+        TransportButton = CreateButton(this, new SpriteName("Transport"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, MaxTransports, new Cooldown(TransportCd),
             (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;

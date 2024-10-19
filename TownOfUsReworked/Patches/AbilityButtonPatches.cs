@@ -5,9 +5,9 @@ public static class HauntUpdatePatch
 {
     public static bool Prefix(AbilityButton __instance)
     {
-        var button = AllButtons.Find(x => x.Base == __instance && !x.Disabled);
+        var result = !AllButtons.TryFinding(x => x.Base == __instance && !x.Disabled, out var button);
         button?.Update();
-        return button == null;
+        return result;
     }
 }
 
@@ -18,7 +18,7 @@ public static class AbilityButtonSetCooldown
 
     public static void Postfix(ActionButton __instance, float timer, float maxTimer)
     {
-        if (timer > Mathf.FloorToInt(maxTimer / 2f))
+        if (timer > Mathf.RoundToInt(maxTimer / 2f))
             __instance.cooldownTimerText.color = UColor.red;
         else if (timer >= 1f)
             __instance.cooldownTimerText.color = UColor.yellow;
@@ -40,7 +40,7 @@ public static class AbilityButtonSetFillUp
         __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
         __instance.SetCooldownFill(percentCool);
 
-        if (timer > Mathf.FloorToInt(maxTimer / 2f))
+        if (timer > Mathf.RoundToInt(maxTimer / 2f))
             __instance.cooldownTimerText.color = UColor.white;
         else if (timer > 3f)
             __instance.cooldownTimerText.color = UColor.yellow;

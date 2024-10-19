@@ -23,11 +23,11 @@ public class Betrayer : Neutral
         BaseStart();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
         Alignment = Alignment.NeutralPros;
-        KillButton = CreateButton(this, new SpriteName("BetrayerKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(BetrayCd), "BACKSTAB",
+        KillButton = CreateButton(this, new SpriteName("BetrayerKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(BetrayCd), "BACKSTAB",
             (PlayerBodyExclusion)Exception);
     }
 
-    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
+    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.GetTarget<PlayerControl>(), true));
 
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);

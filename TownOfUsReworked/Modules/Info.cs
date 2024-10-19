@@ -1,13 +1,13 @@
 namespace TownOfUsReworked.Modules;
 
-public class Info(string name, string shortF, string description, UColor color, InfoType type, bool header = false)
+public class Info(string name, string shortF, string description, UColor color, InfoType type, bool footer = false)
 {
     public string Name { get; } = name;
     public string Short { get; set; } = shortF;
     public string Description { get; set; } = description;
     public UColor Color { get; set; } = color;
     public InfoType Type { get; } = type;
-    public bool Header { get; } = header;
+    public bool Footer { get; } = footer;
 
     public static readonly List<Info> AllInfo = [];
 
@@ -42,7 +42,7 @@ public class Info(string name, string shortF, string description, UColor color, 
 }
 
 public class RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, UColor color, LayerEnum role, string attack = "None", string
-    defense = "None", string wincon = "", bool header = false) : Info(name, shortF, description, color, InfoType.Role, header)
+    defense = "None", string wincon = "", bool footer = false) : Info(name, shortF, description, color, InfoType.Role, footer)
 {
     public string Alignment { get; } = alignmentEnum.AlignmentName();
     public string ColoredAlignment { get; } = alignmentEnum.AlignmentName(true);
@@ -97,7 +97,7 @@ public class FactionInfo : Info
 
     public Faction Faction { get; }
 
-    public FactionInfo(Faction faction, bool header = false) : base($"{faction}", "", "", default, InfoType.Faction, header)
+    public FactionInfo(Faction faction, bool footer = false) : base($"{faction}", "", "", default, InfoType.Faction, footer)
     {
         Faction = faction;
         (Description, Short, Color) = faction switch
@@ -135,7 +135,7 @@ public class SubFactionInfo : Info
     public string Symbol { get; }
     public SubFaction SubFaction { get; }
 
-    public SubFactionInfo(SubFaction sub, bool header = false) : base($"{sub}", "", "", default, InfoType.SubFaction, header)
+    public SubFactionInfo(SubFaction sub, bool footer = false) : base($"{sub}", "", "", default, InfoType.SubFaction, footer)
     {
         SubFaction = sub;
         (Description, Short, Color, Symbol) = sub switch
@@ -236,7 +236,7 @@ public class AlignmentInfo : Info
     public string AlignmentName { get; }
     public Alignment Alignment { get; }
 
-    public AlignmentInfo(Alignment alignmentEnum, bool header = false) : base(alignmentEnum.AlignmentName(), "", "", CustomColorManager.Alignment, InfoType.Alignment, header)
+    public AlignmentInfo(Alignment alignmentEnum, bool footer = false) : base(alignmentEnum.AlignmentName(), "", "", CustomColorManager.Alignment, InfoType.Alignment, footer)
     {
         Alignment = alignmentEnum;
         (Short, Description, AlignmentName) = Alignment switch
@@ -310,8 +310,8 @@ public class AlignmentInfo : Info
     }
 }
 
-public class ModifierInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum modifier, bool header = false) : Info(name, shortF, description, color,
-    InfoType.Modifier, header)
+public class ModifierInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum modifier, bool footer = false) : Info(name, shortF, description, color,
+    InfoType.Modifier, footer)
 {
     public string AppliesTo { get; } = applies;
     public LayerEnum Modifier { get; } = modifier;
@@ -326,8 +326,8 @@ public class ModifierInfo(string name, string shortF, string description, string
     }
 }
 
-public class DispositionInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum disposition, bool header = false) :
-    Info(name, shortF, description, color, InfoType.Disposition, header)
+public class DispositionInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum disposition, bool footer = false) :
+    Info(name, shortF, description, color, InfoType.Disposition, footer)
 {
     public string AppliesTo { get; } = applies;
     public string WinCon { get; } = wincon;
@@ -346,8 +346,8 @@ public class DispositionInfo(string name, string shortF, string description, str
     }
 }
 
-public class AbilityInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum ability, bool header = false) : Info(name, shortF, description, color,
-    InfoType.Ability, header)
+public class AbilityInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum ability, bool footer = false) : Info(name, shortF, description, color,
+    InfoType.Ability, footer)
 {
     public string AppliesTo { get; } = applies;
     public LayerEnum Ability { get; } = ability;
@@ -371,8 +371,8 @@ public class Lore(string name, string story, string shortF, UColor color) : Info
     }
 }
 
-public class OtherInfo(string name, string shortF, string description, UColor color, string otherNotes = "", bool header = false) : Info(name, shortF, description, color, InfoType.Other,
-    header)
+public class OtherInfo(string name, string shortF, string description, UColor color, string otherNotes = "", bool footer = false) : Info(name, shortF, description, color, InfoType.Other,
+    footer)
 {
     public string OtherNotes { get; } = otherNotes;
 
@@ -382,7 +382,7 @@ public class OtherInfo(string name, string shortF, string description, UColor co
         result += ColorIt($"Name: {Name}");
         result += "\n" + ColorIt($"Short Form: {Short}");
         result += "\n" + ColorIt(WrapText($"Description: {Description}"));
-        result += "\n" + ColorIt(WrapTexts(OtherNotes.Split('\n').ToList()));
+        result += "\n" + ColorIt(WrapTexts(OtherNotes.Split('\n')));
     }
 }
 
@@ -405,7 +405,7 @@ public class GameModeInfo : Info
 
     public GameMode Mode { get; }
 
-    public GameModeInfo(GameMode mode, bool header = false) : base(mode.GameModeName(), "", "", default, InfoType.GameMode, header)
+    public GameModeInfo(GameMode mode, bool footer = false) : base(mode.GameModeName(), "", "", default, InfoType.GameMode, footer)
     {
         Mode = mode;
         (Description, Short, Color) = mode switch
@@ -431,7 +431,7 @@ public class GameModeInfo : Info
     }
 }
 
-public class SymbolInfo(string name, string symbol, string description, UColor color, bool header = false) : Info(name, "", description, color, InfoType.GameMode, header)
+public class SymbolInfo(string name, string symbol, string description, UColor color, bool footer = false) : Info(name, "", description, color, InfoType.GameMode, footer)
 {
     public string Symbol { get; } = symbol;
 

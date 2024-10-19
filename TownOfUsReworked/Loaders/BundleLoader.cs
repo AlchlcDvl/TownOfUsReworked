@@ -25,7 +25,7 @@ public class BundleLoader : AssetLoader<Asset>
         for (var i = 0; i < assets.Count; i++)
         {
             var asset = assets[i];
-            var bundle = LoadBundle(File.Open(Path.Combine(DirectoryInfo, asset.ID), FileMode.Open));
+            var bundle = LoadBundle(File.ReadAllBytes(Path.Combine(DirectoryInfo, asset.ID)));
             Bundles[asset.ID] = bundle;
             bundle.AllAssetNames().ForEach(x => ObjectToBundle[ConvertToBaseName(x)] = asset.ID);
             time += Time.deltaTime;

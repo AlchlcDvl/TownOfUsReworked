@@ -58,79 +58,79 @@ public class PromotedGodfather : Intruder
     {
         if (IsBM)
         {
-            BlackmailButton ??= CreateButton(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(Blackmailer.BlackmailCd),
+            BlackmailButton ??= CreateButton(this, "BLACKMAIL", "Blackmail", AbilityType.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(Blackmailer.BlackmailCd),
                 (PlayerBodyExclusion)BMException, (UsableFunc)BMUsable);
         }
         else if (IsCamo)
         {
-            CamouflageButton ??= CreateButton(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitCamouflage, (ConditionFunc)CamoCondition,
+            CamouflageButton ??= CreateButton(this, new SpriteName("Camouflage"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitCamouflage, (ConditionFunc)CamoCondition,
                 "CAMOUFLAGE", new Cooldown(Camouflager.CamouflageCd), new Duration(Camouflager.CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage,
                 (UsableFunc)CamoUsable);
         }
         else if (IsGren)
         {
-            FlashButton ??= CreateButton(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(Grenadier.FlashCd), "FLASH",
+            FlashButton ??= CreateButton(this, new SpriteName("Flash"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(Grenadier.FlashCd), "FLASH",
                 new Duration(Grenadier.FlashDur), (EffectVoid)Flash, (EffectStartVoid)StartFlash, (EffectEndVoid)UnFlash, (ConditionFunc)GrenCondition, (UsableFunc)GrenUsable);
         }
         else if (IsJani)
         {
-            DragButton ??= CreateButton(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(Janitor.DragCd), "DRAG BODY",
+            DragButton ??= CreateButton(this, new SpriteName("Drag"), AbilityType.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(Janitor.DragCd), "DRAG BODY",
                 (UsableFunc)JaniUsable1);
-            DropButton ??= CreateButton(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)JaniUsable2);
-            CleanButton ??= CreateButton(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(Janitor.CleanCd), "CLEAN BODY",
+            DropButton ??= CreateButton(this, new SpriteName("Drop"), AbilityType.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)JaniUsable2);
+            CleanButton ??= CreateButton(this, new SpriteName("Clean"), AbilityType.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(Janitor.CleanCd), "CLEAN BODY",
                 (UsableFunc)JaniUsable1, (DifferenceFunc)JaniDifference);
         }
         else if (IsDisg)
         {
-            MeasureButton ??= CreateButton(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(Disguiser.MeasureCd), "MEASURE",
+            MeasureButton ??= CreateButton(this, new SpriteName("Measure"), AbilityType.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(Disguiser.MeasureCd), "MEASURE",
                 (PlayerBodyExclusion)MeasureException, (UsableFunc)DisgUsable1);
-            DisguiseButton ??= CreateButton(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitDisguise, new Cooldown(Disguiser.DisguiseCd),
+            DisguiseButton ??= CreateButton(this, new SpriteName("Disguise"), AbilityType.Alive, KeybindType.Secondary, (OnClick)HitDisguise, new Cooldown(Disguiser.DisguiseCd),
                 new Duration(Disguiser.DisguiseDur), (EffectVoid)Disguise, (EffectEndVoid)UnDisguise, new Delay(Disguiser.DisguiseDelay), (PlayerBodyExclusion)DisgException, "DISGUISE",
                 (UsableFunc)DisgUsable2, (EndFunc)DisgEnd);
         }
         else if (IsMorph)
         {
-            SampleButton ??= CreateButton(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (Morphling.SampleCd), "SAMPLE",
+            SampleButton ??= CreateButton(this, new SpriteName("Sample"), AbilityType.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (Morphling.SampleCd), "SAMPLE",
                 (PlayerBodyExclusion)MorphException, (UsableFunc)MorphUsable1);
-            MorphButton ??= CreateButton(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(Morphling.MorphCd), "MORPH",
+            MorphButton ??= CreateButton(this, new SpriteName("Morph"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(Morphling.MorphCd), "MORPH",
                 new Duration(Morphling.MorphDur), (EffectVoid)Morph, (EffectEndVoid)UnMorph, (EndFunc)MorphEnd, (UsableFunc)MorphUsable2);
         }
         else if (IsWraith)
         {
-            InvisButton ??= CreateButton(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitInvis, (UsableFunc)WraithUsable,
+            InvisButton ??= CreateButton(this, "INVISIBILITY", new SpriteName("Invis"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitInvis, (UsableFunc)WraithUsable,
                 new Cooldown(Wraith.InvisCd), (EffectVoid)Invis, new Duration(Wraith.InvisDur), (EffectEndVoid)UnInvis, (EndFunc)InvisEnd);
         }
         else if (IsAmb)
         {
-            AmbushButton ??= CreateButton(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(Ambusher.AmbushCd), "AMBUSH",
+            AmbushButton ??= CreateButton(this, new SpriteName("Ambush"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(Ambusher.AmbushCd), "AMBUSH",
                 (EndFunc)AmbEnd, new Duration(Ambusher.AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)AmbushException, (UsableFunc)AmbUsable);
         }
         else if (IsEnf)
         {
-            BombButton ??= CreateButton(this, new SpriteName("Enforce"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Bomb, new Cooldown(Enforcer.EnforceCd), "SET BOMB",
+            BombButton ??= CreateButton(this, new SpriteName("Enforce"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Bomb, new Cooldown(Enforcer.EnforceCd), "SET BOMB",
                 (UsableFunc)EnfUsable, new Duration(Enforcer.EnforceDur), (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(Enforcer.EnforceDelay), new CanClickAgain(false),
                 (PlayerBodyExclusion)EnfException, (EndFunc)BoomEnd);
         }
         else if (IsConsig)
         {
-            InvestigateButton ??= CreateButton(this, new SpriteName("Investigate"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Investigate, (UsableFunc)ConsigUsable, "INVESTIGATE",
+            InvestigateButton ??= CreateButton(this, new SpriteName("Investigate"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Investigate, (UsableFunc)ConsigUsable, "INVESTIGATE",
                 new Cooldown(Consigliere.InvestigateCd), (PlayerBodyExclusion)ConsigException);
         }
         else if (IsCons)
         {
-            BlockButton ??= CreateButton(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, (UsableFunc)ConsUsable,
+            BlockButton ??= CreateButton(this, new SpriteName("ConsortRoleblock"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Roleblock, (UsableFunc)ConsUsable,
                 new Cooldown(Consort.ConsortCd), new Duration(Consort.ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock, (LabelFunc)ConsLabel);
         }
         else if (IsMiner)
         {
-            MineButton ??= CreateButton(this, new SpriteName(Miner.SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mine, new Cooldown(Miner.MineCd),
+            MineButton ??= CreateButton(this, new SpriteName(Miner.SpriteName), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Mine, new Cooldown(Miner.MineCd),
                 (LabelFunc)Miner.Label, (ConditionFunc)MineCondition, (UsableFunc)MinerUsable);
         }
         else if (IsTele)
         {
-            MarkButton ??= CreateButton(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(Teleporter.TeleMarkCd),
+            MarkButton ??= CreateButton(this, new SpriteName("Mark"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(Teleporter.TeleMarkCd),
                 "MARK POSITION", (ConditionFunc)MarkCondition, (UsableFunc)TeleUsable1);
-            TeleportButton ??= CreateButton(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(Teleporter.TeleportCd),
+            TeleportButton ??= CreateButton(this, new SpriteName("Teleport"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(Teleporter.TeleportCd),
                 "TELEPORT", (UsableFunc)TeleUsable2, (ConditionFunc)TeleCondition);
         }
     }
@@ -186,11 +186,11 @@ public class PromotedGodfather : Intruder
 
     public void Blackmail()
     {
-        var cooldown = Interact(Player, BlackmailButton.TargetPlayer);
+        var cooldown = Interact(Player, BlackmailButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            BlackmailedPlayer = BlackmailButton.TargetPlayer;
+            BlackmailedPlayer = BlackmailButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GFActionsRPC.Blackmail, BlackmailedPlayer);
         }
 
@@ -314,9 +314,9 @@ public class PromotedGodfather : Intruder
 
     public void Clean()
     {
-        Spread(Player, PlayerByBody(CleanButton.TargetBody));
-        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, CleanButton.TargetBody);
-        FadeBody(CleanButton.TargetBody);
+        Spread(Player, PlayerByBody(CleanButton.GetTarget<DeadBody>()));
+        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, CleanButton.GetTarget<DeadBody>());
+        FadeBody(CleanButton.GetTarget<DeadBody>());
         CleanButton.StartCooldown();
 
         if (Janitor.JaniCooldownsLinked)
@@ -325,7 +325,7 @@ public class PromotedGodfather : Intruder
 
     public void Drag()
     {
-        CurrentlyDragging = DragButton.TargetBody;
+        CurrentlyDragging = DragButton.GetTarget<DeadBody>();
         Spread(Player, PlayerByBody(CurrentlyDragging));
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GFActionsRPC.Drag, CurrentlyDragging);
         DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
@@ -368,12 +368,12 @@ public class PromotedGodfather : Intruder
 
     public void HitDisguise()
     {
-        var cooldown = Interact(Player, DisguiseButton.TargetPlayer);
+        var cooldown = Interact(Player, DisguiseButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
             CopiedPlayer = MeasuredPlayer;
-            DisguisedPlayer = DisguiseButton.TargetPlayer;
+            DisguisedPlayer = DisguiseButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, DisguiseButton, CopiedPlayer, DisguisedPlayer);
             DisguiseButton.Begin();
         }
@@ -391,10 +391,10 @@ public class PromotedGodfather : Intruder
 
     public void Measure()
     {
-        var cooldown = Interact(Player, MeasureButton.TargetPlayer);
+        var cooldown = Interact(Player, MeasureButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            MeasuredPlayer = MeasureButton.TargetPlayer;
+            MeasuredPlayer = MeasureButton.GetTarget<PlayerControl>();
 
         MeasureButton.StartCooldown(cooldown);
 
@@ -436,10 +436,10 @@ public class PromotedGodfather : Intruder
 
     public void Sample()
     {
-        var cooldown = Interact(Player, SampleButton.TargetPlayer);
+        var cooldown = Interact(Player, SampleButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            SampledPlayer = SampleButton.TargetPlayer;
+            SampledPlayer = SampleButton.GetTarget<PlayerControl>();
 
         SampleButton.StartCooldown(cooldown);
 
@@ -496,10 +496,10 @@ public class PromotedGodfather : Intruder
 
     public void Investigate()
     {
-        var cooldown = Interact(Player, InvestigateButton.TargetPlayer);
+        var cooldown = Interact(Player, InvestigateButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            Investigated.Add(InvestigateButton.TargetPlayer.PlayerId);
+            Investigated.Add(InvestigateButton.GetTarget<PlayerControl>().PlayerId);
 
         InvestigateButton.StartCooldown(cooldown);
     }
@@ -557,11 +557,11 @@ public class PromotedGodfather : Intruder
 
     public void Ambush()
     {
-        var cooldown = Interact(Player, AmbushButton.TargetPlayer);
+        var cooldown = Interact(Player, AmbushButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            AmbushedPlayer = AmbushButton.TargetPlayer;
+            AmbushedPlayer = AmbushButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AmbushButton, AmbushedPlayer);
             AmbushButton.Begin();
         }
@@ -579,7 +579,7 @@ public class PromotedGodfather : Intruder
     // Consort Stuff
     public CustomButton BlockButton { get; set; }
     public PlayerControl BlockTarget { get; set; }
-    public CustomMenu BlockMenu { get; set; }
+    public CustomPlayerMenu BlockMenu { get; set; }
     public bool IsCons => FormerRole?.Type == LayerEnum.Consort;
 
     public bool ConsException(PlayerControl player) => player == BlockTarget || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
@@ -650,11 +650,11 @@ public class PromotedGodfather : Intruder
 
     public void Bomb()
     {
-        var cooldown = Interact(Player, BombButton.TargetPlayer);
+        var cooldown = Interact(Player, BombButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            BombedPlayer = BombButton.TargetPlayer;
+            BombedPlayer = BombButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BombButton, BombedPlayer);
             BombButton.Begin();
         }

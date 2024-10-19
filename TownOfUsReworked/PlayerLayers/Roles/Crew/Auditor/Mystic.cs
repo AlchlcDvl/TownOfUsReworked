@@ -20,7 +20,7 @@ public class Mystic : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewAudit;
-        RevealButton = CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (PlayerBodyExclusion)Exception,
+        RevealButton = CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (PlayerBodyExclusion)Exception,
             new Cooldown(RevealCd));
     }
 
@@ -39,11 +39,11 @@ public class Mystic : Crew
 
     private void Reveal()
     {
-        var cooldown = Interact(Player, RevealButton.TargetPlayer);
+        var cooldown = Interact(Player, RevealButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            Flash((!RevealButton.TargetPlayer.Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.TargetPlayer.Is(Alignment.NeutralNeo)) || RevealButton.TargetPlayer.IsFramed()
+            Flash((!RevealButton.GetTarget<PlayerControl>().Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.GetTarget<PlayerControl>().Is(Alignment.NeutralNeo)) || RevealButton.GetTarget<PlayerControl>().IsFramed()
                 ? UColor.red : UColor.green);
         }
 

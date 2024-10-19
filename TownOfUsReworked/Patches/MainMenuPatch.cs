@@ -35,7 +35,7 @@ public static class MainMenuStartPatch
             var rend = Logo.AddComponent<SpriteRenderer>();
             rend.sprite = GetSprite("Banner");
             var former = rend.materials.ToArray().ToList();
-            former.Add(Get<Material>("GlitchedPlayer"));
+            former.Add(UnityGet<Material>("GlitchedPlayer"));
             rend.SetMaterialArray(former.ToArray());
             Logo.transform.SetParent(rightPanel.transform);
         }

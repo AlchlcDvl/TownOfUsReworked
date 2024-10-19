@@ -29,7 +29,7 @@ public class Altruist : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewProt;
-        ReviveButton = CreateButton(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
+        ReviveButton = CreateButton(this, "REVIVE", new SpriteName("Revive"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
             MaxRevives, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false));
     }
 
@@ -75,14 +75,14 @@ public class Altruist : Crew
 
     public void Revive()
     {
-        RevivingBody = ReviveButton.TargetBody;
+        RevivingBody = ReviveButton.GetTarget<DeadBody>();
         Spread(Player, PlayerByBody(RevivingBody));
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ReviveButton, RevivingBody);
         ReviveButton.Begin();
         Flash(Color, ReviveDur);
 
         if (AltruistTargetBody)
-            ReviveButton.TargetBody?.gameObject.Destroy();
+            ReviveButton.GetTarget<DeadBody>()?.gameObject.Destroy();
     }
 
     public override void ReadRPC(MessageReader reader)

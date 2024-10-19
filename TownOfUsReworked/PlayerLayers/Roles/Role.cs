@@ -115,17 +115,17 @@ public abstract class Role : PlayerLayer
 
         /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
         {
-            CallButton = CreateButton(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClick)UsePlatform, (UsableFunc)CallUsable,
+            CallButton = CreateButton(this, "CALL PLATFORM", "CallPlatform", AbilityType.Targetless, KeybindType.Quarternary, (OnClick)UsePlatform, (UsableFunc)CallUsable,
                 (ConditionFunc)CallCondition);
         }*/
 
         if (!IsCustomHnS() && !IsTaskRace())
         {
             if (RoleGen.GetSpawnItem(LayerEnum.Enforcer).IsActive())
-                BombKillButton = CreateButton(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
+                BombKillButton = CreateButton(this, "KILL", new SpriteName("BombKill"), AbilityType.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
 
             if (RoleGen.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
-                PlaceHitButton = CreateButton(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
+                PlaceHitButton = CreateButton(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityType.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
         }
     }
 
@@ -447,7 +447,7 @@ public abstract class Role : PlayerLayer
 
     public void PlaceHit()
     {
-        var target = Requestor.IsLinkedTo(PlaceHitButton.TargetPlayer) ? Player : PlaceHitButton.TargetPlayer;
+        var target = Requestor.IsLinkedTo(PlaceHitButton.GetTarget<PlayerControl>()) ? Player : PlaceHitButton.GetTarget<PlayerControl>();
         Requestor.GetLayer<BountyHunter>().TentativeTarget = target;
         Requesting = false;
         Requestor = null;
@@ -573,7 +573,7 @@ public abstract class Role : PlayerLayer
 
     public void BombKill()
     {
-        var success = Interact(Player, BombKillButton.TargetPlayer, true) != CooldownType.Fail;
+        var success = Interact(Player, BombKillButton.GetTarget<PlayerControl>(), true) != CooldownType.Fail;
         GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);

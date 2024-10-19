@@ -36,7 +36,7 @@ public class Detective : Crew
         AllPrints = [];
         Investigated = [];
         Alignment = Alignment.CrewInvest;
-        ExamineButton = CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
+        ExamineButton = CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
     }
 
     public override void OnLobby()
@@ -61,13 +61,13 @@ public class Detective : Crew
 
     public void Examine()
     {
-        var cooldown = Interact(Player, ExamineButton.TargetPlayer);
+        var cooldown = Interact(Player, ExamineButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
+            Flash(ExamineButton.GetTarget<PlayerControl>().IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.GetTarget<PlayerControl>().PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
                 RecentKill) ? UColor.red : UColor.green);
-            Investigated.Add(ExamineButton.TargetPlayer.PlayerId);
+            Investigated.Add(ExamineButton.GetTarget<PlayerControl>().PlayerId);
         }
 
         ExamineButton.StartCooldown(cooldown);

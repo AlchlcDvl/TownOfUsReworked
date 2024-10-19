@@ -70,7 +70,7 @@ public class LobbyConsole : MonoBehaviour
 
     public static void CreateMenu()
     {
-        // ClientStuff.CloseMenus(SkipEnum.Client);
+        ClientStuff.CloseMenus(SkipEnum.Client);
 
         if (ClientOptionsActive && GameSettingMenu.Instance)
         {

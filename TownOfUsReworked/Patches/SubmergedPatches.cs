@@ -13,8 +13,15 @@ public static class SubmergedStartPatch
 }
 
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
+[HarmonyPriority(Priority.Low)]
+public static class SubmergedPhysicsPatches1
+{
+    public static void Postfix(PlayerPhysics __instance) => GhostRoleFix(__instance);
+}
+
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.LateUpdate))]
-public static class SubmergedPhysicsPatches
+[HarmonyPriority(Priority.Low)]
+public static class SubmergedPhysicsPatches2
 {
     public static void Postfix(PlayerPhysics __instance) => GhostRoleFix(__instance);
 }

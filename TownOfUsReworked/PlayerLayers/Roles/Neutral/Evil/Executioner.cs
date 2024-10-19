@@ -58,13 +58,13 @@ public class Executioner : Neutral
 
         if (ExecutionerCanPickTargets)
         {
-            TargetButton = CreateButton(this, new SpriteName("ExeTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
+            TargetButton = CreateButton(this, new SpriteName("ExeTarget"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
                 (UsableFunc)Usable2);
         }
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
         {
-            DoomButton = CreateButton(this, new SpriteName("Doom"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Doom, (PlayerBodyExclusion)Exception1, "DOOM",
+            DoomButton = CreateButton(this, new SpriteName("Doom"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Doom, (PlayerBodyExclusion)Exception1, "DOOM",
                 (UsableFunc)Usable1);
         }
 
@@ -73,7 +73,7 @@ public class Executioner : Neutral
 
     public void SelectTarget()
     {
-        TargetPlayer = TargetButton.TargetPlayer;
+        TargetPlayer = TargetButton.GetTarget<PlayerControl>();
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
     }
 
@@ -101,7 +101,7 @@ public class Executioner : Neutral
 
     public void Doom()
     {
-        RpcMurderPlayer(Player, DoomButton.TargetPlayer, DeathReasonEnum.Doomed, false);
+        RpcMurderPlayer(Player, DoomButton.GetTarget<PlayerControl>(), DeathReasonEnum.Doomed, false);
         HasDoomed = true;
     }
 

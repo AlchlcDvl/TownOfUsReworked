@@ -62,7 +62,7 @@ public class Volatile : Modifier
             }
             // Hear random things
             else if (randomNumber == 3)
-                Play(GetAll<AudioClip>().Random());
+                Play(UnityGetAll<AudioClip>().Random());
         }
     }
 }

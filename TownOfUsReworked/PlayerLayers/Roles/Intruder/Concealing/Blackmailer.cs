@@ -33,17 +33,17 @@ public class Blackmailer : Intruder
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
-        BlackmailButton = CreateButton(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(BlackmailCd),
+        BlackmailButton = CreateButton(this, "BLACKMAIL", "Blackmail", AbilityType.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(BlackmailCd),
             (PlayerBodyExclusion)Exception1);
     }
 
     public void Blackmail()
     {
-        var cooldown = Interact(Player, BlackmailButton.TargetPlayer);
+        var cooldown = Interact(Player, BlackmailButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            BlackmailedPlayer = BlackmailButton.TargetPlayer;
+            BlackmailedPlayer = BlackmailButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BlackmailedPlayer);
         }
 

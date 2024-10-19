@@ -18,6 +18,15 @@ public static class Utils
 
     public static SpriteRenderer MyRend(this DeadBody d) => d?.bodyRenderers?.FirstOrDefault();
 
+    public static SpriteRenderer MyRend(this MonoBehaviour m) => m switch
+    {
+        PlayerControl player => player.MyRend(),
+        DeadBody body => body.MyRend(),
+        Console console => console.MyRend(),
+        Vent vent => vent.MyRend(),
+        _ => m.TryGetComponent<SpriteRenderer>(out var rend) ? rend : null
+    };
+
     public static bool IsImpostor(this NetworkedPlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
 
     public static bool IsImpostor(this PlayerControl playerinfo) => playerinfo?.Data?.IsImpostor() == true;
@@ -540,20 +549,19 @@ public static class Utils
             }
             else if (target.TryGetLayer<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
-            else if (target.IsAssassin())
+            else if (target.TryGetLayer<Assassin>(out var assassin))
             {
-                var assassin = target.GetLayer<Assassin>();
-                assassin.Exit(Meeting());
+                assassin.GuessingMenu.Close();
                 assassin.AssassinMenu.HideButtons();
             }
             else if (target.TryGetLayer<Guesser>(out var guesser))
             {
-                guesser.Exit(Meeting());
+                guesser.GuessingMenu.Close();
                 guesser.GuessMenu.HideButtons();
             }
             else if (target.TryGetLayer<Thief>(out var thief))
             {
-                thief.Exit(Meeting());
+                thief.GuessingMenu.Close();
                 thief.GuessMenu.HideButtons();
             }
         }
@@ -605,20 +613,19 @@ public static class Utils
 
         if (!CustomPlayer.LocalCustom.Dead)
         {
-            if (CustomPlayer.Local.IsAssassin())
+            if (CustomPlayer.Local.TryGetLayer<Assassin>(out var assassin))
             {
-                var assassin = Ability.LocalAbilityAs<Assassin>();
-                assassin.Exit(Meeting());
+                assassin.GuessingMenu.Close();
                 assassin.AssassinMenu.HideSingle(target.PlayerId);
             }
             else if (CustomPlayer.Local.TryGetLayer<Guesser>(out var guesser))
             {
-                guesser.Exit(Meeting());
+                guesser.GuessingMenu.Close();
                 guesser.GuessMenu.HideSingle(target.PlayerId);
             }
             else if (CustomPlayer.Local.TryGetLayer<Thief>(out var thief))
             {
-                thief.Exit(Meeting());
+                thief.GuessingMenu.Close();
                 thief.GuessMenu.HideSingle(target.PlayerId);
             }
             else if (CustomPlayer.Local.TryGetLayer<Swapper>(out var swapper))
@@ -1014,14 +1021,18 @@ public static class Utils
         yield break;
     }
 
-    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false) =>
-        GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls);
+    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false,
+        Func<PlayerControl, bool> predicate = null) => GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls, x => x != refPlayer && predicate(x));
 
-    public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
+    public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false, Func<PlayerControl, bool>
+        predicate = null)
     {
         var closestDistance = double.MaxValue;
         PlayerControl closestPlayer = null;
         allPlayers ??= AllPlayers();
+
+        if (predicate != null)
+            allPlayers = allPlayers.Where(predicate);
 
         if (maxDistance == 0f)
             maxDistance = GameSettings.InteractionDistance;
@@ -1047,10 +1058,10 @@ public static class Utils
         return closestPlayer;
     }
 
-    public static Vent GetClosestVent(this PlayerControl refPlayer, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false) =>
-        GetClosestVent(refPlayer.transform.position, allVents, maxDistance, ignoreWalls);
+    public static Vent GetClosestVent(this PlayerControl refPlayer, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
+        => GetClosestVent(refPlayer.transform.position, allVents, maxDistance, ignoreWalls, predicate);
 
-    public static Vent GetClosestVent(Vector3 position, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false)
+    public static Vent GetClosestVent(Vector3 position, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
     {
         var closestDistance = double.MaxValue;
         Vent closestVent = null;
@@ -1058,6 +1069,9 @@ public static class Utils
 
         if (maxDistance == 0f)
             maxDistance = AllMapVents()[0].UsableDistance;
+
+        if (predicate != null)
+            allVents = allVents.Where(predicate);
 
         foreach (var vent in allVents)
         {
@@ -1077,10 +1091,10 @@ public static class Utils
         return closestVent;
     }
 
-    public static DeadBody GetClosestBody(this PlayerControl refPlayer, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false) =>
-        GetClosestBody(refPlayer.transform.position, allBodies, maxDistance, ignoreWalls);
+    public static DeadBody GetClosestBody(this PlayerControl refPlayer, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false, Func<DeadBody, bool>
+        predicate = null) => GetClosestBody(refPlayer.transform.position, allBodies, maxDistance, ignoreWalls, predicate);
 
-    public static DeadBody GetClosestBody(Vector3 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false)
+    public static DeadBody GetClosestBody(Vector3 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false, Func<DeadBody, bool> predicate = null)
     {
         var closestDistance = double.MaxValue;
         DeadBody closestBody = null;
@@ -1088,6 +1102,9 @@ public static class Utils
 
         if (maxDistance == 0f)
             maxDistance = GameSettings.InteractionDistance;
+
+        if (predicate != null)
+            allBodies = allBodies.Where(predicate);
 
         foreach (var body in allBodies)
         {
@@ -1110,24 +1127,28 @@ public static class Utils
         return closestBody;
     }
 
-    public static Console GetClosestConsole(this PlayerControl refPlayer, IEnumerable<Console> allConsoles = null, float maxDistance = 0f, bool ignoreWalls = false) =>
-        GetClosestConsole(refPlayer.transform.position, allConsoles, maxDistance, ignoreWalls);
+    public static Console GetClosestConsole(this PlayerControl refPlayer, IEnumerable<Console> allConsoles = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Console, bool>
+        predicate = null) => GetClosestConsole(refPlayer.transform.position, allConsoles, maxDistance, ignoreWalls, predicate);
 
-    public static Console GetClosestConsole(Vector3 position, IEnumerable<Console> allConsoles = null, float maxDistance = 0f, bool ignoreWalls = false)
+    public static Console GetClosestConsole(Vector3 position, IEnumerable<Console> allConsoles = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Console, bool> predicate = null)
     {
         var closestDistance = double.MaxValue;
         Console closestConsole = null;
         allConsoles ??= AllConsoles();
 
-        if (maxDistance == 0f)
-            maxDistance = AllConsoles()[0].UsableDistance;
+        if (predicate != null)
+            allConsoles = allConsoles.Where(predicate);
 
         foreach (var console in allConsoles)
         {
             var distance = Vector2.Distance(position, console.transform.position);
             var vector = (Vector2)console.transform.position - (Vector2)position;
+            var tempMaxDistance = maxDistance;
 
-            if (distance > maxDistance || distance > closestDistance)
+            if (tempMaxDistance == 0f)
+                tempMaxDistance = console.UsableDistance;
+
+            if (distance > tempMaxDistance || distance > closestDistance)
                 continue;
 
             if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
@@ -1138,6 +1159,47 @@ public static class Utils
         }
 
         return closestConsole;
+    }
+
+    public static MonoBehaviour GetClosestMono(this PlayerControl player, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = 0f, bool ignoreWalls = false) =>
+        GetClosestMono(player.transform.position, allMonos, trueMaxDistance, ignoreWalls);
+
+    public static MonoBehaviour GetClosestMono(Vector3 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = 0f, bool ignoreWalls = false)
+    {
+        if (allMonos.Count() == 1)
+            return allMonos.ElementAt(0);
+
+        var closestDistance = double.MaxValue;
+        MonoBehaviour closestMono = null;
+
+        foreach (var mono in allMonos)
+        {
+            var distance = Vector2.Distance(position, mono.transform.position);
+            var vector = (Vector2)mono.transform.position - (Vector2)position;
+            var maxDistance = trueMaxDistance;
+
+            if (maxDistance == 0f)
+            {
+                maxDistance = mono switch
+                {
+                    PlayerControl or DeadBody => GameSettings.InteractionDistance,
+                    Console console => console.UsableDistance,
+                    Vent vent => vent.UsableDistance,
+                    _ => 1f,
+                };
+            }
+
+            if (distance > maxDistance || distance > closestDistance)
+                continue;
+
+            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
+                continue;
+
+            closestMono = mono;
+            closestDistance = distance;
+        }
+
+        return closestMono;
     }
 
     public static void RemoveTasks(PlayerControl player)
@@ -1304,25 +1366,12 @@ public static class Utils
 
     public static byte ClampByte(float value, float min, float max) => (byte)Mathf.Clamp(value, min, max);
 
-    /*public static string AddSpaces(this string @string)
-    {
-        Uppercase.ForEach(x =>
-        {
-            var index = @string.IndexOf(x);
-
-            if (index > 0)
-                @string = @string.Insert(index, " ");
-        });
-        return @string;
-    }*/
-
     public static string SanitisePath(this string path)
     {
         path = path.Replace(".png", "");
         path = path.Replace(".raw", "");
         path = path.Replace(".wav", "");
         path = path.Replace(".txt", "");
-        path = path.Replace(TownOfUsReworked.Resources, "");
         path = path.Split('/')[^1];
         path = path.Split('\\')[^1];
         path = path.Split('.')[^1];
@@ -1408,7 +1457,7 @@ public static class Utils
 
     public static void OverrideOnClickListeners(this PassiveButton passive, Action action, bool enabled = true)
     {
-        passive.OnClick.RemoveAllListeners();
+        passive.OnClick?.RemoveAllListeners();
         passive.OnClick = new();
         passive.OnClick.AddListener(action);
         passive.enabled = enabled;
@@ -1416,7 +1465,7 @@ public static class Utils
 
     public static void OverrideOnMouseOverListeners(this PassiveButton passive, Action action, bool enabled = true)
     {
-        passive.OnMouseOver.RemoveAllListeners();
+        passive.OnMouseOver?.RemoveAllListeners();
         passive.OnMouseOver = new();
         passive.OnMouseOver.AddListener(action);
         passive.enabled = enabled;
@@ -1424,7 +1473,7 @@ public static class Utils
 
     public static void OverrideOnMouseOutListeners(this PassiveButton passive, Action action, bool enabled = true)
     {
-        passive.OnMouseOut.RemoveAllListeners();
+        passive.OnMouseOut?.RemoveAllListeners();
         passive.OnMouseOut = new();
         passive.OnMouseOut.AddListener(action);
         passive.enabled = enabled;

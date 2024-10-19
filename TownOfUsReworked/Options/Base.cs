@@ -303,30 +303,41 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         if (!SettingsPatches.Save || SettingsPatches.PresetsButtons.Any(x => x.name == fileName))
             return;
 
-        var presetButton = UObject.Instantiate(SettingsPatches.Save, SettingsPatches.Save.transform.parent);
-        presetButton.transform.localScale = new(0.5f, 0.84f, 1f);
-        presetButton.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
-        presetButton.buttonText.alignment = TextAlignmentOptions.Center;
-        presetButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-        presetButton.buttonText.text = presetButton.name = fileName;
-        presetButton.OverrideOnClickListeners(() => LoadPreset(fileName));
-        SettingsPatches.PresetsButtons.Add(presetButton);
+        SettingsPatches.CreatePresetButton(fileName);
         SettingsPatches.OnPageChangedOrPresetAdded();
     }
 
-    public static void LoadPreset(string presetName)
+    public static void LoadPreset(string presetName, TextMeshPro tmp)
     {
         Message($"Loading - {presetName}");
         var text = ReadDiskText($"{presetName}.txt", TownOfUsReworked.Options);
 
         if (IsNullEmptyOrWhiteSpace(text))
+        {
             Error($"{presetName} no exist");
+            FlashText(tmp, UColor.red);
+        }
         else
         {
             CallRpc(CustomRPC.Misc, MiscRPC.LoadPreset, presetName);
             SettingsPatches.CurrentPreset = presetName;
             LoadSettings(text);
+            FlashText(tmp, UColor.green);
         }
+    }
+
+    public static void FlashText(TextMeshPro text, UColor color) => Coroutines.Start(CoFlashText(text, color));
+
+    private static IEnumerator CoFlashText(TextMeshPro text, UColor color)
+    {
+        if (!text)
+            yield break;
+
+        var cache = text.color;
+        text.color = color;
+        yield return Wait(0.5f);
+        text.color = cache;
+        yield break;
     }
 
     public static void LoadSettings(string settingsData) => Coroutines.Start(CoLoadSettings(settingsData));

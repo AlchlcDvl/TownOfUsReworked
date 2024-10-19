@@ -21,7 +21,7 @@ public class Rebel : Syndicate
     {
         BaseStart();
         Alignment = Alignment.SyndicatePower;
-        SidekickButton = CreateButton(this, new SpriteName("Sidekick"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
+        SidekickButton = CreateButton(this, new SpriteName("Sidekick"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
             (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("RebelIntro");
     }
@@ -39,10 +39,10 @@ public class Rebel : Syndicate
 
     public void Sidekick()
     {
-        if (Interact(Player, SidekickButton.TargetPlayer) != CooldownType.Fail)
+        if (Interact(Player, SidekickButton.GetTarget<PlayerControl>()) != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SidekickButton.TargetPlayer);
-            Sidekick(SidekickButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SidekickButton.GetTarget<PlayerControl>());
+            Sidekick(SidekickButton.GetTarget<PlayerControl>());
         }
     }
 

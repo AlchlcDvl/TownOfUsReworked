@@ -15,6 +15,9 @@ public class CooldownsTab : BaseTab
         if (GUILayout.Button("Cancel Cooldowns"))
             CustomPlayer.Local.GetButtons().ForEach(x => x.CooldownTime = 0f);
 
+        if (GUILayout.Button("Cancel Delays"))
+            CustomPlayer.Local.GetButtons().ForEach(x => x.DelayTime = 0f);
+
         if (GUILayout.Button("Click Buttons"))
             CustomPlayer.Local.GetButtons().ForEach(x => x.Clicked());
 

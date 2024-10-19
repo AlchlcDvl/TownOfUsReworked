@@ -24,16 +24,16 @@ public class Sheriff : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewKill;
-        InterrogateButton = CreateButton(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Interrogate,
+        InterrogateButton = CreateButton(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Interrogate,
             new Cooldown(InterrogateCd), (PlayerBodyExclusion)Exception);
     }
 
     public void Interrogate()
     {
-        var cooldown = Interact(Player, InterrogateButton.TargetPlayer);
+        var cooldown = Interact(Player, InterrogateButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            Flash(InterrogateButton.TargetPlayer.SeemsEvil() ? UColor.red : UColor.green);
+            Flash(InterrogateButton.GetTarget<PlayerControl>().SeemsEvil() ? UColor.red : UColor.green);
 
         InterrogateButton.StartCooldown(cooldown);
     }

@@ -1,21 +1,25 @@
-using BepInEx.Unity.IL2CPP.Utils.Collections;
-
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]
+// For some reason something here was nulling, so I just overrided the whole thing instead of just a few parts of it
+[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGameHost))]
 public static class MapPatches
 {
     public static byte CurrentMap;
 
-    public static void Prefix()
+    public static bool Prefix(ref Il2CppSystem.Collections.IEnumerator __result)
     {
-        if (IsHnS())
-            return;
+        __result = CoStartGameFix().WrapToIl2Cpp();
+        return false;
+    }
 
-        if (AmongUsClient.Instance.AmHost)
+    private static IEnumerator CoStartGameFix()
+    {
+        if (Lobby())
+            Lobby().Despawn();
+
+        if (!Ship())
         {
-            CurrentMap = GetSelectedMap();
-            TownOfUsReworked.NormalOptions.MapId = CurrentMap;
+            TownOfUsReworked.NormalOptions.MapId = CurrentMap = GetSelectedMap();
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
@@ -44,7 +48,52 @@ public static class MapPatches
             AllPlayers().ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
+            // AmongUsClient.Instance.ShipLoadingAsyncHandle seems to be having an issue in its setter, I wonder what's up with that
+            var async = AmongUsClient.Instance.ShipPrefabs[CurrentMap].InstantiateAsync();
+            yield return async;
+            ShipStatus.Instance = async.Result.GetComponent<ShipStatus>();
+            AmongUsClient.Instance.Spawn(Ship());
         }
+
+        var timer = 0f;
+
+        while (true)
+        {
+            var stopWaiting = true;
+            var num2 = 10;
+
+            if (CurrentMap is 5 or 4)
+                num2 = 15;
+
+            lock (AmongUsClient.Instance.allClients)
+            {
+                foreach (var clientData in AmongUsClient.Instance.allClients)
+                {
+                    if (clientData.Id != AmongUsClient.Instance.ClientId && !clientData.IsReady)
+                    {
+                        if (timer < num2)
+                            stopWaiting = false;
+                        else
+                        {
+                            AmongUsClient.Instance.SendLateRejection(clientData.Id, DisconnectReasons.ClientTimeout);
+                            clientData.IsReady = true;
+                            AmongUsClient.Instance.OnPlayerLeft(clientData, DisconnectReasons.ClientTimeout);
+                        }
+                    }
+                }
+            }
+
+            yield return EndFrame();
+
+            if (stopWaiting)
+                break;
+
+            timer += Time.deltaTime;
+        }
+
+        RoleManager.Instance.SelectRoles();
+        ShipStatus.Instance.Begin();
+        AmongUsClient.Instance.SendClientReady();
     }
 
     private static byte GetSelectedMap()
@@ -124,75 +173,7 @@ public static class MapPatches
         foreach (var option in OptionAttribute.AllOptions.Where(x => x.Name.Contains("Cooldown") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
         {
             if (option is NumberOptionAttribute number)
-                number.Set(new(number.Value + change));
+                number.Set(new(number.Value.Value + change));
         }
-    }
-}
-
-// For some reason something here was nulling, so I just overrided the whole thing instead of just a few parts of it
-[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGameHost))]
-public static class AmongUsClientCoStartHostPatch2
-{
-    public static bool Prefix(ref Il2CppSystem.Collections.IEnumerator __result)
-    {
-        __result = CoStartGameFix().WrapToIl2Cpp();
-        return false;
-    }
-
-    private static IEnumerator CoStartGameFix()
-    {
-        if (Lobby())
-            Lobby().Despawn();
-
-        if (!Ship())
-        {
-            // AmongUsClient.Instance.ShipLoadingAsyncHandle seems to be having an issue in its setter, I wonder what's up with that
-            var async = AmongUsClient.Instance.ShipPrefabs[MapPatches.CurrentMap].InstantiateAsync();
-            yield return async;
-            ShipStatus.Instance = async.Result.GetComponent<ShipStatus>();
-            AmongUsClient.Instance.Spawn(Ship());
-        }
-
-        var timer = 0f;
-
-        while (true)
-        {
-            var stopWaiting = true;
-            var num2 = 10;
-
-            if (MapPatches.CurrentMap is 5 or 4)
-                num2 = 15;
-
-            lock (AmongUsClient.Instance.allClients)
-            {
-                for (var i = 0; i < AmongUsClient.Instance.allClients.Count; i++)
-                {
-                    var clientData = AmongUsClient.Instance.allClients[i];
-
-                    if (clientData.Id != AmongUsClient.Instance.ClientId && !clientData.IsReady)
-                    {
-                        if (timer < num2)
-                            stopWaiting = false;
-                        else
-                        {
-                            AmongUsClient.Instance.SendLateRejection(clientData.Id, DisconnectReasons.ClientTimeout);
-                            clientData.IsReady = true;
-                            AmongUsClient.Instance.OnPlayerLeft(clientData, DisconnectReasons.ClientTimeout);
-                        }
-                    }
-                }
-            }
-
-            yield return EndFrame();
-
-            if (stopWaiting)
-                break;
-
-            timer += Time.deltaTime;
-        }
-
-        RoleManager.Instance.SelectRoles();
-        ShipStatus.Instance.Begin();
-        AmongUsClient.Instance.SendClientReady();
     }
 }

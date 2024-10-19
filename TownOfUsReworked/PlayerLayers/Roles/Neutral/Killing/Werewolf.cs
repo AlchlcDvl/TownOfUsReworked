@@ -32,7 +32,7 @@ public class Werewolf : Neutral
         BaseStart();
         Objectives = () => "- Maul anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        MaulButton = CreateButton(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitMaul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
+        MaulButton = CreateButton(this, new SpriteName("Maul"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)HitMaul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception);
         Data.Role.IntroSound = GetAudio("WerewolfIntro");
     }
@@ -50,7 +50,7 @@ public class Werewolf : Neutral
 
     public void HitMaul()
     {
-        var cooldown = Interact(Player, MaulButton.TargetPlayer, true);
+        var cooldown = Interact(Player, MaulButton.GetTarget<PlayerControl>(), true);
 
         if (cooldown != CooldownType.Fail)
             Maul();

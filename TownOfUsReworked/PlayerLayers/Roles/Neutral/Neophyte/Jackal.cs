@@ -38,26 +38,26 @@ public class Jackal : Neutral
         SubFactionColor = CustomColorManager.Cabal;
         Alignment = Alignment.NeutralNeo;
         Recruited = [ Player.PlayerId ];
-        RecruitButton = CreateButton(this, new SpriteName("Recruit"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Recruit, (PlayerBodyExclusion)Exception, "RECRUIT",
+        RecruitButton = CreateButton(this, new SpriteName("Recruit"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Recruit, (PlayerBodyExclusion)Exception, "RECRUIT",
             (UsableFunc)Usable1, new Cooldown(RecruitCd));
-        KillButton = CreateButton(this, new SpriteName("JackalKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, (PlayerBodyExclusion)Exception, "KILL",
+        KillButton = CreateButton(this, new SpriteName("JackalKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Kill, (PlayerBodyExclusion)Exception, "KILL",
             (UsableFunc)Usable2, new Cooldown(RecruitCd));
         Data.Role.IntroSound = GetAudio("JackalIntro");
     }
 
     public void Recruit()
     {
-        var cooldown = Interact(Player, RecruitButton.TargetPlayer);
+        var cooldown = Interact(Player, RecruitButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            RoleGen.RpcConvert(RecruitButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Cabal);
+            RoleGen.RpcConvert(RecruitButton.GetTarget<PlayerControl>().PlayerId, Player.PlayerId, SubFaction.Cabal);
 
         RecruitButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player) => Recruited.Contains(player.PlayerId);
 
-    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
+    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.GetTarget<PlayerControl>(), true));
 
     public bool Usable1() => RecruitsDead;
 

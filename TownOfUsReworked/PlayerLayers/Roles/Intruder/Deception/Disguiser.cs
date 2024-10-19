@@ -38,9 +38,9 @@ public class Disguiser : Intruder
     {
         BaseStart();
         Alignment = Alignment.IntruderDecep;
-        MeasureButton = CreateButton(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(MeasureCd), "MEASURE",
+        MeasureButton = CreateButton(this, new SpriteName("Measure"), AbilityType.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(MeasureCd), "MEASURE",
             (PlayerBodyExclusion)Exception2);
-        DisguiseButton = CreateButton(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
+        DisguiseButton = CreateButton(this, new SpriteName("Disguise"), AbilityType.Alive, KeybindType.Secondary, (OnClick)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
             new Duration(DisguiseDur), (EffectVoid)Disguise, new Delay(DisguiseDelay), (PlayerBodyExclusion)Exception1, (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE");
         DisguisedPlayer = null;
         MeasuredPlayer = null;
@@ -58,12 +58,12 @@ public class Disguiser : Intruder
 
     public void HitDisguise()
     {
-        var cooldown = Interact(Player, DisguiseButton.TargetPlayer);
+        var cooldown = Interact(Player, DisguiseButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
             CopiedPlayer = MeasuredPlayer;
-            DisguisedPlayer = DisguiseButton.TargetPlayer;
+            DisguisedPlayer = DisguiseButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, DisguiseButton, CopiedPlayer, DisguisedPlayer);
             DisguiseButton.Begin();
         }
@@ -76,10 +76,10 @@ public class Disguiser : Intruder
 
     public void Measure()
     {
-        var cooldown = Interact(Player, MeasureButton.TargetPlayer);
+        var cooldown = Interact(Player, MeasureButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            MeasuredPlayer = MeasureButton.TargetPlayer;
+            MeasuredPlayer = MeasureButton.GetTarget<PlayerControl>();
 
         MeasureButton.StartCooldown(cooldown);
 

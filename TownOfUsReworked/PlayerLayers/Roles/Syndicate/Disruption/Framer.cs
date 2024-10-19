@@ -25,9 +25,9 @@ public class Framer : Syndicate
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         Framed = [];
-        FrameButton = CreateButton(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
+        FrameButton = CreateButton(this, new SpriteName("Frame"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
             (PlayerBodyExclusion)Exception1);
-        RadialFrameButton = CreateButton(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, new Cooldown(FrameCd), (UsableFunc)Usable2,
+        RadialFrameButton = CreateButton(this, new SpriteName("RadialFrame"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, new Cooldown(FrameCd), (UsableFunc)Usable2,
             "FRAME");
     }
 
@@ -42,10 +42,10 @@ public class Framer : Syndicate
 
     public void Frame()
     {
-        var cooldown = Interact(Player, FrameButton.TargetPlayer);
+        var cooldown = Interact(Player, FrameButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            RpcFrame(FrameButton.TargetPlayer);
+            RpcFrame(FrameButton.GetTarget<PlayerControl>());
 
         FrameButton.StartCooldown(cooldown);
     }

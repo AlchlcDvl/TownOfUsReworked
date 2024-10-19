@@ -231,7 +231,7 @@ public static class References
         { LayerEnum.Amnesiac, new(typeof(Amnesiac), CustomColorManager.Amnesiac, "Amnesiac") },
         { LayerEnum.Arsonist, new(typeof(Arsonist), CustomColorManager.Arsonist, "Arsonist") },
         { LayerEnum.Betrayer, new(typeof(Betrayer), CustomColorManager.Betrayer, "Betrayer") },
-        { LayerEnum.BountyHunter, new(typeof(BountyHunter), CustomColorManager.BountyHunter, "Bount yHunter") },
+        { LayerEnum.BountyHunter, new(typeof(BountyHunter), CustomColorManager.BountyHunter, "Bounty Hunter") },
         { LayerEnum.Cannibal, new(typeof(Cannibal), CustomColorManager.Cannibal, "Cannibal") },
         { LayerEnum.Cryomaniac, new(typeof(Cryomaniac), CustomColorManager.Cryomaniac, "Cryomaniac") },
         { LayerEnum.Dracula, new(typeof(Dracula), CustomColorManager.Dracula, "Dracula") },
@@ -316,7 +316,7 @@ public static class References
         { LayerEnum.Taskmaster, new(typeof(Taskmaster), CustomColorManager.Taskmaster, "Taskmaster") },
         { LayerEnum.Traitor, new(typeof(Traitor), CustomColorManager.Traitor, "Traitor") },
         { LayerEnum.Bullseye, new(typeof(Bullseye), CustomColorManager.Crew, "Bullseye") },
-        { LayerEnum.ButtonBarry, new(typeof(ButtonBarry), CustomColorManager.ButtonBarry, "ButtonBarry") },
+        { LayerEnum.ButtonBarry, new(typeof(ButtonBarry), CustomColorManager.ButtonBarry, "Button Barry") },
         { LayerEnum.Hitman, new(typeof(Hitman), CustomColorManager.Intruder, "Hitman") },
         { LayerEnum.Insider, new(typeof(Insider), CustomColorManager.Insider, "Insider") },
         { LayerEnum.Multitasker, new(typeof(Multitasker), CustomColorManager.Multitasker, "Multitasker") },
@@ -331,6 +331,10 @@ public static class References
         { LayerEnum.Tiebreaker, new(typeof(Tiebreaker), CustomColorManager.Tiebreaker, "Tiebreaker") },
         { LayerEnum.Torch, new(typeof(Torch), CustomColorManager.Torch, "Torch") },
         { LayerEnum.Tunneler, new(typeof(Tunneler), CustomColorManager.Tunneler, "Tunneler") },
-        { LayerEnum.Underdog, new(typeof(Underdog), CustomColorManager.Underdog, "Underdog") }
+        { LayerEnum.Underdog, new(typeof(Underdog), CustomColorManager.Underdog, "Underdog") },
+        { LayerEnum.Cabal, new(null, CustomColorManager.Cabal, "Cabal") },
+        { LayerEnum.Sect, new(null, CustomColorManager.Sect, "Sect") },
+        { LayerEnum.Reanimated, new(null, CustomColorManager.Reanimated, "Reanimated") },
+        { LayerEnum.Undead, new(null, CustomColorManager.Undead, "Undead") }
     };
 }

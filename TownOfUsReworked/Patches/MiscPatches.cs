@@ -2,7 +2,6 @@ using AmongUs.Data.Player;
 using AmongUs.Data.Legacy;
 using AmongUs.Data.Settings;
 using Discord;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace TownOfUsReworked.Patches;
 
@@ -66,9 +65,19 @@ public static class AmBanned
 }
 
 [HarmonyPatch(typeof(PlayerData), nameof(PlayerData.FileName), MethodType.Getter)]
+public static class PlayerDataPatch
+{
+    public static void Postfix(ref string __result) => __result += "_ToU-Rew";
+}
+
 [HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
-[HarmonyPatch(typeof(SettingsData), nameof(SettingsData.FileName), MethodType.Getter)]
 public static class LegacySaveManagerPatch
+{
+    public static void Postfix(ref string __result) => __result += "_ToU-Rew";
+}
+
+[HarmonyPatch(typeof(SettingsData), nameof(SettingsData.FileName), MethodType.Getter)]
+public static class SettingsDataPatch
 {
     public static void Postfix(ref string __result) => __result += "_ToU-Rew";
 }
@@ -131,10 +140,9 @@ public static class DisconnectHandler
 {
     public static readonly List<byte> Disconnected = [];
 
-    public static void Prefix(ref PlayerControl player)
+    public static void Prefix(PlayerControl player)
     {
-        var player2 = player;
-        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || !x.Player);
+        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player || !x.Player);
 
         if (player.AmOwner)
         {
@@ -156,8 +164,8 @@ public static class CanMove
 {
     public static bool Prefix(PlayerControl __instance, ref bool __result)
     {
-        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen &&
-            !HUD().GameMenu.IsOpen)) && (!Map() || !Map().IsOpenStopped) && !Meeting() && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
+        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen && !Meeting() &&
+            !HUD().GameMenu.IsOpen)) && (!Map() || !Map().IsOpenStopped) && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
         return false;
     }
 }
@@ -181,8 +189,8 @@ public static class VisibleOverride
             value = !__instance.inVent;
         else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && __instance != CustomPlayer.Local)
             value = !ClientOptions.HideOtherGhosts;
-        else if (((CustomPlayer.Local.TryGetLayer<Medium>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId)) || (CustomPlayer.Local.TryGetLayer<Retributionist>(out var
-            ret) && ret.MediatedPlayers.Contains(__instance.PlayerId))) && __instance != CustomPlayer.Local)
+        else if (((CustomPlayer.Local.TryGetLayer<Medium>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId)) || (CustomPlayer.Local.TryGetLayer<Retributionist>(out var ret) &&
+            ret.MediatedPlayers.Contains(__instance.PlayerId))) && __instance != CustomPlayer.Local)
         {
             value = true;
         }
@@ -212,7 +220,7 @@ public static class MinigameBeginPatch
 }
 
 [HarmonyPatch(typeof(ShapeshifterMinigame), nameof(ShapeshifterMinigame.Begin))]
-public static class CustomMenuPatch
+public static class CustomPlayerMenuPatch
 {
     public static bool Prefix(ShapeshifterMinigame __instance)
     {
@@ -221,24 +229,7 @@ public static class CustomMenuPatch
         if (!CustomMenu.AllMenus.TryFinding(x => x.Menu == __instance && x.Owner.AmOwner, out var menu))
             return true;
 
-        __instance.potentialVictims = new();
-        var list2 = new ISystem.List<UiElement>();
-        var targets = menu.Targets();
-
-        for (var i = 0; i < targets.Count; i++)
-        {
-            var player = targets[i];
-            var num = i % 3;
-            var num2 = i / 3;
-            var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
-            panel.transform.localPosition = new(__instance.XStart + (num * __instance.XOffset), __instance.YStart + (num2 * __instance.YOffset), -1f);
-            panel.SetPlayer(i, player.Data, (Action)(() => menu.Clicked(player)));
-            (panel.NameText.text, panel.NameText.color) = PlayerHandler.UpdateGameName(player);
-            __instance.potentialVictims.Add(panel);
-            list2.Add(panel.Button);
-        }
-
-        ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.BackButton, __instance.DefaultButtonSelected, list2);
+        ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.BackButton, __instance.DefaultButtonSelected, menu.CreateMenu(__instance));
         return false;
     }
 }

@@ -35,8 +35,7 @@ public static class RedirectLoggerPatch
         }, finalMessage);
     }
 
-    [HarmonyPatch(nameof(Logger.Debug))]
-    [HarmonyPrefix]
+    [HarmonyPatch(nameof(Logger.Debug)), HarmonyPrefix]
     public static bool DebugPatch(Logger __instance, Il2CppSystem.Object message, UObject context)
     {
         if (Enabled)
@@ -45,8 +44,7 @@ public static class RedirectLoggerPatch
         return !Enabled;
     }
 
-    [HarmonyPatch(nameof(Logger.Info))]
-    [HarmonyPrefix]
+    [HarmonyPatch(nameof(Logger.Info)), HarmonyPrefix]
     public static bool InfoPatch(Logger __instance, Il2CppSystem.Object message, UObject context)
     {
         if (Enabled)
@@ -55,8 +53,7 @@ public static class RedirectLoggerPatch
         return !Enabled;
     }
 
-    [HarmonyPatch(nameof(Logger.Warning))]
-    [HarmonyPrefix]
+    [HarmonyPatch(nameof(Logger.Warning)), HarmonyPrefix]
     public static bool WarningPatch(Logger __instance, Il2CppSystem.Object message, UObject context)
     {
         if (Enabled)
@@ -65,8 +62,7 @@ public static class RedirectLoggerPatch
         return !Enabled;
     }
 
-    [HarmonyPatch(nameof(Logger.Error))]
-    [HarmonyPrefix]
+    [HarmonyPatch(nameof(Logger.Error)), HarmonyPrefix]
     public static bool ErrorPatch(Logger __instance, Il2CppSystem.Object message, UObject context)
     {
         if (Enabled)

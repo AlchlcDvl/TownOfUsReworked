@@ -11,7 +11,7 @@ public class Consort : Intruder
 
     public CustomButton BlockButton { get; set; }
     public PlayerControl BlockTarget { get; set; }
-    public CustomMenu BlockMenu { get; set; }
+    public CustomPlayerMenu BlockMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consort : CustomColorManager.Intruder;
     public override string Name => "Consort";
@@ -27,7 +27,7 @@ public class Consort : Intruder
         RoleBlockImmune = true;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
-        BlockButton = CreateButton(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
+        BlockButton = CreateButton(this, new SpriteName("ConsortRoleblock"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
             new Duration(ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock);
     }
 

@@ -88,15 +88,15 @@ public static class LayerInfo
         new("Veteran", "Vet", "The Veteran can go on alert. Anyone who interacts with a Veteran on alert will be killed by the Veteran in question.", Alignment.CrewKill, Faction.Crew,
             "Touch me, I dare you.", CustomColorManager.Veteran, LayerEnum.Veteran, "Powerful", "Basic when on alert"),
         new("Vigilante", "Vig", "The Vigilante can kill. However, if they kill someone they shouldn't, they instead kill themselves. Framed players are guaranteed to die without the risk of "
-            + "the Vigilante misfiring.", Alignment.CrewKill, Faction.Crew, "I AM THE HAND OF JUSTICE.", CustomColorManager.Vigilante, LayerEnum.Vigilante, "Basic"),
+            + "the Vigilante misfiring.", Alignment.CrewKill, Faction.Crew, "I AM THE HAND OF JUSTICE.", CustomColorManager.Vigilante, LayerEnum.Vigilante, "Basic", footer: true),
 
         new("Actor", "Act", "The Actor gets a list of roles at the start of the game. Alternatively, the Actor can pick a player to add their role to the role list and the rest of the role "
             + "list is filtered and filled. This list of roles depends on which roles are present in the game. The Actor must pretend to be and get guessed as one of the roles in order to " +
             "win.", Alignment.NeutralEvil, Faction.Neutral, "I am totally what you think of me as.", CustomColorManager.Actor, LayerEnum.Actor, "Unstoppable", "None", "Get guessed as a role "
-            + "in their target role list", true),
+            + "in their target role list"),
         new("Amnesiac", "Amne", "The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player. When there is only 4 players left, the Amnesiac becomes" +
-            "a Thief.", Alignment.NeutralBen, Faction.Neutral, "I forgor :skull:", CustomColorManager.Amnesiac, LayerEnum.Amnesiac, "Find a dead body, take their role and then win as that " +
-            "role."),
+            "a Thief.", Alignment.NeutralBen, Faction.Neutral, "I forgor :skull:", CustomColorManager.Amnesiac, LayerEnum.Amnesiac, "None", "None", "Find a dead body, take their role and then"
+            + " win as that role."),
         new("Arsonist", "Arso", "The Arsonist can douse players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once. " +
             "Doused players have an orange Ξ next to their names. Upon igniting, the Arsonist may cremate the body, leaving behind unreportable ash that is visible to all players. The " +
             "Arsonist has basic defense when they have at most 2 players doused.", Alignment.NeutralKill, Faction.Neutral, "I like my meat well done.", CustomColorManager.Arsonist,
@@ -111,7 +111,7 @@ public static class LayerInfo
             + "guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter becomes a Troll. The target has a red Θ next to their names.", Alignment.NeutralEvil,
             Faction.Neutral, "You can run, but you can't hide.", CustomColorManager.BountyHunter, LayerEnum.BountyHunter, "Unstoppable", "None", "Find and kill their bounty"),
         new("Cannibal", "Cann", "The Cannibal can eat the body which wipes away the body, like the Janitor.", Alignment.NeutralEvil, Faction.Neutral, "How do you survive with no " +
-            "food but with a lot of people? Improvise, adapt, overcome.", CustomColorManager.Cannibal, LayerEnum.Cannibal, "Eat a certain number of bodies"),
+            "food but with a lot of people? Improvise, adapt, overcome.", CustomColorManager.Cannibal, LayerEnum.Cannibal, "None", "None", "Eat a certain number of bodies"),
         new("Cryomaniac", "Cryo", "The Cryomaniac can douse players in coolant and freeze them similar to the Arsonist's dousing in gasoline and ignite. Freezing players does not immediately"
             + " kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of " +
             "players reaches a certain threshold, the Cryomaniac may also directly kill. Doused players have a purple λ next to their names. The Cryomaniac has basic defense when they have "
@@ -154,7 +154,8 @@ public static class LayerInfo
         new("Necromancer", "Necro", "The Necromancer is essentially an evil Altruist. They can resurrect dead players and make them join the Necromancer's team, the Reanimated. There is a " +
             "limit to how many times can the Necromancer can kill and resurrect players. Reviving someone with a Lover when both lovers die will revive that Lover too. The Necromancer " +
             "cannot revive the same person twice. Members of the Reanimated have a dark pink Σ next to their names.", Alignment.NeutralNeo, Faction.Neutral, "I like the dead, they do a lot "
-            + "of things I like. For example, staying dead.", CustomColorManager.Necromancer, LayerEnum.Necromancer, "Resurrect the dead and kill off anyone who can oppose the Reanimated"),
+            + "of things I like. For example, staying dead.", CustomColorManager.Necromancer, LayerEnum.Necromancer, "Basic", "None", "Resurrect the dead and kill off anyone who can oppose the"
+            + " Reanimated"),
         new("Pestilence", "Pest", "When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their " +
             "target a stack of the deadly plague. However, targetting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. " +
             "Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to " +
@@ -163,7 +164,7 @@ public static class LayerInfo
             "can oppose them"),
         new("Phantom", "Phan", "The Phantom spawns when a Neutral player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without" +
             " getting clicked on to win.", Alignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. <i>Voice from the distance</i> Get outta here! This is not " +
-            "FNAF!", CustomColorManager.Phantom, LayerEnum.Phantom, "Finish tasks without getting caught"),
+            "FNAF!", CustomColorManager.Phantom, LayerEnum.Phantom, "None", "None", "Finish tasks without getting caught"),
         new("Plaguebearer", "PB", "The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all " +
             "players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.", Alignment.NeutralHarb, Faction.Neutral,
             "<i>Cough</i> This should surely work, right? <i>Cough</i> I sure hope it does.", CustomColorManager.Plaguebearer, LayerEnum.Plaguebearer, "None", "Basic for as long as half " +
@@ -181,15 +182,14 @@ public static class LayerInfo
             "interaction sensitive roles like Veteran and Pestilence. Killing the Troll makes the Troll kill their killer.", Alignment.NeutralEvil, Faction.Neutral, "Kill me. " +
             "Impostor: Later.", CustomColorManager.Troll, LayerEnum.Troll, "Unstoppable", "None", "Get killed"),
         new("Werewolf", "WW", "The Werewolf can kill all players within a certain radius. The Werewolf cannot attack on the first and third rounds, but gets Basic defense in exchange.",
-            Alignment.NeutralKill, Faction.Neutral, "AWOOOOOOOOOOOOOOOOOOOO", CustomColorManager.Werewolf, LayerEnum.Werewolf, "Powerful", "Basic when not attackign", "Maul anyone who can " +
+            Alignment.NeutralKill, Faction.Neutral, "AWOOOOOOOOOOOOOOOOOOOO", CustomColorManager.Werewolf, LayerEnum.Werewolf, "Powerful", "Basic when not attacking", "Maul anyone who can " +
             "oppose them"),
         new("Whisperer", "Whisp", "The Whisperer can whisper to all players within a certain radius. With each whisper, the chances of bringing someone over to the Sect increases " +
             "till they do convert. Members of the Sect have a pink Λ next to their names.", Alignment.NeutralNeo, Faction.Neutral, "PSST.", CustomColorManager.Whisperer, LayerEnum.Whisperer,
-            "Basic", "None", "Persuade or kill anyone who can oppose the Sect"),
+            "Basic", "None", "Persuade or kill anyone who can oppose the Sect", true),
 
         new("Ambusher", "Amb", "The Ambusher can temporarily force anyone to go on alert, killing anyone who interacts with the Ambusher's target. Attacks via ambush deal a Basic attack to "
-            + "the interactor. Ambushers also give their targets Powerful defense.", Alignment.IntruderKill, Faction.Intruder, "BOO", CustomColorManager.Ambusher, LayerEnum.Ambusher, "Basic",
-            "None", "", true),
+            + "the interactor. Ambushers also give their targets Powerful defense.", Alignment.IntruderKill, Faction.Intruder, "BOO", CustomColorManager.Ambusher, LayerEnum.Ambusher, "Basic"),
         new("Blackmailer", "BM", "The Blackmailer can blackmail people. Blackmailed players cannot speak during the next meeting and have a green Φ next to their names.",
             Alignment.IntruderConceal, Faction.Intruder, "Shush.", CustomColorManager.Blackmailer, LayerEnum.Blackmailer),
         new("Camouflager", "Camo", "The Camouflager can camouflage all players at once, turning them all grey and anonymous.", Alignment.IntruderConceal, Faction.Intruder, "Good luck " +
@@ -229,11 +229,11 @@ public static class LayerInfo
         new("Teleporter", "Tele", "The Teleporter can mark a location which they can then teleport to later.", Alignment.IntruderSupport, Faction.Intruder, "He's here, he's there, "
             + "he's everywhere. Who are ya gonna call? Psychic friend Fr-", CustomColorManager.Teleporter, LayerEnum.Teleporter),
         new("Wraith", "Wraith", "The Wraith can temporarily turn invisible.", Alignment.IntruderDecep, Faction.Intruder, "Now you see me, now you don't.", CustomColorManager.Wraith,
-            LayerEnum.Wraith),
+            LayerEnum.Wraith, footer: true),
 
         new("Anarchist", "Anarch", "Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only benefit is its " +
             "ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.", Alignment.SyndicateUtil, Faction.Syndicate, "If you " +
-            "ever feel useless, just remember that I also exist.", CustomColorManager.Syndicate, LayerEnum.Anarchist, "Basic", "None", "", true),
+            "ever feel useless, just remember that I also exist.", CustomColorManager.Syndicate, LayerEnum.Anarchist, "Basic", "None", ""),
         new("Banshee", "Bansh", "The Banshee is the first dead Syndicate. The Banshee can block every non-Syndicate player every once in a while. This role cannot get the Chaos Drive.",
             Alignment.SyndicateUtil, Faction.Syndicate, "AAAAAAAAAAAAAAA", CustomColorManager.Banshee, LayerEnum.Banshee),
         new("Bomber", "Bomb", "The Bomber can place a bomb which can be remotely detonated at any time. Anyone caught inside the bomb's radius at the time of detonation will be killed. Only "
@@ -278,23 +278,23 @@ public static class LayerInfo
             " rewinds players instead.", Alignment.SyndicateDisrup, Faction.Syndicate, "IT'S TIME TO STOP. NO MORE.", CustomColorManager.Timekeeper, LayerEnum.Timekeeper),
         new("Warper", "Warp", "The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map. Warping a player "
             + "makes them unable to move and play an animation. During warping, they can be targeted by anyone, opening up the possibility of team killing.", Alignment.SyndicateSupport,
-            Faction.Syndicate, "BEGONE!", CustomColorManager.Warper, LayerEnum.Warper),
+            Faction.Syndicate, "BEGONE!", CustomColorManager.Warper, LayerEnum.Warper, footer: true),
 
         new("Hunter", "Hunter", "The Hunter is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunter can kill Hunted, or convert them to Hunters. The Hunters " +
             "also have a higher run speed than Hunters but can barely see in exchange. All attempts at killing deal a Basic attack.", Alignment.GameModeHideAndSeek, Faction.GameMode,
-            "You can run, but you can't hide", CustomColorManager.Hunter, LayerEnum.Hunter, "Kill or convert all of the Hunted", "Basic", "None", true),
+            "You can run, but you can't hide", CustomColorManager.Hunter, LayerEnum.Hunter, "Basic", "None", "Kill or convert all of the Hunted"),
         new("Hunted", "Hunted", "The Hunted is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunted has no active abilities and just has a higher vision than " +
-            "the Hunters and might be able to chat.", Alignment.GameModeHideAndSeek, Faction.GameMode, "I am running and hiding", CustomColorManager.Hunted, LayerEnum.Hunted, "Finish all " +
-            "tasks before the Hunters catch them"),
+            "the Hunters and might be able to chat.", Alignment.GameModeHideAndSeek, Faction.GameMode, "I am running and hiding", CustomColorManager.Hunted, LayerEnum.Hunted, "None", "None",
+            "Finish all tasks before the Hunters catch them"),
         new("Runner", "Runner", "The Runner is a role that only spawns in the Task Race game mode. It has no abilities and just ends the game when they are the first to finish.",
-            Alignment.GameModeTaskRace, Faction.GameMode, "Gotta go fast", CustomColorManager.Runner, LayerEnum.Runner, "Be the first to finish their tasks")
+            Alignment.GameModeTaskRace, Faction.GameMode, "Gotta go fast", CustomColorManager.Runner, LayerEnum.Runner, "None", "None", "Be the first to finish their tasks", footer: true)
     ];
 
     public static readonly List<ModifierInfo> AllModifiers =
     [
         new("Invalid", "Invalid", "Invalid", "Invalid", CustomColorManager.Modifier, LayerEnum.NoneModifier),
         new("Bait", "Bait", "The Bait's killer will be forced to self-report the Bait's body.", "Everyone except Troll, Vigilate, Altruist, Thief and Shifter", CustomColorManager.Bait,
-            LayerEnum.Bait, true),
+            LayerEnum.Bait),
         new("Coward", "Coward", "The Coward cannot report bodies.", "Everyone", CustomColorManager.Coward, LayerEnum.Coward),
         new("Diseased", "Diseased", "Killing the Diseased increases all of the killer's cooldowns.", "Everyone except Troll and Altruist", CustomColorManager.Diseased, LayerEnum.Diseased),
         new("Drunk", "Drunk", "The Drunk's controls are inverted.", "Everyone", CustomColorManager.Drunk, LayerEnum.Drunk),
@@ -311,7 +311,7 @@ public static class LayerInfo
         new("Yeller", "Yell", "The Yeller's location is revealed to everyone at all times.", "Everyone", CustomColorManager.Yeller, LayerEnum.Yeller),
         new("Colorblind", "CB", "A colorblind player cannot tell the difference between players.", "Everyone", CustomColorManager.Colorblind, LayerEnum.Colorblind),
         new("Volatile", "Vol", "A Volatile player will see random things happen to them and cannot distinguish real kill and flashes from the fake ones.", "Everyone",
-            CustomColorManager.Volatile, LayerEnum.Volatile)
+            CustomColorManager.Volatile, LayerEnum.Volatile, true)
     ];
 
     public static readonly List<DispositionInfo> AllDispositions =
@@ -319,7 +319,7 @@ public static class LayerInfo
         new("Invalid", "Invalid", "Invalid", "Invalid", "Invalid", "φ", CustomColorManager.Disposition, LayerEnum.NoneDisposition),
         new("Taskmaster", "TM", "The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate" +
             " and the Crew only sees a flash to indicate the Taskmaster's existence.", "Finish tasks without dying or game ending", "Neutrals", "µ", CustomColorManager.Taskmaster,
-            LayerEnum.Taskmaster, true),
+            LayerEnum.Taskmaster),
         new("Lovers", "Lover", "The Lovers are two players who are linked together. They gain the primary objective to stay alive together. In order to so, they gain access to a private" +
             " chat, only visible by them in between meetings. However, they can also win with their respective teams.", "Live to the final 3 with both Lovers still alive", "Everyone", "♥",
             CustomColorManager.Lovers, LayerEnum.Lovers),
@@ -343,7 +343,7 @@ public static class LayerInfo
         new("Linked", "Link", "The Linked players are a watered down pair of Lovers. They can help the other player win. As long as one of the links wins, the other does too, regardless " +
             "of how they won.", "Help the other link win", "Neutrals", "Ψ", CustomColorManager.Linked, LayerEnum.Linked),
         new("Defector", "Defect", "A Defector switches sides when they happen to be the last player alive in their original faction.", "Kill off anyone who opposes their new faction",
-            "Intruders And Syndicate", "ε", CustomColorManager.Defector, LayerEnum.Defector)
+            "Intruders And Syndicate", "ε", CustomColorManager.Defector, LayerEnum.Defector, true)
     ];
 
     public static readonly List<AbilityInfo> AllAbilities =
@@ -352,7 +352,7 @@ public static class LayerInfo
         new("Assassin", "Assassin", "The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name " +
             "of the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals and Sniper is for the Syndicate. Assassin adds "
             + "a level of attack to the applied crewmate.", "Intruders, Crew, Syndicate, Neutral (Killing), Neutral (Harbinger) and Neutral (Neophyte)", CustomColorManager.Assassin,
-            LayerEnum.Assassin, true),
+            LayerEnum.Assassin),
         new("Button Barry", "BB", "The Button Barry can call a meeting from anywhere on the map, even during sabotages. Calling a meeting during a sabotage will fix the sabotage.",
             "Everyone except roles who cannot call meetings", CustomColorManager.ButtonBarry, LayerEnum.ButtonBarry),
         new("Insider", "Ins", "The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.", "Crew",
@@ -376,32 +376,32 @@ public static class LayerInfo
             "later use. On the other hand, if the Politician can kill, they lose the Abstain button and instead gain a vote for each player they kill.", "Crew, Intruders, Syndicate " +
             "and Neutral Killers", CustomColorManager.Politician, LayerEnum.Politician),
         new("Swapper", "Swap", "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted towards the second player and "
-            + "vice versa.", "Crew", CustomColorManager.Swapper, LayerEnum.Swapper)
+            + "vice versa.", "Crew", CustomColorManager.Swapper, LayerEnum.Swapper, true)
     ];
 
     public static readonly List<FactionInfo> AllFactions =
     [
         new(Faction.None),
-        new(Faction.Crew, true),
+        new(Faction.Crew),
         new(Faction.Intruder),
         new(Faction.Neutral),
         new(Faction.Syndicate),
-        new(Faction.GameMode)
+        new(Faction.GameMode, true)
     ];
 
     public static readonly List<SubFactionInfo> AllSubFactions =
     [
         new(SubFaction.None),
-        new(SubFaction.Sect, true),
+        new(SubFaction.Sect),
         new(SubFaction.Cabal),
         new(SubFaction.Undead),
-        new(SubFaction.Reanimated)
+        new(SubFaction.Reanimated, true)
     ];
 
     public static readonly List<AlignmentInfo> AllAlignments =
     [
         new(Alignment.None),
-        new(Alignment.CrewSupport, true),
+        new(Alignment.CrewSupport),
         new(Alignment.CrewInvest),
         new(Alignment.CrewProt),
         new(Alignment.CrewKill),
@@ -456,20 +456,20 @@ public static class LayerInfo
         new(Alignment.SyndicateDecep),
         new(Alignment.SyndicateHead),
         new(Alignment.GameModeHideAndSeek),
-        new(Alignment.GameModeTaskRace)
+        new(Alignment.GameModeTaskRace, true)
     ];
 
     public static readonly List<GameModeInfo> AllModes =
     [
         new(GameMode.None),
-        new(GameMode.Classic, true),
+        new(GameMode.Classic),
         new(GameMode.Vanilla),
         new(GameMode.AllAny),
         new(GameMode.KillingOnly),
         new(GameMode.TaskRace),
         new(GameMode.RoleList),
         new(GameMode.HideAndSeek),
-        new(GameMode.Custom)
+        new(GameMode.Custom, true)
     ];
 
     public static readonly List<Lore> AllLore =
@@ -588,7 +588,7 @@ public static class LayerInfo
         new("Chaos Drive", "CD", "The Chaos Drive is an ability boosting device that the Syndicate receives after a certain number of meetings. When the Chaos Drive is discovered, it "
             + "is handed to members of the Syndicate in a particular order. The holder of the Chaos Drive gains the ability to kill (if they didn't already) and have stronger variations/" +
             "buffs to their abilities.", CustomColorManager.Syndicate, "Order Of Receiving The Chaos Drive:\nPromoted Rebel\nSyndicate (Disruption)\nSyndicate (Support)\nSyndicate (Power)" +
-            "\nSyndicate (Killing)\nOriginal Rebel, Sidekick, Anarchist", true),
+            "\nSyndicate (Killing)\nOriginal Rebel, Sidekick, Anarchist"),
         new("Role", "Role", "Roles decide your abilities and goals for the game. Every game, you are guaranteed to have a role as not having one basically means you cannot play the game.",
             CustomColorManager.Role),
         new("Disposition", "Obj", "Dispositions provide an alternate way for you to win, and sometimes they may override the your original win condition (see Corrupted and Mafia) or change" +
@@ -600,14 +600,14 @@ public static class LayerInfo
             + " don't have a team, namely the Neutral (Evil) roles. Neutral (Benign) roles can side with whoever, and Neutral (Neophyte) roles form their own mini faction called a subfaction"
             + ". Neutral (Killing) roles are generally solo, but can be toggled to side with each other.", CustomColorManager.Faction),
         new("Alignment", "Alignment", "Alignments are a general umbrella where certain roles from other factions fall under. Alignments are generally only used for classification purposes " +
-            "and a role cannot change alignments at any point in the game.", CustomColorManager.Alignment)
+            "and a role cannot change alignments at any point in the game under normal circumstances.", CustomColorManager.Alignment, "", true)
     ];
 
     public static readonly List<SymbolInfo> AllSymbols =
     [
         new("Invalid", "Invalid", "Invalid", UColor.red),
         new("Null", "φ", "This symbol is a placeholder for when one doesn't have an disposition or a subfaction that they are a part of.", CustomColorManager.SubFaction),
-        new("Shield", "✚", "Players who have shield deployed on them through a Medic or a Retributionist-Medic.", CustomColorManager.Medic, true),
+        new("Shield", "✚", "Players who have shield deployed on them through a Medic or a Retributionist-Medic.", CustomColorManager.Medic),
         new("Knighted", "κ", "Players who have been knighted by a Monarch recieve this symbol.", CustomColorManager.Monarch),
         new("Trapped", "∮", "Players that have been trapped by a Trapper or a Retributionist-Trapper. Trapped players will have their interactor's roles logged and sent to the relevant " +
             "Trapper. If the trapped target is attacked, the trap will remove all of its logged roles and attack the attacker. The Trapper is notified if the trap attacked someone, and if " +
@@ -655,6 +655,6 @@ public static class LayerInfo
         new("Overlord", "β", "Use to denote those who have the Overlord disposition.", CustomColorManager.Overlord),
         new("Rivals", "α", "Use to denote those who have the Rivals disposition.", CustomColorManager.Rivals),
         new("Taskmaster", "µ", "Use to denote those who have the Taskmaster disposition.", CustomColorManager.Taskmaster),
-        new("Traitor", "♣", "Use to denote those who have the Traitor disposition. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Traitor)
+        new("Traitor", "♣", "Use to denote those who have the Traitor disposition. The color of this symbol denotes which faction they are a part of.", CustomColorManager.Traitor, true)
     ];
 }

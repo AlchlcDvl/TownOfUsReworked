@@ -11,7 +11,7 @@ public static class OnGameStart
         foreach (var client in __instance.allClients)
         {
             client.IsReady = true;
-            client.Character.gameObject.GetComponent<DummyBehaviour>().enabled = false;
+            client.Character.GetComponent<DummyBehaviour>().enabled = false;
         }
     }
 }

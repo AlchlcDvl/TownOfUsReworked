@@ -10,7 +10,7 @@ public class Shifter : Crew
     public static BecomeEnum ShiftedBecomes { get; set; } = BecomeEnum.Shifter;
 
     public CustomButton ShiftButton { get; set; }
-    public CustomMenu ShifterMenu { get; set; }
+    public CustomPlayerMenu ShifterMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Shifter : CustomColorManager.Crew;
     public override string Name => "Shifter";
@@ -23,17 +23,17 @@ public class Shifter : Crew
         BaseStart();
         Alignment = Alignment.CrewSupport;
         ShifterMenu = new(Player, Shift, Exception);
-        ShiftButton = CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
+        ShiftButton = CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
     }
 
     public void Shift()
     {
-        var cooldown = Interact(Player, ShiftButton.TargetPlayer, astral: true);
+        var cooldown = Interact(Player, ShiftButton.GetTarget<PlayerControl>(), astral: true);
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ShiftButton.TargetPlayer);
-            Shift(ShiftButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ShiftButton.GetTarget<PlayerControl>());
+            Shift(ShiftButton.GetTarget<PlayerControl>());
         }
         else
             ShiftButton.StartCooldown(cooldown);
@@ -104,7 +104,7 @@ public class Shifter : Crew
         Role newRole2 = ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
         newRole2.Start<Role>(other).RoleUpdate(role);
         ShifterMenu.Destroy();
-        CustomMenu.AllMenus.Remove(ShifterMenu);
+        CustomPlayerMenu.AllMenus.Remove(ShifterMenu);
     }
 
     public bool Exception(PlayerControl player) => player.HasDied() || (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None &&

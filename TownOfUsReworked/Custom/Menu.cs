@@ -1,25 +1,19 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomMenu
+public abstract class CustomMenu
 {
     public static readonly List<CustomMenu> AllMenus = [];
 
     public ShapeshifterMinigame Menu { get; set; }
     public PlayerControl Owner { get; }
-    public Select Click { get; }
-    public PlayerBodyExclusion Exception { get; }
+    private string Type { get; set; }
 
-    public delegate void Select(PlayerControl player);
-
-    public CustomMenu(PlayerControl owner, Select click, PlayerBodyExclusion exception = null)
+    public CustomMenu(PlayerControl owner, string type)
     {
         Owner = owner;
-        Click = click;
-        Exception = exception ?? BlankFalse;
+        Type = type;
         AllMenus.Add(this);
     }
-
-    public List<PlayerControl> Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 
     public void Open()
     {
@@ -29,7 +23,7 @@ public class CustomMenu
                 return;
 
             Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
-            Menu.name = Menu.gameObject.name = $"{Owner.Data.PlayerName}AbilityMenu";
+            Menu.name = Menu.gameObject.name = $"{Owner.Data.PlayerName}{Type}Menu";
         }
 
         Menu.transform.localPosition = new(0f, 0f, -50f);
@@ -38,11 +32,7 @@ public class CustomMenu
 
     private static ShapeshifterMinigame GetShapeshifterMenu() => RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter)?.TryCast<ShapeshifterRole>()?.ShapeshifterMenu;
 
-    public void Clicked(PlayerControl player)
-    {
-        Click(player);
-        Menu.Close();
-    }
+    public abstract ISystem.List<UiElement> CreateMenu(ShapeshifterMinigame __instance);
 
     public void Destroy()
     {

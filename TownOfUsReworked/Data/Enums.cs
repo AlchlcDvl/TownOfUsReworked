@@ -40,14 +40,15 @@ public enum ThiefActionsRPC
     Guess
 }
 
-public enum AbilityTypes
+[Flags]
+public enum AbilityType
 {
-    Alive,
-    Dead,
-    Vent,
-    Targetless,
-    Console,
-    None
+    None = 0,
+    Alive = 1 << 0,
+    Dead = 1 << 1,
+    Vent = 1 << 2,
+    Targetless = 1 << 3,
+    Console = 1 << 4
 }
 
 public enum MeetingTypes
@@ -498,6 +499,11 @@ public enum LayerEnum
     Tunneler,
     Underdog,
     NoneAbility,
+
+    Undead,
+    Sect,
+    Cabal,
+    Reanimated,
 
     Any,
 

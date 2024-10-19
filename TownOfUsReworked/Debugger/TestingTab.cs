@@ -12,6 +12,9 @@ public class TestingTab : BaseTab
         TownOfUsReworked.RedirectLogger.Value = GUILayout.Toggle(TownOfUsReworked.RedirectLogger.Value, "Redirect Logger");
         TownOfUsReworked.IsTest = GUILayout.Toggle(TownOfUsReworked.IsTest, "Test Mode");
 
+        if (CustomPlayer.Local && !NoLobby() && !CustomPlayer.LocalCustom.Dead && !IsEnded() && WinState == WinLose.None)
+            CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Player Collider");
+
         if (!Lobby())
             return;
 
@@ -50,6 +53,6 @@ public class TestingTab : BaseTab
             OptionAttribute.SaveSettings("Debugging");
 
         if (GUILayout.Button("Load Last Settings"))
-            OptionAttribute.LoadPreset("Debugging");
+            OptionAttribute.LoadPreset("Debugging", null);
     }
 }

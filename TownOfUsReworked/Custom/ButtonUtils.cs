@@ -134,7 +134,7 @@ public static class ButtonUtils
 
             if (Operative.BugsRemoveOnNewRound && meeting)
             {
-                op.Bugs.ForEach(x => x.Destroy());
+                op.Bugs.ForEach(x => x.gameObject.Destroy());
                 op.Bugs.Clear();
             }
         }
@@ -169,7 +169,7 @@ public static class ButtonUtils
 
             if (Operative.BugsRemoveOnNewRound && meeting)
             {
-                ret.Bugs.ForEach(x => x.Destroy());
+                ret.Bugs.ForEach(x => x?.gameObject?.Destroy());
                 ret.Bugs.Clear();
             }
 
@@ -228,7 +228,7 @@ public static class ButtonUtils
             sil.SilencedPlayer = null;
         else if (role is Bomber bomb && Bomber.BombsRemoveOnNewRound && meeting)
         {
-            bomb.Bombs.ForEach(x => x.Destroy());
+            bomb.Bombs.ForEach(x => x?.gameObject?.Destroy());
             bomb.Bombs.Clear();
         }
         else if (role is Framer framer && player.HasDied())
@@ -252,7 +252,7 @@ public static class ButtonUtils
 
             if (Bomber.BombsRemoveOnNewRound && meeting)
             {
-                reb.Bombs.ForEach(x => x.Destroy());
+                reb.Bombs.ForEach(x => x?.gameObject?.Destroy());
                 reb.Bombs.Clear();
             }
 

@@ -39,7 +39,7 @@ public class Cannibal : Neutral
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = [];
         EatNeed = Math.Min(BodiesNeeded, AllPlayers().Count / 2);
-        EatButton = CreateButton(this, new SpriteName("Eat"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
+        EatButton = CreateButton(this, new SpriteName("Eat"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -85,11 +85,11 @@ public class Cannibal : Neutral
 
     public void Eat()
     {
-        Spread(Player, PlayerByBody(EatButton.TargetBody));
-        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, EatButton.TargetBody);
+        Spread(Player, PlayerByBody(EatButton.GetTarget<DeadBody>()));
+        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, EatButton.GetTarget<DeadBody>());
         EatButton.StartCooldown();
         EatNeed--;
-        FadeBody(EatButton.TargetBody);
+        FadeBody(EatButton.GetTarget<DeadBody>());
 
         if (EatWin && !Eaten)
         {

@@ -15,7 +15,7 @@ public class Drunkard : Syndicate
     public CustomButton ConfuseButton { get; set; }
     public float Modifier => ConfuseButton.EffectActive ? -1 : 1;
     public PlayerControl ConfusedPlayer { get; set; }
-    public CustomMenu ConfuseMenu { get; set; }
+    public CustomPlayerMenu ConfuseMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Drunkard : CustomColorManager.Syndicate;
     public override string Name => "Drunkard";
@@ -29,7 +29,7 @@ public class Drunkard : Syndicate
         Alignment = Alignment.SyndicateDisrup;
         ConfuseMenu = new(Player, Click, Exception1);
         ConfusedPlayer = null;
-        ConfuseButton = CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,
+        ConfuseButton = CreateButton(this, new SpriteName("Confuse"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,
             new Duration(ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (EndFunc)EndEffect);
     }
 

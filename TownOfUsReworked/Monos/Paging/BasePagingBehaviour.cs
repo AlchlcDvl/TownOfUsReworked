@@ -2,8 +2,9 @@ namespace TownOfUsReworked.Monos;
 
 public abstract class BasePagingBehaviour : MonoBehaviour
 {
-    private int _page;
     public virtual int MaxPageIndex => 0;
+
+    private int _page;
     public int PageIndex
     {
         get => _page;

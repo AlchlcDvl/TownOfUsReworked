@@ -39,9 +39,9 @@ public class Bomber : Syndicate
         BaseStart();
         Alignment = Alignment.SyndicateKill;
         Bombs = [];
-        BombButton = CreateButton(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(BombCd), "PLACE BOMB",
+        BombButton = CreateButton(this, new SpriteName("Plant"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(BombCd), "PLACE BOMB",
             (ConditionFunc)Condition);
-        DetonateButton = CreateButton(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any,
+        DetonateButton = CreateButton(this, new SpriteName("Detonate"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any,
             "DETONATE");
         Data.Role.IntroSound = GetAudio("BomberIntro");
     }
@@ -49,7 +49,7 @@ public class Bomber : Syndicate
     public override void OnLobby()
     {
         base.OnLobby();
-        Bombs.ForEach(x => x.Destroy());
+        Bombs.ForEach(x => x?.gameObject?.Destroy());
         Bombs.Clear();
     }
 
@@ -66,7 +66,7 @@ public class Bomber : Syndicate
 
     public void Place()
     {
-        Bombs.Add(new(Player, HoldsDrive));
+        Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
         BombButton.StartCooldown();
 
         if (BombCooldownsLinked)
@@ -83,11 +83,5 @@ public class Bomber : Syndicate
             BombButton.StartCooldown();
     }
 
-    public bool Condition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.Transform.position) < x.Size * 2);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        Bombs.ForEach(x => x.Update());
-    }
+    public bool Condition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 }

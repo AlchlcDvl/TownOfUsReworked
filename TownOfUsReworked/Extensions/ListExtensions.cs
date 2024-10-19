@@ -57,7 +57,11 @@ public static class ListExtensions
 
     public static void ForEach<T>(this ISystem.List<T> list, Action<T> action) => list.ToSystem().ForEach(action);
 
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => source.ToList().ForEach(action);
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+    {
+        foreach (var item in source)
+            action(item);
+    }
 
     public static List<List<T>> Split<T>(this List<T> list, int splitCount)
     {
@@ -121,6 +125,10 @@ public static class ListExtensions
             count--;
         }
     }
+
+    public static bool ContainsAny<T>(this IEnumerable<T> source, T[] values) => values.Any(source.Contains);
+
+    public static bool ContainsAnyKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey[] keys) => keys.Any(dict.ContainsKey);
 
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {

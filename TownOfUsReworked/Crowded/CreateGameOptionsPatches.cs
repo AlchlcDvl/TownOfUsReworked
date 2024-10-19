@@ -66,7 +66,7 @@ public static class CreateOptionsPicker_Awake
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMap))]
 public static class MapPickerPatch
 {
-    public static void Postfix(ref int mapId)
+    public static void Prefix(ref int mapId)
     {
         if (mapId == 6 && !SubLoaded)
             mapId = LILoaded ? 7 : 5;

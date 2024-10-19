@@ -26,7 +26,7 @@ public class Ambusher : Intruder
         BaseStart();
         Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
-        AmbushButton = CreateButton(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
+        AmbushButton = CreateButton(this, new SpriteName("Ambush"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
             new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);
     }
 
@@ -34,11 +34,11 @@ public class Ambusher : Intruder
 
     public void Ambush()
     {
-        var cooldown = Interact(Player, AmbushButton.TargetPlayer);
+        var cooldown = Interact(Player, AmbushButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            AmbushedPlayer = AmbushButton.TargetPlayer;
+            AmbushedPlayer = AmbushButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AmbushButton, AmbushedPlayer);
             AmbushButton.Begin();
         }

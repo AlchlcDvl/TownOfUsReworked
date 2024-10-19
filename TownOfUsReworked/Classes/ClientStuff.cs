@@ -112,8 +112,6 @@ public static class ClientStuff
         {
             var clone = Modules.Info.AllInfo.Clone();
             clone.RemoveAll(x => x.Name is "Invalid" or "None" || x.Type == InfoType.Lore);
-            clone.Reverse();
-            clone = [ .. clone.Distinct() ];
             var i = 0;
             var j = 0;
             var k = 0;
@@ -124,7 +122,7 @@ public static class ClientStuff
                 j++;
                 k++;
 
-                if (k >= 28)
+                if (k >= 28 || (pair.Footer && pair != clone[^1]))
                 {
                     i++;
                     k = 0;
@@ -209,7 +207,7 @@ public static class ClientStuff
                     foreach (var buttons in ClientHandler.Instance.Buttons.Values)
                     {
                         if (buttons.Any())
-                            buttons.ForEach(x => x?.gameObject?.SetActive(false));
+                            buttons.Select(x => x.Item2).ForEach(x => x?.gameObject?.SetActive(false));
                     }
 
                     ClientHandler.Instance.Selected = cache;
@@ -217,15 +215,21 @@ public static class ClientStuff
                     AddInfo();
                 }, cache.Color);
 
-                ClientHandler.Instance.Buttons[i].Add(button);
+                ClientHandler.Instance.Buttons[i].Add((cache, button));
                 j++;
 
-                if (j >= 28)
+                if (j >= 28 || cache.Footer)
                 {
                     i++;
                     j = 0;
                 }
             }
+
+            ClientHandler.Instance.Buttons.ToList().ForEach(x =>
+            {
+                if (!x.Value.Any())
+                    ClientHandler.Instance.Buttons.Remove(x.Key);
+            });
         }
 
         ClientHandler.Instance.WikiActive = !ClientHandler.Instance.WikiActive;
@@ -269,8 +273,10 @@ public static class ClientStuff
 
         foreach (var pair in ClientHandler.Instance.Buttons)
         {
-            foreach (var button in pair.Value)
+            foreach (var pair2 in pair.Value)
             {
+                var button = pair2.Item2;
+
                 if (!button)
                     continue;
 
@@ -280,8 +286,8 @@ public static class ClientStuff
                 button.gameObject.SetActive(ClientHandler.Instance.Page == pair.Key && ClientHandler.Instance.WikiActive);
                 m++;
 
-                if (m >= 28)
-                    m -= 28;
+                if (m >= 28 || pair2.Item1.Footer)
+                    m = 0;
             }
         }
     }

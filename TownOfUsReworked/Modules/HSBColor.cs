@@ -53,23 +53,26 @@ public struct HSBColor
             else
                 ret.h = (g - b) / dif * 60f;
 
-            if (ret.h < 0)
+            while (ret.h < 0)
                 ret.h += 360f;
+
+            while (ret.h > 360)
+                ret.h -= 360f;
         }
         else
             ret.h = 0;
 
         ret.h /= 360f;
-        ret.s = dif / max * 1f;
+        ret.s = dif / max;
         ret.b = max;
         return ret;
     }
 
     public static UColor ToColor(HSBColor hsbColor)
     {
-        var r = hsbColor.b;
-        var g = hsbColor.b;
-        var b = hsbColor.b;
+        var r = 0f;
+        var g = 0f;
+        var b = 0f;
 
         if (hsbColor.s != 0)
         {
@@ -108,12 +111,6 @@ public struct HSBColor
                 r = max;
                 g = min;
                 b = (-(h - 360f) * dif / 60) + min;
-            }
-            else
-            {
-                r = 0;
-                g = 0;
-                b = 0;
             }
         }
 
@@ -176,6 +173,7 @@ public struct HSBColor
         if it's 4, then parse the 4th value as a bool to check if it's in reverse (idk why i'm doing this but might as well) and get a ping pong value as such
         the alpha is optional, not including it will just set it to 1
         i'm quite proud of myself here
+        PS: this is really laggy
     */
     /*public static HSBColor Parse(string input)
     {

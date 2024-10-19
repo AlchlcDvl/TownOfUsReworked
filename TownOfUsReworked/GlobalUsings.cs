@@ -5,6 +5,7 @@ global using TBMode = AmongUs.GameOptions.TaskBarMode;
 global using BepInEx;
 global using BepInEx.Unity.IL2CPP;
 global using BepInEx.Configuration;
+global using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Injection;

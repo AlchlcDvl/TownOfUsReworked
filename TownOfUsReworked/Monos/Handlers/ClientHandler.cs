@@ -16,7 +16,7 @@ public class ClientHandler : MonoBehaviour
     public PassiveButton BackButton;
     public PassiveButton LoreButton;
     public PassiveButton YourStatus;
-    public readonly Dictionary<int, List<PassiveButton>> Buttons = [];
+    public readonly Dictionary<int, List<(Info, PassiveButton)>> Buttons = [];
     public readonly Dictionary<int, KeyValuePair<string, Info>> Sorted = [];
     public int Page;
     public int ResultPage;
@@ -96,8 +96,8 @@ public class ClientHandler : MonoBehaviour
             ClientOptionsButton = Instantiate(HUD().MapButton, ButtonsParent);
             ClientOptionsButton.OverrideOnClickListeners(LobbyConsole.CreateMenu);
             ClientOptionsButton.name = "ClientOptionsButton";
-            ClientOptionsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("ClientInactive");
-            ClientOptionsButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("ClientActive");
+            ClientOptionsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsInactive");
+            ClientOptionsButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsActive");
             ClientOptionsButton.transform.Find("Background").localPosition = Vector3.zero;
         }
 
@@ -125,7 +125,7 @@ public class ClientHandler : MonoBehaviour
         ClientOptionsButton.gameObject.SetActive(HUD().MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal() && !IsFreePlay() && IsInGame() && ActiveTask() is not HauntMenuMinigame &&
             !GameSettingMenu.Instance);
         ZoomButton.gameObject.SetActive(HUD().MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && !IntroCutscene.Instance && !IsFreePlay() && IsInGame() && (!CustomPlayer.Local.IsPostmortal() ||
-            CustomPlayer.Local.Caught()) && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance);
+            CustomPlayer.Local.Caught()) && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance && !Meeting());
 
         if (PhoneText)
         {

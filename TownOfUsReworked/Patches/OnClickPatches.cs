@@ -11,7 +11,7 @@ public static class PlayerControlOnClick
         if (IsHnS())
             return true;
 
-        if (AllButtons.TryFinding(x => x.Owner.Local && x.Clickable() && ((__instance.AmOwner && x.Type == AbilityTypes.Targetless) || x.TargetPlayer == __instance), out var button))
+        if (AllButtons.TryFinding(x => x.Owner.Local && x.Clickable() && ((__instance.AmOwner && x.Type == AbilityType.Targetless) || x.Target == __instance), out var button))
         {
             button.Clicked();
             return false;
@@ -80,7 +80,7 @@ public static class DeadBodyOnClick
         if (Meeting() || Lobby() || IsHnS() || PerformReport.ReportPressed)
             return true;
 
-        var result = AllButtons.TryFinding(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable() && !x.Owner.IsBlocked, out var button);
+        var result = AllButtons.TryFinding(x => x.Owner.Local && x.Target == __instance && x.Clickable() && !x.Owner.IsBlocked, out var button);
         button?.Clicked();
         return !result && !IsTaskRace() && !IsCustomHnS();
     }

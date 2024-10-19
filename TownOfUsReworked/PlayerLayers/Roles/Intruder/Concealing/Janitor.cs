@@ -38,17 +38,17 @@ public class Janitor : Intruder
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
-        DragButton = CreateButton(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
-        DropButton = CreateButton(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
-        CleanButton = CreateButton(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
+        DragButton = CreateButton(this, new SpriteName("Drag"), AbilityType.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
+        DropButton = CreateButton(this, new SpriteName("Drop"), AbilityType.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
+        CleanButton = CreateButton(this, new SpriteName("Clean"), AbilityType.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
             (UsableFunc)Usable1);
     }
 
     public void Clean()
     {
-        Spread(Player, PlayerByBody(CleanButton.TargetBody));
-        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, CleanButton.TargetBody);
-        FadeBody(CleanButton.TargetBody);
+        Spread(Player, PlayerByBody(CleanButton.GetTarget<DeadBody>()));
+        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, CleanButton.GetTarget<DeadBody>());
+        FadeBody(CleanButton.GetTarget<DeadBody>());
         CleanButton.StartCooldown();
 
         if (JaniCooldownsLinked)
@@ -57,7 +57,7 @@ public class Janitor : Intruder
 
     public void Drag()
     {
-        CurrentlyDragging = DragButton.TargetBody;
+        CurrentlyDragging = DragButton.GetTarget<DeadBody>();
         Spread(Player, PlayerByBody(CurrentlyDragging));
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CurrentlyDragging);
         DragHandler.Instance.StartDrag(Player, CurrentlyDragging);

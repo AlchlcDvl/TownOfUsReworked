@@ -5,20 +5,18 @@ public static class AssetManager
     public static readonly List<Sprite> PortalAnimation = [];
     public static readonly Dictionary<string, AssetBundle> Bundles = [];
     public static readonly Dictionary<string, string> ObjectToBundle = [];
-    public static readonly Dictionary<string, List<UObject>> LoadedObjects = [];
-    public static readonly Dictionary<string, List<object>> OtherLoadedObjects = [];
+    private static readonly Dictionary<string, List<UObject>> UnityLoadedObjects = [];
+    private static readonly Dictionary<string, List<object>> SystemLoadedObjects = [];
 
-    public static AudioClip GetAudio(string path) => Get<AudioClip>(path) ?? Get<AudioClip>("Placeholder");
+    public static AudioClip GetAudio(string path) => UnityGet<AudioClip>(path);
 
-    public static Sprite GetSprite(string path) => Get<Sprite>(path) ?? Get<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder");
+    public static Sprite GetSprite(string path) => UnityGet<Sprite>(path, false) ?? UnityGet<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder", false);
 
-    public static TMP_FontAsset GetFont(string path) => Get<TMP_FontAsset>(path) ?? Get<TMP_FontAsset>("Placeholder");
+    public static TMP_FontAsset GetFont(string path) => UnityGet<TMP_FontAsset>(path);
 
-    public static RoleEffectAnimation GetRoleAnim(string path) => Get<RoleEffectAnimation>(path);
+    public static AnimationClip GetAnim(string path) => UnityGet<AnimationClip>(path, false);
 
-    public static AnimationClip GetAnim(string path) => Get<AnimationClip>(path);
-
-    public static string GetString(string path) => OtherGet<string>(path) ?? "Placeholder";
+    public static string GetString(string path) => SystemGet<string>(path, false) ?? "Placeholder";
 
     public static void Play(string path, bool loop = false, float volume = 1f) => Play(GetAudio(path), loop, volume);
 
@@ -36,51 +34,42 @@ public static class AssetManager
             SoundManager.Instance.StopSound(audio);
     }
 
-    public static void StopAll() => GetAll<AudioClip>().ForEach(Stop);
+    public static void StopAll() => UnityGetAll<AudioClip>().ForEach(Stop);
 
     public static Texture2D LoadDiskTexture(string path) => LoadTexture(File.ReadAllBytes(path), path.SanitisePath());
 
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
 
-    public static unsafe Texture2D LoadResourceTexture(string path)
-    {
-        var stream = TownOfUsReworked.Core.GetManifestResourceStream(path);
-        var length = stream.Length;
-        var byteTexture = new Il2CppStructArray<byte>(length);
-        stream.Read(new(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
-        return LoadTexture(byteTexture, path.SanitisePath());
-    }
+    public static Texture2D LoadResourceTexture(string path) => LoadTexture(TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully(), path.SanitisePath());
 
     public static Texture2D LoadTexture(byte[] data, string name)
     {
         var texture = EmptyTexture();
-        texture.LoadImage(data, false);
+        texture.LoadImage(data, !GetReadable(name));
         texture.name = name;
         return texture.DontDestroy();
     }
 
     public static Sprite CreateResourceSprite(string path) => CreateSprite(LoadResourceTexture(path), path.SanitisePath());
 
-    public static Sprite CreateSprite(Texture2D tex, string name, float size = -1f)
+    public static Sprite CreateSprite(Texture2D tex, string name, float size = -1f, SpriteMeshType meshType = SpriteMeshType.Tight)
     {
-        var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), size > 0f ? size : GetSize(name));
+        var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), size > 0f ? size : GetSize(name), 0, meshType);
         sprite.name = name;
         sprite.hideFlags |= HideFlags.DontSaveInEditor;
         return sprite.DontDestroy();
     }
 
-    public static AudioClip CreateResourceAudio(string path) => CreateAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path));
+    public static AudioClip CreateResourceAudio(string path) => CreateAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully());
 
-    public static AudioClip CreateDiskAudio(string path) => CreateAudio(path.SanitisePath(), File.Open(path, FileMode.Open));
+    public static AudioClip CreateDiskAudio(string path) => CreateAudio(path.SanitisePath(), File.ReadAllBytes(path));
 
-    public static AudioClip CreateAudio(string name, Stream stream)
+    public static AudioClip CreateAudio(string name, byte[] data)
     {
-        var byteAudio = new byte[stream.Length];
-        stream.Read(byteAudio, 0, (int)stream.Length);
-        var samples = new float[byteAudio.Length / 4];
+        var samples = new float[data.Length / 4];
 
         for (var i = 0; i < samples.Length; i++)
-            samples[i] = (float)BitConverter.ToInt32(byteAudio, i * 4) / int.MaxValue;
+            samples[i] = (float)BitConverter.ToInt32(data, i * 4) / int.MaxValue;
 
         var audioClip = AudioClip.Create(name, samples.Length / 2, 2, GetFrequency(name), false);
         audioClip.SetData(samples, 0);
@@ -88,33 +77,16 @@ public static class AssetManager
         return audioClip.DontDestroy();
     }
 
-    public static AssetBundle LoadBundle(Stream stream) => AssetBundle.LoadFromMemory(stream.ReadFully());
+    public static AssetBundle LoadBundle(byte[] data) => AssetBundle.LoadFromMemory(data);
 
-    public static string ReadResourceText(string itemName)
+    public static string ReadResourceText(string path)
     {
-        var resourceName = $"{TownOfUsReworked.Resources}{itemName}.txt";
-        var stream = TownOfUsReworked.Core.GetManifestResourceStream(resourceName);
+        var stream = TownOfUsReworked.Core.GetManifestResourceStream(path);
         var reader = new StreamReader(stream);
         var text = reader.ReadToEnd();
         KeyWords.ForEach(x => text = text.Replace(x.Key, x.Value));
         return text;
     }
-
-    // https://stackoverflow.com/questions/51315918/how-to-encodetopng-compressed-textures-in-unity courtesy of pat from salem mod loader
-    // public static Texture2D Decompress(this Texture2D source)
-    // {
-    //     var renderTex = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
-    //     Graphics.Blit(source, renderTex);
-    //     var previous = RenderTexture.active;
-    //     RenderTexture.active = renderTex;
-    //     var readableText = new Texture2D(source.width, source.height);
-    //     readableText.ReadPixels(new(0, 0, renderTex.width, renderTex.height), 0, 0);
-    //     readableText.Apply();
-    //     RenderTexture.active = previous;
-    //     RenderTexture.ReleaseTemporary(renderTex);
-    //     readableText.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-    //     return readableText;
-    // }
 
     public static void SaveText(string fileName, string textToSave, string diskLocation) => SaveText(fileName, textToSave, true, diskLocation);
 
@@ -154,7 +126,7 @@ public static class AssetManager
             else if (resourceName.EndsWith(".raw"))
                 AddAsset(resourceName.SanitisePath(), CreateResourceAudio(resourceName));
             else if (resourceName.Contains(".txt"))
-                AddAsset(resourceName.SanitisePath(), ReadResourceText(resourceName.SanitisePath()));
+                AddAsset(resourceName.SanitisePath(), ReadResourceText(resourceName));
         }
 
         Cursor.SetCursor(GetSprite("Cursor").texture, CursorMode.Auto);
@@ -203,32 +175,38 @@ public static class AssetManager
             return 48000;
     }
 
-    public static T Get<T>(string name) where T : UObject
+    public static T UnityGet<T>(string name, bool fetchPlaceholder = true) where T : UObject
     {
-        if (LoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x.GetType() == typeof(T), out var result))
+        if (UnityLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x.GetType() == typeof(T), out var result))
             return result as T;
 
         if (ObjectToBundle.TryGetValue(name.ToLower(), out var bundle))
             return LoadAsset<T>(Bundles[bundle], name);
 
-        // Error($"{path} does not exist");
+        if (name != "Placeholder" && fetchPlaceholder)
+            return UnityGet<T>("Placeholder", false);
+
+        // Error($"{name} does not exist");
         return null;
     }
 
-    public static T OtherGet<T>(string name)
+    public static T SystemGet<T>(string name, bool fetchPlaceholder = true)
     {
-        if (OtherLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x.GetType() == typeof(T), out var result))
+        if (SystemLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x.GetType() == typeof(T), out var result))
             return (T)result;
 
-        // Error($"{path} does not exist");
+        if (name != "Placeholder" && fetchPlaceholder)
+            return SystemGet<T>("Placeholder", false);
+
+        // Error($"{name} does not exist");
         return default;
     }
 
-    public static List<T> GetAll<T>() where T : UObject
+    public static List<T> UnityGetAll<T>() where T : UObject
     {
         var result = new List<T>();
 
-        foreach (var (_, objList) in LoadedObjects)
+        foreach (var (_, objList) in UnityLoadedObjects)
         {
             foreach (var obj in objList)
             {
@@ -240,11 +218,11 @@ public static class AssetManager
         return result;
     }
 
-    public static List<T> OtherGetAll<T>()
+    public static List<T> SystemGetAll<T>()
     {
         var result = new List<T>();
 
-        foreach (var (_, objList) in OtherLoadedObjects)
+        foreach (var (_, objList) in SystemLoadedObjects)
         {
             foreach (var obj in objList)
             {
@@ -260,6 +238,11 @@ public static class AssetManager
     {
         var asset = assetBundle.LoadAsset<T>(name)?.DontUnload();
         AddAsset(name, asset);
+        ObjectToBundle.Remove(name);
+
+        if (!Bundles.Keys.Any(ObjectToBundle.Values.Contains))
+            Bundles.Remove(assetBundle.name);
+
         return asset;
     }
 
@@ -267,17 +250,19 @@ public static class AssetManager
 
     public static void AddAsset(string name, UObject obj)
     {
-        if (!LoadedObjects.ContainsKey(name))
-            LoadedObjects[name] = [ obj ];
-        else if (!LoadedObjects[name].Contains(obj))
-            LoadedObjects[name].Add(obj);
+        if (!UnityLoadedObjects.TryGetValue(name, out var value))
+            UnityLoadedObjects[name] = [ obj ];
+        else if (!value.Contains(obj))
+            value.Add(obj);
     }
 
     public static void AddAsset(string name, object obj)
     {
-        if (!OtherLoadedObjects.ContainsKey(name))
-            OtherLoadedObjects[name] = [ obj ];
-        else if (!OtherLoadedObjects[name].Contains(obj))
-            OtherLoadedObjects[name].Add(obj);
+        if (!SystemLoadedObjects.TryGetValue(name, out var value))
+            SystemLoadedObjects[name] = [ obj ];
+        else if (!value.Contains(obj))
+            value.Add(obj);
     }
+
+    private static bool GetReadable(string name) => name is "Cursor";
 }

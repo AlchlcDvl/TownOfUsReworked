@@ -32,7 +32,7 @@ public static class RPC
                 if (option is ToggleOptionAttribute toggle)
                     writer.Write(toggle.Value);
                 else if (option is NumberOptionAttribute number)
-                    writer.Write(num: number.Value);
+                    writer.Write(number.Value.Value);
                 else if (option is StringOptionAttribute stringOpt)
                     writer.Write(stringOpt.Value);
                 else if (option is RoleListEntryAttribute entry)
@@ -173,8 +173,6 @@ public static class RPC
         writer.Write(pv.Version);
     }
 
-    public static void Write(this MessageWriter writer, Number num) => writer.Write(num.Value);
-
     public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(enumVal.ToString());
 
     public static void Write(this MessageWriter writer, object item, object[] data)
@@ -216,7 +214,7 @@ public static class RPC
         else if (item is Version version)
             writer.Write(version);
         else if (item is Number num)
-            writer.Write(num: num);
+            writer.Write(num.Value);
         else if (item is List<Role> roles)
         {
             writer.Write(roles.Count);

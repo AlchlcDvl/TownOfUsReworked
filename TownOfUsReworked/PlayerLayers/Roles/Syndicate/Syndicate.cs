@@ -18,8 +18,8 @@ public abstract class Syndicate : Role
         Faction = Faction.Syndicate;
         FactionColor = CustomColorManager.Syndicate;
         Objectives = () => SyndicateWinCon;
-        KillButton = CreateButton(this, new SpriteName("SyndicateKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
-            (PlayerBodyExclusion)Exception);
+        KillButton = CreateButton(this, new SpriteName("SyndicateKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
+            (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable);
         Player.SetImpostor(true);
         IsPromoted = false;
     }
@@ -57,7 +57,7 @@ public abstract class Syndicate : Role
         return team;
     }
 
-    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.TargetPlayer, true));
+    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.GetTarget<PlayerControl>(), true));
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);

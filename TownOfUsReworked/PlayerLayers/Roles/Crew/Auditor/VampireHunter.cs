@@ -20,7 +20,7 @@ public class VampireHunter : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewAudit;
-        StakeButton = CreateButton(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stake, new Cooldown(StakeCd));
+        StakeButton = CreateButton(this, "STAKE", new SpriteName("Stake"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Stake, new Cooldown(StakeCd));
     }
 
     public void TurnVigilante() => new Vigilante().Start<Role>(Player).RoleUpdate(this);
@@ -36,7 +36,7 @@ public class VampireHunter : Crew
         }
     }
 
-    private void Stake() => StakeButton.StartCooldown(Interact(Player, StakeButton.TargetPlayer, ShouldKill(StakeButton.TargetPlayer)));
+    private void Stake() => StakeButton.StartCooldown(Interact(Player, StakeButton.GetTarget<PlayerControl>(), ShouldKill(StakeButton.GetTarget<PlayerControl>())));
 
     private static bool ShouldKill(PlayerControl player) => player.Is(SubFaction.Undead) || player.IsFramed();
 }

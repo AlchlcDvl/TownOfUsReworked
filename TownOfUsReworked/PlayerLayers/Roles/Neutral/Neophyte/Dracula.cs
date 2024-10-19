@@ -37,7 +37,7 @@ public class Dracula : Neutral
         Alignment = Alignment.NeutralNeo;
         SubFactionColor = CustomColorManager.Undead;
         Converted = [ Player.PlayerId ];
-        BiteButton = CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
+        BiteButton = CreateButton(this, new SpriteName("Bite"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 
@@ -49,11 +49,11 @@ public class Dracula : Neutral
 
     public void Convert()
     {
-        var cooldown = Interact(Player, BiteButton.TargetPlayer);
+        var cooldown = Interact(Player, BiteButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            RoleGen.RpcConvert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= AliveVampCount);
+            RoleGen.RpcConvert(BiteButton.GetTarget<PlayerControl>().PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= AliveVampCount);
             HasConverted = true;
         }
 

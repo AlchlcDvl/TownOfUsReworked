@@ -23,7 +23,7 @@ public class Seer : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewInvest;
-        SeerButton = CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(SeerCd));
+        SeerButton = CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(SeerCd));
         Data.Role.IntroSound = GetAudio("SeerIntro");
     }
 
@@ -31,10 +31,10 @@ public class Seer : Crew
 
     public void See()
     {
-        var cooldown = Interact(Player, SeerButton.TargetPlayer);
+        var cooldown = Interact(Player, SeerButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            Flash(SeerButton.TargetPlayer.GetRole().RoleHistory.Any() || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
+            Flash(SeerButton.GetTarget<PlayerControl>().GetRole().RoleHistory.Any() || SeerButton.GetTarget<PlayerControl>().IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }

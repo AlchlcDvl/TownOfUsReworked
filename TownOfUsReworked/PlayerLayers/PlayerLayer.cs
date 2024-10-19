@@ -369,8 +369,7 @@ public abstract class PlayerLayer
         Ability.AbilityLookup.Clear();*/
     }
 
-    public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => [ .. AllLayers.Where(x => x.GetType() == typeof(T) && (!x.Ignore || includeIgnored) && x.Player)
-        .Cast<T>() ];
+    public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => [ .. AllLayers.Where(x => x is T && (!x.Ignore || includeIgnored) && x.Player).Cast<T>() ];
 
     public static List<PlayerLayer> GetLayers(LayerEnum type, bool includeIgnored = false) => [ .. AllLayers.Where(x => x.Type == type && (!x.Ignore || includeIgnored) && x.Player) ];
 }

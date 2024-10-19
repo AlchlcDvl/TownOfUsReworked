@@ -21,7 +21,7 @@ public class Godfather : Intruder
     {
         BaseStart();
         Alignment = Alignment.IntruderHead;
-        DeclareButton = CreateButton(this, "Promote", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
+        DeclareButton = CreateButton(this, "Promote", AbilityType.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 
     public void Declare(PlayerControl target)
@@ -37,10 +37,10 @@ public class Godfather : Intruder
 
     public void Declare()
     {
-        if (Interact(Player, DeclareButton.TargetPlayer) != CooldownType.Fail)
+        if (Interact(Player, DeclareButton.GetTarget<PlayerControl>()) != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DeclareButton.TargetPlayer);
-            Declare(DeclareButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DeclareButton.GetTarget<PlayerControl>());
+            Declare(DeclareButton.GetTarget<PlayerControl>());
         }
     }
 

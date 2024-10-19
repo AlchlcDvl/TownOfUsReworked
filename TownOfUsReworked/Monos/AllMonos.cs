@@ -29,6 +29,9 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<MissingBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<CustomKillAnimationPlayer>();
         ClassInjector.RegisterTypeInIl2Cpp<CameraEffect>();
+        ClassInjector.RegisterTypeInIl2Cpp<Range>();
+        ClassInjector.RegisterTypeInIl2Cpp<Bug>();
+        ClassInjector.RegisterTypeInIl2Cpp<Bomb>();
         ClassInjector.RegisterTypeInIl2Cpp<LobbyConsole>(usableInterface);
     }
 

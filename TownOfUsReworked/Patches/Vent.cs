@@ -168,8 +168,13 @@ public static class MoveToVentPatch
 }
 
 [HarmonyPatch(typeof(Vent), nameof(Vent.UpdateArrows))]
+public static class FixdlekSVents1
+{
+    public static bool Prefix() => MapPatches.CurrentMap != 3;
+}
+
 [HarmonyPatch(typeof(Vent), nameof(Vent.ToggleNeighborVentBeingCleaned))]
-public static class FixdlekSVents
+public static class FixdlekSVents2
 {
     public static bool Prefix() => MapPatches.CurrentMap != 3;
 }

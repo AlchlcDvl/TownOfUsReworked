@@ -1,18 +1,17 @@
-﻿namespace TownOfUsReworked.Objects;
+﻿namespace TownOfUsReworked.Monos;
 
-public class Bug(PlayerControl owner) : Range(owner, CustomColorManager.Operative, Operative.BugRange, "Bug")
+public class Bug : Range
 {
+    [HideFromIl2Cpp]
     private Dictionary<byte, float> Players { get; } = [];
+
+    [HideFromIl2Cpp]
     private Dictionary<byte, LayerEnum> Results { get; } = [];
 
     public override void Update()
     {
         base.Update();
-
-        if (!Transform)
-            return;
-
-        var closest = GetClosestPlayers(Transform.position, Size);
+        var closest = GetClosestPlayers(transform.position, Size);
         var remove = new List<byte>();
 
         foreach (var player in Players.Keys)
@@ -44,6 +43,7 @@ public class Bug(PlayerControl owner) : Range(owner, CustomColorManager.Operativ
         }
     }
 
+    [HideFromIl2Cpp]
     public string GetResults()
     {
         var result = "";
@@ -58,5 +58,16 @@ public class Bug(PlayerControl owner) : Range(owner, CustomColorManager.Operativ
         Results.Clear();
         Players.Clear();
         return result;
+    }
+
+    public static Bug CreateBug(PlayerControl owner)
+    {
+        var gameObject = CreateRange(CustomColorManager.Operative, Operative.BugRange, "Bug");
+        var bug = gameObject.AddComponent<Bug>();
+        bug.Owner = owner;
+        bug.Size = Operative.BugRange;
+        var position = owner.GetTruePosition();
+        gameObject.transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);
+        return bug;
     }
 }

@@ -39,20 +39,12 @@ public class Guesser : Neutral
     private bool LettersExhausted { get; set; }
     private string RoleName { get; set; }
     public List<string> Letters { get; set; }
-    public Dictionary<string, UColor> ColorMapping { get; set; }
-    public Dictionary<string, UColor> SortedColorMapping { get; set; }
-    public GameObject Phone { get; set; }
-    public Transform SelectedButton { get; set; }
-    public int Page { get; set; }
-    public int MaxPage { get; set; }
-    public Dictionary<int, List<Transform>> GuessButtons { get; set; }
-    public Dictionary<int, KeyValuePair<string, UColor>> Sorted { get; set; }
+    private List<LayerEnum> Mapping { get; set; }
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
     public CustomMeeting GuessMenu { get; set; }
-    private Transform Next;
-    private Transform Back;
+    public CustomRolesMenu GuessingMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Guesser : CustomColorManager.Neutral;
     public override string Name => "Guesser";
@@ -67,26 +59,18 @@ public class Guesser : Neutral
         BaseStart();
         Alignment = Alignment.NeutralEvil;
         RemainingGuesses = MaxGuesses == 0 ? 10000 : MaxGuesses;
-        SortedColorMapping = [];
-        SelectedButton = null;
-        Page = 0;
-        MaxPage = 0;
-        GuessButtons = [];
-        Sorted = [];
-        ColorMapping = [];
         Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer.Data.PlayerName} was" : (!TargetPlayer ? "- Find someone to be guessed by you" : ("- Guess " +
             $"{TargetPlayer?.name}'s role"));
-        SetLists();
         GuessMenu = new(Player, "Guess", GuesserAfterVoting, Guess, IsExempt, SetLists);
         Rounds = 0;
         Letters = [];
+        GuessingMenu = new(Player, GuessPlayer);
 
         if (GuesserCanPickTargets)
         {
-            TargetButton = CreateButton(this, new SpriteName("GuessTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception,
-                (UsableFunc)Usable, "AGONISE");
+            TargetButton = CreateButton(this, new SpriteName("GuessTarget"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
+                (UsableFunc)Usable);
         }
-
     }
 
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
@@ -94,17 +78,15 @@ public class Guesser : Neutral
 
     public void SelectTarget()
     {
-        TargetPlayer = TargetButton.TargetPlayer;
+        TargetPlayer = TargetButton.GetTarget<PlayerControl>();
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
     }
 
     private void SetLists()
     {
-        ColorMapping.Clear();
-        SortedColorMapping.Clear();
-        Sorted.Clear();
+        Mapping.Clear();
 
-        ColorMapping.Add("Crewmate", CustomColorManager.Crew);
+        Mapping.Add(LayerEnum.Crewmate);
 
         // Adds all the roles that have a non-zero chance of being in the game
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
@@ -113,62 +95,46 @@ public class Guesser : Neutral
             {
                 var layer = (LayerEnum)h;
 
-                if (layer is LayerEnum.Revealer or LayerEnum.Crewmate)
-                    continue;
-
-                var entry = LayerDictionary[layer];
-
-                if (RoleGen.GetSpawnItem(layer).IsActive())
+                if (layer is LayerEnum.Revealer or LayerEnum.Crewmate or LayerEnum.Coroner or LayerEnum.Detective or LayerEnum.Medium or LayerEnum.Operative or LayerEnum.Seer or
+                    LayerEnum.Sheriff or LayerEnum.Tracker)
                 {
-                    if (layer is LayerEnum.Coroner or LayerEnum.Detective or LayerEnum.Medium or LayerEnum.Operative or LayerEnum.Seer or LayerEnum.Sheriff or LayerEnum.Tracker)
-                        continue;
-
-                    ColorMapping.Add(entry.Name, entry.Color);
+                    continue;
                 }
-                else if (layer == LayerEnum.Vigilante && !ColorMapping.ContainsKey("Vigilante") && ColorMapping.ContainsKey("Vampire Hunter"))
-                    ColorMapping.Add("Vigilante", CustomColorManager.Vigilante);
+
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !Mapping.Contains(LayerEnum.Vigilante) && Mapping.Contains(LayerEnum.VampireHunter)))
+                    Mapping.Add(layer);
             }
         }
 
         if (!SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
         {
+            Mapping.Add(LayerEnum.Impostor);
+
             for (var h = 52; h < 70; h++)
             {
                 var layer = (LayerEnum)h;
 
-                if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather)
+                if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.Impostor)
                     continue;
 
-                var entry = LayerDictionary[layer];
-
-                if (RoleGen.GetSpawnItem(layer).IsActive())
-                    ColorMapping.Add(entry.Name, entry.Color);
-                else if (layer == LayerEnum.Mafioso && !ColorMapping.ContainsKey("Mafioso") && ColorMapping.ContainsKey("Godfather"))
-                    ColorMapping.Add("Mafioso", CustomColorManager.Mafioso);
-            }
-
-            if (ColorMapping.ContainsKey("Miner") && MapPatches.CurrentMap == 5)
-            {
-                ColorMapping["Herbalist"] = ColorMapping["Miner"];
-                ColorMapping.Remove("Miner");
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !Mapping.Contains(LayerEnum.Mafioso) && Mapping.Contains(LayerEnum.Godfather)))
+                    Mapping.Add(layer);
             }
         }
 
         if (SyndicateSettings.SyndicateCount > 0)
         {
+            Mapping.Add(LayerEnum.Anarchist);
+
             for (var h = 70; h < 88; h++)
             {
                 var layer = (LayerEnum)h;
 
-                if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel)
+                if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel or LayerEnum.Anarchist)
                     continue;
 
-                var entry = LayerDictionary[layer];
-
-                if (RoleGen.GetSpawnItem(layer).IsActive())
-                    ColorMapping.Add(entry.Name, entry.Color);
-                else if (layer == LayerEnum.Sidekick && !ColorMapping.ContainsKey("Sidekick") && ColorMapping.ContainsKey("Rebel"))
-                    ColorMapping.Add("Sidekick", CustomColorManager.Sidekick);
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !Mapping.Contains(LayerEnum.Sidekick) && Mapping.Contains(LayerEnum.Rebel)))
+                    Mapping.Add(layer);
             }
         }
 
@@ -181,150 +147,62 @@ public class Guesser : Neutral
                 if (layer == LayerEnum.Phantom)
                     continue;
 
-                var entry = LayerDictionary[layer];
-
-                if (RoleGen.GetSpawnItem(layer).IsActive())
-                    ColorMapping.Add(entry.Name, entry.Color);
-                else if (layer == LayerEnum.Survivor && ColorMapping.ContainsKey("Guardian Angel") && !ColorMapping.ContainsKey("Survivor"))
-                    ColorMapping.Add("Survivor", CustomColorManager.Survivor);
-                else if (layer == LayerEnum.Thief && ColorMapping.ContainsKey("Amnesiac") && !ColorMapping.ContainsKey("Thief"))
-                    ColorMapping.Add("Thief", CustomColorManager.Thief);
-                else if (layer == LayerEnum.Troll && ColorMapping.ContainsKey("Bounty Hunter") && !ColorMapping.ContainsKey("Troll"))
-                    ColorMapping.Add("Troll", CustomColorManager.Troll);
-                else if (layer == LayerEnum.Actor && ColorMapping.ContainsKey("Guesser") && !ColorMapping.ContainsKey("Actor"))
-                    ColorMapping.Add("Actor", CustomColorManager.Actor);
-                else if (layer == LayerEnum.Jester && ColorMapping.ContainsKey("Executioner") && !ColorMapping.ContainsKey("Jester"))
-                    ColorMapping.Add("Jester", CustomColorManager.Jester);
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && Mapping.Contains(LayerEnum.GuardianAngel) && !Mapping.Contains(LayerEnum.Survivor)) || (layer
+                    == LayerEnum.Thief && Mapping.Contains(LayerEnum.Amnesiac) && !Mapping.Contains(LayerEnum.Thief)) || (layer == LayerEnum.Troll && Mapping.Contains(LayerEnum.BountyHunter)
+                    && !Mapping.Contains(LayerEnum.Troll)) || (layer == LayerEnum.Actor && Mapping.Contains(LayerEnum.Guesser) && !Mapping.Contains(LayerEnum.Actor)) || (layer ==
+                    LayerEnum.Jester && Mapping.Contains(LayerEnum.Executioner) && !Mapping.Contains(LayerEnum.Jester)))
+                {
+                    Mapping.Add(layer);
+                }
             }
+
+            if (Mapping.Contains(LayerEnum.Whisperer))
+                Mapping.Add(LayerEnum.Sect);
+
+            if (Mapping.Contains(LayerEnum.Necromancer))
+                Mapping.Add(LayerEnum.Reanimated);
+
+            if (Mapping.Contains(LayerEnum.Jackal))
+                Mapping.Add(LayerEnum.Cabal);
+
+            if (Mapping.Contains(LayerEnum.Dracula))
+                Mapping.Add(LayerEnum.Undead);
         }
 
-        // Sorts the list alphabetically.
-        SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
-
-        var i = 0;
-        var j = 0;
-        var k = 0;
-
-        foreach (var pair in SortedColorMapping)
-        {
-            Sorted.Add(j, pair);
-            j++;
-            k++;
-
-            if (k >= 40)
-            {
-                i++;
-                k -= 40;
-            }
-        }
-
-        MaxPage = i;
+        // Sorts the list by layer type
+        Mapping = [ .. Mapping.OrderBy(x => x) ];
     }
 
-    private void SetButtons(MeetingHud __instance, PlayerVoteArea voteArea)
+    private void GuessPlayer(ShapeshifterPanel panel, PlayerControl player, LayerEnum guess)
     {
-        var buttonTemplate = voteArea.transform.FindChild("votePlayerBase");
-        SelectedButton = null;
-        var i = 0;
-        var j = 0;
+        if (Dead || Meeting().state == MeetingHud.VoteStates.Discussion || !panel || RemainingGuesses <= 0)
+            return;
 
-        for (var k = 0; k < SortedColorMapping.Count; k++)
+        if (GuessingMenu.SelectedPanel != panel)
         {
-            if (!GuessButtons.ContainsKey(i))
-                GuessButtons.Add(i, []);
+            if (GuessingMenu.SelectedPanel)
+                GuessingMenu.SelectedPanel.Background.color = UColor.white;
 
-            var row = j / 5;
-            var col = j % 5;
-            var guess = Sorted[k].Key;
-            var buttonParent = new GameObject($"Guess{i}").transform;
-            buttonParent.SetParent(Phone.transform);
-            var button = UObject.Instantiate(buttonTemplate, buttonParent);
-            MakeTheButton(button, buttonParent, voteArea, new(-3.47f + (1.75f * col), 1.5f - (0.45f * row), -5f), guess, Sorted[k].Value, () =>
-            {
-                if (Dead)
-                    return;
-
-                if (SelectedButton != button)
-                {
-                    if (SelectedButton)
-                        SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
-
-                    SelectedButton = button;
-                    SelectedButton.GetComponent<SpriteRenderer>().color = UColor.red;
-                }
-                else
-                {
-                    var focusedTarget = PlayerByVoteArea(voteArea);
-
-                    if (__instance.state == MeetingHud.VoteStates.Discussion || !focusedTarget || RemainingGuesses <= 0)
-                        return;
-
-                    var targetId = voteArea.TargetPlayerId;
-                    var targetPlayer = PlayerById(targetId);
-
-                    var playerRole = voteArea.GetRole();
-
-                    var roleflag = playerRole?.Name == guess;
-                    var recruitflag = targetPlayer.IsRecruit() && guess == "Recruit";
-                    var sectflag = targetPlayer.IsPersuaded() && guess == "Persuaded";
-                    var reanimatedflag = targetPlayer.IsResurrected() && guess == "Resurrected";
-                    var undeadflag = targetPlayer.IsBitten() && guess == "Bitten";
-
-                    var flag = roleflag || recruitflag || sectflag || reanimatedflag || undeadflag;
-                    var toDie = flag ? targetPlayer : Player;
-                    TargetGuessed = flag;
-                    Exit(__instance);
-                    RpcMurderPlayer(toDie, guess, targetPlayer);
-
-                    if (RemainingGuesses <= 0 || !MultipleGuesses)
-                        GuessMenu.HideButtons();
-                    else
-                        GuessMenu.HideSingle(targetId);
-                }
-            });
-
-            GuessButtons[i].Add(button);
-            j++;
-
-            if (j >= 40)
-            {
-                i++;
-                j -= 40;
-            }
+            GuessingMenu.SelectedPanel = panel;
+            GuessingMenu.SelectedPanel.Background.color = LayerDictionary[guess].Color.Alternate(0.4f);
         }
-
-        if (MaxPage > 0)
+        else
         {
-            var nextParent = new GameObject("GuessNext").transform;
-            nextParent.SetParent(Phone.transform);
-            Next = UObject.Instantiate(buttonTemplate, nextParent);
-            MakeTheButton(Next, nextParent, voteArea, new(3.53f, -2.13f, -5f), "Next Page", UColor.white, () => Page = CycleInt(MaxPage, 0, Page, true));
+            var layerflag = player.GetLayers().Any(x => x.Type == guess);
+            var subfactionflag = player.GetSubFaction().ToString() == guess.ToString();
 
-            var backParent = new GameObject("GuessBack").transform;
-            backParent.SetParent(Phone.transform);
-            Back = UObject.Instantiate(buttonTemplate, backParent);
-            MakeTheButton(Back, backParent, voteArea, new(-3.47f, -2.13f, -5f), "Back Page", UColor.white, () => Page = CycleInt(MaxPage, 0, Page, false));
+            var flag = layerflag || subfactionflag;
+            var toDie = flag ? player : Player;
+            TargetGuessed = flag;
+            RpcMurderPlayer(toDie, guess, player);
+
+            if (RemainingGuesses <= 0 || !MultipleGuesses)
+                GuessMenu.HideButtons();
+            else
+                GuessMenu.HideSingle(player.PlayerId);
+
+            GuessingMenu.SelectedPanel = null;
         }
-    }
-
-    private void MakeTheButton(Transform button, Transform buttonParent, PlayerVoteArea voteArea, Vector3 position, string title, UColor color, Action onClick)
-    {
-        UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), buttonParent);
-        var label = UObject.Instantiate(voteArea.NameText, button);
-        var rend = button.GetComponent<SpriteRenderer>();
-        rend.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
-        buttonParent.localPosition = position;
-        buttonParent.localScale = new(0.55f, 0.55f, 1f);
-        label.transform.localPosition = new(0f, 0f, label.transform.localPosition.z);
-        label.transform.localScale *= 1.7f;
-        label.text = title;
-        label.color = color;
-        var passive = button.GetComponent<PassiveButton>();
-        passive.OverrideOnMouseOverListeners(() => rend.color = UColor.green);
-        passive.OverrideOnMouseOutListeners(() => rend.color = SelectedButton == button ? UColor.red : UColor.white);
-        passive.OverrideOnClickListeners(onClick);
-        passive.ClickSound = GetAudio("Click");
-        passive.HoverSound = GetAudio("Hover");
     }
 
     public void TurnAct()
@@ -486,102 +364,28 @@ public class Guesser : Neutral
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
     {
-        if (Phone || __instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
+        if (__instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
             return;
 
-        AllVoteAreas().ForEach(x => x.gameObject.SetActive(false));
-        __instance.TimerText.gameObject.SetActive(false);
-        Chat().SetVisible(false);
-        Page = 0;
-        var container = UObject.Instantiate(UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI"), __instance.transform);
-        container.transform.localPosition = new(0, 0, -5f);
-        Phone = container.gameObject;
-        var exitButtonParent = new GameObject("CustomExitButton").transform;
-        exitButtonParent.SetParent(container);
-        var exitButton = UObject.Instantiate(voteArea.transform.FindChild("votePlayerBase").transform, exitButtonParent);
-        var exitButtonMask = UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), exitButtonParent);
-        exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = voteArea.Buttons.transform.Find("CancelButton").GetComponent<SpriteRenderer>().sprite;
-        exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
-        exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
-        exitButton.GetComponent<PassiveButton>().OverrideOnClickListeners(() => Exit(__instance));
-        SetButtons(__instance, voteArea);
-    }
-
-    public void Exit(MeetingHud __instance)
-    {
-        if (!Phone)
-            return;
-
-        Phone.Destroy();
-        Chat().SetVisible(true);
-        SelectedButton = null;
-        __instance.TimerText.gameObject.SetActive(true);
-        AllVoteAreas().ForEach(x => x.gameObject.SetActive(true));
-
-        foreach (var pair in GuessButtons)
-        {
-            foreach (var item in pair.Value)
-            {
-                if (!item)
-                    continue;
-
-                item.GetComponent<PassiveButton>().WipeListeners();
-                item.gameObject.SetActive(false);
-                item.gameObject.Destroy();
-                item.Destroy();
-            }
-        }
-
-        GuessButtons.Clear();
-
-        if (MaxPage > 0)
-        {
-            Next.GetComponent<PassiveButton>().WipeListeners();
-            Next.gameObject.SetActive(false);
-            Next.gameObject.Destroy();
-            Next.Destroy();
-
-            Back.GetComponent<PassiveButton>().WipeListeners();
-            Back.gameObject.SetActive(false);
-            Back.gameObject.Destroy();
-            Back.Destroy();
-        }
+        GuessingMenu.Open(PlayerByVoteArea(voteArea), Mapping);
     }
 
     public override void UpdateMeeting(MeetingHud __instance)
     {
         base.UpdateMeeting(__instance);
         GuessMenu.Update(__instance);
-
-        if (Phone)
-        {
-            if (MaxPage > 0)
-            {
-                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
-                    Page = CycleInt(MaxPage, 0, Page, true);
-                else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
-                    Page = CycleInt(MaxPage, 0, Page, false);
-            }
-
-            foreach (var pair in GuessButtons)
-            {
-                if (pair.Value.Any())
-                    pair.Value.ForEach(x => x?.gameObject?.SetActive(Page == pair.Key));
-
-                GuessButtons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UColor.red : UColor.white);
-            }
-        }
     }
 
-    public void RpcMurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
+    public void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, player, guess, guessTarget);
     }
 
-    public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
+    public void MurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
         Spread(Player, guessTarget);
+        var guessString = LayerDictionary[guess].Name;
 
         if (Player != player)
         {
@@ -601,9 +405,9 @@ public class Guesser : Neutral
             }
 
             if (CustomPlayer.Local == player)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
             else if (DeadSeeEverything())
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guessString}!");
             else if (CanAttack(AttackVal, player.GetDefenseValue(Player)))
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
         }
@@ -614,14 +418,14 @@ public class Guesser : Neutral
                 RemainingGuesses--;
 
                 if (DeadSeeEverything() && !Local)
-                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guess}!");
+                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guessString}!");
                 else if (Local && !TargetGuessed)
-                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess}!");
+                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString}!");
             }
             else if (DeadSeeEverything())
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guess}!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guessString}!");
             else if (Local && !TargetGuessed)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess}!");
+                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString}!");
         }
     }
 
@@ -629,15 +433,15 @@ public class Guesser : Neutral
     {
         base.VoteComplete(__instance);
         GuessMenu.HideButtons();
-        Exit(__instance);
+        GuessingMenu.Close();
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)
     {
         base.ConfirmVotePrefix(__instance);
         GuessMenu.Voted();
-        Exit(__instance);
+        GuessingMenu.Close();
     }
 
-    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
+    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.ReadPlayer(), reader.ReadEnum<LayerEnum>(), reader.ReadPlayer());
 }

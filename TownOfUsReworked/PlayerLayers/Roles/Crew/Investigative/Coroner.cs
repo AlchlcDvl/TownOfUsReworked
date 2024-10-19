@@ -41,8 +41,8 @@ public class Coroner : Crew
         BodyArrows = [];
         Reported = [];
         ReferenceBodies = [];
-        AutopsyButton = CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, new Cooldown(AutopsyCd));
-        CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
+        AutopsyButton = CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, new Cooldown(AutopsyCd));
+        CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -88,7 +88,7 @@ public class Coroner : Crew
 
     public void Autopsy()
     {
-        var playerId = AutopsyButton.TargetBody.ParentId;
+        var playerId = AutopsyButton.GetTarget<DeadBody>().ParentId;
         Spread(Player, PlayerById(playerId));
         ReferenceBodies.AddRange(KilledPlayers.Where(x => x.PlayerId == playerId));
         AutopsyButton.StartCooldown();
@@ -96,10 +96,10 @@ public class Coroner : Crew
 
     public void Compare()
     {
-        var cooldown = Interact(Player, CompareButton.TargetPlayer);
+        var cooldown = Interact(Player, CompareButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
-            Flash(ReferenceBodies.Any(x => CompareButton.TargetPlayer.PlayerId == x.KillerId) ? UColor.red : UColor.green);
+            Flash(ReferenceBodies.Any(x => CompareButton.GetTarget<PlayerControl>().PlayerId == x.KillerId) ? UColor.red : UColor.green);
 
         CompareButton.StartCooldown(cooldown);
     }

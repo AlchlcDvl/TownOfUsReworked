@@ -27,7 +27,7 @@ public class Bastion : Crew
         BaseStart();
         Alignment = Alignment.CrewKill;
         BombedIDs = [];
-        BombButton = CreateButton(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClick)Bomb, new Cooldown(BastionCd),
+        BombButton = CreateButton(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityType.Vent, KeybindType.ActionSecondary, (OnClick)Bomb, new Cooldown(BastionCd),
             MaxBombs, (VentExclusion)Exception);
     }
 
@@ -42,12 +42,12 @@ public class Bastion : Crew
 
     public void Bomb()
     {
-        var cooldown = Interact(Player, BombButton.TargetVent);
+        var cooldown = Interact(Player, BombButton.GetTarget<Vent>());
 
         if (cooldown != CooldownType.Fail)
         {
-            BombedIDs.Add(BombButton.TargetVent.Id);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BombButton.TargetVent);
+            BombedIDs.Add(BombButton.GetTarget<Vent>().Id);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BombButton.GetTarget<Vent>());
         }
 
         BombButton.StartCooldown(cooldown);

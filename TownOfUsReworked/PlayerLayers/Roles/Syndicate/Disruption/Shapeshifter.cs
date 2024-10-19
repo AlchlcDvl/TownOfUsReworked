@@ -15,8 +15,8 @@ public class Shapeshifter : Syndicate
     public CustomButton ShapeshiftButton { get; set; }
     public PlayerControl ShapeshiftPlayer1 { get; set; }
     public PlayerControl ShapeshiftPlayer2 { get; set; }
-    public CustomMenu ShapeshiftMenu1 { get; set; }
-    public CustomMenu ShapeshiftMenu2 { get; set; }
+    public CustomPlayerMenu ShapeshiftMenu1 { get; set; }
+    public CustomPlayerMenu ShapeshiftMenu2 { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Shapeshifter : CustomColorManager.Syndicate;
     public override string Name => "Shapeshifter";
@@ -32,7 +32,7 @@ public class Shapeshifter : Syndicate
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Exception1);
         ShapeshiftMenu2 = new(Player, Click2, Exception2);
-        ShapeshiftButton = CreateButton(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(ShapeshiftCd), (EffectEndVoid)UnShapeshift,
+        ShapeshiftButton = CreateButton(this, "Shapeshift", AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(ShapeshiftCd), (EffectEndVoid)UnShapeshift,
             new Duration(ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)Label);
     }
 

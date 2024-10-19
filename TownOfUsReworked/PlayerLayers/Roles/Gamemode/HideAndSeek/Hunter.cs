@@ -16,7 +16,7 @@ public class Hunter : HideAndSeek
     {
         BaseStart();
         Objectives = () => "- Hunt the others down before they finish their tasks";
-        HuntButton = CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd),
+        HuntButton = CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd),
             (PlayerBodyExclusion)Exception);
         Player.SetImpostor(true);
     }
@@ -53,11 +53,11 @@ public class Hunter : HideAndSeek
     public void Hunt()
     {
         if (GameModeSettings.HnSMode == HnSMode.Classic)
-            RpcMurderPlayer(Player, HuntButton.TargetPlayer);
+            RpcMurderPlayer(Player, HuntButton.GetTarget<PlayerControl>());
         else if (GameModeSettings.HnSMode == HnSMode.Infection)
         {
-            TurnHunter(HuntButton.TargetPlayer);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, HuntButton.TargetPlayer);
+            TurnHunter(HuntButton.GetTarget<PlayerControl>());
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, HuntButton.GetTarget<PlayerControl>());
         }
 
         HuntButton.StartCooldown();

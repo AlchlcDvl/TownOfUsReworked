@@ -55,6 +55,9 @@ Fixes!
 - General: Fixed the auto updater not clearing out old versions properly
 - General: Fixed the occasional small bugs here and there
 
+Known Bugs :(
+- Critically slow fps for everyone, with the host having it the worst
+
 Credits-
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
 Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, HalloweenApple, Dave, GD

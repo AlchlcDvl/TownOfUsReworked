@@ -26,7 +26,7 @@ public class Glitch : Neutral
     public CustomButton NeutraliseButton { get; set; }
     public PlayerControl HackTarget { get; set; }
     public PlayerControl MimicTarget { get; set; }
-    public CustomMenu MimicMenu { get; set; }
+    public CustomPlayerMenu MimicMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Glitch : CustomColorManager.Neutral;
     public override string Name => "Glitch";
@@ -44,11 +44,11 @@ public class Glitch : Neutral
         Alignment = Alignment.NeutralKill;
         MimicMenu = new(Player, Click, Exception3);
         RoleBlockImmune = true;
-        NeutraliseButton = CreateButton(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Neutralise, (PlayerBodyExclusion)Exception1,
+        NeutraliseButton = CreateButton(this, new SpriteName("Neutralise"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Neutralise, (PlayerBodyExclusion)Exception1,
             new Cooldown(NeutraliseCd), "NEUTRALISE");
-        HackButton = CreateButton(this, new SpriteName("Hack"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
+        HackButton = CreateButton(this, new SpriteName("Hack"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
             new Duration(HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
-        MimicButton = CreateButton(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
+        MimicButton = CreateButton(this, new SpriteName("Mimic"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
             new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic);
         Data.Role.IntroSound = GetAudio("GlitchIntro");
     }
@@ -73,11 +73,11 @@ public class Glitch : Neutral
 
     public void HitHack()
     {
-        var cooldown = Interact(Player, HackButton.TargetPlayer);
+        var cooldown = Interact(Player, HackButton.GetTarget<PlayerControl>());
 
         if (cooldown != CooldownType.Fail)
         {
-            HackTarget = HackButton.TargetPlayer;
+            HackTarget = HackButton.GetTarget<PlayerControl>();
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, HackButton, GlitchActionsRPC.Hack, HackTarget);
             HackButton.Begin();
         }
@@ -85,7 +85,7 @@ public class Glitch : Neutral
             HackButton.StartCooldown(cooldown);
     }
 
-    public void Neutralise() => NeutraliseButton.StartCooldown(Interact(Player, NeutraliseButton.TargetPlayer, true));
+    public void Neutralise() => NeutraliseButton.StartCooldown(Interact(Player, NeutraliseButton.GetTarget<PlayerControl>(), true));
 
     public void HitMimic()
     {

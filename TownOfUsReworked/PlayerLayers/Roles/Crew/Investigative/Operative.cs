@@ -44,14 +44,14 @@ public class Operative : Crew
         Alignment = Alignment.CrewInvest;
         BuggedPlayers = [];
         Bugs = [];
-        BugButton = CreateButton(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(BugCd),  MaxBugs,
+        BugButton = CreateButton(this, "BUG", new SpriteName("Bug"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(BugCd),  MaxBugs,
             (ConditionFunc)Condition);
     }
 
     public override void OnLobby()
     {
         base.OnLobby();
-        Bugs.ForEach(x => x.Destroy());
+        Bugs.ForEach(x => x?.gameObject?.Destroy());
         Bugs.Clear();
     }
 
@@ -92,17 +92,11 @@ public class Operative : Crew
             Run("<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
-    public bool Condition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.Transform.position) < x.Size * 2);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        Bugs.ForEach(x => x.Update());
-    }
+    public bool Condition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 
     public void PlaceBug()
     {
-        Bugs.Add(new(Player));
+        Bugs.Add(Bug.CreateBug(Player));
         BugButton.StartCooldown();
     }
 }

@@ -5,15 +5,14 @@ public static class PatchColours
 {
     public static bool Prefix(StringNames id, ref string __result)
     {
-        var id2 = id;
+        var result = CustomColorManager.AllColors.TryFinding(x => x.StringID == (int)id && !x.Default, out var color) && color != null;
 
-        if (CustomColorManager.AllColors.TryFinding(x => x.StringID == (int)id2 && !x.Default, out var color) && color != null)
+        if (result)
         {
-            var result = TranslationManager.Translate($"Colors.{color.Name}");
-            __result = result == $"Colors.{color.Name}" ? color.Name : result;
-            return false;
+            var translation = TranslationManager.Translate($"Colors.{color.Name}");
+            __result = translation == $"Colors.{color.Name}" ? color.Name : translation;
         }
 
-        return true;
+        return !result;
     }
 }

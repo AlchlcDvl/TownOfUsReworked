@@ -1011,78 +1011,65 @@ public static class LayerExtentions
         _ => "Invalid"
     };
 
-    public static Alignment GetNewAlignment(this Alignment alignment, Faction faction)
+    public static Alignment GetNewAlignment(this Alignment alignment, Faction faction) => faction switch
     {
-        if (faction == Faction.Crew)
+        Faction.Crew => alignment switch
         {
-            return alignment switch
-            {
-                Alignment.NeutralKill or Alignment.SyndicateKill or Alignment.IntruderKill => Alignment.CrewKill,
-                Alignment.IntruderSupport or Alignment.SyndicateSupport => Alignment.CrewSupport,
-                Alignment.IntruderConceal => Alignment.CrewConceal,
-                Alignment.IntruderDecep => Alignment.CrewDecep,
-                Alignment.IntruderUtil or Alignment.SyndicateUtil => Alignment.CrewUtil,
-                Alignment.SyndicateDisrup => Alignment.CrewDisrup,
-                Alignment.SyndicatePower => Alignment.CrewPower,
-                Alignment.IntruderHead => Alignment.CrewHead,
-                _ => alignment
-            };
-        }
-        else if (faction == Faction.Intruder)
+            Alignment.NeutralKill or Alignment.SyndicateKill or Alignment.IntruderKill => Alignment.CrewKill,
+            Alignment.IntruderSupport or Alignment.SyndicateSupport => Alignment.CrewSupport,
+            Alignment.IntruderConceal => Alignment.CrewConceal,
+            Alignment.IntruderDecep => Alignment.CrewDecep,
+            Alignment.IntruderUtil or Alignment.SyndicateUtil => Alignment.CrewUtil,
+            Alignment.SyndicateDisrup => Alignment.CrewDisrup,
+            Alignment.SyndicatePower => Alignment.CrewPower,
+            Alignment.IntruderHead => Alignment.CrewHead,
+            _ => alignment
+        },
+        Faction.Intruder => alignment switch
         {
-            return alignment switch
-            {
-                Alignment.CrewSupport or Alignment.SyndicateSupport => Alignment.IntruderSupport,
-                Alignment.CrewInvest => Alignment.IntruderInvest,
-                Alignment.CrewProt => Alignment.IntruderProt,
-                Alignment.CrewKill or Alignment.SyndicateKill or Alignment.NeutralKill => Alignment.IntruderKill,
-                Alignment.CrewUtil or Alignment.SyndicateUtil => Alignment.IntruderUtil,
-                Alignment.CrewSov => Alignment.IntruderSov,
-                Alignment.CrewAudit => Alignment.IntruderAudit,
-                Alignment.SyndicateDisrup => Alignment.IntruderDisrup,
-                Alignment.SyndicatePower => Alignment.IntruderPower,
-                _ => alignment
-            };
-        }
-        else if (faction == Faction.Syndicate)
+            Alignment.CrewSupport or Alignment.SyndicateSupport => Alignment.IntruderSupport,
+            Alignment.CrewInvest => Alignment.IntruderInvest,
+            Alignment.CrewProt => Alignment.IntruderProt,
+            Alignment.CrewKill or Alignment.SyndicateKill or Alignment.NeutralKill => Alignment.IntruderKill,
+            Alignment.CrewUtil or Alignment.SyndicateUtil => Alignment.IntruderUtil,
+            Alignment.CrewSov => Alignment.IntruderSov,
+            Alignment.CrewAudit => Alignment.IntruderAudit,
+            Alignment.SyndicateDisrup => Alignment.IntruderDisrup,
+            Alignment.SyndicatePower => Alignment.IntruderPower,
+            _ => alignment
+        },
+        Faction.Syndicate =>  alignment switch
         {
-            return alignment switch
-            {
-                Alignment.CrewSupport or Alignment.IntruderSupport => Alignment.SyndicateSupport,
-                Alignment.CrewInvest => Alignment.SyndicateInvest,
-                Alignment.CrewProt => Alignment.SyndicateProt,
-                Alignment.CrewKill or Alignment.NeutralKill or Alignment.IntruderKill => Alignment.SyndicateKill,
-                Alignment.CrewUtil or Alignment.IntruderUtil => Alignment.SyndicateUtil,
-                Alignment.CrewSov => Alignment.SyndicateSov,
-                Alignment.CrewAudit => Alignment.SyndicateAudit,
-                Alignment.IntruderConceal => Alignment.SyndicateConceal,
-                Alignment.IntruderDecep => Alignment.SyndicateDecep,
-                Alignment.IntruderHead => Alignment.SyndicateHead,
-                _ => alignment
-            };
-        }
-        else if (faction == Faction.Neutral)
+            Alignment.CrewSupport or Alignment.IntruderSupport => Alignment.SyndicateSupport,
+            Alignment.CrewInvest => Alignment.SyndicateInvest,
+            Alignment.CrewProt => Alignment.SyndicateProt,
+            Alignment.CrewKill or Alignment.NeutralKill or Alignment.IntruderKill => Alignment.SyndicateKill,
+            Alignment.CrewUtil or Alignment.IntruderUtil => Alignment.SyndicateUtil,
+            Alignment.CrewSov => Alignment.SyndicateSov,
+            Alignment.CrewAudit => Alignment.SyndicateAudit,
+            Alignment.IntruderConceal => Alignment.SyndicateConceal,
+            Alignment.IntruderDecep => Alignment.SyndicateDecep,
+            Alignment.IntruderHead => Alignment.SyndicateHead,
+            _ => alignment
+        },
+        Faction.Neutral => alignment switch
         {
-            return alignment switch
-            {
-                Alignment.CrewSupport or Alignment.IntruderSupport or Alignment.SyndicateSupport => Alignment.NeutralSupport,
-                Alignment.CrewInvest => Alignment.NeutralInvest,
-                Alignment.CrewProt => Alignment.NeutralProt,
-                Alignment.CrewKill or Alignment.SyndicateUtil or Alignment.IntruderUtil => Alignment.NeutralKill,
-                Alignment.CrewUtil or Alignment.SyndicateKill or Alignment.IntruderKill => Alignment.NeutralUtil,
-                Alignment.CrewSov => Alignment.NeutralSov,
-                Alignment.CrewAudit => Alignment.NeutralAudit,
-                Alignment.IntruderConceal => Alignment.NeutralConceal,
-                Alignment.IntruderDecep => Alignment.NeutralDecep,
-                Alignment.SyndicateDisrup => Alignment.NeutralDisrup,
-                Alignment.SyndicatePower => Alignment.NeutralDisrup,
-                Alignment.IntruderHead => Alignment.NeutralHead,
-                _ => alignment
-            };
-        }
-
-        return alignment;
-    }
+            Alignment.CrewSupport or Alignment.IntruderSupport or Alignment.SyndicateSupport => Alignment.NeutralSupport,
+            Alignment.CrewInvest => Alignment.NeutralInvest,
+            Alignment.CrewProt => Alignment.NeutralProt,
+            Alignment.CrewKill or Alignment.SyndicateUtil or Alignment.IntruderUtil => Alignment.NeutralKill,
+            Alignment.CrewUtil or Alignment.SyndicateKill or Alignment.IntruderKill => Alignment.NeutralUtil,
+            Alignment.CrewSov => Alignment.NeutralSov,
+            Alignment.CrewAudit => Alignment.NeutralAudit,
+            Alignment.IntruderConceal => Alignment.NeutralConceal,
+            Alignment.IntruderDecep => Alignment.NeutralDecep,
+            Alignment.SyndicateDisrup => Alignment.NeutralDisrup,
+            Alignment.SyndicatePower => Alignment.NeutralDisrup,
+            Alignment.IntruderHead => Alignment.NeutralHead,
+            _ => alignment
+        },
+        _ => alignment
+    };
 
     public static bool CanButton(this PlayerControl player, out string name)
     {
@@ -1235,12 +1222,7 @@ public static class LayerExtentions
 
     // public static PlayerLayer GetLayer(this PlayerControl player, PlayerLayerEnum layerType) => player.GetLayers().Find(x => x.LayerType == layerType);
 
-    public static T GetLayer<T>(this PlayerControl player) where T : PlayerLayer => player.GetLayers().Find(x =>
-    {
-        var xType = x.GetType();
-        var targetType = typeof(T);
-        return xType == targetType || xType.IsAssignableTo(targetType) || xType.IsAssignableFrom(targetType);
-    }) as T;
+    public static T GetLayer<T>(this PlayerControl player) where T : PlayerLayer => player.GetLayers().Find(x => x is T) as T;
 
     // public static Role GetRoleFromList(this PlayerControl player) => Role.AllRoles.Find(x => x.Player == player);
 

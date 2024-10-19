@@ -41,10 +41,6 @@ public class DebuggerBehaviour : MonoBehaviour
 
             var mouse = Input.mousePosition;
             GUILayout.Label($"Mouse Position\nx: {mouse.x:00.00} y: {mouse.y:00.00} z: {mouse.z:00.00}");
-
-            if (CustomPlayer.Local && !NoLobby() && !CustomPlayer.LocalCustom.Dead && !IsEnded() && WinState == WinLose.None)
-                CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Player Collider");
-
             GUILayout.BeginHorizontal();
 
             foreach (var tab in Tabs)

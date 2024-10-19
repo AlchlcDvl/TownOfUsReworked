@@ -27,6 +27,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         base.OptionCreated();
         var role = Setting.Cast<RoleOptionSetting>();
         role.titleText.text = TranslationManager.Translate(ID);
+        role.titleText.color = LayerColor.Alternate(0.45f);
         role.roleMaxCount = Max;
         var tuple = Get();
         role.chanceText.text = $"{tuple.Chance}%";
@@ -34,7 +35,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         role.role = null;
         role.roleChance = tuple.Chance;
         role.roleMaxCount = Max;
-        role.labelSprite.color = LayerColor.Shadow();
+        role.labelSprite.color = LayerColor;
 
         Count = role.transform.GetChild(1).gameObject;
         Chance = role.transform.GetChild(2).gameObject;
@@ -61,8 +62,12 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         Active1.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleActive);
 
         var cog = role.transform.GetChild(5).gameObject;
-        cog.GetComponent<PassiveButton>().OverrideOnClickListeners(SetUpOptionsMenu);
         cog.SetActive(GroupHeader != null || OptionParents1.Any(x => x.Item2.Contains(Layer)) || OptionParents2.Any(x => x.Item2.Contains(Layer)));
+        var button = cog.GetComponent<GameOptionButton>();
+        button.OverrideOnClickListeners(SetUpOptionsMenu);
+        button.interactableHoveredColor = UColor.white;
+        button.interactableColor = LayerColor.Alternate(0.3f);
+        button.buttonSprite.color = LayerColor.Alternate(0.3f);
 
         SavedMode = GameMode.None;
         Update();

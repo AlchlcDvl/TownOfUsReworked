@@ -1361,6 +1361,8 @@ public static class RoleGen
             Message("Dispositions in the game: " + ids);
         }
 
+        var invalid = new List<LayerEnum>();
+
         while (playerList.Any() && AllDispositions.Any())
         {
             var id = AllDispositions.TakeFirst().ID;
@@ -1388,8 +1390,18 @@ public static class RoleGen
                 if (!assigned.GetDisposition())
                     Gen(assigned, id, PlayerLayerEnum.Disposition);
                 else
-                    AllDispositions.Add(GetSpawnItem(id));
+                    invalid.Add(id);
             }
+        }
+
+        if (TownOfUsReworked.IsTest)
+        {
+            var ids = "";
+
+            foreach (var spawn in invalid)
+                ids += $" {spawn}";
+
+            Message("Invalid Dispositions in the game: " + ids);
         }
 
         Message("Dispositions Done");
@@ -1437,6 +1449,8 @@ public static class RoleGen
 
         AllModifiers.Shuffle();
 
+        var invalid = new List<LayerEnum>();
+
         if (TownOfUsReworked.IsTest)
         {
             var ids = "";
@@ -1479,8 +1493,18 @@ public static class RoleGen
                 if (!assigned.GetModifier())
                     Gen(assigned, id, PlayerLayerEnum.Modifier);
                 else
-                    AllModifiers.Add(GetSpawnItem(id));
+                    invalid.Add(id);
             }
+        }
+
+        if (TownOfUsReworked.IsTest)
+        {
+            var ids = "";
+
+            foreach (var spawn in invalid)
+                ids += $" {spawn}";
+
+            Message("Invalid Modifiers in the game: " + ids);
         }
 
         Message("Modifiers Done");
@@ -1488,130 +1512,131 @@ public static class RoleGen
 
     private static void SetTargets()
     {
-        foreach (var ally in PlayerLayer.GetLayers<Allied>())
+        if (GetSpawnItem(LayerEnum.Allied).IsActive())
         {
-            var alliedRole = ally.Player.GetRole();
-            var crew = Allied.AlliedFaction == AlliedFaction.Crew;
-            var intr = Allied.AlliedFaction == AlliedFaction.Intruder;
-            var syn = Allied.AlliedFaction == AlliedFaction.Syndicate;
-            var factions = new List<byte>() { 1, 3, 0 };
-            byte faction;
-
-            if (Allied.AlliedFaction == AlliedFaction.Random)
+            foreach (var ally in PlayerLayer.GetLayers<Allied>())
             {
-                faction = factions.Random();
-                intr = faction == 1;
-                syn = faction == 3;
-                crew = faction == 0;
+                var alliedRole = ally.Player.GetRole();
+                var factions = new byte[] { 1, 3, 0 };
+                var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions[(int)Allied.AlliedFaction - 1];
+                alliedRole.FactionColor = faction switch
+                {
+                    0 => CustomColorManager.Crew,
+                    1 => CustomColorManager.Intruder,
+                    3 => CustomColorManager.Syndicate,
+                    _ => CustomColorManager.Neutral,
+                };
+                ally.Side = alliedRole.Faction = (Faction)faction;
+                alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(ally.Side);
+                ally.Player.SetImpostor(ally.Side is Faction.Intruder or Faction.Syndicate);
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
             }
-            else
-                faction = factions[(int)Allied.AlliedFaction - 1];
 
-            if (crew)
-                alliedRole.FactionColor = CustomColorManager.Crew;
-            else if (intr)
-                alliedRole.FactionColor = CustomColorManager.Intruder;
-            else if (syn)
-                alliedRole.FactionColor = CustomColorManager.Syndicate;
-
-            ally.Side = alliedRole.Faction = (Faction)faction;
-            alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment((Faction)faction);
-            ally.Player.SetImpostor((Faction)faction is Faction.Intruder or Faction.Syndicate);
-            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
+            Message("Allied Faction Set Done");
         }
 
-        Message("Allied Faction Set Done");
-
-        var lovers = PlayerLayer.GetLayers<Lovers>();
-        lovers.Shuffle();
-
-        for (var i = 0; i < lovers.Count - 1; i++)
+        if (GetSpawnItem(LayerEnum.Lovers).IsActive())
         {
-            var lover = lovers[i];
+            var lovers = PlayerLayer.GetLayers<Lovers>();
+            lovers.Shuffle();
 
-            if (lover.OtherLover)
-                continue;
+            for (var i = 0; i < lovers.Count - 1; i += 2)
+            {
+                var lover = lovers[i];
 
-            var other = lovers[i + 1];
-            lover.OtherLover = other.Player;
-            other.OtherLover = lover.Player;
-            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, lover, other);
+                if (lover.OtherLover)
+                    continue;
 
-            if (TownOfUsReworked.IsTest)
-                Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
+                var other = lovers[i + 1];
+                lover.OtherLover = other.Player;
+                other.OtherLover = lover.Player;
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, lover, other);
+
+                if (TownOfUsReworked.IsTest)
+                    Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
+            }
+
+            foreach (var lover in lovers)
+            {
+                if (!lover.OtherLover)
+                    NullLayer(lover.Player, PlayerLayerEnum.Disposition);
+            }
+
+            Message("Lovers Set");
         }
 
-        foreach (var lover in lovers)
+        if (GetSpawnItem(LayerEnum.Rivals).IsActive())
         {
-            if (!lover.OtherLover)
-                NullLayer(lover.Player, PlayerLayerEnum.Disposition);
+            var rivals = PlayerLayer.GetLayers<Rivals>();
+            rivals.Shuffle();
+
+            for (var i = 0; i < rivals.Count - 1; i += 2)
+            {
+                var rival = rivals[i];
+
+                if (rival.OtherRival)
+                    continue;
+
+                var other = rivals[i + 1];
+                rival.OtherRival = other.Player;
+                other.OtherRival = rival.Player;
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, rival, other);
+
+                if (TownOfUsReworked.IsTest)
+                    Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
+            }
+
+            foreach (var rival in rivals)
+            {
+                if (!rival.OtherRival)
+                    NullLayer(rival.Player, PlayerLayerEnum.Disposition);
+            }
+
+            Message("Rivals Set");
         }
 
-        Message("Lovers Set");
-
-        var rivals = PlayerLayer.GetLayers<Rivals>();
-        rivals.Shuffle();
-
-        for (var i = 0; i < rivals.Count - 1; i++)
+        if (GetSpawnItem(LayerEnum.Linked).IsActive())
         {
-            var rival = rivals[i];
+            var linked = PlayerLayer.GetLayers<Linked>();
+            linked.Shuffle();
 
-            if (rival.OtherRival)
-                continue;
+            for (var i = 0; i < linked.Count - 1; i += 2)
+            {
+                var link = linked[i];
 
-            var other = rivals[i + 1];
-            rival.OtherRival = other.Player;
-            other.OtherRival = rival.Player;
-            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, rival, other);
+                if (link.OtherLink)
+                    continue;
 
-            if (TownOfUsReworked.IsTest)
-                Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
+                var other = linked[i + 1];
+                link.OtherLink = other.Player;
+                other.OtherLink = link.Player;
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, link, other);
+
+                if (TownOfUsReworked.IsTest)
+                    Message($"Linked = {link.PlayerName} & {other.PlayerName}");
+            }
+
+            foreach (var link in linked)
+            {
+                if (!link.OtherLink)
+                    NullLayer(link.Player, PlayerLayerEnum.Disposition);
+            }
+
+            Message("Linked Set");
         }
 
-        foreach (var rival in rivals)
+        if (GetSpawnItem(LayerEnum.Mafia).IsActive())
         {
-            if (!rival.OtherRival)
-                NullLayer(rival.Player, PlayerLayerEnum.Disposition);
+            if (PlayerLayer.GetLayers<Mafia>().Count == 1)
+            {
+                foreach (var player in AllPlayers().Where(x => x.Is(LayerEnum.Mafia)))
+                    NullLayer(player, PlayerLayerEnum.Disposition);
+            }
+
+            Message("Mafia Set");
         }
 
-        Message("Rivals Set");
-
-        var linked = PlayerLayer.GetLayers<Linked>();
-        linked.Shuffle();
-
-        for (var i = 0; i < linked.Count - 1; i++)
-        {
-            var link = linked[i];
-
-            if (link.OtherLink)
-                continue;
-
-            var other = linked[i + 1];
-            link.OtherLink = other.Player;
-            other.OtherLink = link.Player;
-            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, link, other);
-
-            if (TownOfUsReworked.IsTest)
-                Message($"Linked = {link.PlayerName} & {other.PlayerName}");
-        }
-
-        foreach (var link in linked)
-        {
-            if (!link.OtherLink)
-                NullLayer(link.Player, PlayerLayerEnum.Disposition);
-        }
-
-        Message("Linked Set");
-
-        if (PlayerLayer.GetLayers<Mafia>().Count == 1)
-        {
-            foreach (var player in AllPlayers().Where(x => x.Is(LayerEnum.Mafia)))
-                NullLayer(player, PlayerLayerEnum.Disposition);
-        }
-
-        Message("Mafia Set");
-
-        if (!Executioner.ExecutionerCanPickTargets)
+        if (!Executioner.ExecutionerCanPickTargets && GetSpawnItem(LayerEnum.Executioner).IsActive())
         {
             foreach (var exe in PlayerLayer.GetLayers<Executioner>())
             {
@@ -1629,7 +1654,7 @@ public static class RoleGen
             Message("Exe Targets Set");
         }
 
-        if (!Guesser.GuesserCanPickTargets)
+        if (!Guesser.GuesserCanPickTargets && GetSpawnItem(LayerEnum.Guesser).IsActive())
         {
             foreach (var guess in PlayerLayer.GetLayers<Guesser>())
             {
@@ -1647,7 +1672,7 @@ public static class RoleGen
             Message("Guess Targets Set");
         }
 
-        if (!GuardianAngel.GuardianAngelCanPickTargets)
+        if (!GuardianAngel.GuardianAngelCanPickTargets && GetSpawnItem(LayerEnum.GuardianAngel).IsActive())
         {
             foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
             {
@@ -1665,7 +1690,7 @@ public static class RoleGen
             Message("GA Target Set");
         }
 
-        if (!BountyHunter.BountyHunterCanPickTargets)
+        if (!BountyHunter.BountyHunterCanPickTargets && GetSpawnItem(LayerEnum.BountyHunter).IsActive())
         {
             foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
             {
@@ -1683,7 +1708,7 @@ public static class RoleGen
             Message("BH Targets Set");
         }
 
-        if (!Actor.ActorCanPickRole)
+        if (!Actor.ActorCanPickRole && GetSpawnItem(LayerEnum.Actor).IsActive())
         {
             foreach (var act in PlayerLayer.GetLayers<Actor>())
             {
@@ -1697,27 +1722,30 @@ public static class RoleGen
             Message("Act Variables Set");
         }
 
-        foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
+        if (GetSpawnItem(LayerEnum.Jackal).IsActive())
         {
-            jackal.Recruit1 = AllPlayers().Random(x => !x.Is(Alignment.NeutralNeo) && !x.Is(SubFaction.Cabal) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen));
-
-            if (jackal.Recruit1)
+            foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
             {
-                jackal.Recruit2 = AllPlayers().Random(x => !x.Is(Alignment.NeutralNeo) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen) &&
-                    !x.Is(SubFaction.Cabal) && jackal.Recruit1.GetFaction() != x.GetFaction());
+                jackal.Recruit1 = AllPlayers().Random(x => !x.Is(Alignment.NeutralNeo) && x.Is(SubFaction.None) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen));
+
+                if (jackal.Recruit1)
+                {
+                    jackal.Recruit2 = AllPlayers().Random(x => !x.Is(Alignment.NeutralNeo) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen) && x.Is(SubFaction.None) &&
+                        jackal.Recruit1.GetFaction() != x.GetFaction());
+                }
+
+                if (jackal.Recruit1)
+                    RpcConvert(jackal.Recruit1.PlayerId, jackal.PlayerId, SubFaction.Cabal);
+
+                if (jackal.Recruit2)
+                    RpcConvert(jackal.Recruit2.PlayerId, jackal.PlayerId, SubFaction.Cabal);
+
+                if (TownOfUsReworked.IsTest)
+                    Message($"Recruits = {jackal.Recruit1?.name} & {jackal.Recruit2?.name}");
             }
 
-            if (jackal.Recruit1)
-                RpcConvert(jackal.Recruit1.PlayerId, jackal.PlayerId, SubFaction.Cabal);
-
-            if (jackal.Recruit2)
-                RpcConvert(jackal.Recruit2.PlayerId, jackal.PlayerId, SubFaction.Cabal);
-
-            if (TownOfUsReworked.IsTest)
-                Message($"Recruits = {jackal.Recruit1?.name} & {jackal.Recruit2?.name}");
+            Message("Jackal Recruits Set");
         }
-
-        Message("Jackal Recruits Set");
 
         Message("Targets Set");
     }
@@ -1740,6 +1768,8 @@ public static class RoleGen
         PlayerHandler.Instance.ColorNames.Clear();
 
         DragHandler.Instance.Dragging.Clear();
+
+        Monos.Range.AllItems.Clear();
 
         PlayerLayer.DeleteAll();
 
@@ -1817,9 +1847,8 @@ public static class RoleGen
         DestroyAll();
 
         Ash.DestroyAll();
-        Objects.Range.DestroyAll();
 
-        // ClientStuff.CloseMenus();
+        ClientStuff.CloseMenus();
 
         BodyLocations.Clear();
 
@@ -2151,6 +2180,7 @@ public static class RoleGen
 
                 role1.SubFaction = sub;
                 role1.SubFactionColor = flash;
+                role1.Faction = Faction.Neutral;
                 role1.Alignment = role1.Alignment.GetNewAlignment(Faction.Neutral);
                 Convertible--;
 

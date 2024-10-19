@@ -16,7 +16,7 @@ public abstract class Intruder : Role
         Faction = Faction.Intruder;
         FactionColor = CustomColorManager.Intruder;
         Objectives = () => IntrudersWinCon;
-        KillButton = CreateButton(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
+        KillButton = CreateButton(this, new SpriteName("IntruderKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception);
         Player.SetImpostor(true);
     }
@@ -56,7 +56,7 @@ public abstract class Intruder : Role
 
     public void Kill()
     {
-        var cooldown = Interact(Player, KillButton.TargetPlayer, true);
+        var cooldown = Interact(Player, KillButton.GetTarget<PlayerControl>(), true);
 
         if (this is Janitor jani)
         {

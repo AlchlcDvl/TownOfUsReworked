@@ -8,8 +8,8 @@ public class CustomButton
     // Params
     public PlayerLayer Owner { get; set; }
     public SpriteName Sprite { get; set; }
-    public AbilityTypes Type { get; set; }
-    public KeybindType Keybind { get; set; }
+    public AbilityType Type { get; set; }
+    public string Keybind { get; set; }
     public PostDeath PostDeath { get; set; }
     public OnClick DoClick { get; set; }
     public EffectVoid Effect { get; set; }
@@ -40,10 +40,7 @@ public class CustomButton
     public bool EffectEnabled { get; set; }
     public bool DelayEnabled { get; set; }
     public bool Targeting { get; set; }
-    public PlayerControl TargetPlayer { get; set; }
-    public DeadBody TargetBody { get; set; }
-    public Vent TargetVent { get; set; }
-    public Console TargetConsole { get; set; }
+    public MonoBehaviour Target { get; set; }
     public bool ClickedAgain { get; set; }
     private GameObject Block { get; set; }
     public string ID { get; set; }
@@ -75,10 +72,10 @@ public class CustomButton
                 button.ButtonLabelFunc = labelFunc;
             else if (prop is SpriteName sprite)
                 button.Sprite = sprite;
-            else if (prop is AbilityTypes type)
+            else if (prop is AbilityType type)
                 button.Type = type;
             else if (prop is KeybindType keybind)
-                button.Keybind = keybind;
+                button.Keybind = keybind.ToString();
             else if (prop is PostDeath postDeath)
                 button.PostDeath = postDeath;
             else if (prop is OnClick onClick)
@@ -242,8 +239,6 @@ public class CustomButton
             ClickedAgain = true;
             CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
         }
-        else
-            return;
 
         Play("Click");
         DisableTarget();
@@ -317,48 +312,6 @@ public class CustomButton
             CooldownTime = 0f;
     }
 
-    private void SetAliveTarget()
-    {
-        var previous = TargetPlayer;
-        TargetPlayer = Owner.Player.GetClosestPlayer(AllPlayers().Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving())));
-        Targeting = TargetPlayer;
-
-        if (previous != TargetPlayer)
-            SetOutline(previous?.MyRend(), TargetPlayer?.MyRend());
-    }
-
-    private void SetDeadTarget()
-    {
-        var previous = TargetBody;
-        TargetBody = Owner.Player.GetClosestBody(AllBodies().Where(x => !Exception(x)));
-        Targeting = TargetBody;
-
-        if (previous != TargetBody)
-            SetOutline(previous?.MyRend(), TargetBody?.MyRend());
-    }
-
-    private void SetVentTarget()
-    {
-        var previous = TargetVent;
-        TargetVent = Owner.Player.GetClosestVent(AllMapVents().Where(x => !Exception(x)));
-        Targeting = TargetVent;
-
-        if (previous != TargetVent)
-            SetOutline(previous?.MyRend(), TargetVent?.MyRend());
-    }
-
-    private void SetConsoleTarget()
-    {
-        var previous = TargetConsole;
-        TargetConsole = Owner.Player.GetClosestConsole(AllConsoles().Where(x => !Exception(x)));
-        Targeting = TargetConsole;
-
-        if (previous != TargetConsole)
-            SetOutline(previous?.MyRend(), TargetConsole?.MyRend());
-    }
-
-    private void SetNoTarget() => Targeting = true;
-
     private void SetOutline(Renderer prevRend, Renderer newRend)
     {
         if (prevRend == newRend)
@@ -389,21 +342,36 @@ public class CustomButton
     public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath.Value && !Ejection() && Owner.Local && !IsMeeting() &&
         !IsLobby() && !NoPlayers() && Owner.Player && !IntroCutscene.Instance;
 
-    public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive &&
-        Base.isActiveAndEnabled && !Disabled;
+    public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled &&
+        Base.isActiveAndEnabled;
 
     private void SetTarget()
     {
-        if (Type == AbilityTypes.Alive)
-            SetAliveTarget();
-        else if (Type == AbilityTypes.Dead)
-            SetDeadTarget();
-        else if (Type == AbilityTypes.Vent)
-            SetVentTarget();
-        else if (Type == AbilityTypes.Console)
-            SetConsoleTarget();
-        else if (Type == AbilityTypes.Targetless)
-            SetNoTarget();
+        if (Type.HasFlag(AbilityType.Targetless))
+            Targeting = true;
+        else
+        {
+            var monos = new List<MonoBehaviour>();
+
+            if (Type.HasFlag(AbilityType.Console))
+                monos.Add(Owner.Player.GetClosestConsole(predicate: x => !Exception(x)));
+
+            if (Type.HasFlag(AbilityType.Alive))
+                monos.Add(Owner.Player.GetClosestPlayer(predicate: x => !Exception(x)));
+
+            if (Type.HasFlag(AbilityType.Dead))
+                monos.Add(Owner.Player.GetClosestBody(predicate: x => !Exception(x)));
+
+            if (Type.HasFlag(AbilityType.Vent))
+                monos.Add(Owner.Player.GetClosestVent(predicate: x => !Exception(x)));
+
+            var previous = Target;
+            Target = Owner.Player.GetClosestMono(monos);
+            Targeting = Target;
+
+            if (previous != Target)
+                SetOutline(previous?.MyRend(), Target?.MyRend());
+        }
     }
 
     private void EnableDisable()
@@ -450,50 +418,37 @@ public class CustomButton
         else
             Base.SetCoolDown(CooldownTime, MaxCooldown());
 
-        if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind.ToString()))
+        if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind))
             Clicked();
     }
 
     private void DisableTarget()
     {
-        if (!Base)
-            return;
+        if (Base)
+            Base.SetDisabled();
 
         Targeting = false;
 
-        if (Type == AbilityTypes.Alive)
+        if (Target)
         {
-            TargetPlayer?.MyRend()?.SetOutlineColor(UColor.clear);
-            TargetPlayer = null;
+            Target?.MyRend()?.SetOutlineColor(UColor.clear);
+            Target = null;
         }
-        else if (Type == AbilityTypes.Alive)
-        {
-            TargetBody?.MyRend()?.SetOutlineColor(UColor.clear);
-            TargetBody = null;
-        }
-        else if (Type == AbilityTypes.Alive)
-        {
-            TargetVent?.MyRend()?.SetOutlineColor(UColor.clear);
-            TargetVent = null;
-        }
-        else if (Type == AbilityTypes.Alive)
-        {
-            TargetConsole?.MyRend()?.SetOutlineColor(UColor.clear);
-            TargetConsole = null;
-        }
-
-        Base?.SetDisabled();
     }
 
     public void Disable()
     {
-        if (Disabled || !Base)
+        if (Disabled)
             return;
 
         Disabled = true;
+        DisableTarget();
+
+        if (!Base)
+            return;
+
         Base.enabled = false;
         Base.gameObject.SetActive(false);
-        DisableTarget();
     }
 
     public void Enable()
@@ -509,11 +464,11 @@ public class CustomButton
     public void Destroy()
     {
         Disabled = true;
+        DisableTarget();
 
         if (!Base)
             return;
 
-        DisableTarget();
         Base.SetCoolDown(0, 0);
         Base.SetDisabled();
         Block.SetActive(false);
@@ -541,6 +496,8 @@ public class CustomButton
         Owner.ReadRPC(reader);
         Begin();
     }
+
+    public T GetTarget<T>() where T : MonoBehaviour => Target as T;
 
     public static void DestroyAll()
     {
