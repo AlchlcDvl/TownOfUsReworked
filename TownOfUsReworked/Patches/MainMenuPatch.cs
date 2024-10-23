@@ -135,19 +135,19 @@ public static class MainMenuStartPatch
         __instance.settingsButton.transform.GetChild(2).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
 
         var ghObj = UObject.Instantiate(__instance.newsButton, __instance.newsButton.transform.parent);
-        ghObj.gameObject.name = "ReworkedGitHub";
+        ghObj.name = "ReworkedGitHub";
         ghObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.GitHubLink));
         ghObj.transform.localPosition = pos;
         pos.y = __instance.settingsButton.transform.localPosition.y;
 
         var discObj = UObject.Instantiate(__instance.settingsButton, __instance.settingsButton.transform.parent);
-        discObj.gameObject.name = "ReworkedDiscord";
+        discObj.name = "ReworkedDiscord";
         discObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.DiscordInvite));
         discObj.transform.localPosition = pos;
         pos.y = __instance.myAccountButton.transform.localPosition.y;
 
         var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
-        credObj.gameObject.name = "ReworkedModInfo";
+        credObj.name = "ReworkedModInfo";
         credObj.OverrideOnClickListeners(() =>
         {
             PopUp?.Destroy();

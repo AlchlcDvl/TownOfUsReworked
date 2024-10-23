@@ -82,34 +82,34 @@ public static class BetterSkeld
         var vents = AllVents();
 
         if (!NavVentSouth)
-            NavVentSouth = vents.Find(vent => vent.gameObject.name == "NavVentSouth");
+            NavVentSouth = vents.Find(vent => vent.name == "NavVentSouth");
 
         if (!NavVentNorth)
-            NavVentNorth = vents.Find(vent => vent.gameObject.name == "NavVentNorth");
+            NavVentNorth = vents.Find(vent => vent.name == "NavVentNorth");
 
         if (!ShieldsVent)
-            ShieldsVent = vents.Find(vent => vent.gameObject.name == "ShieldsVent");
+            ShieldsVent = vents.Find(vent => vent.name == "ShieldsVent");
 
         if (!WeaponsVent)
-            WeaponsVent = vents.Find(vent => vent.gameObject.name == "WeaponsVent");
+            WeaponsVent = vents.Find(vent => vent.name == "WeaponsVent");
 
         if (!REngineVent)
-            REngineVent = vents.Find(vent => vent.gameObject.name == "REngineVent");
+            REngineVent = vents.Find(vent => vent.name == "REngineVent");
 
         if (!UpperReactorVent)
-            UpperReactorVent = vents.Find(vent => vent.gameObject.name == "UpperReactorVent");
+            UpperReactorVent = vents.Find(vent => vent.name == "UpperReactorVent");
 
         if (!LEngineVent)
-            LEngineVent = vents.Find(vent => vent.gameObject.name == "LEngineVent");
+            LEngineVent = vents.Find(vent => vent.name == "LEngineVent");
 
         if (!ReactorVent)
-            ReactorVent = vents.Find(vent => vent.gameObject.name == "ReactorVent");
+            ReactorVent = vents.Find(vent => vent.name == "ReactorVent");
 
         if (!BigYVent)
-            BigYVent = vents.Find(vent => vent.gameObject.name == "BigYVent");
+            BigYVent = vents.Find(vent => vent.name == "BigYVent");
 
         if (!CafeVent)
-            CafeVent = vents.Find(vent => vent.gameObject.name == "CafeVent");
+            CafeVent = vents.Find(vent => vent.name == "CafeVent");
 
         IsVentsFetched = NavVentSouth && NavVentNorth && ShieldsVent && WeaponsVent && REngineVent && UpperReactorVent && LEngineVent && ReactorVent && BigYVent && CafeVent;
     }

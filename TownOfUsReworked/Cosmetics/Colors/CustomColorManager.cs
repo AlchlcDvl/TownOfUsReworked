@@ -5,34 +5,34 @@ public static class CustomColorManager
     public static readonly List<CustomColor> AllColors = [];
 
     public static UColor Rainbow => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), 1f, 1f).ToColor();
-    public static UColor RainbowShadow => Alternate(Rainbow);
+    public static UColor RainbowShadow => Shadow(Rainbow);
 
     public static UColor Galaxy => new HSBColor(HSBColor.PingPong(0.5f, 0.87f, 0.4f), 1f, 1f).ToColor();
-    public static UColor GalaxyShadow => Alternate(Galaxy);
+    public static UColor GalaxyShadow => Shadow(Galaxy);
 
     public static UColor Fire => new HSBColor(HSBColor.PingPong(0f, 0.17f, 0.4f), 1f, 1f).ToColor();
-    public static UColor FireShadow => Alternate(Fire);
+    public static UColor FireShadow => Shadow(Fire);
 
     public static UColor Monochrome => new HSBColor(1f, 0f, HSBColor.PingPong(0f, 1f, 0.8f)).ToColor();
-    public static UColor MonochromeShadow => Alternate(Monochrome);
+    public static UColor MonochromeShadow => Shadow(Monochrome);
 
     public static UColor Mantle => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), HSBColor.PingPong(0f, 1f, 0.9f), HSBColor.PingPong(0f, 0.8f, 0.5f)).ToColor();
-    public static UColor MantleShadow => Alternate(Mantle);
+    public static UColor MantleShadow => Shadow(Mantle);
 
     public static UColor Chroma => new HSBColor(HSBColor.PingPong(0f, 1f, 0.4f), HSBColor.PingPongReverse(0f, 1f, 0.6f), HSBColor.PingPong(0f, 1f, 0.9f)).ToColor();
-    public static UColor ChromaShadow => Alternate(Chroma);
+    public static UColor ChromaShadow => Shadow(Chroma);
 
     public static UColor Reversebow => new HSBColor(HSBColor.PingPongReverse(0f, 1f, 0.3f), 1f, HSBColor.PingPongReverse(0f, 1f, 0.3f)).ToColor();
-    public static UColor ReversebowShadow => Alternate(Reversebow);
+    public static UColor ReversebowShadow => Shadow(Reversebow);
 
     public static UColor Vibrance => new HSBColor(HSBColor.PingPongReverse(0.17f, 0.5f, 0.3f), HSBColor.PingPong(0.9f, 1f, 0.3f), HSBColor.PingPongReverse(0.9f, 1f, 0.3f)).ToColor();
-    public static UColor VibranceShadow => Alternate(Vibrance);
+    public static UColor VibranceShadow => Shadow(Vibrance);
 
     public static UColor Darkbow => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), 0.8f, 0.3f).ToColor();
-    public static UColor DarkbowShadow => Alternate(Darkbow);
+    public static UColor DarkbowShadow => Shadow(Darkbow);
 
     public static UColor Abberation => new HSBColor(HSBColor.PingPong(0f, 0.2f, 0.9f), HSBColor.PingPongReverse(0.8f, 1f, 0.3f), 0.3f).ToColor();
-    public static UColor AbberationShadow => Alternate(Abberation);
+    public static UColor AbberationShadow => Shadow(Abberation);
 
     public static void SetColor(Renderer rend, int id)
     {

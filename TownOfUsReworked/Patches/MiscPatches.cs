@@ -212,7 +212,7 @@ public static class MinigameBeginPatch
 {
     public static void Postfix(Minigame __instance)
     {
-        if (__instance is null or TaskAdderGame or HauntMenuMinigame or SpawnInMinigame || !CustomPlayer.Local.Is(LayerEnum.Multitasker))
+        if (__instance is TaskAdderGame or HauntMenuMinigame or SpawnInMinigame or ShapeshifterMinigame || !CustomPlayer.Local.Is(LayerEnum.Multitasker))
             return;
 
         __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, Multitasker.Transparancy / 100f));
@@ -220,17 +220,17 @@ public static class MinigameBeginPatch
 }
 
 [HarmonyPatch(typeof(ShapeshifterMinigame), nameof(ShapeshifterMinigame.Begin))]
-public static class CustomPlayerMenuPatch
+public static class CustomMenuPatch
 {
     public static bool Prefix(ShapeshifterMinigame __instance)
     {
         __instance.gameObject.AddComponent<MenuPagingBehaviour>().Menu = __instance;
+        var result = CustomMenu.AllMenus.TryFinding(x => x.Menu == __instance && x.Owner.AmOwner, out var menu);
 
-        if (!CustomMenu.AllMenus.TryFinding(x => x.Menu == __instance && x.Owner.AmOwner, out var menu))
-            return true;
+        if (result)
+            ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.BackButton, __instance.DefaultButtonSelected, menu.CreateMenu(__instance));
 
-        ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.BackButton, __instance.DefaultButtonSelected, menu.CreateMenu(__instance));
-        return false;
+        return !result;
     }
 }
 
@@ -407,7 +407,7 @@ public static class EmergencyMinigameUpdatePatch
 [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
 public static class LobbyBehaviourPatch
 {
-    public static void Postfix()
+    public static void Postfix(LobbyBehaviour __instance)
     {
         SetFullScreenHUD();
         RoleGen.ResetEverything();
@@ -418,25 +418,14 @@ public static class LobbyBehaviourPatch
         MCIUtils.Clients.Clear();
         MCIUtils.PlayerClientIDs.Clear();
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame();
-        ClientHandler.Instance.OnLobbyStart();
+        ClientHandler.Instance.OnLobbyStart(__instance);
         ClientHandler.Instance.Page = 0;
         ClientHandler.Instance.Buttons.Clear();
-        ClientStuff.CloseMenus();
+        ClientHandler.CloseMenus();
         // FreeplayPatches.PreviouslySelected.Clear();
 
         if (count > 0 && TownOfUsReworked.Persistence.Value && !IsOnlineGame())
             MCIUtils.CreatePlayerInstances(count);
-
-        var lobbyTransform = Lobby().transform;
-        var consolePrefab = lobbyTransform.FindChild("panel_Wardrobe").gameObject;
-        var rewConsoleObj = UObject.Instantiate(consolePrefab, lobbyTransform);
-        rewConsoleObj.name = "panel_Reworked";
-        rewConsoleObj.transform.localPosition = new(0f, 2.86f, -9.898f);
-
-        var consoleObj = rewConsoleObj.transform.GetChild(0).gameObject;
-        consoleObj.GetComponent<OptionsConsole>().Destroy();
-        consoleObj.AddComponent<LobbyConsole>();
-        rewConsoleObj.GetComponentInChildren<BoxCollider2D>().size = new(0.01f, 0.01f);
     }
 }
 

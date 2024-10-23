@@ -23,7 +23,9 @@ public abstract class CustomMenu
                 return;
 
             Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
-            Menu.name = Menu.gameObject.name = $"{Owner.Data.PlayerName}{Type}Menu";
+            Menu.name = $"{Owner.Data.PlayerName}{Type}Menu";
+            PlayerMaterial.SetColors(CustomPlayer.Local.CurrentOutfit.ColorId, Menu.transform.GetChild(0).GetChild(1).GetComponent<SpriteRenderer>());
+            PlayerMaterial.SetColors(CustomPlayer.Local.CurrentOutfit.ColorId, Menu.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>());
         }
 
         Menu.transform.localPosition = new(0f, 0f, -50f);
@@ -39,7 +41,6 @@ public abstract class CustomMenu
         if (!Menu)
             return;
 
-        Menu.Destroy();
         Menu.gameObject.Destroy();
         Menu = null;
     }

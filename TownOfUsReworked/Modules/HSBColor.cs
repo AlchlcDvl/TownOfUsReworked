@@ -70,9 +70,9 @@ public struct HSBColor
 
     public static UColor ToColor(HSBColor hsbColor)
     {
-        var r = 0f;
-        var g = 0f;
-        var b = 0f;
+        var r = hsbColor.b;
+        var g = hsbColor.b;
+        var b = hsbColor.b;
 
         if (hsbColor.s != 0)
         {
@@ -112,6 +112,12 @@ public struct HSBColor
                 g = min;
                 b = (-(h - 360f) * dif / 60) + min;
             }
+            else
+            {
+                r = 0;
+                g = 0;
+                b = 0;
+            }
         }
 
         return new(Mathf.Clamp01(r), Mathf.Clamp01(g), Mathf.Clamp01(b), hsbColor.a);
@@ -121,47 +127,47 @@ public struct HSBColor
 
     public override readonly string ToString() => $"H: {h} S: {s} B: {b}";
 
-    public static HSBColor Lerp(HSBColor a, HSBColor b, float t)
-    {
-        float h, s;
+    // public static HSBColor Lerp(HSBColor a, HSBColor b, float t)
+    // {
+    //     float h, s;
 
-        // Check special case black (color.b == 0): interpolate neither hue nor saturation!
-        // Check special case grey (color.s == 0): don't interpolate hue!
+    //     // Check special case black (color.b == 0): interpolate neither hue nor saturation!
+    //     // Check special case grey (color.s == 0): don't interpolate hue!
 
-        if (a.b == 0)
-        {
-            h = b.h;
-            s = b.s;
-        }
-        else if (b.b == 0)
-        {
-            h = a.h;
-            s = a.s;
-        }
-        else
-        {
-            if (a.s == 0)
-                h = b.h;
-            else if (b.s == 0)
-                h = a.h;
-            else
-            {
-                var angle = Mathf.LerpAngle(a.h * 360f, b.h * 360f, t);
+    //     if (a.b == 0)
+    //     {
+    //         h = b.h;
+    //         s = b.s;
+    //     }
+    //     else if (b.b == 0)
+    //     {
+    //         h = a.h;
+    //         s = a.s;
+    //     }
+    //     else
+    //     {
+    //         if (a.s == 0)
+    //             h = b.h;
+    //         else if (b.s == 0)
+    //             h = a.h;
+    //         else
+    //         {
+    //             var angle = Mathf.LerpAngle(a.h * 360f, b.h * 360f, t);
 
-                while (angle < 0f)
-                    angle += 360f;
+    //             while (angle < 0f)
+    //                 angle += 360f;
 
-                while (angle > 360f)
-                    angle -= 360f;
+    //             while (angle > 360f)
+    //                 angle -= 360f;
 
-                h = angle / 360f;
-            }
+    //             h = angle / 360f;
+    //         }
 
-            s = Mathf.Lerp(a.s, b.s, t);
-        }
+    //         s = Mathf.Lerp(a.s, b.s, t);
+    //     }
 
-        return new(h, s, Mathf.Lerp(a.b, b.b, t), Mathf.Lerp(a.a, b.a, t));
-    }
+    //     return new(h, s, Mathf.Lerp(a.b, b.b, t), Mathf.Lerp(a.a, b.a, t));
+    // }
 
     /*
         test case = "0.54,0.6,1,true;1,0.69,0.23;0.5,1;1"

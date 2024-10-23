@@ -1848,7 +1848,7 @@ public static class RoleGen
 
         Ash.DestroyAll();
 
-        ClientStuff.CloseMenus();
+        ClientHandler.CloseMenus();
 
         BodyLocations.Clear();
 

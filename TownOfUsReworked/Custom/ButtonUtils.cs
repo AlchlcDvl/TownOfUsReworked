@@ -23,7 +23,7 @@ public static class ButtonUtils
         player.GetButtons().ForEach(x => x.Enable());
         HUD().KillButton.gameObject.SetActive(false);
         HUD().SabotageButton.gameObject.SetActive(player.CanSabotage());
-        HUD().ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward));
+        HUD().ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward) && !Meeting() && !player.HasDied());
         HUD().ImpostorVentButton.gameObject.SetActive(player.CanVent());
 
         if (IsHnS())

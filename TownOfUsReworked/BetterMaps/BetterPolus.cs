@@ -139,25 +139,25 @@ public static class BetterPolus
         var vents = AllVents();
 
         if (!ElectricBuildingVent)
-            ElectricBuildingVent = vents.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
+            ElectricBuildingVent = vents.Find(vent => vent.name == "ElectricBuildingVent");
 
         if (!ElectricalVent)
-            ElectricalVent = vents.Find(vent => vent.gameObject.name == "ElectricalVent");
+            ElectricalVent = vents.Find(vent => vent.name == "ElectricalVent");
 
         if (!ScienceBuildingVent)
-            ScienceBuildingVent = vents.Find(vent => vent.gameObject.name == "ScienceBuildingVent");
+            ScienceBuildingVent = vents.Find(vent => vent.name == "ScienceBuildingVent");
 
         if (!StorageVent)
-            StorageVent = vents.Find(vent => vent.gameObject.name == "StorageVent");
+            StorageVent = vents.Find(vent => vent.name == "StorageVent");
 
         if (!LightCageVent)
-            LightCageVent = vents.Find(vent => vent.gameObject.name == "ElecFenceVent");
+            LightCageVent = vents.Find(vent => vent.name == "ElecFenceVent");
 
         if (!AdminVent)
-            AdminVent = vents.Find(vent => vent.gameObject.name == "AdminVent");
+            AdminVent = vents.Find(vent => vent.name == "AdminVent");
 
         if (!BathroomVent)
-            BathroomVent = vents.Find(vent => vent.gameObject.name == "BathroomVent");
+            BathroomVent = vents.Find(vent => vent.name == "BathroomVent");
 
         if (!SpeciVent)
         {

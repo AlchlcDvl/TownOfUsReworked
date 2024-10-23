@@ -902,9 +902,8 @@ public enum SkipEnum
     RoleCard,
     Zooming,
     Wiki,
-    Settings,
     Task,
-    Client,
+    Settings,
     None
 }
 

@@ -100,37 +100,37 @@ public static class BetterMiraHQ
         var vents = AllVents();
 
         if (!SpawnVent)
-            SpawnVent = vents.Find(vent => vent.gameObject.name == "LaunchVent");
+            SpawnVent = vents.Find(vent => vent.name == "LaunchVent");
 
         if (!BalcVent)
-            BalcVent = vents.Find(vent => vent.gameObject.name == "BalconyVent");
+            BalcVent = vents.Find(vent => vent.name == "BalconyVent");
 
         if (!ReactorVent)
-            ReactorVent = vents.Find(vent => vent.gameObject.name == "ReactorVent");
+            ReactorVent = vents.Find(vent => vent.name == "ReactorVent");
 
         if (!LabVent)
-            LabVent = vents.Find(vent => vent.gameObject.name == "LabVent");
+            LabVent = vents.Find(vent => vent.name == "LabVent");
 
         if (!LockerVent)
-            LockerVent = vents.Find(vent => vent.gameObject.name == "LockerVent");
+            LockerVent = vents.Find(vent => vent.name == "LockerVent");
 
         if (!AdminVent)
-            AdminVent = vents.Find(vent => vent.gameObject.name == "AdminVent");
+            AdminVent = vents.Find(vent => vent.name == "AdminVent");
 
         if (!LightsVent)
-            LightsVent = vents.Find(vent => vent.gameObject.name == "OfficeVent");
+            LightsVent = vents.Find(vent => vent.name == "OfficeVent");
 
         if (!O2Vent)
-            O2Vent = vents.Find(vent => vent.gameObject.name == "AgriVent");
+            O2Vent = vents.Find(vent => vent.name == "AgriVent");
 
         if (!DeconVent)
-            DeconVent = vents.Find(vent => vent.gameObject.name == "DeconVent");
+            DeconVent = vents.Find(vent => vent.name == "DeconVent");
 
         if (!MedicVent)
-            MedicVent = vents.Find(vent => vent.gameObject.name == "MedVent");
+            MedicVent = vents.Find(vent => vent.name == "MedVent");
 
         if (!YRightVent)
-            YRightVent = vents.Find(vent => vent.gameObject.name == "YHallRightVent");
+            YRightVent = vents.Find(vent => vent.name == "YHallRightVent");
 
         if (!CommsVent)
         {

@@ -163,7 +163,7 @@ public class CustomButton
         Base = InstantiateButton();
         Base.graphic.sprite = GetSprite(Sprite.Value);
         Base.graphic.SetCooldownNormalizedUvs();
-        Base.gameObject.name = Base.name = ID;
+        Base.name = ID;
         var passive = Base.GetComponent<PassiveButton>();
         passive.OverrideOnClickListeners(Clicked);
         passive.HoverSound = GetAudio("Hover");
@@ -333,7 +333,7 @@ public class CustomButton
         if (result == "ABILITY")
             result = ButtonLabel;
 
-        if (Owner.IsBlocked)
+        if (BlockIsExposed())
             result = "BLOCKED";
 
         return result;

@@ -56,6 +56,7 @@ public class Glitch : Neutral
     public void UnHack()
     {
         HackTarget.GetLayers().ForEach(x => x.IsBlocked = false);
+        HackTarget.GetButtons().ForEach(x => x.BlockExposed = false);
         HackTarget = null;
     }
 

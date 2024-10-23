@@ -34,7 +34,12 @@ public class Banshee : Syndicate
 
     public void UnScream()
     {
-        Blocked.ForEach(y => PlayerById(y).GetLayers().ForEach(x => x.IsBlocked = false));
+        foreach (var id in Blocked)
+        {
+            var blocked = PlayerById(id);
+            blocked.GetLayers().ForEach(x => x.IsBlocked = false);
+            blocked.GetButtons().ForEach(x => x.BlockExposed = false);
+        }
         Blocked.Clear();
     }
 

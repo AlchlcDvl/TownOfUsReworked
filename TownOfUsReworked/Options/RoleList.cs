@@ -6,7 +6,8 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
     private string Num { get; set; }
     private TextMeshPro ValueText { get; set; }
 
-    public static List<PassiveButton> ChoiceButtons = [];
+    public static readonly List<PassiveButton> ChoiceButtons = [];
+    public static string SelectedEntry;
 
     public override void PostLoadSetup()
     {
@@ -36,13 +37,20 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
     public override void ModifyViewSetting()
     {
         base.ModifyViewSetting();
-        ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.text = Format();
+        var valueText = ViewSetting.Cast<ViewSettingsInfoPanel>().settingText;
+        valueText.text = Format();
+
+        if (LayerDictionary.TryGetValue(Value, out var entry))
+            valueText.color = entry.Color;
     }
 
     public override void ModifySetting()
     {
         base.ModifySetting();
         ValueText.text = Format();
+
+        if (LayerDictionary.TryGetValue(Value, out var entry))
+            ValueText.color = entry.Color;
     }
 
     public override string Format()
@@ -58,16 +66,23 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         }
     }
 
-    public static void ToDo()
+    public override string SettingNotif() => base.SettingNotif().Replace("%num%", Num);
+
+    public void ToDo()
     {
+        if (IsInGame())
+            return;
+
         SettingsPatches.SettingsPage = 4;
         SettingsPatches.CachedPage = 0;
+        SelectedEntry = ID;
         SettingsPatches.OnValueChanged();
     }
 
-    public static bool IsBanned(LayerEnum id) => GetOptions<RoleListEntryAttribute>().Any(x => x.IsBan && x.Get() == id) || (id == LayerEnum.Crewmate && RoleListBans.BanCrewmate) || (id == LayerEnum.Impostor &&
-        RoleListBans.BanImpostor) || (id == LayerEnum.Anarchist && RoleListBans.BanAnarchist) || (id == LayerEnum.Murderer && RoleListBans.BanMurderer) || id is LayerEnum.Actor or LayerEnum.Revealer or LayerEnum.Ghoul or
-        LayerEnum.Banshee or LayerEnum.Phantom or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Mafioso or LayerEnum.Sidekick || (int)id is (> 87 and < 138) or 178 or 179 or 180;
+    public static bool IsBanned(LayerEnum id) => GetOptions<RoleListEntryAttribute>().Any(x => x.IsBan && x.Get() == id) || (id == LayerEnum.Crewmate && RoleListBans.BanCrewmate) || (id ==
+        LayerEnum.Impostor && RoleListBans.BanImpostor) || (id == LayerEnum.Anarchist && RoleListBans.BanAnarchist) || (id == LayerEnum.Murderer && RoleListBans.BanMurderer) || id is
+        LayerEnum.Actor or LayerEnum.Revealer or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Phantom or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Mafioso or
+        LayerEnum.Sidekick or LayerEnum.Betrayer || (int)id is (> 87 and < 142) or 182 or 183 or 184;
 
     public static bool IsAdded(LayerEnum id) => GetOptions<RoleListEntryAttribute>().Any(x => !x.IsBan && x.Get() == id);
 

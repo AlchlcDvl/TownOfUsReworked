@@ -451,7 +451,7 @@ public static class MeetingPatches
 
             for (var childI = 0; childI < role.Swap1.transform.childCount; childI++)
             {
-                if (role.Swap1.transform.GetChild(childI).gameObject.name == "playerVote(Clone)")
+                if (role.Swap1.transform.GetChild(childI).name == "playerVote(Clone)")
                     votes1.Add(role.Swap1.transform.GetChild(childI));
             }
 
@@ -478,7 +478,7 @@ public static class MeetingPatches
 
             for (var childI = 0; childI < role.Swap2.transform.childCount; childI++)
             {
-                if (role.Swap2.transform.GetChild(childI).gameObject.name == "playerVote(Clone)")
+                if (role.Swap2.transform.GetChild(childI).name == "playerVote(Clone)")
                     votes2.Add(role.Swap2.transform.GetChild(childI));
             }
 
@@ -495,7 +495,7 @@ public static class MeetingPatches
             votes2.ForEach(x => x.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap1.MaskLayer));
             votes1.ForEach(x => x.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap2.MaskLayer));
 
-            var duration = 1f / (PlayerLayer.GetLayers<Swapper>().Count + 1);
+            var duration = 1f / (PlayerLayer.GetLayers<Swapper>().Count(x => x.Alive && x.Swap1 && x.Swap2) + 1);
 
             Coroutines.Start(Slide2D(cb1, cbdest1, cbdest2, duration));
             Coroutines.Start(Slide2D(cb2, cbdest2, cbdest1, duration));

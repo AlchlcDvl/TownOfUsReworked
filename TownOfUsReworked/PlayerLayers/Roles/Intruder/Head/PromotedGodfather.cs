@@ -588,6 +588,7 @@ public class PromotedGodfather : Intruder
     public void UnBlock()
     {
         BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
+        BlockTarget.GetButtons().ForEach(x => x.BlockExposed = false);
         BlockTarget = null;
     }
 

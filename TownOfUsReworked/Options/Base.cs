@@ -19,6 +19,9 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) 
 
     public void Set(T value, bool rpc = true, bool notify = true)
     {
+        if (IsInGame())
+            return;
+
         Value = value;
         Property?.SetValue(null, value);
         // OnChanged.Invoke(value);
@@ -43,7 +46,7 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) 
         if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
             return;
 
-        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{TranslationManager.Translate(ID)}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
+        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
 
         if (LastChangedSetting == ID && HUD().Notifier.activeMessages.Count > 0)
             HUD().Notifier.activeMessages[^1].UpdateMessage(changed);
@@ -111,8 +114,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [ GameMode.HideAndSeek ] ),
         ( [ "TRShortTasks", "TRCommonTasks", "TRLongTasks" ], [ GameMode.TaskRace ] ),
         ( [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ] ),
-        ( [ "RandomMapSubmerged" ], [ MapEnum.Random, ("ModCompatibility", "SubLoaded") ] ),
-        ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, ("ModCompatibility", "LILoaded") ] ),
+        ( [ "RandomMapSubmerged" ], [ MapEnum.Random, "SubLoaded" ] ),
+        ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, "LILoaded" ] ),
         ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
             MapEnum.MiraHQ, MapEnum.LevelImpostor ] ),
         ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
@@ -177,15 +180,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             result = SettingsPatches.SettingsPage == num;
         else if (option is VigiOptions vigiop)
             result = Vigilante.HowDoesVigilanteDie == vigiop;
-        else if (option is (string, string))
-        {
-            if (!MapToLoaded.TryGetValue(ID, out result))
-            {
-                var tuple = ((string, string))option;
-                var type = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ToList().Find(x => x.Name == tuple.Item1);
-                MapToLoaded[ID] = result = (bool)AccessTools.GetDeclaredProperties(type).Find(x => x.Name == tuple.Item2)?.GetValue(null);
-            }
-        }
         else if (option is string id)
         {
             if (id == Name)
@@ -202,8 +196,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
                 else if (optionatt is HeaderOptionAttribute header)
                     result &= header.Get();
             }
-            else
-                result = true;
+            else if (!MapToLoaded.TryGetValue(id, out result))
+                MapToLoaded[id] = result = (bool)AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id)?.GetValue(null);
         }
 
         // if (Invert && option != null)
@@ -219,7 +213,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         if (Setting is OptionBehaviour option)
         {
             option.Title = (StringNames)999999999;
-            option.OnValueChanged = (Action<OptionBehaviour>)BlankVoid; // The cast here is not redundant, idk why the compiler refuses to accept this
+            option.OnValueChanged = (Action<OptionBehaviour>)BlankVoid; // The cast here is not redundant
         }
     }
 
@@ -241,6 +235,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public virtual void ModifyViewSetting() {}
 
+    public virtual string SettingNotif() => TranslationManager.Translate(ID);
+
     public virtual void AddMenuIndex(int index)
     {
         var menu = (MultiMenu)index;
@@ -251,6 +247,9 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public void SetBase(object value, bool rpc = true, bool notify = true)
     {
+        if (IsInGame())
+            return;
+
         if (this is ToggleOptionAttribute toggle)
             toggle.Set((bool)value, rpc, notify);
         else if (this is NumberOptionAttribute number)
@@ -304,7 +303,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             return;
 
         SettingsPatches.CreatePresetButton(fileName);
-        SettingsPatches.OnPageChangedOrPresetAdded();
+        SettingsPatches.OnPageChanged(false);
     }
 
     public static void LoadPreset(string presetName, TextMeshPro tmp)

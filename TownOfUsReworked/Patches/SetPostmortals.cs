@@ -199,14 +199,15 @@ public static class SetPostmortals
             var ventilationSystem = systemType.TryCast<VentilationSystem>();
 
             if (ventilationSystem != null)
-                vents = [ .. vents.Where(x => !ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id))];
+                vents.RemoveAll(x => !ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id));
         }
-
-        if (IsSubmerged())
-            vents = [ .. vents.Where(x => AllMapVents().IndexOf(x) is not (0 or 14))];
 
         vents.Shuffle();
         var startingVent = vents.Random();
+
+        if (IsSubmerged())
+            startingVent = vents.Random(x => AllMapVents().IndexOf(x) is not (0 or 14));
+
         player.RpcCustomSnapTo(GetVentPosition(startingVent));
         player.MyPhysics.RpcEnterVent(startingVent.Id);
     }

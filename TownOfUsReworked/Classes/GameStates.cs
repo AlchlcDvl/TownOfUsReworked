@@ -52,7 +52,7 @@ public static class GameStates
 
     public static bool LocalNotBlocked() => !LocalBlocked();
 
-    public static bool BlockIsExposed() => CustomPlayer.Local.GetButtons().Any(x => x.BlockExposed);
+    public static bool BlockIsExposed() => CustomPlayer.Local.GetButtons().Any(x => x.BlockExposed) || Blocked.BlockExposed;
 
     public static bool DeadSeeEverything()
     {

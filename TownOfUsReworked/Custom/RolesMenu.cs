@@ -40,6 +40,7 @@ public class CustomRolesMenu(PlayerControl owner, CustomRolesMenu.Select click) 
         panel.NameText.text = dictEntry.Name;
         panel.NameText.color = dictEntry.Color;
         panel.name = $"Guess{layer}";
+        // panel.transform.GetChild()
 
         if (panel == SelectedPanel)
             panel.Background.color = dictEntry.Color.Alternate(0.4f);

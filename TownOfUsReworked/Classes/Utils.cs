@@ -404,10 +404,11 @@ public static class Utils
         if (!data || data.IsDead || !killer.Data)
             return;
 
-        AchievementManager.Instance.OnMurder(killer.AmOwner, target.AmOwner, CachedMorphs.ContainsKey(killer.PlayerId),
-            CachedMorphs.TryGetValue(killer.PlayerId, out var id) ? id : 255, target.PlayerId);
+        AchievementManager.Instance.OnMurder(killer.AmOwner, target.AmOwner, CachedMorphs.ContainsKey(killer.PlayerId), CachedMorphs.TryGetValue(killer.PlayerId, out var id) ? id : 255,
+            target.PlayerId);
         lunge &= !killer.Is(LayerEnum.Ninja) && killer != target;
         Pestilence.Infected.Remove(target.PlayerId);
+        DefaultOutfit(target);
 
         if (IsCustomHnS() || CustomPlayer.LocalCustom.Dead)
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(target, 0);

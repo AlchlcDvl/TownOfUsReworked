@@ -28,7 +28,7 @@ public static class RegionInfoOpenPatch
         if (!IPField || !IPField.gameObject)
         {
             IPField = UObject.Instantiate(joinGameButton1.GameIdText, __instance.transform);
-            IPField.gameObject.name = "IPTextBox";
+            IPField.name = "IPTextBox";
             var child = IPField.transform.FindChild("arrowEnter");
 
             if (child && child.gameObject)
@@ -54,7 +54,7 @@ public static class RegionInfoOpenPatch
         if (!PortField || !PortField.gameObject)
         {
             PortField = UObject.Instantiate(joinGameButton1.GameIdText, __instance.transform);
-            PortField.gameObject.name = "PortTextBox";
+            PortField.name = "PortTextBox";
             var child1 = PortField.transform.FindChild("arrowEnter");
 
             if (child1 && child1.gameObject)

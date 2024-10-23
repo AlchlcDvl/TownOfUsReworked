@@ -6,7 +6,7 @@ public static class AllMonos
 
     public static void RegisterMonos()
     {
-        var usableInterface = new RegisterTypeOptions() { Interfaces = new([ typeof(IUsable) ]) };
+        // var usableInterface = new RegisterTypeOptions() { Interfaces = new([ typeof(IUsable) ]) };
 
         // So many monos...AM I THE NEXT SUBMERGED???? o_O
 
@@ -32,7 +32,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<Range>();
         ClassInjector.RegisterTypeInIl2Cpp<Bug>();
         ClassInjector.RegisterTypeInIl2Cpp<Bomb>();
-        ClassInjector.RegisterTypeInIl2Cpp<LobbyConsole>(usableInterface);
+        // ClassInjector.RegisterTypeInIl2Cpp<LobbyConsole>(usableInterface);
     }
 
     public static void AddComponents()

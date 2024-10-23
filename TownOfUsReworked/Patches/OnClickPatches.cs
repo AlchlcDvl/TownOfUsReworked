@@ -5,13 +5,13 @@ public static class PlayerControlOnClick
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        if (!CustomPlayer.Local ||! CustomPlayer.Local.Data || !__instance.Data || Meeting() || Lobby())
+        if (!CustomPlayer.Local || !CustomPlayer.Local.Data || !__instance.Data || Meeting() || Lobby())
             return false;
 
         if (IsHnS())
             return true;
 
-        if (AllButtons.TryFinding(x => x.Owner.Local && x.Clickable() && ((__instance.AmOwner && x.Type == AbilityType.Targetless) || x.Target == __instance), out var button))
+        if (AllButtons.TryFinding(x => x.Owner.Local && x.Clickable() && ((__instance.AmOwner && x.Type.HasFlag(AbilityType.Targetless)) || x.Target == __instance), out var button))
         {
             button.Clicked();
             return false;

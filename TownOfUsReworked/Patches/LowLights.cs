@@ -11,12 +11,8 @@ public static class CalculateLightRadiusPatch
         if (IsHnS())
         {
             var hns = TownOfUsReworked.HNSOptions;
-
-            if (hns.useFlashlight)
-                __result = __instance.MaxLightRadius * (player.IsImpostor() ? hns.ImpostorFlashlightSize : hns.CrewmateFlashlightSize);
-            else
-                __result = __instance.MaxLightRadius * (player.IsImpostor() ? hns.ImpostorLightMod : hns.CrewLightMod);
-
+            var isImp = player.IsImpostor();
+            __result = __instance.MaxLightRadius * (hns.useFlashlight ? (isImp ? hns.ImpostorFlashlightSize : hns.CrewmateFlashlightSize) : (isImp ? hns.ImpostorLightMod : hns.CrewLightMod));
             return false;
         }
 
