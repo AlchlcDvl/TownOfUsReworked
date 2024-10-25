@@ -58,13 +58,13 @@ public class Executioner : Neutral
 
         if (ExecutionerCanPickTargets)
         {
-            TargetButton = CreateButton(this, new SpriteName("ExeTarget"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
+            TargetButton ??= CreateButton(this, new SpriteName("ExeTarget"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
                 (UsableFunc)Usable2);
         }
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
         {
-            DoomButton = CreateButton(this, new SpriteName("Doom"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Doom, (PlayerBodyExclusion)Exception1, "DOOM",
+            DoomButton ??= CreateButton(this, new SpriteName("Doom"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Doom, (PlayerBodyExclusion)Exception1, "DOOM",
                 (UsableFunc)Usable1);
         }
 
@@ -97,7 +97,7 @@ public class Executioner : Neutral
         }
     }
 
-    public void TurnJest() => new Jester().Start<Role>(Player).RoleUpdate(this);
+    public void TurnJest() => new Jester().RoleUpdate(this, Player);
 
     public void Doom()
     {

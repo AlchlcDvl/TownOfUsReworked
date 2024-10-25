@@ -26,7 +26,7 @@ public class Veteran : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewKill;
-        AlertButton = CreateButton(this, "ALERT", new SpriteName("Alert"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Alert, new Cooldown(AlertCd), MaxAlerts,
+        AlertButton ??= CreateButton(this, "ALERT", new SpriteName("Alert"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Alert, new Cooldown(AlertCd), MaxAlerts,
             new Duration(AlertDur), (EndFunc)EndEffect);
     }
 

@@ -100,7 +100,7 @@ public class Fanatic : Disposition
         Betrayed = true;
 
         if (role.Type != LayerEnum.Betrayer)
-            new Betrayer() { Objectives = role.Objectives }.Start<Role>(Player).RoleUpdate(role);
+            new Betrayer() { Objectives = role.Objectives }.RoleUpdate(role, Player);
     }
 
     public override void UpdateHud(HudManager __instance)

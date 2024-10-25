@@ -10,12 +10,14 @@ public static class CustomVisorManager
     public static VisorData CreateVisorBehaviour(CustomVisor cv)
     {
         var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
+
         var viewData = ScriptableObject.CreateInstance<VisorViewData>().DontDestroy();
         viewData.IdleFrame = CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.ID), CosmeticTypeEnum.Visor);
         viewData.FloorFrame = cv.FloorID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.FloorID), CosmeticTypeEnum.Visor) : viewData.IdleFrame;
         viewData.LeftIdleFrame = cv.FlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.FlipID), CosmeticTypeEnum.Visor) : null;
         viewData.ClimbFrame = cv.ClimbID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.ClimbID), CosmeticTypeEnum.Visor) : null;
         viewData.MatchPlayerColor = cv.Adaptive;
+
         visor.name = cv.Name;
         visor.displayOrder = 99;
         visor.ProductId = "customVisor_" + cv.Name.Replace(' ', '_');
@@ -24,12 +26,15 @@ public static class CustomVisorManager
         visor.behindHats = !cv.InFront;
         visor.NotInStore = true;
         visor.ViewDataRef = new(viewData.Pointer);
+        visor.CreateAddressableAsset();
 
         var extend = new VisorExtension()
         {
             Artist = cv.Artist ?? "Unknown",
             StreamOnly = cv.StreamOnly,
-            TestOnly = cv.TestOnly
+            TestOnly = cv.TestOnly,
+            FloorImage = viewData.FloorFrame,
+            ClimbImage = viewData.ClimbFrame
         };
         CustomVisorRegistry.TryAdd(visor.name, extend);
         CustomVisorViewDatas.TryAdd(visor.ProductId, viewData);

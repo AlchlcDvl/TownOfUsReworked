@@ -52,13 +52,13 @@ public class BountyHunter : Neutral
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;
-        GuessButton = CreateButton(this, new SpriteName("BHGuess"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
+        GuessButton ??= CreateButton(this, new SpriteName("BHGuess"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);
-        HuntButton = CreateButton(this, new SpriteName("Hunt"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GuessCd), "HUNT", (UsableFunc)Usable2);
+        HuntButton ??= CreateButton(this, new SpriteName("Hunt"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GuessCd), "HUNT", (UsableFunc)Usable2);
 
         if (BountyHunterCanPickTargets)
         {
-            RequestButton = CreateButton(this, new SpriteName("Request"), AbilityType.Alive, KeybindType.Tertiary, (OnClick)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
+            RequestButton ??= CreateButton(this, new SpriteName("Request"), AbilityType.Alive, KeybindType.Tertiary, (OnClick)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
                 (UsableFunc)Usable3);
         }
 
@@ -68,7 +68,7 @@ public class BountyHunter : Neutral
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.GetRole().Requesting || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
-    public void TurnTroll() => new Troll().Start<Role>(Player).RoleUpdate(this);
+    public void TurnTroll() => new Troll().RoleUpdate(this, Player);
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

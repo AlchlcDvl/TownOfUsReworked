@@ -18,7 +18,7 @@ public abstract class Syndicate : Role
         Faction = Faction.Syndicate;
         FactionColor = CustomColorManager.Syndicate;
         Objectives = () => SyndicateWinCon;
-        KillButton = CreateButton(this, new SpriteName("SyndicateKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
+        KillButton ??= CreateButton(this, new SpriteName("SyndicateKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable);
         Player.SetImpostor(true);
         IsPromoted = false;

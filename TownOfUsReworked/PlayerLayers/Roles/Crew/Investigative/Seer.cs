@@ -23,11 +23,11 @@ public class Seer : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewInvest;
-        SeerButton = CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(SeerCd));
+        SeerButton ??= CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(SeerCd));
         Data.Role.IntroSound = GetAudio("SeerIntro");
     }
 
-    public void TurnSheriff() => new Sheriff().Start<Role>(Player).RoleUpdate(this);
+    public void TurnSheriff() => new Sheriff().RoleUpdate(this, Player);
 
     public void See()
     {

@@ -127,6 +127,8 @@ public static class CustomColorManager
         };
 
         Palette.ShadowColors = Palette.PlayerColors.Select(x => (Color32)Shadow(x)).ToArray();
+        Palette.TextColors = Palette.PlayerColors;
+        Palette.TextOutlineColors = Palette.PlayerColors.Select(x => (Color32)Alternate(x)).ToArray();
     }
 
     public static UColor Shadow(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r - val), Mathf.Clamp01(color.g - val), Mathf.Clamp01(color.b - val), color.a);

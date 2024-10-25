@@ -36,12 +36,12 @@ public class Detective : Crew
         AllPrints = [];
         Investigated = [];
         Alignment = Alignment.CrewInvest;
-        ExamineButton = CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
+        ExamineButton ??= CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         Clear();
     }
 
@@ -109,6 +109,6 @@ public class Detective : Crew
             }
         }
         else if (AllPrints.Count > 0)
-            OnLobby();
+            Deinit();
     }
 }

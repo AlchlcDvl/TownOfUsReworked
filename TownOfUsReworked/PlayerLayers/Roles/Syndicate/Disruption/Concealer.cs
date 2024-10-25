@@ -28,7 +28,7 @@ public class Concealer : Syndicate
         Alignment = Alignment.SyndicateDisrup;
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;
-        ConcealButton = CreateButton(this, new SpriteName("Conceal"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(ConcealCd), (EffectVoid)Conceal,
+        ConcealButton ??= CreateButton(this, new SpriteName("Conceal"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(ConcealCd), (EffectVoid)Conceal,
             (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal);
     }
 

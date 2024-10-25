@@ -27,7 +27,7 @@ public class Sidekick : Syndicate
             FormerRole = FormerRole is PromotedRebel preb ? preb.FormerRole : FormerRole,
             RoleBlockImmune = FormerRole.RoleBlockImmune
         };
-        reb.Start<Role>(Player).RoleUpdate(this);
+        reb.RoleUpdate(this, Player);
         reb.OnRoleSelected();
     }
 

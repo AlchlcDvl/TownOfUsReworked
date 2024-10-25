@@ -22,6 +22,9 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         Setting.Cast<ToggleOption>().TitleText.text = TranslationManager.Translate(ID).Replace("%num%", Num);
         ValueText = Setting.transform.GetChild(3).GetComponent<TextMeshPro>();
         ValueText.text = Format();
+
+        if (LayerDictionary.TryGetValue(Value, out var entry))
+            ValueText.color = entry.Color;
     }
 
     public override void ViewOptionCreated()
@@ -32,6 +35,9 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         viewSettingsInfoPanel.settingText.text = Format();
         viewSettingsInfoPanel.checkMark.gameObject.SetActive(false);
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(false);
+
+        if (LayerDictionary.TryGetValue(Value, out var entry))
+            viewSettingsInfoPanel.settingText.color = entry.Color;
     }
 
     public override void ModifyViewSetting()
@@ -70,13 +76,11 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
 
     public void ToDo()
     {
-        if (IsInGame())
-            return;
-
         SettingsPatches.SettingsPage = 4;
         SettingsPatches.CachedPage = 0;
         SelectedEntry = ID;
         SettingsPatches.OnValueChanged();
+        GameSettingMenu.Instance.GameSettingsTab.scrollBar.ScrollToTop();
     }
 
     public static bool IsBanned(LayerEnum id) => GetOptions<RoleListEntryAttribute>().Any(x => x.IsBan && x.Get() == id) || (id == LayerEnum.Crewmate && RoleListBans.BanCrewmate) || (id ==

@@ -68,7 +68,7 @@ public static class HatParentUpdateMaterialPatch
         {
             try
             {
-                if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out asset) || !asset)
+                if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out asset))
                     return true;
             }
             catch
@@ -77,9 +77,12 @@ public static class HatParentUpdateMaterialPatch
             }
         }
 
+        if (!asset)
+            return false;
+
         var maskType = __instance.matProperties.MaskType;
 
-        if (__instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor)
+        if (__instance.IsLoaded && asset.MatchPlayerColor)
         {
             if (maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI)
             {

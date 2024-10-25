@@ -23,7 +23,7 @@ public class Shifter : Crew
         BaseStart();
         Alignment = Alignment.CrewSupport;
         ShifterMenu = new(Player, Shift, Exception);
-        ShiftButton = CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
+        ShiftButton ??= CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
     }
 
     public void Shift()
@@ -56,8 +56,8 @@ public class Shifter : Crew
         if (CustomPlayer.Local == other || CustomPlayer.Local == player)
         {
             Flash(CustomColorManager.Shifter);
-            role.OnLobby();
-            OnLobby();
+            role.Deinit();
+            Deinit();
             ButtonUtils.Reset();
         }
 
@@ -100,9 +100,9 @@ public class Shifter : Crew
             LayerEnum.Shifter or _ => new Shifter(),
         };
 
-        newRole.Start<Role>(player).RoleUpdate(this);
+        newRole.RoleUpdate(this, player);
         Role newRole2 = ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
-        newRole2.Start<Role>(other).RoleUpdate(role);
+        newRole2.RoleUpdate(role, other);
         ShifterMenu.Destroy();
         CustomPlayerMenu.AllMenus.Remove(ShifterMenu);
     }

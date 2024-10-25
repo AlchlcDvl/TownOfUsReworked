@@ -884,14 +884,12 @@ public static class LayerExtentions
         } catch {}
     }
 
-    public static void RoleUpdate(this Role newRole, Role former, bool retainFaction = false)
+    public static void RoleUpdate(this Role newRole, Role former, PlayerControl player, bool retainFaction = false)
     {
         AllButtons.Where(x => x.Owner == former || !x.Owner.Player).ForEach(x => x.Destroy());
-        CustomArrow.AllArrows.Where(x => x.Owner == former.Player).ForEach(x => x.Disable());
-        former.OnLobby();
-        former.ExitingLayer();
-        former.Ignore = true;
-        former.Player = null;
+        CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
+        former.End();
+        newRole.Start(player);
 
         if (!retainFaction)
         {
@@ -1142,7 +1140,7 @@ public static class LayerExtentions
         return bastflag || retflag;
     }
 
-    /*public static PlayerLayerEnum GetLayerType(this LayerEnum layer)
+    public static PlayerLayerEnum GetLayerType(this LayerEnum layer)
     {
         var id = (int)layer;
 
@@ -1156,7 +1154,7 @@ public static class LayerExtentions
             return PlayerLayerEnum.Ability;
         else
             return PlayerLayerEnum.None;
-    }*/
+    }
 
     public static AttackEnum GetAttackValue(this PlayerControl player, PlayerControl target = null, AttackEnum? overrideAtt = null)
     {

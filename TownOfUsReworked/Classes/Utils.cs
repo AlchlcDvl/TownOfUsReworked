@@ -108,7 +108,7 @@ public static class Utils
             var a = player.cosmetics.GetPhantomRoleAlpha();
             yield return PerformTimedAction(1, p =>
             {
-                player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(p, a, 1));
+                player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(1, a, p));
 
                 if (player != CustomPlayer.Local)
                 {
@@ -125,8 +125,7 @@ public static class Utils
                     player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
                 }
 
-                var color = UColor.Lerp(37.GetColor(false), HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), p);
-                PlayerMaterial.SetColors(color, rend);
+                PlayerMaterial.SetColors(UColor.Lerp(37.GetColor(false), HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), p), rend);
             });
         }
         else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
@@ -236,9 +235,8 @@ public static class Utils
             player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit1(player));
             Coroutines.Start(PerformTimedAction(1, p =>
             {
-                player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(1 - p, ca, 1));
-                var color = UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), 37.GetColor(false), p);
-                PlayerMaterial.SetColors(color, player.MyRend());
+                player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(1, ca, p));
+                PlayerMaterial.SetColors(UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), 37.GetColor(false), p), player.MyRend());
 
                 if (player != CustomPlayer.Local)
                 {
@@ -768,10 +766,7 @@ public static class Utils
         var name = "";
 
         while (name.Length < length)
-        {
-            var random = URandom.RandomRangeInt(0, Everything.Length);
-            name += Everything[random];
-        }
+            name += Everything[URandom.RandomRangeInt(0, Everything.Length)];
 
         return name;
     }
@@ -838,6 +833,7 @@ public static class Utils
         vent.Right = null;
         vent.Center = null;
         vent.name = $"{name}{vents.Count}";
+        vent.myAnim?.Stop();
 
         var allVents = AllMapVents();
         allVents.Add(vent);
@@ -1493,4 +1489,8 @@ public static class Utils
     }
 
     public static bool AmOwner(this PlayerVoteArea pva) => pva.TargetPlayerId == CustomPlayer.Local.PlayerId;
+
+    public static T GetValue<T>(this PropertyInfo prop, object obj) => (T)prop.GetValue(obj);
+
+    public static T GetValue<T>(this FieldInfo field, object obj) => (T)field.GetValue(obj);
 }

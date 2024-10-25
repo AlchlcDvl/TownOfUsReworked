@@ -1848,7 +1848,7 @@ public static class RoleGen
 
         Ash.DestroyAll();
 
-        ClientHandler.CloseMenus();
+        ClientHandler.Instance.CloseMenus();
 
         BodyLocations.Clear();
 
@@ -2026,13 +2026,12 @@ public static class RoleGen
     {
         SetLayer(id, rpc).Start(player);
         CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
+
+        if (id == LayerEnum.None)
+            player.GetLayers().Find(x => x.LayerType == rpc)?.End();
     }
 
-    private static void NullLayer(PlayerControl player, PlayerLayerEnum rpc)
-    {
-        player.GetLayers().Find(x => x.LayerType == rpc)?.Delete();
-        Gen(player, LayerEnum.None, rpc);
-    }
+    private static void NullLayer(PlayerControl player, PlayerLayerEnum rpc) => Gen(player, LayerEnum.None, rpc);
 
     public static PlayerLayer SetLayer(LayerEnum id, PlayerLayerEnum rpc)
     {

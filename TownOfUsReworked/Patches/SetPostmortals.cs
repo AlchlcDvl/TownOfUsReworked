@@ -202,12 +202,11 @@ public static class SetPostmortals
                 vents.RemoveAll(x => !ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id));
         }
 
+        if (IsSubmerged())
+            vents.RemoveAll(x => AllMapVents().IndexOf(x) is 0 or 14);
+
         vents.Shuffle();
         var startingVent = vents.Random();
-
-        if (IsSubmerged())
-            startingVent = vents.Random(x => AllMapVents().IndexOf(x) is not (0 or 14));
-
         player.RpcCustomSnapTo(GetVentPosition(startingVent));
         player.MyPhysics.RpcEnterVent(startingVent.Id);
     }
@@ -239,7 +238,7 @@ public static class SetPostmortals
             if (!rev.Is(LayerEnum.Revealer))
             {
                 var former = rev.GetRole();
-                new Revealer() { FormerRole = former }.Start<Role>(rev).RoleUpdate(former);
+                new Revealer() { FormerRole = former }.RoleUpdate(former, rev);
                 RemoveTasks(rev);
                 rev.gameObject.layer = LayerMask.NameToLayer("Players");
             }
@@ -289,7 +288,7 @@ public static class SetPostmortals
             if (!phan.Is(LayerEnum.Phantom))
             {
                 var former = phan.GetRole();
-                new Phantom().Start<Role>(phan).RoleUpdate(former);
+                new Phantom().RoleUpdate(former, phan);
                 RemoveTasks(phan);
                 phan.gameObject.layer = LayerMask.NameToLayer("Players");
             }
@@ -342,7 +341,7 @@ public static class SetPostmortals
             if (!ban.Is(LayerEnum.Banshee))
             {
                 var former = ban.GetRole();
-                new Banshee().Start<Role>(ban).RoleUpdate(former);
+                new Banshee().RoleUpdate(former, ban);
                 ban.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
@@ -391,7 +390,7 @@ public static class SetPostmortals
             if (!ghoul.Is(LayerEnum.Ghoul))
             {
                 var former = ghoul.GetRole();
-                new Ghoul().Start<Role>(ghoul).RoleUpdate(former);
+                new Ghoul().RoleUpdate(former, ghoul);
                 ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 

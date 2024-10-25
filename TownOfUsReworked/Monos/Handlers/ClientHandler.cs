@@ -33,7 +33,7 @@ public class ClientHandler : MonoBehaviour
     public PassiveButton ClientOptionsButton;
     public bool SettingsActive;
 
-    private bool ButtonsSet;
+    public bool ButtonsSet;
 
     private Transform ButtonsParent;
 
@@ -118,7 +118,7 @@ public class ClientHandler : MonoBehaviour
 
     public void Update()
     {
-        if (IsHnS() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsSet)
+        if (IsHnS() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsSet || !ButtonsParent)
             return;
 
         ResetButtonPos();
@@ -126,7 +126,7 @@ public class ClientHandler : MonoBehaviour
         WikiRCButton.gameObject.SetActive(part2);
         ClientOptionsButton.gameObject.SetActive(part2);
         ZoomButton.gameObject.SetActive(HUD().MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() ||
-            CustomPlayer.Local.Caught()) && !Meeting() && !IsFreePlay());
+            CustomPlayer.Local.Caught()) && !Meeting());
 
         if (PhoneText)
         {
@@ -150,79 +150,89 @@ public class ClientHandler : MonoBehaviour
         HUD()?.TaskPanel?.gameObject?.SetActive(part && !Meeting() && !IsCustomHnS());
         TaskBar?.gameObject?.SetActive(part && GameSettings.TaskBarMode != TBMode.Invisible);
     }
-    public static void ClickZoom()
+
+    public void ClickZoom()
     {
         CloseMenus(SkipEnum.Zooming);
-        ClientHandler.Instance.Zooming = !ClientHandler.Instance.Zooming;
-        Coroutines.Start(Zoom(ClientHandler.Instance.Zooming));
+        Zooming = !Zooming;
+        Coroutines.Start(Zoom(Zooming));
     }
 
-    private static IEnumerator Zoom(bool inOut)
+    private static Vector3 MaxSize = Vector3.zero;
+    private static Vector3 MinSize = Vector3.zero;
+
+    [HideFromIl2Cpp]
+    private IEnumerator Zoom(bool inOut)
     {
-        ClientHandler.Instance.ZoomButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Inactive");
-        ClientHandler.Instance.ZoomButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Active");
-        var change = 0.3f * (inOut ? 1 : -1);
+        ZoomButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Inactive");
+        ZoomButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Active");
+
         var limit = inOut ? 12f : 3f;
-        // HUD().SetHudActive(false);
+        var original = Camera.main.orthographicSize;
 
-        for (var i = Camera.main.orthographicSize; inOut ? (i < 12f) : (i > 3f); i += change)
+        if (MinSize == Vector3.zero)
+            MinSize = HUD().transform.localScale;
+
+        if (MaxSize == Vector3.zero)
+            MaxSize = HUD().transform.localScale * 4f;
+
+        var sizeLimit = inOut ? MaxSize : MinSize;
+        var originalSize = HUD().transform.localScale;
+
+        yield return PerformTimedAction(1.5f, p =>
         {
-            var size = Meeting() ? 3f : i;
+            var size = Meeting() ? 3f : Mathf.Lerp(original, limit, p);
             Camera.main.orthographicSize = size;
-            Camera.allCameras.ForEach(x => x.orthographicSize = size);
-            yield return EndFrame();
-        }
+            HUD().UICamera.orthographicSize = size;
+            HUD().transform.localScale = Vector3.Lerp(originalSize, sizeLimit, p);
+        });
 
-        Camera.main.orthographicSize = limit;
-        Camera.allCameras.ForEach(x => x.orthographicSize = limit);
-        // ResolutionManager.ResolutionChanged.Invoke(Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen);
-        // HUD().SetHudActive(true);
         yield break;
     }
 
-    public static void OpenRoleCard()
+    public void OpenRoleCard()
     {
         CloseMenus(SkipEnum.RoleCard);
 
         if (LocalBlocked())
             return;
 
-        if (ClientHandler.Instance.PhoneText)
-            ClientHandler.Instance.PhoneText.gameObject.Destroy();
+        if (PhoneText)
+            PhoneText.gameObject.Destroy();
 
-        ClientHandler.Instance.PhoneText = UObject.Instantiate(HUD().KillButton.cooldownTimerText, ClientHandler.Instance.Phone.transform);
-        ClientHandler.Instance.PhoneText.enableWordWrapping = false;
-        ClientHandler.Instance.PhoneText.transform.localScale = Vector3.one * 0.4f;
-        ClientHandler.Instance.PhoneText.transform.localPosition = new(0, 0, -50f);
-        ClientHandler.Instance.PhoneText.gameObject.layer = 5;
-        ClientHandler.Instance.PhoneText.alignment = TextAlignmentOptions.Center;
-        ClientHandler.Instance.PhoneText.name = "PhoneText";
+        PhoneText = Instantiate(HUD().KillButton.cooldownTimerText, Phone.transform);
+        PhoneText.enableWordWrapping = false;
+        PhoneText.transform.localScale = Vector3.one * 0.4f;
+        PhoneText.transform.localPosition = new(0, 0, -50f);
+        PhoneText.gameObject.layer = 5;
+        PhoneText.alignment = TextAlignmentOptions.Center;
+        PhoneText.name = "PhoneText";
 
-        if (!ClientHandler.Instance.ToTheWiki)
+        if (!ToTheWiki)
         {
-            ClientHandler.Instance.ToTheWiki = CreateButton("ToTheWiki", "Mod Wiki", () =>
+            ToTheWiki = CreateButton("ToTheWiki", "Mod Wiki", () =>
             {
                 OpenRoleCard();
                 OpenWiki();
             });
         }
 
-        ClientHandler.Instance.RoleCardActive = !ClientHandler.Instance.RoleCardActive;
-        ClientHandler.Instance.PhoneText.text = CustomPlayer.Local.RoleCardInfo();
-        ClientHandler.Instance.PhoneText.gameObject.SetActive(ClientHandler.Instance.RoleCardActive);
-        ClientHandler.Instance.Phone.gameObject.SetActive(ClientHandler.Instance.RoleCardActive);
-        ClientHandler.Instance.ToTheWiki.gameObject.SetActive(ClientHandler.Instance.RoleCardActive && IsNormal() && IsInGame());
+        RoleCardActive = !RoleCardActive;
+        PhoneText.text = CustomPlayer.Local.RoleCardInfo();
+        PhoneText.gameObject.SetActive(RoleCardActive);
+        Phone.gameObject.SetActive(RoleCardActive);
+        ToTheWiki.gameObject.SetActive(RoleCardActive && IsNormal() && IsInGame());
     }
 
-    public static void Open()
+    public void Open()
     {
-        if (!ClientHandler.Instance.Phone)
+        if (!Phone)
         {
-            ClientHandler.Instance.Phone = new GameObject("Phone") { layer = 5 }.AddComponent<SpriteRenderer>();
-            ClientHandler.Instance.Phone.sprite = GetSprite("Phone");
-            ClientHandler.Instance.Phone.transform.SetParent(HUD().transform);
-            ClientHandler.Instance.Phone.transform.localPosition = new(0, 0, -49f);
-            ClientHandler.Instance.Phone.transform.localScale *= 1.25f;
+            Phone = new GameObject("Phone") { layer = 5 }.AddComponent<SpriteRenderer>();
+            Phone.sprite = GetSprite("Phone");
+            Phone.transform.SetParent(HUD().transform);
+            Phone.transform.localPosition = new(0, 0, -49f);
+            Phone.transform.localScale *= 1.25f;
         }
 
         if (IsInGame())
@@ -233,7 +243,7 @@ public class ClientHandler : MonoBehaviour
 
     public static void CreateMenu()
     {
-        CloseMenus(SkipEnum.Settings);
+        Instance.CloseMenus(SkipEnum.Settings);
 
         if (GameSettingMenu.Instance)
         {
@@ -243,21 +253,21 @@ public class ClientHandler : MonoBehaviour
 
         SettingsPatches.SettingsPage = 3;
         CustomPlayer.Local.NetTransform.Halt();
-        var currentMenu = UObject.Instantiate(ClientHandler.Prefab);
+        var currentMenu = Instantiate(Prefab);
         currentMenu.transform.SetParent(Camera.main.transform, false);
-        currentMenu.transform.localPosition = ClientHandler.Pos;
+        currentMenu.transform.localPosition = Pos;
         currentMenu.name = "ClientOptionsMenu";
         TransitionFade.Instance.DoTransitionFade(null, currentMenu.gameObject, null);
     }
 
     public static void OpenWiki()
     {
-        CloseMenus(SkipEnum.Wiki);
+        Instance.CloseMenus(SkipEnum.Wiki);
 
         if (LocalBlocked())
             return;
 
-        if (!ClientHandler.Instance.PagesSet)
+        if (!Instance.PagesSet)
         {
             var clone = Modules.Info.AllInfo.Clone();
             clone.RemoveAll(x => x.Name is "Invalid" or "None" || x.Type == InfoType.Lore);
@@ -267,7 +277,7 @@ public class ClientHandler : MonoBehaviour
 
             foreach (var pair in clone)
             {
-                ClientHandler.Instance.Sorted.Add(j, new(pair is SymbolInfo symbol ? symbol.Symbol : pair.Name, pair));
+                Instance.Sorted.Add(j, new(pair is SymbolInfo symbol ? symbol.Symbol : pair.Name, pair));
                 j++;
                 k++;
 
@@ -278,93 +288,93 @@ public class ClientHandler : MonoBehaviour
                 }
             }
 
-            ClientHandler.Instance.MaxPage = i;
-            ClientHandler.Instance.PagesSet = true;
+            Instance.MaxPage = i;
+            Instance.PagesSet = true;
         }
 
-        if (!ClientHandler.Instance.NextButton)
+        if (!Instance.NextButton)
         {
-            ClientHandler.Instance.NextButton = CreateButton("WikiNextButton", "Next Page", () =>
+            Instance.NextButton = Instance.CreateButton("WikiNextButton", "Next Page", () =>
             {
-                ClientHandler.Instance.Page = CycleInt(ClientHandler.Instance.MaxPage, 0, ClientHandler.Instance.Page, true);
+                Instance.Page = CycleInt(Instance.MaxPage, 0, Instance.Page, true);
                 ResetButtonPos();
             });
         }
 
-        if (!ClientHandler.Instance.BackButton)
+        if (!Instance.BackButton)
         {
-            ClientHandler.Instance.BackButton = CreateButton("WikiBack", "Previous Page", () =>
+            Instance.BackButton = Instance.CreateButton("WikiBack", "Previous Page", () =>
             {
-                if (ClientHandler.Instance.Selected == null)
-                    ClientHandler.Instance.Page = CycleInt(ClientHandler.Instance.MaxPage, 0, ClientHandler.Instance.Page, false);
-                else if (ClientHandler.Instance.LoreActive)
+                if (Instance.Selected == null)
+                    Instance.Page = CycleInt(Instance.MaxPage, 0, Instance.Page, false);
+                else if (Instance.LoreActive)
                 {
-                    ClientHandler.Instance.PhoneText.gameObject.SetActive(false);
-                    AddInfo();
-                    ClientHandler.Instance.LoreActive = false;
+                    Instance.PhoneText.gameObject.SetActive(false);
+                    Instance.AddInfo();
+                    Instance.LoreActive = false;
                 }
                 else
                 {
-                    ClientHandler.Instance.Selected = null;
-                    ClientHandler.Instance.SelectionActive = false;
-                    ClientHandler.Instance.LoreButton.gameObject.SetActive(false);
-                    ClientHandler.Instance.NextButton.gameObject.SetActive(true);
-                    ClientHandler.Instance.NextButton.transform.localPosition = new(2.5f, 1.6f, 0f);
-                    ClientHandler.Instance.PhoneText.gameObject.SetActive(false);
-                    ClientHandler.Instance.Entry.Clear();
+                    Instance.Selected = null;
+                    Instance.SelectionActive = false;
+                    Instance.LoreButton.gameObject.SetActive(false);
+                    Instance.NextButton.gameObject.SetActive(true);
+                    Instance.NextButton.transform.localPosition = new(2.5f, 1.6f, 0f);
+                    Instance.PhoneText.gameObject.SetActive(false);
+                    Instance.Entry.Clear();
                 }
 
                 ResetButtonPos();
             });
         }
 
-        if (!ClientHandler.Instance.YourStatus)
+        if (!Instance.YourStatus)
         {
-            ClientHandler.Instance.YourStatus = CreateButton("YourStatus", "Your Status", () =>
+            Instance.YourStatus = Instance.CreateButton("YourStatus", "Your Status", () =>
             {
                 OpenWiki();
-                OpenRoleCard();
+                Instance.OpenRoleCard();
             });
         }
 
-        if (!ClientHandler.Instance.LoreButton)
+        if (!Instance.LoreButton)
         {
-            ClientHandler.Instance.LoreButton = CreateButton("WikiLore", "Lore", () =>
+            Instance.LoreButton = Instance.CreateButton("WikiLore", "Lore", () =>
             {
-                ClientHandler.Instance.LoreActive = !ClientHandler.Instance.LoreActive;
-                SetEntryText(Modules.Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == ClientHandler.Instance.Selected.Name || x.Short == ClientHandler.Instance.Selected.Short).Description)));
-                ClientHandler.Instance.PhoneText.text = ClientHandler.Instance.Entry[0];
-                ClientHandler.Instance.PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
-                ClientHandler.Instance.SelectionActive = true;
+                Instance.LoreActive = !Instance.LoreActive;
+                Instance.SetEntryText(Modules.Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short).Description)));
+                Instance.PhoneText.text = Instance.Entry[0];
+                Instance.PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
+                Instance.SelectionActive = true;
             });
         }
 
-        if (ClientHandler.Instance.Buttons.Count == 0)
+        if (Instance.Buttons.Count == 0)
         {
             var i = 0;
             var j = 0;
 
-            for (var k = 0; k < ClientHandler.Instance.Sorted.Count; k++)
+            for (var k = 0; k < Instance.Sorted.Count; k++)
             {
-                if (!ClientHandler.Instance.Buttons.ContainsKey(i))
-                    ClientHandler.Instance.Buttons.Add(i, []);
+                if (!Instance.Buttons.ContainsKey(i))
+                    Instance.Buttons.Add(i, []);
 
-                var cache = ClientHandler.Instance.Sorted[k].Value;
-                var cache2 = ClientHandler.Instance.Sorted[k].Key;
-                var button = CreateButton($"{cache2}Info", cache2, () =>
+                var cache = Instance.Sorted[k].Value;
+                var cache2 = Instance.Sorted[k].Key;
+                var button = Instance.CreateButton($"{cache2}Info", cache2, () =>
                 {
-                    foreach (var buttons in ClientHandler.Instance.Buttons.Values)
+                    foreach (var buttons in Instance.Buttons.Values)
                     {
                         if (buttons.Any())
                             buttons.Select(x => x.Item2).ForEach(x => x?.gameObject?.SetActive(false));
                     }
 
-                    ClientHandler.Instance.Selected = cache;
-                    ClientHandler.Instance.NextButton.gameObject.SetActive(false);
-                    AddInfo();
+                    Instance.Selected = cache;
+                    Instance.NextButton.gameObject.SetActive(false);
+                    Instance.AddInfo();
                 }, cache.Color);
 
-                ClientHandler.Instance.Buttons[i].Add((cache, button));
+                Instance.Buttons[i].Add((cache, button));
                 j++;
 
                 if (j >= 28 || cache.Footer)
@@ -374,45 +384,45 @@ public class ClientHandler : MonoBehaviour
                 }
             }
 
-            ClientHandler.Instance.Buttons.ToList().ForEach(x =>
+            Instance.Buttons.ToList().ForEach(x =>
             {
                 if (!x.Value.Any())
-                    ClientHandler.Instance.Buttons.Remove(x.Key);
+                    Instance.Buttons.Remove(x.Key);
             });
         }
 
-        ClientHandler.Instance.WikiActive = !ClientHandler.Instance.WikiActive;
-        ClientHandler.Instance.Phone.gameObject.SetActive(ClientHandler.Instance.WikiActive);
-        ClientHandler.Instance.NextButton.gameObject.SetActive(ClientHandler.Instance.WikiActive);
-        ClientHandler.Instance.BackButton.gameObject.SetActive(ClientHandler.Instance.WikiActive);
-        ClientHandler.Instance.YourStatus.gameObject.SetActive(ClientHandler.Instance.WikiActive && IsNormal() && IsInGame());
+        Instance.WikiActive = !Instance.WikiActive;
+        Instance.Phone.gameObject.SetActive(Instance.WikiActive);
+        Instance.NextButton.gameObject.SetActive(Instance.WikiActive);
+        Instance.BackButton.gameObject.SetActive(Instance.WikiActive);
+        Instance.YourStatus.gameObject.SetActive(Instance.WikiActive && IsNormal() && IsInGame());
         ResetButtonPos();
-        ClientHandler.Instance.Selected = null;
+        Instance.Selected = null;
 
-        if (!ClientHandler.Instance.WikiActive && ClientHandler.Instance.PhoneText)
-            ClientHandler.Instance.PhoneText.gameObject.SetActive(false);
+        if (!Instance.WikiActive && Instance.PhoneText)
+            Instance.PhoneText.gameObject.SetActive(false);
     }
 
     public static void ResetButtonPos()
     {
-        if (ClientHandler.Instance.BackButton)
-            ClientHandler.Instance.BackButton.transform.localPosition = new(-2.6f, 1.6f, 0f);
+        if (Instance.BackButton)
+            Instance.BackButton.transform.localPosition = new(-2.6f, 1.6f, 0f);
 
-        if (ClientHandler.Instance.NextButton)
-            ClientHandler.Instance.NextButton.transform.localPosition = new(2.5f, 1.6f, 0f);
+        if (Instance.NextButton)
+            Instance.NextButton.transform.localPosition = new(2.5f, 1.6f, 0f);
 
-        if (ClientHandler.Instance.YourStatus)
-            ClientHandler.Instance.YourStatus.transform.localPosition = new(0f, 1.6f, 0f);
+        if (Instance.YourStatus)
+            Instance.YourStatus.transform.localPosition = new(0f, 1.6f, 0f);
 
-        if (ClientHandler.Instance.ToTheWiki)
-            ClientHandler.Instance.ToTheWiki.transform.localPosition = new(-2.6f, 1.6f, 0f);
+        if (Instance.ToTheWiki)
+            Instance.ToTheWiki.transform.localPosition = new(-2.6f, 1.6f, 0f);
 
-        if (ClientHandler.Instance.Selected != null)
+        if (Instance.Selected != null)
         {
-            if (LayerInfo.AllLore.Any(x => x.Name == ClientHandler.Instance.Selected.Name || x.Short == ClientHandler.Instance.Selected.Short) && ClientHandler.Instance.LoreButton)
+            if (LayerInfo.AllLore.Any(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short) && Instance.LoreButton)
             {
-                ClientHandler.Instance.LoreButton.gameObject.SetActive(!ClientHandler.Instance.LoreActive);
-                ClientHandler.Instance.LoreButton.transform.localPosition = new(0f, -1.7f, 0f);
+                Instance.LoreButton.gameObject.SetActive(!Instance.LoreActive);
+                Instance.LoreButton.transform.localPosition = new(0f, -1.7f, 0f);
             }
 
             return;
@@ -420,7 +430,7 @@ public class ClientHandler : MonoBehaviour
 
         var m = 0;
 
-        foreach (var pair in ClientHandler.Instance.Buttons)
+        foreach (var pair in Instance.Buttons)
         {
             foreach (var pair2 in pair.Value)
             {
@@ -432,7 +442,7 @@ public class ClientHandler : MonoBehaviour
                 var row = m / 4;
                 var col = m % 4;
                 button.transform.localPosition = new(-2.6f + (1.7f * col), 1f - (0.45f * row), -1f);
-                button.gameObject.SetActive(ClientHandler.Instance.Page == pair.Key && ClientHandler.Instance.WikiActive);
+                button.gameObject.SetActive(Instance.Page == pair.Key && Instance.WikiActive);
                 m++;
 
                 if (m >= 28 || pair2.Item1.Footer)
@@ -441,33 +451,34 @@ public class ClientHandler : MonoBehaviour
         }
     }
 
-    public static void AddInfo()
+    public void AddInfo()
     {
-        if (ClientHandler.Instance.PhoneText)
-            ClientHandler.Instance.PhoneText.gameObject.Destroy();
+        if (PhoneText)
+            PhoneText.gameObject.Destroy();
 
-        ClientHandler.Instance.Selected.WikiEntry(out var result);
+        Selected.WikiEntry(out var result);
         SetEntryText(result);
-        ClientHandler.Instance.PhoneText = UObject.Instantiate(HUD().TaskPanel.taskText, ClientHandler.Instance.Phone.transform);
-        ClientHandler.Instance.PhoneText.color = UColor.white;
-        ClientHandler.Instance.PhoneText.text = ClientHandler.Instance.Entry[0];
-        ClientHandler.Instance.PhoneText.enableWordWrapping = false;
-        ClientHandler.Instance.PhoneText.transform.localScale = Vector3.one * 0.75f;
-        ClientHandler.Instance.PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
-        ClientHandler.Instance.PhoneText.alignment = TextAlignmentOptions.TopLeft;
-        ClientHandler.Instance.PhoneText.fontStyle = FontStyles.Bold;
-        ClientHandler.Instance.PhoneText.gameObject.SetActive(true);
-        ClientHandler.Instance.PhoneText.name = "PhoneText";
-        ClientHandler.Instance.SelectionActive = true;
+        PhoneText = Instantiate(HUD().TaskPanel.taskText, Phone.transform);
+        PhoneText.color = UColor.white;
+        PhoneText.text = Entry[0];
+        PhoneText.enableWordWrapping = false;
+        PhoneText.transform.localScale = Vector3.one * 0.75f;
+        PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
+        PhoneText.alignment = TextAlignmentOptions.TopLeft;
+        PhoneText.fontStyle = FontStyles.Bold;
+        PhoneText.gameObject.SetActive(true);
+        PhoneText.name = "PhoneText";
+        SelectionActive = true;
     }
 
-    public static PassiveButton CreateButton(string name, string labelText, Action onClick, UColor? textColor = null)
+    [HideFromIl2Cpp]
+    private PassiveButton CreateButton(string name, string labelText, Action onClick, UColor? textColor = null)
     {
-        var button = UObject.Instantiate(HUD().MapButton, ClientHandler.Instance.Phone.transform);
+        var button = Instantiate(HUD().MapButton, Phone.transform);
         button.name = $"{name}Button";
         button.transform.localScale = new(0.5f, 0.5f, 1f);
         button.GetComponent<BoxCollider2D>().size = new(2.5f, 0.55f);
-        var label = UObject.Instantiate(HUD().TaskPanel.taskText, button.transform);
+        var label = Instantiate(HUD().TaskPanel.taskText, button.transform);
         label.color = textColor ?? UColor.white;
         label.text = labelText;
         label.enableWordWrapping = false;
@@ -488,15 +499,15 @@ public class ClientHandler : MonoBehaviour
         return button;
     }
 
-    public static void CloseMenus(SkipEnum skip = SkipEnum.None)
+    public void CloseMenus(SkipEnum skip = SkipEnum.None)
     {
-        if (ClientHandler.Instance.WikiActive && skip != SkipEnum.Wiki)
+        if (WikiActive && skip != SkipEnum.Wiki)
             OpenWiki();
 
-        if (ClientHandler.Instance.RoleCardActive && skip != SkipEnum.RoleCard)
+        if (RoleCardActive && skip != SkipEnum.RoleCard)
             OpenRoleCard();
 
-        if (ClientHandler.Instance.Zooming && skip != SkipEnum.Zooming)
+        if (Zooming && skip != SkipEnum.Zooming)
             ClickZoom();
 
         if (MapPatch.MapActive && Map() && skip != SkipEnum.Map)
@@ -509,10 +520,10 @@ public class ClientHandler : MonoBehaviour
             GameSettingMenu.Instance.Close();
     }
 
-    public static void SetEntryText(string result)
+    public void SetEntryText(string result)
     {
-        ClientHandler.Instance.Entry.Clear();
-        ClientHandler.Instance.ResultPage = 0;
+        Entry.Clear();
+        ResultPage = 0;
         var texts = result.Split('\n');
         var pos = 0;
         var result2 = "";
@@ -524,13 +535,13 @@ public class ClientHandler : MonoBehaviour
 
             if (pos >= 19)
             {
-                ClientHandler.Instance.Entry.Add(result2);
+                Entry.Add(result2);
                 result2 = "";
                 pos -= 19;
             }
         }
 
         if (!IsNullEmptyOrWhiteSpace(result2))
-            ClientHandler.Instance.Entry.Add(result2);
+            Entry.Add(result2);
     }
 }

@@ -89,7 +89,7 @@ public static class ModCompatibility
             CustomTaskTypesType = SubTypes.First(t => t.Name == "CustomTaskTypes");
             RetrieveOxygenMaskField = AccessTools.Field(CustomTaskTypesType, "RetrieveOxygenMask");
             RetTaskTypeField = AccessTools.Field(CustomTaskTypesType, "taskType");
-            RetrieveOxygenMask = (TaskTypes)RetTaskTypeField.GetValue(RetrieveOxygenMaskField.GetValue(null));
+            RetrieveOxygenMask = RetTaskTypeField.GetValue<TaskTypes>(RetrieveOxygenMaskField.GetValue(null));
 
             SubmarineOxygenSystemType = SubTypes.First(t => t.Name == "SubmarineOxygenSystem");
             SubmarineOxygenSystemInstanceProperty = AccessTools.Property(SubmarineOxygenSystemType, "Instance");
@@ -142,7 +142,7 @@ public static class ModCompatibility
             return;
 
         // True is top, false is bottom
-        var currentFloor = (bool)UpperDeckIsTargetFloorField.GetValue(GetSubElevatorSystemField.GetValue(elevator));
+        var currentFloor = UpperDeckIsTargetFloorField.GetValue<bool>(GetSubElevatorSystemField.GetValue(elevator));
         var playerFloor = player.transform.position.y > -7f;
 
         if (currentFloor != playerFloor)
@@ -163,7 +163,7 @@ public static class ModCompatibility
         {
             // Fade to clear
             // True is top, false is bottom
-            var topfloortarget = (bool)UpperDeckIsTargetFloorField.GetValue(GetSubElevatorSystemField.GetValue(elevator));
+            var topfloortarget = UpperDeckIsTargetFloorField.GetValue<bool>(GetSubElevatorSystemField.GetValue(elevator));
             var topintendedtarget = player.transform.position.y > -7f;
 
             if (topfloortarget != topintendedtarget)
@@ -176,7 +176,7 @@ public static class ModCompatibility
         if (!IsSubmerged())
             return (false, null);
 
-        foreach (var elevator in (IList)SubmergedElevatorsField.GetValue(SubmergedInstanceField.GetValue(null)))
+        foreach (var elevator in SubmergedElevatorsField.GetValue<IList>(SubmergedInstanceField.GetValue(null)))
         {
             if ((bool)GetInElevatorMethod.Invoke(elevator, [ player ]))
                 return (true, elevator);
@@ -266,7 +266,7 @@ public static class ModCompatibility
         if (!IsSubmerged())
             return false;
 
-        return (bool)InTrasntionProperty.GetValue(null);
+        return InTrasntionProperty.GetValue<bool>(null);
     }
 
     public static void RepairOxygen()

@@ -69,11 +69,12 @@ public class ChatCommand
 
     public static void Run(string title, string text, bool withColor = true, bool hasColor = false, UColor? color = null)
     {
-        var pooledBubble = Chat().GetPooledBubble();
+        var chat = Chat();
+        var pooledBubble = chat.GetPooledBubble();
 
         try
         {
-            pooledBubble.transform.SetParent(Chat().scroller.Inner);
+            pooledBubble.transform.SetParent(chat.scroller.Inner);
             pooledBubble.transform.localScale = Vector3.one;
             pooledBubble.SetLeft();
             pooledBubble.SetCosmetics(CustomPlayer.Local.Data);
@@ -96,13 +97,18 @@ public class ChatCommand
             var pos = pooledBubble.NameText.transform.localPosition;
             pos.y += 0.05f;
             pooledBubble.NameText.transform.localPosition = pos;
-            Chat().AlignAllBubbles();
+            chat.AlignAllBubbles();
+            chat.chatNotification.SetUp(CustomPlayer.Local, text);
+
+            if (!chat.IsOpenOrOpening && chat.notificationRoutine == null)
+                chat.notificationRoutine = chat.StartCoroutine(chat.BounceDot());
+
             Play("Chat");
         }
         catch (Exception ex)
         {
             Error(ex);
-            Chat().chatBubblePool.Reclaim(pooledBubble);
+            chat.chatBubblePool.Reclaim(pooledBubble);
         }
     }
 

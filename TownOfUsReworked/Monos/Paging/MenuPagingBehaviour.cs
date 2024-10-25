@@ -30,11 +30,11 @@ public class MenuPagingBehaviour : BasePagingBehaviour
         {
             if (i >= PageIndex * 15 && i < (PageIndex + 1) * 15)
             {
-                panel.gameObject.SetActive(true);
                 var relativeIndex = i % 15;
                 var row = relativeIndex / 3;
                 var col = relativeIndex % 3;
                 panel.transform.localPosition = new(Menu.XStart + (Menu.XOffset * col), Menu.YStart + (row * Menu.YOffset), panel.transform.localPosition.z);
+                panel.gameObject.SetActive(true);
             }
             else
                 panel.gameObject.SetActive(false);

@@ -44,7 +44,8 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
         var flag = GroupHeader != null || OptionParents1.Any(x => x.Item2.Contains(Alignment)) || OptionParents2.Any(x => x.Item2.Contains(Alignment));
         var cog = header.transform.GetChild(4).gameObject;
         cog.SetActive(flag);
-        cog.GetComponent<PassiveButton>().OverrideOnClickListeners(SetUpOptionsMenu);
+        var button = cog.GetComponent<GameOptionButton>();
+        button.OverrideOnClickListeners(SetUpOptionsMenu);
 
         if (!flag)
             header.transform.GetChild(3).localPosition = new(-5.539f, -0.45f, -2f);
@@ -68,9 +69,11 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
             _ => UColor.white
         };
 
-        quota.GetChild(0).GetComponent<SpriteRenderer>().color = color.Shadow(0.35f);
+        quota.GetChild(0).GetComponent<SpriteRenderer>().color = color.Alternate(0.35f);
         quota.GetChild(2).GetComponent<SpriteRenderer>().color = quota.GetChild(3).GetComponent<SpriteRenderer>().color = quota.GetChild(5).GetComponent<SpriteRenderer>().color =
-            color.Shadow();
+            color.Alternate();
+        button.interactableHoveredColor = UColor.white;
+        button.interactableColor = button.buttonSprite.color = color;
 
         Update();
     }
@@ -79,8 +82,12 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
     {
         Value = !Get();
         Collapse.GetComponentInChildren<TextMeshPro>().text = Value ? "-" : "+";
-        SettingsPatches.OnValueChanged();
-        SettingsPatches.OnValueChangedView();
+
+        if (Setting)
+            SettingsPatches.OnValueChanged();
+
+        if (ViewSetting)
+            SettingsPatches.OnValueChangedView();
     }
 
     public override void Update()

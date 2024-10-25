@@ -39,7 +39,7 @@ public class Actor : Neutral
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +
             $"- Your target roles are {PretendListString()}"));
         Alignment = Alignment.NeutralEvil;
-        PretendButton = CreateButton(this, new SpriteName("Pretend"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)PickRole, "PRETEND", (UsableFunc)Usable);
+        PretendButton ??= CreateButton(this, new SpriteName("Pretend"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)PickRole, "PRETEND", (UsableFunc)Usable);
         PretendRoles = [];
     }
 
@@ -161,7 +161,7 @@ public class Actor : Neutral
             LayerEnum.Actor or _ => new Amnesiac(),
         };
 
-        newRole.Start<Role>(Player).RoleUpdate(this);
+        newRole.RoleUpdate(this, Player);
     }
 
     public bool Usable() => !Targeted;

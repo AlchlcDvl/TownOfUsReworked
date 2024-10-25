@@ -37,17 +37,17 @@ public class Medium : Crew
         MediateArrows = [];
         Alignment = Alignment.CrewInvest;
         Data.Role.IntroSound = GetAudio("MediumIntro");
-        MediateButton = CreateButton(this, "MEDIATE", new SpriteName("Mediate"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, new Cooldown(MediateCd));
-        // SeanceButton = CreateButton(this, "SEANCE", new SpriteName("Seance"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, new Cooldown(SeanceCd),
+        MediateButton ??= CreateButton(this, "MEDIATE", new SpriteName("Mediate"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, new Cooldown(MediateCd));
+        // SeanceButton ??= CreateButton(this, "SEANCE", new SpriteName("Seance"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, new Cooldown(SeanceCd),
         //     new PostDeath(true));
     }
 
     // private void Seance() { Currently blank, gonna work on this later }
     // Can you believe this guy? Over a year and this mofo still hasn't worked on it :skull:
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         MediateArrows.Values.ToList().DestroyAll();
         MediateArrows.Clear();
         MediatedPlayers.Clear();

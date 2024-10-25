@@ -28,7 +28,16 @@ public static class CheckEndGame
             {
                 Faction.Crew => WinLose.CrewWins,
                 Faction.Intruder => WinLose.IntrudersWin,
-                Faction.Neutral => spell.LinkedDisposition == LayerEnum.Defector ? WinLose.DefectorWins : WinLose.AllNeutralsWin,
+                Faction.Neutral => NeutralSettings.NoSolo switch
+                {
+                    NoSolo.SameNKs or NoSolo.AllNeutrals or NoSolo.AllNKs => WinLose.AllNeutralsWin,
+                    _ => spell.LinkedDisposition switch
+                    {
+                        LayerEnum.Mafia => WinLose.MafiaWins,
+                        LayerEnum.Lovers => WinLose.LoveWins,
+                        _ => WinLose.DefectorWins
+                    }
+                },
                 Faction.Syndicate => WinLose.SyndicateWins,
                 _ => WinLose.NobodyWins
             };

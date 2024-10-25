@@ -12,6 +12,7 @@ public class CustomRolesMenu(PlayerControl owner, CustomRolesMenu.Select click) 
     public void Clicked(ShapeshifterPanel selectedPanel, PlayerControl player, LayerEnum role)
     {
         Click(selectedPanel, player, role);
+        IsActive = false;
 
         if (!SelectedPanel)
             Menu.Close();
@@ -40,7 +41,6 @@ public class CustomRolesMenu(PlayerControl owner, CustomRolesMenu.Select click) 
         panel.NameText.text = dictEntry.Name;
         panel.NameText.color = dictEntry.Color;
         panel.name = $"Guess{layer}";
-        // panel.transform.GetChild()
 
         if (panel == SelectedPanel)
             panel.Background.color = dictEntry.Color.Alternate(0.4f);
@@ -71,5 +71,7 @@ public class CustomRolesMenu(PlayerControl owner, CustomRolesMenu.Select click) 
 
         if (Menu)
             Menu.Close();
+
+        IsActive = false;
     }
 }

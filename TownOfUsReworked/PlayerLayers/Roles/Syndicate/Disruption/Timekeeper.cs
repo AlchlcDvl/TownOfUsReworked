@@ -28,7 +28,7 @@ public class Timekeeper : Syndicate
     {
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
-        TimeButton = CreateButton(this, new SpriteName("Time"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
+        TimeButton ??= CreateButton(this, new SpriteName("Time"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
             new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl);
         Data.Role.IntroSound = GetAudio("TimekeeperIntro");
     }

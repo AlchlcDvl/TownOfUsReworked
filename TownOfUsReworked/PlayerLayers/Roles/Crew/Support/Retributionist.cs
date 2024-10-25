@@ -96,9 +96,9 @@ public class Retributionist : Crew
         }
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
 
         if (BodyArrows.Count > 0)
         {
@@ -161,7 +161,7 @@ public class Retributionist : Crew
         base.UpdateHud(__instance);
 
         if (Dead)
-            OnLobby();
+            Deinit();
         else if (IsCor)
         {
             var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(Coroner.CoronerArrowDur)));
@@ -447,7 +447,7 @@ public class Retributionist : Crew
         {
             AutopsyButton ??= CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, (UsableFunc)CorUsable1,
                 new Cooldown(Coroner.AutopsyCd));
-            CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(Coroner.CompareCd),
+            CompareButton ??= CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(Coroner.CompareCd),
                 (UsableFunc)CorUsable2);
         }
         else if (IsDet)
@@ -499,7 +499,7 @@ public class Retributionist : Crew
         }
         else if (IsAlt)
         {
-            ReviveButton = CreateButton(this, "REVIVE", new SpriteName("Revive"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Revive, new Cooldown(Altruist.ReviveCd),
+            ReviveButton ??= CreateButton(this, "REVIVE", new SpriteName("Revive"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Revive, new Cooldown(Altruist.ReviveCd),
                 new Duration(Altruist.ReviveDur), (EffectEndVoid)UponEnd, Altruist.MaxRevives, (EndFunc)ReviveEnd, (UsableFunc)AltUsable);
         }
         else if (IsMedic)

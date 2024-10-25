@@ -91,7 +91,7 @@ public class PromotedRebel : Syndicate
         if (IsStalk)
         {
             if (Dead && StalkerArrows.Count > 0)
-                OnLobby();
+                Deinit();
             else
             {
                 foreach (var pair in StalkerArrows)
@@ -238,9 +238,9 @@ public class PromotedRebel : Syndicate
         }
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
 
         Bombs.ForEach(x => x?.gameObject?.Destroy());
         Bombs.Clear();

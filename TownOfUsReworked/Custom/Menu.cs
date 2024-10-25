@@ -8,6 +8,8 @@ public abstract class CustomMenu
     public PlayerControl Owner { get; }
     private string Type { get; set; }
 
+    public static bool IsActive;
+
     public CustomMenu(PlayerControl owner, string type)
     {
         Owner = owner;
@@ -28,6 +30,7 @@ public abstract class CustomMenu
             PlayerMaterial.SetColors(CustomPlayer.Local.CurrentOutfit.ColorId, Menu.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>());
         }
 
+        IsActive = true;
         Menu.transform.localPosition = new(0f, 0f, -50f);
         Menu.Begin(null);
     }

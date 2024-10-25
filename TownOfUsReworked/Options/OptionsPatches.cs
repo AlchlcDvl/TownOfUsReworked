@@ -10,8 +10,6 @@ public static class SettingsPatches
 
     private static PassiveButton ClientSettingsButton;
 
-    private static GameOptionsMenu RoleListMenu;
-
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Start))]
     public static class OptionsMenuBehaviour_Start
     {
@@ -30,10 +28,26 @@ public static class SettingsPatches
             ReturnButton.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnActive");
             ReturnButton.SetActive(false);
 
+            Prev = UObject.Instantiate(ReturnButton, __instance.transform);
+            Prev.GetComponent<PassiveButton>().OverrideOnClickListeners(() => NextPage(false));
+            Prev.name = "PrevPageButton";
+            Prev.transform.FindChild("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnInactive");
+            Prev.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnActive");
+            Prev.transform.localPosition = new(-4.473f, 1.0795f, -2f);
+            Prev.SetActive(false);
+
+            Next = UObject.Instantiate(ReturnButton, __instance.transform);
+            Next.GetComponent<PassiveButton>().OverrideOnClickListeners(() => NextPage(true));
+            Next.name = "NextPageButton";
+            Next.transform.FindChild("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("NextInactive");
+            Next.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("NextActive");
+            Next.transform.localPosition = new(-2.2341f, 1.0795f, -2f);
+            Next.SetActive(false);
+
             var pos2 = __instance.GamePresetsButton.transform.localPosition;
             var pos3 = __instance.GameSettingsButton.transform.localPosition;
             var pos4 = __instance.RoleSettingsButton.transform.localPosition;
-            var pos1 = pos4 + new Vector3(0f, Mathf.Abs(pos2.y - pos3.y), 0f);
+            var pos1 = pos2 + new Vector3(0f, Mathf.Abs(pos2.y - pos3.y), 0f);
 
             __instance.GameSettingsButton.transform.localPosition = pos1;
             __instance.RoleSettingsButton.transform.localPosition = pos2;
@@ -47,15 +61,8 @@ public static class SettingsPatches
             ClientSettingsButton.buttonText.GetComponent<TextTranslatorTMP>()?.Destroy();
             ClientSettingsButton.buttonText.text = TranslationManager.Translate("CustomOption.ClientOptions");
             ClientSettingsButton.OverrideOnClickListeners(() => __instance.ChangeTab(3, false));
+            ClientSettingsButton.OverrideOnMouseOverListeners(() => __instance.ChangeTab(3, true));
             ClientSettingsButton.transform.localPosition = pos4;
-
-            RoleListMenu = UObject.Instantiate(__instance.GameSettingsTab, __instance.GameSettingsTab.transform.parent);
-            RoleListMenu.name = "ROLE LIST MENU";
-            RoleListMenu.gameObject.SetActive(false);
-            var count = RoleListMenu.transform.GetChildCount();
-
-            for (var i = 1; i < count; i++)
-                RoleListMenu.transform.GetChild(i).gameObject.Destroy();
 
             if (!ButtonPrefab)
             {
@@ -78,12 +85,19 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.ChangeTab))]
     public static class OnChangingTabs
     {
-        public static bool Prefix(int tabNum) => tabNum != 3;
-
         public static void Postfix(GameSettingMenu __instance, int tabNum, bool previewOnly)
         {
+            if (tabNum == 3)
+                __instance.GameSettingsTab.gameObject.SetActive(true);
+
             if (previewOnly)
                 return;
+
+            if (tabNum == 3)
+            {
+                __instance.GameSettingsTab.OpenMenu();
+                ClientOptionsButton?.SelectButton(true);
+            }
 
             SettingsPage = tabNum switch
             {
@@ -105,6 +119,7 @@ public static class SettingsPatches
                 SettingsPage = 0;
 
             SpawnOptionsCreated = false;
+            RLOptionsCreated = false;
             PresetsButtons.Clear();
             LayerOptionsCreated.Keys.ForEach(x => LayerOptionsCreated[x] = false);
             RoleListEntryAttribute.ChoiceButtons.Clear();
@@ -127,11 +142,11 @@ public static class SettingsPatches
     {
         private static bool LayersSet;
 
-        public static bool Prefix(GameOptionsMenu __instance) => __instance.name != "ROLE LIST MENU";
+        public static bool Prefix(GameOptionsMenu __instance) => __instance.name != "ROLE LIST TAB";
 
         public static void Postfix(GameOptionsMenu __instance)
         {
-            if (__instance.name == "ROLE LIST MENU")
+            if (__instance.name == "ROLE LIST TAB")
                 return;
 
             __instance.Children = new();
@@ -389,6 +404,7 @@ public static class SettingsPatches
     }
 
     private static bool SpawnOptionsCreated;
+    private static bool RLOptionsCreated;
     private static readonly Dictionary<int, bool> LayerOptionsCreated = [];
 
     public static List<MonoBehaviour> CreateOptions(Transform parent)
@@ -396,26 +412,53 @@ public static class SettingsPatches
         var options = new List<MonoBehaviour>();
         var type = (MultiMenu)SettingsPage;
 
-        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menus.Contains(type)))
+        if (SettingsPage == 4)
         {
-            if (!option.Setting)
+            foreach (var layer in RoleListEntryAttribute.GetLayers())
             {
-                var setting = option.Type switch
-                {
-                    CustomOptionType.Number => UObject.Instantiate(NumberPrefab, parent),
-                    CustomOptionType.String => UObject.Instantiate(StringPrefab, parent),
-                    CustomOptionType.Layers => UObject.Instantiate(LayersPrefab, parent),
-                    CustomOptionType.Toggle => UObject.Instantiate(TogglePrefab, parent),
-                    CustomOptionType.Entry => UObject.Instantiate(EntryPrefab, parent),
-                    CustomOptionType.Header => UObject.Instantiate(HeaderPrefab, parent),
-                    CustomOptionType.Alignment => UObject.Instantiate(AlignmentPrefab, parent),
-                    _ => (MonoBehaviour)null,
-                };
-                option.Setting = setting;
-                option.OptionCreated();
-            }
+                var name = $"{layer}";
 
-            options.Add(option.Setting);
+                if (!RoleListEntryAttribute.ChoiceButtons.TryFinding(x => x.name == name, out var button))
+                {
+                    button = CreateButton(name, parent);
+                    button.buttonText.text = TranslationManager.Translate($"RoleList.{layer}");
+                    button.OverrideOnClickListeners(() => SetValue(layer));
+                    button.transform.GetChild(2).transform.localScale += new Vector3(0.32f, 0f, 0f);
+                    button.transform.GetChild(1).localScale = button.transform.GetChild(2).transform.localScale;
+                    button.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().sizeDelta = new(3f, 0.6123f);
+
+                    if (LayerDictionary.TryGetValue(layer, out var entry))
+                        button.buttonText.text = $"<color=#{entry.Color.ToHtmlStringRGBA()}>{button.buttonText.text}</color>";
+
+                    RoleListEntryAttribute.ChoiceButtons.Add(button);
+                }
+
+                options.Add(button);
+            }
+        }
+        else
+        {
+            foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menus.Contains(type)))
+            {
+                if (!option.Setting)
+                {
+                    var setting = option.Type switch
+                    {
+                        CustomOptionType.Number => UObject.Instantiate(NumberPrefab, parent),
+                        CustomOptionType.String => UObject.Instantiate(StringPrefab, parent),
+                        CustomOptionType.Layers => UObject.Instantiate(LayersPrefab, parent),
+                        CustomOptionType.Toggle => UObject.Instantiate(TogglePrefab, parent),
+                        CustomOptionType.Entry => UObject.Instantiate(EntryPrefab, parent),
+                        CustomOptionType.Header => UObject.Instantiate(HeaderPrefab, parent),
+                        CustomOptionType.Alignment => UObject.Instantiate(AlignmentPrefab, parent),
+                        _ => (MonoBehaviour)null,
+                    };
+                    option.Setting = setting;
+                    option.OptionCreated();
+                }
+
+                options.Add(option.Setting);
+            }
         }
 
         return options;
@@ -429,21 +472,15 @@ public static class SettingsPatches
             if (IsHnS())
                 return true;
 
-            if (__instance == RoleListMenu)
-                return false;
-
             if (SettingsPage != 3)
             {
                 __instance.MapPicker.Initialize(20);
                 __instance.MapPicker.SetUpFromData(GameManager.Instance.GameSettingsList.MapNameSetting, 20);
-                __instance.MapPicker.gameObject.SetActive(true);
             }
-            else
-                __instance.MapPicker.gameObject.SetActive(false);
 
             // TODO: Make a better fix for this for example caching the options or creating it ourself.
             // AD Says: Done, kinda.
-            var behaviours = CreateOptions(__instance.MapPicker.transform.parent);
+            var behaviours = CreateOptions(__instance.settingsContainer);
 
             foreach (var behave in behaviours)
             {
@@ -451,7 +488,7 @@ public static class SettingsPatches
                     option.SetClickMask(__instance.ButtonClickMask);
             }
 
-            __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
+            __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>(true).Pointer));
             OnValueChanged();
             return false;
         }
@@ -509,7 +546,7 @@ public static class SettingsPatches
         if (!__instance)
             return;
 
-        __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3);
+        __instance.GameSettingsTab.gameObject.SetActive(SettingsPage is 0 or 3 or 4);
         __instance.RoleSettingsTab.gameObject.SetActive(SettingsPage is 1 or >= 5);
         __instance.PresetsTab.gameObject.SetActive(SettingsPage == 2);
         __instance.GameSettingsButton.SelectButton(SettingsPage == 0);
@@ -517,26 +554,28 @@ public static class SettingsPatches
         __instance.GamePresetsButton.SelectButton(SettingsPage == 2);
         __instance.GameSettingsTab.MapPicker.gameObject.SetActive(SettingsPage == 0);
 
+        // Gotta love things randomly becoming null
+
         if (!ReturnButton)
-            ReturnButton = __instance.transform.FindChild("ReturnButton")?.gameObject; // For some reason this damn thing is becoming null even though it definitely exists???
+            ReturnButton = __instance.transform.FindChild("ReturnButton")?.gameObject;
 
         if (ReturnButton)
             ReturnButton.SetActive(SettingsPage >= 4);
 
+        if (!Next)
+            Next = __instance.transform.FindChild("NextPageButton")?.gameObject;
+
         if (Next)
-            Next.gameObject.SetActive(SettingsPage is 2 or 4);
+            Next.SetActive(SettingsPage == 2);
+
+        if (!Prev)
+            Prev = __instance.transform.FindChild("PrevPageButton")?.gameObject;
 
         if (Prev)
-            Prev.gameObject.SetActive(SettingsPage is 2 or 4);
-
-        if (!RoleListMenu)
-            RoleListMenu = __instance.transform.Find("MainArea").Find("ROLE LIST MENU")?.GetComponent<GameOptionsMenu>();
-
-        if (RoleListMenu)
-            RoleListMenu.gameObject.SetActive(SettingsPage == 4);
+            Prev.SetActive(SettingsPage == 2);
 
         if (!ClientSettingsButton)
-            ClientSettingsButton = __instance.transform.Find("LeftPanel").Find("ClientSettingsButton")?.GetComponent<PassiveButton>();
+            ClientSettingsButton = __instance.transform.Find("LeftPanel")?.Find("ClientSettingsButton")?.GetComponent<PassiveButton>();
 
         if (ClientSettingsButton)
             ClientSettingsButton.SelectButton(SettingsPage == 3);
@@ -565,7 +604,15 @@ public static class SettingsPatches
 
             foreach (var mono in buttons)
             {
-                mono.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+                mono.ClickMask = __instance.RoleSettingsTab.ButtonClickMask;
+
+                foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
+                {
+                    obj.material.SetInt(PlayerMaterial.MaskLayer, 20);
+                    obj.material.SetFloat("_StencilComp", 3f);
+                    obj.material.SetFloat("_Stencil", 20);
+                    obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                }
 
                 foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
                 {
@@ -582,9 +629,42 @@ public static class SettingsPatches
                     option.SetClickMask(__instance.RoleSettingsTab.ButtonClickMask);
             }
 
-            __instance.RoleSettingsTab.ControllerSelectable.AddRange(new(__instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>().Pointer));
+            __instance.RoleSettingsTab.ControllerSelectable.AddRange(new(__instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>(true).Pointer));
             __instance.RoleSettingsTab.scrollBar.ScrollToTop();
             SpawnOptionsCreated = true;
+        }
+
+        if (!RLOptionsCreated && SettingsPage == 4)
+        {
+            var behaviours = CreateOptions(__instance.GameSettingsTab.settingsContainer);
+
+            foreach (var mono in behaviours)
+            {
+                mono.GetComponent<PassiveButton>().ClickMask = __instance.GameSettingsTab.ButtonClickMask;
+
+                foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
+                {
+                    obj.material.SetInt(PlayerMaterial.MaskLayer, 20);
+                    obj.material.SetFloat("_StencilComp", 3f);
+                    obj.material.SetFloat("_Stencil", 20);
+                    obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                }
+
+                foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
+                {
+                    obj.fontMaterial.SetFloat("_StencilComp", 3f);
+                    obj.fontMaterial.SetFloat("_Stencil", 20);
+                }
+            }
+
+            foreach (var elem in __instance.GameSettingsTab.scrollBar.GetComponentsInChildren<UiElement>(true))
+            {
+                if (!__instance.GameSettingsTab.ControllerSelectable.Contains(elem))
+                    __instance.GameSettingsTab.ControllerSelectable.Add(elem);
+            }
+
+            __instance.GameSettingsTab.scrollBar.ScrollToTop();
+            RLOptionsCreated = true;
         }
 
         if ((!LayerOptionsCreated.TryGetValue(SettingsPage, out var layerOptions) || !layerOptions) && SettingsPage >= 5)
@@ -597,7 +677,7 @@ public static class SettingsPatches
                     behave.SetClickMask(__instance.RoleSettingsTab.ButtonClickMask);
             }
 
-            foreach (var elem in __instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>())
+            foreach (var elem in __instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>(true))
             {
                 if (!__instance.RoleSettingsTab.ControllerSelectable.Contains(elem))
                     __instance.RoleSettingsTab.ControllerSelectable.Add(elem);
@@ -606,35 +686,61 @@ public static class SettingsPatches
             LayerOptionsCreated[SettingsPage] = true;
         }
 
-        if (RoleListEntryAttribute.ChoiceButtons.Any() && SettingsPage != 4)
-            RoleListEntryAttribute.ChoiceButtons.ForEach(x => x.gameObject.SetActive(false));
+        RoleListEntryAttribute.ChoiceButtons.ForEach(x => x.gameObject.SetActive(false));
 
-        if (SettingsPage is 0 or 3)
+        foreach (var opt in OptionAttribute.AllOptions)
         {
-            var y = SettingsPage == 3 ? 2.063f : 0.863f;
+            if (opt.Setting)
+                opt.Setting.gameObject.SetActive(false);
+        }
+
+        if (SettingsPage is 0 or 3 or 4)
+        {
+            var y = SettingsPage switch
+            {
+                3 => 2.063f,
+                0 => 0.863f,
+                _ => 1.9f
+            };
             __instance.GameSettingsTab.Children.Clear();
 
-            if (SettingsPage != 3)
-                __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
-
-            foreach (var option in OptionAttribute.AllOptions)
+            if (SettingsPage is 0 or 3)
             {
-                if (option.Setting)
+                if (SettingsPage == 0)
+                    __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
+
+                foreach (var option in OptionAttribute.AllOptions)
                 {
-                    var menu = (MultiMenu)SettingsPage;
-                    var flag = option.Menus.Contains(menu) && option.Active();
-                    option.Setting.gameObject.SetActive(flag);
+                    if (option.Setting)
+                    {
+                        var menu = (MultiMenu)SettingsPage;
+                        var flag = option.Menus.Contains(menu) && option.Active();
+                        option.Setting.gameObject.SetActive(flag);
 
-                    if (!flag)
-                        continue;
+                        if (!flag)
+                            continue;
 
-                    var isHeader = option is HeaderOptionAttribute;
-                    option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
-                    y -= isHeader ? 0.53f : 0.45f;
-                    option.Update();
+                        var isHeader = option is HeaderOptionAttribute;
+                        option.Setting.transform.localPosition = new(isHeader ? -0.903f : 0.952f, y, -2f);
+                        y -= isHeader ? 0.53f : 0.45f;
+                        option.Update();
 
-                    if (option.Setting is OptionBehaviour setting)
-                        __instance.GameSettingsTab.Children.Add(setting);
+                        if (option.Setting is OptionBehaviour setting)
+                            __instance.GameSettingsTab.Children.Add(setting);
+                    }
+                }
+            }
+            else
+            {
+                for (var i = 0; i < RoleListEntryAttribute.ChoiceButtons.Count; i++)
+                {
+                    var option = RoleListEntryAttribute.ChoiceButtons[i];
+                    option.gameObject.SetActive(true);
+                    var isEven = i % 2 == 0;
+                    option.transform.localPosition = new(isEven ? -0.2f : 3.2f, y, -2f);
+
+                    if (!isEven)
+                        y -= 0.65136f;
                 }
             }
 
@@ -686,54 +792,12 @@ public static class SettingsPatches
             __instance.RoleSettingsTab.scrollBar.SetYBoundsMax(-y + (SettingsPage >= 5 ? -1.65f : -1.2f));
             __instance.RoleSettingsTab.InitializeControllerNavigation();
         }
-        else if (SettingsPage == 4)
-        {
-            if (!RoleListEntryAttribute.ChoiceButtons.Any())
-            {
-                foreach (var layer in RoleListEntryAttribute.GetLayers())
-                {
-                    var button = CreateButton($"{layer}", RoleListMenu.transform);
-                    button.buttonText.text = TranslationManager.Translate($"RoleList.{layer}");
-                    button.OverrideOnClickListeners(() => SetValue(layer));
-                    button.transform.GetChild(2).transform.localScale += new Vector3(0.25f, 0f, 0f);
-                    button.transform.GetChild(1).localScale = button.transform.GetChild(2).transform.localScale;
-                    button.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().sizeDelta = new(2.9f, 0.6123f);
-                    RoleListEntryAttribute.ChoiceButtons.Add(button);
-                }
-            }
-
-            OnPageChanged(true);
-        }
-
-        if (SettingsPage is 2 or 4 && ReturnButton)
-        {
-            if (!Prev)
-            {
-                Prev = UObject.Instantiate(ReturnButton, __instance.transform);
-                Prev.GetComponent<PassiveButton>().OverrideOnClickListeners(() => NextPage(false, true));
-                Prev.name = "PreviousPageButton";
-                Prev.transform.FindChild("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnInactive");
-                Prev.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("ReturnActive");
-            }
-
-            if (!Next)
-            {
-                Next = UObject.Instantiate(ReturnButton, __instance.transform);
-                Next.GetComponent<PassiveButton>().OverrideOnClickListeners(() => NextPage(true, true));
-                Next.name = "NextPageButton";
-                Next.transform.FindChild("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("NextInactive");
-                Next.transform.FindChild("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("NextActive");
-            }
-
-            Prev.transform.localPosition = new(-4.473f, 1.0795f, -2f);
-            Next.transform.localPosition = new(-2.2341f, 1.0795f, -2f);
-        }
     }
 
-    private static void NextPage(bool increment, bool isRoleList)
+    private static void NextPage(bool increment)
     {
-        SettingsPage2 = CycleInt((isRoleList ? RoleListEntryAttribute.ChoiceButtons : PresetsButtons).Count / (isRoleList ? 18 : 24), 0, SettingsPage2, increment);
-        OnPageChanged(isRoleList);
+        SettingsPage2 = CycleInt(PresetsButtons.Count / 24, 0, SettingsPage2, increment);
+        OnPageChanged();
     }
 
     private static void SetValue(LayerEnum value)
@@ -748,6 +812,7 @@ public static class SettingsPatches
     {
         SettingsPage = CachedPage;
         GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
+        GameSettingMenu.Instance.GameSettingsTab.scrollBar.ScrollToTop();
         SettingsPage2 = 0;
         RoleListEntryAttribute.SelectedEntry = "";
         OnValueChanged();
@@ -811,6 +876,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(ToggleOption __instance)
         {
+            if (IsInGame())
+                return false;
+
             var option = OptionAttribute.AllOptions.Find(option => option.Setting == __instance);
 
             if (option is ToggleOptionAttribute toggle)
@@ -840,6 +908,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(NumberOption __instance)
         {
+            if (IsInGame())
+                return false;
+
             var result = OptionAttribute.GetOptions<NumberOptionAttribute>().TryFinding(option => option.Setting == __instance, out var num);
 
             if (result)
@@ -854,6 +925,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(NumberOption __instance)
         {
+            if (IsInGame())
+                return false;
+
             var result = OptionAttribute.GetOptions<NumberOptionAttribute>().TryFinding(option => option.Setting == __instance, out var num);
 
             if (result)
@@ -868,6 +942,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(StringOption __instance)
         {
+            if (IsInGame())
+                return false;
+
             var result = OptionAttribute.GetOptions<StringOptionAttribute>().TryFinding(option => option.Setting == __instance, out var str);
 
             if (result)
@@ -882,6 +959,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(StringOption __instance)
         {
+            if (IsInGame())
+                return false;
+
             var result = OptionAttribute.GetOptions<StringOptionAttribute>().TryFinding(option => option.Setting == __instance, out var str);
 
             if (result)
@@ -896,6 +976,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
+            if (IsInGame())
+                return false;
+
             var result = OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(option => option.Setting == __instance, out var layer);
 
             if (result)
@@ -910,6 +993,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
+            if (IsInGame())
+                return false;
+
             var result = OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(option => option.Setting == __instance, out var layer);
 
             if (result)
@@ -924,6 +1010,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
+            if (IsInGame())
+                return false;
+
             var result = OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(option => option.Setting == __instance, out var layer);
 
             if (result)
@@ -938,6 +1027,9 @@ public static class SettingsPatches
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
+            if (IsInGame())
+                return false;
+
             var result = OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(option => option.Setting == __instance, out var layer);
 
             if (result)
@@ -1128,6 +1220,34 @@ public static class SettingsPatches
         }
     }
 
+    [HarmonyPatch(typeof(LobbyInfoPane), nameof(LobbyInfoPane.Update))]
+    public static class LobbyInfoPanePatch
+    {
+        public static void Postfix()
+        {
+            var gmt = GameObject.Find("GameModeText");
+
+            if (gmt)
+            {
+                var tmp = gmt.GetComponent<TextMeshPro>();
+
+                if (tmp.text != CurrentPreset)
+                    tmp.SetText(CurrentPreset);
+            }
+
+            var ml = GameObject.Find("ModeLabel")?.transform?.GetChild(1).gameObject;
+
+            if (ml)
+            {
+                var tmp = ml.GetComponent<TextMeshPro>();
+                var translation = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
+
+                if (tmp.text != translation)
+                    tmp.SetText(translation);
+            }
+        }
+    }
+
     public static void OnValueChangedView(LobbyViewSettingsPane __instance = null)
     {
         if (IsHnS())
@@ -1135,23 +1255,10 @@ public static class SettingsPatches
 
         __instance ??= LobbyInfoPane.Instance.LobbyViewSettingsPane;
 
-        if (LobbyInfoPane.Instance)
-        {
-            var aspect = LobbyInfoPane.Instance.gameObject.transform.GetChild(0);
-
-            var child = aspect.GetChild(6).GetChild(1);
-            child.GetComponent<TextTranslatorTMP>()?.Destroy();
-            child.GetComponent<TextMeshPro>().text = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
-
-            var text = aspect.GetChild(9).GetChild(0);
-            text.GetComponent<TextTranslatorTMP>()?.Destroy();
-            text.GetComponent<TextMeshPro>().text = CurrentPreset;
-        }
-
         if (!__instance)
             return;
 
-        var num = 1.44f;
+        var num = 1.4f;
         var num2 = -8.95f;
         var menu = (MultiMenu)SettingsPage3;
         CreateViewOptions(__instance.settingsContainer);
@@ -1174,6 +1281,7 @@ public static class SettingsPatches
                 continue;
             }
 
+            num -= 0.08f;
             option.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
             __instance.settingsInfo.Add(option.ViewSetting.gameObject);
             num -= 0.85f;
@@ -1227,19 +1335,6 @@ public static class SettingsPatches
     {
         public static void Postfix(LobbyViewSettingsPane __instance)
         {
-            if (LobbyInfoPane.Instance)
-            {
-                var aspect = LobbyInfoPane.Instance.gameObject.transform.GetChild(0);
-
-                var child = aspect.GetChild(6).GetChild(1);
-                child.GetComponent<TextTranslatorTMP>()?.Destroy();
-                child.GetComponent<TextMeshPro>().text = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
-
-                var text = aspect.GetChild(9).GetChild(0);
-                text.GetComponent<TextTranslatorTMP>()?.Destroy();
-                text.GetComponent<TextMeshPro>().text = CurrentPreset;
-            }
-
             __instance.rolesTabButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             __instance.rolesTabButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
 
@@ -1260,11 +1355,19 @@ public static class SettingsPatches
 
             if (!HeaderViewPrefab)
             {
+                //
                 HeaderViewPrefab = UObject.Instantiate(__instance.categoryHeaderOrigin, null).DontUnload().DontDestroy();
                 HeaderViewPrefab.transform.localScale = Vector3.one;
                 HeaderViewPrefab.name = "HeaderViewPrefab";
-                HeaderViewPrefab.Title.name = "Collapse";
-                HeaderViewPrefab.Title.gameObject.AddComponent<PassiveButton>();
+                HeaderViewPrefab.Title.gameObject.SetActive(false);
+
+                var button = UObject.Instantiate(__instance.rolesTabButton, HeaderViewPrefab.transform);
+                button.buttonText.text = "";
+                button.name = "TitleButton";
+                button.SelectButton(false);
+                button.transform.localPosition = new(-0.75f, -0.05f, 0f);
+                button.transform.localScale = new(0.7f, 0.7f, 1f);
+                button.OverrideOnClickListeners(BlankVoid);
 
                 HeaderViewPrefab.gameObject.SetActive(false);
             }
@@ -1318,38 +1421,31 @@ public static class SettingsPatches
 
             Directory.GetFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).Select(x => x.SanitisePath()).ForEach(CreatePresetButton);
 
-            OnPageChanged(false);
+            OnPageChanged();
             return false;
         }
     }
 
-    public static void OnPageChanged(bool isRoleList)
+    public static void OnPageChanged()
     {
-        var list = isRoleList ? RoleListEntryAttribute.ChoiceButtons : PresetsButtons;
-        var xStart = isRoleList ? 2.5f : -2.5731f;
-        var yStart = isRoleList ? -0.64f : 1.7828f;
-        var max = isRoleList ? 18 : 24;
-        var xDiff = isRoleList ? 2.25f : 1.8911f;
-        var mod = isRoleList ? 3 : 4;
-
-        for (var i = 0; i < list.Count; i++)
+        for (var i = 0; i < PresetsButtons.Count; i++)
         {
-            var button = list[i];
+            var button = PresetsButtons[i];
 
-            if (i >= (SettingsPage2 * max) && i < ((SettingsPage2 + 1) * max))
+            if (i >= (SettingsPage2 * 24) && i < ((SettingsPage2 + 1) * 24))
             {
-                var relativeIndex = i % max;
-                var row = relativeIndex / mod;
-                var col = relativeIndex % mod;
-                button.transform.localPosition = new(xStart + (col * xDiff), yStart - (row * 0.65136f), -2);
+                var relativeIndex = i % 24;
+                var row = relativeIndex / 4;
+                var col = relativeIndex % 4;
+                button.transform.localPosition = new(-2.5731f + (col * 1.8911f), 1.7828f - (row * 0.65136f), -2);
                 button.gameObject.SetActive(true);
             }
             else
                 button.gameObject.SetActive(false);
         }
 
-        Prev.gameObject.SetActive(list.Count > max);
-        Next.gameObject.SetActive(list.Count > max);
+        Prev.gameObject.SetActive(PresetsButtons.Count > 24);
+        Next.gameObject.SetActive(PresetsButtons.Count > 24);
     }
 
     public static void CreatePresetButton(string presetName)

@@ -143,7 +143,7 @@ public static class ButtonUtils
             if (Tracker.ResetOnNewRound)
             {
                 track.TrackButton.Uses = track.TrackButton.MaxUses;
-                track.OnLobby();
+                track.Deinit();
             }
         }
         else if (role is Transporter trans)
@@ -156,7 +156,7 @@ public static class ButtonUtils
         else if (role is Monarch mon)
             mon.RoundOne = start && Monarch.RoundOneNoKnighting;
         else if (role is Medium)
-            role.OnLobby();
+            role.Deinit();
         else if (role is Retributionist ret)
         {
             ret.BuggedPlayers.Clear();

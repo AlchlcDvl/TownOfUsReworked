@@ -33,7 +33,7 @@ public class Dictator : Crew
         ToBeEjected = [];
         Ejected = false;
         ToDie = false;
-        RevealButton = CreateButton(this, "REVEAL", new SpriteName("DictReveal"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal);
+        RevealButton ??= CreateButton(this, "REVEAL", new SpriteName("DictReveal"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal);
         DictMenu = new(Player, "DictActive", "DictDisabled", DictateAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 

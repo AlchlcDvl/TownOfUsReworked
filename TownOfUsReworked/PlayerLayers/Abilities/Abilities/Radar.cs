@@ -11,9 +11,9 @@ public class Radar : Ability
 
     public override void Init() => RadarArrow = new(Player, Color);
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         RadarArrow?.Destroy();
     }
 
@@ -22,7 +22,7 @@ public class Radar : Ability
         base.UpdateHud(__instance);
 
         if (Dead)
-            OnLobby();
+            Deinit();
         else
         {
             var closest = Player.GetClosestPlayer(ignoreWalls: true);

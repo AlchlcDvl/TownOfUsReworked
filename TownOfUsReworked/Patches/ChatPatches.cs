@@ -303,7 +303,7 @@ public static class ChatFontPatch
     public static void Postfix(ChatController __instance)
     {
         AddAsset("ChatFont", __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font);
-        __instance.freeChatField.textArea.GetComponent<TextMeshPro>().font = GetFont("ChatFont");
+        // __instance.freeChatField.textArea.GetComponent<TextMeshPro>().font = GetFont("ChatFont");
     }
 }
 
@@ -311,4 +311,22 @@ public static class ChatFontPatch
 public static class InnerNetClientJoinPatch
 {
     public static void Prefix() => DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
+}
+
+[HarmonyPatch(typeof(ChatNotification), nameof(ChatNotification.SetUp))]
+public static class ChatNotifFixPatch
+{
+    public static bool Prefix(ChatNotification __instance, PlayerControl sender, string text)
+    {
+        __instance.timeOnScreen = 4f;
+        __instance.gameObject.SetActive(true);
+        __instance.SetCosmetics(sender.Data);
+        __instance.playerColorText.text = __instance.player.ColorBlindName;
+        __instance.playerNameText.text = sender.Data.PlayerName.IsNullOrWhiteSpace() ? "..." : sender.Data.PlayerName;
+        __instance.playerNameText.color = Palette.TextColors[__instance.player.ColorId];
+        __instance.playerNameText.outlineColor = Palette.TextOutlineColors[__instance.player.ColorId];
+        __instance.chatText.richText = true;
+        __instance.chatText.text = text;
+        return false;
+    }
 }

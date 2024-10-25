@@ -1,7 +1,6 @@
-/*namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches;
 
 // I'll leave the code here for now and get back to it later
-
 public static class FreeplayPatches
 {
     private const SystemTypes LayersType = (SystemTypes)255;
@@ -22,71 +21,44 @@ public static class FreeplayPatches
 
     private static void CreateRoleButton(TaskAdderGame __instance, TaskFolder folder, LayerEnum layer, ref float num, ref float num2, ref float num3)
     {
-        var info = LayerInfo.AllRoles.Find(x => x.Role == layer);
+        if (!LayerDictionary.TryGetValue(layer, out var entry))
+            return;
+
+        var type = layer.GetLayerType();
+        var extension = type switch
+        {
+            PlayerLayerEnum.Role => "r",
+            PlayerLayerEnum.Modifier => "m",
+            PlayerLayerEnum.Ability => "a",
+            PlayerLayerEnum.Disposition => "d",
+            _ => "exe",
+        };
         var button = UObject.Instantiate(__instance.RoleButton);
         button.SafePositionWorld = __instance.SafePositionWorld;
-        button.Text.text = $"{info.Short.Replace(" (XD)", "")}.exe";
+        button.Text.text = button.name = $"{TranslationManager.Translate($"CustomOption.{layer}")}.{extension}";
         button.Role = RoleManager.Instance.AllRoles[0];
-        button.FileImage.color = button.RolloverHandler.OutColor = info.Color;
+        button.FileImage.color = button.RolloverHandler.OutColor = entry.Color;
+        button.RolloverHandler.OverColor = entry.Color.Alternate(0.4f);
         button.Overlay.enabled = CustomPlayer.Local.Is(layer);
         button.Overlay.sprite = button.CheckImage;
         button.Button.OverrideOnClickListeners(() =>
         {
-            var role = Role.LocalRole;
+            var layers = PlayerLayer.LocalLayers();
 
-            if (role && !PreviouslySelected.Any(x => x.Type == role.Type))
-                PreviouslySelected.Add(role);
+            if (layers.TryFindingAll(x => !PreviouslySelected.Contains(x), out var missing))
+                PreviouslySelected.AddRange(missing);
 
-            var ability = Ability.LocalAbility;
+            if (layers.TryFinding(x => x.Type == layer, out var changing))
+                changing.End();
 
-            if (ability && !PreviouslySelected.Any(x => x.Type == ability.Type))
-                PreviouslySelected.Add(ability);
+            if (!PreviouslySelected.TryFinding(x => x.Type == layer, out var selected))
+                selected = RoleGen.SetLayer(layer, type);
 
-            var modifier = Modifier.LocalModifier;
-
-            if (modifier && !PreviouslySelected.Any(x => x.Type == modifier.Type))
-                PreviouslySelected.Add(modifier);
-
-            var disposition = Disposition.LocalDisposition;
-
-            if (disposition && !PreviouslySelected.Any(x => x.Type == disposition.Type))
-                PreviouslySelected.Add(disposition);
-
-            var selected = PreviouslySelected.Find(x => x.Type == layer);
-
-            if (selected)
-                selected.Player = CustomPlayer.Local;
-            else
-                selected = RoleGen.SetLayer(layer, layer.GetLayerType()).Start(CustomPlayer.Local);
-
-            if (role?.Type == layer)
-            {
-                role.ExitingLayer();
-                role.Player = null;
-            }
-
-            if (ability?.Type == layer)
-            {
-                ability.ExitingLayer();
-                ability.Player = null;
-            }
-
-            if (modifier?.Type == layer)
-            {
-                modifier.ExitingLayer();
-                modifier.Player = null;
-            }
-
-            if (disposition?.Type == layer)
-            {
-                disposition.ExitingLayer();
-                disposition.Player = null;
-            }
-
+            selected.Start(CustomPlayer.Local);
             ButtonUtils.Reset();
         });
         __instance.AddFileAsChild(folder, button, ref num, ref num2, ref num3);
-        RoleButtons[button.Text.text] = layer;
+        RoleButtons[button.name] = layer;
     }
 
     [HarmonyPatch(typeof(TaskAdderGame), nameof(TaskAdderGame.Begin))]
@@ -277,7 +249,7 @@ public static class FreeplayPatches
     {
         public static bool Prefix(TaskAddButton __instance)
         {
-            if (RoleButtons.TryGetValue(__instance.Text.text, out var layer))
+            if (RoleButtons.TryGetValue(__instance.name, out var layer))
             {
                 __instance.Overlay.enabled = CustomPlayer.Local.Is(layer);
                 return false;
@@ -286,4 +258,4 @@ public static class FreeplayPatches
             return true;
         }
     }
-}*/
+}

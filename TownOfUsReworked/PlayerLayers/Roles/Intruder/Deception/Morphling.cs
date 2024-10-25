@@ -36,9 +36,9 @@ public class Morphling : Intruder
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
-        SampleButton = CreateButton(this, new SpriteName("Sample"), AbilityType.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (SampleCd), "SAMPLE",
+        SampleButton ??= CreateButton(this, new SpriteName("Sample"), AbilityType.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (SampleCd), "SAMPLE",
             (PlayerBodyExclusion)Exception1);
-        MorphButton = CreateButton(this, new SpriteName("Morph"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
+        MorphButton ??= CreateButton(this, new SpriteName("Morph"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
             new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("MorphlingIntro");
     }

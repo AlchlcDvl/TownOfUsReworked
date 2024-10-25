@@ -30,7 +30,7 @@ public class Tracker : Crew
         TrackerArrows = [];
         Alignment = Alignment.CrewInvest;
         Data.Role.IntroSound = GetAudio("TrackerIntro");
-        TrackButton = CreateButton(this, "TRACK", new SpriteName("Track"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(TrackCd), MaxTracks,
+        TrackButton ??= CreateButton(this, "TRACK", new SpriteName("Track"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);
     }
 
@@ -40,9 +40,9 @@ public class Tracker : Crew
         TrackerArrows.Remove(targetPlayerId);
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         TrackerArrows.Values.ToList().DestroyAll();
         TrackerArrows.Clear();
     }
@@ -64,7 +64,7 @@ public class Tracker : Crew
         base.UpdateHud(__instance);
 
         if (Dead)
-            OnLobby();
+            Deinit();
         else
         {
             foreach (var pair in TrackerArrows)

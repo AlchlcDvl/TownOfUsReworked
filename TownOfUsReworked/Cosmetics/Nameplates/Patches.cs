@@ -82,11 +82,8 @@ public static class NameplatesTabOnEnablePatch
         return offset - ((nameplates.Count - 1) / __instance.NumPerRow * __instance.YOffset) - 1.5f;
     }
 
-    private static void DefaultNameplateCoro(NameplatesTab __instance, NameplateChip chip)
-    {
-        __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance.GetNamePlateById(chip.ProductId).ViewDataRef, (Action<NamePlateViewData>)(viewData =>
-            chip.image.sprite = viewData?.Image)));
-    }
+    private static void DefaultNameplateCoro(NameplatesTab __instance, NameplateChip chip) => __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance
+        .GetNamePlateById(chip.ProductId).ViewDataRef, (Action<NamePlateViewData>)(viewData => chip.image.sprite = viewData?.Image)));
 
     public static bool Prefix(NameplatesTab __instance)
     {
@@ -151,16 +148,9 @@ public static class CosmeticsCacheGetNameplatePatch
 [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
 public static class PreviewNameplatesPatch
 {
-    public static bool Prefix(PlayerVoteArea __instance, string plateID)
+    public static void Postfix(PlayerVoteArea __instance, string plateID)
     {
-        if (!CustomNameplateViewDatas.TryGetValue(plateID, out var viewData))
-            return true;
-
-        __instance.gameObject.SetActive(true);
-        __instance.Background.sprite = viewData?.Image;
-        __instance.PlayerIcon.gameObject.SetActive(false);
-        __instance.NameText.text = DataManager.Player.Customization.Name;
-        __instance.LevelNumberText.text = ProgressionManager.Instance.CurrentVisualLevel;
-        return false;
+        if (CustomNameplateViewDatas.TryGetValue(plateID, out var viewData))
+            __instance.Background.sprite = viewData?.Image;
     }
 }

@@ -16,8 +16,8 @@ public class Hunter : HideAndSeek
     {
         BaseStart();
         Objectives = () => "- Hunt the others down before they finish their tasks";
-        HuntButton = CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd),
-            (PlayerBodyExclusion)Exception);
+        HuntButton ??= CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd),
+            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
         Player.SetImpostor(true);
     }
 
@@ -36,11 +36,13 @@ public class Hunter : HideAndSeek
 
     public bool Exception(PlayerControl player) => player.Is(LayerEnum.Hunter);
 
+    public bool Usable() => !Starting;
+
     public void TurnHunter(PlayerControl player)
     {
         var oldRole = player.GetLayer<Hunted>();
-        var newRole = new Hunter().Start<Hunter>(player);
-        newRole.RoleUpdate(oldRole);
+        var newRole = new Hunter();
+        newRole.RoleUpdate(oldRole, player);
         newRole.KilledBy = " By " + PlayerName;
         newRole.DeathReason = DeathReasonEnum.Converted;
         newRole.HuntButton.StartCooldown();

@@ -34,7 +34,7 @@ public class Thief : Neutral
     {
         BaseStart();
         Alignment = Alignment.NeutralBen;
-        StealButton = CreateButton(this, new SpriteName("Steal"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL",
+        StealButton ??= CreateButton(this, new SpriteName("Steal"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);
         Mapping = [];
         GuessMenu = new(Player, "Guess", ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
@@ -201,8 +201,8 @@ public class Thief : Neutral
         if (CustomPlayer.Local == other || CustomPlayer.Local == player)
         {
             Flash(Color);
-            role.OnLobby();
-            OnLobby();
+            role.Deinit();
+            Deinit();
         }
 
         Role newRole = role.Type switch
@@ -268,7 +268,7 @@ public class Thief : Neutral
             LayerEnum.Thief or _ => new Thief()
         };
 
-        newRole.Start<Role>(player).RoleUpdate(this, Faction == Faction.Neutral);
+        newRole.RoleUpdate(this, player, Faction == Faction.Neutral);
 
         if (other.Is(LayerEnum.Dracula))
             ((Dracula)role).Converted.Clear();
@@ -289,7 +289,7 @@ public class Thief : Neutral
             if (CustomPlayer.Local == other && other.Is(Faction.Intruder))
                 other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
 
-            new Thief().Start<Role>(other).RoleUpdate(role, true);
+            new Thief().RoleUpdate(role, other, true);
         }
 
         if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals))

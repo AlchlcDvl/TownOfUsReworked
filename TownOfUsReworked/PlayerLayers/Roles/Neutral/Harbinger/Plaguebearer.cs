@@ -27,7 +27,7 @@ public class Plaguebearer : Neutral
         Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Alignment = Alignment.NeutralHarb;
         Infected = [Player.PlayerId];
-        InfectButton = CreateButton(this, new SpriteName("Infect"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Infect, new Cooldown(InfectCd), "INFECT",
+        InfectButton ??= CreateButton(this, new SpriteName("Infect"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Infect, new Cooldown(InfectCd), "INFECT",
             (PlayerBodyExclusion)Exception);
     }
 
@@ -61,7 +61,7 @@ public class Plaguebearer : Neutral
 
     public void TurnPestilence()
     {
-        new Pestilence().Start<Role>(Player).RoleUpdate(this);
+        new Pestilence().RoleUpdate(this, Player);
 
         if (NeutralApocalypseSettings.PlayersAlerted)
             Flash(Color);

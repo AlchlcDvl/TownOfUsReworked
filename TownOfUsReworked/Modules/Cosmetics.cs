@@ -83,7 +83,11 @@ public class CustomVisor : CustomCosmetic
     public bool InFront { get; set; }
 }
 
-public class VisorExtension : CosmeticExtension;
+public class VisorExtension : CosmeticExtension
+{
+    public Sprite ClimbImage { get; set; }
+    public Sprite FloorImage { get; set; }
+}
 
 public class CustomNameplate : CustomCosmetic;
 
@@ -158,4 +162,4 @@ public class CustomColor : CustomCosmetic
 }
 
 // Idk why i did it, but ig i just really wanted it for consistency's sake
-public class ColorExtention : CosmeticExtension;
+// public class ColorExtention : CosmeticExtension;

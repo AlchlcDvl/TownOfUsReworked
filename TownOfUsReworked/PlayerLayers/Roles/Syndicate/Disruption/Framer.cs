@@ -25,9 +25,9 @@ public class Framer : Syndicate
         BaseStart();
         Alignment = Alignment.SyndicateDisrup;
         Framed = [];
-        FrameButton = CreateButton(this, new SpriteName("Frame"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
+        FrameButton ??= CreateButton(this, new SpriteName("Frame"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
             (PlayerBodyExclusion)Exception1);
-        RadialFrameButton = CreateButton(this, new SpriteName("RadialFrame"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, new Cooldown(FrameCd), (UsableFunc)Usable2,
+        RadialFrameButton ??= CreateButton(this, new SpriteName("RadialFrame"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, new Cooldown(FrameCd), (UsableFunc)Usable2,
             "FRAME");
     }
 

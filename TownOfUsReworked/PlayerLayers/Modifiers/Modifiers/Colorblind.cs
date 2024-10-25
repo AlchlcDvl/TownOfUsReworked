@@ -13,9 +13,9 @@ public class Colorblind : Modifier
             ColorAll();
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         AllToNormal();
     }
 

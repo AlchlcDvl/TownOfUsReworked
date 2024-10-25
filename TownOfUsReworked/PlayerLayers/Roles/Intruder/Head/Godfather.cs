@@ -21,7 +21,7 @@ public class Godfather : Intruder
     {
         BaseStart();
         Alignment = Alignment.IntruderHead;
-        DeclareButton = CreateButton(this, "Promote", AbilityType.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
+        DeclareButton ??= CreateButton(this, "Promote", AbilityType.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 
     public void Declare(PlayerControl target)
@@ -32,7 +32,7 @@ public class Godfather : Intruder
         {
             FormerRole = formerRole,
             Godfather = this
-        }.Start<Role>(target).RoleUpdate(formerRole);
+        }.RoleUpdate(formerRole, target);
     }
 
     public void Declare()

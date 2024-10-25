@@ -25,8 +25,8 @@ Changes!
 - Nerf: Dracula can now only convert once per round (because it was the only NN role that wasn't limited in its conversions)
 - Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
 - Removed: Removed the /setcolor chat command due to it being essentially useless
-- Update: Updated to Among Us 2024.9.4
-- Update: Updated to BepInEx 6.0.0-be.716
+- Update: Updated to Among Us 2024.10.29
+- Update: Updated to BepInEx 6.0.0-be.725
 - Update: Updated to Reactor 2.3.1
 
 Fixes!

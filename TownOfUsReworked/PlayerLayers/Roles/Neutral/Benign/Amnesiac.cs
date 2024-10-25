@@ -34,7 +34,7 @@ public class Amnesiac : Neutral
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows = [];
-        RememberButton = CreateButton(this, new SpriteName("Remember"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Remember, "REMEMBER");
+        RememberButton ??= CreateButton(this, new SpriteName("Remember"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Remember, "REMEMBER");
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -43,14 +43,14 @@ public class Amnesiac : Neutral
         BodyArrows.Remove(targetPlayerId);
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         BodyArrows.Values.ToList().DestroyAll();
         BodyArrows.Clear();
     }
 
-    public void TurnThief() => new Thief().Start<Thief>(Player).RoleUpdate(this);
+    public void TurnThief() => new Thief().RoleUpdate(this, Player);
 
     public void Remember()
     {
@@ -70,8 +70,8 @@ public class Amnesiac : Neutral
         if (CustomPlayer.Local == player || CustomPlayer.Local == other)
         {
             Flash(Color);
-            role.OnLobby();
-            OnLobby();
+            role.Deinit();
+            Deinit();
             ButtonUtils.Reset();
         }
 
@@ -171,7 +171,7 @@ public class Amnesiac : Neutral
             LayerEnum.Amnesiac or _ => new Amnesiac(),
         };
 
-        newRole.Start<Role>(player).RoleUpdate(this, Faction == Faction.Neutral);
+        newRole.RoleUpdate(this, player, Faction == Faction.Neutral);
 
         if (other.Is(LayerEnum.Dracula))
             ((Dracula)role).Converted.Clear();
@@ -231,7 +231,7 @@ public class Amnesiac : Neutral
             }
         }
         else if (BodyArrows.Count > 0 || AllPlayers().Count(x => !x.HasDied()) <= 4)
-            OnLobby();
+            Deinit();
 
         if (AmneToThief && AllPlayers().Count(x => !x.HasDied()) <= 4 && !Dead)
         {

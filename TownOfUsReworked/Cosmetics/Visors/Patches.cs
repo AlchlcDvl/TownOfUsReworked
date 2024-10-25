@@ -238,8 +238,6 @@ public static class SetVisorPrefix
 
         __instance.visorData = data;
         __instance.SetMaterialColor(color);
-        __instance.UnloadAsset();
-        __instance.viewAsset = null;
         __instance.PopulateFromViewData();
         return false;
     }
@@ -269,25 +267,30 @@ public static class PopulateFromHatViewDataPatch
 }
 
 [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFloorAnim))]
-public static class HatParentSetFloorAnimPatch
+public static class VisorSetFloorAnimPatch
 {
     public static bool Prefix(VisorLayer __instance)
     {
-        if (!__instance.IsLoaded)
-            return false;
+        var result = CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor);
 
-        VisorViewData asset;
+        if (result)
+            __instance.Image.sprite = visor.FloorImage;
 
-        try
-        {
-            asset = __instance.viewAsset.GetAsset();
+        return !result;
+    }
+}
+
+[HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetClimbAnim))]
+public static class VisorSetClimbAnimPatch
+{
+    public static bool Prefix(VisorLayer __instance)
+    {
+        if (!CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor))
             return true;
-        } catch {}
 
-        if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out asset) || !asset)
-            return true;
+        if (!__instance.options.HideDuringClimb)
+            __instance.Image.sprite = visor.ClimbImage;
 
-        __instance.Image.sprite = asset.FloorFrame;
         return false;
     }
 }

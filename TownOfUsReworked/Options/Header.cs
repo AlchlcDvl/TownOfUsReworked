@@ -5,36 +5,45 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
 {
     public string[] GroupMemberStrings { get; set; }
     public OptionAttribute[] GroupMembers { get; set; }
-    private GameObject Collapse { get; set; }
     private Type ClassType { get; set; }
+    private TextMeshPro ButtonText { get; set; }
+    private PassiveButton Button { get; set; }
 
     public override void OptionCreated()
     {
         base.OptionCreated();
-        Created(Setting);
+        var header = Setting.Cast<CategoryHeaderMasked>();
+        header.Title.text = $"<b>{TranslationManager.Translate(ID)}</b>";
+        var collapse = header.transform.FindChild("Collapse")?.gameObject;
+        collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
+        ButtonText = collapse.GetComponentInChildren<TextMeshPro>();
+        ButtonText.text = Get() ? "-" : "+";
     }
 
     public override void ViewOptionCreated()
     {
         base.ViewOptionCreated();
-        Created(ViewSetting);
-    }
-
-    private void Created(MonoBehaviour setting)
-    {
-        var header = setting.Cast<CategoryHeaderMasked>();
-        header.Title.text = $"<b>{TranslationManager.Translate(ID)}</b>";
-        Collapse = header.transform.FindChild("Collapse")?.gameObject;
-        Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
-        Collapse.GetComponentInChildren<TextMeshPro>().text = Get() ? "-" : "+";
+        Button = ViewSetting.transform.Find("TitleButton").GetComponent<PassiveButton>();
+        Button.buttonText.text = $"<b>{TranslationManager.Translate(ID)}</b>";
+        Button.OverrideOnClickListeners(Toggle);
+        Button.SelectButton(Value);
     }
 
     public void Toggle()
     {
         Value = !Get();
-        Collapse.GetComponentInChildren<TextMeshPro>().text = Value ? "-" : "+";
-        SettingsPatches.OnValueChanged();
-        SettingsPatches.OnValueChangedView();
+
+        if (Setting)
+        {
+            ButtonText.text = Value ? "-" : "+";
+            SettingsPatches.OnValueChanged();
+        }
+
+        if (ViewSetting)
+        {
+            Button.SelectButton(Value);
+            SettingsPatches.OnValueChangedView();
+        }
     }
 
     public void SetTypeAndOptions(Type type)

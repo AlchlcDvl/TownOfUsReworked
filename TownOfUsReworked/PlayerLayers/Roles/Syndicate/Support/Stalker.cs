@@ -21,7 +21,7 @@ public class Stalker : Syndicate
         BaseStart();
         StalkerArrows = [];
         Alignment = Alignment.SyndicateSupport;
-        StalkButton = CreateButton(this, new SpriteName("Stalk"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
+        StalkButton ??= CreateButton(this, new SpriteName("Stalk"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception1);
     }
 
@@ -31,9 +31,9 @@ public class Stalker : Syndicate
         StalkerArrows.Remove(targetPlayerId);
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         StalkerArrows.Values.ToList().DestroyAll();
         StalkerArrows.Clear();
     }
@@ -57,7 +57,7 @@ public class Stalker : Syndicate
         base.UpdateHud(__instance);
 
         if (Dead && StalkerArrows.Count > 0)
-            OnLobby();
+            Deinit();
         else
         {
             foreach (var pair in StalkerArrows)

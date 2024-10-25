@@ -26,7 +26,7 @@ public class Mafioso : Intruder
             FormerRole = FormerRole is PromotedGodfather pgf ? pgf.FormerRole : FormerRole,
             RoleBlockImmune = FormerRole.RoleBlockImmune
         };
-        gf.Start<Role>(Player).RoleUpdate(this);
+        gf.RoleUpdate(this, Player);
         gf.OnRoleSelected();
     }
 

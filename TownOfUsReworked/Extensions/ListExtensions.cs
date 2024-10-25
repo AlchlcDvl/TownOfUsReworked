@@ -55,7 +55,11 @@ public static class ListExtensions
 
     public static bool All<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().All(predicate);
 
-    public static void ForEach<T>(this ISystem.List<T> list, Action<T> action) => list.ToSystem().ForEach(action);
+    public static void ForEach<T>(this ISystem.List<T> source, Action<T> action)
+    {
+        foreach (var item in source)
+            action(item);
+    }
 
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
     {
@@ -126,9 +130,20 @@ public static class ListExtensions
         }
     }
 
-    public static bool ContainsAny<T>(this IEnumerable<T> source, T[] values) => values.Any(source.Contains);
+    public static bool TryFindingAll<T>(this IEnumerable<T> source, Func<T, bool> predicate, out List<T> value)
+    {
+        var tempValue = new List<T>();
+        var result = false;
 
-    public static bool ContainsAnyKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey[] keys) => keys.Any(dict.ContainsKey);
+        while (source.TryFinding(x => predicate(x) && !tempValue.Contains(x), out var temp))
+        {
+            tempValue.Add(temp);
+            result = true;
+        }
+
+        value = tempValue;
+        return result;
+    }
 
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
@@ -150,6 +165,10 @@ public static class ListExtensions
 
         return -1;
     }
+
+    public static bool ContainsAny<T>(this IEnumerable<T> source, T[] values) => values.Any(source.Contains);
+
+    public static bool ContainsAnyKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey[] keys) => keys.Any(dict.ContainsKey);
 
     public static List<List<T>> Split<T>(this List<T> list, Func<T, bool> splitCondition, bool includeSatisfier = true)
     {

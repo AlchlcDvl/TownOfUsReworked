@@ -66,8 +66,7 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
         var button = cog.GetComponent<GameOptionButton>();
         button.OverrideOnClickListeners(SetUpOptionsMenu);
         button.interactableHoveredColor = UColor.white;
-        button.interactableColor = LayerColor.Alternate(0.3f);
-        button.buttonSprite.color = LayerColor.Alternate(0.3f);
+        button.interactableColor = button.buttonSprite.color = LayerColor.Alternate(0.3f);
 
         SavedMode = GameMode.None;
         Update();

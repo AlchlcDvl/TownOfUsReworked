@@ -12,16 +12,13 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) 
     public override void SetProperty(PropertyInfo property)
     {
         base.SetProperty(property);
-        Value = DefaultValue = (T)property.GetValue(null);
+        Value = DefaultValue = property.GetValue<T>(null);
     }
 
     public override string ToString() => $"{ID}:{(Value is Number num ? $"{num:0.###}" : $"{Value}")}";
 
     public void Set(T value, bool rpc = true, bool notify = true)
     {
-        if (IsInGame())
-            return;
-
         Value = value;
         Property?.SetValue(null, value);
         // OnChanged.Invoke(value);
@@ -197,7 +194,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
                     result &= header.Get();
             }
             else if (!MapToLoaded.TryGetValue(id, out result))
-                MapToLoaded[id] = result = (bool)AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id)?.GetValue(null);
+                MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
         }
 
         // if (Invert && option != null)
@@ -303,7 +300,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             return;
 
         SettingsPatches.CreatePresetButton(fileName);
-        SettingsPatches.OnPageChanged(false);
+        SettingsPatches.OnPageChanged();
     }
 
     public static void LoadPreset(string presetName, TextMeshPro tmp)

@@ -46,7 +46,7 @@ public class Transporter : Crew
         Alignment = Alignment.CrewSupport;
         TransportMenu1 = new(Player, Click1, Exception1);
         TransportMenu2 = new(Player, Click2, Exception2);
-        TransportButton = CreateButton(this, new SpriteName("Transport"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, MaxTransports, new Cooldown(TransportCd),
+        TransportButton ??= CreateButton(this, new SpriteName("Transport"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, MaxTransports, new Cooldown(TransportCd),
             (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;

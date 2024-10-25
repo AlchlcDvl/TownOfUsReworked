@@ -13,6 +13,7 @@ public class CustomPlayerMenu(PlayerControl owner, CustomPlayerMenu.Select click
     {
         Click(player);
         Menu.Close();
+        IsActive = false;
     }
 
     public override ISystem.List<UiElement> CreateMenu(ShapeshifterMinigame __instance)

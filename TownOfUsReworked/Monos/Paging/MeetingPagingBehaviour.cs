@@ -24,13 +24,13 @@ public class MeetingPagingBehaviour : BasePagingBehaviour
 
         foreach (var button in Targets)
         {
-            if (i >= (PageIndex * 15) && i < ((PageIndex + 1) * 15))
+            if (i >= (PageIndex * 15) && i < ((PageIndex + 1) * 15) && !CustomMenu.IsActive)
             {
-                button.gameObject.SetActive(true);
                 var relativeIndex = i % 15;
                 var row = relativeIndex / 3;
                 var col = relativeIndex % 3;
                 button.transform.localPosition = Menu.VoteOrigin + new Vector3(Menu.VoteButtonOffsets.x * col, Menu.VoteButtonOffsets.y * row, button.transform.localPosition.z);
+                button.gameObject.SetActive(true);
             }
             else
                 button.gameObject.SetActive(false);

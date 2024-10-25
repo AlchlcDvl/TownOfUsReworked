@@ -38,9 +38,9 @@ public class Janitor : Intruder
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
-        DragButton = CreateButton(this, new SpriteName("Drag"), AbilityType.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
-        DropButton = CreateButton(this, new SpriteName("Drop"), AbilityType.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
-        CleanButton = CreateButton(this, new SpriteName("Clean"), AbilityType.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
+        DragButton ??= CreateButton(this, new SpriteName("Drag"), AbilityType.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
+        DropButton ??= CreateButton(this, new SpriteName("Drop"), AbilityType.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
+        CleanButton ??= CreateButton(this, new SpriteName("Clean"), AbilityType.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
             (UsableFunc)Usable1);
     }
 

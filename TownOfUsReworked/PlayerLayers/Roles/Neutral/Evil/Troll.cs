@@ -28,7 +28,7 @@ public class Troll : Neutral
         BaseStart();
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
-        InteractButton = CreateButton(this, new SpriteName("Placeholder"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Interact, new Cooldown(InteractCd), "INTERACT");
+        InteractButton ??= CreateButton(this, new SpriteName("Placeholder"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Interact, new Cooldown(InteractCd), "INTERACT");
         Data.Role.IntroSound = GetAudio("TrollIntro");
     }
 

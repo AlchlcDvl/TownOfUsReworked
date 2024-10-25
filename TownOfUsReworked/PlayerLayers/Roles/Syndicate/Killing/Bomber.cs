@@ -39,16 +39,16 @@ public class Bomber : Syndicate
         BaseStart();
         Alignment = Alignment.SyndicateKill;
         Bombs = [];
-        BombButton = CreateButton(this, new SpriteName("Plant"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(BombCd), "PLACE BOMB",
+        BombButton ??= CreateButton(this, new SpriteName("Plant"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(BombCd), "PLACE BOMB",
             (ConditionFunc)Condition);
-        DetonateButton = CreateButton(this, new SpriteName("Detonate"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any,
+        DetonateButton ??= CreateButton(this, new SpriteName("Detonate"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any,
             "DETONATE");
         Data.Role.IntroSound = GetAudio("BomberIntro");
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         Bombs.ForEach(x => x?.gameObject?.Destroy());
         Bombs.Clear();
     }

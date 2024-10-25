@@ -189,6 +189,8 @@ public static class MainMenuStartPatch
 
         AddAsset("Hover", __instance.playButton.HoverSound);
         AddAsset("Click", __instance.playButton.ClickSound);
+
+        ClientHandler.Instance.ButtonsSet = false;
     }
 }
 

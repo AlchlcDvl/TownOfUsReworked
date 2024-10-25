@@ -26,7 +26,7 @@ public class Spellslinger : Syndicate
         Alignment = Alignment.SyndicatePower;
         Spelled = [];
         SpellCount = 0;
-        SpellButton = CreateButton(this, new SpriteName("Spellbind"), AbilityType.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(SpellCd), "SPELLBIND",
+        SpellButton ??= CreateButton(this, new SpriteName("Spellbind"), AbilityType.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(SpellCd), "SPELLBIND",
             (PlayerBodyExclusion)Exception1, (DifferenceFunc)Difference);
     }
 

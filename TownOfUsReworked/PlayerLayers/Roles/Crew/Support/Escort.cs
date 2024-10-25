@@ -25,7 +25,7 @@ public class Escort : Crew
         Alignment = Alignment.CrewSupport;
         RoleBlockImmune = true;
         BlockTarget = null;
-        BlockButton = CreateButton(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Roleblock, (EffectVoid)Block,
+        BlockButton ??= CreateButton(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Roleblock, (EffectVoid)Block,
             new Cooldown(EscortCd), new Duration(EscortDur), (EffectEndVoid)UnBlock, (EndFunc)EndEffect);
     }
 

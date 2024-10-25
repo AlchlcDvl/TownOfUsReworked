@@ -42,7 +42,7 @@ public class Vigilante : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewKill;
-        ShootButton = CreateButton(this, "SHOOT", new SpriteName("Shoot"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Shoot, new Cooldown(ShootCd),
+        ShootButton ??= CreateButton(this, "SHOOT", new SpriteName("Shoot"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Shoot, new Cooldown(ShootCd),
             (PlayerBodyExclusion)Exception, MaxBullets, (UsableFunc)Usable);
         RoundOne = RoundOneNoShot;
     }

@@ -41,8 +41,8 @@ public class Coroner : Crew
         BodyArrows = [];
         Reported = [];
         ReferenceBodies = [];
-        AutopsyButton = CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, new Cooldown(AutopsyCd));
-        CompareButton = CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
+        AutopsyButton ??= CreateButton(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityType.Dead, KeybindType.ActionSecondary, (OnClick)Autopsy, new Cooldown(AutopsyCd));
+        CompareButton ??= CreateButton(this, "COMPARE", new SpriteName("Compare"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -51,9 +51,9 @@ public class Coroner : Crew
         BodyArrows.Remove(targetPlayerId);
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         BodyArrows.Values.ToList().DestroyAll();
         BodyArrows.Clear();
     }
@@ -83,7 +83,7 @@ public class Coroner : Crew
             }
         }
         else if (BodyArrows.Count > 0)
-            OnLobby();
+            Deinit();
     }
 
     public void Autopsy()

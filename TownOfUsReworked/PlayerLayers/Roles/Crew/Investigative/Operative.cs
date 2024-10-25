@@ -44,13 +44,13 @@ public class Operative : Crew
         Alignment = Alignment.CrewInvest;
         BuggedPlayers = [];
         Bugs = [];
-        BugButton = CreateButton(this, "BUG", new SpriteName("Bug"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(BugCd),  MaxBugs,
+        BugButton ??= CreateButton(this, "BUG", new SpriteName("Bug"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(BugCd),  MaxBugs,
             (ConditionFunc)Condition);
     }
 
-    public override void OnLobby()
+    public override void Deinit()
     {
-        base.OnLobby();
+        base.Deinit();
         Bugs.ForEach(x => x?.gameObject?.Destroy());
         Bugs.Clear();
     }

@@ -39,9 +39,13 @@ public abstract class PlayerLayer
 
     protected PlayerLayer() => AllLayers.Add(this);
 
+    // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
+    public T Start<T>(PlayerControl player) where T : PlayerLayer => Start(player) as T;
+
     public PlayerLayer Start(PlayerControl player)
     {
         Player = player;
+        Ignore = false;
         Init();
 
         if (Local)
@@ -50,12 +54,23 @@ public abstract class PlayerLayer
         return this;
     }
 
-    // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
-    public T Start<T>(PlayerControl player) where T : PlayerLayer => Start(player) as T;
+    public T End<T>() where T : PlayerLayer => End() as T;
+
+    public PlayerLayer End()
+    {
+        Player = null;
+        Ignore = true;
+        Deinit();
+
+        if (Local)
+            ExitingLayer();
+
+        return this;
+    }
 
     public virtual void Init() {}
 
-    public virtual void OnLobby() {}
+    public virtual void Deinit() {}
 
     public virtual void OnIntroEnd() {}
 
@@ -347,19 +362,9 @@ public abstract class PlayerLayer
 
     public override string ToString() => Name;
 
-    public void Delete()
-    {
-        OnLobby();
-
-        if (Local)
-            ExitingLayer();
-
-        Player = null;
-    }
-
     public static void DeleteAll()
     {
-        AllLayers.ForEach(x => x.Delete());
+        AllLayers.ForEach(x => x.Deinit());
         AllLayers.Clear();
         /*LayerLookup.Values.ForEach(x => x.Clear());
         LayerLookup.Clear();

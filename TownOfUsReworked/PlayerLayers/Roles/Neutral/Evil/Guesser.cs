@@ -68,7 +68,7 @@ public class Guesser : Neutral
 
         if (GuesserCanPickTargets)
         {
-            TargetButton = CreateButton(this, new SpriteName("GuessTarget"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
+            TargetButton ??= CreateButton(this, new SpriteName("GuessTarget"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
                 (UsableFunc)Usable);
         }
     }
@@ -208,7 +208,7 @@ public class Guesser : Neutral
     public void TurnAct()
     {
         Role role = IsRoleList() ? new Jester() : new Actor();
-        role.Start<Role>(Player).RoleUpdate(this);
+        role.RoleUpdate(this, Player);
     }
 
     public bool Usable() => !TargetPlayer;

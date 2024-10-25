@@ -368,9 +368,7 @@ public class CustomButton
             var previous = Target;
             Target = Owner.Player.GetClosestMono(monos);
             Targeting = Target;
-
-            if (previous != Target)
-                SetOutline(previous?.MyRend(), Target?.MyRend());
+            SetOutline(previous?.MyRend(), Target?.MyRend());
         }
     }
 
