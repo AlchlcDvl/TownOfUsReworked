@@ -414,9 +414,9 @@ public static class SetPostmortals
 
     public static void RemoveFromPostmortals(PlayerControl player)
     {
-        WillBeRevealers.RemoveAll(x => x == player.PlayerId || x == 255 || !PlayerById(x));
-        WillBePhantoms.RemoveAll(x => x == player.PlayerId || x == 255 || !PlayerById(x));
-        WillBeBanshees.RemoveAll(x => x == player.PlayerId || x == 255 || !PlayerById(x));
-        WillBeGhouls.RemoveAll(x => x == player.PlayerId || x == 255 || !PlayerById(x));
+        WillBeRevealers.RemoveAll(x => x == player.PlayerId || !PlayerById(x));
+        WillBePhantoms.RemoveAll(x => x == player.PlayerId || !PlayerById(x));
+        WillBeBanshees.RemoveAll(x => x == player.PlayerId || !PlayerById(x));
+        WillBeGhouls.RemoveAll(x => x == player.PlayerId || !PlayerById(x));
     }
 }

@@ -18,10 +18,9 @@ public class CustomRolesMenu(PlayerControl owner, CustomRolesMenu.Select click) 
             Menu.Close();
     }
 
-    public void Open(PlayerControl selected, List<LayerEnum> mapping)
+    public void Open(PlayerControl selected)
     {
         Selected = selected;
-        Mapping = mapping;
         Open();
     }
 
@@ -38,9 +37,9 @@ public class CustomRolesMenu(PlayerControl owner, CustomRolesMenu.Select click) 
         var dictEntry = LayerDictionary[layer];
         PlayerMaterial.SetColors(dictEntry.Color, panel.PlayerIcon.cosmetics.currentBodySprite.BodySprite);
         panel.LevelNumberText.transform.parent.gameObject.SetActive(false);
-        panel.NameText.text = dictEntry.Name;
+        panel.NameText.text = layer == LayerEnum.Miner && MapPatches.CurrentMap == 5 ? "Herbalist" : dictEntry.Name;
         panel.NameText.color = dictEntry.Color;
-        panel.name = $"Guess{layer}";
+        panel.name = $"Guess{panel.NameText.text.Replace(" ", "")}";
 
         if (panel == SelectedPanel)
             panel.Background.color = dictEntry.Color.Alternate(0.4f);

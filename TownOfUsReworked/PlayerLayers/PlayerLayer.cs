@@ -185,10 +185,22 @@ public abstract class PlayerLayer
                 WinState = WinLose.MafiaWins;
                 CallRpc(CustomRPC.WinLose, WinLose.MafiaWins);
             }
-            else if (Type == LayerEnum.Defector && DefectorWins())
+            else if (this is Defector defector)
             {
-                WinState = WinLose.DefectorWins;
-                CallRpc(CustomRPC.WinLose, WinLose.DefectorWins);
+                if (defector.Side == Faction.Neutral)
+                {
+                    WinState = NeutralSettings.NoSolo switch
+                    {
+                        NoSolo.AllNKs => WinLose.AllNKsWin,
+                        NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
+                        _ => WinLose.None
+                    };
+                }
+
+                if (WinState == WinLose.None && DefectorWins())
+                    WinState = WinLose.DefectorWins;
+
+                CallRpc(CustomRPC.WinLose, WinState);
             }
             else if (Type == LayerEnum.Overlord && OverlordWins() && Alive)
             {

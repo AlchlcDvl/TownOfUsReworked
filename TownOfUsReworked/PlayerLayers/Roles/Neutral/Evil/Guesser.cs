@@ -39,7 +39,6 @@ public class Guesser : Neutral
     private bool LettersExhausted { get; set; }
     private string RoleName { get; set; }
     public List<string> Letters { get; set; }
-    private List<LayerEnum> Mapping { get; set; }
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
@@ -84,9 +83,9 @@ public class Guesser : Neutral
 
     private void SetLists()
     {
-        Mapping.Clear();
+        GuessingMenu.Mapping.Clear();
 
-        Mapping.Add(LayerEnum.Crewmate);
+        GuessingMenu.Mapping.Add(LayerEnum.Crewmate);
 
         // Adds all the roles that have a non-zero chance of being in the game
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
@@ -101,14 +100,14 @@ public class Guesser : Neutral
                     continue;
                 }
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !Mapping.Contains(LayerEnum.Vigilante) && Mapping.Contains(LayerEnum.VampireHunter)))
-                    Mapping.Add(layer);
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !GuessingMenu.Mapping.Contains(LayerEnum.Vigilante) && GuessingMenu.Mapping.Contains(LayerEnum.VampireHunter)))
+                    GuessingMenu.Mapping.Add(layer);
             }
         }
 
         if (!SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
         {
-            Mapping.Add(LayerEnum.Impostor);
+            GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
             for (var h = 52; h < 70; h++)
             {
@@ -117,14 +116,14 @@ public class Guesser : Neutral
                 if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.Impostor)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !Mapping.Contains(LayerEnum.Mafioso) && Mapping.Contains(LayerEnum.Godfather)))
-                    Mapping.Add(layer);
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) && GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                    GuessingMenu.Mapping.Add(layer);
             }
         }
 
         if (SyndicateSettings.SyndicateCount > 0)
         {
-            Mapping.Add(LayerEnum.Anarchist);
+            GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
             for (var h = 70; h < 88; h++)
             {
@@ -133,8 +132,8 @@ public class Guesser : Neutral
                 if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel or LayerEnum.Anarchist)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !Mapping.Contains(LayerEnum.Sidekick) && Mapping.Contains(LayerEnum.Rebel)))
-                    Mapping.Add(layer);
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) && GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                    GuessingMenu.Mapping.Add(layer);
             }
         }
 
@@ -147,30 +146,29 @@ public class Guesser : Neutral
                 if (layer == LayerEnum.Phantom)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && Mapping.Contains(LayerEnum.GuardianAngel) && !Mapping.Contains(LayerEnum.Survivor)) || (layer
-                    == LayerEnum.Thief && Mapping.Contains(LayerEnum.Amnesiac) && !Mapping.Contains(LayerEnum.Thief)) || (layer == LayerEnum.Troll && Mapping.Contains(LayerEnum.BountyHunter)
-                    && !Mapping.Contains(LayerEnum.Troll)) || (layer == LayerEnum.Actor && Mapping.Contains(LayerEnum.Guesser) && !Mapping.Contains(LayerEnum.Actor)) || (layer ==
-                    LayerEnum.Jester && Mapping.Contains(LayerEnum.Executioner) && !Mapping.Contains(LayerEnum.Jester)))
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel) &&
+                    !GuessingMenu.Mapping.Contains(LayerEnum.Survivor)) || (layer == LayerEnum.Thief && GuessingMenu.Mapping.Contains(LayerEnum.Amnesiac) &&
+                    !GuessingMenu.Mapping.Contains(LayerEnum.Thief)) || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter)
+                    && !GuessingMenu.Mapping.Contains(LayerEnum.Troll)) || (layer == LayerEnum.Actor && GuessingMenu.Mapping.Contains(LayerEnum.Guesser) &&
+                    !GuessingMenu.Mapping.Contains(LayerEnum.Actor)) || (layer == LayerEnum.Jester && GuessingMenu.Mapping.Contains(LayerEnum.Executioner) &&
+                    !GuessingMenu.Mapping.Contains(LayerEnum.Jester)))
                 {
-                    Mapping.Add(layer);
+                    GuessingMenu.Mapping.Add(layer);
                 }
             }
 
-            if (Mapping.Contains(LayerEnum.Whisperer))
-                Mapping.Add(LayerEnum.Sect);
+            if (GuessingMenu.Mapping.Contains(LayerEnum.Whisperer))
+                GuessingMenu.Mapping.Add(LayerEnum.Sect);
 
-            if (Mapping.Contains(LayerEnum.Necromancer))
-                Mapping.Add(LayerEnum.Reanimated);
+            if (GuessingMenu.Mapping.Contains(LayerEnum.Necromancer))
+                GuessingMenu.Mapping.Add(LayerEnum.Reanimated);
 
-            if (Mapping.Contains(LayerEnum.Jackal))
-                Mapping.Add(LayerEnum.Cabal);
+            if (GuessingMenu.Mapping.Contains(LayerEnum.Jackal))
+                GuessingMenu.Mapping.Add(LayerEnum.Cabal);
 
-            if (Mapping.Contains(LayerEnum.Dracula))
-                Mapping.Add(LayerEnum.Undead);
+            if (GuessingMenu.Mapping.Contains(LayerEnum.Dracula))
+                GuessingMenu.Mapping.Add(LayerEnum.Undead);
         }
-
-        // Sorts the list by layer type
-        Mapping = [ .. Mapping.OrderBy(x => x) ];
     }
 
     private void GuessPlayer(ShapeshifterPanel panel, PlayerControl player, LayerEnum guess)
@@ -367,7 +365,7 @@ public class Guesser : Neutral
         if (__instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
             return;
 
-        GuessingMenu.Open(PlayerByVoteArea(voteArea), Mapping);
+        GuessingMenu.Open(PlayerByVoteArea(voteArea));
     }
 
     public override void UpdateMeeting(MeetingHud __instance)

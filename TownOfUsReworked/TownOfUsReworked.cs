@@ -2,7 +2,7 @@ namespace TownOfUsReworked;
 
 [BepInPlugin(Id, Name, VersionString)]
 [BepInDependency(ReactorPlugin.Id)]
-[BepInDependency("MalumMenu", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInIncompatibility("MalumMenu")]
 [ReactorModFlags(ModFlags.RequireOnAllClients)]
 [BepInProcess("Among Us.exe")]
 public partial class TownOfUsReworked : BasePlugin
@@ -80,14 +80,10 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static TownOfUsReworked ModInstance { get; private set; }
 
-    public TownOfUsReworked() : base() => Logging.Log = Log;
-
     public override void Load()
     {
+        Logging.Log = Log;
         Message("Loading");
-
-        if (InitialiseMalumMenu())
-            return;
 
         if (CheckAbort(out var mod))
         {

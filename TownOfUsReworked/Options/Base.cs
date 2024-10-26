@@ -98,7 +98,20 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         ( [ "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ], [ "EnableBetterPolus" ] ),
         ( [ "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer" ], [ "EnableBetterAirship" ] ),
         ( [ "FungleReactorTimer", "FungleMixupTimer" ], [ "EnableBetterFungle" ] ),
-        ( [ "CoronerKillerNameTime" ], [ "CoronerReportName" ] )
+        ( [ "CoronerKillerNameTime" ], [ "CoronerReportName" ] ),
+        ( [ "DrunkInterval" ], [ "DrunkControlsSwap" ] ),
+        ( [ "WhisperRateDecrease" ], [ "WhisperRateDecreases" ] ),
+        ( [ "WhisperCdIncrease" ], [ "WhisperCdIncreases" ] ),
+        ( [ "NecroKillCdIncrease" ], [ "NecroKillCdIncreases" ] ),
+        ( [ "ResurrectCdIncrease" ], [ "ResurrectCdIncreases" ] ),
+        ( [ "JestSwitchVent" ], [ "JesterVent" ] ),
+        ( [ "ExeSwitchVent" ], [ "ExeVent" ] ),
+        ( [ "SurvSwitchVent" ], [ "SurvVent" ] ),
+        ( [ "AmneSwitchVent" ], [ "AmneVent" ] ),
+        ( [ "GASwitchVent" ], [ "GAVent" ] ),
+        ( [ "GuessSwitchVent" ], [ "GuessVent" ] ),
+        ( [ "TrollSwitchVent" ], [ "TrollVent" ] ),
+        ( [ "ActSwitchVent" ], [ "ActorVent" ] )
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
@@ -128,7 +141,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] ),
         ( [ "Assassin" ], [ LayerEnum.Hitman, LayerEnum.Bullseye, LayerEnum.Sniper, LayerEnum.Slayer ] ),
         ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
-        ( [ "RoleListEntries", "RoleListBans" ], [ GameMode.RoleList ] )
+        ( [ "RoleListEntries", "RoleListBans" ], [ GameMode.RoleList ] ),
+        ( [ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom ] )
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -146,6 +160,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     public virtual string Format() => "";
 
     public virtual void Update() {}
+
+    public virtual void ViewUpdate() {}
 
     public bool Active()
     {
@@ -171,7 +187,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         else if (option is LayerEnum layer)
         {
             AddMenuIndex(6 + (int)layer);
-            result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage);
+            result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage) || RoleGen.GetSpawnItem(layer).IsActive();
         }
         else if (option is int num)
             result = SettingsPatches.SettingsPage == num;

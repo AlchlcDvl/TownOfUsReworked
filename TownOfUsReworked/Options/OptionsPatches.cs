@@ -134,8 +134,6 @@ public static class SettingsPatches
     public static CategoryHeaderMasked HeaderPrefab;
     public static CategoryHeaderEditRole AlignmentPrefab;
     public static PassiveButton ButtonPrefab;
-    private static readonly List<MonoBehaviour> Prefabs1 = [];
-    private static readonly List<MonoBehaviour> Prefabs2 = [];
 
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Awake))]
     public static class DefinePrefabs1
@@ -150,6 +148,7 @@ public static class SettingsPatches
                 return;
 
             __instance.Children = new();
+            var prefabs = new List<MonoBehaviour>();
 
             if (!NumberPrefab)
             {
@@ -172,7 +171,7 @@ public static class SettingsPatches
                 valueBox.localPosition += new Vector3(1.05f, 0f, 0f);
                 valueBox.localScale += new Vector3(0.2f, 0f, 0f);
 
-                Prefabs1.Add(NumberPrefab);
+                prefabs.Add(NumberPrefab);
             }
 
             if (!StringPrefab)
@@ -203,7 +202,7 @@ public static class SettingsPatches
                 valueBox.localPosition += new Vector3(1.05f, 0f, 0f);
                 valueBox.localScale += new Vector3(0.2f, 0f, 0f);
 
-                Prefabs1.Add(StringPrefab);
+                prefabs.Add(StringPrefab);
             }
 
             if (!TogglePrefab)
@@ -221,7 +220,7 @@ public static class SettingsPatches
                 background.localPosition += new Vector3(-0.8f, 0f, 0f);
                 background.localScale += new Vector3(1f, 0f, 0f);
 
-                Prefabs1.Add(TogglePrefab);
+                prefabs.Add(TogglePrefab);
             }
 
             if (!EntryPrefab)
@@ -240,7 +239,7 @@ public static class SettingsPatches
                 UObject.Instantiate(StringPrefab.transform.GetChild(1), EntryPrefab.transform).localPosition = new(2.8f, 0.064f, -1f);
                 UObject.Instantiate(StringPrefab.transform.GetChild(5), EntryPrefab.transform).localPosition = new(2.8f, 0.05f, 0f);
 
-                Prefabs1.Add(EntryPrefab);
+                prefabs.Add(EntryPrefab);
             }
 
             if (!HeaderPrefab)
@@ -257,14 +256,20 @@ public static class SettingsPatches
                 newButton.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
                 newButton.name = "Collapse";
 
-                Prefabs1.Add(HeaderPrefab);
+                prefabs.Add(HeaderPrefab);
             }
 
             if (!LayersSet)
             {
-                foreach (var mono in Prefabs1)
+                foreach (var mono in prefabs)
                 {
-                    mono.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+                    foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
+                    {
+                        obj.material.SetInt(PlayerMaterial.MaskLayer, 20);
+                        obj.material.SetFloat("_StencilComp", 3f);
+                        obj.material.SetFloat("_Stencil", 20);
+                        obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                    }
 
                     foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
                     {
@@ -300,6 +305,8 @@ public static class SettingsPatches
             __instance.transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
             __instance.quotaHeader.gameObject.SetActive(false);
 
+            var prefabs = new List<MonoBehaviour>();
+
             if (!LayersPrefab)
             {
                 // Title = 0, Role # = 1, Chance % = 2, Background = 3, Divider = 4, Cog = 5, Unique = 6, Active = 7
@@ -333,7 +340,7 @@ public static class SettingsPatches
                 active.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
                 active.transform.localScale = new(0.6f, 0.6f, 1f);
 
-                Prefabs2.Add(LayersPrefab);
+                prefabs.Add(LayersPrefab);
             }
 
             if (!AlignmentPrefab)
@@ -380,14 +387,20 @@ public static class SettingsPatches
                 newButton2.transform.localPosition = new(-5.239f, -0.45f, -2f);
                 newButton2.transform.localScale *= 0.7f;
 
-                Prefabs2.Add(AlignmentPrefab);
+                prefabs.Add(AlignmentPrefab);
             }
 
             if (!LayersSet)
             {
-                foreach (var mono in Prefabs2)
+                foreach (var mono in prefabs)
                 {
-                    mono.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, 20));
+                    foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
+                    {
+                        obj.material.SetInt(PlayerMaterial.MaskLayer, 20);
+                        obj.material.SetFloat("_StencilComp", 3f);
+                        obj.material.SetFloat("_Stencil", 20);
+                        obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                    }
 
                     foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
                     {
@@ -1060,7 +1073,7 @@ public static class SettingsPatches
                 return;
             }
 
-            if (AllPlayers().Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive)
+            if (AllPlayers().Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive || IsHnS())
                 return;
 
             SendOptionRPC();
@@ -1113,6 +1126,9 @@ public static class SettingsPatches
                 mapButton.Button.ClickMask = __instance.ButtonClickMask;
                 mapButton.Button.OverrideOnClickListeners(() =>
                 {
+                    if (IsInGame())
+                        return;
+
                     __instance?.selectedButton?.Button?.SelectButton(false);
                     __instance.selectedButton = mapButton;
                     __instance.selectedButton.Button.SelectButton(true);
@@ -1183,10 +1199,13 @@ public static class SettingsPatches
         public static bool Prefix() => false;
     }
 
-    public static List<MonoBehaviour> CreateViewOptions(Transform parent)
+    public static List<MonoBehaviour> CreateViewOptions(Transform parent, int page = -1)
     {
+        if (page == -1)
+            page = SettingsPage3;
+
         var options = new List<MonoBehaviour>();
-        var type = (MultiMenu)SettingsPage3;
+        var type = (MultiMenu)page;
 
         foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menus.Contains(type)))
         {
@@ -1209,12 +1228,28 @@ public static class SettingsPatches
     }
 
     [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawNormalTab))]
-    // [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawRolesTab))]
     public static class OverrideNormalViewSettingsTab
     {
         public static bool Prefix(LobbyViewSettingsPane __instance)
         {
+            if (IsHnS())
+                return true;
+
             SettingsPage3 = 0;
+            OnValueChangedView(__instance);
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawRolesTab))]
+    public static class OverrideRolesViewSettingsTab
+    {
+        public static bool Prefix(LobbyViewSettingsPane __instance)
+        {
+            if (IsHnS())
+                return true;
+
+            SettingsPage3 = 1;
             OnValueChangedView(__instance);
             return false;
         }
@@ -1225,6 +1260,9 @@ public static class SettingsPatches
     {
         public static void Postfix()
         {
+            if (IsHnS())
+                return;
+
             var gmt = GameObject.Find("GameModeText");
 
             if (gmt)
@@ -1259,73 +1297,160 @@ public static class SettingsPatches
             return;
 
         var num = 1.4f;
-        var num2 = -8.95f;
-        var menu = (MultiMenu)SettingsPage3;
         CreateViewOptions(__instance.settingsContainer);
 
         foreach (var option in OptionAttribute.AllOptions)
         {
-            if (option is not IOptionGroup header || !option.ViewSetting)
-                continue;
+            if (option.ViewSetting)
+                option.ViewSetting.gameObject.SetActive(false);
+        }
 
-            var flag = option.Menus.Contains(menu) && option.Active();
-            option.ViewSetting.gameObject.SetActive(flag);
+        if (SettingsPage3 is 0 or 3)
+        {
+            var menu = (MultiMenu)SettingsPage3;
 
-            if (!flag)
+            foreach (var option in OptionAttribute.AllOptions)
             {
-                header.GroupMembers.ForEach(x =>
+                if (option is not IOptionGroup header || !option.ViewSetting)
+                    continue;
+
+                var flag = option.Menus.Contains(menu) && option.Active();
+                option.ViewSetting.gameObject.SetActive(flag);
+
+                if (!flag)
+                {
+                    header.GroupMembers.ForEach(x =>
+                    {
+                        if (x.ViewSetting)
+                            x.ViewSetting.gameObject.SetActive(false);
+                    });
+                    continue;
+                }
+
+                option.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
+                __instance.settingsInfo.Add(option.ViewSetting.gameObject);
+                num -= 0.85f;
+                var members = header.GroupMembers.Where(x =>
+                {
+                    if (!x.ViewSetting)
+                        return false;
+
+                    var flag2 = x.Menus.Contains(menu) && x.Active();
+                    x.ViewSetting.gameObject.SetActive(flag2);
+                    return flag2;
+                }).ToArray();
+                header.GroupMembers.Except(members).ForEach(x =>
                 {
                     if (x.ViewSetting)
                         x.ViewSetting.gameObject.SetActive(false);
                 });
-                continue;
-            }
+                num += 0.59f;
 
-            num -= 0.08f;
-            option.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
-            __instance.settingsInfo.Add(option.ViewSetting.gameObject);
-            num -= 0.85f;
-            var members = header.GroupMembers.Where(x =>
-            {
-                if (!x.ViewSetting)
-                    return false;
-
-                var flag2 = x.Menus.Contains(menu) && x.Active();
-                x.ViewSetting.gameObject.SetActive(flag2);
-                return flag2;
-            }).ToArray();
-            header.GroupMembers.Except(members).ForEach(x =>
-            {
-                if (x.ViewSetting)
-                    x.ViewSetting.gameObject.SetActive(false);
-            });
-
-            for (var i = 0; i < members.Length; i++)
-            {
-                var optionn = members[i];
-
-                if (i % 2 == 0)
+                for (var i = 0; i < members.Length; i++)
                 {
-                    num2 = -8.95f;
-
-                    if (i > 0)
+                    if (i % 2 == 0)
                         num -= 0.59f;
+
+                    var optionn = members[i];
+                    optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, num, -2f);
+                    __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
                 }
-                else
-                    num2 = -3f;
 
-                optionn.ViewSetting.transform.localPosition = new(num2, num, -2f);
-                __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
+                num -= members.Length > 0 ? 0.62f : 0.25f;
             }
+        }
+        else if (SettingsPage == 1)
+        {
+            foreach (var option in OptionAttribute.GetOptions<AlignsOptionAttribute>())
+            {
+                CreateViewOptions(__instance.settingsContainer, (int)option.Alignment + 6);
 
-            num -= 0.59f;
+                option.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
+                __instance.settingsInfo.Add(option.ViewSetting.gameObject);
+                num -= 0.85f;
+
+                if (option.GroupHeader != null)
+                {
+                    option.GroupHeader.ViewSetting.gameObject.SetActive(false);
+
+                    var members = option.GroupHeader.GroupMembers.Where(x =>
+                    {
+                        if (!x.ViewSetting)
+                            return false;
+
+                        var flag2 = x.Active();
+                        x.ViewSetting.gameObject.SetActive(flag2);
+                        return flag2;
+                    }).ToArray();
+                    option.GroupHeader.GroupMembers.Except(members).ForEach(x =>
+                    {
+                        if (x.ViewSetting)
+                            x.ViewSetting.gameObject.SetActive(false);
+                    });
+
+                    for (var i = 0; i < members.Length; i++)
+                    {
+                        if (i % 2 == 0)
+                            num -= 0.59f;
+
+                        var optionn = members[i];
+                        optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, num, -2f);
+                        __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
+                    }
+
+                    num -= members.Length > 0 ? 0.62f : 0.25f;
+                }
+
+                var layers = option.GroupMembers.Cast<LayersOptionAttribute>();
+
+                foreach (var layer in layers)
+                {
+                    CreateViewOptions(__instance.settingsContainer, (int)layer.Layer + 6);
+
+                    layer.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
+                    __instance.settingsInfo.Add(layer.ViewSetting.gameObject);
+                    num -= 0.85f;
+
+                    if (layer.GroupHeader != null)
+                    {
+                        layer.GroupHeader.ViewSetting.gameObject.SetActive(false);
+
+                        var members2 = layer.GroupHeader.GroupMembers.Where(x =>
+                        {
+                            if (!x.ViewSetting)
+                                return false;
+
+                            var flag2 = x.Active();
+                            x.ViewSetting.gameObject.SetActive(flag2);
+                            return flag2;
+                        }).ToArray();
+                        layer.GroupHeader.GroupMembers.Except(members2).ForEach(x =>
+                        {
+                            if (x.ViewSetting)
+                                x.ViewSetting.gameObject.SetActive(false);
+                        });
+
+                        for (var i = 0; i < members2.Length; i++)
+                        {
+                            if (i % 2 == 0)
+                                num -= 0.59f;
+
+                            var optionn = members2[i];
+                            optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, num, -2f);
+                            __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
+                        }
+
+                        num -= members2.Length > 0 ? 0.62f : 0.25f;
+                    }
+                }
+            }
         }
 
         __instance.scrollBar.SetYBoundsMax(-num);
     }
 
     private static CategoryHeaderMasked HeaderViewPrefab;
-    private static CategoryHeaderRoleVariant LayerViewPrefab;
+    private static ViewSettingsInfoPanelRoleVariant LayerViewPrefab;
     private static ViewSettingsInfoPanel GenericViewPrefab;
 
     private static PassiveButton ClientOptionsButton;
@@ -1333,12 +1458,16 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.Awake))]
     public static class DefinePrefabs3
     {
+        private static bool LayersSet;
+
         public static void Postfix(LobbyViewSettingsPane __instance)
         {
             __instance.rolesTabButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             __instance.rolesTabButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
 
-            if (!ClientOptionsButton)
+            var prefabs = new List<MonoBehaviour>();
+
+            if (!ClientOptionsButton && !IsHnS())
             {
                 ClientOptionsButton = UObject.Instantiate(__instance.rolesTabButton, __instance.rolesTabButton.transform.parent);
                 ClientOptionsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
@@ -1348,18 +1477,24 @@ public static class SettingsPatches
                     __instance.taskTabButton.transform.localPosition.x, 0f, 0f);
                 ClientOptionsButton.OverrideOnClickListeners(() =>
                 {
+                    if (IsHnS())
+                        return;
+
                     SettingsPage3 = 3;
                     OnValueChangedView(__instance);
                 });
             }
+            else if (ClientOptionsButton)
+                ClientOptionsButton.gameObject.SetActive(!IsHnS());
 
             if (!HeaderViewPrefab)
             {
-                //
                 HeaderViewPrefab = UObject.Instantiate(__instance.categoryHeaderOrigin, null).DontUnload().DontDestroy();
                 HeaderViewPrefab.transform.localScale = Vector3.one;
                 HeaderViewPrefab.name = "HeaderViewPrefab";
+                HeaderViewPrefab.Background.gameObject.SetActive(false);
                 HeaderViewPrefab.Title.gameObject.SetActive(false);
+                HeaderViewPrefab.transform.GetChild(1).gameObject.SetActive(false);
 
                 var button = UObject.Instantiate(__instance.rolesTabButton, HeaderViewPrefab.transform);
                 button.buttonText.text = "";
@@ -1369,15 +1504,17 @@ public static class SettingsPatches
                 button.transform.localScale = new(0.7f, 0.7f, 1f);
                 button.OverrideOnClickListeners(BlankVoid);
 
-                HeaderViewPrefab.gameObject.SetActive(false);
+                prefabs.Add(HeaderViewPrefab);
             }
 
             if (!LayerViewPrefab)
             {
-                LayerViewPrefab = UObject.Instantiate(__instance.categoryHeaderRoleOrigin, null).DontUnload().DontDestroy();
+                LayerViewPrefab = UObject.Instantiate(__instance.infoPanelRoleOrigin, null).DontUnload().DontDestroy();
                 LayerViewPrefab.transform.localScale = Vector3.one;
                 LayerViewPrefab.name = "LayerViewPrefab";
-                LayerViewPrefab.gameObject.SetActive(false);
+                LayerViewPrefab.iconSprite.gameObject.SetActive(false);
+
+                prefabs.Add(LayerViewPrefab);
             }
 
             if (!GenericViewPrefab)
@@ -1385,7 +1522,35 @@ public static class SettingsPatches
                 GenericViewPrefab = UObject.Instantiate(__instance.infoPanelOrigin, null).DontUnload().DontDestroy();
                 GenericViewPrefab.transform.localScale = Vector3.one;
                 GenericViewPrefab.name = "GenericViewPrefab";
-                GenericViewPrefab.gameObject.SetActive(false);
+
+                prefabs.Add(GenericViewPrefab);
+            }
+
+            if (!LayersSet)
+            {
+                foreach (var mono in prefabs)
+                {
+                    if (mono.name != "GenericViewPrefab")
+                    {
+                        foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
+                        {
+                            obj.material.SetInt(PlayerMaterial.MaskLayer, 61);
+                            obj.material.SetFloat("_StencilComp", 3f);
+                            obj.material.SetFloat("_Stencil", 61);
+                            obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                        }
+
+                        foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
+                        {
+                            obj.fontMaterial.SetFloat("_StencilComp", 3f);
+                            obj.fontMaterial.SetFloat("_Stencil", 61);
+                        }
+                    }
+
+                    mono.gameObject.SetActive(false);
+                }
+
+                LayersSet = true;
             }
         }
     }

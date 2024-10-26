@@ -30,7 +30,8 @@ public static class CheckEndGame
                 Faction.Intruder => WinLose.IntrudersWin,
                 Faction.Neutral => NeutralSettings.NoSolo switch
                 {
-                    NoSolo.SameNKs or NoSolo.AllNeutrals or NoSolo.AllNKs => WinLose.AllNeutralsWin,
+                    NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
+                    NoSolo.AllNKs => WinLose.AllNKsWin,
                     _ => spell.LinkedDisposition switch
                     {
                         LayerEnum.Mafia => WinLose.MafiaWins,
@@ -42,10 +43,7 @@ public static class CheckEndGame
                 _ => WinLose.NobodyWins
             };
 
-            if (spell.LinkedDisposition == LayerEnum.Defector)
-                spell.Winner = true;
-
-            CallRpc(CustomRPC.WinLose, WinState, spell);
+            CallRpc(CustomRPC.WinLose, WinState);
         }
         else if (reb)
         {
@@ -53,15 +51,22 @@ public static class CheckEndGame
             {
                 Faction.Crew => WinLose.CrewWins,
                 Faction.Intruder => WinLose.IntrudersWin,
-                Faction.Neutral => reb.LinkedDisposition == LayerEnum.Defector ? WinLose.DefectorWins : WinLose.AllNeutralsWin,
+                Faction.Neutral => NeutralSettings.NoSolo switch
+                {
+                    NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
+                    NoSolo.AllNKs => WinLose.AllNKsWin,
+                    _ => spell.LinkedDisposition switch
+                    {
+                        LayerEnum.Mafia => WinLose.MafiaWins,
+                        LayerEnum.Lovers => WinLose.LoveWins,
+                        _ => WinLose.DefectorWins
+                    }
+                },
                 Faction.Syndicate => WinLose.SyndicateWins,
                 _ => WinLose.NobodyWins
             };
 
-            if (reb.LinkedDisposition == LayerEnum.Defector)
-                reb.Winner = true;
-
-            CallRpc(CustomRPC.WinLose, WinState, reb);
+            CallRpc(CustomRPC.WinLose, WinState);
         }
         else if (Sabotaged() && IntruderSettings.IntrudersCanSabotage)
         {

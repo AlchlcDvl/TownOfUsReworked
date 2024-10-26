@@ -300,11 +300,7 @@ public static class ChatControllerAwakePatch
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]
 public static class ChatFontPatch
 {
-    public static void Postfix(ChatController __instance)
-    {
-        AddAsset("ChatFont", __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font);
-        // __instance.freeChatField.textArea.GetComponent<TextMeshPro>().font = GetFont("ChatFont");
-    }
+    public static void Postfix(ChatController __instance) => AddAsset("ChatFont", __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font);
 }
 
 [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]

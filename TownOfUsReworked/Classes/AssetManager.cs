@@ -45,9 +45,14 @@ public static class AssetManager
     public static Texture2D LoadTexture(byte[] data, string name)
     {
         var texture = EmptyTexture();
-        texture.LoadImage(data, !GetReadable(name));
-        texture.name = name;
-        return texture.DontDestroy();
+
+        if (texture.LoadImage(data, !GetReadable(name)))
+        {
+            texture.name = name;
+            return texture.DontDestroy();
+        }
+
+        return null;
     }
 
     public static Sprite CreateResourceSprite(string path) => CreateSprite(LoadResourceTexture(path), path.SanitisePath());

@@ -2024,11 +2024,11 @@ public static class RoleGen
 
     private static void Gen(PlayerControl player, LayerEnum id, PlayerLayerEnum rpc)
     {
-        SetLayer(id, rpc).Start(player);
-        CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
-
         if (id == LayerEnum.None)
             player.GetLayers().Find(x => x.LayerType == rpc)?.End();
+
+        SetLayer(id, rpc).Start(player);
+        CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
     }
 
     private static void NullLayer(PlayerControl player, PlayerLayerEnum rpc) => Gen(player, LayerEnum.None, rpc);

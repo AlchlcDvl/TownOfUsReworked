@@ -166,6 +166,16 @@ public static class ListExtensions
         return -1;
     }
 
+    public static IEnumerable<T> GetValues<T>(T start, T end) where T : struct, Enum
+    {
+        var allValues = Enum.GetValues<T>().ToList();
+        return allValues.Where(x =>
+        {
+            var xIndex = allValues.IndexOf(x);
+            return xIndex >= allValues.IndexOf(start) && xIndex <= allValues.IndexOf(end);
+        });
+    }
+
     public static bool ContainsAny<T>(this IEnumerable<T> source, T[] values) => values.Any(source.Contains);
 
     public static bool ContainsAnyKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey[] keys) => keys.Any(dict.ContainsKey);

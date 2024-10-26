@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum layer, bool noParts = false) : OptionAttribute<RoleOptionData>(menu, CustomOptionType.Layers)
+public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false) : OptionAttribute<RoleOptionData>(MultiMenu.Layer, CustomOptionType.Layers)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
@@ -220,6 +220,14 @@ public class LayersOptionAttribute(MultiMenu menu, string hexCode, LayerEnum lay
 
                 case GameMode.KillingOnly:
                     Chance.transform.localPosition = Right + Diff;
+                    break;
+
+                default:
+                    Chance.SetActive(false);
+                    Count.SetActive(false);
+                    Divider.SetActive(false);
+                    Unique.SetActive(false);
+                    Active1.SetActive(false);
                     break;
             }
         }

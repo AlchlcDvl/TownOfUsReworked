@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(menu, CustomOptionType.Alignment), IOptionGroup
+public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(MultiMenu.Layer, CustomOptionType.Alignment), IOptionGroup
 {
     public LayerEnum Alignment { get; } = alignment;
     private bool NoParts { get; set; } = noParts;
@@ -13,7 +13,8 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
     private GameObject Active1 { get; set; }
     private GameObject Unique { get; set; }
     private GameObject Single { get; set; }
-    private GameObject Collapse { get; set; }
+    private TextMeshPro ButtonText { get; set; }
+    private PassiveButton Button { get; set; }
     private Type ClassType { get; set; }
     private GameMode SavedMode { get; set; } = GameMode.None;
     private static Vector3 Left;
@@ -50,9 +51,14 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
         if (!flag)
             header.transform.GetChild(3).localPosition = new(-5.539f, -0.45f, -2f);
 
-        Collapse = header.transform.FindChild("Collapse").gameObject;
-        Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
-        Collapse.GetComponentInChildren<TextMeshPro>().text = Get() ? "-" : "+";
+        var collapse = header.transform.FindChild("Collapse").gameObject;
+
+        if (collapse)
+        {
+            collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
+            ButtonText = collapse.GetComponentInChildren<TextMeshPro>();
+            ButtonText.text = Get() ? "-" : "+";
+        }
 
         var color = Alignment switch
         {
@@ -78,16 +84,31 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
         Update();
     }
 
+    public override void ViewOptionCreated()
+    {
+        base.ViewOptionCreated();
+        Button = ViewSetting.transform.Find("TitleButton").GetComponent<PassiveButton>();
+        Button.buttonText.text = $"<b>{TranslationManager.Translate(ID)}</b>";
+        Button.OverrideOnClickListeners(Toggle);
+        Button.SelectButton(Value);
+    }
+
     public void Toggle()
     {
         Value = !Get();
-        Collapse.GetComponentInChildren<TextMeshPro>().text = Value ? "-" : "+";
+        GroupHeader.Toggle();
 
         if (Setting)
+        {
+            ButtonText.text = Value ? "-" : "+";
             SettingsPatches.OnValueChanged();
+        }
 
         if (ViewSetting)
+        {
+            Button.SelectButton(Value);
             SettingsPatches.OnValueChangedView();
+        }
     }
 
     public override void Update()
@@ -135,6 +156,14 @@ public class AlignsOptionAttribute(MultiMenu menu, LayerEnum alignment, bool noP
 
                 case GameMode.KillingOnly:
                     Chance.transform.localPosition = Right + Diff;
+                    break;
+
+                default:
+                    Chance.SetActive(false);
+                    Count.SetActive(false);
+                    Single.SetActive(true);
+                    Unique.SetActive(false);
+                    Active1.SetActive(false);
                     break;
             }
         }

@@ -338,16 +338,6 @@ public static class ModCompatibility
         }
     }
 
-    public static bool InitialiseMalumMenu()
-    {
-        if (!IL2CPPChainloader.Instance.Plugins.ContainsKey("MalumMenu"))
-            return false;
-
-        Fatal("MalumMenu was detected");
-        Harmony.UnpatchAll();
-        return true;
-    }
-
     private static readonly string[] Unsupported = [ "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI" ];
 
     public static bool CheckAbort(out string mod)

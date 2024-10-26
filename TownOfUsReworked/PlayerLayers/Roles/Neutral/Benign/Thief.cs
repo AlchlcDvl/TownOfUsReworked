@@ -19,7 +19,6 @@ public class Thief : Neutral
     public static bool ThiefVent { get; set; } = false;
 
     public CustomButton StealButton { get; set; }
-    public List<LayerEnum> Mapping { get; set; }
     public CustomMeeting GuessMenu { get; set; }
     public CustomRolesMenu GuessingMenu { get; set; }
 
@@ -36,14 +35,13 @@ public class Thief : Neutral
         Alignment = Alignment.NeutralBen;
         StealButton ??= CreateButton(this, new SpriteName("Steal"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);
-        Mapping = [];
         GuessMenu = new(Player, "Guess", ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);
     }
 
     private void SetLists()
     {
-        Mapping.Clear();
+        GuessingMenu.Mapping.Clear();
 
         // Adds all the roles that have a non-zero chance of being in the game
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
@@ -52,14 +50,14 @@ public class Thief : Neutral
 
             foreach (var layer in nks)
             {
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !Mapping.Contains(LayerEnum.Vigilante) && Mapping.Contains(LayerEnum.VampireHunter)))
-                    Mapping.Add(layer);
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !GuessingMenu.Mapping.Contains(LayerEnum.Vigilante) && GuessingMenu.Mapping.Contains(LayerEnum.VampireHunter)))
+                    GuessingMenu.Mapping.Add(layer);
             }
         }
 
         if (!SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
         {
-            Mapping.Add(LayerEnum.Impostor);
+            GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
             for (var h = 52; h < 70; h++)
             {
@@ -68,14 +66,14 @@ public class Thief : Neutral
                 if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.Impostor)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !Mapping.Contains(LayerEnum.Mafioso) && Mapping.Contains(LayerEnum.Godfather)))
-                    Mapping.Add(layer);
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) && GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                    GuessingMenu.Mapping.Add(layer);
             }
         }
 
         if (SyndicateSettings.SyndicateCount > 0)
         {
-            Mapping.Add(LayerEnum.Anarchist);
+            GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
             for (var h = 70; h < 88; h++)
             {
@@ -84,8 +82,8 @@ public class Thief : Neutral
                 if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel or LayerEnum.Anarchist)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !Mapping.Contains(LayerEnum.Sidekick) && Mapping.Contains(LayerEnum.Rebel)))
-                    Mapping.Add(layer);
+                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) && GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                    GuessingMenu.Mapping.Add(layer);
             }
         }
 
@@ -97,12 +95,9 @@ public class Thief : Neutral
             foreach (var layer in nks)
             {
                 if (RoleGen.GetSpawnItem(layer).IsActive())
-                    Mapping.Add(layer);
+                    GuessingMenu.Mapping.Add(layer);
             }
         }
-
-        // Sorts the list by layer type
-        Mapping = [ .. Mapping.OrderBy(x => x) ];
     }
 
     private void GuessPlayer(ShapeshifterPanel panel, PlayerControl player, LayerEnum guess)
@@ -141,7 +136,7 @@ public class Thief : Neutral
         if (__instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
             return;
 
-        GuessingMenu.Open(PlayerByVoteArea(voteArea), Mapping);
+        GuessingMenu.Open(PlayerByVoteArea(voteArea));
     }
 
     public override void OnMeetingStart(MeetingHud __instance)

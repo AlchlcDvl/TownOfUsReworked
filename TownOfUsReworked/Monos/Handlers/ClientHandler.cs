@@ -122,11 +122,11 @@ public class ClientHandler : MonoBehaviour
             return;
 
         ResetButtonPos();
-        var part2 = !IntroCutscene.Instance && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance;
+        var part2 = !IntroCutscene.Instance && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance && !PlayerCustomizationMenu.Instance;
         WikiRCButton.gameObject.SetActive(part2);
-        ClientOptionsButton.gameObject.SetActive(part2);
+        ClientOptionsButton.gameObject.SetActive(part2 && !RoleCardActive);
         ZoomButton.gameObject.SetActive(HUD().MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() ||
-            CustomPlayer.Local.Caught()) && !Meeting());
+            CustomPlayer.Local.Caught()) && !Meeting() && !RoleCardActive);
 
         if (PhoneText)
         {
