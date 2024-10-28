@@ -8,39 +8,28 @@ public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : 
     public HeaderOptionAttribute GroupHeader { get; set; }
     public string[] GroupMemberStrings { get; set; }
     public OptionAttribute[] GroupMembers { get; set; }
-    private GameObject Chance { get; set; }
-    private GameObject Count { get; set; }
-    private GameObject Active1 { get; set; }
-    private GameObject Unique { get; set; }
+    private TextMeshPro Left { get; set; }
+    private TextMeshPro Right { get; set; }
+    private TextMeshPro Center { get; set; }
     private GameObject Single { get; set; }
     private TextMeshPro ButtonText { get; set; }
     private PassiveButton Button { get; set; }
     private Type ClassType { get; set; }
-    private GameMode SavedMode { get; set; } = GameMode.None;
-    private static Vector3 Left;
-    private static Vector3 Right;
-    private static Vector3 Diff;
+    private GameMode SavedMode { get; set; }
 
     public override void OptionCreated()
     {
         base.OptionCreated();
         var header = Setting.Cast<CategoryHeaderMasked>();
         header.Title.text = $"<b>{TranslationManager.Translate(ID)}</b>";
+
         var quota = header.transform.GetChild(2);
-        Count = quota.GetChild(1).gameObject;
-        Chance = quota.GetChild(4).gameObject;
+
+        Left = quota.GetChild(1).gameObject.GetComponent<TextMeshPro>();
+        Right = quota.GetChild(4).gameObject.GetComponent<TextMeshPro>();
+        Center = quota.GetChild(6).gameObject.GetComponent<TextMeshPro>();
+
         Single = quota.GetChild(5).gameObject;
-        Active1 = quota.GetChild(6).gameObject;
-        Unique = quota.GetChild(7).gameObject;
-
-        if (Left == default)
-            Left = Count.transform.localPosition;
-
-        if (Right == default)
-            Right = Chance.transform.localPosition;
-
-        if (Diff == default)
-            Diff = (Left - Right) / 2;
 
         var flag = GroupHeader != null || OptionParents1.Any(x => x.Item2.Contains(Alignment)) || OptionParents2.Any(x => x.Item2.Contains(Alignment));
         var cog = header.transform.GetChild(4).gameObject;
@@ -51,14 +40,10 @@ public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : 
         if (!flag)
             header.transform.GetChild(3).localPosition = new(-5.539f, -0.45f, -2f);
 
-        var collapse = header.transform.FindChild("Collapse").gameObject;
-
-        if (collapse)
-        {
-            collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
-            ButtonText = collapse.GetComponentInChildren<TextMeshPro>();
-            ButtonText.text = Get() ? "-" : "+";
-        }
+        var collapse = header.transform.FindChild("Collapse");
+        collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
+        ButtonText = collapse.GetComponentInChildren<TextMeshPro>();
+        ButtonText.text = Get() ? "-" : "+";
 
         var color = Alignment switch
         {
@@ -81,6 +66,15 @@ public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : 
         button.interactableHoveredColor = UColor.white;
         button.interactableColor = button.buttonSprite.color = color;
 
+        if (NoParts)
+        {
+            Left.gameObject.SetActive(false);
+            Right.gameObject.SetActive(false);
+            Center.gameObject.SetActive(false);
+            Single.SetActive(true);
+        }
+
+        SavedMode = GameMode.None;
         Update();
     }
 
@@ -91,12 +85,15 @@ public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : 
         Button.buttonText.text = $"<b>{TranslationManager.Translate(ID)}</b>";
         Button.OverrideOnClickListeners(Toggle);
         Button.SelectButton(Value);
+
+        SavedMode = GameMode.None;
+        ViewUpdate();
     }
 
     public void Toggle()
     {
         Value = !Get();
-        GroupHeader.Toggle();
+        GroupHeader?.Toggle();
 
         if (Setting)
         {
@@ -118,54 +115,31 @@ public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : 
 
         SavedMode = GameModeSettings.GameMode;
 
-        if (NoParts)
+        if (!NoParts)
         {
-            Chance.SetActive(false);
-            Count.SetActive(false);
-            Single.SetActive(true);
-            Unique.SetActive(false);
-            Active1.SetActive(false);
-        }
-        else
-        {
-            Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
-            Count.SetActive(SavedMode == GameMode.Custom);
-            Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
-            Active1.SetActive(SavedMode == GameMode.AllAny);
+            Left.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
+            Right.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
+            Center.gameObject.SetActive(SavedMode is GameMode.Classic or GameMode.RoleList or GameMode.KillingOnly);
             Single.SetActive(SavedMode is not (GameMode.Custom or GameMode.AllAny));
 
-            switch (SavedMode)
+            Center.SetText(SavedMode switch
             {
-                case GameMode.Classic:
-                    Chance.transform.localPosition = Right + Diff;
-                    break;
-
-                case GameMode.Custom:
-                    Chance.transform.localPosition = Right;
-                    Count.transform.localPosition = Left;
-                    break;
-
-                case GameMode.AllAny:
-                    Unique.transform.localPosition = Right;
-                    Active1.transform.localPosition = Left;
-                    break;
-
-                case GameMode.RoleList:
-                    Unique.transform.localPosition = Right + Diff;
-                    break;
-
-                case GameMode.KillingOnly:
-                    Chance.transform.localPosition = Right + Diff;
-                    break;
-
-                default:
-                    Chance.SetActive(false);
-                    Count.SetActive(false);
-                    Single.SetActive(true);
-                    Unique.SetActive(false);
-                    Active1.SetActive(false);
-                    break;
-            }
+                GameMode.Classic or GameMode.KillingOnly => "Chance",
+                GameMode.RoleList => "Unique",
+                _ => ""
+            });
+            Right.SetText(SavedMode switch
+            {
+                GameMode.Custom => "Chance",
+                GameMode.AllAny => "Unique",
+                _ => ""
+            });
+            Left.SetText(SavedMode switch
+            {
+                GameMode.Custom => "Count",
+                GameMode.AllAny => "Active",
+                _ => ""
+            });
         }
     }
 
@@ -173,12 +147,10 @@ public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : 
     {
         ClassType = type;
         Name = ClassType.Name;
-        Value = DefaultValue = true;
+        Value = DefaultValue = false;
         ID = $"CustomOption.{Name}";
-        // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
         AllOptions.Add(this);
         var members = new List<OptionAttribute>();
-        var strings = new List<string>();
 
         foreach (var prop in AccessTools.GetDeclaredProperties(ClassType))
         {
@@ -188,19 +160,18 @@ public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : 
             {
                 att.SetProperty(prop);
                 members.Add(att);
-                strings.Add(prop.Name);
             }
         }
 
-        GroupMemberStrings = [ .. strings ];
         GroupMembers = [ .. members ];
-        OptionParents1.Add((GroupMemberStrings, [ Name ]));
     }
 
     public override void PostLoadSetup()
     {
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Name.Replace("Roles", "") + "Settings");
         GroupHeader?.AddMenuIndex(6 + (int)Alignment);
+        GroupMemberStrings = [ .. GroupMembers.Select(x => x.Name) ];
+        OptionParents1.Add((GroupMemberStrings, [ Name ]));
     }
 
     public void SetUpOptionsMenu()

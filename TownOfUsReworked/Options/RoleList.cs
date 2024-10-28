@@ -11,7 +11,6 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
 
     public override void PostLoadSetup()
     {
-        base.PostLoadSetup();
         IsBan = ID.Contains("Ban");
         Num = ID.Replace("CustomOption.", "").Replace("Entry", "").Replace("Ban", "");
     }
@@ -21,28 +20,20 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         base.OptionCreated();
         Setting.Cast<ToggleOption>().TitleText.text = TranslationManager.Translate(ID).Replace("%num%", Num);
         ValueText = Setting.transform.GetChild(3).GetComponent<TextMeshPro>();
-        ValueText.text = Format();
-
-        if (LayerDictionary.TryGetValue(Value, out var entry))
-            ValueText.color = entry.Color;
+        Update();
     }
 
     public override void ViewOptionCreated()
     {
         base.ViewOptionCreated();
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.titleText.text = TranslationManager.Translate(ID).Replace("%num%", Num);
-        viewSettingsInfoPanel.settingText.text = Format();
         viewSettingsInfoPanel.checkMark.gameObject.SetActive(false);
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(false);
-
-        if (LayerDictionary.TryGetValue(Value, out var entry))
-            viewSettingsInfoPanel.settingText.color = entry.Color;
+        ViewUpdate();
     }
 
-    public override void ModifyViewSetting()
+    public override void ViewUpdate()
     {
-        base.ModifyViewSetting();
         var valueText = ViewSetting.Cast<ViewSettingsInfoPanel>().settingText;
         valueText.text = Format();
 
@@ -50,9 +41,8 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
             valueText.color = entry.Color;
     }
 
-    public override void ModifySetting()
+    public override void Update()
     {
-        base.ModifySetting();
         ValueText.text = Format();
 
         if (LayerDictionary.TryGetValue(Value, out var entry))

@@ -7,7 +7,7 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
     public OptionAttribute[] GroupMembers { get; set; }
     private Type ClassType { get; set; }
     private TextMeshPro ButtonText { get; set; }
-    private PassiveButton Button { get; set; }
+    public PassiveButton Button { get; set; }
 
     public override void OptionCreated()
     {
@@ -50,13 +50,12 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
     {
         ClassType = type;
         Name = ClassType.Name;
-        Value = DefaultValue = true;
+        Value = DefaultValue = false;
         ID = $"CustomOption.{Name}";
         AllOptions.Add(this);
         var members = new List<OptionAttribute>();
-        var strings = new List<string>();
 
-        foreach (var prop in  AccessTools.GetDeclaredProperties(type))
+        foreach (var prop in AccessTools.GetDeclaredProperties(type))
         {
             var att = prop.GetCustomAttribute<OptionAttribute>();
 
@@ -64,18 +63,21 @@ public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
             {
                 att.SetProperty(prop);
                 members.Add(att);
-                strings.Add(att.Name);
             }
         }
 
-        GroupMemberStrings = [ .. strings ];
         GroupMembers = [ .. members ];
-        OptionParents1.Add((GroupMemberStrings, [ Name ]));
     }
 
     public override void AddMenuIndex(int index)
     {
         base.AddMenuIndex(index);
         GroupMembers.ForEach(x => x.AddMenuIndex(index));
+    }
+
+    public override void PostLoadSetup()
+    {
+        GroupMemberStrings = [ .. GroupMembers.Select(x => x.Name) ];
+        OptionParents1.Add((GroupMemberStrings, [ Name ]));
     }
 }

@@ -11,30 +11,25 @@ public class ToggleOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
         base.OptionCreated();
         var toggle = Setting.Cast<ToggleOption>();
         toggle.TitleText.text = TranslationManager.Translate(ID);
-        toggle.CheckMark.enabled = Get();
+        Update();
     }
 
     public override void ViewOptionCreated()
     {
         base.ViewOptionCreated();
+        ViewUpdate();
+    }
+
+    public override void ViewUpdate()
+    {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
         viewSettingsInfoPanel.settingText.text = "";
         viewSettingsInfoPanel.checkMark.gameObject.SetActive(Get());
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Get());
     }
 
-    public override void ModifyViewSetting()
+    public override void Update()
     {
-        base.ModifyViewSetting();
-        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = "";
-        viewSettingsInfoPanel.checkMark.gameObject.SetActive(Get());
-        viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Get());
-    }
-
-    public override void ModifySetting()
-    {
-        base.ModifySetting();
         var toggle = Setting.Cast<ToggleOption>();
         var newValue = Get();
         toggle.oldValue = newValue;

@@ -24,8 +24,7 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
         number.TitleText.text = TranslationManager.Translate(ID);
         number.ValidRange = new(Min, Max);
         number.Increment = Increment;
-        number.Value = number.oldValue = Get();
-        number.ValueText.text = Format();
+        Update();
     }
 
     public override string Format()
@@ -45,28 +44,20 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     public override void ViewOptionCreated()
     {
         base.ViewOptionCreated();
-        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = Format();
-        viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
+        ViewUpdate();
     }
 
-    public override void PostLoadSetup()
-    {
-        base.PostLoadSetup();
-        AllowHalf &= Increment != 1;
-    }
+    public override void PostLoadSetup() => AllowHalf &= Increment != 1;
 
-    public override void ModifySetting()
+    public override void Update()
     {
-        base.ModifySetting();
         var number = Setting.Cast<NumberOption>();
         number.Value = number.oldValue = Get();
         number.ValueText.text = Format();
     }
 
-    public override void ModifyViewSetting()
+    public override void ViewUpdate()
     {
-        base.ModifyViewSetting();
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
         viewSettingsInfoPanel.settingText.text = Format();
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);

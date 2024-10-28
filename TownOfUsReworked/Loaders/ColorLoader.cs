@@ -23,7 +23,7 @@ public class ColorLoader : AssetLoader<CustomColor>
 
             if (File.Exists(filePath))
             {
-                var data = JsonSerializer.Deserialize<List<CustomColor>>(File.ReadAllText(filePath));
+                var data = JsonSerializer.Deserialize<CustomColor[]>(File.ReadAllText(filePath));
                 data.ForEach(x => x.StreamOnly = true);
                 AllColors.AddRange(data);
             }
@@ -53,9 +53,11 @@ public class ColorLoader : AssetLoader<CustomColor>
         }
 
         Palette.ColorNames = AllColors.Select(x => (StringNames)x.StringID).ToArray();
-        /*Palette.PlayerColors = AllColors.Select(x => x.MainColor).ToArray();
-        Palette.ShadowColors = AllColors.Select(x => x.ShadowColor).ToArray();*/
-        LoadColors();
+        Palette.PlayerColors = AllColors.Select(x => ParseToColor(x.RGBMain)).ToArray();
+        Palette.ShadowColors = AllColors.Select(x => ParseToColor(x.RGBShadow)).ToArray();
+        Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
+        Palette.TextColors = Palette.PlayerColors;
+
         Message($"Set {AllColors.Count} colors");
         colors.Clear();
         yield break;

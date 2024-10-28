@@ -110,6 +110,12 @@ public class CustomColor : CustomCosmetic
     [JsonPropertyName("changing")]
     public bool Changing { get; set; }
 
+    [JsonPropertyName("rgbmain")]
+    public string RGBMain { get; set; }
+
+    [JsonPropertyName("rgbshadow")]
+    public string RGBShadow { get; set; }
+
     [JsonIgnore]
     public int ColorID { get; set; }
 
@@ -118,12 +124,6 @@ public class CustomColor : CustomCosmetic
 
     [JsonPropertyName("title")]
     public string Title { get; set; }
-
-    [JsonPropertyName("rgbmain")]
-    public string RGBMain { get; set; }
-
-    [JsonPropertyName("rgbshadow")]
-    public string RGBShadow { get; set; }
 
     [JsonPropertyName("hsbmain")]
     public string HSBMain { get; set; }

@@ -19,13 +19,7 @@ public static class Generate
 
         // So, this is AD from a couple weeks after the above 3 comments, I thought to myself on the toilet "What if I just used a class for the headers instead of another property? Then I don't need to add a random getter setter and I don't have to make the string arrays either because I can just get the declared properties and use their names as the array" and then this genius thing was born
         AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).Where(x => x.Name is not ("Bullseye" or "Hitman" or "Sniper" or "Slayer")).ForEach(y =>
-            y.GetCustomAttribute<HeaderOptionAttribute>()?.SetTypeAndOptions(y));
-        AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ForEach(y => y.GetCustomAttribute<AlignsOptionAttribute>()?.SetTypeAndOptions(y));
-
-        // Simple enough, I'm too cautious to let something fuck me up while I set the properties
-        OptionAttribute.AllOptions.ForEach(x => x.PostLoadSetup());
-
-        OptionAttribute.SaveSettings("Default");
+            (y.GetCustomAttribute<OptionAttribute>() as IOptionGroup)?.SetTypeAndOptions(y));
 
         // Fixing up accidental duped IDs
         var d = OptionAttribute.AllOptions.Clone();
@@ -41,11 +35,18 @@ public static class Generate
         foreach (var opt in opts)
         {
             var index = OptionAttribute.AllOptions.Where(x => x.ID == opt.ID).ToList().IndexOf(opt);
-            opt.ID += $"{(index == 0 ? "" : index.ToString())}";
+            var toAdd = index == 0 ? "" : index.ToString();
+            opt.ID += toAdd;
+            opt.Name += toAdd;
         }
 
         opts.Clear();
         d.Clear();
+
+        // Simple enough, I'm too cautious to let something fuck me up while I set the properties
+        OptionAttribute.AllOptions.ForEach(x => x.PostLoadSetup());
+
+        OptionAttribute.SaveSettings("Default");
 
         Message($"There exist {OptionAttribute.AllOptions.Count} total options lmao (number jumpscare)");
     }

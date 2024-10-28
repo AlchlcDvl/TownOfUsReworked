@@ -17,7 +17,19 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
     private GameObject Count { get; set; }
     public SpriteRenderer UniqueCheck { get; set; }
     public SpriteRenderer ActiveCheck { get; set; }
-    private GameMode SavedMode { get; set; } = GameMode.None;
+    private GameMode SavedMode { get; set; }
+    private PassiveButton Button { get; set; }
+    private TextMeshPro CenterTitle { get; set; }
+    private TextMeshPro CenterValue { get; set; }
+    private TextMeshPro LeftTitle { get; set; }
+    private SpriteRenderer CenterBackground { get; set; }
+    private GameObject LeftBox { get; set; }
+    private GameObject CenterBox { get; set; }
+    private GameObject RightBox { get; set; }
+    private GameObject RightCheck { get; set; }
+    private GameObject RightCross { get; set; }
+    private GameObject CenterCheck { get; set; }
+    private GameObject CenterCross { get; set; }
     private static Vector3 Left;
     private static Vector3 Right;
     private static Vector3 Diff;
@@ -29,12 +41,6 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
         role.titleText.text = TranslationManager.Translate(ID);
         role.titleText.color = LayerColor.Alternate(0.45f);
         role.roleMaxCount = Max;
-        var tuple = Get();
-        role.chanceText.text = $"{tuple.Chance}%";
-        role.countText.text = $"x{tuple.Count}";
-        role.role = null;
-        role.roleChance = tuple.Chance;
-        role.roleMaxCount = Max;
         role.labelSprite.color = LayerColor;
 
         Count = role.transform.GetChild(1).gameObject;
@@ -45,9 +51,6 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
 
         UniqueCheck = Unique.transform.GetChild(2).GetComponent<SpriteRenderer>();
         ActiveCheck = Active1.transform.GetChild(2).GetComponent<SpriteRenderer>();
-
-        UniqueCheck.enabled = tuple.Unique;
-        ActiveCheck.enabled = tuple.Active;
 
         if (Left == default)
             Left = Count.transform.localPosition;
@@ -68,6 +71,14 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
         button.interactableHoveredColor = UColor.white;
         button.interactableColor = button.buttonSprite.color = LayerColor.Alternate(0.3f);
 
+        if (NoParts)
+        {
+            Chance.SetActive(false);
+            Count.SetActive(false);
+            Unique.SetActive(false);
+            Active1.SetActive(false);
+        }
+
         SavedMode = GameMode.None;
         Update();
     }
@@ -76,16 +87,40 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
     {
         base.ViewOptionCreated();
         var view = ViewSetting.Cast<ViewSettingsInfoPanelRoleVariant>();
-        view.iconSprite.gameObject.SetActive(false);
-        view.titleText.text = TranslationManager.Translate(ID);
-        var tuple = Get();
-        view.chanceText.text = $"{tuple.Chance}%";
-        view.settingText.text = $"x{tuple.Count}";
+
+        LeftBox = view.transform.GetChild(0).gameObject;
+        LeftTitle = LeftBox.transform.GetChild(5).GetComponent<TextMeshPro>();
+
+        RightBox = view.transform.GetChild(2).gameObject;
+        RightCheck = RightBox.transform.GetChild(3).gameObject;
+        RightCross = RightBox.transform.GetChild(4).gameObject;
+
+        CenterBox = view.transform.GetChild(6).gameObject;
+        CenterCheck = RightBox.transform.GetChild(3).gameObject;
+        CenterCross = RightBox.transform.GetChild(4).gameObject;
+        CenterValue = CenterBox.transform.GetChild(0).GetComponent<TextMeshPro>();
+        CenterTitle = CenterBox.transform.GetChild(5).GetComponent<TextMeshPro>();
+        CenterBackground = CenterBox.transform.GetChild(1).GetComponent<SpriteRenderer>();
+
+        Button = view.transform.Find("Toggle").GetComponent<PassiveButton>();
+        Button.gameObject.SetActive(GroupHeader != null || OptionParents1.Any(x => x.Item2.Contains(Layer)) || OptionParents2.Any(x => x.Item2.Contains(Layer)));
+        Button.SelectButton(GroupHeader?.Get() == true);
+        Button.OverrideOnClickListeners(Toggle);
+
+        if (NoParts)
+        {
+            LeftBox.SetActive(false);
+            RightBox.SetActive(false);
+            CenterBox.SetActive(false);
+        }
+
+        SavedMode = GameMode.None;
+        ViewUpdate();
     }
 
     public int GetChance() => IsClassic() || IsCustom() || IsKilling() ? Get().Chance : 0;
 
-    public int GetCount() => IsCustom() ? Get().Count : 1;
+    public int GetCount() => IsCustom() ? Get().Count : (IsRoleList() ? GetOptions<RoleListEntryAttribute>().Count(x => x.Get() == Layer && !x.IsBan) : 1);
 
     public bool GetUnique() => (IsAA() || IsRoleList()) && Get().Unique;
 
@@ -177,24 +212,24 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
 
     public override void Update()
     {
+        var data = Get();
+        var role = Setting.Cast<RoleOptionSetting>();
+        role.chanceText.text = $"{data.Chance}%";
+        role.countText.text = $"x{data.Count}";
+        role.roleChance = data.Chance;
+        UniqueCheck.enabled = data.Unique;
+        ActiveCheck.enabled = data.Active;
+
         if (SavedMode == GameModeSettings.GameMode)
             return;
 
         SavedMode = GameModeSettings.GameMode;
+        Divider.SetActive(SavedMode is GameMode.Custom or GameMode.AllAny);
 
-        if (NoParts)
-        {
-            Chance.SetActive(false);
-            Count.SetActive(false);
-            Divider.SetActive(false);
-            Unique.SetActive(false);
-            Active1.SetActive(false);
-        }
-        else
+        if (!NoParts)
         {
             Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
             Count.SetActive(SavedMode == GameMode.Custom);
-            Divider.SetActive(SavedMode is GameMode.Custom or GameMode.AllAny);
             Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
             Active1.SetActive(SavedMode == GameMode.AllAny);
 
@@ -220,14 +255,6 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
 
                 case GameMode.KillingOnly:
                     Chance.transform.localPosition = Right + Diff;
-                    break;
-
-                default:
-                    Chance.SetActive(false);
-                    Count.SetActive(false);
-                    Divider.SetActive(false);
-                    Unique.SetActive(false);
-                    Active1.SetActive(false);
                     break;
             }
         }
@@ -265,7 +292,6 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
 
     public override void PostLoadSetup()
     {
-        base.PostLoadSetup();
         ID =  $"CustomOption.{Layer}";
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
@@ -281,14 +307,67 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
         SettingsPatches.OnValueChanged();
     }
 
-    public override void ModifySetting()
+    public void Toggle()
     {
-        base.ModifySetting();
+        if (GroupHeader == null)
+            return;
+
+        GroupHeader.Button = Button;
+        GroupHeader.Toggle();
+    }
+
+    public override void ViewUpdate()
+    {
         var data = Get();
-        var role = Setting.Cast<RoleOptionSetting>();
-        role.chanceText.text = $"{data.Chance}%";
-        role.countText.text = $"x{data.Count}";
-        UniqueCheck.enabled = data.Unique;
-        ActiveCheck.enabled = data.Active;
+        var view = ViewSetting.Cast<ViewSettingsInfoPanelRoleVariant>();
+
+        view.chanceText.SetText(SavedMode == GameMode.Custom ? $"{data.Chance}%" : "");
+        view.settingText.SetText(SavedMode == GameMode.Custom ? $"x{data.Count}" : "");
+        CenterValue.SetText(SavedMode is GameMode.Classic or GameMode.KillingOnly ? $"{data.Chance}%" : "");
+
+        CenterCheck.SetActive(SavedMode == GameMode.RoleList && data.Unique);
+        CenterCross.SetActive(!CenterCheck.activeSelf);
+        RightCheck.SetActive(SavedMode == GameMode.AllAny && data.Unique);
+        RightCross.SetActive(!RightCheck.activeSelf);
+        view.checkMark.gameObject.SetActive(SavedMode == GameMode.AllAny && data.Active);
+        view.checkMarkOff.gameObject.SetActive(!view.checkMark.gameObject.activeSelf);
+
+        var isActive = RoleGen.GetSpawnItem(Layer).IsActive();
+        var color = isActive ? LayerColor : Palette.DisabledGrey;
+        view.labelBackground.color = color;
+        view.titleText.color = view.chanceText.color = view.chanceTitle.color = view.settingText.color = LeftTitle.color = CenterValue.color = CenterTitle.color = color.Alternate(0.45f);
+        view.background.sprite = view.chanceBackground.sprite = CenterBackground.sprite = isActive ? view.crewmateCube : view.disabledCube;
+        view.background.color = view.chanceBackground.color = CenterBackground.color = color.Alternate(0.3f);
+
+        if (SavedMode == GameModeSettings.GameMode)
+            return;
+
+        SavedMode = GameModeSettings.GameMode;
+
+        if (!NoParts)
+        {
+            LeftBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
+            RightBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
+            CenterBox.gameObject.SetActive(SavedMode is GameMode.Classic or GameMode.RoleList or GameMode.KillingOnly);
+
+            CenterTitle.SetText(SavedMode switch
+            {
+                GameMode.Classic or GameMode.KillingOnly => "Chance",
+                GameMode.RoleList => "Unique",
+                _ => ""
+            });
+            view.chanceTitle.SetText(SavedMode switch
+            {
+                GameMode.Custom => "Chance",
+                GameMode.AllAny => "Unique",
+                _ => ""
+            });
+            LeftTitle.SetText(SavedMode switch
+            {
+                GameMode.Custom => "Count",
+                GameMode.AllAny => "Active",
+                _ => ""
+            });
+        }
     }
 }

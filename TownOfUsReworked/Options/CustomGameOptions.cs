@@ -1069,6 +1069,9 @@ public static class Modifiers
 [AlignsOption(LayerEnum.Ability)]
 public static class Abilities
 {
+    [LayersOption("#073763FF", LayerEnum.Assassin, true)]
+    public static RoleOptionData Assassin { get; set; }
+
     [LayersOption("#8CFFFFFF", LayerEnum.Bullseye)]
     public static RoleOptionData Bullseye { get; set; }
 

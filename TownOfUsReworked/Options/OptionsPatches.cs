@@ -314,6 +314,7 @@ public static class SettingsPatches
                 LayersPrefab = UObject.Instantiate(__instance.roleOptionSettingOrigin, null).DontUnload().DontDestroy();
                 LayersPrefab.name = "CustomLayersOptionPrefab";
                 LayersPrefab.titleText.alignment = TextAlignmentOptions.Left;
+                LayersPrefab.role = null;
                 LayersPrefab.buttons = LayersPrefab.GetComponentsInChildren<PassiveButton>().ToArray();
                 LayersPrefab.transform.GetChild(0).localPosition += new Vector3(-0.1f, 0f, 0f);
 
@@ -346,8 +347,7 @@ public static class SettingsPatches
             if (!AlignmentPrefab)
             {
                 // Header Label = 0, Header Text = 1, Quota Header = 2, Collapse = 3, Cog = 4
-                //                                    ┗---------------- Dark Label = 0, Count Text = 1, Left Label = 2, Right Label = 3, Chance Text = 4, Long Label = 5, Active = 6,
-                //                                                          Unique = 7
+                //                                    ┗---------------- Dark Label = 0, Left = 1, Left Label = 2, Right Label = 3, Right = 4, Long Label = 5, Center = 6
                 AlignmentPrefab = UObject.Instantiate(__instance.categoryHeaderEditRoleOrigin, null).DontUnload().DontDestroy();
                 AlignmentPrefab.name = "CustomHeaderOptionLayerPrefab";
                 AlignmentPrefab.transform.GetChild(0).gameObject.SetActive(false);
@@ -359,20 +359,13 @@ public static class SettingsPatches
                 single.localPosition += new Vector3(-0.956f, 0f, 0f);
                 single.name = "SingleBG";
 
-                var count = quota.GetChild(1).GetComponent<TextMeshPro>();
+                var text = quota.GetChild(1);
+                text.GetComponent<TextTranslatorTMP>().Destroy();
 
-                count.GetComponent<TextTranslatorTMP>().Destroy();
-                count.text = "# Layer Count";
-
-                var active = UObject.Instantiate(count, quota);
-                active.name = "Active";
-                active.GetComponent<TextTranslatorTMP>().Destroy();
-                active.text = "Is Active?";
-
-                var unique = UObject.Instantiate(count, quota);
-                unique.name = "Unique";
-                unique.GetComponent<TextTranslatorTMP>().Destroy();
-                unique.text = "Is Unique?";
+                var center = UObject.Instantiate(text, quota);
+                center.name = "Center";
+                center.GetComponent<TextTranslatorTMP>().Destroy();
+                center.transform.localPosition = quota.GetChild(4).localPosition + ((quota.GetChild(1).localPosition - quota.GetChild(4).localPosition) / 2);
 
                 var newButton = UObject.Instantiate(LayersPrefab.buttons[0], AlignmentPrefab.transform);
                 newButton.name = "Collapse";
@@ -420,7 +413,7 @@ public static class SettingsPatches
     private static bool RLOptionsCreated;
     private static readonly Dictionary<int, bool> LayerOptionsCreated = [];
 
-    public static List<MonoBehaviour> CreateOptions(Transform parent)
+    public static List<MonoBehaviour> CreateOptions(Transform parent, bool instantiate = true)
     {
         var options = new List<MonoBehaviour>();
         var type = (MultiMenu)SettingsPage;
@@ -431,7 +424,7 @@ public static class SettingsPatches
             {
                 var name = $"{layer}";
 
-                if (!RoleListEntryAttribute.ChoiceButtons.TryFinding(x => x.name == name, out var button))
+                if (!RoleListEntryAttribute.ChoiceButtons.TryFinding(x => x.name == name, out var button) && instantiate)
                 {
                     button = CreateButton(name, parent);
                     button.buttonText.text = TranslationManager.Translate($"RoleList.{layer}");
@@ -447,13 +440,14 @@ public static class SettingsPatches
                 }
 
                 options.Add(button);
+                button?.gameObject?.SetActive(false);
             }
         }
         else
         {
             foreach (var option in OptionAttribute.AllOptions.Where(x => x.Menus.Contains(type)))
             {
-                if (!option.Setting)
+                if (!option.Setting && instantiate)
                 {
                     var setting = option.Type switch
                     {
@@ -470,7 +464,12 @@ public static class SettingsPatches
                     option.OptionCreated();
                 }
 
-                options.Add(option.Setting);
+                if (option.Setting)
+                {
+                    option.Update();
+                    options.Add(option.Setting);
+                    option.Setting.gameObject.SetActive(false);
+                }
             }
         }
 
@@ -593,6 +592,8 @@ public static class SettingsPatches
         if (ClientSettingsButton)
             ClientSettingsButton.SelectButton(SettingsPage == 3);
 
+        CreateOptions(null, false);
+
         if (!SpawnOptionsCreated && SettingsPage == 1)
         {
             var buttons = new List<PassiveButton>();
@@ -697,14 +698,6 @@ public static class SettingsPatches
             }
 
             LayerOptionsCreated[SettingsPage] = true;
-        }
-
-        RoleListEntryAttribute.ChoiceButtons.ForEach(x => x.gameObject.SetActive(false));
-
-        foreach (var opt in OptionAttribute.AllOptions)
-        {
-            if (opt.Setting)
-                opt.Setting.gameObject.SetActive(false);
         }
 
         if (SettingsPage is 0 or 3 or 4)
@@ -1221,7 +1214,12 @@ public static class SettingsPatches
                 option.ViewOptionCreated();
             }
 
-            options.Add(option.ViewSetting);
+            if (option.ViewSetting)
+            {
+                option.ViewUpdate();
+                options.Add(option.ViewSetting);
+                option.ViewSetting.gameObject.SetActive(false);
+            }
         }
 
         return options;
@@ -1296,14 +1294,12 @@ public static class SettingsPatches
         if (!__instance)
             return;
 
-        var num = 1.4f;
-        CreateViewOptions(__instance.settingsContainer);
+        __instance.taskTabButton.SelectButton(SettingsPage3 == 0);
+        __instance.rolesTabButton.SelectButton(SettingsPage3 == 1);
+        ClientOptionsButton.SelectButton(SettingsPage3 == 3);
 
-        foreach (var option in OptionAttribute.AllOptions)
-        {
-            if (option.ViewSetting)
-                option.ViewSetting.gameObject.SetActive(false);
-        }
+        var y = 1.4f;
+        CreateViewOptions(__instance.settingsContainer);
 
         if (SettingsPage3 is 0 or 3)
         {
@@ -1327,9 +1323,9 @@ public static class SettingsPatches
                     continue;
                 }
 
-                option.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
+                option.ViewSetting.transform.localPosition = new(-9.77f, y, -2f);
                 __instance.settingsInfo.Add(option.ViewSetting.gameObject);
-                num -= 0.85f;
+                y -= 0.06f;
                 var members = header.GroupMembers.Where(x =>
                 {
                     if (!x.ViewSetting)
@@ -1339,35 +1335,38 @@ public static class SettingsPatches
                     x.ViewSetting.gameObject.SetActive(flag2);
                     return flag2;
                 }).ToArray();
-                header.GroupMembers.Except(members).ForEach(x =>
-                {
-                    if (x.ViewSetting)
-                        x.ViewSetting.gameObject.SetActive(false);
-                });
-                num += 0.59f;
 
                 for (var i = 0; i < members.Length; i++)
                 {
                     if (i % 2 == 0)
-                        num -= 0.59f;
+                        y -= 0.59f;
 
                     var optionn = members[i];
-                    optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, num, -2f);
+                    optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, y, -2f);
                     __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
                 }
 
-                num -= members.Length > 0 ? 0.62f : 0.25f;
+                y -= members.Length > 0 ? 0.52f : 0.35f;
+                y -= 0.1f;
             }
         }
-        else if (SettingsPage == 1)
+        else if (SettingsPage3 == 1)
         {
+            CreateViewOptions(__instance.settingsContainer, 250);
+            CreateViewOptions(__instance.settingsContainer, 5);
+
             foreach (var option in OptionAttribute.GetOptions<AlignsOptionAttribute>())
             {
-                CreateViewOptions(__instance.settingsContainer, (int)option.Alignment + 6);
-
-                option.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
+                option.ViewSetting.transform.localPosition = new(-9.77f, y, -2f);
+                option.ViewSetting.gameObject.SetActive(true);
                 __instance.settingsInfo.Add(option.ViewSetting.gameObject);
-                num -= 0.85f;
+                y -= 0.16f;
+
+                if (!option.Value)
+                {
+                    y -= 0.35f;
+                    continue;
+                }
 
                 if (option.GroupHeader != null)
                 {
@@ -1378,75 +1377,79 @@ public static class SettingsPatches
                         if (!x.ViewSetting)
                             return false;
 
-                        var flag2 = x.Active();
-                        x.ViewSetting.gameObject.SetActive(flag2);
-                        return flag2;
+                        var flag = x.Active();
+                        x.ViewSetting.gameObject.SetActive(flag);
+                        return flag;
                     }).ToArray();
-                    option.GroupHeader.GroupMembers.Except(members).ForEach(x =>
-                    {
-                        if (x.ViewSetting)
-                            x.ViewSetting.gameObject.SetActive(false);
-                    });
 
                     for (var i = 0; i < members.Length; i++)
                     {
                         if (i % 2 == 0)
-                            num -= 0.59f;
+                            y -= 0.59f;
 
                         var optionn = members[i];
-                        optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, num, -2f);
+                        optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, y, -2f);
                         __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
                     }
 
-                    num -= members.Length > 0 ? 0.62f : 0.25f;
+                    y -= members.Length > 0 ? 0.62f : 0.35f;
                 }
+                else
+                    y -= 0.543f;
 
-                var layers = option.GroupMembers.Cast<LayersOptionAttribute>();
-
-                foreach (var layer in layers)
+                foreach (var layer in option.GroupMembers.Cast<LayersOptionAttribute>())
                 {
-                    CreateViewOptions(__instance.settingsContainer, (int)layer.Layer + 6);
+                    var active = layer.Active();
+                    layer.ViewSetting.gameObject.SetActive(active);
 
-                    layer.ViewSetting.transform.localPosition = new(-9.77f, num, -2f);
+                    if (!active)
+                    {
+                        layer.GroupHeader?.GroupMembers.ForEach(x =>
+                        {
+                            if (x.ViewSetting)
+                                x.ViewSetting.gameObject.SetActive(false);
+                        });
+                        continue;
+                    }
+
+                    layer.ViewSetting.transform.localPosition = new(-6.73f, y, -2f);
                     __instance.settingsInfo.Add(layer.ViewSetting.gameObject);
-                    num -= 0.85f;
+                    y -= 0.65f;
 
                     if (layer.GroupHeader != null)
                     {
                         layer.GroupHeader.ViewSetting.gameObject.SetActive(false);
 
-                        var members2 = layer.GroupHeader.GroupMembers.Where(x =>
+                        y += 0.6f;
+                        var members = layer.GroupHeader.GroupMembers.Where(x =>
                         {
                             if (!x.ViewSetting)
                                 return false;
 
-                            var flag2 = x.Active();
-                            x.ViewSetting.gameObject.SetActive(flag2);
-                            return flag2;
+                            var flag = x.Active();
+                            x.ViewSetting.gameObject.SetActive(flag);
+                            return flag;
                         }).ToArray();
-                        layer.GroupHeader.GroupMembers.Except(members2).ForEach(x =>
-                        {
-                            if (x.ViewSetting)
-                                x.ViewSetting.gameObject.SetActive(false);
-                        });
 
-                        for (var i = 0; i < members2.Length; i++)
+                        for (var i = 0; i < members.Length; i++)
                         {
                             if (i % 2 == 0)
-                                num -= 0.59f;
+                                y -= 0.59f;
 
-                            var optionn = members2[i];
-                            optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, num, -2f);
+                            var optionn = members[i];
+                            optionn.ViewSetting.transform.localPosition = new(i % 2 == 0 ? -8.95f : -3f, y, -2f);
                             __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
                         }
 
-                        num -= members2.Length > 0 ? 0.62f : 0.25f;
+                        y -= members.Length > 0 ? 0.62f : 0.59f;
                     }
+                    else
+                        y += 0.01f;
                 }
             }
         }
 
-        __instance.scrollBar.SetYBoundsMax(-num);
+        __instance.scrollBar.SetYBoundsMax(-y);
     }
 
     private static CategoryHeaderMasked HeaderViewPrefab;
@@ -1484,13 +1487,12 @@ public static class SettingsPatches
                     OnValueChangedView(__instance);
                 });
             }
-            else if (ClientOptionsButton)
-                ClientOptionsButton.gameObject.SetActive(!IsHnS());
+
+            ClientOptionsButton?.gameObject?.SetActive(!IsHnS());
 
             if (!HeaderViewPrefab)
             {
                 HeaderViewPrefab = UObject.Instantiate(__instance.categoryHeaderOrigin, null).DontUnload().DontDestroy();
-                HeaderViewPrefab.transform.localScale = Vector3.one;
                 HeaderViewPrefab.name = "HeaderViewPrefab";
                 HeaderViewPrefab.Background.gameObject.SetActive(false);
                 HeaderViewPrefab.Title.gameObject.SetActive(false);
@@ -1509,10 +1511,54 @@ public static class SettingsPatches
 
             if (!LayerViewPrefab)
             {
+                // Left Box = 0, Title = 1, Right Box = 2, Label = 3, Role Icon = 4, Button = 5, Center Box = 6
+                // ┗------------------------┗----------------------------------------------------┗- Value Text = 0, Background = 1, Other BG = 2, Tick = 3, Cross = 4, Label = 5
                 LayerViewPrefab = UObject.Instantiate(__instance.infoPanelRoleOrigin, null).DontUnload().DontDestroy();
-                LayerViewPrefab.transform.localScale = Vector3.one;
                 LayerViewPrefab.name = "LayerViewPrefab";
+
                 LayerViewPrefab.iconSprite.gameObject.SetActive(false);
+                LayerViewPrefab.background.gameObject.SetActive(false);
+
+                var leftBox = LayerViewPrefab.transform.GetChild(0);
+                leftBox.name = "Left";
+                leftBox.localPosition -= new Vector3(1.2f, 0f, 0f);
+
+                var leftText = UObject.Instantiate(LayerViewPrefab.titleText, leftBox);
+                leftText.name = "LeftText";
+                leftText.GetComponent<TextTranslatorTMP>()?.Destroy();
+                leftText.transform.SetParent(leftBox);
+
+                LayerViewPrefab.titleText.alignment = TextAlignmentOptions.MidlineLeft;
+                LayerViewPrefab.titleText.transform.localPosition = new(-3.4703f, -0.0223f, -2f);
+
+                var button = UObject.Instantiate(HeaderViewPrefab.transform.Find("TitleButton").gameObject, LayerViewPrefab.transform);
+                button.name = "Toggle";
+                button.transform.localPosition = new(5.7536f, 0.05f, 0f);
+                button.transform.GetChild(1).localScale =  button.transform.GetChild(2).localScale =  button.transform.GetChild(3).localScale = new(0.5f, 1f, 1f);
+
+                var buttonButton = button.GetComponent<PassiveButton>();
+                buttonButton.buttonText.transform.localPosition = new(-1.55f, 0.048f, -2f);
+                buttonButton.buttonText.transform.localScale = Vector3.one;
+
+                LayerViewPrefab.checkMark.name = "ActiveOn";
+                LayerViewPrefab.checkMarkOff.name = "ActiveOff";
+
+                LayerViewPrefab.checkMark.transform.localPosition = LayerViewPrefab.checkMarkOff.transform.localPosition = new(1.089f, -0.009f, -1f);
+
+                var rightBox = LayerViewPrefab.transform.GetChild(2);
+                rightBox.name = "Right";
+                rightBox.localPosition -= new Vector3(0.1f, 0f, 0f);
+
+                UObject.Instantiate(LayerViewPrefab.checkMark, rightBox).name = "UniqueOn";
+                UObject.Instantiate(LayerViewPrefab.checkMarkOff, rightBox).name = "UniqueOff";
+
+                LayerViewPrefab.chanceTitle.name = "RightText";
+                LayerViewPrefab.chanceTitle.GetComponent<TextTranslatorTMP>()?.Destroy();
+                LayerViewPrefab.chanceTitle.transform.SetParent(rightBox);
+
+                var centerBox = UObject.Instantiate(rightBox.gameObject, rightBox.parent);
+                centerBox.name = "Centre";
+                centerBox.transform.localPosition = rightBox.localPosition + ((leftBox.localPosition - rightBox.localPosition) / 2);
 
                 prefabs.Add(LayerViewPrefab);
             }
@@ -1520,8 +1566,8 @@ public static class SettingsPatches
             if (!GenericViewPrefab)
             {
                 GenericViewPrefab = UObject.Instantiate(__instance.infoPanelOrigin, null).DontUnload().DontDestroy();
-                GenericViewPrefab.transform.localScale = Vector3.one;
                 GenericViewPrefab.name = "GenericViewPrefab";
+                GenericViewPrefab.labelBackground.gameObject.SetActive(false);
 
                 prefabs.Add(GenericViewPrefab);
             }
@@ -1530,21 +1576,18 @@ public static class SettingsPatches
             {
                 foreach (var mono in prefabs)
                 {
-                    if (mono.name != "GenericViewPrefab")
+                    foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
                     {
-                        foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
-                        {
-                            obj.material.SetInt(PlayerMaterial.MaskLayer, 61);
-                            obj.material.SetFloat("_StencilComp", 3f);
-                            obj.material.SetFloat("_Stencil", 61);
-                            obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-                        }
+                        obj.material.SetInt(PlayerMaterial.MaskLayer, 61);
+                        obj.material.SetFloat("_StencilComp", 3f);
+                        obj.material.SetFloat("_Stencil", 61);
+                        obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                    }
 
-                        foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
-                        {
-                            obj.fontMaterial.SetFloat("_StencilComp", 3f);
-                            obj.fontMaterial.SetFloat("_Stencil", 61);
-                        }
+                    foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
+                    {
+                        obj.fontMaterial.SetFloat("_StencilComp", 3f);
+                        obj.fontMaterial.SetFloat("_Stencil", 61);
                     }
 
                     mono.gameObject.SetActive(false);

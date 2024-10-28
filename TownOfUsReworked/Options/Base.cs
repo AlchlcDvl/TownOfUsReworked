@@ -1,64 +1,5 @@
 namespace TownOfUsReworked.Options;
 
-public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) : OptionAttribute(menu, type)
-{
-    private static string LastChangedSetting = "";
-
-    public T Value { get; set; }
-    public T DefaultValue { get; set; }
-
-    public T Get() => Value;
-
-    public override void SetProperty(PropertyInfo property)
-    {
-        base.SetProperty(property);
-        Value = DefaultValue = property.GetValue<T>(null);
-    }
-
-    public override string ToString() => $"{ID}:{(Value is Number num ? $"{num:0.###}" : $"{Value}")}";
-
-    public void Set(T value, bool rpc = true, bool notify = true)
-    {
-        Value = value;
-        Property?.SetValue(null, value);
-        // OnChanged.Invoke(value);
-
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type is CustomOptionType.Header or CustomOptionType.Alignment))
-            SendOptionRPC(this);
-
-        if (Setting)
-        {
-            ModifySetting();
-            SettingsPatches.OnValueChanged();
-        }
-
-        if (ViewSetting)
-        {
-            ModifyViewSetting();
-            SettingsPatches.OnValueChangedView();
-        }
-
-        var stringValue = Format();
-
-        if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
-            return;
-
-        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
-
-        if (LastChangedSetting == ID && HUD().Notifier.activeMessages.Count > 0)
-            HUD().Notifier.activeMessages[^1].UpdateMessage(changed);
-        else
-        {
-            LastChangedSetting = ID;
-            var newMessage = UObject.Instantiate(HUD().Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD().Notifier.transform);
-            newMessage.transform.localPosition = new(0f, 0f, -2f);
-            newMessage.SetUp(changed, HUD().Notifier.settingsChangeSprite, HUD().Notifier.settingsChangeColor, (Action)(() => HUD().Notifier.OnMessageDestroy(newMessage)));
-            HUD().Notifier.ShiftMessages();
-            HUD().Notifier.AddMessageToQueue(newMessage);
-        }
-    }
-}
-
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : Attribute
 {
@@ -73,11 +14,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     public PropertyInfo Property { get; set; }
     public string Name { get; set; } // Not actually the setting text, just the property/class name :]
     public Type TargetType { get; set; }
-    // public bool Invert { get; set; }
-    // public MethodInfo OnChanged { get; set; }
-    // public Type OnChangedType { get; set; }
-    // public string OnChangedName { get; set; }
-    // ^ Code for when I do actually need it :]
 
     // Apparently, setting the parents in the attibutes doesn't seem to work
     // This one is for those depending on other options
@@ -137,12 +73,10 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
         ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom, GameMode.Vanilla, GameMode.KillingOnly, GameMode.RoleList ] ),
         ( [ "CrewMax", "CrewMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
-        ( [ "Pestilence" ], [ LayerEnum.Plaguebearer ] ),
-        ( [ "Betrayer" ], [ LayerEnum.Traitor, LayerEnum.Fanatic ] ),
-        ( [ "Assassin" ], [ LayerEnum.Hitman, LayerEnum.Bullseye, LayerEnum.Sniper, LayerEnum.Slayer ] ),
         ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
         ( [ "RoleListEntries", "RoleListBans" ], [ GameMode.RoleList ] ),
-        ( [ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom ] )
+        ( [ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom ] ),
+        ( [ "NoSolo" ], [ NoSolo.SameNKs ] )
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -152,8 +86,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         Name = property.Name.Replace("Priv", "");
         ID = $"CustomOption.{Name}";
         TargetType = property.PropertyType;
-        // OnChanged = AccessTools.GetDeclaredMethods(OnChangedType).Find(x => x.Name == OnChangedName);
-        // TownOfUsReworked.ModInstance.Harmony.Patch(Property.GetSetMethod(true), null, new(typeof(OptionAttribute), nameof(OptionsPatch)));
         AllOptions.Add(this);
     }
 
@@ -167,11 +99,11 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     {
         var result = true;
 
-        if (OptionParents1.TryFinding(x => x.Item1.Contains(Name), out var parents))
-            result &= parents.Item2.AllAnyOrEmpty(IsActive, All);
+        if (OptionParents1.TryFindingAll(x => x.Item1.Contains(Name), out var parents))
+            result &= parents.AllAnyOrEmpty(x => x.Item2.AllAnyOrEmpty(IsActive, All), All);
 
-        if (OptionParents2.TryFinding(x => x.Item1.Contains(Name), out parents))
-            result &= parents.Item2.AllAnyOrEmpty(IsActive, All);
+        if (OptionParents2.TryFindingAll(x => x.Item1.Contains(Name), out parents))
+            result &= parents.AllAnyOrEmpty(x => x.Item2.AllAnyOrEmpty(IsActive, All), All);
 
         return result;
     }
@@ -189,32 +121,31 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             AddMenuIndex(6 + (int)layer);
             result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage) || RoleGen.GetSpawnItem(layer).IsActive();
         }
+        else if (option is MultiMenu menu)
+            result = Menus.Contains(menu);
         else if (option is int num)
             result = SettingsPatches.SettingsPage == num;
         else if (option is VigiOptions vigiop)
             result = Vigilante.HowDoesVigilanteDie == vigiop;
+        else if (option is NoSolo noSolo)
+            result = NeutralSettings.NoSolo == noSolo;
         else if (option is string id)
         {
             if (id == Name)
                 return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them even with this line active
 
-            var optionatt = GetOptionFromName(id);
+            var optionatt = GetOption(id);
 
             if (optionatt != null)
             {
                 result = optionatt.Active();
 
-                if (optionatt is ToggleOptionAttribute toggle)
-                    result &= toggle.Get();
-                else if (optionatt is HeaderOptionAttribute header)
-                    result &= header.Get();
+                if (optionatt is OptionAttribute<bool> boolOpt)
+                    result &= boolOpt.Get();
             }
             else if (!MapToLoaded.TryGetValue(id, out result))
                 MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
         }
-
-        // if (Invert && option != null)
-        //     result = !result;
 
         return result;
     }
@@ -226,7 +157,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         if (Setting is OptionBehaviour option)
         {
             option.Title = (StringNames)999999999;
-            option.OnValueChanged = (Action<OptionBehaviour>)BlankVoid; // The cast here is not redundant
+            option.OnValueChanged = (Action<OptionBehaviour>)BlankVoid;
         }
     }
 
@@ -236,17 +167,12 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
         if (ViewSetting is ViewSettingsInfoPanel viewSettingsInfoPanel)
         {
-            viewSettingsInfoPanel.SetMaskLayer(61);
-            viewSettingsInfoPanel.titleText.text = TranslationManager.Translate(ID);
+            viewSettingsInfoPanel.titleText.text = SettingNotif();
             viewSettingsInfoPanel.background.gameObject.SetActive(true);
         }
     }
 
     public virtual void PostLoadSetup() {}
-
-    public virtual void ModifySetting() {}
-
-    public virtual void ModifyViewSetting() {}
 
     public virtual string SettingNotif() => TranslationManager.Translate(ID);
 
@@ -413,16 +339,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public static List<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x.GetType() == typeof(T)).Cast<T>().ToList();
 
-    public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == id);
+    public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id);
 
     public static T GetOption<T>(string id) where T : OptionAttribute => GetOption(id) as T;
-
-    public static OptionAttribute GetOptionFromName(string name) => GetOption($"CustomOption.{name}");
-
-    public static T GetOptionFromName<T>(string name) where T : OptionAttribute => GetOptionFromName(name) as T;
-}
-
-public interface IOptionGroup
-{
-    public OptionAttribute[] GroupMembers { get; set; }
 }

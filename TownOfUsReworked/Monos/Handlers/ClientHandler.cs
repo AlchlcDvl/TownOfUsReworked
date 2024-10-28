@@ -143,6 +143,9 @@ public class ClientHandler : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+            CloseMenus();
+
         if (!IsInGame())
             return;
 

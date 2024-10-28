@@ -44,6 +44,16 @@ public static class CustomColorManager
         rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
     }
 
+    public static void SetColor(Renderer rend, UColor color)
+    {
+        if (!rend)
+            return;
+
+        rend.material.SetColor(PlayerMaterial.BackColor, Shadow(color));
+        rend.material.SetColor(PlayerMaterial.BodyColor, color);
+        rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
+    }
+
     public static bool OutOfBounds(int id) => id < 0 || id >= AllColors.Count;
 
     public static bool IsChanging(this int id) => !OutOfBounds(id) && AllColors.Find(x => x.ColorID == id).Changing;
@@ -67,81 +77,38 @@ public static class CustomColorManager
         _ => shadow ? Palette.ShadowColors[id] : Palette.PlayerColors[id]
     };
 
-    public static void LoadColors()
-    {
-        Palette.PlayerColors = new Color32[]
-        {
-            new(198, 17, 17, 255),
-            new(19, 46, 210, 255),
-            new(17, 128, 45, 255),
-            new(238, 84, 187, 255),
-            new(240, 125, 13, 255),
-            new(246, 246, 87, 255),
-            new(63, 71, 78, 255),
-            new(215, 225, 241, 255),
-            new(107, 47, 188, 255),
-            new(113, 73, 30, 255),
-            new(56, 255, 221, 255),
-            new(80, 240, 57, 255),
-            new(95, 29, 46, 255),
-            new(236, 192, 211, 255),
-            new(240, 231, 168, 255),
-            new(117, 133, 147, 255),
-            new(145, 136, 119, 255),
-            new(215, 100, 100, 255),
-            //New colors
-            new(168, 50, 62, 255),
-            new(60, 48, 44, 255),
-            new(61, 129, 255, 255),
-            new(240, 211, 165, 255),
-            new(255, 0, 127, 255),
-            new(61, 255, 181, 255),
-            new(186, 161, 255, 255),
-            new(97, 114, 24, 255),
-            new(1, 166, 255, 255),
-            new(79, 0, 127, 255),
-            new(0, 47, 0, 255),
-            new(151, 255, 151, 255),
-            new(207, 255, 0, 255),
-            new(0, 97, 93, 255),
-            new(205, 63, 0, 255),
-            new(255, 207, 0, 255),
-            new(255, 255, 255, 255),
-            new(255, 0, 0, 255),
-            new(255, 255, 255, 255),
-            new(15, 15, 15, 255),
-            new(251, 251, 255, 255),
-            new(160, 101, 56, 255),
-            new(255, 255, 16, 255),
-            //Everchanging colors
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255),
-            new(0, 0, 0, 255)
-        };
-
-        Palette.ShadowColors = Palette.PlayerColors.Select(x => (Color32)Shadow(x)).ToArray();
-        Palette.TextColors = Palette.PlayerColors;
-        Palette.TextOutlineColors = Palette.PlayerColors.Select(x => (Color32)Alternate(x)).ToArray();
-    }
-
     public static UColor Shadow(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r - val), Mathf.Clamp01(color.g - val), Mathf.Clamp01(color.b - val), color.a);
 
     public static UColor Light(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r + val), Mathf.Clamp01(color.g + val), Mathf.Clamp01(color.b + val), color.a);
 
     public static UColor Alternate(this UColor color, float val = 0.2f) => color.IsColorDark() ? color.Light(val) : color.Shadow(val);
 
-    public static bool IsColorDark(this UColor color) => color is { r: < 0.5f, g: < 0.5f, b: < 0.5f };
+    public static bool IsColorDark(this UColor color) => color is { r: <= 0.5f, g: <= 0.5f, b: <= 0.5f };
 
     public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
 
-    /*public static Color32 Shadow(this Color32 color) => new(ClampByte(color.r - 51, 0, 255), ClampByte(color.g - 51, 0, 255), ClampByte(color.b - 51, 0, 255), color.a);
+    public static byte[] ParseToBytes(string input)
+    {
+        if (input.IsNullOrWhiteSpace())
+            return [ 0, 0, 0, 255 ];
+
+        input = input.Replace(" ", "");
+        var parts = input.Split(',');
+
+        if (parts.Length is not (3 or 4))
+            // throw new IncorrectLengthException(input);
+            return [ 0, 0, 0, 255 ];
+
+        return [ .. parts.Select(byte.Parse) ];
+    }
+
+    public static Color32 ParseToColor(string input)
+    {
+        var bytes = ParseToBytes(input);
+        return new(bytes[0], bytes[1], bytes[2], bytes.Length == 4 ? bytes[3] : (byte)255);
+    }
+
+    public static Color32 Shadow(this Color32 color) => new(ClampByte(color.r - 51, 0, 255), ClampByte(color.g - 51, 0, 255), ClampByte(color.b - 51, 0, 255), color.a);
 
     public static Color32 Light(this Color32 color) => new(ClampByte(color.r + 51, 0, 255), ClampByte(color.g + 51, 0, 255), ClampByte(color.b + 51, 0, 255), color.a);
 
@@ -149,23 +116,10 @@ public static class CustomColorManager
 
     public static bool IsColorDark(this Color32 color) => color is { r: < 128, g: < 128, b: 128 };
 
-    public static UColor GetColor(this int id, bool shadow)
+    /*public static UColor GetColor(this int id, bool shadow)
     {
         var custom = AllColors.Find(x => x.ColorID == id);
         return shadow ? custom.ShadowColor : custom.MainColor;
-    }
-
-    public static List<byte> ParseToBytes(string input)
-    {
-        input = input.Replace(" ", "");
-        var parts = input.Split(',');
-
-        if (parts.Length is not (3 or 4))
-            throw new IncorrectLengthException(input);
-
-        var result = new List<byte>();
-        parts.ForEach(x => result.Add(byte.Parse(x)));
-        return result;
     }
 
     public static bool TryParseToBytes(string input, out List<byte> bytes)
@@ -180,12 +134,6 @@ public static class CustomColorManager
             bytes = [];
             return false;
         }
-    }
-
-    public static Color32 ParseToColor(string input)
-    {
-        var bytes = ParseToBytes(input);
-        return new(bytes[0], bytes[1], bytes[2], bytes.Count == 4 ? bytes[3] : (byte)255);
     }
 
     public static bool TryParseToColor(string input, out Color32 color)

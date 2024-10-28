@@ -28,16 +28,14 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
         base.OptionCreated();
         var str = Setting.Cast<StringOption>();
         str.TitleText.text = TranslationManager.Translate(ID);
-        str.Value = str.oldValue = GetInt();
-        str.ValueText.text = Format();
         str.Values = new(0);
+        Update();
     }
 
     public override string Format() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{GetString()}");
 
     public override void PostLoadSetup()
     {
-        base.PostLoadSetup();
         Values = [ .. Enum.GetNames(TargetType).Where(x => !IgnoreStrings.Contains(x)) ];
         EnumValues = [ .. Enum.GetValues(TargetType).Cast<Enum>() ];
         Index = EnumValues.IndexOf(Value);
@@ -46,22 +44,18 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     public override void ViewOptionCreated()
     {
         base.ViewOptionCreated();
+        ViewUpdate();
+    }
+
+    public override void ViewUpdate()
+    {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
         viewSettingsInfoPanel.settingText.text = Format();
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 
-    public override void ModifyViewSetting()
+    public override void Update()
     {
-        base.ModifyViewSetting();
-        var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = Format();
-        viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
-    }
-
-    public override void ModifySetting()
-    {
-        base.ModifySetting();
         var str = Setting.Cast<StringOption>();
         str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Values.Length - 1);
         str.ValueText.text = Format();
