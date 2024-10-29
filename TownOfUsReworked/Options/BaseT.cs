@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) : OptionAttribute(menu, type)
+public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type, int priority = -1) : OptionAttribute(menu, type, priority)
 {
     private static string LastChangedSetting = "";
 
@@ -19,6 +19,9 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type) 
 
     public void Set(T value, bool rpc = true, bool notify = true)
     {
+        if (IsInGame() && !ClientOnly)
+            return;
+
         Value = value;
         Property?.SetValue(null, value);
         // OnChanged.Invoke(value);

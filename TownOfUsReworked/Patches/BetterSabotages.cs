@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-[HeaderOption(MultiMenu.Main)]
+[HeaderOption(MultiMenu.Main, priority: 0)]
 public static class BetterSabotages
 {
     [ToggleOption(MultiMenu.Main)]

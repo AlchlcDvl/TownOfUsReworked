@@ -37,14 +37,15 @@ public static class RPC
                     writer.Write(stringOpt.Value);
                 else if (option is RoleListEntryAttribute entry)
                     writer.Write(entry.Value);
-                else if (option is LayersOptionAttribute layer)
+                else if (option is LayerOptionAttribute layer)
                     writer.Write(layer.Value);
             }
 
             writer.EndRpc();
         }
 
-        CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, "Map", MapSettings.Map);
+        if (options.Count > 1)
+            CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, "Map", MapSettings.Map);
 
         if (save)
             OptionAttribute.SaveSettings("Last Used");
@@ -66,20 +67,25 @@ public static class RPC
                 SettingsPatches.SetMap(reader.ReadEnum<MapEnum>());
             else
             {
-                var customOption = OptionAttribute.AllOptions.Find(option => option.ID == id);
+                var customOption = OptionAttribute.GetOption(id);
+
+                if (customOption == null)
+                {
+                    Error($"No option found for id: {id}");
+                    continue;
+                }
+
                 var value = customOption.Type switch
                 {
                     CustomOptionType.Toggle => reader.ReadBoolean(),
                     CustomOptionType.Number => reader.ReadNumber(),
                     CustomOptionType.String => reader.ReadEnum(customOption.TargetType),
-                    CustomOptionType.Layers => reader.ReadRoleOptionData(),
+                    CustomOptionType.Layer => reader.ReadRoleOptionData(),
                     CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
                     _ => true
                 };
                 customOption.SetBase(value, false);
             }
-
-            // Info(id);
         }
 
         OptionAttribute.SaveSettings("Last Used");

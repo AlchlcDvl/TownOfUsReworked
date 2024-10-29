@@ -29,6 +29,21 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
         var str = Setting.Cast<StringOption>();
         str.TitleText.text = TranslationManager.Translate(ID);
         str.Values = new(0);
+
+        if (!AmongUsClient.Instance.AmHost && !ClientOnly)
+        {
+            foreach (var button2 in str.buttons)
+            {
+                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
+
+                if (button2 is GameOptionButton goButton)
+                {
+                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
+                    goButton.interactableColor = Palette.DisabledGrey;
+                }
+            }
+        }
+
         Update();
     }
 

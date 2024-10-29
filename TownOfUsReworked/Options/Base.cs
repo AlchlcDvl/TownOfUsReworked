@@ -1,9 +1,10 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : Attribute
+public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int priority = -1) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];
+    public static readonly List<OptionAttribute> SortedOptions = [];
     public string ID { get; set; }
     public readonly List<MultiMenu> Menus = [ menu ];
     public MonoBehaviour Setting { get; set; }
@@ -14,6 +15,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
     public PropertyInfo Property { get; set; }
     public string Name { get; set; } // Not actually the setting text, just the property/class name :]
     public Type TargetType { get; set; }
+    public int Priority { get; set; } = priority;
 
     // Apparently, setting the parents in the attibutes doesn't seem to work
     // This one is for those depending on other options
@@ -186,7 +188,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
 
     public void SetBase(object value, bool rpc = true, bool notify = true)
     {
-        if (IsInGame())
+        if (IsInGame() && !ClientOnly)
             return;
 
         if (this is ToggleOptionAttribute toggle)
@@ -197,7 +199,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
             stringOpt.Set((Enum)value, rpc, notify);
         else if (this is RoleListEntryAttribute entry)
             entry.Set((LayerEnum)value, rpc, notify);
-        else if (this is LayersOptionAttribute layer)
+        else if (this is LayerOptionAttribute layer)
             layer.Set((RoleOptionData)value, rpc, notify);
     }
 
@@ -313,7 +315,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
                     {
                         CustomOptionType.Toggle => bool.Parse(value),
                         CustomOptionType.Number => Number.Parse(value),
-                        CustomOptionType.Layers => RoleOptionData.Parse(value),
+                        CustomOptionType.Layer => RoleOptionData.Parse(value),
                         CustomOptionType.String => Enum.Parse(option.TargetType, value),
                         CustomOptionType.Entry => Enum.Parse<LayerEnum>(value),
                         _ => true
@@ -337,9 +339,9 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type) : A
         yield break;
     }
 
-    public static List<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x.GetType() == typeof(T)).Cast<T>().ToList();
+    public static List<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x is T).Cast<T>().ToList();
 
-    public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id);
+    public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
 
     public static T GetOption<T>(string id) where T : OptionAttribute => GetOption(id) as T;
 }

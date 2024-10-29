@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class HeaderOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu, CustomOptionType.Header), IOptionGroup
+public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : OptionAttribute<bool>(menu, CustomOptionType.Header, priority), IOptionGroup
 {
     public string[] GroupMemberStrings { get; set; }
     public OptionAttribute[] GroupMembers { get; set; }

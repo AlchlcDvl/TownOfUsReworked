@@ -11,6 +11,21 @@ public class ToggleOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
         base.OptionCreated();
         var toggle = Setting.Cast<ToggleOption>();
         toggle.TitleText.text = TranslationManager.Translate(ID);
+
+        if (!AmongUsClient.Instance.AmHost && !ClientOnly)
+        {
+            foreach (var button2 in toggle.buttons)
+            {
+                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
+
+                if (button2 is GameOptionButton goButton)
+                {
+                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
+                    goButton.interactableColor = Palette.DisabledGrey;
+                }
+            }
+        }
+
         Update();
     }
 

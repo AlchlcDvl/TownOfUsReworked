@@ -170,7 +170,7 @@ public enum CustomOptionType
     Toggle,
     Number,
     String,
-    Layers,
+    Layer,
     Entry,
     Alignment
 }

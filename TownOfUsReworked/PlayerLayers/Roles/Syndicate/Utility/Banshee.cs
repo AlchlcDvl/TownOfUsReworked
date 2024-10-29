@@ -39,7 +39,11 @@ public class Banshee : Syndicate
             var blocked = PlayerById(id);
             blocked.GetLayers().ForEach(x => x.IsBlocked = false);
             blocked.GetButtons().ForEach(x => x.BlockExposed = false);
+
+            if (blocked.AmOwner)
+                Patches.Blocked.BlockExposed = false;
         }
+
         Blocked.Clear();
     }
 

@@ -182,7 +182,7 @@ public static class AssetManager
 
     public static T UnityGet<T>(string name, bool fetchPlaceholder = true) where T : UObject
     {
-        if (UnityLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x.GetType() == typeof(T), out var result))
+        if (UnityLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result))
             return result as T;
 
         if (ObjectToBundle.TryGetValue(name.ToLower(), out var bundle))
@@ -197,7 +197,7 @@ public static class AssetManager
 
     public static T SystemGet<T>(string name, bool fetchPlaceholder = true)
     {
-        if (SystemLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x.GetType() == typeof(T), out var result))
+        if (SystemLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result))
             return (T)result;
 
         if (name != "Placeholder" && fetchPlaceholder)

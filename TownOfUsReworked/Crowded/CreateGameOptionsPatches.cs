@@ -81,7 +81,7 @@ public static class MapPickerPatch
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
 public static class LobbySizePatch
 {
-    public static void Postfix(int maxPlayers) => OptionAttribute.GetOption("LobbySize").SetBase(maxPlayers, false);
+    public static void Postfix(int maxPlayers) => OptionAttribute.GetOption("LobbySize").SetBase(new Number(maxPlayers), false);
 }
 
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
@@ -90,7 +90,11 @@ public static class CreateOptionsPicker_UpdateMaxPlayersButtons
     public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)
     {
         __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
-        __instance.MaxPlayerButtons.ToArray().Skip(1).ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == opts.MaxPlayers.ToString());
+        __instance.MaxPlayerButtons.ToArray().Skip(1).ForEach(x =>
+        {
+            if (x)
+                x.enabled = x?.GetComponentInChildren<TextMeshPro>()?.text == opts?.MaxPlayers.ToString();
+        });
         return false;
     }
 }

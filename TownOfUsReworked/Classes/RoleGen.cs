@@ -1178,7 +1178,7 @@ public static class RoleGen
         LayerEnum.Phantom => NeutralProselyteRoles.Phantom,
         LayerEnum.Pestilence => Options.NeutralHarbingerRoles.Plaguebearer,
         LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 15, false, false, id),
-        _ => OptionAttribute.GetOptions<LayersOptionAttribute>().TryFinding(x => x.Layer == id, out var result) ? result.Get() : new(0, 0, false, false, id)
+        _ => OptionAttribute.GetOptions<LayerOptionAttribute>().TryFinding(x => x.Layer == id, out var result) ? result.Get() : new(0, 0, false, false, id)
     };
 
     private static void GenAbilities()
@@ -1838,6 +1838,8 @@ public static class RoleGen
 
         CachedFirstDead = FirstDead;
         FirstDead = null;
+
+        Blocked.BlockExposed = false;
 
         // Role.IsLeft = false;
 

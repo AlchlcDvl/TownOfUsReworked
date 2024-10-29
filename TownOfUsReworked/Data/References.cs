@@ -315,6 +315,7 @@ public static class References
         { LayerEnum.Rivals, new(typeof(Rivals), CustomColorManager.Rivals, "Rivals") },
         { LayerEnum.Taskmaster, new(typeof(Taskmaster), CustomColorManager.Taskmaster, "Taskmaster") },
         { LayerEnum.Traitor, new(typeof(Traitor), CustomColorManager.Traitor, "Traitor") },
+        { LayerEnum.Assassin, new(typeof(Assassin), CustomColorManager.Assassin, "Assassin") },
         { LayerEnum.Bullseye, new(typeof(Bullseye), CustomColorManager.Crew, "Bullseye") },
         { LayerEnum.ButtonBarry, new(typeof(ButtonBarry), CustomColorManager.ButtonBarry, "Button Barry") },
         { LayerEnum.Hitman, new(typeof(Hitman), CustomColorManager.Intruder, "Hitman") },

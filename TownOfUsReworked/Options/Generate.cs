@@ -46,6 +46,8 @@ public static class Generate
         // Simple enough, I'm too cautious to let something fuck me up while I set the properties
         OptionAttribute.AllOptions.ForEach(x => x.PostLoadSetup());
 
+        OptionAttribute.SortedOptions.AddRange(OptionAttribute.AllOptions.OrderBy(x => x.Priority));
+
         OptionAttribute.SaveSettings("Default");
 
         Message($"There exist {OptionAttribute.AllOptions.Count} total options lmao (number jumpscare)");

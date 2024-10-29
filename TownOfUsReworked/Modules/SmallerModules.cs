@@ -40,7 +40,7 @@ public class Asset
     public string ID { get; set; }
 }
 
-public class RoleOptionData(int chance, int count, bool unique, bool active, LayerEnum layer)
+public struct RoleOptionData(int chance, int count, bool unique, bool active, LayerEnum layer)
 {
     public int Chance { get; set; } = chance;
     public int Count { get; set; } = count;
@@ -48,7 +48,7 @@ public class RoleOptionData(int chance, int count, bool unique, bool active, Lay
     public bool Active { get; set; } = active;
     public LayerEnum ID { get; set; } = layer;
 
-    public override string ToString() => $"{Chance},{Count},{Unique},{Active},{ID}";
+    public override readonly string ToString() => $"{Chance},{Count},{Unique},{Active},{ID}";
 
     public static RoleOptionData Parse(string input)
     {
@@ -56,9 +56,9 @@ public class RoleOptionData(int chance, int count, bool unique, bool active, Lay
         return new(int.Parse(parts[0]), int.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
     }
 
-    public RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
+    public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
 
-    public bool IsActive(int? relatedCount = null) => ((Chance > 0 && (IsClassic() || IsCustom())) || (Active && IsAA()) || (IsRoleList() && RoleListEntryAttribute.IsAdded(ID))) &&
+    public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && (IsClassic() || IsCustom())) || (Active && IsAA()) || (IsRoleList() && RoleListEntryAttribute.IsAdded(ID))) &&
         ID.IsValid(relatedCount);
 }
 

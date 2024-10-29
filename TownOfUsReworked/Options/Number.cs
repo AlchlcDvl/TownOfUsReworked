@@ -24,6 +24,22 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
         number.TitleText.text = TranslationManager.Translate(ID);
         number.ValidRange = new(Min, Max);
         number.Increment = Increment;
+        number.ZeroIsInfinity = ZeroIsInfinity;
+
+        if (!AmongUsClient.Instance.AmHost && !ClientOnly)
+        {
+            foreach (var button2 in number.buttons)
+            {
+                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
+
+                if (button2 is GameOptionButton goButton)
+                {
+                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
+                    goButton.interactableColor = goButton.buttonSprite.color = Palette.DisabledGrey;
+                }
+            }
+        }
+
         Update();
     }
 

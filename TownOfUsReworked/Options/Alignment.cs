@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(MultiMenu.Layer, CustomOptionType.Alignment), IOptionGroup
+public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(MultiMenu.Layer, CustomOptionType.Alignment), IOptionGroup
 {
     public LayerEnum Alignment { get; } = alignment;
     private bool NoParts { get; set; } = noParts;
@@ -122,24 +122,24 @@ public class AlignsOptionAttribute(LayerEnum alignment, bool noParts = false) : 
             Center.gameObject.SetActive(SavedMode is GameMode.Classic or GameMode.RoleList or GameMode.KillingOnly);
             Single.SetActive(SavedMode is not (GameMode.Custom or GameMode.AllAny));
 
-            Center.SetText(SavedMode switch
+            Center.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Classic or GameMode.KillingOnly => "Chance",
                 GameMode.RoleList => "Unique",
                 _ => ""
-            });
-            Right.SetText(SavedMode switch
+            })));
+            Right.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Custom => "Chance",
                 GameMode.AllAny => "Unique",
                 _ => ""
-            });
-            Left.SetText(SavedMode switch
+            })));
+            Left.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Custom => "Count",
                 GameMode.AllAny => "Active",
                 _ => ""
-            });
+            })));
         }
     }
 

@@ -18,8 +18,24 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
     public override void OptionCreated()
     {
         base.OptionCreated();
-        Setting.Cast<ToggleOption>().TitleText.text = TranslationManager.Translate(ID).Replace("%num%", Num);
+        var entry = Setting.Cast<ToggleOption>();
+        entry.TitleText.text = SettingNotif();
         ValueText = Setting.transform.GetChild(3).GetComponent<TextMeshPro>();
+
+        if (!AmongUsClient.Instance.AmHost)
+        {
+            foreach (var button2 in entry.buttons)
+            {
+                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
+
+                if (button2 is GameOptionButton goButton)
+                {
+                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
+                    goButton.interactableColor = Palette.DisabledGrey;
+                }
+            }
+        }
+
         Update();
     }
 
@@ -69,8 +85,15 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         SettingsPatches.SettingsPage = 4;
         SettingsPatches.CachedPage = 0;
         SelectedEntry = ID;
-        SettingsPatches.OnValueChanged();
         GameSettingMenu.Instance.GameSettingsTab.scrollBar.ScrollToTop();
+
+        foreach (var option in AllOptions)
+        {
+            if (option.Setting)
+                option.Setting.gameObject.SetActive(false);
+        }
+
+        SettingsPatches.OnValueChanged();
     }
 
     public static bool IsBanned(LayerEnum id) => GetOptions<RoleListEntryAttribute>().Any(x => x.IsBan && x.Get() == id) || (id == LayerEnum.Crewmate && RoleListBans.BanCrewmate) || (id ==
@@ -80,7 +103,7 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
 
     public static bool IsAdded(LayerEnum id) => GetOptions<RoleListEntryAttribute>().Any(x => !x.IsBan && x.Get() == id);
 
-    private static bool IsUnique(LayerEnum id) => GetOptions<LayersOptionAttribute>().Any(x => x.Layer == id && x.Get().Unique);
+    private static bool IsUnique(LayerEnum id) => GetOptions<LayerOptionAttribute>().Any(x => x.Layer == id && x.Get().Unique);
 
     private static bool IsAvailable(LayerEnum id) => !IsBanned(id) && !(IsAdded(id) && IsUnique(id));
 

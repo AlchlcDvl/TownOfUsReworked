@@ -35,6 +35,10 @@ public class Consort : Intruder
     {
         BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
         BlockTarget.GetButtons().ForEach(x => x.BlockExposed = false);
+
+        if (BlockTarget.AmOwner)
+            Blocked.BlockExposed = false;
+
         BlockTarget = null;
     }
 

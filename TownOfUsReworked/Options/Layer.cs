@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false) : OptionAttribute<RoleOptionData>(MultiMenu.Layer, CustomOptionType.Layers)
+public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false) : OptionAttribute<RoleOptionData>(MultiMenu.Layer, CustomOptionType.Layer)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
@@ -77,6 +77,23 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
             Count.SetActive(false);
             Unique.SetActive(false);
             Active1.SetActive(false);
+        }
+
+        if (!AmongUsClient.Instance.AmHost)
+        {
+            foreach (var button2 in role.buttons)
+            {
+                if (button2.name == "LayerSubSettingsButton")
+                    continue;
+
+                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
+
+                if (button2 is GameOptionButton goButton)
+                {
+                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
+                    goButton.interactableColor = Palette.DisabledGrey;
+                }
+            }
         }
 
         SavedMode = GameMode.None;
@@ -283,7 +300,7 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
         {
             GameMode.Classic => $"{val.Chance}%",
             GameMode.Custom => $"{val.Chance}% x{val.Count}",
-            GameMode.KillingOnly => $"{(val.Active ? "A" : "Ina")}ctive",
+            GameMode.KillingOnly => $"RoleOption.{(val.Active ? "A" : "Ina")}ctive",
             GameMode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
             GameMode.RoleList => $"{(val.Unique ? "" : "Non-")}Unique",
             _ => "Invalid"
@@ -292,10 +309,9 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
 
     public override void PostLoadSetup()
     {
-        ID =  $"CustomOption.{Layer}";
-        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Layer.ToString());
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
         Property.SetValue(null, Value);
+        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name.Contains($"{Layer}"));
         GroupHeader?.AddMenuIndex(6 + (int)Layer);
     }
 
@@ -326,11 +342,11 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
         CenterValue.SetText(SavedMode is GameMode.Classic or GameMode.KillingOnly ? $"{data.Chance}%" : "");
 
         CenterCheck.SetActive(SavedMode == GameMode.RoleList && data.Unique);
-        CenterCross.SetActive(!CenterCheck.activeSelf);
+        CenterCross.SetActive(SavedMode == GameMode.RoleList && !data.Unique);
         RightCheck.SetActive(SavedMode == GameMode.AllAny && data.Unique);
-        RightCross.SetActive(!RightCheck.activeSelf);
+        RightCross.SetActive(SavedMode == GameMode.AllAny && !data.Unique);
         view.checkMark.gameObject.SetActive(SavedMode == GameMode.AllAny && data.Active);
-        view.checkMarkOff.gameObject.SetActive(!view.checkMark.gameObject.activeSelf);
+        view.checkMarkOff.gameObject.SetActive(SavedMode == GameMode.AllAny && !data.Active);
 
         var isActive = RoleGen.GetSpawnItem(Layer).IsActive();
         var color = isActive ? LayerColor : Palette.DisabledGrey;
@@ -350,24 +366,24 @@ public class LayersOptionAttribute(string hexCode, LayerEnum layer, bool noParts
             RightBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
             CenterBox.gameObject.SetActive(SavedMode is GameMode.Classic or GameMode.RoleList or GameMode.KillingOnly);
 
-            CenterTitle.SetText(SavedMode switch
+            CenterTitle.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Classic or GameMode.KillingOnly => "Chance",
                 GameMode.RoleList => "Unique",
                 _ => ""
-            });
-            view.chanceTitle.SetText(SavedMode switch
+            })));
+            view.chanceTitle.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Custom => "Chance",
                 GameMode.AllAny => "Unique",
                 _ => ""
-            });
-            LeftTitle.SetText(SavedMode switch
+            })));
+            LeftTitle.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Custom => "Count",
                 GameMode.AllAny => "Active",
                 _ => ""
-            });
+            })));
         }
     }
 }

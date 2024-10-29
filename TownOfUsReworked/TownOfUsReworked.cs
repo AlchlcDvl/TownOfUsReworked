@@ -14,7 +14,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 16;
+    public const int DevBuild = 17;
 
     public static bool IsTest { get; set; }
     private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);

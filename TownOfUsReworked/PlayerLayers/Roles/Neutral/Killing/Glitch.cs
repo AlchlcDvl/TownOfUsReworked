@@ -57,6 +57,10 @@ public class Glitch : Neutral
     {
         HackTarget.GetLayers().ForEach(x => x.IsBlocked = false);
         HackTarget.GetButtons().ForEach(x => x.BlockExposed = false);
+
+        if (HackTarget.AmOwner)
+            Blocked.BlockExposed = false;
+
         HackTarget = null;
     }
 
