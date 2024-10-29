@@ -29,7 +29,7 @@ public class Drunkard : Syndicate
         Alignment = Alignment.SyndicateDisrup;
         ConfuseMenu = new(Player, Click, Exception1);
         ConfusedPlayer = null;
-        ConfuseButton ??= CreateButton(this, new SpriteName("Confuse"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,
+        ConfuseButton ??= CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,
             new Duration(ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (EndFunc)EndEffect);
     }
 

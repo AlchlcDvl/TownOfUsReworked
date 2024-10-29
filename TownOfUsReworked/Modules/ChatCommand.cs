@@ -19,7 +19,7 @@ public class ChatCommand
         new([ "clearlobby", "cl", "clear" ], Clear),
         new([ "setname", "sn", "name" ], SetName),
         new([ "whisper", "w"] , Whisper),
-        new([ "ignore", "i" ], Whisper),
+        new([ "ignore", "i", "unignore", "ui" ], ToggleIgnore),
         new([ "help", "h" ], Help),
         // new([ "testargs", "targ" ], TestArgs),
         // new([ "testargless", "targless" ], TestArgless),
@@ -120,17 +120,15 @@ public class ChatCommand
             return;
         }
 
-        var args2 = arg.Split("|");
+        var args2 = arg.Split([ "(", ")" ], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
         if (args.Length < 3 || IsNullEmptyOrWhiteSpace(args[1]) || IsNullEmptyOrWhiteSpace(args[2]))
         {
-            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number | (player name in ||)> <message>");
+            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number | (player name in ())> <message>");
             return;
         }
 
         var message = "";
-        var invalid = "";
-        var first = args2[0].Split(' ').Length;
         PlayerControl whispered = null;
 
         if (CustomPlayer.LocalCustom.Dead)
@@ -145,25 +143,60 @@ public class ChatCommand
             args[2..].ForEach(arg2 => message += $"{arg2} ");
             message = message.Remove(message.Length - 1);
         }
-        else if (args2.Length == 3 && first == 0)
-        {
-            whispered = AllPlayers().Find(x => x.name == args2[1]);
+        else if (AllPlayers().TryFinding(x => x.Data.PlayerName == args2[1], out whispered))
             message = args2[2][1..];
-        }
-        else
-            invalid = first > 0 ? args[1] : args2[1];
 
         if (!whispered)
-            Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"Who are you trying to whisper? {invalid} is invalid.");
+            Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"Who are you trying to whisper? {arg} is invalid.");
         else if (whispered.AmOwner)
             Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
-        else if (whispered.HasDied())
+        else if (whispered.HasDied() && !CustomPlayer.Local.HasDied())
             Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
+        else if (!whispered.HasDied() && CustomPlayer.Local.HasDied())
+            Run("<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not a real Medium!");
         else
         {
             Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"You whisper to {whispered.name}: {message}");
             CallRpc(CustomRPC.Misc, MiscRPC.Whisper, CustomPlayer.Local, whispered, message);
         }
+    }
+
+    private static void ToggleIgnore(string[] args, string arg)
+    {
+        if (IsLobby())
+        {
+            Run("<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
+            return;
+        }
+
+        if (args.Length < 2)
+        {
+            Run("<color=#00FF00FF>★ Help ★</color>", "Usage: /<ignore | i | unignore | ui> <meeting number | (player name in ||)>");
+            return;
+        }
+
+        var args2 = arg.Split([ "(", ")" ], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+        if (byte.TryParse(args[1], out var id))
+        {
+            if (arg.Contains("unignore"))
+                ChatChannels.Ignored.RemoveAll(x => x == id);
+            else
+                ChatChannels.Ignored.Add(id);
+
+            Run("<color=#99007FFF>《 Ignoring 》</color>", $"Toggled ignore for {id}");
+        }
+        else if (AllPlayers().TryFinding(x => x.Data.PlayerName == args2[1], out var player))
+        {
+            if (arg.Contains("unignore"))
+                ChatChannels.Ignored.RemoveAll(x => x == player.PlayerId);
+            else
+                ChatChannels.Ignored.Add(player.PlayerId);
+
+            Run("<color=#99007FFF>《 Ignoring 》</color>", $"Toggled ignore for {args2[1]}");
+        }
+        else
+            Run("<color=#FF0000FF>⚠ Ignoring Error ⚠</color>", $"Who are you trying to ignore/unignore? {arg} is invalid.");
     }
 
     private static void SetName(string[] args)
@@ -185,7 +218,7 @@ public class ChatCommand
         arg = arg.Remove(arg.Length - 1);
 
         if (arg.Any(Disallowed.Contains))
-            Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains Disallowed characters.");
+            Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains disallowed characters.");
         else if (Profanities.Any(arg.Contains))
             Run("<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains unaccepted words.");
         else if (arg.Length > 20)
@@ -295,8 +328,8 @@ public class ChatCommand
         Run("<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n/ignore{lobby}");
     }
 
-    private static void Controls() => Run("<color=#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Toggle the visibility of the MCI control panel (local only)\nF2 - Toggle the"
-        + " visibility of the MCI cooldowns panel (local only)\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu");
+    private static void Controls() => Run("<color=#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Toggle the visibility of the MCI control panel (local only)\nUp/Left Arrow - " +
+        "Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu");
 
     // private static void TestArgs(string[] args)
     // {

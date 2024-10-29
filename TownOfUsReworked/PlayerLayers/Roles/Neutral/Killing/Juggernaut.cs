@@ -29,7 +29,7 @@ public class Juggernaut : Neutral
         Objectives = () => "- Assault anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         JuggKills = 0;
-        AssaultButton ??= CreateButton(this, new SpriteName("Assault"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
+        AssaultButton ??= CreateButton(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception, "ASSAULT");
     }
 

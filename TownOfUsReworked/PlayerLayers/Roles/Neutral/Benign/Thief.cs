@@ -33,7 +33,7 @@ public class Thief : Neutral
     {
         BaseStart();
         Alignment = Alignment.NeutralBen;
-        StealButton ??= CreateButton(this, new SpriteName("Steal"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL",
+        StealButton ??= CreateButton(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);
         GuessMenu = new(Player, "Guess", ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);

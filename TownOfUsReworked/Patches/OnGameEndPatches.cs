@@ -430,17 +430,17 @@ public static class OnGameEndPatches
 
             if (cachedPlayerData != null)
             {
-				StatsManager.Instance.AddWinReason((GameOverReason)9, MapPatches.CurrentMap, EndGameResult.CachedLocalPlayer.RoleWhenAlive);
+                StatsManager.Instance.AddWinReason((GameOverReason)9, MapPatches.CurrentMap, EndGameResult.CachedLocalPlayer.RoleWhenAlive);
                 AchievementManager.Instance.SetWinMap(MapPatches.CurrentMap);
                 UnityTelemetry.Instance.WonGame(cachedPlayerData.ColorId, cachedPlayerData.HatId, cachedPlayerData.SkinId, cachedPlayerData.PetId, cachedPlayerData.VisorId,
                     cachedPlayerData.NamePlateId);
-				__instance.WinText.text = TranslationController.Instance.GetString(StringNames.Victory);
+                __instance.WinText.text = TranslationController.Instance.GetString(StringNames.Victory);
                 __instance.WinText.color = UColor.blue;
             }
             else
             {
-				StatsManager.Instance.AddLoseReason((GameOverReason)10);
-				__instance.WinText.text = TranslationController.Instance.GetString(StringNames.Defeat);
+                StatsManager.Instance.AddLoseReason((GameOverReason)10);
+                __instance.WinText.text = TranslationController.Instance.GetString(StringNames.Defeat);
                 __instance.WinText.color = UColor.red;
             }
 

@@ -36,9 +36,9 @@ public class Trapper : Crew
         Alignment = Alignment.IntruderSupport;
         Trapped = [];
         TriggeredRoles = [];
-        BuildButton ??= CreateButton(this, "BUILD TRAP", new SpriteName("Build"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)StartBuildling, new Cooldown(BuildCd),
+        BuildButton ??= CreateButton(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling, new Cooldown(BuildCd),
             new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), (UsableFunc)Usable);
-        TrapButton ??= CreateButton(this, "PLACE TRAP", new SpriteName("Trap"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(TrapCd), MaxTraps,
+        TrapButton ??= CreateButton(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(TrapCd), MaxTraps,
             (PlayerBodyExclusion)Exception);
         TrapsMade = 0;
         TrapButton.Uses = 0;

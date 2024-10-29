@@ -24,7 +24,7 @@ public class Murderer : Neutral
         BaseStart();
         Objectives = () => "- Murder anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        MurderButton ??= CreateButton(this, new SpriteName("Murder"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Murder, new Cooldown(MurderCd), "MURDER",
+        MurderButton ??= CreateButton(this, new SpriteName("Murder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Murder, new Cooldown(MurderCd), "MURDER",
             (PlayerBodyExclusion)Exception);
     }
 

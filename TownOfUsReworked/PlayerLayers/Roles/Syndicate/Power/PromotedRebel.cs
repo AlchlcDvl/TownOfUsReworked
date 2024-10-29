@@ -163,77 +163,77 @@ public class PromotedRebel : Syndicate
     {
         if (IsConc)
         {
-            ConcealButton ??= CreateButton(this, new SpriteName("Conceal"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(Concealer.ConcealCd),
+            ConcealButton ??= CreateButton(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(Concealer.ConcealCd),
                 (LabelFunc)ConcLabel, new Duration(Concealer.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal, (UsableFunc)ConcealUsable);
         }
         else if (IsDrunk)
         {
-            ConfuseButton ??= CreateButton(this, new SpriteName("Confuse"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(Drunkard.ConfuseCd),
+            ConfuseButton ??= CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(Drunkard.ConfuseCd),
                 new Duration(Drunkard.ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (LabelFunc)DrunkLabel, (EndFunc)ConfuseEnd, (UsableFunc)DrunkUsable);
         }
         else if (IsFram)
         {
-            FrameButton ??= CreateButton(this, new SpriteName("Frame"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(Framer.FrameCd), "FRAME",
+            FrameButton ??= CreateButton(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(Framer.FrameCd), "FRAME",
                 (PlayerBodyExclusion)FrameException, (UsableFunc)FrameUsable1);
-            RadialFrameButton ??= CreateButton(this, new SpriteName("RadialFrame"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, (UsableFunc)FrameUsable2, "FRAME",
+            RadialFrameButton ??= CreateButton(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, (UsableFunc)FrameUsable2, "FRAME",
                 new Cooldown(Framer.FrameCd));
         }
         else if (IsSS)
         {
-            ShapeshiftButton ??= CreateButton(this, "Shapeshift", AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(Shapeshifter.ShapeshiftCd),
+            ShapeshiftButton ??= CreateButton(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(Shapeshifter.ShapeshiftCd),
                 new Duration(Shapeshifter.ShapeshiftDur), (EffectVoid)Shift, (EffectEndVoid)UnShapeshift, (LabelFunc)SSLabel, (UsableFunc)SSUsable);
         }
         else if (IsSil)
         {
-            SilenceButton ??= CreateButton(this, new SpriteName("Silence"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(Silencer.SilenceCd),
+            SilenceButton ??= CreateButton(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(Silencer.SilenceCd),
                 "SILENCE", (PlayerBodyExclusion)SilenceException, (UsableFunc)SilUsable);
         }
         else if (IsTK)
         {
-            TimeButton ??= CreateButton(this, new SpriteName("Time"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(Timekeeper.TimeCd),
+            TimeButton ??= CreateButton(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(Timekeeper.TimeCd),
                 (LabelFunc)TKLabel, new Duration(Timekeeper.TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl, (UsableFunc)TKUsable);
         }
         else if (IsBomb)
         {
-            BombButton ??= CreateButton(this, new SpriteName("Plant"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(Bomber.BombCd),
+            BombButton ??= CreateButton(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(Bomber.BombCd),
                 "PLACE BOMB", (ConditionFunc)BombCondition, (UsableFunc)BombUsable1);
-            DetonateButton ??= CreateButton(this, new SpriteName("Detonate"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(Bomber.DetonateCd),
+            DetonateButton ??= CreateButton(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(Bomber.DetonateCd),
                 "DETONATE", (UsableFunc)BombUsable2);
         }
         else if (IsCol)
         {
-            PositiveButton ??= CreateButton(this, new SpriteName("Positive"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SetPositive, "SET POSITIVE", (UsableFunc)ColUsable1,
+            PositiveButton ??= CreateButton(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetPositive, "SET POSITIVE", (UsableFunc)ColUsable1,
                 new Cooldown(Collider.CollideCd), (PlayerBodyExclusion)PlusException);
-            NegativeButton ??= CreateButton(this, new SpriteName("Negative"), AbilityType.Alive, KeybindType.Secondary, (OnClick)SetNegative, new Cooldown(Collider.CollideCd),
+            NegativeButton ??= CreateButton(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)SetNegative, new Cooldown(Collider.CollideCd),
                 (PlayerBodyExclusion)MinusException, "SET NEGATIVE", (UsableFunc)ColUsable1);
-            ChargeButton ??= CreateButton(this, new SpriteName("Charge"), AbilityType.Targetless, KeybindType.Tertiary, (OnClick)Charge, new Cooldown(Collider.ChargeCd), "CHARGE",
+            ChargeButton ??= CreateButton(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Charge, new Cooldown(Collider.ChargeCd), "CHARGE",
                 new Duration(Collider.ChargeDur), (UsableFunc)ColUsable2, (EndFunc)ChargeEnd);
         }
         else if (IsCrus)
         {
-            CrusadeButton ??= CreateButton(this, new SpriteName("Crusade"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Crusade, new Cooldown(Crusader.CrusadeCd),
+            CrusadeButton ??= CreateButton(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Crusade, new Cooldown(Crusader.CrusadeCd),
                 "CRUSADE", new Duration(Crusader.CrusadeDur), (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)CrusadeException, (EndFunc)CrusadeEnd, (UsableFunc)CrusUsable);
         }
         else if (IsPois)
         {
-            PoisonButton ??= CreateButton(this, new SpriteName("Poison"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(Poisoner.PoisonCd),
+            PoisonButton ??= CreateButton(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(Poisoner.PoisonCd),
                 "POISON", new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)PoisonException, (UsableFunc)PoisUsable1, (EndFunc)PoisonEnd);
-            GlobalPoisonButton ??= CreateButton(this, new SpriteName("GlobalPoison"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)PoisLabel,
+            GlobalPoisonButton ??= CreateButton(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)PoisLabel,
                 new Cooldown(Poisoner.PoisonCd), new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)PoisUsable2, (EndFunc)PoisonEnd);
         }
         else if (IsSpell)
         {
-            SpellButton ??= CreateButton(this, new SpriteName("Spellbind"), AbilityType.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(Spellslinger.SpellCd),
+            SpellButton ??= CreateButton(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(Spellslinger.SpellCd),
                 "SPELLBIND", (PlayerBodyExclusion)SpellException, (DifferenceFunc)SpellDifference, (UsableFunc)SpellUsable);
         }
         else if (IsStalk)
         {
-            StalkButton ??= CreateButton(this, new SpriteName("Stalk"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(Stalker.StalkCd), "STALK",
+            StalkButton ??= CreateButton(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(Stalker.StalkCd), "STALK",
                 (PlayerBodyExclusion)StalkException, (UsableFunc)StalkUsable);
         }
         else if (IsWarp)
         {
-            WarpButton ??= CreateButton(this, new SpriteName("Warp"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, (LabelFunc)WarpLabel, new Cooldown(Warper.WarpCd),
+            WarpButton ??= CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, (LabelFunc)WarpLabel, new Cooldown(Warper.WarpCd),
                 (UsableFunc)WarpUsable);
         }
     }

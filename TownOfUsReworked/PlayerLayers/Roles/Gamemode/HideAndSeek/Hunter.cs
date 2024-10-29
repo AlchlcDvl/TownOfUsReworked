@@ -16,7 +16,7 @@ public class Hunter : HideAndSeek
     {
         BaseStart();
         Objectives = () => "- Hunt the others down before they finish their tasks";
-        HuntButton ??= CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd),
+        HuntButton ??= CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd),
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
         Player.SetImpostor(true);
     }

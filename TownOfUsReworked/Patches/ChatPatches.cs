@@ -142,8 +142,13 @@ public static class OverrideCharCountPatch
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.AddChat))]
 public static class ChatChannels
 {
+    public static readonly List<byte> Ignored = [];
+
     public static bool Prefix(ChatController __instance, PlayerControl sourcePlayer, string chatText)
     {
+        if (Ignored.Contains(sourcePlayer.PlayerId))
+            return false;
+
         if ((ChatUpdate.ChatHistory.Count == 0 || ChatUpdate.ChatHistory[^1].Contains(chatText)) && !chatText.StartsWith("/"))
             ChatUpdate.ChatHistory.Add($"{sourcePlayer.Data.PlayerName}: {chatText}");
 

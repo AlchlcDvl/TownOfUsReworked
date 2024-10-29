@@ -100,10 +100,16 @@ public struct HSBColor
                 g = max;
                 b = ((h - 120f) * dif / 60f) + min;
             }
-            else if (h < 300)
+            else if (h < 240f)
             {
                 r = min;
                 g = (-(h - 240f) * dif / 60f) + min;
+                b = max;
+            }
+            else if (h < 300f)
+            {
+                r = ((h - 240f) * dif / 60f) + min;
+                g = min;
                 b = max;
             }
             else if (h <= 360f)

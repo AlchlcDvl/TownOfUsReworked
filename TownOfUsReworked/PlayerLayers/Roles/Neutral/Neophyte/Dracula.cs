@@ -37,7 +37,7 @@ public class Dracula : Neutral
         Alignment = Alignment.NeutralNeo;
         SubFactionColor = CustomColorManager.Undead;
         Converted = [ Player.PlayerId ];
-        BiteButton ??= CreateButton(this, new SpriteName("Bite"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
+        BiteButton ??= CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 

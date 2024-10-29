@@ -8,6 +8,9 @@ public class Language : Asset
     [JsonPropertyName("schinese")]
     public string SChinese { get; set; }
 
+    [JsonPropertyName("notes")]
+    public string Notes { get; set; } // I need this here to stop the translator from spamming errors for intentionally blank translations
+
     [JsonPropertyName("ids")]
     public string[] IDs { get; set; } // For when I want multiple IDs to point to the same thing but I'm too lazy to add their own entries to the json
 
@@ -22,7 +25,7 @@ public class Language : Asset
                 _ => ""
             };
 
-            if (IsNullEmptyOrWhiteSpace(result) || !TranslationManager.SupportedLangNames.Contains(lang))
+            if ((IsNullEmptyOrWhiteSpace(result) && Notes == null) || !TranslationManager.SupportedLangNames.Contains(lang))
             {
                 if (English != null)
                 {

@@ -115,17 +115,17 @@ public abstract class Role : PlayerLayer
 
         /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
         {
-            CallButton ??= CreateButton(this, "CALL PLATFORM", "CallPlatform", AbilityType.Targetless, KeybindType.Quarternary, (OnClick)UsePlatform, (UsableFunc)CallUsable,
+            CallButton ??= CreateButton(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClick)UsePlatform, (UsableFunc)CallUsable,
                 (ConditionFunc)CallCondition);
         }*/
 
         if (!IsCustomHnS() && !IsTaskRace())
         {
             if (RoleGen.GetSpawnItem(LayerEnum.Enforcer).IsActive())
-                BombKillButton ??= CreateButton(this, "KILL", new SpriteName("BombKill"), AbilityType.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
+                BombKillButton ??= CreateButton(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
 
             if (RoleGen.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
-                PlaceHitButton ??= CreateButton(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityType.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
+                PlaceHitButton ??= CreateButton(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
         }
     }
 

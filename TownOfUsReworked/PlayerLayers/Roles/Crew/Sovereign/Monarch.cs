@@ -41,7 +41,7 @@ public class Monarch : Crew
         Alignment = Alignment.CrewSov;
         Knighted = [];
         ToBeKnighted = [];
-        KnightingButton ??= CreateButton(this, "KNIGHT", new SpriteName("Knight"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Knight, new Cooldown(KnightingCd), KnightCount,
+        KnightingButton ??= CreateButton(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Knight, new Cooldown(KnightingCd), KnightCount,
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 

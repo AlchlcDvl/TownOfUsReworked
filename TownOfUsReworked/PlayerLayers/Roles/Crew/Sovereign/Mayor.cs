@@ -26,7 +26,7 @@ public class Mayor : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewSov;
-        RevealButton ??= CreateButton(this, new SpriteName("MayorReveal"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal);
+        RevealButton ??= CreateButton(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal);
         Data.Role.IntroSound = GetAudio("MayorIntro");
     }
 

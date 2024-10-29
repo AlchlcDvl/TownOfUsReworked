@@ -36,7 +36,7 @@ public class Detective : Crew
         AllPrints = [];
         Investigated = [];
         Alignment = Alignment.CrewInvest;
-        ExamineButton ??= CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
+        ExamineButton ??= CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
     }
 
     public override void Deinit()

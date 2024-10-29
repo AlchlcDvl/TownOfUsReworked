@@ -41,7 +41,7 @@ public enum ThiefActionsRPC
 }
 
 [Flags]
-public enum AbilityType
+public enum AbilityTypes
 {
     None = 0,
     Alive = 1 << 0,

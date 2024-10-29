@@ -57,15 +57,15 @@ public class GuardianAngel : Neutral
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         Alignment = Alignment.NeutralBen;
         TargetPlayer = null;
-        ProtectButton ??= CreateButton(this, "Protect", AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)HitProtect, new Cooldown(ProtectCd), "PROTECT", new Duration(ProtectDur),
+        ProtectButton ??= CreateButton(this, "Protect", AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitProtect, new Cooldown(ProtectCd), "PROTECT", new Duration(ProtectDur),
             MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
 
         if (GuardianAngelCanPickTargets)
-            TargetButton ??= CreateButton(this, new SpriteName("GATarget"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, "WATCH", (UsableFunc)Usable2);
+            TargetButton ??= CreateButton(this, new SpriteName("GATarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, "WATCH", (UsableFunc)Usable2);
 
         if (ProtectBeyondTheGrave)
         {
-            GraveProtectButton ??= CreateButton(this, new SpriteName("GraveProtect"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)HitGraveProtect, new PostDeath(true),
+            GraveProtectButton ??= CreateButton(this, new SpriteName("GraveProtect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGraveProtect, new PostDeath(true),
                 new Cooldown(ProtectCd), new Duration(ProtectDur), MaxProtects, "PROTECT", (UsableFunc)Usable1, (EndFunc)EndEffect);
         }
 

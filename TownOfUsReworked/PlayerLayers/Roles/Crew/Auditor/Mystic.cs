@@ -20,7 +20,7 @@ public class Mystic : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewAudit;
-        RevealButton ??= CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (PlayerBodyExclusion)Exception,
+        RevealButton ??= CreateButton(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (PlayerBodyExclusion)Exception,
             new Cooldown(RevealCd));
     }
 

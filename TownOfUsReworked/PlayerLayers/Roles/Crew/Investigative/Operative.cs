@@ -44,7 +44,7 @@ public class Operative : Crew
         Alignment = Alignment.CrewInvest;
         BuggedPlayers = [];
         Bugs = [];
-        BugButton ??= CreateButton(this, "BUG", new SpriteName("Bug"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(BugCd),  MaxBugs,
+        BugButton ??= CreateButton(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)PlaceBug, new Cooldown(BugCd),  MaxBugs,
             (ConditionFunc)Condition);
     }
 

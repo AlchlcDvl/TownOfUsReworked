@@ -8,7 +8,7 @@ public class CustomButton
     // Params
     public PlayerLayer Owner { get; set; }
     public SpriteName Sprite { get; set; }
-    public AbilityType Type { get; set; }
+    public AbilityTypes Type { get; set; }
     public string Keybind { get; set; }
     public PostDeath PostDeath { get; set; }
     public OnClick DoClick { get; set; }
@@ -72,7 +72,7 @@ public class CustomButton
                 button.ButtonLabelFunc = labelFunc;
             else if (prop is SpriteName sprite)
                 button.Sprite = sprite;
-            else if (prop is AbilityType type)
+            else if (prop is AbilityTypes type)
                 button.Type = type;
             else if (prop is KeybindType keybind)
                 button.Keybind = keybind.ToString();
@@ -167,7 +167,7 @@ public class CustomButton
         var passive = Base.GetComponent<PassiveButton>();
         passive.OverrideOnClickListeners(Clicked);
         passive.HoverSound = GetAudio("Hover");
-        Block = new($"{Base}Block");
+        Block = new("Block");
         Block.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
         Block.transform.localScale *= 0.75f;
         Block.SetActive(false);
@@ -347,22 +347,22 @@ public class CustomButton
 
     private void SetTarget()
     {
-        if (Type.HasFlag(AbilityType.Targetless))
+        if (Type.HasFlag(AbilityTypes.Targetless))
             Targeting = true;
         else
         {
             var monos = new List<MonoBehaviour>();
 
-            if (Type.HasFlag(AbilityType.Console))
+            if (Type.HasFlag(AbilityTypes.Console))
                 monos.Add(Owner.Player.GetClosestConsole(predicate: x => !Exception(x)));
 
-            if (Type.HasFlag(AbilityType.Alive))
+            if (Type.HasFlag(AbilityTypes.Alive))
                 monos.Add(Owner.Player.GetClosestPlayer(predicate: x => !Exception(x)));
 
-            if (Type.HasFlag(AbilityType.Dead))
+            if (Type.HasFlag(AbilityTypes.Dead))
                 monos.Add(Owner.Player.GetClosestBody(predicate: x => !Exception(x)));
 
-            if (Type.HasFlag(AbilityType.Vent))
+            if (Type.HasFlag(AbilityTypes.Vent))
                 monos.Add(Owner.Player.GetClosestVent(predicate: x => !Exception(x)));
 
             var previous = Target;
@@ -467,14 +467,7 @@ public class CustomButton
         if (!Base)
             return;
 
-        Base.SetCoolDown(0, 0);
-        Base.SetDisabled();
-        Block.SetActive(false);
-        Block.Destroy();
-        Base.enabled = false;
-        Base.gameObject.SetActive(false);
         Base.gameObject.Destroy();
-        Base.Destroy();
         Base = null;
     }
 

@@ -9,8 +9,10 @@ If you want to know more try using the other info commands, visiting the %github
 New!
 - Recode: The custom options have been given a full recode to work even better than before and include many new features and different new options
 - Recode: The guessing menu now has a mew look and behaviour
+- Recode: Changed up how the debugger behaves and added even more functionality
 - Addition: Colorblind now has grayscale vision
 - Addition: Added new role list buckets: Non-Crew, Non-Intruder, Non-Syndicate, Non-Neutral and Factioned Evils (Intruders + Syndicate)
+- Addition: Added a new /ignore chat command to make it so that a specific player's messages no longer show up for you (use /uningnore to do the opposite)
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!

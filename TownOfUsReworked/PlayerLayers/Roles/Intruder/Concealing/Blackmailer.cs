@@ -33,7 +33,7 @@ public class Blackmailer : Intruder
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
-        BlackmailButton ??= CreateButton(this, "BLACKMAIL", "Blackmail", AbilityType.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(BlackmailCd),
+        BlackmailButton ??= CreateButton(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(BlackmailCd),
             (PlayerBodyExclusion)Exception1);
     }
 

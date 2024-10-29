@@ -23,7 +23,7 @@ public class Shifter : Crew
         BaseStart();
         Alignment = Alignment.CrewSupport;
         ShifterMenu = new(Player, Shift, Exception);
-        ShiftButton ??= CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
+        ShiftButton ??= CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
     }
 
     public void Shift()

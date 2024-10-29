@@ -35,7 +35,7 @@ public class Grenadier : Intruder
         BaseStart();
         Alignment = Alignment.IntruderConceal;
         FlashedPlayers = [];
-        FlashButton ??= CreateButton(this, new SpriteName("Flash"), AbilityType.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
+        FlashButton ??= CreateButton(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
             new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, "FLASH");
     }
 

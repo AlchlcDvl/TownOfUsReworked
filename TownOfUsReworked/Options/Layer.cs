@@ -300,7 +300,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         {
             GameMode.Classic => $"{val.Chance}%",
             GameMode.Custom => $"{val.Chance}% x{val.Count}",
-            GameMode.KillingOnly => $"RoleOption.{(val.Active ? "A" : "Ina")}ctive",
+            GameMode.KillingOnly => $"{(val.Active ? "A" : "Ina")}ctive",
             GameMode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
             GameMode.RoleList => $"{(val.Unique ? "" : "Non-")}Unique",
             _ => "Invalid"

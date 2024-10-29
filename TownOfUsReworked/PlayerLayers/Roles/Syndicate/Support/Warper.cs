@@ -40,7 +40,7 @@ public class Warper : Syndicate
         WarpPlayer2 = null;
         WarpMenu1 = new(Player, Click1, Exception1);
         WarpMenu2 = new(Player, Click2, Exception2);
-        WarpButton ??= CreateButton(this, new SpriteName("Warp"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
+        WarpButton ??= CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;
         WasInVent = false;

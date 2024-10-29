@@ -23,7 +23,7 @@ public class Miner : Intruder
     {
         BaseStart();
         Alignment = Alignment.IntruderSupport;
-        MineButton ??= CreateButton(this, new SpriteName(SpriteName), AbilityType.Targetless, KeybindType.Secondary, (OnClick)Mine, new Cooldown(MineCd), (LabelFunc)Label,
+        MineButton ??= CreateButton(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mine, new Cooldown(MineCd), (LabelFunc)Label,
             (ConditionFunc)Condition);
         Vents = [];
     }

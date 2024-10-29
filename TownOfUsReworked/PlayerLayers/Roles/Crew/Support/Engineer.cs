@@ -21,7 +21,7 @@ public class Engineer : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewSupport;
-        FixButton ??= CreateButton(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityType.Targetless, KeybindType.ActionSecondary, (OnClick)Fix, new Cooldown(FixCd), MaxFixes,
+        FixButton ??= CreateButton(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Fix, new Cooldown(FixCd), MaxFixes,
             (ConditionFunc)Condition);
         Data.Role.IntroSound = GetAudio("EngineerIntro");
     }

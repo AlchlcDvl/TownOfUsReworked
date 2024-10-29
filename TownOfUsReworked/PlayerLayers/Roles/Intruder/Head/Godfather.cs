@@ -21,7 +21,7 @@ public class Godfather : Intruder
     {
         BaseStart();
         Alignment = Alignment.IntruderHead;
-        DeclareButton ??= CreateButton(this, "Promote", AbilityType.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
+        DeclareButton ??= CreateButton(this, "Promote", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 
     public void Declare(PlayerControl target)

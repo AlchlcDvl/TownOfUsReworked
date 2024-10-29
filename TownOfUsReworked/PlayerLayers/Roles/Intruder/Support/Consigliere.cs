@@ -24,7 +24,7 @@ public class Consigliere : Intruder
         BaseStart();
         Alignment = Alignment.IntruderSupport;
         Investigated = [];
-        InvestigateButton ??= CreateButton(this, new SpriteName("Investigate"), AbilityType.Alive, KeybindType.Secondary, (OnClick)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
+        InvestigateButton ??= CreateButton(this, new SpriteName("Investigate"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
             (PlayerBodyExclusion)Exception1);
     }
 

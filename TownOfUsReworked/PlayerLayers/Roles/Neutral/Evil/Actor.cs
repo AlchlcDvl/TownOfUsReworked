@@ -39,7 +39,7 @@ public class Actor : Neutral
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +
             $"- Your target roles are {PretendListString()}"));
         Alignment = Alignment.NeutralEvil;
-        PretendButton ??= CreateButton(this, new SpriteName("Pretend"), AbilityType.Alive, KeybindType.ActionSecondary, (OnClick)PickRole, "PRETEND", (UsableFunc)Usable);
+        PretendButton ??= CreateButton(this, new SpriteName("Pretend"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)PickRole, "PRETEND", (UsableFunc)Usable);
         PretendRoles = [];
     }
 
