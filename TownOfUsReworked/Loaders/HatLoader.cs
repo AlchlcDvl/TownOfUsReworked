@@ -19,7 +19,7 @@ public class HatLoader : AssetLoader<CustomHat>
         Message($"Found {UnregisteredHats.Count} hats");
         var toDownload = GenerateDownloadList(UnregisteredHats);
         Message($"Downloading {toDownload.Count} hat files");
-        yield return CoDownloadAsset(toDownload);
+        yield return CoDownloadAssets(toDownload);
         mainResponse.Clear();
     }
 
@@ -27,17 +27,17 @@ public class HatLoader : AssetLoader<CustomHat>
     {
         UnregisteredHats.ForEach(ch => ch.Behind = ch.BackID != null || ch.BackFlipID != null);
 
-        if (TownOfUsReworked.IsStream)
-        {
-            var filePath = Path.Combine(TownOfUsReworked.Hats, "Stream", "Hats.json");
+        // if (TownOfUsReworked.IsStream)
+        // {
+        //     var filePath = Path.Combine(TownOfUsReworked.Hats, "Stream", "Hats.json");
 
-            if (File.Exists(filePath))
-            {
-                var data = JsonSerializer.Deserialize<List<CustomHat>>(File.ReadAllText(filePath));
-                data.ForEach(x => x.StreamOnly = true);
-                UnregisteredHats.AddRange(data);
-            }
-        }
+        //     if (File.Exists(filePath))
+        //     {
+        //         var data = JsonSerializer.Deserialize<List<CustomHat>>(File.ReadAllText(filePath));
+        //         data.ForEach(x => x.StreamOnly = true);
+        //         UnregisteredHats.AddRange(data);
+        //     }
+        // }
 
         var cache = UnregisteredHats.Clone();
         var time = 0f;

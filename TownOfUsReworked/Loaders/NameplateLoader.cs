@@ -19,23 +19,23 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
         Message($"Found {UnregisteredNameplates.Count} nameplates");
         var toDownload = GenerateDownloadList(UnregisteredNameplates);
         Message($"Downloading {toDownload.Count} nameplate files");
-        yield return CoDownloadAsset(toDownload);
+        yield return CoDownloadAssets(toDownload);
         mainResponse.Clear();
     }
 
     public override IEnumerator AfterLoading(object response)
     {
-        if (TownOfUsReworked.IsStream)
-        {
-            var filePath = Path.Combine(TownOfUsReworked.Nameplates, "Stream", "Nameplates.json");
+        // if (TownOfUsReworked.IsStream)
+        // {
+        //     var filePath = Path.Combine(TownOfUsReworked.Nameplates, "Stream", "Nameplates.json");
 
-            if (File.Exists(filePath))
-            {
-                var data = JsonSerializer.Deserialize<List<CustomNameplate>>(File.ReadAllText(filePath));
-                data.ForEach(x => x.StreamOnly = true);
-                UnregisteredNameplates.AddRange(data);
-            }
-        }
+        //     if (File.Exists(filePath))
+        //     {
+        //         var data = JsonSerializer.Deserialize<List<CustomNameplate>>(File.ReadAllText(filePath));
+        //         data.ForEach(x => x.StreamOnly = true);
+        //         UnregisteredNameplates.AddRange(data);
+        //     }
+        // }
 
         var cache = UnregisteredNameplates.Clone();
         var time = 0f;

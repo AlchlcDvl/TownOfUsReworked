@@ -13,6 +13,7 @@ New!
 - Addition: Colorblind now has grayscale vision
 - Addition: Added new role list buckets: Non-Crew, Non-Intruder, Non-Syndicate, Non-Neutral and Factioned Evils (Intruders + Syndicate)
 - Addition: Added a new /ignore chat command to make it so that a specific player's messages no longer show up for you (use /uningnore to do the opposite)
+- Addition: Added some sounds
 - Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
@@ -25,6 +26,7 @@ Changes!
 - Change: Neutral defecting Spellslingers and Rebel-Spellslingers can now win solo by spellbinding everyone
 - Change: Blocks are now only revealed when you try to do something to avoid identification of blockers (yes, Banshee too because it's funny)
 - Change: The kill animation now has a colored background (now that I know how to change this, be prepared for some pseudo-custom kill animations)
+- Change: You can now whisper players by name by doing /w (Player Name in brackets)
 - Nerf: Dracula can now only convert once per round (because it was the only NN role that wasn't limited in its conversions)
 - Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
 - Removed: Removed the /setcolor chat command due to it being essentially useless

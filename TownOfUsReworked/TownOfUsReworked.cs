@@ -12,9 +12,9 @@ public partial class TownOfUsReworked : BasePlugin
     public const string VersionString = "0.7.0.0";
     public static readonly Version Version = new(VersionString);
 
-    public const bool IsDev = true;
-    public const bool IsStream = true;
-    public const int DevBuild = 17;
+    public const bool IsDev = false;
+    public const bool IsStream = false;
+    public const int DevBuild = 0;
 
     public static bool IsTest { get; set; }
     private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);

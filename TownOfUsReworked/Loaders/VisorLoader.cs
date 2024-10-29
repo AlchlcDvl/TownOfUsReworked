@@ -19,23 +19,23 @@ public class VisorLoader : AssetLoader<CustomVisor>
         Message($"Found {UnregisteredVisors.Count} visors");
         var toDownload = GenerateDownloadList(UnregisteredVisors);
         Message($"Downloading {toDownload.Count} visor files");
-        yield return CoDownloadAsset(toDownload);
+        yield return CoDownloadAssets(toDownload);
         mainResponse.Clear();
     }
 
     public override IEnumerator AfterLoading(object response)
     {
-        if (TownOfUsReworked.IsStream)
-        {
-            var filePath = Path.Combine(TownOfUsReworked.Visors, "Stream", "Visors.json");
+        // if (TownOfUsReworked.IsStream)
+        // {
+        //     var filePath = Path.Combine(TownOfUsReworked.Visors, "Stream", "Visors.json");
 
-            if (File.Exists(filePath))
-            {
-                var data = JsonSerializer.Deserialize<List<CustomVisor>>(File.ReadAllText(filePath));
-                data.ForEach(x => x.StreamOnly = true);
-                UnregisteredVisors.AddRange(data);
-            }
-        }
+        //     if (File.Exists(filePath))
+        //     {
+        //         var data = JsonSerializer.Deserialize<List<CustomVisor>>(File.ReadAllText(filePath));
+        //         data.ForEach(x => x.StreamOnly = true);
+        //         UnregisteredVisors.AddRange(data);
+        //     }
+        // }
 
         var cache = UnregisteredVisors.Clone();
         var time = 0f;

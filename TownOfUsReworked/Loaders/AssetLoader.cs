@@ -2,17 +2,24 @@ namespace TownOfUsReworked.Loaders;
 
 public abstract class AssetLoader
 {
-    public static string RepositoryUrl => $"https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/{(TownOfUsReworked.IsDev ? "dev" : "main")}";
+    public static readonly string RepositoryUrl = $"https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/{(TownOfUsReworked.IsDev ? "dev" : "main")}";
 
     public virtual string Manifest => "";
     public virtual string DirectoryInfo => "";
     public virtual string FileExtension => "";
     public virtual bool Downloading => false;
 
-    public IEnumerator CoDownloadAsset(IEnumerable<string> files)
+    public IEnumerator CoDownloadAssets(IEnumerable<string> files)
     {
-        foreach (var fileName in files)
+        var count = files.Count();
+
+        if (count == 0)
+            yield break;
+
+        for (var i = 0; i < count; i++)
         {
+            var fileName = files.ElementAt(i);
+            UpdateSplashPatch.SetText($"Downloading {Manifest} ({i}/{count})");
             var trueName = $"{fileName.Replace(" ", "%20")}{(IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}")}";
             Message($"Downloading: {Manifest}/{fileName}");
             var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}/{trueName}");

@@ -15,7 +15,7 @@ public static class MainMenuStartPatch
         ShortTitle = "Mod Info",
         SubTitle = "",
         PinState = false,
-        Date = "24.03.2024",
+        Date = "29.10.2024",
         Text = $"<size=75%>{GetString("ModInfo")}</size>"
     };
     public static GameObject Logo;

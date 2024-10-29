@@ -17,17 +17,17 @@ public class ColorLoader : AssetLoader<CustomColor>
         var cache = AllColors.Count;
         Message($"Found {cache} colors");
 
-        if (TownOfUsReworked.IsStream)
-        {
-            var filePath = Path.Combine(DirectoryInfo, "Stream", "Colors.json");
+        // if (TownOfUsReworked.IsStream)
+        // {
+        //     var filePath = Path.Combine(DirectoryInfo, "Stream", "Colors.json");
 
-            if (File.Exists(filePath))
-            {
-                var data = JsonSerializer.Deserialize<CustomColor[]>(File.ReadAllText(filePath));
-                data.ForEach(x => x.StreamOnly = true);
-                AllColors.AddRange(data);
-            }
-        }
+        //     if (File.Exists(filePath))
+        //     {
+        //         var data = JsonSerializer.Deserialize<CustomColor[]>(File.ReadAllText(filePath));
+        //         data.ForEach(x => x.StreamOnly = true);
+        //         AllColors.AddRange(data);
+        //     }
+        // }
 
         Message($"Found {AllColors.Count - cache} local colors");
         AllColors.RemoveAll(x => x.StreamOnly && !TownOfUsReworked.IsStream);

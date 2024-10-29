@@ -15,7 +15,7 @@ public class PresetLoader : AssetLoader<Asset>
         Message($"Found {mainResponse.Count} presets");
         var toDownload = mainResponse.Select(x => x.ID);
         Message($"Downloading {toDownload.Count()} presets");
-        yield return CoDownloadAsset(toDownload);
+        yield return CoDownloadAssets(toDownload);
         mainResponse.Clear();
     }
 }

@@ -15,7 +15,7 @@ public class PortalLoader : AssetLoader<Asset>
         Message($"Found {mainResponse.Count} frames");
         var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
         Message($"Downloading {toDownload.Count()} frames");
-        yield return CoDownloadAsset(toDownload);
+        yield return CoDownloadAssets(toDownload);
     }
 
     public override IEnumerator AfterLoading(object response)

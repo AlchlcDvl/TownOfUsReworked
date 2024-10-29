@@ -67,19 +67,19 @@ public static class AmBanned
 [HarmonyPatch(typeof(PlayerData), nameof(PlayerData.FileName), MethodType.Getter)]
 public static class PlayerDataPatch
 {
-    public static void Postfix(ref string __result) => __result += "_ToU-Rew";
+    public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : "");
 }
 
 [HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
 public static class LegacySaveManagerPatch
 {
-    public static void Postfix(ref string __result) => __result += "_ToU-Rew";
+    public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : "");
 }
 
 [HarmonyPatch(typeof(SettingsData), nameof(SettingsData.FileName), MethodType.Getter)]
 public static class SettingsDataPatch
 {
-    public static void Postfix(ref string __result) => __result += "_ToU-Rew";
+    public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : "");
 }
 
 [HarmonyPatch(typeof(SecurityLogger), nameof(SecurityLogger.Awake))]
@@ -271,15 +271,17 @@ public static class GetPurchasePatch
 {
     public static bool Prefix(ref bool __result)
     {
-        __result = true;
-        return false;
+        // if (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream)
+        //     __result = true;
+
+        return !(TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
     }
 }
 
 [HarmonyPatch(typeof(PlayerPurchasesData), nameof(PlayerPurchasesData.SetPurchased))]
 public static class SetPurchasedPatch
 {
-    public static bool Prefix() => false;
+    public static bool Prefix() => !(TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
 }
 
 [HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.Initialize))]

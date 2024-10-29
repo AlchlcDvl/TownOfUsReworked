@@ -15,7 +15,7 @@ public class SoundLoader : AssetLoader<Asset>
         Message($"Found {mainResponse.Count} sounds");
         var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
         Message($"Downloading {toDownload.Count()} sounds");
-        yield return CoDownloadAsset(toDownload);
+        yield return CoDownloadAssets(toDownload);
     }
 
     public override IEnumerator AfterLoading(object response)
