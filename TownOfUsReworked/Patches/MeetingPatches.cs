@@ -32,15 +32,16 @@ public static class MeetingPatches
         }
     }
 
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
     public static class SetReported
     {
-        public static void Postfix(PlayerControl __instance, NetworkedPlayerInfo target)
+        public static void Prefix(PlayerControl __instance, NetworkedPlayerInfo target)
         {
+            PlayerLayer.LocalLayers().ForEach(x => x.BeforeMeeting());
             Reported = target;
             Reporter = __instance;
 
-            if (!target)
+            if (!target || !__instance.AmOwner)
                 return;
 
             var pc = Reported.Object;
@@ -56,21 +57,18 @@ public static class MeetingPatches
         public static void Postfix(MeetingHud __instance)
         {
             __instance.gameObject.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
-            // ClientStuff.CloseMenus();
+            ClientHandler.Instance.CloseMenus();
             CustomPlayer.Local.DisableButtons();
             Ash.DestroyAll();
             MeetingCount++;
-            Coroutines.Start(Announcements());
 
-            if (Role.ChaosDriveMeetingTimerCount < SyndicateSettings.ChaosDriveMeetingCount)
-                Role.ChaosDriveMeetingTimerCount++;
-
-            if ((Role.ChaosDriveMeetingTimerCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Role.SyndicateHasChaosDrive)
+            if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Role.SyndicateHasChaosDrive)
             {
                 Role.SyndicateHasChaosDrive = true;
                 RoleGen.AssignChaosDrive();
             }
 
+            Coroutines.Start(Announcements());
             CachedFirstDead = null;
         }
 
@@ -203,11 +201,11 @@ public static class MeetingPatches
 
             if (SyndicateSettings.SyndicateCount > 0)
             {
-                if (Role.ChaosDriveMeetingTimerCount < SyndicateSettings.ChaosDriveMeetingCount - 1)
-                    message = $"{SyndicateSettings.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-                else if (Role.ChaosDriveMeetingTimerCount == SyndicateSettings.ChaosDriveMeetingCount - 1)
+                if (MeetingCount < SyndicateSettings.ChaosDriveMeetingCount - 1)
+                    message = $"{SyndicateSettings.ChaosDriveMeetingCount - MeetingCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
+                else if (MeetingCount == SyndicateSettings.ChaosDriveMeetingCount - 1)
                     message = "This is the last meeting before the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-                else if (Role.ChaosDriveMeetingTimerCount == SyndicateSettings.ChaosDriveMeetingCount && MeetingCount == Role.ChaosDriveMeetingTimerCount)
+                else if (MeetingCount == SyndicateSettings.ChaosDriveMeetingCount)
                     message = "The <b>Syndicate</b> now possesses the Chaos Drive!";
                 else
                     message = "The <b>Syndicate</b> possesses the Chaos Drive.";
@@ -224,7 +222,7 @@ public static class MeetingPatches
                 else if (MeetingCount < Overlord.OverlordMeetingWinCount - 1)
                     message = "There seems to be an <b>Overlord</b> bent on dominating the mission! Kill them before they are successful!";
 
-                if (message != "")
+                if (!IsNullEmptyOrWhiteSpace(message))
                     Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
 
                 yield return Wait(2f);

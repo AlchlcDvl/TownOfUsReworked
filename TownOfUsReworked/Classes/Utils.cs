@@ -24,7 +24,7 @@ public static class Utils
         DeadBody body => body.MyRend(),
         Console console => console.MyRend(),
         Vent vent => vent.MyRend(),
-        _ => m.TryGetComponent<SpriteRenderer>(out var rend) ? rend : null
+        _ => m.TryGetComponent<SpriteRenderer>(out var rend) ? rend : m.GetComponentInChildren<SpriteRenderer>()
     };
 
     public static bool IsImpostor(this NetworkedPlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
@@ -1493,4 +1493,6 @@ public static class Utils
     public static T GetValue<T>(this PropertyInfo prop, object obj) => (T)prop.GetValue(obj);
 
     public static T GetValue<T>(this FieldInfo field, object obj) => (T)field.GetValue(obj);
+
+    public static bool IsAny<T>(this T value, params T[] values) => values.Any(x => Equals(x, value));
 }

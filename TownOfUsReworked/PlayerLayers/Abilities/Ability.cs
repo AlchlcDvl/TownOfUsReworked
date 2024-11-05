@@ -13,11 +13,9 @@ public abstract class Ability : PlayerLayer
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        GetAssassins().ForEach(x => x.AssassinMenu.HideButtons());
 
         foreach (var swapper in GetLayers<Swapper>())
         {
-            swapper.SwapMenu.HideButtons();
             swapper.Swap1 = null;
             swapper.Swap2 = null;
         }

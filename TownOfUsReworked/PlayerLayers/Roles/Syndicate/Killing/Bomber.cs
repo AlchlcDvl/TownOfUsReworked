@@ -53,9 +53,9 @@ public class Bomber : Syndicate
         Bombs.Clear();
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void BeforeMeeting()
     {
-        base.OnMeetingStart(__instance);
+        base.BeforeMeeting();
 
         if (BombsDetonateOnMeetingStart)
         {

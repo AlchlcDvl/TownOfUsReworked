@@ -336,6 +336,13 @@ public class Retributionist : Crew
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Revive, Selected);
         }
     }
+    public override void BeforeMeeting()
+    {
+        base.BeforeMeeting();
+
+        if (IsDet)
+            ClearFootprints();
+    }
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
@@ -375,8 +382,6 @@ public class Retributionist : Crew
             if (HUD())
                 Run("<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
         }
-        else if (IsDet)
-            ClearFootprints();
         else if (IsTrap)
         {
             if (!AttackedSomeone && TriggeredRoles.Any())

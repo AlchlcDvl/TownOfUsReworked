@@ -166,7 +166,7 @@ public class BountyHunter : Neutral
             return;
 
         // Ensures only the Bounty Hunter sees this
-        if (HUD() && something != "")
+        if (HUD() && !IsNullEmptyOrWhiteSpace(something))
             Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", something);
     }
 

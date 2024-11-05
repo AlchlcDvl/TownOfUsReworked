@@ -94,6 +94,8 @@ public abstract class PlayerLayer
 
     public virtual void EnteringLayer() {}
 
+    public virtual void BeforeMeeting() {}
+
     public virtual void OnMeetingStart(MeetingHud __instance) {}
 
     public virtual void OnMeetingEnd(MeetingHud __instance) {}

@@ -17,6 +17,7 @@ public partial class TownOfUsReworked
         CustomEjects = Config.Bind("Client", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
         HideOtherGhosts = Config.Bind("Client", "Hide Other Ghosts", true, "Hides other ghosts when you are dead");
         OptimisationMode = Config.Bind("Client", "Optimisation Mode", false, "Disables things that would be considered resource heavy");
+        LockCameraSway = Config.Bind("Client", "Lock Camera Sway", false, "Disables the camera bobbing around your character");
 
         Ip = Config.Bind("Config", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
         Port = Config.Bind("Config", "Custom Server Port", (ushort)22023, "Port for the Custom Server");

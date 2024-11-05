@@ -64,9 +64,9 @@ public class Cryomaniac : Neutral
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void BeforeMeeting()
     {
-        base.OnMeetingStart(__instance);
+        base.BeforeMeeting();
 
         if (FreezeUsed)
         {

@@ -135,7 +135,7 @@ public static class MCIUtils
         light.transform.SetParent(CustomPlayer.LocalCustom.Transform, false);
         light.transform.localPosition = newPlayer.Collider.offset;
 
-        Camera.main.GetComponent<FollowerCamera>().SetTarget(newPlayer);
+        HUD().PlayerCam.SetTarget(newPlayer);
         newPlayer.MyPhysics.ResetMoveState(true);
         KillAnimation.SetMovement(newPlayer, true);
         newPlayer.MyPhysics.inputHandler.enabled = true;

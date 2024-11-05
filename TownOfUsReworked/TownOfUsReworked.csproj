@@ -3,7 +3,7 @@
         <AssemblyName>Reworked</AssemblyName>
         <RootNamespace>TownOfUsReworked</RootNamespace>
         <TargetFramework>net6.0</TargetFramework>
-        <Version>0.7.0.0</Version>
+        <Version>0.7.1.0</Version>
         <DebugType>embedded</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <LangVersion>latest</LangVersion>
@@ -15,6 +15,7 @@
         <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
         <Description>Town Of Us but better! (hopefully)</Description>
+        <AmongUs>C:\Users\AlchlcSystm\Documents\GitHub\TownOfUsReworked\Test</AmongUs>
     </PropertyGroup>
 
     <ItemGroup>

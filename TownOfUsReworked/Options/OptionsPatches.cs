@@ -1067,7 +1067,7 @@ public static class SettingsPatches
             CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SyncSummary, ReadDiskText("Summary", TownOfUsReworked.Other));
 
             if (CachedFirstDead != null)
-                CallRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
+                CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
         }
     }
 

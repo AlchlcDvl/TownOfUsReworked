@@ -10,7 +10,7 @@ public static class AssetManager
 
     public static AudioClip GetAudio(string path) => UnityGet<AudioClip>(path);
 
-    public static Sprite GetSprite(string path) => UnityGet<Sprite>(path, false) ?? UnityGet<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder", false);
+    public static Sprite GetSprite(string path) => UnityGet<Sprite>(path, false) ?? UnityGet<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder");
 
     public static TMP_FontAsset GetFont(string path) => UnityGet<TMP_FontAsset>(path);
 

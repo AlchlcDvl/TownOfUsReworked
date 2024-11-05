@@ -7,58 +7,10 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 New!
-- Recode: The custom options have been given a full recode to work even better than before and include many new features and different new options
-- Recode: The guessing menu now has a mew look and behaviour
-- Recode: Changed up how the debugger behaves and added even more functionality
-- Addition: Colorblind now has grayscale vision
-- Addition: Added new role list buckets: Non-Crew, Non-Intruder, Non-Syndicate, Non-Neutral and Factioned Evils (Intruders + Syndicate)
-- Addition: Added a new /ignore chat command to make it so that a specific player's messages no longer show up for you (use /uningnore to do the opposite)
-- Addition: Added some sounds
-- Return: Reporting bodies now spreads infections and douses (I had removed it a while back due to bugs, but it's back now)
 
 Changes!
-- Improvement: Touched up on some oudated code to ensure they all function better
-- Rename: Objectifiers have now been renamed to Dispositions, due to the new name being more fitting
-- Change: Jackal recruits can now need to only be of opposite factions so it has more flexible matchups
-- Change: Shifter now has a player menu to swap through to prevent auto confirms
-- Change: Bastion can now spawn in Killing Only
-- Change: Raised the min player requirement for Jackal spawn from 6 to 7
-- Change: Neutral defecting Spellslingers and Rebel-Spellslingers can now win solo by spellbinding everyone
-- Change: Blocks are now only revealed when you try to do something to avoid identification of blockers (yes, Banshee too because it's funny)
-- Change: The kill animation now has a colored background (now that I know how to change this, be prepared for some pseudo-custom kill animations)
-- Change: You can now whisper players by name by doing /w (Player Name in brackets)
-- Nerf: Dracula can now only convert once per round (because it was the only NN role that wasn't limited in its conversions)
-- Revert: Partially reverted changes to custom colors because it has a hand in the fps issue
-- Removed: Removed the /setcolor chat command due to it being essentially useless
-- Update: Updated to Among Us 2024.10.29
-- Update: Updated to BepInEx 6.0.0-pre.2
-- Update: Updated to Reactor 2.3.1
 
 Fixes!
-- Critical: Fixed the rare instance where the host may lag a lot when a round starts
-- Critical: Fixed some roles having no ability cooldowns
-- Crticial: Fixed venting being broken
-- Role: Fixed Altruist and Necromancer being able to skip the resurrection time by clicking the ability button again
-- Role: Fixed Betrayer being unable to kill
-- Role: Fixed target selection for targeting neutral roles
-- Role + Ability: Fixed Herbalists (Fungle Miners) being unguessable
-- Role + Ability: Fixed Snitch and Revealer not revealing Neutrals like they should
-- Ability: Fixed the edge case where Swapper swaps didn't appear to be correctly selected
-- Ability: Fixed a tiny issue with handling Assassin
-- Disposition: Fixed Fanatics not being converted upon attacks
-- Disposition: Fixed up some niche end game scenarios regarding Defector
-- Visual: Fixed ability buttons appearing and disappearing incorrectly
-- General: Fixed spawning in forbidden places with Random Spawns on (somewhat)
-- General: Fixed dead players not being able to see roles even with the setting turned on
-- General: Some fixes with cosmetics
-- General: Fixed some issues with button initialisation breaking role gen somehow (it's a bandaid fix, a proper fix will come later)
-- General: Made some more fixes for base game Hide and Seek
-- General: Fixed Submerged updater not actually checking for updates
-- General: Fixed not being able to get achievements for kills (why would you even want this only god knows)
-- General: Fixed body locations being shown of players who have been revived
-- General: Fixed the accidental usage of the wrong options in a lot of places
-- General: Fixed the auto updater not clearing out old versions properly
-- General: Fixed the occasional small bugs here and there
 
 Known Bugs :(
 - Critically slow fps for everyone, with the host having it the worst, a fix is in progress and the severity has been considerably reduced

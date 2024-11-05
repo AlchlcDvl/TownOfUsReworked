@@ -182,7 +182,7 @@ public class ClientHandler : MonoBehaviour
         var sizeLimit = inOut ? MaxSize : MinSize;
         var originalSize = HUD().transform.localScale;
 
-        yield return PerformTimedAction(1.5f, p =>
+        yield return PerformTimedAction(1f, p =>
         {
             var size = Meeting() ? 3f : Mathf.Lerp(original, limit, p);
             Camera.main.orthographicSize = size;

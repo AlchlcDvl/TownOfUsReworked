@@ -147,9 +147,9 @@ public class Collider : Syndicate
 
     public bool EndEffect() => Dead;
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void BeforeMeeting()
     {
-        base.OnMeetingStart(__instance);
+        base.BeforeMeeting();
         ResetCharges();
     }
 }

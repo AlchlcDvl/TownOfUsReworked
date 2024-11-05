@@ -12,13 +12,15 @@ public static class TranslationManager
 
     public static readonly string[] SupportedLangNames = [ "English", "SChinese" ];
 
-    public static string Translate(string id, string language = null)
+    public static string Translate(string id, (string Key, string Value)[] toReplace, string language)
     {
         language ??= CurrentLanguage;
 
         try
         {
-            return AllTranslations.Find(x => x.ID == id || x.IDs?.Contains(id) == true)[language];
+            var result = AllTranslations.Find(x => x.ID == id || x.IDs?.Contains(id) == true)?[language];
+            toReplace.ForEach(x => result = result.Replace(x.Key, x.Value));
+            return result;
         }
         catch
         {
@@ -26,6 +28,10 @@ public static class TranslationManager
             return id;
         }
     }
+
+    public static string Translate(string id, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, null);
+
+    public static string Translate(string id, string language, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, language);
 
     public static string Test(string id)
     {

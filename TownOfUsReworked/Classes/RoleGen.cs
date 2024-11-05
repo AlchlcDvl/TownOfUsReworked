@@ -1730,8 +1730,9 @@ public static class RoleGen
 
                 if (jackal.Recruit1)
                 {
-                    jackal.Recruit2 = AllPlayers().Random(x => !x.Is(Alignment.NeutralNeo) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen) && x.Is(SubFaction.None) &&
-                        jackal.Recruit1.GetFaction() != x.GetFaction());
+                    jackal.Recruit2 = AllPlayers().Random(x => x.GetAlignment() is not (Alignment.NeutralNeo or Alignment.NeutralEvil or Alignment.NeutralBen) && x.Is(SubFaction.None) &&
+                        (jackal.Recruit1.GetFaction() != x.GetFaction() || (jackal.Recruit1.GetFaction() == Faction.Neutral && x.GetFaction() == Faction.Neutral && x.GetRole().Type !=
+                        jackal.Recruit1.GetRole().Type)));
                 }
 
                 if (jackal.Recruit1)
@@ -1754,8 +1755,9 @@ public static class RoleGen
     {
         WinState = WinLose.None;
 
+        MeetingPatches.MeetingCount = 0;
+
         Role.SyndicateHasChaosDrive = false;
-        Role.ChaosDriveMeetingTimerCount = 0;
         Role.DriveHolder = null;
 
         Role.Cleaned.Clear();
@@ -1820,6 +1822,8 @@ public static class RoleGen
         SetPostmortals.WillBeGhouls.Clear();
         SetPostmortals.WillBeRevealers.Clear();
         SetPostmortals.WillBePhantoms.Clear();
+
+        ChatUpdate.ChatHistory.Clear();
 
         PureCrew = null;
         Convertible = 0;

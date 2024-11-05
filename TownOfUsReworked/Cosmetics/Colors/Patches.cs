@@ -157,7 +157,7 @@ public static class SetPlayerMaterialPatch1
 [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(UColor), typeof(Renderer))]
 public static class SetPlayerMaterialPatch2
 {
-    public static void Prefix(Renderer rend, Color color) => ColorHandler.Instance.SetRend(rend, color);
+    public static void Prefix(Renderer rend, UColor color) => ColorHandler.Instance.SetRend(rend, color);
 }
 
 [HarmonyPatch(typeof(RoleEffectAnimation), nameof(RoleEffectAnimation.SetMaterialColor))]

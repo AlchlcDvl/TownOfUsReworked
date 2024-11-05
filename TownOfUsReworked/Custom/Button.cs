@@ -7,7 +7,8 @@ public class CustomButton
 
     // Params
     public PlayerLayer Owner { get; set; }
-    public SpriteName Sprite { get; set; }
+    public SpriteName ButtonSprite { get; set; }
+    public SpriteFunc SpriteFunc { get; set; }
     public AbilityTypes Type { get; set; }
     public string Keybind { get; set; }
     public PostDeath PostDeath { get; set; }
@@ -71,7 +72,7 @@ public class CustomButton
             else if (prop is LabelFunc labelFunc)
                 button.ButtonLabelFunc = labelFunc;
             else if (prop is SpriteName sprite)
-                button.Sprite = sprite;
+                button.ButtonSprite = sprite;
             else if (prop is AbilityTypes type)
                 button.Type = type;
             else if (prop is KeybindType keybind)
@@ -147,7 +148,7 @@ public class CustomButton
         button.PostDeath ??= new(false);
         button.CanClickAgain ??= new(true);
         button.CooldownTime = button.EffectTime = button.DelayTime = 0f;
-        button.ID = button.Sprite.Value + button.Owner.Name + button.Owner.PlayerName + AllButtons.Count;
+        button.ID = button.Sprite() + button.Owner.Name + button.Owner.PlayerName + AllButtons.Count;
         button.Disabled = !button.Owner.Local;
         button.CreateButton();
         AllButtons.Add(button);
@@ -161,7 +162,7 @@ public class CustomButton
             return;
 
         Base = InstantiateButton();
-        Base.graphic.sprite = GetSprite(Sprite.Value);
+        Base.graphic.sprite = GetSprite(Sprite());
         Base.graphic.SetCooldownNormalizedUvs();
         Base.name = ID;
         var passive = Base.GetComponent<PassiveButton>();
@@ -223,6 +224,9 @@ public class CustomButton
     {
         if (Owner.IsBlocked)
             BlockExposed = true;
+
+        Base.graphic.sprite = GetSprite(Sprite());
+        Base.graphic.SetCooldownNormalizedUvs();
 
         if (Clickable())
         {
@@ -339,6 +343,16 @@ public class CustomButton
         return result;
     }
 
+    public string Sprite()
+    {
+        var result = ButtonSprite.Value;
+
+        if (result == "Placeholder")
+            result = SpriteFunc();
+
+        return result;
+    }
+
     public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath.Value && !Ejection() && Owner.Local && !IsMeeting() &&
         !IsLobby() && !NoPlayers() && Owner.Player && !IntroCutscene.Instance;
 
@@ -416,7 +430,7 @@ public class CustomButton
         else
             Base.SetCoolDown(CooldownTime, MaxCooldown());
 
-        if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind))
+        if (KeyboardJoystick.player.GetButton(Keybind))
             Clicked();
     }
 

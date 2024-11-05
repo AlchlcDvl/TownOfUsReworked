@@ -17,6 +17,7 @@ public class Altruist : Crew
 
     public CustomButton ReviveButton { get; set; }
     public DeadBody RevivingBody { get; set; }
+    public byte ParentId { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Altruist : CustomColorManager.Crew;
     public override string Name => "Altruist";
@@ -43,7 +44,7 @@ public class Altruist : Crew
 
     private void FinishRevive()
     {
-        var player = PlayerByBody(RevivingBody);
+        var player = PlayerById(ParentId);
 
         if (!player.Data.IsDead)
             return;
@@ -76,18 +77,20 @@ public class Altruist : Crew
     public void Revive()
     {
         RevivingBody = ReviveButton.GetTarget<DeadBody>();
+        ParentId = RevivingBody.ParentId;
         Spread(Player, PlayerByBody(RevivingBody));
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ReviveButton, RevivingBody);
         ReviveButton.Begin();
         Flash(Color, ReviveDur);
 
         if (AltruistTargetBody)
-            ReviveButton.GetTarget<DeadBody>()?.gameObject.Destroy();
+            RevivingBody.gameObject.Destroy();
     }
 
     public override void ReadRPC(MessageReader reader)
     {
         RevivingBody = reader.ReadBody();
+        ParentId = RevivingBody.ParentId;
 
         if (CustomPlayer.Local.PlayerId == RevivingBody.ParentId)
             Flash(CustomColorManager.Altruist, ReviveDur);

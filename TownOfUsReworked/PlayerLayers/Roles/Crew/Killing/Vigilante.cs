@@ -47,14 +47,20 @@ public class Vigilante : Crew
         RoundOne = RoundOneNoShot;
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void BeforeMeeting()
     {
-        base.OnMeetingStart(__instance);
+        base.BeforeMeeting();
         RoundOne = false;
 
         if (PreMeetingDie)
             RpcMurderPlayer(Player);
-        else if (InnoMessage)
+    }
+
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        base.OnMeetingStart(__instance);
+
+        if (InnoMessage)
             Run("<color=#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
 

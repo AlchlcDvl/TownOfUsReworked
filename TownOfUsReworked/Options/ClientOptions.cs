@@ -165,4 +165,15 @@ public static class ClientOptions
                 TownOfUsReworked.HideOtherGhosts.Value = value;
         }
     }
+
+    [ToggleOption(MultiMenu.Client, ClientOnly = true)]
+    public static bool LockCameraSway
+    {
+        get => TownOfUsReworked.LockCameraSway.Value;
+        set
+        {
+            if (value != TownOfUsReworked.LockCameraSway.Value)
+                TownOfUsReworked.LockCameraSway.Value = value;
+        }
+    }
 }

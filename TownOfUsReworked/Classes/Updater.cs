@@ -129,7 +129,7 @@ public static class ModUpdater
             Popup.TextAreaTMP.enableAutoSizing = false;
         }
 
-        Popup.Show(TranslationManager.Translate("Updates.Mod.Updating").Replace("%mod%", updateType));
+        Popup.Show(TranslationManager.Translate("Updates.Mod.Updating", ("%mod%", updateType)));
 
         var button = Popup.transform.GetChild(2).gameObject;
         button.SetActive(false);
@@ -148,7 +148,7 @@ public static class ModUpdater
         while (!operation.isDone)
         {
             var stars = Mathf.CeilToInt(www.downloadProgress * 10);
-            Popup.TextAreaTMP.text = $"{TranslationManager.Translate("Updates.Mod.Updating").Replace("%mod%", updateType)}";
+            Popup.TextAreaTMP.text = $"{TranslationManager.Translate("Updates.Mod.Updating", ("%mod%", updateType))}";
             Popup.TextAreaTMP.text += $"\n{new string((char)0x25A0, stars)}{new string((char)0x25A1, 10 - stars)}";
             yield return EndFrame();
         }
@@ -157,10 +157,12 @@ public static class ModUpdater
         {
             Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.NoSuccess");
             Error(www.error);
+            www.downloadHandler.Dispose();
+            www.Dispose();
             yield break;
         }
 
-        Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Copying").Replace("%mod%", updateType);
+        Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Copying", ("%mod%", updateType));
         var filePath = Path.Combine(TownOfUsReworked.ModsFolder, $"{updateType}.dll");
 
         if (File.Exists(filePath + ".old"))
@@ -194,7 +196,7 @@ public static class ModUpdater
             Error(error);
         }
         else
-            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Success").Replace("%mod%", updateType);
+            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Success", ("%mod%", updateType));
 
         button.SetActive(true);
         yield break;

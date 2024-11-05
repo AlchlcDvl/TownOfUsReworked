@@ -22,7 +22,6 @@ public static class PlayerControlRevivePatch
         SetPostmortals.RemoveFromPostmortals(__instance);
         __instance.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
         var body = BodyByPlayer(__instance);
-        __instance.GetLayers().ForEach(x => x.OnRevive());
 
         if (body)
         {
@@ -33,11 +32,13 @@ public static class PlayerControlRevivePatch
         if (IsSubmerged() && __instance.AmOwner)
             ChangeFloor(__instance.transform.position.y > -7);
 
+        __instance.GetLayers().ForEach(x => x.OnRevive());
+
         if (!__instance.AmOwner)
             return false;
 
         HUD().ShadowQuad.gameObject.SetActive(true);
-        HUD().KillButton.gameObject.SetActive(false);
+        HUD().KillButton.gameObject.SetActive(IsHnS());
         HUD().AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS());
         HUD().SabotageButton.gameObject.SetActive(__instance.CanSabotage());
         HUD().ImpostorVentButton.gameObject.SetActive(__instance.CanVent());

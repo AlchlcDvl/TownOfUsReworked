@@ -94,6 +94,8 @@ public class CustomMeeting
 
     public void GenButtons(MeetingHud __instance, bool usable = true)
     {
+        HideButtons();
+
         if (!usable || Owner != CustomPlayer.Local)
             return;
 

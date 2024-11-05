@@ -93,10 +93,10 @@ public static class OpenMapMenuPatch
 {
     public static bool Prefix(MapBehaviour __instance, MapOptions opts)
     {
-        // if (ClientHandler.Instance.SettingsActive)
-        //     return false;
+        if (ClientHandler.Instance.SettingsActive)
+            return false;
 
-        // ClientStuff.CloseMenus(SkipEnum.Map);
+        ClientHandler.Instance.CloseMenus(SkipEnum.Map);
 
         if (PlayerLayer.LocalLayers().All(x => x.IsBlocked))
             return false;
@@ -271,8 +271,8 @@ public static class GetPurchasePatch
 {
     public static bool Prefix(ref bool __result)
     {
-        // if (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream)
-        //     __result = true;
+        if (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream)
+            __result = true;
 
         return !(TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
     }
@@ -651,6 +651,28 @@ public static class FixNullRef
 
         __result = true;
         return false;
+    }
+}
+[HarmonyPatch(typeof(FollowerCamera), nameof(FollowerCamera.Update))]
+public static class FollowerCameraPatches
+{
+    public static void Postfix(FollowerCamera __instance)
+    {
+        if (!__instance.Target || __instance.Locked || ClientOptions.LockCameraSway)
+            return;
+
+        var v = (Vector2)__instance.Target.transform.position + __instance.Offset;
+
+        if (__instance.shakeAmount > 0f && DataManager.Settings.Gameplay.ScreenShake && __instance.OverrideScreenShakeEnabled)
+        {
+            var num = Time.fixedTime * __instance.shakePeriod;
+            var num2 = (Mathf.PerlinNoise(0.5f, num) * 2f) - 1f;
+            var num3 = (Mathf.PerlinNoise(num, 0.5f) * 2f) - 1f;
+            v.x += num2 * __instance.shakeAmount;
+            v.y += num3 * __instance.shakeAmount;
+        }
+
+        __instance.transform.position = v;
     }
 }
 

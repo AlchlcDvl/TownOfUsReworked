@@ -8,7 +8,7 @@ public static class SubmergedStartPatch
         if (!CustomPlayer.Local || !CustomPlayer.Local.Data || !IsSubmerged())
             return;
 
-        Coroutines.Start(WaitStart(() => ButtonUtils.Reset(CooldownType.Start)));
+        Coroutines.Start(WaitAction(() => ButtonUtils.Reset(CooldownType.Start)));
     }
 }
 

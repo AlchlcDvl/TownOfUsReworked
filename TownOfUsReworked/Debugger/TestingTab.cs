@@ -12,7 +12,7 @@ public class TestingTab : BaseTab
         TownOfUsReworked.RedirectLogger.Value = GUILayout.Toggle(TownOfUsReworked.RedirectLogger.Value, "Redirect Logger");
         TownOfUsReworked.IsTest = GUILayout.Toggle(TownOfUsReworked.IsTest, "Test Mode");
 
-        if (CustomPlayer.Local && !NoLobby() && !CustomPlayer.LocalCustom.Dead && !IsEnded() && WinState == WinLose.None)
+        if (CustomPlayer.Local && !NoLobby() && !IsEnded() && WinState == WinLose.None)
             CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Player Collider");
 
         if (!Lobby())

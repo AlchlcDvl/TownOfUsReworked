@@ -30,7 +30,6 @@ public abstract class Role : PlayerLayer
 
     public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.SectWins or WinLose.UndeadWins;
 
-    public static int ChaosDriveMeetingTimerCount { get; set; }
     public static bool SyndicateHasChaosDrive { get; set; }
     public static PlayerControl DriveHolder { get; set; }
 
@@ -403,8 +402,8 @@ public abstract class Role : PlayerLayer
         TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
         AllVoteAreas().ForEach(GenText);
         AllRoles.ForEach(x => x.CurrentChannel = ChatChannel.All);
-        GetLayers<Thief>().ForEach(x => x.GuessMenu.HideButtons());
-        GetLayers<Guesser>().ForEach(x => x.GuessMenu.HideButtons());
+        GetLayers<Retributionist>().ForEach(x => x.Selected = null);
+        GetLayers<Dictator>().ForEach(x => x.ToBeEjected.Clear());
 
         if (Requesting && BountyTimer > 2)
         {
@@ -412,18 +411,6 @@ public abstract class Role : PlayerLayer
             Requestor.GetLayer<BountyHunter>().TentativeTarget = Player;
             Requesting = false;
             Requestor = null;
-        }
-
-        foreach (var ret in GetLayers<Retributionist>())
-        {
-            ret.RetMenu.HideButtons();
-            ret.Selected = null;
-        }
-
-        foreach (var dict in GetLayers<Dictator>())
-        {
-            dict.DictMenu.HideButtons();
-            dict.ToBeEjected.Clear();
         }
 
         foreach (var bh in GetLayers<BountyHunter>())

@@ -116,9 +116,9 @@ public static class RPC
 
     public static PlayerLayer ReadLayer(this MessageReader reader)
     {
-        var player = reader.ReadPlayer();
+        var player = reader.ReadByte();
         var type = reader.ReadEnum<LayerEnum>();
-        return PlayerLayer.AllLayers.Find(x => x.Player == player && x.Type == type);
+        return PlayerLayer.AllLayers.Find(x => x.PlayerId == player && x.Type == type);
     }
 
     public static CustomButton ReadButton(this MessageReader reader)
@@ -181,10 +181,10 @@ public static class RPC
 
     public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(enumVal.ToString());
 
-    public static void Write(this MessageWriter writer, object item, object[] data)
+    public static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index)
     {
         if (item == null)
-            Error($"Data type used in the rpc was null: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
+            Error($"Data type used in the rpc was null: index - {index}, rpc - {rpc}");
         else if (item is Enum enumVal)
             writer.Write(enumVal);
         else if (item is PlayerControl player)
@@ -232,16 +232,16 @@ public static class RPC
             layers.ForEach(x => writer.Write(layer: x));
         }
         else
-            Error($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}, item - {item}, type - {item.GetType()}");
+            Error($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, item - {item}, type - {item.GetType()}");
     }
 
-    public static void CallRpc(params object[] data) => CallOpenRpc(data)?.EndRpc();
+    public static void CallRpc(CustomRPC rpc, params object[] data) => CallOpenRpc(rpc, data)?.EndRpc();
 
-    public static MessageWriter CallOpenRpc(params object[] data) => CallTargetedOpenRpc(-1, data);
+    public static MessageWriter CallOpenRpc(CustomRPC rpc, params object[] data) => CallTargetedOpenRpc(-1, rpc, data);
 
-    public static void CallTargetedRpc(int targetClientId, params object[] data) => CallTargetedOpenRpc(targetClientId, data)?.EndRpc();
+    public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data) => CallTargetedOpenRpc(targetClientId, rpc, data)?.EndRpc();
 
-    public static MessageWriter CallTargetedOpenRpc(int targetClientId, params object[] data)
+    public static MessageWriter CallTargetedOpenRpc(int targetClientId, CustomRPC rpc, params object[] data)
     {
         if (TownOfUsReworked.MCIActive)
             return null;
@@ -250,14 +250,9 @@ public static class RPC
         if (data[0] is object[] array)
             data = array;
 
-        if (data[0] is not CustomRPC)
-        {
-            Error("The first parameter must be CustomRPC");
-            return null;
-        }
-
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
-        data.ForEach(x => writer.Write(x, data));
+        writer.Write(rpc);
+        data.ForEach((x, y) => writer.Write(x, rpc, y));
         return writer;
     }
 

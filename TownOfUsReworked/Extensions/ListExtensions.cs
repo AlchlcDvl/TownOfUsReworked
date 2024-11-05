@@ -145,6 +145,20 @@ public static class ListExtensions
         return result;
     }
 
+    public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action)
+    {
+        foreach (var (key, value) in dict)
+            action(key, value);
+    }
+
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
+    {
+        var num = 0;
+
+        foreach (var item in source)
+            action(item, num++);
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)
@@ -224,22 +238,6 @@ public static class ListExtensions
     }
 
     public static IEnumerable<T> Where<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().Where(predicate);
-
-    public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action) => dict.ToList().ForEach(pair => action(pair.Key, pair.Value));
-
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
-    {
-        if (source == null)
-            throw new ArgumentNullException(nameof(source));
-
-        var num = 0;
-        var enumerator = source.GetEnumerator();
-
-        while (enumerator.MoveNext())
-            action(enumerator.Current, num++);
-
-        enumerator.Dispose();
-    }
 
     public static void Shuffle<T>(this ISystem.List<T> list)
     {

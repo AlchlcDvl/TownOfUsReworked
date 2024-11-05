@@ -247,7 +247,7 @@ public class Guesser : Neutral
         var newRoleName = targetRole.Name;
         var rolechanged = false;
 
-        if (RoleName != newRoleName && RoleName != "")
+        if (RoleName != newRoleName && !IsNullEmptyOrWhiteSpace(RoleName))
         {
             rolechanged = true;
             RoleName = newRoleName;
@@ -345,11 +345,8 @@ public class Guesser : Neutral
             AlignmentHintGiven = true;
         }
 
-        if (IsNullEmptyOrWhiteSpace(something))
-            return;
-
         // Ensures only the Guesser sees this
-        if (HUD() && something != "")
+        if (HUD() && !IsNullEmptyOrWhiteSpace(something))
             Run("<color=#EEE5BEFF>〖 Guess Hint 〗</color>", something);
     }
 

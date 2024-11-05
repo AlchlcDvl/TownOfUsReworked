@@ -19,6 +19,21 @@ public static class IntroSplash
         "",
         "Let me introduce you to our sponsor, Raid-",
         "Push to production is my motto. Bugs? meh public release go brrrr",
+        "It's not a bug, it's a feature",
+        "My life like a movie",
+        "real",
+        "WHERE AM I?!",
+        "OOOOO a nice view :)",
+        "What dis",
+        "O_O",
+        "o_O",
+        "O_o",
+        "o_o",
+        "._o",
+        "o_.",
+        "._.",
+        "._O",
+        "O_.",
         "LET. HIM. COOK."
     ];
     private static TextMeshPro Intro;
@@ -34,7 +49,7 @@ public static class IntroSplash
             {
                 Intro = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
                 Intro.transform.localPosition = new(0, -1.5f, 0);
-                Intro.text = $"<size=175%><b><color=#9FDA81FF>{Splashes.Random(x => x != "")}</color></b></size>";
+                Intro.text = $"<size=175%><b><color=#9FDA81FF>{Splashes.Random(x => !IsNullEmptyOrWhiteSpace(x))}</color></b></size>";
                 Intro.alignment = TextAlignmentOptions.Center;
                 Intro.fontStyle = FontStyles.Bold;
                 Intro.name = "ModIntroText";

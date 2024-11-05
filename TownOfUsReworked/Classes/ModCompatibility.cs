@@ -56,6 +56,9 @@ public static class ModCompatibility
     private static Type SubSpawnSystemType;
     private static MethodInfo GetReadyPlayerAmountMethod;
 
+    private static Type ElevatorConsoleType;
+    private static MethodInfo CanUseMethod;
+
     public static bool InitializeSubmerged()
     {
         if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin) || subPlugin == null)
@@ -116,10 +119,16 @@ public static class ModCompatibility
             GetReadyPlayerAmountMethod = AccessTools.Method(SubSpawnSystemType, "GetReadyPlayerAmount");
             CurrentStateField = AccessTools.Field(SubSpawnSystemType, "currentState");
 
+            ElevatorConsoleType = SubTypes.First(t => t.Name == "ElevatorConsole");
+            CanUseMethod = AccessTools.Method(ElevatorConsoleType, "CanUse");
+
             var compatType = typeof(ModCompatibility);
+            var canUseType = typeof(CanUsePatch);
 
             TownOfUsReworked.ModInstance.Harmony.Patch(SubmergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
             TownOfUsReworked.ModInstance.Harmony.Patch(GetReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(CanUseMethod, new(AccessTools.Method(canUseType, nameof(CanUsePatch.Prefix))), new(AccessTools.Method(canUseType,
+                nameof(CanUsePatch.Postfix))));
 
             Message("Submerged compatibility finished");
             return true;
@@ -187,25 +196,11 @@ public static class ModCompatibility
 
     public static void ExileRoleChangePostfix()
     {
-        Coroutines.Start(WaitMeeting(() => ButtonUtils.Reset(CooldownType.Meeting)));
+        Coroutines.Start(WaitAction(() => ButtonUtils.Reset(CooldownType.Meeting)));
         SetPostmortals.ExileControllerPostfix(Ejection());
     }
 
-    public static IEnumerator WaitStart(Action next)
-    {
-        while (!HUD().UICamera.transform.Find("SpawnInMinigame(Clone)"))
-            yield return EndFrame();
-
-        yield return Wait(0.5f);
-
-        while (HUD().UICamera.transform.Find("SpawnInMinigame(Clone)"))
-            yield return EndFrame();
-
-        next();
-        yield break;
-    }
-
-    public static IEnumerator WaitMeeting(Action next)
+    public static IEnumerator WaitAction(Action next)
     {
         while (!CustomPlayer.Local.moveable)
             yield return EndFrame();

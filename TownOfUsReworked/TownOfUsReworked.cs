@@ -9,12 +9,12 @@ public partial class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
     public const string Name = "Reworked";
-    public const string VersionString = "0.7.0.0";
+    public const string VersionString = "0.7.1.0";
     public static readonly Version Version = new(VersionString);
 
-    public const bool IsDev = false;
-    public const bool IsStream = false;
-    public const int DevBuild = 0;
+    public const bool IsDev = true;
+    public const bool IsStream = true;
+    public const int DevBuild = 1;
 
     public static bool IsTest { get; set; }
     private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);
@@ -57,6 +57,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static ConfigEntry<string> Ip { get; set; }
     public static ConfigEntry<ushort> Port { get; set; }
+
     public static ConfigEntry<bool> LighterDarker { get; set; }
     public static ConfigEntry<bool> WhiteNameplates { get; set; }
     public static ConfigEntry<bool> NoLevels { get; set; }
@@ -70,6 +71,7 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> CustomEjects { get; set; }
     public static ConfigEntry<bool> OptimisationMode { get; set; }
     public static ConfigEntry<bool> HideOtherGhosts { get; set; }
+    public static ConfigEntry<bool> LockCameraSway { get; set; }
 
     public static ConfigEntry<bool> RedirectLogger { get; set; }
     public static ConfigEntry<bool> AutoPlayAgain { get; set; }

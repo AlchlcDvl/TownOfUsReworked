@@ -324,7 +324,7 @@ public class ChatCommand
         var comma = setColor.Length == 0 ? "" : ", ";
         var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
         var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
-        var lobby = setColor + kickBan != "" ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "";
+        var lobby = setColor + (!IsNullEmptyOrWhiteSpace(kickBan) ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "");
         Run("<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n/ignore{lobby}");
     }
 

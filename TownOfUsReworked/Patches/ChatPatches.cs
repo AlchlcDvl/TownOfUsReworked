@@ -219,14 +219,12 @@ public static class ChatCommands
             CallRpc(CustomRPC.Misc, MiscRPC.Notify, CustomPlayer.Local.PlayerId);
         }
 
-        if (chatHandled)
-            Clear(__instance);
-        else
+        if (!chatHandled)
         {
             if (GameSettings.ChatCooldown > __instance.timeSinceLastMessage)
             {
                 __instance.sendRateMessageText.gameObject.SetActive(true);
-                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
+                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.RoundToInt(GameSettings.ChatCooldown -
                     __instance.timeSinceLastMessage));
             }
             else if (!IsNullEmptyOrWhiteSpace(text))
@@ -241,19 +239,19 @@ public static class ChatCommands
                     __instance.SendFreeChat();
                 }
 
-                Clear(__instance);
+                chatHandled = true;
             }
         }
 
-        return false;
-    }
+        if (chatHandled)
+        {
+            __instance.freeChatField.Clear();
+            __instance.quickChatMenu.Clear();
+            __instance.quickChatField.Clear();
+            __instance.UpdateChatMode();
+        }
 
-    private static void Clear(ChatController __instance)
-    {
-        __instance.freeChatField.Clear();
-        __instance.quickChatMenu.Clear();
-        __instance.quickChatField.Clear();
-        __instance.UpdateChatMode();
+        return false;
     }
 
     public static void Notify(byte targetPlayerId)

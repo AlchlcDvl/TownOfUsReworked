@@ -22,9 +22,9 @@ public class Astral : Modifier
             ChangeFloor(LastPosition.y > -7);
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void BeforeMeeting()
     {
-        base.OnMeetingStart(__instance);
+        base.BeforeMeeting();
 
         if (!UninteractiblePlayers.ContainsKey(PlayerId))
             LastPosition = CustomPlayer.LocalCustom.Position;

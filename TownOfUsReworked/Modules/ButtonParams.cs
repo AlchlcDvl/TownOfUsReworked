@@ -21,6 +21,8 @@ public delegate float MultiplierFunc();
 
 public delegate string LabelFunc();
 
+public delegate string SpriteFunc();
+
 public record PostDeath(bool Value);
 
 public record CanClickAgain(bool Value);
