@@ -35,7 +35,7 @@ public class Drunkard : Syndicate
 
     public void StartConfusion()
     {
-        if (CustomPlayer.Local == ConfusedPlayer || HoldsDrive)
+        if (ConfusedPlayer.AmOwner || HoldsDrive)
             Flash(CustomColorManager.Drunkard);
     }
 

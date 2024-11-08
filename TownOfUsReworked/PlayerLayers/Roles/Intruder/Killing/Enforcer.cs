@@ -37,7 +37,7 @@ public class Enforcer : Intruder
 
     public void BoomStart()
     {
-        if (CustomPlayer.Local == BombedPlayer && !Dead)
+        if (BombedPlayer.AmOwner && !Dead)
         {
             Flash(Color);
             BombedPlayer.GetRole().Bombed = true;

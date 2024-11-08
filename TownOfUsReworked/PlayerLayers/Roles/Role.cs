@@ -463,8 +463,7 @@ public abstract class Role : PlayerLayer
             if (!role2.IsMedic || !role2.ShieldedPlayer)
                 continue;
 
-            if (role2.ShieldedPlayer == player && ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (CustomPlayer.Local == player &&
-                (int)Medic.WhoGetsNotification is 1 or 2)))
+            if (role2.ShieldedPlayer == player && ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (player.AmOwner && (int)Medic.WhoGetsNotification is 1 or 2)))
             {
                 var roleEffectAnimation = UObject.Instantiate(RoleManager.Instance.protectAnim, player.gameObject.transform);
                 roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
@@ -478,7 +477,7 @@ public abstract class Role : PlayerLayer
             if (!role2.ShieldedPlayer)
                 continue;
 
-            if (role2.ShieldedPlayer == player && ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (CustomPlayer.Local == player &&
+            if (role2.ShieldedPlayer == player && ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (player.AmOwner &&
                 (int)Medic.WhoGetsNotification is 1 or 2)))
             {
                 var roleEffectAnimation = UObject.Instantiate(RoleManager.Instance.protectAnim, player.gameObject.transform);

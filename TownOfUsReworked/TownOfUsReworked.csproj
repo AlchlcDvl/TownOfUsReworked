@@ -15,12 +15,11 @@
         <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
         <Description>Town Of Us but better! (hopefully)</Description>
-        <AmongUs>C:\Users\AlchlcSystm\Documents\GitHub\TownOfUsReworked\Test</AmongUs>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Reactor" Version="2.3.1" />
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.725" />
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.697" />
         <PackageReference Include="AmongUs.GameLibs.Steam" Version="2024.10.29" />
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1" />
         <PackageReference Include="System.Text.Json" Version="6.0.10" />
@@ -28,7 +27,7 @@
         <EmbeddedResource Include="Resources\*" />
     </ItemGroup>
 
-    <Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AmongUs)/BepInEx/plugins/" />
+    <Target Name="Copy" AfterTargets="Build">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildThisFileDirectory)/Test/BepInEx/plugins/" />
     </Target>
 </Project>

@@ -45,7 +45,7 @@ public class Grenadier : Intruder
         {
             var player = PlayerById(id);
 
-            if (CustomPlayer.Local == player)
+            if (player.AmOwner)
             {
                 if (FlashButton.EffectTime > FlashDur - 0.5f)
                 {

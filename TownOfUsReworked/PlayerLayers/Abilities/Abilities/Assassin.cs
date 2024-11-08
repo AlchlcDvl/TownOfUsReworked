@@ -403,7 +403,7 @@ public abstract class Assassin : Ability
             else
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         }
-        else if (Player != player && CustomPlayer.Local == player)
+        else if (Player != player && player.AmOwner)
             Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
         else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything())
         {

@@ -237,7 +237,7 @@ public class PromotedGodfather : Intruder
         {
             var player = PlayerById(id);
 
-            if (CustomPlayer.Local == player)
+            if (player.AmOwner)
             {
                 if (FlashButton.EffectTime > Grenadier.FlashDur - 0.5f)
                 {
@@ -634,7 +634,7 @@ public class PromotedGodfather : Intruder
 
     public void BoomStart()
     {
-        if (CustomPlayer.Local == BombedPlayer && !Dead)
+        if (BombedPlayer.AmOwner && !Dead)
         {
             Utils.Flash(Color);
             BombedPlayer.GetRole().Bombed = true;

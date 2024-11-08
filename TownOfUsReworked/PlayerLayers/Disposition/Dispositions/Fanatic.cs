@@ -73,7 +73,7 @@ public class Fanatic : Disposition
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
                     Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
-                else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
+                else if (snitch.TasksDone && snitch.Local)
                     snitch.Player.GetRole().AllArrows.Add(PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
         }

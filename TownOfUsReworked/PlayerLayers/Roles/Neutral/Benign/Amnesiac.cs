@@ -67,12 +67,11 @@ public class Amnesiac : Neutral
         var role = other.GetRole();
         var player = Player;
 
-        if (CustomPlayer.Local == player || CustomPlayer.Local == other)
+        if (player.AmOwner || other.AmOwner)
         {
             Flash(Color);
             role.Deinit();
             Deinit();
-            ButtonUtils.Reset();
         }
 
         Role newRole = role.Type switch
@@ -191,20 +190,20 @@ public class Amnesiac : Neutral
         {
             foreach (var snitch in GetLayers<Snitch>())
             {
-                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && CustomPlayer.Local == player)
+                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
                     LocalRole.AllArrows.Add(snitch.PlayerId, new(player, CustomColorManager.Snitch));
-                else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
+                else if (snitch.TasksDone && snitch.Local)
                     snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
 
             foreach (var revealer in GetLayers<Revealer>())
             {
-                if (revealer.Revealed && CustomPlayer.Local == player)
+                if (revealer.Revealed && player.AmOwner)
                     LocalRole.AllArrows.Add(revealer.PlayerId, new(player, CustomColorManager.Revealer));
             }
         }
 
-        if (CustomPlayer.Local == player || CustomPlayer.Local == other)
+        if (player.AmOwner || other.AmOwner)
             ButtonUtils.Reset();
     }
 

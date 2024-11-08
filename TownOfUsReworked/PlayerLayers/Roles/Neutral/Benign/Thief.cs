@@ -193,7 +193,7 @@ public class Thief : Neutral
         var role = other.GetRole();
         var player = Player;
 
-        if (CustomPlayer.Local == other || CustomPlayer.Local == player)
+        if (other.AmOwner || player.AmOwner)
         {
             Flash(Color);
             role.Deinit();
@@ -281,7 +281,7 @@ public class Thief : Neutral
 
         if (ThiefSteals)
         {
-            if (CustomPlayer.Local == other && other.Is(Faction.Intruder))
+            if (other.AmOwner && other.Is(Faction.Intruder))
                 other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
 
             new Thief().RoleUpdate(role, other, true);
@@ -291,15 +291,15 @@ public class Thief : Neutral
         {
             foreach (var snitch in GetLayers<Snitch>())
             {
-                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && CustomPlayer.Local == player)
+                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
                     LocalRole.AllArrows.Add(snitch.PlayerId, new(player, CustomColorManager.Snitch));
-                else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
+                else if (snitch.TasksDone && snitch.Local)
                     snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
 
             foreach (var revealer in GetLayers<Revealer>())
             {
-                if (revealer.Revealed && CustomPlayer.Local == player)
+                if (revealer.Revealed && player.AmOwner)
                     LocalRole.AllArrows.Add(revealer.PlayerId, new(player, CustomColorManager.Revealer));
             }
         }
@@ -353,7 +353,7 @@ public class Thief : Neutral
             else
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         }
-        else if (Player != player && CustomPlayer.Local == player)
+        else if (Player != player && player.AmOwner)
             Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessTarget}!");
         else if (DeadSeeEverything())
         {

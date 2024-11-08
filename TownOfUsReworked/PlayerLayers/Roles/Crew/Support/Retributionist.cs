@@ -463,9 +463,7 @@ public class Retributionist : Crew
         else if (IsMed)
         {
             MediateButton ??= CreateButton(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, (UsableFunc)MedUsable,
-                new Cooldown(Medium.MediateCd));/*
-            SeanceButton ??= CreateButton(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, (UsableFunc)MedUsable,
-                new Cooldown(Medium.SeanceCd), new PostDeath(true));*/
+                new Cooldown(Medium.MediateCd));
         }
         else if (IsOp)
         {
@@ -607,7 +605,6 @@ public class Retributionist : Crew
     // Medium Stuff
     public Dictionary<byte, CustomArrow> MediateArrows { get; set; }
     public CustomButton MediateButton { get; set; }
-    // public CustomButton SeanceButton { get; set; }
     public List<byte> MediatedPlayers { get; set; }
     public bool IsMed => RevivedRole?.Type == LayerEnum.Medium;
 
@@ -649,8 +646,6 @@ public class Retributionist : Crew
             }
         }
     }
-
-    // private static void Seance() { Currently blank, gonna work on this later }
 
     public bool MedUsable() => IsMed;
 
@@ -1041,7 +1036,7 @@ public class Retributionist : Crew
             TransportPlayer2.NetTransform.Halt();
         }
 
-        if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
+        if (TransportPlayer1.AmOwner || TransportPlayer2.AmOwner)
             Flash(Color, Transporter.TransportDur);
 
         if (!Player1Body && !WasInVent1)
@@ -1078,13 +1073,12 @@ public class Retributionist : Crew
 
             if (IsSubmerged())
             {
-                if (CustomPlayer.Local == TransportPlayer1)
+                if (TransportPlayer1.AmOwner)
                 {
                     ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
                     CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
-
-                if (CustomPlayer.Local == TransportPlayer2)
+                else if (TransportPlayer2.AmOwner)
                 {
                     ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
                     CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -1106,7 +1100,7 @@ public class Retributionist : Crew
             Player1Body.transform.position = TransportPlayer2.GetTruePosition();
             TransportPlayer2.CustomSnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-            if (IsSubmerged() && CustomPlayer.Local == TransportPlayer2)
+            if (IsSubmerged() && TransportPlayer2.AmOwner)
             {
                 ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -1120,7 +1114,7 @@ public class Retributionist : Crew
             TransportPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
             Player2Body.transform.position = TempPosition;
 
-            if (IsSubmerged() && CustomPlayer.Local == TransportPlayer1)
+            if (IsSubmerged() && TransportPlayer1.AmOwner)
             {
                 ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -1133,7 +1127,7 @@ public class Retributionist : Crew
             (Player1Body.transform.position, Player2Body.transform.position) = (Player2Body.TruePosition, Player1Body.TruePosition);
         }
 
-        if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
+        if (TransportPlayer1.AmOwner || TransportPlayer2.AmOwner)
         {
             if (ActiveTask())
                 ActiveTask().Close();

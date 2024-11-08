@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class Range : MonoBehaviour
+public abstract class Range : MonoBehaviour
 {
     public static readonly List<GameObject> AllItems = [];
     public static int Number { get; set; }

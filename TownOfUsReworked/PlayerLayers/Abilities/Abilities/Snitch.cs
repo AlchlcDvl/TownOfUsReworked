@@ -39,7 +39,7 @@ public class Snitch : Ability
 
         if (TasksLeft == SnitchTasksRemaining)
         {
-            if (CustomPlayer.Local == Player)
+            if (Local)
                 Flash(Color);
             else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
                 Alignment.NeutralPros && SnitchSeesNeutrals))

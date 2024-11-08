@@ -43,7 +43,7 @@ public class Shifter : Crew
     {
         var role = other.GetRole();
 
-        if (!other.Is(Faction.Crew) || other.IsFramed())
+        if (!other.IsBase(Faction.Crew) || other.IsFramed())
         {
             if (AmongUsClient.Instance.AmHost)
                 RpcMurderPlayer(Player);
@@ -53,7 +53,7 @@ public class Shifter : Crew
 
         var player = Player;
 
-        if (CustomPlayer.Local == other || CustomPlayer.Local == player)
+        if (other.AmOwner || player.AmOwner)
         {
             Flash(CustomColorManager.Shifter);
             role.Deinit();
@@ -104,7 +104,10 @@ public class Shifter : Crew
         Role newRole2 = ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
         newRole2.RoleUpdate(role, other);
         ShifterMenu.Destroy();
-        CustomPlayerMenu.AllMenus.Remove(ShifterMenu);
+        CustomMenu.AllMenus.Remove(ShifterMenu);
+
+        if (other.AmOwner || player.AmOwner)
+            ButtonUtils.Reset();
     }
 
     public bool Exception(PlayerControl player) => player.HasDied() || (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None &&

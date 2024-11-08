@@ -399,7 +399,7 @@ public class Guesser : Neutral
                 }
             }
 
-            if (CustomPlayer.Local == player)
+            if (player.AmOwner)
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
             else if (DeadSeeEverything())
                 Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guessString}!");

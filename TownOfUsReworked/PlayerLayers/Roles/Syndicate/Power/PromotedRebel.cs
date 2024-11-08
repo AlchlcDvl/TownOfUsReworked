@@ -666,7 +666,7 @@ public class PromotedRebel : Syndicate
             WarpPlayer1.NetTransform.Halt();
         }
 
-        if (CustomPlayer.Local == WarpPlayer1)
+        if (WarpPlayer1.AmOwner)
             Flash(Color, Warper.WarpDur);
 
         if (!Player1Body && !WasInVent)
@@ -695,7 +695,7 @@ public class PromotedRebel : Syndicate
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.CustomSnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
-            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
+            if (IsSubmerged() && WarpPlayer1.AmOwner)
             {
                 ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -709,7 +709,7 @@ public class PromotedRebel : Syndicate
             StopDragging(Player1Body.ParentId);
             Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer2)
+            if (IsSubmerged() && WarpPlayer2.AmOwner)
             {
                 ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -720,7 +720,7 @@ public class PromotedRebel : Syndicate
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
+            if (IsSubmerged() && WarpPlayer1.AmOwner)
             {
                 ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -732,7 +732,7 @@ public class PromotedRebel : Syndicate
             Player1Body.transform.position = Player2Body.TruePosition;
         }
 
-        if (CustomPlayer.Local == WarpPlayer1)
+        if (WarpPlayer1.AmOwner)
         {
             if (ActiveTask())
                 ActiveTask().Close();
@@ -967,7 +967,7 @@ public class PromotedRebel : Syndicate
 
     public void StartConfusion()
     {
-        if (CustomPlayer.Local == ConfusedPlayer || HoldsDrive)
+        if (ConfusedPlayer.AmOwner || HoldsDrive)
             Flash(CustomColorManager.Drunkard);
     }
 
