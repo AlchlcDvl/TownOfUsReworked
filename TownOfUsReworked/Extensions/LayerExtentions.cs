@@ -1302,9 +1302,5 @@ public static class LayerExtentions
 
     public static Ability GetAbility(this PlayerVoteArea area) => PlayerByVoteArea(area).GetAbility();
 
-    public static bool TryGetLayer<T>(this PlayerControl player, out T layer) where T : PlayerLayer
-    {
-        layer = player.GetLayer<T>();
-        return layer;
-    }
+    public static bool TryGetLayer<T>(this PlayerControl player, out T layer) where T : PlayerLayer => layer = player.GetLayer<T>();
 }

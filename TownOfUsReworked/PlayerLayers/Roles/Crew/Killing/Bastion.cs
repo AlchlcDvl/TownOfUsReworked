@@ -42,12 +42,13 @@ public class Bastion : Crew
 
     public void Bomb()
     {
-        var cooldown = Interact(Player, BombButton.GetTarget<Vent>());
+        var target = BombButton.GetTarget<Vent>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            BombedIDs.Add(BombButton.GetTarget<Vent>().Id);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BombButton.GetTarget<Vent>());
+            BombedIDs.Add(target.Id);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
         }
 
         BombButton.StartCooldown(cooldown);

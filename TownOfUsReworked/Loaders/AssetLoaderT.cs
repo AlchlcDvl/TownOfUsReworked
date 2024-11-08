@@ -56,7 +56,7 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
             yield break;
         }
 
-        var response = JsonSerializer.Deserialize<List<T>>(jsonText);
+        var response = JsonSerializer.Deserialize<T[]>(jsonText);
 
         if (Downloading)
         {
@@ -66,7 +66,13 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
 
         UpdateSplashPatch.SetText($"Preloading {Manifest}");
         yield return AfterLoading(response);
+
+        Array.Clear(response);
         yield return EndFrame();
         yield break;
     }
+
+    public virtual IEnumerator BeginDownload(T[] response) => EndFrame();
+
+    public virtual IEnumerator AfterLoading(T[] response) => EndFrame();
 }

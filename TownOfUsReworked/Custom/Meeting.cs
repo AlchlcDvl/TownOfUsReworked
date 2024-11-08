@@ -9,7 +9,7 @@ public class CustomMeeting
     public string ActiveSprite { get; }
     public string DisabledSprite { get; }
     public MeetingTypes Type { get; }
-    public Vector3? Position { get; set; }
+    public Vector3 Position { get; set; }
     public Dictionary<byte, bool> Actives { get; set; }
     public Dictionary<byte, GameObject> Buttons { get; set; }
     public bool AfterVote { get; }
@@ -76,7 +76,7 @@ public class CustomMeeting
 
         var targetBox = UObject.Instantiate(voteArea.Buttons.transform.Find("CancelButton").gameObject, voteArea.transform);
         targetBox.name = Owner.name + ActiveSprite + voteArea.name;
-        targetBox.transform.localPosition = Position.Value;
+        targetBox.transform.localPosition = Position;
         var renderer = targetBox.GetComponent<SpriteRenderer>();
         renderer.sprite = GetSprite(Type == MeetingTypes.Toggle ? DisabledSprite : ActiveSprite);
         var button = targetBox.GetComponent<PassiveButton>();

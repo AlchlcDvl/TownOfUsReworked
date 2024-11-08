@@ -16,9 +16,12 @@ public abstract class AssetLoader
         if (count == 0)
             yield break;
 
-        for (var i = 0; i < count; i++)
+        Message($"Downloading {count} files");
+        var i = 0;
+
+        foreach (var fileName in files)
         {
-            var fileName = files.ElementAt(i);
+            i++;
             UpdateSplashPatch.SetText($"Downloading {Manifest} ({i}/{count})");
             var trueName = $"{fileName.Replace(" ", "%20")}{(IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}")}";
             Message($"Downloading: {Manifest}/{fileName}");
@@ -72,8 +75,4 @@ public abstract class AssetLoader
         yield return EndFrame();
         yield break;
     }
-
-    public virtual IEnumerator BeginDownload(object response) => EndFrame();
-
-    public virtual IEnumerator AfterLoading(object response) => EndFrame();
 }

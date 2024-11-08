@@ -542,9 +542,8 @@ public static class Utils
             else if (target.TryGetLayer<Dictator>(out var dict))
             {
                 dict.DictMenu.HideButtons();
-                dict.ToBeEjected.Clear();
-                dict.ToDie = false;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, false, dict.ToBeEjected);
+                dict.ToBeEjected = null;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, DictActionsRPC.SelectToEject, dict.ToBeEjected);
             }
             else if (target.TryGetLayer<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
@@ -574,39 +573,42 @@ public static class Utils
         voteArea.XMark.gameObject.SetActive(true);
         voteArea.XMark.transform.localScale = Vector3.one;
 
-        foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
+        if (MeetingHudUpdatePatch.CachedOverlay)
         {
-            if (target == role.BlackmailedPlayer && role.PrevOverlay)
+            foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
             {
-                voteArea.Overlay.sprite = role.PrevOverlay;
-                voteArea.Overlay.color = role.PrevColor.Value;
+                if (target == role.BlackmailedPlayer)
+                {
+                    voteArea.Overlay.sprite = MeetingHudUpdatePatch.CachedOverlay;
+                    voteArea.Overlay.color = MeetingHudUpdatePatch.CachedColor ?? UColor.white;
+                }
             }
-        }
 
-        foreach (var role in PlayerLayer.GetLayers<Silencer>())
-        {
-            if (target == role.SilencedPlayer && role.PrevOverlay)
+            foreach (var role in PlayerLayer.GetLayers<Silencer>())
             {
-                voteArea.Overlay.sprite = role.PrevOverlay;
-                voteArea.Overlay.color = role.PrevColor.Value;
+                if (target == role.SilencedPlayer)
+                {
+                    voteArea.Overlay.sprite = MeetingHudUpdatePatch.CachedOverlay;
+                    voteArea.Overlay.color = MeetingHudUpdatePatch.CachedColor ?? UColor.white;
+                }
             }
-        }
 
-        foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
-        {
-            if (target == role.BlackmailedPlayer && role.PrevOverlay && role.IsBM)
+            foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
             {
-                voteArea.Overlay.sprite = role.PrevOverlay;
-                voteArea.Overlay.color = role.PrevColor.Value;
+                if (target == role.BlackmailedPlayer && role.IsBM)
+                {
+                    voteArea.Overlay.sprite = MeetingHudUpdatePatch.CachedOverlay;
+                    voteArea.Overlay.color = MeetingHudUpdatePatch.CachedColor ?? UColor.white;
+                }
             }
-        }
 
-        foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
-        {
-            if (target == role.SilencedPlayer && role.PrevOverlay && role.IsSil)
+            foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
             {
-                voteArea.Overlay.sprite = role.PrevOverlay;
-                voteArea.Overlay.color = role.PrevColor.Value;
+                if (target == role.SilencedPlayer && role.IsSil)
+                {
+                    voteArea.Overlay.sprite = MeetingHudUpdatePatch.CachedOverlay;
+                    voteArea.Overlay.color = MeetingHudUpdatePatch.CachedColor ?? UColor.white;
+                }
             }
         }
 
@@ -646,9 +648,9 @@ public static class Utils
             {
                 if (dict.DictMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
-                    dict.ToBeEjected.Clear();
+                    dict.ToBeEjected = null;
                     dict.DictMenu.Actives.Keys.ForEach(x => dict.DictMenu.Actives[x] = false);
-                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, false, dict.ToBeEjected);
+                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, DictActionsRPC.SelectToEject, dict.ToBeEjected);
                 }
 
                 dict.DictMenu.HideSingle(target.PlayerId);
@@ -1327,7 +1329,7 @@ public static class Utils
     public static void RpcBreakShield(PlayerControl target)
     {
         Role.BreakShield(target, Medic.ShieldBreaks);
-        CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
+        CallRpc(CustomRPC.Misc, MiscRPC.BreakShield, target);
     }
 
     // public static T EnsureComponent<T>(this Component component) where T : Component => component?.gameObject?.EnsureComponent<T>();

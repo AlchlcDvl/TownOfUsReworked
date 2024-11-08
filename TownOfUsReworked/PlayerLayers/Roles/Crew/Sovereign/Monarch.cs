@@ -47,12 +47,13 @@ public class Monarch : Crew
 
     public void Knight()
     {
-        var cooldown = Interact(Player, KnightingButton.GetTarget<PlayerControl>());
+        var target = KnightingButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, KnightingButton.GetTarget<PlayerControl>().PlayerId);
-            ToBeKnighted.Add(KnightingButton.GetTarget<PlayerControl>().PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
+            ToBeKnighted.Add(target.PlayerId);
         }
 
         KnightingButton.StartCooldown(cooldown);

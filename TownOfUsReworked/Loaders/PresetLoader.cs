@@ -9,13 +9,9 @@ public class PresetLoader : AssetLoader<Asset>
 
     public static PresetLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(object response)
+    public override IEnumerator BeginDownload(Asset[] response)
     {
-        var mainResponse = (List<Asset>)response;
-        Message($"Found {mainResponse.Count} presets");
-        var toDownload = mainResponse.Select(x => x.ID);
-        Message($"Downloading {toDownload.Count()} presets");
-        yield return CoDownloadAssets(toDownload);
-        mainResponse.Clear();
+        Message($"Found {response.Length} presets");
+        yield return CoDownloadAssets(response.Select(x => x.ID));
     }
 }

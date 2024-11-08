@@ -22,6 +22,12 @@ public enum ActionsRPC
     None
 }
 
+public enum DictActionsRPC
+{
+    Tribunal,
+    SelectToEject,
+}
+
 public enum GlitchActionsRPC
 {
     Mimic,
@@ -294,7 +300,7 @@ public enum MiscRPC
 {
     SetLayer,
     Catch,
-    AttemptSound,
+    BreakShield,
     Start,
     SyncCustomSettings,
     SetSettings,

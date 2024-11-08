@@ -104,18 +104,13 @@ public static class RoleGen
 
     private static bool Check(RoleOptionData data, bool sorting = false)
     {
-        if (IsAA())
-            return URandom.RandomRangeInt(0, 2) == 0 && data.Active;
-        else
-        {
-            if (data.Chance == 0)
-                return false;
+        if (data.Chance == 0)
+            return false;
 
-            if (data.Chance == 100)
-                return !sorting;
+        if (data.Chance == 100)
+            return !sorting;
 
-            return URandom.RandomRangeInt(1, 100) <= data.Chance;
-        }
+        return URandom.RandomRangeInt(1, 100) <= data.Chance;
     }
 
     private static List<RoleOptionData> Sort(List<RoleOptionData> items, int amount)
@@ -123,44 +118,33 @@ public static class RoleGen
         var newList = new List<RoleOptionData>();
         items.Shuffle();
 
-        if (amount != AllPlayers().Count && IsAA())
-            amount = AllPlayers().Count;
-        else if (items.Count < amount)
-            amount = items.Count;
-
         if (IsAA())
         {
-            var rate = 0;
+            if (amount != AllPlayers().Count)
+                amount = AllPlayers().Count;
 
-            while (newList.Count < amount && items.Any() && rate < 10000)
+            while (newList.Count < amount && items.Any())
             {
                 items.Shuffle();
-                newList.Add(items[0]);
-
-                if (items[0].Unique)
-                    items.Remove(items[0]);
-                else
-                    rate++;
+                var first = items[0];
+                newList.Add(first.Unique ? items.TakeFirst() : first);
             }
         }
         else
         {
+            if (items.Count < amount)
+                amount = items.Count;
+
             var guaranteed = items.Where(x => x.Chance == 100).ToList();
             guaranteed.Shuffle();
-            var optionals = items.Where(x => Check(x, true)).ToList();
+            var optionals = items.Where(x => x.Chance != 100 && Check(x, true)).ToList();
             optionals.Shuffle();
             newList.AddRanges(guaranteed, optionals);
 
-            while (newList.Count < amount)
-                newList.Add(items.Where(x => x.Chance < 100).Random(x => !newList.Contains(x)));
+            if (newList.Count < amount)
+                newList.AddRange(items.GetRandomRange(amount - newList.Count, x => x.Chance < 100 && !newList.Contains(x)));
         }
 
-        newList = [ .. newList.OrderByDescending(x => x.Chance) ];
-
-        while (newList.Count > amount && newList.Count > 1)
-            newList.Remove(newList.Last());
-
-        newList.Shuffle();
         return newList;
     }
 
@@ -261,110 +245,71 @@ public static class RoleGen
     private static int GetRandomCount()
     {
         var random = URandom.RandomRangeInt(0, 100);
-        var players = GameData.Instance.PlayerCount;
-        var result = 0;
-
-        if (players <= 6)
+        return GameData.Instance.PlayerCount switch
         {
-            if (random <= 5)
-                result = 0;
-            else
-                result = 1;
-        }
-        else if (players == 7)
-        {
-            if (random < 5)
-                result = 0;
-            else if (random < 20)
-                result = 2;
-            else
-                result = 1;
-        }
-        else if (players == 8)
-        {
-            if (random < 5)
-                result = 0;
-            else if (random < 40)
-                result = 2;
-            else
-                result = 1;
-        }
-        else if (players == 9)
-        {
-            if (random < 5)
-                result = 0;
-            else if (random < 50)
-                result = 2;
-            else
-                result = 1;
-        }
-        else if (players == 10)
-        {
-            if (random < 5)
-                result = 0;
-            else if (random < 10)
-                result = 3;
-            else if (random < 60)
-                result = 2;
-            else
-                result = 1;
-        }
-        else if (players == 11)
-        {
-            if (random < 10)
-                result = 0;
-            else if (random < 60)
-                result = 2;
-            else if (random < 70)
-                result = 3;
-            else
-                result = 1;
-        }
-        else if (players == 12)
-        {
-            if (random < 10)
-                result = 0;
-            else if (random < 60)
-                result = 2;
-            else if (random < 80)
-                result = 3;
-            else
-                result = 1;
-        }
-        else if (players == 13)
-        {
-            if (random < 10)
-                result = 0;
-            else if (random < 60)
-                result = 2;
-            else if (random < 90)
-                result = 3;
-            else
-                result = 1;
-        }
-        else if (players == 14)
-        {
-            if (random < 5)
-                result = 0;
-            else if (random < 25)
-                result = 1;
-            else if (random < 50)
-                result = 3;
-            else
-                result = 2;
-        }
-        else if (random < 5)
-            result = 0;
-        else if (random < 20)
-            result = 1;
-        else if (random < 60)
-            result = 3;
-        else if (random < 90)
-            result = 2;
-        else
-            result = 4;
-
-        return result;
+            <= 6 => random <= 5 ? 0 : 1,
+            7 => random switch
+            {
+                < 5 => 0,
+                < 20 => 2,
+                _ => 1
+            },
+            8 => random switch
+            {
+                < 5 => 0,
+                < 40 => 2,
+                _ => 1
+            },
+            9 => random switch
+            {
+                < 5 => 0,
+                < 50 => 2,
+                _ => 1
+            },
+            10 => random switch
+            {
+                < 5 => 0,
+                < 10 => 3,
+                < 60 => 2,
+                _ => 1
+            },
+            11 => random switch
+            {
+                < 5 => 0,
+                < 40 => 3,
+                < 70 => 2,
+                _ => 1
+            },
+            12 => random switch
+            {
+                < 5 => 0,
+                < 60 => 3,
+                < 80 => 2,
+                _ => 1
+            },
+            13 => random switch
+            {
+                < 5 => 0,
+                < 60 => 3,
+                < 90 => 2,
+                _ => 1
+            },
+            14 => random switch
+            {
+                < 5 => 0,
+                < 25 => 1,
+                < 60 => 3,
+                _ => 2
+            },
+            _ => random switch
+            {
+                < 5 => 0,
+                < 20 => 1,
+                < 60 => 3,
+                < 90 => 2,
+                _ => 4
+            }
+        };
     }
 
     private static void GenVanilla()
@@ -491,8 +436,9 @@ public static class RoleGen
             result = new List<LayerEnum>() { LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Whisperer }.Any(x => GetSpawnItem(x).IsActive());
         else if (layer == LayerEnum.Seer)
         {
-            result = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor, LayerEnum.Amnesiac,
-                LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter }.Any(x => GetSpawnItem(x).IsActive());
+            result = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic,
+                LayerEnum.Traitor, LayerEnum.Amnesiac, LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter }.Any(x => GetSpawnItem(x)
+                    .IsActive());
         }
         else if (layer == LayerEnum.Plaguebearer)
             result = !NeutralApocalypseSettings.DirectSpawn;
@@ -540,9 +486,7 @@ public static class RoleGen
                     SetPostmortals.RevealerOn = Check(spawn);
                 else if (spawn.IsActive())
                 {
-                    var num = spawn.Count;
-
-                    while (num > 0)
+                    for (var j = 0; j < spawn.Count; j++)
                     {
                         if (layer is LayerEnum.Mayor or LayerEnum.Monarch or LayerEnum.Dictator)
                             CrewSovereignRoles.Add(spawn);
@@ -558,12 +502,10 @@ public static class RoleGen
                             CrewSupportRoles.Add(spawn);
                         else if (layer == LayerEnum.Crewmate)
                             CrewRoles.Add(spawn);
-
-                        num--;
                     }
-                }
 
-                Info($"{layer} Done");
+                    Info($"{layer} Active");
+                }
             }
         }
 
@@ -582,9 +524,7 @@ public static class RoleGen
                     SetPostmortals.PhantomOn = Check(spawn);
                 else if (spawn.IsActive())
                 {
-                    var num = spawn.Count;
-
-                    while (num > 0)
+                    for (var j = 0; j < spawn.Count; j++)
                     {
                         if (layer is LayerEnum.Plaguebearer or LayerEnum.Pestilence)
                             NeutralHarbingerRoles.Add(spawn);
@@ -596,12 +536,10 @@ public static class RoleGen
                             NeutralKillingRoles.Add(spawn);
                         else if (layer is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer)
                             NeutralNeophyteRoles.Add(spawn);
-
-                        num--;
                     }
-                }
 
-                Info($"{layer} Done");
+                    Info($"{layer} Active");
+                }
             }
         }
 
@@ -620,9 +558,7 @@ public static class RoleGen
                     SetPostmortals.GhoulOn = Check(spawn);
                 else if (spawn.IsActive(imps))
                 {
-                    var num = spawn.Count;
-
-                    while (num > 0)
+                    for (var j = 0; j < spawn.Count; j++)
                     {
                         if (layer == LayerEnum.Godfather)
                             IntruderHeadRoles.Add(spawn);
@@ -636,12 +572,10 @@ public static class RoleGen
                             IntruderSupportRoles.Add(spawn);
                         else if (layer == LayerEnum.Impostor)
                             IntruderRoles.Add(spawn);
-
-                        num--;
                     }
-                }
 
-                Info($"{layer} Done");
+                    Info($"{layer} Active");
+                }
             }
         }
 
@@ -660,9 +594,7 @@ public static class RoleGen
                     SetPostmortals.BansheeOn = Check(spawn);
                 else if (spawn.IsActive(syn))
                 {
-                    var num = spawn.Count;
-
-                    while (num > 0)
+                    for (var j = 0; j < spawn.Count; j++)
                     {
                         if (layer is LayerEnum.Rebel or LayerEnum.Spellslinger)
                             SyndicatePowerRoles.Add(spawn);
@@ -674,14 +606,10 @@ public static class RoleGen
                             SyndicateSupportRoles.Add(spawn);
                         else if (layer == LayerEnum.Anarchist)
                             SyndicateRoles.Add(spawn);
-                        else if (layer == LayerEnum.Banshee)
-                            SetPostmortals.BansheeOn = Check(spawn);
-
-                        num--;
                     }
-                }
 
-                Info($"{layer} Done");
+                    Info($"{layer} Active");
+                }
             }
         }
 
@@ -1005,11 +933,6 @@ public static class RoleGen
             Message("All Any Sorting Done");
         }
 
-        CrewRoles.Shuffle();
-        SyndicateRoles.Shuffle();
-        IntruderRoles.Shuffle();
-        NeutralRoles.Shuffle();
-
         AllRoles.AddRanges(CrewRoles, NeutralRoles, SyndicateRoles);
 
         if (!SyndicateSettings.AltImps)
@@ -1190,16 +1113,11 @@ public static class RoleGen
 
             if (spawn.IsActive())
             {
-                var num = spawn.Count;
-
-                while (num > 0)
-                {
+                for (var j = 0; j < spawn.Count; j++)
                     AllAbilities.Add(spawn);
-                    num--;
-                }
-            }
 
-            Info($"{layer} Done");
+                Info($"{layer} Active");
+            }
         }
 
         int maxAb = AbilitiesSettings.MaxAbilities;
@@ -1318,16 +1236,11 @@ public static class RoleGen
 
             if (spawn.IsActive())
             {
-                var num = spawn.Count * (layer is LayerEnum.Rivals or LayerEnum.Lovers or LayerEnum.Linked ? 2 : 1);
-
-                while (num > 0)
-                {
+                for (var j = 0; j < spawn.Count * (layer is LayerEnum.Rivals or LayerEnum.Lovers or LayerEnum.Linked ? 2 : 1); j++)
                     AllDispositions.Add(spawn);
-                    num--;
-                }
-            }
 
-            Info($"{spawn} Done");
+                Info($"{layer} Active");
+            }
         }
 
         int maxObj = DispositionsSettings.MaxDispositions;
@@ -1416,16 +1329,11 @@ public static class RoleGen
 
             if (spawn.IsActive())
             {
-                var num = spawn.Count;
-
-                while (num > 0)
-                {
+                for (var j = 0; j < spawn.Count; j++)
                     AllModifiers.Add(spawn);
-                    num--;
-                }
-            }
 
-            Info($"{layer} Done");
+                Info($"{layer} Active");
+            }
         }
 
         int maxMod = ModifiersSettings.MaxModifiers;

@@ -61,13 +61,13 @@ public class Detective : Crew
 
     public void Examine()
     {
-        var cooldown = Interact(Player, ExamineButton.GetTarget<PlayerControl>());
+        var target = ExamineButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            Flash(ExamineButton.GetTarget<PlayerControl>().IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.GetTarget<PlayerControl>().PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
-                RecentKill) ? UColor.red : UColor.green);
-            Investigated.Add(ExamineButton.GetTarget<PlayerControl>().PlayerId);
+            Flash(target.IsFramed() || KilledPlayers.Any(x => x.KillerId == target.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <= RecentKill) ? UColor.red : UColor.green);
+            Investigated.Add(target.PlayerId);
         }
 
         ExamineButton.StartCooldown(cooldown);

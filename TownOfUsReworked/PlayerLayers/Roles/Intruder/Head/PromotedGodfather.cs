@@ -180,8 +180,6 @@ public class PromotedGodfather : Intruder
     public CustomButton BlackmailButton { get; set; }
     public PlayerControl BlackmailedPlayer { get; set; }
     public bool ShookAlready { get; set; }
-    public Sprite PrevOverlay { get; set; }
-    public UColor? PrevColor { get; set; }
     public bool IsBM => FormerRole?.Type == LayerEnum.Blackmailer;
 
     public void Blackmail()

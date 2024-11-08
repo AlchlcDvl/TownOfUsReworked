@@ -1020,7 +1020,7 @@ public class PlayerHandler : MonoBehaviour
         if (revealed)
             player.NameText().transform.localPosition = new(0f, 0.15f, -0.5f);
         else
-            player.NameText().transform.localPosition = NamePos.Value;
+            player.NameText().transform.localPosition = NamePos ?? default;
 
         return (name, color);
     }

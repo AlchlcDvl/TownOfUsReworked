@@ -18,8 +18,6 @@ public class Silencer : Syndicate
     public CustomButton SilenceButton { get; set; }
     public PlayerControl SilencedPlayer { get; set; }
     public bool ShookAlready { get; set; }
-    public Sprite PrevOverlay { get; set; }
-    public UColor? PrevColor { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Silencer : CustomColorManager.Syndicate;
     public override string Name => "Silencer";

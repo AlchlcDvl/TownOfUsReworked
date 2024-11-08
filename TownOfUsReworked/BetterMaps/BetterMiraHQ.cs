@@ -63,7 +63,7 @@ public static class BetterMiraHQ
             if (!EnableBetterMiraHQ)
                 return;
 
-            if (!IsVentModified && __instance.Type == ShipStatus.MapType.Hq)
+            if (!IsVentModified && __instance.Type == ShipStatus.MapType.Hq && CommsVent)
             {
                 CommsVent.Id = GetAvailableId();
                 IsVentModified = true;

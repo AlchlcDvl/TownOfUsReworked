@@ -30,10 +30,11 @@ public class Sheriff : Crew
 
     public void Interrogate()
     {
-        var cooldown = Interact(Player, InterrogateButton.GetTarget<PlayerControl>());
+        var target = InterrogateButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash(InterrogateButton.GetTarget<PlayerControl>().SeemsEvil() ? UColor.red : UColor.green);
+            Flash(target.SeemsEvil() ? UColor.red : UColor.green);
 
         InterrogateButton.StartCooldown(cooldown);
     }

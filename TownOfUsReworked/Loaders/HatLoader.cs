@@ -12,32 +12,29 @@ public class HatLoader : AssetLoader<CustomHat>
 
     public static HatLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(object response)
+    public override IEnumerator BeginDownload(CustomHat[] response)
     {
-        var mainResponse = (List<CustomHat>)response;
-        UnregisteredHats.AddRange(mainResponse);
+        UnregisteredHats.AddRange(response);
         Message($"Found {UnregisteredHats.Count} hats");
-        var toDownload = GenerateDownloadList(UnregisteredHats);
-        Message($"Downloading {toDownload.Count} hat files");
-        yield return CoDownloadAssets(toDownload);
-        mainResponse.Clear();
+        yield return CoDownloadAssets(GenerateDownloadList(UnregisteredHats));
     }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(CustomHat[] response)
     {
         UnregisteredHats.ForEach(ch => ch.Behind = ch.BackID != null || ch.BackFlipID != null);
 
-        // if (TownOfUsReworked.IsStream)
-        // {
-        //     var filePath = Path.Combine(TownOfUsReworked.Hats, "Stream", "Hats.json");
+        if (TownOfUsReworked.IsStream)
+        {
+            var filePath = Path.Combine(TownOfUsReworked.Hats, "Stream", "Hats.json");
 
-        //     if (File.Exists(filePath))
-        //     {
-        //         var data = JsonSerializer.Deserialize<List<CustomHat>>(File.ReadAllText(filePath));
-        //         data.ForEach(x => x.StreamOnly = true);
-        //         UnregisteredHats.AddRange(data);
-        //     }
-        // }
+            if (File.Exists(filePath))
+            {
+                var data = JsonSerializer.Deserialize<CustomHat[]>(File.ReadAllText(filePath));
+                data.ForEach(x => x.StreamOnly = true);
+                UnregisteredHats.AddRange(data);
+                Array.Clear(data);
+            }
+        }
 
         var cache = UnregisteredHats.Clone();
         var time = 0f;

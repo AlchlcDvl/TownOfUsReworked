@@ -1,13 +1,13 @@
 namespace TownOfUsReworked.Patches;
 
 #region OpenDoorConsole
-// [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse))]
-// public static class OpenDoorConsoleCanUse
-// {
-//     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
+[HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse))]
+public static class OpenDoorConsoleCanUse
+{
+    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
-//     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-// }
+    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+}
 
 [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
 public static class OpenDoorConsoleUse
@@ -26,49 +26,36 @@ public static class OpenDoorConsoleUse
         return false;
     }
 }
+#endregion
 
-[HarmonyPatch]
-public static class CanUsePatches
+#region DoorConsole
+[HarmonyPatch(typeof(DoorConsole), nameof(DoorConsole.CanUse))]
+public static class DoorConsoleCanUse
 {
-    public static IEnumerable<MethodBase> TargetMethods() => AccessTools.GetTypesFromAssembly(typeof(Console).Assembly)
-        .Where(x => x.IsAssignableTo(typeof(Console)) && !x.IsAny(typeof(Vent), typeof(OptionsConsole), typeof(SystemConsole)))
-        .SelectMany(type => type.GetMethods())
-        .Where(method => method.ReturnType == typeof(float) && method.Name.StartsWith("CanUse"));
-
     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
 }
 #endregion
 
-#region DoorConsole
-// [HarmonyPatch(typeof(DoorConsole), nameof(DoorConsole.CanUse))]
-// public static class DoorConsoleCanUse
-// {
-//     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
-
-//     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-// }
-#endregion
-
 #region Ladder
-// [HarmonyPatch(typeof(Ladder), nameof(Ladder.CanUse))]
-// public static class LadderCanUse
-// {
-//     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
+[HarmonyPatch(typeof(Ladder), nameof(Ladder.CanUse))]
+public static class LadderCanUse
+{
+    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
-//     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-// }
+    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+}
 #endregion
 
 #region PlatformConsole
-// [HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.CanUse))]
-// public static class PlatformConsoleCanUse
-// {
-//     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
+[HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.CanUse))]
+public static class PlatformConsoleCanUse
+{
+    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
-//     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-// }
+    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+}
 
 [HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl))]
 public static class MovingPlatformBehaviourUse
@@ -80,13 +67,13 @@ public static class MovingPlatformBehaviourUse
 #endregion
 
 #region DeconControl
-// [HarmonyPatch(typeof(DeconControl), nameof(DeconControl.CanUse))]
-// public static class DeconControlUse
-// {
-//     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
+[HarmonyPatch(typeof(DeconControl), nameof(DeconControl.CanUse))]
+public static class DeconControlUse
+{
+    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
-//     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-// }
+    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+}
 #endregion
 
 #region Console
@@ -108,20 +95,20 @@ public static class ConsoleCanUsePatch
         return true;
     }
 
-    // public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
+    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
-    // public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
 }
 #endregion
 
 #region ZiplineConsole
-// [HarmonyPatch(typeof(ZiplineConsole), nameof(ZiplineConsole.CanUse))]
-// public static class ZiplineConsoleCanUse
-// {
-//     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
+[HarmonyPatch(typeof(ZiplineConsole), nameof(ZiplineConsole.CanUse))]
+public static class ZiplineConsoleCanUse
+{
+    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
-//     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-// }
+    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+}
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CheckUseZipline))]
 public static class PlayerControlCheckUseZipline

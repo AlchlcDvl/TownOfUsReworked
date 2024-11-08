@@ -9,25 +9,19 @@ public class PortalLoader : AssetLoader<Asset>
 
     public static PortalLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(object response)
+    public override IEnumerator BeginDownload(Asset[] response)
     {
-        var mainResponse = (List<Asset>)response;
-        Message($"Found {mainResponse.Count} frames");
-        var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
-        Message($"Downloading {toDownload.Count()} frames");
-        yield return CoDownloadAssets(toDownload);
+        Message($"Found {response.Length} frames");
+        yield return CoDownloadAssets(response.Select(x => x.ID).Where(ShouldDownload));
     }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(Asset[] response)
     {
-        var portal = (List<Asset>)response;
-        var textures = new List<Texture2D>();
-        portal.Select(x => Path.Combine(DirectoryInfo, $"{x.ID}.png")).ForEach(x => textures.Add(LoadDiskTexture(x)));
         var time = 0f;
 
-        for (var i = 0; i < portal.Count; i++)
+        for (var i = 0; i < response.Length; i++)
         {
-            PortalAnimation.Add(CreateSprite(textures[i], portal[i].ID));
+            PortalAnimation.Add(LoadDiskSprite(Path.Combine(DirectoryInfo, $"{response[i].ID}.png")));
             time += Time.deltaTime;
 
             if (time > 1f)
@@ -38,7 +32,6 @@ public class PortalLoader : AssetLoader<Asset>
             }
         }
 
-        portal.Clear();
         yield break;
     }
 

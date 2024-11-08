@@ -7,8 +7,6 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     private string[] IgnoreStrings { get; } = ignoreStrings ?? [];
     private List<Enum> EnumValues { get; set; }
 
-    public int GetInt() => Index;
-
     public string GetString() => Values[Index];
 
     public void Increase()

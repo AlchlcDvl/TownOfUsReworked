@@ -70,70 +70,21 @@ public static class SetPostmortals
 
         foreach (var dict in PlayerLayer.GetLayers<Dictator>())
         {
-            if (dict.Revealed && dict.ToBeEjected.Any() && !dict.ToBeEjected.Any(x => x == 255))
+            if (dict.Revealed && dict.ToBeEjected)
             {
-                foreach (var exiled1 in dict.ToBeEjected)
-                {
-                    var player = PlayerById(exiled1);
+                dict.ToBeEjected.Exiled();
+                var role = dict.ToBeEjected.GetRole();
+                role.KilledBy = " By " + dict.PlayerName;
+                role.DeathReason = DeathReasonEnum.Dictated;
 
-                    if (!player)
-                        continue;
-
-                    player.Exiled();
-                    var role = player.GetRole();
-                    role.KilledBy = " By " + dict.PlayerName;
-                    role.DeathReason = DeathReasonEnum.Dictated;
-                }
-
-                if (dict.ToDie)
+                if (dict.ToBeEjected.Is(Faction.Crew) && dict.ToBeEjected.Is(SubFaction.None))
                 {
                     dict.Player.Exiled();
                     dict.DeathReason = DeathReasonEnum.Suicide;
                     MisfiredPlayers.Add(dict.Player.PlayerId);
                 }
 
-                dict.Ejected = true;
-                dict.ToBeEjected.Clear();
-            }
-        }
-
-        foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
-        {
-            if (bh.TargetKilled && !bh.Dead)
-            {
-                bh.Player.Exiled();
-                bh.DeathReason = DeathReasonEnum.Escaped;
-                EscapedPlayers.Add(bh.Player.PlayerId);
-            }
-        }
-
-        foreach (var exe in PlayerLayer.GetLayers<Executioner>())
-        {
-            if (exe.TargetVotedOut && !exe.Dead)
-            {
-                exe.Player.Exiled();
-                exe.DeathReason = DeathReasonEnum.Escaped;
-                EscapedPlayers.Add(exe.Player.PlayerId);
-            }
-        }
-
-        foreach (var guess in PlayerLayer.GetLayers<Guesser>())
-        {
-            if (guess.TargetGuessed && !guess.Dead)
-            {
-                guess.Player.Exiled();
-                guess.DeathReason = DeathReasonEnum.Escaped;
-                EscapedPlayers.Add(guess.Player.PlayerId);
-            }
-        }
-
-        foreach (var cann in PlayerLayer.GetLayers<Cannibal>())
-        {
-            if (cann.Eaten && !cann.Dead)
-            {
-                cann.Player.Exiled();
-                cann.DeathReason = DeathReasonEnum.Escaped;
-                EscapedPlayers.Add(cann.Player.PlayerId);
+                dict.ToBeEjected = null;
             }
         }
 
@@ -144,6 +95,49 @@ public static class SetPostmortals
                 vigi.Player.Exiled();
                 vigi.DeathReason = DeathReasonEnum.Suicide;
                 MisfiredPlayers.Add(vigi.Player.PlayerId);
+            }
+        }
+
+        if (NeutralSettings.AvoidNeutralKingmakers)
+        {
+            foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
+            {
+                if (bh.TargetKilled && !bh.Dead)
+                {
+                    bh.Player.Exiled();
+                    bh.DeathReason = DeathReasonEnum.Escaped;
+                    EscapedPlayers.Add(bh.Player.PlayerId);
+                }
+            }
+
+            foreach (var exe in PlayerLayer.GetLayers<Executioner>())
+            {
+                if (exe.TargetVotedOut && !exe.Dead)
+                {
+                    exe.Player.Exiled();
+                    exe.DeathReason = DeathReasonEnum.Escaped;
+                    EscapedPlayers.Add(exe.Player.PlayerId);
+                }
+            }
+
+            foreach (var guess in PlayerLayer.GetLayers<Guesser>())
+            {
+                if (guess.TargetGuessed && !guess.Dead)
+                {
+                    guess.Player.Exiled();
+                    guess.DeathReason = DeathReasonEnum.Escaped;
+                    EscapedPlayers.Add(guess.Player.PlayerId);
+                }
+            }
+
+            foreach (var cann in PlayerLayer.GetLayers<Cannibal>())
+            {
+                if (cann.Eaten && !cann.Dead)
+                {
+                    cann.Player.Exiled();
+                    cann.DeathReason = DeathReasonEnum.Escaped;
+                    EscapedPlayers.Add(cann.Player.PlayerId);
+                }
             }
         }
 

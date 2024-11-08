@@ -9,35 +9,30 @@ public class SoundLoader : AssetLoader<Asset>
 
     public static SoundLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(object response)
+    public override IEnumerator BeginDownload(Asset[] response)
     {
-        var mainResponse = (List<Asset>)response;
-        Message($"Found {mainResponse.Count} sounds");
-        var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
-        Message($"Downloading {toDownload.Count()} sounds");
-        yield return CoDownloadAssets(toDownload);
+        Message($"Found {response.Length} sounds");
+        yield return CoDownloadAssets(response.Select(x => x.ID).Where(ShouldDownload));
     }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(Asset[] response)
     {
-        var sounds = (List<Asset>)response;
         var time = 0f;
 
-        for (var i = 0; i < sounds.Count; i++)
+        for (var i = 0; i < response.Length; i++)
         {
-            var sound = sounds[i];
-            AddAsset(sound.ID, CreateDiskAudio(Path.Combine(DirectoryInfo, $"{sound.ID}.wav")));
+            var sound = response[i];
+            AddPath(sound.ID, Path.Combine(DirectoryInfo, $"{sound.ID}.wav"));
             time += Time.deltaTime;
 
             if (time > 1f)
             {
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Sounds ({i + 1}/{sounds.Count})");
+                UpdateSplashPatch.SetText($"Loading Sounds ({i + 1}/{response.Length})");
                 yield return EndFrame();
             }
         }
 
-        sounds.Clear();
         yield break;
     }
 

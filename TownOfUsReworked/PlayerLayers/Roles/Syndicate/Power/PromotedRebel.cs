@@ -1034,8 +1034,6 @@ public class PromotedRebel : Syndicate
     public CustomButton SilenceButton { get; set; }
     public PlayerControl SilencedPlayer { get; set; }
     public bool ShookAlready { get; set; }
-    public Sprite PrevOverlay { get; set; }
-    public UColor? PrevColor { get; set; }
     public bool IsSil => FormerRole?.Type == LayerEnum.Silencer;
 
     public bool SilenceException(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !Silencer.SilenceMates) ||

@@ -9,12 +9,10 @@ public class TranslationLoader : AssetLoader<Language>
 
     public static TranslationLoader Instance { get; set; }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(Language[] response)
     {
-        var langs = (List<Language>)response;
-        AllTranslations.AddRange(langs);
+        AllTranslations.AddRange(response);
         Message($"Found {AllTranslations.Count} translations");
-        langs.Clear();
         yield break;
     }
 }

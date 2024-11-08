@@ -31,10 +31,11 @@ public class Seer : Crew
 
     public void See()
     {
-        var cooldown = Interact(Player, SeerButton.GetTarget<PlayerControl>());
+        var target = SeerButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash(SeerButton.GetTarget<PlayerControl>().GetRole().RoleHistory.Any() || SeerButton.GetTarget<PlayerControl>().IsFramed() ? UColor.red : UColor.green);
+            Flash(target.GetRole().RoleHistory.Any() || target.IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }

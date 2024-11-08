@@ -51,10 +51,11 @@ public class Tracker : Crew
 
     public void Track()
     {
-        var cooldown = Interact(Player, TrackButton.GetTarget<PlayerControl>());
+        var target = TrackButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            TrackerArrows.Add(TrackButton.GetTarget<PlayerControl>().PlayerId, new(Player, TrackButton.GetTarget<PlayerControl>().GetPlayerColor(), UpdateInterval));
+            TrackerArrows.Add(target.PlayerId, new(Player, target.GetPlayerColor(), UpdateInterval));
 
         TrackButton.StartCooldown(cooldown);
     }

@@ -8,23 +8,19 @@ public class BundleLoader : AssetLoader<Asset>
 
     public static BundleLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(object response)
+    public override IEnumerator BeginDownload(Asset[] response)
     {
-        var mainResponse = (List<Asset>)response;
-        Message($"Found {mainResponse.Count} assets");
-        var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
-        Message($"Downloading {toDownload.Count()} assets");
-        yield return CoDownloadAssets(toDownload);
+        Message($"Found {response.Length} assets");
+        yield return CoDownloadAssets(response.Select(x => x.ID).Where(ShouldDownload));
     }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(Asset[] response)
     {
-        var assets = (List<Asset>)response;
         var time = 0f;
 
-        for (var i = 0; i < assets.Count; i++)
+        for (var i = 0; i < response.Length; i++)
         {
-            var asset = assets[i];
+            var asset = response[i];
             var bundle = LoadBundle(File.ReadAllBytes(Path.Combine(DirectoryInfo, asset.ID)));
             Bundles[asset.ID] = bundle;
             bundle.AllAssetNames().ForEach(x => ObjectToBundle[ConvertToBaseName(x)] = asset.ID);
@@ -33,12 +29,11 @@ public class BundleLoader : AssetLoader<Asset>
             if (time > 1f)
             {
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Assets ({i + 1}/{assets.Count})");
+                UpdateSplashPatch.SetText($"Loading Assets ({i + 1}/{response.Length})");
                 yield return EndFrame();
             }
         }
 
-        assets.Clear();
         yield break;
     }
 

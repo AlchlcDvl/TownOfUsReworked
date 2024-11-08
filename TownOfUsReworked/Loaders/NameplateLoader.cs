@@ -12,30 +12,27 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
 
     public static NameplateLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(object response)
+    public override IEnumerator BeginDownload(CustomNameplate[] response)
     {
-        var mainResponse = (List<CustomNameplate>)response;
-        UnregisteredNameplates.AddRange(mainResponse);
+        UnregisteredNameplates.AddRange(response);
         Message($"Found {UnregisteredNameplates.Count} nameplates");
-        var toDownload = GenerateDownloadList(UnregisteredNameplates);
-        Message($"Downloading {toDownload.Count} nameplate files");
-        yield return CoDownloadAssets(toDownload);
-        mainResponse.Clear();
+        yield return CoDownloadAssets(GenerateDownloadList(UnregisteredNameplates));
     }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(CustomNameplate[] response)
     {
-        // if (TownOfUsReworked.IsStream)
-        // {
-        //     var filePath = Path.Combine(TownOfUsReworked.Nameplates, "Stream", "Nameplates.json");
+        if (TownOfUsReworked.IsStream)
+        {
+            var filePath = Path.Combine(TownOfUsReworked.Nameplates, "Stream", "Nameplates.json");
 
-        //     if (File.Exists(filePath))
-        //     {
-        //         var data = JsonSerializer.Deserialize<List<CustomNameplate>>(File.ReadAllText(filePath));
-        //         data.ForEach(x => x.StreamOnly = true);
-        //         UnregisteredNameplates.AddRange(data);
-        //     }
-        // }
+            if (File.Exists(filePath))
+            {
+                var data = JsonSerializer.Deserialize<CustomNameplate[]>(File.ReadAllText(filePath));
+                data.ForEach(x => x.StreamOnly = true);
+                UnregisteredNameplates.AddRange(data);
+                Array.Clear(data);
+            }
+        }
 
         var cache = UnregisteredNameplates.Clone();
         var time = 0f;

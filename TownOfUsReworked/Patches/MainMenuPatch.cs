@@ -14,13 +14,13 @@ public static class MainMenuStartPatch
         Title = "Town Of Us Reworked Info",
         ShortTitle = "Mod Info",
         SubTitle = "",
-        PinState = false,
+        PinState = true,
         Date = "29.10.2024",
         Text = $"<size=75%>{GetString("ModInfo")}</size>"
     };
     public static GameObject Logo;
 
-    public static void Prefix(MainMenuManager __instance)
+    public static void Prefix()
     {
         AllMonos.AddComponents();
         LoadVanillaSounds();
@@ -47,7 +47,7 @@ public static class MainMenuStartPatch
         if (ModUpdater.ReworkedUpdate)
         {
             Info("Reworked can be updated");
-            CreatDownloadButton(__instance, "Reworked", y, pos, "UpdateReworked");
+            CreatDownloadButton("Reworked", y, pos, "UpdateReworked");
             y += 0.5f;
             pos += 0.5f;
         }
@@ -55,7 +55,7 @@ public static class MainMenuStartPatch
         if (ModUpdater.SubmergedUpdate || ModUpdater.CanDownloadSubmerged)
         {
             Info($"Submerged can be {(ModUpdater.SubmergedUpdate ? "updated" : "downloaded")}");
-            CreatDownloadButton(__instance, "Submerged", y, pos, $"{(SubLoaded ? "Update" : "Download")}Submerged");
+            CreatDownloadButton("Submerged", y, pos, $"{(SubLoaded ? "Update" : "Download")}Submerged");
             y += 0.5f;
             pos += 0.5f;
         }
@@ -63,7 +63,7 @@ public static class MainMenuStartPatch
         if (ModUpdater.CanDownloadLevelImpostor)
         {
             Info("LevelImpostor can be downloaded");
-            CreatDownloadButton(__instance, "LevelImpostor", y, pos, "DownloadLevelImpostor");
+            CreatDownloadButton("LevelImpostor", y, pos, "DownloadLevelImpostor");
         }
 
         if (ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate)
@@ -75,7 +75,7 @@ public static class MainMenuStartPatch
         }
     }
 
-    private static void CreatDownloadButton(MainMenuManager __instance, string downloadType, float yValue1, float yValue2, string spriteName)
+    private static void CreatDownloadButton(string downloadType, float yValue1, float yValue2, string spriteName)
     {
         var template = GameObject.Find("ExitGameButton");
         var rightPanel = GameObject.Find("RightPanel");
@@ -125,25 +125,28 @@ public static class MainMenuStartPatch
         pos.y = __instance.newsButton.transform.localPosition.y;
         pos.x = __instance.quitButton.transform.localPosition.x;
         __instance.newsButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
-        __instance.newsButton.transform.GetChild(1).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        __instance.newsButton.transform.GetChild(2).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.newsButton.transform.GetChild(1).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
+        __instance.newsButton.transform.GetChild(2).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
         __instance.myAccountButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
-        __instance.myAccountButton.transform.GetChild(1).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        __instance.myAccountButton.transform.GetChild(2).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.myAccountButton.transform.GetChild(1).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
+        __instance.myAccountButton.transform.GetChild(2).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
         __instance.settingsButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
-        __instance.settingsButton.transform.GetChild(1).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        __instance.settingsButton.transform.GetChild(2).GetChild(0).localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+        __instance.settingsButton.transform.GetChild(1).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
+        __instance.settingsButton.transform.GetChild(2).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
 
         var ghObj = UObject.Instantiate(__instance.newsButton, __instance.newsButton.transform.parent);
         ghObj.name = "ReworkedGitHub";
         ghObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.GitHubLink));
         ghObj.transform.localPosition = pos;
+        ghObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = ghObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("GitHub");
+        ghObj.transform.GetChild(3).gameObject.Destroy();
         pos.y = __instance.settingsButton.transform.localPosition.y;
 
         var discObj = UObject.Instantiate(__instance.settingsButton, __instance.settingsButton.transform.parent);
         discObj.name = "ReworkedDiscord";
         discObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.DiscordInvite));
         discObj.transform.localPosition = pos;
+        discObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = discObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Discord");
         pos.y = __instance.myAccountButton.transform.localPosition.y;
 
         var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
@@ -178,6 +181,7 @@ public static class MainMenuStartPatch
                 }
             }));
         });
+        credObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = credObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Info");
         credObj.transform.localPosition = pos;
 
         Coroutines.Start(PerformTimedAction(0.01f, _ =>

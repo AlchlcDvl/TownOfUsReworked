@@ -12,30 +12,27 @@ public class VisorLoader : AssetLoader<CustomVisor>
 
     public static VisorLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(object response)
+    public override IEnumerator BeginDownload(CustomVisor[] response)
     {
-        var mainResponse = (List<CustomVisor>)response;
-        UnregisteredVisors.AddRange(mainResponse);
+        UnregisteredVisors.AddRange(response);
         Message($"Found {UnregisteredVisors.Count} visors");
-        var toDownload = GenerateDownloadList(UnregisteredVisors);
-        Message($"Downloading {toDownload.Count} visor files");
-        yield return CoDownloadAssets(toDownload);
-        mainResponse.Clear();
+        yield return CoDownloadAssets(GenerateDownloadList(UnregisteredVisors));
     }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(CustomVisor[] response)
     {
-        // if (TownOfUsReworked.IsStream)
-        // {
-        //     var filePath = Path.Combine(TownOfUsReworked.Visors, "Stream", "Visors.json");
+        if (TownOfUsReworked.IsStream)
+        {
+            var filePath = Path.Combine(TownOfUsReworked.Visors, "Stream", "Visors.json");
 
-        //     if (File.Exists(filePath))
-        //     {
-        //         var data = JsonSerializer.Deserialize<List<CustomVisor>>(File.ReadAllText(filePath));
-        //         data.ForEach(x => x.StreamOnly = true);
-        //         UnregisteredVisors.AddRange(data);
-        //     }
-        // }
+            if (File.Exists(filePath))
+            {
+                var data = JsonSerializer.Deserialize<CustomVisor[]>(File.ReadAllText(filePath));
+                data.ForEach(x => x.StreamOnly = true);
+                UnregisteredVisors.AddRange(data);
+                Array.Clear(data);
+            }
+        }
 
         var cache = UnregisteredVisors.Clone();
         var time = 0f;

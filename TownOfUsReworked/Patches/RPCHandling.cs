@@ -58,7 +58,7 @@ public static class RPCHandling
                         RoleGen.Convertible = reader.ReadInt32();
                         break;
 
-                    case MiscRPC.AttemptSound:
+                    case MiscRPC.BreakShield:
                         Role.BreakShield(reader.ReadPlayer(), Medic.ShieldBreaks);
                         break;
 

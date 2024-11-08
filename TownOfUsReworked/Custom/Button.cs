@@ -35,6 +35,7 @@ public class CustomButton
     public ConsoleExclusion ConsoleException { get; set; }
     public LabelFunc ButtonLabelFunc { get; set; }
     public string ButtonLabel { get; set; }
+    public UColor TextColor { get; set; }
 
     // Other things
     public ActionButton Base { get; set; }
@@ -68,7 +69,10 @@ public class CustomButton
         foreach (var prop in properties)
         {
             if (prop is PlayerLayer layer)
+            {
                 button.Owner = layer;
+                button.TextColor = layer.Color;
+            }
             else if (prop is LabelFunc labelFunc)
                 button.ButtonLabelFunc = labelFunc;
             else if (prop is SpriteName sprite)
@@ -121,6 +125,8 @@ public class CustomButton
                 button.ConsoleException = console;
             else if (prop is string label)
                 button.ButtonLabel = label;
+            else if (prop is UColor color)
+                button.TextColor = color;
             else
                 missing.Add(prop);
         }
@@ -147,6 +153,7 @@ public class CustomButton
         button.Delay ??= new(0f);
         button.PostDeath ??= new(false);
         button.CanClickAgain ??= new(true);
+        button.ButtonSprite ??= new("Placeholder");
         button.CooldownTime = button.EffectTime = button.DelayTime = 0f;
         button.ID = button.Sprite() + button.Owner.Name + button.Owner.PlayerName + AllButtons.Count;
         button.Disabled = !button.Owner.Local;
@@ -165,6 +172,7 @@ public class CustomButton
         Base.graphic.sprite = GetSprite(Sprite());
         Base.graphic.SetCooldownNormalizedUvs();
         Base.name = ID;
+        Base.buttonLabelText.SetOutlineColor(TextColor);
         var passive = Base.GetComponent<PassiveButton>();
         passive.OverrideOnClickListeners(Clicked);
         passive.HoverSound = GetAudio("Hover");
@@ -413,9 +421,8 @@ public class CustomButton
         if (!Base || !Owner.Player || Disabled)
             return;
 
-        Base.buttonLabelText.SetOutlineColor(Owner.Color);
-        Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
         Base.buttonLabelText.text = Label();
+        Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
         Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && BlockIsExposed());
 
         if (!EffectActive && !DelayActive && !CooldownActive && !Disabled && PostDeath.Value == Owner.Dead)

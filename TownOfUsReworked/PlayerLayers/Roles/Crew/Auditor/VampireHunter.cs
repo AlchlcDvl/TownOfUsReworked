@@ -23,7 +23,12 @@ public class VampireHunter : Crew
         StakeButton ??= CreateButton(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stake, new Cooldown(StakeCd));
     }
 
-    public void TurnVigilante() => new Vigilante().RoleUpdate(this, Player);
+    public void TurnVigilante()
+    {
+        var vigi = new Vigilante();
+        vigi.RoleUpdate(this, Player);
+        vigi.ShootButton.Uses = 1;
+    }
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -36,7 +41,11 @@ public class VampireHunter : Crew
         }
     }
 
-    private void Stake() => StakeButton.StartCooldown(Interact(Player, StakeButton.GetTarget<PlayerControl>(), ShouldKill(StakeButton.GetTarget<PlayerControl>())));
+    private void Stake()
+    {
+        var target = StakeButton.GetTarget<PlayerControl>();
+        StakeButton.StartCooldown(Interact(Player, target, ShouldKill(target)));
+    }
 
     private static bool ShouldKill(PlayerControl player) => player.Is(SubFaction.Undead) || player.IsFramed();
 }

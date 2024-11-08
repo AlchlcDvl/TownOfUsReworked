@@ -12,12 +12,14 @@ public class Dictator : Crew
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool DictatorButton { get; set; } = true;
 
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 10, 1, ZeroIsInfinity = true)]
+    public static Number MaxTribunals { get; set; } = new(2);
+
     public bool RoundOne { get; set; }
     public bool Revealed { get; set; }
-    public List<byte> ToBeEjected { get; set; }
+    public bool Tribunal { get; set; }
+    public PlayerControl ToBeEjected { get; set; }
     public CustomButton RevealButton { get; set; }
-    public bool Ejected { get; set; }
-    public bool ToDie { get; set; }
     public CustomMeeting DictMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Dictator : CustomColorManager.Crew;
@@ -30,17 +32,21 @@ public class Dictator : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewSov;
-        ToBeEjected = [];
-        Ejected = false;
-        ToDie = false;
-        RevealButton ??= CreateButton(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal);
+        RevealButton ??= CreateButton(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal, (UsableFunc)Usable);
         DictMenu = new(Player, "DictActive", "DictDisabled", DictateAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 
     public void Reveal()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
-        PublicReveal(Player);
+        if (!Revealed)
+        {
+            CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
+            PublicReveal(Player);
+        }
+        else
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DictActionsRPC.Tribunal);
+
+        Tribunal = true;
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -48,48 +54,38 @@ public class Dictator : Crew
         base.VoteComplete(__instance);
         DictMenu.HideButtons();
 
-        if (ToBeEjected.Any() && !Ejected && !Dead)
-        {
-            ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ToDie, ToBeEjected);
-        }
+        if (ToBeEjected && !Dead)
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DictActionsRPC.SelectToEject, ToBeEjected);
     }
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
     {
-        if (__instance.state == MeetingHud.VoteStates.Discussion || !Revealed || Ejected || ToDie)
+        if (__instance.state == MeetingHud.VoteStates.Discussion || !Revealed || Dead)
             return;
 
         var id = voteArea.TargetPlayerId;
+        var player = PlayerById(id);
+        DictMenu.Actives[id] = !DictMenu.Actives[id];
+        var prev = ToBeEjected;
 
-        if (ToBeEjected.Contains(id))
-        {
-            ToBeEjected.Remove(id);
-            DictMenu.Actives[id] = false;
-        }
-        else
-        {
-            ToBeEjected.Add(id);
-            DictMenu.Actives[id] = true;
-        }
-
-        if (ToBeEjected.Count > 3)
-        {
-            DictMenu.Actives[ToBeEjected[0]] = false;
-            ToBeEjected.Remove(ToBeEjected[0]);
-        }
+        if (!prev)
+            ToBeEjected = player;
+        else if (prev == player)
+            ToBeEjected = null;
+        else if (prev)
+            DictMenu.Actives[prev.PlayerId] = false;
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        DictMenu.GenButtons(__instance, Revealed && !Ejected && !ToDie);
+        DictMenu.GenButtons(__instance, Tribunal && !Dead);
     }
 
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (player == Player && Local) || Dead || !Revealed || Ejected;
+        return player.HasDied() || player.AmOwner || Dead || !Revealed;
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)
@@ -104,9 +100,25 @@ public class Dictator : Crew
         DictMenu.Update(__instance);
     }
 
+    public bool Usable() => !RoundOne;
+
     public override void ReadRPC(MessageReader reader)
     {
-        ToDie = reader.ReadBoolean();
-        ToBeEjected = reader.ReadByteList();
+        var dictAction = reader.ReadEnum<DictActionsRPC>();
+
+        switch (dictAction)
+        {
+            case DictActionsRPC.Tribunal:
+                Flash(Color);
+                break;
+
+            case DictActionsRPC.SelectToEject:
+                ToBeEjected = reader.ReadPlayer();
+                break;
+
+            default:
+                Error($"Received unknown RPC - {(int)dictAction}");
+                break;
+        }
     }
 }

@@ -17,7 +17,7 @@ public abstract class Intruder : Role
         FactionColor = CustomColorManager.Intruder;
         Objectives = () => IntrudersWinCon;
         KillButton ??= CreateButton(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
-            (PlayerBodyExclusion)Exception);
+            (PlayerBodyExclusion)Exception, FactionColor);
         Player.SetImpostor(true);
     }
 

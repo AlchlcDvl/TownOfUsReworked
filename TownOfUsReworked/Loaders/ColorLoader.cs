@@ -9,25 +9,24 @@ public class ColorLoader : AssetLoader<CustomColor>
 
     public static ColorLoader Instance { get; set; }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(CustomColor[] response)
     {
-        var colors = (List<CustomColor>)response;
-        AllColors.AddRange(colors);
-        // Message($"Found {AllColors.Count} colors");
+        AllColors.AddRange(response);
         var cache = AllColors.Count;
         Message($"Found {cache} colors");
 
-        // if (TownOfUsReworked.IsStream)
-        // {
-        //     var filePath = Path.Combine(DirectoryInfo, "Stream", "Colors.json");
+        if (TownOfUsReworked.IsStream)
+        {
+            var filePath = Path.Combine(DirectoryInfo, "Stream", "Colors.json");
 
-        //     if (File.Exists(filePath))
-        //     {
-        //         var data = JsonSerializer.Deserialize<CustomColor[]>(File.ReadAllText(filePath));
-        //         data.ForEach(x => x.StreamOnly = true);
-        //         AllColors.AddRange(data);
-        //     }
-        // }
+            if (File.Exists(filePath))
+            {
+                var data = JsonSerializer.Deserialize<CustomColor[]>(File.ReadAllText(filePath));
+                data.ForEach(x => x.StreamOnly = true);
+                AllColors.AddRange(data);
+                Array.Clear(data);
+            }
+        }
 
         Message($"Found {AllColors.Count - cache} local colors");
         AllColors.RemoveAll(x => x.StreamOnly && !TownOfUsReworked.IsStream);
@@ -57,9 +56,7 @@ public class ColorLoader : AssetLoader<CustomColor>
         Palette.ShadowColors = AllColors.Select(x => ParseToColor(x.RGBShadow)).ToArray();
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
         Palette.TextColors = Palette.PlayerColors;
-
         Message($"Set {AllColors.Count} colors");
-        colors.Clear();
         yield break;
     }
 }

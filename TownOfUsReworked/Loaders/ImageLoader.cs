@@ -9,37 +9,30 @@ public class ImageLoader : AssetLoader<Asset>
 
     public static ImageLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(object response)
+    public override IEnumerator BeginDownload(Asset[] response)
     {
-        var mainResponse = (List<Asset>)response;
-        Message($"Found {mainResponse.Count} assets");
-        var toDownload = mainResponse.Select(x => x.ID).Where(ShouldDownload);
-        Message($"Downloading {toDownload.Count()} assets");
-        yield return CoDownloadAssets(toDownload);
+        Message($"Found {response.Length} assets");
+        yield return CoDownloadAssets(response.Select(x => x.ID).Where(ShouldDownload));
     }
 
-    public override IEnumerator AfterLoading(object response)
+    public override IEnumerator AfterLoading(Asset[] response)
     {
-        var images = (List<Asset>)response;
-        var textures = new List<Texture2D>();
-        images.Select(x => Path.Combine(TownOfUsReworked.Images, $"{x.ID}.png")).ForEach(x => textures.Add(LoadDiskTexture(x)));
         var time = 0f;
 
-        for (var i = 0; i < images.Count; i++)
+        for (var i = 0; i < response.Length; i++)
         {
-            var image = images[i];
-            AddAsset(image.ID, CreateSprite(textures[i], image.ID));
+            var image = response[i];
+            AddPath(image.ID, Path.Combine(DirectoryInfo, $"{image.ID}.png"));
             time += Time.deltaTime;
 
             if (time > 1f)
             {
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Images ({i + 1}/{images.Count})");
+                UpdateSplashPatch.SetText($"Loading Images ({i + 1}/{response.Length})");
                 yield return EndFrame();
             }
         }
 
-        images.Clear();
         yield break;
     }
 

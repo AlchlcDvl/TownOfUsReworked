@@ -181,10 +181,10 @@ public static class RPC
 
     public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(enumVal.ToString());
 
-    public static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index)
+    public static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index, Enum subRpc = null)
     {
         if (item == null)
-            Error($"Data type used in the rpc was null: index - {index}, rpc - {rpc}");
+            Error($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");
         else if (item is Enum enumVal)
             writer.Write(enumVal);
         else if (item is PlayerControl player)
@@ -226,13 +226,28 @@ public static class RPC
             writer.Write(roles.Count);
             roles.ForEach(x => writer.Write(layer: x));
         }
+        else if (item is List<Ability> abs)
+        {
+            writer.Write(abs.Count);
+            abs.ForEach(x => writer.Write(layer: x));
+        }
+        else if (item is List<Modifier> mods)
+        {
+            writer.Write(mods.Count);
+            mods.ForEach(x => writer.Write(layer: x));
+        }
+        else if (item is List<Disposition> disps)
+        {
+            writer.Write(disps.Count);
+            disps.ForEach(x => writer.Write(layer: x));
+        }
         else if (item is List<PlayerLayer> layers)
         {
             writer.Write(layers.Count);
             layers.ForEach(x => writer.Write(layer: x));
         }
         else
-            Error($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, item - {item}, type - {item.GetType()}");
+            Error($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type - {item.GetType()}");
     }
 
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallOpenRpc(rpc, data)?.EndRpc();
@@ -252,7 +267,15 @@ public static class RPC
 
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
         writer.Write(rpc);
-        data.ForEach((x, y) => writer.Write(x, rpc, y));
+
+        if (data.Length > 0)
+        {
+            if (data[0] is Enum @enum)
+                data.ForEach((x, y) => writer.Write(x, rpc, y, @enum));
+            else
+                data.ForEach((x, y) => writer.Write(x, rpc, y));
+        }
+
         return writer;
     }
 

@@ -432,7 +432,7 @@ public static class NeutralSettings
     public static Number NeutralMax { get; set; } = new(3);
 
     [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static Number NeutralMin { get; set; } = new(3);
+    public static Number NeutralMin { get; set; } = new(1);
 
     [StringOption(MultiMenu.Main)]
     public static NoSolo NoSolo { get; set; } = NoSolo.Never;

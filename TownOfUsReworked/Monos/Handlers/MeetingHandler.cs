@@ -35,8 +35,9 @@ public class MeetingHandler : MonoBehaviour
         var info = player.GetLayers();
         var localinfo = CustomPlayer.Local.GetLayers();
         var revealed = false;
+        var consig = false;
 
-        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead)
+        if (HudHandler.Instance.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.Dead && BetterSabotages.CamouflagedMeetings)
             name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
         else
             name = PlayerHandler.Instance.PlayerNames.FirstOrDefault(x => x.Key == player.TargetPlayerId).Value;
@@ -48,7 +49,6 @@ public class MeetingHandler : MonoBehaviour
         {
             var role = info[0] as Role;
             name = $"{name} ({role.TasksCompleted}/{role.TotalTasks})";
-            revealed = true;
         }
 
         if (player.IsKnighted())
@@ -60,140 +60,69 @@ public class MeetingHandler : MonoBehaviour
         if (player.IsMarked())
             name += " <color=#F1C40FFF>χ</color>";
 
-        if (player.Is(LayerEnum.Mayor) && !DeadSeeEverything() && CustomPlayer.Local.PlayerId != player.TargetPlayerId)
+        if (info[0] is Mayor mayor && !DeadSeeEverything() && CustomPlayer.Local.PlayerId != player.TargetPlayerId && mayor.Revealed)
         {
-            var mayor = info[0] as Mayor;
-
-            if (mayor.Revealed)
-            {
-                revealed = true;
-                name += $"\n{mayor.Name}";
-                color = mayor.Color;
-
-                if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                {
-                    var consigliere = localinfo[0] as Consigliere;
-
-                    if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                        consigliere.Investigated.Remove(player.TargetPlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                {
-                    var godfather = localinfo[0] as PromotedGodfather;
-
-                    if (godfather.Investigated.Contains(player.TargetPlayerId))
-                        godfather.Investigated.Remove(player.TargetPlayerId);
-                }
-            }
+            revealed = true;
+            name += $"\n{mayor.Name}";
+            color = mayor.Color;
         }
-        else if (player.Is(LayerEnum.Dictator) && !DeadSeeEverything() && CustomPlayer.Local.PlayerId != player.TargetPlayerId)
+        else if (info[0] is Dictator dict && !DeadSeeEverything() && CustomPlayer.Local.PlayerId != player.TargetPlayerId && dict.Revealed)
         {
-            var dict = info[0] as Dictator;
-
-            if (dict.Revealed)
-            {
-                revealed = true;
-                name += $"\n{dict.Name}";
-                color = dict.Color;
-
-                if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                {
-                    var consigliere = localinfo[0] as Consigliere;
-
-                    if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                        consigliere.Investigated.Remove(player.TargetPlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                {
-                    var godfather = localinfo[0] as PromotedGodfather;
-
-                    if (godfather.Investigated.Contains(player.TargetPlayerId))
-                        godfather.Investigated.Remove(player.TargetPlayerId);
-                }
-            }
+            revealed = true;
+            name += $"\n{dict.Name}";
+            color = dict.Color;
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Coroner) && !DeadSeeEverything())
+        if (localinfo[0] is Coroner coroner && !DeadSeeEverything() && coroner.Reported.Contains(player.TargetPlayerId) && !revealed)
         {
-            var coroner = localinfo[0] as Coroner;
+            var role = info[0];
+            color = role.Color;
+            name += $"\n{role}";
+            revealed = true;
+        }
+        else if (localinfo[0] is Consigliere consigliere && !DeadSeeEverything() && consigliere.Investigated.Contains(player.TargetPlayerId) && !revealed)
+        {
+            var role = info[0] as Role;
 
-            if (coroner.Reported.Contains(player.TargetPlayerId) && !revealed)
+            if (Consigliere.ConsigInfo == ConsigInfo.Role)
             {
-                var role = info[0] as Role;
                 color = role.Color;
                 name += $"\n{role}";
                 revealed = true;
+                consig = true;
             }
-        }
-        else if (CustomPlayer.Local.Is(LayerEnum.Consigliere) && !DeadSeeEverything())
-        {
-            var consigliere = localinfo[0] as Consigliere;
-
-            if (consigliere.Investigated.Contains(player.TargetPlayerId) && !revealed)
+            else if (Consigliere.ConsigInfo == ConsigInfo.Faction)
             {
-                var role = info[0] as Role;
-                revealed = true;
-
-                if (Consigliere.ConsigInfo == ConsigInfo.Role)
-                {
-                    color = role.Color;
-                    name += $"\n{role}";
-
-                    if (consigliere.Player.GetSubFaction() == player.GetSubFaction() && player.GetSubFaction() != SubFaction.None)
-                        consigliere.Investigated.Remove(player.TargetPlayerId);
-                }
-                else if (Consigliere.ConsigInfo == ConsigInfo.Faction)
-                {
-                    color = role.FactionColor;
-                    name += $"\n{role.FactionName}";
-                }
+                color = role.FactionColor;
+                name += $" ({role.FactionName})";
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather) && !DeadSeeEverything())
+        else if (localinfo[0] is PromotedGodfather godfather && !DeadSeeEverything() && godfather.IsConsig && godfather.Investigated.Contains(player.TargetPlayerId) && !revealed)
         {
-            var godfather = localinfo[0] as PromotedGodfather;
+            var role = info[0] as Role;
 
-            if (godfather.IsConsig && godfather.Investigated.Contains(player.TargetPlayerId) && !revealed)
+            if (Consigliere.ConsigInfo == ConsigInfo.Role)
             {
-                var role = info[0] as Role;
+                color = role.Color;
+                name += $"\n{role}";
                 revealed = true;
-
-                if (Consigliere.ConsigInfo == ConsigInfo.Role)
-                {
-                    color = role.Color;
-                    name += $"\n{role}";
-
-                    if (godfather.Player.GetSubFaction() == player.GetSubFaction() && player.GetSubFaction() != SubFaction.None)
-                        godfather.Investigated.Remove(player.TargetPlayerId);
-                }
-                else if (Consigliere.ConsigInfo == ConsigInfo.Faction)
-                {
-                    color = role.FactionColor;
-                    name += $"\n{role.FactionName}";
-                }
+                consig = true;
+            }
+            else if (Consigliere.ConsigInfo == ConsigInfo.Faction)
+            {
+                color = role.FactionColor;
+                name += $" ({role.FactionName})";
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Medic))
+        else if (localinfo[0] is Medic medic && medic.ShieldedPlayer && medic.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)Medic.ShowShielded is 1 or 2)
+            name += " <color=#006600FF>✚</color>";
+        else if (localinfo[0] is Trapper trapper && trapper.Trapped.Contains(player.TargetPlayerId))
+            name += " <color=#BE1C8CFF>∮</color>";
+        else if (localinfo[0] is Retributionist ret)
         {
-            var medic = localinfo[0] as Medic;
-
-            if (medic.ShieldedPlayer && medic.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)Medic.ShowShielded is 1 or 2)
-                name += " <color=#006600FF>✚</color>";
-        }
-        else if (CustomPlayer.Local.Is(LayerEnum.Trapper))
-        {
-            var trapper = localinfo[0] as Trapper;
-
-            if (trapper.Trapped.Contains(player.TargetPlayerId))
-                name += " <color=#BE1C8CFF>∮</color>";
-        }
-        else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-        {
-            var ret = localinfo[0] as Retributionist;
-
             if (ret.Reported.Contains(player.TargetPlayerId) && !revealed)
             {
-                var role = info[0] as Role;
+                var role = info[0];
                 color = role.Color;
                 name += $"\n{role}";
                 revealed = true;
@@ -375,21 +304,6 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $" <color=#7B8968FF>γ</color>\n{role}";
                     revealed = true;
-
-                    if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                    {
-                        var consigliere = localinfo[0] as Consigliere;
-
-                        if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                            consigliere.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                    {
-                        var godfather = localinfo[0] as PromotedGodfather;
-
-                        if (godfather.Investigated.Contains(player.TargetPlayerId))
-                            godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
                 }
                 else
                     color = dracula.SubFactionColor;
@@ -407,21 +321,6 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $" <color=#575657FF>$</color>\n{role}";
                     revealed = true;
-
-                    if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                    {
-                        var consigliere = localinfo[0] as Consigliere;
-
-                        if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                            consigliere.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                    {
-                        var godfather = localinfo[0] as PromotedGodfather;
-
-                        if (godfather.Investigated.Contains(player.TargetPlayerId))
-                            godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
                 }
                 else
                     color = jackal.SubFactionColor;
@@ -439,21 +338,6 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $" <color=#E6108AFF>Σ</color>\n{role}";
                     revealed = true;
-
-                    if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                    {
-                        var consigliere = localinfo[0] as Consigliere;
-
-                        if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                            consigliere.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                    {
-                        var godfather = localinfo[0] as PromotedGodfather;
-
-                        if (godfather.Investigated.Contains(player.TargetPlayerId))
-                            godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
                 }
                 else
                     color = necromancer.SubFactionColor;
@@ -471,21 +355,6 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $" <color=#F995FCFF>Λ</color>\n{role}";
                     revealed = true;
-
-                    if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                    {
-                        var consigliere = localinfo[0] as Consigliere;
-
-                        if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                            consigliere.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                    {
-                        var godfather = localinfo[0] as PromotedGodfather;
-
-                        if (godfather.Investigated.Contains(player.TargetPlayerId))
-                            godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
                 }
                 else
                     color = whisperer.SubFactionColor;
@@ -509,21 +378,6 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
-
-                    if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                    {
-                        var consigliere = localinfo[0] as Consigliere;
-
-                        if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                            consigliere.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                    {
-                        var godfather = localinfo[0] as PromotedGodfather;
-
-                        if (godfather.Investigated.Contains(player.TargetPlayerId))
-                            godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
                 }
             }
         }
@@ -542,21 +396,6 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
-
-                    if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                    {
-                        var consigliere = localinfo[0] as Consigliere;
-
-                        if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                            consigliere.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                    {
-                        var godfather = localinfo[0] as PromotedGodfather;
-
-                        if (godfather.Investigated.Contains(player.TargetPlayerId))
-                            godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
                 }
             }
         }
@@ -575,21 +414,6 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
-
-                    if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                    {
-                        var consigliere = localinfo[0] as Consigliere;
-
-                        if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                            consigliere.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                    {
-                        var godfather = localinfo[0] as PromotedGodfather;
-
-                        if (godfather.Investigated.Contains(player.TargetPlayerId))
-                            godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
                 }
             }
         }
@@ -607,21 +431,6 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
-
-                    if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                    {
-                        var consigliere = localinfo[0] as Consigliere;
-
-                        if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                            consigliere.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                    {
-                        var godfather = localinfo[0] as PromotedGodfather;
-
-                        if (godfather.Investigated.Contains(player.TargetPlayerId))
-                            godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
                 }
             }
         }
@@ -687,21 +496,6 @@ public class MeetingHandler : MonoBehaviour
                 color = role.Color;
                 name += $"\n{role}";
                 revealed = true;
-
-                if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-                {
-                    var consigliere = localinfo[0] as Consigliere;
-
-                    if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                        consigliere.Investigated.Remove(player.TargetPlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-                {
-                    var godfather = localinfo[0] as PromotedGodfather;
-
-                    if (godfather.Investigated.Contains(player.TargetPlayerId))
-                        godfather.Investigated.Remove(player.TargetPlayerId);
-                }
             }
             else
                 color = role.FactionColor;
@@ -859,14 +653,23 @@ public class MeetingHandler : MonoBehaviour
                     color = role.Color;
                     name += $"{(name.Contains('\n') ? " " : "\n")}{role}";
                     revealed = true;
+                    consig = true;
                 }
             }
+        }
+
+        if (!consig)
+        {
+            if (localinfo[0] is Consigliere consigliere)
+                consigliere.Investigated.Remove(player.TargetPlayerId);
+            else if (localinfo[0] is PromotedGodfather godfather)
+                godfather.Investigated.Remove(player.TargetPlayerId);
         }
 
         if (revealed)
             player.ColorBlindName.transform.localPosition = new(-0.93f, 0f, -0.1f);
         else
-            player.ColorBlindName.transform.localPosition = NamePos.Value;
+            player.ColorBlindName.transform.localPosition = NamePos ?? default;
 
         return (name, color);
     }

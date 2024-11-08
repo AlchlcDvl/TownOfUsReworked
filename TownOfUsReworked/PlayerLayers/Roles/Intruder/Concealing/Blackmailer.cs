@@ -18,8 +18,6 @@ public class Blackmailer : Intruder
     public CustomButton BlackmailButton { get; set; }
     public PlayerControl BlackmailedPlayer { get; set; }
     public bool ShookAlready { get; set; }
-    public Sprite PrevOverlay { get; set; }
-    public UColor? PrevColor { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Blackmailer : CustomColorManager.Intruder;
     public override string Name => "Blackmailer";

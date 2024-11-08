@@ -224,7 +224,7 @@ public static class ChatCommands
             if (GameSettings.ChatCooldown > __instance.timeSinceLastMessage)
             {
                 __instance.sendRateMessageText.gameObject.SetActive(true);
-                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.RoundToInt(GameSettings.ChatCooldown -
+                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
                     __instance.timeSinceLastMessage));
             }
             else if (!IsNullEmptyOrWhiteSpace(text))

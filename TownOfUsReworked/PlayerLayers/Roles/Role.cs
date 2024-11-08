@@ -403,7 +403,7 @@ public abstract class Role : PlayerLayer
         AllVoteAreas().ForEach(GenText);
         AllRoles.ForEach(x => x.CurrentChannel = ChatChannel.All);
         GetLayers<Retributionist>().ForEach(x => x.Selected = null);
-        GetLayers<Dictator>().ForEach(x => x.ToBeEjected.Clear());
+        GetLayers<Dictator>().ForEach(x => x.ToBeEjected = null);
 
         if (Requesting && BountyTimer > 2)
         {

@@ -96,10 +96,11 @@ public class Coroner : Crew
 
     public void Compare()
     {
-        var cooldown = Interact(Player, CompareButton.GetTarget<PlayerControl>());
+        var target = CompareButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash(ReferenceBodies.Any(x => CompareButton.GetTarget<PlayerControl>().PlayerId == x.KillerId) ? UColor.red : UColor.green);
+            Flash(ReferenceBodies.Any(x => target.PlayerId == x.KillerId) ? UColor.red : UColor.green);
 
         CompareButton.StartCooldown(cooldown);
     }

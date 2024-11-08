@@ -17,6 +17,8 @@ public static class MeetingPatches
                 __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
+                __instance.PlayerIcon.SetBodyCosmeticsVisible(false);
+                __instance.PlayerIcon.SetBodyColor(16);
             }
             else
             {

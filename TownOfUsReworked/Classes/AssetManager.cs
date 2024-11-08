@@ -7,16 +7,17 @@ public static class AssetManager
     public static readonly Dictionary<string, string> ObjectToBundle = [];
     private static readonly Dictionary<string, List<UObject>> UnityLoadedObjects = [];
     private static readonly Dictionary<string, List<object>> SystemLoadedObjects = [];
+    public static readonly Dictionary<string, List<string>> UnloadedObjects = [];
 
-    public static AudioClip GetAudio(string path) => UnityGet<AudioClip>(path);
+    public static AudioClip GetAudio(string path) => UnityGet<AudioClip>(path) ?? UnityGet<AudioClip>("Placeholder");
 
-    public static Sprite GetSprite(string path) => UnityGet<Sprite>(path, false) ?? UnityGet<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder");
+    public static Sprite GetSprite(string path) => UnityGet<Sprite>(path) ?? UnityGet<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder");
 
-    public static TMP_FontAsset GetFont(string path) => UnityGet<TMP_FontAsset>(path);
+    public static TMP_FontAsset GetFont(string path) => UnityGet<TMP_FontAsset>(path) ?? UnityGet<TMP_FontAsset>("Placeholder");
 
-    public static AnimationClip GetAnim(string path) => UnityGet<AnimationClip>(path, false);
+    public static AnimationClip GetAnim(string path) => UnityGet<AnimationClip>(path);
 
-    public static string GetString(string path) => SystemGet<string>(path, false) ?? "Placeholder";
+    public static string GetString(string path) => SystemGet<string>(path) ?? "Placeholder";
 
     public static void Play(string path, bool loop = false, float volume = 1f) => Play(GetAudio(path), loop, volume);
 
@@ -49,15 +50,18 @@ public static class AssetManager
         if (texture.LoadImage(data, !GetReadable(name)))
         {
             texture.name = name;
+            texture.hideFlags |= HideFlags.DontSaveInEditor;
             return texture.DontDestroy();
         }
 
         return null;
     }
 
-    public static Sprite CreateResourceSprite(string path) => CreateSprite(LoadResourceTexture(path), path.SanitisePath());
+    public static Sprite LoadDiskSprite(string path) => LoadSprite(LoadDiskTexture(path), path.SanitisePath());
 
-    public static Sprite CreateSprite(Texture2D tex, string name, float size = -1f, SpriteMeshType meshType = SpriteMeshType.Tight)
+    public static Sprite LoadResourceSprite(string path) => LoadSprite(LoadResourceTexture(path), path.SanitisePath());
+
+    public static Sprite LoadSprite(Texture2D tex, string name, float size = -1f, SpriteMeshType meshType = SpriteMeshType.Tight)
     {
         var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), size > 0f ? size : GetSize(name), 0, meshType);
         sprite.name = name;
@@ -65,11 +69,11 @@ public static class AssetManager
         return sprite.DontDestroy();
     }
 
-    public static AudioClip CreateResourceAudio(string path) => CreateAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully());
+    public static AudioClip LoadResourceAudio(string path) => LoadAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully());
 
-    public static AudioClip CreateDiskAudio(string path) => CreateAudio(path.SanitisePath(), File.ReadAllBytes(path));
+    public static AudioClip LoadDiskAudio(string path) => LoadAudio(path.SanitisePath(), File.ReadAllBytes(path));
 
-    public static AudioClip CreateAudio(string name, byte[] data)
+    public static AudioClip LoadAudio(string name, byte[] data)
     {
         var samples = new float[data.Length / 4];
 
@@ -84,7 +88,7 @@ public static class AssetManager
 
     public static AssetBundle LoadBundle(byte[] data) => AssetBundle.LoadFromMemory(data);
 
-    public static string ReadResourceText(string path)
+    public static string LoadResourceText(string path)
     {
         var stream = TownOfUsReworked.Core.GetManifestResourceStream(path);
         var reader = new StreamReader(stream);
@@ -127,11 +131,11 @@ public static class AssetManager
         foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
         {
             if (resourceName.EndsWith(".png"))
-                AddAsset(resourceName.SanitisePath(), CreateResourceSprite(resourceName));
+                AddAsset(resourceName.SanitisePath(), LoadResourceSprite(resourceName));
             else if (resourceName.EndsWith(".raw"))
-                AddAsset(resourceName.SanitisePath(), CreateResourceAudio(resourceName));
+                AddAsset(resourceName.SanitisePath(), LoadResourceAudio(resourceName));
             else if (resourceName.Contains(".txt"))
-                AddAsset(resourceName.SanitisePath(), ReadResourceText(resourceName));
+                AddAsset(resourceName.SanitisePath(), LoadResourceText(resourceName));
         }
 
         Cursor.SetCursor(GetSprite("Cursor").texture, CursorMode.Auto);
@@ -154,10 +158,8 @@ public static class AssetManager
         AddAsset("AppearPoofAnim", RoleManager.Instance.shapeshiftAnim);
     }
 
-    public static float GetSize(string path)
+    public static float GetSize(string name)
     {
-        var name = path.SanitisePath();
-
         if (name is "CurrentSettings" or "Client" or "Plus" or "Minus" or "Wiki")
             return 180;
         else if (name == "Phone")
@@ -166,21 +168,21 @@ public static class AssetManager
             return 115;
         else if (name == "NightVision")
             return 350;
+        else if (name is "Info" or "GitHub" or "Discord")
+            return 525;
         else
             return 100;
     }
 
-    public static int GetFrequency(string path)
+    public static int GetFrequency(string name)
     {
-        var name = path.SanitisePath();
-
         if (name.Contains("Intro"))
             return 36000;
         else
             return 48000;
     }
 
-    public static T UnityGet<T>(string name, bool fetchPlaceholder = true) where T : UObject
+    public static T UnityGet<T>(string name) where T : UObject
     {
         if (UnityLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result))
             return result as T;
@@ -188,20 +190,30 @@ public static class AssetManager
         if (ObjectToBundle.TryGetValue(name.ToLower(), out var bundle))
             return LoadAsset<T>(Bundles[bundle], name);
 
-        if (name != "Placeholder" && fetchPlaceholder)
-            return UnityGet<T>("Placeholder", false);
+        if (UnloadedObjects.TryGetValue(name, out var strings))
+        {
+            var tType = typeof(T);
+
+            if (tType == typeof(Sprite) && strings.TryFinding(x => x.EndsWith(".png"), out var path))
+            {
+                strings.Remove(path);
+                return AddAsset(name, LoadDiskSprite(path)) as T;
+            }
+            else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".wav"), out path))
+            {
+                strings.Remove(path);
+                return AddAsset(name, LoadDiskAudio(path)) as T;
+            }
+        }
 
         // Error($"{name} does not exist");
         return null;
     }
 
-    public static T SystemGet<T>(string name, bool fetchPlaceholder = true)
+    public static T SystemGet<T>(string name)
     {
         if (SystemLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result))
             return (T)result;
-
-        if (name != "Placeholder" && fetchPlaceholder)
-            return SystemGet<T>("Placeholder", false);
 
         // Error($"{name} does not exist");
         return default;
@@ -253,20 +265,34 @@ public static class AssetManager
 
     public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.GetRole(roleType)?.IntroSound;
 
-    public static void AddAsset(string name, UObject obj)
+    public static UObject AddAsset(string name, UObject obj)
     {
         if (!UnityLoadedObjects.TryGetValue(name, out var value))
             UnityLoadedObjects[name] = [ obj ];
         else if (!value.Contains(obj))
             value.Add(obj);
+
+        return obj;
     }
 
-    public static void AddAsset(string name, object obj)
+    public static object AddAsset(string name, object obj)
     {
         if (!SystemLoadedObjects.TryGetValue(name, out var value))
             SystemLoadedObjects[name] = [ obj ];
         else if (!value.Contains(obj))
             value.Add(obj);
+
+        return obj;
+    }
+
+    public static string AddPath(string name, string path)
+    {
+        if (!UnloadedObjects.TryGetValue(name, out var value))
+            UnloadedObjects[name] = [ path ];
+        else if (!value.Contains(path))
+            value.Add(path);
+
+        return path;
     }
 
     private static bool GetReadable(string name) => name is "Cursor";

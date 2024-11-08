@@ -59,12 +59,13 @@ public class Trapper : Crew
 
     private void SetTrap()
     {
-        var cooldown = Interact(Player, TrapButton.GetTarget<PlayerControl>());
+        var target = TrapButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Place, TrapButton.GetTarget<PlayerControl>().PlayerId);
-            Trapped.Add(TrapButton.GetTarget<PlayerControl>().PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Place, target.PlayerId);
+            Trapped.Add(target.PlayerId);
         }
 
         TrapButton.StartCooldown(cooldown);

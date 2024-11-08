@@ -7,10 +7,19 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 New!
+- Addition: The main menu buttons now fashion their own icons
 
 Changes!
+- Rework: Dictator no longer ejects 3 players at a time, instead they pick a singular player to eject and instead has gained ability charges to compensate
+- Improvement: Improved the mod's asset loaders
+- Improvement: Assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
+- Improvement: Made general optimsations to improve the mod's intensity
 
 Fixes!
+- Role: Fixed the Mayor and Dictator buttons not disappearing when they should
+- Compatibility: Fixed the elavator not being usable for postmortal roles
+- General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
+- General: Fixed All Any role gen being a bit broken in other aspects
 
 Known Bugs :(
 - Critically slow fps for everyone, with the host having it the worst, a fix is in progress and the severity has been considerably reduced

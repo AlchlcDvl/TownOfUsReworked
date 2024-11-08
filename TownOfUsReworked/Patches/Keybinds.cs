@@ -19,7 +19,7 @@ public static class Keybinds
     private static void RegisterBind(this UserData self, string name, string description, KeyboardKeyCode keycode)
     {
         self.AddAction(0);
-        var action = self.GetAction(self.actions.Count - 1)!;
+        var action = self.GetAction(self.actions.Count - 1);
         action.name = name;
         action.descriptiveName = description;
         action.categoryId = 0;

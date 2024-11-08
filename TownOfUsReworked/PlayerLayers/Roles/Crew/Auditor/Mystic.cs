@@ -39,13 +39,11 @@ public class Mystic : Crew
 
     private void Reveal()
     {
-        var cooldown = Interact(Player, RevealButton.GetTarget<PlayerControl>());
+        var target = RevealButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-        {
-            Flash((!RevealButton.GetTarget<PlayerControl>().Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.GetTarget<PlayerControl>().Is(Alignment.NeutralNeo)) || RevealButton.GetTarget<PlayerControl>().IsFramed()
-                ? UColor.red : UColor.green);
-        }
+            Flash((!target.Is(SubFaction) && SubFaction != SubFaction.None && !target.Is(Alignment.NeutralNeo)) || target.IsFramed() ? UColor.red : UColor.green);
 
         RevealButton.StartCooldown(cooldown);
     }

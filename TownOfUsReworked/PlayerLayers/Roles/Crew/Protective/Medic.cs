@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Medic : Crew
 {
     [StringOption(MultiMenu.LayerSubOptions)]
-    public static ShieldOptions ShowShielded { get; set; } = ShieldOptions.Shielded;
+    public static ShieldOptions ShowShielded { get; set; } = ShieldOptions.Medic;
 
     [StringOption(MultiMenu.LayerSubOptions)]
     public static ShieldOptions WhoGetsNotification { get; set; } = ShieldOptions.Medic;
@@ -35,7 +35,9 @@ public class Medic : Crew
 
     public void Protect()
     {
-        if (Interact(Player, ShieldButton.GetTarget<PlayerControl>()) != CooldownType.Fail)
+        var target = ShieldButton.GetTarget<PlayerControl>();
+
+        if (Interact(Player, target) != CooldownType.Fail)
         {
             if (ShieldedPlayer)
             {
@@ -44,8 +46,8 @@ public class Medic : Crew
             }
             else
             {
-                ShieldedPlayer = ShieldButton.GetTarget<PlayerControl>();
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MedicActionsRPC.Add, ShieldedPlayer);
+                ShieldedPlayer = target;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MedicActionsRPC.Add, target);
             }
         }
     }
@@ -55,7 +57,7 @@ public class Medic : Crew
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
         else
-            return (player.Is(LayerEnum.Mayor) && player.GetLayer<Mayor>().Revealed) || (player.Is(LayerEnum.Dictator) && player.GetLayer<Dictator>().Revealed);
+            return (player.TryGetLayer<Mayor>(out var mayor) && mayor.Revealed) || (player.TryGetLayer<Dictator>(out var dictator) && dictator.Revealed);
     }
 
     public bool Usable() => !ShieldBroken;

@@ -139,10 +139,6 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
     public int GetCount() => IsCustom() ? Get().Count : (IsRoleList() ? GetOptions<RoleListEntryAttribute>().Count(x => x.Get() == Layer && !x.IsBan) : 1);
 
-    public bool GetUnique() => (IsAA() || IsRoleList()) && Get().Unique;
-
-    public bool GetActive() => IsAA() && Get().Active;
-
     public void IncreaseCount()
     {
         var val = Get();
@@ -281,6 +277,8 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     {
         var val = Get();
         val.Active = !val.Active;
+        CachedCount = val.Count;
+        val.Count = 1;
         ActiveCheck.enabled = val.Active;
         Set(val);
     }

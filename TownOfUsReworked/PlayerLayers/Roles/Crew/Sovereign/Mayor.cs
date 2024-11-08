@@ -26,7 +26,7 @@ public class Mayor : Crew
     {
         BaseStart();
         Alignment = Alignment.CrewSov;
-        RevealButton ??= CreateButton(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal);
+        RevealButton ??= CreateButton(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal, (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("MayorIntro");
     }
 
@@ -35,4 +35,6 @@ public class Mayor : Crew
         CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
         PublicReveal(Player);
     }
+
+    public bool Usable() => !RoundOne && !Revealed;
 }

@@ -44,11 +44,12 @@ public class Escort : Crew
 
     public void Roleblock()
     {
-        var cooldown = Interact(Player, BlockButton.GetTarget<PlayerControl>());
+        var target = BlockButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            BlockTarget = BlockButton.GetTarget<PlayerControl>();
+            BlockTarget = target;
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BlockButton, BlockTarget);
             BlockButton.Begin();
         }
