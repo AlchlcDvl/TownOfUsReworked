@@ -21,7 +21,7 @@ public class Murderer : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Murder anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MurderButton ??= CreateButton(this, new SpriteName("Murder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Murder, new Cooldown(MurderCd), "MURDER",

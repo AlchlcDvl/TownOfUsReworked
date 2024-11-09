@@ -8,7 +8,7 @@ public class Crewmate : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewUtil;
         Data.Role.IntroSound = GetAudio("CrewmateIntro");
     }

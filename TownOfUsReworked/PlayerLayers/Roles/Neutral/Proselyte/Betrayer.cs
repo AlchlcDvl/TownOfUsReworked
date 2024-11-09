@@ -20,7 +20,7 @@ public class Betrayer : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
         Alignment = Alignment.NeutralPros;
         KillButton ??= CreateButton(this, new SpriteName("BetrayerKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(BetrayCd), "BACKSTAB",

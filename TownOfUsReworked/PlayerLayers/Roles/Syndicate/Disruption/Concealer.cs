@@ -24,7 +24,7 @@ public class Concealer : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateDisrup;
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;

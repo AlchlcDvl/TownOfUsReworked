@@ -35,7 +35,7 @@ public class Actor : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +
             $"- Your target roles are {PretendListString()}"));
         Alignment = Alignment.NeutralEvil;
@@ -172,7 +172,7 @@ public class Actor : Neutral
 
         if ((TargetFailed || (Targeted && Failed)) && !Dead)
         {
-            var role = (TargetFailed ? AllRoles : PretendRoles).Random(x => x.Type != Type);
+            var role = (TargetFailed ? AllRoles() : PretendRoles).Random(x => x.Type != Type);
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, role);
             TurnRole(role);
         }

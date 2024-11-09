@@ -25,7 +25,7 @@ public class Pestilence : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Obliterate anyone who can oppose you";
         Alignment = Alignment.NeutralApoc;
         ObliterateButton ??= CreateButton(this, new SpriteName("Obliterate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",

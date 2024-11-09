@@ -39,7 +39,7 @@ public class Glitch : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Neutralise anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MimicMenu = new(Player, Click, Exception3);

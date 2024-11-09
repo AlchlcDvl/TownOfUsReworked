@@ -22,7 +22,7 @@ public class Banshee : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateUtil;
         Blocked = [];
         RoleBlockImmune = true; // Not taking chances
@@ -110,5 +110,13 @@ public class Banshee : Syndicate
             if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
                 Blocked.Add(player.PlayerId);
         }
+    }
+
+    public override void UpdatePlayer()
+    {
+        if (!Caught)
+            Fade();
+        else if (Faded)
+            UnFade();
     }
 }

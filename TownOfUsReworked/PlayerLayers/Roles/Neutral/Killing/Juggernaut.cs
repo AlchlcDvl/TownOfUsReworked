@@ -25,7 +25,7 @@ public class Juggernaut : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Assault anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         JuggKills = 0;

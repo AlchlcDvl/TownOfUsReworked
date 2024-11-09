@@ -5,12 +5,6 @@ using Discord;
 
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(RoleBehaviour), nameof(RoleBehaviour.IsAffectedByComms), MethodType.Getter)]
-public static class ButtonsPatch
-{
-    public static bool Prefix(ref bool __result) => __result = false;
-}
-
 [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
 public static class MapBehaviourPatch
 {
@@ -658,7 +652,7 @@ public static class FollowerCameraPatches
 {
     public static void Postfix(FollowerCamera __instance)
     {
-        if (!__instance.Target || __instance.Locked || ClientOptions.LockCameraSway)
+        if (!__instance.Target || __instance.Locked || !ClientOptions.LockCameraSway)
             return;
 
         var v = (Vector2)__instance.Target.transform.position + __instance.Offset;
@@ -673,6 +667,16 @@ public static class FollowerCameraPatches
         }
 
         __instance.transform.position = v;
+    }
+}
+
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+public static class FixedPlayerPatch
+{
+    public static void Postfix()
+    {
+        if (CustomPlayer.LocalCustom?.Data?.Role is LayerHandler handler)
+            handler.FixedPlayerUpdate();
     }
 }
 

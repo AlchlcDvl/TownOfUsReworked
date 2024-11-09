@@ -21,7 +21,7 @@ public class Consigliere : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderSupport;
         Investigated = [];
         InvestigateButton ??= CreateButton(this, new SpriteName("Investigate"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",

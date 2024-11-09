@@ -925,16 +925,6 @@ public static class LayerExtentions
         ButtonUtils.Reset(CooldownType.Reset, newRole.Player);
     }
 
-    public static void SetImpostor(this PlayerControl player, bool impostor)
-    {
-        if (!player)
-            return;
-
-        var imp = player.HasDied() ? RoleTypes.ImpostorGhost : RoleTypes.Impostor;
-        var crew = player.HasDied() ? RoleTypes.CrewmateGhost : RoleTypes.Crewmate;
-        RoleManager.Instance.SetRole(player, impostor ? imp : crew);
-    }
-
     public static string AlignmentName(this Alignment alignment, bool withColors = false) => alignment switch
     {
         Alignment.CrewSupport => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Support</color>)</color>" : "Crew (Support)",
@@ -1203,102 +1193,73 @@ public static class LayerExtentions
         return overrideDef ?? (DefenseEnum)defense;
     }
 
-    public static List<PlayerLayer> GetLayers(this PlayerControl player) => [ .. PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType) ];
-    /*{
-        if (!player)
-            return [];
+    public static List<PlayerLayer> GetLayersFromList(this PlayerControl player) => [ .. PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType) ];
 
-        if (PlayerLayer.LayerLookup.TryGetValue(player.PlayerId, out var layers))
-            return layers;
+    public static List<PlayerLayer> GetLayers(this PlayerControl player)
+    {
+        if (player.Data.Role is LayerHandler handler)
+            return handler.GetLayers();
 
-        return PlayerLayer.LayerLookup[player.PlayerId] = [ .. PlayerLayer.AllLayers.Where(x => x.Player == player) ];
-    }*/
+        return player.GetLayersFromList();
+    }
 
     public static List<PlayerLayer> GetLayers(this PlayerVoteArea player) => PlayerByVoteArea(player).GetLayers();
 
-    // public static PlayerLayer GetLayer<T>(this PlayerControl player, PlayerLayerEnum layerType) where T : PlayerLayer => player.GetLayer(layerType) as T;
+    public static T GetLayerFromList<T>(this PlayerControl player) where T : PlayerLayer => player.GetLayersFromList().Find(x => x is T) as T;
 
-    // public static PlayerLayer GetLayer(this PlayerControl player, PlayerLayerEnum layerType) => player.GetLayers().Find(x => x.LayerType == layerType);
+    public static T GetLayer<T>(this PlayerControl player) where T : PlayerLayer
+    {
+        if (player.Data.Role is LayerHandler handler)
+            return handler.GetLayer<T>();
 
-    public static T GetLayer<T>(this PlayerControl player) where T : PlayerLayer => player.GetLayers().Find(x => x is T) as T;
+        return player.GetLayerFromList<T>();
+    }
 
-    // public static Role GetRoleFromList(this PlayerControl player) => Role.AllRoles.Find(x => x.Player == player);
+    public static Role GetRoleFromList(this PlayerControl player) => player.GetLayerFromList<Role>();
 
-    public static Role GetRole(this PlayerControl player) => player.GetLayer<Role>();
-    /*{
-        if (!player)
-            return null;
+    public static Role GetRole(this PlayerControl player)
+    {
+        if (player.Data.Role is LayerHandler handler)
+            return handler.CustomRole;
 
-        Role.RoleLookup.TryGetValue(player.PlayerId, out var role);
-
-        if (!role)
-        {
-            role = player.GetLayer(PlayerLayerEnum.Role) as Role ?? new Roleless().Start<Role>(player);
-            Role.RoleLookup[player.PlayerId] = role;
-        }
-
-        return role;
-    }*/
+        return player.GetRoleFromList();
+    }
 
     public static Role GetRole(this PlayerVoteArea area) => PlayerByVoteArea(area).GetRole();
 
-    // public static Disposition GetDispositionFromList(this PlayerControl player) => Disposition.AllDispositions().Find(x => x.Player == player);
+    public static Disposition GetDispositionFromList(this PlayerControl player) => player.GetLayerFromList<Disposition>();
 
-    public static Disposition GetDisposition(this PlayerControl player) => player.GetLayer<Disposition>();
-    /*{
-        if (!player)
-            return null;
+    public static Disposition GetDisposition(this PlayerControl player)
+    {
+        if (player.Data.Role is LayerHandler handler)
+            return handler.CustomDisposition;
 
-        Disposition.DispositionLookup.TryGetValue(player.PlayerId, out var disp);
-
-        if (!disp)
-        {
-            disp = player.GetLayer(PlayerLayerEnum.Disposition) as Disposition ?? new Dispositionless().Start<Disposition>(player);
-            Disposition.DispositionLookup[player.PlayerId] = disp;
-        }
-
-        return disp;
-    }*/
+        return player.GetDispositionFromList();
+    }
 
     public static Disposition GetDisposition(this PlayerVoteArea area) => PlayerByVoteArea(area).GetDisposition();
 
-    // public static Modifier GetModifierFromList(this PlayerControl player) => Modifier.AllModifiers().Find(x => x.Player == player);
+    public static Modifier GetModifierFromList(this PlayerControl player) => player.GetLayerFromList<Modifier>();
 
-    public static Modifier GetModifier(this PlayerControl player) => player.GetLayer<Modifier>();
-    /*{
-        if (!player)
-            return null;
+    public static Modifier GetModifier(this PlayerControl player)
+    {
+        if (player.Data.Role is LayerHandler handler)
+            return handler.CustomModifier;
 
-        Modifier.ModifierLookup.TryGetValue(player.PlayerId, out var mod);
-
-        if (!mod)
-        {
-            mod = player.GetLayer(PlayerLayerEnum.Modifier) as Modifier ?? new Modifierless().Start<Modifier>(player);
-            Modifier.ModifierLookup[player.PlayerId] = mod;
-        }
-
-        return mod;
-    }*/
+        return player.GetModifierFromList();
+    }
 
     public static Modifier GetModifier(this PlayerVoteArea area) => PlayerByVoteArea(area).GetModifier();
 
-    // public static Ability GetAbilityFromList(this PlayerControl player) => Ability.AllAbilities().Find(x => x.Player == player);
+    public static Ability GetAbilityFromList(this PlayerControl player) => player.GetLayerFromList<Ability>();
 
-    public static Ability GetAbility(this PlayerControl player) => player.GetLayer<Ability>();
-    /*{
-        if (!player)
-            return null;
+    public static Ability GetAbility(this PlayerControl player)
+    {
+        if (player.Data.Role is LayerHandler handler)
+            return handler.CustomAbility;
 
-        Ability.AbilityLookup.TryGetValue(player.PlayerId, out var ab);
-
-        if (!ab)
-        {
-            ab = player.GetLayer(PlayerLayerEnum.Ability) as Ability ?? new Abilityless().Start<Ability>(player);
-            Ability.AbilityLookup[player.PlayerId] = ab;
-        }
-
-        return ab;
-    }*/
+        return player.GetAbilityFromList();
+    }
 
     public static Ability GetAbility(this PlayerVoteArea area) => PlayerByVoteArea(area).GetAbility();
 

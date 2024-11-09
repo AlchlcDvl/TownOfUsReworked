@@ -29,7 +29,7 @@ public class Survivor : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Live to the end of the game";
         VestButton ??= CreateButton(this, new SpriteName("Vest"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitVest, new Cooldown(VestCd), "VEST", new Duration(VestDur),

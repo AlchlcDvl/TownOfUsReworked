@@ -15,7 +15,7 @@ public class Sidekick : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateUtil;
     }
 

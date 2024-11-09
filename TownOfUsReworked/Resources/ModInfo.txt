@@ -11,6 +11,7 @@ New!
 
 Changes!
 - Rework: Dictator no longer ejects 3 players at a time, instead they pick a singular player to eject and instead has gained ability charges to compensate
+- Nerf: Vampire Hunters turned Vigilantes will always have one bullet left
 - Improvement: Improved the mod's asset loaders
 - Improvement: Assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
 - Improvement: Made general optimsations to improve the mod's intensity

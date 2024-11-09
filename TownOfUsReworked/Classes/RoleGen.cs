@@ -463,7 +463,7 @@ public static class RoleGen
         else if (layer == LayerEnum.Rivals)
             result = GameData.Instance.PlayerCount > 3;
         else if (layer == LayerEnum.Linked)
-            result = Role.GetRoles(Faction.Neutral).Count > 1 && GameData.Instance.PlayerCount > 4;
+            result = Role.GetRoles(Faction.Neutral).Count() > 1 && GameData.Instance.PlayerCount > 4;
 
         if (TownOfUsReworked.IsTest)
             result = true;
@@ -1436,7 +1436,6 @@ public static class RoleGen
                 };
                 ally.Side = alliedRole.Faction = (Faction)faction;
                 alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(ally.Side);
-                ally.Player.SetImpostor(ally.Side is Faction.Intruder or Faction.Syndicate);
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
             }
 
@@ -1782,12 +1781,11 @@ public static class RoleGen
         if (IsHnS() || !AmongUsClient.Instance.AmHost)
             return;
 
-        Message("RPC SET ROLE");
+        Message("Role Gen Start");
         Message($"Current Mode = {GameModeSettings.GameMode}");
         ResetEverything();
         CallRpc(CustomRPC.Misc, MiscRPC.Start);
         Message("Cleared Variables");
-        Message("Role Gen Start");
 
         if (IsKilling())
             GenKilling();
@@ -1918,16 +1916,11 @@ public static class RoleGen
 
         foreach (var player in AllPlayers())
         {
-            var role = player.GetRole() ?? new Roleless().Start<Role>(player);
-            var mod = player.GetModifier() ?? new Modifierless().Start<Modifier>(player);
-            var ab = player.GetAbility() ?? new Abilityless().Start<Ability>(player);
-            var disp = player.GetDisposition() ?? new Dispositionless().Start<Disposition>(player);
-
-            /*PlayerLayer.LayerLookup[player.PlayerId] = [ role, mod, ab, disp ];
-            Role.RoleLookup[player.PlayerId] = role;
-            Modifier.ModifierLookup[player.PlayerId] = mod;
-            Disposition.DispositionLookup[player.PlayerId] = disp;
-            Ability.AbilityLookup[player.PlayerId] = ab;*/
+            var role = player.GetRoleFromList() ?? new Roleless().Start(player);
+            var mod = player.GetModifierFromList() ?? new Modifierless().Start(player);
+            var ab = player.GetAbilityFromList() ?? new Abilityless().Start(player);
+            var disp = player.GetDispositionFromList() ?? new Dispositionless().Start(player);
+            RoleManager.Instance.SetRole(player, (RoleTypes)100);
 
             if (TownOfUsReworked.IsTest)
                 Message($"{player.name} -> {role}, {disp}, {mod}, {ab}");
@@ -1966,7 +1959,7 @@ public static class RoleGen
 
     public static void AssignChaosDrive()
     {
-        var all = AllPlayers().Where(x => !x.HasDied() && x.Is(Faction.Syndicate) && x.IsBase(Faction.Syndicate)).ToList();
+        var all = AllPlayers().Where(x => !x.HasDied() && x.Is(Faction.Syndicate) && x.IsBase(Faction.Syndicate));
 
         if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost || !all.Any())
             return;

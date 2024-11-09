@@ -31,7 +31,7 @@ public class Dracula : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
         Alignment = Alignment.NeutralNeo;

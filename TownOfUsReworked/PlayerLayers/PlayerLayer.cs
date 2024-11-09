@@ -74,6 +74,8 @@ public abstract class PlayerLayer
 
     public virtual void OnIntroEnd() {}
 
+    public virtual void UpdatePlayer() {}
+
     public virtual void UpdateHud(HudManager __instance) {}
 
     public virtual void UpdateMeeting(MeetingHud __instance) {}
@@ -106,7 +108,7 @@ public abstract class PlayerLayer
 
     public virtual void ReadRPC(MessageReader reader) {}
 
-    public virtual void OnDeath() {}
+    public virtual void OnDeath(DeathReason reason) {}
 
     public virtual void OnRevive() {}
 

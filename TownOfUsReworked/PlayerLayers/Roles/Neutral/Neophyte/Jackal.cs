@@ -32,7 +32,7 @@ public class Jackal : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Recruit or kill anyone who can oppose the <color=#575657FF>Cabal</color>";
         SubFaction = SubFaction.Cabal;
         SubFactionColor = CustomColorManager.Cabal;

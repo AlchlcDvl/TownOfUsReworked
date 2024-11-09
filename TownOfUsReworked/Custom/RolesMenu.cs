@@ -1,13 +1,11 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomRolesMenu(PlayerControl owner, CustomRolesMenu.Select click) : CustomMenu(owner, "Guessing")
+public class CustomRolesMenu(PlayerControl owner, RoleSelect click) : CustomMenu(owner, "Guessing")
 {
-    public Select Click { get; } = click;
+    public RoleSelect Click { get; } = click;
     public List<LayerEnum> Mapping { get; set; } = [];
     public PlayerControl Selected { get; set; }
     public ShapeshifterPanel SelectedPanel { get; set; }
-
-    public delegate void Select(ShapeshifterPanel selectedPanel, PlayerControl player, LayerEnum role);
 
     public void Clicked(ShapeshifterPanel selectedPanel, PlayerControl player, LayerEnum role)
     {

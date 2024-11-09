@@ -36,7 +36,7 @@ public class Disguiser : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderDecep;
         MeasureButton ??= CreateButton(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(MeasureCd), "MEASURE",
             (PlayerBodyExclusion)Exception2);

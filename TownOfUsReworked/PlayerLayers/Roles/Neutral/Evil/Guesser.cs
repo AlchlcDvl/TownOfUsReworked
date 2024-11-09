@@ -55,7 +55,7 @@ public class Guesser : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.NeutralEvil;
         RemainingGuesses = MaxGuesses == 0 ? 10000 : MaxGuesses;
         Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer.Data.PlayerName} was" : (!TargetPlayer ? "- Find someone to be guessed by you" : ("- Guess " +

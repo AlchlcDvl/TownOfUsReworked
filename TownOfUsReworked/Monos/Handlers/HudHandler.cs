@@ -21,42 +21,8 @@ public class HudHandler : MonoBehaviour
             ActiveTask().Close();
 
         CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ForEach(x => x.Update());
-        PlayerLayer.LocalLayers().ForEach(x => x.UpdateHud(HUD()));
-        CustomPlayer.Local.GetButtons().ForEach(x => x.SetActive());
         AllButtons.ForEach(x => x.Timers());
         HUD()?.ReportButton?.gameObject?.SetActive(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is(LayerEnum.Coward) && !CustomPlayer.Local.Is(Faction.GameMode) && !Meeting());
-
-        foreach (var phantom in PlayerLayer.GetLayers<Phantom>())
-        {
-            if (!phantom.Caught)
-                phantom.Fade();
-            else if (phantom.Faded)
-                phantom.UnFade();
-        }
-
-        foreach (var banshee in PlayerLayer.GetLayers<Banshee>())
-        {
-            if (!banshee.Caught)
-                banshee.Fade();
-            else if (banshee.Faded)
-                banshee.UnFade();
-        }
-
-        foreach (var ghoul in PlayerLayer.GetLayers<Ghoul>())
-        {
-            if (!ghoul.Caught)
-                ghoul.Fade();
-            else if (ghoul.Faded)
-                ghoul.UnFade();
-        }
-
-        foreach (var revealer in PlayerLayer.GetLayers<Revealer>())
-        {
-            if (!revealer.Caught)
-                revealer.Fade();
-            else if (revealer.Faded)
-                revealer.UnFade();
-        }
 
         foreach (var body in AllBodies())
         {

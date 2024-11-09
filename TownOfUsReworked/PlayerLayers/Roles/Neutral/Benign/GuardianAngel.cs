@@ -53,7 +53,7 @@ public class GuardianAngel : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         Alignment = Alignment.NeutralBen;
         TargetPlayer = null;

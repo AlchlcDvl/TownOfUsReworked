@@ -27,7 +27,7 @@ public class Crusader : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateKill;
         CrusadedPlayer = null;
         CrusadeButton ??= CreateButton(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Crusade, new Cooldown(CrusadeCd), "CRUSADE",

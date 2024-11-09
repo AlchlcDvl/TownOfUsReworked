@@ -9,7 +9,7 @@ public class Impostor : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderUtil;
         Data.Role.IntroSound = GetAudio("ImpostorIntro");
     }

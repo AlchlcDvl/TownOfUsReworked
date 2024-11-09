@@ -32,7 +32,7 @@ public class Grenadier : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderConceal;
         FlashedPlayers = [];
         FlashButton ??= CreateButton(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,

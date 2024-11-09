@@ -30,7 +30,7 @@ public class Amnesiac : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows = [];

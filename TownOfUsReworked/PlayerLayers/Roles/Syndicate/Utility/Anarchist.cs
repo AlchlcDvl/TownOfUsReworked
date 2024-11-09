@@ -9,7 +9,7 @@ public class Anarchist : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateUtil;
     }
 }

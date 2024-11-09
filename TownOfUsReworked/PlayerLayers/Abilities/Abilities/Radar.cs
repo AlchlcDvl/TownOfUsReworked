@@ -11,19 +11,11 @@ public class Radar : Ability
 
     public override void Init() => RadarArrow = new(Player, Color);
 
-    public override void Deinit()
-    {
-        base.Deinit();
-        RadarArrow?.Destroy();
-    }
+    public override void Deinit() => RadarArrow?.Destroy();
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
-        if (Dead)
-            Deinit();
-        else
+        if (!Dead)
         {
             var closest = Player.GetClosestPlayer(ignoreWalls: true);
             var body = Player.GetClosestBody(ignoreWalls: true);
@@ -32,4 +24,6 @@ public class Radar : Ability
             RadarArrow.Update(transform.position);
         }
     }
+
+    public override void OnDeath(DeathReason reason) => Deinit();
 }

@@ -10,8 +10,7 @@ public class Hunted : HideAndSeek
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Finish your tasks before the others";
-        Player.SetImpostor(false);
     }
 }

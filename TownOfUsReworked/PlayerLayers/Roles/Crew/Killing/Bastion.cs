@@ -24,7 +24,7 @@ public class Bastion : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewKill;
         BombedIDs = [];
         BombButton ??= CreateButton(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClick)Bomb, new Cooldown(BastionCd),

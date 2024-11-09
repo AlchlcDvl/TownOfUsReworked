@@ -28,7 +28,7 @@ public class Blackmailer : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
         BlackmailButton ??= CreateButton(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(BlackmailCd),

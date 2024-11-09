@@ -14,11 +14,10 @@ public class Hunter : HideAndSeek
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Hunt the others down before they finish their tasks";
         HuntButton ??= CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd),
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
-        Player.SetImpostor(true);
     }
 
     public override void UpdateHud(HudManager __instance)

@@ -28,7 +28,7 @@ public class Silencer : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateDisrup;
         SilencedPlayer = null;
         SilenceButton ??= CreateButton(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(SilenceCd), "SILENCE",

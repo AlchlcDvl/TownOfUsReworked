@@ -295,7 +295,7 @@ public static class MeetingPatches
             PlayerLayer.LocalLayers().ForEach(x => x?.VoteComplete(__instance));
             Coroutines.Start(PerformSwaps());
 
-            foreach (var role in Role.AllRoles)
+            foreach (var role in Role.AllRoles())
             {
                 if (role.Type is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.GuardianAngel or LayerEnum.Jester)
                     continue;

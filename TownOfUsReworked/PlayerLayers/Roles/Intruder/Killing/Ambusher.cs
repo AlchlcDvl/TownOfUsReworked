@@ -23,7 +23,7 @@ public class Ambusher : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
         AmbushButton ??= CreateButton(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",

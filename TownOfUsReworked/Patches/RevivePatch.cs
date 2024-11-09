@@ -20,7 +20,6 @@ public static class PlayerControlRevivePatch
         Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || !AllPlayers().Any(y => y.PlayerId == x) || !PlayerById(x));
         BodyLocations.Remove(__instance.PlayerId);
         SetPostmortals.RemoveFromPostmortals(__instance);
-        __instance.SetImpostor(__instance.GetFaction() is Faction.Intruder or Faction.Syndicate);
         var body = BodyByPlayer(__instance);
 
         if (body)

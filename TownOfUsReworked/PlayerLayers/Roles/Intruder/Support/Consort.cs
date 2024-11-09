@@ -22,7 +22,7 @@ public class Consort : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderSupport;
         RoleBlockImmune = true;
         BlockMenu = new(Player, Click, Exception1);

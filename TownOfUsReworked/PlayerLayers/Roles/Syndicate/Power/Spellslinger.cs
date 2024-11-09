@@ -22,7 +22,7 @@ public class Spellslinger : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicatePower;
         Spelled = [];
         SpellCount = 0;

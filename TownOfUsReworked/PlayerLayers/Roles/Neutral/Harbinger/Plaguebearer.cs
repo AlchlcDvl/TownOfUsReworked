@@ -23,7 +23,7 @@ public class Plaguebearer : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Alignment = Alignment.NeutralHarb;
         Infected = [Player.PlayerId];

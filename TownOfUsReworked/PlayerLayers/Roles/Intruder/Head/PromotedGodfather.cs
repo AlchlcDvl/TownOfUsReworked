@@ -4,9 +4,8 @@ public class PromotedGodfather : Intruder
 {
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderHead;
-        BlockMenu = new(Player, ConsClick, ConsException);
         TeleportPoint = Vector3.zero;
         Investigated = [];
         FlashedPlayers = [];
@@ -64,8 +63,7 @@ public class PromotedGodfather : Intruder
         else if (IsCamo)
         {
             CamouflageButton ??= CreateButton(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitCamouflage, (ConditionFunc)CamoCondition,
-                "CAMOUFLAGE", new Cooldown(Camouflager.CamouflageCd), new Duration(Camouflager.CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage,
-                (UsableFunc)CamoUsable);
+                "CAMOUFLAGE", new Cooldown(Camouflager.CamouflageCd), new Duration(Camouflager.CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage, (UsableFunc)CamoUsable);
         }
         else if (IsGren)
         {
@@ -118,8 +116,12 @@ public class PromotedGodfather : Intruder
         }
         else if (IsCons)
         {
+            var wasnull = BlockButton == null;
             BlockButton ??= CreateButton(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, (UsableFunc)ConsUsable,
                 new Cooldown(Consort.ConsortCd), new Duration(Consort.ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock, (LabelFunc)ConsLabel);
+
+            if (wasnull)
+                BlockMenu = new(Player, ConsClick, ConsException);
         }
         else if (IsMiner)
         {

@@ -26,7 +26,7 @@ public class Timekeeper : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateDisrup;
         TimeButton ??= CreateButton(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
             new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl);

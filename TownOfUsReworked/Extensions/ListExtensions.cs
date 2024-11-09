@@ -161,6 +161,17 @@ public static class ListExtensions
             action(item, num++);
     }
 
+    public static T Find<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        foreach (var item in source)
+        {
+            if (predicate(item))
+                return item;
+        }
+
+        return default;
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)

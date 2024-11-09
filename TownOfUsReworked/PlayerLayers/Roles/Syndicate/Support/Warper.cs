@@ -34,7 +34,7 @@ public class Warper : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateSupport;
         WarpPlayer1 = null;
         WarpPlayer2 = null;

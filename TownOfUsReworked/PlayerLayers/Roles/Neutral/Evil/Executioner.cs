@@ -51,7 +51,7 @@ public class Executioner : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (!TargetPlayer ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
         Alignment = Alignment.NeutralEvil;
         ToDoom = [];

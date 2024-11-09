@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Custom;
 public class CustomPlayer
 {
     public PlayerControl Player { get; }
-    public NetworkedPlayerInfo Data => Player.Data;
+    public NetworkedPlayerInfo Data => Player?.Data;
     public Transform Transform => Player.transform;
     public Vector3 Position => Transform.position;
     public bool Dead => Data.IsDead;

@@ -22,7 +22,7 @@ public class Framer : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateDisrup;
         Framed = [];
         FrameButton ??= CreateButton(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,

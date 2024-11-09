@@ -18,7 +18,7 @@ public class VampireHunter : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewAudit;
         StakeButton ??= CreateButton(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stake, new Cooldown(StakeCd));
     }

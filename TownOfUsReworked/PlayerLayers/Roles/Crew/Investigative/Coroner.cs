@@ -36,7 +36,7 @@ public class Coroner : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewInvest;
         BodyArrows = [];
         Reported = [];

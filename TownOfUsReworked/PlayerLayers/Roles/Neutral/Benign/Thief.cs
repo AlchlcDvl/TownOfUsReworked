@@ -31,7 +31,7 @@ public class Thief : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.NeutralBen;
         StealButton ??= CreateButton(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);

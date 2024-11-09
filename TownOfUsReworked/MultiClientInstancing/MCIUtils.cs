@@ -25,12 +25,10 @@ public static class MCIUtils
         }
     }
 
-    public static void CreatePlayerInstances(int count) => Coroutines.Start(CoCreatePlayerInstances(count));
-
-    public static IEnumerator CoCreatePlayerInstances(int count)
+    public static void CreatePlayerInstances(int count)
     {
         for (var i = 0; i < count; i++)
-            yield return CoCreatePlayerInstance();
+            CreatePlayerInstance();
     }
 
     public static void CreatePlayerInstance() => Coroutines.Start(CoCreatePlayerInstance());

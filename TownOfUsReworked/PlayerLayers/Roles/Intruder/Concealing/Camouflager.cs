@@ -20,7 +20,7 @@ public class Camouflager : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderConceal;
         CamouflageButton ??= CreateButton(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
             new Cooldown(CamouflageCd), new Duration(CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage);

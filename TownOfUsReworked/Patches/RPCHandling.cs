@@ -167,16 +167,11 @@ public static class RPCHandling
                     case MiscRPC.EndRoleGen:
                         foreach (var player2 in AllPlayers())
                         {
-                            var role = player2.GetRole() ?? new Roleless().Start<Role>(player2);
-                            var mod = player2.GetModifier() ?? new Modifierless().Start<Modifier>(player2);
-                            var ab = player2.GetAbility() ?? new Abilityless().Start<Ability>(player2);
-                            var disp = player2.GetDisposition() ?? new Dispositionless().Start<Disposition>(player2);
-
-                            /*PlayerLayer.LayerLookup[player2.PlayerId] = [ role, mod, ab, disp ];
-                            Role.RoleLookup[player2.PlayerId] = role;
-                            Modifier.ModifierLookup[player2.PlayerId] = mod;
-                            Disposition.DispositionLookup[player2.PlayerId] = disp;
-                            Ability.AbilityLookup[player2.PlayerId] = ab;*/
+                            _ = player2.GetRoleFromList() ?? new Roleless().Start(player2);
+                            _ = player2.GetAbilityFromList() ?? new Abilityless().Start(player2);
+                            _ = player2.GetModifierFromList() ?? new Modifierless().Start(player2);
+                            _ = player2.GetDispositionFromList() ?? new Dispositionless().Start(player2);
+                            RoleManager.Instance.SetRole(player2, (RoleTypes)100);
                         }
 
                         break;
@@ -200,7 +195,6 @@ public static class RPCHandling
                             var alliedRole = ally.Player.GetRole();
                             var faction = reader.ReadEnum<Faction>();
                             alliedRole.Faction = ally.Side = faction;
-                            ally.Player.SetImpostor(faction is Faction.Intruder or Faction.Syndicate);
                             alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(faction);
                             alliedRole.FactionColor = faction switch
                             {

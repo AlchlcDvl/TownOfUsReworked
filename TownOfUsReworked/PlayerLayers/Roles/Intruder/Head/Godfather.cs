@@ -19,7 +19,7 @@ public class Godfather : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderHead;
         DeclareButton ??= CreateButton(this, "Promote", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }

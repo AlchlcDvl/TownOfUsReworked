@@ -28,7 +28,7 @@ public class Enforcer : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderKill;
         BombedPlayer = null;
         BombButton ??= CreateButton(this, new SpriteName("Enforce"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Bomb, new Cooldown(EnforceCd), "SET BOMB", new Duration(EnforceDur),

@@ -23,7 +23,7 @@ public class Poisoner : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         PoisonedPlayer = null;
         Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);

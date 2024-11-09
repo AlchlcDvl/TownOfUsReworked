@@ -48,7 +48,7 @@ public class BountyHunter : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;

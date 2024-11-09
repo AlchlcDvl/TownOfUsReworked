@@ -32,7 +32,7 @@ public class Morphling : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;

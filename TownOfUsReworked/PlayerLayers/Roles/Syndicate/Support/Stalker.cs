@@ -18,7 +18,7 @@ public class Stalker : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         StalkerArrows = [];
         Alignment = Alignment.SyndicateSupport;
         StalkButton ??= CreateButton(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,

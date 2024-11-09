@@ -2,8 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 public abstract class Disposition : PlayerLayer
 {
-    public static List<Disposition> AllDispositions() => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Disposition).Cast<Disposition>() ];
-    // public static readonly Dictionary<byte, Disposition> DispositionLookup = [];
     public static Disposition LocalDisposition => CustomPlayer.Local.GetDisposition();
 
     public override UColor Color => CustomColorManager.Disposition;
@@ -22,4 +20,6 @@ public abstract class Disposition : PlayerLayer
         base.Init();
         Player.GetRole().LinkedDisposition = Type;
     }
+
+    public static IEnumerable<Disposition> AllDispositions() => AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Disposition).Cast<Disposition>();
 }

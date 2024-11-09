@@ -22,7 +22,7 @@ public class Wraith : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderDecep;
         Data.Role.IntroSound = GetAudio("WraithIntro");
         InvisButton ??= CreateButton(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitInvis, new Cooldown(InvisCd),

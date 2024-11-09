@@ -15,6 +15,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<MeetingHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<DragHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<ColorHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<LayerHandler>();
 
         // Paging
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -45,6 +46,27 @@ public static class AllMonos
         TownOfUsReworked.ModInstance.AddComponent<MeetingHandler>();
         TownOfUsReworked.ModInstance.AddComponent<DragHandler>();
         TownOfUsReworked.ModInstance.AddComponent<ColorHandler>();
+
+        var prefab = (RoleBehaviour)new GameObject("LayerHandler").DontDestroy().AddComponent(Il2CppType.From(typeof(LayerHandler)));
+        prefab.Role = (RoleTypes)100;
+        prefab.TeamType = (RoleTeamTypes)5;
+        prefab.CanBeKilled = true;
+        prefab.CanUseKillButton = false;
+        prefab.CanVent = false;
+        prefab.NameColor = UColor.white;
+        prefab.MaxCount = 127;
+        prefab.DefaultGhostRole = (RoleTypes)100;
+        prefab.AffectedByLightAffectors = true;
+        prefab.IntroSound = GetAudio("CrewmateIntro");
+
+        var allRoles = RoleManager.Instance.AllRoles.ToArray().ToList();
+        allRoles.Add(prefab);
+        RoleManager.Instance.AllRoles = allRoles.ToArray();
+
+        LayerHandler.Crewmate = RoleManager.Instance.GetRole(RoleTypes.Crewmate);
+        LayerHandler.Impostor = RoleManager.Instance.GetRole(RoleTypes.Impostor);
+        LayerHandler.CrewmateGhost = RoleManager.Instance.GetRole(RoleTypes.CrewmateGhost);
+        LayerHandler.ImpostorGhost = RoleManager.Instance.GetRole(RoleTypes.ImpostorGhost);
 
         ComponentsAdded = true;
     }

@@ -25,7 +25,7 @@ public class Troll : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
         InteractButton ??= CreateButton(this, new SpriteName("Placeholder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Interact, new Cooldown(InteractCd), "INTERACT");

@@ -20,7 +20,7 @@ public class Shifter : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewSupport;
         ShifterMenu = new(Player, Shift, Exception);
         ShiftButton ??= CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
@@ -28,12 +28,13 @@ public class Shifter : Crew
 
     public void Shift()
     {
-        var cooldown = Interact(Player, ShiftButton.GetTarget<PlayerControl>(), astral: true);
+        var target = ShiftButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target, astral: true);
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ShiftButton.GetTarget<PlayerControl>());
-            Shift(ShiftButton.GetTarget<PlayerControl>());
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+            Shift(target);
         }
         else
             ShiftButton.StartCooldown(cooldown);
@@ -100,9 +101,9 @@ public class Shifter : Crew
             LayerEnum.Shifter or _ => new Shifter(),
         };
 
-        newRole.RoleUpdate(this, player);
+        newRole.RoleUpdate(this, player, true);
         Role newRole2 = ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
-        newRole2.RoleUpdate(role, other);
+        newRole2.RoleUpdate(role, other, true);
         ShifterMenu.Destroy();
         CustomMenu.AllMenus.Remove(ShifterMenu);
 

@@ -116,7 +116,10 @@ public static class PerformSabotage
         if (!blocked)
             Blocked.BlockExposed = true;
 
-        return blocked && CustomPlayer.Local.CanSabotage();
+        if (blocked && CustomPlayer.Local.CanSabotage() && !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled())
+            HUD().ToggleMapVisible(new() { Mode = MapOptions.Modes.Sabotage });
+
+        return false;
     }
 }
 
@@ -175,6 +178,9 @@ public static class Blocked
     {
         if (!CustomPlayer.Local || IsLobby())
             return;
+
+        if (CustomPlayer.LocalCustom.Data.Role is LayerHandler handler)
+            handler.HudUpdate(__instance);
 
         if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
         {

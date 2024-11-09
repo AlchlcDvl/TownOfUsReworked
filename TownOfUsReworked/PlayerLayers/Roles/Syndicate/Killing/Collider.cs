@@ -40,7 +40,7 @@ public class Collider : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateKill;
         Positive = null;
         Negative = null;

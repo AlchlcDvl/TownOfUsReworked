@@ -22,7 +22,7 @@ public class Sheriff : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewKill;
         InterrogateButton ??= CreateButton(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Interrogate,
             new Cooldown(InterrogateCd), (PlayerBodyExclusion)Exception);

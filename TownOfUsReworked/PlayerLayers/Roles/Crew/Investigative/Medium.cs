@@ -32,7 +32,7 @@ public class Medium : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         MediatedPlayers = [];
         MediateArrows = [];
         Alignment = Alignment.CrewInvest;

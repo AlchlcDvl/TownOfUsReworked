@@ -24,7 +24,7 @@ public class Veteran : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewKill;
         AlertButton ??= CreateButton(this, "ALERT", new SpriteName("Alert"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Alert, new Cooldown(AlertCd), MaxAlerts,
             new Duration(AlertDur), (EndFunc)EndEffect);

@@ -59,7 +59,7 @@ public class Necromancer : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
         Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Reanimated;

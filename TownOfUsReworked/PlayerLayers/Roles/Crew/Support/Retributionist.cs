@@ -8,7 +8,7 @@ public class Retributionist : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewSupport;
         BodyArrows = [];
         MediatedPlayers = [];
@@ -32,23 +32,8 @@ public class Retributionist : Crew
         WasInVent2 = false;
         Vent1 = null;
         Vent2 = null;
-        Transport1 = new("RetTransport1") { layer = 5 };
-        Transport2 = new("RetTransport2") { layer = 5 };
-        Transport1.AddSubmergedComponent("ElevatorMover");
-        Transport2.AddSubmergedComponent("ElevatorMover");
-        Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
-        Transport2.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
-        AnimationPlaying1 = Transport1.AddComponent<SpriteRenderer>();
-        AnimationPlaying2 = Transport2.AddComponent<SpriteRenderer>();
-        AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
-        AnimationPlaying1.material = AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
-        Transport1.SetActive(true);
-        Transport2.SetActive(true);
-        TransportMenu1 = new(Player, Click1, TransException1);
-        TransportMenu2 = new(Player, Click2, TransException2);
         RetMenu = new(Player, "RetActive", "RetDisabled", ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
         TrapsMade = 0;
-        TrapButton.Uses = 0;
     }
 
     // Retributionist Stuff
@@ -61,12 +46,10 @@ public class Retributionist : Crew
     {
         get
         {
-            if (!ClientOptions.CustomCrewColors)
-                return CustomColorManager.Crew;
-            else if (RevivedRole)
-                return RevivedRole.Color;
+            if (ClientOptions.CustomCrewColors)
+                return RevivedRole?.Color ?? CustomColorManager.Retributionist;
             else
-                return CustomColorManager.Retributionist;
+                return CustomColorManager.Crew;
         }
     }
     public override string Name => "Retributionist";
@@ -533,8 +516,26 @@ public class Retributionist : Crew
         }
         else if (IsTrans)
         {
+            var wasnull = TransportButton == null;
             TransportButton ??= CreateButton(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, Transporter.MaxTransports,
                 (LabelFunc)TransLabel, new Cooldown(Transporter.TransportCd), (UsableFunc)TransUsable);
+
+            if (wasnull)
+            {
+                Transport1 = new("RetTransport1") { layer = 5 };
+                Transport2 = new("RetTransport2") { layer = 5 };
+                Transport1.AddSubmergedComponent("ElevatorMover");
+                Transport2.AddSubmergedComponent("ElevatorMover");
+                Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
+                Transport2.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
+                AnimationPlaying1 = Transport1.AddComponent<SpriteRenderer>();
+                AnimationPlaying2 = Transport2.AddComponent<SpriteRenderer>();
+                AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
+                AnimationPlaying1.material = AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
+                Transport1.SetActive(true);
+                Transport2.SetActive(true);
+                TransportMenu1 = new(Player, Click1, TransException1);
+                TransportMenu2 = new(Player, Click2, TransException2);}
         }
     }
 

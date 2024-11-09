@@ -19,7 +19,7 @@ public class Engineer : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewSupport;
         FixButton ??= CreateButton(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Fix, new Cooldown(FixCd), MaxFixes,
             (ConditionFunc)Condition);

@@ -32,7 +32,7 @@ public class Detective : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         AllPrints = [];
         Investigated = [];
         Alignment = Alignment.CrewInvest;

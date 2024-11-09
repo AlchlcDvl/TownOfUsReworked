@@ -36,7 +36,7 @@ public class Bomber : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateKill;
         Bombs = [];
         BombButton ??= CreateButton(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(BombCd), "PLACE BOMB",

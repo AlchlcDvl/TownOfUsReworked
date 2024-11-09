@@ -37,7 +37,7 @@ public class Cryomaniac : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Freeze anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         Doused = [];

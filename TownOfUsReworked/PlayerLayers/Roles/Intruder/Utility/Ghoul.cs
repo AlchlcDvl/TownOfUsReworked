@@ -20,7 +20,7 @@ public class Ghoul : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderUtil;
         MarkedPlayer = null;
         MarkButton ??= CreateButton(this, new SpriteName("GhoulMark"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Mark, new Cooldown(GhoulMarkCd), "MARK", new PostDeath(true),
@@ -80,4 +80,12 @@ public class Ghoul : Intruder
     public bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
     public override void ReadRPC(MessageReader reader) => MarkedPlayer = reader.ReadPlayer();
+
+    public override void UpdatePlayer()
+    {
+        if (!Caught)
+            Fade();
+        else if (Faded)
+            UnFade();
+    }
 }

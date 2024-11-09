@@ -514,7 +514,7 @@ public static class Utils
         if (Meeting())
             MarkMeetingDead(target, killer);
         else
-            target.GetLayers().ForEach(x => x.OnDeath());
+            target.GetLayers().ForEach(x => x.OnDeath(DeathReason.Kill));
     }
 
     public static void MarkMeetingDead(PlayerControl target, bool doesKill = true, bool noReason = false) => MarkMeetingDead(target, target, doesKill, noReason);
@@ -700,7 +700,7 @@ public static class Utils
         if (FirstDead == null)
             FirstDead = target.Data.PlayerName;
 
-        target.GetLayers().ForEach(x => x.OnDeath());
+        target.GetLayers().ForEach(x => x.OnDeath(DeathReason.Kill));
     }
 
     public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
@@ -1026,7 +1026,7 @@ public static class Utils
     public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false, Func<PlayerControl, bool>
         predicate = null)
     {
-        var closestDistance = double.MaxValue;
+        var closestDistance = float.MaxValue;
         PlayerControl closestPlayer = null;
         allPlayers ??= AllPlayers();
 
@@ -1041,8 +1041,8 @@ public static class Utils
             if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !GameModifiers.VentTargeting) || player.walkingToVent)
                 continue;
 
-            var distance = Vector2.Distance(position, player.transform.position);
-            var vector = (Vector2)player.transform.position - (Vector2)position;
+            var distance = Vector3.Distance(position, player.transform.position);
+            var vector = player.transform.position - position;
 
             if (distance > closestDistance || distance > maxDistance)
                 continue;
@@ -1062,7 +1062,7 @@ public static class Utils
 
     public static Vent GetClosestVent(Vector3 position, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
     {
-        var closestDistance = double.MaxValue;
+        var closestDistance = float.MaxValue;
         Vent closestVent = null;
         allVents ??= AllMapVents();
 
@@ -1074,8 +1074,8 @@ public static class Utils
 
         foreach (var vent in allVents)
         {
-            var distance = Vector2.Distance(position, vent.transform.position);
-            var vector = (Vector2)vent.transform.position - (Vector2)position;
+            var distance = Vector3.Distance(position, vent.transform.position);
+            var vector = vent.transform.position - position;
 
             if (distance > maxDistance || distance > closestDistance)
                 continue;
@@ -1095,7 +1095,7 @@ public static class Utils
 
     public static DeadBody GetClosestBody(Vector3 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false, Func<DeadBody, bool> predicate = null)
     {
-        var closestDistance = double.MaxValue;
+        var closestDistance = float.MaxValue;
         DeadBody closestBody = null;
         allBodies ??= AllBodies();
 
@@ -1110,8 +1110,8 @@ public static class Utils
             if (Role.Cleaned.Any(x => x == body.ParentId))
                 continue;
 
-            var distance = Vector2.Distance(position, body.transform.position);
-            var vector = (Vector2)body.transform.position - (Vector2)position;
+            var distance = Vector3.Distance(position, body.transform.position);
+            var vector = body.transform.position - position;
 
             if (distance > maxDistance || distance > closestDistance)
                 continue;
@@ -1131,7 +1131,7 @@ public static class Utils
 
     public static Console GetClosestConsole(Vector3 position, IEnumerable<Console> allConsoles = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Console, bool> predicate = null)
     {
-        var closestDistance = double.MaxValue;
+        var closestDistance = float.MaxValue;
         Console closestConsole = null;
         allConsoles ??= AllConsoles();
 
@@ -1140,8 +1140,8 @@ public static class Utils
 
         foreach (var console in allConsoles)
         {
-            var distance = Vector2.Distance(position, console.transform.position);
-            var vector = (Vector2)console.transform.position - (Vector2)position;
+            var distance = Vector3.Distance(position, console.transform.position);
+            var vector = console.transform.position - position;
             var tempMaxDistance = maxDistance;
 
             if (tempMaxDistance == 0f)
@@ -1168,13 +1168,13 @@ public static class Utils
         if (allMonos.Count() == 1)
             return allMonos.ElementAt(0);
 
-        var closestDistance = double.MaxValue;
+        var closestDistance = float.MaxValue;
         MonoBehaviour closestMono = null;
 
         foreach (var mono in allMonos)
         {
-            var distance = Vector2.Distance(position, mono.transform.position);
-            var vector = (Vector2)mono.transform.position - (Vector2)position;
+            var distance = Vector3.Distance(position, mono.transform.position);
+            var vector = mono.transform.position - position;
             var maxDistance = trueMaxDistance;
 
             if (maxDistance == 0f)

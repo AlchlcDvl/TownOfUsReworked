@@ -25,7 +25,7 @@ public class Drunkard : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateDisrup;
         ConfuseMenu = new(Player, Click, Exception1);
         ConfusedPlayer = null;

@@ -26,7 +26,7 @@ public class Shapeshifter : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicateDisrup;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;

@@ -15,7 +15,7 @@ public class Mafioso : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderUtil;
     }
 

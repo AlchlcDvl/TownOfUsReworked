@@ -37,7 +37,7 @@ public class Monarch : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewSov;
         Knighted = [];
         ToBeKnighted = [];

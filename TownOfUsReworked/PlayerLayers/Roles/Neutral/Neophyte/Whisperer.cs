@@ -47,7 +47,7 @@ public class Whisperer : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
         Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Sect;

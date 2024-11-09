@@ -32,7 +32,7 @@ public class Trapper : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderSupport;
         Trapped = [];
         TriggeredRoles = [];

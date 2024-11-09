@@ -21,7 +21,7 @@ public class Escort : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewSupport;
         RoleBlockImmune = true;
         BlockTarget = null;

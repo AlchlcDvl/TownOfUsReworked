@@ -11,11 +11,10 @@ public class Runner : Role
 
     public override void Init()
     {
-        RoleStart();
+        base.Init();
         Faction = Faction.GameMode;
         FactionColor = CustomColorManager.TaskRace;
         Objectives = () => "- Finish your tasks before the others";
-        Player.SetImpostor(false);
         Alignment = Alignment.GameModeTaskRace;
     }
 

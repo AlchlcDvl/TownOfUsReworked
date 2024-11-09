@@ -29,7 +29,7 @@ public class Werewolf : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Maul anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MaulButton ??= CreateButton(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitMaul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,

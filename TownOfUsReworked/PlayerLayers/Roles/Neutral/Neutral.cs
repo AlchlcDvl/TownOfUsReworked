@@ -5,12 +5,11 @@ public abstract class Neutral : Role
     public override UColor Color => CustomColorManager.Neutral;
     public override Faction BaseFaction => Faction.Neutral;
 
-    public void BaseStart()
+    public override void Init()
     {
-        RoleStart();
+        base.Init();
         Faction = Faction.Neutral;
         FactionColor = CustomColorManager.Neutral;
-        Player.SetImpostor(false);
     }
 
     public override List<PlayerControl> Team()

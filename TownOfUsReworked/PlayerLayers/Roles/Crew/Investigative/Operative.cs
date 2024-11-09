@@ -40,7 +40,7 @@ public class Operative : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewInvest;
         BuggedPlayers = [];
         Bugs = [];

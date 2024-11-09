@@ -4,7 +4,7 @@ public class PromotedRebel : Syndicate
 {
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicatePower;
         SpellCount = 0;
         Framed = [];
@@ -25,20 +25,6 @@ public class PromotedRebel : Syndicate
         Player2Body = null;
         WasInVent = false;
         Vent = null;
-        WarpObj = new("Warp") { layer = 5 };
-        WarpObj.AddSubmergedComponent("ElevatorMover");
-        WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
-        AnimationPlaying = WarpObj.AddComponent<SpriteRenderer>();
-        AnimationPlaying.sprite = PortalAnimation[0];
-        AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
-        WarpObj.SetActive(true);
-        ConfuseMenu = new(Player, ConfuseClick, DrunkException);
-        WarpMenu1 = new(Player, WarpClick1, WarpException1);
-        WarpMenu2 = new(Player, WarpClick2, WarpException2);
-        ConcealMenu = new(Player, ConcealClick, ConcealException);
-        PoisonMenu = new(Player, PoisonClick, PoisonException);
-        ShapeshiftMenu1 = new(Player, ShapeshiftClick1, SSException1);
-        ShapeshiftMenu2 = new(Player, ShapeshiftClick2, SSException2);
         Data.Role.IntroSound = GetAudio("RebelIntro");
     }
 
@@ -163,13 +149,21 @@ public class PromotedRebel : Syndicate
     {
         if (IsConc)
         {
+            var wasnull = ConcealButton == null;
             ConcealButton ??= CreateButton(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(Concealer.ConcealCd),
                 (LabelFunc)ConcLabel, new Duration(Concealer.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal, (UsableFunc)ConcealUsable);
+
+            if (wasnull)
+                ConcealMenu = new(Player, ConcealClick, ConcealException);
         }
         else if (IsDrunk)
         {
+            var wasnull = ConfuseButton == null;
             ConfuseButton ??= CreateButton(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConfuse, new Cooldown(Drunkard.ConfuseCd),
                 new Duration(Drunkard.ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (LabelFunc)DrunkLabel, (EndFunc)ConfuseEnd, (UsableFunc)DrunkUsable);
+
+            if (wasnull)
+                ConfuseMenu = new(Player, ConfuseClick, DrunkException);
         }
         else if (IsFram)
         {
@@ -180,8 +174,15 @@ public class PromotedRebel : Syndicate
         }
         else if (IsSS)
         {
+            var wasnull = ShapeshiftButton == null;
             ShapeshiftButton ??= CreateButton(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(Shapeshifter.ShapeshiftCd),
                 new Duration(Shapeshifter.ShapeshiftDur), (EffectVoid)Shift, (EffectEndVoid)UnShapeshift, (LabelFunc)SSLabel, (UsableFunc)SSUsable);
+
+            if (wasnull)
+            {
+                ShapeshiftMenu1 = new(Player, ShapeshiftClick1, SSException1);
+                ShapeshiftMenu2 = new(Player, ShapeshiftClick2, SSException2);
+            }
         }
         else if (IsSil)
         {
@@ -216,10 +217,14 @@ public class PromotedRebel : Syndicate
         }
         else if (IsPois)
         {
+            var wasnull = PoisonButton == null;
             PoisonButton ??= CreateButton(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(Poisoner.PoisonCd),
                 "POISON", new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)PoisonException, (UsableFunc)PoisUsable1, (EndFunc)PoisonEnd);
             GlobalPoisonButton ??= CreateButton(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)PoisLabel,
                 new Cooldown(Poisoner.PoisonCd), new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)PoisUsable2, (EndFunc)PoisonEnd);
+
+            if (wasnull)
+                PoisonMenu = new(Player, PoisonClick, PoisonException);
         }
         else if (IsSpell)
         {
@@ -233,8 +238,22 @@ public class PromotedRebel : Syndicate
         }
         else if (IsWarp)
         {
+            var wasnull = WarpButton == null;
             WarpButton ??= CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, (LabelFunc)WarpLabel, new Cooldown(Warper.WarpCd),
                 (UsableFunc)WarpUsable);
+
+            if (wasnull)
+            {
+                WarpObj = new("RebWarp") { layer = 5 };
+                WarpObj.AddSubmergedComponent("ElevatorMover");
+                WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
+                AnimationPlaying = WarpObj.AddComponent<SpriteRenderer>();
+                AnimationPlaying.sprite = PortalAnimation[0];
+                AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
+                WarpObj.SetActive(true);
+                WarpMenu1 = new(Player, WarpClick1, WarpException1);
+                WarpMenu2 = new(Player, WarpClick2, WarpException2);
+            }
         }
     }
 

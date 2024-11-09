@@ -26,7 +26,7 @@ public class Tracker : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         TrackerArrows = [];
         Alignment = Alignment.CrewInvest;
         Data.Role.IntroSound = GetAudio("TrackerIntro");

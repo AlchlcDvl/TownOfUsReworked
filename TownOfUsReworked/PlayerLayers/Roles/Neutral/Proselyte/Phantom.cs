@@ -20,7 +20,7 @@ public class Phantom : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Finish your tasks without getting clicked";
         Alignment = Alignment.NeutralPros;
     }
@@ -72,5 +72,13 @@ public class Phantom : Neutral
 
         if (TasksLeft == PhantomTasksRemaining && PhantomPlayersAlerted && !Caught)
             Flash(Color);
+    }
+
+    public override void UpdatePlayer()
+    {
+        if (!Caught)
+            Fade();
+        else if (Faded)
+            UnFade();
     }
 }

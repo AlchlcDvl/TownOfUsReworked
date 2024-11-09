@@ -27,7 +27,7 @@ public class Teleporter : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderSupport;
         TeleportPoint = Vector3.zero;
         MarkButton ??= CreateButton(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(TeleMarkCd), "MARK POSITION",

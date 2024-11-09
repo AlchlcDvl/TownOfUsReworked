@@ -25,7 +25,7 @@ public class Medic : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         ShieldedPlayer = null;
         Alignment = Alignment.CrewProt;
         ShieldButton ??= CreateButton(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Protect, (PlayerBodyExclusion)Exception,

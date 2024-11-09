@@ -94,6 +94,7 @@ public static class MapPatches
         RoleManager.Instance.SelectRoles();
         ShipStatus.Instance.Begin();
         AmongUsClient.Instance.SendClientReady();
+        yield break;
     }
 
     private static byte GetSelectedMap()

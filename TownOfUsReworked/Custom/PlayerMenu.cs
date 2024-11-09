@@ -1,11 +1,9 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomPlayerMenu(PlayerControl owner, CustomPlayerMenu.Select click, PlayerBodyExclusion exception = null) : CustomMenu(owner, "Player")
+public class CustomPlayerMenu(PlayerControl owner, PlayerSelect click, PlayerBodyExclusion exception = null) : CustomMenu(owner, "Player")
 {
-    public Select Click { get; } = click;
+    public PlayerSelect Click { get; } = click;
     public PlayerBodyExclusion Exception { get; } = exception ?? BlankFalse;
-
-    public delegate void Select(PlayerControl player);
 
     public List<PlayerControl> Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 

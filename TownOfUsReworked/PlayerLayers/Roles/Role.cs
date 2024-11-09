@@ -2,8 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Role : PlayerLayer
 {
-    public static List<Role> AllRoles => [ .. AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Role).Cast<Role>() ];
-    // public static readonly Dictionary<byte, Role> RoleLookup = [];
     public static readonly List<byte> Cleaned = [];
 
     public static Role LocalRole => CustomPlayer.Local.GetRole();
@@ -103,7 +101,7 @@ public abstract class Role : PlayerLayer
 
     public bool HasTarget => Type is LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.Guesser or LayerEnum.BountyHunter;
 
-    public void RoleStart()
+    public override void Init()
     {
         RoleHistory = [];
         AllArrows = [];
@@ -401,7 +399,7 @@ public abstract class Role : PlayerLayer
         base.OnMeetingStart(__instance);
         TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
         AllVoteAreas().ForEach(GenText);
-        AllRoles.ForEach(x => x.CurrentChannel = ChatChannel.All);
+        AllRoles().ForEach(x => x.CurrentChannel = ChatChannel.All);
         GetLayers<Retributionist>().ForEach(x => x.Selected = null);
         GetLayers<Dictator>().ForEach(x => x.ToBeEjected = null);
 
@@ -565,11 +563,13 @@ public abstract class Role : PlayerLayer
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
 
-    public static List<Role> GetRoles(Faction faction) => [ .. AllRoles.Where(x => x.Faction == faction && !x.Ignore) ];
+    public static IEnumerable<Role> AllRoles() => AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Role).Cast<Role>();
 
-    public static List<Role> GetRoles(Alignment ra) => [ .. AllRoles.Where(x => x.Alignment == ra && !x.Ignore) ];
+    public static IEnumerable<Role> GetRoles(Faction faction) => AllRoles().Where(x => x.Faction == faction && !x.Ignore);
 
-    public static List<Role> GetRoles(SubFaction subfaction) => [ .. AllRoles.Where(x => x.SubFaction == subfaction && !x.Ignore) ];
+    public static IEnumerable<Role> GetRoles(Alignment ra) => AllRoles().Where(x => x.Alignment == ra && !x.Ignore);
+
+    public static IEnumerable<Role> GetRoles(SubFaction subfaction) => AllRoles().Where(x => x.SubFaction == subfaction && !x.Ignore);
 
     public static T LocalRoleAs<T>() where T : Role => LocalRole as T;
 }

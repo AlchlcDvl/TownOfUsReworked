@@ -35,7 +35,7 @@ public class Janitor : Intruder
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
         DragButton ??= CreateButton(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);

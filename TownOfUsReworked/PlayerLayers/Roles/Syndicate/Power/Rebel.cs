@@ -19,7 +19,7 @@ public class Rebel : Syndicate
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.SyndicatePower;
         SidekickButton ??= CreateButton(this, new SpriteName("Sidekick"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
             (UsableFunc)Usable);

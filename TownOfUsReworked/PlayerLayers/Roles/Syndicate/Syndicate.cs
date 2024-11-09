@@ -12,15 +12,14 @@ public abstract class Syndicate : Role
     public override Faction BaseFaction => Faction.Syndicate;
     public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.Basic;
 
-    public void BaseStart()
+    public override void Init()
     {
-        RoleStart();
+        base.Init();
         Faction = Faction.Syndicate;
         FactionColor = CustomColorManager.Syndicate;
         Objectives = () => SyndicateWinCon;
         KillButton ??= CreateButton(this, new SpriteName("SyndicateKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
-        Player.SetImpostor(true);
         IsPromoted = false;
     }
 

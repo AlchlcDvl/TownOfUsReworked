@@ -30,7 +30,7 @@ public class Jester : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
         Alignment = Alignment.NeutralEvil;
         ToHaunt = [];

@@ -24,7 +24,7 @@ public class Mayor : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewSov;
         RevealButton ??= CreateButton(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal, (UsableFunc)Usable);
         Data.Role.IntroSound = GetAudio("MayorIntro");

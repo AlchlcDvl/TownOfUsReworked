@@ -22,8 +22,8 @@ public static class MainMenuStartPatch
 
     public static void Prefix()
     {
-        AllMonos.AddComponents();
         LoadVanillaSounds();
+        AllMonos.AddComponents();
         CachedFirstDead = null;
         TownOfUsReworked.IsTest = false;
         var rightPanel = GameObject.Find("RightPanel");

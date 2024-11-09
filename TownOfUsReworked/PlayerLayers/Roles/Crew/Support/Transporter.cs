@@ -40,7 +40,7 @@ public class Transporter : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Alignment = Alignment.CrewSupport;

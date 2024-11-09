@@ -40,7 +40,7 @@ public class Revealer : Crew
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Alignment = Alignment.CrewUtil;
     }
 
@@ -108,5 +108,13 @@ public class Revealer : Crew
                 Flash(Color);
             }
         }
+    }
+
+    public override void UpdatePlayer()
+    {
+        if (!Caught)
+            Fade();
+        else if (Faded)
+            UnFade();
     }
 }

@@ -29,7 +29,7 @@ public class SerialKiller : Neutral
 
     public override void Init()
     {
-        BaseStart();
+        base.Init();
         Objectives = () => "- Stab anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         RoleBlockImmune = true;
