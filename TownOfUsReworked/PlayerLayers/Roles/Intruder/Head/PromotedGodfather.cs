@@ -135,6 +135,8 @@ public class PromotedGodfather : Intruder
             TeleportButton ??= CreateButton(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(Teleporter.TeleportCd),
                 "TELEPORT", (UsableFunc)TeleUsable2, (ConditionFunc)TeleCondition);
         }
+
+        Player.ResetButtons();
     }
 
     public override void ReadRPC(MessageReader reader)

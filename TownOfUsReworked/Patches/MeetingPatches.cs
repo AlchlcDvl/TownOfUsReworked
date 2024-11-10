@@ -258,8 +258,6 @@ public static class MeetingPatches
 
             foreach (var layer in PlayerLayer.LocalLayers())
             {
-                layer.OnMeetingStart(Meeting());
-
                 if (layer.Player == Reporter)
                     layer.OnBodyReport(Reported);
             }

@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.Monos;
 
 public class LayerHandler : RoleBehaviour
@@ -18,16 +17,22 @@ public class LayerHandler : RoleBehaviour
     [HideFromIl2Cpp]
     public Disposition CustomDisposition { get; set; }
 
+    [HideFromIl2Cpp]
+    public List<PlayerLayer> CustomLayers { get; set; }
+
+    [HideFromIl2Cpp]
+    public List<CustomButton> Buttons { get; set; }
+
     public static RoleBehaviour Crewmate;
     public static RoleBehaviour Impostor;
     public static RoleBehaviour CrewmateGhost;
     public static RoleBehaviour ImpostorGhost;
 
     [HideFromIl2Cpp]
-    public List<PlayerLayer> GetLayers() => [ CustomRole, CustomModifier , CustomAbility, CustomDisposition ];
+    public List<PlayerLayer> GetLayers() => CustomLayers;
 
     [HideFromIl2Cpp]
-    public T GetLayer<T>() where T : PlayerLayer => GetLayers().Find(x => x is T) as T;
+    public T GetLayer<T>() where T : PlayerLayer => CustomLayers.Find(x => x is T) as T;
 
     public void FixedPlayerUpdate()
     {
@@ -43,8 +48,14 @@ public class LayerHandler : RoleBehaviour
         CustomAbility.UpdateHud(__instance);
         CustomModifier.UpdateHud(__instance);
         CustomDisposition.UpdateHud(__instance);
-        Player.GetButtons().ForEach(x => x.SetActive());
+        Buttons.ForEach(x => x.SetActive());
         CanVent = Player.CanVent();
+    }
+
+    public void ResetButtons()
+    {
+        Buttons?.Clear();
+        Buttons = Player.GetButtonsFromList();
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;
@@ -57,12 +68,18 @@ public class LayerHandler : RoleBehaviour
         CustomDisposition.OnDeath(reason);
     }
 
-    public override bool DidWin(GameOverReason gameOverReason) => CustomRole.Winner || CustomDisposition.Winner;
+    public override bool DidWin(GameOverReason gameOverReason)
+    {
+        if (gameOverReason != (GameOverReason)9)
+            return false;
+
+        return CustomRole.Winner || CustomDisposition.Winner;
+    }
 
     public override void SpawnTaskHeader(PlayerControl playerControl)
     {
         if (playerControl.AmOwner)
-            PlayerTask.GetOrCreateTask<ImportantTextTask>(playerControl).Text = "Achieve your win condition!";
+            PlayerTask.GetOrCreateTask<ImportantTextTask>(playerControl).Text = "Achieve your win condition!\n";
     }
 
     public override void AppendTaskHint(Il2CppSystem.Text.StringBuilder taskStringBuilder) {}
@@ -74,6 +91,8 @@ public class LayerHandler : RoleBehaviour
         CustomAbility = Player.GetAbility();
         CustomModifier = Player.GetModifier();
         CustomDisposition = Player.GetDisposition();
+        CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
+        ResetButtons();
         NameColor = CustomRole.Color;
     }
 

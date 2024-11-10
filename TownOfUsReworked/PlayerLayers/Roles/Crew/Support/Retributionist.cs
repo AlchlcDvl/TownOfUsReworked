@@ -296,21 +296,12 @@ public class Retributionist : Crew
         }
     }
 
-    public override void ConfirmVotePrefix(MeetingHud __instance)
-    {
-        base.ConfirmVotePrefix(__instance);
-        RetMenu.Voted();
-    }
+    public override void ConfirmVotePrefix(MeetingHud __instance) => RetMenu.Voted();
 
-    public override void UpdateMeeting(MeetingHud __instance)
-    {
-        base.UpdateMeeting(__instance);
-        RetMenu.Update(__instance);
-    }
+    public override void UpdateMeeting(MeetingHud __instance) => RetMenu.Update(__instance);
 
     public override void VoteComplete(MeetingHud __instance)
     {
-        base.VoteComplete(__instance);
         RetMenu.HideButtons();
 
         if (Selected && !Dead)
@@ -319,10 +310,9 @@ public class Retributionist : Crew
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Revive, Selected);
         }
     }
+
     public override void BeforeMeeting()
     {
-        base.BeforeMeeting();
-
         if (IsDet)
             ClearFootprints();
     }
@@ -392,9 +382,7 @@ public class Retributionist : Crew
 
     public override void OnBodyReport(NetworkedPlayerInfo info)
     {
-        base.OnBodyReport(info);
-
-        if (info == null || !Local)
+        if (info == null)
             return;
 
         if (IsCor)
@@ -537,6 +525,8 @@ public class Retributionist : Crew
                 TransportMenu1 = new(Player, Click1, TransException1);
                 TransportMenu2 = new(Player, Click2, TransException2);}
         }
+
+        Player.ResetButtons();
     }
 
     // Coroner Stuff

@@ -276,7 +276,7 @@ public static class LayerExtentions
     public static bool IsOnAlert(this PlayerControl player)
     {
         var vetFlag = PlayerLayer.GetLayers<Veteran>().Any(role => role.AlertButton.EffectActive && player == role.Player);
-        var retFlag = PlayerLayer.GetLayers<Retributionist>().Any(role => role.AlertButton.EffectActive && role.IsVet && player == role.Player);
+        var retFlag = PlayerLayer.GetLayers<Retributionist>().Any(role => role.IsVet && role.AlertButton.EffectActive && player == role.Player);
         return vetFlag || retFlag;
     }
 
@@ -289,26 +289,26 @@ public static class LayerExtentions
     public static bool IsAmbushed(this PlayerControl player)
     {
         var ambFlag = PlayerLayer.GetLayers<Ambusher>().Any(role => role.AmbushButton.EffectActive && player == role.AmbushedPlayer);
-        var gfFlag = PlayerLayer.GetLayers<PromotedGodfather>().Any(role => role.AmbushButton.EffectActive && player == role.AmbushedPlayer && role.IsAmb);
+        var gfFlag = PlayerLayer.GetLayers<PromotedGodfather>().Any(role => player == role.AmbushedPlayer && role.AmbushButton.EffectActive);
         return ambFlag || gfFlag;
     }
 
     public static bool IsCrusaded(this PlayerControl player)
     {
         var crusFlag = PlayerLayer.GetLayers<Crusader>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer);
-        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer && role.IsCrus);
+        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive);
         return crusFlag || rebFlag;
     }
 
     public static bool CrusadeActive(this PlayerControl player)
     {
         var crusFlag = PlayerLayer.GetLayers<Crusader>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer && role.HoldsDrive);
-        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer && role.IsCrus && role.HoldsDrive);
+        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive && role.HoldsDrive);
         return crusFlag || rebFlag;
     }
 
-    public static bool IsProtected(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>().Any(role => (role.ProtectButton.EffectActive || role.GraveProtectButton.EffectActive)
-        && player == role.TargetPlayer);
+    public static bool IsProtected(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>().Any(role => (role.ProtectButton.EffectActive || role.GraveProtectButton?.EffectActive
+        == true) && player == role.TargetPlayer);
 
     public static bool IsInfected(this PlayerControl player) => PlayerLayer.GetLayers<Plaguebearer>().Any(role => role.Infected.Contains(player.PlayerId) || player == role.Player);
 
@@ -367,7 +367,7 @@ public static class LayerExtentions
     public static bool IsOtherLink(this PlayerControl player, PlayerControl refPlayer) => player.GetOtherLink() == refPlayer;
 
     public static bool IsFlashed(this PlayerControl player) => !player.HasDied() && (PlayerLayer.GetLayers<Grenadier>().Any(x => x.FlashedPlayers.Contains(player.PlayerId)) ||
-        PlayerLayer.GetLayers<PromotedGodfather>().Any(x => x.IsGren && x.FlashedPlayers.Contains(player.PlayerId)));
+        PlayerLayer.GetLayers<PromotedGodfather>().Any(x => x.FlashedPlayers.Contains(player.PlayerId)));
 
     public static bool SyndicateSided(this PlayerControl player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly() || (player.Is(Faction.Syndicate) &&
         player.Is(LayerEnum.Betrayer)) || player.IsSynDefect() || (player.Is(Faction.Syndicate) && !player.IsBase(Faction.Syndicate));

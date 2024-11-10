@@ -35,8 +35,6 @@ public class Snitch : Ability
 
     public override void UponTaskComplete(uint taskId)
     {
-        base.UponTaskComplete(taskId);
-
         if (TasksLeft == SnitchTasksRemaining)
         {
             if (Local)

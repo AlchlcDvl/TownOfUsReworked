@@ -305,11 +305,7 @@ public class Thief : Neutral
         }
     }
 
-    public override void UpdateMeeting(MeetingHud __instance)
-    {
-        base.UpdateMeeting(__instance);
-        GuessMenu.Update(__instance);
-    }
+    public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update(__instance);
 
     public void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
@@ -371,14 +367,12 @@ public class Thief : Neutral
 
     public override void VoteComplete(MeetingHud __instance)
     {
-        base.VoteComplete(__instance);
         GuessMenu.HideButtons();
         GuessingMenu.Close();
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)
     {
-        base.ConfirmVotePrefix(__instance);
         GuessMenu.Voted();
         GuessingMenu.Close();
     }

@@ -10,8 +10,6 @@ public abstract class Ability : PlayerLayer
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
-
         foreach (var swapper in GetLayers<Swapper>())
         {
             swapper.Swap1 = null;

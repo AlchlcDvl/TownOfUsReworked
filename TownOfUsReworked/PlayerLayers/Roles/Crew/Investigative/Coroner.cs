@@ -107,9 +107,7 @@ public class Coroner : Crew
 
     public override void OnBodyReport(NetworkedPlayerInfo info)
     {
-        base.OnBodyReport(info);
-
-        if (info == null || !Local || !KilledPlayers.TryFinding(x => x.PlayerId == info.PlayerId, out var body))
+        if (info == null || !KilledPlayers.TryFinding(x => x.PlayerId == info.PlayerId, out var body))
             return;
 
         Reported.Add(info.PlayerId);

@@ -33,7 +33,7 @@ public abstract class AssetLoader
                 Error(www.error);
                 www.downloadHandler.Dispose();
                 www.Dispose();
-                yield break;
+                continue;
             }
 
             var filePath = Path.Combine(DirectoryInfo, trueName);

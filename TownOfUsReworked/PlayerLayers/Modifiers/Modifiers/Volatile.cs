@@ -27,8 +27,6 @@ public class Volatile : Modifier
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (ActiveTask() || IntroCutscene.Instance || Dead)
             return;
 

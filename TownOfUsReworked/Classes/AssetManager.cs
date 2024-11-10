@@ -193,17 +193,24 @@ public static class AssetManager
         if (UnloadedObjects.TryGetValue(name, out var strings))
         {
             var tType = typeof(T);
+            result = null;
 
             if (tType == typeof(Sprite) && strings.TryFinding(x => x.EndsWith(".png"), out var path))
             {
                 strings.Remove(path);
-                return AddAsset(name, LoadDiskSprite(path)) as T;
+                result = AddAsset(name, LoadDiskSprite(path));
             }
             else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".wav"), out path))
             {
                 strings.Remove(path);
-                return AddAsset(name, LoadDiskAudio(path)) as T;
+                result = AddAsset(name, LoadDiskAudio(path));
             }
+
+            if (strings.Count == 0)
+                UnloadedObjects.Remove(name);
+
+            if (result)
+                return result as T;
         }
 
         // Error($"{name} does not exist");

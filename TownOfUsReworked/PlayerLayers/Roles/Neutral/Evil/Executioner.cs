@@ -79,8 +79,6 @@ public class Executioner : Neutral
 
     public override void VoteComplete(MeetingHud __instance)
     {
-        base.VoteComplete(__instance);
-
         if (TargetVotedOut)
             return;
 

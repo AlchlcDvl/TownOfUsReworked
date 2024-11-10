@@ -16,7 +16,21 @@ public static class ButtonUtils
         HUD().AbilityButton.gameObject.SetActive(false);
     }
 
-    public static List<CustomButton> GetButtons(this PlayerControl player) => [ .. AllButtons.Where(x => x.Owner.Player == player) ];
+    public static List<CustomButton> GetButtonsFromList(this PlayerControl player) => [ .. AllButtons.Where(x => x.Owner.Player == player) ];
+
+    public static List<CustomButton> GetButtons(this PlayerControl player)
+    {
+        if (player.Data.Role is LayerHandler handler)
+            return handler.Buttons;
+
+        return player.GetButtonsFromList();
+    }
+
+    public static void ResetButtons(this PlayerControl player)
+    {
+        if (player.Data.Role is LayerHandler handler)
+            handler.ResetButtons();
+    }
 
     public static void EnableButtons(this PlayerControl player)
     {

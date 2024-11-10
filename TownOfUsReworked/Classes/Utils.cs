@@ -512,20 +512,21 @@ public static class Utils
             RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
 
         if (Meeting())
-            MarkMeetingDead(target, killer);
-        else
-            target.GetLayers().ForEach(x => x.OnDeath(DeathReason.Kill));
+            MarkMeetingDead(target, killer, showAnim: false);
     }
 
-    public static void MarkMeetingDead(PlayerControl target, bool doesKill = true, bool noReason = false) => MarkMeetingDead(target, target, doesKill, noReason);
+    public static void MarkMeetingDead(PlayerControl target, bool doesKill = true, bool noReason = false, bool showAnim = true) => MarkMeetingDead(target, target, doesKill, noReason,
+        showAnim);
 
-    public static void MarkMeetingDead(PlayerControl target, PlayerControl killer, bool doesKill = true, bool noReason = false)
+    public static void MarkMeetingDead(PlayerControl target, PlayerControl killer, bool doesKill = true, bool noReason = false, bool showAnim = true)
     {
         Play("Kill");
 
         if (target.AmOwner)
         {
-            HUD().KillOverlay.ShowKillAnimation(killer.Data, target.Data);
+            if (showAnim)
+                HUD().KillOverlay.ShowKillAnimation(killer.Data, target.Data);
+
             HUD().ShadowQuad.gameObject.SetActive(false);
             target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
             target.RpcSetScanner(false);
@@ -699,8 +700,6 @@ public static class Utils
 
         if (FirstDead == null)
             FirstDead = target.Data.PlayerName;
-
-        target.GetLayers().ForEach(x => x.OnDeath(DeathReason.Kill));
     }
 
     public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
@@ -726,7 +725,7 @@ public static class Utils
     public static void EndGame()
     {
         if (AmongUsClient.Instance.AmHost)
-            GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
+            GameManager.Instance.RpcEndGame((GameOverReason)9, false);
     }
 
     public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => [ .. AllPlayers().Where(x => Vector2.Distance(truePosition,

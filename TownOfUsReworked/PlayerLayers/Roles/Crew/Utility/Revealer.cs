@@ -86,8 +86,6 @@ public class Revealer : Crew
 
     public override void UponTaskComplete(uint taskId)
     {
-        base.UponTaskComplete(taskId);
-
         if (TasksLeft == RevealerTasksRemainingAlert && !Caught)
         {
             if (Local)

@@ -30,8 +30,6 @@ public class Drunk : Modifier
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (DrunkControlsSwap)
         {
             _time += Time.deltaTime;

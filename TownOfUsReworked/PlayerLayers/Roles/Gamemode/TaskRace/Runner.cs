@@ -28,8 +28,6 @@ public class Runner : Role
 
     public override void UponTaskComplete(uint taskId)
     {
-        base.UponTaskComplete(taskId);
-
         if (TasksLeft == 1)
             Flash(Color);
     }

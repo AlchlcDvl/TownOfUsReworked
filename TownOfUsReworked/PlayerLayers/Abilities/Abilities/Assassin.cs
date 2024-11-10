@@ -330,11 +330,7 @@ public abstract class Assassin : Ability
         AssassinMenu.GenButtons(__instance, RemainingKills > 0);
     }
 
-    public override void UpdateMeeting(MeetingHud __instance)
-    {
-        base.UpdateMeeting(__instance);
-        AssassinMenu.Update(__instance);
-    }
+    public override void UpdateMeeting(MeetingHud __instance) => AssassinMenu.Update(__instance);
 
     public void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
@@ -418,14 +414,12 @@ public abstract class Assassin : Ability
 
     public override void VoteComplete(MeetingHud __instance)
     {
-        base.VoteComplete(__instance);
         AssassinMenu.HideButtons();
         GuessingMenu.Close();
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)
     {
-        base.ConfirmVotePrefix(__instance);
         AssassinMenu.Voted();
         GuessingMenu.Close();
     }

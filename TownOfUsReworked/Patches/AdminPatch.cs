@@ -6,7 +6,7 @@ public static class AdminPatch
     private static void SetSabotaged(MapCountOverlay __instance, bool sabotaged)
     {
         __instance.isSab = sabotaged;
-        __instance.BackgroundColor.SetColor(sabotaged ? Palette.DisabledGrey : UColor.green);
+        __instance.BackgroundColor.SetColor(sabotaged ? Palette.DisabledGrey : Role.LocalRole.Color);
         __instance.SabotageText.gameObject.SetActive(sabotaged);
 
         if (sabotaged)

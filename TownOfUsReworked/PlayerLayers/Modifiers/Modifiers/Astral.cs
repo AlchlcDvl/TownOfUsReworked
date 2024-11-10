@@ -24,8 +24,6 @@ public class Astral : Modifier
 
     public override void BeforeMeeting()
     {
-        base.BeforeMeeting();
-
         if (!UninteractiblePlayers.ContainsKey(PlayerId))
             LastPosition = CustomPlayer.LocalCustom.Position;
     }

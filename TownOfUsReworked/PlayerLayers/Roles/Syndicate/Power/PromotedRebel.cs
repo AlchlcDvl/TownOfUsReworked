@@ -255,6 +255,8 @@ public class PromotedRebel : Syndicate
                 WarpMenu2 = new(Player, WarpClick2, WarpException2);
             }
         }
+
+        Player.ResetButtons();
     }
 
     public override void Deinit()
@@ -272,8 +274,6 @@ public class PromotedRebel : Syndicate
 
     public override void BeforeMeeting()
     {
-        base.BeforeMeeting();
-
         if (Bomber.BombsDetonateOnMeetingStart && IsBomb)
         {
             Bombs.ForEach(x => x.Detonate());

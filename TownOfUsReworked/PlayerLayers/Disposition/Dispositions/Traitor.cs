@@ -136,8 +136,6 @@ public class Traitor : Disposition
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (Betray && Turned)
         {
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, true);
@@ -147,8 +145,6 @@ public class Traitor : Disposition
 
     public override void UponTaskComplete(uint taskId)
     {
-        base.UponTaskComplete(taskId);
-
         if (TasksDone)
         {
             GetFactionChoice(out var syndicate, out var intruder);

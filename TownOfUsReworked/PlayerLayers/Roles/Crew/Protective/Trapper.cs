@@ -37,7 +37,7 @@ public class Trapper : Crew
         Trapped = [];
         TriggeredRoles = [];
         BuildButton ??= CreateButton(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling, new Cooldown(BuildCd),
-            new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), (UsableFunc)Usable);
+            new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), (UsableFunc)Usable, MaxTraps);
         TrapButton ??= CreateButton(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(TrapCd), MaxTraps,
             (PlayerBodyExclusion)Exception);
         TrapsMade = 0;
@@ -55,6 +55,7 @@ public class Trapper : Crew
         TrapButton.Uses++;
         TrapsMade++;
         Building = false;
+        TrapButton.Base.SetUsesRemaining(TrapButton.Uses);
     }
 
     private void SetTrap()
@@ -73,18 +74,18 @@ public class Trapper : Crew
 
     private bool Exception(PlayerControl player) => Trapped.Contains(player.PlayerId);
 
-    public bool Usable() => TrapsMade < MaxTraps;
+    public bool Usable() => TrapsMade <= MaxTraps;
 
     public void TriggerTrap(PlayerControl trapped, PlayerControl trigger, bool isAttack)
     {
         if (!Trapped.Contains(trapped.PlayerId))
             return;
 
-        if (!isAttack)
-        {
-            TriggeredRoles.Add(trigger.GetRole());
+        if (trigger.AmOwner)
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Trigger, trapped, trigger, isAttack);
-        }
+
+        if (!isAttack)
+            TriggeredRoles.Add(trigger.GetRole());
         else
             AttackedSomeone = true;
 

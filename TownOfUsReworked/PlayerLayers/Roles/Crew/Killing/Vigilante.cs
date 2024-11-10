@@ -49,7 +49,6 @@ public class Vigilante : Crew
 
     public override void BeforeMeeting()
     {
-        base.BeforeMeeting();
         RoundOne = false;
 
         if (PreMeetingDie)

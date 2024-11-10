@@ -66,8 +66,6 @@ public class Cryomaniac : Neutral
 
     public override void BeforeMeeting()
     {
-        base.BeforeMeeting();
-
         if (FreezeUsed)
         {
             foreach (var cryo in GetLayers<Cryomaniac>())

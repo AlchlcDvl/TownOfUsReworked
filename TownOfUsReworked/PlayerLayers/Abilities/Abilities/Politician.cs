@@ -70,8 +70,6 @@ public class Politician : Ability
 
     public override void UpdateMeeting(MeetingHud __instance)
     {
-        base.UpdateMeeting(__instance);
-
         if (__instance.state == MeetingHud.VoteStates.Discussion)
         {
             if (__instance.discussionTimer < GameSettings.DiscussionTime || CanKill)
@@ -88,21 +86,12 @@ public class Politician : Ability
         __instance.TimerText.text = $"Can Vote: {VoteBank} time(s) | {__instance.TimerText.text}";
     }
 
-    public override void VoteComplete(MeetingHud __instance)
-    {
-        base.VoteComplete(__instance);
-        UpdateButton(__instance);
-    }
+    public override void VoteComplete(MeetingHud __instance) => UpdateButton(__instance);
 
-    public override void ClearVote(MeetingHud __instance)
-    {
-        base.ClearVote(__instance);
-        UpdateButton(__instance);
-    }
+    public override void ClearVote(MeetingHud __instance) => UpdateButton(__instance);
 
     public override void ConfirmVotePostfix(MeetingHud __instance)
     {
-        base.ConfirmVotePostfix(__instance);
         __instance.SkipVoteButton.gameObject.SetActive(CanVote);
         Abstain.ClearButtons();
         UpdateButton(__instance);
@@ -110,16 +99,12 @@ public class Politician : Ability
 
     public override void ConfirmVotePrefix(MeetingHud __instance)
     {
-        base.ConfirmVotePrefix(__instance);
-
         if (__instance.state == MeetingHud.VoteStates.Voted)
             __instance.state = MeetingHud.VoteStates.NotVoted;
     }
 
     public override void SelectVote(MeetingHud __instance, int id)
     {
-        base.SelectVote(__instance, id);
-
         if (id != 251)
             Abstain?.ClearButtons();
 

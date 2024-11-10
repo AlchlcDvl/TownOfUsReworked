@@ -16,8 +16,6 @@ public class Taskmaster : Disposition
 
     public override void UponTaskComplete(uint taskId)
     {
-        base.UponTaskComplete(taskId);
-
         if (TasksLeft == TMTasksRemaining)
         {
             if (Local || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is Alignment.NeutralBen or Alignment.NeutralEvil)

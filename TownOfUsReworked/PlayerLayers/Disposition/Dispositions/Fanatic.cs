@@ -105,8 +105,6 @@ public class Fanatic : Disposition
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (Betray && Turned)
         {
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, true);

@@ -51,7 +51,6 @@ public class Dictator : Crew
 
     public override void VoteComplete(MeetingHud __instance)
     {
-        base.VoteComplete(__instance);
         DictMenu.HideButtons();
 
         if (ToBeEjected && !Dead)
@@ -88,17 +87,9 @@ public class Dictator : Crew
         return player.HasDied() || player.AmOwner || Dead || !Revealed;
     }
 
-    public override void ConfirmVotePrefix(MeetingHud __instance)
-    {
-        base.ConfirmVotePrefix(__instance);
-        DictMenu.Voted();
-    }
+    public override void ConfirmVotePrefix(MeetingHud __instance) => DictMenu.Voted();
 
-    public override void UpdateMeeting(MeetingHud __instance)
-    {
-        base.UpdateMeeting(__instance);
-        DictMenu.Update(__instance);
-    }
+    public override void UpdateMeeting(MeetingHud __instance) => DictMenu.Update(__instance);
 
     public bool Usable() => !RoundOne;
 

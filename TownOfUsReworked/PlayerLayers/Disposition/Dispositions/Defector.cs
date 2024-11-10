@@ -122,8 +122,6 @@ public class Defector : Disposition
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (Defect && !Turned)
         {
             GetFactionChoice(out var crew, out var evil, out var neut);

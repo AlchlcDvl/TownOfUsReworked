@@ -30,7 +30,6 @@ public class Swapper : Ability
 
     public override void VoteComplete(MeetingHud __instance)
     {
-        base.VoteComplete(__instance);
         SwapMenu.HideButtons();
 
         if (Swap1 && Swap2 && !Dead)
@@ -89,15 +88,7 @@ public class Swapper : Ability
         return player.HasDied() || (Local && Player == player && !SwapSelf) || Dead;
     }
 
-    public override void ConfirmVotePrefix(MeetingHud __instance)
-    {
-        base.ConfirmVotePrefix(__instance);
-        SwapMenu.Voted();
-    }
+    public override void ConfirmVotePrefix(MeetingHud __instance) => SwapMenu.Voted();
 
-    public override void UpdateMeeting(MeetingHud __instance)
-    {
-        base.UpdateMeeting(__instance);
-        SwapMenu.Update(__instance);
-    }
+    public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update(__instance);
 }

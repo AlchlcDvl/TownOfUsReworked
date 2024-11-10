@@ -55,8 +55,6 @@ public class Bomber : Syndicate
 
     public override void BeforeMeeting()
     {
-        base.BeforeMeeting();
-
         if (BombsDetonateOnMeetingStart)
         {
             Bombs.ForEach(x => x.Detonate());

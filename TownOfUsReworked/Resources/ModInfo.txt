@@ -14,13 +14,14 @@ Changes!
 - Nerf: Vampire Hunters turned Vigilantes will always have one bullet left
 - Improvement: Improved the mod's asset loaders
 - Improvement: Assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
-- Improvement: Made general optimsations to improve the mod's intensity
+- Improvement: Made general optimsations to improve the mod's runtime
 
 Fixes!
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
 - Compatibility: Fixed the elavator not being usable for postmortal roles
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
 - General: Fixed All Any role gen being a bit broken in other aspects
+- General: Greatly improved the stutter and fps issues
 
 Known Bugs :(
 - Critically slow fps for everyone, with the host having it the worst, a fix is in progress and the severity has been considerably reduced

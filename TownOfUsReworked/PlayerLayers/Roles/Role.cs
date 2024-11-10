@@ -146,15 +146,10 @@ public abstract class Role : PlayerLayer
         HUD().ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
     }
 
-    public override void OnIntroEnd()
-    {
-        base.OnIntroEnd();
-        UpdateButtons();
-    }
+    public override void OnIntroEnd() => UpdateButtons();
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
         __instance.ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
         __instance.UseButton.buttonLabelText.SetOutlineColor(FactionColor);
         __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
@@ -310,8 +305,6 @@ public abstract class Role : PlayerLayer
 
     public override void OnMeetingEnd(MeetingHud __instance)
     {
-        base.OnMeetingEnd(__instance);
-
         if (Player.Is(LayerEnum.Lovers))
             CurrentChannel = ChatChannel.Lovers;
         else if (Player.Is(LayerEnum.Rivals))
@@ -324,8 +317,6 @@ public abstract class Role : PlayerLayer
 
     public override void Deinit()
     {
-        base.Deinit();
-
         AllArrows.Values.ToList().DestroyAll();
         AllArrows.Clear();
 
@@ -334,7 +325,6 @@ public abstract class Role : PlayerLayer
 
     public override void UpdateMap(MapBehaviour __instance)
     {
-        base.UpdateMap(__instance);
         __instance.ColorControl.baseColor = Color;
         __instance.ColorControl.SetColor(Color);
     }
@@ -396,7 +386,6 @@ public abstract class Role : PlayerLayer
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
         TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
         AllVoteAreas().ForEach(GenText);
         AllRoles().ForEach(x => x.CurrentChannel = ChatChannel.All);

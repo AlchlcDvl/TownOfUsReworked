@@ -15,11 +15,7 @@ public abstract class Disposition : PlayerLayer
 
     public string ColoredSymbol => $"{ColorString}{Symbol}</color>";
 
-    public override void Init()
-    {
-        base.Init();
-        Player.GetRole().LinkedDisposition = Type;
-    }
+    public override void Init() => Player.GetRole().LinkedDisposition = Type;
 
     public static IEnumerable<Disposition> AllDispositions() => AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Disposition).Cast<Disposition>();
 }

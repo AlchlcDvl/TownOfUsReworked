@@ -13,11 +13,7 @@ public class Colorblind : Modifier
             ColorAll();
     }
 
-    public override void Deinit()
-    {
-        base.Deinit();
-        AllToNormal();
-    }
+    public override void Deinit() => AllToNormal();
 
     public override void ExitingLayer()
     {
@@ -35,16 +31,12 @@ public class Colorblind : Modifier
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!Dead)
             ColorAll();
     }
 
     public override void OnMeetingEnd(MeetingHud __instance)
     {
-        base.OnMeetingEnd(__instance);
-
         if (Dead)
             AllToNormal();
     }

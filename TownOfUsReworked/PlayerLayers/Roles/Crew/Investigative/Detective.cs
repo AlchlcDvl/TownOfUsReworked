@@ -45,11 +45,7 @@ public class Detective : Crew
         Clear();
     }
 
-    public override void BeforeMeeting()
-    {
-        base.BeforeMeeting();
-        Clear();
-    }
+    public override void BeforeMeeting() => Clear();
 
     public void Clear()
     {
