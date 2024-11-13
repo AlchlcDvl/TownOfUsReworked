@@ -836,7 +836,7 @@ public static class Utils
         vent.name = $"{name}{vents.Count}";
         vent.myAnim?.Stop();
 
-        var allVents = AllMapVents();
+        var allVents = AllMapVents().ToList();
         allVents.Add(vent);
         Ship().AllVents = allVents.ToArray();
 
@@ -955,11 +955,8 @@ public static class Utils
         var targets = AllPlayers().Where(player => !player.HasDied() && !UninteractiblePlayers.ContainsKey(player.PlayerId) && !player.inVent);
         var coordinates = new Dictionary<byte, Vector2>();
         var allLocations = new List<Vector2>();
-        targets.ForEach(x => allLocations.Add(x.transform.position));
-        AllVents().ForEach(x => allLocations.Add(GetVentPosition(x)));
-        AllConsoles().ForEach(x => allLocations.Add(GetConsolePosition(x)));
-        AllSystemConsoles().ForEach(x => allLocations.Add(GetSystemConsolePosition(x)));
-        AllBodies().ForEach(x => allLocations.Add(x.transform.position));
+        allLocations.AddRanges(targets.Select(x => (Vector2)x.transform.position), AllVents().Select(GetVentPosition), AllConsoles().Select(GetConsolePosition),
+            AllSystemConsoles().Select(GetSystemConsolePosition), AllBodies().Select(x => (Vector2)x.transform.position));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,

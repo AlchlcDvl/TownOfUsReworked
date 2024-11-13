@@ -186,7 +186,7 @@ public static class SetPostmortals
         if (!player.Data.IsDead || !player.IsPostmortal() || player.Caught())
             return;
 
-        var vents = AllMapVents();
+        var vents = AllMapVents().ToList();
 
         if (Ship().Systems.TryGetValue(SystemTypes.Ventilation, out var systemType))
         {
@@ -197,7 +197,7 @@ public static class SetPostmortals
         }
 
         if (IsSubmerged())
-            vents.RemoveAll(x => AllMapVents().IndexOf(x) is 0 or 14);
+            vents.RemoveAll(x => Array.IndexOf(AllMapVents(), x) is 0 or 14);
 
         vents.Shuffle();
         var startingVent = vents.Random();

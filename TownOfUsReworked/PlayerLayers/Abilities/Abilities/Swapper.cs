@@ -42,6 +42,22 @@ public class Swapper : Ability
         Swap2 = reader.ReadVoteArea();
     }
 
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        base.OnMeetingStart(__instance);
+        SwapMenu.GenButtons(__instance);
+    }
+
+    private bool IsExempt(PlayerVoteArea voteArea)
+    {
+        var player = PlayerByVoteArea(voteArea);
+        return player.HasDied() || (Local && Player == player && !SwapSelf) || Dead;
+    }
+
+    public override void ConfirmVotePrefix(MeetingHud __instance) => SwapMenu.Voted();
+
+    public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update(__instance);
+
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
     {
         if (__instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
@@ -75,20 +91,4 @@ public class Swapper : Ability
             SwapMenu.Actives[voteArea.TargetPlayerId] = !SwapMenu.Actives[voteArea.TargetPlayerId];
         }
     }
-
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        SwapMenu.GenButtons(__instance);
-    }
-
-    private bool IsExempt(PlayerVoteArea voteArea)
-    {
-        var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (Local && Player == player && !SwapSelf) || Dead;
-    }
-
-    public override void ConfirmVotePrefix(MeetingHud __instance) => SwapMenu.Voted();
-
-    public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update(__instance);
 }

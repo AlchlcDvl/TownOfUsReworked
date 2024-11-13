@@ -39,7 +39,9 @@ public static class MeetingPatches
     {
         public static void Prefix(PlayerControl __instance, NetworkedPlayerInfo target)
         {
-            PlayerLayer.LocalLayers().ForEach(x => x.BeforeMeeting());
+            if (CustomPlayer.Local.Data.Role is LayerHandler handler)
+                handler.BeforeMeeting();
+
             Reported = target;
             Reporter = __instance;
 
@@ -278,19 +280,20 @@ public static class MeetingPatches
         {
             CustomPlayer.Local.EnableButtons();
             ButtonUtils.Reset(CooldownType.Meeting);
-            PlayerLayer.LocalLayers().ForEach(x => x?.OnMeetingEnd(__instance));
+
+            if (CustomPlayer.Local.Data.Role is LayerHandler handler)
+                handler.OnMeetingEnd(__instance);
         }
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
     public static class VotingComplete
     {
-        public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo exiled, bool tie)
+        public static void Postfix(NetworkedPlayerInfo exiled, bool tie)
         {
             var exiledString = !exiled ? "null" : exiled.PlayerName;
             Info($"Exiled PlayerName = {exiledString}");
             Info($"Was a tie = {tie}");
-            PlayerLayer.LocalLayers().ForEach(x => x?.VoteComplete(__instance));
             Coroutines.Start(PerformSwaps());
 
             foreach (var role in Role.AllRoles())

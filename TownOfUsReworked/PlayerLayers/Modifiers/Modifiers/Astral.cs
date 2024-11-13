@@ -11,6 +11,12 @@ public class Astral : Modifier
 
     public override void Init() => LastPosition = Vector3.zero;
 
+    public override void BeforeMeeting()
+    {
+        if (!UninteractiblePlayers.ContainsKey(PlayerId))
+            LastPosition = CustomPlayer.LocalCustom.Position;
+    }
+
     public void SetPosition()
     {
         if (LastPosition == Vector3.zero)
@@ -20,11 +26,5 @@ public class Astral : Modifier
 
         if (IsSubmerged())
             ChangeFloor(LastPosition.y > -7);
-    }
-
-    public override void BeforeMeeting()
-    {
-        if (!UninteractiblePlayers.ContainsKey(PlayerId))
-            LastPosition = CustomPlayer.LocalCustom.Position;
     }
 }

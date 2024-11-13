@@ -21,10 +21,11 @@ Fixes!
 - Compatibility: Fixed the elavator not being usable for postmortal roles
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
 - General: Fixed All Any role gen being a bit broken in other aspects
+- General: Fixed fake players not spawning in locations correctly when using MCI to test things
 - General: Greatly improved the stutter and fps issues
 
 Known Bugs :(
-- Critically slow fps for everyone, with the host having it the worst, a fix is in progress and the severity has been considerably reduced
+- Critically slow fps for everyone, with the host having it the worst, a fix is in progress and the severity has been considerably reduced since discovery
 
 Credits-
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi

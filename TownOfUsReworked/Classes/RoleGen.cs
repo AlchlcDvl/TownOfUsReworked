@@ -327,20 +327,9 @@ public static class RoleGen
 
         if (imps > 0)
         {
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Enforcer));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Morphling));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Blackmailer));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Miner));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Teleporter));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Wraith));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Consort));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Janitor));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Camouflager));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Grenadier));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Impostor));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Consigliere));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Disguiser));
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Ambusher));
+            IntruderRoles.Add(GetSpawnItem(LayerEnum.Enforcer), GetSpawnItem(LayerEnum.Morphling), GetSpawnItem(LayerEnum.Blackmailer), GetSpawnItem(LayerEnum.Miner),
+                GetSpawnItem(LayerEnum.Teleporter), GetSpawnItem(LayerEnum.Wraith), GetSpawnItem(LayerEnum.Consort), GetSpawnItem(LayerEnum.Janitor), GetSpawnItem(LayerEnum.Camouflager),
+                GetSpawnItem(LayerEnum.Grenadier), GetSpawnItem(LayerEnum.Impostor), GetSpawnItem(LayerEnum.Consigliere), GetSpawnItem(LayerEnum.Disguiser), GetSpawnItem(LayerEnum.Ambusher));
 
             if (imps >= 3)
                 IntruderRoles.Add(GetSpawnItem(LayerEnum.Godfather));
@@ -350,11 +339,8 @@ public static class RoleGen
 
         if (syn > 0)
         {
-            SyndicateRoles.Add(GetSpawnItem(LayerEnum.Anarchist));
-            SyndicateRoles.Add(GetSpawnItem(LayerEnum.Bomber));
-            SyndicateRoles.Add(GetSpawnItem(LayerEnum.Poisoner));
-            SyndicateRoles.Add(GetSpawnItem(LayerEnum.Crusader));
-            SyndicateRoles.Add(GetSpawnItem(LayerEnum.Collider));
+            SyndicateRoles.Add(GetSpawnItem(LayerEnum.Anarchist), GetSpawnItem(LayerEnum.Bomber), GetSpawnItem(LayerEnum.Poisoner), GetSpawnItem(LayerEnum.Crusader),
+                GetSpawnItem(LayerEnum.Collider));
 
             if (syn >= 3)
                 SyndicateRoles.Add(GetSpawnItem(LayerEnum.Rebel));
@@ -364,12 +350,8 @@ public static class RoleGen
 
         if (neut > 0)
         {
-            NeutralRoles.Add(GetSpawnItem(LayerEnum.Glitch));
-            NeutralRoles.Add(GetSpawnItem(LayerEnum.Werewolf));
-            NeutralRoles.Add(GetSpawnItem(LayerEnum.SerialKiller));
-            NeutralRoles.Add(GetSpawnItem(LayerEnum.Juggernaut));
-            NeutralRoles.Add(GetSpawnItem(LayerEnum.Murderer));
-            NeutralRoles.Add(GetSpawnItem(LayerEnum.Thief));
+            NeutralRoles.Add(GetSpawnItem(LayerEnum.Glitch), GetSpawnItem(LayerEnum.Werewolf), GetSpawnItem(LayerEnum.SerialKiller), GetSpawnItem(LayerEnum.Juggernaut),
+                GetSpawnItem(LayerEnum.Murderer), GetSpawnItem(LayerEnum.Thief));
 
             if (GameModeSettings.AddArsonist)
                 NeutralRoles.Add(GetSpawnItem(LayerEnum.Arsonist));

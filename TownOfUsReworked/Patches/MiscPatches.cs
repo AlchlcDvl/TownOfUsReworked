@@ -670,16 +670,6 @@ public static class FollowerCameraPatches
     }
 }
 
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-public static class FixedPlayerPatch
-{
-    public static void Postfix()
-    {
-        if (CustomPlayer.LocalCustom?.Data?.Role is LayerHandler handler)
-            handler.FixedPlayerUpdate();
-    }
-}
-
 /*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
 public static class DebuggingClassForRandomStuff
 {

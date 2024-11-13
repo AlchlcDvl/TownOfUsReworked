@@ -265,7 +265,10 @@ public static class AssetManager
         ObjectToBundle.Remove(name);
 
         if (!Bundles.Keys.Any(ObjectToBundle.Values.Contains))
+        {
             Bundles.Remove(assetBundle.name);
+            assetBundle.Unload(false);
+        }
 
         return asset;
     }

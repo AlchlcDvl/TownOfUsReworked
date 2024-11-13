@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Monos;
 
-// Why is this here? well i'm glad you asked dear onlooker, it's because THE FUCKING THING INSISTS ON LOWERING THE FPS OTHERWISE
 public class HudHandler : MonoBehaviour
 {
     private bool CommsEnabled;

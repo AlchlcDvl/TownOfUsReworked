@@ -5,6 +5,8 @@ public class LayerHandler : RoleBehaviour
     public override bool IsDead => Player?.Data?.IsDead ?? false;
     public override bool IsAffectedByComms => false;
 
+    public bool Local => Player.AmOwner;
+
     [HideFromIl2Cpp]
     public Role CustomRole { get; set; }
 
@@ -50,6 +52,55 @@ public class LayerHandler : RoleBehaviour
         CustomDisposition.UpdateHud(__instance);
         Buttons.ForEach(x => x.SetActive());
         CanVent = Player.CanVent();
+    }
+
+    public void UponTaskComplete(uint idx)
+    {
+        CustomRole.UponTaskComplete(idx);
+        CustomAbility.UponTaskComplete(idx);
+        CustomModifier.UponTaskComplete(idx);
+        CustomDisposition.UponTaskComplete(idx);
+
+        foreach (var button in Buttons)
+        {
+            if (button.HasUses)
+            {
+                button.Uses++;
+                button.MaxUses++;
+            }
+        }
+    }
+
+    public void OnRevive()
+    {
+        CustomRole.OnRevive();
+        CustomAbility.OnRevive();
+        CustomModifier.OnRevive();
+        CustomDisposition.OnRevive();
+    }
+
+    public void BeforeMeeting()
+    {
+        CustomRole.BeforeMeeting();
+        CustomAbility.BeforeMeeting();
+        CustomModifier.BeforeMeeting();
+        CustomDisposition.BeforeMeeting();
+    }
+
+    public void OnIntroEnd()
+    {
+        CustomRole.OnIntroEnd();
+        CustomAbility.OnIntroEnd();
+        CustomModifier.OnIntroEnd();
+        CustomDisposition.OnIntroEnd();
+    }
+
+    public void OnMeetingEnd(MeetingHud __instance)
+    {
+        CustomRole.OnMeetingEnd(__instance);
+        CustomAbility.OnMeetingEnd(__instance);
+        CustomModifier.OnMeetingEnd(__instance);
+        CustomDisposition.OnMeetingEnd(__instance);
     }
 
     public void ResetButtons()
@@ -102,6 +153,22 @@ public class LayerHandler : RoleBehaviour
         CustomAbility.OnMeetingStart(Meeting());
         CustomModifier.OnMeetingStart(Meeting());
         CustomDisposition.OnMeetingStart(Meeting());
+    }
+
+    public override void OnVotingComplete()
+    {
+        CustomRole.VoteComplete(Meeting());
+        CustomAbility.VoteComplete(Meeting());
+        CustomModifier.VoteComplete(Meeting());
+        CustomDisposition.VoteComplete(Meeting());
+    }
+
+    public override void Deinitialize(PlayerControl targetPlayer)
+    {
+        CustomRole.Deinit();
+        CustomAbility.Deinit();
+        CustomModifier.Deinit();
+        CustomDisposition.Deinit();
     }
 
     public override bool CanUse(IUsable console)

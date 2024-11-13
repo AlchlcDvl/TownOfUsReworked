@@ -17,11 +17,10 @@ public static class SpawnPatches
 
     private static void DoTheThing(bool intro = false, bool meeting = false)
     {
-        // HUD()?.GameSettings?.gameObject?.SetActive(false);
         Chat()?.SetVisible(CustomPlayer.Local.CanChat());
 
-        if (intro)
-            PlayerLayer.LocalLayers().ForEach(x => x?.OnIntroEnd());
+        if (intro && CustomPlayer.Local.Data.Role is LayerHandler handler)
+            handler.OnIntroEnd();
 
         AllPlayers().ForEach(x => x?.MyPhysics?.ResetAnimState());
         AllBodies().ForEach(x => x?.gameObject?.Destroy());
@@ -69,9 +68,7 @@ public static class SpawnPatches
         }
 
         var allLocations = new List<Vector2>();
-        AllMapVents().ForEach(x => allLocations.Add(GetVentPosition(x)));
-        AllConsoles().ForEach(x => allLocations.Add(GetConsolePosition(x)));
-        AllSystemConsoles().ForEach(x => allLocations.Add(GetSystemConsolePosition(x)));
+        allLocations.AddRanges(AllVents().Select(GetVentPosition), AllConsoles().Select(GetConsolePosition), AllSystemConsoles().Select(GetSystemConsolePosition));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,

@@ -34,6 +34,8 @@ public static class IntroSplash
         "._.",
         "._O",
         "O_.",
+        "ehehehehehehehehe",
+        "Think fast chuckle nuts",
         "LET. HIM. COOK."
     ];
     private static TextMeshPro Intro;

@@ -29,30 +29,6 @@ public class Politician : Ability
         ExtraVotes = [];
     }
 
-    private void UpdateButton(MeetingHud __instance)
-    {
-        if (CanKill || !Abstain)
-            return;
-
-        Abstain.gameObject.SetActive(__instance.SkipVoteButton.gameObject.active && !VotedOnce);
-        Abstain.voteComplete = __instance.SkipVoteButton.voteComplete;
-        Abstain.GetComponent<SpriteRenderer>().enabled = __instance.SkipVoteButton.GetComponent<SpriteRenderer>().enabled;
-        Abstain.GetComponentsInChildren<TextMeshPro>()[0].text = "Abstain";
-    }
-
-    public void DestroyAbstain()
-    {
-        if (CanKill || !Abstain)
-            return;
-
-        Abstain.ClearButtons();
-        Abstain.gameObject.SetActive(false);
-        Abstain.Destroy();
-        Abstain = null;
-        VotedOnce = false;
-        ExtraVotes.Clear();
-    }
-
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
@@ -130,5 +106,29 @@ public class Politician : Ability
                 Error($"Received unknown RPC - {(int)polAction}");
                 break;
         }
+    }
+
+    private void UpdateButton(MeetingHud __instance)
+    {
+        if (CanKill || !Abstain)
+            return;
+
+        Abstain.gameObject.SetActive(__instance.SkipVoteButton.gameObject.active && !VotedOnce);
+        Abstain.voteComplete = __instance.SkipVoteButton.voteComplete;
+        Abstain.GetComponent<SpriteRenderer>().enabled = __instance.SkipVoteButton.GetComponent<SpriteRenderer>().enabled;
+        Abstain.GetComponentsInChildren<TextMeshPro>()[0].text = "Abstain";
+    }
+
+    public void DestroyAbstain()
+    {
+        if (CanKill || !Abstain)
+            return;
+
+        Abstain.ClearButtons();
+        Abstain.gameObject.SetActive(false);
+        Abstain.Destroy();
+        Abstain = null;
+        VotedOnce = false;
+        ExtraVotes.Clear();
     }
 }

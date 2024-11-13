@@ -72,6 +72,28 @@ public abstract class Assassin : Ability
         GuessingMenu = new(Player, GuessPlayer);
     }
 
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        base.OnMeetingStart(__instance);
+        AssassinMenu.GenButtons(__instance, RemainingKills > 0);
+    }
+
+    public override void UpdateMeeting(MeetingHud __instance) => AssassinMenu.Update(__instance);
+
+    public override void VoteComplete(MeetingHud __instance)
+    {
+        AssassinMenu.HideButtons();
+        GuessingMenu.Close();
+    }
+
+    public override void ConfirmVotePrefix(MeetingHud __instance)
+    {
+        AssassinMenu.Voted();
+        GuessingMenu.Close();
+    }
+
+    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.ReadPlayer(), reader.ReadEnum<LayerEnum>(), reader.ReadPlayer());
+
     private void SetLists()
     {
         GuessingMenu.Mapping.Clear();
@@ -324,14 +346,6 @@ public abstract class Assassin : Ability
         GuessingMenu.Open(PlayerByVoteArea(voteArea));
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        AssassinMenu.GenButtons(__instance, RemainingKills > 0);
-    }
-
-    public override void UpdateMeeting(MeetingHud __instance) => AssassinMenu.Update(__instance);
-
     public void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
@@ -411,18 +425,4 @@ public abstract class Assassin : Ability
         else
             Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
     }
-
-    public override void VoteComplete(MeetingHud __instance)
-    {
-        AssassinMenu.HideButtons();
-        GuessingMenu.Close();
-    }
-
-    public override void ConfirmVotePrefix(MeetingHud __instance)
-    {
-        AssassinMenu.Voted();
-        GuessingMenu.Close();
-    }
-
-    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.ReadPlayer(), reader.ReadEnum<LayerEnum>(), reader.ReadPlayer());
 }

@@ -106,23 +106,19 @@ public static class BetterAirship
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
-            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
-            {
-                __instance.Close();
-                return false;
-            }
-
             if (TownOfUsReworked.MCIActive)
             {
                 foreach (var player in AllPlayers())
                 {
-                    if (!player.Data.PlayerName.Contains("Robot"))
-                        continue;
-
-                    var rand = URandom.Range(0, __instance.Locations.Count);
-                    player.gameObject.SetActive(true);
-                    player.RpcCustomSnapTo(__instance.Locations[rand].Location);
+                    if (player.Data.PlayerName.Contains("Bot"))
+                        player.RpcCustomSnapTo(__instance.Locations.Random().Location);
                 }
+            }
+
+            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
+            {
+                __instance.Close();
+                return false;
             }
 
             if (!EnableBetterAirship || IsSubmerged())

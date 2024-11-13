@@ -43,6 +43,22 @@ public class Traitor : Disposition
         Side = Faction.Crew;
     }
 
+    public override void UpdatePlayer()
+    {
+        if (Betray && Turned)
+            TurnBetrayer();
+    }
+
+    public override void UponTaskComplete(uint taskId)
+    {
+        if (TasksDone && Local)
+        {
+            GetFactionChoice(out var syndicate, out var intruder);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, false, syndicate, intruder);
+            TurnTraitor(syndicate, intruder);
+        }
+    }
+
     public void TurnBetrayer()
     {
         var role = Player.GetRole();
@@ -66,18 +82,18 @@ public class Traitor : Disposition
 
             if (intAlive == synAlive)
             {
-                turnIntruder = random < 50;
-                turnSyndicate = random >= 50;
+                turnIntruder = random >= 50;
+                turnSyndicate = random > 50;
             }
             else if (intAlive > synAlive)
             {
-                turnIntruder = random < 25;
-                turnSyndicate = random >= 25;
+                turnIntruder = random >= 75;
+                turnSyndicate = random < 75;
             }
             else if (intAlive < synAlive)
             {
-                turnIntruder = random < 75;
-                turnSyndicate = random >= 75;
+                turnIntruder = random >= 25;
+                turnSyndicate = random < 25;
             }
         }
         else if (intAlive > 0 && synAlive == 0)
@@ -132,24 +148,5 @@ public class Traitor : Disposition
 
         if (Local)
             traitorRole.UpdateButtons();
-    }
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        if (Betray && Turned)
-        {
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, true);
-            TurnBetrayer();
-        }
-    }
-
-    public override void UponTaskComplete(uint taskId)
-    {
-        if (TasksDone)
-        {
-            GetFactionChoice(out var syndicate, out var intruder);
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, false, syndicate, intruder);
-            TurnTraitor(syndicate, intruder);
-        }
     }
 }

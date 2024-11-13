@@ -31,7 +31,8 @@ public static class PlayerControlRevivePatch
         if (IsSubmerged() && __instance.AmOwner)
             ChangeFloor(__instance.transform.position.y > -7);
 
-        __instance.GetLayers().ForEach(x => x.OnRevive());
+        if (__instance.Data.Role is LayerHandler layerHandler)
+            layerHandler.OnRevive();
 
         if (!__instance.AmOwner)
             return false;

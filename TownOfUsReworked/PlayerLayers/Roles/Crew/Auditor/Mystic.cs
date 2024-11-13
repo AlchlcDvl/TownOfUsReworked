@@ -26,15 +26,10 @@ public class Mystic : Crew
 
     public void TurnSeer() => new Seer().RoleUpdate(this, Player);
 
-    public override void UpdateHud(HudManager __instance)
+    public override void UpdatePlayer()
     {
-        base.UpdateHud(__instance);
-
         if (ConvertedDead && !Dead)
-        {
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnSeer();
-        }
     }
 
     private void Reveal()

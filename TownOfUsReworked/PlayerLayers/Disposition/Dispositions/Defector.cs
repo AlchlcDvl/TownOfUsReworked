@@ -44,6 +44,16 @@ public class Defector : Disposition
         Side = Player.GetFaction();
     }
 
+    public override void UpdatePlayer()
+    {
+        if (Defect && !Turned && AmongUsClient.Instance.AmHost)
+        {
+            GetFactionChoice(out var crew, out var evil, out var neut);
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, crew, evil, neut);
+            TurnSides(crew, evil, neut);
+        }
+    }
+
     public static void GetFactionChoice(out bool crew, out bool evil, out bool neut)
     {
         crew = DefectorFaction == DefectorFaction.Crew;
@@ -118,15 +128,5 @@ public class Defector : Disposition
 
         if (CustomPlayer.Local.Is(LayerEnum.Mystic))
             Flash(CustomColorManager.Mystic);
-    }
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        if (Defect && !Turned)
-        {
-            GetFactionChoice(out var crew, out var evil, out var neut);
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, crew, evil, neut);
-            TurnSides(crew, evil, neut);
-        }
     }
 }

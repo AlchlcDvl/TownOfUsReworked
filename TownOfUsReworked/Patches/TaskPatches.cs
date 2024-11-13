@@ -93,16 +93,8 @@ public static class CompleteTasksPatch
 {
     public static void Postfix(PlayerControl __instance, uint idx)
     {
-        __instance.GetLayers().ForEach(x => x.UponTaskComplete(idx));
-
-        foreach (var button in __instance.GetButtons())
-        {
-            if (button.HasUses)
-            {
-                button.Uses++;
-                button.MaxUses++;
-            }
-        }
+        if (__instance.Data.Role is LayerHandler handler)
+            handler.UponTaskComplete(idx);
 
         if (HUD().TaskPanel)
         {

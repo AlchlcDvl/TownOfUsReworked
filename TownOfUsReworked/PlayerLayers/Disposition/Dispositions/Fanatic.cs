@@ -44,6 +44,12 @@ public class Fanatic : Disposition
         Side = Faction.Crew;
     }
 
+    public override void UpdatePlayer()
+    {
+        if (Betray && Turned)
+            TurnBetrayer();
+    }
+
     public void TurnFanatic(Faction faction)
     {
         var fanaticRole = Player.GetRole();
@@ -101,14 +107,5 @@ public class Fanatic : Disposition
 
         if (role.Type != LayerEnum.Betrayer)
             new Betrayer() { Objectives = role.Objectives }.RoleUpdate(role, Player);
-    }
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        if (Betray && Turned)
-        {
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, true);
-            TurnBetrayer();
-        }
     }
 }

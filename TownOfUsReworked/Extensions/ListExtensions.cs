@@ -28,6 +28,9 @@ public static class ListExtensions
         }
     }
 
+
+    public static void Add<T>(this List<T> main, params T[] items) => items.ForEach(main.Add);
+
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
 
     public static List<T> ToSystem<T>(this ISystem.List<T> list) => [ .. list.ToArray() ];

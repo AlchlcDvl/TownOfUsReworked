@@ -5,7 +5,7 @@ public class CustomPlayerMenu(PlayerControl owner, PlayerSelect click, PlayerBod
     public PlayerSelect Click { get; } = click;
     public PlayerBodyExclusion Exception { get; } = exception ?? BlankFalse;
 
-    public List<PlayerControl> Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
+    public PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 
     public void Clicked(PlayerControl player)
     {
@@ -20,7 +20,7 @@ public class CustomPlayerMenu(PlayerControl owner, PlayerSelect click, PlayerBod
         var list2 = new ISystem.List<UiElement>();
         var targets = Targets();
 
-        for (var i = 0; i < targets.Count; i++)
+        for (var i = 0; i < targets.Length; i++)
         {
             var player = targets[i];
             var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
