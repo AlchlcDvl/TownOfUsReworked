@@ -200,84 +200,70 @@ public class Thief : Neutral
             Deinit();
         }
 
-        Role newRole = role.Type switch
+        Role newRole = role switch
         {
             // Crew roles
-            LayerEnum.Bastion => new Bastion(),
-            LayerEnum.VampireHunter => new VampireHunter(),
-            LayerEnum.Veteran => new Veteran(),
-            LayerEnum.Vigilante => new Vigilante(),
+            Bastion => new Bastion(),
+            VampireHunter => new VampireHunter(),
+            Veteran => new Veteran(),
+            Vigilante => new Vigilante(),
 
             // Neutral roles
-            LayerEnum.Arsonist => new Arsonist(),
-            LayerEnum.Betrayer => new Betrayer() { Faction = role.Faction },
-            LayerEnum.Cannibal => new Cannibal(),
-            LayerEnum.Cryomaniac => new Cryomaniac(),
-            LayerEnum.Glitch => new Glitch(),
-            LayerEnum.Juggernaut => new Juggernaut(),
-            LayerEnum.Murderer => new Murderer(),
-            LayerEnum.Plaguebearer or LayerEnum.Pestilence => new Plaguebearer(),
-            LayerEnum.SerialKiller => new SerialKiller(),
-            LayerEnum.Thief => new Thief(),
-            LayerEnum.Werewolf => new Werewolf(),
+            Arsonist => new Arsonist(),
+            Betrayer => new Betrayer() { Faction = role.Faction },
+            Cannibal => new Cannibal(),
+            Cryomaniac => new Cryomaniac(),
+            Glitch => new Glitch(),
+            Juggernaut => new Juggernaut(),
+            Murderer => new Murderer(),
+            Plaguebearer or Pestilence => new Plaguebearer(),
+            SerialKiller => new SerialKiller(),
+            Thief => new Thief(),
+            Werewolf => new Werewolf(),
 
             // Intruder roles
-            LayerEnum.Ambusher => new Ambusher(),
-            LayerEnum.Blackmailer => new Blackmailer(),
-            LayerEnum.Camouflager => new Camouflager(),
-            LayerEnum.Consigliere => new Consigliere(),
-            LayerEnum.Consort => new Consort(),
-            LayerEnum.Disguiser => new Disguiser(),
-            LayerEnum.Enforcer => new Enforcer(),
-            LayerEnum.Godfather => new Godfather(),
-            LayerEnum.PromotedGodfather => new PromotedGodfather(),
-            LayerEnum.Grenadier => new Grenadier(),
-            LayerEnum.Impostor => new Impostor(),
-            LayerEnum.Janitor => new Janitor(),
-            LayerEnum.Mafioso => new Mafioso() { Godfather = ((Mafioso)role).Godfather },
-            LayerEnum.Miner => new Miner(),
-            LayerEnum.Morphling => new Morphling(),
-            LayerEnum.Teleporter => new Teleporter(),
-            LayerEnum.Wraith => new Wraith(),
+            Ambusher => new Ambusher(),
+            Blackmailer => new Blackmailer(),
+            Camouflager => new Camouflager(),
+            Consigliere => new Consigliere(),
+            Consort => new Consort(),
+            Disguiser => new Disguiser(),
+            Enforcer => new Enforcer(),
+            Godfather => new Godfather(),
+            PromotedGodfather => new PromotedGodfather(),
+            Grenadier => new Grenadier(),
+            Impostor => new Impostor(),
+            Janitor => new Janitor(),
+            Mafioso mafioso => new Mafioso() { Godfather = mafioso.Godfather },
+            Miner => new Miner(),
+            Morphling => new Morphling(),
+            Teleporter => new Teleporter(),
+            Wraith => new Wraith(),
 
             // Syndicate roles
-            LayerEnum.Anarchist => new Anarchist(),
-            LayerEnum.Bomber => new Bomber(),
-            LayerEnum.Collider => new Collider(),
-            LayerEnum.Concealer => new Concealer(),
-            LayerEnum.Crusader => new Crusader(),
-            LayerEnum.Drunkard => new Drunkard(),
-            LayerEnum.Framer => new Framer(),
-            LayerEnum.Poisoner => new Poisoner(),
-            LayerEnum.Rebel => new Rebel(),
-            LayerEnum.PromotedRebel => new PromotedRebel(),
-            LayerEnum.Shapeshifter => new Shapeshifter(),
-            LayerEnum.Sidekick => new Sidekick() { Rebel = ((Sidekick)role).Rebel },
-            LayerEnum.Silencer => new Silencer(),
-            LayerEnum.Spellslinger => new Spellslinger(),
-            LayerEnum.Stalker => new Stalker(),
-            LayerEnum.Timekeeper => new Timekeeper(),
-            LayerEnum.Warper => new Warper(),
+            Anarchist => new Anarchist(),
+            Bomber => new Bomber(),
+            Collider => new Collider(),
+            Concealer => new Concealer(),
+            Crusader => new Crusader(),
+            Drunkard => new Drunkard(),
+            Framer => new Framer(),
+            Poisoner => new Poisoner(),
+            Rebel => new Rebel(),
+            PromotedRebel => new PromotedRebel(),
+            Shapeshifter => new Shapeshifter(),
+            Sidekick sidekick => new Sidekick() { Rebel = sidekick.Rebel },
+            Silencer => new Silencer(),
+            Spellslinger => new Spellslinger(),
+            Stalker => new Stalker(),
+            Timekeeper => new Timekeeper(),
+            Warper => new Warper(),
 
             // Whatever else
-            LayerEnum.Thief or _ => new Thief()
+            Thief or _ => new Thief()
         };
 
         newRole.RoleUpdate(this, player, Faction == Faction.Neutral);
-
-        if (other.Is(LayerEnum.Dracula))
-            ((Dracula)role).Converted.Clear();
-        else if (other.Is(LayerEnum.Whisperer))
-            ((Whisperer)role).Persuaded.Clear();
-        else if (other.Is(LayerEnum.Necromancer))
-            ((Necromancer)role).Resurrected.Clear();
-        else if (other.Is(LayerEnum.Jackal))
-        {
-            ((Jackal)role).Recruited.Clear();
-            ((Jackal)role).Recruit2 = null;
-            ((Jackal)role).Recruit1 = null;
-            ((Jackal)role).Recruit3 = null;
-        }
 
         if (ThiefSteals)
         {

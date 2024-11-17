@@ -21,13 +21,13 @@ public class CustomArrow
         ArrowColor = color;
         Time = DateTime.UnixEpoch;
         Instantiate();
-        Disabled = Owner != CustomPlayer.Local;
+        Disabled = !Owner.AmOwner;
         AllArrows.Add(this);
     }
 
     private void Instantiate()
     {
-        if (Owner != CustomPlayer.Local)
+        if (!Owner.AmOwner)
             return;
 
         ArrowObj = new("CustomArrow") { layer = 5 };
@@ -45,10 +45,10 @@ public class CustomArrow
 
     public void Update(Vector3 target, UColor? color = null)
     {
-        if (!ArrowObj || !Arrow || !Render || (Owner != CustomPlayer.Local && Disabled))
+        if (!ArrowObj || !Arrow || !Render || (!Owner.AmOwner && Disabled))
             return;
 
-        if (Owner != CustomPlayer.Local)
+        if (!Owner.AmOwner)
         {
             Arrow.target = CustomPlayer.LocalCustom.Position;
             Disable();
@@ -88,7 +88,7 @@ public class CustomArrow
 
     public void Enable()
     {
-        if (!Disabled || Owner != CustomPlayer.Local)
+        if (!Disabled || !Owner.AmOwner)
             return;
 
         Instantiate();
@@ -97,7 +97,7 @@ public class CustomArrow
 
     public void UpdateArrowBlip(MapBehaviour __instance)
     {
-        if (!ArrowObj || !Arrow || !Render || ArrowColor == default || Meeting() || Owner != CustomPlayer.Local)
+        if (!ArrowObj || !Arrow || !Render || ArrowColor == default || Meeting() || !Owner.AmOwner)
             return;
 
         var v = Target;

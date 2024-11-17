@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Werewolf : Neutral
+public class Werewolf : NKilling
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number MaulCd { get; set; } = new(25);
@@ -31,7 +31,6 @@ public class Werewolf : Neutral
     {
         base.Init();
         Objectives = () => "- Maul anyone who can oppose you";
-        Alignment = Alignment.NeutralKill;
         MaulButton ??= CreateButton(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitMaul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception);
         Data.Role.IntroSound = GetAudio("WerewolfIntro");

@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Cryomaniac : Neutral
+public class Cryomaniac : NKilling
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number CryoDouseCd { get; set; } = new(25);
@@ -39,7 +39,6 @@ public class Cryomaniac : Neutral
     {
         base.Init();
         Objectives = () => "- Freeze anyone who can oppose you";
-        Alignment = Alignment.NeutralKill;
         Doused = [];
         DouseButton ??= CreateButton(this, new SpriteName("CryoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(CryoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);

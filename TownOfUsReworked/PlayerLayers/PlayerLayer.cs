@@ -76,7 +76,11 @@ public abstract class PlayerLayer
 
     public virtual void UpdatePlayer() {}
 
+    public virtual void UpdatePlayer(PlayerControl __instance) {}
+
     public virtual void UpdateVoteArea() {}
+
+    public virtual void UpdateVoteArea(PlayerVoteArea voteArea) {}
 
     public virtual void UpdateHud(HudManager __instance) {}
 

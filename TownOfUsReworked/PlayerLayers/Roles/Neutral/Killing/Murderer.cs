@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Murderer : Neutral
+public class Murderer : NKilling
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number MurderCd { get; set; } = new(25);
@@ -23,7 +23,6 @@ public class Murderer : Neutral
     {
         base.Init();
         Objectives = () => "- Murder anyone who can oppose you";
-        Alignment = Alignment.NeutralKill;
         MurderButton ??= CreateButton(this, new SpriteName("Murder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Murder, new Cooldown(MurderCd), "MURDER",
             (PlayerBodyExclusion)Exception);
     }

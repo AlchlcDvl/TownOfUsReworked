@@ -31,12 +31,9 @@ public class LayerHandler : RoleBehaviour
     public static RoleBehaviour ImpostorGhost;
 
     [HideFromIl2Cpp]
-    public List<PlayerLayer> GetLayers() => CustomLayers;
-
-    [HideFromIl2Cpp]
     public T GetLayer<T>() where T : PlayerLayer => CustomLayers.Find(x => x is T) as T;
 
-    public void FixedPlayerUpdate()
+    public void UpdatePlayer()
     {
         CustomRole.UpdatePlayer();
         CustomAbility.UpdatePlayer();
@@ -44,7 +41,31 @@ public class LayerHandler : RoleBehaviour
         CustomDisposition.UpdatePlayer();
     }
 
-    public void HudUpdate(HudManager __instance)
+    public void UpdatePlayer(PlayerControl __instance)
+    {
+        CustomRole.UpdatePlayer(__instance);
+        CustomAbility.UpdatePlayer(__instance);
+        CustomModifier.UpdatePlayer(__instance);
+        CustomDisposition.UpdatePlayer(__instance);
+    }
+
+    public void UpdateVoteArea()
+    {
+        CustomRole.UpdateVoteArea();
+        CustomAbility.UpdateVoteArea();
+        CustomModifier.UpdateVoteArea();
+        CustomDisposition.UpdateVoteArea();
+    }
+
+    public void UpdateVoteArea(PlayerVoteArea __instance)
+    {
+        CustomRole.UpdateVoteArea(__instance);
+        CustomAbility.UpdateVoteArea(__instance);
+        CustomModifier.UpdateVoteArea(__instance);
+        CustomDisposition.UpdateVoteArea(__instance);
+    }
+
+    public void UpdateHud(HudManager __instance)
     {
         CustomRole.UpdateHud(__instance);
         CustomAbility.UpdateHud(__instance);
@@ -52,6 +73,14 @@ public class LayerHandler : RoleBehaviour
         CustomDisposition.UpdateHud(__instance);
         Buttons.ForEach(x => x.SetActive());
         CanVent = Player.CanVent();
+    }
+
+    public void UpdateMeeting(MeetingHud __instance)
+    {
+        CustomRole.UpdateMeeting(__instance);
+        CustomAbility.UpdateMeeting(__instance);
+        CustomModifier.UpdateMeeting(__instance);
+        CustomDisposition.UpdateMeeting(__instance);
     }
 
     public void UponTaskComplete(uint idx)

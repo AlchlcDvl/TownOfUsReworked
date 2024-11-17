@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Glitch : Neutral
+public class Glitch : NKilling
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number MimicCd { get; set; } = new(25);
@@ -41,7 +41,6 @@ public class Glitch : Neutral
     {
         base.Init();
         Objectives = () => "- Neutralise anyone who can oppose you";
-        Alignment = Alignment.NeutralKill;
         MimicMenu = new(Player, Click, Exception3);
         RoleBlockImmune = true;
         NeutraliseButton ??= CreateButton(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Neutralise, (PlayerBodyExclusion)Exception1,

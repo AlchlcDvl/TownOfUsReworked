@@ -180,7 +180,7 @@ public static class Blocked
             return;
 
         if (CustomPlayer.LocalCustom.Data.Role is LayerHandler handler)
-            handler.HudUpdate(__instance);
+            handler.UpdateHud(__instance);
 
         if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
         {

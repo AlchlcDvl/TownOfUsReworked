@@ -286,6 +286,24 @@ public static class MeetingPatches
         }
     }
 
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
+    public static class UpdateMeetingPatch
+    {
+        public static void Postfix(MeetingHud __instance)
+        {
+            if (IsCustomHnS() || IsTaskRace())
+                return;
+
+            // Deactivate skip Button if skipping on emergency meetings is disabled
+            __instance.SkipVoteButton.gameObject.SetActive(!((Reported == null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping ==
+                DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !CustomPlayer.LocalCustom.Dead);
+
+            if (CustomPlayer.Local.Data.Role is LayerHandler localHandler)
+                localHandler.UpdateMeeting(__instance);
+
+        }
+    }
+
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
     public static class VotingComplete
     {

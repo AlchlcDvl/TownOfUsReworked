@@ -93,6 +93,8 @@ public static class LayerExtentions
 
     public static bool IsResurrected(this PlayerControl player) => player.GetRole().IsResurrected;
 
+    public static bool IsConverted(this Role role) => role.IsRecruit || role.IsBitten || role.IsPersuaded || role.IsResurrected;
+
     public static bool Diseased(this PlayerControl player) => player.GetRole().Diseased;
 
     public static bool IsCrewDefect(this PlayerControl player) => player.GetRole().IsCrewDefect;
@@ -197,13 +199,15 @@ public static class LayerExtentions
 
     public static bool CanDoTasks(this PlayerVoteArea player) => PlayerByVoteArea(player).CanDoTasks();
 
-    public static Jackal GetJackal(this PlayerControl player) => PlayerLayer.GetLayers<Jackal>().Find(role => role.Recruited.Contains(player.PlayerId));
+    public static Jackal GetJackal(this PlayerControl player) => PlayerLayer.GetLayers<Jackal>().Find(role => role.Members.Contains(player.PlayerId));
 
-    public static Necromancer GetNecromancer(this PlayerControl player) => PlayerLayer.GetLayers<Necromancer>().Find(role => role.Resurrected.Contains(player.PlayerId));
+    public static Necromancer GetNecromancer(this PlayerControl player) => PlayerLayer.GetLayers<Necromancer>().Find(role => role.Members.Contains(player.PlayerId));
 
-    public static Dracula GetDracula(this PlayerControl player) => PlayerLayer.GetLayers<Dracula>().Find(role => role.Converted.Contains(player.PlayerId));
+    public static Dracula GetDracula(this PlayerControl player) => PlayerLayer.GetLayers<Dracula>().Find(role => role.Members.Contains(player.PlayerId));
 
-    public static Whisperer GetWhisperer(this PlayerControl player) => PlayerLayer.GetLayers<Whisperer>().Find(role => role.Persuaded.Contains(player.PlayerId));
+    public static Whisperer GetWhisperer(this PlayerControl player) => PlayerLayer.GetLayers<Whisperer>().Find(role => role.Members.Contains(player.PlayerId));
+
+    public static Neophyte GetNeophyte(this PlayerControl player) => PlayerLayer.GetLayers<Neophyte>().Find(role => role.Members.Contains(player.PlayerId));
 
     public static Jackal GetJackal(this PlayerVoteArea player) => PlayerByVoteArea(player).GetJackal();
 
@@ -1198,7 +1202,7 @@ public static class LayerExtentions
     public static List<PlayerLayer> GetLayers(this PlayerControl player)
     {
         if (player.Data.Role is LayerHandler handler)
-            return handler.GetLayers();
+            return handler.CustomLayers;
 
         return player.GetLayersFromList();
     }
@@ -1209,6 +1213,9 @@ public static class LayerExtentions
 
     public static T GetLayer<T>(this PlayerControl player) where T : PlayerLayer
     {
+        if (!player || !player.Data)
+            return null;
+
         if (player.Data.Role is LayerHandler handler)
             return handler.GetLayer<T>();
 

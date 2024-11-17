@@ -96,7 +96,7 @@ public class CustomMeeting
     {
         HideButtons();
 
-        if (!usable || Owner != CustomPlayer.Local)
+        if (!usable || !Owner.AmOwner)
             return;
 
         Parallel();

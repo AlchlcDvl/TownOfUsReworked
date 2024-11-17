@@ -25,7 +25,7 @@ public class CustomPlayerMenu(PlayerControl owner, PlayerSelect click, PlayerBod
             var player = targets[i];
             var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
             panel.SetPlayer(i, player.Data, (Action)(() => Clicked(player)));
-            (panel.NameText.text, panel.NameText.color) = PlayerHandler.UpdateGameName(player);
+            (panel.NameText.text, panel.NameText.color) = (player.NameText().text, player.NameText().color);
             __instance.potentialVictims.Add(panel);
             list2.Add(panel.Button);
         }

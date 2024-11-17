@@ -181,10 +181,10 @@ public static class VisibleOverride
     {
         if (__instance.IsPostmortal() && !__instance.Caught())
             value = !__instance.inVent;
-        else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && __instance != CustomPlayer.Local)
+        else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && !__instance.AmOwner)
             value = !ClientOptions.HideOtherGhosts;
         else if (((CustomPlayer.Local.TryGetLayer<Medium>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId)) || (CustomPlayer.Local.TryGetLayer<Retributionist>(out var ret) &&
-            ret.MediatedPlayers.Contains(__instance.PlayerId))) && __instance != CustomPlayer.Local)
+            ret.MediatedPlayers.Contains(__instance.PlayerId))) && !__instance.AmOwner)
         {
             value = true;
         }
@@ -300,7 +300,7 @@ public static class AddCustomPlayerPatch
 {
     public static void Postfix(PlayerControl __instance)
     {
-        CustomPlayer.Custom(__instance);
+        __instance.gameObject.AddComponent<PlayerControlHandler>();
         AddAsset("Kill", __instance.KillSfx);
     }
 }
@@ -449,7 +449,7 @@ public static class LadderFix
 {
     public static bool Prefix(PlayerControl __instance, bool b)
     {
-        if (__instance != CustomPlayer.Local || !__instance.onLadder || b || __instance.GetModifier() is not (Giant or Dwarf) || MapPatches.CurrentMap is not (5 or 4))
+        if (!__instance.AmOwner || !__instance.onLadder || b || __instance.GetModifier() is not (Giant or Dwarf) || MapPatches.CurrentMap is not (5 or 4))
             return true;
 
         var ladder = UObject.FindObjectsOfType<Ladder>().OrderBy(x => Vector3.Distance(x.transform.position, __instance.transform.position)).ElementAt(0);

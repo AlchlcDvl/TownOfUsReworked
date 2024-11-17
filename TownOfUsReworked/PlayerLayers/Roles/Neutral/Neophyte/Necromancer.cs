@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Necromancer : Neutral
+public class Necromancer : Neophyte
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number ResurrectCd { get; set; } = new(25);
@@ -45,7 +45,6 @@ public class Necromancer : Neutral
     public DeadBody ResurrectingBody { get; set; }
     public CustomButton ResurrectButton { get; set; }
     public CustomButton SacrificeButton { get; set; }
-    public List<byte> Resurrected { get; set; }
     public int ResurrectedCount { get; set; }
     public int KillCount { get; set; }
 
@@ -61,12 +60,10 @@ public class Necromancer : Neutral
     {
         base.Init();
         Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
-        Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Reanimated;
         SubFactionColor = CustomColorManager.Reanimated;
         ResurrectedCount = 0;
         KillCount = 0;
-        Resurrected = [ Player.PlayerId ];
         ResurrectButton ??= CreateButton(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
             new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, "RESURRECT", (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
         SacrificeButton ??= CreateButton(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
@@ -128,7 +125,7 @@ public class Necromancer : Neutral
         }
     }
 
-    public bool Exception(PlayerControl player) => Resurrected.Contains(player.PlayerId) || Player.IsLinkedTo(player);
+    public bool Exception(PlayerControl player) => Members.Contains(player.PlayerId) || Player.IsLinkedTo(player);
 
     public void Kill()
     {

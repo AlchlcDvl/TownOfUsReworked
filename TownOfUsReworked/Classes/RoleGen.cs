@@ -1655,8 +1655,8 @@ public static class RoleGen
 
         KilledPlayers.Clear();
 
-        PlayerHandler.Instance.PlayerNames.Clear();
-        PlayerHandler.Instance.ColorNames.Clear();
+        NameHandler.PlayerNames.Clear();
+        NameHandler.ColorNames.Clear();
 
         DragHandler.Instance.Dragging.Clear();
 
@@ -1977,107 +1977,58 @@ public static class RoleGen
     {
         var converted = PlayerById(target);
         var converter = PlayerById(convert);
+        var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.NeutralNeo));
 
-        if (condition || Convertible <= 0 || PureCrew == converted)
+        if (condition || Convertible <= 0 || PureCrew == converted || !converts)
         {
             if (AmongUsClient.Instance.AmHost)
                 Interact(converter, converted, true, true);
 
             return;
         }
-        else
+
+        var role1 = converted.GetRole();
+        var role2 = converter.GetRole();
+
+        if (role2 is Neophyte neophyte)
         {
-            var role1 = converted.GetRole();
-            var role2 = converter.GetRole();
-            var converts = converted.Is(SubFaction.None);
-
-            if (!converts && !converted.Is(sub))
-                Interact(converter, converted, true, true);
-            else
+            if (converts)
             {
-                if (converter.Is(LayerEnum.Dracula))
+                neophyte.Members.Add(target);
+
+                if (converted.Is(SubFaction.None) && neophyte is Jackal jackal)
                 {
-                    if (converts)
-                        ((Dracula)role2).Converted.Add(target);
-                    else if (converted.IsBitten())
-                        ((Dracula)role2).Converted.Add(target);
-                    else if (converted.Is(LayerEnum.Dracula))
-                    {
-                        ((Dracula)role2).Converted.AddRange(((Dracula)role1).Converted);
-                        ((Dracula)role1).Converted.AddRange(((Dracula)role2).Converted);
-                    }
+                    if (!jackal.Recruit1)
+                        jackal.Recruit1 = converted;
+                    else if (!jackal.Recruit2)
+                        jackal.Recruit2 = converted;
+                    else if (!jackal.Recruit3)
+                        jackal.Recruit3 = converted;
                 }
-                else if (converter.Is(LayerEnum.Whisperer))
-                {
-                    if (converts)
-                        ((Whisperer)role2).Persuaded.Add(target);
-                    else if (converted.IsPersuaded())
-                        ((Whisperer)role2).Persuaded.Add(target);
-                    else if (converted.Is(LayerEnum.Whisperer))
-                    {
-                        ((Whisperer)role2).Persuaded.AddRange(((Whisperer)role1).Persuaded);
-                        ((Whisperer)role1).Persuaded.AddRange(((Whisperer)role2).Persuaded);
-                        ((Whisperer)role1).Persuaded.ForEach(x => ((Whisperer)role1).PlayerConversion.Remove(x));
-                    }
+            }
+            else if (role1 is Neophyte neophyte1 && role1.Type == role2.Type)
+            {
+                neophyte1.Members.AddRange(neophyte.Members);
+                neophyte.Members.AddRange(neophyte1.Members);
 
-                    ((Whisperer)role2).Persuaded.ForEach(x => ((Whisperer)role2).PlayerConversion.Remove(x));
+                if (role1 is Whisperer whisperer1 && role2 is Whisperer whisperer2)
+                {
+                    whisperer1.Members.ForEach(x => whisperer2.PlayerConversion.Remove(x));
+                    whisperer2.Members.ForEach(x => whisperer1.PlayerConversion.Remove(x));
                 }
-                else if (converter.Is(LayerEnum.Necromancer))
-                {
-                    if (converts)
-                        ((Necromancer)role2).Resurrected.Add(target);
-                    else if (converted.IsResurrected())
-                        ((Necromancer)role2).Resurrected.Add(target);
-                    else if (converted.Is(LayerEnum.Necromancer))
-                    {
-                        ((Necromancer)role2).Resurrected.AddRange(((Necromancer)role1).Resurrected);
-                        ((Necromancer)role1).Resurrected.AddRange(((Necromancer)role2).Resurrected);
-                    }
-                }
-                else if (converter.Is(LayerEnum.Jackal))
-                {
-                    if (converts)
-                    {
-                        var jackal = (Jackal)role2;
-                        jackal.Recruited.Add(target);
-
-                        if (!jackal.Recruit1)
-                            jackal.Recruit1 = converted;
-                        else if (!jackal.Recruit2)
-                            jackal.Recruit2 = converted;
-                        else if (!jackal.Recruit3)
-                            jackal.Recruit3 = converted;
-                    }
-                    else if (converted.IsRecruit())
-                        ((Jackal)role2).Recruited.Add(target);
-                    else if (converted.Is(LayerEnum.Jackal))
-                    {
-                        ((Jackal)role2).Recruited.AddRange(((Jackal)role1).Recruited);
-                        ((Jackal)role1).Recruited.AddRange(((Jackal)role2).Recruited);
-                    }
-                }
-
-                var flash = sub switch
-                {
-                    SubFaction.Undead => CustomColorManager.Undead,
-                    SubFaction.Cabal => CustomColorManager.Cabal,
-                    SubFaction.Reanimated => CustomColorManager.Reanimated,
-                    SubFaction.Sect => CustomColorManager.Sect,
-                    _ => CustomColorManager.SubFaction
-                };
-
-                role1.SubFaction = sub;
-                role1.SubFactionColor = flash;
-                role1.Faction = Faction.Neutral;
-                role1.Alignment = role1.Alignment.GetNewAlignment(Faction.Neutral);
-                Convertible--;
-
-                if (converted.AmOwner)
-                    Flash(flash);
-                else if (CustomPlayer.Local.Is(LayerEnum.Mystic))
-                    Flash(CustomColorManager.Mystic);
             }
         }
+
+        role1.SubFaction = sub;
+        role1.SubFactionColor = role2.SubFactionColor;
+        role1.Faction = Faction.Neutral;
+        role1.Alignment = role1.Alignment.GetNewAlignment(Faction.Neutral);
+        Convertible--;
+
+        if (converted.AmOwner)
+            Flash(role1.SubFactionColor);
+        else if (CustomPlayer.Local.Is(LayerEnum.Mystic))
+            Flash(CustomColorManager.Mystic);
     }
 
     public static void RpcConvert(byte target, byte convert, SubFaction sub, bool condition = false)

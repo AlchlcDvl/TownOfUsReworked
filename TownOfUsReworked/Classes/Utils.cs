@@ -110,7 +110,7 @@ public static class Utils
             {
                 player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(1, a, p));
 
-                if (player != CustomPlayer.Local)
+                if (!player.AmOwner)
                 {
                     var text = player.NameText();
                     text.color = new(text.color.a, text.color.a, text.color.a, p);
@@ -200,7 +200,7 @@ public static class Utils
 
     public static void CamoSingle(PlayerControl player)
     {
-        if ((int)player.GetCustomOutfitType() is not (4 or 5 or 6 or 7) && !player.Data.IsDead && !CustomPlayer.LocalCustom.Dead && player != CustomPlayer.Local)
+        if ((int)player.GetCustomOutfitType() is not (4 or 5 or 6 or 7) && !player.HasDied() && !CustomPlayer.Local.HasDied() && !player.AmOwner)
         {
             player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
             Coroutines.Start(PerformTimedAction(1, p =>
@@ -238,7 +238,7 @@ public static class Utils
                 player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(1, ca, p));
                 PlayerMaterial.SetColors(UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), 37.GetColor(false), p), player.MyRend());
 
-                if (player != CustomPlayer.Local)
+                if (!player.AmOwner)
                 {
                     var text = player.NameText();
                     text.color = new(text.color.r, text.color.g, text.color.b, 1 - p);

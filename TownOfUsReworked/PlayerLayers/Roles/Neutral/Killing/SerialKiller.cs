@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class SerialKiller : Neutral
+public class SerialKiller : NKilling
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number BloodlustCd { get; set; } = new(25);
@@ -31,7 +31,6 @@ public class SerialKiller : Neutral
     {
         base.Init();
         Objectives = () => "- Stab anyone who can oppose you";
-        Alignment = Alignment.NeutralKill;
         RoleBlockImmune = true;
         BloodlustButton ??= CreateButton(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Lust, new Cooldown(BloodlustCd), new Duration(BloodlustDur),
             "BLOODLUST", (EndFunc)EndEffect);

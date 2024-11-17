@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Dracula : Neutral
+public class Dracula : Neophyte
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number BiteCd { get; set; } = new(25);
@@ -17,7 +17,6 @@ public class Dracula : Neutral
 
     public CustomButton BiteButton { get; set; }
     public bool HasConverted { get; set; }
-    public List<byte> Converted { get; set; }
     public static int AliveCount => AllPlayers().Count(x => !x.HasDied());
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : CustomColorManager.Neutral;
@@ -34,9 +33,7 @@ public class Dracula : Neutral
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
-        Alignment = Alignment.NeutralNeo;
         SubFactionColor = CustomColorManager.Undead;
-        Converted = [ Player.PlayerId ];
         BiteButton ??= CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
@@ -62,5 +59,5 @@ public class Dracula : Neutral
 
     public bool Usable() => !HasConverted;
 
-    public bool Exception(PlayerControl player) => Converted.Contains(player.PlayerId);
+    public bool Exception(PlayerControl player) => Members.Contains(player.PlayerId);
 }

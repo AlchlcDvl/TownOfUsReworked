@@ -11,11 +11,12 @@ public static class AllMonos
         // Handlers
         ClassInjector.RegisterTypeInIl2Cpp<HudHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<ClientHandler>();
-        ClassInjector.RegisterTypeInIl2Cpp<PlayerHandler>();
-        ClassInjector.RegisterTypeInIl2Cpp<MeetingHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<DragHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<ColorHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<LayerHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<NameHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<VoteAreaHandler>();
 
         // Paging
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -42,8 +43,6 @@ public static class AllMonos
 
         TownOfUsReworked.ModInstance.AddComponent<HudHandler>();
         TownOfUsReworked.ModInstance.AddComponent<ClientHandler>();
-        TownOfUsReworked.ModInstance.AddComponent<PlayerHandler>();
-        TownOfUsReworked.ModInstance.AddComponent<MeetingHandler>();
         TownOfUsReworked.ModInstance.AddComponent<DragHandler>();
         TownOfUsReworked.ModInstance.AddComponent<ColorHandler>();
 
@@ -57,7 +56,6 @@ public static class AllMonos
         prefab.MaxCount = 127;
         prefab.DefaultGhostRole = (RoleTypes)100;
         prefab.AffectedByLightAffectors = true;
-        prefab.IntroSound = GetAudio("CrewmateIntro");
 
         var allRoles = RoleManager.Instance.AllRoles.ToArray().ToList();
         allRoles.Add(prefab);

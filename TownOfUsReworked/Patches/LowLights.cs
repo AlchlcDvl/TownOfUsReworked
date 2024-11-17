@@ -64,7 +64,7 @@ public static class AdjustLightingPatch
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        if (CustomPlayer.Local != __instance || !Ship())
+        if (!__instance.AmOwner || !Ship())
             return true;
 
         var flashlights = false;

@@ -389,7 +389,6 @@ public abstract class Role : PlayerLayer
         TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
         AllVoteAreas().ForEach(GenText);
         AllRoles().ForEach(x => x.CurrentChannel = ChatChannel.All);
-        GetLayers<Retributionist>().ForEach(x => x.Selected = null);
         GetLayers<Dictator>().ForEach(x => x.ToBeEjected = null);
 
         if (Requesting && BountyTimer > 2)

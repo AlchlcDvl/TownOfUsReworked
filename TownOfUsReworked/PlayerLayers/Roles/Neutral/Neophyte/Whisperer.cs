@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Whisperer : Neutral
+public class Whisperer : Neophyte
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number WhisperCd { get; set; } = new(25);
@@ -35,7 +35,6 @@ public class Whisperer : Neutral
     public int ConversionCount { get; set; }
     public Dictionary<byte, int> PlayerConversion { get; set; }
     public int WhisperConversion { get; set; }
-    public List<byte> Persuaded { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : CustomColorManager.Neutral;
     public override string Name => "Whisperer";
@@ -49,28 +48,26 @@ public class Whisperer : Neutral
     {
         base.Init();
         Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
-        Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Sect;
         SubFactionColor = CustomColorManager.Sect;
         WhisperConversion = WhisperRate;
-        Persuaded = [ Player.PlayerId ];
         WhisperButton ??= CreateButton(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);
         PlayerConversion = [];
         AllPlayers().ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
-        Persuaded.ForEach(x => PlayerConversion.Remove(x));
+        Members.ForEach(x => PlayerConversion.Remove(x));
     }
 
     public void Whisper()
     {
         var closestPlayers = GetClosestPlayers(Player.transform.position, WhisperRadius);
-        closestPlayers.RemoveAll(x => x == Player || Persuaded.Contains(x.PlayerId));
+        closestPlayers.RemoveAll(x => x == Player || Members.Contains(x.PlayerId));
 
         foreach (var player in closestPlayers)
         {
             if (PlayerConversion.ContainsKey(player.PlayerId))
                 PlayerConversion[player.PlayerId] -= WhisperConversion;
-            else if (!Persuaded.Contains(player.PlayerId))
+            else if (!Members.Contains(player.PlayerId))
                 PlayerConversion.Add(player.PlayerId, 100 - WhisperConversion);
         }
 
@@ -93,7 +90,7 @@ public class Whisperer : Neutral
         }
 
         WhisperCount++;
-        Persuaded.ForEach(x => PlayerConversion.Remove(x));
+        Members.ForEach(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
         WhisperButton.StartCooldown();
         var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, PlayerConversion.Count);
@@ -116,6 +113,6 @@ public class Whisperer : Neutral
         for (var i = 0; i <= count; i++)
             PlayerConversion[reader.ReadByte()] = reader.ReadInt32();
 
-        Persuaded.ForEach(x => PlayerConversion.Remove(x));
+        Members.ForEach(x => PlayerConversion.Remove(x));
     }
 }

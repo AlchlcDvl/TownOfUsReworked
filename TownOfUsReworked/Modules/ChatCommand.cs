@@ -256,7 +256,7 @@ public class ChatCommand
 
         foreach (var player2 in AllPlayers())
         {
-            if (player2 != CustomPlayer.Local)
+            if (!player2.AmOwner)
             {
                 var client = AmongUsClient.Instance.GetClient(player2.OwnerId);
 

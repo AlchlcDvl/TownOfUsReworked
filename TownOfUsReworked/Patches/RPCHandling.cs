@@ -293,7 +293,7 @@ public static class RPCHandling
                     case VanillaRPC.SetColor:
                         var player = reader.ReadPlayer();
                         player.SetColor(reader.ReadByte());
-                        PlayerHandler.Instance.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
+                        NameHandler.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
                         break;
 
                     default:

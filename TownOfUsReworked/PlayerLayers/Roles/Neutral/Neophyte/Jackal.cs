@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Jackal : Neutral
+public class Jackal : Neophyte
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number RecruitCd { get; set; } = new(25);
@@ -19,7 +19,6 @@ public class Jackal : Neutral
     public CustomButton KillButton { get; set; }
     public bool RecruitsDead => !Recruit2 || !Recruit1 || (!Recruit3 && Recruit1 && Recruit2 && Recruit1.HasDied() && Recruit2.HasDied());
     public bool AllRecruitsDead => Recruit1 && Recruit1.HasDied() && Recruit2 && Recruit2.HasDied() && Recruit3 && Recruit3.HasDied();
-    public List<byte> Recruited { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Jackal : CustomColorManager.Neutral;
     public override string Name => "Jackal";
@@ -36,13 +35,19 @@ public class Jackal : Neutral
         Objectives = () => "- Recruit or kill anyone who can oppose the <color=#575657FF>Cabal</color>";
         SubFaction = SubFaction.Cabal;
         SubFactionColor = CustomColorManager.Cabal;
-        Alignment = Alignment.NeutralNeo;
-        Recruited = [ Player.PlayerId ];
         RecruitButton ??= CreateButton(this, new SpriteName("Recruit"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Recruit, (PlayerBodyExclusion)Exception, "RECRUIT",
             (UsableFunc)Usable1, new Cooldown(RecruitCd));
         KillButton ??= CreateButton(this, new SpriteName("JackalKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, (PlayerBodyExclusion)Exception, "KILL",
             (UsableFunc)Usable2, new Cooldown(RecruitCd));
         Data.Role.IntroSound = GetAudio("JackalIntro");
+    }
+
+    public override void Deinit()
+    {
+        base.Deinit();
+        Recruit1 = null;
+        Recruit2 = null;
+        Recruit3 = null;
     }
 
     public void Recruit()
@@ -55,7 +60,7 @@ public class Jackal : Neutral
         RecruitButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) => Recruited.Contains(player.PlayerId);
+    public bool Exception(PlayerControl player) => Members.Contains(player.PlayerId);
 
     public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.GetTarget<PlayerControl>(), true));
 
@@ -63,5 +68,5 @@ public class Jackal : Neutral
 
     public bool Usable2() => AllRecruitsDead;
 
-    public IEnumerable<PlayerControl> GetOtherRecruits(PlayerControl recruit) => Recruited.Where(x => x != recruit.PlayerId).Select(PlayerById);
+    public IEnumerable<PlayerControl> GetOtherRecruits(PlayerControl recruit) => Members.Where(x => x != recruit.PlayerId).Select(PlayerById);
 }

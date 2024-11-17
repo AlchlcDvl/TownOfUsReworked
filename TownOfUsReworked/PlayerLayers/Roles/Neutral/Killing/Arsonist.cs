@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Arsonist : Neutral
+public class Arsonist : NKilling
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number ArsoDouseCd { get; set; } = new(25);
@@ -43,7 +43,6 @@ public class Arsonist : Neutral
     {
         base.Init();
         Objectives = () => "- Burn anyone who can oppose you";
-        Alignment = Alignment.NeutralKill;
         Doused = [];
         DouseButton ??= CreateButton(this, new SpriteName("ArsoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);

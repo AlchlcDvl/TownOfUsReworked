@@ -28,8 +28,7 @@ public static class ListExtensions
         }
     }
 
-
-    public static void Add<T>(this List<T> main, params T[] items) => items.ForEach(main.Add);
+    public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
 
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
 

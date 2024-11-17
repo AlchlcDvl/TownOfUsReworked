@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Juggernaut : Neutral
+public class Juggernaut : NKilling
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number AssaultCd { get; set; } = new(25);
@@ -27,7 +27,6 @@ public class Juggernaut : Neutral
     {
         base.Init();
         Objectives = () => "- Assault anyone who can oppose you";
-        Alignment = Alignment.NeutralKill;
         JuggKills = 0;
         AssaultButton ??= CreateButton(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception, "ASSAULT");
