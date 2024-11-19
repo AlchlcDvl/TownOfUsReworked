@@ -33,8 +33,7 @@ public class Dracula : Neophyte
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
-        SubFactionColor = CustomColorManager.Undead;
-        BiteButton ??= CreateButton(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
+        BiteButton ??= new(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 

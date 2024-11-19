@@ -30,10 +30,9 @@ public class Teleporter : Intruder
         base.Init();
         Alignment = Alignment.IntruderSupport;
         TeleportPoint = Vector3.zero;
-        MarkButton ??= CreateButton(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(TeleMarkCd), "MARK POSITION",
-            (ConditionFunc)Condition1);
-        TeleportButton ??= CreateButton(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(TeleportCd), "TELEPORT",
-            (UsableFunc)Usable, (ConditionFunc)Condition2);
+        MarkButton ??= new(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(TeleMarkCd), "MARK POSITION", (ConditionFunc)Condition1);
+        TeleportButton ??= new(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(TeleportCd), "TELEPORT", (UsableFunc)Usable,
+            (ConditionFunc)Condition2);
     }
 
     public void Mark()
@@ -55,12 +54,8 @@ public class Teleporter : Intruder
             MarkButton.StartCooldown();
     }
 
-    public bool Condition1()
-    {
-        var hits = Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0);
-        hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)).ToArray();
-        return hits.Count == 0 && Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != Player.transform.position;
-    }
+    public bool Condition1() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
+        Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != Player.transform.position;
 
     public bool Usable() => TeleportPoint != Vector3.zero;
 

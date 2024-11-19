@@ -30,14 +30,9 @@ public class Mafioso : Intruder
         gf.OnRoleSelected();
     }
 
-    public override void UpdateHud(HudManager __instance)
+    public override void UpdatePlayer()
     {
-        base.UpdateHud(__instance);
-
         if (CanPromote)
-        {
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnGodfather();
-        }
     }
 }

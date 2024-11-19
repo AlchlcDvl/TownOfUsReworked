@@ -10,7 +10,6 @@ public abstract class HideAndSeek : Role
     {
         base.Init();
         Faction = Faction.GameMode;
-        FactionColor = CustomColorManager.HideAndSeek;
         Alignment = Alignment.GameModeHideAndSeek;
     }
 

@@ -12,6 +12,9 @@ public class BountyHunter : Neutral
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number GuessCd { get; set; } = new(25);
 
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static Number HuntCd { get; set; } = new(25);
+
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BHVent { get; set; } = false;
 
@@ -52,13 +55,13 @@ public class BountyHunter : Neutral
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;
-        GuessButton ??= CreateButton(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
+        GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);
-        HuntButton ??= CreateButton(this, new SpriteName("Hunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GuessCd), "HUNT", (UsableFunc)Usable2);
+        HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(HuntCd), "HUNT", (UsableFunc)Usable2);
 
         if (BountyHunterCanPickTargets)
         {
-            RequestButton ??= CreateButton(this, new SpriteName("Request"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
+            RequestButton ??= new(this, new SpriteName("Request"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
                 (UsableFunc)Usable3);
         }
 
@@ -180,14 +183,9 @@ public class BountyHunter : Neutral
     {
         base.UpdateHud(__instance);
 
-        if (Failed && !Dead)
+        if (Failed && !Dead && !BHToTroll)
         {
-            if (BHToTroll)
-            {
-                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
-                TurnTroll();
-            }
-            else if (BountyHunterCanPickTargets)
+            if (BountyHunterCanPickTargets)
             {
                 TargetPlayer = null;
                 Rounds = 0;
@@ -198,11 +196,18 @@ public class BountyHunter : Neutral
         }
     }
 
+    public override void UpdatePlayer()
+    {
+        if (Failed && !Dead && BHToTroll)
+            TurnTroll();
+    }
+
     public void Request()
     {
         RequestingPlayer = RequestButton.GetTarget<PlayerControl>();
-        RequestingPlayer.GetRole().Requesting = true;
-        RequestingPlayer.GetRole().Requestor = Player;
+        var role = RequestingPlayer.GetRole();
+        role.Requesting = true;
+        role.Requestor = Player;
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RequestingPlayer);
     }
 
@@ -210,14 +215,15 @@ public class BountyHunter : Neutral
     {
         var request = reader.ReadPlayer();
         RequestingPlayer = request;
-        request.GetRole().Requesting = true;
-        request.GetRole().Requestor = Player;
+        var role = request.GetRole();
+        role.Requesting = true;
+        role.Requestor = Player;
     }
 
     public void Guess()
     {
         TargetFound = GuessButton.GetTarget<PlayerControl>() == TargetPlayer;
-        Flash(new(TargetFound ? 0 : 255, TargetFound ? 255 : 0, 0, 255));
+        Flash(TargetFound ? UColor.green : UColor.red);
         GuessButton.StartCooldown();
 
         if (TargetFound)

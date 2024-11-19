@@ -58,13 +58,13 @@ public class Executioner : Neutral
 
         if (ExecutionerCanPickTargets)
         {
-            TargetButton ??= CreateButton(this, new SpriteName("ExeTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
+            TargetButton ??= new(this, new SpriteName("ExeTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
                 (UsableFunc)Usable2);
         }
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
         {
-            DoomButton ??= CreateButton(this, new SpriteName("Doom"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Doom, (PlayerBodyExclusion)Exception1, "DOOM",
+            DoomButton ??= new(this, new SpriteName("Doom"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Doom, (PlayerBodyExclusion)Exception1, "DOOM",
                 (UsableFunc)Usable1);
         }
 

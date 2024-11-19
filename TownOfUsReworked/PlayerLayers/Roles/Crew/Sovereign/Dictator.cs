@@ -32,7 +32,7 @@ public class Dictator : Crew
     {
         base.Init();
         Alignment = Alignment.CrewSov;
-        RevealButton ??= CreateButton(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal, (UsableFunc)Usable);
+        RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal, (UsableFunc)Usable);
         DictMenu = new(Player, "DictActive", "DictDisabled", DictateAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 

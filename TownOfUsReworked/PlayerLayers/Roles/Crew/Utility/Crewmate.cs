@@ -10,6 +10,5 @@ public class Crewmate : Crew
     {
         base.Init();
         Alignment = Alignment.CrewUtil;
-        Data.Role.IntroSound = GetAudio("CrewmateIntro");
     }
 }

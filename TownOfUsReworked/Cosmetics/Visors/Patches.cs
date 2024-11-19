@@ -166,7 +166,7 @@ public static class CosmeticsCacheGetVisorPatch
         if (!CustomVisorViewDatas.TryGetValue(id, out __result))
             return true;
 
-        return __result ??= __instance.visors["visor_EmptyVisor"].GetAsset();
+        return !(__result ??= __instance.visors["visor_EmptyVisor"].GetAsset());
     }
 }
 

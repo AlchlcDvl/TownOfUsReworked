@@ -22,9 +22,8 @@ public class Camouflager : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderConceal;
-        CamouflageButton ??= CreateButton(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
+        CamouflageButton ??= new(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
             new Cooldown(CamouflageCd), new Duration(CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage);
-        Data.Role.IntroSound = GetAudio("CamouflagerIntro");
     }
 
     public void Camouflage()

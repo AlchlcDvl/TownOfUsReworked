@@ -29,8 +29,7 @@ public class Tracker : Crew
         base.Init();
         TrackerArrows = [];
         Alignment = Alignment.CrewInvest;
-        Data.Role.IntroSound = GetAudio("TrackerIntro");
-        TrackButton ??= CreateButton(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(TrackCd), MaxTracks,
+        TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);
     }
 

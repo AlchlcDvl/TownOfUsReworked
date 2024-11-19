@@ -57,16 +57,16 @@ public class GuardianAngel : Neutral
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         Alignment = Alignment.NeutralBen;
         TargetPlayer = null;
-        ProtectButton ??= CreateButton(this, "Protect", AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitProtect, new Cooldown(ProtectCd), "PROTECT", new Duration(ProtectDur),
+        ProtectButton ??= new(this, "Protect", AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitProtect, new Cooldown(ProtectCd), "PROTECT", new Duration(ProtectDur),
             MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
 
         if (GuardianAngelCanPickTargets)
-            TargetButton ??= CreateButton(this, new SpriteName("GATarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, "WATCH", (UsableFunc)Usable2);
+            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, "WATCH", (UsableFunc)Usable2);
 
         if (ProtectBeyondTheGrave)
         {
-            GraveProtectButton ??= CreateButton(this, new SpriteName("GraveProtect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGraveProtect, new PostDeath(true),
-                new Cooldown(ProtectCd), new Duration(ProtectDur), MaxProtects, "PROTECT", (UsableFunc)Usable1, (EndFunc)EndEffect);
+            GraveProtectButton ??= new(this, new SpriteName("GraveProtect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGraveProtect, new PostDeath(true), "PROTECT",
+                new Cooldown(ProtectCd), new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
         }
 
         Rounds = 0;
@@ -104,14 +104,9 @@ public class GuardianAngel : Neutral
     {
         base.UpdateHud(__instance);
 
-        if (Failed && !Dead)
+        if (Failed && !Dead && !GAToSurv)
         {
-            if (GAToSurv)
-            {
-                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
-                TurnSurv();
-            }
-            else if (GuardianAngelCanPickTargets)
+            if (GuardianAngelCanPickTargets)
             {
                 TargetPlayer = null;
                 Rounds = 0;
@@ -120,6 +115,12 @@ public class GuardianAngel : Neutral
             else
                 RpcMurderPlayer(Player);
         }
+    }
+
+    public override void UpdatePlayer()
+    {
+        if (Failed && !Dead && GAToSurv)
+            TurnSurv();
     }
 
     public bool EndEffect() => Dead || !TargetAlive;

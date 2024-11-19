@@ -8,19 +8,24 @@ If you want to know more try using the other info commands, visiting the %github
 
 New!
 - Addition: The main menu buttons now fashion their own icons
+- Addition: You can now change the keybind to deselect players (default is still Backspace)
 
 Changes!
 - Rework: Dictator no longer ejects 3 players at a time, instead they pick a singular player to eject and instead has gained ability charges to compensate
 - Nerf: Vampire Hunters turned Vigilantes will always have one bullet left
+- Change: Actors will now prioritise turning into a dead target role
 - Improvement: Improved the mod's asset loaders
 - Improvement: Assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
 - Improvement: Made general optimsations to improve the mod's runtime
 
 Fixes!
+- Critical: Fixed Godfather-Miners being unable to spawn vents
+- Critical: Fixed Lovers, Linked and Rivals not having partners
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
+- Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Compatibility: Fixed the elavator not being usable for postmortal roles
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
-- General: Fixed All Any role gen being a bit broken in other aspects
+- General: Fixed All Any role gen being a bit broken in some aspects
 - General: Fixed fake players not spawning in locations correctly on Airship and Submerged when using MCI to test things
 - General: Fixed conversions not being consistent
 - General: Greatly improved the stutter and fps issues

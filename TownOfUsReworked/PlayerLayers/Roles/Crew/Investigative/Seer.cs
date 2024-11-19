@@ -23,8 +23,7 @@ public class Seer : Crew
     {
         base.Init();
         Alignment = Alignment.CrewInvest;
-        SeerButton ??= CreateButton(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(SeerCd));
-        Data.Role.IntroSound = GetAudio("SeerIntro");
+        SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)See, new Cooldown(SeerCd));
     }
 
     public void TurnSheriff() => new Sheriff().RoleUpdate(this, Player);
@@ -40,14 +39,9 @@ public class Seer : Crew
         SeerButton.StartCooldown(cooldown);
     }
 
-    public override void UpdateHud(HudManager __instance)
+    public override void UpdatePlayer()
     {
-        base.UpdateHud(__instance);
-
         if (ChangedDead && !Dead)
-        {
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnSheriff();
-        }
     }
 }

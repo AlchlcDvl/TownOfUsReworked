@@ -23,7 +23,13 @@ public class Shifter : Crew
         base.Init();
         Alignment = Alignment.CrewSupport;
         ShifterMenu = new(Player, Shift, Exception);
-        ShiftButton ??= CreateButton(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
+        ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
+    }
+
+    public override void Deinit()
+    {
+        base.Deinit();
+        CustomMenu.AllMenus.Remove(ShifterMenu);
     }
 
     public void Shift()
@@ -54,61 +60,51 @@ public class Shifter : Crew
 
         var player = Player;
 
-        if (other.AmOwner || player.AmOwner)
+        Role newRole = role switch
         {
-            Flash(CustomColorManager.Shifter);
-            role.Deinit();
-            Deinit();
-            ButtonUtils.Reset();
-        }
-
-        Role newRole = role.Type switch
-        {
-            LayerEnum.Altruist => new Altruist(),
-            LayerEnum.Bastion => new Bastion() { BombedIDs = ((Bastion)role).BombedIDs },
-            LayerEnum.Chameleon => new Chameleon(),
-            LayerEnum.Coroner => new Coroner(),
-            LayerEnum.Crewmate => new Crewmate(),
-            LayerEnum.Detective => new Detective(),
-            LayerEnum.Dictator => new Dictator(),
-            LayerEnum.Engineer => new Engineer(),
-            LayerEnum.Escort => new Escort(),
-            LayerEnum.Mayor => new Mayor(),
-            LayerEnum.Medic => new Medic() { ShieldedPlayer = ((Medic)role).ShieldedPlayer },
-            LayerEnum.Medium => new Medium(),
-            LayerEnum.Monarch => new Monarch()
+            Altruist => new Altruist(),
+            Bastion bastion => new Bastion() { BombedIDs = bastion.BombedIDs },
+            Chameleon => new Chameleon(),
+            Coroner => new Coroner(),
+            Crewmate => new Crewmate(),
+            Detective => new Detective(),
+            Dictator => new Dictator(),
+            Engineer => new Engineer(),
+            Escort => new Escort(),
+            Mayor => new Mayor(),
+            Medic medic => new Medic() { ShieldedPlayer = medic.ShieldedPlayer },
+            Medium => new Medium(),
+            Monarch mon => new Monarch()
             {
-                ToBeKnighted = ((Monarch)role).ToBeKnighted,
-                Knighted = ((Monarch)role).Knighted
+                ToBeKnighted = mon.ToBeKnighted,
+                Knighted = mon.Knighted
             },
-            LayerEnum.Mystic => new Mystic(),
-            LayerEnum.Operative => new Operative(),
-            LayerEnum.Retributionist => new Retributionist()
+            Mystic => new Mystic(),
+            Operative => new Operative(),
+            Retributionist ret => new Retributionist()
             {
-                Selected = ((Retributionist)role).Selected,
-                ShieldedPlayer = ((Retributionist)role).ShieldedPlayer,
-                BombedIDs = ((Retributionist)role).BombedIDs,
-                Trapped = ((Retributionist)role).Trapped
+                Selected = ret.Selected,
+                ShieldedPlayer = ret.ShieldedPlayer,
+                BombedIDs = ret.BombedIDs,
+                Trapped = ret.Trapped
             },
-            LayerEnum.Seer => new Seer(),
-            LayerEnum.Sheriff => new Sheriff(),
-            LayerEnum.Tracker => new Tracker(),
-            LayerEnum.Transporter => new Transporter(),
-            LayerEnum.Trapper => new Trapper() { Trapped = ((Trapper)role).Trapped },
-            LayerEnum.VampireHunter => new VampireHunter(),
-            LayerEnum.Veteran => new Veteran(),
-            LayerEnum.Vigilante => new Vigilante(),
-            LayerEnum.Shifter or _ => new Shifter(),
+            Seer => new Seer(),
+            Sheriff => new Sheriff(),
+            Tracker => new Tracker(),
+            Transporter => new Transporter(),
+            Trapper trap => new Trapper() { Trapped = trap.Trapped },
+            VampireHunter => new VampireHunter(),
+            Veteran => new Veteran(),
+            Vigilante => new Vigilante(),
+            Shifter or _ => new Shifter(),
         };
 
         newRole.RoleUpdate(this, player, true);
         Role newRole2 = ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
         newRole2.RoleUpdate(role, other, true);
-        ShifterMenu.Destroy();
-        CustomMenu.AllMenus.Remove(ShifterMenu);
 
-        if (other.AmOwner || player.AmOwner)
-            ButtonUtils.Reset();
+        if (other.AmOwner)
+            Flash(Color);
     }
 
     public bool Exception(PlayerControl player) => player.HasDied() || (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None &&

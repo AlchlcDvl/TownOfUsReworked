@@ -9,7 +9,6 @@ public abstract class Crew : Role
     {
         base.Init();
         Faction = Faction.Crew;
-        FactionColor = CustomColorManager.Crew;
         Objectives = () => CrewWinCon;
     }
 

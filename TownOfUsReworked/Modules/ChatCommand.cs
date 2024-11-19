@@ -25,7 +25,8 @@ public class ChatCommand
         // new([ "testargless", "targless" ], TestArgless),
         // new([ "testargmessage", "targmess" ], TestArgsMessage),
         // new([ "translate", "trans", "t" ], Translate),
-        // new([ "rpc" ], SendRPC)
+        // new([ "rpc" ], SendRPCArgless),
+        // new([ "rpca" ], SendRPCArgs),
     ];
 
     private ChatCommand(string[] aliases) => Aliases = aliases;
@@ -350,11 +351,27 @@ public class ChatCommand
 
     // private static void TestArgless() => Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", "Test.");
 
-    // private static void SendRPC()
+    // private static void SendRPCArgless()
     // {
-    //     CallRpc(CustomRPC.Test);
+    //     CallRpc(CustomRPC.Test, TestRPC.Argless);
     //     Message("RPC Sent!");
     //     Run("<color=#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
+    // }
+
+    // private static void SendRPCArgs(string[] args)
+    // {
+    //     var message = "You entered the following params:\n";
+    //     var writer = CallOpenRpc(CustomRPC.Test, TestRPC.Args);
+
+    //     foreach (var arg in args[1..])
+    //     {
+    //         writer.Write(arg);
+    //         message += $"{arg} ";
+    //     }
+
+    //     writer.EndRpc();
+    //     Message("RPC Sent!");
+    //     Run("<color=#FF00FFFF>⚠ RPC TEST ⚠</color>", $"RPC Sent!\nWith the following message: {message}");
     // }
 
     // private static void Translate(string[] args)

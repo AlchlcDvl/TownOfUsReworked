@@ -24,8 +24,8 @@ public class Chameleon : Crew
     {
         base.Init();
         Alignment = Alignment.CrewSupport;
-        SwoopButton ??= CreateButton(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Swoop, new Cooldown(SwoopCd), (EffectVoid)Invis,
-            new Duration(SwoopDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, MaxSwoops);
+        SwoopButton ??= new(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Swoop, new Cooldown(SwoopCd), (EffectVoid)Invis, MaxSwoops,
+            new Duration(SwoopDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
     public void Invis() => Utils.Invis(Player);

@@ -896,14 +896,10 @@ public static class LayerExtentions
         newRole.Start(player);
 
         if (!retainFaction)
-        {
             newRole.Faction = former.Faction;
-            newRole.FactionColor = former.FactionColor;
-        }
 
         newRole.Alignment = newRole.Alignment.GetNewAlignment(newRole.Faction);
         newRole.SubFaction = former.SubFaction;
-        newRole.SubFactionColor = former.SubFactionColor;
         newRole.DeathReason = former.DeathReason;
         newRole.KilledBy = former.KilledBy;
         newRole.IsBlocked = former.IsBlocked;
@@ -926,7 +922,10 @@ public static class LayerExtentions
         if (CustomPlayer.Local.Is(LayerEnum.Seer))
             Flash(CustomColorManager.Seer);
 
-        ButtonUtils.Reset(CooldownType.Reset, newRole.Player);
+        if (player.AmOwner)
+            Flash(newRole.Color);
+
+        ButtonUtils.Reset(player: newRole.Player);
     }
 
     public static string AlignmentName(this Alignment alignment, bool withColors = false) => alignment switch

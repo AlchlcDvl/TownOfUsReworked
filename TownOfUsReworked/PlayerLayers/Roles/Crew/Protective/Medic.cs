@@ -28,9 +28,7 @@ public class Medic : Crew
         base.Init();
         ShieldedPlayer = null;
         Alignment = Alignment.CrewProt;
-        ShieldButton ??= CreateButton(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Protect, (PlayerBodyExclusion)Exception,
-            (UsableFunc)Usable);
-        Data.Role.IntroSound = GetAudio("MedicIntro");
+        ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Protect, (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 
     public void Protect()

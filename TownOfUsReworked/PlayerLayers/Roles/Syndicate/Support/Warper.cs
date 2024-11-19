@@ -40,7 +40,7 @@ public class Warper : Syndicate
         WarpPlayer2 = null;
         WarpMenu1 = new(Player, Click1, Exception1);
         WarpMenu2 = new(Player, Click2, Exception2);
-        WarpButton ??= CreateButton(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
+        WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;
         WasInVent = false;
@@ -52,7 +52,6 @@ public class Warper : Syndicate
         AnimationPlaying.sprite = PortalAnimation[0];
         AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
         WarpObj.SetActive(true);
-        Data.Role.IntroSound = GetAudio("WarperIntro");
     }
 
     public IEnumerator WarpPlayers()
@@ -295,7 +294,7 @@ public class Warper : Syndicate
     {
         base.UpdateHud(__instance);
 
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        if (KeyboardJoystick.player.GetButton("Delete"))
         {
             if (!HoldsDrive && !Warping)
             {

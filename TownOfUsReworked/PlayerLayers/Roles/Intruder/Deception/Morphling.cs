@@ -36,11 +36,9 @@ public class Morphling : Intruder
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
-        SampleButton ??= CreateButton(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (SampleCd), "SAMPLE",
-            (PlayerBodyExclusion)Exception1);
-        MorphButton ??= CreateButton(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
+        SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (SampleCd), "SAMPLE", (PlayerBodyExclusion)Exception1);
+        MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
             new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);
-        Data.Role.IntroSound = GetAudio("MorphlingIntro");
     }
 
     public void Morph() => Utils.Morph(Player, MorphedPlayer);
@@ -63,10 +61,11 @@ public class Morphling : Intruder
 
     public void Sample()
     {
-        var cooldown = Interact(Player, SampleButton.GetTarget<PlayerControl>());
+        var target = SampleButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            SampledPlayer = SampleButton.GetTarget<PlayerControl>();
+            SampledPlayer = target;
 
         SampleButton.StartCooldown(cooldown);
 

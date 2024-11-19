@@ -46,7 +46,7 @@ public class Transporter : Crew
         Alignment = Alignment.CrewSupport;
         TransportMenu1 = new(Player, Click1, Exception1);
         TransportMenu2 = new(Player, Click2, Exception2);
-        TransportButton ??= CreateButton(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, MaxTransports, new Cooldown(TransportCd),
+        TransportButton ??= new(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Transport, MaxTransports, new Cooldown(TransportCd),
             (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;
@@ -66,6 +66,13 @@ public class Transporter : Crew
         AnimationPlaying1.material = AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
         Transport1.SetActive(true);
         Transport2.SetActive(true);
+    }
+
+    public override void Deinit()
+    {
+        base.Deinit();
+        Transport1.Destroy();
+        Transport2.Destroy();
     }
 
     public string Label()
@@ -146,13 +153,13 @@ public class Transporter : Crew
         if (!Player2Body && !WasInVent2)
             AnimateTransport2();
 
-        var startTime = DateTime.UtcNow;
+        var time = 0f;
 
         while (true)
         {
-            var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
+            time += Time.deltaTime;
 
-            if (seconds < TransportDur)
+            if (time < TransportDur)
                 yield return EndFrame();
             else
                 break;
@@ -335,7 +342,7 @@ public class Transporter : Crew
     {
         base.UpdateHud(__instance);
 
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        if (KeyboardJoystick.player.GetButton("Delete"))
         {
             if (!Transporting)
             {

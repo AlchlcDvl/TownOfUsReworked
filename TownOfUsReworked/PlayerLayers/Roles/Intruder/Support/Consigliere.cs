@@ -24,16 +24,17 @@ public class Consigliere : Intruder
         base.Init();
         Alignment = Alignment.IntruderSupport;
         Investigated = [];
-        InvestigateButton ??= CreateButton(this, new SpriteName("Investigate"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
+        InvestigateButton ??= new(this, new SpriteName("Investigate"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
             (PlayerBodyExclusion)Exception1);
     }
 
     public void Investigate()
     {
-        var cooldown = Interact(Player, InvestigateButton.GetTarget<PlayerControl>());
+        var target = InvestigateButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Investigated.Add(InvestigateButton.GetTarget<PlayerControl>().PlayerId);
+            Investigated.Add(target.PlayerId);
 
         InvestigateButton.StartCooldown(cooldown);
     }

@@ -59,18 +59,13 @@ public class Fanatic : Disposition
         if (CustomPlayer.Local.Is(LayerEnum.Mystic) || CustomPlayer.Local.Is(faction))
             Flash(CustomColorManager.Mystic);
 
-        if (faction == Faction.Syndicate)
-        {
-            fanaticRole.FactionColor = CustomColorManager.Syndicate;
-            fanaticRole.Objectives = () => Role.SyndicateWinCon;
-        }
-        else if (faction == Faction.Intruder)
-        {
-            fanaticRole.FactionColor = CustomColorManager.Intruder;
-            fanaticRole.Objectives = () => Role.IntrudersWinCon;
-        }
-
         Side = faction;
+        fanaticRole.Objectives = faction switch
+        {
+            Faction.Syndicate => () => Role.SyndicateWinCon,
+            Faction.Intruder => () => Role.IntrudersWinCon,
+            _ => () => ""
+        };
         fanaticRole.Alignment = fanaticRole.Alignment.GetNewAlignment(fanaticRole.Faction);
 
         foreach (var snitch in GetLayers<Snitch>())

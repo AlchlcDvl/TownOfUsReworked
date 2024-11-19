@@ -9,7 +9,7 @@ public static class AssetManager
     private static readonly Dictionary<string, List<object>> SystemLoadedObjects = [];
     public static readonly Dictionary<string, List<string>> UnloadedObjects = [];
 
-    public static AudioClip GetAudio(string path) => UnityGet<AudioClip>(path) ?? UnityGet<AudioClip>("Placeholder");
+    public static AudioClip GetAudio(string path, bool placeholder = true) => UnityGet<AudioClip>(path) ?? (placeholder ? UnityGet<AudioClip>("Placeholder") : null);
 
     public static Sprite GetSprite(string path) => UnityGet<Sprite>(path) ?? UnityGet<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder");
 
@@ -81,9 +81,14 @@ public static class AssetManager
             samples[i] = (float)BitConverter.ToInt32(data, i * 4) / int.MaxValue;
 
         var audioClip = AudioClip.Create(name, samples.Length / 2, 2, GetFrequency(name), false);
-        audioClip.SetData(samples, 0);
-        audioClip.hideFlags |= HideFlags.DontSaveInEditor;
-        return audioClip.DontDestroy();
+
+        if (audioClip.SetData(samples, 0))
+        {
+            audioClip.hideFlags |= HideFlags.DontSaveInEditor;
+            return audioClip.DontDestroy();
+        }
+
+        return null;
     }
 
     public static AssetBundle LoadBundle(byte[] data) => AssetBundle.LoadFromMemory(data);
@@ -184,11 +189,16 @@ public static class AssetManager
 
     public static T UnityGet<T>(string name) where T : UObject
     {
-        if (UnityLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result))
+        if (UnityLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result) && result)
             return result as T;
 
         if (ObjectToBundle.TryGetValue(name.ToLower(), out var bundle))
-            return LoadAsset<T>(Bundles[bundle], name);
+        {
+            result = LoadAsset<T>(Bundles[bundle], name);
+
+            if (result)
+                return result as T;
+        }
 
         if (UnloadedObjects.TryGetValue(name, out var strings))
         {
@@ -200,7 +210,7 @@ public static class AssetManager
                 strings.Remove(path);
                 result = AddAsset(name, LoadDiskSprite(path));
             }
-            else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".wav"), out path))
+            else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".raw"), out path))
             {
                 strings.Remove(path);
                 result = AddAsset(name, LoadDiskAudio(path));
@@ -226,37 +236,9 @@ public static class AssetManager
         return default;
     }
 
-    public static List<T> UnityGetAll<T>() where T : UObject
-    {
-        var result = new List<T>();
+    public static IEnumerable<T> UnityGetAll<T>() where T : UObject => UnityLoadedObjects.Values.SelectMany(x => x).OfType<T>();
 
-        foreach (var (_, objList) in UnityLoadedObjects)
-        {
-            foreach (var obj in objList)
-            {
-                if (obj is T t)
-                    result.Add(t);
-            }
-        }
-
-        return result;
-    }
-
-    public static List<T> SystemGetAll<T>()
-    {
-        var result = new List<T>();
-
-        foreach (var (_, objList) in SystemLoadedObjects)
-        {
-            foreach (var obj in objList)
-            {
-                if (obj is T t)
-                    result.Add(t);
-            }
-        }
-
-        return result;
-    }
+    public static IEnumerable<T> SystemGetAll<T>() => SystemLoadedObjects.Values.SelectMany(x => x).OfType<T>();
 
     private static T LoadAsset<T>(AssetBundle assetBundle, string name) where T : UObject
     {

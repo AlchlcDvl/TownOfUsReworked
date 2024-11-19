@@ -11,6 +11,5 @@ public class Impostor : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderUtil;
-        Data.Role.IntroSound = GetAudio("ImpostorIntro");
     }
 }

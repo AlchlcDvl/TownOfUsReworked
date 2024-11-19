@@ -24,9 +24,8 @@ public class Wraith : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderDecep;
-        Data.Role.IntroSound = GetAudio("WraithIntro");
-        InvisButton ??= CreateButton(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitInvis, new Cooldown(InvisCd),
-            (EffectVoid)Invis, new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
+        InvisButton ??= new(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitInvis, new Cooldown(InvisCd), (EffectVoid)Invis,
+            new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
     public void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));

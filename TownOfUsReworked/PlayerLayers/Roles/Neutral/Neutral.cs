@@ -9,7 +9,6 @@ public abstract class Neutral : Role
     {
         base.Init();
         Faction = Faction.Neutral;
-        FactionColor = CustomColorManager.Neutral;
     }
 
     public override List<PlayerControl> Team()

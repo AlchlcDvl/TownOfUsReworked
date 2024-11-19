@@ -1408,15 +1408,8 @@ public static class RoleGen
             {
                 var alliedRole = ally.Player.GetRole();
                 var factions = new byte[] { 1, 3, 0 };
-                var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions[(int)Allied.AlliedFaction - 1];
-                alliedRole.FactionColor = faction switch
-                {
-                    0 => CustomColorManager.Crew,
-                    1 => CustomColorManager.Intruder,
-                    3 => CustomColorManager.Syndicate,
-                    _ => CustomColorManager.Neutral,
-                };
-                ally.Side = alliedRole.Faction = (Faction)faction;
+                var faction = (Faction)(Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions[(int)Allied.AlliedFaction - 1]);
+                ally.Side = alliedRole.Faction = faction;
                 alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(ally.Side);
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
             }
@@ -2020,7 +2013,6 @@ public static class RoleGen
         }
 
         role1.SubFaction = sub;
-        role1.SubFactionColor = role2.SubFactionColor;
         role1.Faction = Faction.Neutral;
         role1.Alignment = role1.Alignment.GetNewAlignment(Faction.Neutral);
         Convertible--;

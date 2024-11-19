@@ -1,3 +1,5 @@
+using MonoMod.Utils;
+
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
@@ -34,7 +36,7 @@ public class Amnesiac : Neutral
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows = [];
-        RememberButton ??= CreateButton(this, new SpriteName("Remember"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Remember, "REMEMBER");
+        RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Remember, "REMEMBER");
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -175,12 +177,8 @@ public class Amnesiac : Neutral
                 jackal2.Recruit2 = jackal1.Recruit2;
                 jackal2.Recruit3 = jackal1.Recruit3;
             }
-        }
-
-        if (player.AmOwner || other.AmOwner)
-        {
-            Flash(Color);
-            role.Deinit();
+            else if (role is Whisperer whisperer1 && newRole is Whisperer whisperer2)
+                whisperer2.PlayerConversion.AddRange(whisperer1.PlayerConversion);
         }
 
         if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && (Snitch.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))
@@ -200,8 +198,11 @@ public class Amnesiac : Neutral
             }
         }
 
-        if (player.AmOwner || other.AmOwner)
-            ButtonUtils.Reset();
+        if (other.AmOwner)
+        {
+            Flash(Color);
+            ButtonUtils.Reset(player: other);
+        }
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -228,11 +229,11 @@ public class Amnesiac : Neutral
         }
         else if (BodyArrows.Count > 0 || AllPlayers().Count(x => !x.HasDied()) <= 4)
             Deinit();
+    }
 
+    public override void UpdatePlayer()
+    {
         if (AmneToThief && AllPlayers().Count(x => !x.HasDied()) <= 4 && !Dead)
-        {
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnThief();
-        }
     }
 }

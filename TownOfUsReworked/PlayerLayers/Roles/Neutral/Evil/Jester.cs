@@ -37,8 +37,8 @@ public class Jester : Neutral
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
         {
-            HauntButton ??= CreateButton(this, new SpriteName("Haunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Haunt, (PlayerBodyExclusion)Exception, new PostDeath(true),
-                "HAUNT", (UsableFunc)Usable);
+            HauntButton ??= new(this, new SpriteName("Haunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Haunt, (PlayerBodyExclusion)Exception, new PostDeath(true), "HAUNT",
+                (UsableFunc)Usable);
         }
     }
 

@@ -19,9 +19,9 @@ public class Detective : Crew
     public static FootprintVisibility AnonymousFootPrint { get; set; } = FootprintVisibility.OnlyWhenCamouflaged;
 
     public CustomButton ExamineButton { get; set; }
-    private static float _time;
     public List<Footprint> AllPrints { get; set; }
     public List<byte> Investigated { get; set; }
+    private Dictionary<byte, float> PlayerTimes { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Detective : CustomColorManager.Crew;
     public override string Name => "Detective";
@@ -35,8 +35,9 @@ public class Detective : Crew
         base.Init();
         AllPrints = [];
         Investigated = [];
+        PlayerTimes = [];
         Alignment = Alignment.CrewInvest;
-        ExamineButton ??= CreateButton(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
+        ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
     }
 
     public override void Deinit()
@@ -75,36 +76,37 @@ public class Detective : Crew
 
         if (!Dead)
         {
-            _time += Time.deltaTime;
-
-            if (_time >= FootprintInterval)
+            for (var i = 0; i < AllPrints.Count; i++)
             {
-                _time -= FootprintInterval;
-
-                foreach (var id in Investigated)
+                try
                 {
-                    var player = PlayerById(id);
+                    var footprint = AllPrints[i];
 
-                    if (player.HasDied() || player.AmOwner)
-                        continue;
-
-                    if (!AllPrints.Any(print => Vector2.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
-                        AllPrints.Add(new(player));
-                }
-
-                for (var i = 0; i < AllPrints.Count; i++)
-                {
-                    try
-                    {
-                        var footprint = AllPrints[i];
-
-                        if (footprint.Update())
-                            i--;
-                    } catch { /*Assume footprint value is null and allow the loop to continue*/ }
-                }
+                    if (footprint.Update())
+                        i--;
+                } catch { /*Assume footprint value is null and allow the loop to continue*/ }
             }
         }
         else if (AllPrints.Count > 0)
             Deinit();
+    }
+
+    public override void UpdatePlayer(PlayerControl __instance)
+    {
+        if (Dead || !Investigated.Contains(__instance.PlayerId) || __instance.AmOwner || __instance.HasDied())
+            return;
+
+        if (!PlayerTimes.ContainsKey(__instance.PlayerId))
+            PlayerTimes.Add(__instance.PlayerId, 0f);
+
+        PlayerTimes[__instance.PlayerId] += Time.deltaTime;
+
+        if (PlayerTimes[__instance.PlayerId] >= FootprintInterval)
+        {
+            PlayerTimes[__instance.PlayerId] -= FootprintInterval;
+
+            if (!AllPrints.Any(print => Vector2.Distance(print.Position, Position(__instance)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == __instance.PlayerId))
+                AllPrints.Add(new(__instance));
+        }
     }
 }

@@ -58,13 +58,13 @@ public abstract class PlayerLayer
 
     public PlayerLayer End()
     {
-        Player = null;
-        Ignore = true;
         Deinit();
 
         if (Local)
             ExitingLayer();
 
+        Player = null;
+        Ignore = true;
         return this;
     }
 

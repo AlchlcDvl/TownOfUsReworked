@@ -174,6 +174,7 @@ public class LayerHandler : RoleBehaviour
         CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
         ResetButtons();
         NameColor = CustomRole.Color;
+        IntroSound = GetAudio($"{CustomRole}Intro", false) ?? GetAudio($"{(CustomRole.Faction is Faction.Intruder or Faction.Syndicate ? "Impostor" : "Crewmate")}Intro");
     }
 
     public override void OnMeetingStart()

@@ -647,6 +647,7 @@ public static class FixNullRef
         return false;
     }
 }
+
 [HarmonyPatch(typeof(FollowerCamera), nameof(FollowerCamera.Update))]
 public static class FollowerCameraPatches
 {

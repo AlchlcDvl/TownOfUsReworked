@@ -335,7 +335,7 @@ public static class CosmeticsCacheGetHatPatch
         if (!CustomHatViewDatas.TryGetValue(id, out __result))
             return true;
 
-        return __result ??= __instance.hats["hat_NoHat"].GetAsset();
+        return !(__result ??= __instance.hats["hat_NoHat"].GetAsset());
     }
 }
 

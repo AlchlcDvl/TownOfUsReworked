@@ -109,13 +109,11 @@ public class Traitor : Disposition
         if (turnIntruder)
         {
             traitorRole.Faction = Faction.Intruder;
-            traitorRole.FactionColor = CustomColorManager.Intruder;
             traitorRole.Objectives = () => Role.IntrudersWinCon;
         }
         else if (turnSyndicate)
         {
             traitorRole.Faction = Faction.Syndicate;
-            traitorRole.FactionColor = CustomColorManager.Syndicate;
             traitorRole.Objectives = () => Role.SyndicateWinCon;
         }
 

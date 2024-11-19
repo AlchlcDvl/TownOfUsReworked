@@ -95,7 +95,6 @@ public class Defector : Disposition
         if (crew)
         {
             role.Faction = Faction.Crew;
-            role.FactionColor = CustomColorManager.Crew;
             role.Objectives = () => Role.CrewWinCon;
         }
         else if (evil)
@@ -103,20 +102,17 @@ public class Defector : Disposition
             if (Side == Faction.Intruder)
             {
                 role.Faction = Faction.Syndicate;
-                role.FactionColor = CustomColorManager.Syndicate;
                 role.Objectives = () => Role.SyndicateWinCon;
             }
             else if (Side == Faction.Syndicate)
             {
                 role.Faction = Faction.Intruder;
-                role.FactionColor = CustomColorManager.Intruder;
                 role.Objectives = () => Role.IntrudersWinCon;
             }
         }
         else if (neutral)
         {
             role.Faction = Faction.Neutral;
-            role.FactionColor = CustomColorManager.Neutral;
             role.Objectives = () => "- Be the last one standing";
         }
 

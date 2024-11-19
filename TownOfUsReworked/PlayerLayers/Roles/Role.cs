@@ -31,8 +31,6 @@ public abstract class Role : PlayerLayer
     public static bool SyndicateHasChaosDrive { get; set; }
     public static PlayerControl DriveHolder { get; set; }
 
-    public UColor FactionColor { get; set; } = CustomColorManager.Faction;
-    public UColor SubFactionColor { get; set; } = CustomColorManager.SubFaction;
     public Faction Faction { get; set; } = Faction.None;
     public Alignment Alignment { get; set; } = Alignment.None;
     public SubFaction SubFaction { get; set; } = SubFaction.None;
@@ -50,6 +48,28 @@ public abstract class Role : PlayerLayer
 
     public Func<string> Objectives { get; set; } = () => "- None";
 
+    public UColor FactionColor => Faction switch
+    {
+        Faction.Intruder => CustomColorManager.Intruder,
+        Faction.Crew => CustomColorManager.Crew,
+        Faction.Syndicate => CustomColorManager.Syndicate,
+        Faction.Neutral => CustomColorManager.Neutral,
+        Faction.GameMode => Alignment switch
+        {
+            Alignment.GameModeHideAndSeek => CustomColorManager.HideAndSeek,
+            Alignment.GameModeTaskRace => CustomColorManager.TaskRace,
+            _ => CustomColorManager.Faction
+        },
+        _ => CustomColorManager.Faction
+    };
+    public UColor SubFactionColor => SubFaction switch
+    {
+        SubFaction.Undead => CustomColorManager.Undead,
+        SubFaction.Sect => CustomColorManager.Sect,
+        SubFaction.Cabal => CustomColorManager.Cabal,
+        SubFaction.Reanimated => CustomColorManager.Reanimated,
+        _ => CustomColorManager.SubFaction
+    };
     public virtual string FactionName => $"{Faction}";
     public virtual string SubFactionName => $"{SubFaction}";
     public string SubFactionSymbol => SubFaction switch
@@ -112,17 +132,17 @@ public abstract class Role : PlayerLayer
 
         /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
         {
-            CallButton ??= CreateButton(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClick)UsePlatform, (UsableFunc)CallUsable,
+            CallButton ??= new(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClick)UsePlatform, (UsableFunc)CallUsable,
                 (ConditionFunc)CallCondition);
         }*/
 
         if (!IsCustomHnS() && !IsTaskRace())
         {
             if (RoleGen.GetSpawnItem(LayerEnum.Enforcer).IsActive())
-                BombKillButton ??= CreateButton(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
+                BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
 
             if (RoleGen.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
-                PlaceHitButton ??= CreateButton(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
+                PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
         }
     }
 
@@ -132,7 +152,7 @@ public abstract class Role : PlayerLayer
         {
             Faction.Syndicate => "SyndicateSabotage",
             Faction.Intruder => "IntruderSabotage",
-            _ => "DefaultSabotage"
+            _ => "IntruderSabotage"
         });
         HUD().SabotageButton.graphic.SetCooldownNormalizedUvs();
         HUD().ImpostorVentButton.graphic.sprite = GetSprite(Faction switch
@@ -141,7 +161,7 @@ public abstract class Role : PlayerLayer
             Faction.Intruder => "IntruderVent",
             Faction.Crew => "CrewVent",
             Faction.Neutral => "NeutralVent",
-            _ => "DefaultVent"
+            _ => "IntruderVent"
         });
         HUD().ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
     }

@@ -21,9 +21,7 @@ public class Rebel : Syndicate
     {
         base.Init();
         Alignment = Alignment.SyndicatePower;
-        SidekickButton ??= CreateButton(this, new SpriteName("Sidekick"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
-            (UsableFunc)Usable);
-        Data.Role.IntroSound = GetAudio("RebelIntro");
+        SidekickButton ??= new(this, new SpriteName("Sidekick"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK", (UsableFunc)Usable);
     }
 
     public void Sidekick(PlayerControl target)

@@ -16,8 +16,8 @@ public class Hunter : HideAndSeek
     {
         base.Init();
         Objectives = () => "- Hunt the others down before they finish their tasks";
-        HuntButton ??= CreateButton(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd),
-            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
+        HuntButton ??= new(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd), (UsableFunc)Usable,
+            (PlayerBodyExclusion)Exception);
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -39,9 +39,8 @@ public class Hunter : HideAndSeek
 
     public void TurnHunter(PlayerControl player)
     {
-        var oldRole = player.GetLayer<Hunted>();
         var newRole = new Hunter();
-        newRole.RoleUpdate(oldRole, player);
+        newRole.RoleUpdate(player.GetRole(), player);
         newRole.KilledBy = " By " + PlayerName;
         newRole.DeathReason = DeathReasonEnum.Converted;
         newRole.HuntButton.StartCooldown();
@@ -53,12 +52,14 @@ public class Hunter : HideAndSeek
 
     public void Hunt()
     {
+        var target = HuntButton.GetTarget<PlayerControl>();
+
         if (GameModeSettings.HnSMode == HnSMode.Classic)
-            RpcMurderPlayer(Player, HuntButton.GetTarget<PlayerControl>());
+            RpcMurderPlayer(Player, target);
         else if (GameModeSettings.HnSMode == HnSMode.Infection)
         {
-            TurnHunter(HuntButton.GetTarget<PlayerControl>());
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, HuntButton.GetTarget<PlayerControl>());
+            TurnHunter(target);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
         }
 
         HuntButton.StartCooldown();

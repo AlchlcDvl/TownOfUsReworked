@@ -36,10 +36,8 @@ public class Medium : Crew
         MediatedPlayers = [];
         MediateArrows = [];
         Alignment = Alignment.CrewInvest;
-        Data.Role.IntroSound = GetAudio("MediumIntro");
-        MediateButton ??= CreateButton(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, new Cooldown(MediateCd));
-        // SeanceButton ??= CreateButton(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, new Cooldown(SeanceCd),
-        //     new PostDeath(true));
+        MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, new Cooldown(MediateCd));
+        // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, new Cooldown(SeanceCd), new PostDeath(true));
     }
 
     // private void Seance() { Currently blank, gonna work on this later }
@@ -53,25 +51,17 @@ public class Medium : Crew
         MediatedPlayers.Clear();
     }
 
-    public override void UpdateHud(HudManager __instance)
+    public override void UpdatePlayer(PlayerControl __instance)
     {
-        base.UpdateHud(__instance);
+        if (Dead || !MediateArrows.TryGetValue(__instance.PlayerId, out var arrow))
+            return;
 
-        if (!Dead)
+        arrow?.Update(__instance.transform.position, __instance.GetPlayerColor(false, !ShowMediatePlayer));
+
+        if (!ShowMediatePlayer)
         {
-            foreach (var player in AllPlayers())
-            {
-                if (MediateArrows.ContainsKey(player.PlayerId))
-                {
-                    MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, ShowMediatePlayer));
-
-                    if (!ShowMediatePlayer)
-                    {
-                        player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
-                        PlayerMaterial.SetColors(UColor.grey, player.MyRend());
-                    }
-                }
-            }
+            __instance.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
+            PlayerMaterial.SetColors(UColor.grey, __instance.MyRend());
         }
     }
 

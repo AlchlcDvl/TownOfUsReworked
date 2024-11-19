@@ -56,6 +56,7 @@ public static class AllMonos
         prefab.MaxCount = 127;
         prefab.DefaultGhostRole = (RoleTypes)100;
         prefab.AffectedByLightAffectors = true;
+        prefab.IntroSound = null;
 
         var allRoles = RoleManager.Instance.AllRoles.ToArray().ToList();
         allRoles.Add(prefab);

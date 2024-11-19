@@ -36,9 +36,9 @@ public class Trapper : Crew
         Alignment = Alignment.IntruderSupport;
         Trapped = [];
         TriggeredRoles = [];
-        BuildButton ??= CreateButton(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling, new Cooldown(BuildCd),
-            new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), (UsableFunc)Usable, MaxTraps);
-        TrapButton ??= CreateButton(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(TrapCd), MaxTraps,
+        BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling, new Cooldown(BuildCd), (UsableFunc)Usable,
+            new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), MaxTraps);
+        TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(TrapCd), MaxTraps,
             (PlayerBodyExclusion)Exception);
         TrapsMade = 0;
         TrapButton.Uses = 0;
@@ -84,11 +84,8 @@ public class Trapper : Crew
         if (trigger.AmOwner)
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Trigger, trapped, trigger, isAttack);
 
-        if (!isAttack)
-            TriggeredRoles.Add(trigger.GetRole());
-        else
-            AttackedSomeone = true;
-
+        TriggeredRoles.Add(trigger.GetRole());
+        AttackedSomeone = isAttack;
         Trapped.Remove(trapped.PlayerId);
     }
 

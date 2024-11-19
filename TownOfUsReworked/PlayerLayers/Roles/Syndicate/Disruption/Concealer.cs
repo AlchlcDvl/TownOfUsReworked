@@ -28,7 +28,7 @@ public class Concealer : Syndicate
         Alignment = Alignment.SyndicateDisrup;
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;
-        ConcealButton ??= CreateButton(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(ConcealCd), (EffectVoid)Conceal,
+        ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitConceal, new Cooldown(ConcealCd), (EffectVoid)Conceal,
             (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal);
     }
 
@@ -85,7 +85,7 @@ public class Concealer : Syndicate
     {
         base.UpdateHud(__instance);
 
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        if (KeyboardJoystick.player.GetButton("Delete"))
         {
             if (ConcealedPlayer && !HoldsDrive && !ConcealButton.EffectActive)
                 ConcealedPlayer = null;

@@ -33,8 +33,7 @@ public class Thief : Neutral
     {
         base.Init();
         Alignment = Alignment.NeutralBen;
-        StealButton ??= CreateButton(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL",
-            (PlayerBodyExclusion)Exception);
+        StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL", (PlayerBodyExclusion)Exception);
         GuessMenu = new(Player, "Guess", ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);
     }
@@ -127,8 +126,8 @@ public class Thief : Neutral
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || Dead || (player == Player && player.AmOwner) ||
-            (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
+        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || Dead || (player == Player && player.AmOwner) || (player.Is(Faction)
+            && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -167,16 +166,17 @@ public class Thief : Neutral
 
     public void Steal()
     {
-        var cooldown = Interact(Player, StealButton.GetTarget<PlayerControl>(), true);
+        var target = StealButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target, true, delayed: true);
 
         if (cooldown != CooldownType.Fail)
         {
-            if (StealButton.GetTarget<PlayerControl>().GetFaction() is Faction.Intruder or Faction.Syndicate || StealButton.GetTarget<PlayerControl>().GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
-                Alignment.NeutralPros or Alignment.CrewKill || StealButton.GetTarget<PlayerControl>().GetRole() is VampireHunter)
+            if (target.GetFaction() is Faction.Intruder or Faction.Syndicate || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or
+                Alignment.CrewKill || target.GetRole() is VampireHunter)
             {
-                Utils.RpcMurderPlayer(Player, StealButton.GetTarget<PlayerControl>());
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, StealButton.GetTarget<PlayerControl>());
-                Steal(StealButton.GetTarget<PlayerControl>());
+                Utils.RpcMurderPlayer(Player, target);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
+                Steal(target);
             }
             else
                 Utils.RpcMurderPlayer(Player);
@@ -192,13 +192,6 @@ public class Thief : Neutral
     {
         var role = other.GetRole();
         var player = Player;
-
-        if (other.AmOwner || player.AmOwner)
-        {
-            Flash(Color);
-            role.Deinit();
-            Deinit();
-        }
 
         Role newRole = role switch
         {
@@ -289,6 +282,9 @@ public class Thief : Neutral
                     LocalRole.AllArrows.Add(revealer.PlayerId, new(player, CustomColorManager.Revealer));
             }
         }
+
+        if (other.AmOwner)
+            Flash(Color);
     }
 
     public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update(__instance);

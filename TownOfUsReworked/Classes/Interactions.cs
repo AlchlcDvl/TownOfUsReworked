@@ -61,8 +61,12 @@ public static class Interactions
             CallRpc(CustomRPC.Action, ActionsRPC.Infect, targetId, Pestilence.Infected[targetId]);
     }
 
-    public static CooldownType Interact(PlayerControl source, PlayerControl target, bool isAttack = false, bool astral = false, bool bypass = false, bool delayed = false)
+    public static CooldownType Interact(PlayerControl source, PlayerControl target, bool isAttack = false, bool astral = false, bool bypass = false, bool delayed = false, DeathReasonEnum reason
+        = DeathReasonEnum.Killed)
     {
+        if (!source || !target)
+            return CooldownType.Fail;
+
         var abilityUsed = true;
         var attack = source.GetAttackValue(target);
         var defense = target.GetDefenseValue(source);
@@ -80,7 +84,7 @@ public static class Interactions
         {
             if (bypass)
             {
-                RpcMurderPlayer(source, target);
+                RpcMurderPlayer(source, target, reason);
                 abilityUsed = true;
             }
             else
@@ -109,7 +113,7 @@ public static class Interactions
                         RpcBreakShield(source);
                     }
                     else if (!delayed)
-                        RpcMurderPlayer(source, target);
+                        RpcMurderPlayer(source, target, reason);
                 }
             }
         }

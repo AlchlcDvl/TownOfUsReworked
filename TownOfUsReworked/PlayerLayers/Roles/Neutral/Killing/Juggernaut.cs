@@ -28,7 +28,7 @@ public class Juggernaut : NKilling
         base.Init();
         Objectives = () => "- Assault anyone who can oppose you";
         JuggKills = 0;
-        AssaultButton ??= CreateButton(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
+        AssaultButton ??= new(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception, "ASSAULT");
     }
 

@@ -6,36 +6,34 @@ public class CustomButton
     public static readonly List<CustomButton> AllButtons = [];
 
     // Params
-    public PlayerLayer Owner { get; set; }
-    public SpriteName ButtonSprite { get; set; }
-    public SpriteFunc SpriteFunc { get; set; }
-    public AbilityTypes Type { get; set; }
-    public string Keybind { get; set; }
-    public PostDeath PostDeath { get; set; }
-    public OnClick DoClick { get; set; }
-    public EffectVoid Effect { get; set; }
-    public EffectStartVoid OnEffectStart { get; set; }
-    public EffectEndVoid OnEffectEnd { get; set; }
-    public DelayStartVoid OnDelayStart { get; set; }
-    public DelayEndVoid OnDelayEnd { get; set; }
-    public DelayVoid ActionDelay { get; set; }
-    public EndFunc End { get; set; }
-    public Cooldown Cooldown { get; set; }
-    public DifferenceFunc Difference { get; set; }
-    public MultiplierFunc Multiplier { get; set; }
-    public Duration Duration { get; set; }
-    public Delay Delay { get; set; }
-    public int MaxUses { get; set; }
-    public int Uses { get; set; }
-    public UsableFunc IsUsable { get; set; }
-    public ConditionFunc Condition { get; set; }
-    public CanClickAgain CanClickAgain { get; set; }
-    public PlayerBodyExclusion PlayerBodyException { get; set; }
-    public VentExclusion VentException { get; set; }
-    public ConsoleExclusion ConsoleException { get; set; }
-    public LabelFunc ButtonLabelFunc { get; set; }
-    public string ButtonLabel { get; set; }
-    public UColor TextColor { get; set; }
+    public PlayerLayer Owner { get; }
+    public SpriteName ButtonSprite { get; }
+    public SpriteFunc SpriteFunc { get; }
+    public AbilityTypes Type { get; }
+    public string Keybind { get; }
+    public PostDeath PostDeath { get; }
+    public OnClick DoClick { get; }
+    public EffectVoid Effect { get; }
+    public EffectStartVoid OnEffectStart { get; }
+    public EffectEndVoid OnEffectEnd { get; }
+    public DelayStartVoid OnDelayStart { get; }
+    public DelayEndVoid OnDelayEnd { get; }
+    public DelayVoid ActionDelay { get; }
+    public EndFunc End { get; }
+    public Cooldown Cooldown { get; }
+    public DifferenceFunc Difference { get; }
+    public MultiplierFunc Multiplier { get; }
+    public Duration Duration { get; }
+    public Delay Delay { get; }
+    public UsableFunc IsUsable { get; }
+    public ConditionFunc Condition { get; }
+    public CanClickAgain CanClickAgain { get; }
+    public PlayerBodyExclusion PlayerBodyException { get; }
+    public VentExclusion VentException { get; }
+    public ConsoleExclusion ConsoleException { get; }
+    public LabelFunc ButtonLabelFunc { get; }
+    public string ButtonLabel { get; }
+    public UColor TextColor { get; }
 
     // Other things
     public ActionButton Base { get; set; }
@@ -51,6 +49,8 @@ public class CustomButton
     public float DelayTime { get; set; }
     public float CooldownTime { get; set; }
     public bool BlockExposed { get; set; }
+    public int Uses { get; set; }
+    public int MaxUses { get; set; }
 
     // Read-onlys (onlies?)
     public bool HasEffect => Duration.Value > 0f;
@@ -61,106 +61,103 @@ public class CustomButton
     public bool CooldownActive => CooldownTime > 0f;
     private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
 
-    public static CustomButton CreateButton(params object[] properties)
+    public CustomButton(params object[] properties)
     {
-        var button = new CustomButton();
-        var missing = new List<object>();
-
         foreach (var prop in properties)
         {
             if (prop is PlayerLayer layer)
             {
-                button.Owner = layer;
-                button.TextColor = layer.Color;
+                Owner = layer;
+                TextColor = layer.Color;
             }
             else if (prop is LabelFunc labelFunc)
-                button.ButtonLabelFunc = labelFunc;
+                ButtonLabelFunc = labelFunc;
             else if (prop is SpriteName sprite)
-                button.ButtonSprite = sprite;
+                ButtonSprite = sprite;
             else if (prop is AbilityTypes type)
-                button.Type = type;
+                Type = type;
             else if (prop is KeybindType keybind)
-                button.Keybind = keybind.ToString();
+                Keybind = keybind.ToString();
             else if (prop is PostDeath postDeath)
-                button.PostDeath = postDeath;
+                PostDeath = postDeath;
             else if (prop is OnClick onClick)
-                button.DoClick = onClick;
+                DoClick = onClick;
             else if (prop is EffectVoid effect)
-                button.Effect = effect;
+                Effect = effect;
             else if (prop is EffectStartVoid onEffect)
-                button.OnEffectStart = onEffect;
+                OnEffectStart = onEffect;
             else if (prop is EffectEndVoid offEffect)
-                button.OnEffectEnd = offEffect;
+                OnEffectEnd = offEffect;
             else if (prop is DelayStartVoid onDelay)
-                button.OnDelayStart = onDelay;
+                OnDelayStart = onDelay;
             else if (prop is DelayEndVoid offDelay)
-                button.OnDelayEnd = offDelay;
+                OnDelayEnd = offDelay;
             else if (prop is DelayVoid delay)
-                button.ActionDelay = delay;
+                ActionDelay = delay;
             else if (prop is EndFunc end)
-                button.End = end;
+                End = end;
             else if (prop is Cooldown cooldown)
-                button.Cooldown = cooldown;
+                Cooldown = cooldown;
             else if (prop is DifferenceFunc difference)
-                button.Difference = difference;
+                Difference = difference;
             else if (prop is MultiplierFunc multiplier)
-                button.Multiplier = multiplier;
+                Multiplier = multiplier;
             else if (prop is Duration duration)
-                button.Duration = duration;
+                Duration = duration;
             else if (prop is Delay delay1)
-                button.Delay = delay1;
+                Delay = delay1;
             else if (prop is Number uses)
-                button.Uses = button.MaxUses = uses;
+                Uses = MaxUses = uses;
             else if (prop is UsableFunc usable)
-                button.IsUsable = usable;
+                IsUsable = usable;
             else if (prop is ConditionFunc condition)
-                button.Condition = condition;
+                Condition = condition;
             else if (prop is CanClickAgain canClickAgain)
-                button.CanClickAgain = canClickAgain;
+                CanClickAgain = canClickAgain;
             else if (prop is PlayerBodyExclusion playerBody)
-                button.PlayerBodyException = playerBody;
+                PlayerBodyException = playerBody;
             else if (prop is VentExclusion vent)
-                button.VentException = vent;
+                VentException = vent;
             else if (prop is ConsoleExclusion console)
-                button.ConsoleException = console;
+                ConsoleException = console;
             else if (prop is string label)
-                button.ButtonLabel = label;
+                ButtonLabel = label;
             else if (prop is UColor color)
-                button.TextColor = color;
+                TextColor = color;
+            else if (prop is null)
+                Warning("Entered a null prop value");
             else
-                missing.Add(prop);
+                Warning($"Unassignable proprty of type {prop.GetType().Name}");
         }
 
-        button.DoClick ??= BlankVoid;
-        button.PlayerBodyException ??= BlankFalse;
-        button.VentException ??= BlankFalse;
-        button.ConsoleException ??= BlankFalse;
-        button.Effect ??= BlankVoid;
-        button.OnEffectStart ??= BlankVoid;
-        button.OnEffectEnd ??= BlankVoid;
-        button.OnDelayEnd ??= BlankVoid;
-        button.OnDelayStart ??= BlankVoid;
-        button.ActionDelay ??= BlankVoid;
-        button.End ??= BlankFalse;
-        button.IsUsable ??= BlankTrue;
-        button.Condition ??= BlankTrue;
-        button.Difference ??= BlankZero;
-        button.Multiplier ??= BlankOne;
-        button.ButtonLabelFunc ??= BlankButtonLabel;
-        button.ButtonLabel ??= "ABILITY";
-        button.Cooldown ??= new(0f);
-        button.Duration ??= new(0f);
-        button.Delay ??= new(0f);
-        button.PostDeath ??= new(false);
-        button.CanClickAgain ??= new(true);
-        button.ButtonSprite ??= new("Placeholder");
-        button.CooldownTime = button.EffectTime = button.DelayTime = 0f;
-        button.ID = button.Sprite() + button.Owner.Name + button.Owner.PlayerName + AllButtons.Count;
-        button.Disabled = !button.Owner.Local;
-        button.CreateButton();
-        AllButtons.Add(button);
-        missing.ForEach(x => Error($"Unassigned proprty of type {x.GetType().Name} was found in the button {button.ID}"));
-        return button;
+        DoClick ??= BlankVoid;
+        PlayerBodyException ??= BlankFalse;
+        VentException ??= BlankFalse;
+        ConsoleException ??= BlankFalse;
+        Effect ??= BlankVoid;
+        OnEffectStart ??= BlankVoid;
+        OnEffectEnd ??= BlankVoid;
+        OnDelayEnd ??= BlankVoid;
+        OnDelayStart ??= BlankVoid;
+        ActionDelay ??= BlankVoid;
+        End ??= BlankFalse;
+        IsUsable ??= BlankTrue;
+        Condition ??= BlankTrue;
+        Difference ??= BlankZero;
+        Multiplier ??= BlankOne;
+        ButtonLabelFunc ??= BlankButtonLabel;
+        ButtonLabel ??= "ABILITY";
+        Cooldown ??= new(0f);
+        Duration ??= new(0f);
+        Delay ??= new(0f);
+        PostDeath ??= new(false);
+        CanClickAgain ??= new(true);
+        ButtonSprite ??= new("Placeholder");
+        CooldownTime = EffectTime = DelayTime = 0f;
+        ID = Sprite() + Owner.Name + Owner.PlayerName + AllButtons.Count;
+        Disabled = !Owner.Local;
+        CreateButton();
+        AllButtons.Add(this);
     }
 
     private void CreateButton()

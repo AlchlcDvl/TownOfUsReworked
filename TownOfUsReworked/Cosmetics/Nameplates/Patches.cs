@@ -141,7 +141,7 @@ public static class CosmeticsCacheGetNameplatePatch
         if (!CustomNameplateViewDatas.TryGetValue(id, out __result))
             return true;
 
-        return __result ??= __instance.nameplates["nameplate_NoPlate"].GetAsset();
+        return !(__result ??= __instance.nameplates["nameplate_NoPlate"].GetAsset());
     }
 }
 

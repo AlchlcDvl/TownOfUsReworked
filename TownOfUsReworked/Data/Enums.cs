@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data;
 
-public enum ActionsRPC
+public enum ActionsRPC : byte
 {
     Mine,
     CallMeeting,
@@ -22,48 +22,47 @@ public enum ActionsRPC
     None
 }
 
-public enum DictActionsRPC
+public enum DictActionsRPC : byte
 {
     Tribunal,
     SelectToEject,
 }
 
-public enum GlitchActionsRPC
+public enum GlitchActionsRPC : byte
 {
     Mimic,
     Hack
 }
 
-public enum PoliticianActionsRPC
+public enum PoliticianActionsRPC : byte
 {
     Add,
     Remove
 }
 
-public enum ThiefActionsRPC
+public enum ThiefActionsRPC : byte
 {
     Steal,
     Guess
 }
 
 [Flags]
-public enum AbilityTypes
+public enum AbilityTypes : byte
 {
-    None = 0,
-    Alive = 1 << 0,
-    Dead = 1 << 1,
-    Vent = 1 << 2,
-    Targetless = 1 << 3,
+    Targetless = 1 << 0,
+    Alive = 1 << 1,
+    Dead = 1 << 2,
+    Vent = 1 << 3,
     Console = 1 << 4
 }
 
-public enum MeetingTypes
+public enum MeetingTypes : byte
 {
     Toggle,
     Click
 }
 
-public enum InfoType
+public enum InfoType : byte
 {
     Role,
     Disposition,
@@ -80,7 +79,7 @@ public enum InfoType
     None
 }
 
-public enum Faction
+public enum Faction : byte
 {
     None,
     Crew,
@@ -90,7 +89,7 @@ public enum Faction
     GameMode
 }
 
-public enum Alignment
+public enum Alignment : byte
 {
     CrewSupport,
     CrewInvest,
@@ -160,7 +159,7 @@ public enum Alignment
     None
 }
 
-public enum SubFaction
+public enum SubFaction : byte
 {
     Undead,
     Cabal,
@@ -170,7 +169,7 @@ public enum SubFaction
     None
 }
 
-public enum CustomOptionType
+public enum CustomOptionType : byte
 {
     Header,
     Toggle,
@@ -181,7 +180,7 @@ public enum CustomOptionType
     Alignment
 }
 
-public enum MultiMenu
+public enum MultiMenu : byte
 {
     Main,
     Layer,
@@ -192,28 +191,28 @@ public enum MultiMenu
     AlignmentSubOptions = 250
 }
 
-public enum WhoCanVentOptions
+public enum WhoCanVentOptions : byte
 {
     Everyone,
     Default,
     NoOne
 }
 
-public enum DisableSkipButtonMeetings
+public enum DisableSkipButtonMeetings : byte
 {
     Never,
     Emergency,
     Always
 }
 
-public enum RoleFactionReports
+public enum RoleFactionReports : byte
 {
     Neither,
     Role,
     Faction
 }
 
-public enum AirshipSpawnType
+public enum AirshipSpawnType : byte
 {
     Normal,
     Fixed,
@@ -222,21 +221,21 @@ public enum AirshipSpawnType
     Meeting
 }
 
-public enum MoveAdmin
+public enum MoveAdmin : byte
 {
     DontMove,
     Cockpit,
     MainHall
 }
 
-public enum MoveElectrical
+public enum MoveElectrical : byte
 {
     DontMove,
     Vault,
     Electrical
 }
 
-public enum GameMode
+public enum GameMode : byte
 {
     Classic,
     AllAny,
@@ -249,13 +248,13 @@ public enum GameMode
     None
 }
 
-public enum HnSMode
+public enum HnSMode : byte
 {
     Classic,
     Infection
 }
 
-public enum MapEnum
+public enum MapEnum : byte
 {
     Skeld,
     MiraHQ,
@@ -268,21 +267,21 @@ public enum MapEnum
     Random
 }
 
-public enum PlayerNames
+public enum PlayerNames : byte
 {
     Obstructed,
     Visible,
     NotVisible
 }
 
-public enum WhoCanSeeFirstKillShield
+public enum WhoCanSeeFirstKillShield : byte
 {
     Everyone,
     PlayerOnly,
     NoOne
 }
 
-public enum CustomPlayerOutfitType
+public enum CustomPlayerOutfitType : byte
 {
     Default,
     Shapeshifted,
@@ -296,7 +295,7 @@ public enum CustomPlayerOutfitType
     NightVision
 }
 
-public enum MiscRPC
+public enum MiscRPC : byte
 {
     SetLayer,
     Catch,
@@ -329,7 +328,7 @@ public enum MiscRPC
     None
 }
 
-public enum CustomRPC
+public enum CustomRPC : byte
 {
     Action,
     WinLose,
@@ -340,13 +339,19 @@ public enum CustomRPC
     None
 }
 
-public enum VanillaRPC
+public enum TestRPC : byte
+{
+    Argless,
+    Args
+}
+
+public enum VanillaRPC : byte
 {
     SnapTo,
     SetColor
 }
 
-public enum PlayerLayerEnum
+public enum PlayerLayerEnum : byte
 {
     Role,
     Modifier,
@@ -356,7 +361,7 @@ public enum PlayerLayerEnum
     None
 }
 
-public enum LayerEnum
+public enum LayerEnum : byte
 {
     Altruist,
     Bastion,
@@ -565,7 +570,7 @@ public enum LayerEnum
     None
 }
 
-public enum DeathReasonEnum
+public enum DeathReasonEnum : byte
 {
     Alive,
     Ejected,
@@ -595,7 +600,7 @@ public enum DeathReasonEnum
     None
 }
 
-public enum WinLose
+public enum WinLose : byte
 {
     JesterWins,
     ExecutionerWins,
@@ -648,7 +653,7 @@ public enum WinLose
     None
 }
 
-public enum DeadRevealed
+public enum DeadRevealed : byte
 {
     Oldest,
     Newest,
@@ -656,21 +661,21 @@ public enum DeadRevealed
     Everyone
 }
 
-public enum VigiOptions
+public enum VigiOptions : byte
 {
     Immediate,
     PreMeeting,
     PostMeeting
 }
 
-public enum VigiNotif
+public enum VigiNotif : byte
 {
     Never,
     Message,
     Flash
 }
 
-public enum AdminDeadPlayers
+public enum AdminDeadPlayers : byte
 {
     Nobody,
     Operative,
@@ -678,7 +683,7 @@ public enum AdminDeadPlayers
     Everyone
 }
 
-public enum ShieldOptions
+public enum ShieldOptions : byte
 {
     Shielded,
     Medic,
@@ -687,13 +692,13 @@ public enum ShieldOptions
     Nobody
 }
 
-public enum BecomeEnum
+public enum BecomeEnum : byte
 {
     Shifter,
     Crewmate
 }
 
-public enum RetActionsRPC
+public enum RetActionsRPC : byte
 {
     ProtectAdd,
     ProtectRemove,
@@ -706,7 +711,7 @@ public enum RetActionsRPC
     Trigger
 }
 
-public enum JanitorOptions
+public enum JanitorOptions : byte
 {
     Never,
     Body,
@@ -714,27 +719,27 @@ public enum JanitorOptions
     Always
 }
 
-public enum DisguiserTargets
+public enum DisguiserTargets : byte
 {
     Everyone,
     Intruders,
     NonIntruders
 }
 
-public enum ConsigInfo
+public enum ConsigInfo : byte
 {
     Role,
     Faction
 }
 
-public enum RevealerCanBeClickedBy
+public enum RevealerCanBeClickedBy : byte
 {
     Everyone,
     NonCrew,
     EvilsOnly
 }
 
-public enum AlliedFaction
+public enum AlliedFaction : byte
 {
     Random,
     Intruder,
@@ -742,7 +747,7 @@ public enum AlliedFaction
     Crew
 }
 
-public enum GFActionsRPC
+public enum GFActionsRPC : byte
 {
     Morph,
     Disguise,
@@ -752,14 +757,14 @@ public enum GFActionsRPC
     Ambush
 }
 
-public enum SyndicateVentOptions
+public enum SyndicateVentOptions : byte
 {
     Always,
     ChaosDrive,
     Never
 }
 
-public enum RebActionsRPC
+public enum RebActionsRPC : byte
 {
     Poison,
     Warp,
@@ -772,7 +777,7 @@ public enum RebActionsRPC
     Silence
 }
 
-public enum ProtectOptions
+public enum ProtectOptions : byte
 {
     Protected,
     GA,
@@ -781,7 +786,7 @@ public enum ProtectOptions
     Nobody
 }
 
-public enum NoSolo
+public enum NoSolo : byte
 {
     Never,
     SameNKs,
@@ -789,7 +794,7 @@ public enum NoSolo
     AllNeutrals
 }
 
-public enum SKVentOptions
+public enum SKVentOptions : byte
 {
     Always,
     Bloodlust,
@@ -797,7 +802,7 @@ public enum SKVentOptions
     Never
 }
 
-public enum ChatChannel
+public enum ChatChannel : byte
 {
     Lovers,
     Rivals,
@@ -816,7 +821,7 @@ public enum ChatChannel
     All
 }
 
-public enum DefectorFaction
+public enum DefectorFaction : byte
 {
     Random,
     NonFaction,
@@ -827,14 +832,14 @@ public enum DefectorFaction
     Crew
 }
 
-public enum ShowMediumToDead
+public enum ShowMediumToDead : byte
 {
     Never,
     Target,
     AllDead
 }
 
-public enum CooldownType
+public enum CooldownType : byte
 {
     Start,
     Meeting,
@@ -843,7 +848,7 @@ public enum CooldownType
     Reset
 }
 
-public enum AnonVotes
+public enum AnonVotes : byte
 {
     Disabled,
     Enabled,
@@ -852,14 +857,14 @@ public enum AnonVotes
     NotVisible
 }
 
-public enum FootprintVisibility
+public enum FootprintVisibility : byte
 {
     OnlyWhenCamouflaged,
     AlwaysVisible,
     AlwaysCamouflaged
 }
 
-public enum RandomSpawning
+public enum RandomSpawning : byte
 {
     Disabled,
     GameStart,
@@ -867,7 +872,7 @@ public enum RandomSpawning
     Both
 }
 
-public enum AttackEnum
+public enum AttackEnum : byte
 {
     None,
     Basic,
@@ -875,7 +880,7 @@ public enum AttackEnum
     Unstoppable
 }
 
-public enum DefenseEnum
+public enum DefenseEnum : byte
 {
     None,
     Basic,
@@ -883,26 +888,26 @@ public enum DefenseEnum
     Invincible
 }
 
-public enum MedicActionsRPC
+public enum MedicActionsRPC : byte
 {
     Add,
     Remove
 }
 
-public enum TrapperActionsRPC
+public enum TrapperActionsRPC : byte
 {
     Place,
     Trigger
 }
 
-public enum CosmeticTypeEnum
+public enum CosmeticTypeEnum : byte
 {
     Hat,
     Visor,
     Nameplate
 }
 
-public enum SkipEnum
+public enum SkipEnum : byte
 {
     Map,
     RoleCard,
@@ -913,7 +918,7 @@ public enum SkipEnum
     None
 }
 
-public enum WerewolfVentOptions
+public enum WerewolfVentOptions : byte
 {
     Always,
     Attacking,
@@ -921,7 +926,7 @@ public enum WerewolfVentOptions
     Never
 }
 
-public enum KeybindType
+public enum KeybindType : byte
 {
     ActionSecondary,
     Secondary,
@@ -929,7 +934,7 @@ public enum KeybindType
     Quarternary
 }
 
-public enum Format
+public enum Format : byte
 {
     None,
     Time,
@@ -938,14 +943,14 @@ public enum Format
     Multiplier
 }
 
-public enum CrewVenting
+public enum CrewVenting : byte
 {
     Never,
     OnTasksDone,
     Always
 }
 
-public enum TempLocation
+public enum TempLocation : byte
 {
     DontMove,
     DeathValley,

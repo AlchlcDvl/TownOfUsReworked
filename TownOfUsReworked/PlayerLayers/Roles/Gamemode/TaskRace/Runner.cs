@@ -13,7 +13,6 @@ public class Runner : Role
     {
         base.Init();
         Faction = Faction.GameMode;
-        FactionColor = CustomColorManager.TaskRace;
         Objectives = () => "- Finish your tasks before the others";
         Alignment = Alignment.GameModeTaskRace;
     }

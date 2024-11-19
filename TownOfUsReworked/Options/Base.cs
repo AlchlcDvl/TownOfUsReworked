@@ -16,6 +16,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
     public string Name { get; set; } // Not actually the setting text, just the property/class name :]
     public Type TargetType { get; set; }
     public int Priority { get; set; } = priority;
+    public KeyValuePair<byte, byte> RpcId { get; set; }
 
     // Apparently, setting the parents in the attibutes doesn't seem to work
     // This one is for those depending on other options
@@ -49,6 +50,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         ( [ "GASwitchVent" ], [ "GAVent" ] ),
         ( [ "GuessSwitchVent" ], [ "GuessVent" ] ),
         ( [ "TrollSwitchVent" ], [ "TrollVent" ] ),
+        ( [ "InteractCd" ], [ "CanInteract" ] ),
         ( [ "ActSwitchVent" ], [ "ActorVent" ] )
     ];
     // I need a second one because for some dumb reason the game likes crashing
@@ -88,6 +90,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         Name = property.Name.Replace("Priv", "");
         ID = $"CustomOption.{Name}";
         TargetType = property.PropertyType;
+        RpcId = new((byte)(AllOptions.Count / 255), (byte)(AllOptions.Count % 255));
         AllOptions.Add(this);
     }
 
@@ -342,6 +345,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
     public static List<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x is T).Cast<T>().ToList();
 
     public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
+
+    public static OptionAttribute GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.Key == superId && x.RpcId.Value == id);
 
     public static T GetOption<T>(string id) where T : OptionAttribute => GetOption(id) as T;
 }

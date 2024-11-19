@@ -11,6 +11,6 @@ public class Hunted : HideAndSeek
     public override void Init()
     {
         base.Init();
-        Objectives = () => "- Finish your tasks before the others";
+        Objectives = () => "- Finish your tasks without being hunted";
     }
 }

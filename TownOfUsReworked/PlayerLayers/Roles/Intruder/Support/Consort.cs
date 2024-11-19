@@ -27,7 +27,7 @@ public class Consort : Intruder
         RoleBlockImmune = true;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
-        BlockButton ??= CreateButton(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
+        BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
             new Duration(ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock);
     }
 
@@ -74,7 +74,7 @@ public class Consort : Intruder
     {
         base.UpdateHud(__instance);
 
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        if (KeyboardJoystick.player.GetButton("Delete"))
         {
             if (BlockTarget && !BlockButton.EffectActive)
                 BlockTarget = null;

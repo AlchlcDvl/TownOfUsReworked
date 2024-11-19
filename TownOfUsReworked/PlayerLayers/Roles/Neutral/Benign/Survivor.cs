@@ -32,8 +32,7 @@ public class Survivor : Neutral
         base.Init();
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Live to the end of the game";
-        VestButton ??= CreateButton(this, new SpriteName("Vest"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitVest, new Cooldown(VestCd), "VEST", new Duration(VestDur),
-            MaxVests);
+        VestButton ??= new(this, new SpriteName("Vest"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitVest, new Cooldown(VestCd), "VEST", new Duration(VestDur), MaxVests);
     }
 
     public void HitVest()

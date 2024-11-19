@@ -32,8 +32,6 @@ public static class SpawnPatches
         if (MapPatches.CurrentMap is not (4 or 6))
             HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
 
-        AddAsset("DefaultVent", HUD().ImpostorVentButton.graphic.sprite);
-        AddAsset("DefaultSabotage", HUD().SabotageButton.graphic.sprite);
         HUD().ImpostorVentButton.buttonLabelText.fontSharedMaterial = HUD().ReportButton.buttonLabelText.fontSharedMaterial = HUD().UseButton.buttonLabelText.fontSharedMaterial =
             HUD().PetButton.buttonLabelText.fontSharedMaterial = HUD().SabotageButton.buttonLabelText.fontSharedMaterial;
 

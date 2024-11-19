@@ -22,12 +22,13 @@ public static class RPC
 
         foreach (var list in split)
         {
-            var writer = CallTargetedOpenRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, list.Count);
+            var writer = CallTargetedOpenRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, (byte)list.Count);
 
             foreach (var option in list)
             {
                 // Info($"Sending {option}");
-                writer.Write(option.ID);
+                writer.Write(option.RpcId.Key);
+                writer.Write(option.RpcId.Value);
 
                 if (option is ToggleOptionAttribute toggle)
                     writer.Write(toggle.Value);
@@ -45,10 +46,10 @@ public static class RPC
         }
 
         if (options.Count > 1)
-            CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, "Map", MapSettings.Map);
+            CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, 255, 255, MapSettings.Map);
 
         if (save)
-            OptionAttribute.SaveSettings("Last Used");
+            OptionAttribute.SaveSettings(TownOfUsReworked.IsTest ? "Debugging" : "Last Used");
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)
@@ -56,18 +57,19 @@ public static class RPC
         if (TownOfUsReworked.MCIActive)
             return;
 
-        var count = reader.ReadInt32();
+        var count = reader.ReadByte();
         Info($"{count} options received:");
 
         for (var i = 0; i < count; i++)
         {
-            var id = reader.ReadString();
+            var superId = reader.ReadByte();
+            var id = reader.ReadByte();
 
-            if (id == "Map")
+            if (id == 255 && superId == 255)
                 SettingsPatches.SetMap(reader.ReadEnum<MapEnum>());
             else
             {
-                var customOption = OptionAttribute.GetOption(id);
+                var customOption = OptionAttribute.GetOption(superId, id);
 
                 if (customOption == null)
                 {
@@ -150,9 +152,9 @@ public static class RPC
 
     public static PlayerVersion ReadPlayerVersion(this MessageReader reader) => new(new(reader.ReadString()), reader.ReadString(), reader.ReadVersion());
 
-    public static object ReadEnum(this MessageReader reader, Type type) => Enum.Parse(type, reader.ReadString());
+    public static object ReadEnum(this MessageReader reader, Type type) => Enum.Parse(type, $"{reader.ReadByte()}");
 
-    public static T ReadEnum<T>(this MessageReader reader) where T : struct => Enum.Parse<T>(reader.ReadString());
+    public static T ReadEnum<T>(this MessageReader reader) where T : struct => Enum.Parse<T>($"{reader.ReadByte()}");
 
     public static Number ReadNumber(this MessageReader reader) => new(reader.ReadSingle());
 
@@ -179,13 +181,11 @@ public static class RPC
         writer.Write(pv.Version);
     }
 
-    public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(enumVal.ToString());
+    public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(Convert.ToByte(enumVal));
 
     public static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index, Enum subRpc = null)
     {
-        if (item == null)
-            Error($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");
-        else if (item is Enum enumVal)
+        if (item is Enum enumVal)
             writer.Write(enumVal);
         else if (item is PlayerControl player)
             writer.Write(player.PlayerId);
@@ -246,6 +246,8 @@ public static class RPC
             writer.Write(layers.Count);
             layers.ForEach(x => writer.Write(layer: x));
         }
+        else if (item is null)
+            Error($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");
         else
             Error($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type - {item.GetType()}");
     }
@@ -261,15 +263,15 @@ public static class RPC
         if (TownOfUsReworked.MCIActive)
             return null;
 
-        // Just to be safe
-        if (data[0] is object[] array)
-            data = array;
-
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
         writer.Write(rpc);
 
         if (data.Length > 0)
         {
+            // Just to be safe
+            if (data[0] is object[] array)
+                data = array;
+
             if (data[0] is Enum @enum)
                 data.ForEach((x, y) => writer.Write(x, rpc, y, @enum));
             else

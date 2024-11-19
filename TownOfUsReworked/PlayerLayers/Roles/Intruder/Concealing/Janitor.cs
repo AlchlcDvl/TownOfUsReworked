@@ -38,17 +38,18 @@ public class Janitor : Intruder
         base.Init();
         Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
-        DragButton ??= CreateButton(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
-        DropButton ??= CreateButton(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
-        CleanButton ??= CreateButton(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
+        DragButton ??= new(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
+        DropButton ??= new(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
+        CleanButton ??= new(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
             (UsableFunc)Usable1);
     }
 
     public void Clean()
     {
-        Spread(Player, PlayerByBody(CleanButton.GetTarget<DeadBody>()));
-        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, CleanButton.GetTarget<DeadBody>());
-        FadeBody(CleanButton.GetTarget<DeadBody>());
+        var target = CleanButton.GetTarget<DeadBody>();
+        Spread(Player, PlayerByBody(target));
+        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
+        FadeBody(target);
         CleanButton.StartCooldown();
 
         if (JaniCooldownsLinked)
@@ -84,5 +85,13 @@ public class Janitor : Intruder
     {
         CurrentlyDragging = reader.ReadBody();
         DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
+    }
+
+    public override void Kill()
+    {
+        base.Kill();
+
+        if (JaniCooldownsLinked)
+            CleanButton.StartCooldown(CooldownType.Custom, KillButton.CooldownTime);
     }
 }

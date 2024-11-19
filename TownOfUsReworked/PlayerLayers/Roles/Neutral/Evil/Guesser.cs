@@ -67,7 +67,7 @@ public class Guesser : Neutral
 
         if (GuesserCanPickTargets)
         {
-            TargetButton ??= CreateButton(this, new SpriteName("GuessTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
+            TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
                 (UsableFunc)Usable);
         }
     }

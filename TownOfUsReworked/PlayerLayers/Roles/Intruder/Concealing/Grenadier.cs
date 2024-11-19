@@ -35,8 +35,8 @@ public class Grenadier : Intruder
         base.Init();
         Alignment = Alignment.IntruderConceal;
         FlashedPlayers = [];
-        FlashButton ??= CreateButton(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
-            new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, "FLASH");
+        FlashButton ??= new(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash, "FLASH",
+            new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition);
     }
 
     public void Flash()
@@ -89,9 +89,9 @@ public class Grenadier : Intruder
     }
 
     private bool ShouldPlayerBeDimmed(PlayerControl player) => (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None) || player.Data.IsDead) && !Meeting()) || player == Player;
+        SubFaction.None) || player.Data.IsDead) && !Meeting()) || player == Player || Meeting();
 
-    private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player) && !Meeting();
+    private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player);
 
     public void UnFlash()
     {

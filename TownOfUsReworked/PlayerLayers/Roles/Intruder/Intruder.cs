@@ -14,15 +14,22 @@ public abstract class Intruder : Role
     {
         base.Init();
         Faction = Faction.Intruder;
-        FactionColor = CustomColorManager.Intruder;
         Objectives = () => IntrudersWinCon;
-        KillButton ??= CreateButton(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
+        KillButton ??= new(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception, FactionColor);
     }
 
     public override List<PlayerControl> Team()
     {
         var team = base.Team();
+        team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
+
+        if (Player.Is(LayerEnum.Lovers))
+            team.Add(Player.GetOtherLover());
+        else if (Player.Is(LayerEnum.Rivals))
+            team.Add(Player.GetOtherRival());
+        else if (Player.Is(LayerEnum.Mafia))
+            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(LayerEnum.Mafia)));
 
         if (IsRecruit)
         {
@@ -31,45 +38,10 @@ public abstract class Intruder : Role
             team.AddRange(jackal.GetOtherRecruits(Player));
         }
 
-        foreach (var player in AllPlayers())
-        {
-            if (player.Is(Faction) && player != Player)
-                team.Add(player);
-        }
-
-        if (Player.Is(LayerEnum.Lovers))
-            team.Add(Player.GetOtherLover());
-        else if (Player.Is(LayerEnum.Rivals))
-            team.Add(Player.GetOtherRival());
-        else if (Player.Is(LayerEnum.Mafia))
-        {
-            foreach (var player in AllPlayers())
-            {
-                if (player != Player && player.Is(LayerEnum.Mafia))
-                    team.Add(player);
-            }
-        }
-
         return team;
     }
 
-    public void Kill()
-    {
-        var cooldown = Interact(Player, KillButton.GetTarget<PlayerControl>(), true);
-
-        if (this is Janitor jani)
-        {
-            if (Janitor.JaniCooldownsLinked)
-                jani.CleanButton.StartCooldown(cooldown);
-        }
-        else if (this is PromotedGodfather gf)
-        {
-            if (Janitor.JaniCooldownsLinked && gf.IsJani)
-                gf.CleanButton.StartCooldown(cooldown);
-        }
-
-        KillButton.StartCooldown(cooldown);
-    }
+    public virtual void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.GetTarget<PlayerControl>(), true));
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);

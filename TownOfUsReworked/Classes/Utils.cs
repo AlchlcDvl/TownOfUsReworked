@@ -8,8 +8,6 @@ public static class Utils
 
     public static TextMeshPro ColorBlindText(this PlayerControl p) => p.cosmetics.colorBlindText;
 
-    public static TextMeshPro NameText(this PoolablePlayer p) => p.cosmetics.nameText;
-
     public static SpriteRenderer MyRend(this PlayerControl p) => p?.cosmetics?.currentBodySprite?.BodySprite;
 
     public static SpriteRenderer MyRend(this Vent v) => v?.myRend;
@@ -200,7 +198,7 @@ public static class Utils
 
     public static void CamoSingle(PlayerControl player)
     {
-        if ((int)player.GetCustomOutfitType() is not (4 or 5 or 6 or 7) && !player.HasDied() && !CustomPlayer.Local.HasDied() && !player.AmOwner)
+        if (!player.HasDied() && (int)player.GetCustomOutfitType() is not (4 or 5 or 6 or 7) && !CustomPlayer.Local.HasDied() && !player.AmOwner)
         {
             player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
             Coroutines.Start(PerformTimedAction(1, p =>
@@ -798,7 +796,7 @@ public static class Utils
 
     public static void RpcSpawnVent(Role role)
     {
-        if (role.Type is not (LayerEnum.Godfather or LayerEnum.Miner))
+        if (role is not (PromotedGodfather or Miner))
             return;
 
         var position = (Vector2)role.Player.transform.position;
@@ -1365,7 +1363,6 @@ public static class Utils
     {
         path = path.Replace(".png", "");
         path = path.Replace(".raw", "");
-        path = path.Replace(".wav", "");
         path = path.Replace(".txt", "");
         path = path.Split('/')[^1];
         path = path.Split('\\')[^1];
@@ -1478,9 +1475,9 @@ public static class Utils
 
     public static void WipeListeners(this PassiveButton passive)
     {
-        passive.OnClick.RemoveAllListeners();
-        passive.OnMouseOut.RemoveAllListeners();
-        passive.OnMouseOver.RemoveAllListeners();
+        passive.OnClick?.RemoveAllListeners();
+        passive.OnMouseOut?.RemoveAllListeners();
+        passive.OnMouseOver?.RemoveAllListeners();
         passive.OnClick = new();
         passive.OnMouseOut = new();
         passive.OnMouseOver = new();

@@ -31,25 +31,25 @@ public class Blackmailer : Intruder
         base.Init();
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
-        BlackmailButton ??= CreateButton(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(BlackmailCd),
-            (PlayerBodyExclusion)Exception1);
+        BlackmailButton ??= new(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(BlackmailCd), (PlayerBodyExclusion)Exception1);
     }
 
     public void Blackmail()
     {
-        var cooldown = Interact(Player, BlackmailButton.GetTarget<PlayerControl>());
+        var target = BlackmailButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            BlackmailedPlayer = BlackmailButton.GetTarget<PlayerControl>();
+            BlackmailedPlayer = target;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BlackmailedPlayer);
         }
 
         BlackmailButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == BlackmailedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && BlackmailMates) ||
-        (player.Is(SubFaction) && SubFaction != SubFaction.None && BlackmailMates);
+    public bool Exception1(PlayerControl player) => player == BlackmailedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !BlackmailMates) ||
+        (player.Is(SubFaction) && SubFaction != SubFaction.None && !BlackmailMates);
 
     public override void ReadRPC(MessageReader reader) => BlackmailedPlayer = reader.ReadPlayer();
 }
