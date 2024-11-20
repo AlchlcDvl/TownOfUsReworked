@@ -73,6 +73,8 @@ public class Medium : Crew
         if (playersDead.Count == 0)
             return;
 
+        var bodies = AllBodies();
+
         if (DeadRevealed != DeadRevealed.Random)
         {
             if (DeadRevealed == DeadRevealed.Newest)
@@ -80,7 +82,7 @@ public class Medium : Crew
 
             foreach (var dead in playersDead)
             {
-                if (AllBodies().Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+                if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                 {
                     MediateArrows.Add(dead.PlayerId, new(Player, Color));
                     MediatedPlayers.Add(dead.PlayerId);
@@ -95,11 +97,11 @@ public class Medium : Crew
         {
             var dead = playersDead.Random();
 
-            if (AllBodies().Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+            if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
             {
                 MediateArrows.Add(dead.PlayerId, new(Player, Color));
                 MediatedPlayers.Add(dead.PlayerId);
-                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
             }
         }
     }

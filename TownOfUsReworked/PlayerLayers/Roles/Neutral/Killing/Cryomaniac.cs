@@ -60,12 +60,12 @@ public class Cryomaniac : NKilling
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CryoActionsRPC.Douse, target.PlayerId);
     }
 
     public override void BeforeMeeting()
     {
-        if (FreezeUsed)
+        if (FreezeUsed && Local)
         {
             foreach (var cryo in GetLayers<Cryomaniac>())
             {
@@ -75,6 +75,9 @@ public class Cryomaniac : NKilling
                 foreach (var player in cryo.Doused)
                 {
                     var player2 = PlayerById(player);
+
+                    if (player2.HasDied())
+                        continue;
 
                     if (CanAttack(AttackVal, player2.GetDefenseValue()))
                         RpcMurderPlayer(Player, player2, DeathReasonEnum.Frozen, false);
@@ -100,11 +103,37 @@ public class Cryomaniac : NKilling
         DouseButton.StartCooldown(cooldown);
     }
 
-    public void FreezeUnFreeze() => FreezeUsed = !FreezeUsed;
+    public void FreezeUnFreeze()
+    {
+        FreezeUsed = !FreezeUsed;
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CryoActionsRPC.Freeze);
+    }
 
     public string Label() => (FreezeUsed ? "UN" : "") + "FREEZE";
 
     public bool Usable() => LastKiller;
 
-    public override void ReadRPC(MessageReader reader) => Doused.Add(reader.ReadByte());
+    public override void ReadRPC(MessageReader reader)
+    {
+        var cryoAction = reader.ReadEnum<CryoActionsRPC>();
+
+        switch (cryoAction)
+        {
+            case CryoActionsRPC.Douse:
+                Doused.Add(reader.ReadByte());
+                break;
+
+            case CryoActionsRPC.UnDouse:
+                Doused.Remove(reader.ReadByte());
+                break;
+
+            case CryoActionsRPC.Freeze:
+                FreezeUsed = !FreezeUsed;
+                break;
+
+            default:
+                Error($"Received unknown RPC - {(int)cryoAction}");
+                break;
+        }
+    }
 }

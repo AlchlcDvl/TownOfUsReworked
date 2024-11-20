@@ -355,7 +355,7 @@ public class Retributionist : Crew
             {
                 message = "The following roles triggered your bugs: ";
                 BuggedPlayers.Shuffle();
-                BuggedPlayers.ForEach(role => message += $"{GetLayers(role)[0]}, ");
+                BuggedPlayers.ForEach(role => message += $"{LayerDictionary[role].Name}, ");
                 message = message.Remove(message.Length - 2);
             }
 

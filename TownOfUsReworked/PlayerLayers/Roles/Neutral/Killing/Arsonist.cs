@@ -26,16 +26,16 @@ public class Arsonist : NKilling
 
     public CustomButton IgniteButton { get; set; }
     public CustomButton DouseButton { get; set; }
-    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
-        x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && ArsoLastKillerBoost;
+    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.CrewKill or Alignment.CrewAudit
+        or Alignment.NeutralPros or Alignment.NeutralNeo or Alignment.NeutralKill) && x != Player) && ArsoLastKillerBoost;
     public List<byte> Doused { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist : CustomColorManager.Neutral;
     public override string Name => "Arsonist";
     public override LayerEnum Type => LayerEnum.Arsonist;
     public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";
-    public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with " +
-        "you will get doused";
+    public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with you will " +
+        "get doused";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
@@ -59,6 +59,9 @@ public class Arsonist : NKilling
             foreach (var playerId in arso.Doused)
             {
                 var player = PlayerById(playerId);
+
+                if (player.HasDied() || player.TryIgnitingFrozen())
+                    continue;
 
                 if (CanAttack(AttackVal, player.GetDefenseValue()))
                     RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
@@ -87,10 +90,11 @@ public class Arsonist : NKilling
 
     public void Douse()
     {
-        var cooldown = Interact(Player, DouseButton.GetTarget<PlayerControl>());
+        var target = DouseButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            RpcSpreadDouse(Player, DouseButton.GetTarget<PlayerControl>());
+            RpcSpreadDouse(Player, target);
 
         DouseButton.StartCooldown(cooldown);
 

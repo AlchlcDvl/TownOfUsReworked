@@ -2,19 +2,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Harbinger : Neutral
 {
-    public abstract bool CanTransform { get; }
-
-    public abstract void TurnApocalypse();
-
     public override void Init()
     {
         base.Init();
         Alignment = Alignment.NeutralHarb;
     }
+}
+
+public abstract class Harbinger<Apoc> : Neutral where Apoc : Apocalypse
+{
+    public abstract bool CanTransform();
+
+    public void TurnApocalypse() => ((Apoc)Activator.CreateInstance(typeof(Apoc))).RoleUpdate(this, Player);
 
     public override void UpdatePlayer()
     {
-        if ((CanTransform || NeutralApocalypseSettings.DirectSpawn) && !Dead)
+        if ((CanTransform() || NeutralApocalypseSettings.DirectSpawn) && !Dead)
             TurnApocalypse();
     }
 }

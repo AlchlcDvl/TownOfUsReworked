@@ -497,8 +497,11 @@ public static class RoleGen
             {
                 var layer = (LayerEnum)i;
 
-                if (layer == LayerEnum.Betrayer)
+                if (layer == LayerEnum.Betrayer || (layer == LayerEnum.Pestilence && !NeutralApocalypseSettings.DirectSpawn) || (layer == LayerEnum.Plaguebearer &&
+                    NeutralApocalypseSettings.DirectSpawn))
+                {
                     continue;
+                }
 
                 var spawn = GetSpawnItem(layer);
 
@@ -1419,7 +1422,7 @@ public static class RoleGen
 
         if (GetSpawnItem(LayerEnum.Lovers).IsActive())
         {
-            var lovers = PlayerLayer.GetLayers<Lovers>();
+            var lovers = PlayerLayer.GetLayers<Lovers>().ToList();
             lovers.Shuffle();
 
             for (var i = 0; i < lovers.Count - 1; i += 2)
@@ -1449,7 +1452,7 @@ public static class RoleGen
 
         if (GetSpawnItem(LayerEnum.Rivals).IsActive())
         {
-            var rivals = PlayerLayer.GetLayers<Rivals>();
+            var rivals = PlayerLayer.GetLayers<Rivals>().ToList();
             rivals.Shuffle();
 
             for (var i = 0; i < rivals.Count - 1; i += 2)
@@ -1479,7 +1482,7 @@ public static class RoleGen
 
         if (GetSpawnItem(LayerEnum.Linked).IsActive())
         {
-            var linked = PlayerLayer.GetLayers<Linked>();
+            var linked = PlayerLayer.GetLayers<Linked>().ToList();
             linked.Shuffle();
 
             for (var i = 0; i < linked.Count - 1; i += 2)
@@ -1509,10 +1512,12 @@ public static class RoleGen
 
         if (GetSpawnItem(LayerEnum.Mafia).IsActive())
         {
-            if (PlayerLayer.GetLayers<Mafia>().Count == 1)
+            var mafia = PlayerLayer.GetLayers<Mafia>();
+
+            if (mafia.Count() == 1)
             {
-                foreach (var player in AllPlayers().Where(x => x.Is(LayerEnum.Mafia)))
-                    NullLayer(player, PlayerLayerEnum.Disposition);
+                foreach (var maf in mafia)
+                    NullLayer(maf.Player, PlayerLayerEnum.Disposition);
             }
 
             Message("Mafia Set");

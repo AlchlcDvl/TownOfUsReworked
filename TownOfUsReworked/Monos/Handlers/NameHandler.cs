@@ -6,20 +6,31 @@ public class NameHandler : MonoBehaviour
     public static readonly Dictionary<byte, string> ColorNames = [];
 
     public PlayerControl Player { get; set; }
-    // public CustomPlayer Custom { get; set; }
 
     public static (string, UColor) UpdateColorblind(PlayerControl player)
     {
         if (!DataManager.Settings.Accessibility.ColorBlindMode)
-            return ("", UColor.white);
+            return ("", UColor.clear);
 
-        var distance = Vector3.Distance(CustomPlayer.Local.transform.position, player.transform.position);
-        var vector = player.transform.position - CustomPlayer.Local.transform.position;
+        if (IsLobby())
+            return (ColorNames[player.PlayerId], UColor.white);
 
-        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !player.AmOwner &&
-            !CustomPlayer.Local.HasDied() && GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
+        var local = CustomPlayer.Local;
+
+        if (!Meeting())
         {
-            return ("", UColor.white);
+            var distance = Vector2.Distance(local.transform.position, player.transform.position);
+
+            if (distance > ShipStatus.Instance?.CalculateLightRadius(local.Data))
+                return ("", UColor.clear);
+
+            var vector = player.transform.position - local.transform.position;
+
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !player.AmOwner && !local.HasDied() &&
+                GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
+            {
+                return ("", UColor.clear);
+            }
         }
 
         if (!TransitioningSize.ContainsKey(player.PlayerId))
@@ -27,15 +38,15 @@ public class NameHandler : MonoBehaviour
 
         var name = "";
 
-        if (GameModifiers.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby())
+        if (GameModifiers.PlayerNames == Data.PlayerNames.NotVisible)
             name = "";
-        else if (!player.AmOwner)
+        else if (!player.AmOwner && !local.HasDied())
         {
-            if (HudHandler.Instance.IsCamoed && !CustomPlayer.Local.HasDied())
+            if (HudHandler.Instance.IsCamoed)
                 name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
-            else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache) && !CustomPlayer.Local.HasDied())
+            else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache))
                 name = ColorNames[cache];
-            else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind && !CustomPlayer.Local.HasDied())
+            else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind)
                 name = "";
             else
                 name = ColorNames[player.PlayerId];
@@ -54,16 +65,29 @@ public class NameHandler : MonoBehaviour
     public static (string, UColor) UpdateGameName(LayerHandler playerHandler, LayerHandler localHandler, out bool revealed)
     {
         revealed = false;
-        var deadSeeEverything = DeadSeeEverything();
         var player = playerHandler.Player;
-        var local = localHandler.Player;
-        var distance = Vector2.Distance(local.transform.position, player.transform.position);
-        var vector = player.transform.position - local.transform.position;
 
-        if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !player.AmOwner && !local.HasDied() &&
-            GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
+        if (IsLobby())
+            return (PlayerNames[player.PlayerId], UColor.white);
+
+        var deadSeeEverything = DeadSeeEverything();
+        var local = localHandler.Player;
+        var meeting = Meeting();
+
+        if (!meeting)
         {
-            return ("", UColor.clear);
+            var distance = Vector2.Distance(local.transform.position, player.transform.position);
+
+            if (distance > ShipStatus.Instance?.CalculateLightRadius(local.Data))
+                return ("", UColor.white);
+
+            var vector = player.transform.position - local.transform.position;
+
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !player.AmOwner && !local.HasDied() &&
+                GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
+            {
+                return ("", UColor.clear);
+            }
         }
 
         if (!player.AmOwner && !deadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked) && mimicked.Data.Role is LayerHandler handler)
@@ -80,15 +104,15 @@ public class NameHandler : MonoBehaviour
         var localDisp = localHandler.CustomDisposition;
         var removeFromConsig = false;
 
-        if (GameModifiers.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby())
+        if (GameModifiers.PlayerNames == Data.PlayerNames.NotVisible)
             name = "";
-        else if (!playerHandler.Local)
+        else if (!playerHandler.Local && !local.HasDied())
         {
-            if (HudHandler.Instance.IsCamoed && !CustomPlayer.Local.HasDied())
+            if (HudHandler.Instance.IsCamoed)
                 name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
-            else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache) && !CustomPlayer.Local.HasDied())
+            else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache))
                 name = PlayerNames[cache];
-            else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind && !CustomPlayer.Local.HasDied())
+            else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind)
                 name = "";
             else
                 name = PlayerNames[player.PlayerId];
@@ -102,7 +126,7 @@ public class NameHandler : MonoBehaviour
         if (player.IsKnighted())
             name += " <color=#FF004EFF>κ</color>";
 
-        if (player.IsSpellbound() && Meeting())
+        if (player.IsSpellbound() && meeting)
             name += " <color=#0028F5FF>ø</color>";
 
         if (player.IsMarked())
@@ -237,7 +261,7 @@ public class NameHandler : MonoBehaviour
                         color = ret.Color;
                     }
 
-                    if (ret.Reported.Contains(player.PlayerId) && !revealed && Meeting())
+                    if (ret.Reported.Contains(player.PlayerId) && !revealed && meeting)
                     {
                         color = role.Color;
                         name += $"\n{role}";
@@ -409,7 +433,7 @@ public class NameHandler : MonoBehaviour
                 }
                 case Coroner coroner:
                 {
-                    if (coroner.Reported.Contains(player.PlayerId) && !revealed && Meeting())
+                    if (coroner.Reported.Contains(player.PlayerId) && !revealed && meeting)
                     {
                         color = role.Color;
                         name += $"\n{role}";

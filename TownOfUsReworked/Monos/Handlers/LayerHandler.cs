@@ -138,6 +138,17 @@ public class LayerHandler : RoleBehaviour
         Buttons = Player.GetButtonsFromList();
     }
 
+    [HideFromIl2Cpp]
+    public void SetUpLayers(Role newRole = null)
+    {
+        CustomRole = newRole ?? Player.GetRole();
+        CustomAbility = Player.GetAbility();
+        CustomModifier = Player.GetModifier();
+        CustomDisposition = Player.GetDisposition();
+        CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
+        ResetButtons();
+    }
+
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;
 
     public override void OnDeath(DeathReason reason)
@@ -167,13 +178,7 @@ public class LayerHandler : RoleBehaviour
     public override void Initialize(PlayerControl player)
     {
         Player = player;
-        CustomRole = Player.GetRole();
-        CustomAbility = Player.GetAbility();
-        CustomModifier = Player.GetModifier();
-        CustomDisposition = Player.GetDisposition();
-        CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
-        ResetButtons();
-        NameColor = CustomRole.Color;
+        SetUpLayers();
         IntroSound = GetAudio($"{CustomRole}Intro", false) ?? GetAudio($"{(CustomRole.Faction is Faction.Intruder or Faction.Syndicate ? "Impostor" : "Crewmate")}Intro");
     }
 

@@ -101,6 +101,7 @@ public class Dictator : Crew
         {
             case DictActionsRPC.Tribunal:
                 Flash(Color);
+                Tribunal = true;
                 break;
 
             case DictActionsRPC.SelectToEject:

@@ -34,10 +34,10 @@ public abstract class PlayerLayer
     public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 
     public static readonly List<PlayerLayer> AllLayers = [];
-    // public static readonly Dictionary<byte, List<PlayerLayer>> LayerLookup = [];
-    public static List<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
 
     protected PlayerLayer() => AllLayers.Add(this);
+
+    ~PlayerLayer() => End();
 
     // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
     public T Start<T>(PlayerControl player) where T : PlayerLayer => Start(player) as T;
@@ -126,7 +126,7 @@ public abstract class PlayerLayer
             return;
         }
 
-        if (!Player || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier)
+        if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier)
             return;
         else if (Dead)
         {
@@ -388,15 +388,9 @@ public abstract class PlayerLayer
     {
         AllLayers.ForEach(x => x.Deinit());
         AllLayers.Clear();
-        /*LayerLookup.Values.ForEach(x => x.Clear());
-        LayerLookup.Clear();
-        Role.RoleLookup.Clear();
-        Disposition.DispositionLookup.Clear();
-        Modifier.ModifierLookup.Clear();
-        Ability.AbilityLookup.Clear();*/
     }
 
-    public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => [ .. AllLayers.Where(x => x is T && (!x.Ignore || includeIgnored) && x.Player).Cast<T>() ];
+    public static IEnumerable<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => (!x.Ignore || includeIgnored) && x.Player).OfType<T>();
 
-    public static List<PlayerLayer> GetLayers(LayerEnum type, bool includeIgnored = false) => [ .. AllLayers.Where(x => x.Type == type && (!x.Ignore || includeIgnored) && x.Player) ];
+    public static List<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
 }

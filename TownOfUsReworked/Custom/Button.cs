@@ -34,6 +34,7 @@ public class CustomButton
     public LabelFunc ButtonLabelFunc { get; }
     public string ButtonLabel { get; }
     public UColor TextColor { get; }
+    public int MaxUses { get; set; }
 
     // Other things
     public ActionButton Base { get; set; }
@@ -50,7 +51,6 @@ public class CustomButton
     public float CooldownTime { get; set; }
     public bool BlockExposed { get; set; }
     public int Uses { get; set; }
-    public int MaxUses { get; set; }
 
     // Read-onlys (onlies?)
     public bool HasEffect => Duration.Value > 0f;

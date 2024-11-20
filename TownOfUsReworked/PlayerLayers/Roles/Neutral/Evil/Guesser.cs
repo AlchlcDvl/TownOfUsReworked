@@ -215,14 +215,9 @@ public class Guesser : Neutral
     {
         base.UpdateHud(__instance);
 
-        if (Failed && !Dead)
+        if (Failed && !Dead && !GuessToAct)
         {
-            if (GuessToAct)
-            {
-                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
-                TurnAct();
-            }
-            else if (GuesserCanPickTargets)
+            if (GuesserCanPickTargets)
             {
                 TargetPlayer = null;
                 Rounds = 0;
@@ -231,6 +226,12 @@ public class Guesser : Neutral
             else
                 Utils.RpcMurderPlayer(Player);
         }
+    }
+
+    public override void UpdatePlayer()
+    {
+        if (Failed && !Dead && GuessToAct)
+            TurnAct();
     }
 
     public override void OnMeetingStart(MeetingHud __instance)

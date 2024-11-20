@@ -10,7 +10,6 @@ public class VoteAreaHandler : NameHandler
     {
         VoteArea = gameObject.GetComponent<PlayerVoteArea>();
         Player = PlayerByVoteArea(VoteArea);
-        // Custom = CustomPlayer.Custom(Player);
         NamePos ??= VoteArea.ColorBlindName.transform.localPosition;
     }
 
@@ -18,6 +17,8 @@ public class VoteAreaHandler : NameHandler
     {
         if (!Player)
             return;
+
+        (VoteArea.ColorBlindName.text, VoteArea.ColorBlindName.color) = UpdateColorblind(Player);
 
         if (Player.Data?.Role is LayerHandler handler && CustomPlayer.Local.Data?.Role is LayerHandler localHandler)
         {

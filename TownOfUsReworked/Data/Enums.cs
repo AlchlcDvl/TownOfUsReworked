@@ -22,6 +22,13 @@ public enum ActionsRPC : byte
     None
 }
 
+public enum CryoActionsRPC : byte
+{
+    Douse,
+    Freeze,
+    UnDouse
+}
+
 public enum DictActionsRPC : byte
 {
     Tribunal,

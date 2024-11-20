@@ -52,6 +52,9 @@ public class ClientHandler : MonoBehaviour
     public static GameObject Prefab;
     public static Vector3 Pos;
 
+    private static Vector3 MaxSize = Vector3.zero;
+    private static Vector3 MinSize = Vector3.zero;
+
     public static ClientHandler Instance { get; private set; }
 
     public ClientHandler(IntPtr ptr) : base(ptr) => Instance = this;
@@ -113,6 +116,12 @@ public class ClientHandler : MonoBehaviour
             Pos = options.CustomPosition;
         }
 
+        if (MinSize == Vector3.zero)
+            MinSize = HUD().transform.localScale;
+
+        if (MaxSize == Vector3.zero)
+            MaxSize = HUD().transform.localScale * 4f;
+
         ButtonsSet = true;
     }
 
@@ -161,9 +170,6 @@ public class ClientHandler : MonoBehaviour
         Coroutines.Start(Zoom(Zooming));
     }
 
-    private static Vector3 MaxSize = Vector3.zero;
-    private static Vector3 MinSize = Vector3.zero;
-
     [HideFromIl2Cpp]
     private IEnumerator Zoom(bool inOut)
     {
@@ -172,12 +178,6 @@ public class ClientHandler : MonoBehaviour
 
         var limit = inOut ? 12f : 3f;
         var original = Camera.main.orthographicSize;
-
-        if (MinSize == Vector3.zero)
-            MinSize = HUD().transform.localScale;
-
-        if (MaxSize == Vector3.zero)
-            MaxSize = HUD().transform.localScale * 4f;
 
         var sizeLimit = inOut ? MaxSize : MinSize;
         var originalSize = HUD().transform.localScale;

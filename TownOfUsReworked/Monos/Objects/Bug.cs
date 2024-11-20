@@ -49,7 +49,7 @@ public class Bug : Range
         var result = "";
         var results = Results.Values.ToList();
         results.Shuffle();
-        results.ForEach(role => result += $"{PlayerLayer.GetLayers(role)[0]}, ");
+        results.ForEach(role => result += $"{LayerDictionary[role].Name}, ");
         result = result.Remove(result.Length - 2);
 
         if (Operative.PreciseOperativeInfo)

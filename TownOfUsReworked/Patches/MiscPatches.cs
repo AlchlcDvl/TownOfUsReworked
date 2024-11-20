@@ -671,6 +671,41 @@ public static class FollowerCameraPatches
     }
 }
 
+[HarmonyPatch(typeof(HostInfoPanel), nameof(HostInfoPanel.SetUp))]
+public static class HostInfoPanelPatch
+{
+    public static bool Prefix(HostInfoPanel __instance)
+    {
+        var host = GameData.Instance.GetHost();
+        __instance.hostWidth = __instance.hostLabel.GetRenderedValues().x;
+
+        if (!host || host.IsIncomplete)
+            return false;
+
+        __instance.content.SetActive(true);
+
+        if (!__instance.firstUpdate)
+        {
+            __instance.firstUpdate = true;
+            __instance.StartCoroutine(__instance.SetCosmetics(host));
+        }
+
+        var text = ColorUtility.ToHtmlStringRGB(__instance.player.ColorId.GetColor(false));
+        __instance.hostLabel.text = TranslationController.Instance.GetString(StringNames.HostNounLabel);
+        __instance.playerName.text = $"{(string.IsNullOrEmpty(host.PlayerName) ? "..." : $"<color=#{text}>{host.PlayerName}</color>")} " + (AmongUsClient.Instance.AmHost ?
+            $"<size=90%><b><font=\"Barlow-BoldItalic SDF\" material=\"Barlow-BoldItalic SDF Outline\">{TranslationController.Instance.GetString(StringNames.HostYouLabel)}" :
+            $"({__instance.player.ColorBlindName})");
+        var x = __instance.playerName.GetRenderedValues().x;
+        var num = __instance.hostWidth + 0.48f;
+        __instance.content.transform.localPosition = new((-0.43f + num) / 2f, __instance.content.transform.localPosition.y, __instance.content.transform.localPosition.z);
+        __instance.playerHolder.transform.localPosition = new(((__instance.playerName.transform.localPosition.x - x) / 2f) - 0.215f, __instance.playerHolder.transform.localPosition.y,
+            __instance.playerHolder.transform.localPosition.z);
+        __instance.hostLabel.transform.localPosition = new(__instance.playerHolder.transform.localPosition.x - 0.22f, __instance.hostLabel.transform.localPosition.y,
+            __instance.hostLabel.transform.localPosition.z);
+        return false;
+    }
+}
+
 /*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
 public static class DebuggingClassForRandomStuff
 {

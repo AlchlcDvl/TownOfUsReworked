@@ -239,6 +239,23 @@ public static class LayerExtentions
 
     public static bool IsCryoDoused(this PlayerControl player) => PlayerLayer.GetLayers<Cryomaniac>().Any(role => role.Doused.Contains(player.PlayerId));
 
+    public static bool TryIgnitingFrozen(this PlayerControl player)
+    {
+        var result = false;
+
+        foreach (var cryo in PlayerLayer.GetLayers<Cryomaniac>())
+        {
+            if (!cryo.Doused.Contains(player.PlayerId))
+                continue;
+
+            result = true;
+            cryo.Doused.Remove(player.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, cryo, CryoActionsRPC.UnDouse, player.PlayerId);
+        }
+
+        return result;
+    }
+
     public static bool IsProtectedMonarch(this PlayerControl player) => PlayerLayer.GetLayers<Monarch>().Any(role => role.Protected && role.Player == player);
 
     public static bool IsFaithful(this PlayerControl player) => player.GetRole().Faithful;
@@ -888,8 +905,9 @@ public static class LayerExtentions
         } catch {}
     }
 
-    public static void RoleUpdate(this Role newRole, Role former, PlayerControl player, bool retainFaction = false)
+    public static void RoleUpdate(this Role newRole, Role former, PlayerControl player = null, bool retainFaction = false)
     {
+        player ??= former.Player;
         AllButtons.Where(x => x.Owner == former || !x.Owner.Player).ForEach(x => x.Destroy());
         CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
         former.End();
@@ -924,6 +942,9 @@ public static class LayerExtentions
 
         if (player.AmOwner)
             Flash(newRole.Color);
+
+        if (player.Data.Role is LayerHandler layerHandler)
+            layerHandler.SetUpLayers(newRole);
 
         ButtonUtils.Reset(player: newRole.Player);
     }
@@ -1237,6 +1258,9 @@ public static class LayerExtentions
 
     public static Disposition GetDisposition(this PlayerControl player)
     {
+        if (!player || !player.Data)
+            return null;
+
         if (player.Data.Role is LayerHandler handler)
             return handler.CustomDisposition;
 
@@ -1249,6 +1273,9 @@ public static class LayerExtentions
 
     public static Modifier GetModifier(this PlayerControl player)
     {
+        if (!player || !player.Data)
+            return null;
+
         if (player.Data.Role is LayerHandler handler)
             return handler.CustomModifier;
 
@@ -1261,6 +1288,9 @@ public static class LayerExtentions
 
     public static Ability GetAbility(this PlayerControl player)
     {
+        if (!player || !player.Data)
+            return null;
+
         if (player.Data.Role is LayerHandler handler)
             return handler.CustomAbility;
 

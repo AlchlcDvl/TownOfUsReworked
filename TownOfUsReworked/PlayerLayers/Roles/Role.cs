@@ -164,18 +164,17 @@ public abstract class Role : PlayerLayer
             _ => "IntruderVent"
         });
         HUD().ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
+        HUD().ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
+        HUD().UseButton.buttonLabelText.SetOutlineColor(FactionColor);
+        HUD().PetButton.buttonLabelText.SetOutlineColor(FactionColor);
+        HUD().ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
+        HUD().SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
     }
 
     public override void OnIntroEnd() => UpdateButtons();
 
     public override void UpdateHud(HudManager __instance)
     {
-        __instance.ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
-        __instance.UseButton.buttonLabelText.SetOutlineColor(FactionColor);
-        __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
-        __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
-        __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-
         foreach (var pair in DeadArrows)
         {
             var player = PlayerById(pair.Key);
@@ -409,7 +408,7 @@ public abstract class Role : PlayerLayer
         TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
         AllVoteAreas().ForEach(GenText);
         AllRoles().ForEach(x => x.CurrentChannel = ChatChannel.All);
-        GetLayers<Dictator>().ForEach(x => x.ToBeEjected = null);
+        GetLayers<Arsonist>().ForEach(x => x.Doused.Clear());
 
         if (Requesting && BountyTimer > 2)
         {
@@ -430,6 +429,18 @@ public abstract class Role : PlayerLayer
                 if (HUD() && bh.Local)
                     Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
             }
+        }
+
+        foreach (var dict in GetLayers<Dictator>())
+        {
+            dict.ToBeEjected = null;
+            dict.Tribunal = false;
+        }
+
+        foreach (var cryo in GetLayers<Cryomaniac>())
+        {
+            cryo.FreezeUsed = false;
+            cryo.Doused.Clear();
         }
     }
 

@@ -4,7 +4,7 @@ public static class TranslationManager
 {
     public static readonly List<Language> AllTranslations = [];
 
-    public static string CurrentLanguage => DataManager.Settings.Language.CurrentLanguage switch
+    private static string CurrentLanguage => DataManager.Settings.Language.CurrentLanguage switch
     {
         SupportedLangs.SChinese => "SChinese",
         _ => "English"
@@ -18,9 +18,9 @@ public static class TranslationManager
 
         try
         {
-            var result = AllTranslations.Find(x => x.ID == id || x.IDs?.Contains(id) == true)?[language];
+            var result = AllTranslations.Find(x => x.ID == id || x.IDs.Contains(id) == true)?[language];
             toReplace.ForEach(x => result = result.Replace(x.Key, x.Value));
-            return result;
+            return result ?? throw new UnsupportedLanguageException($"{language}:{id}");
         }
         catch
         {

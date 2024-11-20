@@ -24,19 +24,20 @@ public class Language : Asset
                 "SChinese" => SChinese,
                 _ => ""
             };
+            var ids = GetIDs();
 
             if ((IsNullEmptyOrWhiteSpace(result) && Notes == null) || !TranslationManager.SupportedLangNames.Contains(lang))
             {
                 if (English != null)
                 {
-                    Error($"Selected language is unsupported {lang} ({GetIDs()})");
+                    Error($"Selected language is unsupported {lang} ({ids})");
                     return English;
                 }
                 else
-                    throw new UnsupportedLanguageException(lang);
+                    throw new UnsupportedLanguageException($"{lang}:{ids}");
             }
             else
-                return result ?? English ?? "Error";
+                return result ?? throw new UnsupportedLanguageException($"{lang}:{ids}");
         }
         set
         {
@@ -45,7 +46,7 @@ public class Language : Asset
             else if (lang == "SChinese")
                 SChinese = value;
             else
-                throw new UnsupportedLanguageException(lang);
+                throw new UnsupportedLanguageException($"{lang}:{GetIDs()}");
         }
     }
 

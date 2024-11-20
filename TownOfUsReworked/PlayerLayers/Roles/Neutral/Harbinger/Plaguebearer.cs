@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Plaguebearer : Harbinger
+public class Plaguebearer : Harbinger<Pestilence>
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number InfectCd { get; set; } = new(25);
@@ -19,7 +19,6 @@ public class Plaguebearer : Harbinger
     public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>\n- Infections can "
         + "spread via interaction between players";
     public override DefenseEnum DefenseVal => Infected.Count < AllPlayers().Count / 2 ? DefenseEnum.Basic : DefenseEnum.None;
-    public override bool CanTransform => AllPlayers().Count(x => !x.HasDied()) <= Infected.Count;
 
     public override void Init()
     {
@@ -57,7 +56,7 @@ public class Plaguebearer : Harbinger
 
     public void Infect() => InfectButton.StartCooldown(Interact(Player, InfectButton.GetTarget<PlayerControl>()));
 
-    public override void TurnApocalypse() => new Pestilence().RoleUpdate(this, Player);
+    public override bool CanTransform() => AllPlayers().Count(x => !x.HasDied()) <= Infected.Count;
 
     public bool Exception(PlayerControl player) => Infected.Contains(player.PlayerId);
 

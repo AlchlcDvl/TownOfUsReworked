@@ -17,7 +17,7 @@ public static class RPC
             options = [ .. OptionAttribute.AllOptions ];
 
         options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Alignment || x.ClientOnly);
-        var split = options.Split(50);
+        var split = options.Split(60);
         Info($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
 
         foreach (var list in split)
@@ -135,7 +135,7 @@ public static class RPC
 
     public static List<PlayerLayer> ReadLayerList(this MessageReader reader)
     {
-        var count = reader.ReadInt32();
+        var count = reader.ReadByte();
         var list = new List<PlayerLayer>();
 
         while (list.Count < count)
@@ -223,27 +223,27 @@ public static class RPC
             writer.Write(num.Value);
         else if (item is List<Role> roles)
         {
-            writer.Write(roles.Count);
+            writer.Write((byte)roles.Count);
             roles.ForEach(x => writer.Write(layer: x));
         }
         else if (item is List<Ability> abs)
         {
-            writer.Write(abs.Count);
+            writer.Write((byte)abs.Count);
             abs.ForEach(x => writer.Write(layer: x));
         }
         else if (item is List<Modifier> mods)
         {
-            writer.Write(mods.Count);
+            writer.Write((byte)mods.Count);
             mods.ForEach(x => writer.Write(layer: x));
         }
         else if (item is List<Disposition> disps)
         {
-            writer.Write(disps.Count);
+            writer.Write((byte)disps.Count);
             disps.ForEach(x => writer.Write(layer: x));
         }
         else if (item is List<PlayerLayer> layers)
         {
-            writer.Write(layers.Count);
+            writer.Write((byte)layers.Count);
             layers.ForEach(x => writer.Write(layer: x));
         }
         else if (item is null)
