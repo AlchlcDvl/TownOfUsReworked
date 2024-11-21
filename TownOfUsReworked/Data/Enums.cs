@@ -22,10 +22,9 @@ public enum ActionsRPC : byte
     None
 }
 
-public enum CryoActionsRPC : byte
+public enum DouseActionsRPC : byte
 {
     Douse,
-    Freeze,
     UnDouse
 }
 
@@ -715,7 +714,8 @@ public enum RetActionsRPC : byte
     Revive,
     Bomb,
     Place,
-    Trigger
+    Trigger,
+    AltRevive
 }
 
 public enum JanitorOptions : byte

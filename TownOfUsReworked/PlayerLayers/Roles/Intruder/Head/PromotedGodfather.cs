@@ -39,6 +39,7 @@ public class PromotedGodfather : Intruder
     public override Func<string> StartText => () => "Lead The <color=#FF1919FF>Intruders</color>";
     public override Func<string> Description => () => "- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities"
         + (!FormerRole ? "" : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
+    public override bool RoleBlockImmune => FormerRole?.RoleBlockImmune ?? false;
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -309,7 +310,7 @@ public class PromotedGodfather : Intruder
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player.transform.position, Grenadier.FlashRadius).Select(x => x.PlayerId) ];
+    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player, Grenadier.FlashRadius).Select(x => x.PlayerId) ];
 
     public bool GrenCondition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !Grenadier.SaboFlash;
 

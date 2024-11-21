@@ -12,6 +12,7 @@ public abstract class Role : PlayerLayer
 
     public virtual Faction BaseFaction => Faction.None;
     public virtual Func<string> StartText => () => "Woah The Game Started";
+    public virtual bool RoleBlockImmune => false;
 
     public virtual List<PlayerControl> Team() => [ Player ];
 
@@ -83,8 +84,6 @@ public abstract class Role : PlayerLayer
 
     public string KilledBy { get; set; } = "";
     public DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
-
-    public bool RoleBlockImmune { get; set; }
 
     public bool Rewinding { get; set; }
 

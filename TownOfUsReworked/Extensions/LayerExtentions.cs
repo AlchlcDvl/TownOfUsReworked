@@ -250,7 +250,24 @@ public static class LayerExtentions
 
             result = true;
             cryo.Doused.Remove(player.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, cryo, CryoActionsRPC.UnDouse, player.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, cryo, DouseActionsRPC.UnDouse, player.PlayerId);
+        }
+
+        return result;
+    }
+
+    public static bool TryFreezingIgnited(this PlayerControl player)
+    {
+        var result = false;
+
+        foreach (var arso in PlayerLayer.GetLayers<Arsonist>())
+        {
+            if (!arso.Doused.Contains(player.PlayerId))
+                continue;
+
+            result = true;
+            arso.Doused.Remove(player.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, arso, DouseActionsRPC.UnDouse, player.PlayerId);
         }
 
         return result;

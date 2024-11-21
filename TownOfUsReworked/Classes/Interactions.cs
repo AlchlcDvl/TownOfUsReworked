@@ -8,7 +8,7 @@ public static class Interactions
             return true;
         else if (target.IsAmbushed() && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && Ambusher.AmbushMates)))
             return true;
-        else if (target.Is(LayerEnum.SerialKiller) && player.GetRole() is Escort or Consort or Glitch && !harmful)
+        else if (target.GetRole() is SerialKiller sk && sk.BloodlustButton.EffectActive && player.GetRole() is Escort or Consort or Glitch && !harmful)
             return true;
         else if (target.IsCrusaded() && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && Crusader.CrusadeMates)))
             return true;

@@ -36,15 +36,15 @@ public class Glitch : NKilling
         "short while\n- You are immune to blocks\n- If you hack a <color=#336EFFFF>Serial Killer</color> they will be forced to kill you";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
+    public override bool RoleBlockImmune => true;
 
     public override void Init()
     {
         base.Init();
         Objectives = () => "- Neutralise anyone who can oppose you";
         MimicMenu = new(Player, Click, Exception3);
-        RoleBlockImmune = true;
-        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Neutralise, (PlayerBodyExclusion)Exception1,
-            new Cooldown(NeutraliseCd), "NEUTRALISE");
+        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
+            new Cooldown(NeutraliseCd));
         HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
             new Duration(HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
         MimicButton ??= new(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
@@ -76,11 +76,12 @@ public class Glitch : NKilling
 
     public void HitHack()
     {
-        var cooldown = Interact(Player, HackButton.GetTarget<PlayerControl>());
+        var target = HackButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            HackTarget = HackButton.GetTarget<PlayerControl>();
+            HackTarget = target;
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, HackButton, GlitchActionsRPC.Hack, HackTarget);
             HackButton.Begin();
         }

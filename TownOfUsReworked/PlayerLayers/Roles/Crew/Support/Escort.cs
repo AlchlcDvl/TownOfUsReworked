@@ -18,12 +18,12 @@ public class Escort : Crew
     public override Func<string> StartText => () => "Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
         "to blocks\n- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
+    public override bool RoleBlockImmune => true;
 
     public override void Init()
     {
         base.Init();
         Alignment = Alignment.CrewSupport;
-        RoleBlockImmune = true;
         BlockTarget = null;
         BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Roleblock, (EffectVoid)Block, (EffectEndVoid)UnBlock,
             new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect);

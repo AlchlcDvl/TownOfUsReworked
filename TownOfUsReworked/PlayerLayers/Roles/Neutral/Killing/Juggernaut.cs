@@ -34,7 +34,7 @@ public class Juggernaut : NKilling
 
     public void Assault()
     {
-        var cooldown = Interact(Player, AssaultButton.GetTarget<PlayerControl>(), true, false, JuggKills >= 4);
+        var cooldown = Interact(Player, AssaultButton.GetTarget<PlayerControl>(), true, bypass: JuggKills >= 4);
 
         if (cooldown != CooldownType.Fail)
         {

@@ -114,5 +114,23 @@ public class Arsonist : NKilling
     public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
         Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
-    public override void ReadRPC(MessageReader reader) => Doused.Add(reader.ReadByte());
+    public override void ReadRPC(MessageReader reader)
+    {
+        var arsoAction = reader.ReadEnum<DouseActionsRPC>();
+
+        switch (arsoAction)
+        {
+            case DouseActionsRPC.Douse:
+                Doused.Add(reader.ReadByte());
+                break;
+
+            case DouseActionsRPC.UnDouse:
+                Doused.Remove(reader.ReadByte());
+                break;
+
+            default:
+                Error($"Received unknown RPC - {(int)arsoAction}");
+                break;
+        }
+    }
 }

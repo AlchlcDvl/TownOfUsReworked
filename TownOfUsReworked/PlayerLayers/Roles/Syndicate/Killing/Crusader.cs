@@ -52,7 +52,7 @@ public class Crusader : Syndicate
 
     public static void RadialCrusade(PlayerControl player2)
     {
-        foreach (var player in GetClosestPlayers(player2.transform.position, ChaosDriveCrusadeRadius))
+        foreach (var player in GetClosestPlayers(player2, ChaosDriveCrusadeRadius))
         {
             Spread(player2, player);
 

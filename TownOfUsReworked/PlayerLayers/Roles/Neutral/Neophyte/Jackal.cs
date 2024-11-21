@@ -50,10 +50,11 @@ public class Jackal : Neophyte
 
     public void Recruit()
     {
-        var cooldown = Interact(Player, RecruitButton.GetTarget<PlayerControl>());
+        var target = RecruitButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            RoleGen.RpcConvert(RecruitButton.GetTarget<PlayerControl>().PlayerId, Player.PlayerId, SubFaction.Cabal);
+            RoleGen.RpcConvert(target.PlayerId, Player.PlayerId, SubFaction.Cabal);
 
         RecruitButton.StartCooldown(cooldown);
     }

@@ -726,8 +726,18 @@ public static class Utils
             GameManager.Instance.RpcEndGame((GameOverReason)9, false);
     }
 
-    public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => [ .. AllPlayers().Where(x => Vector2.Distance(truePosition,
-        x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))) ];
+    public static IEnumerable<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => AllPlayers().Where(x => Vector2.Distance(truePosition,
+        x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead)));
+
+    public static IEnumerable<PlayerControl> GetClosestPlayers(PlayerControl player, float radius, Func<PlayerControl, bool> filter = null, bool includeDead = false)
+    {
+        var result = AllPlayers().Where(x => Vector2.Distance(player.transform.position, x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead)) && x != player);
+
+        if (filter != null)
+            result = result.Where(filter);
+
+        return result;
+    }
 
     public static void StopDragging(byte id)
     {

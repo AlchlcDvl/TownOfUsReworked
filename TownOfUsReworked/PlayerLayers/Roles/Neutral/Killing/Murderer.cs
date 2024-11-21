@@ -23,8 +23,7 @@ public class Murderer : NKilling
     {
         base.Init();
         Objectives = () => "- Murder anyone who can oppose you";
-        MurderButton ??= new(this, new SpriteName("Murder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Murder, new Cooldown(MurderCd), "MURDER",
-            (PlayerBodyExclusion)Exception);
+        MurderButton ??= new(this, new SpriteName("Murder"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Murder, new Cooldown(MurderCd), "MURDER", (PlayerBodyExclusion)Exception);
     }
 
     public void Murder() => MurderButton.StartCooldown(Interact(Player, MurderButton.GetTarget<PlayerControl>(), true));

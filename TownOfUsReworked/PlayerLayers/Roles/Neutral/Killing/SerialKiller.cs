@@ -26,12 +26,12 @@ public class SerialKiller : NKilling
         " <color=#801780FF>Consort</color> or <color=#00FF00FF>Glitch</color> tries to block you, you will immediately kill them, regardless of your cooldown\n- You are immune to roleblocks";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => BloodlustButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
+    public override bool RoleBlockImmune => true;
 
     public override void Init()
     {
         base.Init();
         Objectives = () => "- Stab anyone who can oppose you";
-        RoleBlockImmune = true;
         BloodlustButton ??= new(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Lust, new Cooldown(BloodlustCd), new Duration(BloodlustDur),
             "BLOODLUST", (EndFunc)EndEffect);
         StabButton ??= new(this, new SpriteName("Stab"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stab, new Cooldown(StabCd), "STAB", (PlayerBodyExclusion)Exception,

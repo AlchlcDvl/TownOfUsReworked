@@ -19,12 +19,12 @@ public class Consort : Intruder
     public override Func<string> StartText => () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
         $"immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
+    public override bool RoleBlockImmune => true;
 
     public override void Init()
     {
         base.Init();
         Alignment = Alignment.IntruderSupport;
-        RoleBlockImmune = true;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
         BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,

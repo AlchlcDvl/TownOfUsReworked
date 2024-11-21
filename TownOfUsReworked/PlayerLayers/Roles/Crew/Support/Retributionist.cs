@@ -79,6 +79,7 @@ public class Retributionist : Crew
                 return DefenseEnum.None;
         }
     }
+    public override bool RoleBlockImmune => RevivedRole?.RoleBlockImmune ?? false;
 
     public override void Deinit()
     {
@@ -298,6 +299,18 @@ public class Retributionist : Crew
                 TriggerTrap(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadBoolean());
                 break;
 
+            case RetActionsRPC.AltRevive:
+            {
+                ParentId = reader.ReadByte();
+
+                if (CustomPlayer.Local.PlayerId == ParentId)
+                    Flash(CustomColorManager.Altruist, Altruist.ReviveDur);
+
+                if (Altruist.AltruistTargetBody)
+                    BodyById(ParentId).gameObject.Destroy();
+
+                break;
+            }
             default:
                 Error($"Received unknown RPC - {(int)retAction}");
                 break;
@@ -748,7 +761,6 @@ public class Retributionist : Crew
 
     // Altruist Stuff
     public CustomButton ReviveButton { get; set; }
-    public DeadBody RevivingBody { get; set; }
     public byte ParentId { get; set; }
     public bool IsAlt => RevivedRole is Altruist;
 
@@ -796,15 +808,15 @@ public class Retributionist : Crew
 
     public void Revive()
     {
-        RevivingBody = ReviveButton.GetTarget<DeadBody>();
-        ParentId = RevivingBody.ParentId;
-        Spread(Player, PlayerByBody(RevivingBody));
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ReviveButton, RetActionsRPC.Revive, RevivingBody);
+        var target = ReviveButton.GetTarget<DeadBody>();
+        ParentId = target.ParentId;
+        Spread(Player, PlayerByBody(target));
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ReviveButton, RetActionsRPC.AltRevive, ParentId);
         ReviveButton.Begin();
         Flash(Color, Altruist.ReviveDur);
 
         if (Altruist.AltruistTargetBody)
-            RevivingBody?.gameObject.Destroy();
+            target?.gameObject.Destroy();
     }
 
     // Medic Stuff

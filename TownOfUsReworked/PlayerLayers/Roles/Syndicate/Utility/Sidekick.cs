@@ -22,11 +22,7 @@ public class Sidekick : Syndicate
     public void TurnRebel()
     {
         FormerRole.IsPromoted = true;
-        var reb = new PromotedRebel()
-        {
-            FormerRole = FormerRole is PromotedRebel preb ? preb.FormerRole : FormerRole,
-            RoleBlockImmune = FormerRole.RoleBlockImmune
-        };
+        var reb = new PromotedRebel() { FormerRole = FormerRole is PromotedRebel preb ? preb.FormerRole : FormerRole };
         reb.RoleUpdate(this, Player);
         reb.OnRoleSelected();
     }

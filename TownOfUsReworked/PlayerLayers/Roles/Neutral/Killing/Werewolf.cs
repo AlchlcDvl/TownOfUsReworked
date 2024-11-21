@@ -37,7 +37,7 @@ public class Werewolf : NKilling
 
     public void Maul()
     {
-        foreach (var player in GetClosestPlayers(Player.transform.position, MaulRadius))
+        foreach (var player in GetClosestPlayers(Player, MaulRadius, x => x != Player))
         {
             Spread(Player, player);
 

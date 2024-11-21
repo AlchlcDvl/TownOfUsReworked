@@ -21,7 +21,7 @@ public abstract class PlayerLayer
     public bool Dead => Data?.IsDead ?? true;
     public bool Disconnected => Data?.Disconnected ?? true;
     public bool Alive => !Disconnected && !Dead;
-    public bool Local => Player?.AmOwner == true;
+    public bool Local => Player?.AmOwner ?? false;
 
     public NetworkedPlayerInfo Data => Player?.Data;
     public string PlayerName => Data?.PlayerName ?? "";
@@ -361,7 +361,7 @@ public abstract class PlayerLayer
 
     public static implicit operator bool(PlayerLayer exists) => exists != null && exists.Player;
 
-    public bool Equals(PlayerLayer other) => other.Player == Player && other.LayerType == LayerType && Type == other.Type && GetHashCode() == other.GetHashCode();
+    public bool Equals(PlayerLayer other) => other.Player == Player && other.LayerType == LayerType && Type == other.Type;
 
     public override bool Equals(object obj)
     {

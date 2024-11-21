@@ -19,13 +19,13 @@ public class Banshee : Syndicate
     public override LayerEnum Type => LayerEnum.Banshee;
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
+    public override bool RoleBlockImmune => true; // Not taking chances
 
     public override void Init()
     {
         base.Init();
         Alignment = Alignment.SyndicateUtil;
         Blocked = [];
-        RoleBlockImmune = true; // Not taking chances
         ScreamButton ??= new(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
             new Duration(ScreamDur), (EffectVoid)Scream, (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
     }

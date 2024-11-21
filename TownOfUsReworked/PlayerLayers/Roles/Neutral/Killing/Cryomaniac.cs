@@ -60,7 +60,7 @@ public class Cryomaniac : NKilling
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CryoActionsRPC.Douse, target.PlayerId);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DouseActionsRPC.Douse, target.PlayerId);
     }
 
     public override void BeforeMeeting()
@@ -76,7 +76,7 @@ public class Cryomaniac : NKilling
                 {
                     var player2 = PlayerById(player);
 
-                    if (player2.HasDied())
+                    if (player2.HasDied() || player2.TryFreezingIgnited())
                         continue;
 
                     if (CanAttack(AttackVal, player2.GetDefenseValue()))
@@ -103,11 +103,7 @@ public class Cryomaniac : NKilling
         DouseButton.StartCooldown(cooldown);
     }
 
-    public void FreezeUnFreeze()
-    {
-        FreezeUsed = !FreezeUsed;
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CryoActionsRPC.Freeze);
-    }
+    public void FreezeUnFreeze() => FreezeUsed = !FreezeUsed;
 
     public string Label() => (FreezeUsed ? "UN" : "") + "FREEZE";
 
@@ -115,20 +111,16 @@ public class Cryomaniac : NKilling
 
     public override void ReadRPC(MessageReader reader)
     {
-        var cryoAction = reader.ReadEnum<CryoActionsRPC>();
+        var cryoAction = reader.ReadEnum<DouseActionsRPC>();
 
         switch (cryoAction)
         {
-            case CryoActionsRPC.Douse:
+            case DouseActionsRPC.Douse:
                 Doused.Add(reader.ReadByte());
                 break;
 
-            case CryoActionsRPC.UnDouse:
+            case DouseActionsRPC.UnDouse:
                 Doused.Remove(reader.ReadByte());
-                break;
-
-            case CryoActionsRPC.Freeze:
-                FreezeUsed = !FreezeUsed;
                 break;
 
             default:

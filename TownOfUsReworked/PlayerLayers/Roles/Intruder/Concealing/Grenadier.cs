@@ -105,7 +105,7 @@ public class Grenadier : Intruder
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player.transform.position, FlashRadius).Select(x => x.PlayerId) ];
+    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player, FlashRadius).Select(x => x.PlayerId) ];
 
     public bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !SaboFlash;
 }

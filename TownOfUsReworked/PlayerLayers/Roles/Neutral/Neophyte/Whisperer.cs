@@ -33,7 +33,7 @@ public class Whisperer : Neophyte
     public CustomButton WhisperButton { get; set; }
     public int WhisperCount { get; set; }
     public int ConversionCount { get; set; }
-    public Dictionary<byte, int> PlayerConversion { get; set; }
+    public Dictionary<byte, byte> PlayerConversion { get; set; }
     public int WhisperConversion { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : CustomColorManager.Neutral;
@@ -59,15 +59,14 @@ public class Whisperer : Neophyte
 
     public void Whisper()
     {
-        var closestPlayers = GetClosestPlayers(Player.transform.position, WhisperRadius);
-        closestPlayers.RemoveAll(x => x == Player || Members.Contains(x.PlayerId));
+        var closestPlayers = GetClosestPlayers(Player, WhisperRadius, x => x != Player && !Members.Contains(x.PlayerId));
 
         foreach (var player in closestPlayers)
         {
             if (PlayerConversion.ContainsKey(player.PlayerId))
-                PlayerConversion[player.PlayerId] -= WhisperConversion;
+                PlayerConversion[player.PlayerId] -= (byte)WhisperConversion;
             else if (!Members.Contains(player.PlayerId))
-                PlayerConversion.Add(player.PlayerId, 100 - WhisperConversion);
+                PlayerConversion.Add(player.PlayerId, (byte)(100 - WhisperConversion));
         }
 
         var removals = new List<byte>();
@@ -92,7 +91,7 @@ public class Whisperer : Neophyte
         Members.ForEach(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
         WhisperButton.StartCooldown();
-        var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, PlayerConversion.Count);
+        var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, (byte)PlayerConversion.Count);
 
         foreach (var (id, perc) in PlayerConversion)
         {
@@ -107,10 +106,10 @@ public class Whisperer : Neophyte
 
     public override void ReadRPC(MessageReader reader)
     {
-        var count = reader.ReadInt32();
+        var count = reader.ReadByte();
 
         for (var i = 0; i <= count; i++)
-            PlayerConversion[reader.ReadByte()] = reader.ReadInt32();
+            PlayerConversion[reader.ReadByte()] = reader.ReadByte();
 
         Members.ForEach(x => PlayerConversion.Remove(x));
     }

@@ -43,6 +43,7 @@ public class Necromancer : Neophyte
     public static bool ResurrectVent { get; set; } = false;
 
     public DeadBody ResurrectingBody { get; set; }
+    public byte ParentId { get; set; }
     public CustomButton ResurrectButton { get; set; }
     public CustomButton SacrificeButton { get; set; }
     public int ResurrectedCount { get; set; }
@@ -147,6 +148,7 @@ public class Necromancer : Neophyte
     public override void ReadRPC(MessageReader reader)
     {
         ResurrectingBody = reader.ReadBody();
+        ParentId = reader.ReadByte();
 
         if (CustomPlayer.Local.PlayerId == ResurrectingBody.ParentId)
             Flash(CustomColorManager.Necromancer, ResurrectDur);

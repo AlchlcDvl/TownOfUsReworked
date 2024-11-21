@@ -45,6 +45,7 @@ public class PromotedRebel : Syndicate
     public override Func<string> StartText => () => "Lead The <color=#008000FF>Syndicate</color>";
     public override Func<string> Description => () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities" +
         (!FormerRole ? CommonAbilities : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
+    public override bool RoleBlockImmune => FormerRole?.RoleBlockImmune ?? false;
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -433,7 +434,7 @@ public class PromotedRebel : Syndicate
 
     public void RadialFrame()
     {
-        GetClosestPlayers(Player.transform.position, Framer.ChaosDriveFrameRadius).ForEach(RpcFrame);
+        GetClosestPlayers(Player, Framer.ChaosDriveFrameRadius).ForEach(RpcFrame);
         RadialFrameButton.StartCooldown();
     }
 

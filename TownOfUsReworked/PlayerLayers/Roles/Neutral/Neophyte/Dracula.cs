@@ -33,8 +33,8 @@ public class Dracula : Neophyte
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
-        BiteButton ??= new(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE",
-            (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
+        BiteButton ??= new(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Convert, new Cooldown(BiteCd), "BITE", (PlayerBodyExclusion)Exception,
+            (UsableFunc)Usable);
     }
 
     public override void OnMeetingEnd(MeetingHud __instance)
@@ -45,11 +45,12 @@ public class Dracula : Neophyte
 
     public void Convert()
     {
-        var cooldown = Interact(Player, BiteButton.GetTarget<PlayerControl>());
+        var target = BiteButton.GetTarget<PlayerControl>();
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            RoleGen.RpcConvert(BiteButton.GetTarget<PlayerControl>().PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= AliveVampCount);
+            RoleGen.RpcConvert(target.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= AliveVampCount);
             HasConverted = true;
         }
 

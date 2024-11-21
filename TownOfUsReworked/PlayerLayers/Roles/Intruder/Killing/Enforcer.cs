@@ -56,7 +56,7 @@ public class Enforcer : Intruder
 
     public static void Explode(PlayerControl centre, PlayerControl enf)
     {
-        foreach (var player in GetClosestPlayers(centre.transform.position, EnforceRadius))
+        foreach (var player in GetClosestPlayers(centre, EnforceRadius))
         {
             if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
                 RpcMurderPlayer(enf, player, DeathReasonEnum.Bombed, false);
