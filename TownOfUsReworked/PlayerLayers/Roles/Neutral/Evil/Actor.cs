@@ -39,7 +39,7 @@ public class Actor : Neutral
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +
             $"- Your target roles are {PretendListString()}"));
         Alignment = Alignment.NeutralEvil;
-        PretendButton ??= new(this, new SpriteName("Pretend"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)PickRole, "PRETEND", (UsableFunc)Usable);
+        PretendButton ??= new(this, new SpriteName("Pretend"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)PickRole, "PRETEND", (UsableFunc)Usable);
         PretendRoles = [];
     }
 
@@ -57,9 +57,9 @@ public class Actor : Neutral
         return text;
     }
 
-    public void PickRole()
+    public void PickRole(PlayerControl target)
     {
-        FillRoles(PretendButton.GetTarget<PlayerControl>());
+        FillRoles(target);
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, PretendRoles);
     }
 
@@ -184,10 +184,14 @@ public class Actor : Neutral
         if (!target.Is(LayerEnum.Actor))
             PretendRoles.Add(target.GetRole());
 
-        var targets = AllPlayers().Where(x => x != Player && x != target && !x.Is(LayerEnum.Actor));
+        var targets = AllPlayers().Where(x => x != Player && x != target && !x.Is(LayerEnum.Actor)).Select(x => x.GetRole());
+        var count = (int)ActorRoleCount;
 
-        while (PretendRoles.Count < ActorRoleCount)
-            PretendRoles.Add(targets.Random().GetRole());
+        if (targets.Count() < count)
+            count = targets.Count();
+
+        while (PretendRoles.Count < count)
+            PretendRoles.Add(targets.Random(x => !PretendRoles.Contains(x)));
 
         PretendRoles.Shuffle();
         Targeted = true;

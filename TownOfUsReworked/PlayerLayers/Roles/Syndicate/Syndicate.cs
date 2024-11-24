@@ -17,7 +17,7 @@ public abstract class Syndicate : Role
         base.Init();
         Faction = Faction.Syndicate;
         Objectives = () => SyndicateWinCon;
-        KillButton ??= new(this, new SpriteName("SyndicateKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
+        KillButton ??= new(this, new SpriteName("SyndicateKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
         IsPromoted = false;
     }
@@ -25,37 +25,11 @@ public abstract class Syndicate : Role
     public override List<PlayerControl> Team()
     {
         var team = base.Team();
-
-        if (IsRecruit)
-        {
-            var jackal = Player.GetJackal();
-            team.Add(jackal.Player);
-            team.AddRange(jackal.GetOtherRecruits(Player));
-        }
-
-        foreach (var player in AllPlayers())
-        {
-            if (player.Is(Faction) && player != Player)
-                team.Add(player);
-        }
-
-        if (Player.Is(LayerEnum.Lovers))
-            team.Add(Player.GetOtherLover());
-        else if (Player.Is(LayerEnum.Rivals))
-            team.Add(Player.GetOtherRival());
-        else if (Player.Is(LayerEnum.Mafia))
-        {
-            foreach (var player in AllPlayers())
-            {
-                if (player != Player && player.Is(LayerEnum.Mafia))
-                    team.Add(player);
-            }
-        }
-
+        team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
         return team;
     }
 
-    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.GetTarget<PlayerControl>(), true));
+    public void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);

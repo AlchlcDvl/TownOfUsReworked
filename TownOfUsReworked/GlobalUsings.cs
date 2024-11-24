@@ -25,7 +25,6 @@ global using TownOfUsReworked.Monos;
 global using TownOfUsReworked.Custom;
 global using TownOfUsReworked.Classes;
 global using TownOfUsReworked.Patches;
-global using TownOfUsReworked.Objects;
 global using TownOfUsReworked.Modules;
 global using TownOfUsReworked.Options;
 global using TownOfUsReworked.Debugger;

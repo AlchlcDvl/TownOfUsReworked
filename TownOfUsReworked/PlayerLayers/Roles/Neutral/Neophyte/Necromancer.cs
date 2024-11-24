@@ -42,7 +42,6 @@ public class Necromancer : Neophyte
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ResurrectVent { get; set; } = false;
 
-    public DeadBody ResurrectingBody { get; set; }
     public byte ParentId { get; set; }
     public CustomButton ResurrectButton { get; set; }
     public CustomButton SacrificeButton { get; set; }
@@ -64,9 +63,9 @@ public class Necromancer : Neophyte
         SubFaction = SubFaction.Reanimated;
         ResurrectedCount = 0;
         KillCount = 0;
-        ResurrectButton ??= new(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClick)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
+        ResurrectButton ??= new(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClickBody)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
             new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, "RESURRECT", (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
-        SacrificeButton ??= new(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
+        SacrificeButton ??= new(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
             (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
     }
 
@@ -78,7 +77,7 @@ public class Necromancer : Neophyte
 
     private void FinishResurrect()
     {
-        var player = PlayerByBody(ResurrectingBody);
+        var player = PlayerById(ParentId);
 
         if (!player.Data.IsDead)
             return;
@@ -101,23 +100,25 @@ public class Necromancer : Neophyte
         }
     }
 
-    public void Resurrect()
+    public void Resurrect(DeadBody target)
     {
-        if (RoleGen.Convertible <= 0 || !PlayerByBody(ResurrectButton.GetTarget<DeadBody>()).Is(SubFaction.None))
+        var player = PlayerByBody(target);
+
+        if (RoleGen.Convertible <= 0 || !player.Is(SubFaction.None))
         {
             Flash(new(255, 0, 0, 255));
             ResurrectButton.StartCooldown();
         }
         else
         {
-            ResurrectingBody = ResurrectButton.GetTarget<DeadBody>();
-            Spread(Player, PlayerByBody(ResurrectingBody));
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ResurrectButton, ResurrectingBody);
+            ParentId = target.ParentId;
+            Spread(Player, player);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ResurrectButton, ParentId);
             ResurrectButton.Begin();
             Flash(Color, ResurrectDur);
 
             if (NecromancerTargetBody)
-                ResurrectButton.GetTarget<DeadBody>()?.gameObject.Destroy();
+                target?.gameObject.Destroy();
 
             if (NecroCooldownsLinked)
                 SacrificeButton.StartCooldown();
@@ -126,9 +127,9 @@ public class Necromancer : Neophyte
 
     public bool Exception(PlayerControl player) => Members.Contains(player.PlayerId) || Player.IsLinkedTo(player);
 
-    public void Kill()
+    public void Kill(PlayerControl target)
     {
-        var cooldown = Interact(Player, SacrificeButton.GetTarget<PlayerControl>(), true);
+        var cooldown = Interact(Player, target, true);
 
         if (cooldown != CooldownType.Fail)
             KillCount++;
@@ -147,13 +148,12 @@ public class Necromancer : Neophyte
 
     public override void ReadRPC(MessageReader reader)
     {
-        ResurrectingBody = reader.ReadBody();
         ParentId = reader.ReadByte();
 
-        if (CustomPlayer.Local.PlayerId == ResurrectingBody.ParentId)
+        if (CustomPlayer.Local.PlayerId == ParentId)
             Flash(CustomColorManager.Necromancer, ResurrectDur);
 
         if (NecromancerTargetBody)
-            ResurrectingBody.gameObject.Destroy();
+            BodyById(ParentId).gameObject.Destroy();
     }
 }

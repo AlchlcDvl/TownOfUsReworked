@@ -31,7 +31,7 @@ public class Enforcer : Intruder
         base.Init();
         Alignment = Alignment.IntruderKill;
         BombedPlayer = null;
-        BombButton ??= new(this, new SpriteName("Enforce"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Bomb, new Cooldown(EnforceCd), "SET BOMB", new Duration(EnforceDur),
+        BombButton ??= new(this, new SpriteName("Enforce"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Bomb, new Cooldown(EnforceCd), "SET BOMB", new Duration(EnforceDur),
             (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(EnforceDelay), (PlayerBodyExclusion)Exception1, new CanClickAgain(false), (EndFunc)EndEffect);
     }
 
@@ -61,11 +61,12 @@ public class Enforcer : Intruder
             if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
                 RpcMurderPlayer(enf, player, DeathReasonEnum.Bombed, false);
         }
+
+        RpcMurderPlayer(enf, centre, DeathReasonEnum.Bombed, false);
     }
 
-    public void Bomb()
+    public void Bomb(PlayerControl target)
     {
-        var target = BombButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

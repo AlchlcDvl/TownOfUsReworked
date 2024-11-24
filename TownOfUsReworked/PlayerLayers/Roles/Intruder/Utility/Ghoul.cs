@@ -23,7 +23,7 @@ public class Ghoul : Intruder
         base.Init();
         Alignment = Alignment.IntruderUtil;
         MarkedPlayer = null;
-        MarkButton ??= new(this, new SpriteName("GhoulMark"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Mark, new Cooldown(GhoulMarkCd), "MARK", new PostDeath(true),
+        MarkButton ??= new(this, new SpriteName("GhoulMark"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Mark, new Cooldown(GhoulMarkCd), "MARK", new PostDeath(true),
             (PlayerBodyExclusion)Exception1, (UsableFunc)Usable);
     }
 
@@ -56,9 +56,8 @@ public class Ghoul : Intruder
             Camouflage();
     }
 
-    public void Mark()
+    public void Mark(PlayerControl target)
     {
-        MarkedPlayer = MarkButton.GetTarget<PlayerControl>();
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MarkedPlayer);
         MarkButton.StartCooldown();
     }

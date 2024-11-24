@@ -21,7 +21,7 @@ public class Engineer : Crew
     {
         base.Init();
         Alignment = Alignment.CrewSupport;
-        FixButton ??= new(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Fix, new Cooldown(FixCd), MaxFixes,
+        FixButton ??= new(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Fix, new Cooldown(FixCd), MaxFixes,
             (ConditionFunc)Condition);
     }
 

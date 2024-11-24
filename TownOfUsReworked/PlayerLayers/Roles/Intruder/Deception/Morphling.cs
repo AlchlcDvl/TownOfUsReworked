@@ -36,8 +36,9 @@ public class Morphling : Intruder
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
-        SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Sample, new Cooldown (SampleCd), "SAMPLE", (PlayerBodyExclusion)Exception1);
-        MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
+        SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE",
+            (PlayerBodyExclusion)Exception1);
+        MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
             new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);
     }
 
@@ -59,9 +60,8 @@ public class Morphling : Intruder
         MorphButton.Begin();
     }
 
-    public void Sample()
+    public void Sample(PlayerControl target)
     {
-        var target = SampleButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

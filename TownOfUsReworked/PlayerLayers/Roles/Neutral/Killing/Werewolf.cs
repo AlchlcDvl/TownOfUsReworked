@@ -31,27 +31,24 @@ public class Werewolf : NKilling
     {
         base.Init();
         Objectives = () => "- Maul anyone who can oppose you";
-        MaulButton ??= new(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitMaul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
+        MaulButton ??= new(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Maul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception);
     }
 
-    public void Maul()
+    public void Maul(PlayerControl target)
     {
-        foreach (var player in GetClosestPlayers(Player, MaulRadius, x => x != Player))
-        {
-            Spread(Player, player);
-
-            if (CanAttack(AttackVal, player.GetDefenseValue()))
-                RpcMurderPlayer(Player, player, DeathReasonEnum.Mauled, false);
-        }
-    }
-
-    public void HitMaul()
-    {
-        var cooldown = Interact(Player, MaulButton.GetTarget<PlayerControl>(), true);
+        var cooldown = Interact(Player, target, true);
 
         if (cooldown != CooldownType.Fail)
-            Maul();
+        {
+            foreach (var player in GetClosestPlayers(Player, MaulRadius))
+            {
+                Spread(Player, player);
+
+                if (CanAttack(AttackVal, player.GetDefenseValue()))
+                    RpcMurderPlayer(Player, player, DeathReasonEnum.Mauled, false);
+            }
+        }
 
         MaulButton.StartCooldown(cooldown);
     }

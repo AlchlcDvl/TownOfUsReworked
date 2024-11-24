@@ -27,7 +27,7 @@ public class Consort : Intruder
         Alignment = Alignment.IntruderSupport;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
-        BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
+        BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
             new Duration(ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock);
     }
 

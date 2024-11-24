@@ -40,19 +40,19 @@ public class Cryomaniac : NKilling
         base.Init();
         Objectives = () => "- Freeze anyone who can oppose you";
         Doused = [];
-        DouseButton ??= new(this, new SpriteName("CryoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(CryoDouseCd), "DOUSE",
+        DouseButton ??= new(this, new SpriteName("CryoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(CryoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
-        FreezeButton ??= new(this, new SpriteName("Freeze"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)FreezeUnFreeze, (LabelFunc)Label, (UsableFunc)Doused.Any);
+        FreezeButton ??= new(this, new SpriteName("Freeze"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)FreezeUnFreeze, (LabelFunc)Label, (UsableFunc)Doused.Any);
 
         if (CryoLastKillerBoost)
         {
-            KillButton ??= new(this, new SpriteName("CryoKill"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Kill, new Cooldown(VaporiseCd), "VAPORISE", (UsableFunc)Usable,
+            KillButton ??= new(this, new SpriteName("CryoKill"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Kill, new Cooldown(VaporiseCd), "VAPORISE", (UsableFunc)Usable,
                 (PlayerBodyExclusion)Exception);
         }
 
     }
 
-    public void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.GetTarget<PlayerControl>(), true));
+    public void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
     public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
     {
@@ -93,12 +93,12 @@ public class Cryomaniac : NKilling
     public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
         Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
-    public void Douse()
+    public void Douse(PlayerControl target)
     {
-        var cooldown = Interact(Player, DouseButton.GetTarget<PlayerControl>());
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            RpcSpreadDouse(Player, DouseButton.GetTarget<PlayerControl>());
+            RpcSpreadDouse(Player, target);
 
         DouseButton.StartCooldown(cooldown);
     }

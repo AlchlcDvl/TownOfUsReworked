@@ -41,13 +41,12 @@ public class Monarch : Crew
         Alignment = Alignment.CrewSov;
         Knighted = [];
         ToBeKnighted = [];
-        KnightingButton ??= new(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Knight, new Cooldown(KnightingCd), KnightCount,
+        KnightingButton ??= new(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Knight, new Cooldown(KnightingCd), KnightCount,
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 
-    public void Knight()
+    public void Knight(PlayerControl target)
     {
-        var target = KnightingButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

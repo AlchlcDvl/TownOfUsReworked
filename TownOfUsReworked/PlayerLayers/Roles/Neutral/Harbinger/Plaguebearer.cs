@@ -25,7 +25,8 @@ public class Plaguebearer : Harbinger<Pestilence>
         base.Init();
         Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Infected = [ Player.PlayerId ];
-        InfectButton ??= new(this, new SpriteName("Infect"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Infect, new Cooldown(InfectCd), "INFECT", (PlayerBodyExclusion)Exception);
+        InfectButton ??= new(this, new SpriteName("Infect"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Infect, new Cooldown(InfectCd), "INFECT",
+            (PlayerBodyExclusion)Exception);
     }
 
     public void RpcSpreadInfection(PlayerControl source, PlayerControl target)
@@ -54,7 +55,7 @@ public class Plaguebearer : Harbinger<Pestilence>
         }
     }
 
-    public void Infect() => InfectButton.StartCooldown(Interact(Player, InfectButton.GetTarget<PlayerControl>()));
+    public void Infect(PlayerControl target) => InfectButton.StartCooldown(Interact(Player, target));
 
     public override bool CanTransform() => AllPlayers().Count(x => !x.HasDied()) <= Infected.Count;
 

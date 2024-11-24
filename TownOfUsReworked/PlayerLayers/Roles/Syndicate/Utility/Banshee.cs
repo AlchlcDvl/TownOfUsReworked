@@ -26,7 +26,7 @@ public class Banshee : Syndicate
         base.Init();
         Alignment = Alignment.SyndicateUtil;
         Blocked = [];
-        ScreamButton ??= new(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
+        ScreamButton ??= new(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
             new Duration(ScreamDur), (EffectVoid)Scream, (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
     }
 

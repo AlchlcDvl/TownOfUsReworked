@@ -15,7 +15,7 @@ public abstract class Intruder : Role
         base.Init();
         Faction = Faction.Intruder;
         Objectives = () => IntrudersWinCon;
-        KillButton ??= new(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
+        KillButton ??= new(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception, FactionColor);
     }
 
@@ -23,25 +23,10 @@ public abstract class Intruder : Role
     {
         var team = base.Team();
         team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
-
-        if (Player.Is(LayerEnum.Lovers))
-            team.Add(Player.GetOtherLover());
-        else if (Player.Is(LayerEnum.Rivals))
-            team.Add(Player.GetOtherRival());
-        else if (Player.Is(LayerEnum.Mafia))
-            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(LayerEnum.Mafia)));
-
-        if (IsRecruit)
-        {
-            var jackal = Player.GetJackal();
-            team.Add(jackal.Player);
-            team.AddRange(jackal.GetOtherRecruits(Player));
-        }
-
         return team;
     }
 
-    public virtual void Kill() => KillButton.StartCooldown(Interact(Player, KillButton.GetTarget<PlayerControl>(), true));
+    public virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);

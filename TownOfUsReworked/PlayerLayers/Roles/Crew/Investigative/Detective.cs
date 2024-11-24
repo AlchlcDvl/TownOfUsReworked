@@ -37,7 +37,7 @@ public class Detective : Crew
         Investigated = [];
         PlayerTimes = [];
         Alignment = Alignment.CrewInvest;
-        ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Examine, new Cooldown(ExamineCd));
+        ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Examine, new Cooldown(ExamineCd));
     }
 
     public override void Deinit()
@@ -56,9 +56,8 @@ public class Detective : Crew
 
     private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
 
-    public void Examine()
+    public void Examine(PlayerControl target)
     {
-        var target = ExamineButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

@@ -38,15 +38,14 @@ public class Janitor : Intruder
         base.Init();
         Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
-        DragButton ??= new(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClick)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
-        DropButton ??= new(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Drop, "DROP BODY", (UsableFunc)Usable2);
-        CleanButton ??= new(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClick)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
+        DragButton ??= new(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClickBody)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
+        DropButton ??= new(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Drop, "DROP BODY", (UsableFunc)Usable2);
+        CleanButton ??= new(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClickBody)Clean, new Cooldown(CleanCd), "CLEAN BODY", (DifferenceFunc)Difference,
             (UsableFunc)Usable1);
     }
 
-    public void Clean()
+    public void Clean(DeadBody target)
     {
-        var target = CleanButton.GetTarget<DeadBody>();
         Spread(Player, PlayerByBody(target));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
         FadeBody(target);
@@ -56,9 +55,9 @@ public class Janitor : Intruder
             KillButton.StartCooldown();
     }
 
-    public void Drag()
+    public void Drag(DeadBody target)
     {
-        CurrentlyDragging = DragButton.GetTarget<DeadBody>();
+        CurrentlyDragging = target;
         Spread(Player, PlayerByBody(CurrentlyDragging));
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CurrentlyDragging);
         DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
@@ -87,9 +86,9 @@ public class Janitor : Intruder
         DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
     }
 
-    public override void Kill()
+    public override void Kill(PlayerControl target)
     {
-        base.Kill();
+        base.Kill(target);
 
         if (JaniCooldownsLinked)
             CleanButton.StartCooldown(CooldownType.Custom, KillButton.CooldownTime);

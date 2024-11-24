@@ -33,7 +33,8 @@ public class Thief : Neutral
     {
         base.Init();
         Alignment = Alignment.NeutralBen;
-        StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Steal, new Cooldown(StealCd), "STEAL", (PlayerBodyExclusion)Exception);
+        StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL",
+            (PlayerBodyExclusion)Exception);
         GuessMenu = new(Player, "Guess", ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);
     }
@@ -164,33 +165,39 @@ public class Thief : Neutral
         }
     }
 
-    public void Steal()
-    {
-        var target = StealButton.GetTarget<PlayerControl>();
-        var cooldown = Interact(Player, target, true, delayed: true);
-
-        if (cooldown != CooldownType.Fail)
-        {
-            if (target.GetFaction() is Faction.Intruder or Faction.Syndicate || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or
-                Alignment.CrewKill || target.GetRole() is VampireHunter)
-            {
-                Utils.RpcMurderPlayer(Player, target);
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
-                Steal(target);
-            }
-            else
-                Utils.RpcMurderPlayer(Player);
-        }
-
-        StealButton.StartCooldown(cooldown);
-    }
-
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 
-    public void Steal(PlayerControl other)
+    public void Steal(PlayerControl target)
     {
-        var role = other.GetRole();
+        var allowed = true;
+
+        if (Local)
+        {
+            var cooldown = Interact(Player, target, true, delayed: true);
+
+            if (cooldown != CooldownType.Fail)
+            {
+                if (target.GetFaction() is Faction.Intruder or Faction.Syndicate || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or
+                    Alignment.CrewKill || target.GetRole() is VampireHunter)
+                {
+                    Utils.RpcMurderPlayer(Player, target);
+                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
+                }
+                else
+                {
+                    Utils.RpcMurderPlayer(Player);
+                    allowed = false;
+                }
+            }
+
+            StealButton.StartCooldown(cooldown);
+        }
+
+        if (!allowed)
+            return;
+
+        var role = target.GetRole();
         var player = Player;
 
         Role newRole = role switch
@@ -260,10 +267,10 @@ public class Thief : Neutral
 
         if (ThiefSteals)
         {
-            if (other.AmOwner && other.Is(Faction.Intruder))
-                other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
+            if (target.AmOwner && target.Is(Faction.Intruder))
+                target.Data.Role.TeamType = RoleTeamTypes.Crewmate;
 
-            new Thief().RoleUpdate(role, other, true);
+            new Thief().RoleUpdate(role, target, true);
         }
 
         if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals))
@@ -283,7 +290,7 @@ public class Thief : Neutral
             }
         }
 
-        if (other.AmOwner)
+        if (target.AmOwner)
             Flash(Color);
     }
 

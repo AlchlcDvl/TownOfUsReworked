@@ -44,11 +44,11 @@ public class Collider : Syndicate
         Alignment = Alignment.SyndicateKill;
         Positive = null;
         Negative = null;
-        PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",
+        PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",
             (PlayerBodyExclusion)Exception1);
-        NegativeButton ??= new(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)SetNegative, new Cooldown(CollideCd), "SET NEGATIVE",
+        NegativeButton ??= new(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)SetNegative, new Cooldown(CollideCd), "SET NEGATIVE",
             (PlayerBodyExclusion)Exception2);
-        ChargeButton ??= new(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClick)Charge, new Cooldown(ChargeCd), "CHARGE", (UsableFunc)Usable,
+        ChargeButton ??= new(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Charge, new Cooldown(ChargeCd), "CHARGE", (UsableFunc)Usable,
             new Duration(ChargeDur), (EndFunc)EndEffect);
     }
 
@@ -66,12 +66,12 @@ public class Collider : Syndicate
         ResetCharges();
     }
 
-    public void SetPositive()
+    public void SetPositive(PlayerControl target)
     {
-        var cooldown = Interact(Player, PositiveButton.GetTarget<PlayerControl>());
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Positive = PositiveButton.GetTarget<PlayerControl>();
+            Positive = target;
 
         PositiveButton.StartCooldown(cooldown);
 
@@ -79,12 +79,12 @@ public class Collider : Syndicate
             NegativeButton.StartCooldown(cooldown);
     }
 
-    public void SetNegative()
+    public void SetNegative(PlayerControl target)
     {
-        var cooldown = Interact(Player, NegativeButton.GetTarget<PlayerControl>());
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Negative = NegativeButton.GetTarget<PlayerControl>();
+            Negative = target;
 
         NegativeButton.StartCooldown(cooldown);
 

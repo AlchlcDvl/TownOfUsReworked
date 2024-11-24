@@ -31,17 +31,17 @@ public class Silencer : Syndicate
         base.Init();
         Alignment = Alignment.SyndicateDisrup;
         SilencedPlayer = null;
-        SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Silence, new Cooldown(SilenceCd), "SILENCE",
+        SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(SilenceCd), "SILENCE",
             (PlayerBodyExclusion)Exception1);
     }
 
-    public void Silence()
+    public void Silence(PlayerControl target)
     {
-        var cooldown = Interact(Player, SilenceButton.GetTarget<PlayerControl>());
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            SilencedPlayer = SilenceButton.GetTarget<PlayerControl>();
+            SilencedPlayer = target;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SilencedPlayer);
         }
 

@@ -26,7 +26,7 @@ public class Mayor : Crew
     {
         base.Init();
         Alignment = Alignment.CrewSov;
-        RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Reveal, (UsableFunc)Usable);
+        RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable);
     }
 
     public void Reveal()

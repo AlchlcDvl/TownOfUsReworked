@@ -78,6 +78,19 @@ public static class OverrideShowTeam
     public static void Postfix(ref ISystem.List<PlayerControl> __result)
     {
         if (!IsHnS())
-            __result = Role.LocalRole.Team().ToIl2Cpp();
+        {
+            var result = Role.LocalRole.Team();
+            var copy = new List<PlayerControl>();
+
+            foreach (var player in result)
+            {
+                if (result.Count(x => x == player) > 1)
+                    copy.Add(player);
+            }
+
+            result.RemoveRange(copy); // Removes all copies of players that appeared more than once
+            result.AddRange(copy); // Adds only one instance of each copied player back
+            __result = result.ToIl2Cpp();
+        }
     }
 }

@@ -67,7 +67,7 @@ public class Guesser : Neutral
 
         if (GuesserCanPickTargets)
         {
-            TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
+            TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
                 (UsableFunc)Usable);
         }
     }
@@ -75,9 +75,9 @@ public class Guesser : Neutral
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
-    public void SelectTarget()
+    public void SelectTarget(PlayerControl target)
     {
-        TargetPlayer = TargetButton.GetTarget<PlayerControl>();
+        TargetPlayer = target;
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
     }
 

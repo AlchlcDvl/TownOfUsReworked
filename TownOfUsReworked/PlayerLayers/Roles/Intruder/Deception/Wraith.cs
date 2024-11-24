@@ -24,7 +24,7 @@ public class Wraith : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderDecep;
-        InvisButton ??= new(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitInvis, new Cooldown(InvisCd), (EffectVoid)Invis,
+        InvisButton ??= new(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitInvis, new Cooldown(InvisCd), (EffectVoid)Invis,
             new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 

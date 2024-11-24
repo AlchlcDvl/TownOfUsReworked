@@ -40,7 +40,7 @@ public class Warper : Syndicate
         WarpPlayer2 = null;
         WarpMenu1 = new(Player, Click1, Exception1);
         WarpMenu2 = new(Player, Click2, Exception2);
-        WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
+        WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
         Player1Body = null;
         Player2Body = null;
         WasInVent = false;
@@ -52,6 +52,12 @@ public class Warper : Syndicate
         AnimationPlaying.sprite = PortalAnimation[0];
         AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
         WarpObj.SetActive(true);
+    }
+
+    public override void Deinit()
+    {
+        base.Deinit();
+        WarpObj.Destroy();
     }
 
     public IEnumerator WarpPlayers()

@@ -36,12 +36,11 @@ public class Trapper : Crew
         Alignment = Alignment.IntruderSupport;
         Trapped = [];
         TriggeredRoles = [];
-        BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)StartBuildling, new Cooldown(BuildCd), (UsableFunc)Usable,
-            new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false), MaxTraps);
-        TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SetTrap, new Cooldown(TrapCd), MaxTraps,
+        BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuildling, new Cooldown(BuildCd), MaxTraps,
+            (UsableFunc)Usable, new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
+        TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, new Cooldown(TrapCd), MaxTraps,
             (PlayerBodyExclusion)Exception);
-        TrapsMade = 0;
-        TrapButton.Uses = 0;
+        TrapsMade = TrapButton.Uses = 0;
     }
 
     private void StartBuildling()
@@ -58,9 +57,8 @@ public class Trapper : Crew
         TrapButton.Base.SetUsesRemaining(TrapButton.Uses);
     }
 
-    private void SetTrap()
+    private void SetTrap(PlayerControl target)
     {
-        var target = TrapButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

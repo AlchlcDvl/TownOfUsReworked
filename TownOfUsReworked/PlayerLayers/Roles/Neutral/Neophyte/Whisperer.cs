@@ -50,7 +50,7 @@ public class Whisperer : Neophyte
         Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
         SubFaction = SubFaction.Sect;
         WhisperConversion = WhisperRate;
-        WhisperButton ??= new(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Whisper, new Cooldown(WhisperCd), "WHISPER",
+        WhisperButton ??= new(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);
         PlayerConversion = [];
         AllPlayers().ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
@@ -59,7 +59,7 @@ public class Whisperer : Neophyte
 
     public void Whisper()
     {
-        var closestPlayers = GetClosestPlayers(Player, WhisperRadius, x => x != Player && !Members.Contains(x.PlayerId));
+        var closestPlayers = GetClosestPlayers(Player, WhisperRadius, x => !Members.Contains(x.PlayerId));
 
         foreach (var player in closestPlayers)
         {

@@ -20,7 +20,7 @@ public class Mystic : Crew
     {
         base.Init();
         Alignment = Alignment.CrewAudit;
-        RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Reveal, (PlayerBodyExclusion)Exception,
+        RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (PlayerBodyExclusion)Exception,
             new Cooldown(RevealCd));
     }
 
@@ -32,9 +32,8 @@ public class Mystic : Crew
             TurnSeer();
     }
 
-    private void Reveal()
+    private void Reveal(PlayerControl target)
     {
-        var target = RevealButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

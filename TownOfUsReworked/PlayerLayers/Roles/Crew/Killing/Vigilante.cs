@@ -42,7 +42,7 @@ public class Vigilante : Crew
     {
         base.Init();
         Alignment = Alignment.CrewKill;
-        ShootButton ??= new(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Shoot, new Cooldown(ShootCd), (PlayerBodyExclusion)Exception,
+        ShootButton ??= new(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Shoot, new Cooldown(ShootCd), (PlayerBodyExclusion)Exception,
             MaxBullets, (UsableFunc)Usable);
         RoundOne = RoundOneNoShot;
     }
@@ -68,9 +68,8 @@ public class Vigilante : Crew
 
     public bool Usable() => !KilledInno && !RoundOne;
 
-    public void Shoot()
+    public void Shoot(PlayerControl target)
     {
-        var target = ShootButton.GetTarget<PlayerControl>();
         var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or
             Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.IsFramed() ||
             (target.Is(Alignment.NeutralEvil) && NeutralEvilSettings.VigilanteKillsEvils) || Player.Is(LayerEnum.Corrupted) || target.IsFramed() || (target.Is(Alignment.NeutralBen) &&

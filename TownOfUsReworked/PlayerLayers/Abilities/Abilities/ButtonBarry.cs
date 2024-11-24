@@ -14,7 +14,7 @@ public class ButtonBarry : Ability
     public override LayerEnum Type => LayerEnum.ButtonBarry;
     public override Func<string> Description => () => "- You can call a button from anywhere";
 
-    public override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClick)Call, (UsableFunc)Usable,
+    public override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)Call, (UsableFunc)Usable,
         new Cooldown(ButtonCd));
 
     private void Call()

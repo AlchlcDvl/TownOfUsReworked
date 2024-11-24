@@ -26,18 +26,18 @@ public class Spellslinger : Syndicate
         Alignment = Alignment.SyndicatePower;
         Spelled = [];
         SpellCount = 0;
-        SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitSpell, new Cooldown(SpellCd), "SPELLBIND",
-            (PlayerBodyExclusion)Exception1, (DifferenceFunc)Difference);
+        SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(SpellCd), "SPELLBIND", (DifferenceFunc)Difference,
+            (PlayerBodyExclusion)Exception1);
     }
 
-    public void HitSpell()
+    public void Spell(PlayerControl target)
     {
-        var cooldown = Interact(Player, SpellButton.GetTarget<PlayerControl>(), astral: HoldsDrive);
+        var cooldown = Interact(Player, target, astral: HoldsDrive);
 
         if (cooldown != CooldownType.Fail)
         {
-            Spelled.Add(SpellButton.GetTarget<PlayerControl>().PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SpellButton.GetTarget<PlayerControl>().PlayerId);
+            Spelled.Add(target.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
 
             if (HoldsDrive)
                 SpellCount = 0;

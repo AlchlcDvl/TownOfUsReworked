@@ -6,8 +6,8 @@ public class Medium : Crew
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number MediateCd { get; set; } = new(25);
 
-    // [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    // public static Number SeanceCd { get; set; } = new(25);
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static Number SeanceCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ShowMediatePlayer { get; set; } = true;
@@ -20,7 +20,8 @@ public class Medium : Crew
 
     public Dictionary<byte, CustomArrow> MediateArrows { get; set; }
     public CustomButton MediateButton { get; set; }
-    // public CustomButton SeanceButton { get; set; }
+    public CustomButton SeanceButton { get; set; }
+    public bool HasSeanced { get; set; }
     public List<byte> MediatedPlayers { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medium : CustomColorManager.Crew;
@@ -36,11 +37,12 @@ public class Medium : Crew
         MediatedPlayers = [];
         MediateArrows = [];
         Alignment = Alignment.CrewInvest;
-        MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Mediate, new Cooldown(MediateCd));
-        // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Seance, new Cooldown(SeanceCd), new PostDeath(true));
+        MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));
+        SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), 1,
+            new PostDeath(true));
     }
 
-    // private void Seance() { Currently blank, gonna work on this later }
+    private void Seance() { /*Currently blank, gonna work on this later*/ }
     // Can you believe this guy? Over a year and this mofo still hasn't worked on it :skull:
 
     public override void Deinit()
@@ -75,7 +77,18 @@ public class Medium : Crew
 
         var bodies = AllBodies();
 
-        if (DeadRevealed != DeadRevealed.Random)
+        if (DeadRevealed == DeadRevealed.Random)
+        {
+            var dead = playersDead.Random();
+
+            if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+            {
+                MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                MediatedPlayers.Add(dead.PlayerId);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
+            }
+        }
+        else
         {
             if (DeadRevealed == DeadRevealed.Newest)
                 playersDead.Reverse();
@@ -91,17 +104,6 @@ public class Medium : Crew
                     if (DeadRevealed != DeadRevealed.Everyone)
                         break;
                 }
-            }
-        }
-        else
-        {
-            var dead = playersDead.Random();
-
-            if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
-            {
-                MediateArrows.Add(dead.PlayerId, new(Player, Color));
-                MediatedPlayers.Add(dead.PlayerId);
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
             }
         }
     }

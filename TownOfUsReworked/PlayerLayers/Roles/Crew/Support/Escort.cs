@@ -25,8 +25,8 @@ public class Escort : Crew
         base.Init();
         Alignment = Alignment.CrewSupport;
         BlockTarget = null;
-        BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Roleblock, (EffectVoid)Block, (EffectEndVoid)UnBlock,
-            new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect);
+        BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, (EffectVoid)Block,
+            (EffectEndVoid)UnBlock,  new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect);
     }
 
     public void UnBlock()
@@ -42,9 +42,8 @@ public class Escort : Crew
 
     public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
 
-    public void Roleblock()
+    public void Roleblock(PlayerControl target)
     {
-        var target = BlockButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

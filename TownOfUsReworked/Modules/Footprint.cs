@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Objects;
+namespace TownOfUsReworked.Modules;
 
 public class Footprint
 {

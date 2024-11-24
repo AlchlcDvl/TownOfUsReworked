@@ -39,9 +39,8 @@ public class Bomber : Syndicate
         base.Init();
         Alignment = Alignment.SyndicateKill;
         Bombs = [];
-        BombButton ??= new(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)Place, new Cooldown(BombCd), "PLACE BOMB",
-            (ConditionFunc)Condition);
-        DetonateButton ??= new(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any, "DETONATE");
+        BombButton ??= new(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Place, new Cooldown(BombCd), "PLACE BOMB", (ConditionFunc)Condition);
+        DetonateButton ??= new(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any, "DETONATE");
     }
 
     public override void Deinit()

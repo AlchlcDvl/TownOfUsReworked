@@ -58,7 +58,7 @@ public static class AllMonos
         prefab.AffectedByLightAffectors = true;
         prefab.IntroSound = null;
 
-        var allRoles = RoleManager.Instance.AllRoles.ToArray().ToList();
+        var allRoles = RoleManager.Instance.AllRoles.ToList();
         allRoles.Add(prefab);
         RoleManager.Instance.AllRoles = allRoles.ToArray();
 

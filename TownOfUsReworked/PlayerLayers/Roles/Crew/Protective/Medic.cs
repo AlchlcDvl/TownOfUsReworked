@@ -28,13 +28,12 @@ public class Medic : Crew
         base.Init();
         ShieldedPlayer = null;
         Alignment = Alignment.CrewProt;
-        ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Protect, (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
+        ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)Exception,
+            (UsableFunc)Usable);
     }
 
-    public void Protect()
+    public void Protect(PlayerControl target)
     {
-        var target = ShieldButton.GetTarget<PlayerControl>();
-
         if (Interact(Player, target) != CooldownType.Fail)
         {
             if (ShieldedPlayer)

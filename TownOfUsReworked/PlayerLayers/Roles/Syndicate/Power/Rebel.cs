@@ -21,11 +21,25 @@ public class Rebel : Syndicate
     {
         base.Init();
         Alignment = Alignment.SyndicatePower;
-        SidekickButton ??= new(this, new SpriteName("Sidekick"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK", (UsableFunc)Usable);
+        SidekickButton ??= new(this, new SpriteName("Sidekick"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
+            (UsableFunc)Usable);
     }
 
     public void Sidekick(PlayerControl target)
     {
+        var allow = true;
+
+        if (Local)
+        {
+            allow = Interact(Player, target) != CooldownType.Fail;
+
+            if (allow)
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+        }
+
+        if (!allow)
+            return;
+
         HasDeclared = true;
         var formerRole = target.GetLayer<Syndicate>();
         new Sidekick()
@@ -33,15 +47,6 @@ public class Rebel : Syndicate
             FormerRole = formerRole,
             Rebel = this
         }.RoleUpdate(formerRole, target);
-    }
-
-    public void Sidekick()
-    {
-        if (Interact(Player, SidekickButton.GetTarget<PlayerControl>()) != CooldownType.Fail)
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SidekickButton.GetTarget<PlayerControl>());
-            Sidekick(SidekickButton.GetTarget<PlayerControl>());
-        }
     }
 
     public bool Exception1(PlayerControl player) => player.GetRole() is PromotedRebel or Roles.Sidekick or Rebel || !(player.IsBase(Faction.Syndicate) && player.Is(Faction));

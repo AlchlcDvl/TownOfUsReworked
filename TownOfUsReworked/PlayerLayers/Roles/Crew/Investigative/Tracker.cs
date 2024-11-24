@@ -29,7 +29,7 @@ public class Tracker : Crew
         base.Init();
         TrackerArrows = [];
         Alignment = Alignment.CrewInvest;
-        TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Track, new Cooldown(TrackCd), MaxTracks,
+        TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);
     }
 
@@ -48,9 +48,8 @@ public class Tracker : Crew
 
     public bool Exception(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
 
-    public void Track()
+    public void Track(PlayerControl target)
     {
-        var target = TrackButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
@@ -67,16 +66,20 @@ public class Tracker : Crew
             Deinit();
         else
         {
+            var toDestroy = new List<byte>();
+
             foreach (var pair in TrackerArrows)
             {
                 var player = PlayerById(pair.Key);
                 var body = BodyById(pair.Key);
 
                 if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
-                    DestroyArrow(pair.Key);
+                    toDestroy.Add(pair.Key);
                 else
                     pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());
             }
+
+            toDestroy.ForEach(DestroyArrow);
         }
     }
 }

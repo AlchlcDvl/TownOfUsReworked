@@ -32,7 +32,7 @@ public class Shapeshifter : Syndicate
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Exception1);
         ShapeshiftMenu2 = new(Player, Click2, Exception2);
-        ShapeshiftButton ??= new(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitShapeshift, new Cooldown(ShapeshiftCd), (EffectEndVoid)UnShapeshift,
+        ShapeshiftButton ??= new(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(ShapeshiftCd), (EffectEndVoid)UnShapeshift,
             new Duration(ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)Label);
     }
 

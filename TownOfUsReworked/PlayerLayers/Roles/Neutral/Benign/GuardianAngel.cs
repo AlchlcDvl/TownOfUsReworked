@@ -57,24 +57,24 @@ public class GuardianAngel : Neutral
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         Alignment = Alignment.NeutralBen;
         TargetPlayer = null;
-        ProtectButton ??= new(this, "Protect", AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitProtect, new Cooldown(ProtectCd), "PROTECT", new Duration(ProtectDur),
+        ProtectButton ??= new(this, "Protect", AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT", new Duration(ProtectDur),
             MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
 
         if (GuardianAngelCanPickTargets)
-            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)SelectTarget, "WATCH", (UsableFunc)Usable2);
+            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
 
         if (ProtectBeyondTheGrave)
         {
-            GraveProtectButton ??= new(this, new SpriteName("GraveProtect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGraveProtect, new PostDeath(true), "PROTECT",
-                new Cooldown(ProtectCd), new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
+            GraveProtectButton ??= new(this, new SpriteName("GraveProtect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGraveProtect, new PostDeath(true),
+                "PROTECT", new Cooldown(ProtectCd), new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
         }
 
         Rounds = 0;
     }
 
-    public void SelectTarget()
+    public void SelectTarget(PlayerControl target)
     {
-        TargetPlayer = TargetButton.GetTarget<PlayerControl>();
+        TargetPlayer = target;
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
     }
 

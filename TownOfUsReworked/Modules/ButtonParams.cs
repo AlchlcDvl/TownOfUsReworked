@@ -8,13 +8,18 @@ public delegate bool EndFunc();
 public delegate bool UsableFunc();
 public delegate bool ConditionFunc();
 
-public delegate void OnClick();
 public delegate void DelayVoid();
 public delegate void EffectVoid();
 public delegate void DelayEndVoid();
 public delegate void EffectEndVoid();
 public delegate void DelayStartVoid();
 public delegate void EffectStartVoid();
+
+public delegate void OnClickTargetless();
+public delegate void OnClickVent(Vent target);
+public delegate void OnClickBody(DeadBody target);
+public delegate void OnClickConsole(Console target);
+public delegate void OnClickPlayer(PlayerControl target);
 
 public delegate float DifferenceFunc();
 public delegate float MultiplierFunc();

@@ -30,8 +30,8 @@ public class Teleporter : Intruder
         base.Init();
         Alignment = Alignment.IntruderSupport;
         TeleportPoint = Vector3.zero;
-        MarkButton ??= new(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Mark, new Cooldown(TeleMarkCd), "MARK POSITION", (ConditionFunc)Condition1);
-        TeleportButton ??= new(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Teleport, new Cooldown(TeleportCd), "TELEPORT", (UsableFunc)Usable,
+        MarkButton ??= new(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mark, new Cooldown(TeleMarkCd), "MARK POSITION", (ConditionFunc)Condition1);
+        TeleportButton ??= new(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Teleport, new Cooldown(TeleportCd), "TELEPORT", (UsableFunc)Usable,
             (ConditionFunc)Condition2);
     }
 

@@ -15,13 +15,7 @@ public abstract class Neutral : Role
     {
         var team = base.Team();
 
-        if (IsRecruit)
-        {
-            var jackal = Player.GetJackal();
-            team.Add(jackal.Player);
-            team.AddRange(jackal.GetOtherRecruits(Player));
-        }
-        else if (Type == LayerEnum.Jackal)
+        if (Type == LayerEnum.Jackal)
         {
             var jackal = (Jackal)this;
             team.Add(jackal.Recruit1);
@@ -31,28 +25,8 @@ public abstract class Neutral : Role
         if (HasTarget && Type != LayerEnum.BountyHunter)
             team.Add(Player.GetTarget());
 
-        if (Player.Is(LayerEnum.Lovers))
-            team.Add(Player.GetOtherLover());
-        else if (Player.Is(LayerEnum.Rivals))
-            team.Add(Player.GetOtherRival());
-        else if (Player.Is(LayerEnum.Linked))
-            team.Add(Player.GetOtherLink());
-        else if (Player.Is(LayerEnum.Mafia))
-        {
-            foreach (var player in AllPlayers())
-            {
-                if (player != Player && player.Is(LayerEnum.Mafia))
-                    team.Add(player);
-            }
-        }
-        else if (Player.Is(LayerEnum.Allied) && !Player.Is(Faction.Crew))
-        {
-            foreach (var player in AllPlayers())
-            {
-                if (player.Is(Faction) && player != Player)
-                    team.Add(player);
-            }
-        }
+        if (Player.Is(LayerEnum.Allied) && !Player.Is(Faction.Crew))
+            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
 
         return team;
     }

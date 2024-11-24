@@ -32,9 +32,9 @@ public class SerialKiller : NKilling
     {
         base.Init();
         Objectives = () => "- Stab anyone who can oppose you";
-        BloodlustButton ??= new(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Lust, new Cooldown(BloodlustCd), new Duration(BloodlustDur),
-            "BLOODLUST", (EndFunc)EndEffect);
-        StabButton ??= new(this, new SpriteName("Stab"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Stab, new Cooldown(StabCd), "STAB", (PlayerBodyExclusion)Exception,
+        BloodlustButton ??= new(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Lust, new Cooldown(BloodlustCd), (EndFunc)EndEffect,
+            new Duration(BloodlustDur), "BLOODLUST");
+        StabButton ??= new(this, new SpriteName("Stab"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Stab, new Cooldown(StabCd), "STAB", (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);
     }
 
@@ -44,7 +44,7 @@ public class SerialKiller : NKilling
         BloodlustButton.Begin();
     }
 
-    public void Stab() => StabButton.StartCooldown(Interact(Player, StabButton.GetTarget<PlayerControl>(), true));
+    public void Stab(PlayerControl target) => StabButton.StartCooldown(Interact(Player, target, true));
 
     public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);

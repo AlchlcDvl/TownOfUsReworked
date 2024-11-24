@@ -21,11 +21,24 @@ public class Godfather : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderHead;
-        DeclareButton ??= new(this, "Promote", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
+        DeclareButton ??= new(this, "Promote", AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 
     public void Declare(PlayerControl target)
     {
+        var allow = true;
+
+        if (Local)
+        {
+            allow = Interact(Player, target) != CooldownType.Fail;
+
+            if (allow)
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+        }
+
+        if (!allow)
+            return;
+
         HasDeclared = true;
         var formerRole = target.GetRole();
         new Mafioso()
@@ -33,17 +46,6 @@ public class Godfather : Intruder
             FormerRole = formerRole,
             Godfather = this
         }.RoleUpdate(formerRole, target);
-    }
-
-    public void Declare()
-    {
-        var target = DeclareButton.GetTarget<PlayerControl>();
-
-        if (Interact(Player, target) != CooldownType.Fail)
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
-            Declare(target);
-        }
     }
 
     public bool Exception1(PlayerControl player) => player.GetRole() is PromotedGodfather or Mafioso or Godfather || !(player.IsBase(Faction.Intruder) && player.Is(Faction));

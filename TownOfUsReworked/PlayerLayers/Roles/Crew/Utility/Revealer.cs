@@ -98,13 +98,10 @@ public class Revealer : Crew
                 LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
             }
         }
-        else if (TasksDone && !Caught)
+        else if (TasksDone && !Caught && (Local || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or
+            Alignment.NeutralNeo or Alignment.NeutralPros && RevealerRevealsNeutrals)))
         {
-            if (Local || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
-                Alignment.NeutralPros && RevealerRevealsNeutrals))
-            {
-                Flash(Color);
-            }
+            Flash(Color);
         }
     }
 

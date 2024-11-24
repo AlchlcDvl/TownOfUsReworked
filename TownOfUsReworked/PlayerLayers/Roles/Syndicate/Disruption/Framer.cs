@@ -18,16 +18,16 @@ public class Framer : Syndicate
     public override LayerEnum Type => LayerEnum.Framer;
     public override Func<string> StartText => () => "Make Everyone Suspicious";
     public override Func<string> Description => () => $"- You can frame a{(HoldsDrive ? $"ll players within a {ChaosDriveFrameRadius}m radius" : " player")}\n- Till you are dead, framed " +
-        $"targets will die easily to killing roles and have the wrong investigative results\n{CommonAbilities}";
+        $"targets will die easily to killing roles and will have the wrong investigative results\n{CommonAbilities}";
 
     public override void Init()
     {
         base.Init();
         Alignment = Alignment.SyndicateDisrup;
         Framed = [];
-        FrameButton ??= new(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
+        FrameButton ??= new(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
             (PlayerBodyExclusion)Exception1);
-        RadialFrameButton ??= new(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)RadialFrame, new Cooldown(FrameCd), (UsableFunc)Usable2,
+        RadialFrameButton ??= new(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)RadialFrame, new Cooldown(FrameCd), (UsableFunc)Usable2,
             "FRAME");
     }
 
@@ -40,12 +40,12 @@ public class Framer : Syndicate
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, player.PlayerId);
     }
 
-    public void Frame()
+    public void Frame(PlayerControl target)
     {
-        var cooldown = Interact(Player, FrameButton.GetTarget<PlayerControl>());
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            RpcFrame(FrameButton.GetTarget<PlayerControl>());
+            RpcFrame(target);
 
         FrameButton.StartCooldown(cooldown);
     }

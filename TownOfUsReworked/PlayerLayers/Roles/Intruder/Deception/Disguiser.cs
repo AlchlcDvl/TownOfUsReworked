@@ -38,8 +38,9 @@ public class Disguiser : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderDecep;
-        MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Measure, new Cooldown(MeasureCd), "MEASURE", (PlayerBodyExclusion)Exception2);
-        DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
+        MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(MeasureCd), "MEASURE",
+            (PlayerBodyExclusion)Exception2);
+        DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
             new Duration(DisguiseDur), (EffectVoid)Disguise, new Delay(DisguiseDelay), (PlayerBodyExclusion)Exception1, (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE");
         DisguisedPlayer = null;
         MeasuredPlayer = null;
@@ -55,9 +56,8 @@ public class Disguiser : Intruder
         CopiedPlayer = null;
     }
 
-    public void HitDisguise()
+    public void HitDisguise(PlayerControl target)
     {
-        var target = DisguiseButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
@@ -74,9 +74,8 @@ public class Disguiser : Intruder
             MeasureButton.StartCooldown(cooldown);
     }
 
-    public void Measure()
+    public void Measure(PlayerControl target)
     {
-        var target = MeasureButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

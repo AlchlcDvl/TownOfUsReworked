@@ -26,15 +26,14 @@ public class Ambusher : Intruder
         base.Init();
         Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
-        AmbushButton ??= new(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
+        AmbushButton ??= new(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
             new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);
     }
 
     public void UnAmbush() => AmbushedPlayer = null;
 
-    public void Ambush()
+    public void Ambush(PlayerControl target)
     {
-        var target = AmbushButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
@@ -47,8 +46,8 @@ public class Ambusher : Intruder
             AmbushButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) ||
-        (player.Is(SubFaction) && SubFaction != SubFaction.None && !AmbushMates);
+    public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) || (!AmbushMates &&
+        player.Is(SubFaction) && SubFaction != SubFaction.None);
 
     public bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 

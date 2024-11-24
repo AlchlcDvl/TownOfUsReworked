@@ -44,9 +44,10 @@ public class Arsonist : NKilling
         base.Init();
         Objectives = () => "- Burn anyone who can oppose you";
         Doused = [];
-        DouseButton ??= new(this, new SpriteName("ArsoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
+        DouseButton ??= new(this, new SpriteName("ArsoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
-        IgniteButton ??= new(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)Ignite, new Cooldown(IgniteCd), "IGNITE", (UsableFunc)Doused.Any);
+        IgniteButton ??= new(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Ignite, new Cooldown(IgniteCd), "IGNITE",
+            (UsableFunc)Doused.Any);
     }
 
     public void Ignite()
@@ -88,9 +89,8 @@ public class Arsonist : NKilling
             DouseButton.StartCooldown();
     }
 
-    public void Douse()
+    public void Douse(PlayerControl target)
     {
-        var target = DouseButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

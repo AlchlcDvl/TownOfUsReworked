@@ -14,7 +14,26 @@ public abstract class Role : PlayerLayer
     public virtual Func<string> StartText => () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
 
-    public virtual List<PlayerControl> Team() => [ Player ];
+    public virtual List<PlayerControl> Team()
+    {
+        var team = new List<PlayerControl>() { Player };
+
+        if (Player.Is(LayerEnum.Lovers))
+            team.Add(Player.GetOtherLover());
+        else if (Player.Is(LayerEnum.Rivals))
+            team.Add(Player.GetOtherRival());
+        else if (Player.Is(LayerEnum.Mafia))
+            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(LayerEnum.Mafia)));
+
+        if (IsRecruit)
+        {
+            var jackal = Player.GetJackal();
+            team.Add(jackal.Player);
+            team.AddRange(jackal.GetOtherRecruits(Player));
+        }
+
+        return team;
+    }
 
     /*private static bool PlateformIsUsed;
     public static bool IsLeft;
@@ -131,17 +150,17 @@ public abstract class Role : PlayerLayer
 
         /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
         {
-            CallButton ??= new(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClick)UsePlatform, (UsableFunc)CallUsable,
+            CallButton ??= new(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
                 (ConditionFunc)CallCondition);
         }*/
 
         if (!IsCustomHnS() && !IsTaskRace())
         {
             if (RoleGen.GetSpawnItem(LayerEnum.Enforcer).IsActive())
-                BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)BombKill, (UsableFunc)BombUsable);
+                BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
 
             if (RoleGen.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
-                PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClick)PlaceHit, (UsableFunc)RequestUsable);
+                PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
         }
     }
 
@@ -448,9 +467,9 @@ public abstract class Role : PlayerLayer
         "<color=#008000FF>Syndicate</color>";
     public const string CrewWinCon = "- Finish all tasks\n- Eject all <color=#FF0000FF>evildoers</color>";
 
-    public void PlaceHit()
+    public void PlaceHit(PlayerControl target)
     {
-        var target = Requestor.IsLinkedTo(PlaceHitButton.GetTarget<PlayerControl>()) ? Player : PlaceHitButton.GetTarget<PlayerControl>();
+        target = Requestor.IsLinkedTo(target) ? Player : target;
         Requestor.GetLayer<BountyHunter>().TentativeTarget = target;
         Requesting = false;
         Requestor = null;
@@ -573,9 +592,9 @@ public abstract class Role : PlayerLayer
         }
     }
 
-    public void BombKill()
+    public void BombKill(PlayerControl target)
     {
-        var success = Interact(Player, BombKillButton.GetTarget<PlayerControl>(), true) != CooldownType.Fail;
+        var success = Interact(Player, target, true) != CooldownType.Fail;
         GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);

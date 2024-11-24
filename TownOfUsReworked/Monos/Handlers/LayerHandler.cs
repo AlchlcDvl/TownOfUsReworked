@@ -31,7 +31,7 @@ public class LayerHandler : RoleBehaviour
     public static RoleBehaviour ImpostorGhost;
 
     [HideFromIl2Cpp]
-    public T GetLayer<T>() where T : PlayerLayer => CustomLayers.Find(x => x is T) as T;
+    public T GetLayer<T>() where T : PlayerLayer => CustomLayers.OfType<T>().FirstOrDefault();
 
     public void UpdatePlayer()
     {

@@ -174,6 +174,19 @@ public static class ListExtensions
         return default;
     }
 
+    public static int RemoveRange<T>(this List<T> list, IEnumerable<T> list2)
+    {
+        var result = 0;
+
+        foreach (var item in list2)
+        {
+            if (list.Contains(item))
+                result += list.RemoveAll(x => Equals(x, item));
+        }
+
+        return result;
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)
@@ -289,19 +302,6 @@ public static class ListExtensions
         {
             if (list.Remove(t))
                 result = true;
-        }
-
-        return result;
-    }
-
-    public static int RemoveRange<T>(this List<T> list, IEnumerable<T> list2)
-    {
-        var result = 0;
-
-        foreach (var item in list2)
-        {
-            if (list.Contains(item))
-                result += list.RemoveAll(x => Equals(x, item));
         }
 
         return result;

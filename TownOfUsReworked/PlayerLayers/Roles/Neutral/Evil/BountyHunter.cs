@@ -55,13 +55,13 @@ public class BountyHunter : Neutral
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;
-        GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
+        GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);
-        HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(HuntCd), "HUNT", (UsableFunc)Usable2);
+        HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(HuntCd), "HUNT", (UsableFunc)Usable2);
 
         if (BountyHunterCanPickTargets)
         {
-            RequestButton ??= new(this, new SpriteName("Request"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClick)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
+            RequestButton ??= new(this, new SpriteName("Request"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
                 (UsableFunc)Usable3);
         }
 
@@ -202,9 +202,9 @@ public class BountyHunter : Neutral
             TurnTroll();
     }
 
-    public void Request()
+    public void Request(PlayerControl target)
     {
-        RequestingPlayer = RequestButton.GetTarget<PlayerControl>();
+        RequestingPlayer = target;
         var role = RequestingPlayer.GetRole();
         role.Requesting = true;
         role.Requestor = Player;
@@ -220,9 +220,9 @@ public class BountyHunter : Neutral
         role.Requestor = Player;
     }
 
-    public void Guess()
+    public void Guess(PlayerControl target)
     {
-        TargetFound = GuessButton.GetTarget<PlayerControl>() == TargetPlayer;
+        TargetFound = target == TargetPlayer;
         Flash(TargetFound ? UColor.green : UColor.red);
         GuessButton.StartCooldown();
 
@@ -230,20 +230,20 @@ public class BountyHunter : Neutral
             HuntButton.StartCooldown();
     }
 
-    public void Hunt()
+    public void Hunt(PlayerControl target)
     {
-        if (HuntButton.GetTarget<PlayerControl>() != TargetPlayer && !TargetKilled)
+        if (target != TargetPlayer && !TargetKilled)
         {
             Flash(new(255, 0, 0, 255));
             HuntButton.StartCooldown();
         }
-        else if (HuntButton.GetTarget<PlayerControl>() == TargetPlayer && !TargetKilled)
+        else if (target == TargetPlayer && !TargetKilled)
         {
             TargetKilled = true;
-            HuntButton.StartCooldown(Interact(Player, HuntButton.GetTarget<PlayerControl>(), true, bypass: true));
+            HuntButton.StartCooldown(Interact(Player, target, true, bypass: true));
             CallRpc(CustomRPC.WinLose, WinLose.BountyHunterWins, this);
         }
         else
-            HuntButton.StartCooldown(Interact(Player, HuntButton.GetTarget<PlayerControl>(), true));
+            HuntButton.StartCooldown(Interact(Player, target, true));
     }
 }

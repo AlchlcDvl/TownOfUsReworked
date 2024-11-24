@@ -27,9 +27,9 @@ public class Poisoner : Syndicate
         PoisonedPlayer = null;
         Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);
-        PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
+        PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
             new Duration(PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
-        GlobalPoisonButton ??= new(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)HitGlobalPoison, (LabelFunc)Label,
+        GlobalPoisonButton ??= new(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGlobalPoison, (LabelFunc)Label,
             new Cooldown(PoisonCd), new Duration(PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);
     }
 
@@ -75,13 +75,13 @@ public class Poisoner : Syndicate
     public bool Exception1(PlayerControl player) => player == PoisonedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None);
 
-    public void HitPoison()
+    public void HitPoison(PlayerControl target)
     {
-        var cooldown = Interact(Player, PoisonButton.GetTarget<PlayerControl>(), delayed: true);
+        var cooldown = Interact(Player, target, true, delayed: true);
 
         if (cooldown != CooldownType.Fail)
         {
-            PoisonedPlayer = PoisonButton.GetTarget<PlayerControl>();
+            PoisonedPlayer = target;
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, PoisonButton, PoisonedPlayer);
             PoisonButton.Begin();
         }

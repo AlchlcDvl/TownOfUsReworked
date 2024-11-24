@@ -12,7 +12,11 @@ public class CustomButton
     public AbilityTypes Type { get; }
     public string Keybind { get; }
     public PostDeath PostDeath { get; }
-    public OnClick DoClick { get; }
+    public OnClickTargetless DoClickTargetless { get; }
+    public OnClickBody DoClickBody { get; }
+    public OnClickPlayer DoClickPlayer { get; }
+    public OnClickVent DoClickVent { get; }
+    public OnClickConsole DoClickConsole { get; }
     public EffectVoid Effect { get; }
     public EffectStartVoid OnEffectStart { get; }
     public EffectEndVoid OnEffectEnd { get; }
@@ -80,8 +84,16 @@ public class CustomButton
                 Keybind = keybind.ToString();
             else if (prop is PostDeath postDeath)
                 PostDeath = postDeath;
-            else if (prop is OnClick onClick)
-                DoClick = onClick;
+            else if (prop is OnClickTargetless onClickTargetless)
+                DoClickTargetless = onClickTargetless;
+            else if (prop is OnClickBody onClickBody)
+                DoClickBody = onClickBody;
+            else if (prop is OnClickPlayer onClickPlayer)
+                DoClickPlayer = onClickPlayer;
+            else if (prop is OnClickVent onClickVent)
+                DoClickVent = onClickVent;
+            else if (prop is OnClickConsole onClickConsole)
+                DoClickConsole = onClickConsole;
             else if (prop is EffectVoid effect)
                 Effect = effect;
             else if (prop is EffectStartVoid onEffect)
@@ -108,6 +120,8 @@ public class CustomButton
                 Delay = delay1;
             else if (prop is Number uses)
                 Uses = MaxUses = uses;
+            else if (prop is int number)
+                Uses = MaxUses = number;
             else if (prop is UsableFunc usable)
                 IsUsable = usable;
             else if (prop is ConditionFunc condition)
@@ -130,7 +144,11 @@ public class CustomButton
                 Warning($"Unassignable proprty of type {prop.GetType().Name}");
         }
 
-        DoClick ??= BlankVoid;
+        DoClickTargetless ??= BlankVoid;
+        DoClickPlayer ??= BlankVoid;
+        DoClickVent ??= BlankVoid;
+        DoClickBody ??= BlankVoid;
+        DoClickConsole ??= BlankVoid;
         PlayerBodyException ??= BlankFalse;
         VentException ??= BlankFalse;
         ConsoleException ??= BlankFalse;
@@ -227,6 +245,8 @@ public class CustomButton
 
     public void Clicked()
     {
+        Play("Click");
+
         if (Owner.IsBlocked)
             BlockExposed = true;
 
@@ -235,7 +255,18 @@ public class CustomButton
 
         if (Clickable())
         {
-            DoClick();
+            if (Type.HasFlag(AbilityTypes.Targetless))
+                DoClickTargetless();
+            else if (Target is PlayerControl player)
+                DoClickPlayer(player);
+            else if (Target is Vent vent)
+                DoClickVent(vent);
+            else if (Target is DeadBody body)
+                DoClickBody(body);
+            else if (Target is Console console)
+                DoClickConsole(console);
+            else
+                return;
 
             if (HasUses)
             {
@@ -249,7 +280,6 @@ public class CustomButton
             CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
         }
 
-        Play("Click");
         DisableTarget();
     }
 
@@ -505,8 +535,6 @@ public class CustomButton
         Owner.ReadRPC(reader);
         Begin();
     }
-
-    public T GetTarget<T>() where T : MonoBehaviour => Target as T;
 
     public static void DestroyAll()
     {

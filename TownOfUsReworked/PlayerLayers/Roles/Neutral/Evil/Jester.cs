@@ -37,8 +37,8 @@ public class Jester : Neutral
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
         {
-            HauntButton ??= new(this, new SpriteName("Haunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Haunt, (PlayerBodyExclusion)Exception, new PostDeath(true), "HAUNT",
-                (UsableFunc)Usable);
+            HauntButton ??= new(this, new SpriteName("Haunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Haunt, (PlayerBodyExclusion)Exception, new PostDeath(true),
+                "HAUNT", (UsableFunc)Usable);
         }
     }
 
@@ -63,9 +63,9 @@ public class Jester : Neutral
     public bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player) ||
         player.Is(Alignment.NeutralApoc);
 
-    public void Haunt()
+    public void Haunt(PlayerControl target)
     {
-        RpcMurderPlayer(Player, HauntButton.GetTarget<PlayerControl>(), DeathReasonEnum.Haunted, false);
+        RpcMurderPlayer(Player, target, DeathReasonEnum.Haunted, false);
         HasHaunted = true;
         TrulyDead = true;
     }

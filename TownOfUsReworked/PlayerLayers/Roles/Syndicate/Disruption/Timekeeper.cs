@@ -28,8 +28,8 @@ public class Timekeeper : Syndicate
     {
         base.Init();
         Alignment = Alignment.SyndicateDisrup;
-        TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
-            new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl);
+        TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label, (EffectEndVoid)UnControl,
+            new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart);
     }
 
     public void ControlStart() => Flash(Color, TimeDur);

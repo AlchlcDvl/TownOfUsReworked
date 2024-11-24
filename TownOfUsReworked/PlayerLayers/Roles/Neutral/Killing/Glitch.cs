@@ -43,11 +43,11 @@ public class Glitch : NKilling
         base.Init();
         Objectives = () => "- Neutralise anyone who can oppose you";
         MimicMenu = new(Player, Click, Exception3);
-        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
+        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
             new Cooldown(NeutraliseCd));
-        HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
+        HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
             new Duration(HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
-        MimicButton ??= new(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClick)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
+        MimicButton ??= new(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
             new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic);
     }
 
@@ -74,9 +74,8 @@ public class Glitch : NKilling
 
     public void Click(PlayerControl player) => MimicTarget = player;
 
-    public void HitHack()
+    public void HitHack(PlayerControl target)
     {
-        var target = HackButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
@@ -89,7 +88,7 @@ public class Glitch : NKilling
             HackButton.StartCooldown(cooldown);
     }
 
-    public void Neutralise() => NeutraliseButton.StartCooldown(Interact(Player, NeutraliseButton.GetTarget<PlayerControl>(), true));
+    public void Neutralise(PlayerControl target) => NeutraliseButton.StartCooldown(Interact(Player, target, true));
 
     public void HitMimic()
     {

@@ -31,12 +31,11 @@ public class Blackmailer : Intruder
         base.Init();
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
-        BlackmailButton ??= new(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Blackmail, new Cooldown(BlackmailCd), (PlayerBodyExclusion)Exception1);
+        BlackmailButton ??= new(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(BlackmailCd), (PlayerBodyExclusion)Exception1);
     }
 
-    public void Blackmail()
+    public void Blackmail(PlayerControl target)
     {
-        var target = BlackmailButton.GetTarget<PlayerControl>();
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)

@@ -23,31 +23,27 @@ public class Shifter : Crew
         base.Init();
         Alignment = Alignment.CrewSupport;
         ShifterMenu = new(Player, Shift, Exception);
-        ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClick)ShifterMenu.Open, new Cooldown(ShiftCd));
-    }
-
-    public override void Deinit()
-    {
-        base.Deinit();
-        CustomMenu.AllMenus.Remove(ShifterMenu);
-    }
-
-    public void Shift()
-    {
-        var target = ShiftButton.GetTarget<PlayerControl>();
-        var cooldown = Interact(Player, target, astral: true);
-
-        if (cooldown != CooldownType.Fail)
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
-            Shift(target);
-        }
-        else
-            ShiftButton.StartCooldown(cooldown);
+        ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)ShifterMenu.Open, new Cooldown(ShiftCd));
     }
 
     public void Shift(PlayerControl other)
     {
+        if (Local)
+        {
+            var cooldown = Interact(Player, other, astral: true);
+
+            if (cooldown != CooldownType.Fail)
+            {
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, other);
+                Shift(other);
+            }
+            else
+            {
+                ShiftButton.StartCooldown(cooldown);
+                return;
+            }
+        }
+
         var role = other.GetRole();
 
         if (!other.IsBase(Faction.Crew) || other.IsFramed())

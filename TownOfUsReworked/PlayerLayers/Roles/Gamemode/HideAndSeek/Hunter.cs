@@ -16,21 +16,21 @@ public class Hunter : HideAndSeek
     {
         base.Init();
         Objectives = () => "- Hunt the others down before they finish their tasks";
-        HuntButton ??= new(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Hunt, new Cooldown(GameModeSettings.HuntCd), (UsableFunc)Usable,
-            (PlayerBodyExclusion)Exception);
+        HuntButton ??= new(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(GameModeSettings.HuntCd),
+            (UsableFunc)Usable, (PlayerBodyExclusion)Exception);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (Starting)
-        {
-            StartingTimer = Mathf.Clamp(StartingTimer - Time.deltaTime, 0f, GameModeSettings.StartTime);
+        if (!Starting)
+            return;
 
-            if (!Starting)
-                HuntButton.StartCooldown();
-        }
+        StartingTimer = Mathf.Clamp(StartingTimer - Time.deltaTime, 0f, GameModeSettings.StartTime);
+
+        if (!Starting)
+            HuntButton.StartCooldown();
     }
 
     public bool Exception(PlayerControl player) => player.Is(LayerEnum.Hunter);
@@ -50,10 +50,8 @@ public class Hunter : HideAndSeek
 
     public override void OnIntroEnd() => StartingTimer = GameModeSettings.StartTime;
 
-    public void Hunt()
+    public void Hunt(PlayerControl target)
     {
-        var target = HuntButton.GetTarget<PlayerControl>();
-
         if (GameModeSettings.HnSMode == HnSMode.Classic)
             RpcMurderPlayer(Player, target);
         else if (GameModeSettings.HnSMode == HnSMode.Infection)

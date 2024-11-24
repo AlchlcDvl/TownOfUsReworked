@@ -5,7 +5,7 @@ public class SoundLoader : AssetLoader<Asset>
     public override string DirectoryInfo => TownOfUsReworked.Sounds;
     public override bool Downloading => true;
     public override string Manifest => "Sounds";
-    public override string FileExtension => "raw";
+    public override string FileExtension => "wav";
 
     public static SoundLoader Instance { get; set; }
 
@@ -22,7 +22,7 @@ public class SoundLoader : AssetLoader<Asset>
         for (var i = 0; i < response.Length; i++)
         {
             var sound = response[i];
-            AddPath(sound.ID, Path.Combine(DirectoryInfo, $"{sound.ID}.raw"));
+            AddPath(sound.ID, Path.Combine(DirectoryInfo, $"{sound.ID}.wav"));
             time += Time.deltaTime;
 
             if (time > 1f)
@@ -36,5 +36,5 @@ public class SoundLoader : AssetLoader<Asset>
         yield break;
     }
 
-    private static bool ShouldDownload(string id) => !File.Exists(Path.Combine(TownOfUsReworked.Sounds, $"{id}.raw"));
+    private static bool ShouldDownload(string id) => !File.Exists(Path.Combine(TownOfUsReworked.Sounds, $"{id}.wav"));
 }

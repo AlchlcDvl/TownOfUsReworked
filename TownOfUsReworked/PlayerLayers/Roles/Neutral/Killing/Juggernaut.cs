@@ -28,13 +28,13 @@ public class Juggernaut : NKilling
         base.Init();
         Objectives = () => "- Assault anyone who can oppose you";
         JuggKills = 0;
-        AssaultButton ??= new(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClick)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
+        AssaultButton ??= new(this, new SpriteName("Assault"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception, "ASSAULT");
     }
 
-    public void Assault()
+    public void Assault(PlayerControl target)
     {
-        var cooldown = Interact(Player, AssaultButton.GetTarget<PlayerControl>(), true, bypass: JuggKills >= 4);
+        var cooldown = Interact(Player, target, true, bypass: JuggKills >= 4);
 
         if (cooldown != CooldownType.Fail)
         {

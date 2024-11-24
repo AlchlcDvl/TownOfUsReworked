@@ -30,19 +30,19 @@ public class Crusader : Syndicate
         base.Init();
         Alignment = Alignment.SyndicateKill;
         CrusadedPlayer = null;
-        CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClick)Crusade, new Cooldown(CrusadeCd), "CRUSADE",
-            new Duration(CrusadeDur), (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
+        CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(CrusadeCd), "CRUSADE", new Duration(CrusadeDur),
+            (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
     }
 
     public void UnCrusade() => CrusadedPlayer = null;
 
-    public void Crusade()
+    public void Crusade(PlayerControl target)
     {
-        var cooldown = Interact(Player, CrusadeButton.GetTarget<PlayerControl>());
+        var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
         {
-            CrusadedPlayer = CrusadeButton.GetTarget<PlayerControl>();
+            CrusadedPlayer = target;
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, CrusadeButton, CrusadedPlayer);
             CrusadeButton.Begin();
         }
