@@ -22,16 +22,16 @@ public class Dracula : Neophyte
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : CustomColorManager.Neutral;
     public override string Name => "Dracula";
     public override LayerEnum Type => LayerEnum.Dracula;
-    public override Func<string> StartText => () => "Lead The <color=#7B8968FF>Undead</color> To Victory";
-    public override Func<string> Description => () => "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of " +
-        $"alive <color=#7B8968FF>Undead</color> exceeds {AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire Hunter</color> will force them to " +
+    public override Func<string> StartText => () => "Lead The <#7B8968FF>Undead</color> To Victory";
+    public override Func<string> Description => () => "- You can convert the <#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of " +
+        $"alive <#7B8968FF>Undead</color> exceeds {AliveVampCount}, you will kill them instead\n- Attempting to convert a <#C0C0C0FF>Vampire Hunter</color> will force them to " +
         "kill you";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()
     {
         base.Init();
-        Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
+        Objectives = () => "- Convert or kill anyone who can oppose the <#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
         BiteButton ??= new(this, new SpriteName("Bite"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Convert, new Cooldown(BiteCd), "BITE", (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);

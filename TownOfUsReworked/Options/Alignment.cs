@@ -25,9 +25,9 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
 
         var quota = header.transform.GetChild(2);
 
-        Left = quota.GetChild(1).gameObject.GetComponent<TextMeshPro>();
-        Right = quota.GetChild(4).gameObject.GetComponent<TextMeshPro>();
-        Center = quota.GetChild(6).gameObject.GetComponent<TextMeshPro>();
+        Left = quota.GetChild(1).GetComponent<TextMeshPro>();
+        Right = quota.GetChild(4).GetComponent<TextMeshPro>();
+        Center = quota.GetChild(6).GetComponent<TextMeshPro>();
 
         Single = quota.GetChild(5).gameObject;
 

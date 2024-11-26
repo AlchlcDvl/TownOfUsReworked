@@ -2,17 +2,17 @@ namespace TownOfUsReworked.Extensions;
 
 public static class LayerExtentions
 {
-    public static string RoleColorString => $"<color=#{CustomColorManager.Role.ToHtmlStringRGBA()}>";
-    public static string AlignmentColorString => $"<color=#{CustomColorManager.Alignment.ToHtmlStringRGBA()}>";
-    public static string ObjectivesColorString => $"<color=#{CustomColorManager.Objectives.ToHtmlStringRGBA()}>";
-    public static string AttributesColorString => $"<color=#{CustomColorManager.Attributes.ToHtmlStringRGBA()}>";
-    public static string AbilitiesColorString => $"<color=#{CustomColorManager.Abilities.ToHtmlStringRGBA()}>";
-    public static string DispositionColorString => $"<color=#{CustomColorManager.Disposition.ToHtmlStringRGBA()}>";
-    public static string ModifierColorString => $"<color=#{CustomColorManager.Modifier.ToHtmlStringRGBA()}>";
-    public static string AbilityColorString => $"<color=#{CustomColorManager.Ability.ToHtmlStringRGBA()}>";
-    public static string SubFactionColorString => $"<color=#{CustomColorManager.SubFaction.ToHtmlStringRGBA()}>";
-    public static string AttackColorString => $"<color=#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
-    public static string DefenseColorString => $"<color=#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
+    public static string RoleColorString => $"<#{CustomColorManager.Role.ToHtmlStringRGBA()}>";
+    public static string AlignmentColorString => $"<#{CustomColorManager.Alignment.ToHtmlStringRGBA()}>";
+    public static string ObjectivesColorString => $"<#{CustomColorManager.Objectives.ToHtmlStringRGBA()}>";
+    public static string AttributesColorString => $"<#{CustomColorManager.Attributes.ToHtmlStringRGBA()}>";
+    public static string AbilitiesColorString => $"<#{CustomColorManager.Abilities.ToHtmlStringRGBA()}>";
+    public static string DispositionColorString => $"<#{CustomColorManager.Disposition.ToHtmlStringRGBA()}>";
+    public static string ModifierColorString => $"<#{CustomColorManager.Modifier.ToHtmlStringRGBA()}>";
+    public static string AbilityColorString => $"<#{CustomColorManager.Ability.ToHtmlStringRGBA()}>";
+    public static string SubFactionColorString => $"<#{CustomColorManager.SubFaction.ToHtmlStringRGBA()}>";
+    public static string AttackColorString => $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
+    public static string DefenseColorString => $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
     public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
 
@@ -837,27 +837,18 @@ public static class LayerExtentions
             modifierName += "None";
 
         modifierName += "</b></color>";
+        var neo = player.GetNeophyte();
 
         if (player.IsRecruit())
-        {
-            var jackal = player.GetJackal();
-            objectives += $"\n<color=#{CustomColorManager.Cabal.ToHtmlStringRGBA()}>- You are a member of the Cabal. Help {jackal.PlayerName} in taking over the mission $</color>";
-        }
+            objectives += $"\n<#{CustomColorManager.Cabal.ToHtmlStringRGBA()}>- You are a member of the Cabal. Help {neo.PlayerName} in taking over the mission $</color>";
         else if (player.IsResurrected())
-        {
-            var necromancer = player.GetNecromancer();
-            objectives += $"\n<color=#{CustomColorManager.Reanimated.ToHtmlStringRGBA()}>- You are a member of the Reanimated. Help {necromancer.PlayerName} in taking over the mission Σ</color>";
-        }
+            objectives += $"\n<#{CustomColorManager.Reanimated.ToHtmlStringRGBA()}>- You are a member of the Reanimated. Help {neo.PlayerName} in taking over the mission Σ</color>";
         else if (player.IsPersuaded())
-        {
-            var whisperer = player.GetWhisperer();
-            objectives += $"\n<color=#{CustomColorManager.Sect.ToHtmlStringRGBA()}>- You are a member of the Sect. Help {whisperer.PlayerName} in taking over the mission Λ</color>";
-        }
+            objectives += $"\n<#{CustomColorManager.Sect.ToHtmlStringRGBA()}>- You are a member of the Sect. Help {neo.PlayerName} in taking over the mission Λ</color>";
         else if (player.IsBitten())
         {
-            var dracula = player.GetDracula();
-            objectives += $"\n<color=#{CustomColorManager.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {dracula.PlayerName} in taking over the mission γ</color>";
-            abilities += $"\n{role.ColorString}- Attempting to interact with a <color=#C0C0C0FF>Vampire Hunter</color> will force them to kill you</color>";
+            objectives += $"\n<#{CustomColorManager.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {neo.PlayerName} in taking over the mission γ</color>";
+            abilities += $"\n{role.ColorString}- Attempting to interact with a <#C0C0C0FF>Vampire Hunter</color> will force them to kill you</color>";
         }
 
         objectives += "</color>";
@@ -880,25 +871,25 @@ public static class LayerExtentions
             attributes += $"\n{modifier.ColorString}{modifier.Description()}</color>";
 
         if (player.IsGuessTarget() && Guesser.GuessTargetKnows)
-            attributes += "\n<color=#EEE5BEFF>- Someone wants to assassinate you π</color>";
+            attributes += "\n<#EEE5BEFF>- Someone wants to assassinate you π</color>";
 
         if (player.IsExeTarget() && Executioner.ExeTargetKnows)
-            attributes += "\n<color=#CCCCCCFF>- Someone wants you ejected §</color>";
+            attributes += "\n<#CCCCCCFF>- Someone wants you ejected §</color>";
 
         if (player.IsGATarget() && GuardianAngel.GATargetKnows)
-            attributes += "\n<color=#FFFFFFFF>- Someone wants to protect you ★</color>";
+            attributes += "\n<#FFFFFFFF>- Someone wants to protect you ★</color>";
 
         if (player.IsBHTarget())
-            attributes += "\n<color=#B51E39FF>- There is a bounty on your head Θ</color>";
+            attributes += "\n<#B51E39FF>- There is a bounty on your head Θ</color>";
 
         if (player.Is(Faction.Syndicate) && role.BaseFaction == Faction.Syndicate && ((Syndicate)role).HoldsDrive)
-            attributes += "\n<color=#008000FF>- You have the power of the Chaos Drive Δ</color>";
+            attributes += "\n<#008000FF>- You have the power of the Chaos Drive Δ</color>";
 
         if (!player.CanDoTasks())
-            attributes += "\n<color=#ABCDEFFF>- Your tasks are fake</color>";
+            attributes += "\n<#ABCDEFFF>- Your tasks are fake</color>";
 
         if (player.Data.IsDead)
-            attributes += "\n<color=#FF1919FF>- You are dead</color>";
+            attributes += "\n<#FF1919FF>- You are dead</color>";
 
         if (attributes == $"{AttributesColorString}Attributes:")
             attributes = "";
@@ -968,75 +959,75 @@ public static class LayerExtentions
 
     public static string AlignmentName(this Alignment alignment, bool withColors = false) => alignment switch
     {
-        Alignment.CrewSupport => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Support</color>)</color>" : "Crew (Support)",
-        Alignment.CrewInvest => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Investigative</color>)</color>" : "Crew (Investigative)",
-        Alignment.CrewProt => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Protective</color>)</color>" : "Crew (Protective)",
-        Alignment.CrewKill => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Killing</color>)</color>" : "Crew (Killing)",
-        Alignment.CrewUtil => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Utility</color>)</color>" : "Crew (Utility)",
-        Alignment.CrewSov => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Crew (Sovereign)",
-        Alignment.CrewAudit => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Auditor</color>)</color>" : "Crew (Auditor)",
-        Alignment.CrewDecep => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Deception</color>)</color>" : "Crew (Deception)",
-        Alignment.CrewConceal => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Concealing</color>)</color>" : "Crew (Concealing)",
-        Alignment.CrewPower => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Power</color>)</color>" : "Crew (Power)",
-        Alignment.CrewDisrup => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Disruption</color>)</color>" : "Crew (Disruption)",
-        Alignment.CrewHead => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Head</color>)</color>" : "Crew (Head)",
-        Alignment.IntruderSupport => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>" : "Intruder (Support)",
-        Alignment.IntruderConceal => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Concealing</color>)</color>" : "Intruder (Concealing)",
-        Alignment.IntruderDecep => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Deception</color>)</color>" : "Intuder (Deception)",
-        Alignment.IntruderKill => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Killing</color>)</color>" : "Intruder (Killing)",
-        Alignment.IntruderUtil => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Utility</color>)</color>" : "Intruder (Utility)",
-        Alignment.IntruderInvest => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Investigative</color>)</color>" : "Intruder (Investigative)",
-        Alignment.IntruderAudit => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Auditor</color>)</color>" : "Intruder (Auditor)",
-        Alignment.IntruderProt => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Protective</color>)</color>" : "Intruder (Protective)",
-        Alignment.IntruderSov => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
-        Alignment.IntruderDisrup=> withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
-        Alignment.IntruderPower => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Power</color>)</color>" : "Intruder (Power)",
-        Alignment.IntruderHead => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
-        Alignment.NeutralKill => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Killing</color>)</color>" : "Neutral (Killing)",
-        Alignment.NeutralNeo => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Neophyte</color>)</color>" : "Neutral (Neophyte)",
-        Alignment.NeutralEvil => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Evil</color>)</color>" : "Neutral (Evil)",
-        Alignment.NeutralBen => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Benign</color>)</color>" : "Neutral (Benign)",
-        Alignment.NeutralPros => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Proselyte</color>)</color>" : "Neutral (Proselyte)",
-        Alignment.NeutralSupport => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Support</color>)</color>" : "Neutral (Support)",
-        Alignment.NeutralInvest => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Investigative</color>)</color>" : "Neutral (Investigative)",
-        Alignment.NeutralProt => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Protective</color>)</color>" : "Neutral (Protective)",
-        Alignment.NeutralUtil => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Utility</color>)</color>" : "Neutral (Utility)",
-        Alignment.NeutralSov => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Neutral (Sovereign)",
-        Alignment.NeutralAudit => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Auditor</color>)</color>" : "Neutral (Auditor)",
-        Alignment.NeutralConceal => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Concealing</color>)</color>" : "Neutral (Concealing)",
-        Alignment.NeutralDecep => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Deception</color>)</color>" : "Neutral (Deception)",
-        Alignment.NeutralPower => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Power</color>)</color>" : "Neutral (Power)",
-        Alignment.NeutralDisrup => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Disruption</color>)</color>" : "Neutral (Disruption)",
-        Alignment.NeutralApoc => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Apocalypse</color>)</color>" : "Neutral (Apocalypse)",
-        Alignment.NeutralHarb => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Harbinger</color>)</color>" : "Neutral (Harbinger)",
-        Alignment.NeutralHead => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Head</color>)</color>" : "Neutral (Head)",
-        Alignment.SyndicateKill => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Killing</color>)</color>" : "Syndicate (Killing)",
-        Alignment.SyndicateSupport => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Support</color>)</color>" : "Syndicate (Support)",
-        Alignment.SyndicateDisrup => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Disruption</color>)</color>" : "Syndicate (Disruption)",
-        Alignment.SyndicatePower => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Power</color>)</color>" : "Syndicate (Power)",
-        Alignment.SyndicateUtil => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Utility</color>)</color>" : "Syndicate (Utility)",
-        Alignment.SyndicateInvest => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Investigative</color>)</color>" : "Syndicate (Investigative)",
-        Alignment.SyndicateAudit => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Auditor</color>)</color>" : "Syndicate (Auditor)",
-        Alignment.SyndicateSov => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Syndicate (Sovereign)",
-        Alignment.SyndicateProt => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Protective</color>)</color>" : "Syndicate (Protective)",
-        Alignment.SyndicateConceal => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Concealing</color>)</color>" : "Syndicate (Concealing)",
-        Alignment.SyndicateDecep => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Deception</color>)</color>" : "Syndicate (Deception)",
-        Alignment.SyndicateHead => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Head</color>)</color>" : "Syndicate (Head)",
-        Alignment.GameModeHideAndSeek => withColors ? "<color=#A81538FF>Game Mode (<color=#7500AFFF>Hide And Seek</color>)</color>" : "Game Mode (Hide And Seek)",
-        Alignment.GameModeTaskRace => withColors ? "<color=#A81538FF>Game Mode (<color=#1E49CFFF>Task Race</color>)</color>" : "Game Mode (Task Race)",
+        Alignment.CrewSupport => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Support</color>)</color>" : "Crew (Support)",
+        Alignment.CrewInvest => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Investigative</color>)</color>" : "Crew (Investigative)",
+        Alignment.CrewProt => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Protective</color>)</color>" : "Crew (Protective)",
+        Alignment.CrewKill => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Killing</color>)</color>" : "Crew (Killing)",
+        Alignment.CrewUtil => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Utility</color>)</color>" : "Crew (Utility)",
+        Alignment.CrewSov => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Sovereign</color>)</color>" : "Crew (Sovereign)",
+        Alignment.CrewAudit => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Auditor</color>)</color>" : "Crew (Auditor)",
+        Alignment.CrewDecep => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Deception</color>)</color>" : "Crew (Deception)",
+        Alignment.CrewConceal => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Concealing</color>)</color>" : "Crew (Concealing)",
+        Alignment.CrewPower => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Power</color>)</color>" : "Crew (Power)",
+        Alignment.CrewDisrup => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Disruption</color>)</color>" : "Crew (Disruption)",
+        Alignment.CrewHead => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Head</color>)</color>" : "Crew (Head)",
+        Alignment.IntruderSupport => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Support</color>)</color>" : "Intruder (Support)",
+        Alignment.IntruderConceal => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Concealing</color>)</color>" : "Intruder (Concealing)",
+        Alignment.IntruderDecep => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Deception</color>)</color>" : "Intuder (Deception)",
+        Alignment.IntruderKill => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Killing</color>)</color>" : "Intruder (Killing)",
+        Alignment.IntruderUtil => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Utility</color>)</color>" : "Intruder (Utility)",
+        Alignment.IntruderInvest => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Investigative</color>)</color>" : "Intruder (Investigative)",
+        Alignment.IntruderAudit => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Auditor</color>)</color>" : "Intruder (Auditor)",
+        Alignment.IntruderProt => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Protective</color>)</color>" : "Intruder (Protective)",
+        Alignment.IntruderSov => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
+        Alignment.IntruderDisrup=> withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
+        Alignment.IntruderPower => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Power</color>)</color>" : "Intruder (Power)",
+        Alignment.IntruderHead => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
+        Alignment.NeutralKill => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Killing</color>)</color>" : "Neutral (Killing)",
+        Alignment.NeutralNeo => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Neophyte</color>)</color>" : "Neutral (Neophyte)",
+        Alignment.NeutralEvil => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Evil</color>)</color>" : "Neutral (Evil)",
+        Alignment.NeutralBen => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Benign</color>)</color>" : "Neutral (Benign)",
+        Alignment.NeutralPros => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Proselyte</color>)</color>" : "Neutral (Proselyte)",
+        Alignment.NeutralSupport => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Support</color>)</color>" : "Neutral (Support)",
+        Alignment.NeutralInvest => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Investigative</color>)</color>" : "Neutral (Investigative)",
+        Alignment.NeutralProt => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Protective</color>)</color>" : "Neutral (Protective)",
+        Alignment.NeutralUtil => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Utility</color>)</color>" : "Neutral (Utility)",
+        Alignment.NeutralSov => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Sovereign</color>)</color>" : "Neutral (Sovereign)",
+        Alignment.NeutralAudit => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Auditor</color>)</color>" : "Neutral (Auditor)",
+        Alignment.NeutralConceal => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Concealing</color>)</color>" : "Neutral (Concealing)",
+        Alignment.NeutralDecep => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Deception</color>)</color>" : "Neutral (Deception)",
+        Alignment.NeutralPower => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Power</color>)</color>" : "Neutral (Power)",
+        Alignment.NeutralDisrup => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Disruption</color>)</color>" : "Neutral (Disruption)",
+        Alignment.NeutralApoc => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Apocalypse</color>)</color>" : "Neutral (Apocalypse)",
+        Alignment.NeutralHarb => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Harbinger</color>)</color>" : "Neutral (Harbinger)",
+        Alignment.NeutralHead => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Head</color>)</color>" : "Neutral (Head)",
+        Alignment.SyndicateKill => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Killing</color>)</color>" : "Syndicate (Killing)",
+        Alignment.SyndicateSupport => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Support</color>)</color>" : "Syndicate (Support)",
+        Alignment.SyndicateDisrup => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Disruption</color>)</color>" : "Syndicate (Disruption)",
+        Alignment.SyndicatePower => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Power</color>)</color>" : "Syndicate (Power)",
+        Alignment.SyndicateUtil => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Utility</color>)</color>" : "Syndicate (Utility)",
+        Alignment.SyndicateInvest => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Investigative</color>)</color>" : "Syndicate (Investigative)",
+        Alignment.SyndicateAudit => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Auditor</color>)</color>" : "Syndicate (Auditor)",
+        Alignment.SyndicateSov => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Sovereign</color>)</color>" : "Syndicate (Sovereign)",
+        Alignment.SyndicateProt => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Protective</color>)</color>" : "Syndicate (Protective)",
+        Alignment.SyndicateConceal => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Concealing</color>)</color>" : "Syndicate (Concealing)",
+        Alignment.SyndicateDecep => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Deception</color>)</color>" : "Syndicate (Deception)",
+        Alignment.SyndicateHead => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Head</color>)</color>" : "Syndicate (Head)",
+        Alignment.GameModeHideAndSeek => withColors ? "<#A81538FF>Game Mode (<#7500AFFF>Hide And Seek</color>)</color>" : "Game Mode (Hide And Seek)",
+        Alignment.GameModeTaskRace => withColors ? "<#A81538FF>Game Mode (<#1E49CFFF>Task Race</color>)</color>" : "Game Mode (Task Race)",
         _ => alignment.ToString()
     };
 
     public static string GameModeName(this GameMode mode, bool withColors = false) => mode switch
     {
-        GameMode.TaskRace => withColors ? "<color=#1E49CFFF>Task Race</color>" : "Task Race",
-        GameMode.HideAndSeek => withColors ? "<color=#7500AFFF>Hide And Seek</color>" : "Hide And Seek",
-        GameMode.Classic => withColors ? "<color=#C02A2CFF>Classic</color>" : "Classic",
-        GameMode.AllAny => withColors ? "<color=#CBD542FF>All Any</color>" : "All Any",
-        GameMode.KillingOnly => withColors ? "<color=#06E00CFF>Killing Only</color>" : "Killing Only",
-        GameMode.Custom => withColors ? "<color=#E6956AFF>Custom</color>" : "Custom",
+        GameMode.TaskRace => withColors ? "<#1E49CFFF>Task Race</color>" : "Task Race",
+        GameMode.HideAndSeek => withColors ? "<#7500AFFF>Hide And Seek</color>" : "Hide And Seek",
+        GameMode.Classic => withColors ? "<#C02A2CFF>Classic</color>" : "Classic",
+        GameMode.AllAny => withColors ? "<#CBD542FF>All Any</color>" : "All Any",
+        GameMode.KillingOnly => withColors ? "<#06E00CFF>Killing Only</color>" : "Killing Only",
+        GameMode.Custom => withColors ? "<#E6956AFF>Custom</color>" : "Custom",
         GameMode.Vanilla => "Vanilla",
-        GameMode.RoleList => withColors ? "<color=#FA1C79FF>Role List</color>" : "Role List",
+        GameMode.RoleList => withColors ? "<#FA1C79FF>Role List</color>" : "Role List",
         _ => "Invalid"
     };
 

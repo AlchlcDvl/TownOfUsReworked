@@ -7,14 +7,14 @@ public static class VersionShowerPatch
 
     public static void Postfix(VersionShower __instance)
     {
-        __instance.text.text += $" - <color=#C50000FF>Reworked</color> {TownOfUsReworked.VersionFinal}";
+        __instance.text.text += $" - <#C50000FF>Reworked</color> {TownOfUsReworked.VersionFinal}";
         var gameObject = GameObject.Find("LOGO-AU");
 
         if (gameObject && !ModVersion)
         {
             ModVersion = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
             ModVersion.transform.localPosition = new(0, -2f, 0);
-            ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nBy <color=#C50000FF>AlchlcSystm</color></b></size>";
+            ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nBy <#C50000FF>AlchlcSystm</color></b></size>";
             ModVersion.alignment = TextAlignmentOptions.Center;
             ModVersion.fontStyle = FontStyles.Bold;
             ModVersion.font = GetFont("Placeholder");
@@ -46,8 +46,7 @@ public static class PingTracker_Update
         try
         {
             DeltaTime += (Time.deltaTime - DeltaTime) * 0.1f;
-            var fps = Mathf.Round(1f / DeltaTime);
-            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}</size>";
+            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {Mathf.Round(1f / DeltaTime)}</size>";
         } catch {}
 
         return false;

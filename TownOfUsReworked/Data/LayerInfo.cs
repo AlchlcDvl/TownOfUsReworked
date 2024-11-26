@@ -170,7 +170,8 @@ public static class LayerInfo
             "<i>Cough</i> This should surely work, right? <i>Cough</i> I sure hope it does.", CustomColorManager.Plaguebearer, LayerEnum.Plaguebearer, "None", "Basic for as long as half " +
             "the players are infected", "Infect everyone to become Pestilence or kill off anyone who can oppose them"),
         new("Serial Killer", "SK", "Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the ability"
-            + " to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust. The Serial Killer gets Basic defense when in bloodlust.", Alignment.NeutralKill, Faction.Neutral, "I always come back.", CustomColorManager.SerialKiller, LayerEnum.SerialKiller, "Powerful", "Basic when in bloodlust", "Stab anyone who " +
+            + " to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust. The Serial Killer gets Basic defense when in bloodlust.",
+            Alignment.NeutralKill, Faction.Neutral, "I always come back.", CustomColorManager.SerialKiller, LayerEnum.SerialKiller, "Powerful", "Basic when in bloodlust", "Stab anyone who " +
             "can oppose them"),
         new("Survivor", "Surv", "The Survivor wins by simply surviving. They can vest which makes them immortal for a short duration. Vesting Survivors have a yellow υ next to their " +
             "names.", Alignment.NeutralBen, Faction.Neutral, "Hey listen man, I mind my own business and you mind yours. Everyone wins!", CustomColorManager.Survivor, LayerEnum.Survivor,
@@ -606,7 +607,7 @@ public static class LayerInfo
     public static readonly List<SymbolInfo> AllSymbols =
     [
         new("Invalid", "Invalid", "Invalid", UColor.red),
-        new("Null", "φ", "This symbol is a placeholder for when one doesn't have an disposition or a subfaction that they are a part of.", CustomColorManager.SubFaction),
+        new("Null", "φ", "This symbol is a placeholder for when one doesn't have a disposition or subfaction that they are a part of.", CustomColorManager.Status),
         new("Shield", "✚", "Players who have shield deployed on them through a Medic or a Retributionist-Medic.", CustomColorManager.Medic),
         new("Knighted", "κ", "Players who have been knighted by a Monarch recieve this symbol.", CustomColorManager.Monarch),
         new("Trapped", "∮", "Players that have been trapped by a Trapper or a Retributionist-Trapper. Trapped players will have their interactor's roles logged and sent to the relevant " +
@@ -619,9 +620,9 @@ public static class LayerInfo
         new("Tormented", "§", "Players being tormented by an Executioner. Avoid ejecting them to increases your chances of winning.", CustomColorManager.Executioner),
         new("Watched", "★", "Players being watched by a Guardian Angel. Try to recruit them, or their target to your side to increase you chances of winnign.", UColor.white),
         new("Protected", "η", "Players being protected by their Guardian Angel.", UColor.white),
-        new("Agonise", "π", "Players being agonised by a Guesser. If the player happens to be on your team, avoid revealing their role publicly to increase your chances of winning.",
+        new("Agonised", "π", "Players being agonised by a Guesser. If the player happens to be on your team, avoid revealing their role publicly to increase your chances of winning.",
             CustomColorManager.Guesser),
-        new("Recruit", "$", "The symbol that means one is a part of the Cabal subfaction.", CustomColorManager.Cabal),
+        new("Recruited", "$", "The symbol that means one is a part of the Cabal subfaction.", CustomColorManager.Cabal),
         new("Resurrected", "Σ", "The symbol that means one is a part of the Reanimated subfaction.", CustomColorManager.Reanimated),
         new("Infected", "ρ", "Players that have been infected by a Plaguebearer. Once everyone is infected, the Plaguebearer becomes Pestilence.", CustomColorManager.Plaguebearer),
         new("Plague", "米", "This symbol denotes how many stacks of the plague a certain player has.", CustomColorManager.Pestilence),
@@ -637,11 +638,11 @@ public static class LayerInfo
         new("Flashed", "ㅇ", "Players who have been blinded by a Grenadier or a Godfather-Grenadier. Flashed players cannot see anything as their screen turns white. Players exempted from " +
             "being flashed will have their screen dull out a little to indicate that they got flashed.", CustomColorManager.Grenadier),
         new("Drived", "Δ", "The player who currently wields the Chaos Drive within the Syndicate faction.", CustomColorManager.Syndicate),
-        new("Friend", "ξ", "This symbols indicates that they are on the same faction as the lcoal player, but beware them as they could still backstab you.", CustomColorManager.Faction),
+        new("Friend", "ξ", "This symbols indicates that they are on the same faction as you, but beware them as they could still backstab you.", CustomColorManager.Faction),
         new("Marked", "χ", "Players who have been marked by the Ghoul. Marked players will die at the end of the next meeting.", CustomColorManager.Ghoul),
         new("First Dead", "Γ", "When the setting is enabled, the first person to die in the previous game gets a shield of protection in the next game for the first round.",
             CustomColorManager.FirstShield),
-        new("On Alert", "σ", "Players who are on high alert. Players on alert will attack anyone who interacts with them.", CustomColorManager.Veteran),
+        new("Alerting", "σ", "Players who are on high alert. Players on alert will attack anyone who interacts with them.", CustomColorManager.Veteran),
         new("Crusaded", "τ", "Players being targeted by a Crusader. Crusaded players will attack anyone who interact with them, or if the Crusader holds the drive, everyone in a certain " +
             "radius.", CustomColorManager.Crusader),
         new("Ambushed", "人", "Players being targeted by an Ambusher. AMbushed players will attack anyone who interact with them.", CustomColorManager.Ambusher),

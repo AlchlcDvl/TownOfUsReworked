@@ -15,7 +15,7 @@ public class Miner : Intruder
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Miner : CustomColorManager.Intruder;
     public override string Name => MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner";
     public override LayerEnum Type => LayerEnum.Miner;
-    public override Func<string> StartText => () => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <color=#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
+    public override Func<string> StartText => () => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
         "From The Top, Make It Drop, Boom, That's A Vent";
     public override Func<string> Description => () => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
 

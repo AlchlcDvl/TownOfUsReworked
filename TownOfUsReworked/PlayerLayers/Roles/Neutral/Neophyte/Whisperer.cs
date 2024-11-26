@@ -41,13 +41,13 @@ public class Whisperer : Neophyte
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
-        "defect and join the <color=#F995FCFF>Sect</color>";
+        "defect and join the <#F995FCFF>Sect</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()
     {
         base.Init();
-        Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
+        Objectives = () => "- Persuade or kill anyone who can oppose the <#F995FCFF>Sect</color>";
         SubFaction = SubFaction.Sect;
         WhisperConversion = WhisperRate;
         WhisperButton ??= new(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Whisper, new Cooldown(WhisperCd), "WHISPER",

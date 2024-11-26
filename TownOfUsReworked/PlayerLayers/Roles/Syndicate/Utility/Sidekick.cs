@@ -9,8 +9,8 @@ public class Sidekick : Syndicate
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Sidekick : CustomColorManager.Syndicate;
     public override string Name => "Sidekick";
     public override LayerEnum Type => LayerEnum.Sidekick;
-    public override Func<string> StartText => () => "Succeed The <color=#FFFCCEFF>Rebel</color>";
-    public override Func<string> Description => () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your" +
+    public override Func<string> StartText => () => "Succeed The <#FFFCCEFF>Rebel</color>";
+    public override Func<string> Description => () => "- When the <#FFFCCEFF>Rebel</color> dies, you will become the new <#FFFCCEFF>Rebel</color> with boosted abilities of your" +
         $" former role\n{CommonAbilities}";
 
     public override void Init()

@@ -34,7 +34,7 @@ public class Traitor : Disposition
     public override string Name => "Traitor";
     public override string Symbol => "♣";
     public override LayerEnum Type => LayerEnum.Traitor;
-    public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <color=#FF1919FF>Intruders</color> or the <color=#008000FF>Syndicate</color>" : "";
+    public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : "";
     public override bool Hidden => !TraitorKnows && !Turned && !Dead;
 
     public override void Init()

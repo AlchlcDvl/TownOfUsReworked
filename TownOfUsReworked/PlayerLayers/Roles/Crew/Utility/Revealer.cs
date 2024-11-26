@@ -36,7 +36,7 @@ public class Revealer : Crew
     public override string Name => "Revealer";
     public override LayerEnum Type => LayerEnum.Revealer;
     public override Func<string> StartText => () => "OOOOOOO";
-    public override Func<string> Description => () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
+    public override Func<string> Description => () => "- You can reveal evils players to the <#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
 
     public override void Init()
     {
@@ -58,7 +58,7 @@ public class Revealer : Crew
         var distPercent = distance / maxDistance;
         distPercent = Mathf.Max(0, distPercent - 1);
 
-        var velocity = Player.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude;
+        var velocity = Player.GetComponent<Rigidbody2D>().velocity.magnitude;
         color.a = 0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f);
         color.a = Mathf.Lerp(color.a, 0, distPercent);
 

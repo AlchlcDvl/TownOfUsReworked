@@ -18,7 +18,7 @@ public class Sheriff : Crew
     public override string Name => "Sheriff";
     public override LayerEnum Type => LayerEnum.Sheriff;
     public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";
-    public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>";
+    public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <#8CFFFFFF>Crew</color>";
 
     public override void Init()
     {

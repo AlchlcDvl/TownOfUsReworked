@@ -110,10 +110,10 @@ public static class CompleteTasksPatch
                 else if (role.TasksCompleted > 0)
                     color = "FFFF";
 
-                text = $"Tasks <color=#{color}00FF>({role.TasksCompleted}/{role.TotalTasks})</color>";
+                text = $"Tasks <#{color}00FF>({role.TasksCompleted}/{role.TotalTasks})</color>";
             }
             else
-                text = "<color=#FF0000FF>Fake Tasks</color>";
+                text = "<#FF0000FF>Fake Tasks</color>";
 
             HUD().TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
         }

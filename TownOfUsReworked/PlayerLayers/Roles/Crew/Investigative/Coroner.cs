@@ -118,6 +118,6 @@ public class Coroner : Crew
 
         // Only Coroner can see this
         if (HUD())
-            Run("<color=#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
+            Run("<#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
     }
 }

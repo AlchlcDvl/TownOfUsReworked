@@ -34,7 +34,7 @@ public class Vigilante : Crew
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Vigilante : CustomColorManager.Crew;
     public override string Name => "Vigilante";
     public override LayerEnum Type => LayerEnum.Vigilante;
-    public override Func<string> StartText => () => "Shoot The <color=#FF0000FF>Evildoers</color>";
+    public override Func<string> StartText => () => "Shoot The <#FF0000FF>Evildoers</color>";
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
@@ -60,7 +60,7 @@ public class Vigilante : Crew
         base.OnMeetingStart(__instance);
 
         if (InnoMessage)
-            Run("<color=#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
+            Run("<#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||

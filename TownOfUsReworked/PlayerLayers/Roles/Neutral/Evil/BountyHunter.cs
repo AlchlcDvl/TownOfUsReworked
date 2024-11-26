@@ -46,7 +46,7 @@ public class BountyHunter : Neutral
     public override Func<string> StartText => () => "Find And Kill Your Target";
     public override Func<string> Description => () => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +
         "finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you will" +
-        " become a <color=#678D36FF>Troll</color>");
+        " become a <#678D36FF>Troll</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
     public override void Init()
@@ -170,7 +170,7 @@ public class BountyHunter : Neutral
 
         // Ensures only the Bounty Hunter sees this
         if (HUD() && !IsNullEmptyOrWhiteSpace(something))
-            Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", something);
+            Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", something);
     }
 
     public bool Usable1() => TargetPlayer && !CanHunt;

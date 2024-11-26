@@ -175,7 +175,7 @@ public static class CustomColorManager
             var g = startColor.g + (stepG * i);
             var b = startColor.b + (stepB * i);
             var a = startColor.a + (stepA * i);
-            gradientText += $"<color=#{new UColor(r, g, b, a).ToHtmlStringRGBA()}>{text[i]}</color>";
+            gradientText += $"<#{new UColor(r, g, b, a).ToHtmlStringRGBA()}>{text[i]}</color>";
         }
 
         return gradientText;

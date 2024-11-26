@@ -237,7 +237,7 @@ public static class SetPostmortals
                 rev.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
-            rev.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
+            rev.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
 
             if (rev.AmOwner)
             {
@@ -287,7 +287,7 @@ public static class SetPostmortals
                 phan.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
-            phan.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
+            phan.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
 
             if (phan.AmOwner)
             {
@@ -339,7 +339,7 @@ public static class SetPostmortals
                 ban.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
-            ban.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
+            ban.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
 
             if (ban.AmOwner)
             {
@@ -388,7 +388,7 @@ public static class SetPostmortals
                 ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
-            ghoul.gameObject.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
+            ghoul.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
 
             if (ghoul.AmOwner)
             {

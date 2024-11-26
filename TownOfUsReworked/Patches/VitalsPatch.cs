@@ -23,7 +23,7 @@ public static class VitalsPatch
                 continue;
 
             var num = (float)(DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;
-            var tmp = panel.Cardio.gameObject.GetComponent<TextMeshPro>();
+            var tmp = panel.Cardio.GetComponent<TextMeshPro>();
             tmp.color = UColor.red;
             tmp.text = Math.Ceiling(num / 1000) + "s";
             var transform = tmp.transform;

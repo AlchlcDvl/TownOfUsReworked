@@ -42,17 +42,16 @@ public static class ShowRolePatch
             status += $" {ability?.ColorString}{ability?.Name}</color>";
 
         if (CustomPlayer.Local.IsRecruit())
-            status += " <color=#575657FF>Recruited</color>";
+            status += " <#575657FF>Recruited</color>";
 
         if (status.Length != 0)
-            statusString = $"\n<color=#{CustomColorManager.Status.ToHtmlStringRGBA()}>Status</color>:{status}";
+            statusString = $"\n<#{CustomColorManager.Status.ToHtmlStringRGBA()}>Status</color>:{status}";
 
         __instance.__4__this.RoleText.text = role.Name;
         __instance.__4__this.RoleText.color = role.Color;
         __instance.__4__this.YouAreText.color = role.Color;
         __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
         __instance.__4__this.RoleBlurbText.color = role.Color;
-        Coroutines.Start(PerformTimedAction(0.01f, _ => __instance.__4__this.YouAreText.text = "You Are The"));
     }
 }
 

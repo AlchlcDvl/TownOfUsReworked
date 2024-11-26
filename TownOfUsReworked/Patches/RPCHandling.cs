@@ -21,7 +21,7 @@ public static class RPCHandling
                 {
                     case TestRPC.Argless:
                     {
-                        Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
+                        Run("<#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
                         break;
                     }
                     case TestRPC.Args:
@@ -31,7 +31,7 @@ public static class RPCHandling
                         while (reader.BytesRemaining > 0)
                             message += reader.ReadString() + " ";
 
-                        Run("<color=#FF00FFFF>⚠ TEST ⚠</color>", $"Received RPC!\nWith the following message: {message}");
+                        Run("<#FF00FFFF>⚠ TEST ⚠</color>", $"Received RPC!\nWith the following message: {message}");
                         break;
                     }
                     default:
@@ -64,14 +64,14 @@ public static class RPCHandling
                         var message = reader.ReadString();
 
                         if (whispered.AmOwner)
-                            Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
+                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
                         else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
                             Silencer.WhispersNotPrivateS))
                         {
-                            Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to {whispered.name}: {message}");
+                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to {whispered.name}: {message}");
                         }
                         else if (GameModifiers.WhispersAnnouncement)
-                            Run("<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
+                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
 
                         break;
                     }
@@ -188,7 +188,7 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
                         TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
                         TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-                        AllPlayers().ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
+                        CustomPlayer.Local.MaxReportDistance = GameSettings.ReportDistance;
                         MapPatches.AdjustSettings();
                         break;
                     }
@@ -210,7 +210,7 @@ public static class RPCHandling
                     case MiscRPC.LoadPreset:
                     {
                         var preset = reader.ReadString();
-                        Run("<color=#00CC99FF>【 Loading Preset 】</color>", $"Loading the {preset} preset!");
+                        Run("<#00CC99FF>【 Loading Preset 】</color>", $"Loading the {preset} preset!");
                         SettingsPatches.CurrentPreset = preset;
                         break;
                     }

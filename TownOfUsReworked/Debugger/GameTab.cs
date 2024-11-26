@@ -69,6 +69,9 @@ public class GameTab : BaseTab
         if (GUILayout.Button("Kill All"))
             AllPlayers().ForEach(x => RpcMurderPlayer(x));
 
+        if (GUILayout.Button("Kill All But Me"))
+            AllPlayers().Where(x => !x.AmOwner).ForEach(x => RpcMurderPlayer(x));
+
         if (GUILayout.Button("Revive Self"))
             CustomPlayer.Local.Revive();
 

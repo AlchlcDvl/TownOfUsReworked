@@ -33,7 +33,7 @@ public class Glitch : NKilling
     public override LayerEnum Type => LayerEnum.Glitch;
     public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";
     public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
-        "short while\n- You are immune to blocks\n- If you hack a <color=#336EFFFF>Serial Killer</color> they will be forced to kill you";
+        "short while\n- You are immune to blocks\n- If you hack a <#336EFFFF>Serial Killer</color> they will be forced to kill you";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
     public override bool RoleBlockImmune => true;

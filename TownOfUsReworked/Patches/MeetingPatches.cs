@@ -90,11 +90,11 @@ public static class MeetingPatches
                     var player = Reported.Object;
                     check = player;
                     var report = $"{player.name} was found dead last round.";
-                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
                     report = GameAnnouncementSettings.LocationReports && BodyLocations.TryGetValue(Reported.PlayerId, out var location) ? $"Their body was found in {location}." :
                         "It is unknown where they died.";
-                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
                     var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
 
@@ -105,7 +105,7 @@ public static class MeetingPatches
                     else
                         report = "They were killed by an unknown assailant.";
 
-                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
                     var role = player.GetRole();
 
@@ -116,10 +116,10 @@ public static class MeetingPatches
                     else
                         report = $"We could not determine what {player.name} was.";
 
-                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                 }
                 else
-                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", "A meeting has been called.");
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", "A meeting has been called.");
 
                 yield return Wait(2f);
 
@@ -129,10 +129,10 @@ public static class MeetingPatches
                     {
                         var player = PlayerById(playerid);
                         var report = $"{player} was found dead last round.";
-                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
                         report = "It is unknown where they died.";
-                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
 
                         var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
@@ -146,7 +146,7 @@ public static class MeetingPatches
                         else
                             report = "They were killed by an unknown assailant.";
 
-                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
                         var role = player.GetRole();
 
@@ -159,7 +159,7 @@ public static class MeetingPatches
                         else
                             report = $"We could not determine what {player} was.";
 
-                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", report);
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return Wait(2f);
                     }
                 }
@@ -168,7 +168,7 @@ public static class MeetingPatches
                 {
                     if (player != check.PlayerId)
                     {
-                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} killed themselves last round.");
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} killed themselves last round.");
                         yield return Wait(2f);
                     }
                 }
@@ -177,7 +177,7 @@ public static class MeetingPatches
                 {
                     if (player != check.PlayerId)
                     {
-                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} accomplished their objective and escaped last round.");
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} accomplished their objective and escaped last round.");
                         yield return Wait(2f);
                     }
                 }
@@ -186,7 +186,7 @@ public static class MeetingPatches
                 {
                     if (player != check.PlayerId)
                     {
-                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} was ejected for their misuse of power.");
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} was ejected for their misuse of power.");
                         yield return Wait(2f);
                     }
                 }
@@ -195,7 +195,7 @@ public static class MeetingPatches
                 {
                     if (player != check.PlayerId)
                     {
-                        Run("<color=#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {PlayerById(player)} to be ejected!");
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {PlayerById(player)} to be ejected!");
                         yield return Wait(2f);
                     }
                 }
@@ -214,7 +214,7 @@ public static class MeetingPatches
                 else
                     message = "The <b>Syndicate</b> possesses the Chaos Drive.";
 
-                Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
 
                 yield return Wait(2f);
             }
@@ -227,7 +227,7 @@ public static class MeetingPatches
                     message = "There seems to be an <b>Overlord</b> bent on dominating the mission! Kill them before they are successful!";
 
                 if (!IsNullEmptyOrWhiteSpace(message))
-                    Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
 
                 yield return Wait(2f);
             }
@@ -247,7 +247,7 @@ public static class MeetingPatches
                         if (!knight.HasDied())
                         {
                             message = $"{knight.name} was knighted by a <b>Monarch</b>!";
-                            Run("<color=#6C29ABFF>》 Game Announcement 《</color>", message);
+                            Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
                             knighted.Add(id);
                         }
                     }

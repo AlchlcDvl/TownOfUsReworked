@@ -18,7 +18,7 @@ public static class TranslationManager
 
         try
         {
-            var result = AllTranslations.Find(x => x.ID == id || x.IDs.Contains(id) == true)?[language];
+            var result = AllTranslations.Find(x => x.ID == id || x.IDs?.Contains(id) == true)?[language];
             toReplace.ForEach(x => result = result.Replace(x.Key, x.Value));
             return result ?? throw new UnsupportedLanguageException($"{language}:{id}");
         }

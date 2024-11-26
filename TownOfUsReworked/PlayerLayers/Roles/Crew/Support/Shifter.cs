@@ -16,7 +16,7 @@ public class Shifter : Crew
     public override string Name => "Shifter";
     public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText => () => "Shift Around Roles";
-    public override Func<string> Description => () => "- You can steal another player's role\n- Shifting withn on-<color=#8CFFFFFF>Crew</color> will cause you to kill yourself";
+    public override Func<string> Description => () => "- You can steal another player's role\n- Shifting withn on-<#8CFFFFFF>Crew</color> will cause you to kill yourself";
 
     public override void Init()
     {

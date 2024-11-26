@@ -331,7 +331,7 @@ public static class BetterPolus
             var flag = __instance.ShouldYellowText();
 
             if (flag)
-                sb.Append(__instance.IsComplete ? "<color=#00DD00FF>" : "<color=#FFFF00FF>");
+                sb.Append(__instance.IsComplete ? "<#00DD00FF>" : "<#FFFF00FF>");
 
             var room = SystemTypes.Hallway;
 

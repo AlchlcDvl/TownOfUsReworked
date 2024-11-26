@@ -19,7 +19,7 @@ public class Concealer : Syndicate
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Concealer : CustomColorManager.Syndicate;
     public override string Name => "Concealer";
     public override LayerEnum Type => LayerEnum.Concealer;
-    public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
+    public override Func<string> StartText => () => "Turn The <#8CFFFFFF>Crew</color> Invisible For Some Chaos";
     public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
 
     public override void Init()

@@ -27,7 +27,7 @@ public static class ShowHostMeetingStartPatch
             return;
 
         __instance.ProceedButton.gameObject.transform.localPosition = new(-2.5f, 2.2f, 0);
-        __instance.ProceedButton.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        __instance.ProceedButton.GetComponent<SpriteRenderer>().enabled = false;
         __instance.ProceedButton.GetComponent<PassiveButton>().enabled = false;
         __instance.HostIcon.enabled = true;
         __instance.HostIcon.gameObject.SetActive(true);

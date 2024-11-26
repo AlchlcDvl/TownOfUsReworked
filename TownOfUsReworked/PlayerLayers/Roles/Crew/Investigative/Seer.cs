@@ -17,7 +17,7 @@ public class Seer : Crew
     public override LayerEnum Type => LayerEnum.Seer;
     public override Func<string> StartText => () => "You Can See People's Histories";
     public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
-        "<color=#FFCC80FF>Sheriff</color>";
+        "<#FFCC80FF>Sheriff</color>";
 
     public override void Init()
     {

@@ -89,7 +89,7 @@ public class Operative : Crew
         }
 
         if (HUD())
-            Run("<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
+            Run("<#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
     public bool Condition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);

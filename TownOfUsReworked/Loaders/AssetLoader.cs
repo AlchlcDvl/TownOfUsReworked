@@ -4,7 +4,8 @@ public abstract class AssetLoader
 {
     public static readonly string RepositoryUrl = $"https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/{(TownOfUsReworked.IsDev ? "dev" : "main")}";
 
-    public virtual string Manifest => "";
+    public abstract string Manifest { get; }
+
     public virtual string DirectoryInfo => "";
     public virtual string FileExtension => "";
     public virtual bool Downloading => false;

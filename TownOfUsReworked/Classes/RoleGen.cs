@@ -1725,8 +1725,6 @@ public static class RoleGen
 
         OnGameEndPatches.Disconnected.Clear();
 
-        Footprint.OddEven.Clear();
-
         CachedFirstDead = FirstDead;
         FirstDead = null;
 

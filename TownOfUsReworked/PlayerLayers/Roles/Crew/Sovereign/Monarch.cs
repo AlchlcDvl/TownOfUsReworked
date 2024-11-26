@@ -76,7 +76,7 @@ public class Monarch : Crew
             if (knight.HasDied())
             {
                 remove.Add(id);
-                Run("<color=#FF004EFF>〖 Alert 〗</color>", "A Knight as died!");
+                Run("<#FF004EFF>〖 Alert 〗</color>", "A Knight as died!");
             }
         }
 

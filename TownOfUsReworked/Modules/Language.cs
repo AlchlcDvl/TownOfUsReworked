@@ -71,10 +71,6 @@ public class Language : Asset
         if (ID != null)
             return TranslationManager.Test(ID);
         else
-        {
-            var result = "";
-            IDs.ForEach(id => result += $"{TranslationManager.Test(id)}\n");
-            return result;
-        }
+            return TranslationManager.Test(IDs[0]);
     }
 }

@@ -17,20 +17,20 @@ public class Info(string name, string shortF, string description, UColor color, 
     public static string ColorIt(string result, bool bold = true)
     {
         foreach (var info in AllInfo.Where(x => x.Type is not (InfoType.Alignment or InfoType.Lore)))
-            result = result.Replace(info.Name, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Name}</color></b>");
+            result = result.Replace(info.Name, $"<b><#{info.Color.ToHtmlStringRGBA()}>{info.Name}</color></b>");
 
         foreach (var info in LayerInfo.AllSymbols)
-            result = result.Replace(info.Symbol, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
+            result = result.Replace(info.Symbol, $"<b><#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
 
         for (var i = 0; i < 56; i++)
             result = result.Replace(((Alignment)i).AlignmentName(), $"<b>{((Alignment)i).AlignmentName(true)}</b>");
 
-        result = result.Replace($"<b><color=#758000FF>Drunk</color></b>ard", "Drunkard")
-            .Replace($"<b><color=#FFD700FF>Role</color></b> List", "Role List")
-            .Replace($"<b><color=#B51E39FF>Bounty</color></b> Hunter", "Bounty Hunter")
-            .Replace($"<b><color=#B51E39FF>Bounty</color></b> <b><color=#FF004EFF>Hunter</color></b>", "Bounty Hunter")
-            .Replace($"Bounty <b><color=#FF004EFF>Hunter</color></b>", "Bounty Hunter")
-            .Replace($"Vampire <b><color=#FF004EFF>Hunter</color></b>", "Vampire Hunter");
+        result = result.Replace($"<b><#758000FF>Drunk</color></b>ard", "Drunkard")
+            .Replace($"<b><#FFD700FF>Role</color></b> List", "Role List")
+            .Replace($"<b><#B51E39FF>Bounty</color></b> Hunter", "Bounty Hunter")
+            .Replace($"<b><#B51E39FF>Bounty</color></b> <b><#FF004EFF>Hunter</color></b>", "Bounty Hunter")
+            .Replace($"Bounty <b><#FF004EFF>Hunter</color></b>", "Bounty Hunter")
+            .Replace($"Vampire <b><#FF004EFF>Hunter</color></b>", "Vampire Hunter");
 
         if (!bold)
             result = result.Replace("<b>", "").Replace("</b>", "");

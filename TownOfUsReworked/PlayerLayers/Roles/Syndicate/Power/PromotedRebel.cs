@@ -42,8 +42,8 @@ public class PromotedRebel : Syndicate
     }
     public override string Name => "Rebel";
     public override LayerEnum Type => LayerEnum.PromotedRebel;
-    public override Func<string> StartText => () => "Lead The <color=#008000FF>Syndicate</color>";
-    public override Func<string> Description => () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities" +
+    public override Func<string> StartText => () => "Lead The <#008000FF>Syndicate</color>";
+    public override Func<string> Description => () => "- You have succeeded the former <#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities" +
         (!FormerRole ? CommonAbilities : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
     public override bool RoleBlockImmune => FormerRole?.RoleBlockImmune ?? false;
 

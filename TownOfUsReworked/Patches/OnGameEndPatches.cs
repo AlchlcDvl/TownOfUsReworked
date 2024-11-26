@@ -589,31 +589,31 @@ public static class OnGameEndPatches
 
         if (player.IsGATarget())
         {
-            summary += " <color=#FFFFFFFF>★</color>";
+            summary += " <#FFFFFFFF>★</color>";
             cache += " ★";
         }
 
         if (player.IsExeTarget())
         {
-            summary += " <color=#CCCCCCFF>§</color>";
+            summary += " <#CCCCCCFF>§</color>";
             cache += " §";
         }
 
         if (player.IsBHTarget())
         {
-            summary += " <color=#B51E39FF>Θ</color>";
+            summary += " <#B51E39FF>Θ</color>";
             cache += " Θ";
         }
 
         if (player.IsGuessTarget())
         {
-            summary += " <color=#EEE5BEFF>π</color>";
+            summary += " <#EEE5BEFF>π</color>";
             cache += " π";
         }
 
         if (player == Role.DriveHolder && !SyndicateSettings.GlobalDrive)
         {
-            summary += " <color=#008000FF>Δ</color>";
+            summary += " <#008000FF>Δ</color>";
             cache += " Δ";
         }
 
@@ -682,9 +682,9 @@ public static class OnGameEndPatches
             roleSummaryText.AppendLine();
             roleSummaryCache.AppendLine("Game Summary:");
             roleSummaryCache.AppendLine();
-            winnersText.AppendLine("<size=105%><color=#00FF00FF><b>◈ - Winners - ◈</b></color></size>");
-            losersText.AppendLine("<size=105%><color=#FF0000FF><b>◆ - Losers - ◆</b></color></size>");
-            discText.AppendLine("<size=105%><color=#0000FFFF><b>◇ - Disconnected - ◇</b></color></size>");
+            winnersText.AppendLine("<size=105%><#00FF00FF><b>◈ - Winners - ◈</b></color></size>");
+            losersText.AppendLine("<size=105%><#FF0000FF><b>◆ - Losers - ◆</b></color></size>");
+            discText.AppendLine("<size=105%><#0000FFFF><b>◇ - Disconnected - ◇</b></color></size>");
             winnersCache.AppendLine("◈ - Winners - ◈");
             losersCache.AppendLine("◆ - Losers - ◆");
             discCache.AppendLine("◇ - Disconnected - ◇");

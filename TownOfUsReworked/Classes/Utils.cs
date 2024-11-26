@@ -1336,7 +1336,7 @@ public static class Utils
         CallRpc(CustomRPC.Misc, MiscRPC.BreakShield, target);
     }
 
-    // public static T EnsureComponent<T>(this Component component) where T : Component => component?.gameObject?.EnsureComponent<T>();
+    public static T EnsureComponent<T>(this Component component) where T : Component => component?.gameObject?.EnsureComponent<T>();
 
     public static T EnsureComponent<T>(this GameObject gameObject) where T : Component => gameObject?.GetComponent<T>() ?? gameObject?.AddComponent<T>();
 
@@ -1372,7 +1372,7 @@ public static class Utils
     public static string SanitisePath(this string path)
     {
         path = path.Replace(".png", "");
-        path = path.Replace(".raw", "");
+        path = path.Replace(".wav", "");
         path = path.Replace(".txt", "");
         path = path.Split('/')[^1];
         path = path.Split('\\')[^1];

@@ -15,15 +15,15 @@ public class Plaguebearer : Harbinger<Pestilence>
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Plaguebearer : CustomColorManager.Neutral;
     public override string Name => "Plaguebearer";
     public override LayerEnum Type => LayerEnum.Plaguebearer;
-    public override Func<string> StartText => () => "Spread Disease To Summon <color=#424242FF>Pestilence</color>";
-    public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>\n- Infections can "
+    public override Func<string> StartText => () => "Spread Disease To Summon <#424242FF>Pestilence</color>";
+    public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <#424242FF>Pestilence</color>\n- Infections can "
         + "spread via interaction between players";
     public override DefenseEnum DefenseVal => Infected.Count < AllPlayers().Count / 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
     public override void Init()
     {
         base.Init();
-        Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
+        Objectives = () => "- Infect everyone to become <#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Infected = [ Player.PlayerId ];
         InfectButton ??= new(this, new SpriteName("Infect"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Infect, new Cooldown(InfectCd), "INFECT",
             (PlayerBodyExclusion)Exception);

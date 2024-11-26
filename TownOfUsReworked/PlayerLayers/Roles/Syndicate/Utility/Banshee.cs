@@ -61,7 +61,7 @@ public class Banshee : Syndicate
         var distPercent = distance / maxDistance;
         distPercent = Mathf.Max(0, distPercent - 1);
 
-        var velocity = Player.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude;
+        var velocity = Player.GetComponent<Rigidbody2D>().velocity.magnitude;
         color.a = 0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f);
         color.a = Mathf.Lerp(color.a, 0, distPercent);
 

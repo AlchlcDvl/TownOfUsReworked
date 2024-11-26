@@ -137,7 +137,7 @@ public static class VisorsTabOnEnablePatch
         }
 
         var yOffset = __instance.YStart;
-        Template = __instance.transform.FindChild("Text").gameObject.GetComponent<TMP_Text>();
+        Template = __instance.transform.FindChild("Text").GetComponent<TMP_Text>();
         var keys = packages.Keys.OrderBy(x => x switch
         {
             "Innersloth" => 4,

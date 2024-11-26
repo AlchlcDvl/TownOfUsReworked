@@ -334,21 +334,21 @@ public class Thief : Neutral
         if (Local)
         {
             if (Player != player)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guessString}!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guessString}!");
             else
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         }
         else if (Player != player && player.AmOwner)
-            Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessTarget}!");
+            Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessTarget}!");
         else if (DeadSeeEverything())
         {
             if (Player != player)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!");
             else
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {player.name} as {guessTarget} and died!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {player.name} as {guessTarget} and died!");
         }
         else
-            Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
+            Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
 
         if (Player != player && CanAttack(AttackVal, player.GetDefenseValue(Player)))
             Steal(player);

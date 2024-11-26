@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
-// For some reason something here was nulling, so I just overrided the whole thing instead of just a few parts of it
+// For some reason something here was nulling, so I just overwrote the whole thing instead of just a few parts of it
 [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGameHost))]
 public static class MapPatches
 {
@@ -45,7 +45,7 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
             TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-            AllPlayers().ForEach(x => x.MaxReportDistance = GameSettings.ReportDistance);
+            CustomPlayer.Local.MaxReportDistance = GameSettings.ReportDistance;
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
             // AmongUsClient.Instance.ShipLoadingAsyncHandle seems to be having an issue in its setter, I wonder what's up with that

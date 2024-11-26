@@ -52,14 +52,14 @@ public class Necromancer : Neophyte
     public override string Name => "Necromancer";
     public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
-    public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
+    public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
         "up the process";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()
     {
         base.Init();
-        Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
+        Objectives = () => "- Resurrect or kill anyone who can oppose the <#E6108AFF>Reanimated</color>";
         SubFaction = SubFaction.Reanimated;
         ResurrectedCount = 0;
         KillCount = 0;

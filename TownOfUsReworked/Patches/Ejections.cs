@@ -48,9 +48,9 @@ public static class ConfirmEjects
             if (GameSettings.EjectionRevealsRoles)
             {
                 if (player.Is(LayerEnum.Jester) && Jester.JestEjectScreen)
-                    ejectString = "The <color=#F7B3DAFF>Jester</color> will get his revenge from beyond the grave!";
+                    ejectString = "The <#F7B3DAFF>Jester</color> will get his revenge from beyond the grave!";
                 else if (PlayerLayer.GetLayers<Executioner>().Any(x => x.TargetPlayer == player) && Executioner.ExeEjectScreen)
-                    ejectString = "The <color=#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
+                    ejectString = "The <#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
                 else
                     ejectString = $"{player.Data.PlayerName} was the {role.ColorString}{role.Name}</color>.";
             }
@@ -64,7 +64,7 @@ public static class ConfirmEjects
             var totalEvilsRemaining = IsAA() ? "an unknown number of" : $"{totalEvilsCount}";
             var s = totalEvilsCount > 1 ? "s" : "";
             var isAre = totalEvilsCount > 1 ? "are" : "is";
-            __instance.ImpostorText.text = $"There {isAre} {totalEvilsRemaining} <color=#FF0000FF>evil{s}</color> remaining.";
+            __instance.ImpostorText.text = $"There {isAre} {totalEvilsRemaining} <#FF0000FF>evil{s}</color> remaining.";
         }
 
         __instance.completeString = ejectString;

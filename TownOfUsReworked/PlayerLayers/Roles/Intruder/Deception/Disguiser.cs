@@ -31,7 +31,7 @@ public class Disguiser : Intruder
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Disguiser : CustomColorManager.Intruder;
     public override string Name => "Disguiser";
     public override LayerEnum Type => LayerEnum.Disguiser;
-    public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
+    public override Func<string> StartText => () => "Disguise The <#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
 
     public override void Init()

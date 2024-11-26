@@ -201,17 +201,17 @@ public static class ChatCommands
         else if (CustomPlayer.Local.IsBlackmailed() && text != "i am blackmailed.")
         {
             chatHandled = true;
-            Run("<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
+            Run("<#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
         }
         else if (CustomPlayer.Local.SilenceActive() && text != "i am silenced.")
         {
             chatHandled = true;
-            Run("<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
+            Run("<#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         }
         else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.LocalCustom.Dead)
         {
             chatHandled = true;
-            Run("<color=#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
+            Run("<#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
         }
         else if (!CustomPlayer.LocalCustom.Dead && !IsNullEmptyOrWhiteSpace(text))
         {

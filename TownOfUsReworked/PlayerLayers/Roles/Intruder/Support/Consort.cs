@@ -16,9 +16,9 @@ public class Consort : Intruder
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consort : CustomColorManager.Intruder;
     public override string Name => "Consort";
     public override LayerEnum Type => LayerEnum.Consort;
-    public override Func<string> StartText => () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
+    public override Func<string> StartText => () => "Roleblock The <#8CFFFFFF>Crew</color> From Progressing";
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
-        $"immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
+        $"immune to blocks\n- If you block a <#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
     public override bool RoleBlockImmune => true;
 
     public override void Init()

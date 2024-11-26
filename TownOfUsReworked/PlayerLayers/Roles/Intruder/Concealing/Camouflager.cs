@@ -14,7 +14,7 @@ public class Camouflager : Intruder
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Camouflager : CustomColorManager.Intruder;
     public override string Name => "Camouflager";
     public override LayerEnum Type => LayerEnum.Camouflager;
-    public override Func<string> StartText => () => "Hinder The <color=#8CFFFFFF>Crew</color>'s Recognition";
+    public override Func<string> StartText => () => "Hinder The <#8CFFFFFF>Crew</color>'s Recognition";
     public override Func<string> Description => () => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey " +
         $"with fluctuating names and no cosmetics\n{CommonAbilities}";
 

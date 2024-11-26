@@ -15,7 +15,7 @@ public class Consigliere : Intruder
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consigliere : CustomColorManager.Intruder;
     public override string Name => "Consigliere";
     public override LayerEnum Type => LayerEnum.Consigliere;
-    public override Func<string> StartText => () => "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
+    public override Func<string> StartText => () => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";
     public override Func<string> Description => () => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}\n{CommonAbilities}";
     public override Func<string> Attributes => () => Player.IsAssassin() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "";
 

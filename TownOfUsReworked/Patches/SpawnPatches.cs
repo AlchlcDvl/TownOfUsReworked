@@ -48,10 +48,10 @@ public static class SpawnPatches
                 else if (Role.LocalRole.TasksCompleted > 0)
                     color = "FFFF";
 
-                text = $"Tasks <color=#{color}00FF>({Role.LocalRole.TasksCompleted}/{Role.LocalRole.TotalTasks})</color>";
+                text = $"Tasks <#{color}00FF>({Role.LocalRole.TasksCompleted}/{Role.LocalRole.TotalTasks})</color>";
             }
             else
-                text = "<color=#FF0000FF>Fake Tasks</color>";
+                text = "<#FF0000FF>Fake Tasks</color>";
 
             HUD().TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
         }

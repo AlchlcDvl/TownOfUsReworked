@@ -1,9 +1,7 @@
-namespace TownOfUsReworked.Modules;
+namespace TownOfUsReworked.Monos;
 
 public class PlayerControlHandler : NameHandler
 {
-    public static Vector3? NamePos;
-
     [HideFromIl2Cpp]
     public CustomPlayer Custom { get; set; }
 
@@ -11,7 +9,7 @@ public class PlayerControlHandler : NameHandler
     {
         Player = gameObject.GetComponent<PlayerControl>();
         Custom = CustomPlayer.Custom(Player);
-        NamePos ??= Player?.NameText()?.transform?.localPosition;
+        Player.ColorBlindText().transform.localPosition = new(0f, -1.5f, 0f);
     }
 
     public void Update()
@@ -25,19 +23,19 @@ public class PlayerControlHandler : NameHandler
         if (Meeting())
             return;
 
-        (Player.ColorBlindText().text, Player.ColorBlindText().color) = UpdateColorblind(Player);
+        var cb = Player.ColorBlindText();
+        (cb.text, cb.color) = UpdateColorblind(Player);
+        var revealed = false;
+        var name = Player.NameText();
 
-        if (Player.Data?.Role is LayerHandler handler && CustomPlayer.Local.Data?.Role is LayerHandler localHandler)
+        if (IsInGame() && Player.Data?.Role is LayerHandler handler && CustomPlayer.Local.Data?.Role is LayerHandler localHandler)
         {
             handler.UpdatePlayer();
             localHandler.UpdatePlayer(Player);
-
-            if (IsInGame())
-            {
-                (Player.NameText().text, Player.NameText().color) = UpdateGameName(handler, localHandler, out var revealed);
-                Player.NameText().transform.localPosition = revealed ? new(0f, 0.15f, -0.5f) : (NamePos ?? default);
-                Player.transform.localScale = Custom.SizeFactor;
-            }
+            (name.text, name.color) = UpdateGameName(handler, localHandler, out revealed);
+            Player.transform.localScale = Custom.SizeFactor;
         }
+
+        name.transform.localPosition = new(0f, revealed ? -0.05f : -0.2f, -0.5f);
     }
 }

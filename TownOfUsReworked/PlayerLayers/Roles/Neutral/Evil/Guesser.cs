@@ -50,7 +50,7 @@ public class Guesser : Neutral
     public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText => () => "Guess What Someone Might Be";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
-        $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <color=#00ACC2FF>Actor</color>");
+        $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <#00ACC2FF>Actor</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
     public override void Init()
@@ -348,7 +348,7 @@ public class Guesser : Neutral
 
         // Ensures only the Guesser sees this
         if (HUD() && !IsNullEmptyOrWhiteSpace(something))
-            Run("<color=#EEE5BEFF>〖 Guess Hint 〗</color>", something);
+            Run("<#EEE5BEFF>〖 Guess Hint 〗</color>", something);
     }
 
     private bool IsExempt(PlayerVoteArea voteArea)
@@ -397,11 +397,11 @@ public class Guesser : Neutral
             }
 
             if (player.AmOwner)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
             else if (DeadSeeEverything())
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guessString}!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guessString}!");
             else if (CanAttack(AttackVal, player.GetDefenseValue(Player)))
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
         }
         else if (Player == player)
         {
@@ -410,14 +410,14 @@ public class Guesser : Neutral
                 RemainingGuesses--;
 
                 if (DeadSeeEverything() && !Local)
-                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guessString}!");
+                    Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guessString}!");
                 else if (Local && !TargetGuessed)
-                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString}!");
+                    Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString}!");
             }
             else if (DeadSeeEverything())
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guessString}!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guessString}!");
             else if (Local && !TargetGuessed)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString}!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString}!");
         }
     }
 

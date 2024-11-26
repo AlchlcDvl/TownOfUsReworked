@@ -49,7 +49,7 @@ public class GuardianAngel : Neutral
     public override LayerEnum Type => LayerEnum.GuardianAngel;
     public override Func<string> StartText => () => "Find Someone To Protect";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +
-        $"\n- If {TargetPlayer?.name} dies, you will become a <color=#DDDD00FF>Survivor</color>");
+        $"\n- If {TargetPlayer?.name} dies, you will become a <#DDDD00FF>Survivor</color>");
 
     public override void Init()
     {

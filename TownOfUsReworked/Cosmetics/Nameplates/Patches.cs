@@ -72,9 +72,9 @@ public static class NameplatesTabOnEnablePatch
             colorChip.SelectionHighlight.gameObject.SetActive(false);
 
             if (CustomNameplateViewDatas.TryGetValue(colorChip.ProductId, out var viewData))
-                colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = viewData.Image;
+                colorChip.GetComponent<NameplateChip>().image.sprite = viewData.Image;
             else
-                DefaultNameplateCoro(__instance, colorChip.gameObject.GetComponent<NameplateChip>());
+                DefaultNameplateCoro(__instance, colorChip.GetComponent<NameplateChip>());
 
             __instance.ColorChips.Add(colorChip);
         }
@@ -112,7 +112,7 @@ public static class NameplatesTabOnEnablePatch
         }
 
         var YOffset = __instance.YStart;
-        Template = __instance.transform.FindChild("Text").gameObject.GetComponent<TMP_Text>();
+        Template = __instance.transform.FindChild("Text").GetComponent<TMP_Text>();
         var keys = packages.Keys.OrderBy(x => x switch
         {
             "Innersloth" => 4,

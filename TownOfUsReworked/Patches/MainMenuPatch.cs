@@ -191,6 +191,7 @@ public static class MainMenuStartPatch
             credObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
         }));
 
+        AddAsset("Placeholder", __instance.playButton.HoverSound);
         AddAsset("Hover", __instance.playButton.HoverSound);
         AddAsset("Click", __instance.playButton.ClickSound);
 

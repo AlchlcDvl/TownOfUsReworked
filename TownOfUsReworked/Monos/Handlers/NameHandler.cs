@@ -16,6 +16,7 @@ public class NameHandler : MonoBehaviour
             return (ColorNames[player.PlayerId], UColor.white);
 
         var local = CustomPlayer.Local;
+        var amOwner = player.AmOwner;
 
         if (!Meeting())
         {
@@ -26,7 +27,7 @@ public class NameHandler : MonoBehaviour
 
             var vector = player.transform.position - local.transform.position;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !player.AmOwner && !local.HasDied() &&
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !amOwner && !local.HasDied() &&
                 GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
             {
                 return ("", UColor.clear);
@@ -40,7 +41,7 @@ public class NameHandler : MonoBehaviour
 
         if (GameModifiers.PlayerNames == Data.PlayerNames.NotVisible)
             name = "";
-        else if (!player.AmOwner && !local.HasDied())
+        else if (!amOwner && !local.HasDied())
         {
             if (HudHandler.Instance.IsCamoed)
                 name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
@@ -73,6 +74,7 @@ public class NameHandler : MonoBehaviour
         var deadSeeEverything = DeadSeeEverything();
         var local = localHandler.Player;
         var meeting = Meeting();
+        var amOwner = player.AmOwner;
 
         if (!meeting)
         {
@@ -83,14 +85,14 @@ public class NameHandler : MonoBehaviour
 
             var vector = player.transform.position - local.transform.position;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !player.AmOwner && !local.HasDied() &&
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !amOwner && !local.HasDied() &&
                 GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
             {
                 return ("", UColor.clear);
             }
         }
 
-        if (!player.AmOwner && !deadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked) && mimicked.Data.Role is LayerHandler handler)
+        if (!amOwner && !deadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked) && mimicked.Data.Role is LayerHandler handler)
         {
             player = mimicked;
             playerHandler = handler;
@@ -120,22 +122,22 @@ public class NameHandler : MonoBehaviour
         else
             name = PlayerNames[player.PlayerId];
 
-        if (player.CanDoTasks() && (deadSeeEverything || player.AmOwner || IsCustomHnS() || IsTaskRace()))
+        if (player.CanDoTasks() && (deadSeeEverything || amOwner || IsCustomHnS() || IsTaskRace()))
             name += role.TasksDone ? "✔" : $" ({role.TasksCompleted}/{role.TotalTasks})";
 
         if (player.IsKnighted())
-            name += " <color=#FF004EFF>κ</color>";
+            name += " <#FF004EFF>κ</color>";
 
         if (player.IsSpellbound() && meeting)
-            name += " <color=#0028F5FF>ø</color>";
+            name += " <#0028F5FF>ø</color>";
 
         if (player.IsMarked())
-            name += " <color=#F1C40FFF>χ</color>";
+            name += " <#F1C40FFF>χ</color>";
 
-        if (player.Data.PlayerName == CachedFirstDead && ((player.AmOwner && (int)GameModifiers.WhoSeesFirstKillShield == 1) || GameModifiers.WhoSeesFirstKillShield == 0))
-            name += " <color=#C2185BFF>Γ</color>";
+        if (player.Data.PlayerName == CachedFirstDead && ((amOwner && (int)GameModifiers.WhoSeesFirstKillShield == 1) || GameModifiers.WhoSeesFirstKillShield == 0))
+            name += " <#C2185BFF>Γ</color>";
 
-        if (!deadSeeEverything && !player.AmOwner)
+        if (!deadSeeEverything && !amOwner)
         {
             switch (role)
             {
@@ -202,17 +204,17 @@ public class NameHandler : MonoBehaviour
                     }
                     else if (godfather.IsBM && godfather.BlackmailedPlayer == player)
                     {
-                        name += " <color=#02A752FF>Φ</color>";
+                        name += " <#02A752FF>Φ</color>";
                         color = godfather.Color;
                     }
                     else if (godfather.IsAmb && godfather.AmbushedPlayer == player)
                     {
-                        name += " <color=#2BD29CFF>人</color>";
+                        name += " <#2BD29CFF>人</color>";
                         color = godfather.Color;
                     }
                     if (godfather.FlashedPlayers.Contains(player.PlayerId) && Grenadier.GrenadierIndicators)
                     {
-                        name += " <color=#85AA5BFF>ㅇ</color>";
+                        name += " <#85AA5BFF>ㅇ</color>";
                         color = godfather.Color;
                     }
 
@@ -222,12 +224,12 @@ public class NameHandler : MonoBehaviour
                 {
                     if (rebel.IsSil && rebel.SilencedPlayer == player)
                     {
-                        name += " <color=#AAB43EFF>乂</color>";
+                        name += " <#AAB43EFF>乂</color>";
                         color = rebel.Color;
                     }
                     else if (rebel.IsCrus && rebel.CrusadedPlayer == player)
                     {
-                        name += " <color=#DF7AE8FF>τ</color>";
+                        name += " <#DF7AE8FF>τ</color>";
                         color = rebel.Color;
                     }
 
@@ -236,14 +238,14 @@ public class NameHandler : MonoBehaviour
                 case Medic medic:
                 {
                     if (medic.ShieldedPlayer && medic.ShieldedPlayer == player && (int)Medic.ShowShielded is 1 or 2)
-                        name += " <color=#006600FF>✚</color>";
+                        name += " <#006600FF>✚</color>";
 
                     break;
                 }
                 case Trapper trapper:
                 {
                     if (trapper.Trapped.Contains(player.PlayerId))
-                        name += " <color=#BE1C8CFF>∮</color>";
+                        name += " <#BE1C8CFF>∮</color>";
 
                     break;
                 }
@@ -251,13 +253,13 @@ public class NameHandler : MonoBehaviour
                 {
                     if (ret.ShieldedPlayer && ret.ShieldedPlayer == player && (int)Medic.ShowShielded is 1 or 2)
                     {
-                        name += " <color=#006600FF>✚</color>";
+                        name += " <#006600FF>✚</color>";
                         color = ret.Color;
                     }
 
                     if (ret.Trapped.Contains(player.PlayerId))
                     {
-                        name += " <color=#BE1C8CFF>∮</color>";
+                        name += " <#BE1C8CFF>∮</color>";
                         color = ret.Color;
                     }
 
@@ -273,35 +275,35 @@ public class NameHandler : MonoBehaviour
                 case Arsonist arsonist:
                 {
                     if (arsonist.Doused.Contains(player.PlayerId))
-                        name += " <color=#EE7600FF>Ξ</color>";
+                        name += " <#EE7600FF>Ξ</color>";
 
                     break;
                 }
                 case Plaguebearer plaguebearer:
                 {
-                    if (plaguebearer.Infected.Contains(player.PlayerId) && !player.AmOwner)
-                        name += " <color=#CFFE61FF>ρ</color>";
+                    if (plaguebearer.Infected.Contains(player.PlayerId) && !amOwner)
+                        name += " <#CFFE61FF>ρ</color>";
 
                     break;
                 }
                 case Cryomaniac cryomaniac:
                 {
                     if (cryomaniac.Doused.Contains(player.PlayerId))
-                        name += " <color=#642DEAFF>λ</color>";
+                        name += " <#642DEAFF>λ</color>";
 
                     break;
                 }
                 case Framer framer:
                 {
                     if (framer.Framed.Contains(player.PlayerId))
-                        name += " <color=#00FFFFFF>ς</color>";
+                        name += " <#00FFFFFF>ς</color>";
 
                     break;
                 }
                 case Spellslinger spellslinger:
                 {
                     if (spellslinger.Spelled.Contains(player.PlayerId))
-                        name += " <color=#0028F5FF>ø</color>";
+                        name += " <#0028F5FF>ø</color>";
 
                     break;
                 }
@@ -309,7 +311,7 @@ public class NameHandler : MonoBehaviour
                 {
                     if (player == executioner.TargetPlayer)
                     {
-                        name += " <color=#CCCCCCFF>§</color>";
+                        name += " <#CCCCCCFF>§</color>";
 
                         if (Executioner.ExeKnowsTargetRole && !revealed)
                         {
@@ -328,7 +330,7 @@ public class NameHandler : MonoBehaviour
                     if (player == guesser.TargetPlayer)
                     {
                         color = guesser.Color;
-                        name += " <color=#EEE5BEFF>π</color>";
+                        name += " <#EEE5BEFF>π</color>";
                     }
 
                     break;
@@ -337,10 +339,10 @@ public class NameHandler : MonoBehaviour
                 {
                     if (player == guardianAngel.TargetPlayer)
                     {
-                        name += " <color=#FFFFFFFF>★</color>";
+                        name += " <#FFFFFFFF>★</color>";
 
                         if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 1 or 2)
-                            name += " <color=#FFFFFFFF>η</color>";
+                            name += " <#FFFFFFFF>η</color>";
 
                         if (GuardianAngel.GAKnowsTargetRole && !revealed)
                         {
@@ -356,9 +358,9 @@ public class NameHandler : MonoBehaviour
                 }
                 case Neophyte neophyte:
                 {
-                    if (neophyte.Members.Contains(player.PlayerId) && !player.AmOwner)
+                    if (neophyte.Members.Contains(player.PlayerId) && !amOwner)
                     {
-                        name += $" <color=#{neophyte.SubFactionColor.ToHtmlStringRGBA()}>{neophyte.SubFactionSymbol}</color>";
+                        name += $" <#{neophyte.SubFactionColor.ToHtmlStringRGBA()}>{neophyte.SubFactionSymbol}</color>";
 
                         if (GameModifiers.FactionSeeRoles && !revealed)
                         {
@@ -378,7 +380,7 @@ public class NameHandler : MonoBehaviour
                 {
                     if (grenadier.FlashedPlayers.Contains(player.PlayerId) && Grenadier.GrenadierIndicators)
                     {
-                        name += " <color=#85AA5BFF>ㅇ</color>";
+                        name += " <#85AA5BFF>ㅇ</color>";
                         color = grenadier.Color;
                     }
 
@@ -388,7 +390,7 @@ public class NameHandler : MonoBehaviour
                 {
                     if (blackmailer.BlackmailedPlayer == player)
                     {
-                        name += " <color=#02A752FF>Φ</color>";
+                        name += " <#02A752FF>Φ</color>";
                         color = blackmailer.Color;
                     }
 
@@ -398,7 +400,7 @@ public class NameHandler : MonoBehaviour
                 {
                     if (silencer.SilencedPlayer == player)
                     {
-                        name += " <color=#AAB43EFF>乂</color>";
+                        name += " <#AAB43EFF>乂</color>";
                         color = silencer.Color;
                     }
 
@@ -408,7 +410,7 @@ public class NameHandler : MonoBehaviour
                 {
                     if (ambusher.AmbushedPlayer == player)
                     {
-                        name += " <color=#2BD29CFF>人</color>";
+                        name += " <#2BD29CFF>人</color>";
                         color = ambusher.Color;
                     }
 
@@ -418,7 +420,7 @@ public class NameHandler : MonoBehaviour
                 {
                     if (crusader.CrusadedPlayer == player)
                     {
-                        name += " <color=#DF7AE8FF>τ</color>";
+                        name += " <#DF7AE8FF>τ</color>";
                         color = crusader.Color;
                     }
 
@@ -453,7 +455,7 @@ public class NameHandler : MonoBehaviour
                     if (GameModifiers.FactionSeeRoles && !revealed)
                     {
                         color = role.Color;
-                        name += $" <color=#{neophyte.SubFactionColor.ToHtmlStringRGBA()}>{neophyte.SubFactionSymbol}</color>\n{role}";
+                        name += $" <#{neophyte.SubFactionColor.ToHtmlStringRGBA()}>{neophyte.SubFactionSymbol}</color>\n{role}";
                         revealed = true;
                         removeFromConsig = true;
                     }
@@ -593,97 +595,97 @@ public class NameHandler : MonoBehaviour
             }
         }
 
-        if (player.AmOwner && !deadSeeEverything)
+        if (amOwner && !deadSeeEverything)
         {
             if (player.IsShielded() && (int)Medic.ShowShielded is 0 or 2)
-                name += " <color=#006600FF>✚</color>";
+                name += " <#006600FF>✚</color>";
 
             if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 0 or 2)
-                name += " <color=#FFFFFFFF>η</color>";
+                name += " <#FFFFFFFF>η</color>";
 
             if (player.IsBHTarget())
-                name += " <color=#B51E39FF>Θ</color>";
+                name += " <#B51E39FF>Θ</color>";
 
             if (player.IsExeTarget() && Executioner.ExeTargetKnows)
-                name += " <color=#CCCCCCFF>§</color>";
+                name += " <#CCCCCCFF>§</color>";
 
             if (player.IsGATarget() && GuardianAngel.GATargetKnows)
-                name += " <color=#FFFFFFFF>★</color>";
+                name += " <#FFFFFFFF>★</color>";
 
             if (player.IsGuessTarget() && Guesser.GuessTargetKnows)
-                name += " <color=#EEE5BEFF>π</color>";
+                name += " <#EEE5BEFF>π</color>";
 
             if (role.IsConverted())
-                name += $" <color=#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
+                name += $" <#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
         }
 
-        if ((player.AmOwner || deadSeeEverything) && player.IsVesting())
-            name += " <color=#DDDD00FF>υ</color>";
+        if ((amOwner || deadSeeEverything) && player.IsVesting())
+            name += " <#DDDD00FF>υ</color>";
 
-        if ((player.AmOwner || deadSeeEverything) && player.IsOnAlert())
-            name += " <color=#998040FF>σ</color>";
+        if ((amOwner || deadSeeEverything) && player.IsOnAlert())
+            name += " <#998040FF>σ</color>";
 
         if (deadSeeEverything)
         {
             if (player.IsShielded() && Medic.ShowShielded != ShieldOptions.Everyone)
-                name += " <color=#006600FF>✚</color>";
+                name += " <#006600FF>✚</color>";
 
             if (player.IsProtected() && GuardianAngel.ShowProtect != ProtectOptions.Everyone)
-                name += " <color=#FFFFFFFF>η</color>";
+                name += " <#FFFFFFFF>η</color>";
 
             if (player.IsTrapped())
-                name += " <color=#BE1C8CFF>∮</color>";
+                name += " <#BE1C8CFF>∮</color>";
 
             if (player.IsAmbushed())
-                name += " <color=#2BD29CFF>人</color>";
+                name += " <#2BD29CFF>人</color>";
 
             if (player.IsCrusaded())
-                name += " <color=#DF7AE8FF>τ</color>";
+                name += " <#DF7AE8FF>τ</color>";
 
             if (player.IsBHTarget())
-                name += " <color=#B51E39FF>Θ</color>";
+                name += " <#B51E39FF>Θ</color>";
 
             if (player.IsExeTarget())
-                name += " <color=#CCCCCCFF>§</color>";
+                name += " <#CCCCCCFF>§</color>";
 
             if (player.IsGATarget())
-                name += " <color=#FFFFFFFF>★</color>";
+                name += " <#FFFFFFFF>★</color>";
 
             if (player.IsGuessTarget())
-                name += " <color=#EEE5BEFF>π</color>";
+                name += " <#EEE5BEFF>π</color>";
 
             if (player.IsFramed())
-                name += " <color=#00FFFFFF>ς</color>";
+                name += " <#00FFFFFF>ς</color>";
 
             if (player.IsInfected())
-                name += " <color=#CFFE61FF>ρ</color>";
+                name += " <#CFFE61FF>ρ</color>";
 
             if (player.IsArsoDoused())
-                name += " <color=#EE7600FF>Ξ</color>";
+                name += " <#EE7600FF>Ξ</color>";
 
             if (player.IsCryoDoused())
-                name += " <color=#642DEAFF>λ</color>";
+                name += " <#642DEAFF>λ</color>";
 
             if (player.IsSpellbound())
-                name += " <color=#0028F5FF>ø</color>";
+                name += " <#0028F5FF>ø</color>";
 
             if (role.IsConverted())
-                name += $" <color=#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
+                name += $" <#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
         }
 
         if (player.IsShielded() && (int)Medic.ShowShielded is 3 && !deadSeeEverything)
-            name += " <color=#006600FF>✚</color>";
+            name += " <#006600FF>✚</color>";
 
         if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 3 && !deadSeeEverything)
-            name += " <color=#FFFFFFFF>η</color>";
+            name += " <#FFFFFFFF>η</color>";
 
         if ((local.Is(Faction.Syndicate) || deadSeeEverything) && (player == Role.DriveHolder || (SyndicateSettings.GlobalDrive && Role.SyndicateHasChaosDrive && player.Is(Faction.Syndicate))))
-            name += " <color=#008000FF>Δ</color>";
+            name += " <#008000FF>Δ</color>";
 
         if ((deadSeeEverything || local.Is(LayerEnum.Pestilence)) && Pestilence.Infected.TryGetValue(player.PlayerId, out var count))
         {
             for (var i = 0; i < count; i++)
-                name += " <color=#424242FF>米</color>";
+                name += " <#424242FF>米</color>";
         }
 
         if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught) && local.Is(Faction.Crew))
@@ -716,7 +718,7 @@ public class NameHandler : MonoBehaviour
             }
         }
 
-        if (deadSeeEverything || player.AmOwner)
+        if (deadSeeEverything || amOwner)
         {
             if (disp.Type != LayerEnum.NoneDisposition && !disp.Hidden)
                 name += $" {disp.ColoredSymbol}";

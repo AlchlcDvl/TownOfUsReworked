@@ -430,7 +430,7 @@ public static class SettingsPatches
                     button.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().sizeDelta = new(3f, 0.6123f);
 
                     if (LayerDictionary.TryGetValue(layer, out var entry))
-                        button.buttonText.text = $"<color=#{entry.Color.ToHtmlStringRGBA()}>{button.buttonText.text}</color>";
+                        button.buttonText.text = $"<#{entry.Color.ToHtmlStringRGBA()}>{button.buttonText.text}</color>";
 
                     RoleListEntryAttribute.ChoiceButtons.Add(button);
                 }
@@ -1053,14 +1053,14 @@ public static class SettingsPatches
             {
                 if (!SentOnce)
                 {
-                    Run("<color=#5411F8FF>人 Welcome! 人</color>", "Welcome to Town Of Us Reworked! Type /help to get started!");
+                    Run("<#5411F8FF>人 Welcome! 人</color>", "Welcome to Town Of Us Reworked! Type /help to get started!");
                     SentOnce = true;
                 }
 
                 return;
             }
 
-            if (AllPlayers().Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive || IsHnS() || (__instance.myPlayer.AmOwner && AmongUsClient.Instance.AmHost))
+            if (AllPlayers().Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive || IsHnS())
                 return;
 
             SendOptionRPC(targetClientId: __instance.myPlayer.OwnerId);

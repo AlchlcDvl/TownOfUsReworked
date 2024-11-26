@@ -51,7 +51,7 @@ public static class IntroSplash
             {
                 Intro = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
                 Intro.transform.localPosition = new(0, -1.5f, 0);
-                Intro.text = $"<size=175%><b><color=#9FDA81FF>{Splashes.Random(x => !IsNullEmptyOrWhiteSpace(x))}</color></b></size>";
+                Intro.text = $"<size=175%><b><#9FDA81FF>{Splashes.Random(x => !IsNullEmptyOrWhiteSpace(x))}</color></b></size>";
                 Intro.alignment = TextAlignmentOptions.Center;
                 Intro.fontStyle = FontStyles.Bold;
                 Intro.name = "ModIntroText";
@@ -66,7 +66,7 @@ public static class IntroSplash
         public static void Postfix()
         {
             if (Intro)
-                Intro.text = $"<size=175%><b><color=#9FDA81FF>{Splashes.Random(x => x != Intro.text)}</color></b></size>";
+                Intro.text = $"<size=175%><b><#9FDA81FF>{Splashes.Random(x => x != Intro.text)}</color></b></size>";
         }
     }
 }

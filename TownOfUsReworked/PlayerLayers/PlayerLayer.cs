@@ -4,7 +4,6 @@ public abstract class PlayerLayer
 {
     public virtual UColor Color => CustomColorManager.Layer;
     public virtual string Name => "None";
-    public string Short => Modules.Info.AllInfo.Find(x => x.Name == Name)?.Short;
     public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
     public virtual LayerEnum Type => LayerEnum.None;
     public virtual Func<string> Description => () => "- None";
@@ -17,6 +16,8 @@ public abstract class PlayerLayer
     public bool IsBlocked { get; set; }
     public bool Winner { get; set; }
     public bool Ignore { get; set; }
+
+    public string Short => Modules.Info.AllInfo.Find(x => x.Name == Name)?.Short;
 
     public bool Dead => Data?.IsDead ?? true;
     public bool Disconnected => Data?.Disconnected ?? true;
@@ -31,7 +32,7 @@ public abstract class PlayerLayer
     public int TotalTasks => Data?.Tasks?.Count ?? -1;
     public bool TasksDone => Player.CanDoTasks() && (TasksLeft == 0 || TasksCompleted >= TotalTasks);
 
-    public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
+    public string ColorString => $"<#{Color.ToHtmlStringRGBA()}>";
 
     public static readonly List<PlayerLayer> AllLayers = [];
 
@@ -63,8 +64,8 @@ public abstract class PlayerLayer
         if (Local)
             ExitingLayer();
 
-        Player = null;
         Ignore = true;
+        Player = null;
         return this;
     }
 

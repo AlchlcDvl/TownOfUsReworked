@@ -9,8 +9,8 @@ public class Mafioso : Intruder
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Mafioso : CustomColorManager.Intruder;
     public override string Name => "Mafioso";
     public override LayerEnum Type => LayerEnum.Mafioso;
-    public override Func<string> StartText => () => "Succeed The <color=#404C08FF>Godfather</color>";
-    public override Func<string> Description => () => "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities" +
+    public override Func<string> StartText => () => "Succeed The <#404C08FF>Godfather</color>";
+    public override Func<string> Description => () => "- When the <#404C08FF>Godfather</color> dies, you will become the new <#404C08FF>Godfather</color> with boosted abilities" +
         $" of your former role\n{CommonAbilities}";
 
     public override void Init()

@@ -46,7 +46,7 @@ public class Executioner : Neutral
     public override LayerEnum Type => LayerEnum.Executioner;
     public override Func<string> StartText => () => "Find Someone To Eject";
     public override Func<string> Description => () => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
-        $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
+        $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
 
     public override void Init()

@@ -22,7 +22,7 @@ public class Enforcer : Intruder
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Enforcer : CustomColorManager.Intruder;
     public override string Name => "Enforcer";
     public override LayerEnum Type => LayerEnum.Enforcer;
-    public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
+    public override Func<string> StartText => () => "Force The <#8CFFFFFF>Crew</color> To Do Your Bidding";
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
         $"{EnforceDur}s, the bomb will detonate and kill everyone within a {EnforceRadius}m radius\n{CommonAbilities}";
 

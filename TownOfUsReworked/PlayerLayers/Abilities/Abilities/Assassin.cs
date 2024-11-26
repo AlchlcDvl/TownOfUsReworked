@@ -363,9 +363,9 @@ public abstract class Assassin : Ability
         if (player.Is(LayerEnum.Indomitable) && player != Player)
         {
             if (Local)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
             else if (player.AmOwner)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
 
             Flash(CustomColorManager.Indomitable);
             player.GetLayer<Indomitable>().AttemptedGuess = true;
@@ -383,10 +383,10 @@ public abstract class Assassin : Ability
                 if (Local)
                 {
                     Flash(modifier.Color);
-                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
+                    Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
                 }
                 else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything())
-                    Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
+                    Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
 
                 return;
             }
@@ -409,20 +409,20 @@ public abstract class Assassin : Ability
         if (Local)
         {
             if (Player != player)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guessString}!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guessString}!");
             else
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         }
         else if (Player != player && player.AmOwner)
-            Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
+            Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
         else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything())
         {
             if (Player != player)
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guessString}!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guessString}!");
             else
-                Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and died!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and died!");
         }
         else
-            Run("<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
+            Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
     }
 }

@@ -17,6 +17,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<NameHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<VoteAreaHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<FootprintHandler>();
 
         // Paging
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -32,6 +33,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<Range>();
         ClassInjector.RegisterTypeInIl2Cpp<Bug>();
         ClassInjector.RegisterTypeInIl2Cpp<Bomb>();
+        ClassInjector.RegisterTypeInIl2Cpp<FootprintB>();
     }
 
     public static void AddComponents()
@@ -45,6 +47,7 @@ public static class AllMonos
         TownOfUsReworked.ModInstance.AddComponent<ClientHandler>();
         TownOfUsReworked.ModInstance.AddComponent<DragHandler>();
         TownOfUsReworked.ModInstance.AddComponent<ColorHandler>();
+        // TownOfUsReworked.ModInstance.AddComponent<FootprintHandler>().enabled = false;
 
         var prefab = (RoleBehaviour)new GameObject("LayerHandler").DontDestroy().AddComponent(Il2CppType.From(typeof(LayerHandler)));
         prefab.Role = (RoleTypes)100;

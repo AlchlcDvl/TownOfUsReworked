@@ -63,8 +63,8 @@ public abstract class Role : PlayerLayer
     public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
     public LayerEnum LinkedDisposition { get; set; }
 
-    public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
-    public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
+    public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
+    public string SubFactionColorString => $"<#{SubFactionColor.ToHtmlStringRGBA()}>";
 
     public Func<string> Objectives { get; set; } = () => "- None";
 
@@ -445,7 +445,7 @@ public abstract class Role : PlayerLayer
 
                 // Ensures only the Bounty Hunter sees this
                 if (HUD() && bh.Local)
-                    Run("<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
+                    Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
             }
         }
 
@@ -462,10 +462,10 @@ public abstract class Role : PlayerLayer
         }
     }
 
-    public const string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
+    public const string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <#FF0000FF>Intruders</color>";
     public static string SyndicateWinCon => (SyndicateSettings.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes the " +
-        "<color=#008000FF>Syndicate</color>";
-    public const string CrewWinCon = "- Finish all tasks\n- Eject all <color=#FF0000FF>evildoers</color>";
+        "<#008000FF>Syndicate</color>";
+    public const string CrewWinCon = "- Finish all tasks\n- Eject all <#FF0000FF>evildoers</color>";
 
     public void PlaceHit(PlayerControl target)
     {

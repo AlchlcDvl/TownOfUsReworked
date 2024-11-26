@@ -22,8 +22,8 @@ public class SerialKiller : NKilling
     public override string Name => "Serial Killer";
     public override LayerEnum Type => LayerEnum.SerialKiller;
     public override Func<string> StartText => () => "You Like To Play With Knives";
-    public override Func<string> Description => () => "- You can go into bloodlust\n- When in bloodlust, your kill cooldown is very short\n- If and when an <color=#803333FF>Escort</color>," +
-        " <color=#801780FF>Consort</color> or <color=#00FF00FF>Glitch</color> tries to block you, you will immediately kill them, regardless of your cooldown\n- You are immune to roleblocks";
+    public override Func<string> Description => () => "- You can go into bloodlust\n- When in bloodlust, your kill cooldown is very short\n- If and when an <#803333FF>Escort</color>," +
+        " <#801780FF>Consort</color> or <#00FF00FF>Glitch</color> tries to block you, you will immediately kill them, regardless of your cooldown\n- You are immune to roleblocks";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => BloodlustButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool RoleBlockImmune => true;

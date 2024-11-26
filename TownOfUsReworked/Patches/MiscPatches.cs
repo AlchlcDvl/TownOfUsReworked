@@ -692,7 +692,7 @@ public static class HostInfoPanelPatch
 
         var text = ColorUtility.ToHtmlStringRGB(__instance.player.ColorId.GetColor(false));
         __instance.hostLabel.text = TranslationController.Instance.GetString(StringNames.HostNounLabel);
-        __instance.playerName.text = $"{(string.IsNullOrEmpty(host.PlayerName) ? "..." : $"<color=#{text}>{host.PlayerName}</color>")} " + (AmongUsClient.Instance.AmHost ?
+        __instance.playerName.text = $"{(string.IsNullOrEmpty(host.PlayerName) ? "..." : $"<#{text}>{host.PlayerName}</color>")} " + (AmongUsClient.Instance.AmHost ?
             $"<size=90%><b><font=\"Barlow-BoldItalic SDF\" material=\"Barlow-BoldItalic SDF Outline\">{TranslationController.Instance.GetString(StringNames.HostYouLabel)}" :
             $"({__instance.player.ColorBlindName})");
         var x = __instance.playerName.GetRenderedValues().x;

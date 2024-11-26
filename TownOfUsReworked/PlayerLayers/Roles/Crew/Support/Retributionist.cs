@@ -16,14 +16,11 @@ public class Retributionist : Crew
         TrackerArrows = [];
         Reported = [];
         ReferenceBodies = [];
-        AllPrints = [];
         BombedIDs = [];
-        Investigated = [];
         BuggedPlayers = [];
         Trapped = [];
         TriggeredRoles = [];
         MediateArrows = [];
-        PlayerTimes = [];
         Selected = null;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
@@ -56,7 +53,7 @@ public class Retributionist : Crew
     public override string Name => "Retributionist";
     public override LayerEnum Type => LayerEnum.Retributionist;
     public override Func<string> StartText => () => "Mimic the Dead";
-    public override Func<string> Description => () => "- You can mimic the abilities of dead <color=#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description()}" : "");
+    public override Func<string> Description => () => "- You can mimic the abilities of dead <#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description()}" : "");
     public override AttackEnum AttackVal
     {
         get
@@ -112,8 +109,6 @@ public class Retributionist : Crew
 
         Transport1?.Destroy();
         Transport2?.Destroy();
-
-        ClearFootprints();
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -181,19 +176,6 @@ public class Retributionist : Crew
                     pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());
             }
         }
-        else if (IsDet)
-        {
-            for (var i = 0; i < AllPrints.Count; i++)
-            {
-                try
-                {
-                    var footprint = AllPrints[i];
-
-                    if (footprint.Update())
-                        i--;
-                } catch { /*Assume footprint value is null and allow the loop to continue*/ }
-            }
-        }
         else if (IsTrans)
         {
             if (KeyboardJoystick.player.GetButton("Delete"))
@@ -216,25 +198,7 @@ public class Retributionist : Crew
         if (Dead)
             return;
 
-        if (IsDet)
-        {
-            if (!Investigated.Contains(__instance.PlayerId) || __instance.AmOwner || __instance.HasDied())
-                return;
-
-            if (!PlayerTimes.ContainsKey(__instance.PlayerId))
-                PlayerTimes.Add(__instance.PlayerId, 0f);
-
-            PlayerTimes[__instance.PlayerId] += Time.deltaTime;
-
-            if (PlayerTimes[__instance.PlayerId] >= Detective.FootprintInterval)
-            {
-                PlayerTimes[__instance.PlayerId] -= Detective.FootprintInterval;
-
-                if (!AllPrints.Any(print => Vector2.Distance(print.Position, Position(__instance)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == __instance.PlayerId))
-                    AllPrints.Add(new(__instance));
-            }
-        }
-        else if (IsMed)
+        if (IsMed)
         {
             if (!MediateArrows.TryGetValue(__instance.PlayerId, out var arrow))
                 return;
@@ -332,12 +296,6 @@ public class Retributionist : Crew
         }
     }
 
-    public override void BeforeMeeting()
-    {
-        if (IsDet)
-            ClearFootprints();
-    }
-
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
@@ -374,7 +332,7 @@ public class Retributionist : Crew
 
             // Only Retributionist-Operative can see this
             if (HUD())
-                Run("<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
+                Run("<#8D0F8CFF>〖 Bug Results 〗</color>", message);
         }
         else if (IsTrap)
         {
@@ -390,10 +348,10 @@ public class Retributionist : Crew
 
                 // Only Retributionist-Trapper can see this
                 if (HUD())
-                    Run("<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
+                    Run("<#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
             }
             else if (AttackedSomeone && HUD())
-                Run("<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
+                Run("<#8D0F8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
 
             TriggeredRoles.Clear();
         }
@@ -418,7 +376,7 @@ public class Retributionist : Crew
 
             // Only Retributionist-Coroner can see this
             if (HUD())
-                Run("<color=#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
+                Run("<#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
         }
     }
 
@@ -578,9 +536,6 @@ public class Retributionist : Crew
 
     // Detective Stuff
     public CustomButton ExamineButton { get; set; }
-    public List<Footprint> AllPrints { get; set; }
-    public List<byte> Investigated { get; set; }
-    private Dictionary<byte, float> PlayerTimes { get; set; }
     public bool IsDet => RevivedRole is Detective;
 
     private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
@@ -593,19 +548,10 @@ public class Retributionist : Crew
         {
             Flash(target.IsFramed() || KilledPlayers.Any(x => x.KillerId == target.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <= Detective.RecentKill) ? UColor.red :
                 UColor.green);
-            Investigated.Add(target.PlayerId);
+            target.EnsureComponent<FootprintHandler>();
         }
 
         ExamineButton.StartCooldown(cooldown);
-    }
-
-    public void ClearFootprints()
-    {
-        if (AllPrints.Count > 0)
-        {
-            AllPrints.ForEach(x => x.Destroy());
-            AllPrints.Clear();
-        }
     }
 
     public bool DetUsable() => IsDet;

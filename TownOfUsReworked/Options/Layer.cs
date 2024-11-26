@@ -386,5 +386,5 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         }
     }
 
-    public override string SettingNotif() => $"<color={HexCode}>{base.SettingNotif()}</color>";
+    public override string SettingNotif() => $"<{HexCode}>{base.SettingNotif()}</color>";
 }

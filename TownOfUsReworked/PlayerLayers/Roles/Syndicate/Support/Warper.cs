@@ -28,7 +28,7 @@ public class Warper : Syndicate
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Warper : CustomColorManager.Syndicate;
     public override string Name => "Warper";
     public override LayerEnum Type => LayerEnum.Warper;
-    public override Func<string> StartText => () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
+    public override Func<string> StartText => () => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
         " player to another player of your choice") + $"\n{CommonAbilities}";
 

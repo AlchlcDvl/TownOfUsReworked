@@ -26,7 +26,7 @@ public class Trapper : Crew
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Trapper : CustomColorManager.Crew;
     public override string Name => "Trapper";
     public override LayerEnum Type => LayerEnum.Trapper;
-    public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <color=#FF0000FF>Evildoers</color></size>";
+    public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
     public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
         "them\nor protect from an attack once and attack the attacker in return";
 
@@ -123,10 +123,10 @@ public class Trapper : Crew
 
             // Only Trapper can see this
             if (HUD())
-                Run("<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", message);
+                Run("<#BE1C8CFF>〖 Trap Triggers 〗</color>", message);
         }
         else if (AttackedSomeone && HUD())
-            Run("<color=#BE1C8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
+            Run("<#BE1C8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
 
         TriggeredRoles.Clear();
     }

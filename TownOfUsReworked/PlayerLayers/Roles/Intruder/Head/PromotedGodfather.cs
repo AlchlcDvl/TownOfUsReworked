@@ -26,8 +26,8 @@ public class PromotedGodfather : Intruder
 
     public override string Name => "Godfather";
     public override LayerEnum Type => LayerEnum.PromotedGodfather;
-    public override Func<string> StartText => () => "Lead The <color=#FF1919FF>Intruders</color>";
-    public override Func<string> Description => () => "- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities"
+    public override Func<string> StartText => () => "Lead The <#FF1919FF>Intruders</color>";
+    public override Func<string> Description => () => "- You have succeeded the former <#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities"
         + (!FormerRole ? "" : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
     public override bool RoleBlockImmune => FormerRole?.RoleBlockImmune ?? false;
     public override UColor Color

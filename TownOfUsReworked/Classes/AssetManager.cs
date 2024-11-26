@@ -37,9 +37,9 @@ public static class AssetManager
 
     public static void StopAll() => UnityGetAll<AudioClip>().ForEach(Stop);
 
-    public static Texture2D LoadDiskTexture(string path) => LoadTexture(File.ReadAllBytes(path), path.SanitisePath());
-
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
+
+    public static Texture2D LoadDiskTexture(string path) => LoadTexture(File.ReadAllBytes(path), path.SanitisePath());
 
     public static Texture2D LoadResourceTexture(string path) => LoadTexture(TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully(), path.SanitisePath());
 
@@ -69,27 +69,9 @@ public static class AssetManager
         return sprite.DontDestroy();
     }
 
-    public static AudioClip LoadResourceAudio(string path) => LoadAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully());
+    // public static AudioClip LoadResourceAudio(string path) => LoadAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully());
 
     public static AudioClip LoadDiskAudio(string path) => LoadAudio(path.SanitisePath(), File.ReadAllBytes(path));
-
-    public static AudioClip LoadAudio(string name, byte[] data)
-    {
-        var samples = new float[data.Length / 4];
-
-        for (var i = 0; i < samples.Length; i++)
-            samples[i] = (float)BitConverter.ToInt32(data, i * 4) / int.MaxValue;
-
-        var audioClip = AudioClip.Create(name, samples.Length / 2, 2, GetFrequency(name), false);
-
-        if (audioClip.SetData(samples, 0))
-        {
-            audioClip.hideFlags |= HideFlags.DontSaveInEditor;
-            return audioClip.DontDestroy();
-        }
-
-        return null;
-    }
 
     public static AssetBundle LoadBundle(byte[] data) => AssetBundle.LoadFromMemory(data);
 
@@ -137,8 +119,6 @@ public static class AssetManager
         {
             if (resourceName.EndsWith(".png"))
                 AddAsset(resourceName.SanitisePath(), LoadResourceSprite(resourceName));
-            else if (resourceName.EndsWith(".raw"))
-                AddAsset(resourceName.SanitisePath(), LoadResourceAudio(resourceName));
             else if (resourceName.Contains(".txt"))
                 AddAsset(resourceName.SanitisePath(), LoadResourceText(resourceName));
         }
@@ -179,14 +159,6 @@ public static class AssetManager
             return 100;
     }
 
-    public static int GetFrequency(string name)
-    {
-        if (name.Contains("Intro"))
-            return 36000;
-        else
-            return 48000;
-    }
-
     public static T UnityGet<T>(string name) where T : UObject
     {
         if (UnityLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result) && result)
@@ -210,7 +182,7 @@ public static class AssetManager
                 strings.Remove(path);
                 result = AddAsset(name, LoadDiskSprite(path));
             }
-            else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".raw"), out path))
+            else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".wav"), out path))
             {
                 strings.Remove(path);
                 result = AddAsset(name, LoadDiskAudio(path));
@@ -288,4 +260,91 @@ public static class AssetManager
     }
 
     private static bool GetReadable(string name) => name is "Cursor";
+
+    // Lord help my soul, got the code from here: https://github.com/deadlyfingers/UnityWav/blob/master/WavUtility.cs
+
+	public static AudioClip LoadAudio(string name, byte[] fileBytes)
+	{
+		var chunk = BitConverter.ToInt32(fileBytes, 16) + 24;
+		var channels = BitConverter.ToUInt16(fileBytes, 22);
+		var sampleRate = BitConverter.ToInt32(fileBytes, 24);
+		var bitDepth = BitConverter.ToUInt16(fileBytes, 34);
+        var data = bitDepth switch
+        {
+            8 => Convert8BitByteArrayToAudioClipData(fileBytes, chunk),
+            16 => Convert16BitByteArrayToAudioClipData(fileBytes, chunk),
+            24 => Convert24BitByteArrayToAudioClipData(fileBytes, chunk),
+            32 => Convert32BitByteArrayToAudioClipData(fileBytes, chunk),
+            _ => throw new Exception(bitDepth + " bit depth is not supported."),
+        };
+
+        var audioClip = AudioClip.Create(name, data.Length, channels, sampleRate, false);
+
+        if (audioClip.SetData(data, 0))
+        {
+            audioClip.hideFlags |= HideFlags.DontSaveInEditor;
+            return audioClip.DontDestroy();
+        }
+
+        return null;
+	}
+
+	private static float[] Convert8BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+	{
+		var wavSize = BitConverter.ToInt32(source, headerOffset);
+		headerOffset += sizeof(int);
+		var data = new float[wavSize];
+
+		for (var i = 0; i < wavSize; i++)
+			data[i] = (float)source[i] / sbyte.MaxValue;
+
+		return data;
+	}
+
+	private static float[] Convert16BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+	{
+		var wavSize = BitConverter.ToInt32(source, headerOffset);
+		headerOffset += sizeof(int);
+        var x = sizeof(short);
+		var convertedSize = wavSize / x;
+		var data = new float[convertedSize];
+
+		for (var i = 0; i < convertedSize; i++)
+			data[i] = (float)BitConverter.ToInt16(source, (i * x) + headerOffset) / short.MaxValue;
+
+		return data;
+	}
+
+	private static float[] Convert24BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+	{
+		var wavSize = BitConverter.ToInt32(source, headerOffset);
+        var intSize = sizeof(int);
+		headerOffset += intSize;
+		var x = 3; // Block size = 3
+		var convertedSize = wavSize / x;
+		var data = new float[convertedSize];
+		var block = new byte[intSize]; // Using a 4 byte block for copying 3 bytes, then copy bytes with 1 offset
+
+		for (var i = 0; i < convertedSize; i++)
+        {
+			Buffer.BlockCopy(source, (i * x) + headerOffset, block, 1, x);
+			data[i] = (float)BitConverter.ToInt32(block, 0) / int.MaxValue;
+		}
+
+		return data;
+	}
+
+	private static float[] Convert32BitByteArrayToAudioClipData (byte[] source, int headerOffset)
+	{
+		var wavSize = BitConverter.ToInt32(source, headerOffset);
+		headerOffset += sizeof(int);
+		var x = sizeof(float); // Block size = 4
+		var convertedSize = wavSize / x;
+		var data = new float[convertedSize];
+
+		for (var i = 0; i < convertedSize; i++)
+			data[i] = (float)BitConverter.ToInt32(source, (i * x) + headerOffset) / int.MaxValue;
+
+		return data;
+	}
 }
