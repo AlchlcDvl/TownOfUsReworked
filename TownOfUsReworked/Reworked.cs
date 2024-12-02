@@ -18,6 +18,8 @@ public partial class TownOfUsReworked
         HideOtherGhosts = Config.Bind("Client", "Hide Other Ghosts", true, "Hides other ghosts when you are dead");
         OptimisationMode = Config.Bind("Client", "Optimisation Mode", false, "Disables things that would be considered resource heavy");
         LockCameraSway = Config.Bind("Client", "Lock Camera Sway", false, "Disables the camera bobbing around your character");
+        ForceUseLocal = Config.Bind("Client", "Force Use Local Files", false, "Forces the loaders to pull from local json files rather than ones available online");
+        UseDarkTheme = Config.Bind("Client", "Use Dark Theme Chat", false, "Enables dark mode for chat");
 
         Ip = Config.Bind("Config", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
         Port = Config.Bind("Config", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
@@ -43,5 +45,6 @@ public partial class TownOfUsReworked
         AllMonos.RegisterMonos();
         SetUpConfigs();
         LoadAssets();
+        IL2CPPChainloader.Instance.Finished += Initialise;
     }
 }

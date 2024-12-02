@@ -1,3 +1,4 @@
+
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
@@ -17,6 +18,12 @@ public class Bomber : Syndicate
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BombsDetonateOnMeetingStart { get; set; } = false;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool ShowBomb { get; set; } = true;
+
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool BombAlert { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
     public static Number BombRange { get; set; } = new(1.5f);
@@ -39,8 +46,10 @@ public class Bomber : Syndicate
         base.Init();
         Alignment = Alignment.SyndicateKill;
         Bombs = [];
-        BombButton ??= new(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Place, new Cooldown(BombCd), "PLACE BOMB", (ConditionFunc)Condition);
-        DetonateButton ??= new(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any, "DETONATE");
+        BombButton ??= new(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Place, new Cooldown(BombCd), "PLACE BOMB",
+            (ConditionFunc)Condition);
+        DetonateButton ??= new(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any,
+            "DETONATE");
     }
 
     public override void Deinit()
@@ -66,6 +75,9 @@ public class Bomber : Syndicate
 
         if (BombCooldownsLinked)
             DetonateButton.StartCooldown();
+
+        if (ShowBomb)
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BomberActionsRPC.DropBomb);
     }
 
     public void Detonate()
@@ -76,7 +88,30 @@ public class Bomber : Syndicate
 
         if (BombCooldownsLinked)
             BombButton.StartCooldown();
+
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BomberActionsRPC.Explode);
+        Play("Bomb");
     }
 
     public bool Condition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        if (reader.ReadEnum<BomberActionsRPC>() == BomberActionsRPC.DropBomb)
+        {
+            if ((CustomPlayer.Local.GetFaction() is Faction.Syndicate or Faction.Intruder && Faction is Faction.Syndicate or Faction.Intruder) || CustomPlayer.Local.IsOtherLover(Player) ||
+                CustomPlayer.Local.IsOtherLink(Player))
+            {
+                Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
+            }
+        }
+        else
+        {
+            if (BombAlert)
+                Play("Bomb");
+
+            Bombs.ForEach(x => x.gameObject.Destroy());
+            Bombs.Clear();
+        }
+    }
 }

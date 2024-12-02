@@ -37,5 +37,5 @@ public static class VitalsPatch
 [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
 public static class VitalsMinigameBeginPatch
 {
-    public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.AddComponent<VitalsPagingBehaviour>().Menu = __instance;
+    public static void Postfix(VitalsMinigame __instance) => __instance.AddComponent<VitalsPagingBehaviour>().Menu = __instance;
 }

@@ -2,40 +2,45 @@ namespace TownOfUsReworked.Modules;
 
 public class ChatCommand
 {
-    private string[] Aliases { get; }
+    public string[] Aliases { get; }
+    public string Paramters { get; }
+    public string Description { get; }
     private ExecuteArgsCommand ExecuteArgs { get; }
     private ExecuteArglessCommand ExecuteArgless { get; }
     private ExecuteArgsMessageCommand ExecuteArgsMessage { get; }
 
     private delegate void ExecuteArglessCommand();
     private delegate void ExecuteArgsCommand(string[] args);
-    private delegate void ExecuteArgsMessageCommand(string[] args, string arg);
+    private delegate void ExecuteArgsMessageCommand(string[] args, string message);
 
     private static readonly List<ChatCommand> AllCommands =
     [
         new([ "controls", "ctrl", "mci" ], Controls),
-        new([ "kick", "k", "ban", "b" ], KickBan),
+        new([ "kick", "k" ], KickBan, "{player id or (player name)}"),
+        new([ "ban", "b" ], KickBan, "{player id or (player name)}"),
         new([ "summary", "sum" ], Summary),
         new([ "clearlobby", "cl", "clear" ], Clear),
-        new([ "setname", "sn", "name" ], SetName),
-        new([ "whisper", "w"] , Whisper),
-        new([ "ignore", "i", "unignore", "ui" ], ToggleIgnore),
-        new([ "help", "h" ], Help),
+        new([ "setname", "sn", "name" ], SetName, "{(new name)}"),
+        new([ "whisper", "w"] , Whisper, "{player id or (player name)}"),
+        new([ "unignore", "ui" ], ToggleIgnore, "{player id or (player name)}"),
+        new([ "ignore", "i" ], ToggleIgnore, "{player id or (player name)}"),
+        new([ "help", "h" ], Help, "{command name (optional)}"),
         // new([ "testargs", "targ" ], TestArgs),
         // new([ "testargless", "targless" ], TestArgless),
         // new([ "testargmessage", "targmess" ], TestArgsMessage),
         // new([ "translate", "trans", "t" ], Translate),
         // new([ "rpc" ], SendRPCArgless),
-        // new([ "rpca" ], SendRPCArgs),
+        // new([ "rpca" ], SendRPCArgs)
     ];
 
     private ChatCommand(string[] aliases) => Aliases = aliases;
 
-    private ChatCommand(string[] aliases, ExecuteArgsCommand executeArgs) : this(aliases)
+    private ChatCommand(string[] aliases, ExecuteArgsCommand executeArgs, string parameters) : this(aliases)
     {
         ExecuteArgs = executeArgs;
         ExecuteArgless = null;
         ExecuteArgsMessage = null;
+        Paramters = parameters;
     }
 
     private ChatCommand(string[] aliases, ExecuteArglessCommand executeArgless) : this(aliases)
@@ -45,11 +50,12 @@ public class ChatCommand
         ExecuteArgsMessage = null;
     }
 
-    private ChatCommand(string[] aliases, ExecuteArgsMessageCommand executeArgsMessage) : this(aliases)
+    private ChatCommand(string[] aliases, ExecuteArgsMessageCommand executeArgsMessage, string parameters) : this(aliases)
     {
         ExecuteArgs = null;
         ExecuteArgless = null;
         ExecuteArgsMessage = executeArgsMessage;
+        Paramters = parameters;
     }
 
     public static void Execute(ChatCommand command, string[] args, string message)
@@ -66,9 +72,9 @@ public class ChatCommand
             Run("<#FFFF00FF>⚠ Huh? ⚠</color>", "Weird...");
     }
 
-    public static ChatCommand Find(string[] args) => AllCommands.Find(x => x.Aliases.Any(x => args[0] == $"/{x}"));
+    public static ChatCommand Find(string arg) => AllCommands.Find(x => x.Aliases.Any(y => arg.StartsWith($"/{y}")));
 
-    public static void Run(string title, string text, bool withColor = true, bool hasColor = false, UColor? color = null)
+    public static void Run(string title, string text, bool withColor = true, bool hasColor = false, UColor? nameColor = null)
     {
         var chat = Chat();
         var pooledBubble = chat.GetPooledBubble();
@@ -79,32 +85,28 @@ public class ChatCommand
             pooledBubble.transform.localScale = Vector3.one;
             pooledBubble.SetLeft();
             pooledBubble.SetCosmetics(CustomPlayer.Local.Data);
-            pooledBubble.NameText.text = title;
-            pooledBubble.NameText.color = UColor.white;
-            pooledBubble.NameText.ForceMeshUpdate(true, true);
-            pooledBubble.votedMark.enabled = false;
-            pooledBubble.Xmark.enabled = false;
-            pooledBubble.TextArea.text = text;
-            pooledBubble.TextArea.ForceMeshUpdate(true, true);
-            pooledBubble.Background.size = new(5.52f, 0.2f + pooledBubble.NameText.GetNotDumbRenderedHeight() + pooledBubble.TextArea.GetNotDumbRenderedHeight());
-            pooledBubble.MaskArea.size = pooledBubble.Background.size - new Vector2(0, 0.03f);
+            pooledBubble.Player.gameObject.SetActive(false);
+            pooledBubble.SetName(title, false, false, nameColor ?? UColor.white);
+            pooledBubble.SetText(text);
+            pooledBubble.NameText.transform.localPosition -= new Vector3(0.7f, 0.05f, 0f);
+            pooledBubble.TextArea.transform.localPosition -= new Vector3(0.7f, 0.1f, 0f);
             pooledBubble.TextArea.richText = withColor;
-            pooledBubble.Background.color = color ?? UColor.white;
+            pooledBubble.ColorBlindName.gameObject.SetActive(false);
 
             if (withColor && !hasColor)
                 pooledBubble.TextArea.text = Info.ColorIt(text);
 
             pooledBubble.AlignChildren();
-            var pos = pooledBubble.NameText.transform.localPosition;
-            pos.y += 0.05f;
-            pooledBubble.NameText.transform.localPosition = pos;
             chat.AlignAllBubbles();
-            chat.chatNotification.SetUp(CustomPlayer.Local, text);
 
-            if (!chat.IsOpenOrOpening && chat.notificationRoutine == null)
-                chat.notificationRoutine = chat.StartCoroutine(chat.BounceDot());
+            if (!chat.IsOpenOrOpening)
+            {
+                chat.chatNotification.SetUp(CustomPlayer.Local, text);
+                chat.notificationRoutine ??= chat.StartCoroutine(chat.BounceDot());
+            }
 
-            Play("Chat");
+            ChatControllerAwakePatch.SetChatBubble(pooledBubble);
+            Play("Chat", pitch: 0.5f + (CustomPlayer.Local.PlayerId / 15f));
         }
         catch (Exception ex)
         {
@@ -200,7 +202,7 @@ public class ChatCommand
             Run("<#FF0000FF>⚠ Ignoring Error ⚠</color>", $"Who are you trying to ignore/unignore? {arg} is invalid.");
     }
 
-    private static void SetName(string[] args)
+    private static void SetName(string[] args, string message)
     {
         if (!TownOfUsReworked.IsTest || !IsLobby())
         {
@@ -214,11 +216,9 @@ public class ChatCommand
             return;
         }
 
-        var arg = "";
-        args[1..].ForEach(arg2 => arg += $"{arg2} ");
-        arg = arg.Remove(arg.Length - 1);
+        var arg = message.Split([ "(", ")" ], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)[1];
 
-        if (arg.Any(Disallowed.Contains))
+        if (Disallowed.Any(arg.Contains))
             Run("<#FF0000FF>⚠ Name Error ⚠</color>", "Name contains disallowed characters.");
         else if (Profanities.Any(arg.Contains))
             Run("<#FF0000FF>⚠ Name Error ⚠</color>", "Name contains unaccepted words.");
@@ -269,7 +269,7 @@ public class ChatCommand
         Run("<#B148E2FF>◈ Success ◈</color>", "Lobby cleared!");
     }
 
-    private static void KickBan(string[] args)
+    private static void KickBan(string[] args, string message)
     {
         if (!IsLobby())
         {
@@ -291,17 +291,22 @@ public class ChatCommand
             return;
         }
 
-        var arg = "";
-        args[1..].ForEach(arg2 => arg += $"{arg2} ");
-        arg = arg.Remove(arg.Length - 1);
+        var allPlayers = AllPlayers();
+        PlayerControl target = null;
+        var split = message.Split([ "(", ")" ], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-        if (!AllPlayers().TryFinding(x => x.Data.PlayerName == arg, out var target))
+        if (byte.TryParse(args[1], out var id))
+            allPlayers.TryFinding(x => x.PlayerId == id, out target);
+
+        if (split.Length > 1)
+            allPlayers.TryFinding(x => x.Data.PlayerName == split[1], out target);
+
+        if (!target)
         {
-            Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
+            Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find the target.");
             return;
         }
-
-        if (target.AmOwner)
+        else if (target.AmOwner)
         {
             Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Don't {(ban ? "ban" : "kick")} yourself.");
             return;
@@ -311,7 +316,7 @@ public class ChatCommand
 
         if (client == null)
         {
-            Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
+            Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find the target.");
             return;
         }
 
@@ -319,14 +324,20 @@ public class ChatCommand
         Run("<#B148E2FF>◈ Success ◈</color>", $"{target.name} {(ban ? "Bann" : "Kick")}ed!");
     }
 
-    private static void Help()
+    private static void Help(string[] args)
     {
-        var setColor = TownOfUsReworked.IsTest ? "/setname" : "";
-        var comma = setColor.Length == 0 ? "" : ", ";
-        var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
-        var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
-        var lobby = setColor + (!IsNullEmptyOrWhiteSpace(kickBan) ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "");
-        Run("<#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n/ignore{lobby}");
+        if (args.Length == 1)
+        {
+            var setColor = TownOfUsReworked.IsTest ? "/setname" : "";
+            var comma = setColor.Length == 0 ? "" : ", ";
+            var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
+            var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
+            var lobby = setColor + (!IsNullEmptyOrWhiteSpace(kickBan) ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "");
+            Run("<#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n/ignore{lobby}");
+        }
+        else
+        {
+        }
     }
 
     private static void Controls() => Run("<#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Toggle the visibility of the MCI control panel (local only)\nUp/Left Arrow - " +

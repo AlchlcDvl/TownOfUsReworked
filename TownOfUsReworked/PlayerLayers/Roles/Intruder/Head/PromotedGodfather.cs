@@ -146,34 +146,42 @@ public class PromotedGodfather : Intruder
         switch (gfAction)
         {
             case GFActionsRPC.Morph:
+            {
                 MorphedPlayer = reader.ReadPlayer();
                 break;
-
+            }
             case GFActionsRPC.Disguise:
+            {
                 DisguisedPlayer = reader.ReadPlayer();
                 CopiedPlayer = reader.ReadPlayer();
                 break;
-
+            }
             case GFActionsRPC.Roleblock:
+            {
                 BlockTarget = reader.ReadPlayer();
                 break;
-
+            }
             case GFActionsRPC.Blackmail:
+            {
                 BlackmailedPlayer = reader.ReadPlayer();
                 break;
-
+            }
             case GFActionsRPC.Drag:
+            {
                 CurrentlyDragging = reader.ReadBody();
                 DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
                 break;
-
+            }
             case GFActionsRPC.Ambush:
+            {
                 AmbushedPlayer = reader.ReadPlayer();
                 break;
-
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)gfAction}");
                 break;
+            }
         }
     }
 

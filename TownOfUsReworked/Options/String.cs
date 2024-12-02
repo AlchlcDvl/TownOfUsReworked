@@ -50,7 +50,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     public override void PostLoadSetup()
     {
         Values = [ .. Enum.GetNames(TargetType).Where(x => !IgnoreStrings.Contains(x)) ];
-        EnumValues = [ .. Enum.GetValues(TargetType).Cast<Enum>() ];
+        EnumValues = [ .. Enum.GetValues(TargetType).Cast<Enum>().Where(x => !IgnoreStrings.Contains(x.ToString())) ];
         Index = EnumValues.IndexOf(Value);
     }
 
@@ -72,5 +72,18 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
         var str = Setting.Cast<StringOption>();
         str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Values.Length - 1);
         str.ValueText.text = Format();
+    }
+
+    public override void Debug()
+    {
+        base.Debug();
+
+        foreach (var name in Values)
+        {
+            var id = $"CustomOption.{TargetType.Name}.{name}";
+
+            if (!TranslationManager.IdExists(id))
+                Fatal(id);
+        }
     }
 }

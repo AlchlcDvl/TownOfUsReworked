@@ -28,33 +28,37 @@ public static class ModUpdater
         Message($"Getting update info for {updateType}");
         yield return EndFrame();
 
-        if (updateType == "Submerged")
-            SubLoaded = InitializeSubmerged();
-        else if (updateType == "LevelImpostor")
-            LILoaded = InitializeLevelImpostor();
-
         // Checks the github api for tags. Compares current version to the latest tag version on GitHub
         var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=1");
         yield return www.SendWebRequest();
 
         var isError = www.result != UnityWebRequest.Result.Success;
-        var jsonText = isError ? ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other) : www.downloadHandler.text;
+        var jsonText = "";
 
-        if (isError)
-            Error(www.error);
+        if (ClientOptions.ForceUseLocal)
+            jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
         else
         {
-            var task = File.WriteAllTextAsync(Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json"), www.downloadHandler.text);
-
-            while (!task.IsCompleted)
+            if (isError)
             {
-                if (task.Exception != null)
-                {
-                    Error(task.Exception);
-                    break;
-                }
+                Error(www.error);
+                jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
+            }
+            else
+            {
+                jsonText = www.downloadHandler.text;
+                var task = File.WriteAllTextAsync(Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json"), jsonText);
 
-                yield return EndFrame();
+                while (!task.IsCompleted)
+                {
+                    if (task.Exception != null)
+                    {
+                        Error(task.Exception);
+                        break;
+                    }
+
+                    yield return EndFrame();
+                }
             }
         }
 

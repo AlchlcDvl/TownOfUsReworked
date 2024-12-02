@@ -19,14 +19,19 @@ public static class AssetManager
 
     public static string GetString(string path) => SystemGet<string>(path) ?? "Placeholder";
 
-    public static void Play(string path, bool loop = false, float volume = 1f) => Play(GetAudio(path), loop, volume);
+    public static void Play(string path, bool loop = false, float volume = 1f, float pitch = float.NaN) => Play(GetAudio(path), loop, volume, pitch);
 
-    public static void Play(AudioClip audio, bool loop = false, float volume = 1f)
+    public static void Play(AudioClip audio, bool loop = false, float volume = 1f, float pitch = float.NaN)
     {
         Stop(audio);
 
         if (Constants.ShouldPlaySfx())
-            SoundManager.Instance.PlaySound(audio, loop, volume);
+        {
+            var source = SoundManager.Instance.PlaySound(audio, loop, volume);
+
+            if (!float.IsNaN(pitch))
+                source.pitch = pitch;
+        }
     }
 
     public static void Stop(AudioClip audio)
@@ -61,9 +66,9 @@ public static class AssetManager
 
     public static Sprite LoadResourceSprite(string path) => LoadSprite(LoadResourceTexture(path), path.SanitisePath());
 
-    public static Sprite LoadSprite(Texture2D tex, string name, float size = -1f, SpriteMeshType meshType = SpriteMeshType.Tight)
+    public static Sprite LoadSprite(Texture2D tex, string name, float size = float.NaN, SpriteMeshType meshType = SpriteMeshType.Tight)
     {
-        var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), size > 0f ? size : GetSize(name), 0, meshType);
+        var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), float.IsNaN(size) ? GetSize(name) : size, 0, meshType);
         sprite.name = name;
         sprite.hideFlags |= HideFlags.DontSaveInEditor;
         return sprite.DontDestroy();
@@ -263,12 +268,12 @@ public static class AssetManager
 
     // Lord help my soul, got the code from here: https://github.com/deadlyfingers/UnityWav/blob/master/WavUtility.cs
 
-	public static AudioClip LoadAudio(string name, byte[] fileBytes)
-	{
-		var chunk = BitConverter.ToInt32(fileBytes, 16) + 24;
-		var channels = BitConverter.ToUInt16(fileBytes, 22);
-		var sampleRate = BitConverter.ToInt32(fileBytes, 24);
-		var bitDepth = BitConverter.ToUInt16(fileBytes, 34);
+    public static AudioClip LoadAudio(string name, byte[] fileBytes)
+    {
+        var chunk = BitConverter.ToInt32(fileBytes, 16) + 24;
+        var channels = BitConverter.ToUInt16(fileBytes, 22);
+        var sampleRate = BitConverter.ToInt32(fileBytes, 24);
+        var bitDepth = BitConverter.ToUInt16(fileBytes, 34);
         var data = bitDepth switch
         {
             8 => Convert8BitByteArrayToAudioClipData(fileBytes, chunk),
@@ -287,64 +292,64 @@ public static class AssetManager
         }
 
         return null;
-	}
+    }
 
-	private static float[] Convert8BitByteArrayToAudioClipData(byte[] source, int headerOffset)
-	{
-		var wavSize = BitConverter.ToInt32(source, headerOffset);
-		headerOffset += sizeof(int);
-		var data = new float[wavSize];
+    private static float[] Convert8BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+    {
+        var wavSize = BitConverter.ToInt32(source, headerOffset);
+        headerOffset += sizeof(int);
+        var data = new float[wavSize];
 
-		for (var i = 0; i < wavSize; i++)
-			data[i] = (float)source[i] / sbyte.MaxValue;
+        for (var i = 0; i < wavSize; i++)
+            data[i] = (float)source[i] / sbyte.MaxValue;
 
-		return data;
-	}
+        return data;
+    }
 
-	private static float[] Convert16BitByteArrayToAudioClipData(byte[] source, int headerOffset)
-	{
-		var wavSize = BitConverter.ToInt32(source, headerOffset);
-		headerOffset += sizeof(int);
+    private static float[] Convert16BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+    {
+        var wavSize = BitConverter.ToInt32(source, headerOffset);
+        headerOffset += sizeof(int);
         var x = sizeof(short);
-		var convertedSize = wavSize / x;
-		var data = new float[convertedSize];
+        var convertedSize = wavSize / x;
+        var data = new float[convertedSize];
 
-		for (var i = 0; i < convertedSize; i++)
-			data[i] = (float)BitConverter.ToInt16(source, (i * x) + headerOffset) / short.MaxValue;
+        for (var i = 0; i < convertedSize; i++)
+            data[i] = (float)BitConverter.ToInt16(source, (i * x) + headerOffset) / short.MaxValue;
 
-		return data;
-	}
+        return data;
+    }
 
-	private static float[] Convert24BitByteArrayToAudioClipData(byte[] source, int headerOffset)
-	{
-		var wavSize = BitConverter.ToInt32(source, headerOffset);
+    private static float[] Convert24BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+    {
+        var wavSize = BitConverter.ToInt32(source, headerOffset);
         var intSize = sizeof(int);
-		headerOffset += intSize;
-		var x = 3; // Block size = 3
-		var convertedSize = wavSize / x;
-		var data = new float[convertedSize];
-		var block = new byte[intSize]; // Using a 4 byte block for copying 3 bytes, then copy bytes with 1 offset
+        headerOffset += intSize;
+        var x = 3; // Block size = 3
+        var convertedSize = wavSize / x;
+        var data = new float[convertedSize];
+        var block = new byte[intSize]; // Using a 4 byte block for copying 3 bytes, then copy bytes with 1 offset
 
-		for (var i = 0; i < convertedSize; i++)
+        for (var i = 0; i < convertedSize; i++)
         {
-			Buffer.BlockCopy(source, (i * x) + headerOffset, block, 1, x);
-			data[i] = (float)BitConverter.ToInt32(block, 0) / int.MaxValue;
-		}
+            Buffer.BlockCopy(source, (i * x) + headerOffset, block, 1, x);
+            data[i] = (float)BitConverter.ToInt32(block, 0) / int.MaxValue;
+        }
 
-		return data;
-	}
+        return data;
+    }
 
-	private static float[] Convert32BitByteArrayToAudioClipData (byte[] source, int headerOffset)
-	{
-		var wavSize = BitConverter.ToInt32(source, headerOffset);
-		headerOffset += sizeof(int);
-		var x = sizeof(float); // Block size = 4
-		var convertedSize = wavSize / x;
-		var data = new float[convertedSize];
+    private static float[] Convert32BitByteArrayToAudioClipData (byte[] source, int headerOffset)
+    {
+        var wavSize = BitConverter.ToInt32(source, headerOffset);
+        headerOffset += sizeof(int);
+        var x = sizeof(float); // Block size = 4
+        var convertedSize = wavSize / x;
+        var data = new float[convertedSize];
 
-		for (var i = 0; i < convertedSize; i++)
-			data[i] = (float)BitConverter.ToInt32(source, (i * x) + headerOffset) / int.MaxValue;
+        for (var i = 0; i < convertedSize; i++)
+            data[i] = (float)BitConverter.ToInt32(source, (i * x) + headerOffset) / int.MaxValue;
 
-		return data;
-	}
+        return data;
+    }
 }

@@ -173,7 +173,6 @@ public static class CmdCheckColorPatch
     {
         CallRpc(CustomRPC.Vanilla, VanillaRPC.SetColor, __instance, bodyColor);
         __instance.SetColor(bodyColor);
-        NameHandler.ColorNames[__instance.PlayerId] = __instance.Data.ColorName.Replace("(", "").Replace(")", "");
         return false;
     }
 }

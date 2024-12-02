@@ -245,7 +245,6 @@ public class PromotedRebel : Syndicate
             if (wasnull)
             {
                 WarpObj = new("RebWarp") { layer = 5 };
-                WarpObj.AddSubmergedComponent("ElevatorMover");
                 WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
                 AnimationPlaying = WarpObj.AddComponent<SpriteRenderer>();
                 AnimationPlaying.sprite = PortalAnimation[0];
@@ -253,6 +252,9 @@ public class PromotedRebel : Syndicate
                 WarpObj.SetActive(true);
                 WarpMenu1 = new(Player, WarpClick1, WarpException1);
                 WarpMenu2 = new(Player, WarpClick2, WarpException2);
+
+                if (IsSubmerged())
+                    WarpObj.AddSubmergedComponent("ElevatorMover");
             }
         }
 
@@ -292,16 +294,19 @@ public class PromotedRebel : Syndicate
         switch (rebAction)
         {
             case RebActionsRPC.Poison:
+            {
                 PoisonedPlayer = reader.ReadPlayer();
                 break;
-
+            }
             case RebActionsRPC.Conceal:
+            {
                 if (!HoldsDrive)
                     ConcealedPlayer = reader.ReadPlayer();
 
                 break;
-
+            }
             case RebActionsRPC.Shapeshift:
+            {
                 if (!HoldsDrive)
                 {
                     ShapeshiftPlayer1 = reader.ReadPlayer();
@@ -309,38 +314,60 @@ public class PromotedRebel : Syndicate
                 }
 
                 break;
-
+            }
             case RebActionsRPC.Warp:
+            {
                 WarpPlayer1 = reader.ReadPlayer();
                 WarpPlayer2 = reader.ReadPlayer();
                 Coroutines.Start(WarpPlayers());
                 break;
-
+            }
             case RebActionsRPC.Crusade:
+            {
                 CrusadedPlayer = reader.ReadPlayer();
                 break;
-
+            }
             case RebActionsRPC.Spellbind:
+            {
                 Spelled.Add(reader.ReadByte());
                 break;
-
+            }
             case RebActionsRPC.Frame:
+            {
                 Framed.Add(reader.ReadByte());
                 break;
-
+            }
             case RebActionsRPC.Confuse:
+            {
                 if (!HoldsDrive)
                     ConfusedPlayer = reader.ReadPlayer();
 
                 break;
-
+            }
             case RebActionsRPC.Silence:
+            {
                 SilencedPlayer = reader.ReadPlayer();
                 break;
+            }
+            case RebActionsRPC.Explode:
+            {
+                if (Bomber.BombAlert)
+                    Play("Bomb");
 
+                Bombs.ForEach(x => x.gameObject.Destroy());
+                Bombs.Clear();
+                break;
+            }
+            case RebActionsRPC.DropBomb:
+            {
+                Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
+                break;
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)rebAction}");
                 break;
+            }
         }
     }
 
@@ -600,6 +627,9 @@ public class PromotedRebel : Syndicate
 
         if (Bomber.BombCooldownsLinked)
             DetonateButton.StartCooldown();
+
+        if (Bomber.ShowBomb)
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.DropBomb);
     }
 
     public void Detonate()
@@ -610,6 +640,9 @@ public class PromotedRebel : Syndicate
 
         if (Bomber.BombCooldownsLinked)
             BombButton.StartCooldown();
+
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.Explode);
+        Play("Bomb");
     }
 
     public bool BombCondition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);

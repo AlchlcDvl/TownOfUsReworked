@@ -56,8 +56,6 @@ public class Transporter : Crew
         Vent2 = null;
         Transport1 = new("Transport1") { layer = 5 };
         Transport2 = new("Transport2") { layer = 5 };
-        Transport1.AddSubmergedComponent("ElevatorMover");
-        Transport2.AddSubmergedComponent("ElevatorMover");
         Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
         Transport2.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
         AnimationPlaying1 = Transport1.AddComponent<SpriteRenderer>();
@@ -66,6 +64,12 @@ public class Transporter : Crew
         AnimationPlaying1.material = AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
         Transport1.SetActive(true);
         Transport2.SetActive(true);
+
+        if (IsSubmerged())
+        {
+            Transport1.AddSubmergedComponent("ElevatorMover");
+            Transport2.AddSubmergedComponent("ElevatorMover");
+        }
     }
 
     public override void Deinit()

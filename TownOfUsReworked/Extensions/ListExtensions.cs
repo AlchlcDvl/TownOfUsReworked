@@ -187,6 +187,8 @@ public static class ListExtensions
         return result;
     }
 
+    public static bool ContainsAny(this string source, params string[] values) => values.Any(source.Contains);
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)

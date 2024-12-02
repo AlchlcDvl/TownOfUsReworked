@@ -620,34 +620,40 @@ public static class RoleGen
                     switch (URandom.RandomRangeInt(0, 5))
                     {
                         case 0:
+                        {
                             if (maxIC > 0)
                                 maxIC--;
 
                             break;
-
+                        }
                         case 1:
+                        {
                             if (maxID > 0)
                                 maxID--;
 
                             break;
-
+                        }
                         case 2:
+                        {
                             if (maxIK > 0)
                                 maxIK--;
 
                             break;
-
+                        }
                         case 3:
+                        {
                             if (maxIS > 0)
                                 maxIS--;
 
                             break;
-
+                        }
                         case 4:
+                        {
                             if (maxIH > 0)
                                 maxIH--;
 
                             break;
+                        }
                     }
 
                     maxIntSum = maxIC + maxID + maxIK + maxIS + maxIH;
@@ -695,28 +701,33 @@ public static class RoleGen
                     switch (URandom.RandomRangeInt(0, 4))
                     {
                         case 0:
+                        {
                             if (maxSSu > 0)
                                 maxSSu--;
 
                             break;
-
+                        }
                         case 1:
+                        {
                             if (maxSD > 0)
                                 maxSD--;
 
                             break;
-
+                        }
                         case 2:
+                        {
                             if (maxSyK > 0)
                                 maxSyK--;
 
                             break;
-
+                        }
                         case 3:
+                        {
                             if (maxSP > 0)
                                 maxSP--;
 
                             break;
+                        }
                     }
 
                     maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
@@ -764,34 +775,40 @@ public static class RoleGen
                     switch (URandom.RandomRangeInt(0, 5))
                     {
                         case 0:
+                        {
                             if (maxNE > 0)
                                 maxNE--;
 
                             break;
-
+                        }
                         case 1:
+                        {
                             if (maxNB > 0)
                                 maxNB--;
 
                             break;
-
+                        }
                         case 2:
+                        {
                             if (maxNK > 0)
                                 maxNK--;
 
                             break;
-
+                        }
                         case 3:
+                        {
                             if (maxNN > 0)
                                 maxNN--;
 
                             break;
-
+                        }
                         case 4:
+                        {
                             if (maxNH > 0)
                                 maxNH--;
 
                             break;
+                        }
                     }
 
                     maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
@@ -838,40 +855,47 @@ public static class RoleGen
                     switch (URandom.RandomRangeInt(0, 6))
                     {
                         case 0:
+                        {
                             if (maxCA > 0)
                                 maxCA--;
 
                             break;
-
+                        }
                         case 1:
+                        {
                             if (maxCI > 0)
                                 maxCI--;
 
                             break;
-
+                        }
                         case 2:
+                        {
                             if (maxCK > 0)
                                 maxCK--;
 
                             break;
-
+                        }
                         case 3:
+                        {
                             if (maxCS > 0)
                                 maxCS--;
 
                             break;
-
+                        }
                         case 4:
+                        {
                             if (maxCSv > 0)
                                 maxCSv--;
 
                             break;
-
+                        }
                         case 5:
+                        {
                             if (maxCrP > 0)
                                 maxCrP--;
 
                             break;
+                        }
                     }
 
                     maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;

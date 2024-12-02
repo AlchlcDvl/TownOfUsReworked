@@ -16,38 +16,48 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
         if (!Directory.Exists(DirectoryInfo))
             Directory.CreateDirectory(DirectoryInfo);
 
-        Message($"Downloading manifest at: {RepositoryUrl}/{Manifest}.json");
-        var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}.json");
-        yield return www.SendWebRequest();
+        var jsonText = "";
 
-        var isError = www.result != UnityWebRequest.Result.Success;
-        var jsonText = isError ? ReadDiskText($"{Manifest}.json", DirectoryInfo) : www.downloadHandler.text;
-
-        if (isError)
-            Error(www.error);
+        if (ClientOptions.ForceUseLocal)
+            jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
         else
         {
-            var task = File.WriteAllTextAsync(Path.Combine(DirectoryInfo, $"{Manifest}.json"), www.downloadHandler.text);
+            Message($"Downloading manifest at: {RepositoryUrl}/{Manifest}.json");
+            var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}.json");
+            yield return www.SendWebRequest();
 
-            while (!task.IsCompleted)
+            var isError = www.result != UnityWebRequest.Result.Success;
+
+            if (isError)
             {
-                if (task.Exception != null)
-                {
-                    Error(task.Exception);
-                    break;
-                }
-
-                yield return EndFrame();
+                Error(www.error);
+                jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
             }
-        }
+            else
+            {
+                jsonText = www.downloadHandler.text;
+                var task = File.WriteAllTextAsync(Path.Combine(DirectoryInfo, $"{Manifest}.json"), jsonText);
 
-        www.downloadHandler.Dispose();
-        www.Dispose();
+                while (!task.IsCompleted)
+                {
+                    if (task.Exception != null)
+                    {
+                        Error(task.Exception);
+                        break;
+                    }
 
-        if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
-        {
-            jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
-            Warning($"Online JSON for {Manifest} was missing");
+                    yield return EndFrame();
+                }
+            }
+
+            www.downloadHandler.Dispose();
+            www.Dispose();
+
+            if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
+            {
+                jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
+                Warning($"Online JSON for {Manifest} was missing");
+            }
         }
 
         if (IsNullEmptyOrWhiteSpace(jsonText))
@@ -58,13 +68,13 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
 
         var response = JsonSerializer.Deserialize<T[]>(jsonText);
 
-        if (Downloading)
+        if (Downloading && !ClientOptions.ForceUseLocal)
         {
             UpdateSplashPatch.SetText($"Downloading {Manifest}");
             yield return BeginDownload(response);
         }
 
-        UpdateSplashPatch.SetText($"Preloading {Manifest}");
+        UpdateSplashPatch.SetText($"Loading {Manifest}");
         yield return AfterLoading(response);
 
         Array.Clear(response);

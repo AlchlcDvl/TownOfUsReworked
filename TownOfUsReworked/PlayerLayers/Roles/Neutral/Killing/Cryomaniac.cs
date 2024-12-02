@@ -116,16 +116,20 @@ public class Cryomaniac : NKilling
         switch (cryoAction)
         {
             case DouseActionsRPC.Douse:
+            {
                 Doused.Add(reader.ReadByte());
                 break;
-
+            }
             case DouseActionsRPC.UnDouse:
+            {
                 Doused.Remove(reader.ReadByte());
                 break;
-
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)cryoAction}");
                 break;
+            }
         }
     }
 }

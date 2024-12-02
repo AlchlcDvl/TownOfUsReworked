@@ -181,6 +181,12 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
     public virtual string SettingNotif() => TranslationManager.Translate(ID);
 
+    public virtual void Debug()
+    {
+        if (!TranslationManager.IdExists(ID))
+            Fatal(ID);
+    }
+
     public virtual void AddMenuIndex(int index)
     {
         var menu = (MultiMenu)index;

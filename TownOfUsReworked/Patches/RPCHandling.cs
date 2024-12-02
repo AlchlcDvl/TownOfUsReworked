@@ -64,14 +64,14 @@ public static class RPCHandling
                         var message = reader.ReadString();
 
                         if (whispered.AmOwner)
-                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
+                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to you: {message}");
                         else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
                             Silencer.WhispersNotPrivateS))
                         {
-                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to {whispered.name}: {message}");
+                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to #({whispered.name}): {message}");
                         }
                         else if (GameModifiers.WhispersAnnouncement)
-                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
+                            Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) is whispering to #({whispered.name}).");
 
                         break;
                     }
@@ -318,7 +318,6 @@ public static class RPCHandling
                     {
                         var player = reader.ReadPlayer();
                         player.SetColor(reader.ReadByte());
-                        NameHandler.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
                         break;
                     }
                     default:

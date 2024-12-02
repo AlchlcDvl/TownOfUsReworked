@@ -60,6 +60,9 @@ public class Glitch : NKilling
             Blocked.BlockExposed = false;
 
         HackTarget = null;
+
+        if (Local)
+            Play("UnHack");
     }
 
     public void Hack() => HackTarget.GetLayers().ForEach(x => x.IsBlocked = !HackTarget.GetRole().RoleBlockImmune);
@@ -83,6 +86,7 @@ public class Glitch : NKilling
             HackTarget = target;
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, HackButton, GlitchActionsRPC.Hack, HackTarget);
             HackButton.Begin();
+            Play("Hack");
         }
         else
             HackButton.StartCooldown(cooldown);
@@ -132,16 +136,20 @@ public class Glitch : NKilling
         switch (glitchAction)
         {
             case GlitchActionsRPC.Mimic:
+            {
                 MimicTarget = reader.ReadPlayer();
                 break;
-
+            }
             case GlitchActionsRPC.Hack:
+            {
                 HackTarget = reader.ReadPlayer();
                 break;
-
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)glitchAction}");
                 break;
+            }
         }
     }
 }

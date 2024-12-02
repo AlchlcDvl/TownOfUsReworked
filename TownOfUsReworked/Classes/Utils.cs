@@ -913,46 +913,19 @@ public static class Utils
         fullscreen.color = new(0.6f, 0.6f, 0.6f, 0f);
         fullscreen.enabled = true;
         fullscreen.gameObject.active = true;
-        var fs = false;
-
-        switch (MapPatches.CurrentMap)
+        var ship = Ship();
+        var fs = MapPatches.CurrentMap switch
         {
-            case 0 or 1 or 3:
-                var reactor1 = Ship().Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                var oxygen1 = Ship().Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                fs = reactor1.IsActive || oxygen1.IsActive;
-                break;
-
-            case 2:
-                var seismic = Ship().Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                fs = seismic.IsActive;
-                break;
-
-            case 4:
-                var reactor = Ship().Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>();
-                fs = reactor.IsActive;
-                break;
-
-            case 5:
-                var reactor2 = Ship().Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                fs = reactor2.IsActive;
-                break;
-
-            case 6:
-                if (SubLoaded)
-                    fs = HasTask(RetrieveOxygenMask);
-
-                break;
-
-            case 7:
-                if (!LILoaded)
-                    break;
-
-                var reactor3 = Ship().Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                var oxygen3 = Ship().Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                fs = reactor3.IsActive || oxygen3.IsActive;
-                break;
-        }
+            0 or 1 or 3 => ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>().IsActive || ship.Systems[SystemTypes.LifeSupp].Cast<ReactorSystemType>().IsActive,
+            2 => ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>().IsActive,
+            4 => ship.Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>().IsActive,
+            5 => ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>().IsActive,
+            6 => SubLoaded && HasTask(RetrieveOxygenMask),
+            7 => LILoaded && ((ship.Systems.TryGetValue(SystemTypes.Reactor, out var system1) && system1.Cast<ReactorSystemType>().IsActive) ||
+                (ship.Systems.TryGetValue(SystemTypes.Laboratory, out system1) && system1.Cast<ReactorSystemType>().IsActive) || (ship.Systems.TryGetValue(SystemTypes.Laboratory, out
+                    system1) && system1.Cast<LifeSuppSystemType>().IsActive)),
+            _ => false
+        };
 
         if (fs)
             fullscreen.color = new(1f, 0f, 0f, 0.37254903f);
@@ -1024,11 +997,11 @@ public static class Utils
         yield break;
     }
 
-    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false,
+    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false,
         Func<PlayerControl, bool> predicate = null) => GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls, x => x != refPlayer && predicate(x));
 
-    public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false, Func<PlayerControl, bool>
-        predicate = null)
+    public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<PlayerControl,
+        bool> predicate = null)
     {
         var closestDistance = float.MaxValue;
         PlayerControl closestPlayer = null;
@@ -1037,7 +1010,7 @@ public static class Utils
         if (predicate != null)
             allPlayers = allPlayers.Where(predicate);
 
-        if (maxDistance == 0f)
+        if (float.IsNaN(maxDistance))
             maxDistance = GameSettings.InteractionDistance;
 
         foreach (var player in allPlayers)
@@ -1061,16 +1034,16 @@ public static class Utils
         return closestPlayer;
     }
 
-    public static Vent GetClosestVent(this PlayerControl refPlayer, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
-        => GetClosestVent(refPlayer.transform.position, allVents, maxDistance, ignoreWalls, predicate);
+    public static Vent GetClosestVent(this PlayerControl refPlayer, IEnumerable<Vent> allVents = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Vent, bool> predicate =
+        null) => GetClosestVent(refPlayer.transform.position, allVents, maxDistance, ignoreWalls, predicate);
 
-    public static Vent GetClosestVent(Vector3 position, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
+    public static Vent GetClosestVent(Vector3 position, IEnumerable<Vent> allVents = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
     {
         var closestDistance = float.MaxValue;
         Vent closestVent = null;
         allVents ??= AllMapVents();
 
-        if (maxDistance == 0f)
+        if (float.IsNaN(maxDistance))
             maxDistance = AllMapVents()[0].UsableDistance;
 
         if (predicate != null)
@@ -1094,16 +1067,17 @@ public static class Utils
         return closestVent;
     }
 
-    public static DeadBody GetClosestBody(this PlayerControl refPlayer, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false, Func<DeadBody, bool>
+    public static DeadBody GetClosestBody(this PlayerControl refPlayer, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool>
         predicate = null) => GetClosestBody(refPlayer.transform.position, allBodies, maxDistance, ignoreWalls, predicate);
 
-    public static DeadBody GetClosestBody(Vector3 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false, Func<DeadBody, bool> predicate = null)
+    public static DeadBody GetClosestBody(Vector3 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool> predicate =
+        null)
     {
         var closestDistance = float.MaxValue;
         DeadBody closestBody = null;
         allBodies ??= AllBodies();
 
-        if (maxDistance == 0f)
+        if (float.IsNaN(maxDistance))
             maxDistance = GameSettings.InteractionDistance;
 
         if (predicate != null)
@@ -1130,10 +1104,11 @@ public static class Utils
         return closestBody;
     }
 
-    public static Console GetClosestConsole(this PlayerControl refPlayer, IEnumerable<Console> allConsoles = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Console, bool>
+    public static Console GetClosestConsole(this PlayerControl refPlayer, IEnumerable<Console> allConsoles = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Console, bool>
         predicate = null) => GetClosestConsole(refPlayer.transform.position, allConsoles, maxDistance, ignoreWalls, predicate);
 
-    public static Console GetClosestConsole(Vector3 position, IEnumerable<Console> allConsoles = null, float maxDistance = 0f, bool ignoreWalls = false, Func<Console, bool> predicate = null)
+    public static Console GetClosestConsole(Vector3 position, IEnumerable<Console> allConsoles = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Console, bool> predicate =
+        null)
     {
         var closestDistance = float.MaxValue;
         Console closestConsole = null;
@@ -1148,7 +1123,7 @@ public static class Utils
             var vector = console.transform.position - position;
             var tempMaxDistance = maxDistance;
 
-            if (tempMaxDistance == 0f)
+            if (float.IsNaN(tempMaxDistance))
                 tempMaxDistance = console.UsableDistance;
 
             if (distance > tempMaxDistance || distance > closestDistance)
@@ -1167,21 +1142,21 @@ public static class Utils
     public static MonoBehaviour GetClosestMono(this PlayerControl player, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = 0f, bool ignoreWalls = false) =>
         GetClosestMono(player.transform.position, allMonos, trueMaxDistance, ignoreWalls);
 
-    public static MonoBehaviour GetClosestMono(Vector3 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = 0f, bool ignoreWalls = false)
+    public static MonoBehaviour GetClosestMono(Vector3 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false)
     {
-        if (allMonos.Count() == 1)
-            return allMonos.ElementAt(0);
-
         var closestDistance = float.MaxValue;
         MonoBehaviour closestMono = null;
 
         foreach (var mono in allMonos)
         {
+            if (!mono)
+                continue;
+
             var distance = Vector3.Distance(position, mono.transform.position);
             var vector = mono.transform.position - position;
             var maxDistance = trueMaxDistance;
 
-            if (maxDistance == 0f)
+            if (float.IsNaN(maxDistance))
             {
                 maxDistance = mono switch
                 {
@@ -1336,6 +1311,8 @@ public static class Utils
         CallRpc(CustomRPC.Misc, MiscRPC.BreakShield, target);
     }
 
+    public static T AddComponent<T>(this Component component) where T : Component => component?.gameObject?.AddComponent<T>();
+
     public static T EnsureComponent<T>(this Component component) where T : Component => component?.gameObject?.EnsureComponent<T>();
 
     public static T EnsureComponent<T>(this GameObject gameObject) where T : Component => gameObject?.GetComponent<T>() ?? gameObject?.AddComponent<T>();
@@ -1437,13 +1414,8 @@ public static class Utils
         player.MyPhysics.ResetMoveState();
     }
 
-    public static NetworkedPlayerInfo.PlayerOutfit GetCurrentOutfit(this PlayerControl player)
-    {
-        if (!player.Data.Outfits.TryGetValue(player.CurrentOutfitType, out var outfit))
-            return player.Data.DefaultOutfit;
-        else
-            return outfit;
-    }
+    public static NetworkedPlayerInfo.PlayerOutfit GetCurrentOutfit(this PlayerControl player) => player.Data.Outfits.TryGetValue(player.CurrentOutfitType, out var outfit) ? outfit :
+        player.Data.DefaultOutfit;
 
     public static IEnumerator PerformTimedAction(float duration, Action<float> action)
     {
@@ -1493,11 +1465,9 @@ public static class Utils
         passive.OnMouseOver = new();
     }
 
-    public static bool AmOwner(this PlayerVoteArea pva) => pva.TargetPlayerId == CustomPlayer.Local.PlayerId;
-
     public static T GetValue<T>(this PropertyInfo prop, object obj) => (T)prop.GetValue(obj);
 
     public static T GetValue<T>(this FieldInfo field, object obj) => (T)field.GetValue(obj);
 
-    public static bool IsAny<T>(this T value, params T[] values) => values.Any(x => Equals(x, value));
+    // public static bool IsAny<T>(this T value, params T[] values) => values.Any(x => Equals(x, value));
 }

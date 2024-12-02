@@ -52,6 +52,8 @@ public class Arsonist : NKilling
 
     public void Ignite()
     {
+        Play("Ignite");
+
         foreach (var arso in GetLayers<Arsonist>())
         {
             if (arso.Player != Player && !ArsoIgniteAll)
@@ -121,16 +123,20 @@ public class Arsonist : NKilling
         switch (arsoAction)
         {
             case DouseActionsRPC.Douse:
+            {
                 Doused.Add(reader.ReadByte());
                 break;
-
+            }
             case DouseActionsRPC.UnDouse:
+            {
                 Doused.Remove(reader.ReadByte());
                 break;
-
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)arsoAction}");
                 break;
+            }
         }
     }
 }

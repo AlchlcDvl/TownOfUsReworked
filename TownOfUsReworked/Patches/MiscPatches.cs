@@ -218,7 +218,7 @@ public static class CustomMenuPatch
 {
     public static bool Prefix(ShapeshifterMinigame __instance)
     {
-        __instance.gameObject.AddComponent<MenuPagingBehaviour>().Menu = __instance;
+        __instance.AddComponent<MenuPagingBehaviour>().Menu = __instance;
         var result = CustomMenu.AllMenus.TryFinding(x => x.Menu == __instance && x.Owner.AmOwner, out var menu);
 
         if (result)
@@ -300,7 +300,7 @@ public static class AddCustomPlayerPatch
 {
     public static void Postfix(PlayerControl __instance)
     {
-        __instance.gameObject.AddComponent<PlayerControlHandler>();
+        __instance.AddComponent<PlayerControlHandler>();
         AddAsset("Kill", __instance.KillSfx);
     }
 }
@@ -523,7 +523,7 @@ public static class ShowCustomAnim
             _selfDeath.victimParts.transform.localPosition = new(-1.5f, 0, 0);
             _selfDeath.KillType = (KillAnimType)10;
 
-            _selfDeath.gameObject.AddComponent<CustomKillAnimationPlayer>();
+            _selfDeath.AddComponent<CustomKillAnimationPlayer>();
             return _selfDeath;
         }
     }

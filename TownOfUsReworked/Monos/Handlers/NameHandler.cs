@@ -12,8 +12,10 @@ public class NameHandler : MonoBehaviour
         if (!DataManager.Settings.Accessibility.ColorBlindMode)
             return ("", UColor.clear);
 
+        var color = player.GetCurrentOutfit().ColorId.GetColor(false);
+
         if (IsLobby())
-            return (ColorNames[player.PlayerId], UColor.white);
+            return (ColorNames[player.PlayerId], color);
 
         var local = CustomPlayer.Local;
         var amOwner = player.AmOwner;
@@ -60,7 +62,7 @@ public class NameHandler : MonoBehaviour
         if (ClientOptions.LighterDarker)
             name += $" ({ld})";
 
-        return (name, player.GetCurrentOutfit().ColorId.GetColor(false));
+        return (name, color);
     }
 
     public static (string, UColor) UpdateGameName(LayerHandler playerHandler, LayerHandler localHandler, out bool revealed)

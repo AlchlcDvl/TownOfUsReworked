@@ -15,7 +15,6 @@ public abstract class Range : MonoBehaviour
     public static GameObject CreateRange(UColor color, float scale, string name)
     {
         var item = new GameObject(name) { layer = 11 };
-        item.AddSubmergedComponent("ElevatorMover");
         var transform = item.transform;
         var rend = item.AddComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Range");
@@ -27,6 +26,10 @@ public abstract class Range : MonoBehaviour
         numberText.fontStyle = FontStyles.Bold;
         numberText.name = $"{name}Number{Number}";
         numberText.gameObject.SetActive(true);
+
+        if (IsSubmerged())
+            item.AddSubmergedComponent("ElevatorMover");
+
         AllItems.Add(item);
         Coroutines.Start(PerformTimedAction(1f, p => item.transform.localScale = new Vector3(scale * 0.25f, scale * 0.25f, 1f) * p));
         return item;

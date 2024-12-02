@@ -9,7 +9,7 @@ public abstract class Harbinger : Neutral
     }
 }
 
-public abstract class Harbinger<Apoc> : Neutral where Apoc : Apocalypse
+public abstract class Harbinger<Apoc> : Harbinger where Apoc : Apocalypse
 {
     public abstract bool CanTransform();
 

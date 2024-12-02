@@ -7,16 +7,7 @@ public static class ClientOptions
     public static bool LighterDarker
     {
         get => TownOfUsReworked.LighterDarker.Value;
-        set
-        {
-            if (value != TownOfUsReworked.LighterDarker.Value)
-            {
-                TownOfUsReworked.LighterDarker.Value = value;
-
-                if (IsMeeting())
-                    AllVoteAreas().ForEach(Role.LocalRole.GenText);
-            }
-        }
+        set => TownOfUsReworked.LighterDarker.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
@@ -27,11 +18,11 @@ public static class ClientOptions
         {
             if (value != TownOfUsReworked.WhiteNameplates.Value)
             {
-                TownOfUsReworked.WhiteNameplates.Value = value;
-
                 if (IsMeeting())
                     AllVoteAreas().ForEach(x => SetNameplates(x, value));
             }
+
+            TownOfUsReworked.WhiteNameplates.Value = value;
         }
     }
 
@@ -46,11 +37,11 @@ public static class ClientOptions
         {
             if (value != TownOfUsReworked.NoLevels.Value)
             {
-                TownOfUsReworked.NoLevels.Value = value;
-
                 if (IsMeeting())
                     AllVoteAreas().ForEach(x => SetLevels(x, value));
             }
+
+            TownOfUsReworked.NoLevels.Value = value;
         }
     }
 
@@ -60,120 +51,96 @@ public static class ClientOptions
     public static bool CustomCrewColors
     {
         get => TownOfUsReworked.CustomCrewColors.Value;
-        set
-        {
-            if (value != TownOfUsReworked.CustomCrewColors.Value)
-                TownOfUsReworked.CustomCrewColors.Value = value;
-        }
+        set => TownOfUsReworked.CustomCrewColors.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool CustomNeutColors
     {
         get => TownOfUsReworked.CustomNeutColors.Value;
-        set
-        {
-            if (value != TownOfUsReworked.CustomNeutColors.Value)
-                TownOfUsReworked.CustomNeutColors.Value = value;
-        }
+        set => TownOfUsReworked.CustomNeutColors.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool CustomIntColors
     {
         get => TownOfUsReworked.CustomIntColors.Value;
-        set
-        {
-            if (value != TownOfUsReworked.CustomIntColors.Value)
-                TownOfUsReworked.CustomIntColors.Value = value;
-        }
+        set => TownOfUsReworked.CustomIntColors.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool CustomSynColors
     {
         get => TownOfUsReworked.CustomSynColors.Value;
-        set
-        {
-            if (value != TownOfUsReworked.CustomSynColors.Value)
-                TownOfUsReworked.CustomSynColors.Value = value;
-        }
+        set => TownOfUsReworked.CustomSynColors.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool CustomModColors
     {
         get => TownOfUsReworked.CustomModColors.Value;
-        set
-        {
-            if (value != TownOfUsReworked.CustomModColors.Value)
-                TownOfUsReworked.CustomModColors.Value = value;
-        }
+        set => TownOfUsReworked.CustomModColors.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool CustomDispColors
     {
         get => TownOfUsReworked.CustomDispColors.Value;
-        set
-        {
-            if (value != TownOfUsReworked.CustomDispColors.Value)
-                TownOfUsReworked.CustomDispColors.Value = value;
-        }
+        set => TownOfUsReworked.CustomDispColors.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool CustomAbColors
     {
         get => TownOfUsReworked.CustomAbColors.Value;
-        set
-        {
-            if (value != TownOfUsReworked.CustomAbColors.Value)
-                TownOfUsReworked.CustomAbColors.Value = value;
-        }
+        set => TownOfUsReworked.CustomAbColors.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool CustomEjects
     {
         get => TownOfUsReworked.CustomEjects.Value;
-        set
-        {
-            if (value != TownOfUsReworked.CustomEjects.Value)
-                TownOfUsReworked.CustomEjects.Value = value;
-        }
+        set => TownOfUsReworked.CustomEjects.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool OptimisationMode
     {
         get => TownOfUsReworked.OptimisationMode.Value;
-        set
-        {
-            if (value != TownOfUsReworked.OptimisationMode.Value)
-                TownOfUsReworked.OptimisationMode.Value = value;
-        }
+        set => TownOfUsReworked.OptimisationMode.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool HideOtherGhosts
     {
         get => TownOfUsReworked.HideOtherGhosts.Value;
-        set
-        {
-            if (value != TownOfUsReworked.HideOtherGhosts.Value)
-                TownOfUsReworked.HideOtherGhosts.Value = value;
-        }
+        set => TownOfUsReworked.HideOtherGhosts.Value = value;
     }
 
     [ToggleOption(MultiMenu.Client, ClientOnly = true)]
     public static bool LockCameraSway
     {
         get => TownOfUsReworked.LockCameraSway.Value;
+        set => TownOfUsReworked.LockCameraSway.Value = value;
+    }
+
+    [ToggleOption(MultiMenu.Client, ClientOnly = true)]
+    public static bool ForceUseLocal
+    {
+        get => TownOfUsReworked.ForceUseLocal.Value;
+        set => TownOfUsReworked.ForceUseLocal.Value = value;
+    }
+
+    [ToggleOption(MultiMenu.Client, ClientOnly = true)]
+    public static bool UseDarkTheme
+    {
+        get => TownOfUsReworked.UseDarkTheme.Value;
         set
         {
-            if (value != TownOfUsReworked.LockCameraSway.Value)
-                TownOfUsReworked.LockCameraSway.Value = value;
+            if (value != TownOfUsReworked.UseDarkTheme.Value)
+                ChatControllerAwakePatch.SetTheme(Chat());
+
+            TownOfUsReworked.UseDarkTheme.Value = value;
         }
     }
 }

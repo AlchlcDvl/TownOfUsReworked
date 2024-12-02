@@ -2,6 +2,12 @@
 
 public static class ModCompatibility
 {
+    public static void Initialise()
+    {
+        SubLoaded = InitializeSubmerged();
+        LILoaded = InitializeLevelImpostor();
+    }
+
     public const string SM_GUID = "Submerged";
     public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType)6;
 
@@ -123,12 +129,10 @@ public static class ModCompatibility
             CanUseMethod = AccessTools.Method(ElevatorConsoleType, "CanUse");
 
             var compatType = typeof(ModCompatibility);
-            var canUseType = typeof(CanUsePatch);
 
             TownOfUsReworked.ModInstance.Harmony.Patch(SubmergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
             TownOfUsReworked.ModInstance.Harmony.Patch(GetReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(CanUseMethod, new(AccessTools.Method(canUseType, nameof(CanUsePatch.Prefix))), new(AccessTools.Method(canUseType,
-                nameof(CanUsePatch.Postfix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(CanUseMethod, new(AccessTools.Method(compatType, nameof(ElevatorPrefix))), new(AccessTools.Method(compatType, nameof(ElevatorPostfix))));
 
             Message("Submerged compatibility finished");
             return true;
@@ -139,6 +143,10 @@ public static class ModCompatibility
             return false;
         }
     }
+
+    private static void ElevatorPrefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
+
+    private static void ElevatorPostfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
 
     public static void CheckOutOfBoundsElevator(PlayerControl player)
     {

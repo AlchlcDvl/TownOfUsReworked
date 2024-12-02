@@ -62,7 +62,7 @@ public static class CustomColorManager
 
     public static bool IsLighter(this int id) => !OutOfBounds(id) && AllColors.Find(x => x.ColorID == id).Lighter;
 
-    public static UColor GetColor(this int id, bool shadow) => id switch
+    public static UColor GetColor(this int id, bool shadow) => OutOfBounds(id) ? UColor.white : (id switch
     {
         41 => shadow ? ReversebowShadow : Reversebow,
         42 => shadow ? VibranceShadow : Vibrance,
@@ -75,7 +75,7 @@ public static class CustomColorManager
         49 => shadow ? MonochromeShadow : Monochrome,
         50 => shadow ? RainbowShadow : Rainbow,
         _ => shadow ? Palette.ShadowColors[id] : Palette.PlayerColors[id]
-    };
+    });
 
     public static UColor Shadow(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r - val), Mathf.Clamp01(color.g - val), Mathf.Clamp01(color.b - val), color.a);
 
@@ -96,7 +96,6 @@ public static class CustomColorManager
         var parts = input.Split(',');
 
         if (parts.Length is not (3 or 4))
-            // throw new IncorrectLengthException(input);
             return [ 0, 0, 0, 255 ];
 
         return [ .. parts.Select(byte.Parse) ];
@@ -115,71 +114,6 @@ public static class CustomColorManager
     public static Color32 Alternate(this Color32 color, byte val = 51) => ((UColor)color).Alternate((float)val / 255);
 
     public static bool IsColorDark(this Color32 color) => color is { r: < 128, g: < 128, b: 128 };
-
-    /*public static UColor GetColor(this int id, bool shadow)
-    {
-        var custom = AllColors.Find(x => x.ColorID == id);
-        return shadow ? custom.ShadowColor : custom.MainColor;
-    }
-
-    public static bool TryParseToBytes(string input, out List<byte> bytes)
-    {
-        try
-        {
-            bytes = ParseToBytes(input);
-            return true;
-        }
-        catch
-        {
-            bytes = [];
-            return false;
-        }
-    }
-
-    public static bool TryParseToColor(string input, out Color32 color)
-    {
-        try
-        {
-            color = ParseToColor(input);
-            return true;
-        }
-        catch
-        {
-            color = default;
-            return false;
-        }
-    }
-
-    public static string SetGradient(UColor startColor, UColor endColor, string text) => SetGradient(startColor.ToHtmlStringRGBA(), endColor.ToHtmlStringRGBA(), text);
-
-    public static string SetGradient(string startColorHex, string endColorHex, string text)
-    {
-        if (startColorHex.Replace("#", "").Length is not (6 or 8) || endColorHex.Replace("#", "").Length is not (6 or 8))
-        {
-            Error($"Invalid hex length {startColorHex} : {endColorHex}");
-            return text;
-        }
-
-        var startColor = FromHex(startColorHex);
-        var endColor = FromHex(endColorHex);
-        var gradientText = "";
-        var textLength = text.Length;
-        var stepR = (endColor.r - startColor.r) / textLength;
-        var stepG = (endColor.g - startColor.g) / textLength;
-        var stepB = (endColor.b - startColor.b) / textLength;
-        var stepA = (endColor.a - startColor.a) / textLength;
-
-        for (var i = 0; i < textLength; i++)
-        {
-            var r = startColor.r + (stepR * i);
-            var g = startColor.g + (stepG * i);
-            var b = startColor.b + (stepB * i);
-            var a = startColor.a + (stepA * i);
-            gradientText += $"<#{new UColor(r, g, b, a).ToHtmlStringRGBA()}>{text[i]}</color>";
-        }
-
-        return gradientText;
-    }*/
 
     // Layer Colors
     public static readonly UColor Role = FromHex("#FFD700FF");

@@ -5,13 +5,40 @@ namespace TownOfUsReworked.Patches;
 public static class ChatUpdate
 {
     private static int CurrentHistorySelection = -1;
+    public static TextMeshPro SuggestionText;
     public static readonly List<string> ChatHistory = [];
 
     public static bool Prefix(ChatController __instance)
     {
+        if (!__instance.IsOpenOrOpening)
+            return false;
+
         UpdateHistory(__instance);
         UpdateBubbles(__instance);
         UpdateChatTimer(__instance);
+
+        __instance.freeChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
+        __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
+
+        var text = __instance.freeChatField.Text;
+
+        if (__instance.freeChatField.textArea.hasFocus && text.StartsWith("/") && text != "/")
+        {
+            var closestCommand = Find(text.ToLower().Split(' ')[0]);
+
+            if (closestCommand != null)
+            {
+                SuggestionText.SetText($"/{closestCommand.Aliases.Find(x => text.StartsWith($"/{x}") && text.Length - 1 <= x.Length)} {closestCommand.Paramters}");
+
+                if (Input.GetKeyDown(KeyCode.Tab))
+                    __instance.freeChatField.textArea.SetText(SuggestionText.text.Split(' ')[0]);
+            }
+            else
+                SuggestionText.SetText("");
+        }
+        else
+            SuggestionText.SetText("");
+
         return false;
     }
 
@@ -62,7 +89,7 @@ public static class ChatUpdate
                         }
 
                         if (GameModifiers.Whispers && !chat.NameText.text.Contains($"[{player.PlayerId}] "))
-                            chat.NameText.text = $"[{player.PlayerId}] " + chat.NameText.text;
+                            chat.NameText.text = $"[#{player.PlayerId}] " + chat.NameText.text;
                     }
                 }
             }
@@ -171,6 +198,12 @@ public static class ChatChannels
         return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting() &&
             CustomPlayer.Local.IsSilenced());
     }
+
+    public static void Postfix(ChatController __instance, ref bool __runOriginal)
+    {
+        if (__runOriginal)
+            ChatControllerAwakePatch.SetChatBubble(__instance.GetComponentsInChildren<ChatBubble>().Last());
+    }
 }
 
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
@@ -195,8 +228,8 @@ public static class ChatCommands
         if (text.StartsWith("/"))
         {
             chatHandled = true;
-            var args = __instance.freeChatField.Text.Split(' ');
-            Execute(Find(args), args, __instance.freeChatField.Text);
+            var args = __instance.freeChatField.Text.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            Execute(Find(args[0].ToLower()), args, __instance.freeChatField.Text);
         }
         else if (CustomPlayer.Local.IsBlackmailed() && text != "i am blackmailed.")
         {
@@ -297,13 +330,55 @@ public static class ChatControllerAwakePatch
             DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
     }
 
-    public static void Postfix(ChatController __instance) => AddAsset("Chat", __instance.messageSound);
+    public static void Postfix(ChatController __instance)
+    {
+        AddAsset("Chat", __instance.messageSound);
+        AddAsset("Warning", __instance.warningSound);
+
+        if (!ChatUpdate.SuggestionText)
+        {
+            var outputText = __instance.freeChatField.textArea.outputText;
+            ChatUpdate.SuggestionText = UObject.Instantiate(outputText, outputText.transform.parent);
+            ChatUpdate.SuggestionText.transform.localPosition -= new Vector3(0.02f, 0f, 0f);
+            ChatUpdate.SuggestionText.transform.SetSiblingIndex(outputText.transform.GetSiblingIndex());
+            ChatUpdate.SuggestionText.transform.DestroyChildren();
+            ChatUpdate.SuggestionText.name = "SuggestionText";
+            ChatUpdate.SuggestionText.color = UColor.white.SetAlpha(0.5f);
+        }
+
+        SetTheme(__instance);
+    }
+
+    public static void SetTheme(ChatController __instance)
+    {
+        __instance.freeChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
+        __instance.freeChatField.textArea.compoText.Color(ClientOptions.UseDarkTheme ? UColor.white : UColor.black);
+        __instance.freeChatField.textArea.outputText.color = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
+
+        __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
+        __instance.quickChatField.text.color = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
+
+        __instance.quickChatButton.transform.Find("QuickChatIcon").GetComponent<SpriteRenderer>().color = ClientOptions.UseDarkTheme ? UColor.white : new(0.5f, 0.5f, 0.5f, 1f);
+        __instance.openKeyboardButton.transform.Find("OpenKeyboardIcon").GetComponent<SpriteRenderer>().color = ClientOptions.UseDarkTheme ? UColor.white : new(0.5f, 0.5f, 0.5f, 1f);
+
+        __instance.GetComponentsInChildren<ChatBubble>().ForEach(SetChatBubble);
+    }
+
+    public static void SetChatBubble(ChatBubble bubble)
+    {
+        var theme = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
+        var invert = ClientOptions.UseDarkTheme ? UColor.black : UColor.white;
+
+        bubble.TextArea.color = bubble.TextArea.text.ContainsAny($"#{CustomPlayer.Local.PlayerId}", $"#({CustomPlayer.Local.Data.PlayerName})") ? invert : theme;
+        bubble.Background.color = (bubble.TextArea.text.ContainsAny($"#{CustomPlayer.Local.PlayerId}", $"#({CustomPlayer.Local.Data.PlayerName})") ? theme : invert)
+            .SetAlpha(bubble.Xmark.enabled ? 0.5f : 1f);
+    }
 }
 
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]
 public static class ChatFontPatch
 {
-    public static void Postfix(ChatController __instance) => AddAsset("ChatFont", __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font);
+    public static void Postfix(ChatController __instance) => ChatControllerAwakePatch.SetTheme(__instance);
 }
 
 [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]

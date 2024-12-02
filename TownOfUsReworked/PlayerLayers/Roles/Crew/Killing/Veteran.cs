@@ -32,6 +32,7 @@ public class Veteran : Crew
 
     public void Alert()
     {
+        Play("Alert");
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AlertButton);
         AlertButton.Begin();
     }

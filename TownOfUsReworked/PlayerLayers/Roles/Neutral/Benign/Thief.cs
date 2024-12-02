@@ -152,16 +152,20 @@ public class Thief : Neutral
         switch (thiefAction)
         {
             case ThiefActionsRPC.Steal:
+            {
                 Steal(reader.ReadPlayer());
                 break;
-
+            }
             case ThiefActionsRPC.Guess:
+            {
                 MurderPlayer(reader.ReadPlayer(), reader.ReadEnum<LayerEnum>(), reader.ReadPlayer());
                 break;
-
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)thiefAction}");
                 break;
+            }
         }
     }
 

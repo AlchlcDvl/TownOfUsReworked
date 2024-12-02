@@ -60,7 +60,6 @@ public abstract class Role : PlayerLayer
     public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
     public Dictionary<PointInTime, DateTime> Positions { get; set; }
     public Dictionary<byte, CustomArrow> YellerArrows { get; set; }
-    public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
     public LayerEnum LinkedDisposition { get; set; }
 
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
@@ -146,7 +145,6 @@ public abstract class Role : PlayerLayer
         DeadArrows = [];
         Positions = [];
         YellerArrows = [];
-        PlayerNumbers = [];
 
         /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
         {
@@ -366,65 +364,9 @@ public abstract class Role : PlayerLayer
         __instance.ColorControl.SetColor(Color);
     }
 
-    public void GenText(PlayerVoteArea voteArea)
-    {
-        try
-        {
-            if (PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText) && nameText)
-            {
-                nameText?.gameObject?.SetActive(false);
-                nameText?.gameObject?.Destroy();
-                PlayerNumbers.Remove(voteArea.TargetPlayerId);
-            }
-
-            nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
-            nameText.transform.localPosition = new(-0.911f, -0.18f, -0.1f);
-            nameText.text = "";
-            nameText.name = "SubTextLabel";
-            nameText.color = UColor.white;
-            PlayerNumbers[voteArea.TargetPlayerId] = nameText;
-            GenNumbers(voteArea);
-            GenLighterDarker(voteArea);
-        }
-        catch (Exception e)
-        {
-            Error(e);
-        }
-    }
-
-    public void GenNumbers(PlayerVoteArea voteArea)
-    {
-        if (!PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText))
-            return;
-
-        if ((DataManager.Settings.Accessibility.ColorBlindMode && Type is LayerEnum.Operative or LayerEnum.Retributionist) || GameModifiers.Whispers)
-            nameText.text = $"{voteArea.TargetPlayerId} ";
-        else
-            nameText.text = nameText.text.Replace($"{voteArea.TargetPlayerId} ", "");
-    }
-
-    public void GenLighterDarker(PlayerVoteArea voteArea)
-    {
-        if (!PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText))
-            return;
-
-        var playerControl = PlayerByVoteArea(voteArea);
-
-        if (!playerControl)
-            return;
-
-        var ld = playerControl.Data.DefaultOutfit.ColorId.IsLighter() ? "L" : "D";
-
-        if (ClientOptions.LighterDarker)
-            nameText.text += $"({ld})";
-        else
-            nameText.text = nameText.text.Replace($"({ld})", "");
-    }
-
     public override void OnMeetingStart(MeetingHud __instance)
     {
         TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
-        AllVoteAreas().ForEach(GenText);
         AllRoles().ForEach(x => x.CurrentChannel = ChatChannel.All);
         GetLayers<Arsonist>().ForEach(x => x.Doused.Clear());
 

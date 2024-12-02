@@ -60,7 +60,7 @@ public static class MeetingPatches
     {
         public static void Postfix(MeetingHud __instance)
         {
-            __instance.gameObject.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
+            __instance.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
             ClientHandler.Instance.CloseMenus();
             CustomPlayer.Local.DisableButtons();
             Ash.DestroyAll();
@@ -334,6 +334,42 @@ public static class MeetingPatches
     public static class MeetingHudClearVote
     {
         public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ClearVote(__instance));
+    }
+
+    [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.Start))]
+    public static class PlayerVoteAreaPatch
+    {
+        public static void Postfix(PlayerVoteArea __instance)
+        {
+            __instance.EnsureComponent<VoteAreaHandler>();
+
+            if (__instance.transform.Find("PlayerID"))
+                return;
+
+            var level = __instance.transform.Find("PlayerLevel");
+
+            if (!level)
+                return;
+
+            level.SetLocalZ(-2f);
+
+            var id = UObject.Instantiate(level, level.parent);
+            id.SetSiblingIndex(level.GetSiblingIndex() + 1);
+            id.name = "PlayerID";
+            id.SetLocalZ(-2f);
+
+            var label = id.Find("LevelLabel");
+            label.GetComponent<TextTranslatorTMP>().Destroy();
+            label.GetComponent<TextMeshPro>().text = "ID";
+            label.name = "IDLabel";
+
+            var number = id.Find("LevelNumber");
+            number.GetComponent<TextTranslatorTMP>().Destroy();
+            number.GetComponent<TextMeshPro>().text = $"{__instance.TargetPlayerId}";
+            number.name = "IDNumber";
+
+            id.position -= new Vector3(0f, 0.33f, 0f);
+        }
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]

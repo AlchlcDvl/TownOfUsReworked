@@ -14,7 +14,6 @@ public class Bomb : Range
                 RpcMurderPlayer(Owner, player, DeathReasonEnum.Bombed, false);
         }
 
-        AllItems.Remove(gameObject);
         gameObject.Destroy();
     }
 

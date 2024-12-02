@@ -48,8 +48,10 @@ public static class Generate
 
         OptionAttribute.SortedOptions.AddRange(OptionAttribute.AllOptions.OrderBy(x => x.Priority));
 
+        OptionAttribute.AllOptions.ForEach(x => x.Debug());
+
         OptionAttribute.SaveSettings("Default");
 
-        Message($"There exist {OptionAttribute.AllOptions.Count} total options lmao (number jumpscare)");
+        Message($"There exist {OptionAttribute.AllOptions.Count(x => x is not (HeaderOptionAttribute or AlignmentOptionAttribute))} total options lmao (number jumpscare)");
     }
 }

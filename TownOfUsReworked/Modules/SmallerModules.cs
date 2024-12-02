@@ -72,7 +72,14 @@ public readonly struct Number(float num)
 
     public static implicit operator int(Number number) => (int)number.Value;
 
-    public override string ToString() => Value.ToString();
+    public override readonly string ToString() => Value.ToString();
 
     public static Number Parse(string value) => new(float.Parse(value));
+}
+
+public class UnsupportedLanguageException : Exception
+{
+    public UnsupportedLanguageException(string message) : base($"Selected language is unsupported {message}") {}
+
+    public UnsupportedLanguageException(string message, Exception innerException) : base($"Selected language is unsupported {message}", innerException) {}
 }

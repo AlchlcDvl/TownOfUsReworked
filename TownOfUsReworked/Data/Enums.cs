@@ -22,6 +22,12 @@ public enum ActionsRPC : byte
     None
 }
 
+public enum BomberActionsRPC : byte
+{
+    DropBomb,
+    Explode
+}
+
 public enum DouseActionsRPC : byte
 {
     Douse,
@@ -781,6 +787,8 @@ public enum RebActionsRPC : byte
     Crusade,
     Spellbind,
     Confuse,
+    DropBomb,
+    Explode,
     Silence
 }
 

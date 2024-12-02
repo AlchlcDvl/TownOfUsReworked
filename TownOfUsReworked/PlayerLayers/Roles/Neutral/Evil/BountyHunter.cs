@@ -13,7 +13,7 @@ public class BountyHunter : Neutral
     public static Number GuessCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number HuntCd { get; set; } = new(25);
+    public static Number BHHuntCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BHVent { get; set; } = false;
@@ -57,7 +57,7 @@ public class BountyHunter : Neutral
         TargetPlayer = null;
         GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);
-        HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(HuntCd), "HUNT", (UsableFunc)Usable2);
+        HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(BHHuntCd), "HUNT", (UsableFunc)Usable2);
 
         if (BountyHunterCanPickTargets)
         {

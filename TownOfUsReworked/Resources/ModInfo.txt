@@ -9,6 +9,12 @@ If you want to know more try using the other info commands, visiting the %github
 New!
 - Addition: The main menu buttons now fashion their own icons
 - Addition: You can now change the keybind to deselect players (default is still Backspace)
+- Addition: More game options
+- Addition: The player id is now shown similarly to the player level
+- Addition: Added chat command suggestions
+- Addition: Added dark theme to the chat, which can be toggled in the client settings
+- Addition: Added a player mentioning system, where you can send a differently colored chat message to get a target's attention by adding #playerId or #(player name) to the message
+- Addition: Added the usage of some effect sounds
 
 Changes!
 - Rework: Dictator no longer ejects 3 players at a time, instead they pick a singular player to eject and instead has gained ability charges to compensate

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Localisation;
 
 public static class TranslationManager
 {
-    public static readonly List<Language> AllTranslations = [];
+    public static readonly Dictionary<string, Language> AllTranslations = [];
 
     private static string CurrentLanguage => DataManager.Settings.Language.CurrentLanguage switch
     {
@@ -18,7 +18,7 @@ public static class TranslationManager
 
         try
         {
-            var result = AllTranslations.Find(x => x.ID == id || x.IDs?.Contains(id) == true)?[language];
+            var result = AllTranslations[id]?[language];
             toReplace.ForEach(x => result = result.Replace(x.Key, x.Value));
             return result ?? throw new UnsupportedLanguageException($"{language}:{id}");
         }
@@ -28,6 +28,8 @@ public static class TranslationManager
             return id;
         }
     }
+
+    public static bool IdExists(string id) => AllTranslations.ContainsKey(id);
 
     public static string Translate(string id, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, null);
 

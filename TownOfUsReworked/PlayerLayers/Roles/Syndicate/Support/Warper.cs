@@ -46,12 +46,14 @@ public class Warper : Syndicate
         WasInVent = false;
         Vent = null;
         WarpObj = new("Warp") { layer = 5 };
-        WarpObj.AddSubmergedComponent("ElevatorMover");
         WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
         AnimationPlaying = WarpObj.AddComponent<SpriteRenderer>();
         AnimationPlaying.sprite = PortalAnimation[0];
         AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
         WarpObj.SetActive(true);
+
+        if (IsSubmerged())
+            WarpObj.AddSubmergedComponent("ElevatorMover");
     }
 
     public override void Deinit()

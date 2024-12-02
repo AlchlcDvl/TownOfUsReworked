@@ -3,7 +3,7 @@ namespace TownOfUsReworked;
 [BepInPlugin(Id, Name, VersionString)]
 [BepInDependency(ReactorPlugin.Id)]
 [BepInIncompatibility("MalumMenu")]
-[ReactorModFlags(ModFlags.RequireOnAllClients)]
+[ReactorModFlags(ModFlags.RequireOnAllClients | ModFlags.DisableServerAuthority)]
 [BepInProcess("Among Us.exe")]
 public partial class TownOfUsReworked : BasePlugin
 {
@@ -14,7 +14,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 7;
+    public const int DevBuild = 8;
 
     public static bool IsTest { get; set; }
     private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);
@@ -72,6 +72,8 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> OptimisationMode { get; set; }
     public static ConfigEntry<bool> HideOtherGhosts { get; set; }
     public static ConfigEntry<bool> LockCameraSway { get; set; }
+    public static ConfigEntry<bool> ForceUseLocal { get; set; }
+    public static ConfigEntry<bool> UseDarkTheme { get; set; }
 
     public static ConfigEntry<bool> RedirectLogger { get; set; }
     public static ConfigEntry<bool> AutoPlayAgain { get; set; }

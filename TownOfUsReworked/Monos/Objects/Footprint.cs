@@ -14,7 +14,6 @@ public class FootprintB : MonoBehaviour
     {
         Time2 = 0f;
 
-        gameObject.AddSubmergedComponent("ElevatorMover");
         gameObject.transform.localScale *= Player.GetModifiedSize();
         gameObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Player.GetComponent<Rigidbody2D>().velocity));
         gameObject.transform.SetParent(Player.transform.parent);
@@ -23,12 +22,15 @@ public class FootprintB : MonoBehaviour
         Sprite = gameObject.AddComponent<SpriteRenderer>();
         Sprite.sprite = GetSprite("Footprint" + (IsEven ? "Left" : "Right"));
         Sprite.color = Player.GetPlayerColor(false, Grey);
+
+        if (IsSubmerged())
+            gameObject.AddSubmergedComponent("ElevatorMover");
     }
 
     public void Update()
     {
         Time2 += Time.deltaTime;
-        var alpha = Mathf.Clamp(Mathf.Max(1f - (Time2 / Detective.FootprintDur), 0f), 0f, 1f);
+        var alpha = Mathf.Clamp(1f - (Time2 / Detective.FootprintDur), 0f, 1f);
         Sprite.color = Player.GetPlayerColor(false, Grey).SetAlpha(alpha);
 
         if (alpha == 0f)

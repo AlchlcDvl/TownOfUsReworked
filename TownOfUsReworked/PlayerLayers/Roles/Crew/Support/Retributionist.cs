@@ -220,25 +220,30 @@ public class Retributionist : Crew
         switch (retAction)
         {
             case RetActionsRPC.Revive:
+            {
                 Revived = reader.ReadPlayer();
                 break;
-
+            }
             case RetActionsRPC.Transport:
+            {
                 var retRole3 = reader.ReadLayer<Retributionist>();
                 retRole3.TransportPlayer1 = reader.ReadPlayer();
                 retRole3.TransportPlayer2 = reader.ReadPlayer();
                 Coroutines.Start(retRole3.TransportPlayers());
                 break;
-
+            }
             case RetActionsRPC.ProtectAdd:
+            {
                 ShieldedPlayer = reader.ReadPlayer();
                 break;
-
+            }
             case RetActionsRPC.ProtectRemove:
+            {
                 ShieldedPlayer = null;
                 break;
-
+            }
             case RetActionsRPC.Mediate:
+            {
                 var playerid2 = reader.ReadByte();
                 MediatedPlayers.Add(playerid2);
 
@@ -246,23 +251,27 @@ public class Retributionist : Crew
                     LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
 
                 break;
-
+            }
             case RetActionsRPC.Roleblock:
+            {
                 BlockTarget = reader.ReadPlayer();
                 break;
-
+            }
             case RetActionsRPC.Bomb:
+            {
                 BombedIDs.Add(reader.ReadInt32());
                 break;
-
+            }
             case RetActionsRPC.Place:
+            {
                 Trapped.Add(reader.ReadByte());
                 break;
-
+            }
             case RetActionsRPC.Trigger:
+            {
                 TriggerTrap(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadBoolean());
                 break;
-
+            }
             case RetActionsRPC.AltRevive:
             {
                 ParentId = reader.ReadByte();
@@ -276,8 +285,10 @@ public class Retributionist : Crew
                 break;
             }
             default:
+            {
                 Error($"Received unknown RPC - {(int)retAction}");
                 break;
+            }
         }
     }
 
@@ -488,8 +499,6 @@ public class Retributionist : Crew
             {
                 Transport1 = new("RetTransport1") { layer = 5 };
                 Transport2 = new("RetTransport2") { layer = 5 };
-                Transport1.AddSubmergedComponent("ElevatorMover");
-                Transport2.AddSubmergedComponent("ElevatorMover");
                 Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
                 Transport2.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
                 AnimationPlaying1 = Transport1.AddComponent<SpriteRenderer>();
@@ -499,7 +508,14 @@ public class Retributionist : Crew
                 Transport1.SetActive(true);
                 Transport2.SetActive(true);
                 TransportMenu1 = new(Player, Click1, TransException1);
-                TransportMenu2 = new(Player, Click2, TransException2);}
+                TransportMenu2 = new(Player, Click2, TransException2);
+
+                if (IsSubmerged())
+                {
+                    Transport1.AddSubmergedComponent("ElevatorMover");
+                    Transport2.AddSubmergedComponent("ElevatorMover");
+                }
+            }
         }
 
         Player.ResetButtons();

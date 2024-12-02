@@ -94,16 +94,20 @@ public class Trapper : Crew
         switch (trapAction)
         {
             case TrapperActionsRPC.Place:
+            {
                 Trapped.Add(reader.ReadByte());
                 break;
-
+            }
             case TrapperActionsRPC.Trigger:
+            {
                 TriggerTrap(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadBoolean());
                 break;
-
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)trapAction}");
                 break;
+            }
         }
     }
 

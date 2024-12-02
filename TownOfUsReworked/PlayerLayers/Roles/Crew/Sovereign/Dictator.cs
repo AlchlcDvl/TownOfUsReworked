@@ -100,17 +100,21 @@ public class Dictator : Crew
         switch (dictAction)
         {
             case DictActionsRPC.Tribunal:
+            {
                 Flash(Color);
                 Tribunal = true;
                 break;
-
+            }
             case DictActionsRPC.SelectToEject:
+            {
                 ToBeEjected = reader.ReadPlayer();
                 break;
-
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)dictAction}");
                 break;
+            }
         }
     }
 }

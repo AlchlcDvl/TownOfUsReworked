@@ -47,7 +47,6 @@ public static class AllMonos
         TownOfUsReworked.ModInstance.AddComponent<ClientHandler>();
         TownOfUsReworked.ModInstance.AddComponent<DragHandler>();
         TownOfUsReworked.ModInstance.AddComponent<ColorHandler>();
-        // TownOfUsReworked.ModInstance.AddComponent<FootprintHandler>().enabled = false;
 
         var prefab = (RoleBehaviour)new GameObject("LayerHandler").DontDestroy().AddComponent(Il2CppType.From(typeof(LayerHandler)));
         prefab.Role = (RoleTypes)100;
