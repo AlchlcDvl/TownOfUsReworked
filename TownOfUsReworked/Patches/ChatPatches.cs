@@ -24,11 +24,12 @@ public static class ChatUpdate
 
         if (__instance.freeChatField.textArea.hasFocus && text.StartsWith("/") && text != "/")
         {
-            var closestCommand = Find(text.ToLower().Split(' ')[0]);
+            var lower = text.ToLower();
+            var closestCommand = Find(lower.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)[0]);
 
             if (closestCommand != null)
             {
-                SuggestionText.SetText($"/{closestCommand.Aliases.Find(x => text.StartsWith($"/{x}") && text.Length - 1 <= x.Length)} {closestCommand.Paramters}");
+                SuggestionText.SetText($"/{closestCommand.Aliases.Find(x => lower.StartsWith($"/{x}") && text.Length - 1 <= x.Length)} {closestCommand.Parameters}");
 
                 if (Input.GetKeyDown(KeyCode.Tab))
                     __instance.freeChatField.textArea.SetText(SuggestionText.text.Split(' ')[0]);
@@ -351,15 +352,14 @@ public static class ChatControllerAwakePatch
 
     public static void SetTheme(ChatController __instance)
     {
-        __instance.freeChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
+        __instance.freeChatField.background.color = __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
+
         __instance.freeChatField.textArea.compoText.Color(ClientOptions.UseDarkTheme ? UColor.white : UColor.black);
-        __instance.freeChatField.textArea.outputText.color = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
+        __instance.freeChatField.textArea.outputText.color = __instance.quickChatField.text.color = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
 
-        __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
-        __instance.quickChatField.text.color = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
-
-        __instance.quickChatButton.transform.Find("QuickChatIcon").GetComponent<SpriteRenderer>().color = ClientOptions.UseDarkTheme ? UColor.white : new(0.5f, 0.5f, 0.5f, 1f);
-        __instance.openKeyboardButton.transform.Find("OpenKeyboardIcon").GetComponent<SpriteRenderer>().color = ClientOptions.UseDarkTheme ? UColor.white : new(0.5f, 0.5f, 0.5f, 1f);
+        __instance.quickChatButton.transform.Find("QuickChatIcon").GetComponent<SpriteRenderer>().color = __instance.openKeyboardButton.transform.Find("OpenKeyboardIcon")
+            .GetComponent<SpriteRenderer>().color = __instance.openKeyboardButton.transform.parent.Find("BanMenuButton").Find("OpenBanMenuIcon").GetComponent<SpriteRenderer>().color =
+                ClientOptions.UseDarkTheme ? new(0.5f, 0.5f, 0.5f, 1f) : UColor.white;
 
         __instance.GetComponentsInChildren<ChatBubble>().ForEach(SetChatBubble);
     }

@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Modules;
 public class ChatCommand
 {
     public string[] Aliases { get; }
-    public string Paramters { get; }
+    public string Parameters { get; }
     public string Description { get; }
     private ExecuteArgsCommand ExecuteArgs { get; }
     private ExecuteArglessCommand ExecuteArgless { get; }
@@ -40,7 +40,7 @@ public class ChatCommand
         ExecuteArgs = executeArgs;
         ExecuteArgless = null;
         ExecuteArgsMessage = null;
-        Paramters = parameters;
+        Parameters = parameters;
     }
 
     private ChatCommand(string[] aliases, ExecuteArglessCommand executeArgless) : this(aliases)
@@ -55,7 +55,7 @@ public class ChatCommand
         ExecuteArgs = null;
         ExecuteArgless = null;
         ExecuteArgsMessage = executeArgsMessage;
-        Paramters = parameters;
+        Parameters = parameters;
     }
 
     public static void Execute(ChatCommand command, string[] args, string message)

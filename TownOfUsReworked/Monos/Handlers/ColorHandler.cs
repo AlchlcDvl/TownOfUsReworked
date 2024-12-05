@@ -10,15 +10,15 @@ public class ColorHandler : MonoBehaviour
 
     public void SetRend(Renderer rend, int id)
     {
-        IDToRends.RemoveAll(x => x.Item2 == rend);
-        ColorToRends.RemoveAll(x => x.Item2 == rend);
+        IDToRends.RemoveAll(x => x.Item2 == rend || !x.Item2);
+        ColorToRends.RemoveAll(x => x.Item2 == rend || !x.Item2);
         IDToRends.Add((id, rend));
     }
 
     public void SetRend(Renderer rend, UColor color)
     {
-        IDToRends.RemoveAll(x => x.Item2 == rend);
-        ColorToRends.RemoveAll(x => x.Item2 == rend);
+        IDToRends.RemoveAll(x => x.Item2 == rend || !x.Item2);
+        ColorToRends.RemoveAll(x => x.Item2 == rend || !x.Item2);
         ColorToRends.Add((color, rend));
     }
 

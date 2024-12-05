@@ -12,15 +12,12 @@ public class VisorLoader : AssetLoader<CustomVisor>
 
     public static VisorLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(CustomVisor[] response)
-    {
-        UnregisteredVisors.AddRange(response);
-        Message($"Found {UnregisteredVisors.Count} visors");
-        yield return CoDownloadAssets(GenerateDownloadList(UnregisteredVisors));
-    }
+    public override IEnumerator BeginDownload(CustomVisor[] response) => CoDownloadAssets(GenerateDownloadList(response));
 
     public override IEnumerator AfterLoading(CustomVisor[] response)
     {
+        UnregisteredVisors.AddRange(response);
+
         if (TownOfUsReworked.IsStream)
         {
             var filePath = Path.Combine(TownOfUsReworked.Visors, "Stream", "Visors.json");
@@ -34,6 +31,7 @@ public class VisorLoader : AssetLoader<CustomVisor>
             }
         }
 
+        Message($"Found {UnregisteredVisors.Count} visors");
         var cache = UnregisteredVisors.Clone();
         var time = 0f;
 

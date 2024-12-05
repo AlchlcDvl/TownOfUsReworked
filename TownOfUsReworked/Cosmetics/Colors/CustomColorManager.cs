@@ -2,41 +2,11 @@ namespace TownOfUsReworked.Cosmetics.CustomColors;
 
 public static class CustomColorManager
 {
-    public static readonly List<CustomColor> AllColors = [];
-
-    public static UColor Rainbow => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), 1f, 1f).ToColor();
-    public static UColor RainbowShadow => Shadow(Rainbow);
-
-    public static UColor Galaxy => new HSBColor(HSBColor.PingPong(0.5f, 0.87f, 0.4f), 1f, 1f).ToColor();
-    public static UColor GalaxyShadow => Shadow(Galaxy);
-
-    public static UColor Fire => new HSBColor(HSBColor.PingPong(0f, 0.17f, 0.4f), 1f, 1f).ToColor();
-    public static UColor FireShadow => Shadow(Fire);
-
-    public static UColor Monochrome => new HSBColor(1f, 0f, HSBColor.PingPong(0f, 1f, 0.8f)).ToColor();
-    public static UColor MonochromeShadow => Shadow(Monochrome);
-
-    public static UColor Mantle => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), HSBColor.PingPong(0f, 1f, 0.9f), HSBColor.PingPong(0f, 0.8f, 0.5f)).ToColor();
-    public static UColor MantleShadow => Shadow(Mantle);
-
-    public static UColor Chroma => new HSBColor(HSBColor.PingPong(0f, 1f, 0.4f), HSBColor.PingPongReverse(0f, 1f, 0.6f), HSBColor.PingPong(0f, 1f, 0.9f)).ToColor();
-    public static UColor ChromaShadow => Shadow(Chroma);
-
-    public static UColor Reversebow => new HSBColor(HSBColor.PingPongReverse(0f, 1f, 0.3f), 1f, HSBColor.PingPongReverse(0f, 1f, 0.3f)).ToColor();
-    public static UColor ReversebowShadow => Shadow(Reversebow);
-
-    public static UColor Vibrance => new HSBColor(HSBColor.PingPongReverse(0.17f, 0.5f, 0.3f), HSBColor.PingPong(0.9f, 1f, 0.3f), HSBColor.PingPongReverse(0.9f, 1f, 0.3f)).ToColor();
-    public static UColor VibranceShadow => Shadow(Vibrance);
-
-    public static UColor Darkbow => new HSBColor(HSBColor.PingPong(0f, 1f, 0.3f), 0.8f, 0.3f).ToColor();
-    public static UColor DarkbowShadow => Shadow(Darkbow);
-
-    public static UColor Abberation => new HSBColor(HSBColor.PingPong(0f, 0.2f, 0.9f), HSBColor.PingPongReverse(0.8f, 1f, 0.3f), 0.3f).ToColor();
-    public static UColor AbberationShadow => Shadow(Abberation);
+    public static readonly Dictionary<int, CustomColor> AllColors = [];
 
     public static void SetColor(Renderer rend, int id)
     {
-        if (!rend || OutOfBounds(id))
+        if (!rend || !AllColors.ContainsKey(id))
             return;
 
         rend.material.SetColor(PlayerMaterial.BackColor, id.GetColor(true));
@@ -54,28 +24,11 @@ public static class CustomColorManager
         rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
     }
 
-    public static bool OutOfBounds(int id) => id < 0 || id >= AllColors.Count;
+    public static bool IsChanging(this int id) => AllColors.TryGetValue(id, out var color) && color.Changing;
 
-    public static bool IsChanging(this int id) => !OutOfBounds(id) && AllColors.Find(x => x.ColorID == id).Changing;
+    public static bool IsLighter(this int id) => AllColors.TryGetValue(id, out var color) && color.Lighter;
 
-    public static bool IsContrasting(this int id) => !OutOfBounds(id) && AllColors.Find(x => x.ColorID == id).Contrasting;
-
-    public static bool IsLighter(this int id) => !OutOfBounds(id) && AllColors.Find(x => x.ColorID == id).Lighter;
-
-    public static UColor GetColor(this int id, bool shadow) => OutOfBounds(id) ? UColor.white : (id switch
-    {
-        41 => shadow ? ReversebowShadow : Reversebow,
-        42 => shadow ? VibranceShadow : Vibrance,
-        43 => shadow ? DarkbowShadow : Darkbow,
-        44 => shadow ? AbberationShadow : Abberation,
-        45 => shadow ? ChromaShadow : Chroma,
-        46 => shadow ? MantleShadow : Mantle,
-        47 => shadow ? FireShadow : Fire,
-        48 => shadow ? GalaxyShadow : Galaxy,
-        49 => shadow ? MonochromeShadow : Monochrome,
-        50 => shadow ? RainbowShadow : Rainbow,
-        _ => shadow ? Palette.ShadowColors[id] : Palette.PlayerColors[id]
-    });
+    public static UColor GetColor(this int id, bool shadow) => AllColors.TryGetValue(id, out var color) ? (shadow ? color.GetShadowColor() : color.GetColor()) : UColor.white;
 
     public static UColor Shadow(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r - val), Mathf.Clamp01(color.g - val), Mathf.Clamp01(color.b - val), color.a);
 
@@ -86,26 +39,6 @@ public static class CustomColorManager
     public static bool IsColorDark(this UColor color) => color is { r: <= 0.5f, g: <= 0.5f, b: <= 0.5f };
 
     public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
-
-    public static byte[] ParseToBytes(string input)
-    {
-        if (input.IsNullOrWhiteSpace())
-            return [ 0, 0, 0, 255 ];
-
-        input = input.Replace(" ", "");
-        var parts = input.Split(',');
-
-        if (parts.Length is not (3 or 4))
-            return [ 0, 0, 0, 255 ];
-
-        return [ .. parts.Select(byte.Parse) ];
-    }
-
-    public static Color32 ParseToColor(string input)
-    {
-        var bytes = ParseToBytes(input);
-        return new(bytes[0], bytes[1], bytes[2], bytes.Length == 4 ? bytes[3] : (byte)255);
-    }
 
     public static Color32 Shadow(this Color32 color) => new(ClampByte(color.r - 51, 0, 255), ClampByte(color.g - 51, 0, 255), ClampByte(color.b - 51, 0, 255), color.a);
 

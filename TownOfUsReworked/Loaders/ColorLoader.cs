@@ -11,9 +11,7 @@ public class ColorLoader : AssetLoader<CustomColor>
 
     public override IEnumerator AfterLoading(CustomColor[] response)
     {
-        AllColors.AddRange(response);
-        var cache = AllColors.Count;
-        Message($"Found {cache} colors");
+        var colors = new List<CustomColor>(response);
 
         if (TownOfUsReworked.IsStream)
         {
@@ -23,40 +21,48 @@ public class ColorLoader : AssetLoader<CustomColor>
             {
                 var data = JsonSerializer.Deserialize<CustomColor[]>(File.ReadAllText(filePath));
                 data.ForEach(x => x.StreamOnly = true);
-                AllColors.AddRange(data);
+                colors.AddRange(data);
                 Array.Clear(data);
             }
         }
 
-        Message($"Found {AllColors.Count - cache} local colors");
-        AllColors.RemoveAll(x => x.StreamOnly && !TownOfUsReworked.IsStream);
+        colors.RemoveAll(x => x.StreamOnly && !TownOfUsReworked.IsStream);
+        Message($"Found {colors.Count} colors");
         var time = 0f;
 
-        for (var i = 0; i < AllColors.Count; i++)
+        for (var i = 0; i < colors.Count; i++)
         {
-            var color = AllColors[i];
+            var color = colors[i];
             color.ColorID = i;
-            // color.Title ??= (color.Default ? "Innersloth" : "Custom");
+
+            if (color.MainColorValues != null)
+                color.MainColors = [ .. color.MainColorValues.Select(FromHex) ];
+
+            if (color.ShadowColorValues != null)
+                color.ShadowColors = [ .. color.ShadowColorValues.Select(FromHex) ];
+
+            color.Changing = color.MainColorValues?.Length > 1;
+            color.TimeSpeed = color.TimeSpeed == 0f ? 1f : color.TimeSpeed;
 
             if (!color.Default)
                 color.StringID = 999999 - color.ColorID;
 
+            AllColors[i] = color;
             time += Time.deltaTime;
 
             if (time > 1f)
             {
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Colors ({i + 1}/{AllColors.Count})");
+                UpdateSplashPatch.SetText($"Loading Colors ({i + 1}/{colors.Count})");
                 yield return EndFrame();
             }
         }
 
-        Palette.ColorNames = AllColors.Select(x => (StringNames)x.StringID).ToArray();
-        Palette.PlayerColors = AllColors.Select(x => ParseToColor(x.RGBMain)).ToArray();
-        Palette.ShadowColors = AllColors.Select(x => ParseToColor(x.RGBShadow)).ToArray();
+        Palette.ColorNames = colors.Select(x => (StringNames)x.StringID).ToArray();
+        Palette.PlayerColors = colors.Select(x => (Color32)x.GetColor()).ToArray();
+        Palette.ShadowColors = colors.Select(x => (Color32)x.GetShadowColor()).ToArray();
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
         Palette.TextColors = Palette.PlayerColors;
-        Message($"Set {AllColors.Count} colors");
         yield break;
     }
 }

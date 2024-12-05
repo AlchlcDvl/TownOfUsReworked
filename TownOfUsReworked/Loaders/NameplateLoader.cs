@@ -12,15 +12,12 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
 
     public static NameplateLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(CustomNameplate[] response)
-    {
-        UnregisteredNameplates.AddRange(response);
-        Message($"Found {UnregisteredNameplates.Count} nameplates");
-        yield return CoDownloadAssets(GenerateDownloadList(UnregisteredNameplates));
-    }
+    public override IEnumerator BeginDownload(CustomNameplate[] response) => CoDownloadAssets(GenerateDownloadList(response));
 
     public override IEnumerator AfterLoading(CustomNameplate[] response)
     {
+        UnregisteredNameplates.AddRange(response);
+
         if (TownOfUsReworked.IsStream)
         {
             var filePath = Path.Combine(TownOfUsReworked.Nameplates, "Stream", "Nameplates.json");
@@ -34,6 +31,7 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
             }
         }
 
+        Message($"Found {UnregisteredNameplates.Count} nameplates");
         var cache = UnregisteredNameplates.Clone();
         var time = 0f;
 

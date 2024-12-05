@@ -8,14 +8,11 @@ public class BundleLoader : AssetLoader<Asset>
 
     public static BundleLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(Asset[] response)
-    {
-        Message($"Found {response.Length} assets");
-        yield return CoDownloadAssets(response.Select(x => x.ID).Where(ShouldDownload));
-    }
+    public override IEnumerator BeginDownload(Asset[] response) => CoDownloadAssets(response.Select(x => x.ID).Where(ShouldDownload));
 
     public override IEnumerator AfterLoading(Asset[] response)
     {
+        Message($"Found {response.Length} bundles");
         var time = 0f;
 
         for (var i = 0; i < response.Length; i++)

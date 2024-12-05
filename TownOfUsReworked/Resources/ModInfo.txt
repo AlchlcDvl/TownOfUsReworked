@@ -17,6 +17,7 @@ New!
 - Addition: Added the usage of some effect sounds
 
 Changes!
+- Recode: Custom colors have been recoded to be more efficient
 - Rework: Dictator no longer ejects 3 players at a time, instead they pick a singular player to eject and instead has gained ability charges to compensate
 - Change: Actors will now prioritise turning into a dead target role
 - Change: Arsonists when igniting will remove the coolant off those doused by a Cryomaniac
@@ -26,7 +27,7 @@ Changes!
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode, however they will still be roleblock immune the entire time
 - Improvement: Improved the mod's asset loaders
 - Improvement: Assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
-- Improvement: Made general optimsations to improve the mod's runtime
+- Improvement: Made general optimisations to improve the mod's runtime
 
 Fixes!
 - Critical: Fixed Godfather-Miners being unable to spawn vents
@@ -35,7 +36,8 @@ Fixes!
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
-- Compatibility: Fixed the elavator not being usable for postmortal roles
+- Compatibility: Fixed the elavator not being properly usable for postmortal roles
+- Visual: Fixed the hud buttons appearing when kicking out all bots in local
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
 - General: Fixed All Any role gen being a bit broken in some aspects
 - General: Fixed fake players not spawning in locations correctly on Airship and Submerged when using MCI to test things

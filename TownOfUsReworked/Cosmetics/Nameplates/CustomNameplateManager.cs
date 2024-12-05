@@ -42,7 +42,7 @@ public static class CustomNameplateManager
         return nameplate;
     }
 
-    public static List<string> GenerateDownloadList(List<CustomNameplate> nameplates)
+    public static List<string> GenerateDownloadList(IEnumerable<CustomNameplate> nameplates)
     {
         var markedfordownload = new List<string>();
 

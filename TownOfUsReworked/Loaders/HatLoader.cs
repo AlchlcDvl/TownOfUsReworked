@@ -12,15 +12,11 @@ public class HatLoader : AssetLoader<CustomHat>
 
     public static HatLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(CustomHat[] response)
-    {
-        UnregisteredHats.AddRange(response);
-        Message($"Found {UnregisteredHats.Count} hats");
-        yield return CoDownloadAssets(GenerateDownloadList(UnregisteredHats));
-    }
+    public override IEnumerator BeginDownload(CustomHat[] response) => CoDownloadAssets(GenerateDownloadList(response));
 
     public override IEnumerator AfterLoading(CustomHat[] response)
     {
+        UnregisteredHats.AddRange(response);
         UnregisteredHats.ForEach(ch => ch.Behind = ch.BackID != null || ch.BackFlipID != null);
 
         if (TownOfUsReworked.IsStream)
@@ -36,6 +32,7 @@ public class HatLoader : AssetLoader<CustomHat>
             }
         }
 
+        Message($"Found {UnregisteredHats.Count} hats");
         var cache = UnregisteredHats.Clone();
         var time = 0f;
 

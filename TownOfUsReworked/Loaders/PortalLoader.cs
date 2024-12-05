@@ -9,15 +9,12 @@ public class PortalLoader : AssetLoader<Asset>
 
     public static PortalLoader Instance { get; set; }
 
-    public override IEnumerator BeginDownload(Asset[] response)
-    {
-        Message($"Found {response.Length} frames");
-        yield return CoDownloadAssets(response.Select(x => x.ID).Where(ShouldDownload));
-    }
+    public override IEnumerator BeginDownload(Asset[] response) => CoDownloadAssets(response.Select(x => x.ID).Where(ShouldDownload));
 
     public override IEnumerator AfterLoading(Asset[] response)
     {
         var time = 0f;
+        Message($"Found {response.Length} frames");
 
         for (var i = 0; i < response.Length; i++)
         {

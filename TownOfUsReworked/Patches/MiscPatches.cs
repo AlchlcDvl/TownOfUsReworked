@@ -706,6 +706,12 @@ public static class HostInfoPanelPatch
     }
 }
 
+[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
+public static class HudStartPatch
+{
+    public static void Postfix(HudManager __instance) => ClientHandler.Instance.OnHudStart(__instance);
+}
+
 /*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
 public static class DebuggingClassForRandomStuff
 {

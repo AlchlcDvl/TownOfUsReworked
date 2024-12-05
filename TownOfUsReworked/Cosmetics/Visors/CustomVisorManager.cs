@@ -53,7 +53,7 @@ public static class CustomVisorManager
         return path;
     }
 
-    public static List<string> GenerateDownloadList(List<CustomVisor> visors)
+    public static List<string> GenerateDownloadList(IEnumerable<CustomVisor> visors)
     {
         var markedfordownload = new List<string>();
 

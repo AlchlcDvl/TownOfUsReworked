@@ -5,7 +5,7 @@ public static class PatchColours
 {
     public static bool Prefix(StringNames id, ref string __result)
     {
-        var result = CustomColorManager.AllColors.TryFinding(x => x.StringID == (int)id && !x.Default, out var color) && color != null;
+        var result = CustomColorManager.AllColors.Values.TryFinding(x => x.StringID == (int)id && !x.Default, out var color) && color != null;
 
         if (result)
         {

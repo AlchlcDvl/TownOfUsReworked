@@ -71,11 +71,12 @@ public static class UpdateSplashPatch
         Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
 
         yield return AssetLoader.InitLoaders();
+
+        yield return TranslationLoader.Instance.CoFetch();
         yield return HatLoader.Instance.CoFetch();
         yield return VisorLoader.Instance.CoFetch();
         yield return NameplateLoader.Instance.CoFetch();
         yield return ColorLoader.Instance.CoFetch();
-        yield return TranslationLoader.Instance.CoFetch();
         yield return PresetLoader.Instance.CoFetch();
         yield return ImageLoader.Instance.CoFetch();
         yield return PortalLoader.Instance.CoFetch();

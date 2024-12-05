@@ -411,6 +411,13 @@ public static class HatsTabOnEnablePatch
 
     public static bool Prefix(HatsTab __instance)
     {
+        __instance.PlayerPreview.gameObject.SetActive(true);
+
+        if (__instance.HasLocalPlayer())
+            __instance.PlayerPreview.UpdateFromLocalPlayer(PlayerMaterial.MaskType.None);
+        else
+            __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
+
         for (var i = 0; i < __instance.scroller.Inner.childCount; i++)
             __instance.scroller.Inner.GetChild(i).gameObject.Destroy();
 
@@ -436,7 +443,7 @@ public static class HatsTabOnEnablePatch
         }
 
         var YOffset = __instance.YStart;
-        Template = GameObject.Find("HatsGroup").transform.FindChild("Text").GetComponent<TMP_Text>();
+        Template = __instance.transform.FindChild("Text").GetComponent<TMP_Text>();
         var keys = packages.Keys.OrderBy(x => x switch
         {
             "Innersloth" => 4,
@@ -448,6 +455,10 @@ public static class HatsTabOnEnablePatch
         __instance.currentHatIsEquipped = true;
         __instance.SetScrollerBounds();
         __instance.scroller.ContentYBounds.max = -(YOffset + 4.1f);
+
+        if (array.Length != 0)
+            __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);
+
         return false;
     }
 }

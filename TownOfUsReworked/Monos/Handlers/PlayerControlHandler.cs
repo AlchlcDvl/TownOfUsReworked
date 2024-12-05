@@ -26,9 +26,12 @@ public class PlayerControlHandler : NameHandler
         PlayerNames[Player.PlayerId] = Player.Data.PlayerName;
         ColorNames[Player.PlayerId] = Player.Data.ColorName.Replace("(", "").Replace(")", "");
 
+        if (Meeting())
+            return;
+
         (Color.text, Color.color) = UpdateColorblind(Player);
 
-        if (IsInGame() && !Meeting() && Player.Data.Role is LayerHandler handler && CustomPlayer.Local.Data.Role is LayerHandler localHandler)
+        if (IsInGame() && Player.Data.Role is LayerHandler handler && CustomPlayer.Local.Data.Role is LayerHandler localHandler)
         {
             handler.UpdatePlayer();
             localHandler.UpdatePlayer(Player);

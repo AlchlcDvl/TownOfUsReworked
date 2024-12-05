@@ -58,7 +58,7 @@ public static class CustomHatManager
         return path;
     }
 
-    public static List<string> GenerateDownloadList(List<CustomHat> hats)
+    public static List<string> GenerateDownloadList(IEnumerable<CustomHat> hats)
     {
         var markedfordownload = new List<string>();
 

@@ -18,6 +18,9 @@ public class Language : Asset
     {
         get
         {
+            if (Notes != null)
+                return "";
+
             var result = lang switch
             {
                 "English" => English,
@@ -26,7 +29,7 @@ public class Language : Asset
             };
             var ids = GetIDs();
 
-            if ((IsNullEmptyOrWhiteSpace(result) && Notes == null) || !TranslationManager.SupportedLangNames.Contains(lang))
+            if (IsNullEmptyOrWhiteSpace(result) || !TranslationManager.SupportedLangNames.Contains(lang))
             {
                 if (English != null)
                 {

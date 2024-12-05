@@ -45,7 +45,7 @@ public static class MCIUtils
         AmongUsClient.Instance.GetOrCreateClient(sampleC);
         yield return AmongUsClient.Instance.CreatePlayer(sampleC);
 
-        var colorId = CustomColorManager.AllColors.Random().ColorID;
+        var colorId = CustomColorManager.AllColors.Keys.Random();
         sampleC.Character.SetName($"Bot {sampleC.Character.PlayerId}");
         sampleC.Character.SetColor(colorId);
         sampleC.Character.SetSkin(HatManager.Instance.allSkins.Random().ProdId, colorId);

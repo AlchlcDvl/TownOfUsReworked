@@ -55,7 +55,7 @@ public class CustomHat : CustomCosmetic
     [JsonPropertyName("adaptive")]
     public bool Adaptive { get; set; }
 
-    [JsonPropertyName("behind")]
+    [JsonIgnore]
     public bool Behind { get; set; }
 }
 
@@ -107,20 +107,62 @@ public class CustomColor : CustomCosmetic
     [JsonPropertyName("lighter")]
     public bool Lighter { get; set; }
 
-    [JsonPropertyName("changing")]
-    public bool Changing { get; set; }
+    [JsonPropertyName("mainColorValues")]
+    public string[] MainColorValues { get; set; }
 
-    [JsonPropertyName("rgbmain")]
-    public string RGBMain { get; set; }
+    [JsonPropertyName("shadowColorValues")]
+    public string[] ShadowColorValues { get; set; }
 
-    [JsonPropertyName("rgbshadow")]
-    public string RGBShadow { get; set; }
-
-    // [JsonPropertyName("title")]
-    // public string Title { get; set; }
+    [JsonPropertyName("timeSpeed")]
+    public float TimeSpeed { get; set; }
 
     [JsonIgnore]
     public int ColorID { get; set; }
+
+    [JsonIgnore]
+    public UColor[] MainColors { get; set; }
+
+    [JsonIgnore]
+    public UColor[] ShadowColors { get; set; }
+
+    [JsonIgnore]
+    public bool Changing { get; set; }
+
+    public UColor GetColor()
+    {
+        if (MainColorValues == null || MainColorValues.Length == 0)
+            return UColor.black;
+
+        if (MainColors.Length == 1)
+            return MainColors[0];
+
+        return LerpColors(TimeSpeed, MainColors);
+    }
+
+    public UColor GetShadowColor()
+    {
+        if (ShadowColorValues == null || ShadowColorValues.Length == 0)
+            return CustomColorManager.Shadow(GetColor());
+
+        if (ShadowColors.Length == 1)
+            return ShadowColors[0];
+
+        return LerpColors(TimeSpeed, ShadowColors);
+    }
+
+    public static UColor LerpColors(float mul, UColor[] colors)
+    {
+        // Math nerd rambling
+        // Mapping these next 4 lines onto desmos gives a nice little zig zag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
+        var dx = mul * Time.time;
+        var f = Mathf.FloorToInt(dx);
+        var m = f % 2;
+        var point = Mathf.Clamp((colors.Length - 1) * (((dx - f) * ((2 * m) - 1)) + 1 - m), 0f, colors.Length - 1);
+
+        var index = Mathf.FloorToInt(point);
+
+        return UColor.Lerp(colors[index], colors[index + 1], point - index);
+    }
 }
 
 // Idk why i did it, but ig i just really wanted it for consistency's sake

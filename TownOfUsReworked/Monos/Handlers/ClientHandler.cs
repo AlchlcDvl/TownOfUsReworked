@@ -33,8 +33,6 @@ public class ClientHandler : MonoBehaviour
     public PassiveButton ClientOptionsButton;
     public bool SettingsActive;
 
-    public bool ButtonsSet;
-
     private Transform ButtonsParent;
 
     private ProgressTracker _taskBar;
@@ -59,11 +57,11 @@ public class ClientHandler : MonoBehaviour
 
     public ClientHandler(IntPtr ptr) : base(ptr) => Instance = this;
 
-    public void OnLobbyStart(LobbyBehaviour __instance)
+    public void OnHudStart(HudManager __instance)
     {
         if (!ButtonsParent)
         {
-            var obj = HUD().AbilityButton.transform.parent;
+            var obj = __instance.AbilityButton.transform.parent;
             ButtonsParent = Instantiate(obj, obj.parent);
             ButtonsParent.name = "BottomLeft";
             ButtonsParent.transform.localPosition = new(-obj.localPosition.x, obj.localPosition.y, obj.localPosition.z);
@@ -79,7 +77,7 @@ public class ClientHandler : MonoBehaviour
 
         if (!WikiRCButton)
         {
-            WikiRCButton = Instantiate(HUD().MapButton, ButtonsParent);
+            WikiRCButton = Instantiate(__instance.MapButton, ButtonsParent);
             WikiRCButton.OverrideOnClickListeners(Open);
             WikiRCButton.name = "WikiAndRCButton";
             WikiRCButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("WikiInactive");
@@ -89,7 +87,7 @@ public class ClientHandler : MonoBehaviour
 
         if (!ClientOptionsButton)
         {
-            ClientOptionsButton = Instantiate(HUD().MapButton, ButtonsParent);
+            ClientOptionsButton = Instantiate(__instance.MapButton, ButtonsParent);
             ClientOptionsButton.OverrideOnClickListeners(CreateMenu);
             ClientOptionsButton.name = "ClientOptionsButton";
             ClientOptionsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsInactive");
@@ -99,7 +97,7 @@ public class ClientHandler : MonoBehaviour
 
         if (!ZoomButton)
         {
-            ZoomButton = Instantiate(HUD().MapButton, ButtonsParent);
+            ZoomButton = Instantiate(__instance.MapButton, ButtonsParent);
             ZoomButton.OverrideOnClickListeners(ClickZoom);
             ZoomButton.name = "ZoomButton";
             ZoomButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("MinusInactive");
@@ -107,6 +105,15 @@ public class ClientHandler : MonoBehaviour
             ZoomButton.transform.Find("Background").localPosition = Vector3.zero;
         }
 
+        if (MinSize == Vector3.zero)
+            MinSize = __instance.transform.localScale;
+
+        if (MaxSize == Vector3.zero)
+            MaxSize = __instance.transform.localScale * 4f;
+    }
+
+    public void OnLobbyStart(LobbyBehaviour __instance)
+    {
         if (!Prefab)
         {
             var options = __instance.transform.FindChild("SmallBox").GetChild(0).GetComponent<OptionsConsole>();
@@ -115,19 +122,11 @@ public class ClientHandler : MonoBehaviour
             Prefab.name = "ClientOptionsMenuPrefab";
             Pos = options.CustomPosition;
         }
-
-        if (MinSize == Vector3.zero)
-            MinSize = HUD().transform.localScale;
-
-        if (MaxSize == Vector3.zero)
-            MaxSize = HUD().transform.localScale * 4f;
-
-        ButtonsSet = true;
     }
 
     public void Update()
     {
-        if (IsHnS() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsSet || !ButtonsParent)
+        if (IsHnS() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsParent)
             return;
 
         ResetButtonPos();

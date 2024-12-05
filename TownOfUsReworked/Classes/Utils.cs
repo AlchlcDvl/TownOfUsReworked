@@ -123,7 +123,7 @@ public static class Utils
                     player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
                 }
 
-                PlayerMaterial.SetColors(UColor.Lerp(37.GetColor(false), HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), p), rend);
+                PlayerMaterial.SetColors(UColor.Lerp(51.GetColor(false), HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), p), rend);
             });
         }
         else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
@@ -234,7 +234,7 @@ public static class Utils
             Coroutines.Start(PerformTimedAction(1, p =>
             {
                 player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(1, ca, p));
-                PlayerMaterial.SetColors(UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), 37.GetColor(false), p), player.MyRend());
+                PlayerMaterial.SetColors(UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), 51.GetColor(false), p), player.MyRend());
 
                 if (!player.AmOwner)
                 {
@@ -274,7 +274,7 @@ public static class Utils
 
     public static NetworkedPlayerInfo.PlayerOutfit InvisOutfit2() => new()
     {
-        ColorId = 37,
+        ColorId = 51,
         HatId = "hat_NoHat",
         SkinId = "skin_None",
         VisorId = "visor_EmptyVisor",
@@ -307,7 +307,7 @@ public static class Utils
 
     public static NetworkedPlayerInfo.PlayerOutfit ColorblindOutfit() => new()
     {
-        ColorId = 7,
+        ColorId = 39,
         HatId = "hat_NoHat",
         SkinId = "skin_None",
         VisorId = "visor_EmptyVisor",
@@ -318,7 +318,7 @@ public static class Utils
 
     public static NetworkedPlayerInfo.PlayerOutfit NightVisonOutfit() => new()
     {
-        ColorId = 11,
+        ColorId = 6,
         HatId = "hat_NoHat",
         SkinId = "skin_None",
         VisorId = "visor_EmptyVisor",
