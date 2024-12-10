@@ -1437,7 +1437,6 @@ public static class RoleGen
                 var factions = new byte[] { 1, 3, 0 };
                 var faction = (Faction)(Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions[(int)Allied.AlliedFaction - 1]);
                 ally.Side = alliedRole.Faction = faction;
-                alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(ally.Side);
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
             }
 
@@ -1734,7 +1733,7 @@ public static class RoleGen
         SetPostmortals.WillBeRevealers.Clear();
         SetPostmortals.WillBePhantoms.Clear();
 
-        ChatUpdate.ChatHistory.Clear();
+        ChatPatches.ChatHistory.Clear();
 
         PureCrew = null;
         Convertible = 0;
@@ -2041,7 +2040,6 @@ public static class RoleGen
 
         role1.SubFaction = sub;
         role1.Faction = Faction.Neutral;
-        role1.Alignment = role1.Alignment.GetNewAlignment(Faction.Neutral);
         Convertible--;
 
         if (converted.AmOwner)

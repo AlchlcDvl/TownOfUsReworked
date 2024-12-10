@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
+[HarmonyPatch]
 public static class SetPostmortals
 {
     public static readonly List<byte> AssassinatedPlayers = [];
@@ -7,18 +8,8 @@ public static class SetPostmortals
     public static readonly List<byte> MarkedPlayers = [];
     public static readonly List<byte> MisfiredPlayers = [];
 
-    [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
-    public static class AirshipExile
-    {
-        public static void Postfix(AirshipExileController __instance) => ExileControllerPostfix(__instance);
-    }
-
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public static class OtherExile
-    {
-        public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
-    }
-
+    [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
     public static void ExileControllerPostfix(ExileController __instance)
     {
         if (CustomPlayer.LocalCustom.Disconnected)

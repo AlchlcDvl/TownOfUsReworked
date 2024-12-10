@@ -33,6 +33,9 @@ public class LayerHandler : RoleBehaviour
     [HideFromIl2Cpp]
     public T GetLayer<T>() where T : PlayerLayer => CustomLayers.OfType<T>().FirstOrDefault();
 
+    [HideFromIl2Cpp]
+    public T GetILayer<T>() where T : IPlayerLayer => CustomLayers.OfType<T>().FirstOrDefault();
+
     public void UpdatePlayer()
     {
         CustomRole.UpdatePlayer();

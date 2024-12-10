@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Guesser : Neutral
+public class Guesser : Evil
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool GuesserCanPickTargets { get; set; } = false;
@@ -52,11 +52,12 @@ public class Guesser : Neutral
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
         $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <#00ACC2FF>Actor</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override bool HasWon => TargetGuessed;
+    public override WinLose EndState => WinLose.GuesserWins;
 
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralEvil;
         RemainingGuesses = MaxGuesses == 0 ? 10000 : MaxGuesses;
         Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer.Data.PlayerName} was" : (!TargetPlayer ? "- Find someone to be guessed by you" : ("- Guess " +
             $"{TargetPlayer?.name}'s role"));
@@ -187,7 +188,7 @@ public class Guesser : Neutral
         else
         {
             var layerflag = player.GetLayers().Any(x => x.Type == guess);
-            var subfactionflag = player.GetSubFaction().ToString() == guess.ToString();
+            var subfactionflag = $"{player.GetSubFaction()}" == $"{guess}";
 
             var flag = layerflag || subfactionflag;
             var toDie = flag ? player : Player;

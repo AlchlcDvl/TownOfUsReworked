@@ -1,105 +1,116 @@
 namespace TownOfUsReworked.Patches;
 
+[HarmonyPatch(typeof(MeetingHud))]
 public static class MeetingPatches
 {
     public static int MeetingCount;
     public static NetworkedPlayerInfo Reported;
-    private static PlayerControl Reporter;
+    public static PlayerControl Reporter;
     public static bool GivingAnnouncements;
 
-    [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.SetCosmetics))]
-    public static class PlayerStates
+    [HarmonyPatch(nameof(MeetingHud.Confirm))]
+    public static void Postfix(MeetingHud __instance, byte suspectStateIdx)
     {
-        public static void Postfix(PlayerVoteArea __instance)
+        if (!IsLocalGame() || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote.Value)
+            return;
+
+        __instance.playerStates.ForEach(x => __instance.CmdCastVote(x.TargetPlayerId, suspectStateIdx));
+    }
+
+    public static Sprite Cache;
+
+    [HarmonyPatch(nameof(MeetingHud.SetForegroundForDead)), HarmonyPrefix]
+    public static void SetForegroundForDeadPrefix(MeetingHud __instance) => Cache ??= __instance.Glass.sprite;
+
+    [HarmonyPatch(nameof(MeetingHud.Start)), HarmonyPostfix]
+    public static void StartPostfix(MeetingHud __instance)
+    {
+        __instance.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
+        ClientHandler.Instance.CloseMenus();
+        CustomPlayer.Local.DisableButtons();
+        Ash.DestroyAll();
+        MeetingCount++;
+
+        if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Role.SyndicateHasChaosDrive)
         {
-            if (BetterSabotages.CamouflagedMeetings && HudHandler.Instance.IsCamoed)
+            Role.SyndicateHasChaosDrive = true;
+            RoleGen.AssignChaosDrive();
+        }
+
+        Coroutines.Start(Announcements());
+        CachedFirstDead = null;
+    }
+
+    public static DateTime MeetingStartTime = DateTime.MinValue;
+
+    [HarmonyPatch(nameof(MeetingHud.Start))]
+    public static void Prefix() => MeetingStartTime = DateTime.UtcNow;
+
+    private static IEnumerator Announcements()
+    {
+        GivingAnnouncements = true;
+        yield return Wait(5f);
+
+        if (GameAnnouncementSettings.GameAnnouncements)
+        {
+            PlayerControl check = null;
+
+            if (Reported)
             {
-                __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
-                __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
-                __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
-                __instance.PlayerIcon.SetBodyCosmeticsVisible(false);
-                __instance.PlayerIcon.SetBodyColor(16);
+                var player = Reported.Object;
+                check = player;
+                var report = $"{player.name} was found dead last round.";
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
+                yield return Wait(2f);
+                report = GameAnnouncementSettings.LocationReports && BodyLocations.TryGetValue(Reported.PlayerId, out var location) ? $"Their body was found in {location}." :
+                    "It is unknown where they died.";
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
+                yield return Wait(2f);
+                var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
+
+                if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
+                    report = $"They were killed by the <b>{killerRole}</b>.";
+                else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
+                    report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
+                else
+                    report = "They were killed by an unknown assailant.";
+
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
+                yield return Wait(2f);
+                var role = player.GetRole();
+
+                if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
+                    report = $"They were the <b>{role}</b>.";
+                else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
+                    report = $"They were the <b>{role.FactionName}</b>.";
+                else
+                    report = $"We could not determine what {player.name} was.";
+
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
             }
             else
-            {
-                if (ClientOptions.WhiteNameplates)
-                    __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", "A meeting has been called.");
 
-                if (ClientOptions.NoLevels)
+            yield return Wait(2f);
+
+            foreach (var playerid in RecentlyKilled)
+            {
+                if (playerid != check.PlayerId)
                 {
-                    __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
-                    __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
-                }
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
-    public static class SetReported
-    {
-        public static void Prefix(PlayerControl __instance, NetworkedPlayerInfo target)
-        {
-            if (CustomPlayer.Local.Data.Role is LayerHandler handler)
-                handler.BeforeMeeting();
-
-            Reported = target;
-            Reporter = __instance;
-
-            if (!target || !__instance.AmOwner)
-                return;
-
-            var pc = Reported.Object;
-            PlayerLayer.GetLayers<Plaguebearer>().ForEach(x => x.RpcSpreadInfection(__instance, pc));
-            PlayerLayer.GetLayers<Arsonist>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
-            PlayerLayer.GetLayers<Cryomaniac>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
-        }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public static class MeetingHUD_Start
-    {
-        public static void Postfix(MeetingHud __instance)
-        {
-            __instance.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
-            ClientHandler.Instance.CloseMenus();
-            CustomPlayer.Local.DisableButtons();
-            Ash.DestroyAll();
-            MeetingCount++;
-
-            if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Role.SyndicateHasChaosDrive)
-            {
-                Role.SyndicateHasChaosDrive = true;
-                RoleGen.AssignChaosDrive();
-            }
-
-            Coroutines.Start(Announcements());
-            CachedFirstDead = null;
-        }
-
-        private static IEnumerator Announcements()
-        {
-            GivingAnnouncements = true;
-            yield return Wait(5f);
-
-            if (GameAnnouncementSettings.GameAnnouncements)
-            {
-                PlayerControl check = null;
-
-                if (Reported)
-                {
-                    var player = Reported.Object;
-                    check = player;
-                    var report = $"{player.name} was found dead last round.";
+                    var player = PlayerById(playerid);
+                    var report = $"{player} was found dead last round.";
                     Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
-                    report = GameAnnouncementSettings.LocationReports && BodyLocations.TryGetValue(Reported.PlayerId, out var location) ? $"Their body was found in {location}." :
-                        "It is unknown where they died.";
+                    report = "It is unknown where they died.";
                     Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
+
                     var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
 
-                    if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
-                        report = $"They were killed by the <b>{killerRole}</b>.";
+                    if (Role.Cleaned.Contains(player.PlayerId))
+                        report = "They were killed by an unknown assailant.";
+                    else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
+                        report = $"They were killed by the <b>{killerRole.Name}</b>.";
                     else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
                         report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
                     else
@@ -109,351 +120,251 @@ public static class MeetingPatches
                     yield return Wait(2f);
                     var role = player.GetRole();
 
-                    if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
+                    if (Role.Cleaned.Contains(player.PlayerId))
+                        report = $"We could not determine what {player} was.";
+                    else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
                         report = $"They were the <b>{role}</b>.";
                     else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
                         report = $"They were the <b>{role.FactionName}</b>.";
                     else
-                        report = $"We could not determine what {player.name} was.";
+                        report = $"We could not determine what {player} was.";
 
                     Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                }
-                else
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", "A meeting has been called.");
-
-                yield return Wait(2f);
-
-                foreach (var playerid in RecentlyKilled)
-                {
-                    if (playerid != check.PlayerId)
-                    {
-                        var player = PlayerById(playerid);
-                        var report = $"{player} was found dead last round.";
-                        Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                        yield return Wait(2f);
-                        report = "It is unknown where they died.";
-                        Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                        yield return Wait(2f);
-
-                        var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
-
-                        if (Role.Cleaned.Contains(player.PlayerId))
-                            report = "They were killed by an unknown assailant.";
-                        else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
-                            report = $"They were killed by the <b>{killerRole.Name}</b>.";
-                        else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
-                            report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
-                        else
-                            report = "They were killed by an unknown assailant.";
-
-                        Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                        yield return Wait(2f);
-                        var role = player.GetRole();
-
-                        if (Role.Cleaned.Contains(player.PlayerId))
-                            report = $"We could not determine what {player} was.";
-                        else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
-                            report = $"They were the <b>{role}</b>.";
-                        else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
-                            report = $"They were the <b>{role.FactionName}</b>.";
-                        else
-                            report = $"We could not determine what {player} was.";
-
-                        Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                        yield return Wait(2f);
-                    }
-                }
-
-                foreach (var player in DisconnectHandler.Disconnected)
-                {
-                    if (player != check.PlayerId)
-                    {
-                        Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} killed themselves last round.");
-                        yield return Wait(2f);
-                    }
-                }
-
-                foreach (var player in SetPostmortals.EscapedPlayers)
-                {
-                    if (player != check.PlayerId)
-                    {
-                        Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} accomplished their objective and escaped last round.");
-                        yield return Wait(2f);
-                    }
-                }
-
-                foreach (var player in SetPostmortals.MisfiredPlayers)
-                {
-                    if (player != check.PlayerId)
-                    {
-                        Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} was ejected for their misuse of power.");
-                        yield return Wait(2f);
-                    }
-                }
-
-                foreach (var player in SetPostmortals.MarkedPlayers)
-                {
-                    if (player != check.PlayerId)
-                    {
-                        Run("<#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {PlayerById(player)} to be ejected!");
-                        yield return Wait(2f);
-                    }
-                }
-            }
-
-            var message = "";
-
-            if (SyndicateSettings.SyndicateCount > 0)
-            {
-                if (MeetingCount < SyndicateSettings.ChaosDriveMeetingCount - 1)
-                    message = $"{SyndicateSettings.ChaosDriveMeetingCount - MeetingCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-                else if (MeetingCount == SyndicateSettings.ChaosDriveMeetingCount - 1)
-                    message = "This is the last meeting before the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-                else if (MeetingCount == SyndicateSettings.ChaosDriveMeetingCount)
-                    message = "The <b>Syndicate</b> now possesses the Chaos Drive!";
-                else
-                    message = "The <b>Syndicate</b> possesses the Chaos Drive.";
-
-                Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
-
-                yield return Wait(2f);
-            }
-
-            if (PlayerLayer.GetLayers<Overlord>().Any(x => x.Alive))
-            {
-                if (MeetingCount == Overlord.OverlordMeetingWinCount - 1)
-                    message = "This is the last meeting to find and kill the <b>Overlord</b>. Should you fail, you will all lose!";
-                else if (MeetingCount < Overlord.OverlordMeetingWinCount - 1)
-                    message = "There seems to be an <b>Overlord</b> bent on dominating the mission! Kill them before they are successful!";
-
-                if (!IsNullEmptyOrWhiteSpace(message))
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
-
-                yield return Wait(2f);
-            }
-
-            var knighted = new List<byte>();
-
-            foreach (var monarch in PlayerLayer.GetLayers<Monarch>())
-            {
-                foreach (var id in monarch.ToBeKnighted)
-                {
-                    monarch.Knighted.Add(id);
-
-                    if (!knighted.Contains(id))
-                    {
-                        var knight = PlayerById(id);
-
-                        if (!knight.HasDied())
-                        {
-                            message = $"{knight.name} was knighted by a <b>Monarch</b>!";
-                            Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
-                            knighted.Add(id);
-                        }
-                    }
-
                     yield return Wait(2f);
                 }
-
-                monarch.ToBeKnighted.Clear();
             }
 
-            foreach (var layer in PlayerLayer.LocalLayers())
+            foreach (var player in DisconnectHandler.Disconnected)
             {
-                if (layer.Player == Reporter)
-                    layer.OnBodyReport(Reported);
-            }
-
-            RecentlyKilled.Clear();
-            Role.Cleaned.Clear();
-            Reported = null;
-            DisconnectHandler.Disconnected.Clear();
-            GivingAnnouncements = false;
-            yield break;
-        }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
-    public static class MeetingHud_Close
-    {
-        public static void Postfix(MeetingHud __instance)
-        {
-            CustomPlayer.Local.EnableButtons();
-            ButtonUtils.Reset(CooldownType.Meeting);
-
-            if (CustomPlayer.Local.Data.Role is LayerHandler handler)
-                handler.OnMeetingEnd(__instance);
-        }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-    public static class UpdateMeetingPatch
-    {
-        public static void Postfix(MeetingHud __instance)
-        {
-            if (IsCustomHnS() || IsTaskRace())
-                return;
-
-            // Deactivate skip Button if skipping on emergency meetings is disabled
-            __instance.SkipVoteButton.gameObject.SetActive(!((Reported == null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping ==
-                DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !CustomPlayer.LocalCustom.Dead);
-
-            if (CustomPlayer.Local.Data.Role is LayerHandler localHandler)
-                localHandler.UpdateMeeting(__instance);
-
-        }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
-    public static class VotingComplete
-    {
-        public static void Postfix(NetworkedPlayerInfo exiled, bool tie)
-        {
-            var exiledString = !exiled ? "null" : exiled.PlayerName;
-            Info($"Exiled PlayerName = {exiledString}");
-            Info($"Was a tie = {tie}");
-            Coroutines.Start(PerformSwaps());
-
-            foreach (var role in Role.AllRoles())
-            {
-                if (role.Type is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.GuardianAngel or LayerEnum.Jester)
-                    continue;
-
-                role.TrulyDead = true;
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Select))]
-    public static class MeetingHudSelect
-    {
-        public static void Postfix(MeetingHud __instance, int suspectStateIdx) => PlayerLayer.LocalLayers().ForEach(x => x?.SelectVote(__instance, suspectStateIdx));
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ClearVote))]
-    public static class MeetingHudClearVote
-    {
-        public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ClearVote(__instance));
-    }
-
-    [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.Start))]
-    public static class PlayerVoteAreaPatch
-    {
-        public static void Postfix(PlayerVoteArea __instance)
-        {
-            __instance.EnsureComponent<VoteAreaHandler>();
-
-            if (__instance.transform.Find("PlayerID"))
-                return;
-
-            var level = __instance.transform.Find("PlayerLevel");
-
-            if (!level)
-                return;
-
-            level.SetLocalZ(-2f);
-
-            var id = UObject.Instantiate(level, level.parent);
-            id.SetSiblingIndex(level.GetSiblingIndex() + 1);
-            id.name = "PlayerID";
-            id.SetLocalZ(-2f);
-
-            var label = id.Find("LevelLabel");
-            label.GetComponent<TextTranslatorTMP>().Destroy();
-            label.GetComponent<TextMeshPro>().text = "ID";
-            label.name = "IDLabel";
-
-            var number = id.Find("LevelNumber");
-            number.GetComponent<TextTranslatorTMP>().Destroy();
-            number.GetComponent<TextMeshPro>().text = $"{__instance.TargetPlayerId}";
-            number.name = "IDNumber";
-
-            id.position -= new Vector3(0f, 0.33f, 0f);
-        }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
-    public static class CheckForEndVoting
-    {
-        private static bool CheckVoted(PlayerVoteArea playerVoteArea)
-        {
-            if (playerVoteArea.AmDead || playerVoteArea.DidVote)
-                return true;
-
-            var playerInfo = GameData.Instance.GetPlayerById(playerVoteArea.TargetPlayerId);
-
-            if (!playerInfo)
-                return true;
-
-            var playerControl = playerInfo.Object;
-
-            if ((playerControl.IsAssassin() || playerControl.Is(LayerEnum.Guesser) || playerControl.Is(LayerEnum.Thief)) && playerInfo.IsDead)
-            {
-                playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
-                playerVoteArea.SetDead(false, true);
-            }
-
-            return true;
-        }
-
-        public static bool Prefix(MeetingHud __instance)
-        {
-            if (__instance.playerStates.All(ps => ps.AmDead || (ps.DidVote && CheckVoted(ps))))
-            {
-                var self = __instance.CalculateAllVotes(out var tie, out var maxIdx);
-                var array = new Il2CppStructArray<MeetingHud.VoterState>(__instance.playerStates.Length);
-                var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == maxIdx.Key);
-
-                for (var i = 0; i < __instance.playerStates.Length; i++)
+                if (player != check.PlayerId)
                 {
-                    var playerVoteArea = __instance.playerStates[i];
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} killed themselves last round.");
+                    yield return Wait(2f);
+                }
+            }
 
-                    array[i] = new MeetingHud.VoterState()
+            foreach (var player in SetPostmortals.EscapedPlayers)
+            {
+                if (player != check.PlayerId)
+                {
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} accomplished their objective and escaped last round.");
+                    yield return Wait(2f);
+                }
+            }
+
+            foreach (var player in SetPostmortals.MisfiredPlayers)
+            {
+                if (player != check.PlayerId)
+                {
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} was ejected for their misuse of power.");
+                    yield return Wait(2f);
+                }
+            }
+
+            foreach (var player in SetPostmortals.MarkedPlayers)
+            {
+                if (player != check.PlayerId)
+                {
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {PlayerById(player)} to be ejected!");
+                    yield return Wait(2f);
+                }
+            }
+        }
+
+        var message = "";
+
+        if (SyndicateSettings.SyndicateCount > 0)
+        {
+            if (MeetingCount < SyndicateSettings.ChaosDriveMeetingCount - 1)
+                message = $"{SyndicateSettings.ChaosDriveMeetingCount - MeetingCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
+            else if (MeetingCount == SyndicateSettings.ChaosDriveMeetingCount - 1)
+                message = "This is the last meeting before the <b>Syndicate</b> gets their hands on the Chaos Drive!";
+            else if (MeetingCount == SyndicateSettings.ChaosDriveMeetingCount)
+                message = "The <b>Syndicate</b> now possesses the Chaos Drive!";
+            else
+                message = "The <b>Syndicate</b> possesses the Chaos Drive.";
+
+            Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
+
+            yield return Wait(2f);
+        }
+
+        if (PlayerLayer.GetLayers<Overlord>().Any(x => x.Alive))
+        {
+            if (MeetingCount == Overlord.OverlordMeetingWinCount - 1)
+                message = "This is the last meeting to find and kill the <b>Overlord</b>. Should you fail, you will all lose!";
+            else if (MeetingCount < Overlord.OverlordMeetingWinCount - 1)
+                message = "There seems to be an <b>Overlord</b> bent on dominating the mission! Kill them before they are successful!";
+
+            if (!IsNullEmptyOrWhiteSpace(message))
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
+
+            yield return Wait(2f);
+        }
+
+        var knighted = new List<byte>();
+
+        foreach (var monarch in PlayerLayer.GetLayers<Monarch>())
+        {
+            foreach (var id in monarch.ToBeKnighted)
+            {
+                monarch.Knighted.Add(id);
+
+                if (!knighted.Contains(id))
+                {
+                    var knight = PlayerById(id);
+
+                    if (!knight.HasDied())
                     {
-                        VoterId = playerVoteArea.TargetPlayerId,
-                        VotedForId = playerVoteArea.VotedFor
-                    };
+                        message = $"{knight.name} was knighted by a <b>Monarch</b>!";
+                        Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
+                        knighted.Add(id);
+                    }
                 }
 
-                __instance.RpcVotingComplete(array, exiled, tie);
-                PlayerLayer.GetLayers<Politician>().ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, x, PoliticianActionsRPC.Remove, x.ExtraVotes.ToArray()));
+                yield return Wait(2f);
             }
 
-            return false;
+            monarch.ToBeKnighted.Clear();
         }
+
+        foreach (var layer in PlayerLayer.LocalLayers())
+        {
+            if (layer.Player == Reporter)
+                layer.OnBodyReport(Reported);
+        }
+
+        RecentlyKilled.Clear();
+        Role.Cleaned.Clear();
+        Reported = null;
+        DisconnectHandler.Disconnected.Clear();
+        GivingAnnouncements = false;
+        yield break;
+    }
+
+    [HarmonyPatch(nameof(MeetingHud.Close)), HarmonyPostfix]
+    public static void ClosePostfix(MeetingHud __instance)
+    {
+        CustomPlayer.Local.EnableButtons();
+        ButtonUtils.Reset(CooldownType.Meeting);
+
+        if (CustomPlayer.Local.Data.Role is LayerHandler handler)
+            handler.OnMeetingEnd(__instance);
+    }
+
+    [HarmonyPatch(nameof(MeetingHud.Update)), HarmonyPostfix]
+    public static void UpdatePostfix(MeetingHud __instance)
+    {
+        if (IsCustomHnS() || IsTaskRace())
+            return;
+
+        // Deactivate skip Button if skipping on emergency meetings is disabled
+        __instance.SkipVoteButton.gameObject.SetActive(!((Reported == null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping ==
+            DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !CustomPlayer.LocalCustom.Dead);
+
+        if (CustomPlayer.Local.Data.Role is LayerHandler localHandler)
+            localHandler.UpdateMeeting(__instance);
+    }
+
+    [HarmonyPatch(nameof(MeetingHud.VotingComplete))]
+    public static void Postfix(NetworkedPlayerInfo exiled, bool tie)
+    {
+        var exiledString = !exiled ? "null" : exiled.PlayerName;
+        Info($"Exiled PlayerName = {exiledString}");
+        Info($"Was a tie = {tie}");
+        Coroutines.Start(PerformSwaps());
+
+        foreach (var role in Role.AllRoles())
+        {
+            if (role.Type is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.GuardianAngel or LayerEnum.Jester)
+                continue;
+
+            role.TrulyDead = true;
+        }
+    }
+
+    [HarmonyPatch(nameof(MeetingHud.Select))]
+    public static void Postfix(MeetingHud __instance, int suspectStateIdx) => PlayerLayer.LocalLayers().ForEach(x => x?.SelectVote(__instance, suspectStateIdx));
+
+    [HarmonyPatch(nameof(MeetingHud.ClearVote)), HarmonyPostfix]
+    public static void ClearVotePostfix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ClearVote(__instance));
+
+    private static bool CheckVoted(PlayerVoteArea playerVoteArea)
+    {
+        if (playerVoteArea.AmDead || playerVoteArea.DidVote)
+            return true;
+
+        var playerInfo = GameData.Instance.GetPlayerById(playerVoteArea.TargetPlayerId);
+
+        if (!playerInfo)
+            return true;
+
+        var playerControl = playerInfo.Object;
+
+        if ((playerControl.IsAssassin() || playerControl.Is(LayerEnum.Guesser) || playerControl.Is(LayerEnum.Thief)) && playerInfo.IsDead)
+        {
+            playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
+            playerVoteArea.SetDead(false, true);
+        }
+
+        return true;
+    }
+
+    [HarmonyPatch(nameof(MeetingHud.CheckForEndVoting)), HarmonyPrefix]
+    public static bool CheckForEndVotingPrefix(MeetingHud __instance)
+    {
+        if (__instance.playerStates.All(ps => ps.AmDead || (ps.DidVote && CheckVoted(ps))))
+        {
+            var self = __instance.CalculateAllVotes(out var tie, out var maxIdx);
+            var array = new Il2CppStructArray<MeetingHud.VoterState>(__instance.playerStates.Length);
+            var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == maxIdx.Key);
+
+            for (var i = 0; i < __instance.playerStates.Length; i++)
+            {
+                var playerVoteArea = __instance.playerStates[i];
+
+                array[i] = new MeetingHud.VoterState()
+                {
+                    VoterId = playerVoteArea.TargetPlayerId,
+                    VotedForId = playerVoteArea.VotedFor
+                };
+            }
+
+            __instance.RpcVotingComplete(array, exiled, tie);
+            PlayerLayer.GetLayers<Politician>().ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, x, PoliticianActionsRPC.Remove, x.ExtraVotes.ToArray()));
+        }
+
+        return false;
     }
 
     // Thanks twix
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CoIntro))]
-    public static class ShowNewDead
+    public static readonly List<byte> ReportedBodies = [];
+
+    [HarmonyPatch(nameof(MeetingHud.CoIntro))]
+    public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
     {
-        public static readonly List<byte> ReportedBodies = [];
+        ReportedBodies.Clear();
 
-        public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
+        if (!GameModifiers.IndicateReportedBodies)
+            return;
+
+        foreach (var player in __instance.playerStates)
         {
-            ReportedBodies.Clear();
-
-            if (!GameModifiers.IndicateReportedBodies)
-                return;
-
-            foreach (var player in __instance.playerStates)
+            if (deadBodies.Any(x => x.PlayerId == player.TargetPlayerId))
             {
-                if (deadBodies.Any(x => x.PlayerId == player.TargetPlayerId))
+                player.Megaphone.gameObject.SetActive(true);
+                player.Megaphone.enabled = true;
+                player.Megaphone.transform.localEulerAngles = Vector3.zero;
+                player.Megaphone.transform.localScale = Vector3.one;
+
+                if (player.TargetPlayerId != reportedBody.PlayerId)
                 {
-                    player.Megaphone.gameObject.SetActive(true);
-                    player.Megaphone.enabled = true;
-                    player.Megaphone.transform.localEulerAngles = Vector3.zero;
-                    player.Megaphone.transform.localScale = Vector3.one;
-
-                    if (player.TargetPlayerId != reportedBody.PlayerId)
-                    {
-                        player.Megaphone.sprite = GameManager.Instance.DeadBodyPrefab.bodyRenderers[0].sprite;
-                        player.Megaphone.transform.localScale = new(0.3f, 0.3f, 0.3f);
-                        player.Megaphone.transform.localPosition -= new Vector3(0.2f, 0, 0);
-                    }
-
-                    ReportedBodies.Add(player.TargetPlayerId);
+                    player.Megaphone.sprite = GameManager.Instance.DeadBodyPrefab.bodyRenderers[0].sprite;
+                    player.Megaphone.transform.localScale = new(0.3f, 0.3f, 0.3f);
+                    player.Megaphone.transform.localPosition -= new Vector3(0.2f, 0, 0);
                 }
+
+                ReportedBodies.Add(player.TargetPlayerId);
             }
         }
     }

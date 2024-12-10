@@ -24,7 +24,11 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type, 
 
         Value = value;
         Property?.SetValue(null, value);
-        // OnChanged.Invoke(value);
+
+        if (!CustomPlayer.Local)
+            return;
+
+        // OnChanged(value);
 
         if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type is CustomOptionType.Header or CustomOptionType.Alignment))
             SendOptionRPC(this);

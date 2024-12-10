@@ -12,9 +12,9 @@ public static class VersionShowerPatch
 
         if (gameObject && !ModVersion)
         {
-            ModVersion = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
+            ModVersion = UObject.Instantiate(__instance.text, MainMenuPatches.Logo.transform);
             ModVersion.transform.localPosition = new(0, -2f, 0);
-            ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nBy <#C50000FF>AlchlcSystm</color></b></size>";
+            ModVersion.SetText($"<size=175%><b>{TownOfUsReworked.VersionFinal}\nBy <#C50000FF>AlchlcSystm</color></b></size>");
             ModVersion.alignment = TextAlignmentOptions.Center;
             ModVersion.fontStyle = FontStyles.Bold;
             ModVersion.font = GetFont("Placeholder");
@@ -26,29 +26,23 @@ public static class VersionShowerPatch
 [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
 public static class PingTracker_Update
 {
-    private static float DeltaTime;
+    private static GameObject PingLogo;
 
     public static bool Prefix(PingTracker __instance)
     {
         if (!__instance.text || !AmongUsClient.Instance)
             return true;
 
-        if (!__instance.GetComponentInChildren<SpriteRenderer>())
+        if (!PingLogo)
         {
-            var logo = new GameObject("PingLogo") { layer = 5 };
-            logo.AddComponent<SpriteRenderer>().sprite = GetSprite("SettingsButton");
-            logo.transform.SetParent(__instance.transform);
-            logo.transform.localPosition = new(-1f, -0.5f, -1f);
-            logo.transform.localScale *= 0.5f;
+            PingLogo = new GameObject("PingLogo") { layer = 5 };
+            PingLogo.AddComponent<SpriteRenderer>().sprite = GetSprite("SettingsButton");
+            PingLogo.transform.SetParent(__instance.transform);
+            PingLogo.transform.localPosition = new(-1f, -0.5f, -1f);
+            PingLogo.transform.localScale *= 0.5f;
         }
 
-        // try catch my beloved <3
-        try
-        {
-            DeltaTime += (Time.deltaTime - DeltaTime) * 0.1f;
-            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {Mathf.Round(1f / DeltaTime)}</size>";
-        } catch {}
-
+        __instance.text.SetText($"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {Mathf.Round(1f / Time.deltaTime)}</size>");
         return false;
     }
 }

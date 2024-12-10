@@ -93,7 +93,7 @@ public static class LayerExtentions
 
     public static bool IsResurrected(this PlayerControl player) => player.GetRole().IsResurrected;
 
-    public static bool IsConverted(this Role role) => role.IsRecruit || role.IsBitten || role.IsPersuaded || role.IsResurrected;
+    public static bool IsConverted(this Role role) => (role.IsRecruit || role.IsBitten || role.IsPersuaded || role.IsResurrected) && role is not Neophyte;
 
     public static bool Diseased(this PlayerControl player) => player.GetRole().Diseased;
 
@@ -311,12 +311,7 @@ public static class LayerExtentions
 
     public static bool IsCryoDoused(this PlayerVoteArea player) => PlayerByVoteArea(player).IsCryoDoused();
 
-    public static bool IsOnAlert(this PlayerControl player)
-    {
-        var vetFlag = PlayerLayer.GetLayers<Veteran>().Any(role => role.AlertButton.EffectActive && player == role.Player);
-        var retFlag = PlayerLayer.GetLayers<Retributionist>().Any(role => role.IsVet && role.AlertButton.EffectActive && player == role.Player);
-        return vetFlag || retFlag;
-    }
+    public static bool IsOnAlert(this PlayerControl player) => PlayerLayer.GetILayers<IAlerter>().Any(role => role.Player == player && role.AlertButton.EffectActive);
 
     public static bool IsVesting(this PlayerControl player) => PlayerLayer.GetLayers<Survivor>().Any(role => role.VestButton.EffectActive && player == role.Player);
 
@@ -1015,7 +1010,7 @@ public static class LayerExtentions
         Alignment.SyndicateHead => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Head</color>)</color>" : "Syndicate (Head)",
         Alignment.GameModeHideAndSeek => withColors ? "<#A81538FF>Game Mode (<#7500AFFF>Hide And Seek</color>)</color>" : "Game Mode (Hide And Seek)",
         Alignment.GameModeTaskRace => withColors ? "<#A81538FF>Game Mode (<#1E49CFFF>Task Race</color>)</color>" : "Game Mode (Task Race)",
-        _ => alignment.ToString()
+        _ => $"{alignment}"
     };
 
     public static string GameModeName(this GameMode mode, bool withColors = false) => mode switch
@@ -1237,7 +1232,9 @@ public static class LayerExtentions
 
     public static List<PlayerLayer> GetLayers(this PlayerVoteArea player) => PlayerByVoteArea(player).GetLayers();
 
-    public static T GetLayerFromList<T>(this PlayerControl player) where T : PlayerLayer => player.GetLayersFromList().Find(x => x is T) as T;
+    public static T GetLayerFromList<T>(this PlayerControl player) where T : PlayerLayer => PlayerLayer.GetLayers<T>().Find(x => x.Player == player);
+
+    public static T GetILayerFromList<T>(this PlayerControl player) where T : IPlayerLayer => PlayerLayer.GetILayers<T>().Find(x => x.Player == player);
 
     public static T GetLayer<T>(this PlayerControl player) where T : PlayerLayer
     {
@@ -1248,6 +1245,17 @@ public static class LayerExtentions
             return handler.GetLayer<T>();
 
         return player.GetLayerFromList<T>();
+    }
+
+    public static T GetILayer<T>(this PlayerControl player) where T : IPlayerLayer
+    {
+        if (!player || !player.Data)
+            return default;
+
+        if (player.Data.Role is LayerHandler handler)
+            return handler.GetILayer<T>();
+
+        return player.GetILayerFromList<T>();
     }
 
     public static Role GetRoleFromList(this PlayerControl player) => player.GetLayerFromList<Role>();
@@ -1308,4 +1316,6 @@ public static class LayerExtentions
     public static Ability GetAbility(this PlayerVoteArea area) => PlayerByVoteArea(area).GetAbility();
 
     public static bool TryGetLayer<T>(this PlayerControl player, out T layer) where T : PlayerLayer => layer = player.GetLayer<T>();
+
+    public static bool TryGetILayer<T>(this PlayerControl player, out T iLayer) where T : IPlayerLayer => (iLayer = player.GetILayer<T>()) != null;
 }

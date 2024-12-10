@@ -29,6 +29,10 @@ public abstract class Syndicate : Role
         return team;
     }
 
+    public virtual void OnDriveReceivedLocal() {}
+
+    public virtual void OnDriveReceived() {}
+
     public void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||

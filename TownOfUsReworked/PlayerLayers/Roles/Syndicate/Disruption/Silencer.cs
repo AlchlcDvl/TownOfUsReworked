@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Silencer : Syndicate
+public class Silencer : Syndicate, IIntimidator
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number SilenceCd { get; set; } = new(25);
@@ -16,8 +16,13 @@ public class Silencer : Syndicate
     public static bool SilenceRevealed { get; set; } = true;
 
     public CustomButton SilenceButton { get; set; }
-    public PlayerControl SilencedPlayer { get; set; }
     public bool ShookAlready { get; set; }
+    public PlayerControl Target { get; set; }
+    public PlayerControl SilencedPlayer
+    {
+        get => Target;
+        set => Target = value;
+    }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Silencer : CustomColorManager.Syndicate;
     public override string Name => "Silencer";

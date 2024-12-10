@@ -24,10 +24,10 @@ public class Bug : Range
 
         foreach (var player in closest)
         {
-            if (!Players.ContainsKey(player.PlayerId))
+            if (!Players.TryGetValue(player.PlayerId, out var time))
                 Players.Add(player.PlayerId, 0f);
 
-            Players[player.PlayerId] += Time.deltaTime;
+            Players[player.PlayerId] = time + Time.deltaTime;
 
             if (Players[player.PlayerId] >= Operative.MinAmountOfTimeInBug && player != Owner && !Results.ContainsKey(player.PlayerId))
             {

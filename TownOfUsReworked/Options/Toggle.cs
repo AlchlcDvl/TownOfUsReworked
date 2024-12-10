@@ -10,7 +10,7 @@ public class ToggleOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
     {
         base.OptionCreated();
         var toggle = Setting.Cast<ToggleOption>();
-        toggle.TitleText.text = TranslationManager.Translate(ID);
+        toggle.TitleText.SetText(TranslationManager.Translate(ID));
 
         if (!AmongUsClient.Instance.AmHost && !ClientOnly)
         {
@@ -38,7 +38,7 @@ public class ToggleOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
     public override void ViewUpdate()
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = "";
+        viewSettingsInfoPanel.settingText.SetText("");
         viewSettingsInfoPanel.checkMark.gameObject.SetActive(Get());
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Get());
     }

@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Cosmetics.CustomNameplates;
+namespace TownOfUsReworked.Cosmetics;
 
 public static class CustomNameplateManager
 {

@@ -24,7 +24,7 @@ public class CustomPlayer
         AllCustomPlayers.Add(this);
     }
 
-    public static implicit operator bool(CustomPlayer exists) => exists != null && exists.Player;
+    public static implicit operator bool(CustomPlayer exists) => exists?.Player;
 
     public static implicit operator PlayerControl(CustomPlayer exists) => exists.Player;
 

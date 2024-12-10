@@ -338,4 +338,40 @@ public static class References
         { LayerEnum.Reanimated, new(null, CustomColorManager.Reanimated, "Reanimated") },
         { LayerEnum.Undead, new(null, CustomColorManager.Undead, "Undead") }
     };
+    public static readonly string[] Splashes =
+    [
+        "Oh boy, here I go killing again",
+        "Screwed up since 2069",
+        "We were bad, but now we're good",
+        "Count the bodies",
+        "I need my knife, where is it?",
+        "You son of a trash can, I'm in",
+        "real",
+        "bous",
+        "My life be like",
+        "Man I'm ded",
+        "gaming",
+        "WHO LET BRO COOK?",
+        "",
+        "Let me introduce you to our sponsor, Raid-",
+        "Push to production is my motto. Bugs? meh public release go brrrr",
+        "It's not a bug, it's a feature",
+        "My life like a movie",
+        "real",
+        "WHERE AM I?!",
+        "OOOOO a nice view :)",
+        "What dis",
+        "O_O",
+        "o_O",
+        "O_o",
+        "o_o",
+        "._o",
+        "o_.",
+        "._.",
+        "._O",
+        "O_.",
+        "ehehehehehehehehe",
+        "Think fast chuckle nuts",
+        "LET. HIM. COOK."
+    ];
 }

@@ -1,5 +1,25 @@
 namespace TownOfUsReworked.Patches;
 
+[HarmonyPatch]
+public static class BlockPatches
+{
+    [HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
+    [HarmonyPatch(typeof(PetButton), nameof(PetButton.DoClick))]
+    [HarmonyPatch(typeof(AdminButton), nameof(AdminButton.DoClick))]
+    public static bool Prefix()
+    {
+        if (NoPlayers() || IsLobby())
+            return true;
+
+        var blocked = LocalNotBlocked();
+
+        if (!blocked)
+            Blocked.BlockExposed = true;
+
+        return blocked;
+    }
+}
+
 [HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
 public static class PerformVent
 {
@@ -46,63 +66,6 @@ public static class PerformReport
     public static void Postfix() => ReportPressed = false;
 }
 
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportClosest))]
-public static class ReportClosest
-{
-    public static bool Prefix()
-    {
-        if (NoPlayers() || IsLobby())
-            return true;
-
-        if (CustomPlayer.Local.Is(LayerEnum.Coward))
-            return false;
-
-        var blocked = LocalNotBlocked();
-
-        if (!blocked)
-            Blocked.BlockExposed = true;
-
-        return blocked;
-    }
-}
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
-public static class ReportDeadBody
-{
-    public static bool Prefix()
-    {
-        if (NoPlayers() || IsLobby())
-            return true;
-
-        if (CustomPlayer.Local.Is(LayerEnum.Coward))
-            return false;
-
-        var blocked = LocalNotBlocked();
-
-        if (!blocked)
-            Blocked.BlockExposed = true;
-
-        return blocked;
-    }
-}
-
-[HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
-public static class PerformUse
-{
-    public static bool Prefix()
-    {
-        if (NoPlayers() || IsLobby())
-            return true;
-
-        var blocked = LocalNotBlocked();
-
-        if (!blocked)
-            Blocked.BlockExposed = true;
-
-        return blocked;
-    }
-}
-
 [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.DoClick))]
 public static class PerformSabotage
 {
@@ -116,44 +79,13 @@ public static class PerformSabotage
         if (!blocked)
             Blocked.BlockExposed = true;
 
-        if (blocked && CustomPlayer.Local.CanSabotage() && !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled())
+        if (!CustomPlayer.Local.CanSabotage())
+            return false;
+
+        if (blocked && !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled())
             HUD().ToggleMapVisible(new() { Mode = MapOptions.Modes.Sabotage });
 
         return false;
-    }
-}
-
-[HarmonyPatch(typeof(AdminButton), nameof(AdminButton.DoClick))]
-public static class PerformAdmin
-{
-    public static bool Prefix()
-    {
-        if (NoPlayers() || IsLobby())
-            return true;
-
-        var blocked = LocalNotBlocked();
-
-        if (!blocked)
-            Blocked.BlockExposed = true;
-
-        return blocked;
-    }
-}
-
-[HarmonyPatch(typeof(PetButton), nameof(PetButton.DoClick))]
-public static class PerformPet
-{
-    public static bool Prefix()
-    {
-        if (NoPlayers() || IsLobby())
-            return true;
-
-        var blocked = LocalNotBlocked();
-
-        if (!blocked)
-            Blocked.BlockExposed = true;
-
-        return blocked; // No petting for you lmao
     }
 }
 
@@ -293,7 +225,7 @@ public static class Blocked
         else
             __instance.ImpostorVentButton.SetEnabled();
 
-        __instance.ImpostorVentButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "VENT";
+        __instance.ImpostorVentButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "VENT");
         __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
         var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: GameSettings.ReportDistance);
 
@@ -302,28 +234,28 @@ public static class Blocked
         else
             __instance.ReportButton.SetEnabled();
 
-        __instance.ReportButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "REPORT";
+        __instance.ReportButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "REPORT");
 
         if (CustomPlayer.Local.closest == null || BlockIsExposed())
             __instance.UseButton.SetDisabled();
         else
             __instance.UseButton.SetEnabled();
 
-        __instance.UseButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "USE";
+        __instance.UseButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "USE");
 
         if (BlockIsExposed() || CustomPlayer.Local.CannotUse())
             __instance.PetButton.SetDisabled();
         else
             __instance.PetButton.SetEnabled();
 
-        __instance.PetButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "PET";
+        __instance.PetButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "PET");
 
         if (CustomPlayer.Local.CannotUse() || !CustomPlayer.Local.CanSabotage())
             __instance.SabotageButton.SetDisabled();
         else
             __instance.SabotageButton.SetEnabled();
 
-        __instance.SabotageButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "SABOTAGE";
+        __instance.SabotageButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "SABOTAGE");
         __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
 
         if (!IsInGame() || IsLobby())

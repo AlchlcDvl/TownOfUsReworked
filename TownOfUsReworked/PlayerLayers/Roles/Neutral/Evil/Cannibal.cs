@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Cannibal : Neutral
+public class Cannibal : Evil
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number EatCd { get; set; } = new(25);
@@ -31,11 +31,12 @@ public class Cannibal : Neutral
     public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their "
         + "body" : "");
+    public override bool HasWon => EatWin;
+    public override WinLose EndState => WinLose.CannibalWins;
 
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = [];
         EatNeed = Math.Min(BodiesNeeded, AllPlayers().Count / 2);
@@ -73,10 +74,10 @@ public class Cannibal : Neutral
 
             foreach (var body in validBodies)
             {
-                if (!BodyArrows.ContainsKey(body.ParentId))
-                    BodyArrows.Add(body.ParentId, new(Player, Color));
-
-                BodyArrows[body.ParentId]?.Update(body.TruePosition);
+                if (BodyArrows.TryGetValue(body.ParentId, out var arrow))
+                    arrow.Update(body.TruePosition);
+                else
+                    BodyArrows[body.ParentId] = new(Player, Color);
             }
         }
         else if (BodyArrows.Count != 0)

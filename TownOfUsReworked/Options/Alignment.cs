@@ -21,7 +21,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
     {
         base.OptionCreated();
         var header = Setting.Cast<CategoryHeaderMasked>();
-        header.Title.text = $"<b>{TranslationManager.Translate(ID)}</b>";
+        header.Title.SetText($"<b>{TranslationManager.Translate(ID)}</b>");
 
         var quota = header.transform.GetChild(2);
 
@@ -43,7 +43,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
         var collapse = header.transform.FindChild("Collapse");
         collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
         ButtonText = collapse.GetComponentInChildren<TextMeshPro>();
-        ButtonText.text = Get() ? "-" : "+";
+        ButtonText.SetText(Get() ? "-" : "+");
 
         var color = Alignment switch
         {
@@ -82,7 +82,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
     {
         base.ViewOptionCreated();
         Button = ViewSetting.transform.Find("TitleButton").GetComponent<PassiveButton>();
-        Button.buttonText.text = $"<b>{TranslationManager.Translate(ID)}</b>";
+        Button.buttonText.SetText($"<b>{TranslationManager.Translate(ID)}</b>");
         Button.OverrideOnClickListeners(Toggle);
         Button.SelectButton(Value);
 
@@ -97,7 +97,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
 
         if (Setting)
         {
-            ButtonText.text = Value ? "-" : "+";
+            ButtonText.SetText(Value ? "-" : "+");
             SettingsPatches.OnValueChanged();
         }
 

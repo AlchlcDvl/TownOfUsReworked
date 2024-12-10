@@ -42,25 +42,57 @@ public abstract class Role : PlayerLayer
 
     public static bool RoleWins => WinState is WinLose.SerialKillerWins or WinLose.ArsonistWins or WinLose.CryomaniacWins or WinLose.MurdererWins or WinLose.BetrayerWins or
         WinLose.PhantomWins or WinLose.WerewolfWins or WinLose.ActorWins or WinLose.BountyHunterWins or WinLose.CannibalWins or WinLose.TrollWins or WinLose.ExecutionerWins or
-        WinLose.GuesserWins or WinLose.JesterWins or WinLose.TaskRunnerWins or WinLose.HuntedWins or WinLose.HunterWins;
+        WinLose.GuesserWins or WinLose.JesterWins or WinLose.TaskRunnerWins or WinLose.HuntedWin or WinLose.HunterWins;
 
     public static bool FactionWins => WinState is WinLose.CrewWins or WinLose.IntrudersWin or WinLose.SyndicateWins or WinLose.AllNeutralsWin;
 
     public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.SectWins or WinLose.UndeadWins;
 
     public static bool SyndicateHasChaosDrive { get; set; }
-    public static PlayerControl DriveHolder { get; set; }
 
-    public Faction Faction { get; set; } = Faction.None;
-    public Alignment Alignment { get; set; } = Alignment.None;
-    public SubFaction SubFaction { get; set; } = SubFaction.None;
+    private static PlayerControl _driveHolder;
+    public static PlayerControl DriveHolder
+    {
+        get => _driveHolder;
+        set
+        {
+            _driveHolder = value;
+
+            if (!value)
+                return;
+
+            var syndicateRole = value.GetLayer<Syndicate>();
+
+            if (!syndicateRole)
+                return;
+
+            syndicateRole.OnDriveReceived();
+
+            if (value.AmOwner)
+                syndicateRole.OnDriveReceivedLocal();
+        }
+    }
+
+    public Alignment Alignment { get; set; }
+    public SubFaction SubFaction { get; set; }
     public List<Role> RoleHistory { get; set; }
-    public ChatChannel CurrentChannel { get; set; } = ChatChannel.All;
+    public ChatChannel CurrentChannel { get; set; }
     public Dictionary<byte, CustomArrow> AllArrows { get; set; }
     public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
     public Dictionary<PointInTime, DateTime> Positions { get; set; }
     public Dictionary<byte, CustomArrow> YellerArrows { get; set; }
     public LayerEnum LinkedDisposition { get; set; }
+
+    private Faction _faction;
+    public Faction Faction
+    {
+        get => _faction;
+        set
+        {
+            _faction = value;
+            Alignment = Alignment.GetNewAlignment(value);
+        }
+    }
 
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
     public string SubFactionColorString => $"<#{SubFactionColor.ToHtmlStringRGBA()}>";
@@ -140,6 +172,10 @@ public abstract class Role : PlayerLayer
 
     public override void Init()
     {
+        Faction = Faction.None;
+        SubFaction = SubFaction.None;
+        CurrentChannel = ChatChannel.All;
+
         RoleHistory = [];
         AllArrows = [];
         DeadArrows = [];
@@ -207,10 +243,10 @@ public abstract class Role : PlayerLayer
             {
                 if (!yeller.Dead)
                 {
-                    if (!YellerArrows.ContainsKey(yeller.PlayerId))
-                        YellerArrows.Add(yeller.PlayerId, new(Player, CustomColorManager.Yeller));
+                    if (YellerArrows.TryGetValue(yeller.PlayerId, out var arrow))
+                        arrow.Update(yeller.Player.transform.position, CustomColorManager.Yeller);
                     else
-                        YellerArrows[yeller.PlayerId].Update(yeller.Player.transform.position, CustomColorManager.Yeller);
+                        YellerArrows.Add(yeller.PlayerId, new(Player, CustomColorManager.Yeller));
                 }
                 else
                     DestroyArrowY(yeller.PlayerId);
@@ -431,105 +467,43 @@ public abstract class Role : PlayerLayer
 
         Flash(role.Color);
         BreakShield(player, true);
+        GetILayers<ITrapper>().ForEach(x => x.Trapped.Remove(player.PlayerId));
     }
 
     public static void BreakShield(PlayerControl player, bool flag)
     {
-        foreach (var role2 in GetLayers<Retributionist>())
+        foreach (var role2 in GetILayers<IShielder>())
         {
-            if (!role2.IsMedic || !role2.ShieldedPlayer)
+            if (role2.ShieldedPlayer != player)
                 continue;
 
-            if (role2.ShieldedPlayer == player && ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (player.AmOwner && (int)Medic.WhoGetsNotification is 1 or 2)))
+            if ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (player.AmOwner && (int)Medic.WhoGetsNotification is 1 or 2))
             {
-                var roleEffectAnimation = UObject.Instantiate(RoleManager.Instance.protectAnim, player.gameObject.transform);
+                var roleEffectAnimation = UObject.Instantiate(GetRoleAnim("ProtectAnim"), player.gameObject.transform);
                 roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
                 roleEffectAnimation.Play(player, null, player.cosmetics.FlipX, RoleEffectAnimation.SoundType.Local);
                 Flash(role2.Color);
             }
-        }
 
-        foreach (var role2 in GetLayers<Medic>())
-        {
-            if (!role2.ShieldedPlayer)
+            if (!flag)
                 continue;
 
-            if (role2.ShieldedPlayer == player && ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (player.AmOwner &&
-                (int)Medic.WhoGetsNotification is 1 or 2)))
-            {
-                var roleEffectAnimation = UObject.Instantiate(RoleManager.Instance.protectAnim, player.gameObject.transform);
-                roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
-                roleEffectAnimation.Play(player, null, player.cosmetics.FlipX, RoleEffectAnimation.SoundType.Local);
-                Flash(role2.Color);
-            }
-        }
+            role2.ShieldedPlayer = null;
+            role2.ShieldBroken = true;
 
-        if (!flag)
-            return;
-
-        foreach (var role2 in GetLayers<Retributionist>())
-        {
-            if (!role2.IsMedic || !role2.ShieldedPlayer)
-                continue;
-
-            if (role2.ShieldedPlayer == player)
-            {
-                role2.ShieldedPlayer = null;
-                role2.ShieldBroken = true;
-
-                if (TownOfUsReworked.IsTest)
-                    Message(player.name + " Is Ex-Shielded");
-            }
-        }
-
-        foreach (var role2 in GetLayers<Medic>())
-        {
-            if (!role2.ShieldedPlayer)
-                continue;
-
-            if (role2.ShieldedPlayer == player)
-            {
-                role2.ShieldedPlayer = null;
-                role2.ShieldBroken = true;
-
-                if (TownOfUsReworked.IsTest)
-                    Message(player.name + " Is Ex-Shielded");
-            }
+            if (TownOfUsReworked.IsTest)
+                Message(player.Data.PlayerName + " Is Now Ex-Shielded");
         }
     }
 
     public static void BastionBomb(Vent vent, bool flag)
     {
-        foreach (var role2 in GetLayers<Bastion>())
+        foreach (var role2 in GetILayers<IVentBomber>())
         {
             if (role2.BombedIDs.Contains(vent.Id) && role2.Local)
                 Flash(role2.Color);
-        }
 
-        foreach (var role2 in GetLayers<Retributionist>())
-        {
-            if (!role2.IsBast)
-                continue;
-
-            if (role2.BombedIDs.Contains(vent.Id) && role2.Local)
-                Flash(role2.Color);
-        }
-
-        if (!flag)
-            return;
-
-        foreach (var role2 in GetLayers<Bastion>())
-        {
-            if (role2.BombedIDs.Contains(vent.Id))
-                role2.BombedIDs.Remove(vent.Id);
-        }
-
-        foreach (var role2 in GetLayers<Retributionist>())
-        {
-            if (!role2.IsBast)
-                continue;
-
-            if (role2.BombedIDs.Contains(vent.Id))
+            if (flag)
                 role2.BombedIDs.Remove(vent.Id);
         }
     }

@@ -1,12 +1,13 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-public static class MeetingHudStart
+[HarmonyPatch(typeof(MeetingHud))]
+public static class TalkingPatches
 {
     private static bool BeingBlackmailed;
     private static bool BeingSilenced;
 
-    public static void Postfix()
+    [HarmonyPatch(nameof(MeetingHud.Start)), HarmonyPostfix]
+    public static void StartPostfix()
     {
         BeingBlackmailed = CustomPlayer.Local.IsBlackmailed() && !CustomPlayer.LocalCustom.Dead;
         BeingSilenced = CustomPlayer.Local.IsSilenced() && !CustomPlayer.LocalCustom.Dead;
@@ -23,7 +24,7 @@ public static class MeetingHudStart
         var TempPosition = HUD().shhhEmblem.transform.localPosition;
         var TempDuration = HUD().shhhEmblem.HoldDuration;
         HUD().shhhEmblem.transform.localPosition += new Vector3(0f, 0f, 1f);
-        HUD().shhhEmblem.TextImage.text = status;
+        HUD().shhhEmblem.TextImage.SetText(status);
         HUD().shhhEmblem.HoldDuration = 2.5f;
         yield return HUD().ShowEmblem(true);
         HUD().shhhEmblem.transform.localPosition = TempPosition;
@@ -33,15 +34,12 @@ public static class MeetingHudStart
         BeingSilenced = false;
         yield break;
     }
-}
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-public static class MeetingHudUpdatePatch
-{
     public static Sprite CachedOverlay;
     public static UColor? CachedColor;
 
-    public static void Postfix(MeetingHud __instance)
+    [HarmonyPatch(nameof(MeetingHud.Update)), HarmonyPostfix]
+    public static void UpdatePostfix(MeetingHud __instance)
     {
         if (__instance.state == MeetingHud.VoteStates.Animating)
             return;

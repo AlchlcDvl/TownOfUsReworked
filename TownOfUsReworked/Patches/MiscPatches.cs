@@ -5,16 +5,67 @@ using Discord;
 
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
-public static class MapBehaviourPatch
+[HarmonyPatch(typeof(MapBehaviour))]
+public static class MapBehaviourPatches
 {
-    public static void Postfix(MapBehaviour __instance)
+    [HarmonyPatch(nameof(MapBehaviour.FixedUpdate)), HarmonyPostfix]
+    public static void FixedUpdatePostfix(MapBehaviour __instance)
     {
         PlayerLayer.LocalLayers().ForEach(x => x.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x.UpdateArrowBlip(__instance));
 
         if (LocalBlocked())
             __instance.Close();
+    }
+
+    [HarmonyPatch(nameof(MapBehaviour.Show))]
+    public static bool Prefix(MapBehaviour __instance, MapOptions opts)
+    {
+        if (ClientHandler.Instance.SettingsActive)
+            return false;
+
+        ClientHandler.Instance.CloseMenus(SkipEnum.Map);
+
+        if (PlayerLayer.LocalLayers().All(x => x.IsBlocked))
+            return false;
+
+        var notmodified = true;
+
+        if (opts.Mode is not (MapOptions.Modes.None or MapOptions.Modes.CountOverlay))
+        {
+            if (CustomPlayer.Local.CanSabotage() && !AllPlayers().Any(x => x.IsFlashed()))
+                __instance.ShowSabotageMap();
+            else
+                __instance.ShowNormalMap();
+
+            __instance.taskOverlay.gameObject.SetActive(CustomPlayer.Local.CanDoTasks() && !IsTaskRace() && !IsCustomHnS());
+            notmodified = false;
+        }
+
+        PlayerLayer.LocalLayers().ForEach(x => x?.UpdateMap(__instance));
+        CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
+        CustomPlayer.Local.DisableButtons();
+        return notmodified;
+    }
+
+
+    [HarmonyPatch(nameof(MapBehaviour.Show)), HarmonyPostfix]
+    public static void ShowPostfix() => MapActive = true;
+
+    public static bool MapActive;
+
+    [HarmonyPatch(nameof(MapBehaviour.Close)), HarmonyPostfix]
+    public static void ClosePostfix()
+    {
+        MapActive = false;
+        CustomPlayer.Local.EnableButtons();
+    }
+
+    [HarmonyPatch(nameof(MapBehaviour.Awake)), HarmonyPostfix]
+    public static void AwakePostfix(MapBehaviour __instance)
+    {
+        PlayerLayer.LocalLayers().ForEach(x => x.UpdateMap(__instance));
+        CustomArrow.AllArrows.ForEach(x => x.UpdateArrowBlip(__instance));
     }
 }
 
@@ -47,7 +98,7 @@ public static class PooledMapIconPatch
         }
 
         text.transform.localPosition = new(0, 0, -20);
-        text.text = "";
+        text.SetText("");
         text.gameObject.SetActive(false);
     }
 }
@@ -58,21 +109,12 @@ public static class AmBanned
     public static void Postfix(out bool __result) => __result = false;
 }
 
-[HarmonyPatch(typeof(PlayerData), nameof(PlayerData.FileName), MethodType.Getter)]
+[HarmonyPatch]
 public static class PlayerDataPatch
 {
-    public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : "");
-}
-
-[HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
-public static class LegacySaveManagerPatch
-{
-    public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : "");
-}
-
-[HarmonyPatch(typeof(SettingsData), nameof(SettingsData.FileName), MethodType.Getter)]
-public static class SettingsDataPatch
-{
+    [HarmonyPatch(typeof(PlayerData), nameof(PlayerData.FileName), MethodType.Getter)]
+    [HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
+    [HarmonyPatch(typeof(SettingsData), nameof(SettingsData.FileName), MethodType.Getter)]
     public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : "");
 }
 
@@ -80,53 +122,6 @@ public static class SettingsDataPatch
 public static class SecurityLoggerPatch
 {
     public static void Postfix(SecurityLogger __instance) => __instance.Timers = new float[127];
-}
-
-[HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
-public static class OpenMapMenuPatch
-{
-    public static bool Prefix(MapBehaviour __instance, MapOptions opts)
-    {
-        if (ClientHandler.Instance.SettingsActive)
-            return false;
-
-        ClientHandler.Instance.CloseMenus(SkipEnum.Map);
-
-        if (PlayerLayer.LocalLayers().All(x => x.IsBlocked))
-            return false;
-
-        var notmodified = true;
-
-        if (opts.Mode is not (MapOptions.Modes.None or MapOptions.Modes.CountOverlay))
-        {
-            if (CustomPlayer.Local.CanSabotage() && !AllPlayers().Any(x => x.IsFlashed()))
-                __instance.ShowSabotageMap();
-            else
-                __instance.ShowNormalMap();
-
-            __instance.taskOverlay.gameObject.SetActive(CustomPlayer.Local.CanDoTasks() && !IsTaskRace() && !IsCustomHnS());
-            notmodified = false;
-        }
-
-        PlayerLayer.LocalLayers().ForEach(x => x?.UpdateMap(__instance));
-        CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
-        CustomPlayer.Local.DisableButtons();
-        return notmodified;
-    }
-
-    public static void Postfix() => MapPatch.MapActive = true;
-}
-
-[HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Close))]
-public static class MapPatch
-{
-    public static bool MapActive;
-
-    public static void Postfix()
-    {
-        MapActive = false;
-        CustomPlayer.Local.EnableButtons();
-    }
 }
 
 [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
@@ -153,17 +148,6 @@ public static class DisconnectHandler
     }
 }
 
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CanMove), MethodType.Getter)]
-public static class CanMove
-{
-    public static bool Prefix(PlayerControl __instance, ref bool __result)
-    {
-        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen && !Meeting() &&
-            !HUD().GameMenu.IsOpen)) && (!Map() || !Map().IsOpenStopped) && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
-        return false;
-    }
-}
-
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
 public static class HandleAnimation
 {
@@ -171,23 +155,6 @@ public static class HandleAnimation
     {
         if (__instance.myPlayer.IsPostmortal())
             amDead = __instance.myPlayer.Caught();
-    }
-}
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Visible), MethodType.Setter)]
-public static class VisibleOverride
-{
-    public static void Prefix(PlayerControl __instance, ref bool value)
-    {
-        if (__instance.IsPostmortal() && !__instance.Caught())
-            value = !__instance.inVent;
-        else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && !__instance.AmOwner)
-            value = !ClientOptions.HideOtherGhosts;
-        else if (((CustomPlayer.Local.TryGetLayer<Medium>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId)) || (CustomPlayer.Local.TryGetLayer<Retributionist>(out var ret) &&
-            ret.MediatedPlayers.Contains(__instance.PlayerId))) && !__instance.AmOwner)
-        {
-            value = true;
-        }
     }
 }
 
@@ -256,7 +223,7 @@ public static class ExitGamePatch
         }
 
         SaveText($"{filePath.SanitisePath()}.log", SavedLogs, TownOfUsReworked.Logs);
-        OptionAttribute.SaveSettings("Last Used");
+        OptionAttribute.SaveSettings("LastUsed");
     }
 }
 
@@ -293,22 +260,6 @@ public static class OverlayKillAnimationPatch
     }
 
     public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType = (PlayerOutfitType)OutfitTypeCache;
-}
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
-public static class AddCustomPlayerPatch
-{
-    public static void Postfix(PlayerControl __instance)
-    {
-        __instance.AddComponent<PlayerControlHandler>();
-        AddAsset("Kill", __instance.KillSfx);
-    }
-}
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.OnDestroy))]
-public static class RemoveCustomPlayerPatch
-{
-    public static void Prefix(PlayerControl __instance) => CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == __instance || !x.Player);
 }
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -381,8 +332,8 @@ public static class EmergencyMinigameUpdatePatch
                 "GameMode" => "Don't call meetings",
                 _ => $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
             };
-            __instance.StatusText.text = title;
-            __instance.NumberText.text = string.Empty;
+            __instance.StatusText.SetText(title);
+            __instance.NumberText.SetText("");
             __instance.ClosedLid.gameObject.SetActive(true);
             __instance.OpenLid.gameObject.SetActive(false);
             __instance.ButtonActive = false;
@@ -421,7 +372,7 @@ public static class DeathPopUpPatch
     public static void Prefix(HideAndSeekDeathPopup __instance)
     {
         if (IsCustomHnS())
-            Coroutines.Start(PerformTimedAction(0.01f, _ => __instance.text.text = $"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}"));
+            Coroutines.Start(PerformTimedAction(0.01f, _ => __instance.text.SetText($"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}")));
     }
 }
 
@@ -444,27 +395,11 @@ public static class FixLogSpam
     }
 }
 
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetKinematic))]
-public static class LadderFix
-{
-    public static bool Prefix(PlayerControl __instance, bool b)
-    {
-        if (!__instance.AmOwner || !__instance.onLadder || b || __instance.GetModifier() is not (Giant or Dwarf) || MapPatches.CurrentMap is not (5 or 4))
-            return true;
-
-        var ladder = UObject.FindObjectsOfType<Ladder>().OrderBy(x => Vector3.Distance(x.transform.position, __instance.transform.position)).ElementAt(0);
-
-        if (!ladder.IsTop)
-            return true; // Are we at the bottom?
-
-        __instance.RpcCustomSnapTo(__instance.transform.position + new Vector3(0, 0.5f, 0f));
-        return true;
-    }
-}
-
-[HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
+[HarmonyPatch]
 public static class RefreshPatch
 {
+    [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
+    [HarmonyPatch(typeof(GameData), nameof(GameData.DirtyAllData))]
     public static bool Prefix() => false;
 }
 
@@ -552,31 +487,6 @@ public static class WaitForFinishPatch
     }
 }
 
-// Brought this back because the logs are being spammed....again
-[HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
-public static class BegoneModstamp
-{
-    public static bool Prefix(ModManager __instance)
-    {
-        try
-        {
-            // try catch my beloved <3
-            __instance.localCamera = !HudManager.InstanceExists ? Camera.main : HUD().GetComponentInChildren<Camera>();
-            __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
-                __instance.localCamera.nearClipPlane));
-            __instance.ModStamp.gameObject.SetActive(IsEnded() || NoLobby() || IsLobby());
-        } catch {}
-
-        return false;
-    }
-}
-
-[HarmonyPatch(typeof(GameData), nameof(GameData.DirtyAllData))]
-public static class DirtyAllDataPatch
-{
-    public static bool Prefix() => false;
-}
-
 [HarmonyPatch(typeof(KillOverlay), nameof(KillOverlay.ShowKillAnimation), typeof(NetworkedPlayerInfo), typeof(NetworkedPlayerInfo))]
 public static class OverrideFlameColorPatch
 {
@@ -637,8 +547,8 @@ public static class FixNullRef
         else
             writer.Write(0);
 
-        writer.Write(__instance.FriendCode ?? string.Empty);
-        writer.Write(__instance.Puid ?? string.Empty);
+        writer.Write(__instance.FriendCode ?? "");
+        writer.Write(__instance.Puid ?? "");
 
         if (!initialState)
             __instance.ClearDirtyBits();
@@ -691,10 +601,10 @@ public static class HostInfoPanelPatch
         }
 
         var text = ColorUtility.ToHtmlStringRGB(__instance.player.ColorId.GetColor(false));
-        __instance.hostLabel.text = TranslationController.Instance.GetString(StringNames.HostNounLabel);
-        __instance.playerName.text = $"{(string.IsNullOrEmpty(host.PlayerName) ? "..." : $"<#{text}>{host.PlayerName}</color>")} " + (AmongUsClient.Instance.AmHost ?
+        __instance.hostLabel.SetText(TranslationController.Instance.GetString(StringNames.HostNounLabel));
+        __instance.playerName.SetText($"{(string.IsNullOrEmpty(host.PlayerName) ? "..." : $"<#{text}>{host.PlayerName}</color>")} " + (AmongUsClient.Instance.AmHost ?
             $"<size=90%><b><font=\"Barlow-BoldItalic SDF\" material=\"Barlow-BoldItalic SDF Outline\">{TranslationController.Instance.GetString(StringNames.HostYouLabel)}" :
-            $"({__instance.player.ColorBlindName})");
+            $"({__instance.player.ColorBlindName})"));
         var x = __instance.playerName.GetRenderedValues().x;
         var num = __instance.hostWidth + 0.48f;
         __instance.content.transform.localPosition = new((-0.43f + num) / 2f, __instance.content.transform.localPosition.y, __instance.content.transform.localPosition.z);
@@ -710,6 +620,12 @@ public static class HostInfoPanelPatch
 public static class HudStartPatch
 {
     public static void Postfix(HudManager __instance) => ClientHandler.Instance.OnHudStart(__instance);
+}
+
+[HarmonyPatch(typeof(KillAnimation), nameof(KillAnimation.CoPerformKill))]
+public static class AddBodyHandler
+{
+    public static void Postfix(PlayerControl target) => BodyByPlayer(target).AddComponent<DeadBodyHandler>();
 }
 
 /*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]

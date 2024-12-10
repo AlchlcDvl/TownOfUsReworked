@@ -18,6 +18,7 @@ New!
 
 Changes!
 - Recode: Custom colors have been recoded to be more efficient
+- Recode: Redone game patches and their organisation
 - Rework: Dictator no longer ejects 3 players at a time, instead they pick a singular player to eject and instead has gained ability charges to compensate
 - Change: Actors will now prioritise turning into a dead target role
 - Change: Arsonists when igniting will remove the coolant off those doused by a Cryomaniac

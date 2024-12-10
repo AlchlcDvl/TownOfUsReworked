@@ -1,8 +1,9 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
-public static class VentCanUsePatch
+[HarmonyPatch(typeof(Vent))]
+public static class VentPatches
 {
+    [HarmonyPatch(nameof(Vent.CanUse))]
     public static void Postfix(Vent __instance, NetworkedPlayerInfo pc, bool canUse, bool couldUse, float __result)
     {
         var num = float.MaxValue;
@@ -33,11 +34,8 @@ public static class VentCanUsePatch
 
         __result = num;
     }
-}
 
-[HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
-public static class EnterVentPatch
-{
+    [HarmonyPatch(nameof(Vent.SetButtons))]
     public static bool Prefix(Vent __instance, bool enabled)
     {
         var player = CustomPlayer.Local;
@@ -108,13 +106,10 @@ public static class EnterVentPatch
 
         return false;
     }
-}
 
-// Vent and kill shit
-// Yes thank you Discussions - AD
-[HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
-public static class SetVentOutlinePatch
-{
+    // Vent and kill shit
+    // Yes thank you Discussions - AD
+    [HarmonyPatch(nameof(Vent.SetOutline))]
     public static void Postfix(Vent __instance, bool mainTarget)
     {
         var active = CustomPlayer.Local && !Meeting() && CustomPlayer.Local.CanVent();
@@ -125,12 +120,9 @@ public static class SetVentOutlinePatch
         __instance.myRend.material.SetColor("_OutlineColor", Role.LocalRole.Color);
         __instance.myRend.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
     }
-}
 
-[HarmonyPatch(typeof(Vent), nameof(Vent.Use))]
-public static class UseVent
-{
-    public static bool Prefix(Vent __instance)
+    [HarmonyPatch(nameof(Vent.Use)), HarmonyPrefix]
+    public static bool UsePrefix(Vent __instance)
     {
         if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
             return false;
@@ -145,12 +137,9 @@ public static class UseVent
 
         return true;
     }
-}
 
-[HarmonyPatch(typeof(Vent), nameof(Vent.TryMoveToVent))]
-public static class MoveToVentPatch
-{
-    public static bool Prefix(Vent otherVent)
+    [HarmonyPatch(nameof(Vent.TryMoveToVent)), HarmonyPrefix]
+    public static bool TryMoveToVentPrefix(Vent otherVent)
     {
         if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
             return false;
@@ -165,24 +154,13 @@ public static class MoveToVentPatch
 
         return true;
     }
-}
 
-[HarmonyPatch(typeof(Vent), nameof(Vent.UpdateArrows))]
-public static class FixdlekSVents1
-{
+    [HarmonyPatch(nameof(Vent.UpdateArrows))]
+    [HarmonyPatch(nameof(Vent.ToggleNeighborVentBeingCleaned))]
     public static bool Prefix() => MapPatches.CurrentMap != 3;
-}
 
-[HarmonyPatch(typeof(Vent), nameof(Vent.ToggleNeighborVentBeingCleaned))]
-public static class FixdlekSVents2
-{
-    public static bool Prefix() => MapPatches.CurrentMap != 3;
-}
-
-[HarmonyPatch(typeof(Vent), nameof(Vent.EnterVent))]
-public static class HideVentAnims1
-{
-    public static bool Prefix(Vent __instance, PlayerControl pc)
+    [HarmonyPatch(nameof(Vent.EnterVent)), HarmonyPrefix]
+    public static bool EnterVentPrefix(Vent __instance, PlayerControl pc)
     {
         if (!__instance.ExitVentAnim || !GameModifiers.HideVentAnims)
             return true;
@@ -192,12 +170,9 @@ public static class HideVentAnims1
         return vector.magnitude < CustomPlayer.Local.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude,
             Constants.ShipAndObjectsMask);
     }
-}
 
-[HarmonyPatch(typeof(Vent), nameof(Vent.ExitVent))]
-public static class HideVentAnims2
-{
-    public static bool Prefix(Vent __instance, PlayerControl pc)
+    [HarmonyPatch(nameof(Vent.ExitVent)), HarmonyPrefix]
+    public static bool ExitVentPrefix(Vent __instance, PlayerControl pc)
     {
         if (!__instance.ExitVentAnim || !GameModifiers.HideVentAnims)
             return true;

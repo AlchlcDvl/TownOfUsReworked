@@ -116,7 +116,7 @@ public class Thief : Neutral
         else
         {
             var layerflag = player.GetLayers().Any(x => x.Type == guess);
-            var subfactionflag = player.GetSubFaction().ToString() == guess.ToString();
+            var subfactionflag = $"{player.GetSubFaction()}" == $"{guess}";
 
             var flag = layerflag || subfactionflag;
             var toDie = flag ? player : Player;

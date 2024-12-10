@@ -38,12 +38,14 @@ public class Stalker : Syndicate
         StalkerArrows.Clear();
     }
 
+    public override void OnDeath(DeathReason reason) => Deinit();
+
     public void Stalk(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            StalkerArrows.Add(target.PlayerId, new(Player, target.GetPlayerColor(!HoldsDrive)));
+            StalkerArrows.Add(target.PlayerId, new(Player, target.GetPlayerColor(!HoldsDrive, false, !HoldsDrive)));
 
         StalkButton.StartCooldown(cooldown);
     }
@@ -56,29 +58,27 @@ public class Stalker : Syndicate
     {
         base.UpdateHud(__instance);
 
-        if (Dead && StalkerArrows.Count > 0)
-            Deinit();
-        else
+        if (Dead)
+            return;
+
+        foreach (var pair in StalkerArrows)
         {
-            foreach (var pair in StalkerArrows)
-            {
-                var player = PlayerById(pair.Key);
-                var body = BodyById(pair.Key);
+            var player = PlayerById(pair.Key);
+            var body = BodyById(pair.Key);
 
-                if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
-                    DestroyArrow(pair.Key);
-                else
-                    pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive));
-            }
+            if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
+                DestroyArrow(pair.Key);
+            else
+                pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive, false, false));
+        }
+    }
 
-            if (HoldsDrive)
-            {
-                foreach (var player in AllPlayers())
-                {
-                    if (!StalkerArrows.ContainsKey(player.PlayerId))
-                        StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));
-                }
-            }
+    public override void OnDriveReceivedLocal()
+    {
+        foreach (var player in AllPlayers())
+        {
+            if (!StalkerArrows.ContainsKey(player.PlayerId))
+                StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false, false, false)));
         }
     }
 }

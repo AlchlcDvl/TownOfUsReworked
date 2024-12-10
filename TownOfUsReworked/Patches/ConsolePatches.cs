@@ -1,17 +1,16 @@
 namespace TownOfUsReworked.Patches;
 
 #region OpenDoorConsole
-[HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse))]
-public static class OpenDoorConsoleCanUse
+[HarmonyPatch(typeof(OpenDoorConsole))]
+public static class OpenDoorConsolePatches
 {
+    [HarmonyPatch(nameof(OpenDoorConsole.CanUse))]
     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
+    [HarmonyPatch(nameof(OpenDoorConsole.CanUse))]
     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-}
 
-[HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
-public static class OpenDoorConsoleUse
-{
+    [HarmonyPatch(nameof(OpenDoorConsole.Use))]
     public static bool Prefix(OpenDoorConsole __instance)
     {
         __instance.CanUse(CustomPlayer.LocalCustom.Data, out var canUse, out _);
@@ -80,6 +79,7 @@ public static class DeconControlUse
 [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
 public static class ConsoleCanUsePatch
 {
+    [HarmonyPatch(nameof(Console.CanUse))]
     public static bool Prefix(Console __instance, NetworkedPlayerInfo pc, ref float __result)
     {
         var playerControl = pc.Object;
@@ -95,9 +95,21 @@ public static class ConsoleCanUsePatch
         return true;
     }
 
+    [HarmonyPatch(nameof(Console.CanUse))]
     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
+    [HarmonyPatch(nameof(Console.CanUse))]
     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+
+    [HarmonyPatch(nameof(Console.SetOutline))]
+    public static void Postfix(Console __instance, bool mainTarget)
+    {
+        if (!Role.LocalRole || !(CustomPlayer.Local && !Meeting() && CustomPlayer.Local.CanDoTasks()))
+            return;
+
+        __instance.Image.material.SetColor("_OutlineColor", Role.LocalRole.Color);
+        __instance.Image.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
+    }
 }
 #endregion
 
@@ -110,20 +122,41 @@ public static class ZiplineConsoleCanUse
     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
 }
 
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CheckUseZipline))]
-public static class PlayerControlCheckUseZipline
-{
-    public static void Prefix(PlayerControl target, ref bool __state) => CanUsePatch.Prefix(target, ref __state);
-
-    public static void Postfix(PlayerControl target, ref bool __state) => CanUsePatch.Postfix(target, ref __state);
-}
-
 [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), typeof(PlayerControl), typeof(bool))]
 public class ZiplineBehaviourUse
 {
-    public static void Prefix(PlayerControl player, ref bool __state) => CanUsePatch.Prefix(player, ref __state);
-
     public static void Postfix(PlayerControl player, ref bool __state) => CanUsePatch.Postfix(player, ref __state);
+
+    public static void Prefix(ZiplineBehaviour __instance, PlayerControl player, bool fromTop, ref bool __state)
+    {
+        CanUsePatch.Prefix(player, ref __state);
+
+        try
+        {
+            UninteractiblePlayers.TryAdd(player.PlayerId, DateTime.UtcNow);
+            UninteractiblePlayers2.TryAdd(player.PlayerId, fromTop ? __instance.upTravelTime : __instance.downTravelTime);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, UninteractiblePlayers2[player.PlayerId], true);
+            var hand = __instance.playerIdHands[player.PlayerId];
+
+            if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly)
+                hand.handRenderer.color.SetAlpha(player.MyRend().color.a);
+            else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
+                PlayerMaterial.SetColors(UColor.grey, hand.handRenderer);
+            else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Colorblind)
+                hand.handRenderer.color = UColor.grey;
+            else if (player.IsMimicking(out var mimicked))
+                hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None, mimicked.cosmetics.GetPhantomRoleAlpha());
+            else
+                hand.SetPlayerColor(player.GetCurrentOutfit(), PlayerMaterial.MaskType.None, player.cosmetics.GetPhantomRoleAlpha());
+        }
+        catch (Exception e)
+        {
+            Error(e);
+        }
+
+        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
+            ast.LastPosition = CustomPlayer.LocalCustom.Position;
+    }
 }
 #endregion
 
@@ -132,19 +165,6 @@ public class ZiplineBehaviourUse
 public static class DoorSwipePatch
 {
     public static void Prefix(DoorCardSwipeGame __instance) => __instance.minAcceptedTime = BetterAirship.MinDoorSwipeTime;
-}
-
-[HarmonyPatch(typeof(Console), nameof(Console.SetOutline))]
-public static class SetTaskOutline
-{
-    public static void Postfix(Console __instance, bool mainTarget)
-    {
-        if (!Role.LocalRole || !(CustomPlayer.Local && !Meeting() && CustomPlayer.Local.CanDoTasks()))
-            return;
-
-        __instance.Image.material.SetColor("_OutlineColor", Role.LocalRole.Color);
-        __instance.Image.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
-    }
 }
 
 [HarmonyPatch(typeof(CrewmateGhostRole), nameof(CrewmateGhostRole.CanUse))]

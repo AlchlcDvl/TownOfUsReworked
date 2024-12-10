@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.MultiClientInstancing;
+namespace TownOfUsReworked.Classes;
 
 public static class MCIUtils
 {
@@ -167,7 +167,7 @@ public static class MCIUtils
         __instance.SkipVoteButton.gameObject.SetActive(true);
         __instance.SkipVoteButton.AmDead = false;
 
-        if (CacheGlassSprite.Cache)
-            __instance.Glass.sprite = CacheGlassSprite.Cache;
+        if (MeetingPatches.Cache)
+            __instance.Glass.sprite = MeetingPatches.Cache;
     }
 }

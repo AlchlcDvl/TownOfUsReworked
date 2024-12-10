@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Miner : Intruder
+public class Miner : Intruder, IDigger
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number MineCd { get; set; } = new(25);
@@ -23,7 +23,8 @@ public class Miner : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderSupport;
-        MineButton ??= new(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label, (ConditionFunc)Condition);
+        MineButton ??= new(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label,
+            (ConditionFunc)Condition);
         Vents = [];
     }
 

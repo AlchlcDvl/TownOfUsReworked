@@ -2,9 +2,6 @@ namespace TownOfUsReworked.Monos;
 
 public class PlayerControlHandler : NameHandler
 {
-    [HideFromIl2Cpp]
-    private CustomPlayer Custom { get; set; }
-
     private TextMeshPro Name { get; set; }
     private TextMeshPro Color { get; set; }
 
@@ -40,4 +37,6 @@ public class PlayerControlHandler : NameHandler
             Player.transform.localScale = Custom.SizeFactor;
         }
     }
+
+    public void OnDestroy() => CustomPlayer.AllCustomPlayers.RemoveAll([HideFromIl2Cpp] (x) => x.Player == Player || !x.Player);
 }

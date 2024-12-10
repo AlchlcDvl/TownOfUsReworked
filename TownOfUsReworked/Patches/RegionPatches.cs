@@ -133,7 +133,7 @@ public static class RegionMenuChooseOptionPatch
             return true;
 
         ServerManager.Instance.SetRegion(region);
-        __instance.RegionText.text = "Custom";
+        __instance.RegionText.SetText("Custom");
 
         foreach (var button in __instance.ButtonPool.activeChildren)
         {

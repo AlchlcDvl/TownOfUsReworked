@@ -59,7 +59,7 @@ public class Politician : Ability
         if (Dead || __instance.TimerText.text.Contains("Can Vote"))
             return;
 
-        __instance.TimerText.text = $"Can Vote: {VoteBank} time(s) | {__instance.TimerText.text}";
+        __instance.TimerText.SetText($"Can Vote: {VoteBank} time(s) | {__instance.TimerText.text}");
     }
 
     public override void VoteComplete(MeetingHud __instance) => UpdateButton(__instance);
@@ -116,7 +116,7 @@ public class Politician : Ability
         Abstain.gameObject.SetActive(__instance.SkipVoteButton.gameObject.active && !VotedOnce);
         Abstain.voteComplete = __instance.SkipVoteButton.voteComplete;
         Abstain.GetComponent<SpriteRenderer>().enabled = __instance.SkipVoteButton.GetComponent<SpriteRenderer>().enabled;
-        Abstain.GetComponentsInChildren<TextMeshPro>()[0].text = "Abstain";
+        Abstain.GetComponentsInChildren<TextMeshPro>()[0].SetText("Abstain");
     }
 
     public void DestroyAbstain()

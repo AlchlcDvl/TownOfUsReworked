@@ -6,8 +6,8 @@ public class Medium : Crew
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number MediateCd { get; set; } = new(25);
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number SeanceCd { get; set; } = new(25);
+    // [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    // public static Number SeanceCd { get; set; } = new(25);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ShowMediatePlayer { get; set; } = true;
@@ -38,11 +38,11 @@ public class Medium : Crew
         MediateArrows = [];
         Alignment = Alignment.CrewInvest;
         MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));
-        SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), 1,
-            new PostDeath(true));
+        // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), 1,
+        //     new PostDeath(true));
     }
 
-    private void Seance() { /*Currently blank, gonna work on this later*/ }
+    // private void Seance() { /*Currently blank, gonna work on this later*/ }
     // Can you believe this guy? Over a year and this mofo still hasn't worked on it :skull:
 
     public override void Deinit()

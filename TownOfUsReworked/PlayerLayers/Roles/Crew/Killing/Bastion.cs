@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Bastion : Crew
+public class Bastion : Crew, IVentBomber
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static Number MaxBombs { get; set; } = new(5);

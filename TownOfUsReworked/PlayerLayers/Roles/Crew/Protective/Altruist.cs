@@ -15,6 +15,9 @@ public class Altruist : Crew
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AltruistTargetBody { get; set; } = false;
 
+    [ToggleOption(MultiMenu.LayerSubOptions)]
+    public static bool Sacrifice { get; set; } = true;
+
     public CustomButton ReviveButton { get; set; }
     public byte ParentId { get; set; }
 
@@ -63,7 +66,7 @@ public class Altruist : Crew
             lover.Revive();
         }
 
-        if (ReviveButton.Uses == 0 && Local)
+        if (ReviveButton.Uses == 0 && Local && Sacrifice)
             RpcMurderPlayer(Player);
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))

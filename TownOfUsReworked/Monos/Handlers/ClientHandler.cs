@@ -67,12 +67,9 @@ public class ClientHandler : MonoBehaviour
             ButtonsParent.transform.localPosition = new(-obj.localPosition.x, obj.localPosition.y, obj.localPosition.z);
             var grid = ButtonsParent.GetComponent<GridArrange>();
             grid.Alignment = GridArrange.StartAlign.Right;
-            grid.MaxColumns = 2;
+            grid.MaxColumns = 3;
             grid.CellSize = new(0.85f, 0.8f);
-            var count = ButtonsParent.GetChildCount();
-
-            for (var i = 0; i < count; i++)
-                ButtonsParent.GetChild(i).gameObject.Destroy();
+            ButtonsParent.DestroyChildren();
         }
 
         if (!WikiRCButton)
@@ -139,7 +136,7 @@ public class ClientHandler : MonoBehaviour
         if (PhoneText)
         {
             if (RoleCardActive)
-                PhoneText.text = CustomPlayer.Local.RoleCardInfo();
+                PhoneText.SetText(CustomPlayer.Local.RoleCardInfo());
             else if ((LoreActive || SelectionActive) && Entry.Count > 1)
             {
                 if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
@@ -147,7 +144,7 @@ public class ClientHandler : MonoBehaviour
                 else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
                     ResultPage = CycleInt(Entry.Count - 1, 0, ResultPage, true);
 
-                PhoneText.text = Entry[ResultPage];
+                PhoneText.SetText(Entry[ResultPage]);
             }
         }
 
@@ -220,7 +217,7 @@ public class ClientHandler : MonoBehaviour
         }
 
         RoleCardActive = !RoleCardActive;
-        PhoneText.text = CustomPlayer.Local.RoleCardInfo();
+        PhoneText.SetText(CustomPlayer.Local.RoleCardInfo());
         PhoneText.gameObject.SetActive(RoleCardActive);
         Phone.gameObject.SetActive(RoleCardActive);
         ToTheWiki.gameObject.SetActive(RoleCardActive && IsNormal() && IsInGame());
@@ -345,7 +342,7 @@ public class ClientHandler : MonoBehaviour
             {
                 Instance.LoreActive = !Instance.LoreActive;
                 Instance.SetEntryText(Modules.Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short).Description)));
-                Instance.PhoneText.text = Instance.Entry[0];
+                Instance.PhoneText.SetText(Instance.Entry[0]);
                 Instance.PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
                 Instance.SelectionActive = true;
             });
@@ -358,8 +355,8 @@ public class ClientHandler : MonoBehaviour
 
             for (var k = 0; k < Instance.Sorted.Count; k++)
             {
-                if (!Instance.Buttons.ContainsKey(i))
-                    Instance.Buttons.Add(i, []);
+                if (!Instance.Buttons.TryGetValue(i, out var buttons))
+                    Instance.Buttons[i] = buttons = [];
 
                 var cache = Instance.Sorted[k].Value;
                 var cache2 = Instance.Sorted[k].Key;
@@ -376,7 +373,7 @@ public class ClientHandler : MonoBehaviour
                     Instance.AddInfo();
                 }, cache.Color);
 
-                Instance.Buttons[i].Add((cache, button));
+                buttons.Add((cache, button));
                 j++;
 
                 if (j >= 28 || cache.Footer)
@@ -462,7 +459,7 @@ public class ClientHandler : MonoBehaviour
         SetEntryText(result);
         PhoneText = Instantiate(HUD().TaskPanel.taskText, Phone.transform);
         PhoneText.color = UColor.white;
-        PhoneText.text = Entry[0];
+        PhoneText.SetText(Entry[0]);
         PhoneText.enableWordWrapping = false;
         PhoneText.transform.localScale = Vector3.one * 0.75f;
         PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
@@ -482,7 +479,7 @@ public class ClientHandler : MonoBehaviour
         button.GetComponent<BoxCollider2D>().size = new(2.5f, 0.55f);
         var label = Instantiate(HUD().TaskPanel.taskText, button.transform);
         label.color = textColor ?? UColor.white;
-        label.text = labelText;
+        label.SetText(labelText);
         label.enableWordWrapping = false;
         label.transform.localPosition = new(0f, 0f, label.transform.localPosition.z);
         label.transform.localScale *= 1.55f;
@@ -512,7 +509,7 @@ public class ClientHandler : MonoBehaviour
         if (Zooming && skip != SkipEnum.Zooming)
             ClickZoom();
 
-        if (MapPatch.MapActive && Map() && skip != SkipEnum.Map)
+        if (MapBehaviourPatches.MapActive && Map() && skip != SkipEnum.Map)
             Map().Close();
 
         if (ActiveTask() && skip != SkipEnum.Task)

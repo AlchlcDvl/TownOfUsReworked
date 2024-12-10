@@ -138,7 +138,7 @@ public static class ClientOptions
         set
         {
             if (value != TownOfUsReworked.UseDarkTheme.Value)
-                ChatControllerAwakePatch.SetTheme(Chat());
+                ChatPatches.SetTheme(Chat());
 
             TownOfUsReworked.UseDarkTheme.Value = value;
         }

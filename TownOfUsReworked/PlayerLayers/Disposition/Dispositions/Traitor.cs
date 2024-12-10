@@ -119,7 +119,6 @@ public class Traitor : Disposition
 
         Side = traitorRole.Faction;
         Turned = true;
-        traitorRole.Alignment = traitorRole.Alignment.GetNewAlignment(traitorRole.Faction);
 
         foreach (var snitch in GetLayers<Snitch>())
         {

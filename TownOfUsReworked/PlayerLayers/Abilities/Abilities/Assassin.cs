@@ -300,7 +300,7 @@ public abstract class Assassin : Ability
         else
         {
             var layerflag = player.GetLayers().Any(x => x.Type == guess);
-            var subfactionflag = player.GetSubFaction().ToString() == guess.ToString();
+            var subfactionflag = $"{player.GetSubFaction()}" == $"{guess}";
             var framedflag = player.IsFramed();
 
             if (player.Is(LayerEnum.Actor) && guess != LayerEnum.Actor)

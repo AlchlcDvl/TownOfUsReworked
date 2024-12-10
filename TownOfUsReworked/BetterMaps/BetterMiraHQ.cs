@@ -17,11 +17,6 @@ public static class BetterMiraHQ
 
     private static readonly Vector3 CommsPos = new(14.5f, 3.1f, 2f);
 
-    private static bool IsAdjustmentsDone;
-    private static bool IsVentsFetched;
-    private static bool IsRoomsFetched;
-    private static bool IsVentModified;
-
     private static Vent SpawnVent;
     private static Vent ReactorVent;
     private static Vent DeconVent;
@@ -37,62 +32,19 @@ public static class BetterMiraHQ
 
     private static GameObject Comms;
 
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
-    public static class ShipStatusBeginPatch
+    public static void ApplyChanges()
     {
-        public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
-    }
-
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
-    public static class ShipStatusAwakePatch
-    {
-        public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
-    }
-
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.FixedUpdate))]
-    public static class ShipStatusFixedUpdatePatch
-    {
-        public static void Prefix(ShipStatus __instance)
+        if (EnableBetterMiraHQ)
         {
-            if (!IsAdjustmentsDone || !IsVentsFetched)
-                ApplyChanges(__instance);
-        }
-
-        public static void Postfix(ShipStatus __instance)
-        {
-            if (!EnableBetterMiraHQ)
-                return;
-
-            if (!IsVentModified && __instance.Type == ShipStatus.MapType.Hq && CommsVent)
-            {
-                CommsVent.Id = GetAvailableId();
-                IsVentModified = true;
-                var vents = Ship().AllVents.ToList();
-                vents.Add(CommsVent);
-                Ship().AllVents = vents.ToArray();
-            }
+            FindMiraObjects();
+            AdjustMiraHQ();
         }
     }
 
-    private static void ApplyChanges(ShipStatus __instance)
+    private static void FindMiraObjects()
     {
-        if (!EnableBetterMiraHQ)
-            return;
-
-        if (__instance.Type == ShipStatus.MapType.Hq)
-        {
-            FindRooms();
-            FindVents();
-            AdjustMira();
-        }
-    }
-
-    private static void AdjustMira()
-    {
-        if (IsVentsFetched && MiraHQVentImprovements && IsRoomsFetched)
-            AdjustVents();
-
-        IsAdjustmentsDone = true;
+        FindRooms();
+        FindVents();
     }
 
     private static void FindVents()
@@ -140,24 +92,28 @@ public static class BetterMiraHQ
             CommsVent.Center = null;
             CommsVent.name = "CommsVent";
         }
-
-        IsVentsFetched = SpawnVent && BalcVent && ReactorVent && LabVent && LockerVent && AdminVent && O2Vent && LightsVent && DeconVent && MedicVent && YRightVent && CommsVent;
     }
 
     private static void FindRooms()
     {
         if (!Comms)
             Comms = AllGameObjects().Find(o => o.name == "Comms");
-
-        IsRoomsFetched = Comms;
     }
 
-    private static void AdjustVents()
+    private static void AdjustMiraHQ()
     {
-        if (IsVentsFetched && IsRoomsFetched)
+        if (MiraHQVentImprovements)
         {
             MoveCommsVent();
             ReconnectVents();
+
+            if (CommsVent)
+            {
+                CommsVent.Id = GetAvailableId();
+                var vents = Ship().AllVents.ToList();
+                vents.Add(CommsVent);
+                Ship().AllVents = vents.ToArray();
+            }
         }
     }
 

@@ -2,8 +2,6 @@ namespace TownOfUsReworked.Monos;
 
 public static class AllMonos
 {
-    private static bool ComponentsAdded;
-
     public static void RegisterMonos()
     {
         // So many monos...AM I THE NEXT SUBMERGED???? o_O
@@ -17,6 +15,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<NameHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<VoteAreaHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<DeadBodyHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<FootprintHandler>();
 
         // Paging
@@ -38,9 +37,6 @@ public static class AllMonos
 
     public static void AddComponents()
     {
-        if (ComponentsAdded)
-            return;
-
         TownOfUsReworked.ModInstance.AddComponent<DebuggerBehaviour>();
 
         TownOfUsReworked.ModInstance.AddComponent<HudHandler>();
@@ -68,7 +64,5 @@ public static class AllMonos
         LayerHandler.Impostor = RoleManager.Instance.GetRole(RoleTypes.Impostor);
         LayerHandler.CrewmateGhost = RoleManager.Instance.GetRole(RoleTypes.CrewmateGhost);
         LayerHandler.ImpostorGhost = RoleManager.Instance.GetRole(RoleTypes.ImpostorGhost);
-
-        ComponentsAdded = true;
     }
 }

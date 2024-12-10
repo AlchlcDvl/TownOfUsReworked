@@ -25,7 +25,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     {
         base.OptionCreated();
         var str = Setting.Cast<StringOption>();
-        str.TitleText.text = TranslationManager.Translate(ID);
+        str.TitleText.SetText(TranslationManager.Translate(ID));
         str.Values = new(0);
 
         if (!AmongUsClient.Instance.AmHost && !ClientOnly)
@@ -50,7 +50,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     public override void PostLoadSetup()
     {
         Values = [ .. Enum.GetNames(TargetType).Where(x => !IgnoreStrings.Contains(x)) ];
-        EnumValues = [ .. Enum.GetValues(TargetType).Cast<Enum>().Where(x => !IgnoreStrings.Contains(x.ToString())) ];
+        EnumValues = [ .. Enum.GetValues(TargetType).Cast<Enum>().Where(x => !IgnoreStrings.Contains($"{x}")) ];
         Index = EnumValues.IndexOf(Value);
     }
 
@@ -63,7 +63,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     public override void ViewUpdate()
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = Format();
+        viewSettingsInfoPanel.settingText.SetText(Format());
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 
@@ -71,7 +71,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     {
         var str = Setting.Cast<StringOption>();
         str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Values.Length - 1);
-        str.ValueText.text = Format();
+        str.ValueText.SetText(Format());
     }
 
     public override void Debug()

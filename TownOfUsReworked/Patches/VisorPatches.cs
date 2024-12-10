@@ -1,25 +1,7 @@
 using Innersloth.Assets;
-using static TownOfUsReworked.Cosmetics.CustomVisors.CustomVisorManager;
+using static TownOfUsReworked.Cosmetics.CustomVisorManager;
 
-namespace TownOfUsReworked.Cosmetics.CustomVisors;
-
-[HarmonyPatch(typeof(HatManager), nameof(HatManager.GetVisorById))]
-public static class HatManagerPatch
-{
-    private static bool IsLoaded;
-
-    public static void Prefix(HatManager __instance)
-    {
-        if (IsLoaded)
-            return;
-
-        var allVisors = __instance.allVisors.ToList();
-        allVisors.AddRange(RegisteredVisors);
-        __instance.allVisors = allVisors.ToArray();
-        RegisteredVisors.Clear();
-        IsLoaded = true;
-    }
-}
+namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(VisorsTab), nameof(VisorsTab.OnEnable))]
 public static class VisorsTabOnEnablePatch
@@ -112,9 +94,14 @@ public static class VisorsTabOnEnablePatch
 
     public static bool Prefix(VisorsTab __instance)
     {
-        for (var i = 0; i < __instance.scroller.Inner.childCount; i++)
-            __instance.scroller.Inner.GetChild(i).gameObject.Destroy();
+        __instance.PlayerPreview.gameObject.SetActive(true);
 
+        if (__instance.HasLocalPlayer())
+            __instance.PlayerPreview.UpdateFromLocalPlayer(PlayerMaterial.MaskType.None);
+        else
+            __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
+
+        __instance.scroller.Inner.DestroyChildren();
         __instance.ColorChips = new();
         var array = HatManager.Instance.GetUnlockedVisors();
         var packages = new Dictionary<string, List<VisorData>>();
@@ -130,10 +117,10 @@ public static class VisorsTabOnEnablePatch
             if (IsNullEmptyOrWhiteSpace(package))
                 package = "Misc";
 
-            if (!packages.ContainsKey(package))
-                packages[package] = [];
+            if (!packages.TryGetValue(package, out var value))
+                packages[package] = value = [];
 
-            packages[package].Add(data);
+            value.Add(data);
         }
 
         var yOffset = __instance.YStart;
@@ -158,41 +145,21 @@ public static class VisorsTabOnEnablePatch
     }
 }
 
-[HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetVisor))]
-public static class CosmeticsCacheGetVisorPatch
+[HarmonyPatch(typeof(VisorLayer))]
+public static class VisorPatches
 {
-    public static bool Prefix(CosmeticsCache __instance, string id, ref VisorViewData __result)
-    {
-        if (!CustomVisorViewDatas.TryGetValue(id, out __result))
-            return true;
-
-        return !(__result ??= __instance.visors["visor_EmptyVisor"].GetAsset());
-    }
-}
-
-[HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.UpdateMaterial))]
-public static class UpdateMaterialPrefix
-{
-    public static bool Prefix(VisorLayer __instance)
+    [HarmonyPatch(nameof(VisorLayer.UpdateMaterial)), HarmonyPrefix]
+    public static bool UpdateMaterialPrefix(VisorLayer __instance)
     {
         if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out var asset) || !asset)
             return true;
 
         var maskType = __instance.matProperties.MaskType;
-
-        if (__instance.visorData && __instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor)
-        {
-            if (maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI)
-                __instance.Image.sharedMaterial = HatManager.Instance.MaskedPlayerMaterial;
-            else
-                __instance.Image.sharedMaterial = HatManager.Instance.PlayerMaterial;
-        }
-        else if (maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI)
-            __instance.Image.sharedMaterial = HatManager.Instance.MaskedMaterial;
-        else
-            __instance.Image.sharedMaterial = HatManager.Instance.DefaultShader;
-
-        __instance.Image.maskInteraction = __instance.matProperties.MaskType switch
+        var masked = __instance.visorData && __instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor;
+        __instance.Image.sharedMaterial = maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI
+            ? (masked ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial)
+            : (masked ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader);
+        __instance.Image.maskInteraction = maskType switch
         {
             PlayerMaterial.MaskType.SimpleUI => SpriteMaskInteraction.VisibleInsideMask,
             PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
@@ -208,12 +175,9 @@ public static class UpdateMaterialPrefix
 
         return false;
     }
-}
 
-[HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFlipX))]
-public static class SetFlipXPrefix
-{
-    public static bool Prefix(VisorLayer __instance, bool flipX)
+    [HarmonyPatch(nameof(VisorLayer.SetFlipX)), HarmonyPrefix]
+    public static bool SetFlipXPrefix(VisorLayer __instance, bool flipX)
     {
         if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out var asset) || !asset)
             return true;
@@ -226,12 +190,9 @@ public static class SetFlipXPrefix
         __instance.Image.sprite = flipX && asset.LeftIdleFrame ? asset.LeftIdleFrame : asset.IdleFrame;
         return false;
     }
-}
 
-[HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int))]
-public static class SetVisorPrefix
-{
-    public static bool Prefix(VisorLayer __instance, VisorData data, int color)
+    [HarmonyPatch(nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int)), HarmonyPrefix]
+    public static bool SetVisorPrefix(VisorLayer __instance, VisorData data, int color)
     {
         if (!CustomVisorViewDatas.TryGetValue(data.ProductId, out var asset) || !asset)
             return true;
@@ -241,12 +202,9 @@ public static class SetVisorPrefix
         __instance.PopulateFromViewData();
         return false;
     }
-}
 
-[HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.PopulateFromViewData))]
-public static class PopulateFromHatViewDataPatch
-{
-    public static bool Prefix(VisorLayer __instance)
+    [HarmonyPatch(nameof(VisorLayer.PopulateFromViewData)), HarmonyPrefix]
+    public static bool PopulateFromViewDataPrefix(VisorLayer __instance)
     {
         VisorViewData asset = null;
 
@@ -264,12 +222,9 @@ public static class PopulateFromHatViewDataPatch
         __instance.SetFlipX(__instance.Image.flipX);
         return false;
     }
-}
 
-[HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFloorAnim))]
-public static class VisorSetFloorAnimPatch
-{
-    public static bool Prefix(VisorLayer __instance)
+    [HarmonyPatch(nameof(VisorLayer.SetFloorAnim)), HarmonyPrefix]
+    public static bool SetFloorAnimPrefix(VisorLayer __instance)
     {
         var result = CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor);
 
@@ -278,12 +233,9 @@ public static class VisorSetFloorAnimPatch
 
         return !result;
     }
-}
 
-[HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetClimbAnim))]
-public static class VisorSetClimbAnimPatch
-{
-    public static bool Prefix(VisorLayer __instance)
+    [HarmonyPatch(nameof(VisorLayer.SetClimbAnim)), HarmonyPrefix]
+    public static bool SetClimbAnimPrefix(VisorLayer __instance)
     {
         if (!CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor))
             return true;

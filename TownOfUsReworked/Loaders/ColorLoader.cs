@@ -1,4 +1,4 @@
-using static TownOfUsReworked.Cosmetics.CustomColors.CustomColorManager;
+using static TownOfUsReworked.Cosmetics.CustomColorManager;
 
 namespace TownOfUsReworked.Loaders;
 
@@ -63,6 +63,7 @@ public class ColorLoader : AssetLoader<CustomColor>
         Palette.ShadowColors = colors.Select(x => (Color32)x.GetShadowColor()).ToArray();
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
         Palette.TextColors = Palette.PlayerColors;
+        colors.Clear();
         yield break;
     }
 }

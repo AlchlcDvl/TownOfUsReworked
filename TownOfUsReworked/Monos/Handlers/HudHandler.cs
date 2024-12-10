@@ -22,23 +22,7 @@ public class HudHandler : MonoBehaviour
         CustomArrow.AllArrows.Where(x => !x.Owner.AmOwner).ForEach(x => x.Update());
         AllButtons.ForEach(x => x.Timers());
         HUD()?.ReportButton?.ToggleVisible(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is(LayerEnum.Coward) && !CustomPlayer.Local.Is(Faction.GameMode) && !Meeting() &&
-            !MapPatch.MapActive);
-
-        foreach (var body in AllBodies())
-        {
-            var renderer = body.MyRend();
-            var player = PlayerByBody(body);
-
-            if (IsCamoed)
-                PlayerMaterial.SetColors(UColor.grey, renderer);
-            else if (SurveillancePatches.NVActive)
-                PlayerMaterial.SetColors(UColor.green, renderer);
-            else if (player)
-                PlayerMaterial.SetColors(player.Data.DefaultOutfit.ColorId, renderer);
-
-            if (player)
-                body.transform.localScale = CustomPlayer.Custom(player).SizeFactor;
-        }
+            !MapBehaviourPatches.MapActive);
 
         foreach (var id in UninteractiblePlayers.Keys)
         {
@@ -48,7 +32,10 @@ public class HudHandler : MonoBehaviour
                 continue;
 
             if (UninteractiblePlayers.TryGetValue(player.PlayerId, out var time) && time.AddSeconds(UninteractiblePlayers2[player.PlayerId]) < DateTime.UtcNow)
+            {
                 UninteractiblePlayers.Remove(player.PlayerId);
+                UninteractiblePlayers2.Remove(player.PlayerId);
+            }
         }
 
         if (BetterSabotages.CamouflagedComms)

@@ -1,16 +1,17 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.SetFilterText))]
-public static class HauntPatch
+[HarmonyPatch(typeof(HauntMenuMinigame))]
+public static class HauntPatches
 {
-    public static bool Prefix(HauntMenuMinigame __instance)
+    [HarmonyPatch(nameof(HauntMenuMinigame.SetFilterText)), HarmonyPrefix]
+    public static bool SetFilterTextPrefix(HauntMenuMinigame __instance)
     {
         if (IsHnS())
             return true;
 
         if (!DeadSeeEverything())
         {
-            __instance.FilterText.text = " ";
+            __instance.FilterText.SetText("");
             return false;
         }
 
@@ -36,15 +37,12 @@ public static class HauntPatch
         if (otherString.Length != 0)
             objectiveString += "\n" + otherString;
 
-        __instance.FilterText.text = $"<size=75%>{objectiveString}</size>";
+        __instance.FilterText.SetText($"<size=75%>{objectiveString}</size>");
         return false;
     }
-}
 
-[HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.Start))]
-public static class AddNeutralHauntPatch
-{
-    public static bool Prefix(HauntMenuMinigame __instance)
+    [HarmonyPatch(nameof(HauntMenuMinigame.Start)), HarmonyPrefix]
+    public static bool StartPrefix(HauntMenuMinigame __instance)
     {
         __instance.FilterButtons[0].gameObject.SetActive(true);
         var numActive = 0;

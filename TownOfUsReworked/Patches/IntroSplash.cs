@@ -2,42 +2,6 @@ namespace TownOfUsReworked.Patches;
 
 public static class IntroSplash
 {
-    private static readonly string[] Splashes =
-    [
-        "Oh boy, here I go killing again",
-        "Screwed up since 2069",
-        "We were bad, but now we're good",
-        "Count the bodies",
-        "I need my knife, where is it?",
-        "You son of a trash can, I'm in",
-        "real",
-        "bous",
-        "My life be like",
-        "Man I'm ded",
-        "gaming",
-        "WHO LET BRO COOK?",
-        "",
-        "Let me introduce you to our sponsor, Raid-",
-        "Push to production is my motto. Bugs? meh public release go brrrr",
-        "It's not a bug, it's a feature",
-        "My life like a movie",
-        "real",
-        "WHERE AM I?!",
-        "OOOOO a nice view :)",
-        "What dis",
-        "O_O",
-        "o_O",
-        "O_o",
-        "o_o",
-        "._o",
-        "o_.",
-        "._.",
-        "._O",
-        "O_.",
-        "ehehehehehehehehe",
-        "Think fast chuckle nuts",
-        "LET. HIM. COOK."
-    ];
     private static TextMeshPro Intro;
 
     [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
@@ -49,9 +13,9 @@ public static class IntroSplash
 
             if (gameObject && !Intro)
             {
-                Intro = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
+                Intro = UObject.Instantiate(__instance.text, MainMenuPatches.Logo.transform);
                 Intro.transform.localPosition = new(0, -1.5f, 0);
-                Intro.text = $"<size=175%><b><#9FDA81FF>{Splashes.Random(x => !IsNullEmptyOrWhiteSpace(x))}</color></b></size>";
+                Intro.SetText($"<size=175%><b><#9FDA81FF>{Splashes.Random(x => !IsNullEmptyOrWhiteSpace(x))}</color></b></size>");
                 Intro.alignment = TextAlignmentOptions.Center;
                 Intro.fontStyle = FontStyles.Bold;
                 Intro.name = "ModIntroText";
@@ -66,7 +30,7 @@ public static class IntroSplash
         public static void Postfix()
         {
             if (Intro)
-                Intro.text = $"<size=175%><b><#9FDA81FF>{Splashes.Random(x => x != Intro.text)}</color></b></size>";
+                Intro.SetText($"<size=175%><b><#9FDA81FF>{Splashes.Random(x => !Intro.text.Contains(x))}</color></b></size>");
         }
     }
 }

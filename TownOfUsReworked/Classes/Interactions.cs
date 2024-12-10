@@ -20,23 +20,13 @@ public static class Interactions
 
     private static void Trigger(PlayerControl player, PlayerControl target, bool harmful, out PlayerControl trapper)
     {
-        trapper = null;
-
-        if (harmful)
-        {
-            trapper = PlayerLayer.GetLayers<Trapper>().FirstOrDefault(x => x.Trapped.Contains(target.PlayerId))?.Player;
-
-            if (!trapper)
-                trapper = PlayerLayer.GetLayers<Retributionist>().FirstOrDefault(x => x.Trapped.Contains(target.PlayerId))?.Player;
-        }
-
-        PlayerLayer.GetLayers<Trapper>().ForEach(x => x.TriggerTrap(target, player, harmful));
-        PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.TriggerTrap(target, player, harmful));
+        trapper = harmful ? PlayerLayer.GetILayers<ITrapper>().FirstOrDefault(x => x.Trapped.Contains(target.PlayerId))?.Player : null;
+        PlayerLayer.GetILayers<ITrapper>().ForEach(x => x.TriggerTrap(target, player, harmful));
     }
 
     public static void Spread(PlayerControl interacter, PlayerControl target)
     {
-        PlayerLayer.GetLayers<Plaguebearer>().ForEach(pb => pb.RpcSpreadInfection(interacter, target));
+        PlayerLayer.GetLayers<Plaguebearer>().ForEach(pb => pb.RpcSpreadInfection(target, interacter));
         PlayerLayer.GetLayers<Arsonist>().ForEach(arso => arso.RpcSpreadDouse(target, interacter));
         PlayerLayer.GetLayers<Cryomaniac>().ForEach(cryo => cryo.RpcSpreadDouse(target, interacter));
 
@@ -48,10 +38,12 @@ public static class Interactions
         if (!Pestilence.Infected.ContainsKey(targetId))
             return;
 
-        Pestilence.Infected[targetId]++;
-
         if (interacter.Is(LayerEnum.Pestilence))
             Pestilence.Infected[target.PlayerId] = Pestilence.MaxStacks;
+        else if (target.Is(LayerEnum.Pestilence))
+            Pestilence.Infected[interacter.PlayerId] = Pestilence.MaxStacks;
+        else
+            Pestilence.Infected[targetId]++;
 
         if (Pestilence.Infected.TryGetValue(target.PlayerId, out var count) && count >= Pestilence.MaxStacks)
             RpcMurderPlayer(interacter, target, DeathReasonEnum.Infected, false);
@@ -181,16 +173,14 @@ public static class Interactions
         if (target.IsBombed())
         {
             abilityUsed = false;
-
-            if (!PlayerLayer.GetLayers<Bastion>().TryFinding(x => ((Bastion)x).BombedIDs.Contains(target.Id), out Role bastion))
-                bastion = PlayerLayer.GetLayers<Retributionist>().Find(x => x.BombedIDs.Contains(target.Id));
+            var bastion = PlayerLayer.GetILayers<IVentBomber>().Find(x => x.BombedIDs.Contains(target.Id));
 
             if (!CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
             {
                 abilityUsed = true;
                 RpcBreakShield(player);
             }
-            else if (bastion)
+            else if (bastion != null)
                 RpcMurderPlayer(bastion.Player, player, DeathReasonEnum.Bombed, false);
 
             Role.BastionBomb(target, Bastion.BombRemovedOnKill);

@@ -6,7 +6,7 @@ public static class RPC
 
     public static void SendOptionRPC(OptionAttribute setting = null, int targetClientId = -1, bool save = true)
     {
-        if (TownOfUsReworked.MCIActive)
+        if (TownOfUsReworked.MCIActive || !CustomPlayer.Local)
             return;
 
         List<OptionAttribute> options;
@@ -49,7 +49,7 @@ public static class RPC
             CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, 255, 255, MapSettings.Map);
 
         if (save)
-            OptionAttribute.SaveSettings(TownOfUsReworked.IsTest ? "Debugging" : "Last Used");
+            OptionAttribute.SaveSettings(TownOfUsReworked.IsTest ? "Debugging" : "LastUsed");
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)
@@ -90,7 +90,7 @@ public static class RPC
             }
         }
 
-        OptionAttribute.SaveSettings("Last Used");
+        OptionAttribute.SaveSettings("LastUsed");
     }
 
     public static PlayerVersion ShareGameVersion()
@@ -164,7 +164,7 @@ public static class RPC
         writer.Write(layer.Type);
     }
 
-    public static void Write(this MessageWriter writer, RoleOptionData data) => writer.Write(data.ToString());
+    public static void Write(this MessageWriter writer, RoleOptionData data) => writer.Write($"{data}");
 
     public static void Write(this MessageWriter writer, Version version)
     {
@@ -176,7 +176,7 @@ public static class RPC
 
     public static void Write(this MessageWriter writer, PlayerVersion pv)
     {
-        writer.Write(pv.Guid.ToString());
+        writer.Write($"{pv.Guid}");
         writer.Write(pv.VersionFinal);
         writer.Write(pv.Version);
     }
@@ -260,7 +260,7 @@ public static class RPC
 
     public static MessageWriter CallTargetedOpenRpc(int targetClientId, CustomRPC rpc, params object[] data)
     {
-        if (TownOfUsReworked.MCIActive)
+        if (TownOfUsReworked.MCIActive || !CustomPlayer.Local)
             return null;
 
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);

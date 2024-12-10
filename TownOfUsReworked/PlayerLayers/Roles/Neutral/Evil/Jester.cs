@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Jester : Neutral
+public class Jester : Evil
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool JesterButton { get; set; } = true;
@@ -27,12 +27,13 @@ public class Jester : Neutral
     public override Func<string> StartText => () => "It Was Jest A Prank Bro";
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override bool HasWon => VotedOut;
+    public override WinLose EndState => WinLose.JesterWins;
 
     public override void Init()
     {
         base.Init();
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
-        Alignment = Alignment.NeutralEvil;
         ToHaunt = [];
 
         if (!NeutralSettings.AvoidNeutralKingmakers)

@@ -8,11 +8,12 @@ public static class ShowTeamPatch
         if (IsHnS())
             return;
 
-        __instance.__4__this.TeamTitle.text = Role.LocalRole.FactionName;
-        __instance.__4__this.TeamTitle.color = Role.LocalRole.FactionColor;
+        var role = Role.LocalRole;
+        __instance.__4__this.TeamTitle.SetText(role.FactionName);
+        __instance.__4__this.TeamTitle.color = role.FactionColor;
         __instance.__4__this.TeamTitle.outlineColor = UColor.black;
-        __instance.__4__this.BackgroundBar.material.color = Role.LocalRole.FactionColor;
-        __instance.__4__this.ImpostorText.text = " ";
+        __instance.__4__this.BackgroundBar.material.color = role.FactionColor;
+        __instance.__4__this.ImpostorText.SetText("");
     }
 }
 
@@ -47,33 +48,33 @@ public static class ShowRolePatch
         if (status.Length != 0)
             statusString = $"\n<#{CustomColorManager.Status.ToHtmlStringRGBA()}>Status</color>:{status}";
 
-        __instance.__4__this.RoleText.text = role.Name;
+        __instance.__4__this.RoleText.SetText(role.Name);
         __instance.__4__this.RoleText.color = role.Color;
         __instance.__4__this.YouAreText.color = role.Color;
-        __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
-        __instance.__4__this.RoleBlurbText.color = role.Color;
+        __instance.__4__this.RoleBlurbText.SetText(role.StartText() + statusString);
+        __instance.__4__this.RoleBlurbText.color = __instance.__4__this.BackgroundBar.material.color = role.Color;
+        __instance.__4__this.BackgroundBar.transform.SetLocalZ(-15f);
     }
 }
 
-[HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.CreatePlayer))]
-public static class CreatePlayerPatch
+[HarmonyPatch(typeof(IntroCutscene))]
+public static class IntroCutscenePatches
 {
+    [HarmonyPatch(nameof(IntroCutscene.CreatePlayer))]
     public static void Prefix(ref bool impostorPositioning)
     {
         if (!IsHnS())
             impostorPositioning = true;
     }
 
+    [HarmonyPatch(nameof(IntroCutscene.CreatePlayer))]
     public static void Postfix(ref PoolablePlayer __result)
     {
         if (!IsHnS())
             __result.SetNameColor(Role.LocalRole.FactionColor);
     }
-}
 
-[HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.SelectTeamToShow))]
-public static class OverrideShowTeam
-{
+    [HarmonyPatch(nameof(IntroCutscene.SelectTeamToShow))]
     public static void Postfix(ref ISystem.List<PlayerControl> __result)
     {
         if (!IsHnS())
@@ -83,7 +84,7 @@ public static class OverrideShowTeam
 
             foreach (var player in result)
             {
-                if (result.Count(x => x == player) > 1)
+                if (result.Count(x => x == player) > 1 && !copy.Contains(player))
                     copy.Add(player);
             }
 
@@ -91,5 +92,16 @@ public static class OverrideShowTeam
             result.AddRange(copy); // Adds only one instance of each copied player back
             __result = result.ToIl2Cpp();
         }
+    }
+
+    [HarmonyPatch(nameof(IntroCutscene.CoBegin))]
+    public static void Postfix()
+    {
+        if (MapPatches.CurrentMap == 0)
+            BetterSkeld.ApplyChanges();
+        else if (MapPatches.CurrentMap == 1)
+            BetterMiraHQ.ApplyChanges();
+        else if (MapPatches.CurrentMap == 2)
+            BetterPolus.ApplyChanges();
     }
 }

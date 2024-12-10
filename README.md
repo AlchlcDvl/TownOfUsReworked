@@ -6,12 +6,12 @@
 -----------------------
 
 <p align="center">
-    <img width="" height="" src="./Images/Reworked.png" align="center" alt="logo" />
+    <img width="" height="" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Reworked.png" align="center" alt="logo" />
     <p align="center">Town Of Us but better! (hopefully)
 </p>
 
 <p align="center">
-    <img src="https://badgen.net/static/AmongUs/2024.10.29/yellow">
+    <img src="https://badgen.net/static/AmongUs/2024.11.26/yellow">
     <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a>
     <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/AlchlcDvl/TownOfUsReworked/total"></a>
     <a href="https://discord.gg/cd27aDQDY9"> <img src="https://img.shields.io/discord/1039196456667582555.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2"></a>
@@ -153,7 +153,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 
 | Among Us           | Mod Version | Download Link                                                                                   |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
-| 2024.11.24 (s & e) | 0.7.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.7.1/Reworked.zip) |
+| 2024.11.26 (s & e) | 0.7.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.7.1/Reworked.zip) |
 | 2024.10.29 (s & e) | 0.7.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.7.0/Reworked.zip) |
 
 <details>
@@ -221,398 +221,9 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 
 All layers provide an attack or defense value to the player, which dictates the power of their actions. If the level of attack is higher then the target's defense and the attack is successful, the target will die. Otherwise, the target will live and the attacker's ability will fail. Unless mentioned otherwise, the layers provide no attack or defense.
 
-# Crew Roles
-
-<img align="right" width="" height="200" src="./Images/Crew.png">
-
-Each member has a special ability which determines who’s who and can help weed out the evils. The main theme of this faction is deduction and goodwill. This faction is an uninformed majority meaning they make up most of the players and don't who the other members are. The Crew can do tasks which act like a timer for non-Crew.
-
-### Crew Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Common Tasks | How many common tasks must be assigned | Number | 2 |
-| Long Tasks | How many long tasks must be assigned | Number | 1 |
-| Short Tasks | How many short tasks must be assigned | Number | 4 |
-| Crew Ghost Tasks Count To Win | Dictates whether dead Crew should finish their tasks or not to achieve a task win | Toggle | True |
-
-## Altruist
-
-<img align="right" width="" height="200" src="./Images/Altruist.png">
-
-### Alignment: Crew (Protective)
-### Origin: Town Of Us, based off of the original Retributionist in Town Of Salem
-
-The Altruist is capable of reviving dead players. After a set period of time, the player will be revived, if the revival isn't interrupted. Once a player is revived, all evil players will be notified of the revival and will have an arrow pointing towards the revived player. The Altruist sacrifices themselves on the last use of their ability. If the revived player has a [Lover](#lovers) and both die together, the Lover is also revived.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Target's Body Disappears On Beginning Of Revive | Whether the reviving body disappears upon start of the revival | Toggle | False |
-
-## Bastion
-
-<img align="right" width="" height="200" src="./Images/Bastion.png">
-
-### Alignment: Crew (Killing)
-### Origin: Town Of Host: The Other Roles
-### Attack: Powerful
-
-The Bastion can place bombs in vents. Anyone who tries to interact with the bombed vent will die.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Bombs Are Removed Upon Kills | Toggles whether the bombs in vents are permanent or not. If not, they disappear after killing someone | Toggle | True |
-
-## Chameleon
-
-<img align="right" width="" height="200" src="./Images/Chameleon.png">
-
-### Alignment: Crew (Support)
-### Origin: Town Of Us
-
-The Chameleon can go invisible to stalk players and see what they do when no one is around.
-
-## Coroner
-
-<img align="right" width="" height="200" src="./Images/Coroner.png">
-
-### Alignment: Crew (Investigative)
-
-The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. The Coroner can then compare that information with players to see if they killed the body or not. They also gets body reports from the bodies they report. The report will include the cause and time of death, the body's faction/role, the killer's faction/role and (according to the settings) the killer's name. The Coroner will not get any information if they report a body when blinded by a Grenadier and framed players will always appear to be the killer.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Dead Body Arrow Duration | The duration of the arrows pointing to the bodies | Time | 0.1s |
-| Coroner Gets Roles | This dictates whether the Coroner gets the killer's and body's role, otherwise only their factions are revealed | Toggle | False |
-| Coroner Gets Killer's Name | This dictates whether the Coroner gets the killer's name from the report | Toggle | False |
-| ┗ Coroner Gets Killer's Name Under | This dictates how old must a body be for the Coroner to get the killer's name | Time | 1s |
-
-## Crewmate
-
-<img align="right" width="" height="200" src="./Images/Crewmate.png">
-
-### Alignment: Crew (Utility)
-### Origin: Among Us
-
-Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
-
-## Detective
-
-<img align="right" width="" height="200" src="./Images/Detective.png">
-
-### Alignment: Crew (Investigative)
-### Origin: Town Of Us, formed from the fusion of Investigator and Detective and removing body reports
-
-The Detective can examine other players for bloody hands and footprints. If the examined player has killed recently, the Detective will be alerted about it. Once examined, the player's footprints will be visible to the Detective. Framed players will always appear to have bloody hands.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Bloody Hands Duration | How long players remain bloody after a kill | Time | 10s |
-| Footprint Interval | The time interval between two footprints | Time | 0.15s |
-| Footprint Duration | The amount of time that the footprint stays on the ground for | Time | 10s |
-| Anonymous Footprint | When enabled, all footprints are grey instead of the player's colors | String | Only When Camouflaged |
-
-## Dictator
-
-<img align="right" width="" height="200" src="./Images/Dictator.png">
-
-### Alignment: Crew (Sovereign)
-### Origin: Better TOS Marshall
-
-The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting they can pick up to 3 players to be ejected. All 3 players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if any). If any of the 3 killed players happens to be Crew, the Dictator dies with them. The Dictator has no post ejection ability. A revealed Dictator cannot be protected, but can be revived.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Dictator Cannot Reveal Round One | Self descriptive | Toggle | True |
-| Dictator Can Dictate After Voting | Self descriptive | Toggle | True |
-| Dictator Can Button | Whether the Dictator can call a meeting | Toggle | True |
-
-## Engineer
-
-<img align="right" width="" height="200" src="./Images/Engineer.png">
-
-### Alignment: Crew (Support)
-### Origin: Town Of Us
-
-The Engineer can fix sabotages from anywhere on the map and use vents to get across the map easily.
-
-## Escort
-
-<img align="right" width="" height="200" src="./Images/Escort.png">
-
-### Alignment: Crew (Support)
-### Origin: Town Of Salem
-
-The Escort can roleblock players and prevent them from doing anything for a short while.
-
-## Mayor
-
-<img align="right" width="" height="200" src="./Images/Mayor.png">
-
-### Alignment: Crew (Sovereign)
-### Origin: Town Of Salem
-
-The Mayor can reveal themselves as the Mayor to other players. Upon doing so, the value of their vote increases. A revealed Mayor cannot be protected, but can be revived.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Mayor Votes Count As | The additional number of votes that are added to the Mayor's vote | Number | 2 |
-| Mayor Cannot Reveal Round One | Self descriptive | Toggle | True |
-| Mayor Can Button | Whether the Mayor can call a meeting | Toggle | True |
-
-## Medic
-
-<img align="right" width="" height="200" src="./Images/Medic.png">
-
-### Alignment: Crew (Protective)
-### Origin: Town Of Us
-
-The Medic can give any player a shield that will grant them Powerful defense. The Medic can choose who they give thier shield to, and can take their shield back if needed. Shielded players have a green ✚ next to their names.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Show Shielded Player | Who should be able to see who is Shielded | String | Self |
-| Who Gets Murder Attempt Indicator | Who will receive an indicator when someone tries to Kill them | String | Medic |
-| Shield Breaks On Murder Attempt | Whether the Shield breaks when someone attempts to Kill them | Toggle | True |
-
-## Medium
-
-<img align="right" width="" height="200" src="./Images/Medium.png">
-
-### Alignment: Crew (Investigative)
-### Origin: Town Of Us
-
-The Medium can mediate to be able to see ghosts. If the Medium uses this ability, the Medium and the dead player will be able to see each other and communicate with actions from beyond the grave!
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Reveal Appearance Of Mediate Target | Whether the Ghosts will show as themselves, or camouflaged | Toggle | True |
-| Reveal The Medium To The Mediate Target | Whether certain ghosts can see that the Medium is the Medium | String | No |
-| Who Is Revealed With Mediate | Which players are revealed to the Medium | String | Oldest Dead |
-
-## Monarch
-
-<img align="right" width="" height="200" src="./Images/Monarch.png">
-
-### Alignment: Crew (Sovereign)
-### Origin: Traitors In Salem King/Town Of Salem 2
-### Defense: Basic with an alive Knight
-
-The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have the value of their votes increased. For as long as a Knight is alive, the Monarch gets basic defense. Knighted players have a pinkish red κ next to their names. The Monarch is alerted when a knight dies.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Monarch Cannot Knight Round One | Self descriptive | Toggle | True |
-| Knighted Votes Count As | The additional number of votes that are added to a knighted player's vote | Number | 1 |
-| Monarch Can Button | Whether the Monarch can call a meeting | Toggle | True |
-| Knights Can Button | Whether knighted players can call a meeting | Toggle | True |
-
-## Mystic
-
-<img align="right" width="" height="200" src="./Images/Mystic.png">
-
-### Alignment: Crew (Auditor)
-
-The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target belongs to a subfaction, or that the target's subfaction is different from the Mystic's (in the case of a converted Mystic), the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might still be evil. Once all subfactions are dead, the Mystic becomes a Seer. Framed players will appear to have their subfactions changed.
-
-## Operative
-
-<img align="right" width="" height="200" src="./Images/Operative.png">
-
-### Alignment: Crew (Investigative)
-### Origin: Town Of Us, formed from the fusion of Town Of Us Spy and Trapper
-
-The Operative can place bugs around the map. When players enter the range of the bug and stay within it for a certain amount of time, they trigger it. In the following meeting, all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role a specific player is. The Operative also gains more information when on Admin Table and on Vitals. On Admin Table, the Operative can see the colors of every person on the map. When on Vitals, the Operative is shown how long someone has been dead for.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Min Amount Of Time Required For Bug To Trigger | How long a player must stay in the bug for it to trigger | Time | 0s |
-| Bugs Are Removed Each Round | Whether the Operative's bugs are removed after each meeting | Toggle | True |
-| Bug Range | The size of each trap | Factor | 0.25x |
-| Number Of Roles Required To Trigger Bug | The number of players that must enter the bug for it to be triggered | Number | 1 |
-| Who Sees Dead Bodies On Admin | Which players see dead bodies on the admin map | String | Nobody |
-| Operative Gets Precise Information | Whether the information from the Operative's bugs are more accurate and precise | Toggle | False |
-
-## Retributionist
-
-<img align="right" width="" height="200" src="./Images/Retributionist.png">
-
-### Alignment: Crew (Support)
-### Origin: Town Of Us Imitator
-
-The Retributionist can mimic dead crewmates. During meetings, the Retributionist can select who they are going to mimic for the following round from the dead. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Retributionist Can Mimic After Voting | Self descriptive | Toggle | True |
-
-## Revealer
-
-<img align="right" width="" height="200" src="./Images/Revealer.png">
-
-### Alignment: Crew (Utility)
-### Origin: Town Of Us Haunter
-
-The Revealer is a dead Crew. Upon finishing all their tasks, the evils, and possibly their roles, will be revealed to all other alive players. However, if the Revealer is clicked they lose their ability to reveal evils and are once again a normal ghost.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| When Can Revealer Be Clicked | The amount of tasks remaining when the Revealer can be clicked | Number | 5 |
-| Tasks Remaining When Revealed | The amount of tasks remaining when evils are alerted that the Revealer is nearly finished | Number | 1 |
-| Revealer Reveals Neutrals | Whether the Revealer also reveals neutral roles | Toggle | False |
-| Revealer Reveals Crew | Whether the Revealer also Reveals crew roles | Toggle | False |
-| Revealer Reveals Exact Roles | Whether the Revealer also Reveals all roles | Toggle | False |
-| Who Can Click Revealer | Which players can click the Revealer | String | All |
-
-## Seer
-
-<img align="right" width="" height="200" src="./Images/Seer.png">
-
-### Alignment: Crew (Investigative)
-
-The Seer only spawns if there are roles capable of changing their initial roles or if there's a [Traitor](#traitor) or [Fanatic](#fanatic) in the game. The Seer can investigate players to see if their role is different from what they started out as. If a player's role has changed, the Seer's screen will flash red, otherwise it will flash green. If all players capable of changing or have changed their initial roles are dead, the Seer becomes a Sheriff. Framed players will appear to have their role changed.
-
-## Sheriff
-
-<img align="right" width="" height="200" src="./Images/Sheriff.png">
-
-### Alignment: Crew (Investigative)
-### Origin: Town Of Us Seer
-
-The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a player is Good or Evil. The Sheriff's screen will flash green or red depending on the results and settings. Framed players will appear to be evil. Promoted Godfathers and Rebels will not appear to be evil.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Neutral Evils Show Up As Evil | Neutral Evil roles show up as Red | Toggle | False |
-| Neutral Killing Show Up As Evil | Neutral Killing roles show up as Red | Toggle | False |
-
-## Shifter
-
-<img align="right" width="" height="200" src="./Images/Shifter.png">
-
-### Alignment: Crew (Support)
-### Origin: Town Of Us
-
-The Shifter can swap roles with someone, as long as they are a valid Crew. If the shift is unsuccessful or the target is framed, the Shifter dies.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Shifted Becomes | Dictates what the shift target becomes after getting shifted | String | Shifter |
-
-## Tracker
-
-<img align="right" width="" height="200" src="./Images/Tracker.png">
-
-### Alignment: Crew (Investigative)
-### Origin: Town Of Us + The Other Roles
-
-The Tracker can track others during a round. Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Tracker Arrows Reset Each Round | Whether Tracker Arrows are removed after each meeting | Toggle | False |
-| Arrow Update Interval | The time it takes for the arrow to update to the new location of the tracked player | Time | 5s |
-
-## Transporter
-
-<img align="right" width="" height="200" src="./Images/Transporter.png">
-
-### Alignment: Crew (Support)
-### Origin: Town Of Salem
-
-The Transporter can swap the locations of two players at will. Being transported plays an animation that's visible to all players and renderers the targets immobile for the duration of the transportation. During the transportation, they can be targeted by anyone, even those of their own team. This means that the Transporter is capable of making evils attack each other.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Transporter Can Transport Themselves | Self descriptive | Toggle | False |
-
-## Trapper
-
-<img align="right" width="" height="200" src="./Images/Trapper.png">
-
-### Alignment: Crew (Protective)
-### Origin: Town Of Salem
-### Attack: Powerful
-
-The Trapper can build traps and place them on other players. These traps will either register an interacter's role, or attack an attacker. At the start of the next meeting, the Trapper is told whether they attacked someone or not. If not, the Trapper gets a list of roles that interacted with the trapped targets in a random order. Trapped players have a pink ∮ next to their names.
-
-## Vampire Hunter
-
-<img align="right" width="" height="200" src="./Images/VampireHunter.png">
-
-### Alignment: Crew (Auditor)
-### Origin: Town Of Salem
-### Attack: Unstoppable against Undead only
-### Defense: Invincible against Undead only
-
-The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante. Interacting with a Vampire Hunter as an Undead will force the Vampire Hunter to kill you. Framed players will behave like ann Undead to the Vampire Hunter. The Vampire Hunter knows if they target they actually killed is an Undead or not.
-
-## Veteran
-
-<img align="right" width="" height="200" src="./Images/Veteran.png">
-
-### Alignment: Crew (Killing)
-### Origin: Town Of Salem
-### Attack: Powerful
-### Defense: Basic when on alert
-
-The Veteran can go on alert. Anyone who interacts with a Veteran on alert will be killed by the Veteran in question.
-
-## Vigilante
-
-<img align="right" width="" height="200" src="./Images/Vigilante.png">
-
-### Alignment: Crew (Killing)
-### Origin: Town Of Us Sheriff
-### Attack: Basic
-
-The Vigilante can kill. However, if they kill someone they shouldn't, they instead kill themselves. Framed players are guaranteed to die without the risk of the Vigilante misfiring.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Misfire Kills The Target | Whether the target is killed if the Vigilante misfires | Toggle | False |
-| Vigilante Can Kill Again If Target Was Innocent | Whether the Vigilante can continue shooting even after getting a shot wrong | Toggle | False |
-| Vigilante Cannot Shoot Round One | Self descriptive | Toggle | True |
-| How Is The Vigilante Notified Of Their Target's Innocence | Whether the Vigilante is notified of their target's innocent upon misfire | String | Never |
-| How Does Vigilante Die | Dictates how does the Vigilante die, should they kill or attempt to kill someone they shouldn't | String | Immediately |
-
 # Neutral Roles
 
-<img align="right" width="" height="200" src="./Images/Neutral.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Neutral.png">
 
 Each member of this faction has their own unique way to win, seperate from the other roles in the same faction. The main theme of this faction is free for all. This faction is an uninformed minority of the game, meaning they make up a small part of the crew while not knowing who the other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of existing.
 
@@ -628,15 +239,17 @@ Each member of this faction has their own unique way to win, seperate from the o
 
 ## Actor
 
-<img align="right" width="" height="200" src="./Images/Actor.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Actor.png">
 
-### Alignment: Neutral (Evil)
-### Win Condition: Get guessed as a role in their target role list
-### Attack: Unstoppable
+**Alignment**: Neutral (Evil)
 
-The Actor gets a list of roles at the start of the game. Alternatively, the Actor can pick a player to add their role to the role list and the rest of the role list is filtered and filled. This list of roles depends on which roles are present in the game. The Actor must pretend to be and get guessed as one of the roles in order to win.
+**Win Condition**: Get guessed as a role in their target role list
 
-### Game Options
+**Attack**: Unstoppable when guessed
+
+The Actor gets a list of roles at the start of the game. Alternatively, the Actor can pick a player to add their role to the role list and the rest of the role list is filtered and filled. This list of roles depends on which roles are present in the game. The Actor must pretend to be and get guessed as one of the roles in order to win. Upon being successfully guessed, the Actor will attack the guesser that guessed them.
+
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -647,15 +260,17 @@ The Actor gets a list of roles at the start of the game. Alternatively, the Acto
 
 ## Amnesiac
 
-<img align="right" width="" height="200" src="./Images/Amnesiac.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Amnesiac.png">
 
-### Alignment: Neutral (Benign)
-### Win Condition: Find a dead body, take their role and then win as that role
-### Origin: Town Of Salem
+**Alignment**: Neutral (Benign)
+
+**Win Condition**: Find a dead body, take their role and then win as that role
+
+**Origin**: Town Of Salem
 
 The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player. When there is only 4 players left, the Amnesiac becomes a [Thief](#thief).
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -664,17 +279,21 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 
 ## Arsonist
 
-<img align="right" width="" height="200" src="./Images/Arsonist.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Arsonist.png">
 
-### Alignment: Neutral (Killing)
-### Win Condition: Ignite anyone who can oppose them
-### Origin: Town Of Salem
-### Attack: Unstoppable
-### Defense: Basic when up to 2 players are doused
+**Alignment**: Neutral (Killing)
 
-The Arsonist can douse players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once. Doused players have an orange Ξ next to their names. Upon igniting, the Arsonist may cremate the body, leaving behind unreportable ash that is visible to all players. The Arsonist has basic defense when they have at most 2 players doused.
+**Win Condition**: Ignite anyone who can oppose them
 
-### Game Options
+**Origin**: Town Of Salem
+
+**Attack**: Unstoppable
+
+**Defense**: Basic when up to 2 players are doused
+
+The Arsonist can douse players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once. Doused players have an orange Ξ next to their names. Upon igniting, the Arsonist may cremate the body, leaving behind unreportable ash that is visible to all players. The Arsonist has basic defense when they have at most 2 players doused. When trying to ignite players, if they are doused by a Cryomaniac, the douse is removed for both and the target is spared.
+
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -685,25 +304,29 @@ The Arsonist can douse players with gasoline. After dousing, the Arsonist can ch
 
 ## Betrayer
 
-<img align="right" width="" height="200" src="./Images/Betrayer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Betrayer.png">
 
-### Alignment: Neutral (Proselyte)
-### Win Condition: Kill anyone who opposes the faction they defected to
-### Attack: Basic
+**Alignment**: Neutral (Proselyte)
+
+**Win Condition**: Kill anyone who opposes the faction they defected to
+
+**Attack**: Basic
 
 The Betrayer is a simple killer, who appears after a turned [Traitor](#traitor)/[Fanatic](#fanatic) was the only member of their new faction remaning. This role does not spawn directly.
 
 ## Bounty Hunter
 
-<img align="right" width="" height="200" src="./Images/BountyHunter.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/BountyHunter.png">
 
-### Alignment: Neutral (Evil)
-### Win Condition: Find and kill thier target
-### Attack: Unstoppable
+**Alignment**: Neutral (Evil)
+
+**Win Condition**: Find and kill thier target
+
+**Attack**: Unstoppable
 
 The Bounty Hunter is assigned a target as the start of the game. Alternatively, the Bounty Hunter can request a target from someone. That someone must pick a target with the next two rounds, or else they will become the Bounty Hunter's target instead. Every meeting, the Bounty Hunter is given clue to who their target might be. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter becomes a Troll. The target has a red Θ next to their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -712,15 +335,17 @@ The Bounty Hunter is assigned a target as the start of the game. Alternatively, 
 
 ## Cannibal
 
-<img align="right" width="" height="200" src="./Images/Cannibal.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Cannibal.png">
 
-### Alignment: Neutral (Evil)
-### Win Condition: Eat a certain number of bodies
-### Origin: The Other Roles Vulture
+**Alignment**: Neutral (Evil)
+
+**Win Condition**: Eat a certain number of bodies
+
+**Origin**: The Other Roles Vulture
 
 The Cannibal can eat the body which wipes it away, like the Janitor.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -731,16 +356,19 @@ The Cannibal can eat the body which wipes it away, like the Janitor.
 
 ## Cryomaniac
 
-<img align="right" width="" height="200" src="./Images/Cryomaniac.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Cryomaniac.png">
 
-### Alignment: Neutral (Killing)
-### Win Condition: Freeze anyone who can oppose them
-### Attack: Unstoppable
-### Defense: Basic when up to 2 players are doused
+**Alignment**: Neutral (Killing)
 
-The Cryomaniac can douse players in coolant and freeze them similar to the Arsonist's dousing in gasoline and ignite. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac may also directly kill. Doused players have a purple λ next to their names. The Cryomaniac has basic defense when they have at most 2 players doused.
+**Win Condition**: Freeze anyone who can oppose them
 
-### Game Options
+**Attack**: Unstoppable
+
+**Defense**: Basic when up to 2 players are doused
+
+The Cryomaniac can douse players in coolant and freeze them similar to the Arsonist's dousing in gasoline and ignition. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac may also directly kill. Doused players have a purple λ next to their names. The Cryomaniac has basic defense when they have at most 2 players doused. When trying to freeze players, if they are doused by an Arsonist, the douse is removed for both and the target is spared.
+
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -749,15 +377,17 @@ The Cryomaniac can douse players in coolant and freeze them similar to the Arson
 
 ## Dracula
 
-<img align="right" width="" height="200" src="./Images/Dracula.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Dracula.png">
 
-### Alignment: Neutral (Neophyte)
-### Win Condition: Convert or kill anyone who can oppose them
-### Attack: Basic
+**Alignment**: Neutral (Neophyte)
 
-The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into an Undead. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula. Members of the Undead have a grey γ next to their names.
+**Win Condition**: Convert or kill anyone who can oppose them
 
-### Game Options
+**Attack**: Basic
+
+The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into an Undead. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula. The Dracula can only convert once per round. Members of the Undead have a grey γ next to their names.
+
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -766,16 +396,19 @@ The Dracula is the only Undead that spawns in. The Dracula is the leader of the 
 
 ## Executioner
 
-<img align="right" width="" height="200" src="./Images/Executioner.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Executioner.png">
 
-### Alignment: Neutral (Evil)
-### Win Condition: Live (or die according to the settings) to see their target get ejected
-### Origin: Town Of Salem
-### Attack: Unstoppable
+**Alignment**: Neutral (Evil)
+
+**Win Condition**: Live (or die according to the settings) to see their target get ejected
+
+**Origin**: Town Of Salem
+
+**Attack**: Unstoppable
 
 The Executioner has no abilities and instead must use gas-lighting techniques to get their target ejected. The Executioner's target, by default, is always non-Crew Sovereign Crew. Alternatively, the Executioner can pick their own target to try and eject. Once their target is ejected, the Executioner can doom those who voted for their target. If their target dies before getting ejected, the Executioner turns into a Jester. Targets have a grey § next to their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -789,27 +422,33 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 
 ## Glitch
 
-<img align="right" width="" height="200" src="./Images/Glitch.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Glitch.png">
 
-### Alignment: Neutral (Killing)
-### Win Condition: Neutralise anyone who can oppose them
-### Origin: Town Of Us
-### Attack: Basic
-### Defense: Powerful when hacking
+**Alignment**: Neutral (Killing)
+
+**Win Condition**: Neutralise anyone who can oppose them
+
+**Origin**: Town Of Us
+
+**Attack**: Basic
+
+**Defense**: Powerful when hacking
 
 The Glitch can mimic someone, which results in them looking exactly like the other person. They can kill normally. The Glitch can also hack a player, rendering them unable to use their ability or perform tasks and disabling their defense while gaining Powerful defense in return.
 
 ## Guardian Angel
 
-<img align="right" width="" height="200" src="./Images/GuardianAngel.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/GuardianAngel.png">
 
-### Alignment: Neutral (Benign)
-### Win Condition: Have their target live to see the end of the game
-### Origin: Town Of Salem
+**Alignment**: Neutral (Benign)
 
-The Guardian Angel more or less aligns themselves with the faction of their target. Alternatively, the Guardian Angel can pick their own target to protect. The Guardian Angel will win with anyone as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and a white η when protected next to their names. The Guardian Angel provides Powerful defense to their target when protecting.
+**Win Condition**: Have their target live to see the end of the game
 
-### Game Options
+**Origin**: Town Of Salem
+
+The Guardian Angel more or less aligns themselves with the faction of their target. Alternatively, the Guardian Angel can pick their own target to protect. The Guardian Angel will win with anyone as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and a white η when protected next to their names. The Guardian Angel provides Powerful defense to their target when protecting. The Guardian Angel can also protect when they are dead.
+
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -821,15 +460,17 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 
 ## Guesser
 
-<img align="right" width="" height="200" src="./Images/Guesser.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Guesser.png">
 
-### Alignment: Neutral (Evil)
-### Win Condition: Guess their target's role
-### Attack: Unstoppable
+**Alignment**: Neutral (Evil)
 
-The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their target's role. If the target dies not by the Gusser's hands, the Guesser becomes an Actor with the target role list that of their target's role. Upon guessing their target, the Guesser can freely guess anyone. Targets have a beige π next to their names.
+**Win Condition**: Guess their target's role
 
-### Game Options
+**Attack**: Unstoppable
+
+The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their target's role. If the target dies not by the Guesser's hands, the Guesser becomes an Actor with the target role list that of their target's role. Upon guessing their target, the Guesser can freely guess anyone. Targets have a beige π next to their names.
+
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -842,16 +483,19 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 
 ## Jackal
 
-<img align="right" width="" height="200" src="./Images/Jackal.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Jackal.png">
 
-### Alignment: Neutral (Neophyte)
-### Win Condition: Bribe the crew into joining their side and eliminate any threats
-### Origin: Better TOS
-### Attack: Basic
+**Alignment**: Neutral (Neophyte)
+
+**Win Condition**: Bribe the crew into joining their side and eliminate any threats
+
+**Origin**: Better TOS
+
+**Attack**: Basic
 
 The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. The two recruits will always have opposing base win conditions. When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead. Members of the Cabal have a dark grey $ next to their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -859,16 +503,19 @@ The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the star
 
 ## Jester
 
-<img align="right" width="" height="200" src="./Images/Jester.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Jester.png">
 
-### Alignment: Neutral (Evil)
-### Win Condition: Get ejected
-### Origin: Town Of Salem
-### Attack: Unstoppable
+**Alignment**: Neutral (Evil)
+
+**Win Condition**: Get ejected
+
+**Origin**: Town Of Salem
+
+**Attack**: Unstoppable
 
 The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the Jester can haunt those who voted for them, killing them from beyond the grave.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -878,17 +525,21 @@ The Jester has no abilities and must make themselves appear to be evil to the Cr
 
 ## Juggernaut
 
-<img align="right" width="" height="200" src="./Images/Juggernaut.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Juggernaut.png">
 
-### Alignment: Neutral (Killing)
-### Win Condition: Assault anyone who can oppose them
-### Origin: Town Of Us + Town Of Salem
-### Attack: Starts with Basic, Ends with Unstoppable
-### Defense: Basic with at least 3 kills
+**Alignment**: Neutral (Killing)
+
+**Win Condition**: Assault anyone who can oppose them
+
+**Origin**: Town Of Us + Town Of Salem
+
+**Attack**: Starts with Basic, Ends with Unstoppable
+
+**Defense**: Basic with at least 3 kills
 
 The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill cooldown no longer decreases and instead gives them other buffs, like bypassing protections. The Juggernaut's kill power increases with each kill and caps at Unstoppable.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -896,27 +547,33 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 
 ## Murderer
 
-<img align="right" width="" height="200" src="./Images/Murderer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Murderer.png">
 
-### Alignment: Neutral (Killing)
-### Win Condition: Murder anyone who can oppose them
-### Attack: Basic
-### Defense: Basic
+**Alignment**: Neutral (Killing)
+
+**Win Condition**: Murder anyone who can oppose them
+
+**Attack**: Basic
+
+**Defense**: Basic
 
 The Murderer is a simple Neutral Killer with no special abilities. The only role that has both passive defense and attack.
 
 ## Necromancer
 
-<img align="right" width="" height="200" src="./Images/Necromancer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Necromancer.png">
 
-### Alignment: Neutral (Neophyte)
-### Win Condition: Bring the dead to their side and gain a majority
-### Origin: Partly Town Of Us
-### Attack: Basic
+**Alignment**: Neutral (Neophyte)
+
+**Win Condition**: Bring the dead to their side and gain a majority
+
+**Origin**: Partly Town Of Us
+
+**Attack**: Basic
 
 The Necromancer is essentially an evil Altruist. They can resurrect dead players and make them join the Necromancer's team, the Reanimated. There is a limit to how many times can the Necromancer can kill and resurrect players. Reviving someone with a [Lover](#lovers) when both lovers die will revive that Lover too. The Necromancer cannot revive the same person twice. Members of the Reanimated have a dark pink Σ next to their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -931,17 +588,21 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 
 ## Pestilence
 
-<img align="right" width="" height="200" src="./Images/Pestilence.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Pestilence.png">
 
-### Alignment: Neutral (Apocalypse)
-### Win Condition: Obliterate anyone who can oppose them
-### Origin: Town Of Salem
-### Attack: Unstoppable
-### Defense: Invincible
+**Alignment**: Neutral (Apocalypse)
+
+**Win Condition**: Obliterate anyone who can oppose them
+
+**Origin**: Town Of Salem
+
+**Attack**: Unstoppable
+
+**Defense**: Invincible
 
 When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targetting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to Neutral (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -950,15 +611,17 @@ When Pestilence first emerges, every player is given one stack of a deadly plagu
 
 ## Phantom
 
-<img align="right" width="" height="200" src="./Images/Phantom.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Phantom.png">
 
-### Alignment: Neutral (Proselyte)
-### Win Condition: Finish your tasks without getting clicked or having the game end
-### Origin: Ottomated
+**Alignment**: Neutral (Proselyte)
+
+**Win Condition**: Finish your tasks without getting clicked or having the game end
+
+**Origin**: Ottomated
 
 The Phantom spawns when a Neutral player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -967,50 +630,63 @@ The Phantom spawns when a Neutral player dies without accomplishing their object
 
 ## Plaguebearer
 
-<img align="right" width="" height="200" src="./Images/Plaguebearer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Plaguebearer.png">
 
-### Alignment: Neutral (Harbinger)
-### Win Condition: Infect everyone and turn into Pestilence or live to the end by killing off anyone who can oppose them
-### Origin: Town Of Salem
-### Defense: Basic for as long as half the players are infected
+**Alignment**: Neutral (Harbinger)
+
+**Win Condition**: Infect everyone and turn into Pestilence or live to the end by killing off anyone who can oppose them
+
+**Origin**: Town Of Salem
+
+**Defense**: Basic for as long as half the players are infected
 
 The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.
 
 ## Serial Killer
 
-<img align="right" width="" height="200" src="./Images/SerialKiller.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/SerialKiller.png">
 
-### Alignment: Neutral (Killing)
-### Win Condition: Stab anyone who can oppose them
-### Origin: Town Of Us Werewolf
-### Attack: Powerful
-### Defense: Basic on bloodlust
+**Alignment**: Neutral (Killing)
+
+**Win Condition**: Stab anyone who can oppose them
+
+**Origin**: Town Of Us Werewolf
+
+**Attack**: Powerful
+
+**Defense**: Basic on bloodlust
 
 Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the ability to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust. The Serial Killer gets Basic defense when in bloodlust.
 
 ## Survivor
 
-<img align="right" width="" height="200" src="./Images/Survivor.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Survivor.png">
 
-### Alignment: Neutral (Benign)
-### Win Condition: Live to see the end of the game
-### Origin: Town Of Salem
-### Defense: Basic when vesting
+**Alignment**: Neutral (Benign)
+
+**Win Condition**: Live to see the end of the game
+
+**Origin**: Town Of Salem
+
+**Defense**: Basic when vesting
 
 The Survivor wins by simply surviving. They can vest which makes them immortal for a short duration. Vesting Survivors have a yellow υ next to their names.
 
 ## Thief
 
-<img align="right" width="" height="200" src="./Images/Thief.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Thief.png">
 
-### Alignment: Neutral (Benign)
-### Win Condition: Kill a killer and win as their role
-### Origin: The Other Roles
-### Attack: Powerful
+**Alignment**: Neutral (Benign)
+
+**Win Condition**: Kill a killer and win as their role
+
+**Origin**: The Other Roles
+
+**Attack**: Powerful
 
 The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will die. After stealing their target's role, the Thief can now win as whatever role they have become. The Thief can also guess players in-meeting to steal their roles.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1020,27 +696,33 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 
 ## Troll
 
-<img align="right" width="" height="200" src="./Images/Troll.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Troll.png">
 
-### Alignment: Neutral (Evil)
-### Win Condition: Get killed
-### Origin: SocksFor1
-### Attack: Unstoppable
+**Alignment**: Neutral (Evil)
+
+**Win Condition**: Get killed
+
+**Origin**: SocksFor1
+
+**Attack**: Unstoppable
 
 The Troll just wants to be killed, but not ejected. The Troll can "interact" with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence. Killing the Troll makes the Troll kill their killer.
 
 ## Werewolf
 
-<img align="right" width="" height="200" src="./Images/Werewolf.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Werewolf.png">
 
-### Alignment: Neutral (Killing)
-### Win Condition: Maul anyone who can oppose them
-### Attack: Powerful
-### Defense: Basic when not attacking
+**Alignment**: Neutral (Killing)
+
+**Win Condition**: Maul anyone who can oppose them
+
+**Attack**: Powerful
+
+**Defense**: Basic when not attacking
 
 The Werewolf can kill all players within a certain radius. The Werewolf cannot attack on the first and third rounds, but gets Basic defense in exchange.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1048,16 +730,19 @@ The Werewolf can kill all players within a certain radius. The Werewolf cannot a
 
 ## Whisperer
 
-<img align="right" width="" height="200" src="./Images/Whisperer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Whisperer.png">
 
-### Alignment: Neutral (Neophyte)
-### Win Condition: Persuade others into joining the cult
-### Origin: Partly Town Of Us
-### Attack: Basic
+**Alignment**: Neutral (Neophyte)
+
+**Win Condition**: Persuade others into joining the cult
+
+**Origin**: Partly Town Of Us
+
+**Attack**: Basic
 
 The Whisperer can whisper to all players within a certain radius. With each whisper, the chances of bringing someone over to the Whisperer's side increases till they do convert. Members of the Sect have a pink Λ next to their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1071,7 +756,7 @@ The Whisperer can whisper to all players within a certain radius. With each whis
 
 # Intruder Roles
 
-<img align="right" width="" height="200" src="./Images/Intruder.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Intruder.png">
 
 Each member of this faction has the ability to kill alongside an ability pertaining to their role. The main theme of this faction is destruction and raw power. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. All members can sabotage to distract the Crew from their tasks. All Intruders deal a Basic attack when killing.
 
@@ -1087,16 +772,17 @@ Each member of this faction has the ability to kill alongside an ability pertain
 
 ## Ambusher
 
-<img align="right" width="" height="200" src="./Images/Ambusher.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Ambusher.png">
 
-### Alignment: Intruder (Killing)
-### Attack: Basic
+**Alignment**: Intruder (Killing)
+
+**Attack**: Basic
 
 The Ambusher can temporarily force anyone to go on alert, killing anyone who interacts with the Ambusher's target. Attacks via ambush deal a Basic attack to the interactor. Ambushers also give their targets Powerful defense.
 
 <br>
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1104,14 +790,15 @@ The Ambusher can temporarily force anyone to go on alert, killing anyone who int
 
 ## Blackmailer
 
-<img align="right" width="" height="200" src="./Images/Blackmailer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Blackmailer.png">
 
-### Alignment: Intruder (Concealing)
-### Origin: Town Of Salem
+**Alignment**: Intruder (Concealing)
+
+**Origin**: Town Of Salem
 
 The Blackmailer can blackmail people. Blackmailed players cannot speak during the next meeting and have a green Φ next to their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1121,14 +808,15 @@ The Blackmailer can blackmail people. Blackmailed players cannot speak during th
 
 ## Camouflager
 
-<img align="right" width="" height="200" src="./Images/Camouflager.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Camouflager.png">
 
-### Alignment: Intruder (Concealing)
-### Origin: Town Of Us
+**Alignment**: Intruder (Concealing)
+
+**Origin**: Town Of Us
 
 The Camouflager can camouflage all players at once, turning them all grey and anonymous.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1137,14 +825,15 @@ The Camouflager can camouflage all players at once, turning them all grey and an
 
 ## Consigliere
 
-<img align="right" width="" height="200" src="./Images/Consigliere.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Consigliere.png">
 
-### Alignment: Intruder (Support)
-### Origin: Town Of Salem
+**Alignment**: Intruder (Support)
+
+**Origin**: Town Of Salem
 
 The Consigliere can reveal people's roles. They cannot guess those they revealed for obvious reasons.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1152,23 +841,25 @@ The Consigliere can reveal people's roles. They cannot guess those they revealed
 
 ## Consort
 
-<img align="right" width="" height="200" src="./Images/Consort.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Consort.png">
 
-### Alignment: Intruder (Support)
-### Origin: Town Of Salem
+**Alignment**: Intruder (Support)
+
+**Origin**: Town Of Salem
 
 The Consort can roleblock players and prevent them from doing anything for a short while. They behave just like an [Escort](#escort) but the Consort can roleblock from any range.
 
 ## Disguiser
 
-<img align="right" width="" height="200" src="./Images/Disguiser.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Disguiser.png">
 
-### Alignment: Intruder (Deception)
-### Origin: Partly Town Of Salem
+**Alignment**: Intruder (Deception)
+
+**Origin**: Partly Town Of Salem
 
 The Disguiser can disguise other players. At the beginning of each, they can choose someone to measure. They can then disguise the next nearest person into the measured person for a limited amount of time after a short delay.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1177,14 +868,15 @@ The Disguiser can disguise other players. At the beginning of each, they can cho
 
 ## Enforcer
 
-<img align="right" width="" height="200" src="./Images/Enforcer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Enforcer.png">
 
-### Alignment: Intruder (Killing)
-### Attack: Powerful via bomb/Basic via indirect kill
+**Alignment**: Intruder (Killing)
+
+**Attack**: Powerful via bomb/Basic via indirect kill
 
 The Enforcer can plant bombs on players. After a short while, their target will be alerted to the bomb's presence and must kill someone to get rid of it. If they fail to do so within a certain time limit, the bomb will explode, killing everyone within its vicinity. Bombs explosions deal Powerful attacks to all victims and a bombed player will deal a Basic attack to their target.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1192,24 +884,25 @@ The Enforcer can plant bombs on players. After a short while, their target will 
 
 ## Ghoul
 
-<img align="right" width="" height="200" src="./Images/Ghoul.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Ghoul.png">
 
-### Alignment: Intruder (Utility)
-### Origin: Partly The Other Roles Witch
+**Alignment**: Intruder (Utility)
+
+**Origin**: Partly The Other Roles Witch
 
 The Ghoul is a dead Intruder. Every round, the Ghoul can mark a player for death. All players are told who is marked and the marked player will die at the end of the next meeting. The only way to save a marked player is to click the Ghoul that marked them. Marked players have a yellow χ next to their names.
 
 ## Godfather
 
-<img align="right" width="" height="200" src="./Images/Godfather.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Godfather.png">
 
-<img align="right" width="" height="200" src="./Images/PromotedGodfather.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/PromotedGodfather.png">
 
-### Alignment: Intruder (Head)
+**Alignment**: Intruder (Head)
 
 The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, the Mafioso becomes the new Godfather and has lowered cooldowns.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1217,14 +910,17 @@ The Godfather can only spawn in 3+ Intruder games. They can choose to promote a 
 
 ## Grenadier
 
-<img align="right" width="" height="200" src="./Images/Grenadier.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Grenadier.png">
 
-### Alignment: Intruder (Concealing)
-### Origin: Town Of Polus
+**Alignment**: Intruder (Concealing)
+
+**Origin**: Town Of Polus
 
 The Grenadier can throw flash grenades which blinds nearby players. However, a sabotage and a flash grenade can not be active at the same time.
 
-### Game Options
+<br>
+
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1233,23 +929,25 @@ The Grenadier can throw flash grenades which blinds nearby players. However, a s
 
 ## Impostor
 
-<img align="right" width="" height="200" src="./Images/Impostor.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Impostor.png">
 
-### Alignment: Intruder (Utility)
-### Origin: Among Us
+**Alignment**: Intruder (Utility)
+
+**Origin**: Among Us
 
 Just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
 
 ## Janitor
 
-<img align="right" width="" height="200" src="./Images/Janitor.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Janitor.png">
 
-### Alignment: Intruder (Concealing)
-### Origin: Fusion of Town Of Us Janitor and Undertaker
+**Alignment**: Intruder (Concealing)
+
+**Origin**: Fusion of Town Of Us Janitor and Undertaker
 
 The Janitor can drag, drop and clean up bodies. Both their Kill and Clean ability usually have a shared cooldown, meaning they have to choose which one they want to use.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1259,33 +957,37 @@ The Janitor can drag, drop and clean up bodies. Both their Kill and Clean abilit
 
 ## Mafioso
 
-<img align="right" width="" height="200" src="./Images/Mafioso.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Mafioso.png">
 
-### Alignment: Intruder (Utility)
+**Alignment**: Intruder (Utility)
 
 The Mafioso is promoted from a non-Godfather Intruder role. The Mafioso by themself is nothing special, but when the Godfather dies, the Mafioso becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.
 
 ## Miner/Herbalist
 
-<img align="right" width="" height="200" src="./Images/Miner.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Miner.png">
 
-<img align="right" width="" height="200" src="./Images/Herbalist.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Herbalist.png">
 
-### Alignment: Intruder (Support)
-### Origin: Town Of Us
+**Alignment**: Intruder (Support)
+
+**Origin**: Town Of Us
 
 The Miner can create new vents. These vents only connect to each other, forming a new passageway. On the Fungle map, the Miner is named Herbalist for consistency.
 
+<br><br><br><br><br><br><br><br>
+
 ## Morphling
 
-<img align="right" width="" height="200" src="./Images/Morphling.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Morphling.png">
 
-### Alignment: Intruder (Deception)
-### Origin: Town Of Us
+**Alignment**: Intruder (Deception)
+
+**Origin**: Town Of Us
 
 The Morphling can morph into another player. During the round, they can choose someone to sample. They can then morph into the sampled person at any time for a limited amount of time.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1293,14 +995,15 @@ The Morphling can morph into another player. During the round, they can choose s
 
 ## Teleporter
 
-<img align="right" width="" height="200" src="./Images/Teleporter.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Teleporter.png">
 
-### Alignment: Intruder (Support)
-### Origin: Town Of Us Escapist
+**Alignment**: Intruder (Support)
+
+**Origin**: Town Of Us Escapist
 
 The Teleporter can mark a location which they can then teleport to later.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1308,16 +1011,19 @@ The Teleporter can mark a location which they can then teleport to later.
 
 ## Wraith
 
-<img align="right" width="" height="200" src="./Images/Wraith.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Wraith.png">
 
-### Alignment: Intruder (Deception)
-### Origin: Town Of Us Swooper
+**Alignment**: Intruder (Deception)
+
+**Origin**: Town Of Us Swooper
 
 The Wraith can temporarily turn invisible.
 
+<br><br>
+
 # Syndicate Roles
 
-<img align="right" width="" height="200" src="./Images/Syndicate.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Syndicate.png">
 
 Each member of this faction has a special ability and then after a certain number of meetings, can also kill. The main theme of this faction is chaos. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. After a certain number of meetings, the Syndicate can retreive the "Chaos Drive" which gives the holder the ability to kill (if they couldn't already) while also enhancing their existing abilities. Chaos Drive holders deal a Basic attack to targets.
 
@@ -1332,10 +1038,11 @@ Each member of this faction has a special ability and then after a certain numbe
 
 ## Anarchist
 
-<img align="right" width="" height="200" src="./Images/Anarchist.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Anarchist.png">
 
-### Alignment: Syndicate (Utility)
-### Attack: Basic
+**Alignment**: Syndicate (Utility)
+
+**Attack**: Basic
 
 Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only benefit is its ability to kill from the beginning of the game.
 
@@ -1343,9 +1050,9 @@ Just a plain Syndicate with no abilities and only spawns if all the other roles 
 
 ## Banshee
 
-<img align="right" width="" height="200" src="./Images/Banshee.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Banshee.png">
 
-### Alignment: Syndicate (Utility)
+**Alignment**: Syndicate (Utility)
 
 The Banshee is a dead Syndicate. The Banshee can block every non-Syndicate player every once in a while. This role cannot get the Chaos Drive.
 
@@ -1353,14 +1060,15 @@ The Banshee is a dead Syndicate. The Banshee can block every non-Syndicate playe
 
 ## Bomber
 
-<img align="right" width="" height="200" src="./Images/Bomber.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Bomber.png">
 
-### Alignment: Syndicate (Killing)
-### Attack: Powerful
+**Alignment**: Syndicate (Killing)
+
+**Attack**: Powerful
 
 The Bomber can place a bomb which can be remotely detonated at any time. Anyone caught inside the bomb's radius at the time of detonation will be killed. Only the latest placed bomb will detonate, unless the Bomber holds the Chaos Drive, with which they can detonate all bombs at once. Bomb detonation deals a Powerful attack to victims.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1372,13 +1080,13 @@ The Bomber can place a bomb which can be remotely detonated at any time. Anyone 
 
 ## Concealer
 
-<img align="right" width="" height="200" src="./Images/Concealer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Concealer.png">
 
-### Alignment: Syndicate (Disruption)
+**Alignment**: Syndicate (Disruption)
 
 The Concealer can make a player invisible for a short while. With the Chaos Drive, this applies to everyone.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1386,14 +1094,15 @@ The Concealer can make a player invisible for a short while. With the Chaos Driv
 
 ## Crusader
 
-<img align="right" width="" height="200" src="./Images/Crusader.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Crusader.png">
 
-### Alignment: Syndicate (Killing)
-### Attack: Powerful via radial crusade/Basic via indirect attack
+**Alignment**: Syndicate (Killing)
+
+**Attack**: Powerful via radial crusade/Basic via indirect attack
 
 The Crusader can temporaily force anyone to go on alert, killing anyone who interacts with the Crusader's target. With the Chaos Drive, attempting to interact with the Crusader's target will cause the target to kill everyone within a certain range, including the target themselves. Crusades give the target Powerful defense and attack interactors with a Basic attack. A Radial crusade attack via the Chaos Drive deals a Powerful attack to all victims.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1402,15 +1111,17 @@ The Crusader can temporaily force anyone to go on alert, killing anyone who inte
 
 ## Collider
 
-<img align="right" width="" height="200" src="./Images/Collider.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Collider.png">
 
-### Alignment: Syndicate (Killing)
-### Origin: Partly Las Monjas YinYanger
-### Attack: Powerful
+**Alignment**: Syndicate (Killing)
+
+**Origin**: Partly Las Monjas YinYanger
+
+**Attack**: Powerful
 
 The Collider can mark players as positive and negative. If these charged players come within a certain distance of each other, they will die together. With the Chaos Drive, the Collider can charge themselves to collide with the other charged players. This only kills the charged victim. The range of collision also increases with the Chaos Drive. Collisions deal a Powerful attack to charged targets.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1421,15 +1132,15 @@ The Collider can mark players as positive and negative. If these charged players
 
 ## Drunkard
 
-<img align="right" width="" height="200" src="./Images/Drunkard.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Drunkard.png">
 
-### Alignment: Syndicate (Disruption)
+**Alignment**: Syndicate (Disruption)
 
 The Drunkard can reverse a player's controls for a short while. With the Chaos Drive, this applies to everyone.
 
 <br><br>
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1437,14 +1148,15 @@ The Drunkard can reverse a player's controls for a short while. With the Chaos D
 
 ## Framer
 
-<img align="right" width="" height="200" src="./Images/Framer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Framer.png">
 
-### Alignment: Syndicate (Disruption)
-### Origin: Partly Town Of Salem
+**Alignment**: Syndicate (Disruption)
+
+**Origin**: Partly Town Of Salem
 
 The Framer can frame players, making them appear to be evil or have wrong results. This effects lasts as long as the Framer is alive. With the Chaos Drive, the Framer can frame players within a certain radius. Framed will have their results altered to investigative roles and allows them to die to killers like [Vigilante](#vigilante) and [Assassin](#assassin) easily and have a cyan ς next to their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1452,25 +1164,27 @@ The Framer can frame players, making them appear to be evil or have wrong result
 
 ## Poisoner
 
-<img align="right" width="" height="200" src="./Images/Poisoner.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Poisoner.png">
 
-### Alignment: Syndicate (Killing)
-### Origin: Town Of Us
-### Attack: Basic
+**Alignment**: Syndicate (Killing)
+
+**Origin**: Town Of Us
+
+**Attack**: Basic
 
 The Poisoner can poison a player instead of killing them. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere. Poisoned players are dealt a Basic attack astrally.
 
 ## Rebel
 
-<img align="right" width="" height="200" src="./Images/Rebel.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Rebel.png">
 
-<img align="right" width="" height="200" src="./Images/PromotedRebel.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/PromotedRebel.png">
 
-### Alignment: Syndicate (Power)
+**Alignment**: Syndicate (Power)
 
 The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1478,15 +1192,15 @@ The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fel
 
 ## Shapeshifter
 
-<img align="right" width="" height="200" src="./Images/Shapeshifter.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Shapeshifter.png">
 
-### Alignment: Syndicate (Disruption)
+**Alignment**: Syndicate (Disruption)
 
 The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are suffled.
 
 <br><br>
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1494,23 +1208,25 @@ The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, ev
 
 ## Sidekick
 
-<img align="right" width="" height="200" src="./Images/Sidekick.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Sidekick.png">
 
-### Alignment: Syndicate (Utility)
-### Attack: Basic
+**Alignment**: Syndicate (Utility)
+
+**Attack**: Basic
 
 The Sidekick is promoted from a non-Rebel Syndicate role. The Sidekick by themselves is nothing special, but when the Rebel dies, the Sidekick becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.
 
 ## Silencer
 
-<img align="right" width="" height="200" src="./Images/Silencer.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Silencer.png">
 
-### Alignment: Syndicate (Disruption)
-### Origin: Better TOS Banshee
+**Alignment**: Syndicate (Disruption)
+
+**Origin**: Better TOS Banshee
 
 The Silencer can silencer people. Silenced plaeyrs cannot see the messages being sent by others but can still talk. Other players can still talk but can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking. Silencer players have a pale green 乂 next to their names.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1520,14 +1236,15 @@ The Silencer can silencer people. Silenced plaeyrs cannot see the messages being
 
 ## Spellslinger
 
-<img align="right" width="" height="200" src="./Images/Spellslinger.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Spellslinger.png">
 
-### Alignment: Syndicate (Power)
-### Origin: Town Of Salem Hex Master
+**Alignment**: Syndicate (Power)
+
+**Origin**: Town Of Salem Hex Master
 
 The Spellslinger is a powerful role who can cast curses on players. When all non-Syndicate players are cursed, the game ends in a Syndicate victory. With each spell cast, the spellbind cooldown increases. This effect is negated by the Chaos Drive. Spelled players have a blue ø next to their names during a meeting.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1535,9 +1252,9 @@ The Spellslinger is a powerful role who can cast curses on players. When all non
 
 ## Stalker
 
-<img align="right" width="" height="200" src="./Images/Stalker.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Stalker.png">
 
-### Alignment: Syndicate (Support)
+**Alignment**: Syndicate (Support)
 
 The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, the arrows are no longer affected by camouflages and all players instantly have an arrow pointing at them.
 
@@ -1545,14 +1262,15 @@ The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, t
 
 ## Timekeeper
 
-<img align="right" width="" height="200" src="./Images/Timekeeper.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Timekeeper.png">
 
-### Alignment: Syndicate (Disruption)
-### Origin: Reworked Town Of Us Time Lord
+**Alignment**: Syndicate (Disruption)
+
+**Origin**: Reworked Town Of Us Time Lord
 
 The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can freeze time, making everyone unable to move and with it, the Timekeeper rewinds players instead.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1561,14 +1279,15 @@ The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can fre
 
 ## Warper
 
-<img align="right" width="" height="200" src="./Images/Warper.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Warper.png">
 
-### Alignment: Syndicate (Support)
-### Origin: Partly Town Of Us Disperser
+**Alignment**: Syndicate (Support)
+
+**Origin**: Partly Town Of Us Disperser
 
 The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map. Warping a player makes them unable to move and play an animation. During warping, they can be targeted by anyone, opening up the possibility of team killing.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1580,33 +1299,37 @@ Each role within this group only spawns in certain game modes and come with thei
 
 ## Hunted
 
-<img align="right" width="" height="200" src="./Images/Hunted.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Hunted.png">
 
 ### Game Mode: Hide And Seek
-### Win Condition: Finish tasks with the other Hunted before the Hunters kill or convert all of them
+
+**Win Condition**: Finish tasks with the other Hunted before the Hunters kill or convert all of them
 
 The Hunted is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunted has no active abilities and just has a higher vision than the Hunters and might be able to chat.
 
 ## Hunter
 
-<img align="right" width="" height="200" src="./Images/Hunter.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Hunter.png">
 
 ### Game Mode: Hide And Seek
-### Win Condition: Kill or convert all of the Hunted
-### Attack: Basic
+
+**Win Condition**: Kill or convert all of the Hunted
+
+**Attack**: Basic
 
 The Hunter is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunter can kill Hunted, or convert them to Hunters. The Hunters also have a higher run speed than Hunters but can barely see in exchange. All attempts at killing deal a Basic attack.
 
 ## Runner
 
-<img align="right" width="" height="200" src="./Images/Runner.png">
+<img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Runner.png">
 
 ### Game Mode: Task Race
-### Win Condition: Finish tasks before the others
+
+**Win Condition**: Finish tasks before the others
 
 The Runner is a role that only spawns in the Task Race game mode. It has no abilities and just ends the game when they are the first to finish.
 
-<br>
+<br><br>
 
 -----------------------
 
@@ -1615,40 +1338,50 @@ The Runner is a role that only spawns in the Task Race game mode. It has no abil
 Dispositions are basically a second objective for the player. They can either choose to win the regular way, or win via their Disposition's condition.
 
 ## Allied
-### Applied To: Neutral (Killing)
-### Win Condition: Win with whichever faction they are aligned with
-### Symbol: ζ
+
+**Applied To**: Neutral (Killing)
+
+**Win Condition**: Win with whichever faction they are aligned with
+
+**Symbol**: ζ
 
 An Allied Neutral Killer now sides with either the Crew, Intruders or the Syndicate. In the case of the latter two, all faction members are shown who is their Ally, and can no longer kill them. A Crew-Allied will have tasks that they must complete.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Allied Faction | Which faction the Allied joins | String | Random |
 
 ## Corrupted
-### Applied to: Crew
-### Win Condition: Kill everyone
-### Attack: Basic
-### Symbol: δ
+
+**Applied To**: Crew
+
+**Win Condition**: Kill everyone
+
+**Attack**: Basic
+
+**Symbol**: δ
 
 The Corrupted is a member of the Crew with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared. Corrupted adds a level of attack to the applied crewmate.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | All Corrupted Win Together | Self descriptive | Toggle | False |
 
 ## Defector
-### Applied To: Intruders and Syndicate
-### Win Condition: Be the last one of thier faction to switch sides
-### Symbol: ε
+
+**Applied To**: Intruders and Syndicate
+
+**Win Condition**: Be the last one of thier faction to switch sides
+
+**Symbol**: ε
 
 A Defector switches sides when they happen to be the last player alive in their original faction.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1656,14 +1389,18 @@ A Defector switches sides when they happen to be the last player alive in their 
 | Defector Knows Who They Are | Whether the Defector knows who they are | Toggle | True |
 
 ## Fanatic
-### Applied To: Crew
-### Win Condition: Get attacked by either the Intruders or the Syndicate to join their team
-### Origin: The Other Roles: Community Edition
-### Symbol: ♠
+
+**Applied To**: Crew
+
+**Win Condition**: Get attacked by either the Intruders or the Syndicate to join their team
+
+**Origin**: The Other Roles: Community Edition
+
+**Symbol**: ♠
 
 When attacked, the Fanatic joins whichever faction their attacker belongs to. From then on, their alliance sits with said faction.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1673,13 +1410,16 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 | Turned Fanatic Swaps Colours for Investigative Roles | Self descriptive | Toggle | False |
 
 ## Linked
-### Applied To: Neutrals
-### Win Condition: Help the other link win
-### Symbol: Ψ
+
+**Applied To**: Neutrals
+
+**Win Condition**: Help the other link win
+
+**Symbol**: Ψ
 
 The Linked players are a watered down pair of [Lovers](#lovers). They can help the other player win. As long as one of the links wins, the other does too, regardless of who or how they won.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1687,14 +1427,18 @@ The Linked players are a watered down pair of [Lovers](#lovers). They can help t
 | Linked Know Each Other's Roles | Self descriptive | Toggle | True |
 
 ## Lovers
-### Applied To: Everyone
-### Win Condition: Be 2 of the 3 final players
-### Origin: Town Of Us
-### Symbol: ♥
+
+**Applied To**: Everyone
+
+**Win Condition**: Be 2 of the 3 final players
+
+**Origin**: Town Of Us
+
+**Symbol**: ♥
 
 The Lovers are two players who are linked together. They gain the primary objective to stay alive together. In order to so, they gain access to a private chat, only visible by them in between meetings. However, they can also win with their respective team.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1703,26 +1447,32 @@ The Lovers are two players who are linked together. They gain the primary object
 | Lovers Know Each Other's Roles | Self descriptive | Toggle | True |
 
 ## Mafia
-### Applied To: Everyone
-### Win Condition: Kill off anyone who is not a Mafia member
-### Symbol: ω
+
+**Applied To**: Everyone
+
+**Win Condition**: Kill off anyone who is not a Mafia member
+
+**Symbol**: ω
 
 The Mafia are a group of players with a linked win condition. They must kill anyone who is not a member of the Mafia. All Mafia win together.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Mafia Know Each Other's Roles | Self descriptive | Toggle | True |
 
 ## Overlord
-### Applied To: Neutrals
-### Win Condition: Survive a set amount of meetings
-### Symbol: β
+
+**Applied To**: Neutrals
+
+**Win Condition**: Survive a set amount of meetings
+
+**Symbol**: β
 
 Every meeting, for as long as an Overlord is alive, players will be alerted to their existence. The game ends if the Overlord lives long enough. All alive Overlords win together.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1730,13 +1480,16 @@ Every meeting, for as long as an Overlord is alive, players will be alerted to t
 | Overlord Meeting Timer | How many meetings the Overlord must survive | Number | 2 |
 
 ## Rivals
-### Applied To: Everyone
-### Win condition: Get the other rival killed without directly interfering, then live to the final 2
-### Symbol: α
+
+**Applied To**: Everyone
+
+**Win Condition**: Get the other rival killed without directly interfering, then live to the final 2
+
+**Symbol**: α
 
 The Rivals cannot do anything to each other and must get the other one killed.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1744,26 +1497,32 @@ The Rivals cannot do anything to each other and must get the other one killed.
 | Rivals Know Each Other's Roles | Self descriptive | Toggle | True |
 
 ## Taskmaster
-### Applied To: Neutrals
-### Win Condition: Finish tasks before the game ends or dying
-### Symbol: µ
+
+**Applied To**: Neutrals
+
+**Win Condition**: Finish tasks before the game ends or dying
+
+**Symbol**: µ
 
 The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Tasks Remaining When Revealed | How many tasks be remain when the Taskmaster's existence is revealed | Number | 1 |
 
 ## Traitor
-### Applied To: Crew
-### Win Condition: Finish tasks to join either the Intruders or Syndicate
-### Symbol: ♣
+
+**Applied To**: Crew
+
+**Win Condition**: Finish tasks to join either the Intruders or Syndicate
+
+**Symbol**: ♣
 
 The Traitor is a member of the Crew who must finish their tasks to switch sides. Upon doing so, they will either join the Intruders or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original role's abilities and gaining the ability to kill in the process.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1779,18 +1538,22 @@ The Traitor is a member of the Crew who must finish their tasks to switch sides.
 Modifiers are passive afflictions that change a player's gameplay.
 
 ## Astral
-### Applied To: Everyone
-### Origin: The Other Roles Anti-Teleport
+
+**Applied To**: Everyone
+
+**Origin**: The Other Roles Anti-Teleport
 
 An Astral player is not teleported to the meeting table.
 
 ## Bait
-### Applied To: Everyone
-### Origin: Town Of Us
+
+**Applied To**: Everyone
+
+**Origin**: Town Of Us
 
 Killing the Bait makes the killer auto self-report the Bait's body.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1799,24 +1562,30 @@ Killing the Bait makes the killer auto self-report the Bait's body.
 | Bait Maximum Delay | The maximum time the killer of the Bait reports the body | Time | 1s |
 
 ## Colorblind
-### Applied To: Everyone
-### Origin: Partly Town Of Us Aurial
+
+**Applied To**: Everyone
+
+**Origin**: Partly Town Of Us Aurial
 
 A colorblind player cannot tell the difference between players.
 
 ## Coward
-### Applied To: Everyone
-### Origin: Partly Town Of Us Blind
+
+**Applied To**: Everyone
+
+**Origin**: Partly Town Of Us Blind
 
 The Coward cannot report bodies.
 
 ## Diseased
-### Applied To: Everyone
-### Origin: Town Of Us
+
+**Applied To**: Everyone
+
+**Origin**: Town Of Us
 
 Killing the Diseased increases all of the killer's cooldowns.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1824,12 +1593,14 @@ Killing the Diseased increases all of the killer's cooldowns.
 | Cooldown Multiplier | How much the Cooldowns of the killer is increased by | Factor | 3x |
 
 ## Drunk
-### Applied To: Everyone
-### Origin: Town Of Us
+
+**Applied To**: Everyone
+
+**Origin**: Town Of Us
 
 The Drunk player's controls are inverted.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1838,12 +1609,14 @@ The Drunk player's controls are inverted.
 | ┗ Swap Interval | How much time must pass before the controls swap | Time | 15s |
 
 ## Dwarf
-### Applied To: Everyone
-### Origin: Partly Town Of Us Flash
+
+**Applied To**: Everyone
+
+**Origin**: Partly Town Of Us Flash
 
 The Dwarf travels at increased speed and has a much smaller body.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1851,12 +1624,14 @@ The Dwarf travels at increased speed and has a much smaller body.
 | Dwarf Scale | How small the Dwarf is in comparison to normal | Factor | 0.5x |
 
 ## Giant
-### Applied To: Everyone
-### Origin: Town Of Us
+
+**Applied To**: Everyone
+
+**Origin**: Town Of Us
 
 The Giant is a gigantic player that has a decreased walk speed.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1864,53 +1639,62 @@ The Giant is a gigantic player that has a decreased walk speed.
 | Giant Scale | How big the Giant is in comparison to normal | Factor | 1.5x |
 
 ## Indomitable
-### Applied To: Everyone
-### Origin: The Other Roles: Community Edition
+
+**Applied To**: Everyone
+
+**Origin**: The Other Roles: Community Edition
 
 The Indomitable player cannot be guessed.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Indomitable Knows Who They Are | Whether a player knows they are Indomitable at the start of a game | Toggle | True |
 
 ## Professional
-### Applied To: Assassins
-### Origin: Town Of Us Double Shot
+
+**Applied To**: Assassins
+
+**Origin**: Town Of Us Double Shot
 
 The Professional has an extra life when guessing.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Professional Knows Who They Are | Whether a player knows they are a Professional at the start of a game | Toggle | True |
 
 ## Shy
-### Applied To: Everyone
+
+**Applied To**: Everyone
 
 The Shy player cannot call meetings.
 
 ## VIP
-### Applied To: Everyone
-### Origin: Las Monjas
+
+**Applied To**: Everyone
+
+**Origin**: Las Monjas
 
 Everyone is alerted of the VIP's death through a flash of the VIP's role color and will have an arrow poiting towards the VIP's body.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | VIP Knows Who They Are | Whether a player knows they are a VIP at the start of a game | Toggle | True |
 
 ## Volatile
-### Applied To: Everyone
-### Origin: Town Of H
+
+**Applied To**: Everyone
+
+**Origin**: Town Of H
 
 A Volatile player will see and hear random things happen to them and cannot distinguish real kills and flashes from the fake ones.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1918,7 +1702,8 @@ A Volatile player will see and hear random things happen to them and cannot dist
 | Volatile Interval | How much time must pass before something happens | Time | 10s |
 
 ## Yeller
-### Applied To: Everyone
+
+**Applied To**: Everyone
 
 The Yeller's location is always revealed to others.
 
@@ -1929,13 +1714,16 @@ The Yeller's location is always revealed to others.
 Abilities give you extra perks on top of your role's regular powers.
 
 ## Assassin
-### Applied To: Intruders, Crew, Syndicate, Neutral (Killing), Neutral (Harbinger) and Neutral (Neophyte)
-### Origin: Town Of Us
-### Attack: Basic
+
+**Applied To**: Intruders, Crew, Syndicate, Neutral (Killing), Neutral (Harbinger) and Neutral (Neophyte)
+
+**Origin**: Town Of Us
+
+**Attack**: Basic
 
 The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name of the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals and Sniper is for the Syndicate. Assassin adds a level of attack to the applied crewmate.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1951,46 +1739,54 @@ The Assassin can guess the layers of others. If they guess right, the target is 
 | Assassin Can Guess After Voting | Whether the Assassin can Guess after voting | Toggle | False |
 
 ## Button Barry
-### Applied To: Everyone
-### Origin: Town Of Us
+
+**Applied To**: Everyone
+
+**Origin**: Town Of Us
 
 The Button Barry can call a meeting from anywhere on the map, even during sabotages. Calling a meeting during a sabotage will fix the sabotage.
 
 ## Insider
-### Applied To: Crew
+
+**Applied To**: Crew
 
 The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Insider Knows Who They Are | Whether a player knows they are a Insider at the start of a game | Toggle | True |
 
 ## Multitasker
-### Applied to: Roles with tasks
-### Origin: The Other Roles: Community Edition Paranoid
+
+**Applied To**: Roles with tasks
+
+**Origin**: The Other Roles: Community Edition Paranoid
 
 When doing tasks, the Multitasker's task window is transparent.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Transperency | Decides how well can someone see when opening a task | Percentage | 50% |
 
 ## Ninja
-### Applied To: Killers
+
+**Applied To**: Killers
 
 Ninjas don't lunge when killing.
 
 ## Politician
-### Applied To: Crew, Intruders, Syndicate, Neutral (Killing) and Neutral (Harbinger)
-### Origin: Fused Town Of Us Mayor and Project Lotus Pickpocket
+
+**Applied To**: Crew, Intruders, Syndicate, Neutral (Killing) and Neutral (Harbinger)
+
+**Origin**: Fused Town Of Us Mayor and Project Lotus Pickpocket
 
 The Politician can vote multiple times. If the Politician cannot kill, they gain a new button called the abstain button which stores their vote for later use. On the other hand, if the Politician can kill, they lose the Abstain button and instead gain a vote for each player they kill.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -1998,30 +1794,36 @@ The Politician can vote multiple times. If the Politician cannot kill, they gain
 | Politician Can Button | Whether the Politician can call a meeting | Toggle | True |
 
 ## Radar
-### Applied To: Everyone
-### Origin: Town Of Us
+
+**Applied To**: Everyone
+
+**Origin**: Town Of Us
 
 The Radar always has an arrow pointing towards the nearest player.
 
 ## Ruthless
-### Applied To: Killers
-### Origin: All The Roles
+
+**Applied To**: Killers
+
+**Origin**: All The Roles
 
 A Ruthless killer can bypass all forms of protection. Although they bypass alert protection, they will still die to a player on alert.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Ruthless Knows Who They Are | Whether a player knows they are Ruthless at the start of a game | Toggle | True |
 
 ## Snitch
-### Applied To: non-Traitor or Fanatic Crew
-### Origin: Town Of Us
+
+**Applied To**: non-Traitor or Fanatic Crew
+
+**Origin**: Town Of Us
 
 The Snitch is an ability which allows any member of the Crew to get arrows pointing towards the Intruders and the Syndicate once all their tasks are finished. The names of the Intruders and Syndicate will also show up as red on their screen. However, when they only have a certain amount of tasks left, the Intruders and the Syndicate get an arrow pointing towards the Snitch.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -2033,12 +1835,14 @@ The Snitch is an ability which allows any member of the Crew to get arrows point
 | Snitch Sees Evils in Meetings | Whether the Snitch sees the evil players' names red in Meetings | Toggle | True |
 
 ## Swapper
-### Applied To: Crew
-### Origin: Town Of Us
+
+**Applied To**: Crew
+
+**Origin**: Town Of Us
 
 The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted towards the second player and vice versa.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -2047,42 +1851,50 @@ The Swapper can swap the votes on 2 players during a meeting. All the votes for 
 | Swapper Can Swap Themself | Self descriptive | Toggle | True |
 
 ## Tiebreaker
-### Applied To: Everyone
-### Origin: Town Of Us
+
+**Applied To**: Everyone
+
+**Origin**: Town Of Us
 
 During the event of a tie vote, the tied player who the Tiebreaker voted for will be ejected. In the case of a Politician, this applies to their *first* vote.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Tiebreaker Knows Who They Are | Whether a player knows they are a Tiebreaker at the start of a game | Toggle | True |
 
 ## Torch
-### Applied To: Non-Killers
-### Origin: Town Of Us
+
+**Applied To**: Non-Killers
+
+**Origin**: Town Of Us
 
 The Torch has Intruder vision at all times and can see the silhouettes of invisible players.
 
 ## Tunneler
-### Applied To: Crew excluding Engineer
-### Origin: The Other Roles: Community Edition
+
+**Applied To**: Crew excluding Engineer
+
+**Origin**: The Other Roles: Community Edition
 
 The Tunneler will be able to vent when they finish their tasks.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Tunneler Knows Who They Are | Whether a player knows they are a Tunneler at the start of a game | Toggle | True |
 
 ## Underdog
-### Applied To: Intruders and Syndicate
-### Origin: Town Of Us
+
+**Applied To**: Intruders and Syndicate
+
+**Origin**: Town Of Us
 
 The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a teammate. When they are the only remaining member, they will have their cooldowns shortened.
 
-### Game Options
+**Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -2094,8 +1906,6 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 
 # License
 This software is distributed under the GNU GPLv3 License. BepInEx is distributed under LGPL-2.1 License.
-
------------------------
 
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>

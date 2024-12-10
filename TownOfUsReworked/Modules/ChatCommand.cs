@@ -91,10 +91,11 @@ public class ChatCommand
             pooledBubble.NameText.transform.localPosition -= new Vector3(0.7f, 0.05f, 0f);
             pooledBubble.TextArea.transform.localPosition -= new Vector3(0.7f, 0.1f, 0f);
             pooledBubble.TextArea.richText = withColor;
+            pooledBubble.NameText.richText = true;
             pooledBubble.ColorBlindName.gameObject.SetActive(false);
 
             if (withColor && !hasColor)
-                pooledBubble.TextArea.text = Info.ColorIt(text);
+                pooledBubble.TextArea.SetText(Info.ColorIt(text));
 
             pooledBubble.AlignChildren();
             chat.AlignAllBubbles();
@@ -105,7 +106,6 @@ public class ChatCommand
                 chat.notificationRoutine ??= chat.StartCoroutine(chat.BounceDot());
             }
 
-            ChatControllerAwakePatch.SetChatBubble(pooledBubble);
             Play("Chat", pitch: 0.5f + (CustomPlayer.Local.PlayerId / 15f));
         }
         catch (Exception ex)
@@ -183,18 +183,18 @@ public class ChatCommand
         if (byte.TryParse(args[1], out var id))
         {
             if (arg.Contains("unignore"))
-                ChatChannels.Ignored.RemoveAll(x => x == id);
+                ChatPatches.Ignored.RemoveAll(x => x == id);
             else
-                ChatChannels.Ignored.Add(id);
+                ChatPatches.Ignored.Add(id);
 
             Run("<#99007FFF>《 Ignoring 》</color>", $"Toggled ignore for {id}");
         }
         else if (AllPlayers().TryFinding(x => x.Data.PlayerName == args2[1], out var player))
         {
             if (arg.Contains("unignore"))
-                ChatChannels.Ignored.RemoveAll(x => x == player.PlayerId);
+                ChatPatches.Ignored.RemoveAll(x => x == player.PlayerId);
             else
-                ChatChannels.Ignored.Add(player.PlayerId);
+                ChatPatches.Ignored.Add(player.PlayerId);
 
             Run("<#99007FFF>《 Ignoring 》</color>", $"Toggled ignore for {args2[1]}");
         }

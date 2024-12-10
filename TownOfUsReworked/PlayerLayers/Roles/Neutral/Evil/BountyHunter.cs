@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class BountyHunter : Neutral
+public class BountyHunter : Evil
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BountyHunterCanPickTargets { get; set; } = false;
@@ -48,12 +48,13 @@ public class BountyHunter : Neutral
         "finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you will" +
         " become a <#678D36FF>Troll</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override bool HasWon => TargetKilled;
+    public override WinLose EndState => WinLose.BountyHunterWins;
 
     public override void Init()
     {
         base.Init();
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
-        Alignment = Alignment.NeutralEvil;
         TargetPlayer = null;
         GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);

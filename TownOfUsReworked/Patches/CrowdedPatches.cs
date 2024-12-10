@@ -1,8 +1,9 @@
-﻿namespace TownOfUsReworked.Crowded;
+﻿namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.Awake))]
-public static class CreateOptionsPicker_Awake
+[HarmonyPatch(typeof(CreateOptionsPicker))]
+public static class CrowdedPatches
 {
+    [HarmonyPatch(nameof(CreateOptionsPicker.Awake))]
     public static void Postfix(CreateOptionsPicker __instance)
     {
         if (__instance.mode != SettingsMode.Host)
@@ -11,7 +12,7 @@ public static class CreateOptionsPicker_Awake
         var options = __instance.GetTargetOptions();
 
         var firstButtonRenderer = __instance.MaxPlayerButtons[0];
-        firstButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "-";
+        firstButtonRenderer.GetComponentInChildren<TextMeshPro>().SetText("-");
         firstButtonRenderer.enabled = false;
 
         var firstButtonButton = firstButtonRenderer.GetComponent<PassiveButton>();
@@ -22,7 +23,7 @@ public static class CreateOptionsPicker_Awake
                 var playerButton = __instance.MaxPlayerButtons[i];
                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                 var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name) - 3);
-                tmp.text = newValue.ToString();
+                tmp.SetText($"{newValue}");
             }
 
             __instance.UpdateMaxPlayersButtons(options);
@@ -31,7 +32,7 @@ public static class CreateOptionsPicker_Awake
         firstButtonRenderer.Destroy();
 
         var lastButtonRenderer = __instance.MaxPlayerButtons[^1];
-        lastButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "+";
+        lastButtonRenderer.GetComponentInChildren<TextMeshPro>().SetText("+");
         lastButtonRenderer.enabled = false;
 
         var lastButtonButton = lastButtonRenderer.GetComponent<PassiveButton>();
@@ -42,7 +43,7 @@ public static class CreateOptionsPicker_Awake
                 var playerButton = __instance.MaxPlayerButtons[i];
                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                 var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 113);
-                tmp.text = newValue.ToString();
+                tmp.SetText($"{newValue}");
             }
 
             __instance.UpdateMaxPlayersButtons(options);
@@ -61,11 +62,8 @@ public static class CreateOptionsPicker_Awake
         __instance.ImpostorButtons.ForEach(x => x.gameObject.SetActive(false));
         __instance.ImpostorText.gameObject.SetActive(false);
     }
-}
 
-[HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMap))]
-public static class MapPickerPatch
-{
+    [HarmonyPatch(nameof(CreateOptionsPicker.SetMap))]
     public static void Prefix(ref int mapId)
     {
         if (mapId == 6 && !SubLoaded)
@@ -76,17 +74,11 @@ public static class MapPickerPatch
 
         MapSettings.Map = (MapEnum)mapId;
     }
-}
 
-[HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
-public static class LobbySizePatch
-{
+    [HarmonyPatch(nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
     public static void Postfix(int maxPlayers) => OptionAttribute.GetOption("LobbySize").SetBase(new Number(maxPlayers), false);
-}
 
-[HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
-public static class CreateOptionsPicker_UpdateMaxPlayersButtons
-{
+    [HarmonyPatch(nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
     public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)
     {
         __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
@@ -97,10 +89,7 @@ public static class CreateOptionsPicker_UpdateMaxPlayersButtons
         });
         return false;
     }
-}
 
-[HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateImpostorsButtons))]
-public static class CreateOptionsPicker_UpdateImpostorsButtons
-{
+    [HarmonyPatch(nameof(CreateOptionsPicker.UpdateImpostorsButtons))]
     public static bool Prefix() => false;
 }

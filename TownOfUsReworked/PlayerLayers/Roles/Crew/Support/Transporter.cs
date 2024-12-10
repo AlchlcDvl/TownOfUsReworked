@@ -243,7 +243,7 @@ public class Transporter : Crew
             if (ActiveTask())
                 ActiveTask().Close();
 
-            if (MapPatch.MapActive)
+            if (MapBehaviourPatches.MapActive)
                 Map().Close();
         }
 

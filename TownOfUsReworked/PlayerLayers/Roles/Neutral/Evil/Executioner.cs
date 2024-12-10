@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Executioner : Neutral
+public class Executioner : Evil
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ExecutionerCanPickTargets { get; set; } = false;
@@ -48,12 +48,13 @@ public class Executioner : Neutral
     public override Func<string> Description => () => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
         $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override bool HasWon => TargetVotedOut;
+    public override WinLose EndState => WinLose.ExecutionerWins;
 
     public override void Init()
     {
         base.Init();
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (!TargetPlayer ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
-        Alignment = Alignment.NeutralEvil;
         ToDoom = [];
 
         if (ExecutionerCanPickTargets)

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Troll : Neutral
+public class Troll : Evil
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool CanInteract { get; set; } = true;
@@ -25,11 +25,12 @@ public class Troll : Neutral
     public override Func<string> Description => () => "- If you are killed, you will also kill your killer" + (CanInteract ? "\n- You can interact with players\n- Your interactions do nothing "
         + "except spread infection and possibly kill you via touch sensitive roles" : "");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override bool HasWon => Killed;
+    public override WinLose EndState => WinLose.TrollWins;
 
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralEvil;
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
         InteractButton ??= new(this, new SpriteName("Interact"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Interact, new Cooldown(InteractCd), "INTERACT",
             (UsableFunc)Usable);

@@ -2,8 +2,8 @@ using Assets.InnerNet;
 
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
-public static class MainMenuStartPatch
+[HarmonyPatch(typeof(MainMenuManager))]
+public static class MainMenuPatches
 {
     private static AnnouncementPopUp PopUp;
     private static readonly Announcement ModInfo = new()
@@ -20,6 +20,7 @@ public static class MainMenuStartPatch
     };
     public static GameObject Logo;
 
+    [HarmonyPatch(nameof(MainMenuManager.Start))]
     public static void Prefix()
     {
         LoadVanillaSounds();
@@ -106,7 +107,8 @@ public static class MainMenuStartPatch
         }));
     }
 
-    public static void Postfix(MainMenuManager __instance)
+    [HarmonyPatch(nameof(MainMenuManager.Start)), HarmonyPostfix]
+    public static void StartPostfix(MainMenuManager __instance)
     {
         var scale = __instance.newsButton.transform.localScale;
         var pos = __instance.newsButton.transform.position;
@@ -124,12 +126,15 @@ public static class MainMenuStartPatch
         __instance.myAccountButton.transform.position = pos;
         pos.y = __instance.newsButton.transform.localPosition.y;
         pos.x = __instance.quitButton.transform.localPosition.x;
+        __instance.newsButton.transform.GetChild(0).localPosition -= new Vector3(0.3f, 0f, 0f);
         __instance.newsButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
         __instance.newsButton.transform.GetChild(1).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
         __instance.newsButton.transform.GetChild(2).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
+        __instance.myAccountButton.transform.GetChild(0).localPosition -= new Vector3(0.3f, 0f, 0f);
         __instance.myAccountButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
         __instance.myAccountButton.transform.GetChild(1).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
         __instance.myAccountButton.transform.GetChild(2).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
+        __instance.settingsButton.transform.GetChild(0).localPosition -= new Vector3(0.3f, 0f, 0f);
         __instance.settingsButton.transform.GetChild(0).GetChild(0).localScale = new(scale.x * 3.5f, scale.y, scale.z);
         __instance.settingsButton.transform.GetChild(1).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
         __instance.settingsButton.transform.GetChild(2).GetChild(0).localScale = new(1, scale.y / 1.5f, scale.z);
@@ -181,8 +186,8 @@ public static class MainMenuStartPatch
                 }
             }));
         });
-        credObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = credObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Info");
         credObj.transform.localPosition = pos;
+        credObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = credObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Info");
 
         Coroutines.Start(PerformTimedAction(0.01f, _ =>
         {
@@ -195,34 +200,7 @@ public static class MainMenuStartPatch
         AddAsset("Hover", __instance.playButton.HoverSound);
         AddAsset("Click", __instance.playButton.ClickSound);
     }
-}
 
-[HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
-public static class MainMenuUpdatePatch
-{
-    public static void Postfix(MainMenuManager __instance)
-    {
-        try
-        {
-            var pos = __instance.newsButton.transform.GetChild(0).GetChild(0).transform.position;
-            pos.x -= 0.1f;
-            __instance.newsButton.transform.GetChild(0).GetChild(0).transform.position = pos;
-            var pos2 = __instance.myAccountButton.transform.GetChild(0).GetChild(0).transform.position;
-            pos2.x -= 0.1f;
-            __instance.myAccountButton.transform.GetChild(0).GetChild(0).transform.position = pos2;
-            var pos3 = __instance.settingsButton.transform.GetChild(0).GetChild(0).transform.position;
-            pos3.x -= 0.1f;
-            __instance.settingsButton.transform.GetChild(0).GetChild(0).transform.position = pos3;
-            var pos4 = GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).transform.position;
-            pos4.x -= 0.1f;
-            GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).transform.position = pos4;
-            var pos5 = GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).transform.position;
-            pos5.x -= 0.1f;
-            GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).transform.position = pos5;
-            var pos6 = GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).transform.position;
-            pos6.x -= 0.1f;
-            GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).transform.position = pos6;
-            MainMenuStartPatch.Logo.SetActive(!__instance.playLocalButton.isActiveAndEnabled && !__instance.creditsScreen.active);
-        } catch {}
-    }
+    [HarmonyPatch(nameof(MainMenuManager.LateUpdate)), HarmonyPostfix]
+    public static void LateUpdatePostfix(MainMenuManager __instance) => Logo.SetActive(!__instance.playLocalButton.isActiveAndEnabled && !__instance.creditsScreen.active);
 }

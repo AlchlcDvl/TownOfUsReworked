@@ -81,7 +81,7 @@ public class CustomButton
             else if (prop is AbilityTypes type)
                 Type = type;
             else if (prop is KeybindType keybind)
-                Keybind = keybind.ToString();
+                Keybind = $"{keybind}";
             else if (prop is PostDeath postDeath)
                 PostDeath = postDeath;
             else if (prop is OnClickTargetless onClickTargetless)
@@ -220,7 +220,7 @@ public class CustomButton
 
     public override string ToString() => ID;
 
-    private bool Exception(object obj)
+    private bool Exception(MonoBehaviour obj)
     {
         if (obj is PlayerControl player)
             return PlayerBodyException(player);
@@ -231,7 +231,7 @@ public class CustomButton
         else if (obj is Console console)
             return ConsoleException(console);
         else
-            return false;
+            return obj;
     }
 
     public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f) => CooldownTime = type switch
@@ -403,16 +403,38 @@ public class CustomButton
             var monos = new List<MonoBehaviour>();
 
             if (Type.HasFlag(AbilityTypes.Console))
-                monos.Add(Owner.Player.GetClosestConsole(predicate: x => !Exception(x)));
+            {
+                var console = Owner.Player.GetClosestConsole();
+
+                if (console)
+                    monos.Add(console);
+            }
 
             if (Type.HasFlag(AbilityTypes.Alive))
-                monos.Add(Owner.Player.GetClosestPlayer(predicate: x => !Exception(x)));
+            {
+                var player = Owner.Player.GetClosestPlayer();
+
+                if (player)
+                    monos.Add(player);
+            }
 
             if (Type.HasFlag(AbilityTypes.Dead))
-                monos.Add(Owner.Player.GetClosestBody(predicate: x => !Exception(x)));
+            {
+                var body = Owner.Player.GetClosestBody();
+
+                if (body)
+                    monos.Add(body);
+            }
 
             if (Type.HasFlag(AbilityTypes.Vent))
-                monos.Add(Owner.Player.GetClosestVent(predicate: x => !Exception(x)));
+            {
+                var vent = Owner.Player.GetClosestVent();
+
+                if (vent)
+                    monos.Add(vent);
+            }
+
+            monos.RemoveAll(Exception);
 
             var previous = Target;
             Target = Owner.Player.GetClosestMono(monos);
@@ -448,7 +470,7 @@ public class CustomButton
         if (!Base || !Owner.Player || Disabled)
             return;
 
-        Base.buttonLabelText.text = Label();
+        Base.buttonLabelText.SetText(Label());
         Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
         Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && BlockIsExposed());
 

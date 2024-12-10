@@ -17,6 +17,8 @@ public static class AssetManager
 
     public static AnimationClip GetAnim(string path) => UnityGet<AnimationClip>(path);
 
+    public static RoleEffectAnimation GetRoleAnim(string path) => UnityGet<RoleEffectAnimation>(path);
+
     public static string GetString(string path) => SystemGet<string>(path) ?? "Placeholder";
 
     public static void Play(string path, bool loop = false, float volume = 1f, float pitch = float.NaN) => Play(GetAudio(path), loop, volume, pitch);
@@ -142,10 +144,11 @@ public static class AssetManager
         AddAsset("TrackerIntro", GetIntroSound(RoleTypes.Tracker));
         AddAsset("WraithIntro", GetIntroSound(RoleTypes.Phantom));
         AddAsset("MorphAnim", RoleManager.Instance.shapeshiftAnim);
-        AddAsset("ProtectAnim", RoleManager.Instance.protectLoopAnim);
+        AddAsset("ProtectAnimLoop", RoleManager.Instance.protectLoopAnim);
+        AddAsset("ProtectAnim", RoleManager.Instance.protectAnim);
         AddAsset("VanishPoofAnim", RoleManager.Instance.vanish_PoofAnim);
         AddAsset("PoofChargeAnim", RoleManager.Instance.vanish_ChargeAnim);
-        AddAsset("AppearPoofAnim", RoleManager.Instance.shapeshiftAnim);
+        AddAsset("AppearPoofAnim", RoleManager.Instance.appear_PoofAnim);
     }
 
     public static float GetSize(string name)

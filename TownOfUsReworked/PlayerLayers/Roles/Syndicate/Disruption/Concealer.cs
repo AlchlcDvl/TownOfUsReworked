@@ -85,9 +85,12 @@ public class Concealer : Syndicate
     {
         base.UpdateHud(__instance);
 
+        if (HoldsDrive)
+            return;
+
         if (KeyboardJoystick.player.GetButton("Delete"))
         {
-            if (ConcealedPlayer && !HoldsDrive && !ConcealButton.EffectActive)
+            if (ConcealedPlayer && !ConcealButton.EffectActive)
                 ConcealedPlayer = null;
 
             Message("Removed a target");

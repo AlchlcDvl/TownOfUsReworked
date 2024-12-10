@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Cosmetics.CustomColors;
+namespace TownOfUsReworked.Cosmetics;
 
 public static class CustomColorManager
 {
@@ -6,20 +6,16 @@ public static class CustomColorManager
 
     public static void SetColor(Renderer rend, int id)
     {
-        if (!rend || !AllColors.ContainsKey(id))
-            return;
-
-        rend.material.SetColor(PlayerMaterial.BackColor, id.GetColor(true));
-        rend.material.SetColor(PlayerMaterial.BodyColor, id.GetColor(false));
-        rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
+        if (AllColors.TryGetValue(id, out var color))
+            SetColor(rend, color.GetColor(), color.GetShadowColor());
     }
 
-    public static void SetColor(Renderer rend, UColor color)
+    public static void SetColor(Renderer rend, UColor color, UColor? shadow = null)
     {
         if (!rend)
             return;
 
-        rend.material.SetColor(PlayerMaterial.BackColor, Shadow(color));
+        rend.material.SetColor(PlayerMaterial.BackColor, shadow ?? Shadow(color));
         rend.material.SetColor(PlayerMaterial.BodyColor, color);
         rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
     }

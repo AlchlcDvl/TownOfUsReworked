@@ -64,7 +64,7 @@ public static class ConfirmEjects
             var totalEvilsRemaining = IsAA() ? "an unknown number of" : $"{totalEvilsCount}";
             var s = totalEvilsCount > 1 ? "s" : "";
             var isAre = totalEvilsCount > 1 ? "are" : "is";
-            __instance.ImpostorText.text = $"There {isAre} {totalEvilsRemaining} <#FF0000FF>evil{s}</color> remaining.";
+            __instance.ImpostorText.SetText($"There {isAre} {totalEvilsRemaining} <#FF0000FF>evil{s}</color> remaining.");
         }
 
         __instance.completeString = ejectString;

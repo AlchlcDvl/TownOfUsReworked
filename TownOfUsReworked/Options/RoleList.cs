@@ -19,7 +19,7 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
     {
         base.OptionCreated();
         var entry = Setting.Cast<ToggleOption>();
-        entry.TitleText.text = SettingNotif();
+        entry.TitleText.SetText(SettingNotif());
         ValueText = Setting.transform.GetChild(3).GetComponent<TextMeshPro>();
 
         if (!AmongUsClient.Instance.AmHost)
@@ -51,7 +51,7 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
     public override void ViewUpdate()
     {
         var valueText = ViewSetting.Cast<ViewSettingsInfoPanel>().settingText;
-        valueText.text = Format();
+        valueText.SetText(Format());
 
         if (LayerDictionary.TryGetValue(Value, out var entry))
             valueText.color = entry.Color;
@@ -59,7 +59,7 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
 
     public override void Update()
     {
-        ValueText.text = Format();
+        ValueText.SetText(Format());
 
         if (LayerDictionary.TryGetValue(Value, out var entry))
             ValueText.color = entry.Color;

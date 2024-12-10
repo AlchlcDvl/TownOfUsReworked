@@ -1,8 +1,9 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
-public static class HandleDisconnect
+[HarmonyPatch(typeof(MeetingHud))]
+public static class VotePatches
 {
+    [HarmonyPatch(nameof(MeetingHud.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
     public static void Prefix(PlayerControl pc)
     {
         if (AmongUsClient.Instance.AmHost && Meeting())
@@ -27,19 +28,14 @@ public static class HandleDisconnect
         MarkMeetingDead(pc, false, true);
         OnGameEndPatches.AddSummaryInfo(pc, true);
     }
-}
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
-public static class Confirm
-{
+    [HarmonyPatch(nameof(MeetingHud.Confirm))]
     public static void Prefix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ConfirmVotePrefix(__instance));
 
+    [HarmonyPatch(nameof(MeetingHud.Confirm))]
     public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ConfirmVotePostfix(__instance));
-}
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CastVote))]
-public static class CastVote
-{
+    [HarmonyPatch(nameof(MeetingHud.CastVote))]
     public static bool Prefix(MeetingHud __instance, byte srcPlayerId, byte suspectPlayerId)
     {
         var player = PlayerById(srcPlayerId);
@@ -68,15 +64,12 @@ public static class CastVote
         __instance.CheckForEndVoting();
         return false;
     }
-}
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
-public static class PopulateResults
-{
+    [HarmonyPatch(nameof(MeetingHud.PopulateResults))]
     public static bool Prefix(MeetingHud __instance, Il2CppStructArray<MeetingHud.VoterState> states)
     {
         var allNums = new Dictionary<int, int>();
-        __instance.TitleText.text = TranslationController.Instance.GetString(StringNames.MeetingVotingResults);
+        __instance.TitleText.SetText(TranslationController.Instance.GetString(StringNames.MeetingVotingResults));
         var amountOfSkippedVoters = 0;
 
         for (var i = 0; i < __instance.playerStates.Length; i++)
@@ -211,11 +204,8 @@ public static class PopulateResults
 
         return false;
     }
-}
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.BloopAVoteIcon))]
-public static class PatchVoteBloops
-{
+    [HarmonyPatch(nameof(MeetingHud.BloopAVoteIcon))]
     public static bool Prefix(MeetingHud __instance, NetworkedPlayerInfo voterPlayer, int index, Transform parent)
     {
         var insiderFlag = CustomPlayer.Local.Is(LayerEnum.Insider) && Role.LocalRole.TasksDone;

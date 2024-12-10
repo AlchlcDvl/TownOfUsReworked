@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Cosmetics.CustomHats;
+namespace TownOfUsReworked.Cosmetics;
 
 public static class CustomHatManager
 {

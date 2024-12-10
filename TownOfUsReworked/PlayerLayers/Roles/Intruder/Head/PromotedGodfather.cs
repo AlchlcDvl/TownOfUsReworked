@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedGodfather : Intruder
+public class PromotedGodfather : Intruder, IIntimidator, IDragger, IDigger
 {
     public override void Init()
     {
@@ -198,8 +198,13 @@ public class PromotedGodfather : Intruder
 
     // Blackmailer Stuff
     public CustomButton BlackmailButton { get; set; }
-    public PlayerControl BlackmailedPlayer { get; set; }
     public bool ShookAlready { get; set; }
+    public PlayerControl Target { get; set; }
+    public PlayerControl BlackmailedPlayer
+    {
+        get => Target;
+        set => Target = value;
+    }
     public bool IsBM => FormerRole is Blackmailer;
 
     public void Blackmail(PlayerControl target)
@@ -291,7 +296,7 @@ public class PromotedGodfather : Intruder
                         HUD().FullScreen.color = CustomColorManager.NormalVision;
                 }
 
-                if (MapPatch.MapActive)
+                if (MapBehaviourPatches.MapActive)
                     Map().Close();
 
                 if (ActiveTask())

@@ -1,25 +1,7 @@
 using PowerTools;
-using static TownOfUsReworked.Cosmetics.CustomHats.CustomHatManager;
+using static TownOfUsReworked.Cosmetics.CustomHatManager;
 
-namespace TownOfUsReworked.Cosmetics.CustomHats;
-
-[HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
-public static class HatManagerPatch
-{
-    private static bool IsLoaded;
-
-    public static void Prefix(HatManager __instance)
-    {
-        if (IsLoaded)
-            return;
-
-        var allHats = __instance.allHats.ToList();
-        allHats.AddRange(RegisteredHats);
-        __instance.allHats = allHats.ToArray();
-        RegisteredHats.Clear();
-        IsLoaded = true;
-    }
-}
+namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
 public static class PlayerPhysicsHandleAnimationPatch
@@ -52,10 +34,11 @@ public static class PlayerPhysicsHandleAnimationPatch
     }
 }
 
-[HarmonyPatch(typeof(HatParent), nameof(HatParent.UpdateMaterial))]
-public static class HatParentUpdateMaterialPatch
+[HarmonyPatch(typeof(HatParent))]
+public static class HatPatches
 {
-    public static bool Prefix(HatParent __instance)
+    [HarmonyPatch(nameof(HatParent.UpdateMaterial)), HarmonyPrefix]
+    public static bool UpdateMaterialPrefix(HatParent __instance)
     {
         HatViewData asset;
 
@@ -130,12 +113,9 @@ public static class HatParentUpdateMaterialPatch
 
         return false;
     }
-}
 
-[HarmonyPatch(typeof(HatParent), nameof(HatParent.PopulateFromViewData))]
-public static class PopulateFromHatViewDataPatch
-{
-    public static bool Prefix(HatParent __instance)
+    [HarmonyPatch(nameof(HatParent.PopulateFromViewData)), HarmonyPrefix]
+    public static bool PopulateFromViewDataPrefix(HatParent __instance)
     {
         HatViewData asset = null;
 
@@ -183,12 +163,9 @@ public static class PopulateFromHatViewDataPatch
 
         return false;
     }
-}
 
-[HarmonyPatch(typeof(HatParent), nameof(HatParent.LateUpdate))]
-public static class HatParentLateUpdatePatch
-{
-    public static bool Prefix(HatParent __instance)
+    [HarmonyPatch(nameof(HatParent.LateUpdate)), HarmonyPrefix]
+    public static bool LateUpdatePrefix(HatParent __instance)
     {
         if (!__instance.Parent || !__instance.Hat)
             return false;
@@ -242,12 +219,9 @@ public static class HatParentLateUpdatePatch
 
         return false;
     }
-}
 
-[HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
-public static class SetHatPrefix
-{
-    public static bool Prefix(HatParent __instance, int color)
+    [HarmonyPatch(nameof(HatParent.SetHat), typeof(int)), HarmonyPrefix]
+    public static bool SetHatPrefix(HatParent __instance, int color)
     {
         if (!CustomHatViewDatas.ContainsKey(__instance.Hat.ProductId))
             return true;
@@ -258,12 +232,9 @@ public static class SetHatPrefix
         __instance.PopulateFromViewData();
         return false;
     }
-}
 
-[HarmonyPatch(typeof(HatParent), nameof(HatParent.SetFloorAnim))]
-public static class HatParentSetFloorAnimPatch
-{
-    public static bool Prefix(HatParent __instance)
+    [HarmonyPatch(nameof(HatParent.SetFloorAnim))]
+    public static bool SetFloorAnimPrefix(HatParent __instance)
     {
         HatViewData hatViewData;
 
@@ -281,12 +252,9 @@ public static class HatParentSetFloorAnimPatch
         __instance.FrontLayer.sprite = hatViewData.FloorImage;
         return false;
     }
-}
 
-[HarmonyPatch(typeof(HatParent), nameof(HatParent.SetIdleAnim))]
-public static class HatParentSetIdleAnimPatch
-{
-    public static bool Prefix(HatParent __instance, int colorId)
+    [HarmonyPatch(nameof(HatParent.SetIdleAnim)), HarmonyPrefix]
+    public static bool SetIdleAnimPrefix(HatParent __instance, int colorId)
     {
         if (!__instance.Hat)
             return false;
@@ -299,12 +267,9 @@ public static class HatParentSetIdleAnimPatch
         __instance.SetMaterialColor(colorId);
         return false;
     }
-}
 
-[HarmonyPatch(typeof(HatParent), nameof(HatParent.SetClimbAnim))]
-public static class HatParentSetClimbAnimPatch
-{
-    public static bool Prefix(HatParent __instance)
+    [HarmonyPatch(nameof(HatParent.SetClimbAnim)), HarmonyPrefix]
+    public static bool SetClimbAnimPrefix(HatParent __instance)
     {
         HatViewData hatViewData;
 
@@ -327,18 +292,6 @@ public static class HatParentSetClimbAnimPatch
     }
 }
 
-[HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetHat))]
-public static class CosmeticsCacheGetHatPatch
-{
-    public static bool Prefix(CosmeticsCache __instance, string id, ref HatViewData __result)
-    {
-        if (!CustomHatViewDatas.TryGetValue(id, out __result))
-            return true;
-
-        return !(__result ??= __instance.hats["hat_NoHat"].GetAsset());
-    }
-}
-
 [HarmonyPatch(typeof(HatsTab), nameof(HatsTab.OnEnable))]
 public static class HatsTabOnEnablePatch
 {
@@ -356,6 +309,9 @@ public static class HatsTabOnEnablePatch
         if (Template)
         {
             var title = UObject.Instantiate(Template, __instance.scroller.Inner);
+            var material = title.GetComponent<MeshRenderer>().material;
+            material.SetFloat("_StencilComp", 4f);
+            material.SetFloat("_Stencil", 1f);
             title.transform.localPosition = new(2.25f, YStart, -1f);
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
@@ -418,9 +374,7 @@ public static class HatsTabOnEnablePatch
         else
             __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
 
-        for (var i = 0; i < __instance.scroller.Inner.childCount; i++)
-            __instance.scroller.Inner.GetChild(i).gameObject.Destroy();
-
+        __instance.scroller.Inner.DestroyChildren();
         __instance.ColorChips = new();
         var array = HatManager.Instance.GetUnlockedHats();
         var packages = new Dictionary<string, List<HatData>>();
@@ -436,10 +390,10 @@ public static class HatsTabOnEnablePatch
             if (IsNullEmptyOrWhiteSpace(package))
                 package = "Misc";
 
-            if (!packages.ContainsKey(package))
-                packages[package] = [];
+            if (!packages.TryGetValue(package, out var value))
+                packages[package] = value = [];
 
-            packages[package].Add(data);
+            value.Add(data);
         }
 
         var YOffset = __instance.YStart;

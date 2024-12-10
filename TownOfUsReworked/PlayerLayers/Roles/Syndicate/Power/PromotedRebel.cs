@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedRebel : Syndicate
+public class PromotedRebel : Syndicate, IIntimidator
 {
     public override void Init()
     {
@@ -76,29 +76,18 @@ public class PromotedRebel : Syndicate
 
         if (IsStalk)
         {
-            if (Dead && StalkerArrows.Count > 0)
-                Deinit();
-            else
+            if (Dead)
+                return;
+
+            foreach (var pair in StalkerArrows)
             {
-                foreach (var pair in StalkerArrows)
-                {
-                    var player = PlayerById(pair.Key);
-                    var body = BodyById(pair.Key);
+                var player = PlayerById(pair.Key);
+                var body = BodyById(pair.Key);
 
-                    if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
-                        DestroyArrow(pair.Key);
-                    else
-                        pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive));
-                }
-
-                if (HoldsDrive)
-                {
-                    foreach (var player in AllPlayers())
-                    {
-                        if (!StalkerArrows.ContainsKey(player.PlayerId))
-                            StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));
-                    }
-                }
+                if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
+                    DestroyArrow(pair.Key);
+                else
+                    pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive));
             }
         }
         else if (IsCol)
@@ -153,7 +142,7 @@ public class PromotedRebel : Syndicate
             ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(Concealer.ConcealCd),
                 (LabelFunc)ConcLabel, new Duration(Concealer.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal, (UsableFunc)ConcealUsable);
 
-            if (wasnull)
+            if (wasnull && ConfuseMenu == null)
                 ConcealMenu = new(Player, ConcealClick, ConcealException);
         }
         else if (IsDrunk)
@@ -162,7 +151,7 @@ public class PromotedRebel : Syndicate
             ConfuseButton ??= new(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConfuse, new Cooldown(Drunkard.ConfuseCd),
                 new Duration(Drunkard.ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (LabelFunc)DrunkLabel, (EndFunc)ConfuseEnd, (UsableFunc)DrunkUsable);
 
-            if (wasnull)
+            if (wasnull && ConfuseMenu == null)
                 ConfuseMenu = new(Player, ConfuseClick, DrunkException);
         }
         else if (IsFram)
@@ -178,7 +167,7 @@ public class PromotedRebel : Syndicate
             ShapeshiftButton ??= new(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(Shapeshifter.ShapeshiftCd),
                 new Duration(Shapeshifter.ShapeshiftDur), (EffectVoid)Shift, (EffectEndVoid)UnShapeshift, (LabelFunc)SSLabel, (UsableFunc)SSUsable);
 
-            if (wasnull)
+            if (wasnull && (ShapeshiftMenu1 == null || ShapeshiftMenu2 == null))
             {
                 ShapeshiftMenu1 = new(Player, ShapeshiftClick1, SSException1);
                 ShapeshiftMenu2 = new(Player, ShapeshiftClick2, SSException2);
@@ -223,7 +212,7 @@ public class PromotedRebel : Syndicate
             GlobalPoisonButton ??= new(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGlobalPoison, (LabelFunc)PoisLabel,
                 new Cooldown(Poisoner.PoisonCd), new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)PoisUsable2, (EndFunc)PoisonEnd);
 
-            if (wasnull)
+            if (wasnull && PoisonMenu == null)
                 PoisonMenu = new(Player, PoisonClick, PoisonException);
         }
         else if (IsSpell)
@@ -242,7 +231,7 @@ public class PromotedRebel : Syndicate
             WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, (LabelFunc)WarpLabel, new Cooldown(Warper.WarpCd),
                 (UsableFunc)WarpUsable);
 
-            if (wasnull)
+            if (wasnull && !WarpObj)
             {
                 WarpObj = new("RebWarp") { layer = 5 };
                 WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
@@ -275,6 +264,8 @@ public class PromotedRebel : Syndicate
 
         ResetCharges();
     }
+
+    public override void OnDeath(DeathReason reason) => Deinit();
 
     public override void BeforeMeeting()
     {
@@ -370,6 +361,20 @@ public class PromotedRebel : Syndicate
             }
         }
     }
+
+    public override void OnDriveReceivedLocal()
+    {
+        if (IsStalk)
+        {
+            foreach (var player in AllPlayers())
+            {
+                if (!StalkerArrows.ContainsKey(player.PlayerId))
+                    StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));
+            }
+        }
+    }
+
+    public override void OnRevive() => OnRoleSelected();
 
     // Anarchist Stuff
     public bool IsAnarch => FormerRole is Anarchist;
@@ -791,7 +796,7 @@ public class PromotedRebel : Syndicate
             if (ActiveTask())
                 ActiveTask().Close();
 
-            if (MapPatch.MapActive)
+            if (MapBehaviourPatches.MapActive)
                 Map().Close();
         }
 
@@ -1086,8 +1091,13 @@ public class PromotedRebel : Syndicate
 
     // Silencer Stuff
     public CustomButton SilenceButton { get; set; }
-    public PlayerControl SilencedPlayer { get; set; }
     public bool ShookAlready { get; set; }
+    public PlayerControl Target { get; set; }
+    public PlayerControl SilencedPlayer
+    {
+        get => Target;
+        set => Target = value;
+    }
     public bool IsSil => FormerRole is Silencer;
 
     public bool SilenceException(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !Silencer.SilenceMates) ||

@@ -157,7 +157,7 @@ public static class RPCHandling
                     }
                     case MiscRPC.Notify:
                     {
-                        ChatCommands.Notify(reader.ReadByte());
+                        ChatPatches.Notify(reader.ReadByte());
                         break;
                     }
                     case MiscRPC.SetSettings:
@@ -246,7 +246,6 @@ public static class RPCHandling
                             var alliedRole = ally.Player.GetRole();
                             var faction = reader.ReadEnum<Faction>();
                             alliedRole.Faction = ally.Side = faction;
-                            alliedRole.Alignment = alliedRole.Alignment.GetNewAlignment(faction);
                         }
                         else if (layer is Lovers lover1)
                         {
@@ -360,7 +359,7 @@ public static class RPCHandling
                     }
                     case ActionsRPC.Mine:
                     {
-                        AddVent(reader.ReadLayer<Role>(), reader.ReadVector2());
+                        AddVent(reader.ReadLayer<Role>() as IDigger, reader.ReadVector2());
                         break;
                     }
                     case ActionsRPC.Infect:

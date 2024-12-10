@@ -1,13 +1,14 @@
 namespace TownOfUsReworked.Patches;
 
 // I'll leave the code here for now and get back to it later
+[HarmonyPatch(typeof(TaskAdderGame))]
 public static class FreeplayPatches
 {
     private const SystemTypes LayersType = (SystemTypes)255;
 
     public static readonly List<PlayerLayer> PreviouslySelected = [];
     private static readonly List<string> FolderNames = [];
-    private static readonly Dictionary<string, LayerEnum> RoleButtons = [];
+    public static readonly Dictionary<string, LayerEnum> RoleButtons = [];
 
     private static TaskFolder CreateFolder(TaskAdderGame __instance, string name, TaskFolder parent)
     {
@@ -35,7 +36,7 @@ public static class FreeplayPatches
         };
         var button = UObject.Instantiate(__instance.RoleButton);
         button.SafePositionWorld = __instance.SafePositionWorld;
-        button.Text.text = button.name = $"{TranslationManager.Translate($"CustomOption.{layer}")}.{extension}";
+        button.Text.SetText(button.name = $"{TranslationManager.Translate($"CustomOption.{layer}")}.{extension}");
         button.Role = RoleManager.Instance.AllRoles[0];
         button.FileImage.color = button.RolloverHandler.OutColor = entry.Color;
         button.RolloverHandler.OverColor = entry.Color.Alternate(0.4f);
@@ -61,201 +62,192 @@ public static class FreeplayPatches
         RoleButtons[button.name] = layer;
     }
 
-    [HarmonyPatch(typeof(TaskAdderGame), nameof(TaskAdderGame.Begin))]
-    public static class BeginTaskAdderPatch
+    [HarmonyPatch(nameof(TaskAdderGame.Begin))]
+    public static void Prefix(TaskAdderGame __instance)
     {
-        public static void Prefix(TaskAdderGame __instance)
-        {
-            FolderNames.Clear();
-            Info($"File Width: {__instance.fileWidth} Line Width: {__instance.lineWidth} Folder Width {__instance.folderWidth}");
-        }
+        FolderNames.Clear();
+        Info($"File Width: {__instance.fileWidth} Line Width: {__instance.lineWidth} Folder Width {__instance.folderWidth}");
     }
 
-    [HarmonyPatch(typeof(TaskAdderGame), nameof(TaskAdderGame.PopulateRoot))]
-    public static class PopulatRootPatch
+    [HarmonyPatch(nameof(TaskAdderGame.PopulateRoot))]
+    public static void Postfix(TaskAdderGame __instance, ISystem.Dictionary<SystemTypes, TaskFolder> folders, TaskFolder rootFolder)
     {
-        public static void Postfix(TaskAdderGame __instance, ISystem.Dictionary<SystemTypes, TaskFolder> folders, TaskFolder rootFolder)
+        if (!folders.TryGetValue(LayersType, out var taskFolder))
         {
-            if (!folders.TryGetValue(LayersType, out var taskFolder))
+            taskFolder = folders[LayersType] = CreateFolder(__instance, "_Reworked", rootFolder);
+
+            for (var i = 0; i < 4; i++)
             {
-                taskFolder = folders[LayersType] = CreateFolder(__instance, "_Reworked", rootFolder);
+                var folder = CreateFolder(__instance, $"{(PlayerLayerEnum)i}", taskFolder);
 
-                for (var i = 0; i < 4; i++)
+                if (folder.FolderName == "Role")
                 {
-                    var folder = CreateFolder(__instance, ((PlayerLayerEnum)i).ToString(), taskFolder);
-
-                    if (folder.FolderName == "Role")
-                    {
-                        for (var j = 0; j < 5; j++)
-                            CreateFolder(__instance, ((Faction)j).ToString(), folder);
-                    }
+                    for (var j = 0; j < 5; j++)
+                        CreateFolder(__instance, $"{(Faction)j}", folder);
                 }
             }
         }
     }
 
-    [HarmonyPatch(typeof(TaskAdderGame), nameof(TaskAdderGame.ShowFolder))]
-    public static class ShowFolderPatch
+    [HarmonyPatch(nameof(TaskAdderGame.ShowFolder))]
+    public static bool Prefix(TaskAdderGame __instance, TaskFolder taskFolder)
     {
-        public static bool Prefix(TaskAdderGame __instance, TaskFolder taskFolder)
+        RoleButtons.Clear();
+        var stringBuilder = new StringBuilder();
+        __instance.Hierarchy.Add(taskFolder);
+
+        foreach (var folder in __instance.Hierarchy)
         {
-            RoleButtons.Clear();
-            var stringBuilder = new StringBuilder();
-            __instance.Hierarchy.Add(taskFolder);
+            stringBuilder.Append(folder.FolderName);
+            stringBuilder.Append('\\');
+        }
 
-            foreach (var folder in __instance.Hierarchy)
+        __instance.PathText.SetText($"{stringBuilder}");
+        __instance.ActiveItems.ForEach(x => x.gameObject.Destroy());
+        __instance.ActiveItems.Clear();
+        var num = 0f;
+        var num2 = 0f;
+        var num3 = 0f;
+        taskFolder.SubFolders = taskFolder.SubFolders.ToSystem().OrderBy(x => x.FolderName).ToList().ToIl2Cpp();
+
+        foreach (var sub in taskFolder.SubFolders)
+        {
+            var taskFolder2 = UObject.Instantiate(sub, __instance.TaskParent);
+            taskFolder2.gameObject.SetActive(true);
+            taskFolder2.Parent = __instance;
+            taskFolder2.transform.localPosition = new(num, num2, 0f);
+            taskFolder2.transform.localScale = Vector3.one;
+            num3 = Mathf.Max(num3, taskFolder2.Text.bounds.size.y + 1.1f);
+            num += __instance.folderWidth;
+
+            if (num > __instance.lineWidth)
             {
-                stringBuilder.Append(folder.FolderName);
-                stringBuilder.Append('\\');
+                num = 0f;
+                num2 -= num3;
+                num3 = 0f;
             }
 
-            __instance.PathText.text = stringBuilder.ToString();
-            __instance.ActiveItems.ForEach(x => x.gameObject.Destroy());
-            __instance.ActiveItems.Clear();
-            var num = 0f;
-            var num2 = 0f;
-            var num3 = 0f;
-            taskFolder.SubFolders = taskFolder.SubFolders.ToSystem().OrderBy(x => x.FolderName).ToList().ToIl2Cpp();
+            __instance.ActiveItems.Add(taskFolder2.transform);
 
-            foreach (var sub in taskFolder.SubFolders)
+            if (taskFolder2 && taskFolder2.Button)
             {
-                var taskFolder2 = UObject.Instantiate(sub, __instance.TaskParent);
-                taskFolder2.gameObject.SetActive(true);
-                taskFolder2.Parent = __instance;
-                taskFolder2.transform.localPosition = new(num, num2, 0f);
-                taskFolder2.transform.localScale = Vector3.one;
-                num3 = Mathf.Max(num3, taskFolder2.Text.bounds.size.y + 1.1f);
-                num += __instance.folderWidth;
+                ControllerManager.Instance.AddSelectableUiElement(taskFolder2.Button, false);
 
-                if (num > __instance.lineWidth)
-                {
-                    num = 0f;
-                    num2 -= num3;
-                    num3 = 0f;
-                }
-
-                __instance.ActiveItems.Add(taskFolder2.transform);
-
-                if (taskFolder2 && taskFolder2.Button)
-                {
-                    ControllerManager.Instance.AddSelectableUiElement(taskFolder2.Button, false);
-
-                    if (!IsNullEmptyOrWhiteSpace(__instance.restorePreviousSelectionByFolderName) && taskFolder2.FolderName.Equals(__instance.restorePreviousSelectionByFolderName))
-                        __instance.restorePreviousSelectionFound = taskFolder2.Button;
-                }
+                if (!IsNullEmptyOrWhiteSpace(__instance.restorePreviousSelectionByFolderName) && taskFolder2.FolderName.Equals(__instance.restorePreviousSelectionByFolderName))
+                    __instance.restorePreviousSelectionFound = taskFolder2.Button;
             }
+        }
 
-            if (FolderNames.Contains(taskFolder.FolderName))
+        if (FolderNames.Contains(taskFolder.FolderName))
+        {
+            var layerEnum = Enum.TryParse<PlayerLayerEnum>(taskFolder.FolderName, out var h) ? h : PlayerLayerEnum.None;
+            var (start, end) = layerEnum switch
             {
-                var layerEnum = Enum.TryParse<PlayerLayerEnum>(taskFolder.FolderName, out var h) ? h : PlayerLayerEnum.None;
-                var (start, end) = layerEnum switch
+                PlayerLayerEnum.Modifier => ((int)LayerEnum.Astral, (int)LayerEnum.Yeller),
+                PlayerLayerEnum.Disposition => ((int)LayerEnum.Allied, (int)LayerEnum.Traitor),
+                PlayerLayerEnum.Ability => ((int)LayerEnum.ButtonBarry, (int)LayerEnum.Underdog),
+                _ => (-1, -1)
+            };
+
+            if (Enum.TryParse<Faction>(taskFolder.FolderName, out var faction))
+            {
+                (start, end) = faction switch
                 {
-                    PlayerLayerEnum.Modifier => ((int)LayerEnum.Astral, (int)LayerEnum.Yeller),
-                    PlayerLayerEnum.Disposition => ((int)LayerEnum.Allied, (int)LayerEnum.Traitor),
-                    PlayerLayerEnum.Ability => ((int)LayerEnum.ButtonBarry, (int)LayerEnum.Underdog),
+                    Faction.Crew => ((int)LayerEnum.Altruist, (int)LayerEnum.Vigilante),
+                    Faction.Neutral => ((int)LayerEnum.Actor, (int)LayerEnum.Whisperer),
+                    Faction.Intruder => ((int)LayerEnum.Ambusher, (int)LayerEnum.Wraith),
+                    Faction.GameMode => ((int)LayerEnum.Hunter, (int)LayerEnum.Runner),
+                    Faction.Syndicate => ((int)LayerEnum.Anarchist, (int)LayerEnum.Warper),
                     _ => (-1, -1)
                 };
-
-                if (Enum.TryParse<Faction>(taskFolder.FolderName, out var faction))
-                {
-                    (start, end) = faction switch
-                    {
-                        Faction.Crew => ((int)LayerEnum.Altruist, (int)LayerEnum.Vigilante),
-                        Faction.Neutral => ((int)LayerEnum.Actor, (int)LayerEnum.Whisperer),
-                        Faction.Intruder => ((int)LayerEnum.Ambusher, (int)LayerEnum.Wraith),
-                        Faction.GameMode => ((int)LayerEnum.Hunter, (int)LayerEnum.Runner),
-                        Faction.Syndicate => ((int)LayerEnum.Anarchist, (int)LayerEnum.Warper),
-                        _ => (-1, -1)
-                    };
-                }
-
-                if (start != -1 && end != -1)
-                {
-                    for (var k = start; k <= end; k++)
-                    {
-                        var layer = (LayerEnum)k;
-
-                        if (layer is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer)
-                            continue;
-
-                        try
-                        {
-                            CreateRoleButton(__instance, taskFolder, layer, ref num, ref num2, ref num3);
-                        }
-                        catch (Exception e)
-                        {
-                            Error($"Layer: {layer}\n{e}");
-                        }
-                    }
-                }
             }
-            else
+
+            if (start != -1 && end != -1)
             {
-                var flag = false;
-                taskFolder.Children = taskFolder.Children.ToSystem().OrderBy(t => t.TaskType).ToList().ToIl2Cpp();
-
-                foreach (var task in taskFolder.Children)
+                for (var k = start; k <= end; k++)
                 {
-                    var taskAddButton = UObject.Instantiate(__instance.TaskPrefab);
-                    taskAddButton.MyTask = task;
+                    var layer = (LayerEnum)k;
 
-                    if (taskAddButton.MyTask.TaskType == TaskTypes.DivertPower)
+                    if (layer is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer)
+                        continue;
+
+                    try
                     {
-                        var divert = taskAddButton.MyTask.TryCast<DivertPowerTask>();
-
-                        if (divert)
-                            taskAddButton.Text.text = TranslationController.Instance.GetString(StringNames.DivertPowerTo, TranslationController.Instance.GetString(divert.TargetSystem));
+                        CreateRoleButton(__instance, taskFolder, layer, ref num, ref num2, ref num3);
                     }
-                    else if (taskAddButton.MyTask.TaskType == TaskTypes.FixWeatherNode)
+                    catch (Exception e)
                     {
-                        var node = taskAddButton.MyTask.TryCast<WeatherNodeTask>();
-
-                        if (node)
-                        {
-                            taskAddButton.Text.text = TranslationController.Instance.GetString(StringNames.FixWeatherNode) + " " +
-                                TranslationController.Instance.GetString(WeatherSwitchGame.ControlNames[node.NodeId]);
-                        }
-                    }
-                    else
-                        taskAddButton.Text.text = TranslationController.Instance.GetString(taskAddButton.MyTask.TaskType);
-
-                    __instance.AddFileAsChild(taskFolder, taskAddButton, ref num, ref num2, ref num3);
-
-                    if (taskAddButton && taskAddButton.Button)
-                    {
-                        ControllerManager.Instance.AddSelectableUiElement(taskAddButton.Button, false);
-
-                        if (__instance.Hierarchy.Count != 1 && !flag)
-                        {
-                            var component = ControllerManager.Instance.CurrentUiState.CurrentSelection.GetComponent<TaskFolder>();
-
-                            if (component)
-                                __instance.restorePreviousSelectionByFolderName = component.FolderName;
-
-                            ControllerManager.Instance.SetDefaultSelection(taskAddButton.Button, null);
-                            flag = true;
-                        }
+                        Error($"Layer: {layer}\n{e}");
                     }
                 }
             }
+        }
+        else
+        {
+            var flag = false;
+            taskFolder.Children = taskFolder.Children.ToSystem().OrderBy(t => t.TaskType).ToList().ToIl2Cpp();
 
-            ControllerManager.Instance.SetBackButton(__instance.Hierarchy.Count == 1 ? __instance.BackButton : __instance.FolderBackButton);
+            foreach (var task in taskFolder.Children)
+            {
+                var taskAddButton = UObject.Instantiate(__instance.TaskPrefab);
+                taskAddButton.MyTask = task;
+
+                if (taskAddButton.MyTask.TaskType == TaskTypes.DivertPower)
+                {
+                    var divert = taskAddButton.MyTask.TryCast<DivertPowerTask>();
+
+                    if (divert)
+                        taskAddButton.Text.SetText(TranslationController.Instance.GetString(StringNames.DivertPowerTo, TranslationController.Instance.GetString(divert.TargetSystem)));
+                }
+                else if (taskAddButton.MyTask.TaskType == TaskTypes.FixWeatherNode)
+                {
+                    var node = taskAddButton.MyTask.TryCast<WeatherNodeTask>();
+
+                    if (node)
+                    {
+                        taskAddButton.Text.SetText(TranslationController.Instance.GetString(StringNames.FixWeatherNode) + " " +
+                            TranslationController.Instance.GetString(WeatherSwitchGame.ControlNames[node.NodeId]));
+                    }
+                }
+                else
+                    taskAddButton.Text.SetText(TranslationController.Instance.GetString(taskAddButton.MyTask.TaskType));
+
+                __instance.AddFileAsChild(taskFolder, taskAddButton, ref num, ref num2, ref num3);
+
+                if (taskAddButton && taskAddButton.Button)
+                {
+                    ControllerManager.Instance.AddSelectableUiElement(taskAddButton.Button, false);
+
+                    if (__instance.Hierarchy.Count != 1 && !flag)
+                    {
+                        var component = ControllerManager.Instance.CurrentUiState.CurrentSelection.GetComponent<TaskFolder>();
+
+                        if (component)
+                            __instance.restorePreviousSelectionByFolderName = component.FolderName;
+
+                        ControllerManager.Instance.SetDefaultSelection(taskAddButton.Button, null);
+                        flag = true;
+                    }
+                }
+            }
+        }
+
+        ControllerManager.Instance.SetBackButton(__instance.Hierarchy.Count == 1 ? __instance.BackButton : __instance.FolderBackButton);
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(TaskAddButton), nameof(TaskAddButton.Update))]
+public static class UpdateRoleButtons
+{
+    public static bool Prefix(TaskAddButton __instance)
+    {
+        if (FreeplayPatches.RoleButtons.TryGetValue(__instance.name, out var layer))
+        {
+            __instance.Overlay.enabled = CustomPlayer.Local.Is(layer);
             return false;
         }
-    }
 
-    [HarmonyPatch(typeof(TaskAddButton), nameof(TaskAddButton.Update))]
-    public static class UpdateRoleButtons
-    {
-        public static bool Prefix(TaskAddButton __instance)
-        {
-            if (RoleButtons.TryGetValue(__instance.name, out var layer))
-            {
-                __instance.Overlay.enabled = CustomPlayer.Local.Is(layer);
-                return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

@@ -78,9 +78,12 @@ public class Drunkard : Syndicate
     {
         base.UpdateHud(__instance);
 
+        if (HoldsDrive)
+            return;
+
         if (KeyboardJoystick.player.GetButton("Delete"))
         {
-            if (ConfusedPlayer && !HoldsDrive && !ConfuseButton.EffectActive)
+            if (ConfusedPlayer && !ConfuseButton.EffectActive)
                 ConfusedPlayer = null;
 
             Message("Removed a target");

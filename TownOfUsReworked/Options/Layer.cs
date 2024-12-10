@@ -39,7 +39,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     {
         base.OptionCreated();
         var role = Setting.Cast<RoleOptionSetting>();
-        role.titleText.text = TranslationManager.Translate(ID);
+        role.titleText.SetText(TranslationManager.Translate(ID));
         role.titleText.color = LayerColor.Alternate(0.45f);
         role.roleMaxCount = Max;
         role.labelSprite.color = LayerColor;
@@ -228,8 +228,8 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     {
         var data = Get();
         var role = Setting.Cast<RoleOptionSetting>();
-        role.chanceText.text = $"{data.Chance}%";
-        role.countText.text = $"x{data.Count}";
+        role.chanceText.SetText($"{data.Chance}%");
+        role.countText.SetText($"x{data.Count}");
         role.roleChance = data.Chance;
         UniqueCheck.enabled = data.Unique;
         ActiveCheck.enabled = data.Active;

@@ -181,7 +181,7 @@ public class Warper : Syndicate
             if (ActiveTask())
                 ActiveTask().Close();
 
-            if (MapPatch.MapActive)
+            if (MapBehaviourPatches.MapActive)
                 Map().Close();
         }
 

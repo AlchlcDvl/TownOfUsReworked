@@ -117,7 +117,6 @@ public class Defector : Disposition
         }
 
         Side = role.Faction;
-        role.Alignment = role.Alignment.GetNewAlignment(role.Faction);
 
         if (Local)
             Flash(Color);

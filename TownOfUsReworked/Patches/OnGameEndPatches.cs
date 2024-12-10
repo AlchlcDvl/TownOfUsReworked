@@ -275,7 +275,7 @@ public static class OnGameEndPatches
                         Winners[role2.PlayerName] = role2;
                 }
             }
-            else if (WinState == WinLose.HuntedWins)
+            else if (WinState == WinLose.HuntedWin)
             {
                 foreach (var role2 in PlayerLayer.GetLayers<Hunted>())
                 {
@@ -434,13 +434,13 @@ public static class OnGameEndPatches
                 AchievementManager.Instance.SetWinMap(MapPatches.CurrentMap);
                 UnityTelemetry.Instance.WonGame(cachedPlayerData.ColorId, cachedPlayerData.HatId, cachedPlayerData.SkinId, cachedPlayerData.PetId, cachedPlayerData.VisorId,
                     cachedPlayerData.NamePlateId);
-                __instance.WinText.text = TranslationController.Instance.GetString(StringNames.Victory);
+                __instance.WinText.SetText(TranslationController.Instance.GetString(StringNames.Victory));
                 __instance.WinText.color = UColor.blue;
             }
             else
             {
                 StatsManager.Instance.AddLoseReason((GameOverReason)10);
-                __instance.WinText.text = TranslationController.Instance.GetString(StringNames.Defeat);
+                __instance.WinText.SetText(TranslationController.Instance.GetString(StringNames.Defeat));
                 __instance.WinText.color = UColor.red;
             }
 
@@ -516,15 +516,25 @@ public static class OnGameEndPatches
                 WinLose.DefectorWins => ("Defector Wins", "IntruderWin", CustomColorManager.Defector),
                 WinLose.TaskRunnerWins => ("Tasks Completed", "IntruderWin", CustomColorManager.TaskRace),
                 WinLose.HunterWins => ("Hunters Win", "IntruderWin", CustomColorManager.Hunter),
-                WinLose.HuntedWins => ("The Hunted Win", "IntruderWin", CustomColorManager.Hunted),
+                WinLose.HuntedWin => ("The Hunted Win", "IntruderWin", CustomColorManager.Hunted),
                 WinLose.EveryoneWins => ("Everyone Wins", "Stalemate", CustomColorManager.Stalemate),
                 _ => ("Stalemate", "Stalemate", CustomColorManager.Stalemate)
             };
             __instance.BackgroundBar.material.color = text.color = color;
             __instance.WinText.transform.localPosition += new Vector3(0f, 1.5f, 0f);
-            text.text = $"<size=50%>{texttext}!</size>";
+            text.SetText($"<size=50%>{texttext}!</size>");
             Play(winsound);
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(EndGameNavigation), nameof(EndGameNavigation.ShowDefaultNavigation))]
+    public static class AutoPlayAgainPatch
+    {
+        public static void Postfix(EndGameNavigation __instance)
+        {
+            if (TownOfUsReworked.AutoPlayAgain.Value && TownOfUsReworked.MCIActive)
+                __instance.NextGame();
         }
     }
 
@@ -749,9 +759,9 @@ public static class OnGameEndPatches
             roleSummaryTextMesh.fontSizeMin = 1.5f;
             roleSummaryTextMesh.fontSizeMax = 1.5f;
             roleSummaryTextMesh.fontSize = 1.5f;
-            roleSummaryTextMesh.text = $"{roleSummaryText}";
+            roleSummaryTextMesh.SetText($"{roleSummaryText}");
             roleSummaryTextMesh.GetComponent<RectTransform>().anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
-            SaveText("Summary", roleSummaryCache.ToString(), TownOfUsReworked.Other);
+            SaveText("Summary", $"{roleSummaryCache}", TownOfUsReworked.Other);
             PlayerRoles.Clear();
             Disconnected.Clear();
         }

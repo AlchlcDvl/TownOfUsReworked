@@ -26,12 +26,6 @@ public static class BetterPolus
     private static readonly Vector3 TempColdNewPosDV = new(7.772f, -17.103f, -0.017f);
     private static readonly Vector3 SpeciVentPos = new(36.5f, -22f, 0f);
 
-    private static bool IsAdjustmentsDone;
-    private static bool IsObjectsFetched;
-    private static bool IsRoomsFetched;
-    private static bool IsVentsFetched;
-    private static bool IsVentModified;
-
     private static Console WifiConsole;
     private static Console NavConsole;
 
@@ -56,53 +50,29 @@ public static class BetterPolus
     private static GameObject Specimen;
     private static GameObject Office;
 
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
-    public static class ShipStatusBeginPatch
+    public static void ApplyChanges()
     {
-        public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
-    }
-
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
-    public static class ShipStatusAwakePatch
-    {
-        public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
-    }
-
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.FixedUpdate))]
-    public static class ShipStatusFixedUpdatePatch
-    {
-        public static void Prefix(ShipStatus __instance)
-        {
-            if (!IsObjectsFetched || !IsAdjustmentsDone)
-                ApplyChanges(__instance);
-        }
-
-        public static void Postfix(ShipStatus __instance)
-        {
-            if (!EnableBetterPolus)
-                return;
-
-            if (!IsVentModified && __instance.Type == ShipStatus.MapType.Pb && SpeciVent)
-            {
-                SpeciVent.Id = GetAvailableId();
-                IsVentModified = true;
-                var vents = Ship().AllVents.ToList();
-                vents.Add(SpeciVent);
-                Ship().AllVents = vents.ToArray();
-            }
-        }
-    }
-
-    private static void ApplyChanges(ShipStatus __instance)
-    {
-        if (!EnableBetterPolus)
-            return;
-
-        if (__instance.Type == ShipStatus.MapType.Pb)
+        if (EnableBetterPolus)
         {
             FindPolusObjects();
             AdjustPolus();
         }
+    }
+
+    private static void AdjustPolus()
+    {
+        if (TempLocation == TempLocation.SwappedWithVitals)
+        {
+            MoveVitals();
+            MoveTempCold();
+        }
+        else if (TempLocation == TempLocation.DeathValley)
+            MoveTempColdDV();
+
+        if (WifiChartCourseSwap)
+            SwitchNavWifi();
+
+        AdjustVents();
     }
 
     private static void FindPolusObjects()
@@ -110,28 +80,6 @@ public static class BetterPolus
         FindRooms();
         FindVents();
         FindObjects();
-    }
-
-    private static void AdjustPolus()
-    {
-        if (IsObjectsFetched && IsRoomsFetched)
-        {
-            if (TempLocation == TempLocation.SwappedWithVitals)
-            {
-                MoveVitals();
-                MoveTempCold();
-            }
-            else if (TempLocation == TempLocation.DeathValley)
-                MoveTempColdDV();
-
-            if (WifiChartCourseSwap)
-                SwitchNavWifi();
-        }
-
-        if (IsVentsFetched && PolusVentImprovements)
-            AdjustVents();
-
-        IsAdjustmentsDone = true;
     }
 
     private static void FindVents()
@@ -167,8 +115,6 @@ public static class BetterPolus
             SpeciVent.Center = null;
             SpeciVent.name = "SpeciVent";
         }
-
-        IsVentsFetched = ElectricBuildingVent && ElectricalVent && ScienceBuildingVent && StorageVent && LightCageVent && SpeciVent && BathroomVent && AdminVent;
     }
 
     private static void FindRooms()
@@ -192,8 +138,6 @@ public static class BetterPolus
 
         if (!Office)
             Office = gos.Find(o => o.name == "Office");
-
-        IsRoomsFetched = Comms && DropShip && Outside && Science && Specimen && Office;
     }
 
     private static void FindObjects()
@@ -223,16 +167,22 @@ public static class BetterPolus
                 DvdScreenOffice.SetActive(false);
             }
         }
-
-        IsObjectsFetched = WifiConsole && NavConsole && Vitals && DvdScreenOffice && TempCold;
     }
 
     private static void AdjustVents()
     {
-        if (IsVentsFetched)
+        if (PolusVentImprovements)
         {
             MoveSpeciVent();
             ReconnectVents();
+
+            if (SpeciVent)
+            {
+                SpeciVent.Id = GetAvailableId();
+                var vents = Ship().AllVents.ToList();
+                vents.Add(SpeciVent);
+                Ship().AllVents = vents.ToArray();
+            }
         }
     }
 

@@ -1,9 +1,10 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-public static class ShowHostMeetingUpdatePatch
+[HarmonyPatch(typeof(MeetingHud))]
+public static class ShowHostPatches
 {
-    public static void Postfix(MeetingHud __instance)
+    [HarmonyPatch(nameof(MeetingHud.Update)), HarmonyPostfix]
+    public static void UpdatePostfix(MeetingHud __instance)
     {
         if (!IsOnlineGame())
             return;
@@ -13,15 +14,12 @@ public static class ShowHostMeetingUpdatePatch
         if (host != null)
         {
             PlayerMaterial.SetColors(host.DefaultOutfit.ColorId, __instance.HostIcon);
-            __instance.ProceedButton.gameObject.GetComponentInChildren<TextMeshPro>().text = $"HOST: {host.PlayerName}";
+            __instance.ProceedButton.gameObject.GetComponentInChildren<TextMeshPro>().SetText($"HOST: {host.PlayerName}");
         }
     }
-}
 
-[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-public static class ShowHostMeetingStartPatch
-{
-    public static void Postfix(MeetingHud __instance)
+    [HarmonyPatch(nameof(MeetingHud.Start)), HarmonyPostfix]
+    public static void StartPostfix(MeetingHud __instance)
     {
         if (!IsOnlineGame())
             return;

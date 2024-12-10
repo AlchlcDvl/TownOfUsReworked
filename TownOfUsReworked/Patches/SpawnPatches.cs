@@ -1,19 +1,14 @@
 namespace TownOfUsReworked.Patches;
 
 // The code is from The Other Roles: Community Edition with some modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
+[HarmonyPatch]
 public static class SpawnPatches
 {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
-    public static class IntroCutsceneOnDestroyPatch
-    {
-        public static void Prefix() => DoTheThing(true);
-    }
+    public static void Prefix() => DoTheThing(true);
 
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public static class BaseExileControllerPatch
-    {
-        public static void Postfix() => DoTheThing(meeting: true);
-    }
+    public static void Postfix() => DoTheThing(meeting: true);
 
     private static void DoTheThing(bool intro = false, bool meeting = false)
     {
@@ -28,6 +23,7 @@ public static class SpawnPatches
         RandomSpawn(intro, meeting);
         HUD().FullScreen.enabled = true;
         Role.LocalRole.UpdateButtons();
+        CustomPlayer.Local.RegenTask();
 
         if (MapPatches.CurrentMap is not (4 or 6))
             HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);

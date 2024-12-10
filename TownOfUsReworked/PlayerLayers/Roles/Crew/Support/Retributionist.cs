@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Retributionist : Crew
+public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ReviveAfterVoting { get; set; } = true;
@@ -157,10 +157,10 @@ public class Retributionist : Crew
 
             foreach (var body in validBodies)
             {
-                if (!BodyArrows.ContainsKey(body.ParentId))
-                    BodyArrows.Add(body.ParentId, new(Player, Color));
-
-                BodyArrows[body.ParentId]?.Update(body.TruePosition);
+                if (BodyArrows.TryGetValue(body.ParentId, out var arrow))
+                    arrow.Update(body.TruePosition);
+                else
+                    BodyArrows[body.ParentId] = new(Player, Color);
             }
         }
         else if (IsTrack)
@@ -749,7 +749,7 @@ public class Retributionist : Crew
             lover.Revive();
         }
 
-        if (ReviveButton.Uses == 0 && Local)
+        if (ReviveButton.Uses == 0 && Local && Altruist.Sacrifice)
             RpcMurderPlayer(Player);
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
@@ -1098,7 +1098,7 @@ public class Retributionist : Crew
             if (ActiveTask())
                 ActiveTask().Close();
 
-            if (MapPatch.MapActive)
+            if (MapBehaviourPatches.MapActive)
                 Map().Close();
         }
 

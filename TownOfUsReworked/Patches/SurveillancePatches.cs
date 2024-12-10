@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
+[HarmonyPatch]
 public static class SurveillancePatches
 {
     public static bool NVActive;
@@ -7,66 +8,46 @@ public static class SurveillancePatches
     private static bool LightsOut => CustomPlayer.Local.myTasks.Any(x => x.name.Contains("FixLightsTask"));
 
     [HarmonyPatch(typeof(SurveillanceMinigame), nameof(SurveillanceMinigame.Begin))]
-    public static class SurveillanceMinigameBeginPatch
+    public static void Postfix(SurveillanceMinigame __instance)
     {
-        public static void Postfix(SurveillanceMinigame __instance)
+        if (Ship().AllCameras.Length > 4 && __instance.FilteredRooms.Length > 0)
         {
-            if (Ship().AllCameras.Length > 4 && __instance.FilteredRooms.Length > 0)
+            __instance.textures = __instance.textures.Concat(new RenderTexture[Ship().AllCameras.Length - 4]).ToArray();
+
+            for (var i = 4; i < Ship().AllCameras.Length; i++)
             {
-                __instance.textures = __instance.textures.Concat(new RenderTexture[Ship().AllCameras.Length - 4]).ToArray();
-
-                for (var i = 4; i < Ship().AllCameras.Length; i++)
-                {
-                    var surv = Ship().AllCameras[i];
-                    var camera = UObject.Instantiate(__instance.CameraPrefab, __instance.transform);
-                    camera.transform.position = new(surv.transform.position.x, surv.transform.position.y, 8f);
-                    camera.orthographicSize = 2.35f;
-                    __instance.textures[i] = camera.targetTexture = RenderTexture.GetTemporary(256, 256, 16, RenderTextureFormat.ARGB32);
-                }
+                var surv = Ship().AllCameras[i];
+                var camera = UObject.Instantiate(__instance.CameraPrefab, __instance.transform);
+                camera.transform.position = new(surv.transform.position.x, surv.transform.position.y, 8f);
+                camera.orthographicSize = 2.35f;
+                __instance.textures[i] = camera.targetTexture = RenderTexture.GetTemporary(256, 256, 16, RenderTextureFormat.ARGB32);
             }
-
-            NightVisionUpdate(__instance);
         }
+
+        NightVisionUpdate(__instance);
     }
 
     [HarmonyPatch(typeof(PlanetSurveillanceMinigame), nameof(PlanetSurveillanceMinigame.Begin))]
-    public static class PlanetSurveillanceMinigameBeginPatch
-    {
-        public static void Postfix(PlanetSurveillanceMinigame __instance) => NightVisionUpdate(__instance);
-    }
+    public static void Postfix(PlanetSurveillanceMinigame __instance) => NightVisionUpdate(__instance);
 
     [HarmonyPatch(typeof(SurveillanceMinigame), nameof(SurveillanceMinigame.Update))]
-    public static class SurveillanceMinigameUpdatePatch
-    {
-        public static void Prefix(SurveillanceMinigame __instance) => NightVisionUpdate(__instance);
-    }
+    public static void Prefix(SurveillanceMinigame __instance) => NightVisionUpdate(__instance);
 
     [HarmonyPatch(typeof(PlanetSurveillanceMinigame), nameof(PlanetSurveillanceMinigame.Update))]
-    public static class PlanetSurveillanceMinigameUpdatePatch
+    public static void Prefix(PlanetSurveillanceMinigame __instance)
     {
-        public static void Prefix(PlanetSurveillanceMinigame __instance)
-        {
-            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-                __instance.NextCamera(1);
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+            __instance.NextCamera(1);
 
-            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-                __instance.NextCamera(-1);
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+            __instance.NextCamera(-1);
 
-            NightVisionUpdate(__instance);
-        }
+        NightVisionUpdate(__instance);
     }
 
     [HarmonyPatch(typeof(SurveillanceMinigame), nameof(SurveillanceMinigame.OnDestroy))]
-    public static class SurveillanceMinigameDestroyPatch
-    {
-        public static void Prefix() => ResetNightVision();
-    }
-
     [HarmonyPatch(typeof(PlanetSurveillanceMinigame), nameof(PlanetSurveillanceMinigame.OnDestroy))]
-    public static class PlanetSurveillanceMinigameDestroyPatch
-    {
-        public static void Prefix() => ResetNightVision();
-    }
+    public static void Prefix() => ResetNightVision();
 
     private static void NightVisionUpdate(PlanetSurveillanceMinigame __instance) => NightVisionUpdate(null, __instance);
 

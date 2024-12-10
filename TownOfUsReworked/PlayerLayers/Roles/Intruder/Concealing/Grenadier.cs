@@ -79,7 +79,7 @@ public class Grenadier : Intruder
                         HUD().FullScreen.color = CustomColorManager.NormalVision;
                 }
 
-                if (MapPatch.MapActive)
+                if (MapBehaviourPatches.MapActive)
                     Map().Close();
 
                 if (ActiveTask())

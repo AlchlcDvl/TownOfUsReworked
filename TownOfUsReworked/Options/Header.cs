@@ -13,18 +13,18 @@ public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : OptionAt
     {
         base.OptionCreated();
         var header = Setting.Cast<CategoryHeaderMasked>();
-        header.Title.text = $"<b>{TranslationManager.Translate(ID)}</b>";
+        header.Title.SetText($"<b>{TranslationManager.Translate(ID)}</b>");
         var collapse = header.transform.FindChild("Collapse")?.gameObject;
         collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
         ButtonText = collapse.GetComponentInChildren<TextMeshPro>();
-        ButtonText.text = Get() ? "-" : "+";
+        ButtonText.SetText(Get() ? "-" : "+");
     }
 
     public override void ViewOptionCreated()
     {
         base.ViewOptionCreated();
         Button = ViewSetting.transform.Find("TitleButton").GetComponent<PassiveButton>();
-        Button.buttonText.text = $"<b>{TranslationManager.Translate(ID)}</b>";
+        Button.buttonText.SetText($"<b>{TranslationManager.Translate(ID)}</b>");
         Button.OverrideOnClickListeners(Toggle);
         Button.SelectButton(Value);
     }
@@ -35,7 +35,7 @@ public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : OptionAt
 
         if (Setting)
         {
-            ButtonText.text = Value ? "-" : "+";
+            ButtonText.SetText(Value ? "-" : "+");
             SettingsPatches.OnValueChanged();
         }
 

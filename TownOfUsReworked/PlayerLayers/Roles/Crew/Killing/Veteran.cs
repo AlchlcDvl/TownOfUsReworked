@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Veteran : Crew
+public class Veteran : Crew, IAlerter
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
     public static Number MaxAlerts { get; set; } = new(5);

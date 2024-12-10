@@ -35,7 +35,7 @@ public class CustomRolesMenu(PlayerControl owner, RoleSelect click) : CustomMenu
         var dictEntry = LayerDictionary[layer];
         PlayerMaterial.SetColors(dictEntry.Color, panel.PlayerIcon.cosmetics.currentBodySprite.BodySprite);
         panel.LevelNumberText.transform.parent.gameObject.SetActive(false);
-        panel.NameText.text = layer == LayerEnum.Miner && MapPatches.CurrentMap == 5 ? "Herbalist" : dictEntry.Name;
+        panel.NameText.SetText(layer == LayerEnum.Miner && MapPatches.CurrentMap == 5 ? "Herbalist" : dictEntry.Name);
         panel.NameText.color = dictEntry.Color;
         panel.name = $"Guess{panel.NameText.text.Replace(" ", "")}";
 

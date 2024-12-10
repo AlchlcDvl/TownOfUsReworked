@@ -21,7 +21,7 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     {
         base.OptionCreated();
         var number = Setting.Cast<NumberOption>();
-        number.TitleText.text = TranslationManager.Translate(ID);
+        number.TitleText.SetText(TranslationManager.Translate(ID));
         number.ValidRange = new(Min, Max);
         number.Increment = Increment;
         number.ZeroIsInfinity = ZeroIsInfinity;
@@ -69,13 +69,13 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     {
         var number = Setting.Cast<NumberOption>();
         number.Value = number.oldValue = Get();
-        number.ValueText.text = Format();
+        number.ValueText.SetText(Format());
     }
 
     public override void ViewUpdate()
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = Format();
+        viewSettingsInfoPanel.settingText.SetText(Format());
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 }

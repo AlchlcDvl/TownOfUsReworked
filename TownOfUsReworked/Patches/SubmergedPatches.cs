@@ -12,17 +12,11 @@ public static class SubmergedStartPatch
     }
 }
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
-[HarmonyPriority(Priority.Low)]
-public static class SubmergedPhysicsPatches1
+[HarmonyPatch(typeof(PlayerPhysics)), HarmonyPriority(Priority.Low)]
+public static class SubmergedPhysicsPatches
 {
-    public static void Postfix(PlayerPhysics __instance) => GhostRoleFix(__instance);
-}
-
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.LateUpdate))]
-[HarmonyPriority(Priority.Low)]
-public static class SubmergedPhysicsPatches2
-{
+    [HarmonyPatch(nameof(PlayerPhysics.HandleAnimation))]
+    [HarmonyPatch(nameof(PlayerPhysics.LateUpdate))]
     public static void Postfix(PlayerPhysics __instance) => GhostRoleFix(__instance);
 }
 

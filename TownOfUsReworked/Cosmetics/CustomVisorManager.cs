@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Cosmetics.CustomVisors;
+namespace TownOfUsReworked.Cosmetics;
 
 public static class CustomVisorManager
 {

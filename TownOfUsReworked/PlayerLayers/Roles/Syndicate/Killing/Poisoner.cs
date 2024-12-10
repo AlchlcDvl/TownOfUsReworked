@@ -63,9 +63,12 @@ public class Poisoner : Syndicate
     {
         base.UpdateHud(__instance);
 
+        if (!HoldsDrive)
+            return;
+
         if (KeyboardJoystick.player.GetButton("Delete"))
         {
-            if (PoisonedPlayer && HoldsDrive && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
+            if (PoisonedPlayer && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
                 PoisonedPlayer = null;
 
             Message("Removed a target");

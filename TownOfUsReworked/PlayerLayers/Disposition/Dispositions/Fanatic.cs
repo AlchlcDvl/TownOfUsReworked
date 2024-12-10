@@ -66,7 +66,6 @@ public class Fanatic : Disposition
             Faction.Intruder => () => Role.IntrudersWinCon,
             _ => () => ""
         };
-        fanaticRole.Alignment = fanaticRole.Alignment.GetNewAlignment(fanaticRole.Faction);
 
         foreach (var snitch in GetLayers<Snitch>())
         {

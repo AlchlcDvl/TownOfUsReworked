@@ -172,7 +172,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
         if (ViewSetting is ViewSettingsInfoPanel viewSettingsInfoPanel)
         {
-            viewSettingsInfoPanel.titleText.text = SettingNotif();
+            viewSettingsInfoPanel.titleText.SetText(SettingNotif());
             viewSettingsInfoPanel.background.gameObject.SetActive(true);
         }
     }
@@ -222,11 +222,11 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             if (option.Type is CustomOptionType.Header or CustomOptionType.Alignment || option.ClientOnly || !option.ID.Contains("CustomOption"))
                 continue;
 
-            builder.AppendLine(option.ToString());
+            builder.AppendLine($"{option}");
         }
 
         builder.AppendLine($"Map:{MapSettings.Map}");
-        return builder.ToString();
+        return $"{builder}";
     }
 
     public static void SaveSettings()

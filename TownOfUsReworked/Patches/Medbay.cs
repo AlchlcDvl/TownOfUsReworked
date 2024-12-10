@@ -1,8 +1,9 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.Begin))]
+[HarmonyPatch(typeof(MedScanMinigame))]
 public static class MedScanMinigamePatch
 {
+    [HarmonyPatch(nameof(MedScanMinigame.Begin))]
     public static void Postfix(MedScanMinigame __instance)
     {
         var newHeightFeet = 0f;
@@ -22,11 +23,8 @@ public static class MedScanMinigamePatch
         var heightString = $"{(int)newHeightFeet}' {(int)newHeightInch}\"";
         __instance.completeString = __instance.completeString.Replace("3' 6\"", heightString).Replace("92lb", weightString);
     }
-}
 
-[HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.FixedUpdate))]
-public static class MedScanMinigameFixedUpdatePatch
-{
+    [HarmonyPatch(nameof(MedScanMinigame.FixedUpdate))]
     public static void Prefix(MedScanMinigame __instance)
     {
         if (GameModifiers.ParallelMedScans)

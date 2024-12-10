@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Blackmailer : Intruder
+public class Blackmailer : Intruder, IIntimidator
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number BlackmailCd { get; set; } = new(25);
@@ -16,8 +16,13 @@ public class Blackmailer : Intruder
     public static bool BMRevealed { get; set; } = true;
 
     public CustomButton BlackmailButton { get; set; }
-    public PlayerControl BlackmailedPlayer { get; set; }
     public bool ShookAlready { get; set; }
+    public PlayerControl Target { get; set; }
+    public PlayerControl BlackmailedPlayer
+    {
+        get => Target;
+        set => Target = value;
+    }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Blackmailer : CustomColorManager.Intruder;
     public override string Name => "Blackmailer";

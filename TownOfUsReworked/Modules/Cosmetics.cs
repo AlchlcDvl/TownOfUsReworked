@@ -128,36 +128,39 @@ public class CustomColor : CustomCosmetic
     [JsonIgnore]
     public bool Changing { get; set; }
 
+    [JsonIgnore]
+    public UColor MainColor { get; set; }
+
+    [JsonIgnore]
+    public UColor ShadowColor { get; set; }
+
     public UColor GetColor()
     {
         if (MainColorValues == null || MainColorValues.Length == 0)
-            return UColor.black;
+            return MainColor = ShadowColor.Light();
 
-        if (MainColors.Length == 1)
-            return MainColors[0];
-
-        return LerpColors(TimeSpeed, MainColors);
+        return MainColor = LerpColors(TimeSpeed, MainColors);
     }
 
     public UColor GetShadowColor()
     {
         if (ShadowColorValues == null || ShadowColorValues.Length == 0)
-            return CustomColorManager.Shadow(GetColor());
+            return ShadowColor = MainColor.Shadow();
 
-        if (ShadowColors.Length == 1)
-            return ShadowColors[0];
-
-        return LerpColors(TimeSpeed, ShadowColors);
+        return ShadowColor = LerpColors(TimeSpeed, ShadowColors);
     }
 
     public static UColor LerpColors(float mul, UColor[] colors)
     {
+        if (colors.Length == 1)
+            return colors[0];
+
         // Math nerd rambling
         // Mapping these next 4 lines onto desmos gives a nice little zig zag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
         var dx = mul * Time.time;
         var f = Mathf.FloorToInt(dx);
         var m = f % 2;
-        var point = Mathf.Clamp((colors.Length - 1) * (((dx - f) * ((2 * m) - 1)) + 1 - m), 0f, colors.Length - 1);
+        var point = (colors.Length - 1) * (((dx - f) * ((2 * m) - 1)) + 1 - m);
 
         var index = Mathf.FloorToInt(point);
 

@@ -22,7 +22,7 @@ public abstract class Range : MonoBehaviour
         item.SetActive(true);
         Number = AllItems.Count + 1;
         var numberText = Instantiate(HUD().KillButton.cooldownTimerText, transform);
-        numberText.text = $"<size=300%>{Number}</size>";
+        numberText.SetText($"<size=300%>{Number}</size>");
         numberText.fontStyle = FontStyles.Bold;
         numberText.name = $"{name}Number{Number}";
         numberText.gameObject.SetActive(true);

@@ -58,39 +58,3 @@ public static class CalculateLightRadiusPatch
         return false;
     }
 }
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.AdjustLighting))]
-public static class AdjustLightingPatch
-{
-    public static bool Prefix(PlayerControl __instance)
-    {
-        if (!__instance.AmOwner || !Ship())
-            return true;
-
-        var flashlights = false;
-        var size = Ship().CalculateLightRadius(__instance.Data);
-
-        if (__instance.Is(Faction.Crew))
-            flashlights = CrewSettings.CrewFlashlight;
-        else if (__instance.Is(Faction.Intruder))
-            flashlights = IntruderSettings.IntruderFlashlight;
-        else if (__instance.Is(Faction.Syndicate))
-            flashlights = SyndicateSettings.SyndicateFlashlight;
-        else if (__instance.Is(Faction.Neutral))
-            flashlights = NeutralSettings.NeutralFlashlight;
-        else if (__instance.Is(LayerEnum.Hunted))
-            flashlights = GameModeSettings.HuntedFlashlight;
-        else if (__instance.Is(LayerEnum.Hunter))
-            flashlights = GameModeSettings.HunterFlashlight;
-
-        flashlights &= !__instance.Data.IsDead;
-
-        if (flashlights)
-            size /= Ship().MaxLightRadius;
-
-        __instance.TargetFlashlight.gameObject.SetActive(flashlights);
-        __instance.StartCoroutine(__instance.EnableRightJoystick(false));
-        __instance.lightSource.SetupLightingForGameplay(flashlights, size, __instance.TargetFlashlight.transform);
-        return false;
-    }
-}

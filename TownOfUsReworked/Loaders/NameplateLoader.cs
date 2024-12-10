@@ -1,4 +1,4 @@
-using static TownOfUsReworked.Cosmetics.CustomNameplates.CustomNameplateManager;
+using static TownOfUsReworked.Cosmetics.CustomNameplateManager;
 using Cpp2IL.Core.Extensions;
 
 namespace TownOfUsReworked.Loaders;

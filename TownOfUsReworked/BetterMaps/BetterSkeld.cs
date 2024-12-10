@@ -21,9 +21,6 @@ public static class BetterSkeld
     private static readonly Vector3 NavVentNorthNewPos = new(-11.85f, -11.55f, 2f);
     private static readonly Vector3 CafeVentNewPos = new(-3.9f, 5.5f, 2f);
 
-    private static bool IsAdjustmentsDone;
-    private static bool IsVentsFetched;
-
     private static Vent NavVentSouth;
     private static Vent NavVentNorth;
     private static Vent ShieldsVent;
@@ -35,47 +32,16 @@ public static class BetterSkeld
     private static Vent BigYVent;
     private static Vent CafeVent;
 
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
-    public static class ShipStatusBeginPatch
+    public static void ApplyChanges()
     {
-        public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
-    }
-
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
-    public static class ShipStatusAwakePatch
-    {
-        public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
-    }
-
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.FixedUpdate))]
-    public static class ShipStatusFixedUpdatePatch
-    {
-        public static void Prefix(ShipStatus __instance)
-        {
-            if (!IsAdjustmentsDone || !IsVentsFetched)
-                ApplyChanges(__instance);
-        }
-    }
-
-    private static void ApplyChanges(ShipStatus __instance)
-    {
-        if (!EnableBetterSkeld)
-            return;
-
-        if (__instance.Type == ShipStatus.MapType.Ship && MapPatches.CurrentMap != 3)
+        if (EnableBetterSkeld)
         {
             FindVents();
             AdjustSkeld();
         }
     }
 
-    private static void AdjustSkeld()
-    {
-        if (IsVentsFetched && SkeldVentImprovements)
-            AdjustVents();
-
-        IsAdjustmentsDone = true;
-    }
+    private static void AdjustSkeld() => AdjustVents();
 
     private static void FindVents()
     {
@@ -110,13 +76,11 @@ public static class BetterSkeld
 
         if (!CafeVent)
             CafeVent = vents.Find(vent => vent.name == "CafeVent");
-
-        IsVentsFetched = NavVentSouth && NavVentNorth && ShieldsVent && WeaponsVent && REngineVent && UpperReactorVent && LEngineVent && ReactorVent && BigYVent && CafeVent;
     }
 
     private static void AdjustVents()
     {
-        if (IsVentsFetched)
+        if (SkeldVentImprovements)
         {
             MoveVents();
             ReconnectVents();

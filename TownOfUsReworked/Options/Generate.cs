@@ -35,7 +35,7 @@ public static class Generate
         foreach (var opt in opts)
         {
             var index = OptionAttribute.AllOptions.Where(x => x.ID == opt.ID).ToList().IndexOf(opt);
-            var toAdd = index == 0 ? "" : index.ToString();
+            var toAdd = index == 0 ? "" : $"{index}";
             opt.ID += toAdd;
             opt.Name += toAdd;
         }
@@ -51,6 +51,8 @@ public static class Generate
         OptionAttribute.AllOptions.ForEach(x => x.Debug());
 
         OptionAttribute.SaveSettings("Default");
+
+        OptionAttribute.LoadPreset("LastUsed", null);
 
         Message($"There exist {OptionAttribute.AllOptions.Count(x => x is not (HeaderOptionAttribute or AlignmentOptionAttribute))} total options lmao (number jumpscare)");
     }

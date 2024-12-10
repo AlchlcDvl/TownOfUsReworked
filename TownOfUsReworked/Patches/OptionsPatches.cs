@@ -1,5 +1,6 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Patches;
 
+[HarmonyPatch]
 public static class SettingsPatches
 {
     public static int SettingsPage;
@@ -10,9 +11,10 @@ public static class SettingsPatches
 
     private static PassiveButton ClientSettingsButton;
 
-    [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Start))]
-    public static class OptionsMenuBehaviour_Start
+    [HarmonyPatch(typeof(GameSettingMenu))]
+    public static class GameSettingMenuPatches
     {
+        [HarmonyPatch(nameof(GameSettingMenu.Start))]
         public static void Postfix(GameSettingMenu __instance)
         {
             __instance.GameSettingsTab.HideForOnline = new(0);
@@ -54,12 +56,12 @@ public static class SettingsPatches
             __instance.GamePresetsButton.transform.localPosition = pos3;
 
             __instance.RoleSettingsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-            __instance.RoleSettingsButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
+            __instance.RoleSettingsButton.buttonText.SetText(TranslationManager.Translate("GameSettings.Layers"));
 
             ClientSettingsButton = UObject.Instantiate(__instance.RoleSettingsButton, __instance.RoleSettingsButton.transform.parent);
             ClientSettingsButton.name = "ClientSettingsButton";
             ClientSettingsButton.buttonText.GetComponent<TextTranslatorTMP>()?.Destroy();
-            ClientSettingsButton.buttonText.text = TranslationManager.Translate("CustomOption.ClientOptions");
+            ClientSettingsButton.buttonText.SetText(TranslationManager.Translate("CustomOption.ClientOptions"));
             ClientSettingsButton.OverrideOnClickListeners(() => __instance.ChangeTab(3, false));
             ClientSettingsButton.OverrideOnMouseOverListeners(() => __instance.ChangeTab(3, true));
             ClientSettingsButton.transform.localPosition = pos4;
@@ -74,17 +76,14 @@ public static class SettingsPatches
                 ButtonPrefab.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
                 ButtonPrefab.buttonText.alignment = TextAlignmentOptions.Center;
                 ButtonPrefab.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-                ButtonPrefab.buttonText.text = "";
+                ButtonPrefab.buttonText.SetText("");
                 ButtonPrefab.gameObject.SetActive(false);
             }
 
             __instance.ChangeTab(1, false);
         }
-    }
 
-    [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.ChangeTab))]
-    public static class OnChangingTabs
-    {
+        [HarmonyPatch(nameof(GameSettingMenu.ChangeTab))]
         public static void Postfix(GameSettingMenu __instance, int tabNum, bool previewOnly)
         {
             if (tabNum == 3)
@@ -108,11 +107,8 @@ public static class SettingsPatches
             };
             OnValueChanged(__instance);
         }
-    }
 
-    [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Close))]
-    public static class OptionsMenuBehaviour_Close
-    {
+        [HarmonyPatch(nameof(GameSettingMenu.Close))]
         public static void Prefix()
         {
             SettingsPage = 0;
@@ -121,6 +117,18 @@ public static class SettingsPatches
             PresetsButtons.Clear();
             LayerOptionsCreated.Keys.ForEach(x => LayerOptionsCreated[x] = false);
             RoleListEntryAttribute.ChoiceButtons.Clear();
+        }
+
+        [HarmonyPatch(nameof(GameSettingMenu.Update))]
+        public static bool Prefix(GameSettingMenu __instance)
+        {
+            if (Controller.currentTouchType != 0)
+            {
+                __instance.ToggleLeftSideDarkener(false);
+                __instance.ToggleRightSideDarkener(false);
+            }
+
+            return false;
         }
     }
 
@@ -133,13 +141,15 @@ public static class SettingsPatches
     public static CategoryHeaderEditRole AlignmentPrefab;
     public static PassiveButton ButtonPrefab;
 
-    [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Awake))]
-    public static class DefinePrefabs1
+    [HarmonyPatch(typeof(GameOptionsMenu))]
+    public static class GameOptionsMenuPatches
     {
         private static bool LayersSet;
 
-        public static bool Prefix(GameOptionsMenu __instance) => __instance.name != "ROLE LIST TAB";
+        [HarmonyPatch(nameof(GameOptionsMenu.Awake)), HarmonyPrefix]
+        public static bool AwakePrefix(GameOptionsMenu __instance) => __instance.name != "ROLE LIST TAB";
 
+        [HarmonyPatch(nameof(GameOptionsMenu.Awake))]
         public static void Postfix(GameOptionsMenu __instance)
         {
             if (__instance.name == "ROLE LIST TAB")
@@ -189,11 +199,11 @@ public static class SettingsPatches
                 title.GetComponent<TextMeshPro>().fontSize = 2.9f; // Why is it different for string options??
 
                 var minus = StringPrefab.transform.GetChild(3);
-                minus.GetComponentInChildren<TextMeshPro>().text = "<";
+                minus.GetComponentInChildren<TextMeshPro>().SetText("<");
                 minus.localPosition += new Vector3(0.6f, 0f, 0f);
 
                 var plus = StringPrefab.transform.GetChild(4);
-                plus.GetComponentInChildren<TextMeshPro>().text = ">";
+                plus.GetComponentInChildren<TextMeshPro>().SetText(">");
                 plus.localPosition += new Vector3(1.5f, 0f, 0f);
 
                 var valueBox = StringPrefab.transform.GetChild(5);
@@ -249,7 +259,7 @@ public static class SettingsPatches
                 var newButton = UObject.Instantiate(StringPrefab.transform.GetChild(3), HeaderPrefab.transform);
                 newButton.localPosition += new Vector3(1.5f, -0.14f, 0f);
                 newButton.localScale *= 0.7f;
-                newButton.GetComponentInChildren<TextMeshPro>().text = "-";
+                newButton.GetComponentInChildren<TextMeshPro>().SetText("-");
                 newButton.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
                 newButton.name = "Collapse";
 
@@ -280,14 +290,45 @@ public static class SettingsPatches
                 LayersSet = true;
             }
         }
+
+        [HarmonyPatch(nameof(GameOptionsMenu.Initialize)), HarmonyPrefix]
+        public static bool InitializePrefix(GameOptionsMenu __instance)
+        {
+            if (IsHnS())
+                return true;
+
+            if (SettingsPage != 3)
+            {
+                __instance.MapPicker.Initialize(20);
+                __instance.MapPicker.SetUpFromData(GameManager.Instance.GameSettingsList.MapNameSetting, 20);
+            }
+
+            // TODO: Make a better fix for this for example caching the options or creating it ourself.
+            // AD Says: Done, kinda.
+            var behaviours = CreateOptions(__instance.settingsContainer);
+
+            foreach (var behave in behaviours)
+            {
+                if (behave is OptionBehaviour option)
+                    option.SetClickMask(__instance.ButtonClickMask);
+            }
+
+            __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>(true).Pointer));
+            OnValueChanged();
+            return false;
+        }
+
+        [HarmonyPatch(nameof(GameOptionsMenu.ValueChanged))]
+        public static bool Prefix() => false;
     }
 
-    [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.Awake))]
-    public static class DefinePrefabs2
+    [HarmonyPatch(typeof(RolesSettingsMenu))]
+    public static class RolesSettingsMenuPatches
     {
         private static bool LayersSet;
 
-        public static void Postfix(RolesSettingsMenu __instance)
+        [HarmonyPatch(nameof(RolesSettingsMenu.Awake)), HarmonyPostfix]
+        public static void AwakePostfix(RolesSettingsMenu __instance)
         {
             __instance.roleChances = new();
             __instance.roleTabs = new();
@@ -366,7 +407,7 @@ public static class SettingsPatches
                 var newButton = UObject.Instantiate(LayersPrefab.CountMinusBtn, AlignmentPrefab.transform);
                 newButton.name = "Collapse";
                 newButton.transform.localPosition = new(-5.839f, -0.45f, -2f);
-                newButton.GetComponentInChildren<TextMeshPro>().text = "-";
+                newButton.GetComponentInChildren<TextMeshPro>().SetText("-");
                 newButton.OverrideOnClickListeners(BlankVoid);
                 newButton.transform.localScale *= 0.7f;
 
@@ -403,6 +444,14 @@ public static class SettingsPatches
                 LayersSet = true;
             }
         }
+
+        [HarmonyPatch(nameof(RolesSettingsMenu.SetQuotaTab))]
+        [HarmonyPatch(nameof(RolesSettingsMenu.OpenChancesTab))]
+        [HarmonyPatch(nameof(RolesSettingsMenu.ValueChanged))]
+        public static bool Prefix() => false;
+
+        [HarmonyPatch(nameof(RolesSettingsMenu.Update)), HarmonyPostfix]
+        public static void UpdatePostfix(RolesSettingsMenu __instance) => __instance.RoleChancesSettings.transform.localPosition = new(SettingsPage >= 5 ? 0.35f : -0.06f, 0f, -5f);
     }
 
     private static bool SpawnOptionsCreated;
@@ -423,14 +472,14 @@ public static class SettingsPatches
                 if (!RoleListEntryAttribute.ChoiceButtons.TryFinding(x => x.name == name, out var button) && instantiate)
                 {
                     button = CreateButton(name, parent);
-                    button.buttonText.text = TranslationManager.Translate($"RoleList.{layer}");
+                    button.buttonText.SetText(TranslationManager.Translate($"RoleList.{layer}"));
                     button.OverrideOnClickListeners(() => SetValue(layer));
                     button.transform.GetChild(2).transform.localScale += new Vector3(0.32f, 0f, 0f);
                     button.transform.GetChild(1).localScale = button.transform.GetChild(2).transform.localScale;
                     button.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().sizeDelta = new(3f, 0.6123f);
 
                     if (LayerDictionary.TryGetValue(layer, out var entry))
-                        button.buttonText.text = $"<#{entry.Color.ToHtmlStringRGBA()}>{button.buttonText.text}</color>";
+                        button.buttonText.SetText($"<#{entry.Color.ToHtmlStringRGBA()}>{button.buttonText.text}</color>");
 
                     RoleListEntryAttribute.ChoiceButtons.Add(button);
                 }
@@ -474,75 +523,6 @@ public static class SettingsPatches
         }
 
         return options;
-    }
-
-    [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Initialize))]
-    public static class GameOptionsMenu_Initialize
-    {
-        public static bool Prefix(GameOptionsMenu __instance)
-        {
-            if (IsHnS())
-                return true;
-
-            if (SettingsPage != 3)
-            {
-                __instance.MapPicker.Initialize(20);
-                __instance.MapPicker.SetUpFromData(GameManager.Instance.GameSettingsList.MapNameSetting, 20);
-            }
-
-            // TODO: Make a better fix for this for example caching the options or creating it ourself.
-            // AD Says: Done, kinda.
-            var behaviours = CreateOptions(__instance.settingsContainer);
-
-            foreach (var behave in behaviours)
-            {
-                if (behave is OptionBehaviour option)
-                    option.SetClickMask(__instance.ButtonClickMask);
-            }
-
-            __instance.ControllerSelectable.AddRange(new(__instance.scrollBar.GetComponentsInChildren<UiElement>(true).Pointer));
-            OnValueChanged();
-            return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.SetQuotaTab))]
-    public static class RolesSettingsMenuPatches1
-    {
-        public static bool Prefix() => false;
-    }
-
-    [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.OpenChancesTab))]
-    public static class RolesSettingsMenuPatches2
-    {
-        public static bool Prefix() => false;
-    }
-
-    [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
-    public static class FixIssue
-    {
-        public static bool Prefix(GameSettingMenu __instance)
-        {
-            if (Controller.currentTouchType != 0)
-            {
-                __instance.ToggleLeftSideDarkener(false);
-                __instance.ToggleRightSideDarkener(false);
-            }
-
-            return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.ValueChanged))]
-    public static class DisableCustomNotify1
-    {
-        public static bool Prefix() => false;
-    }
-
-    [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.ValueChanged))]
-    public static class DisableCustomNotify2
-    {
-        public static bool Prefix() => false;
     }
 
     private static PassiveButton RolesButton;
@@ -602,7 +582,7 @@ public static class SettingsPatches
             RolesButton.OverrideOnClickListeners(AllLayers);
             RolesButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             RolesButton.buttonText.alignment = TextAlignmentOptions.Center;
-            RolesButton.buttonText.text = TranslationManager.Translate("View.AllLayers");
+            RolesButton.buttonText.SetText(TranslationManager.Translate("View.AllLayers"));
             RolesButton.name = "AllLayers";
             RolesButton.transform.localPosition = new(0.1117f, 1.626f, -2f);
             buttons.Add(RolesButton);
@@ -611,7 +591,7 @@ public static class SettingsPatches
             AlignmentsButton.OverrideOnClickListeners(AllAlignments);
             AlignmentsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             AlignmentsButton.buttonText.alignment = TextAlignmentOptions.Center;
-            AlignmentsButton.buttonText.text = TranslationManager.Translate("View.AllAlignments");
+            AlignmentsButton.buttonText.SetText(TranslationManager.Translate("View.AllAlignments"));
             AlignmentsButton.name = "AllAlignments";
             AlignmentsButton.transform.localPosition = new(3.4727f, 1.626f, -2f);
             buttons.Add(AlignmentsButton);
@@ -840,12 +820,6 @@ public static class SettingsPatches
         OnValueChanged();
     }
 
-    [HarmonyPatch(typeof(RolesSettingsMenu), nameof(RolesSettingsMenu.Update))]
-    public static class RolesSettingsMenu_Update
-    {
-        public static void Postfix(RolesSettingsMenu __instance) => __instance.RoleChancesSettings.transform.localPosition = new(SettingsPage >= 5 ? 0.35f : -0.06f, 0f, -5f);
-    }
-
     private static bool Initialize(OptionBehaviour opt)
     {
         var result = OptionAttribute.AllOptions.TryFinding(option => option.Setting == opt, out var customOption);
@@ -853,34 +827,14 @@ public static class SettingsPatches
         return !result;
     }
 
-    [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.Initialize))]
-    public static class ToggleOption_Initialize
+    [HarmonyPatch(typeof(ToggleOption))]
+    public static class ToggleOptionPatches
     {
-        public static bool Prefix(ToggleOption __instance) => Initialize(__instance);
-    }
+        [HarmonyPatch(nameof(ToggleOption.Initialize)), HarmonyPrefix]
+        public static bool InitializePrefix(ToggleOption __instance) => Initialize(__instance);
 
-    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Initialize))]
-    public static class NumberOption_Initialize
-    {
-        public static bool Prefix(NumberOption __instance) => Initialize(__instance);
-    }
-
-    [HarmonyPatch(typeof(StringOption), nameof(StringOption.Initialize))]
-    public static class StringOption_Initialize
-    {
-        public static bool Prefix(StringOption __instance) => Initialize(__instance);
-    }
-
-    [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.UpdateValuesAndText))]
-    public static class RoleOptionSetting_UpdateValuesAndText
-    {
-        public static bool Prefix(RoleOptionSetting __instance) => Initialize(__instance);
-    }
-
-    [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.Toggle))]
-    public static class ToggleButtonPatch
-    {
-        public static bool Prefix(ToggleOption __instance)
+        [HarmonyPatch(nameof(ToggleOption.Toggle)), HarmonyPrefix]
+        public static bool TogglePrefix(ToggleOption __instance)
         {
             if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
                 return false;
@@ -903,10 +857,28 @@ public static class SettingsPatches
         }
     }
 
-    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Increase))]
-    public static class NumberOptionPatchIncrease
+    [HarmonyPatch(typeof(NumberOption))]
+    public static class NumberOptionPatches
     {
-        public static bool Prefix(NumberOption __instance)
+        [HarmonyPatch(nameof(NumberOption.Initialize)), HarmonyPrefix]
+        public static bool InitializePrefix(NumberOption __instance) => Initialize(__instance);
+
+        [HarmonyPatch(nameof(NumberOption.Decrease)), HarmonyPrefix]
+        public static bool DecreasePrefix(NumberOption __instance)
+        {
+            if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
+                return false;
+
+            var result = OptionAttribute.GetOptions<NumberOptionAttribute>().TryFinding(option => option.Setting == __instance, out var num);
+
+            if (result)
+                num.Decrease();
+
+            return !result;
+        }
+
+        [HarmonyPatch(nameof(NumberOption.Increase)), HarmonyPrefix]
+        public static bool IncreasePrefix(NumberOption __instance)
         {
             if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
                 return false;
@@ -920,27 +892,14 @@ public static class SettingsPatches
         }
     }
 
-    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Decrease))]
-    public static class NumberOptionPatchDecrease
+    [HarmonyPatch(typeof(StringOption))]
+    public static class StringOptionPatches
     {
-        public static bool Prefix(NumberOption __instance)
-        {
-            if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
-                return false;
+        [HarmonyPatch(nameof(StringOption.Initialize)), HarmonyPrefix]
+        public static bool InitializePrefix(StringOption __instance) => Initialize(__instance);
 
-            var result = OptionAttribute.GetOptions<NumberOptionAttribute>().TryFinding(option => option.Setting == __instance, out var num);
-
-            if (result)
-                num.Decrease();
-
-            return !result;
-        }
-    }
-
-    [HarmonyPatch(typeof(StringOption), nameof(StringOption.Increase))]
-    public static class KeyValueOptionPatchIncrease
-    {
-        public static bool Prefix(StringOption __instance)
+        [HarmonyPatch(nameof(StringOption.Increase)), HarmonyPrefix]
+        public static bool IncreasePrefix(StringOption __instance)
         {
             if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
                 return false;
@@ -952,12 +911,9 @@ public static class SettingsPatches
 
             return !result;
         }
-    }
 
-    [HarmonyPatch(typeof(StringOption), nameof(StringOption.Decrease))]
-    public static class KeyValueOptionOptionPatchDecrease
-    {
-        public static bool Prefix(StringOption __instance)
+        [HarmonyPatch(nameof(StringOption.Decrease)), HarmonyPrefix]
+        public static bool DecreasePrefix(StringOption __instance)
         {
             if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
                 return false;
@@ -971,10 +927,14 @@ public static class SettingsPatches
         }
     }
 
-    [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.IncreaseChance))]
-    public static class RoleOptionOptionPatchIncreaseChance
+    [HarmonyPatch(typeof(RoleOptionSetting))]
+    public static class RoleOptionSettingPatches
     {
-        public static bool Prefix(RoleOptionSetting __instance)
+        [HarmonyPatch(nameof(RoleOptionSetting.UpdateValuesAndText)), HarmonyPrefix]
+        public static bool UpdateValuesAndTextPrefix(RoleOptionSetting __instance) => Initialize(__instance);
+
+        [HarmonyPatch(nameof(RoleOptionSetting.IncreaseChance)), HarmonyPrefix]
+        public static bool IncreaseChancePrefix(RoleOptionSetting __instance)
         {
             if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
                 return false;
@@ -986,12 +946,9 @@ public static class SettingsPatches
 
             return !result;
         }
-    }
 
-    [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.DecreaseChance))]
-    public static class RoleOptionOptionPatchDecreaseChance
-    {
-        public static bool Prefix(RoleOptionSetting __instance)
+        [HarmonyPatch(nameof(RoleOptionSetting.DecreaseChance)), HarmonyPrefix]
+        public static bool DecreaseChancePrefix(RoleOptionSetting __instance)
         {
             if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
                 return false;
@@ -1003,12 +960,9 @@ public static class SettingsPatches
 
             return !result;
         }
-    }
 
-    [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.IncreaseCount))]
-    public static class RoleOptionOptionPatchIncreaseCount
-    {
-        public static bool Prefix(RoleOptionSetting __instance)
+        [HarmonyPatch(nameof(RoleOptionSetting.IncreaseCount)), HarmonyPrefix]
+        public static bool IncreaseCountPrefix(RoleOptionSetting __instance)
         {
             if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
                 return false;
@@ -1020,12 +974,9 @@ public static class SettingsPatches
 
             return !result;
         }
-    }
 
-    [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.DecreaseCount))]
-    public static class RoleOptionOptionPatchDecreaseCount
-    {
-        public static bool Prefix(RoleOptionSetting __instance)
+        [HarmonyPatch(nameof(RoleOptionSetting.DecreaseCount)), HarmonyPrefix]
+        public static bool DecreaseCountPrefix(RoleOptionSetting __instance)
         {
             if ((IsInGame() && SettingsPage != 3) || !AmongUsClient.Instance.AmHost)
                 return false;
@@ -1071,9 +1022,10 @@ public static class SettingsPatches
         }
     }
 
-    [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.Initialize))]
-    public static class GameOptionsMapPickerInitializePatch
+    [HarmonyPatch(typeof(GameOptionsMapPicker))]
+    public static class GameOptionsMapPickerPatches
     {
+        [HarmonyPatch(nameof(GameOptionsMapPicker.Initialize))]
         public static void Postfix(GameOptionsMapPicker __instance, int maskLayer)
         {
             if (!__instance.AllMapIcons.Any(x => x.Name == MapNames.Dleks))
@@ -1139,17 +1091,11 @@ public static class SettingsPatches
                 }
             }
         }
-    }
 
-    [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.SelectMap), typeof(int))]
-    public static class GameOptionsMapPickerSelectMapPatch1
-    {
+        [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(int))]
         public static void Postfix(int mapId) => SetMap(mapId);
-    }
 
-    [HarmonyPatch(typeof(GameOptionsMapPicker), nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
-    public static class GameOptionsMapPickerSelectMapPatch2
-    {
+        [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
         public static void Postfix(MapIconByName mapInfo) => SetMap((int)mapInfo.Name);
     }
 
@@ -1160,7 +1106,7 @@ public static class SettingsPatches
 
     public static void SetMap(MapEnum map)
     {
-        if (MapSettings.Map == map || IsInGame())
+        if (MapSettings.Map == map || IsInGame() || !CustomPlayer.Local)
             return;
 
         MapSettings.Map = map;
@@ -1182,10 +1128,7 @@ public static class SettingsPatches
     }
 
     [HarmonyPatch(typeof(NotificationPopper), (nameof(NotificationPopper.AddSettingsChangeMessage)))]
-    public static class DisableVanilaNotifs
-    {
-        public static bool Prefix() => false;
-    }
+    public static bool Prefix() => false;
 
     public static List<MonoBehaviour> CreateViewOptions(Transform parent, int page = -1)
     {
@@ -1216,34 +1159,6 @@ public static class SettingsPatches
         }
 
         return options;
-    }
-
-    [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawNormalTab))]
-    public static class OverrideNormalViewSettingsTab
-    {
-        public static bool Prefix(LobbyViewSettingsPane __instance)
-        {
-            if (IsHnS())
-                return true;
-
-            SettingsPage3 = 0;
-            OnValueChangedView(__instance);
-            return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawRolesTab))]
-    public static class OverrideRolesViewSettingsTab
-    {
-        public static bool Prefix(LobbyViewSettingsPane __instance)
-        {
-            if (IsHnS())
-                return true;
-
-            SettingsPage3 = 1;
-            OnValueChangedView(__instance);
-            return false;
-        }
     }
 
     [HarmonyPatch(typeof(LobbyInfoPane), nameof(LobbyInfoPane.Update))]
@@ -1459,15 +1374,16 @@ public static class SettingsPatches
 
     private static PassiveButton ClientOptionsButton;
 
-    [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.Awake))]
-    public static class DefinePrefabs3
+    [HarmonyPatch(typeof(LobbyViewSettingsPane))]
+    public static class LobbyViewSettingsPanePatches
     {
         private static bool LayersSet;
 
+        [HarmonyPatch(nameof(LobbyViewSettingsPane.Awake))]
         public static void Postfix(LobbyViewSettingsPane __instance)
         {
             __instance.rolesTabButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-            __instance.rolesTabButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
+            __instance.rolesTabButton.buttonText.SetText(TranslationManager.Translate("GameSettings.Layers"));
 
             var prefabs = new List<MonoBehaviour>();
 
@@ -1476,7 +1392,7 @@ public static class SettingsPatches
                 ClientOptionsButton = UObject.Instantiate(__instance.rolesTabButton, __instance.rolesTabButton.transform.parent);
                 ClientOptionsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
                 ClientOptionsButton.name = "ClientOptionsTab";
-                ClientOptionsButton.buttonText.text = TranslationManager.Translate("CustomOption.ClientOptions");
+                ClientOptionsButton.buttonText.SetText(TranslationManager.Translate("CustomOption.ClientOptions"));
                 ClientOptionsButton.transform.localPosition = __instance.rolesTabButton.transform.localPosition + new Vector3(__instance.rolesTabButton.transform.localPosition.x -
                     __instance.taskTabButton.transform.localPosition.x, 0f, 0f);
                 ClientOptionsButton.OverrideOnClickListeners(() =>
@@ -1500,7 +1416,7 @@ public static class SettingsPatches
                 HeaderViewPrefab.transform.GetChild(1).gameObject.SetActive(false);
 
                 var button = UObject.Instantiate(__instance.rolesTabButton, HeaderViewPrefab.transform);
-                button.buttonText.text = "";
+                button.buttonText.SetText("");
                 button.name = "TitleButton";
                 button.SelectButton(false);
                 button.transform.localPosition = new(-0.75f, -0.05f, 0f);
@@ -1597,6 +1513,28 @@ public static class SettingsPatches
                 LayersSet = true;
             }
         }
+
+        [HarmonyPatch(nameof(LobbyViewSettingsPane.DrawNormalTab)), HarmonyPrefix]
+        public static bool DrawNormalTabPrefix(LobbyViewSettingsPane __instance)
+        {
+            if (IsHnS())
+                return true;
+
+            SettingsPage3 = 0;
+            OnValueChangedView(__instance);
+            return false;
+        }
+
+        [HarmonyPatch(nameof(LobbyViewSettingsPane.DrawRolesTab)), HarmonyPrefix]
+        public static bool DrawRolesTabPrefix(LobbyViewSettingsPane __instance)
+        {
+            if (IsHnS())
+                return true;
+
+            SettingsPage3 = 1;
+            OnValueChangedView(__instance);
+            return false;
+        }
     }
 
     public static readonly List<PassiveButton> PresetsButtons = [];
@@ -1624,7 +1562,7 @@ public static class SettingsPatches
                 Save.OverrideOnClickListeners(OptionAttribute.SaveSettings);
                 Save.name = "SaveSettingsButton";
                 Save.transform.localPosition = new(0.26345f, 2.6164f, -2f);
-                Save.buttonText.text = TranslationManager.Translate("ImportExport.Save");
+                Save.buttonText.SetText(TranslationManager.Translate("ImportExport.Save"));
                 Save.gameObject.SetActive(true);
             }
 
@@ -1671,7 +1609,7 @@ public static class SettingsPatches
         button.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
         button.buttonText.alignment = TextAlignmentOptions.Center;
         button.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-        button.buttonText.text = button.name = name;
+        button.buttonText.SetText(button.name = name);
         return button;
     }
 }

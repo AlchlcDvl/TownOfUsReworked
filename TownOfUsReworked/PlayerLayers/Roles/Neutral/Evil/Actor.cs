@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Actor : Neutral
+public class Actor : Evil
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ActorCanPickRole { get; set; } = false;
@@ -32,13 +32,14 @@ public class Actor : Neutral
     public override Func<string> StartText => () => "Play Pretend With The Others";
     public override Func<string> Description => () => !Targeted ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you will kill your guesser";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override bool HasWon => Guessed;
+    public override WinLose EndState => WinLose.ActorWins;
 
     public override void Init()
     {
         base.Init();
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +
             $"- Your target roles are {PretendListString()}"));
-        Alignment = Alignment.NeutralEvil;
         PretendButton ??= new(this, new SpriteName("Pretend"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)PickRole, "PRETEND", (UsableFunc)Usable);
         PretendRoles = [];
     }

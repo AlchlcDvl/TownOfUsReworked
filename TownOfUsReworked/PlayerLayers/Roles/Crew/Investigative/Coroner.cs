@@ -76,10 +76,10 @@ public class Coroner : Crew
 
             foreach (var body in validBodies)
             {
-                if (!BodyArrows.ContainsKey(body.ParentId))
-                    BodyArrows.Add(body.ParentId, new(Player, Color));
-
-                BodyArrows[body.ParentId]?.Update(body.TruePosition);
+                if (BodyArrows.TryGetValue(body.ParentId, out var arrow))
+                    arrow.Update(body.TruePosition);
+                else
+                    BodyArrows[body.ParentId] = new(Player, Color);
             }
         }
         else if (BodyArrows.Count > 0)

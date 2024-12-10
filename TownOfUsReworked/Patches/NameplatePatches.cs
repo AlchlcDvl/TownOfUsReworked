@@ -1,25 +1,7 @@
 using Innersloth.Assets;
-using static TownOfUsReworked.Cosmetics.CustomNameplates.CustomNameplateManager;
+using static TownOfUsReworked.Cosmetics.CustomNameplateManager;
 
-namespace TownOfUsReworked.Cosmetics.CustomNameplates;
-
-[HarmonyPatch(typeof(HatManager), nameof(HatManager.GetNamePlateById))]
-public static class HatManagerPatch
-{
-    private static bool IsLoaded;
-
-    public static void Prefix(HatManager __instance)
-    {
-        if (IsLoaded)
-            return;
-
-        var allPlates = __instance.allNamePlates.ToList();
-        allPlates.AddRange(RegisteredNameplates);
-        __instance.allNamePlates = allPlates.ToArray();
-        RegisteredNameplates.Clear();
-        IsLoaded = true;
-    }
-}
+namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(NameplatesTab), nameof(NameplatesTab.OnEnable))]
 public static class NameplatesTabOnEnablePatch
@@ -87,9 +69,14 @@ public static class NameplatesTabOnEnablePatch
 
     public static bool Prefix(NameplatesTab __instance)
     {
-        for (var i = 0; i < __instance.scroller.Inner.childCount; i++)
-            __instance.scroller.Inner.GetChild(i).gameObject.Destroy();
+        __instance.PlayerPreview.gameObject.SetActive(true);
 
+        if (__instance.HasLocalPlayer())
+            __instance.PlayerPreview.UpdateFromLocalPlayer(PlayerMaterial.MaskType.None);
+        else
+            __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
+
+        __instance.scroller.Inner.DestroyChildren();
         __instance.ColorChips = new();
         var array = HatManager.Instance.GetUnlockedNamePlates();
         var packages = new Dictionary<string, List<NamePlateData>>();
@@ -105,10 +92,10 @@ public static class NameplatesTabOnEnablePatch
             if (IsNullEmptyOrWhiteSpace(package))
                 package = "Misc";
 
-            if (!packages.ContainsKey(package))
-                packages[package] = [];
+            if (!packages.TryGetValue(package, out var value))
+                packages[package] = value = [];
 
-            packages[package].Add(data);
+            value.Add(data);
         }
 
         var YOffset = __instance.YStart;
@@ -130,27 +117,5 @@ public static class NameplatesTabOnEnablePatch
         __instance.SetScrollerBounds();
         __instance.scroller.ContentYBounds.max = -(YOffset + 3.8f);
         return false;
-    }
-}
-
-[HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetNameplate))]
-public static class CosmeticsCacheGetNameplatePatch
-{
-    public static bool Prefix(CosmeticsCache __instance, string id, ref NamePlateViewData __result)
-    {
-        if (!CustomNameplateViewDatas.TryGetValue(id, out __result))
-            return true;
-
-        return !(__result ??= __instance.nameplates["nameplate_NoPlate"].GetAsset());
-    }
-}
-
-[HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
-public static class PreviewNameplatesPatch
-{
-    public static void Postfix(PlayerVoteArea __instance, string plateID)
-    {
-        if (CustomNameplateViewDatas.TryGetValue(plateID, out var viewData))
-            __instance.Background.sprite = viewData?.Image;
     }
 }

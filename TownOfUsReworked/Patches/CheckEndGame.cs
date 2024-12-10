@@ -1,9 +1,10 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
+[HarmonyPatch(typeof(LogicGameFlowNormal))]
 public static class CheckEndGame
 {
-    public static bool Prefix()
+    [HarmonyPatch(nameof(LogicGameFlowNormal.CheckEndCriteria)), HarmonyPrefix]
+    public static bool CheckEndCriteriaPrefix()
     {
         if (IsFreePlay() || IsHnS() || !AmongUsClient.Instance.AmHost)
             return false;
@@ -19,7 +20,7 @@ public static class CheckEndGame
 
         if (TasksDone())
         {
-            WinState = IsCustomHnS() ? WinLose.HuntedWins : WinLose.CrewWins;
+            WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
             CallRpc(CustomRPC.WinLose, WinState);
         }
         else if (spell)
@@ -126,116 +127,102 @@ public static class CheckEndGame
 
     private static bool TasksDone()
     {
-        try
+        if (IsCustomHnS())
         {
-            if (IsCustomHnS())
+            var allCrew = new List<PlayerControl>();
+            var crewWithNoTasks = new List<PlayerControl>();
+
+            foreach (var player in AllPlayers())
             {
-                var allCrew = new List<PlayerControl>();
-                var crewWithNoTasks = new List<PlayerControl>();
-
-                foreach (var player in AllPlayers())
+                if (player.Is(LayerEnum.Hunted))
                 {
-                    if (player.Is(LayerEnum.Hunted))
-                    {
-                        allCrew.Add(player);
+                    allCrew.Add(player);
 
-                        if (player.GetRole().TasksDone)
-                            crewWithNoTasks.Add(player);
-                    }
+                    if (player.GetRole().TasksDone)
+                        crewWithNoTasks.Add(player);
                 }
-
-                return allCrew.Count == crewWithNoTasks.Count;
             }
-            else
+
+            return allCrew.Count == crewWithNoTasks.Count;
+        }
+        else
+        {
+            if (Role.GetRoles(Faction.Crew).All(x => x.Dead && !CrewSettings.GhostTasksCountToWin) || !Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
+                return false;
+
+            var allCrew = new List<PlayerControl>();
+            var crewWithNoTasks = new List<PlayerControl>();
+
+            foreach (var player in AllPlayers())
             {
-                if (Role.GetRoles(Faction.Crew).All(x => x.Dead && !CrewSettings.GhostTasksCountToWin) || !Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
-                    return false;
-
-                var allCrew = new List<PlayerControl>();
-                var crewWithNoTasks = new List<PlayerControl>();
-
-                foreach (var player in AllPlayers())
+                if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CrewSettings.GhostTasksCountToWin)))
                 {
-                    if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CrewSettings.GhostTasksCountToWin)))
-                    {
-                        allCrew.Add(player);
+                    allCrew.Add(player);
 
-                        if (player.GetRole().TasksDone)
-                            crewWithNoTasks.Add(player);
-                    }
+                    if (player.GetRole().TasksDone)
+                        crewWithNoTasks.Add(player);
                 }
-
-                return allCrew.Count == crewWithNoTasks.Count;
             }
-        } catch {}
 
-        return false;
+            return allCrew.Count == crewWithNoTasks.Count;
+        }
     }
 
     private static bool Sabotaged()
     {
-        try
+        var systems = Ship().Systems;
+
+        if (systems.TryGetValue(SystemTypes.LifeSupp, out var life))
         {
-            if (Ship().Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
-            {
-                var lifeSuppSystemType = life.Cast<LifeSuppSystemType>();
+            var lifeSuppSystemType = life.TryCast<LifeSuppSystemType>();
 
-                if (lifeSuppSystemType.Countdown <= 0f)
-                    return true;
-            }
-            else if (Ship().Systems.TryGetValue(SystemTypes.Laboratory, out var lab))
-            {
-                var reactorSystemType = lab.Cast<ReactorSystemType>();
+            if (lifeSuppSystemType.Countdown <= 0f)
+                return true;
+        }
+        else if (systems.TryGetValue(SystemTypes.Laboratory, out var lab))
+        {
+            var reactorSystemType = lab.TryCast<ReactorSystemType>();
 
-                if (reactorSystemType.Countdown <= 0f)
-                    return true;
-            }
-            else if (Ship().Systems.TryGetValue(SystemTypes.Reactor, out var reactor))
-            {
-                var reactorSystemType = reactor.Cast<ICriticalSabotage>();
+            if (reactorSystemType.Countdown <= 0f)
+                return true;
+        }
+        else if (systems.TryGetValue(SystemTypes.Reactor, out var reactor))
+        {
+            var reactorSystemType = reactor.TryCast<ICriticalSabotage>();
 
-                if (reactorSystemType.Countdown <= 0f)
-                    return true;
-            }
-            else if (Ship().Systems.TryGetValue(SystemTypes.HeliSabotage, out var heli))
-            {
-                var reactorSystemType = heli.Cast<HeliSabotageSystem>();
+            if (reactorSystemType.Countdown <= 0f)
+                return true;
+        }
+        else if (systems.TryGetValue(SystemTypes.HeliSabotage, out var heli))
+        {
+            var reactorSystemType = heli.TryCast<HeliSabotageSystem>();
 
-                if (reactorSystemType.Countdown <= 0f)
-                    return true;
-            }
-        } catch {}
+            if (reactorSystemType.Countdown <= 0f)
+                return true;
+        }
 
         return false;
     }
-}
 
-[HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
-public static class OverrideKillEndGame
-{
+    [HarmonyPatch(nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
     public static bool Prefix(ref bool __result) => __result = false;
+
+    [HarmonyPatch(nameof(LogicGameFlowNormal.EndGameForSabotage)), HarmonyPrefix]
+    public static bool EndGameForSabotagePrefix() => false;
 }
 
-[HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.EndGameForSabotage))]
-public static class OverrideSabEndGame
-{
-    public static bool Prefix() => false;
-}
-
-[HarmonyPatch(typeof(GameManager), nameof(GameManager.CheckEndGameViaTasks))]
+[HarmonyPatch(typeof(GameManager))]
 public static class OverrideTaskEndGame1
 {
-    public static bool Prefix(ref bool __result)
+    [HarmonyPatch(nameof(GameManager.CheckEndGameViaTasks)), HarmonyPrefix]
+    public static bool Prefix1(ref bool __result)
     {
         GameData.Instance.RecomputeTaskCounts();
         return __result = IsHnS();
     }
-}
 
-[HarmonyPatch(typeof(GameManager), nameof(GameManager.CheckTaskCompletion))]
-public static class OverrideTaskEndGame2
-{
-    public static bool Prefix(ref bool __result)
+    [HarmonyPatch(nameof(GameManager.CheckTaskCompletion)), HarmonyPrefix]
+    public static bool Prefix2(ref bool __result)
     {
         if (TutorialManager.InstanceExists)
         {

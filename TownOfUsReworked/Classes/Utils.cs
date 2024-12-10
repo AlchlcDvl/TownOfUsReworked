@@ -22,7 +22,7 @@ public static class Utils
         DeadBody body => body.MyRend(),
         Console console => console.MyRend(),
         Vent vent => vent.MyRend(),
-        _ => m.TryGetComponent<SpriteRenderer>(out var rend) ? rend : m.GetComponentInChildren<SpriteRenderer>()
+        _ => m?.TryGetComponent<SpriteRenderer>(out var rend) == true ? rend : m?.GetComponentInChildren<SpriteRenderer>()
     };
 
     public static bool IsImpostor(this NetworkedPlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
@@ -335,18 +335,22 @@ public static class Utils
             self.Add(item);
     }
 
-    public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
+    public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
     {
         if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey.Shadow();
+        else if (player.IsMimicking(out var mimicked) && morphCondition)
+            return mimicked.Data.DefaultOutfit.ColorId.GetColor(true);
         else
             return player.Data.DefaultOutfit.ColorId.GetColor(true);
     }
 
-    public static UColor GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
+    public static UColor GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
     {
         if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey;
+        else if (player.IsMimicking(out var mimicked) && morphCondition)
+            return mimicked.Data.DefaultOutfit.ColorId.GetColor(false);
         else
             return player.Data.DefaultOutfit.ColorId.GetColor(false);
     }
@@ -459,7 +463,7 @@ public static class Utils
             if (ActiveTask())
                 ActiveTask().Close();
 
-            if (MapPatch.MapActive)
+            if (MapBehaviourPatches.MapActive)
                 Map().Close();
 
             HUD().KillOverlay.ShowKillAnimation(killer.Data, data);
@@ -572,41 +576,14 @@ public static class Utils
         voteArea.XMark.gameObject.SetActive(true);
         voteArea.XMark.transform.localScale = Vector3.one;
 
-        if (MeetingHudUpdatePatch.CachedOverlay)
+        if (TalkingPatches.CachedOverlay)
         {
-            foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
+            foreach (var role in PlayerLayer.GetILayers<IIntimidator>())
             {
-                if (target == role.BlackmailedPlayer)
+                if (target == role.Target)
                 {
-                    voteArea.Overlay.sprite = MeetingHudUpdatePatch.CachedOverlay;
-                    voteArea.Overlay.color = MeetingHudUpdatePatch.CachedColor ?? UColor.white;
-                }
-            }
-
-            foreach (var role in PlayerLayer.GetLayers<Silencer>())
-            {
-                if (target == role.SilencedPlayer)
-                {
-                    voteArea.Overlay.sprite = MeetingHudUpdatePatch.CachedOverlay;
-                    voteArea.Overlay.color = MeetingHudUpdatePatch.CachedColor ?? UColor.white;
-                }
-            }
-
-            foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
-            {
-                if (target == role.BlackmailedPlayer && role.IsBM)
-                {
-                    voteArea.Overlay.sprite = MeetingHudUpdatePatch.CachedOverlay;
-                    voteArea.Overlay.color = MeetingHudUpdatePatch.CachedColor ?? UColor.white;
-                }
-            }
-
-            foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
-            {
-                if (target == role.SilencedPlayer && role.IsSil)
-                {
-                    voteArea.Overlay.sprite = MeetingHudUpdatePatch.CachedOverlay;
-                    voteArea.Overlay.color = MeetingHudUpdatePatch.CachedColor ?? UColor.white;
+                    voteArea.Overlay.sprite = TalkingPatches.CachedOverlay;
+                    voteArea.Overlay.color = TalkingPatches.CachedColor ?? UColor.white;
                 }
             }
         }
@@ -739,11 +716,7 @@ public static class Utils
         return result;
     }
 
-    public static void StopDragging(byte id)
-    {
-        PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
-        PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.CurrentlyDragging && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
-    }
+    public static void StopDragging(byte id) => PlayerLayer.GetILayers<IDragger>().Where(x => x.CurrentlyDragging?.ParentId == id).ForEach(x => x.Drop());
 
     public static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
     {
@@ -806,21 +779,15 @@ public static class Utils
 
     public static void RpcSpawnVent(Role role)
     {
-        if (role is not (PromotedGodfather or Miner))
+        if (role is not IDigger digger)
             return;
 
         var position = (Vector2)role.Player.transform.position;
         CallRpc(CustomRPC.Action, ActionsRPC.Mine, role, position);
-        AddVent(role, position);
+        AddVent(digger, position);
     }
 
-    public static void AddVent(Role role, Vector2 position)
-    {
-        if (role is Miner miner)
-            miner.Vents.Add(SpawnVent(miner.Vents, position, miner.Player.transform.position.z, "Miner"));
-        else if (role is PromotedGodfather gf)
-            gf.Vents.Add(SpawnVent(gf.Vents, position, gf.Player.transform.position.z, "Godfather"));
-    }
+    public static void AddVent(IDigger digger, Vector2 position) => digger.Vents.Add(SpawnVent(digger.Vents, position, digger.Player.transform.position.z, digger.Name));
 
     public static Vent SpawnVent(List<Vent> vents, Vector2 position, float zAxis, string name)
     {
@@ -854,11 +821,11 @@ public static class Utils
             vent.gameObject.AddSubmergedComponent("ElevatorMover"); // Just in case elevator vent is not blocked
 
             if (vent.transform.position.y > -7)
-                vent.transform.position = new(position.x, position.y, 0.03f);
+                vent.transform.SetWorldZ(0.03f);
             else
             {
-                vent.transform.position = new(position.x, position.y, 0.0009f);
-                vent.transform.localPosition = new(vent.transform.localPosition.x, vent.transform.localPosition.y, -0.003f);
+                vent.transform.SetWorldZ(0.0009f);
+                vent.transform.SetLocalZ(-0.003f);
             }
         }
 
@@ -916,7 +883,7 @@ public static class Utils
         var ship = Ship();
         var fs = MapPatches.CurrentMap switch
         {
-            0 or 1 or 3 => ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>().IsActive || ship.Systems[SystemTypes.LifeSupp].Cast<ReactorSystemType>().IsActive,
+            0 or 1 or 3 => ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>().IsActive || ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>().IsActive,
             2 => ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>().IsActive,
             4 => ship.Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>().IsActive,
             5 => ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>().IsActive,
@@ -998,10 +965,16 @@ public static class Utils
     }
 
     public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false,
-        Func<PlayerControl, bool> predicate = null) => GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls, x => x != refPlayer && predicate(x));
+        Func<PlayerControl, bool> predicate = null, bool includeDead = false)
+    {
+        if (predicate != null)
+            return GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls, x => x != refPlayer && predicate(x), includeDead);
+        else
+            return GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls, x => x != refPlayer, includeDead);
+    }
 
     public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<PlayerControl,
-        bool> predicate = null)
+        bool> predicate = null, bool includeDead = false)
     {
         var closestDistance = float.MaxValue;
         PlayerControl closestPlayer = null;
@@ -1015,8 +988,11 @@ public static class Utils
 
         foreach (var player in allPlayers)
         {
-            if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !GameModifiers.VentTargeting) || player.walkingToVent)
+            if ((player.Data.IsDead && !includeDead) || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !GameModifiers.VentTargeting) ||
+                player.walkingToVent)
+            {
                 continue;
+            }
 
             var distance = Vector3.Distance(position, player.transform.position);
             var vector = player.transform.position - position;
@@ -1139,19 +1115,20 @@ public static class Utils
         return closestConsole;
     }
 
-    public static MonoBehaviour GetClosestMono(this PlayerControl player, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = 0f, bool ignoreWalls = false) =>
-        GetClosestMono(player.transform.position, allMonos, trueMaxDistance, ignoreWalls);
+    public static MonoBehaviour GetClosestMono(this PlayerControl player, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour,
+        bool> predicate = null) => GetClosestMono(player.transform.position, allMonos, trueMaxDistance, ignoreWalls, predicate);
 
-    public static MonoBehaviour GetClosestMono(Vector3 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false)
+    public static MonoBehaviour GetClosestMono(Vector3 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour, bool>
+        predicate = null)
     {
         var closestDistance = float.MaxValue;
         MonoBehaviour closestMono = null;
 
+        if (predicate != null)
+            allMonos = allMonos.Where(predicate);
+
         foreach (var mono in allMonos)
         {
-            if (!mono)
-                continue;
-
             var distance = Vector3.Distance(position, mono.transform.position);
             var vector = mono.transform.position - position;
             var maxDistance = trueMaxDistance;
@@ -1257,7 +1234,7 @@ public static class Utils
         if (startIndex < text.Length)
             AddWord(text[startIndex..]);
 
-        return result.ToString();
+        return $"{result}";
 
         void AddWord(string word)
         {
@@ -1392,7 +1369,7 @@ public static class Utils
             if (ActiveTask())
                 ActiveTask().Close();
 
-            if (MapPatch.MapActive)
+            if (MapBehaviourPatches.MapActive)
                 Map().Close();
 
             if (IsSubmerged())
@@ -1470,4 +1447,38 @@ public static class Utils
     public static T GetValue<T>(this FieldInfo field, object obj) => (T)field.GetValue(obj);
 
     // public static bool IsAny<T>(this T value, params T[] values) => values.Any(x => Equals(x, value));
+
+    public static Transform FindRecursive(this Transform self, string exactName) => self.FindRecursive(child => child.name == exactName);
+
+    public static Transform FindRecursive(this Transform self, Func<Transform, bool> selector)
+    {
+        for (var i = 0; i < self.childCount; i++)
+        {
+            var child = self.GetChild(i);
+
+            if (selector(child))
+                return child;
+
+            var finding = child.FindRecursive(selector);
+
+            if (finding)
+                return finding;
+        }
+
+        return null;
+    }
+
+    public static IEnumerable<T> GetAllComponents<T>(this Transform self) where T : Component
+    {
+        var result = new List<T>();
+        var comp = self.GetComponent<T>();
+
+        if (comp)
+            result.Add(comp);
+
+        for (var i = 0; i < self.childCount; i++)
+            result.AddRange(self.GetChild(i).GetAllComponents<T>());
+
+        return result;
+    }
 }

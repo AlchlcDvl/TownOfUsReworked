@@ -7,6 +7,9 @@ public class NameHandler : MonoBehaviour
 
     public PlayerControl Player { get; set; }
 
+    [HideFromIl2Cpp]
+    public CustomPlayer Custom { get; set; }
+
     public static (string, UColor) UpdateColorblind(PlayerControl player)
     {
         if (!DataManager.Settings.Accessibility.ColorBlindMode)
@@ -188,9 +191,10 @@ public class NameHandler : MonoBehaviour
                     if (consigliere.Investigated.Contains(player.PlayerId) && !revealed)
                     {
                         revealed = true;
-                        removeFromConsig = role.SubFaction == consigliere.SubFaction && role.SubFaction != SubFaction.None && Consigliere.ConsigInfo == ConsigInfo.Role;
-                        color = Consigliere.ConsigInfo == ConsigInfo.Role ? role.Color : role.FactionColor;
-                        name += Consigliere.ConsigInfo == ConsigInfo.Role ? $"\n{role}" : $"\n{role.FactionName}";
+                        var revealRole = Consigliere.ConsigInfo == ConsigInfo.Role;
+                        removeFromConsig = role.SubFaction == consigliere.SubFaction && role.SubFaction != SubFaction.None && revealRole;
+                        color = revealRole ? role.Color : role.FactionColor;
+                        name += revealRole ? $"\n{role}" : $"\n{role.FactionName}";
                     }
 
                     break;
@@ -200,9 +204,10 @@ public class NameHandler : MonoBehaviour
                     if (godfather.IsConsig && godfather.Investigated.Contains(player.PlayerId) && !revealed)
                     {
                         revealed = true;
-                        removeFromConsig = role.SubFaction == godfather.SubFaction && role.SubFaction != SubFaction.None && Consigliere.ConsigInfo == ConsigInfo.Role;
-                        color = Consigliere.ConsigInfo == ConsigInfo.Role ? role.Color : role.FactionColor;
-                        name += Consigliere.ConsigInfo == ConsigInfo.Role ? $"\n{role}" : $"\n{role.FactionName}";
+                        var revealRole = Consigliere.ConsigInfo == ConsigInfo.Role;
+                        removeFromConsig = role.SubFaction == godfather.SubFaction && role.SubFaction != SubFaction.None && revealRole;
+                        color = revealRole ? role.Color : role.FactionColor;
+                        name += revealRole ? $"\n{role}" : $"\n{role.FactionName}";
                     }
                     else if (godfather.IsBM && godfather.BlackmailedPlayer == player)
                     {
@@ -448,7 +453,7 @@ public class NameHandler : MonoBehaviour
                 }
             }
 
-            if (localRole.IsConverted() && localRole is not Neophyte)
+            if (localRole.IsConverted())
             {
                 var neophyte = local.GetNeophyte();
 
