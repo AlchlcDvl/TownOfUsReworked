@@ -173,8 +173,8 @@ public class Actor : Evil
 
         if ((TargetFailed || (Targeted && Failed)) && !Dead)
         {
-            var targetList = TargetFailed ? AllRoles() : PretendRoles;
-            var role = targetList.Random(x => x.Type != Type && x.Dead) ?? targetList.Random(x => x.Type != Type);
+            var targetList = (TargetFailed ? AllRoles() : PretendRoles).Where(x => x.Type != Type);
+            var role = targetList.Random(x => x.Dead) ?? targetList.Random();
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, role);
             TurnRole(role);
         }

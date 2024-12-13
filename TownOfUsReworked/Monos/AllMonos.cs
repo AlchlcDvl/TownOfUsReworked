@@ -2,6 +2,8 @@ namespace TownOfUsReworked.Monos;
 
 public static class AllMonos
 {
+    private static bool ComponentsAdded;
+
     public static void RegisterMonos()
     {
         // So many monos...AM I THE NEXT SUBMERGED???? o_O
@@ -37,6 +39,9 @@ public static class AllMonos
 
     public static void AddComponents()
     {
+        if (ComponentsAdded)
+            return;
+
         TownOfUsReworked.ModInstance.AddComponent<DebuggerBehaviour>();
 
         TownOfUsReworked.ModInstance.AddComponent<HudHandler>();
@@ -44,7 +49,12 @@ public static class AllMonos
         TownOfUsReworked.ModInstance.AddComponent<DragHandler>();
         TownOfUsReworked.ModInstance.AddComponent<ColorHandler>();
 
-        var prefab = (RoleBehaviour)new GameObject("LayerHandler").DontDestroy().AddComponent(Il2CppType.From(typeof(LayerHandler)));
+        LayerHandler.Crewmate = RoleManager.Instance.GetRole(RoleTypes.Crewmate);
+        LayerHandler.Impostor = RoleManager.Instance.GetRole(RoleTypes.Impostor);
+        LayerHandler.CrewmateGhost = RoleManager.Instance.GetRole(RoleTypes.CrewmateGhost);
+        LayerHandler.ImpostorGhost = RoleManager.Instance.GetRole(RoleTypes.ImpostorGhost);
+
+        var prefab = (RoleBehaviour)new GameObject("LayerHandler").DontDestroy().DontUnload().AddComponent(Il2CppType.Of<LayerHandler>());
         prefab.Role = (RoleTypes)100;
         prefab.TeamType = (RoleTeamTypes)5;
         prefab.CanBeKilled = true;
@@ -55,14 +65,12 @@ public static class AllMonos
         prefab.DefaultGhostRole = (RoleTypes)100;
         prefab.AffectedByLightAffectors = true;
         prefab.IntroSound = null;
+        prefab.Ability = LayerHandler.CrewmateGhost.Ability;
 
         var allRoles = RoleManager.Instance.AllRoles.ToList();
         allRoles.Add(prefab);
         RoleManager.Instance.AllRoles = allRoles.ToArray();
 
-        LayerHandler.Crewmate = RoleManager.Instance.GetRole(RoleTypes.Crewmate);
-        LayerHandler.Impostor = RoleManager.Instance.GetRole(RoleTypes.Impostor);
-        LayerHandler.CrewmateGhost = RoleManager.Instance.GetRole(RoleTypes.CrewmateGhost);
-        LayerHandler.ImpostorGhost = RoleManager.Instance.GetRole(RoleTypes.ImpostorGhost);
+        ComponentsAdded = true;
     }
 }

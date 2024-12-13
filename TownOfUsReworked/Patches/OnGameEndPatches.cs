@@ -13,6 +13,11 @@ public static class OnGameEndPatches
     {
         public static void Postfix()
         {
+            PlayerRoles.Clear();
+            // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
+            // AD says "Done".
+            AllPlayers().ForEach(x => AddSummaryInfo(x));
+
             if (CameraEffect.Instance)
                 CameraEffect.Instance.Materials.Clear();
 
@@ -419,11 +424,15 @@ public static class OnGameEndPatches
         }
     }
 
-    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
-    public static class ShipStatus_SetEverythingUp
+    [HarmonyPatch(typeof(EndGameManager))]
+    public static class EndGameManagerPatches
     {
+        [HarmonyPatch(nameof(EndGameManager.SetEverythingUp))]
         public static bool Prefix(EndGameManager __instance)
         {
+            if (IsHnS())
+                return true;
+
             StatsManager.Instance.IncrementStat(StringNames.StatsGamesFinished);
             __instance.Navigation.HideButtons();
             var cachedPlayerData = EndGameResult.CachedWinners.ToSystem().FirstOrDefault(h => h.IsYou);
@@ -524,6 +533,100 @@ public static class OnGameEndPatches
             __instance.WinText.transform.localPosition += new Vector3(0f, 1.5f, 0f);
             text.SetText($"<size=50%>{texttext}!</size>");
             Play(winsound);
+
+            var position = Camera.main.ViewportToWorldPoint(new(0f, 1f, Camera.main.nearClipPlane));
+            var roleSummary = UObject.Instantiate(__instance.WinText.gameObject);
+            roleSummary.transform.position = new(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f);
+            roleSummary.transform.localScale = new(1f, 1f, 1f);
+
+            var roleSummaryText = new StringBuilder();
+            var roleSummaryCache = new StringBuilder();
+            var winnersText = new StringBuilder();
+            var winnersCache = new StringBuilder();
+            var losersText = new StringBuilder();
+            var losersCache = new StringBuilder();
+            var discText = new StringBuilder();
+            var discCache = new StringBuilder();
+
+            var winnerCount = 0;
+            var loserCount = 0;
+
+            roleSummaryText.AppendLine("<size=125%><u><b>Game Summary</b></u>:</size>");
+            roleSummaryText.AppendLine();
+            roleSummaryCache.AppendLine("Game Summary:");
+            roleSummaryCache.AppendLine();
+            winnersText.AppendLine("<size=105%><#00FF00FF><b>◈ - Winners - ◈</b></color></size>");
+            losersText.AppendLine("<size=105%><#FF0000FF><b>◆ - Losers - ◆</b></color></size>");
+            discText.AppendLine("<size=105%><#0000FFFF><b>◇ - Disconnected - ◇</b></color></size>");
+            winnersCache.AppendLine("◈ - Winners - ◈");
+            losersCache.AppendLine("◆ - Losers - ◆");
+            discCache.AppendLine("◇ - Disconnected - ◇");
+
+            foreach (var data in PlayerRoles)
+            {
+                var dataString = $"<size=75%>{data.PlayerName} - {data.History}</size>";
+                var dataCache = $"{data.PlayerName} - {data.CachedHistory}";
+
+                if (data.PlayerName.IsWinner())
+                {
+                    winnersText.AppendLine(dataString);
+                    winnersCache.AppendLine(dataCache);
+                    winnerCount++;
+                }
+                else
+                {
+                    losersText.AppendLine(dataString);
+                    losersCache.AppendLine(dataCache);
+                    loserCount++;
+                }
+            }
+
+            foreach (var data in Disconnected)
+            {
+                var dataString = $"<size=75%>{data.PlayerName} - {data.History}</size>";
+                var dataCache = $"{data.PlayerName} - {data.CachedHistory}";
+                discText.AppendLine(dataString);
+                discCache.AppendLine(dataCache);
+            }
+
+            if (winnerCount == 0)
+            {
+                winnersText.AppendLine("<size=75%>No One Won</size>");
+                winnersCache.AppendLine("No One Won");
+            }
+
+            if (loserCount == 0)
+            {
+                losersText.AppendLine("<size=75%>No One Lost</size>");
+                losersCache.AppendLine("No One Lost");
+            }
+
+            roleSummaryText.Append(winnersText);
+            roleSummaryText.AppendLine();
+            roleSummaryText.Append(losersText);
+            roleSummaryCache.Append(winnersCache);
+            roleSummaryCache.AppendLine();
+            roleSummaryCache.Append(losersCache);
+
+            if (Disconnected.Any())
+            {
+                roleSummaryText.AppendLine();
+                roleSummaryText.Append(discText);
+                roleSummaryCache.AppendLine();
+                roleSummaryCache.Append(discCache);
+            }
+
+            var roleSummaryTextMesh = roleSummary.GetComponent<TMP_Text>();
+            roleSummaryTextMesh.alignment = TextAlignmentOptions.TopLeft;
+            roleSummaryTextMesh.color = UColor.white;
+            roleSummaryTextMesh.fontSizeMin = 1.5f;
+            roleSummaryTextMesh.fontSizeMax = 1.5f;
+            roleSummaryTextMesh.fontSize = 1.5f;
+            roleSummaryTextMesh.SetText($"{roleSummaryText}");
+            roleSummaryTextMesh.GetComponent<RectTransform>().anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
+            SaveText("Summary", $"{roleSummaryCache}", TownOfUsReworked.Other);
+            PlayerRoles.Clear();
+            Disconnected.Clear();
             return false;
         }
     }
@@ -649,122 +752,6 @@ public static class OnGameEndPatches
         }
         else
             Disconnected.Add(new(player.Data.PlayerName, summary, cache));
-    }
-
-    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
-    public static class EndGameSummary
-    {
-        public static void Postfix()
-        {
-            PlayerRoles.Clear();
-            // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
-            // AD says "Done".
-            AllPlayers().ForEach(x => AddSummaryInfo(x));
-        }
-    }
-
-    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
-    public static class ShipStatusSetUpPatch
-    {
-        public static void Postfix(EndGameManager __instance)
-        {
-            if (IsHnS())
-                return;
-
-            var position = Camera.main.ViewportToWorldPoint(new(0f, 1f, Camera.main.nearClipPlane));
-            var roleSummary = UObject.Instantiate(__instance.WinText.gameObject);
-            roleSummary.transform.position = new(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f);
-            roleSummary.transform.localScale = new(1f, 1f, 1f);
-
-            var roleSummaryText = new StringBuilder();
-            var roleSummaryCache = new StringBuilder();
-            var winnersText = new StringBuilder();
-            var winnersCache = new StringBuilder();
-            var losersText = new StringBuilder();
-            var losersCache = new StringBuilder();
-            var discText = new StringBuilder();
-            var discCache = new StringBuilder();
-
-            var winnerCount = 0;
-            var loserCount = 0;
-
-            roleSummaryText.AppendLine("<size=125%><u><b>Game Summary</b></u>:</size>");
-            roleSummaryText.AppendLine();
-            roleSummaryCache.AppendLine("Game Summary:");
-            roleSummaryCache.AppendLine();
-            winnersText.AppendLine("<size=105%><#00FF00FF><b>◈ - Winners - ◈</b></color></size>");
-            losersText.AppendLine("<size=105%><#FF0000FF><b>◆ - Losers - ◆</b></color></size>");
-            discText.AppendLine("<size=105%><#0000FFFF><b>◇ - Disconnected - ◇</b></color></size>");
-            winnersCache.AppendLine("◈ - Winners - ◈");
-            losersCache.AppendLine("◆ - Losers - ◆");
-            discCache.AppendLine("◇ - Disconnected - ◇");
-
-            foreach (var data in PlayerRoles)
-            {
-                var dataString = $"<size=75%>{data.PlayerName} - {data.History}</size>";
-                var dataCache = $"{data.PlayerName} - {data.CachedHistory}";
-
-                if (data.PlayerName.IsWinner())
-                {
-                    winnersText.AppendLine(dataString);
-                    winnersCache.AppendLine(dataCache);
-                    winnerCount++;
-                }
-                else
-                {
-                    losersText.AppendLine(dataString);
-                    losersCache.AppendLine(dataCache);
-                    loserCount++;
-                }
-            }
-
-            foreach (var data in Disconnected)
-            {
-                var dataString = $"<size=75%>{data.PlayerName} - {data.History}</size>";
-                var dataCache = $"{data.PlayerName} - {data.CachedHistory}";
-                discText.AppendLine(dataString);
-                discCache.AppendLine(dataCache);
-            }
-
-            if (winnerCount == 0)
-            {
-                winnersText.AppendLine("<size=75%>No One Won</size>");
-                winnersCache.AppendLine("No One Won");
-            }
-
-            if (loserCount == 0)
-            {
-                losersText.AppendLine("<size=75%>No One Lost</size>");
-                losersCache.AppendLine("No One Lost");
-            }
-
-            roleSummaryText.Append(winnersText);
-            roleSummaryText.AppendLine();
-            roleSummaryText.Append(losersText);
-            roleSummaryCache.Append(winnersCache);
-            roleSummaryCache.AppendLine();
-            roleSummaryCache.Append(losersCache);
-
-            if (Disconnected.Any())
-            {
-                roleSummaryText.AppendLine();
-                roleSummaryText.Append(discText);
-                roleSummaryCache.AppendLine();
-                roleSummaryCache.Append(discCache);
-            }
-
-            var roleSummaryTextMesh = roleSummary.GetComponent<TMP_Text>();
-            roleSummaryTextMesh.alignment = TextAlignmentOptions.TopLeft;
-            roleSummaryTextMesh.color = UColor.white;
-            roleSummaryTextMesh.fontSizeMin = 1.5f;
-            roleSummaryTextMesh.fontSizeMax = 1.5f;
-            roleSummaryTextMesh.fontSize = 1.5f;
-            roleSummaryTextMesh.SetText($"{roleSummaryText}");
-            roleSummaryTextMesh.GetComponent<RectTransform>().anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
-            SaveText("Summary", $"{roleSummaryCache}", TownOfUsReworked.Other);
-            PlayerRoles.Clear();
-            Disconnected.Clear();
-        }
     }
 
     private static bool IsWinner(this string playerName) => EndGameResult.CachedWinners.Any(x => x.PlayerName == playerName);

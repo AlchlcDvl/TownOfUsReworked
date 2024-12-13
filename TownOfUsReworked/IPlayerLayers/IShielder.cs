@@ -2,6 +2,6 @@ namespace TownOfUsReworked.IPlayerLayers;
 
 public interface IShielder : IPlayerLayer
 {
-    public PlayerControl ShieldedPlayer { get; set; }
-    public bool ShieldBroken { get; set; }
+    PlayerControl ShieldedPlayer { get; set; }
+    bool ShieldBroken { get; set; }
 }

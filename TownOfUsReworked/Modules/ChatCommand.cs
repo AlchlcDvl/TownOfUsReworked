@@ -5,6 +5,7 @@ public class ChatCommand
     public string[] Aliases { get; }
     public string Parameters { get; }
     public string Description { get; }
+
     private ExecuteArgsCommand ExecuteArgs { get; }
     private ExecuteArglessCommand ExecuteArgless { get; }
     private ExecuteArgsMessageCommand ExecuteArgsMessage { get; }
@@ -86,17 +87,13 @@ public class ChatCommand
             pooledBubble.SetLeft();
             pooledBubble.SetCosmetics(CustomPlayer.Local.Data);
             pooledBubble.Player.gameObject.SetActive(false);
-            pooledBubble.SetName(title, false, false, nameColor ?? UColor.white);
-            pooledBubble.SetText(text);
-            pooledBubble.NameText.transform.localPosition -= new Vector3(0.7f, 0.05f, 0f);
-            pooledBubble.TextArea.transform.localPosition -= new Vector3(0.7f, 0.1f, 0f);
             pooledBubble.TextArea.richText = withColor;
             pooledBubble.NameText.richText = true;
+            pooledBubble.SetName(title, false, false, nameColor ?? UColor.white);
+            pooledBubble.SetText(withColor && !hasColor ? Info.ColorIt(text) : text);
+            pooledBubble.NameText.transform.localPosition -= new Vector3(0.7f, 0.05f, 0f);
+            pooledBubble.TextArea.transform.localPosition -= new Vector3(0.7f, 0.1f, 0f);
             pooledBubble.ColorBlindName.gameObject.SetActive(false);
-
-            if (withColor && !hasColor)
-                pooledBubble.TextArea.SetText(Info.ColorIt(text));
-
             pooledBubble.AlignChildren();
             chat.AlignAllBubbles();
 

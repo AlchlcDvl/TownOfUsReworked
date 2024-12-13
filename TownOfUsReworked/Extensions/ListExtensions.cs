@@ -180,8 +180,8 @@ public static class ListExtensions
 
         foreach (var item in list2)
         {
-            if (list.Contains(item))
-                result += list.RemoveAll(x => Equals(x, item));
+            while (list.Remove(item))
+                result++;
         }
 
         return result;

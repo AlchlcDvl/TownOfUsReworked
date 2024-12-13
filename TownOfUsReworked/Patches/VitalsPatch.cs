@@ -1,9 +1,10 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Update))]
+[HarmonyPatch(typeof(VitalsMinigame))]
 public static class VitalsPatch
 {
-    public static void Postfix(VitalsMinigame __instance)
+    [HarmonyPatch(nameof(VitalsMinigame.Update)), HarmonyPostfix]
+    public static void UpdatePostfix(VitalsMinigame __instance)
     {
         var localPlayer = CustomPlayer.Local;
         var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything();
@@ -32,10 +33,7 @@ public static class VitalsPatch
             transform.localScale = Vector3.one / 20;
         }
     }
-}
 
-[HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
-public static class VitalsMinigameBeginPatch
-{
-    public static void Postfix(VitalsMinigame __instance) => __instance.AddComponent<VitalsPagingBehaviour>().Menu = __instance;
+    [HarmonyPatch(nameof(VitalsMinigame.Begin)), HarmonyPostfix]
+    public static void BeginPostfix(VitalsMinigame __instance) => __instance.AddComponent<VitalsPagingBehaviour>().Menu = __instance;
 }

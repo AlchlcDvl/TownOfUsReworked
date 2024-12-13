@@ -31,14 +31,14 @@ public static class MapBehaviourPatches
 
         var notmodified = true;
 
-        if (opts.Mode is not (MapOptions.Modes.None or MapOptions.Modes.CountOverlay))
+        if (opts.Mode is MapOptions.Modes.Normal or MapOptions.Modes.Sabotage)
         {
             if (CustomPlayer.Local.CanSabotage() && !AllPlayers().Any(x => x.IsFlashed()))
                 __instance.ShowSabotageMap();
             else
                 __instance.ShowNormalMap();
 
-            __instance.taskOverlay.gameObject.SetActive(CustomPlayer.Local.CanDoTasks() && !IsTaskRace() && !IsCustomHnS());
+            __instance.taskOverlay.gameObject.SetActive(!IsTaskRace() && !IsCustomHnS());
             notmodified = false;
         }
 
@@ -148,23 +148,28 @@ public static class DisconnectHandler
     }
 }
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
+[HarmonyPatch(typeof(PlayerPhysics))]
 public static class HandleAnimation
 {
+    [HarmonyPatch(nameof(PlayerPhysics.HandleAnimation))]
     public static void Prefix(PlayerPhysics __instance, ref bool amDead)
     {
         if (__instance.myPlayer.IsPostmortal())
             amDead = __instance.myPlayer.Caught();
     }
-}
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ResetMoveState))]
-public static class ResetMoveState
-{
-    public static void Postfix(PlayerPhysics __instance)
+    [HarmonyPatch(nameof(PlayerPhysics.ResetMoveState)), HarmonyPostfix]
+    public static void ResetMoveStatePostfix(PlayerPhysics __instance)
     {
         if (__instance.myPlayer.IsPostmortal())
             __instance.myPlayer.Collider.enabled = !__instance.myPlayer.Caught();
+    }
+
+    [HarmonyPatch(nameof(PlayerPhysics.FixedUpdate)), HarmonyPostfix]
+    public static void FixedUpdatePostfix(PlayerPhysics __instance)
+    {
+        if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+            __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
     }
 }
 
@@ -227,9 +232,10 @@ public static class ExitGamePatch
     }
 }
 
-[HarmonyPatch(typeof(PlayerPurchasesData), nameof(PlayerPurchasesData.GetPurchase))]
+[HarmonyPatch(typeof(PlayerPurchasesData))]
 public static class GetPurchasePatch
 {
+    [HarmonyPatch(nameof(PlayerPurchasesData.GetPurchase))]
     public static bool Prefix(ref bool __result)
     {
         if (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream)
@@ -237,11 +243,8 @@ public static class GetPurchasePatch
 
         return !(TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
     }
-}
 
-[HarmonyPatch(typeof(PlayerPurchasesData), nameof(PlayerPurchasesData.SetPurchased))]
-public static class SetPurchasedPatch
-{
+    [HarmonyPatch(nameof(PlayerPurchasesData.SetPurchased))]
     public static bool Prefix() => !(TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
 }
 
@@ -262,9 +265,10 @@ public static class OverlayKillAnimationPatch
     public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType = (PlayerOutfitType)OutfitTypeCache;
 }
 
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-public static class LobbySizePatch
+[HarmonyPatch(typeof(HudManager))]
+public static class HudPatches
 {
+    [HarmonyPatch(nameof(HudManager.Update))]
     public static void Postfix()
     {
         if (IsLobby())
@@ -273,16 +277,12 @@ public static class LobbySizePatch
                 AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(AllPlayers().Last().OwnerId).Id, DisconnectReasons.GameFull);
         }
     }
-}
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
-public static class SpeedPhysicsPatch
-{
-    public static void Postfix(PlayerPhysics __instance)
-    {
-        if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
-            __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
-    }
+    [HarmonyPatch(nameof(HudManager.Start))]
+    public static void Postfix(HudManager __instance) => ClientHandler.Instance.OnHudStart(__instance);
+
+    [HarmonyPatch(nameof(HudManager.Update))]
+    public static bool Prefix() => CustomPlayer.Local;
 }
 
 [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.FixedUpdate))]
@@ -311,12 +311,6 @@ public static class DiscordPatch
 public static class SetRoles
 {
     public static void Postfix() => RoleGen.BeginRoleGen();
-}
-
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-public static class FixHudNullRef
-{
-    public static bool Prefix() => CustomPlayer.Local;
 }
 
 [HarmonyPatch(typeof(EmergencyMinigame), nameof(EmergencyMinigame.Update))]
@@ -448,7 +442,7 @@ public static class ShowCustomAnim
 
             var parent = new GameObject("SelfKillObject").DontUnload().DontDestroy().transform;
             parent.gameObject.SetActive(false);
-            _selfDeath = UObject.Instantiate(HudManager.Instance.KillOverlay.KillAnims[0], parent);
+            _selfDeath = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
 
             _selfDeath.killerParts.gameObject.SetActive(false);
             _selfDeath.killerParts = null;
@@ -465,6 +459,13 @@ public static class ShowCustomAnim
 
     public static bool Prefix(KillOverlay __instance, NetworkedPlayerInfo killer, NetworkedPlayerInfo victim)
     {
+        var rend = __instance.flameParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
+
+        if (victim == killer || !GameModifiers.ShowKillerRoleColor)
+            rend.color = Role.LocalRole.Color;
+        else
+            rend.color = killer.Object.GetRole().Color;
+
         if (killer.PlayerId != victim.PlayerId || AprilFoolsMode.ShouldHorseAround() || AprilFoolsMode.ShouldLongAround() || IsSubmerged())
             return true;
 
@@ -484,20 +485,6 @@ public static class WaitForFinishPatch
             __result = customKillAnim.WaitForFinish().WrapToIl2Cpp();
 
         return !flag;
-    }
-}
-
-[HarmonyPatch(typeof(KillOverlay), nameof(KillOverlay.ShowKillAnimation), typeof(NetworkedPlayerInfo), typeof(NetworkedPlayerInfo))]
-public static class OverrideFlameColorPatch
-{
-    public static void Prefix(KillOverlay __instance, NetworkedPlayerInfo killer, NetworkedPlayerInfo victim)
-    {
-        var rend = __instance.flameParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
-
-        if (victim == killer || !GameModifiers.ShowKillerRoleColor)
-            rend.color = Role.LocalRole.Color;
-        else
-            rend.color = killer.Object.GetRole().Color;
     }
 }
 
@@ -614,12 +601,6 @@ public static class HostInfoPanelPatch
             __instance.hostLabel.transform.localPosition.z);
         return false;
     }
-}
-
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
-public static class HudStartPatch
-{
-    public static void Postfix(HudManager __instance) => ClientHandler.Instance.OnHudStart(__instance);
 }
 
 [HarmonyPatch(typeof(KillAnimation), nameof(KillAnimation.CoPerformKill))]

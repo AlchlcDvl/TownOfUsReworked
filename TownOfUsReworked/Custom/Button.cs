@@ -220,19 +220,14 @@ public class CustomButton
 
     public override string ToString() => ID;
 
-    private bool Exception(MonoBehaviour obj)
+    private bool Exception(MonoBehaviour obj) => obj switch
     {
-        if (obj is PlayerControl player)
-            return PlayerBodyException(player);
-        else if (obj is DeadBody body)
-            return PlayerBodyException(PlayerByBody(body));
-        else if (obj is Vent vent)
-            return VentException(vent);
-        else if (obj is Console console)
-            return ConsoleException(console);
-        else
-            return obj;
-    }
+        PlayerControl player => PlayerBodyException(player),
+        DeadBody body => PlayerBodyException(PlayerByBody(body)),
+        Vent vent => VentException(vent),
+        Console console => ConsoleException(console),
+        _ => !obj
+    };
 
     public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f) => CooldownTime = type switch
     {
@@ -389,7 +384,7 @@ public class CustomButton
     }
 
     public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath.Value && !Ejection() && Owner.Local && !IsMeeting() &&
-        !IsLobby() && !NoPlayers() && Owner.Player && !IntroCutscene.Instance;
+        !IsLobby() && !NoPlayers() && Owner.Player && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled &&
         Base.isActiveAndEnabled;
@@ -403,36 +398,16 @@ public class CustomButton
             var monos = new List<MonoBehaviour>();
 
             if (Type.HasFlag(AbilityTypes.Console))
-            {
-                var console = Owner.Player.GetClosestConsole();
-
-                if (console)
-                    monos.Add(console);
-            }
+                monos.Add(Owner.Player.GetClosestConsole());
 
             if (Type.HasFlag(AbilityTypes.Alive))
-            {
-                var player = Owner.Player.GetClosestPlayer();
-
-                if (player)
-                    monos.Add(player);
-            }
+                monos.Add(Owner.Player.GetClosestPlayer());
 
             if (Type.HasFlag(AbilityTypes.Dead))
-            {
-                var body = Owner.Player.GetClosestBody();
-
-                if (body)
-                    monos.Add(body);
-            }
+                monos.Add(Owner.Player.GetClosestBody());
 
             if (Type.HasFlag(AbilityTypes.Vent))
-            {
-                var vent = Owner.Player.GetClosestVent();
-
-                if (vent)
-                    monos.Add(vent);
-            }
+                monos.Add(Owner.Player.GetClosestVent());
 
             monos.RemoveAll(Exception);
 

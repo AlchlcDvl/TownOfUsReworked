@@ -76,27 +76,24 @@ public static class DeconControlUse
 #endregion
 
 #region Console
-[HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
+[HarmonyPatch(typeof(Console))]
 public static class ConsoleCanUsePatch
 {
     [HarmonyPatch(nameof(Console.CanUse))]
-    public static bool Prefix(Console __instance, NetworkedPlayerInfo pc, ref float __result)
+    public static bool Prefix(Console __instance, NetworkedPlayerInfo pc, ref float __result, ref bool canUse, ref bool couldUse, ref bool __state)
     {
-        var playerControl = pc.Object;
-        var flag = !playerControl.CanDoTasks();
+        CanUsePatch.Prefix(pc.Object, ref __state);
 
         // If the console is not a sabotage repair console
-        if (flag && !__instance.AllowImpostor)
+        if (!pc.Object.CanDoTasks() && !__instance.AllowImpostor)
         {
             __result = float.MaxValue;
+            canUse = couldUse = false;
             return false;
         }
 
         return true;
     }
-
-    [HarmonyPatch(nameof(Console.CanUse))]
-    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
 
     [HarmonyPatch(nameof(Console.CanUse))]
     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);

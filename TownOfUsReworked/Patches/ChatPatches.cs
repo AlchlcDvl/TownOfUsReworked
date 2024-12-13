@@ -18,8 +18,8 @@ public static class ChatPatches
         UpdateBubbles(__instance);
         UpdateChatTimer(__instance);
 
-        __instance.freeChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
-        __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
+        __instance.freeChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : UColor.white;
+        __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : UColor.white;
 
         var text = __instance.freeChatField.Text;
 
@@ -296,7 +296,7 @@ public static class ChatPatches
 
     public static void SetTheme(ChatController __instance)
     {
-        __instance.freeChatField.background.color = __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : new Color32(255, 255, 255, 255);
+        __instance.freeChatField.background.color = __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : UColor.white;
 
         __instance.freeChatField.textArea.compoText.Color(ClientOptions.UseDarkTheme ? UColor.white : UColor.black);
         __instance.freeChatField.textArea.outputText.color = __instance.quickChatField.text.color = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;

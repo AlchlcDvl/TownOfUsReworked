@@ -36,16 +36,16 @@ public static class ButtonUtils
     public static void EnableButtons(this PlayerControl player)
     {
         var hud = HUD();
-        player.GetButtons().ForEach(x => x.Enable());
+        player.GetButtons().ForEach(x => x.SetActive());
         hud.KillButton.gameObject.SetActive(false);
-        hud.SabotageButton.gameObject.SetActive(player.CanSabotage());
+        hud.SabotageButton.gameObject.SetActive(player.CanSabotage() && IsInGame());
         hud.ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward) && !Meeting() && !player.HasDied() && IsInGame());
         hud.ImpostorVentButton.gameObject.SetActive(player.CanVent() && IsInGame());
 
         if (IsHnS())
             hud.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor() && IsInGame());
         else
-            hud.AbilityButton.gameObject.SetActive(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && IsInGame());
+            hud.AbilityButton.gameObject.SetActive(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && IsInGame() && CustomPlayer.Local.HasDied());
 
         if (Use)
             hud.UseButton.gameObject.SetActive(true);

@@ -481,7 +481,7 @@ public abstract class Role : PlayerLayer
             {
                 var roleEffectAnimation = UObject.Instantiate(GetRoleAnim("ProtectAnim"), player.gameObject.transform);
                 roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
-                roleEffectAnimation.Play(player, null, player.cosmetics.FlipX, RoleEffectAnimation.SoundType.Local);
+                roleEffectAnimation.Play(player, null, player.cosmetics.FlipX, RoleEffectAnimation.SoundType.Global);
                 Flash(role2.Color);
             }
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(MultiMenu.Layer, CustomOptionType.Alignment), IOptionGroup
 {
     public LayerEnum Alignment { get; } = alignment;

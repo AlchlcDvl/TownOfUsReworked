@@ -1,12 +1,13 @@
 namespace TownOfUsReworked.Patches;
 
 // Adapted from The Other Roles
-[HarmonyPatch(typeof(RegionMenu), nameof(RegionMenu.Open))]
+[HarmonyPatch(typeof(RegionMenu))]
 public static class RegionInfoOpenPatch
 {
     private static TextBoxTMP IPField;
     private static TextBoxTMP PortField;
 
+    [HarmonyPatch(nameof(RegionMenu.Open))]
     public static void Postfix(RegionMenu __instance)
     {
         JoinGameButton joinGameButton1 = null;
@@ -122,11 +123,8 @@ public static class RegionInfoOpenPatch
         Info("Resetting previous region");
         ServerManager.Instance.SetRegion(iregionInfo1);
     }
-}
 
-[HarmonyPatch(typeof(RegionMenu), nameof(RegionMenu.ChooseOption))]
-public static class RegionMenuChooseOptionPatch
-{
+    [HarmonyPatch(nameof(RegionMenu.ChooseOption))]
     public static bool Prefix(RegionMenu __instance, IRegionInfo region)
     {
         if (region.Name != "Custom" || ServerManager.Instance.CurrentRegion.Name == "Custom")

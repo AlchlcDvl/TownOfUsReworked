@@ -6,14 +6,23 @@ public static class MapPatches
 {
     public static byte CurrentMap;
 
-    public static bool Prefix(ref Il2CppSystem.Collections.IEnumerator __result)
+    public static bool Prefix(AmongUsClient __instance, ref Il2CppSystem.Collections.IEnumerator __result)
     {
-        __result = CoStartGameFix().WrapToIl2Cpp();
+        __result = CoStartGameFix(__instance).WrapToIl2Cpp();
         return false;
     }
 
-    private static IEnumerator CoStartGameFix()
+    private static IEnumerator CoStartGameFix(AmongUsClient __instance)
     {
+        if (TownOfUsReworked.MCIActive)
+        {
+            foreach (var client in __instance.allClients)
+            {
+                client.IsReady = true;
+                client.Character.GetComponent<DummyBehaviour>().enabled = false;
+            }
+        }
+
         if (Lobby())
             Lobby().Despawn();
 

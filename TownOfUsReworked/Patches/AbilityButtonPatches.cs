@@ -1,9 +1,10 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
+[HarmonyPatch(typeof(AbilityButton))]
 public static class AbilityButtonPatch
 {
-    public static bool Prefix(AbilityButton __instance)
+    [HarmonyPatch(nameof(AbilityButton.Update)), HarmonyPrefix]
+    public static bool UpdatePrefix(AbilityButton __instance)
     {
         var result = !AllButtons.TryFinding(x => x.Base == __instance && !x.Disabled, out var button);
 
@@ -12,6 +13,9 @@ public static class AbilityButtonPatch
 
         return result;
     }
+
+    [HarmonyPatch(nameof(AbilityButton.DoClick)), HarmonyPrefix]
+    public static bool DoClickPrefix(AbilityButton __instance) => !AllButtons.Any(x => x.Base == __instance);
 }
 
 [HarmonyPatch(typeof(ActionButton))]

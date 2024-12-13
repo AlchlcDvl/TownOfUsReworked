@@ -30,6 +30,9 @@ public class LayerHandler : RoleBehaviour
     public static RoleBehaviour CrewmateGhost;
     public static RoleBehaviour ImpostorGhost;
 
+    private static GameObject Parent;
+    private static Minigame HauntMenu;
+
     [HideFromIl2Cpp]
     public T GetLayer<T>() where T : PlayerLayer => CustomLayers.OfType<T>().FirstOrDefault();
 
@@ -183,6 +186,7 @@ public class LayerHandler : RoleBehaviour
         Player = player;
         SetUpLayers();
         IntroSound = GetAudio($"{CustomRole}Intro", false) ?? GetAudio($"{(CustomRole.Faction is Faction.Intruder or Faction.Syndicate ? "Impostor" : "Crewmate")}Intro");
+        InitializeAbilityButton();
     }
 
     public override void OnMeetingStart()
@@ -218,5 +222,32 @@ public class LayerHandler : RoleBehaviour
         var result = role.CanUse(console);
         role.Player = null;
         return result;
+    }
+
+    public override void UseAbility()
+    {
+        if (Chat().IsOpenOrOpening)
+            return;
+
+        if (!HauntMenu)
+        {
+            Parent ??= new("GhostParent");
+            var child = Parent.GetComponentInChildren<CrewmateGhostRole>();
+
+            if (!child)
+                child = Instantiate(CrewmateGhost.TryCast<CrewmateGhostRole>(), Parent.transform);
+
+            HauntMenu = child.HauntMenu;
+        }
+
+        if (Minigame.Instance is HauntMenuMinigame)
+            Minigame.Instance.Close();
+        else
+        {
+            var minigame = Instantiate(HauntMenu, HUD().AbilityButton.transform, false);
+            minigame.transform.SetLocalZ(-5f);
+            minigame.Begin(null);
+            HUD().AbilityButton.SetDisabled();
+        }
     }
 }

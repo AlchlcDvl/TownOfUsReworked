@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
 public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int priority = -1) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];

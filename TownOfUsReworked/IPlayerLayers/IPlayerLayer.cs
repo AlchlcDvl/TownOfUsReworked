@@ -2,9 +2,9 @@ namespace TownOfUsReworked.IPlayerLayers;
 
 public interface IPlayerLayer
 {
-    public PlayerControl Player { get; set; }
+    PlayerControl Player { get; set; }
 
-    public bool Local { get; }
-    public UColor Color { get; }
-    public string Name { get; }
+    bool Local { get; }
+    UColor Color { get; }
+    string Name { get; }
 }

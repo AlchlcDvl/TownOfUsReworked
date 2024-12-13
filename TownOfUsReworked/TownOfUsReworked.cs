@@ -14,7 +14,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 10;
+    public const int DevBuild = 11;
 
     public static bool IsTest { get; set; }
     private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);
@@ -103,6 +103,7 @@ public partial class TownOfUsReworked : BasePlugin
         }
         catch (Exception e)
         {
+            Unload();
             Fatal($"Couldn't load the mod because:\n{e}");
         }
     }

@@ -60,4 +60,19 @@ public static class HauntPatches
 
         return false;
     }
+
+    [HarmonyPatch(nameof(HauntMenuMinigame.MatchesFilter))]
+    public static bool Prefix(HauntMenuMinigame __instance, PlayerControl pc, ref bool __result)
+    {
+        __result = __instance.filterMode switch
+        {
+            HauntMenuMinigame.HauntFilters.Impostor => pc.GetFaction() is Faction.Intruder or Faction.Syndicate || pc.GetAlignment() is Alignment.NeutralApoc or Alignment.NeutralKill or
+                Alignment.NeutralNeo || pc.Is(LayerEnum.Hunter),
+            HauntMenuMinigame.HauntFilters.Crewmate => pc.GetFaction() is Faction.Crew || pc.GetAlignment() is Alignment.NeutralBen or Alignment.NeutralEvil or
+                Alignment.NeutralPros || pc.Is(LayerEnum.Hunted),
+            HauntMenuMinigame.HauntFilters.Ghost => pc.HasDied(),
+            _ => true
+        };
+        return false;
+    }
 }

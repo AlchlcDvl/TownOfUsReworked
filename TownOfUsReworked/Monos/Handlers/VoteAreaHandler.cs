@@ -7,6 +7,10 @@ public class VoteAreaHandler : NameHandler
     public void Awake()
     {
         VoteArea = GetComponent<PlayerVoteArea>();
+
+        if (!VoteArea)
+            return;
+
         Player = PlayerByVoteArea(VoteArea);
     }
 

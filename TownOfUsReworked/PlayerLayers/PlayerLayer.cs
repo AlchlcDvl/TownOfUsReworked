@@ -406,12 +406,6 @@ public abstract class PlayerLayer
         if (ReferenceEquals(this, obj))
             return true;
 
-        var type = obj.GetType();
-        var plType = typeof(PlayerLayer);
-
-        if (!type.IsAssignableTo(plType) && !plType.IsAssignableFrom(type))
-            return false;
-
         return Equals(pl);
     }
 

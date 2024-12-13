@@ -298,7 +298,7 @@ public static class ModCompatibility
 
     public static void ImpartSub(PlayerControl bot)
     {
-        var comp = bot?.gameObject?.AddComponent(Il2CppType.From(CustomPlayerDataType))?.TryCast(CustomPlayerDataType);
+        var comp = bot?.gameObject?.AddComponent(Il2CppType.From(CustomPlayerDataType));
         HasMapField.SetValue(comp, true);
     }
 

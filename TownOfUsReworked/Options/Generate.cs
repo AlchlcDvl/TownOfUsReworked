@@ -18,8 +18,7 @@ public static class Generate
         // Do I care enough to do that? Hell no until it becomes a problem
 
         // So, this is AD from a couple weeks after the above 3 comments, I thought to myself on the toilet "What if I just used a class for the headers instead of another property? Then I don't need to add a random getter setter and I don't have to make the string arrays either because I can just get the declared properties and use their names as the array" and then this genius thing was born
-        AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).Where(x => x.Name is not ("Bullseye" or "Hitman" or "Sniper" or "Slayer")).ForEach(y =>
-            (y.GetCustomAttribute<OptionAttribute>() as IOptionGroup)?.SetTypeAndOptions(y));
+        AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ForEach(y => (y.GetCustomAttribute<OptionAttribute>() as IOptionGroup)?.SetTypeAndOptions(y));
 
         // Fixing up accidental duped IDs
         var d = OptionAttribute.AllOptions.Clone();
@@ -54,6 +53,6 @@ public static class Generate
 
         OptionAttribute.LoadPreset("LastUsed", null);
 
-        Message($"There exist {OptionAttribute.AllOptions.Count(x => x is not (HeaderOptionAttribute or AlignmentOptionAttribute))} total options lmao (number jumpscare)");
+        Message($"There exist {OptionAttribute.AllOptions.Count(x => x is not IOptionGroup)} total options lmao (number jumpscare)");
     }
 }

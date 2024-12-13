@@ -15,6 +15,7 @@ New!
 - Addition: Added dark theme to the chat, which can be toggled in the client settings
 - Addition: Added a player mentioning system, where you can send a differently colored chat message to get a target's attention by adding #playerId or #(player name) to the message
 - Addition: Added the usage of some effect sounds
+- Addition: The role screen will now make use of the background bar
 
 Changes!
 - Recode: Custom colors have been recoded to be more efficient
@@ -25,28 +26,30 @@ Changes!
 - Change: Cryomaniacs when freezing will remove the gasoline off those doused by an Arsonist
 - Change: Player names will no longer appear in your vision until more of their body is exposed to your vision
 - Nerf: Vampire Hunters turned Vigilantes will always have one bullet left
-- Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode, however they will still be roleblock immune the entire time
+- Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode, however they will still be roleblock immune the entire game
 - Improvement: Improved the mod's asset loaders
-- Improvement: Assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
+- Improvement: Mod assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
 - Improvement: Made general optimisations to improve the mod's runtime
 
 Fixes!
 - Critical: Fixed Godfather-Miners being unable to spawn vents
 - Critical: Fixed Lovers, Linked and Rivals not having partners
 - Critical: Fixed Plaguebearer spawning twice
+- Critical: Greatly improved the stutter and fps issues
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
 - Compatibility: Fixed the elavator not being properly usable for postmortal roles
-- Visual: Fixed the hud buttons appearing when kicking out all bots in local
+- Visual: Fixed the hud buttons appearing when kicking out bots in local
+- Visual: Fixed tasks being outlined when you can't do them (thanks le killer)
+- Visual: Fixed ability buttons not disappearing when opening the map
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
 - General: Fixed All Any role gen being a bit broken in some aspects
-- General: Fixed fake players not spawning in locations correctly on Airship and Submerged when using MCI to test things
-- General: Fixed conversions not being consistent
-- General: Greatly improved the stutter and fps issues
+- General: Fixed fake players not spawning in locations correctly on Airship and Submerged
+- General: Fixed conversions being inconsistent
 
 Known Bugs :(
-- Critically slow fps for everyone, with the host having it the worst, a fix is in progress and the severity has been considerably reduced since discovery
+- Critically low fps for everyone, with the host having it the worst, a fix is in progress and the severity has been considerably reduced since discovery
 - Loading settings for the first time makes the text appear a bit misaligned
 
 Credits-
