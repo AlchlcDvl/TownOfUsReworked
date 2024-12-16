@@ -18,7 +18,7 @@ public class Shapeshifter : Syndicate
     public CustomPlayerMenu ShapeshiftMenu1 { get; set; }
     public CustomPlayerMenu ShapeshiftMenu2 { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Shapeshifter : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Shapeshifter: FactionColor;
     public override string Name => "Shapeshifter";
     public override LayerEnum Type => LayerEnum.Shapeshifter;
     public override Func<string> StartText => () => "Change Everyone's Appearances";

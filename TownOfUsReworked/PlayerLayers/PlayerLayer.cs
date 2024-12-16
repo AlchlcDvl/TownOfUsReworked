@@ -115,9 +115,13 @@ public abstract class PlayerLayer
 
     public virtual void ReadRPC(MessageReader reader) {}
 
-    public virtual void OnDeath(DeathReason reason) {}
+    public virtual void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer) {}
 
     public virtual void OnRevive() {}
+
+    public virtual void PostAssignment() {}
+
+    public virtual void OnKill(PlayerControl victim) {}
 
     public void GameEnd()
     {

@@ -23,7 +23,7 @@ public class Trapper : Crew, ITrapper
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Trapper : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Trapper: FactionColor;
     public override string Name => "Trapper";
     public override LayerEnum Type => LayerEnum.Trapper;
     public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
@@ -120,7 +120,7 @@ public class Trapper : Crew, ITrapper
             var message = "Your trap detected the following roles: ";
             TriggeredRoles.Shuffle();
             TriggeredRoles.ForEach(x => message += $"{x}, ");
-            message = message.Remove(message.Length - 2);
+            message = message[..^2];
 
             if (IsNullEmptyOrWhiteSpace(message))
                 return;

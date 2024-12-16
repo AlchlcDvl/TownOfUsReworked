@@ -265,7 +265,11 @@ public class PromotedRebel : Syndicate, IIntimidator
         ResetCharges();
     }
 
-    public override void OnDeath(DeathReason reason) => Deinit();
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        base.OnDeath(reason, reason2, killer);
+        Deinit();
+    }
 
     public override void BeforeMeeting()
     {

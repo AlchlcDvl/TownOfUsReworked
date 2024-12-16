@@ -20,4 +20,10 @@ public class Lovers : Disposition
     public override string Symbol => "♥";
     public override LayerEnum Type => LayerEnum.Lovers;
     public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.Data.PlayerName}";
+
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        if (Local && BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.NeutralApoc))
+            RpcMurderPlayer(OtherLover);
+    }
 }

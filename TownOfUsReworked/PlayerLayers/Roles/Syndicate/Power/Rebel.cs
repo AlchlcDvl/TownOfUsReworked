@@ -9,7 +9,7 @@ public class Rebel : Syndicate
     public bool HasDeclared { get; set; }
     public CustomButton SidekickButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Rebel : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Rebel: FactionColor;
     public override string Name => "Rebel";
     public override LayerEnum Type => LayerEnum.Rebel;
     public override Func<string> StartText => () => "Promote Your Fellow <#008000FF>Syndicate</color> To Do Better";

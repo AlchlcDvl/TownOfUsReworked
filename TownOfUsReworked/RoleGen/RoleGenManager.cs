@@ -1,0 +1,480 @@
+namespace TownOfUsReworked.RoleGen2;
+
+public static class RoleGenManager
+{
+    public static List<RoleOptionData> CrewAuditorRoles = [];
+    public static List<RoleOptionData> CrewKillingRoles = [];
+    public static List<RoleOptionData> CrewSupportRoles = [];
+    public static List<RoleOptionData> CrewSovereignRoles = [];
+    public static List<RoleOptionData> CrewProtectiveRoles = [];
+    public static List<RoleOptionData> CrewInvestigativeRoles = [];
+    public static List<RoleOptionData> CrewRoles = [];
+
+    public static List<RoleOptionData> NeutralEvilRoles = [];
+    public static List<RoleOptionData> NeutralBenignRoles = [];
+    public static List<RoleOptionData> NeutralKillingRoles = [];
+    public static List<RoleOptionData> NeutralNeophyteRoles = [];
+    public static List<RoleOptionData> NeutralHarbingerRoles = [];
+    public static List<RoleOptionData> NeutralRoles = [];
+
+    public static List<RoleOptionData> IntruderHeadRoles = [];
+    public static List<RoleOptionData> IntruderKillingRoles = [];
+    public static List<RoleOptionData> IntruderSupportRoles = [];
+    public static List<RoleOptionData> IntruderDeceptionRoles = [];
+    public static List<RoleOptionData> IntruderConcealingRoles = [];
+    public static List<RoleOptionData> IntruderRoles = [];
+
+    public static List<RoleOptionData> SyndicatePowerRoles = [];
+    public static List<RoleOptionData> SyndicateSupportRoles = [];
+    public static List<RoleOptionData> SyndicateKillingRoles = [];
+    public static List<RoleOptionData> SyndicateDisruptionRoles = [];
+    public static List<RoleOptionData> SyndicateRoles = [];
+
+    public static List<RoleOptionData> AllModifiers = [];
+    public static List<RoleOptionData> AllAbilities = [];
+    public static List<RoleOptionData> AllDispositions = [];
+    public static List<RoleOptionData> AllRoles = [];
+
+    public static PlayerControl PureCrew;
+    public static int Convertible;
+
+    public static readonly LayerEnum[] CA = [ LayerEnum.Mystic, LayerEnum.VampireHunter ];
+    public static readonly LayerEnum[] CI = [ LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Medium, LayerEnum.Coroner, LayerEnum.Operative, LayerEnum.Seer, LayerEnum.Detective ];
+    public static readonly LayerEnum[] CSv = [ LayerEnum.Mayor, LayerEnum.Dictator, LayerEnum.Monarch ];
+    public static readonly LayerEnum[] CrP = [ LayerEnum.Altruist, LayerEnum.Medic, LayerEnum.Trapper ];
+    public static readonly LayerEnum[] CU = [ LayerEnum.Crewmate ];
+    public static readonly LayerEnum[] CK = [ LayerEnum.Vigilante, LayerEnum.Veteran, LayerEnum.Bastion ];
+    public static readonly LayerEnum[] CS = [ LayerEnum.Engineer, LayerEnum.Transporter, LayerEnum.Escort, LayerEnum.Shifter, LayerEnum.Chameleon, LayerEnum.Retributionist ];
+    public static readonly LayerEnum[][] Crew = [ CA, CI, CSv, CrP, CK, CS, CU ];
+    public static readonly LayerEnum[][] RegCrew = [ CI, CrP, CK, CS ];
+    public static readonly LayerEnum[][][] NonCrew = [ Neutral, Intruders, Syndicate ];
+
+    public static readonly LayerEnum[] NB = [ LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief ];
+    public static readonly LayerEnum[] NE = [ LayerEnum.Jester, LayerEnum.Actor, LayerEnum.BountyHunter, LayerEnum.Cannibal, LayerEnum.Executioner, LayerEnum.Guesser, LayerEnum.Troll ];
+    public static readonly LayerEnum[] NN = [ LayerEnum.Jackal, LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Whisperer ];
+    public static readonly LayerEnum[] NH = [ LayerEnum.Plaguebearer ];
+    public static readonly LayerEnum[] NA = [ LayerEnum.Pestilence ];
+    public static readonly LayerEnum[] NK = [ LayerEnum.Arsonist, LayerEnum.Cryomaniac, LayerEnum.Glitch, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.SerialKiller, LayerEnum.Werewolf ];
+    public static readonly LayerEnum[][] Neutral = [ NB, NE, NN, NH, NK ];
+    public static readonly LayerEnum[][] RegNeutral = [ NB, NE ];
+    public static readonly LayerEnum[][] HarmNeutral = [ NN, NH, NK ];
+    public static readonly LayerEnum[][][] NonNeutral = [ Crew, Intruders, Syndicate ];
+
+    public static readonly LayerEnum[] IC = [ LayerEnum.Blackmailer, LayerEnum.Camouflager, LayerEnum.Grenadier, LayerEnum.Janitor ];
+    public static readonly LayerEnum[] ID = [ LayerEnum.Morphling, LayerEnum.Disguiser, LayerEnum.Wraith ];
+    public static readonly LayerEnum[] IK = [ LayerEnum.Enforcer, LayerEnum.Ambusher ];
+    public static readonly LayerEnum[] IS = [ LayerEnum.Consigliere, LayerEnum.Miner, LayerEnum.Teleporter, LayerEnum.Consort ];
+    public static readonly LayerEnum[] IH = [ LayerEnum.Godfather ];
+    public static readonly LayerEnum[] IU = [ LayerEnum.Impostor ];
+    public static readonly LayerEnum[][] Intruders = [ IC, ID, IK, IS, IU, IH ];
+    public static readonly LayerEnum[][] RegIntruders = [ IC, ID, IK, IS ];
+    public static readonly LayerEnum[][][] NonIntruders = [ Neutral, Crew, Syndicate ];
+
+    public static readonly LayerEnum[] SSu = [ LayerEnum.Warper, LayerEnum.Stalker ];
+    public static readonly LayerEnum[] SD = [ LayerEnum.Timekeeper, LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.Silencer] ;
+    public static readonly LayerEnum[] SP = [ LayerEnum.Rebel, LayerEnum.Spellslinger ];
+    public static readonly LayerEnum[] SyK = [ LayerEnum.Bomber, LayerEnum.Collider, LayerEnum.Crusader, LayerEnum.Poisoner ];
+    public static readonly LayerEnum[] SU = [ LayerEnum.Anarchist ];
+    public static readonly LayerEnum[][] Syndicate = [ SSu, SyK, SD, SP, SU ];
+    public static readonly LayerEnum[][] RegSyndicate = [ SSu, SyK, SD ];
+    public static readonly LayerEnum[][][] NonSyndicate = [ Neutral, Intruders, Crew ];
+
+    public static readonly LayerEnum[][][] FactionedEvils = [ Neutral, Crew ];
+
+    public static readonly LayerEnum[] AlignmentEntries = [ LayerEnum.CrewSupport, LayerEnum.CrewInvest, LayerEnum.CrewSov, LayerEnum.CrewProt, LayerEnum.CrewKill, LayerEnum.CrewAudit,
+        LayerEnum.IntruderSupport, LayerEnum.IntruderConceal, LayerEnum.IntruderDecep, LayerEnum.IntruderKill, LayerEnum.NeutralApoc, LayerEnum.NeutralHarb, LayerEnum.NeutralBen,
+        LayerEnum.NeutralEvil, LayerEnum.NeutralKill, LayerEnum.NeutralNeo, LayerEnum.SyndicateDisrup, LayerEnum.SyndicateKill, LayerEnum.SyndicatePower, LayerEnum.IntruderUtil,
+        LayerEnum.CrewUtil, LayerEnum.SyndicateUtil, LayerEnum.IntruderHead ];
+    public static readonly LayerEnum[] RandomEntries = [ LayerEnum.RandomCrew, LayerEnum.RandomIntruder, LayerEnum.RandomSyndicate, LayerEnum.RandomNeutral, LayerEnum.RegularCrew,
+        LayerEnum.RegularIntruder, LayerEnum.RegularNeutral, LayerEnum.RegularSyndicate, LayerEnum.HarmfulNeutral, LayerEnum.NonCrew, LayerEnum.NonIntruder, LayerEnum.NonNeutral,
+        LayerEnum.FactionedEvil, LayerEnum.NonSyndicate ];
+    public static readonly LayerEnum[][] Alignments = [ CA, CI, CSv, CrP, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, NA ];
+
+    public static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.VIP, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
+        LayerEnum.Indomitable, LayerEnum.Yeller, LayerEnum.Colorblind ];
+
+    public static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
+    public static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
+    public static readonly LayerEnum[] NeutralDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
+
+    public static readonly LayerEnum[] CrewAb = [ LayerEnum.Bullseye, LayerEnum.Swapper ];
+    public static readonly LayerEnum[] Tasked = [ LayerEnum.Insider, LayerEnum.Multitasker ];
+    public static readonly LayerEnum[] GlobalAb = [ LayerEnum.Radar, LayerEnum.Tiebreaker ];
+
+    public static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6 ];
+    public static readonly List<byte> CustomSpawns = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+
+    private static readonly TargetGen Targets = new();
+    private static readonly ModifierGen Modifiers = new();
+    private static readonly AbilityGen Abilities = new();
+    private static readonly DispositionGen Dispositions = new();
+    public static readonly Dictionary<GameMode, BaseRoleGen> RoleGen = new()
+    {
+        { GameMode.HideAndSeek, new HideAndSeekGen() },
+        { GameMode.Classic, new ClassicCustomGen() },
+        { GameMode.RoleList, new RoleListGen() },
+        { GameMode.Vanilla, new VanillaGen() },
+        { GameMode.AllAny, new AllAnyGen() },
+        { GameMode.Custom, new ClassicCustomGen() },
+        { GameMode.KillingOnly, new KillingOnlyGen() },
+        { GameMode.TaskRace, new TaskRaceGen() }
+    };
+
+    public static readonly Dictionary<GameMode, BaseFilter> ModeFilters = new()
+    {
+        { GameMode.Classic, new CommonFilter() },
+        { GameMode.Custom, new CommonFilter() },
+        { GameMode.AllAny, new AllAnyFilter() }
+    };
+
+    public static RoleOptionData GetSpawnItem(LayerEnum id) => id switch
+    {
+        LayerEnum.Anarchist => SyndicateUtilityRoles.Anarchist,
+        LayerEnum.Impostor => IntruderUtilityRoles.Impostor,
+        LayerEnum.Murderer => Options.NeutralKillingRoles.Murderer,
+        LayerEnum.Vigilante => Options.CrewKillingRoles.Vigilante,
+        LayerEnum.Veteran => Options.CrewKillingRoles.Veteran,
+        LayerEnum.Bastion => Options.CrewKillingRoles.Bastion,
+        LayerEnum.Crewmate => CrewUtilityRoles.Crewmate,
+        LayerEnum.Revealer => CrewUtilityRoles.Revealer,
+        LayerEnum.Ghoul => IntruderUtilityRoles.Ghoul,
+        LayerEnum.Banshee => SyndicateUtilityRoles.Banshee,
+        LayerEnum.Phantom => NeutralProselyteRoles.Phantom,
+        LayerEnum.Pestilence => Options.NeutralHarbingerRoles.Plaguebearer,
+        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 15, false, false, id),
+        _ => OptionAttribute.GetOptions<LayerOptionAttribute>().TryFinding(x => x.Layer == id, out var result) ? result.Get() : new(0, 0, false, false, id)
+    };
+
+    public static bool IsValid(this LayerEnum layer, int? relatedCount = null)
+    {
+        var result = true;
+
+        if (layer == LayerEnum.Bastion)
+            result = GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne;
+        else if (layer is LayerEnum.Crewmate or LayerEnum.Impostor or LayerEnum.Anarchist)
+            result = IsCustom();
+        else if (layer == LayerEnum.VampireHunter)
+            result = GetSpawnItem(LayerEnum.Dracula).IsActive();
+        else if (layer == LayerEnum.Mystic)
+            result = new List<LayerEnum>() { LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Whisperer }.Any(x => GetSpawnItem(x).IsActive());
+        else if (layer == LayerEnum.Seer)
+        {
+            result = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor,
+                LayerEnum.Amnesiac, LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter }.Any(x => GetSpawnItem(x).IsActive());
+        }
+        else if (layer == LayerEnum.Plaguebearer)
+            result = !NeutralApocalypseSettings.DirectSpawn;
+        else if (layer == LayerEnum.Pestilence)
+            result = NeutralApocalypseSettings.DirectSpawn;
+        else if (layer is LayerEnum.Amnesiac or LayerEnum.GuardianAngel or LayerEnum.Survivor or LayerEnum.Thief)
+            result = !NeutralSettings.AvoidNeutralKingmakers;
+        else if (layer == LayerEnum.Jackal)
+            result = GameData.Instance.PlayerCount > 6;
+        else if (layer == LayerEnum.Actor)
+            result = new List<LayerEnum>() { LayerEnum.Bullseye, LayerEnum.Slayer, LayerEnum.Sniper, LayerEnum.Hitman }.Any(x => GetSpawnItem(x).IsActive());
+        else if (layer == LayerEnum.Miner)
+            result = GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne && !(!Miner.MinerSpawnOnMira && MapPatches.CurrentMap == 2);
+        else if (layer is LayerEnum.Godfather or LayerEnum.Rebel)
+            result = relatedCount > 3;
+        else if (layer == LayerEnum.Insider)
+            result = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
+        else if (layer == LayerEnum.Tunneler)
+            result = GameModifiers.WhoCanVent == WhoCanVentOptions.Default && CrewSettings.CrewVent == CrewVenting.Never;
+        else if (layer == LayerEnum.Lovers)
+            result = GameData.Instance.PlayerCount > 4;
+        else if (layer == LayerEnum.Rivals)
+            result = GameData.Instance.PlayerCount > 3;
+        else if (layer == LayerEnum.Linked)
+            result = Role.GetRoles(Faction.Neutral).Count() > 1 && GameData.Instance.PlayerCount > 4;
+
+        if (TownOfUsReworked.IsTest)
+            result = true;
+
+        return result;
+    }
+
+    public static int GetRandomCount()
+    {
+        var random = URandom.RandomRangeInt(0, 100);
+        return GameData.Instance.PlayerCount switch
+        {
+            <= 6 => random <= 5 ? 0 : 1,
+            7 => random switch
+            {
+                < 5 => 0,
+                < 20 => 2,
+                _ => 1
+            },
+            8 => random switch
+            {
+                < 5 => 0,
+                < 40 => 2,
+                _ => 1
+            },
+            9 => random switch
+            {
+                < 5 => 0,
+                < 50 => 2,
+                _ => 1
+            },
+            10 => random switch
+            {
+                < 5 => 0,
+                < 10 => 3,
+                < 60 => 2,
+                _ => 1
+            },
+            11 => random switch
+            {
+                < 5 => 0,
+                < 40 => 3,
+                < 70 => 2,
+                _ => 1
+            },
+            12 => random switch
+            {
+                < 5 => 0,
+                < 60 => 3,
+                < 80 => 2,
+                _ => 1
+            },
+            13 => random switch
+            {
+                < 5 => 0,
+                < 60 => 3,
+                < 90 => 2,
+                _ => 1
+            },
+            14 => random switch
+            {
+                < 5 => 0,
+                < 25 => 1,
+                < 60 => 3,
+                _ => 2
+            },
+            _ => random switch
+            {
+                < 5 => 0,
+                < 20 => 1,
+                < 60 => 3,
+                < 90 => 2,
+                _ => 4
+            }
+        };
+    }
+
+    public static void Gen(PlayerControl player, LayerEnum id, PlayerLayerEnum rpc)
+    {
+        if (id == LayerEnum.None)
+            player.GetLayers().Find(x => x.LayerType == rpc)?.End();
+
+        SetLayer(id, rpc).Start(player);
+        CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
+    }
+
+    public static void NullLayer(PlayerControl player, PlayerLayerEnum rpc) => Gen(player, LayerEnum.None, rpc);
+
+    public static PlayerLayer SetLayer(LayerEnum id, PlayerLayerEnum rpc)
+    {
+        if (LayerDictionary.TryGetValue(id, out var dictEntry))
+            return (PlayerLayer)Activator.CreateInstance(dictEntry.LayerType);
+        else
+        {
+            return rpc switch
+            {
+                PlayerLayerEnum.Role => new Roleless(),
+                PlayerLayerEnum.Modifier => new Modifierless(),
+                PlayerLayerEnum.Disposition => new Dispositionless(),
+                PlayerLayerEnum.Ability => new Abilityless(),
+                _ => throw new NotImplementedException($"{id}:{rpc}")
+            };
+        }
+    }
+
+    public static void BeginRoleGen()
+    {
+        if (IsHnS() || !AmongUsClient.Instance.AmHost)
+            return;
+
+        Message("Role Gen Start");
+        Message($"Current Mode = {GameModeSettings.GameMode}");
+        ResetEverything();
+        CallRpc(CustomRPC.Misc, MiscRPC.Start);
+        Message("Cleared Variables");
+        var gen = RoleGen[GameModeSettings.GameMode];
+
+        gen.InitSynList();
+        gen.InitIntList();
+        gen.InitNeutList();
+        gen.InitCrewList();
+        gen.InitList();
+
+        gen.BeginFiltering();
+        gen.EndFiltering();
+
+        gen.Assign();
+
+        var allPlayers = AllPlayers();
+
+        PureCrew = allPlayers.Where(x => x.IsBase(Faction.Crew)).Random();
+
+        if (PureCrew)
+        {
+            CallRpc(CustomRPC.Misc, MiscRPC.SyncPureCrew, PureCrew);
+            Message("Synced Pure Crew");
+        }
+
+        if (gen.AllowNonRoles)
+        {
+            if (GameModifiers.EnableDispositions)
+                Dispositions.Assign();
+
+            if (GameModifiers.EnableAbilities)
+                Abilities.Assign();
+
+            if (GameModifiers.EnableModifiers)
+                Modifiers.Assign();
+        }
+
+        if (gen.HasTargets)
+            Targets.Assign();
+
+        gen.PostAssignment();
+
+        Convertible = allPlayers.Count(x => x.Is(SubFaction.None) && x != PureCrew) - 1;
+        CallRpc(CustomRPC.Misc, MiscRPC.SyncConvertible, Convertible);
+
+        if (MapPatches.CurrentMap == 4)
+        {
+            BetterAirship.SpawnPoints.AddRange((BetterAirship.EnableCustomSpawns ? CustomSpawns : Spawns).GetRandomRange(3));
+            CallRpc(CustomRPC.Misc, MiscRPC.SetSpawnAirship, BetterAirship.SpawnPoints);
+        }
+
+        if (TownOfUsReworked.IsTest)
+            Message($"{"Name", -10} -> {"Role", -10}, {"Disposition", -10}, {"Modifier", -10}, {"Ability", -10}");
+
+        CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen);
+
+        foreach (var player in allPlayers)
+        {
+            var role = player.GetRoleFromList() ?? new Roleless().Start(player);
+            var mod = player.GetModifierFromList() ?? new Modifierless().Start(player);
+            var ab = player.GetAbilityFromList() ?? new Abilityless().Start(player);
+            var disp = player.GetDispositionFromList() ?? new Dispositionless().Start(player);
+            RoleManager.Instance.SetRole(player, (RoleTypes)100);
+
+            if (TownOfUsReworked.IsTest)
+                Message($"{player.name, -10} -> {role, -10}, {disp, -10}, {mod, -10}, {ab, -10}");
+        }
+
+        Message("Gen Ended");
+    }
+
+    public static bool Check(RoleOptionData data, bool sorting = false)
+    {
+        if (data.Chance == 0)
+            return false;
+
+        if (data.Chance == 100)
+            return !sorting;
+
+        return URandom.RandomRangeInt(1, 100) <= data.Chance;
+    }
+
+    public static void Clear()
+    {
+        WinState = WinLose.None;
+
+        MeetingPatches.MeetingCount = 0;
+
+        Role.SyndicateHasChaosDrive = false;
+        Role.DriveHolder = null;
+
+        Role.Cleaned.Clear();
+
+        MeetingPatches.MeetingCount = 0;
+
+        KilledPlayers.Clear();
+
+        NameHandler.PlayerNames.Clear();
+        NameHandler.ColorNames.Clear();
+
+        DragHandler.Instance.Dragging.Clear();
+
+        Monos.Range.AllItems.Clear();
+
+        PlayerLayer.DeleteAll();
+
+        SetPostmortals.AssassinatedPlayers.Clear();
+        SetPostmortals.MisfiredPlayers.Clear();
+        SetPostmortals.MarkedPlayers.Clear();
+        SetPostmortals.EscapedPlayers.Clear();
+
+        AllModifiers.Clear();
+        AllAbilities.Clear();
+        AllDispositions.Clear();
+
+        SetPostmortals.PhantomOn = false;
+        SetPostmortals.RevealerOn = false;
+        SetPostmortals.BansheeOn = false;
+        SetPostmortals.GhoulOn = false;
+
+        SetPostmortals.WillBeBanshees.Clear();
+        SetPostmortals.WillBeGhouls.Clear();
+        SetPostmortals.WillBeRevealers.Clear();
+        SetPostmortals.WillBePhantoms.Clear();
+
+        ChatPatches.ChatHistory.Clear();
+
+        PureCrew = null;
+        Convertible = 0;
+
+        RecentlyKilled.Clear();
+
+        DisconnectHandler.Disconnected.Clear();
+
+        SettingsPatches.SettingsPage = 0;
+
+        Assassin.RemainingKills = Assassin.AssassinKills == 0 ? 10000 : Assassin.AssassinKills;
+
+        OnGameEndPatches.Disconnected.Clear();
+
+        CachedFirstDead = FirstDead;
+        FirstDead = null;
+
+        Blocked.BlockExposed = false;
+
+        // Role.IsLeft = false;
+
+        CustomMeeting.DestroyAll();
+        CustomArrow.DestroyAll();
+        CustomMenu.DestroyAll();
+        DestroyAll();
+
+        Ash.DestroyAll();
+
+        ClientHandler.Instance.CloseMenus();
+
+        BodyLocations.Clear();
+
+        CachedMorphs.Clear();
+
+        TransitioningSize.Clear();
+
+        TransitioningSpeed.Clear();
+
+        UninteractiblePlayers.Clear();
+
+        BetterAirship.SpawnPoints.Clear();
+    }
+
+    public static void ResetEverything()
+    {
+        Clear();
+        Targets.Clear();
+        Modifiers.Clear();
+        Abilities.Clear();
+        Dispositions.Clear();
+        RoleGen.Values.ForEach(x => x.Clear());
+    }
+}

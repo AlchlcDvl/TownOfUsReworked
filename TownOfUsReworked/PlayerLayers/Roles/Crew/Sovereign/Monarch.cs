@@ -27,7 +27,7 @@ public class Monarch : Crew
     public List<byte> Knighted { get; set; }
     public bool Protected => Knighted.Any();
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Monarch : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Monarch: FactionColor;
     public override string Name => "Monarch";
     public override LayerEnum Type => LayerEnum.Monarch;
     public override Func<string> StartText => () => "Knight Those Who You Trust";

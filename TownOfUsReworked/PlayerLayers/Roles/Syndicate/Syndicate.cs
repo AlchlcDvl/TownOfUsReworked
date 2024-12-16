@@ -29,6 +29,14 @@ public abstract class Syndicate : Role
         return team;
     }
 
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        base.OnDeath(reason, reason2, killer);
+
+        if (Player == DriveHolder)
+            AssignChaosDrive();
+    }
+
     public virtual void OnDriveReceivedLocal() {}
 
     public virtual void OnDriveReceived() {}

@@ -18,7 +18,7 @@ public class Troll : Evil
     public bool Killed => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public CustomButton InteractButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Troll : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Troll: FactionColor;
     public override string Name => "Troll";
     public override LayerEnum Type => LayerEnum.Troll;
     public override Func<string> StartText => () => "Troll Everyone With Your Death";
@@ -34,6 +34,14 @@ public class Troll : Evil
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
         InteractButton ??= new(this, new SpriteName("Interact"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Interact, new Cooldown(InteractCd), "INTERACT",
             (UsableFunc)Usable);
+    }
+
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        base.OnDeath(reason, reason2, killer);
+
+        if (Local && !NeutralSettings.AvoidNeutralKingmakers)
+            RpcMurderPlayer(Player, killer, DeathReasonEnum.Trolled, false);
     }
 
     public void Interact(PlayerControl target) => InteractButton.StartCooldown(Interactions.Interact(Player, target));

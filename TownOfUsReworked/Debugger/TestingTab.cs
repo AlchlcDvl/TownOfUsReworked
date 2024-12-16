@@ -20,11 +20,9 @@ public class TestingTab : BaseTab
 
         if (IsLocalGame())
         {
-            TownOfUsReworked.LobbyCapped.Value = GUILayout.Toggle(TownOfUsReworked.LobbyCapped.Value, "Lobby Cap");
-
             if (GUILayout.Button("Spawn Bot"))
             {
-                if ((AllPlayers().Count < GameSettings.LobbySize && TownOfUsReworked.LobbyCapped.Value) || (!TownOfUsReworked.LobbyCapped.Value && AllPlayers().Count < 128))
+                if (AllPlayers().Count < GameSettings.LobbySize)
                 {
                     MCIUtils.CleanUpLoad();
                     MCIUtils.CreatePlayerInstance();

@@ -94,19 +94,25 @@ public class Politician : Ability
         switch(polAction)
         {
             case PoliticianActionsRPC.Remove:
+            {
                 ExtraVotes = reader.ReadByteList();
                 VoteBank -= ExtraVotes.Count;
                 break;
-
+            }
             case PoliticianActionsRPC.Add:
+            {
                 VoteBank -= reader.ReadInt32();
                 break;
-
+            }
             default:
+            {
                 Error($"Received unknown RPC - {(int)polAction}");
                 break;
+            }
         }
     }
+
+    public override void OnKill(PlayerControl victim) => VoteBank++;
 
     private void UpdateButton(MeetingHud __instance)
     {

@@ -18,7 +18,7 @@ public static class SpawnPatches
             handler.OnIntroEnd();
 
         AllPlayers().ForEach(x => x?.MyPhysics?.ResetAnimState());
-        AllBodies().ForEach(x => x?.gameObject?.Destroy());
+        AllBodies().ForEach(x => x.gameObject.Destroy());
         ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);
         HUD().FullScreen.enabled = true;

@@ -36,7 +36,7 @@ public class Whisperer : Neophyte
     public Dictionary<byte, byte> PlayerConversion { get; set; }
     public int WhisperConversion { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer: FactionColor;
     public override string Name => "Whisperer";
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";
@@ -82,7 +82,7 @@ public class Whisperer : Neophyte
                     WhisperConversion = 2;
 
                 ConversionCount++;
-                RoleGen.RpcConvert(player, PlayerId, SubFaction.Sect);
+                RpcConvert(player, PlayerId, SubFaction.Sect);
                 removals.Add(player);
             }
         }

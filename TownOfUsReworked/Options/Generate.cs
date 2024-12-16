@@ -4,15 +4,8 @@ namespace TownOfUsReworked.Options;
 
 public static class Generate
 {
-    private static bool Generated;
-
     public static void GenerateAll()
     {
-        if (Generated)
-            return;
-
-        Generated = true;
-
         // Might lead to initial performance issues trying to look through like, 200+ types
         // Could it be improved? Probably
         // Do I care enough to do that? Hell no until it becomes a problem
@@ -43,11 +36,13 @@ public static class Generate
         d.Clear();
 
         // Simple enough, I'm too cautious to let something fuck me up while I set the properties
-        OptionAttribute.AllOptions.ForEach(x => x.PostLoadSetup());
+        foreach (var option in OptionAttribute.AllOptions)
+        {
+            option.PostLoadSetup();
+            option.Debug();
+        }
 
         OptionAttribute.SortedOptions.AddRange(OptionAttribute.AllOptions.OrderBy(x => x.Priority));
-
-        OptionAttribute.AllOptions.ForEach(x => x.Debug());
 
         OptionAttribute.SaveSettings("Default");
 

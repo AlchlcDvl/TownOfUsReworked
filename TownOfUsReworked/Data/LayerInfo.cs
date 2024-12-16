@@ -318,7 +318,7 @@ public static class LayerInfo
     public static readonly List<DispositionInfo> AllDispositions =
     [
         new("Invalid", "Invalid", "Invalid", "Invalid", "Invalid", "φ", CustomColorManager.Disposition, LayerEnum.NoneDisposition),
-        new("Taskmaster", "TM", "The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate" +
+        new("Taskmaster", "TM", "The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate;" +
             " and the Crew only sees a flash to indicate the Taskmaster's existence.", "Finish tasks without dying or game ending", "Neutrals", "µ", CustomColorManager.Taskmaster,
             LayerEnum.Taskmaster),
         new("Lovers", "Lover", "The Lovers are two players who are linked together. They gain the primary objective to stay alive together. In order to so, they gain access to a private" +
@@ -592,7 +592,7 @@ public static class LayerInfo
             "\nSyndicate (Killing)\nOriginal Rebel, Sidekick, Anarchist"),
         new("Role", "Role", "Roles decide your abilities and goals for the game. Every game, you are guaranteed to have a role as not having one basically means you cannot play the game.",
             CustomColorManager.Role),
-        new("Disposition", "Obj", "Dispositions provide an alternate way for you to win, and sometimes they may override the your original win condition (see Corrupted and Mafia) or change" +
+        new("Disposition", "Disp", "Dispositions provide an alternate way for you to win, and sometimes they may override the your original win condition (see Corrupted and Mafia) or change" +
             " your win condition mid-game (see Traitor and Fanatic).", CustomColorManager.Disposition),
         new("Modifier", "Mod", "Modifiers are passive afflictions, usually negative or benign in nature, that serve no purpose and are there for fun. It cam alter a player's gameplay based"
             + " on what they might have. For example, Baits and Diseased players would want to die for their modifiers to take effect.", CustomColorManager.Modifier),

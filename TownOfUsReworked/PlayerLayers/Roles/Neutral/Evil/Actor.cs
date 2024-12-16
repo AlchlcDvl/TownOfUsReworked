@@ -26,7 +26,7 @@ public class Actor : Evil
     public bool TargetFailed => !Targeted && Rounds > 0;
     public bool Targeted { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Actor : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Actor: FactionColor;
     public override string Name => "Actor";
     public override LayerEnum Type => LayerEnum.Actor;
     public override Func<string> StartText => () => "Play Pretend With The Others";

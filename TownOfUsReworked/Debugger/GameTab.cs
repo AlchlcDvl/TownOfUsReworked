@@ -16,13 +16,13 @@ public class GameTab : BaseTab
         Role.SyndicateHasChaosDrive = GUILayout.Toggle(Role.SyndicateHasChaosDrive, "Chaos Drive");
 
         if (Role.SyndicateHasChaosDrive)
-            RoleGen.AssignChaosDrive();
+            AssignChaosDrive();
         else
             Role.DriveHolder = null;
 
         if (GUILayout.Button("Next Player"))
         {
-            DebuggerBehaviour.Instance.ControllingFigure = CycleByte(AllPlayers().Count - 1, 0,DebuggerBehaviour.Instance. ControllingFigure, true);
+            DebuggerBehaviour.Instance.ControllingFigure = CycleByte(AllPlayers().Count - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, true);
             MCIUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
         }
         else if (GUILayout.Button("Previous Player"))

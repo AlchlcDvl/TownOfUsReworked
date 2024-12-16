@@ -19,7 +19,7 @@ public class Dracula : Neophyte
     public bool HasConverted { get; set; }
     public static int AliveCount => AllPlayers().Count(x => !x.HasDied());
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula: FactionColor;
     public override string Name => "Dracula";
     public override LayerEnum Type => LayerEnum.Dracula;
     public override Func<string> StartText => () => "Lead The <#7B8968FF>Undead</color> To Victory";
@@ -49,7 +49,7 @@ public class Dracula : Neophyte
 
         if (cooldown != CooldownType.Fail)
         {
-            RoleGen.RpcConvert(target.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= AliveVampCount);
+            RpcConvert(target.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= AliveVampCount);
             HasConverted = true;
         }
 

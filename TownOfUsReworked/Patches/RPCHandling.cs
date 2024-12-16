@@ -1,3 +1,5 @@
+using TownOfUsReworked.RoleGen2;
+
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -29,9 +31,9 @@ public static class RPCHandling
                         var message = "";
 
                         while (reader.BytesRemaining > 0)
-                            message += reader.ReadString() + " ";
+                            message += $"{reader.ReadString()} ";
 
-                        Run("<#FF00FFFF>⚠ TEST ⚠</color>", $"Received RPC!\nWith the following message: {message}");
+                        Run("<#FF00FFFF>⚠ TEST ⚠</color>", $"Received RPC!\nWith the following message: {message.Trim()}");
                         break;
                     }
                     default:
@@ -78,6 +80,7 @@ public static class RPCHandling
                     case MiscRPC.Start:
                     {
                         RoleGen.ResetEverything();
+                        RoleGenManager.RoleGen[GameModeSettings.GameMode].Clear();
                         break;
                     }
                     case MiscRPC.SyncPureCrew:
@@ -147,7 +150,7 @@ public static class RPCHandling
                     case MiscRPC.ChaosDrive:
                     {
                         Role.DriveHolder = reader.ReadPlayer();
-                        Role.SyndicateHasChaosDrive = true;
+                        Role.SyndicateHasChaosDrive = Role.DriveHolder;
                         break;
                     }
                     case MiscRPC.SyncCustomSettings:
@@ -341,7 +344,7 @@ public static class RPCHandling
                     }
                     case ActionsRPC.Convert:
                     {
-                        RoleGen.Convert(reader.ReadByte(), reader.ReadByte(), reader.ReadEnum<SubFaction>(), reader.ReadBoolean());
+                        Convert(reader.ReadByte(), reader.ReadByte(), reader.ReadEnum<SubFaction>(), reader.ReadBoolean());
                         break;
                     }
                     case ActionsRPC.BypassKill:

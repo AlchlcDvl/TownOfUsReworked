@@ -89,14 +89,14 @@ public static class GameStartManagerPatches
         if (GameData.Instance.PlayerCount != __instance.LastPlayerCount)
         {
             __instance.LastPlayerCount = GameData.Instance.PlayerCount;
-            var arg = "#FF0000FF";
+            var arg = "FF00";
 
             if (__instance.LastPlayerCount > __instance.MinPlayers)
-                arg = "#00FF00FF";
+                arg = "00FF";
             else if (__instance.LastPlayerCount == __instance.MinPlayers)
-                arg = "#FFFF00FF";
+                arg = "FFFF";
 
-            __instance.PlayerCounter.SetText($"<{arg}>{__instance.LastPlayerCount}/{GameSettings.LobbySize}</color>");
+            __instance.PlayerCounter.SetText($"<#{arg}00FF>{__instance.LastPlayerCount}/{GameSettings.LobbySize}</color>");
             __instance.PlayerCounter.enableWordWrapping = false;
             __instance.StartButton.SetButtonEnableState(__instance.LastPlayerCount >= __instance.MinPlayers);
             __instance.StartButtonGlyph?.SetColor(__instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear);

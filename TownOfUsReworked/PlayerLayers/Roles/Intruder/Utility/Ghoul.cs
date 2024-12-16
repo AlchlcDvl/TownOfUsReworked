@@ -11,7 +11,7 @@ public class Ghoul : Intruder
     public bool Faded { get; set; }
     public PlayerControl MarkedPlayer { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Ghoul : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Ghoul: FactionColor;
     public override string Name => "Ghoul";
     public override LayerEnum Type => LayerEnum.Ghoul;
     public override Func<string> StartText => () => "BOO!";

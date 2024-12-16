@@ -318,7 +318,9 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     {
         SettingsPatches.SettingsPage = 6 + (int)Layer;
         SettingsPatches.CachedPage = 1;
-        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
+        var scrollbar = GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
+        SettingsPatches.ScrollerLocation = scrollbar.Inner.transform.localPosition;
+        scrollbar.ScrollToTop();
         SettingsPatches.OnValueChanged();
     }
 

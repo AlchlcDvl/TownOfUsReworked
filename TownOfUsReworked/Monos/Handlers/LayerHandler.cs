@@ -30,8 +30,7 @@ public class LayerHandler : RoleBehaviour
     public static RoleBehaviour CrewmateGhost;
     public static RoleBehaviour ImpostorGhost;
 
-    private static GameObject Parent;
-    private static Minigame HauntMenu;
+    public static Minigame HauntMenu;
 
     [HideFromIl2Cpp]
     public T GetLayer<T>() where T : PlayerLayer => CustomLayers.OfType<T>().FirstOrDefault();
@@ -159,10 +158,12 @@ public class LayerHandler : RoleBehaviour
 
     public override void OnDeath(DeathReason reason)
     {
-        CustomRole.OnDeath(reason);
-        CustomAbility.OnDeath(reason);
-        CustomModifier.OnDeath(reason);
-        CustomDisposition.OnDeath(reason);
+        if (CustomPlayer.Local.Is(LayerEnum.Coroner) && !CustomPlayer.LocalCustom.Dead)
+            Flash(CustomColorManager.Coroner);
+        else if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
+            Flash(mon.Color);
+        else if (CustomPlayer.LocalCustom.Dead)
+            Flash(CustomColorManager.Stalemate);
     }
 
     public override bool DidWin(GameOverReason gameOverReason)
@@ -187,6 +188,11 @@ public class LayerHandler : RoleBehaviour
         SetUpLayers();
         IntroSound = GetAudio($"{CustomRole}Intro", false) ?? GetAudio($"{(CustomRole.Faction is Faction.Intruder or Faction.Syndicate ? "Impostor" : "Crewmate")}Intro");
         InitializeAbilityButton();
+
+        CustomRole.PostAssignment();
+        CustomAbility.PostAssignment();
+        CustomModifier.PostAssignment();
+        CustomDisposition.PostAssignment();
     }
 
     public override void OnMeetingStart()
@@ -229,19 +235,10 @@ public class LayerHandler : RoleBehaviour
         if (Chat().IsOpenOrOpening)
             return;
 
-        if (!HauntMenu)
-        {
-            Parent ??= new("GhostParent");
-            var child = Parent.GetComponentInChildren<CrewmateGhostRole>();
-
-            if (!child)
-                child = Instantiate(CrewmateGhost.TryCast<CrewmateGhostRole>(), Parent.transform);
-
-            HauntMenu = child.HauntMenu;
-        }
-
-        if (Minigame.Instance is HauntMenuMinigame)
-            Minigame.Instance.Close();
+        if (ActiveTask() is HauntMenuMinigame)
+            ActiveTask().Close();
+        else if (ActiveTask())
+            return;
         else
         {
             var minigame = Instantiate(HauntMenu, HUD().AbilityButton.transform, false);

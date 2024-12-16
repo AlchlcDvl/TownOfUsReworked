@@ -45,7 +45,7 @@ public class Guesser : Evil
     public CustomMeeting GuessMenu { get; set; }
     public CustomRolesMenu GuessingMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Guesser : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Guesser: FactionColor;
     public override string Name => "Guesser";
     public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText => () => "Guess What Someone Might Be";

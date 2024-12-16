@@ -338,7 +338,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
                 message = "The following roles triggered your bugs: ";
                 BuggedPlayers.Shuffle();
                 BuggedPlayers.ForEach(role => message += $"{LayerDictionary[role].Name}, ");
-                message = message.Remove(message.Length - 2);
+                message = message[..^2];
             }
 
             // Only Retributionist-Operative can see this
@@ -352,7 +352,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
                 var message = "Your trap detected the following roles: ";
                 TriggeredRoles.Shuffle();
                 TriggeredRoles.ForEach(x => message += $"{x}, ");
-                message = message.Remove(message.Length - 2);
+                message = message[..^2];
 
                 if (IsNullEmptyOrWhiteSpace(message))
                     return;

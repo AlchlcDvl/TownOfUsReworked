@@ -292,6 +292,20 @@ public abstract class Role : PlayerLayer
         }
     }
 
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        if (killer != Player || (killer == Player && reason2 != DeathReasonEnum.Killed))
+        {
+            KilledBy = " By " + PlayerName;
+            DeathReason = reason2;
+        }
+        else
+            DeathReason = DeathReasonEnum.Suicide;
+
+        if (!GetLayers<Altruist>().Any() && !GetLayers<Necromancer>().Any())
+            TrulyDead |= Type != LayerEnum.GuardianAngel;
+    }
+
     public bool BombUsable() => Bombed;
 
     public bool RequestUsable() => Requesting;

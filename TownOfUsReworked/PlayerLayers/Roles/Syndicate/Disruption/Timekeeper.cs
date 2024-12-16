@@ -17,7 +17,7 @@ public class Timekeeper : Syndicate
 
     public CustomButton TimeButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Timekeeper : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Timekeeper: FactionColor;
     public override string Name => "Timekeeper";
     public override LayerEnum Type => LayerEnum.Timekeeper;
     public override Func<string> StartText => () => "Bend Time To Your Will";

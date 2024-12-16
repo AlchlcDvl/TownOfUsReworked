@@ -14,4 +14,10 @@ public class Diseased : Modifier
     public override LayerEnum Type => LayerEnum.Diseased;
     public override Func<string> Description => () => $"- Your killer's cooldown increases by {DiseasedMultiplier} times";
     public override bool Hidden => !DiseasedKnows && !Dead;
+
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        if (killer != Player)
+            killer.GetRole().Diseased = true;
+    }
 }

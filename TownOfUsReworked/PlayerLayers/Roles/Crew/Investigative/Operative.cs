@@ -31,7 +31,7 @@ public class Operative : Crew
     public List<LayerEnum> BuggedPlayers { get; set; }
     public CustomButton BugButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Operative : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Operative: FactionColor;
     public override string Name => "Operative";
     public override LayerEnum Type => LayerEnum.Operative;
     public override Func<string> StartText => () => "Detect Which Roles Are Here";
@@ -85,7 +85,7 @@ public class Operative : Crew
             message = "The following roles triggered your bugs: ";
             BuggedPlayers.Shuffle();
             BuggedPlayers.ForEach(role => message += $"{LayerDictionary[role].Name}, ");
-            message = message.Remove(message.Length - 2);
+            message = message[..^2];
         }
 
         if (HUD())

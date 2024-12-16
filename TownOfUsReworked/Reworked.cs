@@ -27,14 +27,12 @@ public partial class TownOfUsReworked
         RedirectLogger = Config.Bind("Debugging", "Redirect Logger", false, "Redirect base game Logger calls into BepInEx logging");
         AutoPlayAgain = Config.Bind("Debugging", "Auto Play Again", false, "Automatically calls Play Again after game ends");
         DisableTimeout = Config.Bind("Debugging", "Disable Timeout", false, "Disable the network disconnection timeout");
-        LobbyCapped = Config.Bind("Debugging", "Lobby Capped", false, "Caps the bot count to the lobby size");
         Persistence = Config.Bind("Debugging", "Persistence", false, "Enables whether or not bots will respawn after each test");
         SameVote = Config.Bind("Debugging", "Same Vote", false, "Disables whether or not each vote votes for the same player you do");
     }
 
     public void LoadComponents()
     {
-        ReactorCredits.Register("TownOfUsReworked", VersionFinal, IsDev || IsStream, location => location == ReactorCredits.Location.MainMenu || LobbyBehaviour.Instance);
         Harmony.PatchAll();
         var text = Path.Combine(DataPath, "steam_appid.txt");
 

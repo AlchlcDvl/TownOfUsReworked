@@ -61,7 +61,7 @@ public class Language : Asset
         {
             var result = "";
             IDs.ForEach(x => result += $"{x} ");
-            return result;
+            return result.Trim();
         }
 
         return "Error";

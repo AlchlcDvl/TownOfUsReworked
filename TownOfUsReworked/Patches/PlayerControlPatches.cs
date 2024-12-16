@@ -214,4 +214,15 @@ public static class PlayerControlPatches
             !HUD().GameMenu.IsOpen)) && (!Map() || !Map().IsOpenStopped) && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
         return false;
     }
+
+    [HarmonyPatch(nameof(PlayerControl.Exiled)), HarmonyPrefix]
+    public static bool ExiledPrefix(PlayerControl __instance)
+    {
+        __instance.CustomDie(DeathReason.Exile, DeathReasonEnum.Ejected);
+
+        if (__instance.AmOwner)
+            StatsManager.Instance.IncrementStat(StringNames.StatsTimesEjected);
+
+        return false;
+    }
 }

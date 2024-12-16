@@ -16,6 +16,14 @@ public static class PlayerTabPatches
             __instance.scroller = UObject.Instantiate(tab.scroller, __instance.transform, true);
             __instance.scroller.Inner.DestroyChildren();
             __instance.scroller.name = "Scroller";
+            // TODO: Get this working
+            // var track = UObject.Instantiate(tab.transform.Find("UI_ScrollbarTrack"), __instance.transform, true);
+            // track.name = "UI_ScrollbarTrack";
+            // var bar = UObject.Instantiate(tab.transform.Find("UI_Scrollbar").GetComponent<Scrollbar>(), __instance.transform, true);
+            // bar.parent = __instance.scroller;
+            // bar.trackGraphic = track.GetComponent<SpriteRenderer>();
+            // bar.name = "UI_Scrollbar";
+            // __instance.scroller.ScrollbarY = bar;
         }
 
         for (var i = 0; i < __instance.ColorChips.Count; i++)
@@ -31,6 +39,8 @@ public static class PlayerTabPatches
         }
 
         __instance.SetScrollerBounds();
+        // __instance.scroller.ContentYBounds.max = 1.6f;
+        // __instance.scroller.ContentYBounds.min = -1.6f;
     }
 
     private static float TimePassed;

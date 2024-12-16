@@ -54,6 +54,8 @@ public static class AllMonos
         LayerHandler.CrewmateGhost = RoleManager.Instance.GetRole(RoleTypes.CrewmateGhost);
         LayerHandler.ImpostorGhost = RoleManager.Instance.GetRole(RoleTypes.ImpostorGhost);
 
+        LayerHandler.HauntMenu = LayerHandler.CrewmateGhost.TryCast<CrewmateGhostRole>().HauntMenu;
+
         var prefab = (RoleBehaviour)new GameObject("LayerHandler").DontDestroy().DontUnload().AddComponent(Il2CppType.Of<LayerHandler>());
         prefab.Role = (RoleTypes)100;
         prefab.TeamType = (RoleTeamTypes)5;

@@ -50,7 +50,7 @@ public class Bug : Range
         var results = Results.Values.ToList();
         results.Shuffle();
         results.ForEach(role => result += $"{LayerDictionary[role].Name}, ");
-        result = result.Remove(result.Length - 2);
+        result = result[..^2];
 
         if (Operative.PreciseOperativeInfo)
             result = $"Bug {Number}: {result}";

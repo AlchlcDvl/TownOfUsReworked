@@ -159,6 +159,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
             if (att != null)
             {
                 att.SetProperty(prop);
+                att.Priority = Priority;
                 members.Add(att);
             }
         }
@@ -178,7 +179,9 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
     {
         SettingsPatches.SettingsPage = 6 + (int)Alignment;
         SettingsPatches.CachedPage = 1;
-        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
+        var scrollbar = GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
+        SettingsPatches.ScrollerLocation = scrollbar.Inner.transform.localPosition;
+        scrollbar.ScrollToTop();
         SettingsPatches.OnValueChanged();
     }
 

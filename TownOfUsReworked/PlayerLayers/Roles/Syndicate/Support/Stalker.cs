@@ -9,7 +9,7 @@ public class Stalker : Syndicate
     public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
     public CustomButton StalkButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Stalker : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Stalker: FactionColor;
     public override string Name => "Stalker";
     public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
@@ -38,7 +38,11 @@ public class Stalker : Syndicate
         StalkerArrows.Clear();
     }
 
-    public override void OnDeath(DeathReason reason) => Deinit();
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        base.OnDeath(reason, reason2, killer);
+        Deinit();
+    }
 
     public void Stalk(PlayerControl target)
     {

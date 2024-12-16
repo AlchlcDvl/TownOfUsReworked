@@ -46,18 +46,16 @@ public static class References
     // public static readonly char[] Uppercase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
     public static readonly Vector2[] SkeldSpawns =
     [
-        new(-2.2f, 2.2f), // Cafeteria. botton. top left.
-        new(0.7f, 2.2f), // Caffeteria. button. top right.
-        new(-2.2f, -0.2f), // Caffeteria. button. bottom left.
-        new(0.7f, -0.2f), // Caffeteria. button. bottom right.
-        new(4.3f, 0f), // Cafeteria vent
+        new(-2.2f, 2.2f), // Cafeteria. botton. top left
+        new(0.7f, 2.2f), // Caffeteria. button. top right
+        new(-2.2f, -0.2f), // Caffeteria. button. bottom left
+        new(0.7f, -0.2f), // Caffeteria. button. bottom right
         new(10f, 3f), // Weapons top
         new(9.5f, -1f), // Weapons bottom
         new(6.5f, -3.5f), // O2
         new(11.5f, -3.5f), // O2-nav hall
         new(17, -3.5f), // Navigation top
         new(18.2f, -5.7f), // Navigation bottom
-        new(16f, -2f), // Navigation vent
         new(11.5f, -6.5f), // Nav-shields top
         new(9.5f, -8.5f), // Nav-shields bottom
         new(9.2f, -12.2f), // Shields top
@@ -136,7 +134,6 @@ public static class References
         new(32.7f, -15.7f), // Lavapool
         new(31.5f, -12f), // Snowmad below lab
         new(10f, -14f), // Below storage
-        new(21.5f, -12.5f), // Storage vent
         new(19f, -11f), // Storage toolrack
         new(12f, -7f), // Left fuel
         new(5f, -7.5f), // Above elec
@@ -160,12 +157,12 @@ public static class References
     ];
     public static readonly Vector2[] dlekSSpawns =
     [
-        new(2.2f, 2.2f), // Cafeteria. botton. top left.
-        new(-0.7f, 2.2f), // Caffeteria. button. top right.
-        new(2.2f, -0.2f), // Caffeteria. button. bottom left.
-        new(-0.7f, -0.2f), // Caffeteria. button. bottom right.
-        new(-10, 3), // Weapons top
-        new(-9, 1), // Weapons bottom
+        new(2.2f, 2.2f), // Cafeteria. botton. top left
+        new(-0.7f, 2.2f), // Caffeteria. button. top right
+        new(2.2f, -0.2f), // Caffeteria. button. bottom left
+        new(-0.7f, -0.2f), // Caffeteria. button. bottom right
+        new(-10, 3f), // Weapons top
+        new(-9, 1f), // Weapons bottom
         new(-6.5f, -3.5f), // O2
         new(-11.5f, -3.5f), // O2-nav hall
         new(-17, -3.5f), // Navigation top
@@ -173,7 +170,7 @@ public static class References
         new(-11.5f, -6.5f), // Nav-shields top
         new(-9.5f, -8.5f), // Nav-shields bottom
         new(-9.2f, -12.2f), // Shields top
-        new(-8, -14.3f), // Shields bottom
+        new(-8f, -14.3f), // Shields bottom
         new(-2.5f, -16f), // Comms left
         new(-4.2f, -16.4f), // Comms middle
         new(-5.5f, -16f), // Comms right

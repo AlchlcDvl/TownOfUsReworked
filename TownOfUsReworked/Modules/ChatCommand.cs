@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Modules;
 
 public class ChatCommand
 {
-    public string[] Aliases { get; }
-    public string Parameters { get; }
-    public string Description { get; }
+    private string[] Aliases { get; }
+    private string[] Parameters { get; }
+    private string Description { get; }
 
     private ExecuteArgsCommand ExecuteArgs { get; }
     private ExecuteArglessCommand ExecuteArgless { get; }
@@ -16,27 +16,31 @@ public class ChatCommand
 
     private static readonly List<ChatCommand> AllCommands =
     [
-        new([ "controls", "ctrl", "mci" ], Controls),
-        new([ "kick", "k" ], KickBan, "{player id or (player name)}"),
-        new([ "ban", "b" ], KickBan, "{player id or (player name)}"),
-        new([ "summary", "sum" ], Summary),
-        new([ "clearlobby", "cl", "clear" ], Clear),
-        new([ "setname", "sn", "name" ], SetName, "{(new name)}"),
-        new([ "whisper", "w"] , Whisper, "{player id or (player name)}"),
-        new([ "unignore", "ui" ], ToggleIgnore, "{player id or (player name)}"),
-        new([ "ignore", "i" ], ToggleIgnore, "{player id or (player name)}"),
-        new([ "help", "h" ], Help, "{command name (optional)}"),
-        // new([ "testargs", "targ" ], TestArgs),
-        // new([ "testargless", "targless" ], TestArgless),
-        // new([ "testargmessage", "targmess" ], TestArgsMessage),
-        // new([ "translate", "trans", "t" ], Translate),
-        // new([ "rpc" ], SendRPCArgless),
-        // new([ "rpca" ], SendRPCArgs)
+        new([ "controls", "ctrl", "mci" ], Controls, ""),
+        new([ "kick", "k" ], KickBan, [ "{player id | (player name)}" ], ""),
+        new([ "ban", "b" ], KickBan, [ "{player id | (player name)}" ], ""),
+        new([ "summary", "sum" ], Summary, ""),
+        new([ "clearlobby", "clear", "cl" ], Clear, ""),
+        new([ "setname", "name", "sn" ], SetName, [ "{(new name)}" ], ""),
+        new([ "whisper", "w"] , Whisper, [ "{player id | (player name)}", "{message}" ], ""),
+        new([ "unignore", "ui" ], ToggleIgnore, [ "{player id | (player name)}" ], ""),
+        new([ "ignore", "i" ], ToggleIgnore, [ "{player id | (player name)}" ], ""),
+        new([ "help", "h" ], Help, [ "{command name (optional)}" ], ""),
+        // new([ "testargs", "targ" ], TestArgs, ""),
+        // new([ "testargless", "targless" ], TestArgless, ""),
+        // new([ "testargmessage", "targmess" ], TestArgsMessage, ""),
+        // new([ "translate", "trans", "t" ], Translate, ""),
+        // new([ "rpc" ], SendRPCArgless, ""),
+        // new([ "rpca" ], SendRPCArgs, "")
     ];
 
-    private ChatCommand(string[] aliases) => Aliases = aliases;
+    private ChatCommand(string[] aliases, string description)
+    {
+        Aliases = aliases;
+        Description = description;
+    }
 
-    private ChatCommand(string[] aliases, ExecuteArgsCommand executeArgs, string parameters) : this(aliases)
+    private ChatCommand(string[] aliases, ExecuteArgsCommand executeArgs, string[] parameters, string description) : this(aliases, description)
     {
         ExecuteArgs = executeArgs;
         ExecuteArgless = null;
@@ -44,19 +48,43 @@ public class ChatCommand
         Parameters = parameters;
     }
 
-    private ChatCommand(string[] aliases, ExecuteArglessCommand executeArgless) : this(aliases)
+    private ChatCommand(string[] aliases, ExecuteArglessCommand executeArgless, string description) : this(aliases, description)
     {
         ExecuteArgs = null;
         ExecuteArgless = executeArgless;
         ExecuteArgsMessage = null;
     }
 
-    private ChatCommand(string[] aliases, ExecuteArgsMessageCommand executeArgsMessage, string parameters) : this(aliases)
+    private ChatCommand(string[] aliases, ExecuteArgsMessageCommand executeArgsMessage, string[] parameters, string description) : this(aliases, description)
     {
         ExecuteArgs = null;
         ExecuteArgless = null;
         ExecuteArgsMessage = executeArgsMessage;
         Parameters = parameters;
+    }
+
+    public string ConstructParameters(string[] parts)
+    {
+        var result = "";
+
+        for (var i = Parameters.Length - 1; i > parts.Length - 2 && i > -1; i--)
+            result = $"{Parameters[i]} {result} ";
+
+        return result.Trim();
+    }
+
+    public string FindAlias(string first)
+    {
+        var dict = Aliases.Where(x => $"/{x}".StartsWith(first) || first.StartsWith($"/{x}")).ToDictionary(x => first.Length - 1 - x.Length, y => y);
+        var closestInt = int.MaxValue;
+
+        foreach (var (count, result) in dict)
+        {
+            if (count < closestInt)
+                closestInt = count;
+        }
+
+        return dict[closestInt];
     }
 
     public static void Execute(ChatCommand command, string[] args, string message)
@@ -124,7 +152,7 @@ public class ChatCommand
 
         if (args.Length < 3 || IsNullEmptyOrWhiteSpace(args[1]) || IsNullEmptyOrWhiteSpace(args[2]))
         {
-            Run("<#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number | (player name in ())> <message>");
+            Run("<#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number | (player name in)> <message>");
             return;
         }
 
@@ -141,10 +169,10 @@ public class ChatCommand
         {
             whispered = PlayerById(id);
             args[2..].ForEach(arg2 => message += $"{arg2} ");
-            message = message.Remove(message.Length - 1);
+            message = message.Trim();
         }
         else if (AllPlayers().TryFinding(x => x.Data.PlayerName == args2[1], out whispered))
-            message = args2[2][1..];
+            message = args2[^1];
 
         if (!whispered)
             Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", $"Who are you trying to whisper? {arg} is invalid.");
@@ -334,6 +362,7 @@ public class ChatCommand
         }
         else
         {
+            var command = Find(args[0]);
         }
     }
 

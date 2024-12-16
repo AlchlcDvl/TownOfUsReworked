@@ -4,10 +4,11 @@ namespace TownOfUsReworked.Patches;
 public static class SettingsPatches
 {
     public static int SettingsPage;
-    public static string CurrentPreset = "Custom";
     public static int SettingsPage2;
     public static int CachedPage;
     public static int SettingsPage3;
+    public static string CurrentPreset = "Custom";
+    public static Vector3 ScrollerLocation;
 
     private static PassiveButton ClientSettingsButton;
 
@@ -117,6 +118,7 @@ public static class SettingsPatches
             PresetsButtons.Clear();
             LayerOptionsCreated.Keys.ForEach(x => LayerOptionsCreated[x] = false);
             RoleListEntryAttribute.ChoiceButtons.Clear();
+            ScrollerLocation = default;
         }
 
         [HarmonyPatch(nameof(GameSettingMenu.Update))]
@@ -796,8 +798,9 @@ public static class SettingsPatches
     private static void Return()
     {
         SettingsPage = CachedPage;
-        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
-        GameSettingMenu.Instance.GameSettingsTab.scrollBar.ScrollToTop();
+        var scrollbar = CachedPage is 0 ? GameSettingMenu.Instance.GameSettingsTab.scrollBar : GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
+        scrollbar.Inner.transform.localPosition = ScrollerLocation;
+        scrollbar.UpdateScrollBars();
         SettingsPage2 = 0;
         RoleListEntryAttribute.SelectedEntry = "";
         RoleListEntryAttribute.ChoiceButtons.ForEach(x => x.gameObject.SetActive(false));
@@ -808,7 +811,9 @@ public static class SettingsPatches
     {
         SettingsPage = 5;
         CachedPage = 1;
-        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
+        var scrollbar = GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
+        ScrollerLocation = scrollbar.Inner.transform.localPosition;
+        scrollbar.ScrollToTop();
         OnValueChanged();
     }
 
@@ -816,7 +821,9 @@ public static class SettingsPatches
     {
         SettingsPage = 250;
         CachedPage = 1;
-        GameSettingMenu.Instance.RoleSettingsTab.scrollBar.ScrollToTop();
+        var scrollbar = GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
+        ScrollerLocation = scrollbar.Inner.transform.localPosition;
+        scrollbar.ScrollToTop();
         OnValueChanged();
     }
 

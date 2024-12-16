@@ -396,19 +396,12 @@ public static class Utils
 
     public static void MurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason, bool lunge)
     {
-        if (!killer || !target)
-            return;
-
-        var data = target.Data;
-
-        if (!data || data.IsDead || !killer.Data)
+        if (!killer || !target || !target.Data || target.Data.IsDead || !killer.Data)
             return;
 
         AchievementManager.Instance.OnMurder(killer.AmOwner, target.AmOwner, CachedMorphs.ContainsKey(killer.PlayerId), CachedMorphs.TryGetValue(killer.PlayerId, out var id) ? id : 255,
             target.PlayerId);
         lunge &= !killer.Is(LayerEnum.Ninja) && killer != target;
-        Pestilence.Infected.Remove(target.PlayerId);
-        DefaultOutfit(target);
 
         if (IsCustomHnS() || CustomPlayer.LocalCustom.Dead)
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(target, 0);
@@ -419,102 +412,7 @@ public static class Utils
         if (killer.AmOwner || target.AmOwner)
             Play("Kill");
 
-        if (target.AmOwner)
-        {
-            var tracker = HUD().roomTracker.text;
-            var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
-            BodyLocations[target.PlayerId] = location;
-            CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, target, location);
-
-            if (Vent.currentVent && Vent.currentVent.Buttons != null)
-                Vent.currentVent.Buttons.ForEach(x => x.gameObject.SetActive(false));
-        }
-
-        if (FirstDead == null)
-            FirstDead = target.Data.PlayerName;
-
-        target.gameObject.layer = LayerMask.NameToLayer("Ghost");
-
-        if (CustomPlayer.Local.Is(LayerEnum.Coroner) && !CustomPlayer.LocalCustom.Dead)
-            Flash(CustomColorManager.Coroner);
-
-        if (CustomPlayer.LocalCustom.Dead)
-            Flash(CustomColorManager.Stalemate);
-
-        if (killer.AmOwner && killer.Is(LayerEnum.VampireHunter) && target.Is(SubFaction.Undead))
-            Flash(CustomColorManager.Undead);
-
-        if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(target.PlayerId))
-            Flash(CustomColorManager.Monarch);
-
-        var targetRole = target.GetRole();
-
-        if (target.Is(LayerEnum.VIP))
-        {
-            Flash(targetRole.Color);
-            Role.LocalRole.AllArrows.TryAdd(target.PlayerId, new(CustomPlayer.Local, CustomColorManager.VIP));
-            Role.LocalRole.AllArrows[target.PlayerId].Update(CustomColorManager.VIP);
-        }
-
-        var killerRole = killer.GetRole();
-
-        if (target.AmOwner)
-        {
-            if (ActiveTask())
-                ActiveTask().Close();
-
-            if (MapBehaviourPatches.MapActive)
-                Map().Close();
-
-            HUD().KillOverlay.ShowKillAnimation(killer.Data, data);
-            HUD().ShadowQuad.gameObject.SetActive(false);
-            Chat().SetVisible(true);
-            target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
-            target.RpcSetScanner(false);
-        }
-
         killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(lunge ? killer : target, target));
-
-        if (killer != target || (killer == target && reason != DeathReasonEnum.Killed))
-        {
-            targetRole.KilledBy = " By " + killerRole.PlayerName;
-            targetRole.DeathReason = reason;
-        }
-        else
-            targetRole.DeathReason = DeathReasonEnum.Suicide;
-
-        if (!PlayerLayer.GetLayers<Altruist>().Any() && !PlayerLayer.GetLayers<Necromancer>().Any())
-            targetRole.TrulyDead |= targetRole.Type != LayerEnum.GuardianAngel;
-
-        RecentlyKilled.Add(target.PlayerId);
-        KilledPlayers.RemoveAll(x => x.PlayerId == target.PlayerId);
-        KilledPlayers.Add(new(killer.PlayerId, target.PlayerId));
-        SetPostmortals.BeginPostmortals(target, false);
-
-        if (target == Role.DriveHolder)
-            RoleGen.AssignChaosDrive();
-
-        if (target.Is(LayerEnum.Lovers) && AmongUsClient.Instance.AmHost)
-        {
-            var lover = target.GetOtherLover();
-
-            if (!lover.Is(Alignment.NeutralApoc) && Lovers.BothLoversDie && !lover.HasDied())
-                RpcMurderPlayer(lover);
-        }
-
-        if (target.Is(LayerEnum.Diseased) && killer != target)
-            killerRole.Diseased = true;
-        else if (target.Is(LayerEnum.Bait) && killer != target)
-            BaitReport(killer, target);
-
-        if (killer.TryGetLayer<Politician>(out var poli))
-            poli.VoteBank++;
-
-        if (target.TryGetLayer<Troll>(out var troll) && AmongUsClient.Instance.AmHost && !NeutralSettings.AvoidNeutralKingmakers)
-            RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
-
-        if (Meeting())
-            MarkMeetingDead(target, killer, showAnim: false);
     }
 
     public static void MarkMeetingDead(PlayerControl target, bool doesKill = true, bool noReason = false, bool showAnim = true) => MarkMeetingDead(target, target, doesKill, noReason,
@@ -529,9 +427,6 @@ public static class Utils
             if (showAnim)
                 HUD().KillOverlay.ShowKillAnimation(killer.Data, target.Data);
 
-            HUD().ShadowQuad.gameObject.SetActive(false);
-            target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
-            target.RpcSetScanner(false);
             Meeting().SetForegroundForDead();
             Meeting().ClearVote();
 
@@ -567,8 +462,7 @@ public static class Utils
             }
         }
 
-        target.Die(DeathReason.Kill, false);
-        KilledPlayers.Add(new(killer.PlayerId, target.PlayerId));
+        target.CustomDie(DeathReason.Kill, DeathReasonEnum.Guessed, killer);
         var voteArea = VoteAreaByPlayer(target);
         voteArea.AmDead = true;
         voteArea.Overlay.gameObject.SetActive(true);
@@ -656,25 +550,6 @@ public static class Utils
             SetPostmortals.AssassinatedPlayers.Add(target.PlayerId);
             Meeting().CheckForEndVoting();
         }
-
-        if (!noReason)
-        {
-            var role2 = target.GetRole();
-            role2.TrulyDead = true;
-
-            if ((killer != target && doesKill) || !doesKill)
-            {
-                role2.DeathReason = DeathReasonEnum.Guessed;
-                role2.KilledBy = " By " + killer.name;
-            }
-            else
-                role2.DeathReason = DeathReasonEnum.Misfire;
-        }
-
-        SetPostmortals.BeginPostmortals(target, false);
-
-        if (FirstDead == null)
-            FirstDead = target.Data.PlayerName;
     }
 
     public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
@@ -1480,5 +1355,100 @@ public static class Utils
             result.AddRange(self.GetChild(i).GetAllComponents<T>());
 
         return result;
+    }
+
+    public static IEnumerable<T> GetValuesFromTo<T>(T start, T end, Func<T, bool> predicate = null, bool startInclusive = true, bool endInclusive = true) where T : struct, Enum
+    {
+        var values = Enum.GetValues<T>();
+        var startIndex = Array.IndexOf(values, start);
+        var endIndex = Array.IndexOf(values, end);
+        var result = values.Where(x => Array.IndexOf(values, x).IsInRange(startIndex, endIndex, startInclusive, endInclusive));
+
+        if (predicate != null)
+            result = result.Where(predicate);
+
+        return result;
+    }
+
+    public static IEnumerable<TResult> GetValuesFromToAndMorph<TValue, TResult>(TValue start, TValue end, Func<TValue, TResult> select, Func<TValue, bool> predicate = null, bool startInclusive
+        = true, bool endInclusive = true) where TValue : struct, Enum => GetValuesFromTo(start, end, predicate, startInclusive, endInclusive).Select(select);
+
+    public static void CustomDie(this PlayerControl player, DeathReason reason, DeathReasonEnum reason2, PlayerControl killer = null)
+    {
+        if (player.Data.IsDead)
+            return;
+
+        player.logger.Debug($"Player {player.PlayerId} dying for reason {reason} and custom reason {reason2}");
+
+        if (!TutorialManager.InstanceExists && player.AmOwner)
+        {
+            var instance = StatsManager.Instance;
+            instance.LastGameStarted = Il2CppSystem.DateTime.MinValue;
+            instance.BanPoints--;
+        }
+
+        GameData.LastDeathReason = reason;
+
+        if (player.inMovingPlat)
+            ShipStatus.Instance.TryCast<FungleShipStatus>()?.Zipline.CancelZiplineUseForPlayer(player);
+
+        FirstDead ??= player.Data.PlayerName;
+        player.cosmetics.AnimatePetMourning();
+        player.FixMixedUpOutfit();
+        player.Data.IsDead = true;
+        player.clickKillCollider.enabled = false;
+        player.gameObject.layer = LayerMask.NameToLayer("Ghost");
+        player.cosmetics.SetNameMask(false);
+        player.cosmetics.PettingHand.StopPetting();
+        Pestilence.Infected.Remove(player.PlayerId);
+        DefaultOutfit(player);
+
+        if (player.AmOwner)
+        {
+            var tracker = HUD().roomTracker.text;
+            var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
+            BodyLocations[player.PlayerId] = location;
+            CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, player, location);
+
+            if (Vent.currentVent)
+                Vent.currentVent.Buttons?.ForEach(x => x.gameObject.SetActive(false));
+        }
+
+        if (player.walkingToVent)
+        {
+            player.inVent = false;
+            Vent.currentVent = null;
+            player.moveable = true;
+            player.MyPhysics.StopAllCoroutines();
+        }
+
+        player.Data.Role.OnDeath(reason);
+        GameManager.Instance.OnPlayerDeath(player, false);
+
+        if (player.AmOwner)
+        {
+            Chat().SetVisible(true);
+            HUD().ShadowQuad.gameObject.SetActive(false);
+            player.AdjustLighting();
+            AllPlayers().ForEach(x => x.cosmetics.ToggleNameVisible(GameManager.Instance.LogicOptions.GetShowCrewmateNames()));
+            player.RpcSetScanner(false);
+
+            if (ActiveTask())
+                ActiveTask().Close();
+
+            if (MapBehaviourPatches.MapActive)
+                Map().Close();
+
+            HUD().KillOverlay.ShowKillAnimation(killer.Data, player.Data);
+            player.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
+        }
+
+        RecentlyKilled.Add(player.PlayerId);
+        KilledPlayers.RemoveAll(x => x.PlayerId == player.PlayerId);
+        KilledPlayers.Add(new(killer.PlayerId, player.PlayerId));
+        SetPostmortals.BeginPostmortals(player, false);
+
+        player.GetLayers().ForEach(x => x.OnDeath(reason, reason2, killer));
+        killer.GetLayers().ForEach(x => x.OnKill(player));
     }
 }

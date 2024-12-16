@@ -22,7 +22,7 @@ public class Thief : Neutral
     public CustomMeeting GuessMenu { get; set; }
     public CustomRolesMenu GuessingMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Thief : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Thief: FactionColor;
     public override string Name => "Thief";
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";

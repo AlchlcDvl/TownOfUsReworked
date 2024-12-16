@@ -23,7 +23,7 @@ public static class ConfirmEjects
 
         var ejectString = "";
         role.DeathReason = DeathReasonEnum.Ejected;
-        role.KilledBy = " ";
+        role.KilledBy = "";
 
         if (!GameSettings.ConfirmEjects)
         {

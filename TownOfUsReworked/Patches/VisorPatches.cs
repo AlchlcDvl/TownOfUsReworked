@@ -27,7 +27,8 @@ public static class VisorsTabOnEnablePatch
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
-            Coroutines.Start(PerformTimedAction(0.1f, _ => title.SetText(packageName, true)));
+            title.GetComponent<TextTranslatorTMP>().Destroy();
+            title.SetText(packageName);
             offset -= 0.8f * __instance.YOffset;
         }
 

@@ -48,7 +48,7 @@ public class Necromancer : Neophyte
     public int ResurrectedCount { get; set; }
     public int KillCount { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Necromancer : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Necromancer: FactionColor;
     public override string Name => "Necromancer";
     public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
@@ -85,7 +85,7 @@ public class Necromancer : Neophyte
         var targetRole = player.GetRole();
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
-        RoleGen.Convert(player.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
+        Convert(player.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
         ResurrectedCount++;
         player.Revive();
 
@@ -95,7 +95,7 @@ public class Necromancer : Neophyte
             var loverRole = lover.GetRole();
             loverRole.DeathReason = DeathReasonEnum.Revived;
             loverRole.KilledBy = " By " + PlayerName;
-            RoleGen.Convert(lover.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
+            Convert(lover.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
             lover.Revive();
         }
     }

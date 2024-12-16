@@ -141,7 +141,7 @@ public static class ButtonUtils
             role.BountyTimer++;
 
         if (!start && Role.SyndicateHasChaosDrive)
-            RoleGen.AssignChaosDrive();
+            AssignChaosDrive();
 
         if (role is Escort esc)
             esc.BlockTarget = null;

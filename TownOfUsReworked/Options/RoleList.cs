@@ -85,7 +85,9 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         SettingsPatches.SettingsPage = 4;
         SettingsPatches.CachedPage = 0;
         SelectedEntry = ID;
-        GameSettingMenu.Instance.GameSettingsTab.scrollBar.ScrollToTop();
+        var scrollbar = GameSettingMenu.Instance.GameSettingsTab.scrollBar;
+        SettingsPatches.ScrollerLocation = scrollbar.Inner.transform.localPosition;
+        scrollbar.ScrollToTop();
 
         foreach (var option in AllOptions)
         {

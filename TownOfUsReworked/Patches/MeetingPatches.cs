@@ -34,7 +34,7 @@ public static class MeetingPatches
         if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Role.SyndicateHasChaosDrive)
         {
             Role.SyndicateHasChaosDrive = true;
-            RoleGen.AssignChaosDrive();
+            AssignChaosDrive();
         }
 
         Coroutines.Start(Announcements());

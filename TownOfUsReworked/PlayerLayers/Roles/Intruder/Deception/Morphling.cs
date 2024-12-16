@@ -24,7 +24,7 @@ public class Morphling : Intruder
     public PlayerControl SampledPlayer { get; set; }
     public bool Morphed => MorphButton.EffectActive;
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Morphling : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Morphling: FactionColor;
     public override string Name => "Morphling";
     public override LayerEnum Type => LayerEnum.Morphling;
     public override Func<string> StartText => () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";

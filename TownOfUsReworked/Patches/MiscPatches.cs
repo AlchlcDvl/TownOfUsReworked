@@ -366,7 +366,10 @@ public static class DeathPopUpPatch
     public static void Prefix(HideAndSeekDeathPopup __instance)
     {
         if (IsCustomHnS())
-            Coroutines.Start(PerformTimedAction(0.01f, _ => __instance.text.SetText($"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}")));
+        {
+            __instance.text.GetComponent<TextTranslatorTMP>().Destroy();
+            __instance.text.SetText($"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}");
+        }
     }
 }
 
@@ -606,7 +609,69 @@ public static class HostInfoPanelPatch
 [HarmonyPatch(typeof(KillAnimation), nameof(KillAnimation.CoPerformKill))]
 public static class AddBodyHandler
 {
-    public static void Postfix(PlayerControl target) => BodyByPlayer(target).AddComponent<DeadBodyHandler>();
+    public static bool Prefix(KillAnimation __instance, PlayerControl source, PlayerControl target, ref Il2CppSystem.Collections.IEnumerator __result)
+    {
+        __result = CoPerformKill(__instance, source, target).WrapToIl2Cpp();
+        return false;
+    }
+
+    public static IEnumerator CoPerformKill(KillAnimation __instance, PlayerControl source, PlayerControl target)
+    {
+        var cam = Camera.main.GetComponent<FollowerCamera>();
+        var isParticipant = source.AmOwner || target.AmOwner;
+        KillAnimation.SetMovement(source, false);
+        KillAnimation.SetMovement(target, false);
+
+        if (isParticipant)
+        {
+            CustomPlayer.Local.isKilling = true;
+            source.isKilling = true;
+        }
+
+        var deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
+        deadBody.enabled = false;
+        deadBody.ParentId = target.PlayerId;
+        deadBody.AddComponent<DeadBodyHandler>();
+        target.SetPlayerMaterialColors(deadBody.bloodSplatter);
+        var vector = target.transform.position + __instance.BodyOffset;
+        vector.z = vector.y / 1000f;
+        deadBody.transform.position = vector;
+
+        if (isParticipant)
+        {
+            cam.Locked = true;
+            ConsoleJoystick.SetMode_Task();
+            CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
+        }
+
+        target.CustomDie(DeathReason.Kill, DeathReasonEnum.Killed, source);
+        yield return source.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
+
+        source.NetTransform.SnapTo(target.transform.position);
+        source.MyPhysics.Animations.PlayIdleAnimation();
+        KillAnimation.SetMovement(source, true);
+        KillAnimation.SetMovement(target, true);
+        deadBody.enabled = true;
+
+        if (isParticipant)
+        {
+            cam.Locked = false;
+            CustomPlayer.Local.isKilling = false;
+            source.isKilling = false;
+        }
+
+        yield break;
+    }
+}
+
+[HarmonyPatch(typeof(NetworkedPlayerInfo), nameof(NetworkedPlayerInfo.ColorName), MethodType.Getter)]
+public static class FixColorNames
+{
+    public static bool Prefix(NetworkedPlayerInfo __instance, ref string __result)
+    {
+        __result = __instance.GetPlayerColorString(PlayerOutfitType.Default);
+        return false;
+    }
 }
 
 /*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]

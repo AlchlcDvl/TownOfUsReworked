@@ -20,7 +20,7 @@ public class Jackal : Neophyte
     public bool RecruitsDead => !Recruit2 || !Recruit1 || (!Recruit3 && Recruit1 && Recruit2 && Recruit1.HasDied() && Recruit2.HasDied());
     public bool AllRecruitsDead => Recruit1 && Recruit1.HasDied() && Recruit2 && Recruit2.HasDied() && Recruit3 && Recruit3.HasDied();
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Jackal : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Jackal: FactionColor;
     public override string Name => "Jackal";
     public override LayerEnum Type => LayerEnum.Jackal;
     public override Func<string> StartText => () => "Gain A Majority";
@@ -53,7 +53,7 @@ public class Jackal : Neophyte
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            RoleGen.RpcConvert(target.PlayerId, Player.PlayerId, SubFaction.Cabal);
+            RpcConvert(target.PlayerId, Player.PlayerId, SubFaction.Cabal);
 
         RecruitButton.StartCooldown(cooldown);
     }

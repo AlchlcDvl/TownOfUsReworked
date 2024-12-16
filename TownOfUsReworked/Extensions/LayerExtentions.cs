@@ -1318,4 +1318,102 @@ public static class LayerExtentions
     public static bool TryGetLayer<T>(this PlayerControl player, out T layer) where T : PlayerLayer => layer = player.GetLayer<T>();
 
     public static bool TryGetILayer<T>(this PlayerControl player, out T iLayer) where T : IPlayerLayer => (iLayer = player.GetILayer<T>()) != null;
+
+    public static void AssignChaosDrive()
+    {
+        var all = AllPlayers().Where(x => !x.HasDied() && x.Is(Faction.Syndicate) && x.IsBase(Faction.Syndicate));
+
+        if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost || !all.Any())
+            return;
+
+        PlayerControl chosen = null;
+
+        if (!Role.DriveHolder || Role.DriveHolder.HasDied())
+        {
+            if (!all.TryFinding(x => x.Is(LayerEnum.PromotedRebel), out chosen))
+                chosen = all.Find(x => x.Is(Alignment.SyndicateDisrup));
+
+            if (!chosen)
+                chosen = all.Find(x => x.Is(Alignment.SyndicateSupport));
+
+            if (!chosen)
+                chosen = all.Find(x => x.Is(Alignment.SyndicatePower));
+
+            if (!chosen)
+                chosen = all.Find(x => x.Is(Alignment.SyndicateKill));
+
+            if (!chosen)
+                chosen = all.Find(x => x.GetRole() is Anarchist or Rebel or Sidekick);
+        }
+
+        if (chosen)
+        {
+            Role.DriveHolder = chosen;
+            CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen);
+        }
+
+        Role.SyndicateHasChaosDrive = chosen;
+    }
+
+    public static void Convert(byte target, byte convert, SubFaction sub, bool condition)
+    {
+        var converted = PlayerById(target);
+        var converter = PlayerById(convert);
+        var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.NeutralNeo));
+
+        if (condition || RoleGen.Convertible <= 0 || RoleGen.PureCrew == converted || !converts)
+        {
+            if (AmongUsClient.Instance.AmHost)
+                Interact(converter, converted, true, true);
+
+            return;
+        }
+
+        var role1 = converted.GetRole();
+        var role2 = converter.GetRole();
+
+        if (role2 is Neophyte neophyte)
+        {
+            if (converts)
+            {
+                neophyte.Members.Add(target);
+
+                if (converted.Is(SubFaction.None) && neophyte is Jackal jackal)
+                {
+                    if (!jackal.Recruit1)
+                        jackal.Recruit1 = converted;
+                    else if (!jackal.Recruit2)
+                        jackal.Recruit2 = converted;
+                    else if (!jackal.Recruit3)
+                        jackal.Recruit3 = converted;
+                }
+            }
+            else if (role1 is Neophyte neophyte1 && role1.Type == role2.Type)
+            {
+                neophyte1.Members.AddRange(neophyte.Members);
+                neophyte.Members.AddRange(neophyte1.Members);
+
+                if (role1 is Whisperer whisperer1 && role2 is Whisperer whisperer2)
+                {
+                    whisperer1.Members.ForEach(x => whisperer2.PlayerConversion.Remove(x));
+                    whisperer2.Members.ForEach(x => whisperer1.PlayerConversion.Remove(x));
+                }
+            }
+        }
+
+        role1.SubFaction = sub;
+        role1.Faction = Faction.Neutral;
+        Classes.RoleGen.Convertible--;
+
+        if (converted.AmOwner)
+            Flash(role1.SubFactionColor);
+        else if (CustomPlayer.Local.Is(LayerEnum.Mystic))
+            Flash(CustomColorManager.Mystic);
+    }
+
+    public static void RpcConvert(byte target, byte convert, SubFaction sub, bool condition = false)
+    {
+        Convert(target, convert, sub, condition);
+        CallRpc(CustomRPC.Action, ActionsRPC.Convert, convert, target, sub, condition);
+    }
 }

@@ -15,7 +15,7 @@ public class Bastion : Crew, IVentBomber
     public CustomButton BombButton { get; set; }
     public List<int> BombedIDs { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Bastion : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Bastion: FactionColor;
     public override string Name => "Bastion";
     public override LayerEnum Type => LayerEnum.Bastion;
     public override Func<string> StartText => () => "Place Traps To Deter Venters";

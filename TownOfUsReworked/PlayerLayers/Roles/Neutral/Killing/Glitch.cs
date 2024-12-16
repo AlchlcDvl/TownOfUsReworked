@@ -28,7 +28,7 @@ public class Glitch : NKilling
     public PlayerControl MimicTarget { get; set; }
     public CustomPlayerMenu MimicMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Glitch : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Glitch: FactionColor;
     public override string Name => "Glitch";
     public override LayerEnum Type => LayerEnum.Glitch;
     public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";

@@ -17,4 +17,10 @@ public class Bait : Modifier
     public override LayerEnum Type => LayerEnum.Bait;
     public override Func<string> Description => () => "- Killing you causes the killer to report your body, albeit with a slight delay";
     public override bool Hidden => !BaitKnows && !Dead;
+
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        if (killer != Player)
+            BaitReport(killer, Player);
+    }
 }

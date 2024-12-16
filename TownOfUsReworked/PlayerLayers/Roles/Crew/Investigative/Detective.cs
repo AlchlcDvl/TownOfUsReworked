@@ -20,7 +20,7 @@ public class Detective : Crew
 
     public CustomButton ExamineButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Detective : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Detective: FactionColor;
     public override string Name => "Detective";
     public override LayerEnum Type => LayerEnum.Detective;
     public override Func<string> StartText => () => "Examine Players For <#AA0000FF>Blood</color>";

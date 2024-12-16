@@ -26,7 +26,7 @@ public class Cryomaniac : NKilling
     public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CryoLastKillerBoost;
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac : CustomColorManager.Neutral;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac: FactionColor;
     public override string Name => "Cryomaniac";
     public override LayerEnum Type => LayerEnum.Cryomaniac;
     public override Func<string> StartText => () => "Who Likes Ice Cream?";

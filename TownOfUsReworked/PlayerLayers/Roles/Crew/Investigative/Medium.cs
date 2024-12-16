@@ -24,7 +24,7 @@ public class Medium : Crew
     public bool HasSeanced { get; set; }
     public List<byte> MediatedPlayers { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medium : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medium: FactionColor;
     public override string Name => "Medium";
     public override LayerEnum Type => LayerEnum.Medium;
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";

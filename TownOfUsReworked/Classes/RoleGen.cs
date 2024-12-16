@@ -92,8 +92,8 @@ public static class RoleGen
         LayerEnum.Colorblind ];
 
     private static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
-    private static readonly LayerEnum[] CrewObj = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
-    private static readonly LayerEnum[] NeutralObj = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
+    private static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
+    private static readonly LayerEnum[] NeutralDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
 
     private static readonly LayerEnum[] CrewAb = [ LayerEnum.Bullseye, LayerEnum.Swapper ];
     private static readonly LayerEnum[] Tasked = [ LayerEnum.Insider, LayerEnum.Multitasker ];
@@ -1157,7 +1157,7 @@ public static class RoleGen
             foreach (var spawn in AllAbilities)
                 ids += $" {spawn.ID}";
 
-            Message("Abilities in the game: " + ids);
+            Message("Abilities in the game: " + ids.Trim());
         }
 
         var invalid = new List<LayerEnum>();
@@ -1230,7 +1230,7 @@ public static class RoleGen
             foreach (var spawn in invalid)
                 ids += $" {spawn}";
 
-            Message("Invalid Abilities in the game: " + ids);
+            Message("Invalid Abilities in the game: " + ids.Trim());
         }
 
         Message("Abilities Done");
@@ -1252,16 +1252,16 @@ public static class RoleGen
             }
         }
 
-        int maxObj = DispositionsSettings.MaxDispositions;
-        int minObj = DispositionsSettings.MinDispositions;
+        int maxDisp = DispositionsSettings.MaxDispositions;
+        int minDisp = DispositionsSettings.MinDispositions;
 
-        while (maxObj > AllPlayers().Count)
-            maxObj--;
+        while (maxDisp > AllPlayers().Count)
+            maxDisp--;
 
-        while (minObj > AllPlayers().Count)
-            minObj--;
+        while (minDisp > AllPlayers().Count)
+            minDisp--;
 
-        AllDispositions = Sort(AllDispositions, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minObj, maxObj + 1));
+        AllDispositions = Sort(AllDispositions, GameModeSettings.IgnoreLayerCaps ? AllPlayers().Count : URandom.RandomRangeInt(minDisp, maxDisp + 1));
 
         var playerList = AllPlayers().Where(x => x != PureCrew).ToList();
         playerList.Shuffle();
@@ -1280,7 +1280,7 @@ public static class RoleGen
             foreach (var spawn in AllDispositions)
                 ids += $" {spawn.ID}";
 
-            Message("Dispositions in the game: " + ids);
+            Message("Dispositions in the game: " + ids.Trim());
         }
 
         var invalid = new List<LayerEnum>();
@@ -1292,9 +1292,9 @@ public static class RoleGen
 
             if (LoverRival.Contains(id) && playerList.Count > 1)
                 assigned = playerList.FirstOrDefault(x => x.GetRole().Type is not (LayerEnum.Altruist or LayerEnum.Troll or LayerEnum.Actor or LayerEnum.Jester or LayerEnum.Shifter));
-            else if (CrewObj.Contains(id))
+            else if (CrewDisp.Contains(id))
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew));
-            else if (NeutralObj.Contains(id))
+            else if (NeutralDisp.Contains(id))
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Neutral));
             else if (id == LayerEnum.Allied)
                 assigned = playerList.FirstOrDefault(x => x.Is(Alignment.NeutralKill));
@@ -1323,7 +1323,7 @@ public static class RoleGen
             foreach (var spawn in invalid)
                 ids += $" {spawn}";
 
-            Message("Invalid Dispositions in the game: " + ids);
+            Message("Invalid Dispositions in the game: " + ids.Trim());
         }
 
         Message("Dispositions Done");
@@ -1375,7 +1375,7 @@ public static class RoleGen
             foreach (var spawn in AllModifiers)
                 ids += $" {spawn.ID}";
 
-            Message("Modifiers in the game: " + ids);
+            Message("Modifiers in the game: " + ids.Trim());
         }
 
         while (playerList.Any() && AllModifiers.Any())
@@ -1421,7 +1421,7 @@ public static class RoleGen
             foreach (var spawn in invalid)
                 ids += $" {spawn}";
 
-            Message("Invalid Modifiers in the game: " + ids);
+            Message("Invalid Modifiers in the game: " + ids.Trim());
         }
 
         Message("Modifiers Done");
@@ -1866,7 +1866,7 @@ public static class RoleGen
             foreach (var spawn in AllRoles)
                 ids += $" {spawn.ID}";
 
-            Message("Roles in the game: " + ids);
+            Message("Roles in the game: " + ids.Trim());
         }
 
         while (players.Any() && AllRoles.Any())
@@ -1956,101 +1956,5 @@ public static class RoleGen
                 _ => throw new NotImplementedException($"{id}:{rpc}")
             };
         }
-    }
-
-    public static void AssignChaosDrive()
-    {
-        var all = AllPlayers().Where(x => !x.HasDied() && x.Is(Faction.Syndicate) && x.IsBase(Faction.Syndicate));
-
-        if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost || !all.Any())
-            return;
-
-        PlayerControl chosen = null;
-
-        if (!Role.DriveHolder || Role.DriveHolder.HasDied())
-        {
-            if (!all.TryFinding(x => x.Is(LayerEnum.PromotedRebel), out chosen))
-                chosen = all.Find(x => x.Is(Alignment.SyndicateDisrup));
-
-            if (!chosen)
-                chosen = all.Find(x => x.Is(Alignment.SyndicateSupport));
-
-            if (!chosen)
-                chosen = all.Find(x => x.Is(Alignment.SyndicatePower));
-
-            if (!chosen)
-                chosen = all.Find(x => x.Is(Alignment.SyndicateKill));
-
-            if (!chosen)
-                chosen = all.Find(x => x.GetRole() is Anarchist or Rebel or Sidekick);
-        }
-
-        if (chosen)
-        {
-            Role.DriveHolder = chosen;
-            CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen);
-        }
-    }
-
-    public static void Convert(byte target, byte convert, SubFaction sub, bool condition)
-    {
-        var converted = PlayerById(target);
-        var converter = PlayerById(convert);
-        var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.NeutralNeo));
-
-        if (condition || Convertible <= 0 || PureCrew == converted || !converts)
-        {
-            if (AmongUsClient.Instance.AmHost)
-                Interact(converter, converted, true, true);
-
-            return;
-        }
-
-        var role1 = converted.GetRole();
-        var role2 = converter.GetRole();
-
-        if (role2 is Neophyte neophyte)
-        {
-            if (converts)
-            {
-                neophyte.Members.Add(target);
-
-                if (converted.Is(SubFaction.None) && neophyte is Jackal jackal)
-                {
-                    if (!jackal.Recruit1)
-                        jackal.Recruit1 = converted;
-                    else if (!jackal.Recruit2)
-                        jackal.Recruit2 = converted;
-                    else if (!jackal.Recruit3)
-                        jackal.Recruit3 = converted;
-                }
-            }
-            else if (role1 is Neophyte neophyte1 && role1.Type == role2.Type)
-            {
-                neophyte1.Members.AddRange(neophyte.Members);
-                neophyte.Members.AddRange(neophyte1.Members);
-
-                if (role1 is Whisperer whisperer1 && role2 is Whisperer whisperer2)
-                {
-                    whisperer1.Members.ForEach(x => whisperer2.PlayerConversion.Remove(x));
-                    whisperer2.Members.ForEach(x => whisperer1.PlayerConversion.Remove(x));
-                }
-            }
-        }
-
-        role1.SubFaction = sub;
-        role1.Faction = Faction.Neutral;
-        Convertible--;
-
-        if (converted.AmOwner)
-            Flash(role1.SubFactionColor);
-        else if (CustomPlayer.Local.Is(LayerEnum.Mystic))
-            Flash(CustomColorManager.Mystic);
-    }
-
-    public static void RpcConvert(byte target, byte convert, SubFaction sub, bool condition = false)
-    {
-        Convert(target, convert, sub, condition);
-        CallRpc(CustomRPC.Action, ActionsRPC.Convert, convert, target, sub, condition);
     }
 }

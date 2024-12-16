@@ -12,7 +12,7 @@ public class Consigliere : Intruder
     public List<byte> Investigated { get; set; }
     public CustomButton InvestigateButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consigliere : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consigliere: FactionColor;
     public override string Name => "Consigliere";
     public override LayerEnum Type => LayerEnum.Consigliere;
     public override Func<string> StartText => () => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";

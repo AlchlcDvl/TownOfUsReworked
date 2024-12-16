@@ -62,6 +62,7 @@ public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : OptionAt
             if (att != null)
             {
                 att.SetProperty(prop);
+                att.Priority = Priority;
                 members.Add(att);
             }
         }

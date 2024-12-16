@@ -21,7 +21,7 @@ public class PlayerControlHandler : NameHandler
             return;
 
         PlayerNames[Player.PlayerId] = Player.Data.PlayerName;
-        ColorNames[Player.PlayerId] = Player.Data.ColorName.Replace("(", "").Replace(")", "");
+        ColorNames[Player.PlayerId] = Player.Data.ColorName;
 
         if (Meeting())
             return;

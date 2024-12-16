@@ -11,7 +11,7 @@ public class Camouflager : Intruder
 
     public CustomButton CamouflageButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Camouflager : CustomColorManager.Intruder;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Camouflager: FactionColor;
     public override string Name => "Camouflager";
     public override LayerEnum Type => LayerEnum.Camouflager;
     public override Func<string> StartText => () => "Hinder The <#8CFFFFFF>Crew</color>'s Recognition";

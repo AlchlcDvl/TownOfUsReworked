@@ -25,5 +25,5 @@ public class Radar : Ability
         }
     }
 
-    public override void OnDeath(DeathReason reason) => Deinit();
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer) => Deinit();
 }

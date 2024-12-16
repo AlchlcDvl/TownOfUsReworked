@@ -181,7 +181,7 @@ public static class RPC
         writer.Write(pv.Version);
     }
 
-    public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(Convert.ToByte(enumVal));
+    public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(System.Convert.ToByte(enumVal));
 
     public static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index, Enum subRpc = null)
     {

@@ -7,11 +7,11 @@ public class CustomButton
 
     // Params
     public PlayerLayer Owner { get; }
-    public SpriteName ButtonSprite { get; }
+    public string ButtonSprite { get; }
     public SpriteFunc SpriteFunc { get; }
     public AbilityTypes Type { get; }
     public string Keybind { get; }
-    public PostDeath PostDeath { get; }
+    public bool PostDeath { get; }
     public OnClickTargetless DoClickTargetless { get; }
     public OnClickBody DoClickBody { get; }
     public OnClickPlayer DoClickPlayer { get; }
@@ -24,14 +24,14 @@ public class CustomButton
     public DelayEndVoid OnDelayEnd { get; }
     public DelayVoid ActionDelay { get; }
     public EndFunc End { get; }
-    public Cooldown Cooldown { get; }
+    public float Cooldown { get; } = 1f;
     public DifferenceFunc Difference { get; }
     public MultiplierFunc Multiplier { get; }
-    public Duration Duration { get; }
-    public Delay Delay { get; }
+    public float Duration { get; }
+    public float Delay { get; }
     public UsableFunc IsUsable { get; }
     public ConditionFunc Condition { get; }
-    public CanClickAgain CanClickAgain { get; }
+    public bool CanClickAgain { get; } = true;
     public PlayerBodyExclusion PlayerBodyException { get; }
     public VentExclusion VentException { get; }
     public ConsoleExclusion ConsoleException { get; }
@@ -57,8 +57,8 @@ public class CustomButton
     public int Uses { get; set; }
 
     // Read-onlys (onlies?)
-    public bool HasEffect => Duration.Value > 0f;
-    public bool HasDelay => Delay.Value > 0f;
+    public bool HasEffect => Duration > 0f;
+    public bool HasDelay => Delay > 0f;
     public bool HasUses => MaxUses > 0;
     public bool EffectActive => EffectTime > 0f;
     public bool DelayActive => DelayTime > 0f;
@@ -77,13 +77,13 @@ public class CustomButton
             else if (prop is LabelFunc labelFunc)
                 ButtonLabelFunc = labelFunc;
             else if (prop is SpriteName sprite)
-                ButtonSprite = sprite;
+                ButtonSprite = sprite.Value;
             else if (prop is AbilityTypes type)
                 Type = type;
             else if (prop is KeybindType keybind)
                 Keybind = $"{keybind}";
             else if (prop is PostDeath postDeath)
-                PostDeath = postDeath;
+                PostDeath = postDeath.Value;
             else if (prop is OnClickTargetless onClickTargetless)
                 DoClickTargetless = onClickTargetless;
             else if (prop is OnClickBody onClickBody)
@@ -109,15 +109,15 @@ public class CustomButton
             else if (prop is EndFunc end)
                 End = end;
             else if (prop is Cooldown cooldown)
-                Cooldown = cooldown;
+                Cooldown = cooldown.Value;
             else if (prop is DifferenceFunc difference)
                 Difference = difference;
             else if (prop is MultiplierFunc multiplier)
                 Multiplier = multiplier;
             else if (prop is Duration duration)
-                Duration = duration;
+                Duration = duration.Value;
             else if (prop is Delay delay1)
-                Delay = delay1;
+                Delay = delay1.Value;
             else if (prop is Number uses)
                 Uses = MaxUses = uses;
             else if (prop is int number)
@@ -127,7 +127,7 @@ public class CustomButton
             else if (prop is ConditionFunc condition)
                 Condition = condition;
             else if (prop is CanClickAgain canClickAgain)
-                CanClickAgain = canClickAgain;
+                CanClickAgain = canClickAgain.Value;
             else if (prop is PlayerBodyExclusion playerBody)
                 PlayerBodyException = playerBody;
             else if (prop is VentExclusion vent)
@@ -165,12 +165,7 @@ public class CustomButton
         Multiplier ??= BlankOne;
         ButtonLabelFunc ??= BlankButtonLabel;
         ButtonLabel ??= "ABILITY";
-        Cooldown ??= new(0f);
-        Duration ??= new(0f);
-        Delay ??= new(0f);
-        PostDeath ??= new(false);
-        CanClickAgain ??= new(true);
-        ButtonSprite ??= new("Placeholder");
+        ButtonSprite ??= "Placeholder";
         CooldownTime = EffectTime = DelayTime = 0f;
         ID = Sprite() + Owner.Name + Owner.PlayerName + AllButtons.Count;
         Disabled = !Owner.Local;
@@ -269,7 +264,7 @@ public class CustomButton
                 Base.SetUsesRemaining(Uses);
             }
         }
-        else if ((DelayActive || EffectActive) && CanClickAgain.Value)
+        else if ((DelayActive || EffectActive) && CanClickAgain)
         {
             ClickedAgain = true;
             CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
@@ -291,7 +286,7 @@ public class CustomButton
         if (!EffectEnabled)
         {
             OnEffectStart();
-            EffectTime = Duration.Value;
+            EffectTime = Duration;
             EffectEnabled = true;
         }
 
@@ -315,7 +310,7 @@ public class CustomButton
         if (!DelayEnabled)
         {
             OnDelayStart();
-            DelayTime = Delay.Value;
+            DelayTime = Delay;
             DelayEnabled = true;
         }
 
@@ -358,7 +353,7 @@ public class CustomButton
             newRend.SetOutlineColor(Owner.Color);
     }
 
-    public float MaxCooldown() => PostDeath.Value ? Cooldown.Value : Owner.Player.GetModifiedCooldown(Cooldown.Value, Difference(), Multiplier());
+    public float MaxCooldown() => PostDeath ? Cooldown : Owner.Player.GetModifiedCooldown(Cooldown, Difference(), Multiplier());
 
     public string Label()
     {
@@ -375,7 +370,7 @@ public class CustomButton
 
     public string Sprite()
     {
-        var result = ButtonSprite.Value;
+        var result = ButtonSprite;
 
         if (result == "Placeholder")
             result = SpriteFunc();
@@ -383,7 +378,7 @@ public class CustomButton
         return result;
     }
 
-    public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath.Value && !Ejection() && Owner.Local && !IsMeeting() &&
+    public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() &&
         !IsLobby() && !NoPlayers() && Owner.Player && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled &&
@@ -449,7 +444,7 @@ public class CustomButton
         Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
         Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && BlockIsExposed());
 
-        if (!EffectActive && !DelayActive && !CooldownActive && !Disabled && PostDeath.Value == Owner.Dead)
+        if (!EffectActive && !DelayActive && !CooldownActive && !Disabled && PostDeath == Owner.Dead)
             SetTarget();
 
         EnableDisable();
@@ -457,7 +452,7 @@ public class CustomButton
         if (DelayActive)
             Base.SetDelay(DelayTime);
         else if (EffectActive)
-            Base.SetFillUp(EffectTime, Duration.Value);
+            Base.SetFillUp(EffectTime, Duration);
         else
             Base.SetCoolDown(CooldownTime, MaxCooldown());
 

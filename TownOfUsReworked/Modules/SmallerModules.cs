@@ -77,9 +77,4 @@ public readonly struct Number(float num)
     public static Number Parse(string value) => new(float.Parse(value));
 }
 
-public class UnsupportedLanguageException : Exception
-{
-    public UnsupportedLanguageException(string message) : base($"Selected language is unsupported {message}") {}
-
-    public UnsupportedLanguageException(string message, Exception innerException) : base($"Selected language is unsupported {message}", innerException) {}
-}
+public class UnsupportedLanguageException(string message) : Exception($"Selected language is unsupported {message}");

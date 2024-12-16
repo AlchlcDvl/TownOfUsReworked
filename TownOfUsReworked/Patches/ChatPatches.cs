@@ -26,11 +26,19 @@ public static class ChatPatches
         if (__instance.freeChatField.textArea.hasFocus && text.StartsWith("/") && text != "/")
         {
             var lower = text.ToLower();
-            var closestCommand = Find(lower.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)[0]);
+            var split = lower.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var first = split[0];
+            var closestCommand = Find(first);
 
             if (closestCommand != null)
             {
-                SuggestionText.SetText($"/{closestCommand.Aliases.Find(x => lower.StartsWith($"/{x}") && text.Length - 1 <= x.Length)} {closestCommand.Parameters}");
+                var parts = split[1..];
+                var result = "";
+
+                for (var i = 0; i < parts.Length; i++)
+                    result += $"{parts[i]} ";
+
+                SuggestionText.SetText($"/{closestCommand.FindAlias(lower)} {result.Trim()} {closestCommand.ConstructParameters(split)}");
 
                 if (Input.GetKeyDown(KeyCode.Tab))
                     __instance.freeChatField.textArea.SetText(SuggestionText.text.Split(' ')[0]);
@@ -90,7 +98,7 @@ public static class ChatPatches
                                 chat.NameText.color = UColor.white;
                         }
 
-                        if (GameModifiers.Whispers && !chat.NameText.text.Contains($"[#{player.PlayerId}] "))
+                        if (GameModifiers.Whispers && !chat.NameText.text.Contains($"[#{player.PlayerId}]"))
                             chat.NameText.SetText($"[#{player.PlayerId}] {chat.NameText.text}");
                     }
                 }

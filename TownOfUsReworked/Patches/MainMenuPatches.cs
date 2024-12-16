@@ -145,6 +145,9 @@ public static class MainMenuPatches
         ghObj.transform.localPosition = pos;
         ghObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = ghObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("GitHub");
         ghObj.transform.GetChild(3).gameObject.Destroy();
+        var text1 = ghObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        text1.GetComponent<TextTranslatorTMP>().Destroy();
+        text1.SetText("GitHub Repo");
         pos.y = __instance.settingsButton.transform.localPosition.y;
 
         var discObj = UObject.Instantiate(__instance.settingsButton, __instance.settingsButton.transform.parent);
@@ -152,6 +155,9 @@ public static class MainMenuPatches
         discObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.DiscordInvite));
         discObj.transform.localPosition = pos;
         discObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = discObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Discord");
+        var text2 = discObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        text2.GetComponent<TextTranslatorTMP>().Destroy();
+        text2.SetText("Reworked Discord");
         pos.y = __instance.myAccountButton.transform.localPosition.y;
 
         var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
@@ -188,13 +194,9 @@ public static class MainMenuPatches
         });
         credObj.transform.localPosition = pos;
         credObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = credObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Info");
-
-        Coroutines.Start(PerformTimedAction(0.01f, _ =>
-        {
-            discObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Discord");
-            ghObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod GitHub");
-            credObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
-        }));
+        var text3 = credObj.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        text3.GetComponent<TextTranslatorTMP>().Destroy();
+        text3.SetText("Reworked Info");
 
         AddAsset("Placeholder", __instance.playButton.HoverSound);
         AddAsset("Hover", __instance.playButton.HoverSound);

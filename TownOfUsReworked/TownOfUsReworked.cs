@@ -14,7 +14,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 11;
+    public const int DevBuild = 12;
 
     public static bool IsTest { get; set; }
     private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);
@@ -78,7 +78,6 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> RedirectLogger { get; set; }
     public static ConfigEntry<bool> AutoPlayAgain { get; set; }
     public static ConfigEntry<bool> DisableTimeout { get; set; }
-    public static ConfigEntry<bool> LobbyCapped { get; set; }
     public static ConfigEntry<bool> Persistence { get; set; }
     public static ConfigEntry<bool> SameVote { get; set; }
 
@@ -103,8 +102,8 @@ public partial class TownOfUsReworked : BasePlugin
         }
         catch (Exception e)
         {
-            Unload();
             Fatal($"Couldn't load the mod because:\n{e}");
+            Unload();
         }
     }
 
@@ -112,7 +111,7 @@ public partial class TownOfUsReworked : BasePlugin
     {
         ModInstance = null;
         Harmony.UnpatchSelf();
-        Message($"Mod Unloaded - {this}");
+        Fatal($"Mod Unloaded - {this}");
         return base.Unload();
     }
 }

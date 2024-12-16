@@ -13,7 +13,7 @@ public class Framer : Syndicate
     public CustomButton RadialFrameButton { get; set; }
     public List<byte> Framed { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Framer : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Framer: FactionColor;
     public override string Name => "Framer";
     public override LayerEnum Type => LayerEnum.Framer;
     public override Func<string> StartText => () => "Make Everyone Suspicious";

@@ -14,7 +14,7 @@ public class Banshee : Syndicate
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Banshee : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Banshee: FactionColor;
     public override string Name => "Banshee";
     public override LayerEnum Type => LayerEnum.Banshee;
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";

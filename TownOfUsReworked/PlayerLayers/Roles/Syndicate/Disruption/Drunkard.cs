@@ -17,7 +17,7 @@ public class Drunkard : Syndicate
     public PlayerControl ConfusedPlayer { get; set; }
     public CustomPlayerMenu ConfuseMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Drunkard : CustomColorManager.Syndicate;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Drunkard: FactionColor;
     public override string Name => "Drunkard";
     public override LayerEnum Type => LayerEnum.Drunkard;
     public override Func<string> StartText => () => "<i>Burp</i>";

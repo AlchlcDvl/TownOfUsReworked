@@ -12,7 +12,7 @@ public class Escort : Crew
     public PlayerControl BlockTarget { get; set; }
     public CustomButton BlockButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Escort : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Escort: FactionColor;
     public override string Name => "Escort";
     public override LayerEnum Type => LayerEnum.Escort;
     public override Func<string> StartText => () => "Roleblock Players From Harming The <#8CFFFFFF>Crew</color>";

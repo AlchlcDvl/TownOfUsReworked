@@ -14,7 +14,7 @@ public class Sheriff : Crew
 
     public CustomButton InterrogateButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Sheriff : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Sheriff: FactionColor;
     public override string Name => "Sheriff";
     public override LayerEnum Type => LayerEnum.Sheriff;
     public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";

@@ -27,7 +27,7 @@ public class Coroner : Crew
     public List<DeadPlayer> ReferenceBodies { get; set; }
     public CustomButton AutopsyButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Coroner : CustomColorManager.Crew;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Coroner: FactionColor;
     public override string Name => "Coroner";
     public override LayerEnum Type => LayerEnum.Coroner;
     public override Func<string> StartText => () => "Examine The Dead For Information";
