@@ -20,10 +20,10 @@ public class LayerHandler : RoleBehaviour
     public Disposition CustomDisposition { get; set; }
 
     [HideFromIl2Cpp]
-    public List<PlayerLayer> CustomLayers { get; set; }
+    public IEnumerable<PlayerLayer> CustomLayers { get; set; }
 
     [HideFromIl2Cpp]
-    public List<CustomButton> Buttons { get; set; }
+    public IEnumerable<CustomButton> Buttons { get; set; }
 
     public static RoleBehaviour Crewmate;
     public static RoleBehaviour Impostor;
@@ -137,11 +137,7 @@ public class LayerHandler : RoleBehaviour
         CustomDisposition.OnMeetingEnd(__instance);
     }
 
-    public void ResetButtons()
-    {
-        Buttons?.Clear();
-        Buttons = Player.GetButtonsFromList();
-    }
+    public void ResetButtons() => Buttons = Player.GetButtonsFromList();
 
     [HideFromIl2Cpp]
     public void SetUpLayers(Role newRole = null)

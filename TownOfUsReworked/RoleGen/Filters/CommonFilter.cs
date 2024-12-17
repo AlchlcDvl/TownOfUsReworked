@@ -2,7 +2,7 @@ namespace TownOfUsReworked.RoleGen2;
 
 public class CommonFilter : BaseFilter
 {
-    public override void Filter(List<RoleOptionData> spawnList, int count)
+    public override void Filter(List<RoleOptionData> spawnList, int count, bool tryUsePlayerCount = false)
     {
         if (count == 0)
         {

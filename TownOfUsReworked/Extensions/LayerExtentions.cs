@@ -767,7 +767,7 @@ public static class LayerExtentions
 
     public static string RoleCardInfo(this PlayerControl player)
     {
-        var info = player.GetLayers();
+        var info = player.GetLayers().ToList();
 
         if (info.Count != 4)
             return "";
@@ -1220,9 +1220,9 @@ public static class LayerExtentions
         return overrideDef ?? (DefenseEnum)defense;
     }
 
-    public static List<PlayerLayer> GetLayersFromList(this PlayerControl player) => [ .. PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType) ];
+    public static IEnumerable<PlayerLayer> GetLayersFromList(this PlayerControl player) => [ .. PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType) ];
 
-    public static List<PlayerLayer> GetLayers(this PlayerControl player)
+    public static IEnumerable<PlayerLayer> GetLayers(this PlayerControl player)
     {
         if (player.Data.Role is LayerHandler handler)
             return handler.CustomLayers;
@@ -1230,7 +1230,7 @@ public static class LayerExtentions
         return player.GetLayersFromList();
     }
 
-    public static List<PlayerLayer> GetLayers(this PlayerVoteArea player) => PlayerByVoteArea(player).GetLayers();
+    public static IEnumerable<PlayerLayer> GetLayers(this PlayerVoteArea player) => PlayerByVoteArea(player).GetLayers();
 
     public static T GetLayerFromList<T>(this PlayerControl player) where T : PlayerLayer => PlayerLayer.GetLayers<T>().Find(x => x.Player == player);
 

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Data;
 
 public static class LayerInfo
 {
-    public static readonly List<RoleInfo> AllRoles =
+    public static readonly IEnumerable<RoleInfo> AllRoles =
     [
         new("Invalid", "Invalid", "Invalid", Alignment.None, Faction.None, "Invalid", CustomColorManager.Role, LayerEnum.NoneRole, "Invalid"),
 
@@ -291,7 +291,7 @@ public static class LayerInfo
             Alignment.GameModeTaskRace, Faction.GameMode, "Gotta go fast", CustomColorManager.Runner, LayerEnum.Runner, "None", "None", "Be the first to finish their tasks", footer: true)
     ];
 
-    public static readonly List<ModifierInfo> AllModifiers =
+    public static readonly IEnumerable<ModifierInfo> AllModifiers =
     [
         new("Invalid", "Invalid", "Invalid", "Invalid", CustomColorManager.Modifier, LayerEnum.NoneModifier),
         new("Bait", "Bait", "The Bait's killer will be forced to self-report the Bait's body.", "Everyone except Troll, Vigilate, Altruist, Thief and Shifter", CustomColorManager.Bait,
@@ -315,7 +315,7 @@ public static class LayerInfo
             CustomColorManager.Volatile, LayerEnum.Volatile, true)
     ];
 
-    public static readonly List<DispositionInfo> AllDispositions =
+    public static readonly IEnumerable<DispositionInfo> AllDispositions =
     [
         new("Invalid", "Invalid", "Invalid", "Invalid", "Invalid", "φ", CustomColorManager.Disposition, LayerEnum.NoneDisposition),
         new("Taskmaster", "TM", "The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate;" +
@@ -347,7 +347,7 @@ public static class LayerInfo
             "Intruders And Syndicate", "ε", CustomColorManager.Defector, LayerEnum.Defector, true)
     ];
 
-    public static readonly List<AbilityInfo> AllAbilities =
+    public static readonly IEnumerable<AbilityInfo> AllAbilities =
     [
         new("Invalid", "Invalid", "Invalid", "Invalid", CustomColorManager.Ability, LayerEnum.NoneAbility),
         new("Assassin", "Assassin", "The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name " +
@@ -380,7 +380,7 @@ public static class LayerInfo
             + "vice versa.", "Crew", CustomColorManager.Swapper, LayerEnum.Swapper, true)
     ];
 
-    public static readonly List<FactionInfo> AllFactions =
+    public static readonly IEnumerable<FactionInfo> AllFactions =
     [
         new(Faction.None),
         new(Faction.Crew),
@@ -390,7 +390,7 @@ public static class LayerInfo
         new(Faction.GameMode, true)
     ];
 
-    public static readonly List<SubFactionInfo> AllSubFactions =
+    public static readonly IEnumerable<SubFactionInfo> AllSubFactions =
     [
         new(SubFaction.None),
         new(SubFaction.Sect),
@@ -399,7 +399,7 @@ public static class LayerInfo
         new(SubFaction.Reanimated, true)
     ];
 
-    public static readonly List<AlignmentInfo> AllAlignments =
+    public static readonly IEnumerable<AlignmentInfo> AllAlignments =
     [
         new(Alignment.None),
         new(Alignment.CrewSupport),
@@ -460,7 +460,7 @@ public static class LayerInfo
         new(Alignment.GameModeTaskRace, true)
     ];
 
-    public static readonly List<GameModeInfo> AllModes =
+    public static readonly IEnumerable<GameModeInfo> AllModes =
     [
         new(GameMode.None),
         new(GameMode.Classic),
@@ -473,7 +473,7 @@ public static class LayerInfo
         new(GameMode.Custom, true)
     ];
 
-    public static readonly List<Lore> AllLore =
+    public static readonly IEnumerable<Lore> AllLore =
     [
         /*new("All", "The story takes place several hundred years in the future with is a gigantic leap in scientific advancement. As a result, space travel is a common thing and" +
             " is commonly used for mining resources from nearby celestial bodies. A multi-billion dollar government space exploration corporation called \"Mira\" just recently " +
@@ -583,7 +583,7 @@ public static class LayerInfo
             CustomColorManager.Transporter)
     ];
 
-    public static readonly List<OtherInfo> AllOthers =
+    public static readonly IEnumerable<OtherInfo> AllOthers =
     [
         new("Invalid", "Invalid", "Invalid", UColor.red, "Invalid"),
         new("Chaos Drive", "CD", "The Chaos Drive is an ability boosting device that the Syndicate receives after a certain number of meetings. When the Chaos Drive is discovered, it "
@@ -604,7 +604,7 @@ public static class LayerInfo
             "and a role cannot change alignments at any point in the game under normal circumstances.", CustomColorManager.Alignment, "", true)
     ];
 
-    public static readonly List<SymbolInfo> AllSymbols =
+    public static readonly IEnumerable<SymbolInfo> AllSymbols =
     [
         new("Invalid", "Invalid", "Invalid", UColor.red),
         new("Null", "φ", "This symbol is a placeholder for when one doesn't have a disposition or subfaction that they are a part of.", CustomColorManager.Status),

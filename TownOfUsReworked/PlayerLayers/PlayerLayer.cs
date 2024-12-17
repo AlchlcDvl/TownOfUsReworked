@@ -429,5 +429,5 @@ public abstract class PlayerLayer
 
     public static IEnumerable<T> GetILayers<T>(bool includeIgnored = false) where T : IPlayerLayer => AllLayers.Where(x => (!x.Ignore || includeIgnored) && x.Player).OfType<T>();
 
-    public static List<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
+    public static IEnumerable<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
 }

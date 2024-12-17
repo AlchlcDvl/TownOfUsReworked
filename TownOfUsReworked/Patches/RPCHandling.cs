@@ -88,7 +88,7 @@ public static class RPCHandling
                     }
                     case MiscRPC.SyncConvertible:
                     {
-                        RoleGenManager.Convertible = reader.ReadInt32();
+                        RoleGenManager.Convertible = reader.ReadByte();
                         break;
                     }
                     case MiscRPC.BreakShield:

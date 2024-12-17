@@ -348,7 +348,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         yield break;
     }
 
-    public static List<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x is T).Cast<T>().ToList();
+    public static IEnumerable<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x is T).Cast<T>();
 
     public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
 

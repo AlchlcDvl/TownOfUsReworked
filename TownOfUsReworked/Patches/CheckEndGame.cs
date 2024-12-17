@@ -147,19 +147,23 @@ public static class CheckEndGame
         }
         else
         {
-            if (Role.GetRoles(Faction.Crew).All(x => x.Dead && !CrewSettings.GhostTasksCountToWin) || !Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
+            var crew = Role.GetRoles(Faction.Crew);
+
+            if (crew.All(x => x.Dead && !CrewSettings.GhostTasksCountToWin) || !crew.Any(x => x.Player.CanDoTasks()))
                 return false;
 
             var allCrew = new List<PlayerControl>();
             var crewWithNoTasks = new List<PlayerControl>();
 
-            foreach (var player in AllPlayers())
+            foreach (var role in crew)
             {
+                var player = role.Player;
+
                 if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CrewSettings.GhostTasksCountToWin)))
                 {
                     allCrew.Add(player);
 
-                    if (player.GetRole().TasksDone)
+                    if (role.TasksDone)
                         crewWithNoTasks.Add(player);
                 }
             }

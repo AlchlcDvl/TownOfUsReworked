@@ -52,5 +52,26 @@ public abstract class BaseRoleGen : BaseGen
 
     public virtual void InitSynList() {}
 
-    public virtual void GetAdjustedFactions() {}
+    public virtual void GetAdjustedFactions()
+    {
+        var players = GameData.Instance.PlayerCount;
+        Intruders = IntruderSettings.IntruderCount;
+        Syndicate = SyndicateSettings.SyndicateCount;
+        Neutrals = IsKilling() ? GameModeSettings.NeutralsCount : URandom.RandomRangeInt(NeutralSettings.NeutralMin, NeutralSettings.NeutralMax + 1);
+
+        if (Intruders == 0 && Syndicate == 0 && Neutrals == 0)
+        {
+            _ = URandom.RandomRangeInt(0, 3) switch
+            {
+                0 => Intruders++,
+                1 => Syndicate++,
+                _ => Neutrals++,
+            };
+        }
+
+        while (Neutrals >= players - Intruders - Syndicate)
+            Neutrals--;
+
+        Crew = players - Intruders - Syndicate - Neutrals;
+    }
 }

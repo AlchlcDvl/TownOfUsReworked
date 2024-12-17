@@ -17,6 +17,8 @@ public class KillingOnlyGen : BaseRoleGen
 
         if (Intruders >= 3)
             IntruderRoles.Add(GetSpawnItem(LayerEnum.Godfather));
+
+        ModeFilters[GameModeSettings.GameMode].Filter(IntruderRoles, Intruders);
     }
 
     public override void InitSynList()
@@ -29,6 +31,8 @@ public class KillingOnlyGen : BaseRoleGen
 
         if (Syndicate >= 3)
             SyndicateRoles.Add(GetSpawnItem(LayerEnum.Rebel));
+
+        ModeFilters[GameModeSettings.GameMode].Filter(SyndicateRoles, Syndicate);
     }
 
     public override void InitNeutList()
@@ -47,6 +51,8 @@ public class KillingOnlyGen : BaseRoleGen
 
         if (GameModeSettings.AddPlaguebearer)
             NeutralRoles.Add(GetSpawnItem(NeutralApocalypseSettings.DirectSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
+
+        ModeFilters[GameModeSettings.GameMode].Filter(NeutralRoles, Neutrals);
     }
 
     public override void InitCrewList()
@@ -78,15 +84,12 @@ public class KillingOnlyGen : BaseRoleGen
                 basts--;
             }
         }
+
+        ModeFilters[GameModeSettings.GameMode].Filter(CrewRoles, Crew);
     }
 
     public override void Filter()
     {
-        var filter = ModeFilters[GameModeSettings.GameMode];
-        filter.Filter(IntruderRoles, Intruders);
-        filter.Filter(SyndicateRoles, Syndicate);
-        filter.Filter(NeutralRoles, Neutrals);
-        filter.Filter(CrewRoles, Crew);
         AllRoles.AddRanges(NeutralRoles, CrewRoles, SyndicateRoles);
 
         if (!SyndicateSettings.AltImps)

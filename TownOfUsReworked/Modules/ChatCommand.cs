@@ -14,17 +14,17 @@ public class ChatCommand
     private delegate void ExecuteArgsCommand(string[] args);
     private delegate void ExecuteArgsMessageCommand(string[] args, string message);
 
-    private static readonly List<ChatCommand> AllCommands =
+    private static readonly IEnumerable<ChatCommand> AllCommands =
     [
-        new([ "controls", "ctrl", "mci" ], Controls, ""),
-        new([ "kick", "ban" ], KickBan, [ "player id | (player name)" ], ""),
-        new([ "summary" ], Summary, ""),
-        new([ "clearlobby", "cl" ], Clear, ""),
-        new([ "setname", "name", "sn" ], SetName, [ "new name" ], ""),
-        new([ "whisper" ] , Whisper, [ "player id | (player name)", "message" ], ""),
-        new([ "unignore", "ui" ], ToggleIgnore, [ "player id | (player name)" ], ""),
-        new([ "ignore" ], ToggleIgnore, [ "player id | (player name)" ], ""),
-        new([ "help" ], Help, [ "command name (optional)" ], ""),
+        new([ "controls", "ctrl", "mci" ], Controls, "Shows keybinds to use"),
+        new([ "kick", "ban" ], KickBan, [ "player id | (player name)" ], "Kicks or bans the specified player using their player id or name"),
+        new([ "summary" ], Summary, "Fetches the summary of the previous game"),
+        new([ "clearlobby", "cl" ], Clear, "Kicks every non-host player out of the lobby (but does not ban them so they can still rejoin)"),
+        new([ "setname", "name", "sn" ], SetName, [ "new name" ], "Changes the name of a player"),
+        new([ "whisper" ] , Whisper, [ "player id | (player name)", "message" ], "Sends a private message to the specified player using their id or name"),
+        new([ "unignore", "ui" ], ToggleIgnore, [ "player id | (player name)" ], "Unignores a player, making their messages start appearing again"),
+        new([ "ignore" ], ToggleIgnore, [ "player id | (player name)" ], "Ignores a player, making their messages no longer appear to you"),
+        new([ "help" ], Help, [ "command name (optional)" ], "Gets a help menu showing the usable commands, or provides a description of a command if the command name is specified"),
         // new([ "testargs", "targ" ], TestArgs, ""),
         // new([ "testargless", "targless" ], TestArgless, ""),
         // new([ "testargmessage", "targmess" ], TestArgsMessage, ""),
@@ -62,14 +62,14 @@ public class ChatCommand
         Parameters = parameters;
     }
 
-    public string ConstructParameters(string[] parts)
+    public string ConstructParameters(string[] parts = null)
     {
-        if (Parameters == null)
-            return "";
+        if (Parameters == null || Parameters.Length == 1)
+            return "<none>";
 
         var result = "";
 
-        for (var i = Parameters.Length - 1; i > parts.Length - 2 && i > -1; i--)
+        for (var i = Parameters.Length - 1; i > (parts?.Length ?? 0) - 2 && i > -1; i--)
             result = $"<{Parameters[i]}> {result} ";
 
         return result.Trim();
@@ -96,7 +96,7 @@ public class ChatCommand
 
     public static void Execute(string[] args, string message)
     {
-        var command = Find(args[0].ToLower()[1..]);
+        var command = Find(args[0][1..].ToLower());
 
         if (command == null)
             Run("<#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
@@ -350,7 +350,7 @@ public class ChatCommand
 
         if (client == null)
         {
-            Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find the target.");
+            Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", "Could not find the target.");
             return;
         }
 
@@ -371,7 +371,12 @@ public class ChatCommand
         }
         else
         {
-            var command = Find(args[0].ToLower()[1..]);
+            var command = Find(args[1].ToLower());
+
+            if (command != null)
+                Run("<#0000FFFF>✿ Help Menu ✿</color>", $"Command Name: {command.Aliases[0]}\nParameters: {command.ConstructParameters()}\nDescription: {command.Description}");
+            else
+                Run($"<#FF0000FF>⚠ Help Error ⚠</color>", "Could not find the requested command.");
         }
     }
 

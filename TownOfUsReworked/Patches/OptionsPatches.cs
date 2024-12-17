@@ -460,9 +460,8 @@ public static class SettingsPatches
     private static bool RLOptionsCreated;
     private static readonly Dictionary<int, bool> LayerOptionsCreated = [];
 
-    public static List<MonoBehaviour> CreateOptions(Transform parent, bool instantiate = true)
+    public static IEnumerable<MonoBehaviour> CreateOptions(Transform parent, bool instantiate = true)
     {
-        var options = new List<MonoBehaviour>();
         var type = (MultiMenu)SettingsPage;
 
         if (SettingsPage == 4)
@@ -488,8 +487,8 @@ public static class SettingsPatches
 
                 if (button)
                 {
-                    options.Add(button);
                     button.gameObject.SetActive(false);
+                    yield return button;
                 }
             }
         }
@@ -518,13 +517,11 @@ public static class SettingsPatches
                 if (option.Setting)
                 {
                     option.OptionCreated();
-                    options.Add(option.Setting);
                     option.Setting.gameObject.SetActive(false);
+                    yield return option.Setting;
                 }
             }
         }
-
-        return options;
     }
 
     private static PassiveButton RolesButton;
@@ -1137,12 +1134,11 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(NotificationPopper), (nameof(NotificationPopper.AddSettingsChangeMessage)))]
     public static bool Prefix() => false;
 
-    public static List<MonoBehaviour> CreateViewOptions(Transform parent, int page = -1)
+    public static IEnumerable<MonoBehaviour> CreateViewOptions(Transform parent, int page = -1)
     {
         if (page == -1)
             page = SettingsPage3;
 
-        var options = new List<MonoBehaviour>();
         var type = (MultiMenu)page;
 
         foreach (var option in OptionAttribute.SortedOptions.Where(x => x.Menus.Contains(type)))
@@ -1160,12 +1156,10 @@ public static class SettingsPatches
             if (option.ViewSetting)
             {
                 option.ViewOptionCreated();
-                options.Add(option.ViewSetting);
                 option.ViewSetting.gameObject.SetActive(false);
+                yield return option.Setting;
             }
         }
-
-        return options;
     }
 
     [HarmonyPatch(typeof(LobbyInfoPane), nameof(LobbyInfoPane.Update))]

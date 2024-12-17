@@ -120,7 +120,7 @@ public class PromotedGodfather : Intruder, IIntimidator, IDragger, IDigger
             BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, (UsableFunc)ConsUsable,
                 (EffectEndVoid)UnBlock, new Cooldown(Consort.ConsortCd), new Duration(Consort.ConsortDur), (EffectVoid)Block, (LabelFunc)ConsLabel);
 
-            if (wasnull)
+            if (wasnull && BlockMenu == null)
                 BlockMenu = new(Player, ConsClick, ConsException);
         }
         else if (IsMiner)

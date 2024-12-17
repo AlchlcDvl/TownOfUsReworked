@@ -19,15 +19,13 @@ public class DispositionGen : BaseGen
 
         int maxDisp = DispositionsSettings.MaxDispositions;
         int minDisp = DispositionsSettings.MinDispositions;
-        var playerCount = GameData.Instance.PlayerCount;
+        var playerCount = AllPlayers().Count(x => x != Pure);
 
         while (maxDisp > playerCount)
             maxDisp--;
 
         while (minDisp > playerCount)
             minDisp--;
-
-        ModeFilters[GameModeSettings.GameMode].Filter(AllDispositions, GameModeSettings.IgnoreLayerCaps ? playerCount : URandom.RandomRangeInt(minDisp, maxDisp + 1));
 
         var linked = AllDispositions.Count(x => x.ID == LayerEnum.Linked);
 
@@ -43,6 +41,8 @@ public class DispositionGen : BaseGen
 
         for (var i = 0; i < rivals; i++)
             AllDispositions.Add(GetSpawnItem(LayerEnum.Rivals));
+
+        ModeFilters[GameModeSettings.GameMode].Filter(AllDispositions, GameModeSettings.IgnoreLayerCaps ? playerCount : URandom.RandomRangeInt(minDisp, maxDisp + 1), true);
     }
 
     public override void Assign()

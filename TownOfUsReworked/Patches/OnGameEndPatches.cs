@@ -649,7 +649,7 @@ public static class OnGameEndPatches
         var summary = "";
         var cache = "";
 
-        var info = player.GetLayers();
+        var info = player.GetLayers().ToList();
 
         if (info.Count != 4)
             return;

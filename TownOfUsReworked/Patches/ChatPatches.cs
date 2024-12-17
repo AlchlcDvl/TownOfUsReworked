@@ -38,10 +38,15 @@ public static class ChatPatches
                 for (var i = 0; i < parts.Length; i++)
                     result += $"{parts[i]} ";
 
-                SuggestionText.SetText($"/{closestCommand.FindAlias(first)} {result.Trim()} {closestCommand.ConstructParameters(split)}");
+                if (result.Length > 0)
+                    result = $"/{first} {result.Trim()} {closestCommand.ConstructParameters(split)}";
+                else
+                    result = $"/{closestCommand.FindAlias(first)} {closestCommand.ConstructParameters(split)}";
+
+                SuggestionText.SetText(result);
 
                 if (Input.GetKeyDown(KeyCode.Tab))
-                    __instance.freeChatField.textArea.SetText(SuggestionText.text.Split(' ')[0]);
+                    __instance.freeChatField.textArea.SetText(result.Split(' ')[0]);
             }
             else
                 SuggestionText.SetText($"{text} UNKNOWN COMMAND");

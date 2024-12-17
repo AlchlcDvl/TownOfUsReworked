@@ -203,13 +203,22 @@ public static class CustomMenuPatch
 [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Close))]
 public static class AirshipSpawnInPatch
 {
-    public static void Postfix()
+    public static void Postfix(SpawnInMinigame __instance)
     {
         if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast) && ast.LastPosition != Vector3.zero)
             ast.SetPosition();
 
         HUD().FullScreen.enabled = true;
         HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
+
+        if (TownOfUsReworked.MCIActive)
+        {
+            foreach (var player in AllPlayers())
+            {
+                if (player.Data.PlayerName.Contains("Bot"))
+                    player.RpcCustomSnapTo(__instance.Locations.Random().Location);
+            }
+        }
     }
 }
 
@@ -577,7 +586,7 @@ public static class PlayerDataPatches
 		if (__instance.Outfits.TryGetValue(outfitType, out var outfit))
         {
             var translation = Palette.GetColorName(outfit.ColorId);
-            __result = outfit.ColorId.IsDefault() ? translation[0].ToString().ToUpper() + translation[1..].ToLower() : translation;
+            __result = outfit.ColorId.IsDefault() ? (translation[0] + translation[1..].ToLower()) : translation;
         }
         else
 			__result = "";

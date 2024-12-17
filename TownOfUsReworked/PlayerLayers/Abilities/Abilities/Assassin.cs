@@ -159,8 +159,7 @@ public abstract class Assassin : Ability
 
         if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0 && !(Player.Is(Faction.Neutral) && NeutralSettings.NoSolo == NoSolo.AllNeutrals))
         {
-            var nks = new List<LayerEnum>() { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac,
-                LayerEnum.Werewolf };
+            var nks = new List<LayerEnum>() { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac, LayerEnum.Werewolf };
 
             foreach (var layer in nks)
             {
@@ -207,8 +206,9 @@ public abstract class Assassin : Ability
 
                 foreach (var layer in nbs)
                 {
-                    if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel) && !GuessingMenu.Mapping.Contains(LayerEnum.Survivor)) || (layer
-                        == LayerEnum.Thief && GuessingMenu.Mapping.Contains(LayerEnum.Amnesiac) && !GuessingMenu.Mapping.Contains(LayerEnum.Thief)))
+                    if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel) &&
+                        !GuessingMenu.Mapping.Contains(LayerEnum.Survivor)) || (layer  == LayerEnum.Thief && GuessingMenu.Mapping.Contains(LayerEnum.Amnesiac) &&
+                        !GuessingMenu.Mapping.Contains(LayerEnum.Thief)))
                     {
                         GuessingMenu.Mapping.Add(layer);
                     }
@@ -221,8 +221,9 @@ public abstract class Assassin : Ability
 
                 foreach (var layer in nes)
                 {
-                    if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter) && !GuessingMenu.Mapping.Contains(LayerEnum.Troll)) || (layer ==
-                        LayerEnum.Actor && GuessingMenu.Mapping.Contains(LayerEnum.Guesser) && !GuessingMenu.Mapping.Contains(LayerEnum.Actor)) || (layer == LayerEnum.Jester && GuessingMenu.Mapping.Contains(LayerEnum.Executioner) &&
+                    if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter) &&
+                        !GuessingMenu.Mapping.Contains(LayerEnum.Troll)) || (layer == LayerEnum.Actor && GuessingMenu.Mapping.Contains(LayerEnum.Guesser) &&
+                        !GuessingMenu.Mapping.Contains(LayerEnum.Actor)) || (layer == LayerEnum.Jester && GuessingMenu.Mapping.Contains(LayerEnum.Executioner) &&
                         !GuessingMenu.Mapping.Contains(LayerEnum.Jester)))
                     {
                         GuessingMenu.Mapping.Add(layer);

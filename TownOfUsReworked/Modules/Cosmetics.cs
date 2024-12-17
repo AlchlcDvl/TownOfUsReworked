@@ -139,7 +139,7 @@ public class CustomColor : CustomCosmetic
         if (MainColorValues == null || MainColorValues.Length == 0)
             return MainColor = ShadowColor.Light();
 
-        return MainColor = LerpColors(TimeSpeed, MainColors);
+        return MainColor = LerpColors(TimeSpeed, MainColors, MainColor);
     }
 
     public UColor GetShadowColor()
@@ -147,24 +147,31 @@ public class CustomColor : CustomCosmetic
         if (ShadowColorValues == null || ShadowColorValues.Length == 0)
             return ShadowColor = MainColor.Shadow();
 
-        return ShadowColor = LerpColors(TimeSpeed, ShadowColors);
+        return ShadowColor = LerpColors(TimeSpeed, ShadowColors, ShadowColor);
     }
 
-    public static UColor LerpColors(float mul, UColor[] colors)
+    public static UColor LerpColors(float mul, UColor[] colors, UColor? prevColor = null)
     {
         if (colors.Length == 1)
             return colors[0];
 
-        // Math nerd rambling
-        // Mapping these next 4 lines onto desmos gives a nice little zig zag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
-        var dx = mul * Time.time;
-        var f = Mathf.FloorToInt(dx);
-        var m = f % 2;
-        var point = (colors.Length - 1) * (((dx - f) * ((2 * m) - 1)) + 1 - m);
+        try
+        {
+            // Math nerd rambling
+            // Mapping these next 4 lines onto desmos gives a nice little zig zag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
+            var dx = mul * Time.time;
+            var f = Mathf.FloorToInt(dx);
+            var m = f % 2;
+            var point = (colors.Length - 1) * (((dx - f) * ((2 * m) - 1)) + 1 - m);
 
-        var index = Mathf.FloorToInt(point);
+            var index = Mathf.FloorToInt(point);
 
-        return UColor.Lerp(colors[index], colors[index + 1], point - index);
+            return UColor.Lerp(colors[index], colors[index + 1], point - index);
+        }
+        catch
+        {
+            return prevColor ?? colors[0];
+        }
     }
 }
 

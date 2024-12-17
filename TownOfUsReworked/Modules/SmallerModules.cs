@@ -59,7 +59,7 @@ public struct RoleOptionData(int chance, int count, bool unique, bool active, La
     public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
 
     public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && (IsClassic() || IsCustom())) || (Active && IsAA()) || (IsRoleList() && RoleListEntryAttribute.IsAdded(ID))) &&
-        RoleGenManager.IsValid(ID, relatedCount);
+        ID.IsValid(relatedCount);
 }
 
 public record class LayerDictionaryEntry(Type LayerType, UColor Color, string Name);

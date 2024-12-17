@@ -38,7 +38,7 @@ public static class RoleGenManager
     public static readonly List<RoleOptionData> AllRoles = [];
 
     public static PlayerControl Pure;
-    public static int Convertible;
+    public static byte Convertible;
 
     public static readonly LayerEnum[] CA = [ LayerEnum.Mystic, LayerEnum.VampireHunter ];
     public static readonly LayerEnum[] CI = [ LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Medium, LayerEnum.Coroner, LayerEnum.Operative, LayerEnum.Seer, LayerEnum.Detective ];
@@ -352,7 +352,7 @@ public static class RoleGenManager
 
         gen.PostAssignment();
 
-        Convertible = allPlayers.Count(x => x.Is(SubFaction.None) && x != Pure);
+        Convertible = (byte)allPlayers.Count(x => x.Is(SubFaction.None) && x != Pure);
         CallRpc(CustomRPC.Misc, MiscRPC.SyncConvertible, Convertible);
 
         if (MapPatches.CurrentMap == 4)

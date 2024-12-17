@@ -143,11 +143,6 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
         if (!SyndicateSettings.AltImps)
             AllRoles.AddRange(IntruderRoles);
 
-        NeutralRoles.Clear();
-        CrewRoles.Clear();
-        SyndicateRoles.Clear();
-        IntruderRoles.Clear();
-
         if (!AllRoles.Any(x => x.ID == LayerEnum.Dracula))
         {
             var count = AllRoles.RemoveAll(x => x.ID == LayerEnum.VampireHunter);
@@ -191,5 +186,10 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             for (var i = 0; i < count; i++)
                 AllRoles.Add(GetSpawnItem(LayerEnum.Thief));
         }
+
+        NeutralRoles.Clear();
+        CrewRoles.Clear();
+        SyndicateRoles.Clear();
+        IntruderRoles.Clear();
     }
 }

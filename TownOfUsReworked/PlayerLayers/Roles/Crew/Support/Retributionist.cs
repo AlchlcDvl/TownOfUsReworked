@@ -470,9 +470,9 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         }
         else if (IsTrap)
         {
+            var wasnull = TrapButton == null;
             BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuildling, (UsableFunc)TrapUsable,
                 new Cooldown(Trapper.BuildCd), new Duration(Trapper.BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
-            var wasnull = TrapButton == null;
             TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, (UsableFunc)TrapUsable, Trapper.MaxTraps,
                 new Cooldown(Trapper.TrapCd), (PlayerBodyExclusion)TrapException);
 
@@ -495,7 +495,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             TransportButton ??= new(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Transport, Transporter.MaxTransports,
                 (LabelFunc)TransLabel, new Cooldown(Transporter.TransportCd), (UsableFunc)TransUsable);
 
-            if (wasnull)
+            if (wasnull && (!Transport1 || !Transport2 || TransportMenu1 == null || TransportMenu2 == null))
             {
                 Transport1 = new("RetTransport1") { layer = 5 };
                 Transport2 = new("RetTransport2") { layer = 5 };

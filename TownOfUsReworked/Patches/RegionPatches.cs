@@ -47,8 +47,8 @@ public static class RegionInfoOpenPatch
                 IPField.ClearOnFocus = false;
                 IPField.OnEnter = IPField.OnChange = new();
                 IPField.OnFocusLost = new();
-                IPField.OnChange.AddListener(new Action(ChangeIP));
-                IPField.OnFocusLost.AddListener(new Action(UpdateRegions));
+                IPField.OnChange.AddListener((Action)ChangeIP);
+                IPField.OnFocusLost.AddListener((Action)UpdateRegions);
             }
         }
 
@@ -71,8 +71,8 @@ public static class RegionInfoOpenPatch
                 PortField.ClearOnFocus = false;
                 PortField.OnEnter = PortField.OnChange = new();
                 PortField.OnFocusLost = new();
-                PortField.OnChange.AddListener(new Action(ChangePort));
-                PortField.OnFocusLost.AddListener(new Action(UpdateRegions));
+                PortField.OnChange.AddListener((Action)ChangePort);
+                PortField.OnFocusLost.AddListener((Action)UpdateRegions);
             }
         }
 

@@ -164,8 +164,8 @@ public class PromotedRebel : Syndicate, IIntimidator
         else if (IsSS)
         {
             var wasnull = ShapeshiftButton == null;
-            ShapeshiftButton ??= new(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(Shapeshifter.ShapeshiftCd),
-                new Duration(Shapeshifter.ShapeshiftDur), (EffectVoid)Shift, (EffectEndVoid)UnShapeshift, (LabelFunc)SSLabel, (UsableFunc)SSUsable);
+            ShapeshiftButton ??= new(this, new SpriteName("Shapeshift"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, (EffectEndVoid)UnShapeshift,
+                new Cooldown(Shapeshifter.ShapeshiftCd), new Duration(Shapeshifter.ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)SSLabel, (UsableFunc)SSUsable);
 
             if (wasnull && (ShapeshiftMenu1 == null || ShapeshiftMenu2 == null))
             {
@@ -231,7 +231,7 @@ public class PromotedRebel : Syndicate, IIntimidator
             WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, (LabelFunc)WarpLabel, new Cooldown(Warper.WarpCd),
                 (UsableFunc)WarpUsable);
 
-            if (wasnull && !WarpObj)
+            if (wasnull && (!WarpObj || WarpMenu1 == null || WarpMenu2 == null))
             {
                 WarpObj = new("RebWarp") { layer = 5 };
                 WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);

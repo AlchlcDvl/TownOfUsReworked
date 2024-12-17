@@ -144,7 +144,7 @@ public static class RPC
         return list;
     }
 
-    public static List<T> ReadLayerList<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayerList().Cast<T>().ToList();
+    public static List<T> ReadLayerList<T>(this MessageReader reader) where T : PlayerLayer => [ .. reader.ReadLayerList().Cast<T>() ];
 
     public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Parse(reader.ReadString());
 
