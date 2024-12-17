@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Classes;
+namespace TownOfUsReworked.Managers;
 
 public static class AssetManager
 {

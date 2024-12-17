@@ -1,4 +1,4 @@
-using static TownOfUsReworked.Cosmetics.CustomHatManager;
+using static TownOfUsReworked.Managers.CustomHatManager;
 using Cpp2IL.Core.Extensions;
 
 namespace TownOfUsReworked.Loaders;

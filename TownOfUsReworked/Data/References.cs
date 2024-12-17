@@ -17,7 +17,7 @@ public static class References
     public static Console[] AllConsoles() => UObject.FindObjectsOfType<Console>();
     public static SystemConsole[] AllSystemConsoles() => UObject.FindObjectsOfType<SystemConsole>();
     public static PlayerVoteArea[] AllVoteAreas() => Meeting().playerStates;
-    public static List<PlayerControl> AllPlayers() => PlayerControl.AllPlayerControls.ToSystem();
+    public static IEnumerable<PlayerControl> AllPlayers() => PlayerControl.AllPlayerControls.ToSystem();
     public static HudManager HUD() => HudManager.Instance;
     public static MeetingHud Meeting() => MeetingHud.Instance;
     public static ExileController Ejection() => ExileController.Instance;

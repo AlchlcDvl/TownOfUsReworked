@@ -1,5 +1,5 @@
 using Innersloth.Assets;
-using static TownOfUsReworked.Cosmetics.CustomNameplateManager;
+using static TownOfUsReworked.Managers.CustomNameplateManager;
 
 namespace TownOfUsReworked.Patches;
 

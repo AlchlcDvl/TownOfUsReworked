@@ -1,5 +1,3 @@
-using TownOfUsReworked.RoleGen2;
-
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -53,7 +51,7 @@ public static class RPCHandling
                 {
                     case MiscRPC.SetLayer:
                     {
-                        RoleGen.SetLayer(reader.ReadEnum<LayerEnum>(), reader.ReadEnum<PlayerLayerEnum>()).Start(reader.ReadPlayer());
+                        RoleGenManager.SetLayer(reader.ReadEnum<LayerEnum>(), reader.ReadEnum<PlayerLayerEnum>()).Start(reader.ReadPlayer());
                         break;
                     }
                     case MiscRPC.Whisper:
@@ -79,18 +77,18 @@ public static class RPCHandling
                     }
                     case MiscRPC.Start:
                     {
-                        RoleGen.ResetEverything();
+                        RoleGenManager.ResetEverything();
                         RoleGenManager.RoleGen[GameModeSettings.GameMode].Clear();
                         break;
                     }
-                    case MiscRPC.SyncPureCrew:
+                    case MiscRPC.SyncPure:
                     {
-                        RoleGen.PureCrew = reader.ReadPlayer();
+                        RoleGenManager.Pure = reader.ReadPlayer();
                         break;
                     }
                     case MiscRPC.SyncConvertible:
                     {
-                        RoleGen.Convertible = reader.ReadInt32();
+                        RoleGenManager.Convertible = reader.ReadInt32();
                         break;
                     }
                     case MiscRPC.BreakShield:

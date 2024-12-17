@@ -1,5 +1,5 @@
 using PowerTools;
-using static TownOfUsReworked.Cosmetics.CustomHatManager;
+using static TownOfUsReworked.Managers.CustomHatManager;
 
 namespace TownOfUsReworked.Patches;
 

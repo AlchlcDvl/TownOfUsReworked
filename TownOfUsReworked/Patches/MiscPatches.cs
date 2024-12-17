@@ -273,8 +273,10 @@ public static class HudPatches
     {
         if (IsLobby())
         {
-            while (AllPlayers().Count > GameSettings.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
-                AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(AllPlayers().Last().OwnerId).Id, DisconnectReasons.GameFull);
+            var players = AllPlayers();
+
+            while (players.Count() > GameSettings.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+                AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.Last().OwnerId).Id, DisconnectReasons.GameFull);
         }
     }
 
@@ -310,7 +312,7 @@ public static class DiscordPatch
 [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
 public static class SetRoles
 {
-    public static void Postfix() => RoleGen.BeginRoleGen();
+    public static void Postfix() => RoleGenManager.BeginRoleGen();
 }
 
 [HarmonyPatch(typeof(EmergencyMinigame), nameof(EmergencyMinigame.Update))]
@@ -341,7 +343,7 @@ public static class LobbyBehaviourPatch
     public static void Postfix(LobbyBehaviour __instance)
     {
         SetFullScreenHUD();
-        RoleGen.ResetEverything();
+        RoleGenManager.ResetEverything();
         TownOfUsReworked.IsTest = IsLocalGame() && (TownOfUsReworked.IsDev || (TownOfUsReworked.IsTest && TownOfUsReworked.MCIActive));
         StopAll();
         DefaultOutfitAll();
@@ -491,63 +493,6 @@ public static class WaitForFinishPatch
     }
 }
 
-[HarmonyPatch(typeof(NetworkedPlayerInfo), nameof(NetworkedPlayerInfo.Serialize))]
-public static class FixNullRef
-{
-    public static bool Prefix(NetworkedPlayerInfo __instance, MessageWriter writer, bool initialState, ref bool __result)
-    {
-        writer.Write(__instance.PlayerId);
-        writer.WritePacked(__instance.ClientId);
-        writer.Write((byte)__instance.Outfits.Count);
-
-        foreach (var keyValuePair in __instance.Outfits)
-        {
-            writer.Write((byte)keyValuePair.Key);
-            keyValuePair.Value.Serialize(writer);
-        }
-
-        writer.WritePacked(__instance.PlayerLevel);
-        byte b = 0;
-
-        if (__instance.Disconnected)
-            b |= 1;
-
-        if (__instance.IsDead)
-            b |= 4;
-
-        writer.Write(b);
-        writer.Write((ushort)(__instance.Role?.Role ?? RoleTypes.Crewmate));
-        var roleWhenAlive = false;
-
-        try
-        {
-            roleWhenAlive = __instance.RoleWhenAlive != null;
-        } catch {}
-
-        writer.Write(roleWhenAlive);
-
-        if (roleWhenAlive)
-            writer.Write((ushort)__instance.RoleWhenAlive.Value);
-
-        if (__instance.Tasks != null)
-        {
-            writer.Write((byte)__instance.Tasks.Count);
-            __instance.Tasks.ForEach(x => x.Serialize(writer));
-        }
-        else
-            writer.Write(0);
-
-        writer.Write(__instance.FriendCode ?? "");
-        writer.Write(__instance.Puid ?? "");
-
-        if (!initialState)
-            __instance.ClearDirtyBits();
-
-        __result = true;
-        return false;
-    }
-}
-
 [HarmonyPatch(typeof(FollowerCamera), nameof(FollowerCamera.Update))]
 public static class FollowerCameraPatches
 {
@@ -607,79 +552,107 @@ public static class HostInfoPanelPatch
 }
 
 [HarmonyPatch(typeof(KillAnimation), nameof(KillAnimation.CoPerformKill))]
-public static class AddBodyHandler
+public static class OverrideKillAnim
 {
     public static bool Prefix(KillAnimation __instance, PlayerControl source, PlayerControl target, ref Il2CppSystem.Collections.IEnumerator __result)
     {
-        __result = CoPerformKill(__instance, source, target).WrapToIl2Cpp();
+        __result = CoPerformKill(__instance, source, target, true).WrapToIl2Cpp();
         return false;
-    }
-
-    public static IEnumerator CoPerformKill(KillAnimation __instance, PlayerControl source, PlayerControl target)
-    {
-        var cam = Camera.main.GetComponent<FollowerCamera>();
-        var isParticipant = source.AmOwner || target.AmOwner;
-        KillAnimation.SetMovement(source, false);
-        KillAnimation.SetMovement(target, false);
-
-        if (isParticipant)
-        {
-            CustomPlayer.Local.isKilling = true;
-            source.isKilling = true;
-        }
-
-        var deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
-        deadBody.enabled = false;
-        deadBody.ParentId = target.PlayerId;
-        deadBody.AddComponent<DeadBodyHandler>();
-        target.SetPlayerMaterialColors(deadBody.bloodSplatter);
-        var vector = target.transform.position + __instance.BodyOffset;
-        vector.z = vector.y / 1000f;
-        deadBody.transform.position = vector;
-
-        if (isParticipant)
-        {
-            cam.Locked = true;
-            ConsoleJoystick.SetMode_Task();
-            CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
-        }
-
-        target.CustomDie(DeathReason.Kill, DeathReasonEnum.Killed, source);
-        yield return source.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
-
-        source.NetTransform.SnapTo(target.transform.position);
-        source.MyPhysics.Animations.PlayIdleAnimation();
-        KillAnimation.SetMovement(source, true);
-        KillAnimation.SetMovement(target, true);
-        deadBody.enabled = true;
-
-        if (isParticipant)
-        {
-            cam.Locked = false;
-            CustomPlayer.Local.isKilling = false;
-            source.isKilling = false;
-        }
-
-        yield break;
     }
 }
 
-[HarmonyPatch(typeof(NetworkedPlayerInfo), nameof(NetworkedPlayerInfo.ColorName), MethodType.Getter)]
-public static class FixColorNames
+[HarmonyPatch(typeof(NetworkedPlayerInfo))]
+public static class PlayerDataPatches
 {
+    [HarmonyPatch(nameof(NetworkedPlayerInfo.ColorName), MethodType.Getter)]
     public static bool Prefix(NetworkedPlayerInfo __instance, ref string __result)
     {
         __result = __instance.GetPlayerColorString(PlayerOutfitType.Default);
         return false;
     }
+
+    [HarmonyPatch(nameof(NetworkedPlayerInfo.GetPlayerColorString))]
+    public static bool Prefix(NetworkedPlayerInfo __instance, PlayerOutfitType outfitType, ref string __result)
+    {
+		if (__instance.Outfits.TryGetValue(outfitType, out var outfit))
+        {
+            var translation = Palette.GetColorName(outfit.ColorId);
+            __result = outfit.ColorId.IsDefault() ? translation[0].ToString().ToUpper() + translation[1..].ToLower() : translation;
+        }
+        else
+			__result = "";
+
+        return false;
+    }
+
+    [HarmonyPatch(nameof(NetworkedPlayerInfo.Serialize))]
+    public static bool Prefix(NetworkedPlayerInfo __instance, MessageWriter writer, bool initialState, ref bool __result)
+    {
+        writer.Write(__instance.PlayerId);
+        writer.WritePacked(__instance.ClientId);
+        writer.Write((byte)__instance.Outfits.Count);
+
+        foreach (var pair in __instance.Outfits)
+        {
+            writer.Write((byte)pair.Key);
+            pair.Value.Serialize(writer);
+        }
+
+        writer.WritePacked(__instance.PlayerLevel);
+        byte b = 0;
+
+        if (__instance.Disconnected)
+            b |= 1;
+
+        if (__instance.IsDead)
+            b |= 4;
+
+        writer.Write(b);
+        writer.Write((ushort)(__instance.Role?.Role ?? RoleTypes.Crewmate));
+        var roleWhenAlive = false;
+
+        try
+        {
+            roleWhenAlive = __instance.RoleWhenAlive != null && __instance.RoleWhenAlive.HasValue;
+        } catch {}
+
+        writer.Write(roleWhenAlive);
+
+        if (roleWhenAlive)
+            writer.Write((ushort)__instance.RoleWhenAlive.Value);
+
+        if (__instance.Tasks != null)
+        {
+            writer.Write((byte)__instance.Tasks.Count);
+            __instance.Tasks.ForEach(x => x.Serialize(writer));
+        }
+        else
+            writer.Write(0);
+
+        writer.Write(__instance.FriendCode ?? "");
+        writer.Write(__instance.Puid ?? "");
+
+        if (!initialState)
+            __instance.ClearDirtyBits();
+
+        __result = true;
+        return false;
+    }
 }
 
-/*[HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
-public static class DebuggingClassForRandomStuff
+[HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>))]
+public static class PatchColours
 {
-    public static void Postfix()
+    public static bool Prefix(StringNames id, ref string __result)
     {
-        // Some sick code here
-        // Got too lazy to constantly remove it so it'll stay now, still commented tho because i love to reduce dll size :D
+        var result = CustomColorManager.AllColors.Values.TryFinding(x => x.StringID == (int)id && !x.Default, out var color) && color != null;
+
+        if (result)
+        {
+            var translation = TranslationManager.Translate($"Colors.{color.Name}");
+            __result = translation == $"Colors.{color.Name}" ? color.Name : translation;
+        }
+
+        return !result;
     }
-}*/
+}

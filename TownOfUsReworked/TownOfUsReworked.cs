@@ -1,3 +1,5 @@
+using BepInEx.Logging;
+
 namespace TownOfUsReworked;
 
 [BepInPlugin(Id, Name, VersionString)]
@@ -14,7 +16,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 12;
+    public const int DevBuild = 13;
 
     public static bool IsTest { get; set; }
     private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);
@@ -86,6 +88,7 @@ public partial class TownOfUsReworked : BasePlugin
     public override void Load()
     {
         Logging.Log = Log;
+        DiskLog = BepInEx.Logging.Logger.Listeners.OfType<DiskLogListener>().FirstOrDefault();
         Message("Loading");
 
         if (CheckAbort(out var mod))

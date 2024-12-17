@@ -124,7 +124,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         else if (option is LayerEnum layer)
         {
             AddMenuIndex(6 + (int)layer);
-            result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage) || RoleGen.GetSpawnItem(layer).IsActive();
+            result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage) || RoleGenManager.GetSpawnItem(layer).IsActive();
         }
         else if (option is MultiMenu menu)
             result = Menus.Contains(menu);

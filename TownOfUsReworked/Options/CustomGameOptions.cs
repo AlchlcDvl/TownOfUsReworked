@@ -313,6 +313,9 @@ public static class GameModifiers
 
     [ToggleOption(MultiMenu.Main)]
     public static bool ShowKillerRoleColor { get; set; } = false;
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool PurePlayers { get; set; } = false;
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -1139,19 +1142,19 @@ public static class Dispositions
     [LayerOption("#678D36FF", LayerEnum.Fanatic)]
     public static RoleOptionData Fanatic { get; set; }
 
-    [LayerOption("#FF351FFF", LayerEnum.Linked, Max = 7)]
+    [LayerOption("#FF351FFF", LayerEnum.Linked, max: 7)]
     public static RoleOptionData Linked { get; set; }
 
-    [LayerOption("#FF66CCFF", LayerEnum.Lovers, Max = 7)]
+    [LayerOption("#FF66CCFF", LayerEnum.Lovers, max: 7)]
     public static RoleOptionData Lovers { get; set; }
 
-    [LayerOption("#00EEFFFF", LayerEnum.Mafia, Min = 2)]
+    [LayerOption("#00EEFFFF", LayerEnum.Mafia, min: 2)]
     public static RoleOptionData Mafia { get; set; }
 
     [LayerOption("#008080FF", LayerEnum.Overlord)]
     public static RoleOptionData Overlord { get; set; }
 
-    [LayerOption("#3D2D2CFF", LayerEnum.Rivals, Max = 7)]
+    [LayerOption("#3D2D2CFF", LayerEnum.Rivals, max: 7)]
     public static RoleOptionData Rivals { get; set; }
 
     [LayerOption("#ABABFFFF", LayerEnum.Taskmaster)]

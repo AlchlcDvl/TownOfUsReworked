@@ -325,7 +325,7 @@ public enum MiscRPC : byte
     FixLights,
     FixMixup,
     SetFirstKilled,
-    SyncPureCrew,
+    SyncPure,
     SyncSummary,
     BodyLocation,
     BastionBomb,
@@ -970,4 +970,9 @@ public enum TempLocation : byte
     DontMove,
     DeathValley,
     SwappedWithVitals
+}
+
+public enum ReworkedLogLevel : byte
+{
+    Critical
 }

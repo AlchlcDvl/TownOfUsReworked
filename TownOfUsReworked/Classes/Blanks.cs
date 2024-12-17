@@ -25,4 +25,6 @@ public static class Blanks
     public static float BlankZero() => 0f;
 
     public static string BlankButtonLabel() => "ABILITY";
+
+    public static string BlankButtonSprite() => "Placeholder";
 }

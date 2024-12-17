@@ -18,7 +18,7 @@ public class Plaguebearer : Harbinger<Pestilence>
     public override Func<string> StartText => () => "Spread Disease To Summon <#424242FF>Pestilence</color>";
     public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <#424242FF>Pestilence</color>\n- Infections can "
         + "spread via interaction between players";
-    public override DefenseEnum DefenseVal => Infected.Count < AllPlayers().Count / 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override DefenseEnum DefenseVal => Infected.Count < GameData.Instance.PlayerCount / 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
     public override void Init()
     {

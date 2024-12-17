@@ -1,4 +1,4 @@
-using static TownOfUsReworked.Localisation.TranslationManager;
+using static TownOfUsReworked.Managers.TranslationManager;
 
 namespace TownOfUsReworked.Loaders;
 

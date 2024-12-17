@@ -32,7 +32,11 @@ public static class ListExtensions
 
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
 
-    public static List<T> ToSystem<T>(this ISystem.List<T> list) => [ .. list.ToArray() ];
+    public static IEnumerable<T> ToSystem<T>(this ISystem.List<T> list)
+    {
+        foreach (var item in list)
+            yield return item;
+    }
 
     public static ISystem.List<T> ToIl2Cpp<T>(this List<T> list)
     {
@@ -51,11 +55,40 @@ public static class ListExtensions
 
     public static T Random<T>(this IEnumerable<T> list, Func<T, bool> predicate, T defaultVal = default) => list.Where(predicate).Random(defaultVal);
 
-    public static int Count<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().Count(predicate);
+    public static int Count<T>(this ISystem.List<T> list, Func<T, bool> predicate)
+    {
+        var result = 0;
 
-    public static bool Any<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().Any(predicate);
+        foreach (var item in list)
+        {
+            if (predicate(item))
+                result++;
+        }
 
-    public static bool All<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().All(predicate);
+        return result;
+    }
+
+    public static bool Any<T>(this ISystem.List<T> list, Func<T, bool> predicate)
+    {
+        foreach (var item in list)
+        {
+            if (predicate(item))
+                return true;
+        }
+
+        return false;
+    }
+
+    public static bool All<T>(this ISystem.List<T> list, Func<T, bool> predicate)
+    {
+        foreach (var item in list)
+        {
+            if (!predicate(item))
+                return false;
+        }
+
+        return true;
+    }
 
     public static void ForEach<T>(this ISystem.List<T> source, Action<T> action)
     {

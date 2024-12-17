@@ -22,8 +22,8 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type, 
         if (IsInGame() && !ClientOnly)
             return;
 
-        Value = value;
         Property?.SetValue(null, value);
+        Value = Property.GetValue<T>(null);
 
         if (!CustomPlayer.Local)
             return;

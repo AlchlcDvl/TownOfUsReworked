@@ -78,6 +78,8 @@ public class CustomButton
                 ButtonLabelFunc = labelFunc;
             else if (prop is SpriteName sprite)
                 ButtonSprite = sprite.Value;
+            else if (prop is SpriteFunc spriteFunc)
+                SpriteFunc = spriteFunc;
             else if (prop is AbilityTypes type)
                 Type = type;
             else if (prop is KeybindType keybind)
@@ -164,6 +166,7 @@ public class CustomButton
         Difference ??= BlankZero;
         Multiplier ??= BlankOne;
         ButtonLabelFunc ??= BlankButtonLabel;
+        SpriteFunc ??= BlankButtonSprite;
         ButtonLabel ??= "ABILITY";
         ButtonSprite ??= "Placeholder";
         CooldownTime = EffectTime = DelayTime = 0f;

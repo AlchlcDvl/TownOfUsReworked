@@ -1361,7 +1361,7 @@ public static class LayerExtentions
         var converter = PlayerById(convert);
         var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.NeutralNeo));
 
-        if (condition || RoleGen.Convertible <= 0 || RoleGen.PureCrew == converted || !converts)
+        if (condition || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts)
         {
             if (AmongUsClient.Instance.AmHost)
                 Interact(converter, converted, true, true);
@@ -1403,7 +1403,7 @@ public static class LayerExtentions
 
         role1.SubFaction = sub;
         role1.Faction = Faction.Neutral;
-        Classes.RoleGen.Convertible--;
+        RoleGenManager.Convertible--;
 
         if (converted.AmOwner)
             Flash(role1.SubFactionColor);

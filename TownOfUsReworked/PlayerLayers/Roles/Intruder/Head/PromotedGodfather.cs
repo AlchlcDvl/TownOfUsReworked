@@ -58,7 +58,7 @@ public class PromotedGodfather : Intruder, IIntimidator, IDragger, IDigger
     {
         if (IsBM)
         {
-            BlackmailButton ??= new(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(Blackmailer.BlackmailCd),
+            BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(Blackmailer.BlackmailCd),
                 (PlayerBodyExclusion)BMException, (UsableFunc)BMUsable);
         }
         else if (IsCamo)

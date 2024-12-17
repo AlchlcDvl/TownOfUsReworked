@@ -158,12 +158,12 @@ public class LayerHandler : RoleBehaviour
 
     public override void OnDeath(DeathReason reason)
     {
-        if (CustomPlayer.Local.Is(LayerEnum.Coroner) && !CustomPlayer.LocalCustom.Dead)
+        if (CustomPlayer.LocalCustom.Dead)
+            Flash(CustomColorManager.Stalemate);
+        else if (CustomPlayer.Local.Is(LayerEnum.Coroner))
             Flash(CustomColorManager.Coroner);
         else if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
-            Flash(mon.Color);
-        else if (CustomPlayer.LocalCustom.Dead)
-            Flash(CustomColorManager.Stalemate);
+            Flash(CustomColorManager.Monarch);
     }
 
     public override bool DidWin(GameOverReason gameOverReason)

@@ -1,6 +1,6 @@
-using static TownOfUsReworked.Cosmetics.CustomNameplateManager;
-using static TownOfUsReworked.Cosmetics.CustomVisorManager;
-using static TownOfUsReworked.Cosmetics.CustomHatManager;
+using static TownOfUsReworked.Managers.CustomNameplateManager;
+using static TownOfUsReworked.Managers.CustomVisorManager;
+using static TownOfUsReworked.Managers.CustomHatManager;
 
 namespace TownOfUsReworked.Patches;
 

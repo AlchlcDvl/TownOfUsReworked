@@ -1,4 +1,4 @@
-using static TownOfUsReworked.RoleGen2.RoleGenManager;
+using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen2;
 
@@ -9,7 +9,7 @@ public class TaskRaceGen : BaseRoleGen
 
     public override void InitList()
     {
-        while (AllRoles.Count < AllPlayers().Count)
+        while (AllRoles.Count < GameData.Instance.PlayerCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Runner));
     }
 }

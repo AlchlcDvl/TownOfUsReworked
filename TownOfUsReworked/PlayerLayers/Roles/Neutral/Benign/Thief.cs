@@ -50,7 +50,7 @@ public class Thief : Neutral
 
             foreach (var layer in nks)
             {
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !GuessingMenu.Mapping.Contains(LayerEnum.Vigilante) && GuessingMenu.Mapping.Contains(LayerEnum.VampireHunter)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !GuessingMenu.Mapping.Contains(LayerEnum.Vigilante) && GuessingMenu.Mapping.Contains(LayerEnum.VampireHunter)))
                     GuessingMenu.Mapping.Add(layer);
             }
         }
@@ -66,7 +66,7 @@ public class Thief : Neutral
                 if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.Impostor)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) && GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) && GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
                     GuessingMenu.Mapping.Add(layer);
             }
         }
@@ -82,7 +82,7 @@ public class Thief : Neutral
                 if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel or LayerEnum.Anarchist)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) && GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) && GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
                     GuessingMenu.Mapping.Add(layer);
             }
         }
@@ -94,7 +94,7 @@ public class Thief : Neutral
 
             foreach (var layer in nks)
             {
-                if (RoleGen.GetSpawnItem(layer).IsActive())
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                     GuessingMenu.Mapping.Add(layer);
             }
         }

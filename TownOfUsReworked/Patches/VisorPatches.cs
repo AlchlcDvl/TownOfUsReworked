@@ -1,5 +1,5 @@
 using Innersloth.Assets;
-using static TownOfUsReworked.Cosmetics.CustomVisorManager;
+using static TownOfUsReworked.Managers.CustomVisorManager;
 
 namespace TownOfUsReworked.Patches;
 

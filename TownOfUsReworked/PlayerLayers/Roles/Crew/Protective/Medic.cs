@@ -34,7 +34,9 @@ public class Medic : Crew, IShielder
 
     public void Protect(PlayerControl target)
     {
-        if (Interact(Player, target) != CooldownType.Fail)
+        var cooldown = Interact(Player, target);
+
+        if (cooldown != CooldownType.Fail)
         {
             if (ShieldedPlayer)
             {
@@ -47,6 +49,8 @@ public class Medic : Crew, IShielder
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MedicActionsRPC.Add, target);
             }
         }
+
+        ShieldButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player)

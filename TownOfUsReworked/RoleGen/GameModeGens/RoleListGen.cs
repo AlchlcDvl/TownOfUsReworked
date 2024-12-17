@@ -1,4 +1,4 @@
-using static TownOfUsReworked.RoleGen2.RoleGenManager;
+using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen2;
 
@@ -129,7 +129,7 @@ public class RoleListGen : BaseRoleGen
         // Added rate limits to ensure the loops do not go on forever if roles have been set to unique
 
         // In case if the ratelimits and bans disallow the spawning of roles from the role list, vanilla Crewmate should spawn
-        while (AllRoles.Count < AllPlayers().Count)
+        while (AllRoles.Count < GameData.Instance.PlayerCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 

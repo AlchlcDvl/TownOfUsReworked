@@ -53,7 +53,7 @@ public static class FreeplayPatches
                 changing.End();
 
             if (!PreviouslySelected.TryFinding(x => x.Type == layer, out var selected))
-                selected = RoleGen.SetLayer(layer, type);
+                selected = RoleGenManager.SetLayer(layer, type);
 
             selected.Start(CustomPlayer.Local);
             ButtonUtils.Reset();

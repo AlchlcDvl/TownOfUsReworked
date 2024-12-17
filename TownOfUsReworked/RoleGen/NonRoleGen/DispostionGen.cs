@@ -1,4 +1,4 @@
-using static TownOfUsReworked.RoleGen2.RoleGenManager;
+using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen2;
 
@@ -8,20 +8,18 @@ public class DispositionGen : BaseGen
 
     public override void InitList()
     {
-        foreach (var layer in GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor))
+        foreach (var spawn in GetValuesFromToAndMorph(LayerEnum.Allied, LayerEnum.Traitor, GetSpawnItem))
         {
-            var spawn = GetSpawnItem(layer);
-
             if (spawn.IsActive())
             {
-                for (var j = 0; j < spawn.Count * (layer is LayerEnum.Rivals or LayerEnum.Lovers or LayerEnum.Linked ? 2 : 1); j++)
+                for (var j = 0; j < spawn.Count; j++)
                     AllDispositions.Add(spawn);
             }
         }
 
         int maxDisp = DispositionsSettings.MaxDispositions;
         int minDisp = DispositionsSettings.MinDispositions;
-        var playerCount = AllPlayers().Count(x => x != PureCrew);
+        var playerCount = GameData.Instance.PlayerCount;
 
         while (maxDisp > playerCount)
             maxDisp--;
@@ -29,14 +27,29 @@ public class DispositionGen : BaseGen
         while (minDisp > playerCount)
             minDisp--;
 
-        ModeFilters[GameModeSettings.GameMode].Filter(ref AllDispositions, GameModeSettings.IgnoreLayerCaps ? playerCount : URandom.RandomRangeInt(minDisp, maxDisp + 1));
+        ModeFilters[GameModeSettings.GameMode].Filter(AllDispositions, GameModeSettings.IgnoreLayerCaps ? playerCount : URandom.RandomRangeInt(minDisp, maxDisp + 1));
+
+        var linked = AllDispositions.Count(x => x.ID == LayerEnum.Linked);
+
+        for (var i = 0; i < linked; i++)
+            AllDispositions.Add(GetSpawnItem(LayerEnum.Linked));
+
+        var lovers = AllDispositions.Count(x => x.ID == LayerEnum.Lovers);
+
+        for (var i = 0; i < lovers; i++)
+            AllDispositions.Add(GetSpawnItem(LayerEnum.Lovers));
+
+        var rivals = AllDispositions.Count(x => x.ID == LayerEnum.Rivals);
+
+        for (var i = 0; i < rivals; i++)
+            AllDispositions.Add(GetSpawnItem(LayerEnum.Rivals));
     }
 
     public override void Assign()
     {
-        var playerList = AllPlayers().Where(x => x != PureCrew).ToList();
+        var playerList = AllPlayers().ToList();
         playerList.Shuffle();
-        AllAbilities.Shuffle();
+        AllDispositions.Shuffle();
         var invalid = new List<LayerEnum>();
 
         if (TownOfUsReworked.IsTest)
@@ -89,5 +102,7 @@ public class DispositionGen : BaseGen
 
             Message("Invalid Dispositions in the game: " + ids.Trim());
         }
+
+        AllDispositions.Clear();
     }
 }

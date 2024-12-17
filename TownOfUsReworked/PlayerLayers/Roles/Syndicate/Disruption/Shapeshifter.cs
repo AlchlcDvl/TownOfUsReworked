@@ -32,8 +32,8 @@ public class Shapeshifter : Syndicate
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Exception1);
         ShapeshiftMenu2 = new(Player, Click2, Exception2);
-        ShapeshiftButton ??= new(this, "Shapeshift", AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(ShapeshiftCd), (EffectEndVoid)UnShapeshift,
-            new Duration(ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)Label);
+        ShapeshiftButton ??= new(this, new SpriteName("Shapeshift"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(ShapeshiftCd),
+            (EffectEndVoid)UnShapeshift, new Duration(ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)Label);
     }
 
     public void Shift() => Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
@@ -45,30 +45,27 @@ public class Shapeshifter : Syndicate
             Morph(player1, player2);
             Morph(player2, player1);
         }
+        else if (!Shapeshifted)
+        {
+            Shapeshifted = true;
+            var allPlayers = AllPlayers().ToList();
+            var shuffledPlayers = AllPlayers().ToList();
+            shuffledPlayers.Shuffle();
+
+            for (var i = 0; i < allPlayers.Count; i++)
+            {
+                var morphed = allPlayers[i];
+                var morphTarget = shuffledPlayers[i];
+                CachedMorphs.TryAdd(morphed.PlayerId, morphTarget.PlayerId);
+            }
+        }
         else
         {
-            if (!Shapeshifted)
+            AllPlayers().ForEach(x =>
             {
-                Shapeshifted = true;
-                var allPlayers = AllPlayers();
-                var shuffledPlayers = AllPlayers();
-                shuffledPlayers.Shuffle();
-
-                for (var i = 0; i < allPlayers.Count; i++)
-                {
-                    var morphed = allPlayers[i];
-                    var morphTarget = shuffledPlayers[i];
-                    CachedMorphs.TryAdd(morphed.PlayerId, morphTarget.PlayerId);
-                }
-            }
-            else
-            {
-                AllPlayers().ForEach(x =>
-                {
-                    if (CachedMorphs.TryGetValue(x.PlayerId, out var target))
-                        Morph(x, PlayerById(target));
-                });
-            }
+                if (CachedMorphs.TryGetValue(x.PlayerId, out var target))
+                    Morph(x, PlayerById(target));
+            });
         }
     }
 

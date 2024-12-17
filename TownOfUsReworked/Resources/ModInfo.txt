@@ -21,17 +21,18 @@ Changes!
 - Recode: Custom colors have been recoded to be more efficient
 - Recode: Redone game patches and their organisation
 - Recode: Layer assignment has been completely redone to avoid some generation problems
-- Rework: Dictator no longer ejects 3 players at a time, instead they pick a singular player to eject and instead has gained ability charges to compensate
-- Change: Actors will now prioritise turning into a dead target role
+- Rework: Dictator no longer ejects 3 players at a time, instead they only pick a singular player to eject and has gained ability charges to compensate
+- Change: Actors will now prioritise turning into a dead role
 - Change: Arsonists when igniting will remove the coolant off those doused by a Cryomaniac
 - Change: Cryomaniacs when freezing will remove the gasoline off those doused by an Arsonist
 - Change: Player names will no longer appear in your vision until more of their body is exposed to your vision
+- Change: The "Pure Crew" is now a "Pure Player" game modifier so it's no longer limited to just Crew roles (originally it was a bandaid fix for task completion issues; those were resolved ages ago)
 - Nerf: Vampire Hunters turned Vigilantes will always have one bullet left
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode, however they will still be roleblock immune the entire game
-- Improvement: Improved the mod's asset loaders
+- Improvement: Improved the mod's loaders
 - Improvement: Mod assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
 - Improvement: Made general optimisations to improve the mod's runtime
-- Removed: Removed the "Lobby Cap" toggle in the testing menu due to it not actually functioning
+- Removed: Removed the "Lobby Cap" toggle in the testing menu due to it not actually functioning and being too much of a hassle to actually get working
 
 Fixes!
 - Critical: Fixed Godfather-Miners being unable to spawn vents
@@ -50,6 +51,7 @@ Fixes!
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
 - General: Fixed All Any role gen being a bit broken in some aspects
 - General: Fixed fake players not spawning in locations correctly on Airship and Submerged
+- General: Fixed some instances of layer assignment breaking
 - General: Fixed conversions being inconsistent
 
 Known Bugs :(

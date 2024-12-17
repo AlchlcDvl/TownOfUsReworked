@@ -1,4 +1,4 @@
-using static TownOfUsReworked.RoleGen2.RoleGenManager;
+using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen2;
 
@@ -12,7 +12,7 @@ public class VanillaGen : BaseRoleGen
         while (AllRoles.Count < (SyndicateSettings.AltImps ? SyndicateSettings.SyndicateCount : IntruderSettings.IntruderCount))
             AllRoles.Add(GetSpawnItem(SyndicateSettings.AltImps ? LayerEnum.Anarchist : LayerEnum.Impostor));
 
-        while (AllRoles.Count < AllPlayers().Count)
+        while (AllRoles.Count < GameData.Instance.PlayerCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 }

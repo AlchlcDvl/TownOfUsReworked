@@ -1,4 +1,4 @@
-using static TownOfUsReworked.RoleGen2.RoleGenManager;
+using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen2;
 
@@ -12,7 +12,7 @@ public class HideAndSeekGen : BaseRoleGen
         while (AllRoles.Count < GameModeSettings.HunterCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Hunter));
 
-        while (AllRoles.Count < AllPlayers().Count)
+        while (AllRoles.Count < GameData.Instance.PlayerCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Hunted));
     }
 }

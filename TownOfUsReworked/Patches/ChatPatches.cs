@@ -27,7 +27,7 @@ public static class ChatPatches
         {
             var lower = text.ToLower();
             var split = lower.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            var first = split[0];
+            var first = split[0][1..];
             var closestCommand = Find(first);
 
             if (closestCommand != null)
@@ -38,13 +38,13 @@ public static class ChatPatches
                 for (var i = 0; i < parts.Length; i++)
                     result += $"{parts[i]} ";
 
-                SuggestionText.SetText($"/{closestCommand.FindAlias(lower)} {result.Trim()} {closestCommand.ConstructParameters(split)}");
+                SuggestionText.SetText($"/{closestCommand.FindAlias(first)} {result.Trim()} {closestCommand.ConstructParameters(split)}");
 
                 if (Input.GetKeyDown(KeyCode.Tab))
                     __instance.freeChatField.textArea.SetText(SuggestionText.text.Split(' ')[0]);
             }
             else
-                SuggestionText.SetText("");
+                SuggestionText.SetText($"{text} UNKNOWN COMMAND");
         }
         else
             SuggestionText.SetText("");
@@ -194,7 +194,7 @@ public static class ChatPatches
         {
             chatHandled = true;
             var args = __instance.freeChatField.Text.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            Execute(Find(args[0].ToLower()), args, __instance.freeChatField.Text);
+            Execute(args, __instance.freeChatField.Text);
         }
         else if (CustomPlayer.Local.IsBlackmailed() && text != "i am blackmailed.")
         {

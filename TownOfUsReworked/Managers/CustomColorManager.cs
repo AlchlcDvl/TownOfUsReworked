@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Cosmetics;
+namespace TownOfUsReworked.Managers;
 
 public static class CustomColorManager
 {
@@ -23,6 +23,8 @@ public static class CustomColorManager
     public static bool IsChanging(this int id) => AllColors.TryGetValue(id, out var color) && color.Changing;
 
     public static bool IsLighter(this int id) => AllColors.TryGetValue(id, out var color) && color.Lighter;
+
+    public static bool IsDefault(this int id) => AllColors.TryGetValue(id, out var color) && color.Default;
 
     public static UColor GetColor(this int id, bool shadow) => AllColors.TryGetValue(id, out var color) ? (shadow ? color.GetShadowColor() : color.GetColor()) : UColor.white;
 

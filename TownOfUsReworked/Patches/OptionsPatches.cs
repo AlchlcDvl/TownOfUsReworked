@@ -1018,7 +1018,7 @@ public static class SettingsPatches
                 return;
             }
 
-            if (AllPlayers().Count <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive || IsHnS())
+            if (GameData.Instance.PlayerCount <= 1 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MCIActive || IsHnS())
                 return;
 
             SendOptionRPC(targetClientId: __instance.myPlayer.OwnerId);

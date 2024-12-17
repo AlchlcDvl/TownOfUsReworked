@@ -57,8 +57,8 @@ public class GuardianAngel : Neutral
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         Alignment = Alignment.NeutralBen;
         TargetPlayer = null;
-        ProtectButton ??= new(this, "Protect", AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT", new Duration(ProtectDur),
-            MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
+        ProtectButton ??= new(this, new SpriteName("Protect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT",
+            new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
 
         if (GuardianAngelCanPickTargets)
             TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);

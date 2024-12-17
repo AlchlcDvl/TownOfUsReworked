@@ -2,13 +2,17 @@ namespace TownOfUsReworked.RoleGen2;
 
 public class AllAnyFilter : BaseFilter
 {
-    public override void Filter(ref List<RoleOptionData> spawnList, int count)
+    public override void Filter(List<RoleOptionData> spawnList, int count)
     {
+        if (count == 0)
+        {
+            spawnList.Clear();
+            return;
+        }
+
         var newList = new List<RoleOptionData>();
         spawnList.Shuffle();
-
-        if (count != AllPlayers().Count)
-            count = AllPlayers().Count;
+        var pc = GameData.Instance.PlayerCount;
 
         while (newList.Count < count && spawnList.Any())
         {

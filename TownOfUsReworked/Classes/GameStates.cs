@@ -46,7 +46,7 @@ public static class GameStates
 
     public static bool LastSyn() => AllPlayers().Count(x => x.Is(Faction.Syndicate) && !x.HasDied()) == 1;
 
-    public static bool NoPlayers() => AllPlayers().Count < 1 || !CustomPlayer.Local || !CustomPlayer.LocalCustom.Data || NoLobby();
+    public static bool NoPlayers() => !AllPlayers().Any() || !CustomPlayer.Local || !CustomPlayer.LocalCustom.Data || NoLobby();
 
     public static bool LocalBlocked() => PlayerLayer.LocalLayers().Any(x => x.IsBlocked);
 

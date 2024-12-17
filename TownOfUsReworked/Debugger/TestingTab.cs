@@ -22,7 +22,7 @@ public class TestingTab : BaseTab
         {
             if (GUILayout.Button("Spawn Bot"))
             {
-                if (AllPlayers().Count < GameSettings.LobbySize)
+                if (GameData.Instance.PlayerCount < GameSettings.LobbySize)
                 {
                     MCIUtils.CleanUpLoad();
                     MCIUtils.CreatePlayerInstance();

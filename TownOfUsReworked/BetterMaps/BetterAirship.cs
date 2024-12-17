@@ -168,7 +168,7 @@ public static class BetterAirship
             var yIndex = playerId % 2;
             var xIndex = (playerId - yIndex) / 2;
 
-            position.x += xIndex * (13f - 9f) * 2 / AllPlayers().Count;
+            position.x += xIndex * (13f - 9f) * 2 / GameData.Instance.PlayerCount;
 
             if (yIndex == 1)
                 position.y = 14.4f;

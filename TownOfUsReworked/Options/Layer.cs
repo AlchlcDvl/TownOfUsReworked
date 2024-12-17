@@ -1,11 +1,11 @@
 namespace TownOfUsReworked.Options;
 
-public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false) : OptionAttribute<RoleOptionData>(MultiMenu.Layer, CustomOptionType.Layer)
+public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false, int min = 1, int max = 15) : OptionAttribute<RoleOptionData>(MultiMenu.Layer, CustomOptionType.Layer)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
-    public int Max { get; set; } = 15;
-    public int Min { get; set; } = 1;
+    public int Max { get; set; } = max;
+    public int Min { get; set; } = min;
     public LayerEnum Layer { get; } = layer;
     public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
     private bool NoParts { get; set; } = noParts;
@@ -179,7 +179,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         }
 
         if (count.IsInRange(0, Min))
-            count = Min;
+            count = 0;
 
         val.Count = count;
         val.Chance = chance;
@@ -349,7 +349,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         view.checkMark.gameObject.SetActive(SavedMode == GameMode.AllAny && data.Active);
         view.checkMarkOff.gameObject.SetActive(SavedMode == GameMode.AllAny && !data.Active);
 
-        var isActive = RoleGen.GetSpawnItem(Layer).IsActive();
+        var isActive = RoleGenManager.GetSpawnItem(Layer).IsActive();
         var color = isActive ? LayerColor : Palette.DisabledGrey;
         view.labelBackground.color = color;
         view.titleText.color = view.chanceText.color = view.chanceTitle.color = view.settingText.color = LeftTitle.color = CenterValue.color = CenterTitle.color = color.Alternate(0.45f);

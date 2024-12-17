@@ -114,7 +114,7 @@ public abstract class Assassin : Ability
                     continue;
                 }
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !GuessingMenu.Mapping.Contains(LayerEnum.Vigilante) && GuessingMenu.Mapping.Contains(LayerEnum.VampireHunter)) || (layer ==
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !GuessingMenu.Mapping.Contains(LayerEnum.Vigilante) && GuessingMenu.Mapping.Contains(LayerEnum.VampireHunter)) || (layer ==
                     LayerEnum.Sheriff && !GuessingMenu.Mapping.Contains(LayerEnum.Sheriff) && GuessingMenu.Mapping.Contains(LayerEnum.Seer)) || (layer == LayerEnum.Seer && !GuessingMenu.Mapping.Contains(LayerEnum.Seer) &&
                     GuessingMenu.Mapping.Contains(LayerEnum.Mystic)))
                 {
@@ -135,7 +135,7 @@ public abstract class Assassin : Ability
                 if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.Impostor)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) && GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) && GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
                     GuessingMenu.Mapping.Add(layer);
             }
         }
@@ -152,7 +152,7 @@ public abstract class Assassin : Ability
                 if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel or LayerEnum.Anarchist)
                     continue;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) && GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) && GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
                     GuessingMenu.Mapping.Add(layer);
             }
         }
@@ -164,11 +164,11 @@ public abstract class Assassin : Ability
 
             foreach (var layer in nks)
             {
-                if (RoleGen.GetSpawnItem(layer).IsActive() && (!Player.Is(layer) || NeutralSettings.NoSolo == NoSolo.Never))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() && (!Player.Is(layer) || NeutralSettings.NoSolo == NoSolo.Never))
                     GuessingMenu.Mapping.Add(layer);
             }
 
-            if (RoleGen.GetSpawnItem(LayerEnum.Plaguebearer).IsActive() && !Player.Is(Alignment.NeutralHarb) && !Player.Is(Alignment.NeutralApoc))
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Plaguebearer).IsActive() && !Player.Is(Alignment.NeutralHarb) && !Player.Is(Alignment.NeutralApoc))
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Plaguebearer);
 
@@ -176,25 +176,25 @@ public abstract class Assassin : Ability
                     GuessingMenu.Mapping.Add(LayerEnum.Pestilence);
             }
 
-            if (RoleGen.GetSpawnItem(LayerEnum.Dracula).IsActive() && !Player.Is(SubFaction.Undead))
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Dracula).IsActive() && !Player.Is(SubFaction.Undead))
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Dracula);
                 GuessingMenu.Mapping.Add(LayerEnum.Undead);
             }
 
-            if (RoleGen.GetSpawnItem(LayerEnum.Jackal).IsActive() && !Player.Is(SubFaction.Cabal))
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Jackal).IsActive() && !Player.Is(SubFaction.Cabal))
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Jackal);
                 GuessingMenu.Mapping.Add(LayerEnum.Cabal);
             }
 
-            if (RoleGen.GetSpawnItem(LayerEnum.Necromancer).IsActive() && !Player.Is(SubFaction.Reanimated))
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Necromancer).IsActive() && !Player.Is(SubFaction.Reanimated))
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Necromancer);
                 GuessingMenu.Mapping.Add(LayerEnum.Reanimated);
             }
 
-            if (RoleGen.GetSpawnItem(LayerEnum.Whisperer).IsActive() && !Player.Is(SubFaction.Sect))
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Whisperer).IsActive() && !Player.Is(SubFaction.Sect))
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Whisperer);
                 GuessingMenu.Mapping.Add(LayerEnum.Sect);
@@ -207,7 +207,7 @@ public abstract class Assassin : Ability
 
                 foreach (var layer in nbs)
                 {
-                    if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel) && !GuessingMenu.Mapping.Contains(LayerEnum.Survivor)) || (layer
+                    if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel) && !GuessingMenu.Mapping.Contains(LayerEnum.Survivor)) || (layer
                         == LayerEnum.Thief && GuessingMenu.Mapping.Contains(LayerEnum.Amnesiac) && !GuessingMenu.Mapping.Contains(LayerEnum.Thief)))
                     {
                         GuessingMenu.Mapping.Add(layer);
@@ -221,7 +221,7 @@ public abstract class Assassin : Ability
 
                 foreach (var layer in nes)
                 {
-                    if (RoleGen.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter) && !GuessingMenu.Mapping.Contains(LayerEnum.Troll)) || (layer ==
+                    if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter) && !GuessingMenu.Mapping.Contains(LayerEnum.Troll)) || (layer ==
                         LayerEnum.Actor && GuessingMenu.Mapping.Contains(LayerEnum.Guesser) && !GuessingMenu.Mapping.Contains(LayerEnum.Actor)) || (layer == LayerEnum.Jester && GuessingMenu.Mapping.Contains(LayerEnum.Executioner) &&
                         !GuessingMenu.Mapping.Contains(LayerEnum.Jester)))
                     {
@@ -238,7 +238,7 @@ public abstract class Assassin : Ability
 
             foreach (var layer in mods)
             {
-                if (RoleGen.GetSpawnItem(layer).IsActive())
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                     GuessingMenu.Mapping.Add(layer);
             }
         }
@@ -250,7 +250,7 @@ public abstract class Assassin : Ability
             {
                 var layer = (LayerEnum)h;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive())
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
                     if (Player.Is(layer) && ((layer is LayerEnum.Lovers or LayerEnum.Rivals or LayerEnum.Linked or LayerEnum.Mafia) || (layer == LayerEnum.Corrupted &&
                         Corrupted.AllCorruptedWin)))
@@ -270,7 +270,7 @@ public abstract class Assassin : Ability
             {
                 var layer = (LayerEnum)h;
 
-                if (RoleGen.GetSpawnItem(layer).IsActive())
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
                     if ((layer == LayerEnum.Hitman && Player.Is(Faction.Intruder)) || (layer == LayerEnum.Sniper && Player.Is(Faction.Syndicate)) || (layer is LayerEnum.Bullseye or
                         LayerEnum.Snitch && Player.Is(Faction.Crew)))

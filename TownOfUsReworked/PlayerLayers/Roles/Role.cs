@@ -74,7 +74,6 @@ public abstract class Role : PlayerLayer
     }
 
     public Alignment Alignment { get; set; }
-    public SubFaction SubFaction { get; set; }
     public List<Role> RoleHistory { get; set; }
     public ChatChannel CurrentChannel { get; set; }
     public Dictionary<byte, CustomArrow> AllArrows { get; set; }
@@ -90,7 +89,46 @@ public abstract class Role : PlayerLayer
         set
         {
             _faction = value;
+            FactionColor = value switch
+            {
+                Faction.Intruder => CustomColorManager.Intruder,
+                Faction.Crew => CustomColorManager.Crew,
+                Faction.Syndicate => CustomColorManager.Syndicate,
+                Faction.Neutral => CustomColorManager.Neutral,
+                Faction.GameMode => Alignment switch
+                {
+                    Alignment.GameModeHideAndSeek => CustomColorManager.HideAndSeek,
+                    Alignment.GameModeTaskRace => CustomColorManager.TaskRace,
+                    _ => CustomColorManager.Faction
+                },
+                _ => CustomColorManager.Faction
+            };
             Alignment = Alignment.GetNewAlignment(value);
+        }
+    }
+    private SubFaction _subFaction;
+    public SubFaction SubFaction
+    {
+        get => _subFaction;
+        set
+        {
+            _subFaction = value;
+            SubFactionColor = value switch
+            {
+                SubFaction.Undead => CustomColorManager.Undead,
+                SubFaction.Sect => CustomColorManager.Sect,
+                SubFaction.Cabal => CustomColorManager.Cabal,
+                SubFaction.Reanimated => CustomColorManager.Reanimated,
+                _ => CustomColorManager.SubFaction
+            };
+            SubFactionSymbol = value switch
+            {
+                SubFaction.Cabal => "$",
+                SubFaction.Sect => "Λ",
+                SubFaction.Reanimated => "Σ",
+                SubFaction.Undead => "γ",
+                _ => "φ"
+            };
         }
     }
 
@@ -99,38 +137,11 @@ public abstract class Role : PlayerLayer
 
     public Func<string> Objectives { get; set; } = () => "- None";
 
-    public UColor FactionColor => Faction switch
-    {
-        Faction.Intruder => CustomColorManager.Intruder,
-        Faction.Crew => CustomColorManager.Crew,
-        Faction.Syndicate => CustomColorManager.Syndicate,
-        Faction.Neutral => CustomColorManager.Neutral,
-        Faction.GameMode => Alignment switch
-        {
-            Alignment.GameModeHideAndSeek => CustomColorManager.HideAndSeek,
-            Alignment.GameModeTaskRace => CustomColorManager.TaskRace,
-            _ => CustomColorManager.Faction
-        },
-        _ => CustomColorManager.Faction
-    };
-    public UColor SubFactionColor => SubFaction switch
-    {
-        SubFaction.Undead => CustomColorManager.Undead,
-        SubFaction.Sect => CustomColorManager.Sect,
-        SubFaction.Cabal => CustomColorManager.Cabal,
-        SubFaction.Reanimated => CustomColorManager.Reanimated,
-        _ => CustomColorManager.SubFaction
-    };
+    public UColor FactionColor { get; set; }
+    public UColor SubFactionColor { get; set; }
+    public string SubFactionSymbol { get; set; }
     public virtual string FactionName => $"{Faction}";
     public virtual string SubFactionName => $"{SubFaction}";
-    public string SubFactionSymbol => SubFaction switch
-    {
-        SubFaction.Cabal => "$",
-        SubFaction.Sect => "Λ",
-        SubFaction.Reanimated => "Σ",
-        SubFaction.Undead => "γ",
-        _ => "φ"
-    };
 
     public string KilledBy { get; set; } = "";
     public DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
@@ -190,10 +201,10 @@ public abstract class Role : PlayerLayer
 
         if (!IsCustomHnS() && !IsTaskRace())
         {
-            if (RoleGen.GetSpawnItem(LayerEnum.Enforcer).IsActive())
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Enforcer).IsActive())
                 BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
 
-            if (RoleGen.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
+            if (RoleGenManager.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
                 PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
         }
     }

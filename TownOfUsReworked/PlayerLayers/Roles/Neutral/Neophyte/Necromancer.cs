@@ -104,7 +104,7 @@ public class Necromancer : Neophyte
     {
         var player = PlayerByBody(target);
 
-        if (RoleGen.Convertible <= 0 || !player.Is(SubFaction.None))
+        if (RoleGenManager.Convertible <= 0 || !player.Is(SubFaction.None))
         {
             Flash(new(255, 0, 0, 255));
             ResurrectButton.StartCooldown();

@@ -1,4 +1,4 @@
-using static TownOfUsReworked.RoleGen2.RoleGenManager;
+using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen2;
 
@@ -19,20 +19,20 @@ public class ModifierGen : BaseGen
 
         int maxMod = ModifiersSettings.MaxModifiers;
         int minMod = ModifiersSettings.MinModifiers;
-        var players = AllPlayers();
+        var players = GameData.Instance.PlayerCount;
 
-        while (maxMod > players.Count)
+        while (maxMod > players)
             maxMod--;
 
-        while (minMod > players.Count)
+        while (minMod > players)
             minMod--;
 
-        ModeFilters[GameModeSettings.GameMode].Filter(ref AllModifiers, GameModeSettings.IgnoreLayerCaps ? players.Count : URandom.RandomRangeInt(minMod, maxMod + 1));
+        ModeFilters[GameModeSettings.GameMode].Filter(AllModifiers, GameModeSettings.IgnoreLayerCaps ? players : URandom.RandomRangeInt(minMod, maxMod + 1));
     }
 
     public override void Assign()
     {
-        var playerList = AllPlayers();
+        var playerList = AllPlayers().ToList();
         playerList.Shuffle();
         AllModifiers.Shuffle();
         var invalid = new List<LayerEnum>();
@@ -90,5 +90,7 @@ public class ModifierGen : BaseGen
 
             Message("Invalid Modifiers in the game: " + ids.Trim());
         }
+
+        AllModifiers.Clear();
     }
 }

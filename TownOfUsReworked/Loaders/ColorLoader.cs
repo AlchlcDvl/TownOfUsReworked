@@ -1,4 +1,4 @@
-using static TownOfUsReworked.Cosmetics.CustomColorManager;
+using static TownOfUsReworked.Managers.CustomColorManager;
 
 namespace TownOfUsReworked.Loaders;
 

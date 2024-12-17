@@ -412,7 +412,7 @@ public static class Utils
         if (killer.AmOwner || target.AmOwner)
             Play("Kill");
 
-        killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(lunge ? killer : target, target));
+        Coroutines.Start(CoPerformKill(killer.KillAnimations.Random(), killer, target, lunge));
     }
 
     public static void MarkMeetingDead(PlayerControl target, bool doesKill = true, bool noReason = false, bool showAnim = true) => MarkMeetingDead(target, target, doesKill, noReason,
@@ -864,7 +864,7 @@ public static class Utils
         foreach (var player in allPlayers)
         {
             if ((player.Data.IsDead && !includeDead) || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !GameModifiers.VentTargeting) ||
-                player.walkingToVent)
+                player.walkingToVent || player.isKilling)
             {
                 continue;
             }
@@ -1382,9 +1382,8 @@ public static class Utils
 
         if (!TutorialManager.InstanceExists && player.AmOwner)
         {
-            var instance = StatsManager.Instance;
-            instance.LastGameStarted = Il2CppSystem.DateTime.MinValue;
-            instance.BanPoints--;
+            StatsManager.Instance.LastGameStarted = Il2CppSystem.DateTime.MinValue;
+            StatsManager.Instance.BanPoints--;
         }
 
         GameData.LastDeathReason = reason;
@@ -1400,27 +1399,7 @@ public static class Utils
         player.gameObject.layer = LayerMask.NameToLayer("Ghost");
         player.cosmetics.SetNameMask(false);
         player.cosmetics.PettingHand.StopPetting();
-        Pestilence.Infected.Remove(player.PlayerId);
         DefaultOutfit(player);
-
-        if (player.AmOwner)
-        {
-            var tracker = HUD().roomTracker.text;
-            var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
-            BodyLocations[player.PlayerId] = location;
-            CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, player, location);
-
-            if (Vent.currentVent)
-                Vent.currentVent.Buttons?.ForEach(x => x.gameObject.SetActive(false));
-        }
-
-        if (player.walkingToVent)
-        {
-            player.inVent = false;
-            Vent.currentVent = null;
-            player.moveable = true;
-            player.MyPhysics.StopAllCoroutines();
-        }
 
         player.Data.Role.OnDeath(reason);
         GameManager.Instance.OnPlayerDeath(player, false);
@@ -1432,23 +1411,88 @@ public static class Utils
             player.AdjustLighting();
             AllPlayers().ForEach(x => x.cosmetics.ToggleNameVisible(GameManager.Instance.LogicOptions.GetShowCrewmateNames()));
             player.RpcSetScanner(false);
+            HUD().KillOverlay.ShowKillAnimation(killer.Data, player.Data);
+            player.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
+            var tracker = HUD().roomTracker.text;
+            var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
+            BodyLocations[player.PlayerId] = location;
+            CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, player, location);
+
+            if (Vent.currentVent)
+                Vent.currentVent.Buttons?.ForEach(x => x.gameObject.SetActive(false));
 
             if (ActiveTask())
                 ActiveTask().Close();
 
             if (MapBehaviourPatches.MapActive)
                 Map().Close();
+        }
 
-            HUD().KillOverlay.ShowKillAnimation(killer.Data, player.Data);
-            player.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
+        if (player.walkingToVent)
+        {
+            player.inVent = false;
+            Vent.currentVent = null;
+            player.moveable = true;
+            player.MyPhysics.StopAllCoroutines();
         }
 
         RecentlyKilled.Add(player.PlayerId);
         KilledPlayers.RemoveAll(x => x.PlayerId == player.PlayerId);
         KilledPlayers.Add(new(killer.PlayerId, player.PlayerId));
         SetPostmortals.BeginPostmortals(player, false);
+        Pestilence.Infected.Remove(player.PlayerId);
 
         player.GetLayers().ForEach(x => x.OnDeath(reason, reason2, killer));
         killer.GetLayers().ForEach(x => x.OnKill(player));
+    }
+
+    public static IEnumerator CoPerformKill(KillAnimation __instance, PlayerControl source, PlayerControl target, bool lunge)
+    {
+        var cam = HUD().PlayerCam;
+        var isParticipant = source.AmOwner || target.AmOwner;
+        KillAnimation.SetMovement(source, false);
+        KillAnimation.SetMovement(target, false);
+
+        if (isParticipant)
+        {
+            CustomPlayer.Local.isKilling = true;
+            source.isKilling = true;
+        }
+
+        var deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
+        deadBody.enabled = false;
+        deadBody.ParentId = target.PlayerId;
+        deadBody.AddComponent<DeadBodyHandler>();
+        target.SetPlayerMaterialColors(deadBody.bloodSplatter);
+        var vector = target.transform.position + __instance.BodyOffset;
+        vector.z = vector.y / 1000f;
+        deadBody.transform.position = vector;
+
+        if (isParticipant)
+        {
+            cam.Locked = true;
+            ConsoleJoystick.SetMode_Task();
+            CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
+        }
+
+        target.CustomDie(DeathReason.Kill, DeathReasonEnum.Killed, source);
+        yield return source.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
+
+        if (lunge)
+            source.NetTransform.SnapTo(target.transform.position);
+
+        source.MyPhysics.Animations.PlayIdleAnimation();
+        KillAnimation.SetMovement(source, true);
+        KillAnimation.SetMovement(target, true);
+        deadBody.enabled = true;
+
+        if (isParticipant)
+        {
+            cam.Locked = false;
+            CustomPlayer.Local.isKilling = false;
+            source.isKilling = false;
+        }
+
+        yield break;
     }
 }

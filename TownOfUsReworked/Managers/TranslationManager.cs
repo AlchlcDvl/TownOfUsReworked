@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Localisation;
+namespace TownOfUsReworked.Managers;
 
 public static class TranslationManager
 {

@@ -1,4 +1,4 @@
-using static TownOfUsReworked.Cosmetics.CustomVisorManager;
+using static TownOfUsReworked.Managers.CustomVisorManager;
 using Cpp2IL.Core.Extensions;
 
 namespace TownOfUsReworked.Loaders;

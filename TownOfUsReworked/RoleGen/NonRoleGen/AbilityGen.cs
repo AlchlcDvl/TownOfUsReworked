@@ -1,4 +1,4 @@
-using static TownOfUsReworked.RoleGen2.RoleGenManager;
+using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen2;
 
@@ -19,20 +19,20 @@ public class AbilityGen : BaseGen
 
         int maxAb = AbilitiesSettings.MaxAbilities;
         int minAb = AbilitiesSettings.MinAbilities;
-        var players = AllPlayers();
+        var players = GameData.Instance.PlayerCount;
 
-        while (maxAb > players.Count)
+        while (maxAb > players)
             maxAb--;
 
-        while (minAb > players.Count)
+        while (minAb > players)
             minAb--;
 
-        ModeFilters[GameModeSettings.GameMode].Filter(ref AllAbilities, GameModeSettings.IgnoreLayerCaps ? players.Count : URandom.RandomRangeInt(minAb, maxAb + 1));
+        ModeFilters[GameModeSettings.GameMode].Filter(AllAbilities, GameModeSettings.IgnoreLayerCaps ? players : URandom.RandomRangeInt(minAb, maxAb + 1));
     }
 
     public override void Assign()
     {
-        var playerList = AllPlayers();
+        var playerList = AllPlayers().ToList();
         playerList.Shuffle();
         AllAbilities.Shuffle();
         var invalid = new List<LayerEnum>();
@@ -117,5 +117,7 @@ public class AbilityGen : BaseGen
 
             Message("Invalid Abilities in the game: " + ids.Trim());
         }
+
+        AllAbilities.Clear();
     }
 }

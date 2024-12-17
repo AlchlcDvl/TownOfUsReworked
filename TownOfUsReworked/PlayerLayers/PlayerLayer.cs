@@ -279,6 +279,7 @@ public abstract class PlayerLayer
                             WinState = WinLose.HunterWins;
                             CallRpc(CustomRPC.WinLose, WinLose.HunterWins);
                         }
+
                         break;
                     }
                     case Hunted:
@@ -288,6 +289,7 @@ public abstract class PlayerLayer
                             WinState = WinLose.HuntedWin;
                             CallRpc(CustomRPC.WinLose, WinLose.HuntedWin);
                         }
+
                         break;
                     }
                     default:

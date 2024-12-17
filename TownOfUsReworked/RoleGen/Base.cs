@@ -8,9 +8,7 @@ public abstract class BaseGen
 
     public virtual void Clear() {}
 
-    public virtual void BeginFiltering() {}
-
-    public virtual void EndFiltering() {}
+    public virtual void Filter() {}
 
     public virtual void InitList() {}
 }

@@ -2,5 +2,5 @@ namespace TownOfUsReworked.RoleGen2;
 
 public abstract class BaseFilter
 {
-    public abstract void Filter(ref List<RoleOptionData> spawnList, int count);
+    public abstract void Filter(List<RoleOptionData> spawnList, int count);
 }

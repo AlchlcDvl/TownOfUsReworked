@@ -1,41 +1,43 @@
-namespace TownOfUsReworked.RoleGen2;
+using TownOfUsReworked.RoleGen2;
+
+namespace TownOfUsReworked.Managers;
 
 public static class RoleGenManager
 {
-    public static List<RoleOptionData> CrewAuditorRoles = [];
-    public static List<RoleOptionData> CrewKillingRoles = [];
-    public static List<RoleOptionData> CrewSupportRoles = [];
-    public static List<RoleOptionData> CrewSovereignRoles = [];
-    public static List<RoleOptionData> CrewProtectiveRoles = [];
-    public static List<RoleOptionData> CrewInvestigativeRoles = [];
-    public static List<RoleOptionData> CrewRoles = [];
+    public static readonly List<RoleOptionData> CrewAuditorRoles = [];
+    public static readonly List<RoleOptionData> CrewKillingRoles = [];
+    public static readonly List<RoleOptionData> CrewSupportRoles = [];
+    public static readonly List<RoleOptionData> CrewSovereignRoles = [];
+    public static readonly List<RoleOptionData> CrewProtectiveRoles = [];
+    public static readonly List<RoleOptionData> CrewInvestigativeRoles = [];
+    public static readonly List<RoleOptionData> CrewRoles = [];
 
-    public static List<RoleOptionData> NeutralEvilRoles = [];
-    public static List<RoleOptionData> NeutralBenignRoles = [];
-    public static List<RoleOptionData> NeutralKillingRoles = [];
-    public static List<RoleOptionData> NeutralNeophyteRoles = [];
-    public static List<RoleOptionData> NeutralHarbingerRoles = [];
-    public static List<RoleOptionData> NeutralRoles = [];
+    public static readonly List<RoleOptionData> NeutralEvilRoles = [];
+    public static readonly List<RoleOptionData> NeutralBenignRoles = [];
+    public static readonly List<RoleOptionData> NeutralKillingRoles = [];
+    public static readonly List<RoleOptionData> NeutralNeophyteRoles = [];
+    public static readonly List<RoleOptionData> NeutralHarbingerRoles = [];
+    public static readonly List<RoleOptionData> NeutralRoles = [];
 
-    public static List<RoleOptionData> IntruderHeadRoles = [];
-    public static List<RoleOptionData> IntruderKillingRoles = [];
-    public static List<RoleOptionData> IntruderSupportRoles = [];
-    public static List<RoleOptionData> IntruderDeceptionRoles = [];
-    public static List<RoleOptionData> IntruderConcealingRoles = [];
-    public static List<RoleOptionData> IntruderRoles = [];
+    public static readonly List<RoleOptionData> IntruderHeadRoles = [];
+    public static readonly List<RoleOptionData> IntruderKillingRoles = [];
+    public static readonly List<RoleOptionData> IntruderSupportRoles = [];
+    public static readonly List<RoleOptionData> IntruderDeceptionRoles = [];
+    public static readonly List<RoleOptionData> IntruderConcealingRoles = [];
+    public static readonly List<RoleOptionData> IntruderRoles = [];
 
-    public static List<RoleOptionData> SyndicatePowerRoles = [];
-    public static List<RoleOptionData> SyndicateSupportRoles = [];
-    public static List<RoleOptionData> SyndicateKillingRoles = [];
-    public static List<RoleOptionData> SyndicateDisruptionRoles = [];
-    public static List<RoleOptionData> SyndicateRoles = [];
+    public static readonly List<RoleOptionData> SyndicatePowerRoles = [];
+    public static readonly List<RoleOptionData> SyndicateSupportRoles = [];
+    public static readonly List<RoleOptionData> SyndicateKillingRoles = [];
+    public static readonly List<RoleOptionData> SyndicateDisruptionRoles = [];
+    public static readonly List<RoleOptionData> SyndicateRoles = [];
 
-    public static List<RoleOptionData> AllModifiers = [];
-    public static List<RoleOptionData> AllAbilities = [];
-    public static List<RoleOptionData> AllDispositions = [];
-    public static List<RoleOptionData> AllRoles = [];
+    public static readonly List<RoleOptionData> AllModifiers = [];
+    public static readonly List<RoleOptionData> AllAbilities = [];
+    public static readonly List<RoleOptionData> AllDispositions = [];
+    public static readonly List<RoleOptionData> AllRoles = [];
 
-    public static PlayerControl PureCrew;
+    public static PlayerControl Pure;
     public static int Convertible;
 
     public static readonly LayerEnum[] CA = [ LayerEnum.Mystic, LayerEnum.VampireHunter ];
@@ -303,37 +305,46 @@ public static class RoleGenManager
         Message("Cleared Variables");
         var gen = RoleGen[GameModeSettings.GameMode];
 
+        gen.InitList();
         gen.InitSynList();
         gen.InitIntList();
         gen.InitNeutList();
         gen.InitCrewList();
-        gen.InitList();
-
-        gen.BeginFiltering();
-        gen.EndFiltering();
-
+        gen.Filter();
         gen.Assign();
 
         var allPlayers = AllPlayers();
 
-        PureCrew = allPlayers.Where(x => x.IsBase(Faction.Crew)).Random();
-
-        if (PureCrew)
+        if (GameModifiers.PurePlayers)
         {
-            CallRpc(CustomRPC.Misc, MiscRPC.SyncPureCrew, PureCrew);
-            Message("Synced Pure Crew");
+            Pure = allPlayers.Random();
+
+            if (Pure)
+            {
+                CallRpc(CustomRPC.Misc, MiscRPC.SyncPure, Pure);
+                Message("Synced Pure Player");
+            }
         }
 
         if (gen.AllowNonRoles)
         {
             if (GameModifiers.EnableDispositions)
+            {
+                Dispositions.InitList();
                 Dispositions.Assign();
+            }
 
             if (GameModifiers.EnableAbilities)
+            {
+                Abilities.InitList();
                 Abilities.Assign();
+            }
 
             if (GameModifiers.EnableModifiers)
+            {
+                Modifiers.InitList();
                 Modifiers.Assign();
+            }
         }
 
         if (gen.HasTargets)
@@ -341,7 +352,7 @@ public static class RoleGenManager
 
         gen.PostAssignment();
 
-        Convertible = allPlayers.Count(x => x.Is(SubFaction.None) && x != PureCrew) - 1;
+        Convertible = allPlayers.Count(x => x.Is(SubFaction.None) && x != Pure);
         CallRpc(CustomRPC.Misc, MiscRPC.SyncConvertible, Convertible);
 
         if (MapPatches.CurrentMap == 4)
@@ -351,7 +362,7 @@ public static class RoleGenManager
         }
 
         if (TownOfUsReworked.IsTest)
-            Message($"{"Name", -10} -> {"Role", -10}, {"Disposition", -10}, {"Modifier", -10}, {"Ability", -10}");
+            Message($"{"Name", -6} -> {"Role", -14} | {"Disposition", -11} | {"Modifier", -12} | {"Ability", -12}");
 
         CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen);
 
@@ -364,7 +375,7 @@ public static class RoleGenManager
             RoleManager.Instance.SetRole(player, (RoleTypes)100);
 
             if (TownOfUsReworked.IsTest)
-                Message($"{player.name, -10} -> {role, -10}, {disp, -10}, {mod, -10}, {ab, -10}");
+                Message($"{player.name, -6} -> {role, -14} | {disp, -11} | {mod, -12} | {ab, -12}");
         }
 
         Message("Gen Ended");
@@ -426,7 +437,7 @@ public static class RoleGenManager
 
         ChatPatches.ChatHistory.Clear();
 
-        PureCrew = null;
+        Pure = null;
         Convertible = 0;
 
         RecentlyKilled.Clear();

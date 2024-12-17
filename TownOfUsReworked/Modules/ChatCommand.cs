@@ -17,15 +17,14 @@ public class ChatCommand
     private static readonly List<ChatCommand> AllCommands =
     [
         new([ "controls", "ctrl", "mci" ], Controls, ""),
-        new([ "kick", "k" ], KickBan, [ "{player id | (player name)}" ], ""),
-        new([ "ban", "b" ], KickBan, [ "{player id | (player name)}" ], ""),
-        new([ "summary", "sum" ], Summary, ""),
-        new([ "clearlobby", "clear", "cl" ], Clear, ""),
-        new([ "setname", "name", "sn" ], SetName, [ "{(new name)}" ], ""),
-        new([ "whisper", "w"] , Whisper, [ "{player id | (player name)}", "{message}" ], ""),
-        new([ "unignore", "ui" ], ToggleIgnore, [ "{player id | (player name)}" ], ""),
-        new([ "ignore", "i" ], ToggleIgnore, [ "{player id | (player name)}" ], ""),
-        new([ "help", "h" ], Help, [ "{command name (optional)}" ], ""),
+        new([ "kick", "ban" ], KickBan, [ "player id | (player name)" ], ""),
+        new([ "summary" ], Summary, ""),
+        new([ "clearlobby", "cl" ], Clear, ""),
+        new([ "setname", "name", "sn" ], SetName, [ "new name" ], ""),
+        new([ "whisper" ] , Whisper, [ "player id | (player name)", "message" ], ""),
+        new([ "unignore", "ui" ], ToggleIgnore, [ "player id | (player name)" ], ""),
+        new([ "ignore" ], ToggleIgnore, [ "player id | (player name)" ], ""),
+        new([ "help" ], Help, [ "command name (optional)" ], ""),
         // new([ "testargs", "targ" ], TestArgs, ""),
         // new([ "testargless", "targless" ], TestArgless, ""),
         // new([ "testargmessage", "targmess" ], TestArgsMessage, ""),
@@ -65,30 +64,40 @@ public class ChatCommand
 
     public string ConstructParameters(string[] parts)
     {
+        if (Parameters == null)
+            return "";
+
         var result = "";
 
         for (var i = Parameters.Length - 1; i > parts.Length - 2 && i > -1; i--)
-            result = $"{Parameters[i]} {result} ";
+            result = $"<{Parameters[i]}> {result} ";
 
         return result.Trim();
     }
 
     public string FindAlias(string first)
     {
-        var dict = Aliases.Where(x => $"/{x}".StartsWith(first) || first.StartsWith($"/{x}")).ToDictionary(x => first.Length - 1 - x.Length, y => y);
+        var dict = Aliases.Where(x => x.StartsWith(first) || first.StartsWith(x)).ToDictionary(x => first.Length - x.Length, y => y);
         var closestInt = int.MaxValue;
 
-        foreach (var (count, result) in dict)
+        foreach (var count in dict.Keys)
         {
             if (count < closestInt)
                 closestInt = count;
         }
 
-        return dict[closestInt];
+        var result = dict[closestInt];
+
+        if (result.Length < first.Length)
+            return first;
+
+        return result;
     }
 
-    public static void Execute(ChatCommand command, string[] args, string message)
+    public static void Execute(string[] args, string message)
     {
+        var command = Find(args[0].ToLower()[1..]);
+
         if (command == null)
             Run("<#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
         else if (command.ExecuteArgless != null)
@@ -101,7 +110,7 @@ public class ChatCommand
             Run("<#FFFF00FF>⚠ Huh? ⚠</color>", "Weird...");
     }
 
-    public static ChatCommand Find(string arg) => AllCommands.Find(x => x.Aliases.Any(y => arg.StartsWith($"/{y}")));
+    public static ChatCommand Find(string arg) => AllCommands.Find(x => x.Aliases.Any(x => x.StartsWith(arg) || arg.StartsWith(x)));
 
     public static void Run(string title, string text, bool withColor = true, bool hasColor = false, UColor? nameColor = null)
     {
@@ -152,7 +161,7 @@ public class ChatCommand
 
         if (args.Length < 3 || IsNullEmptyOrWhiteSpace(args[1]) || IsNullEmptyOrWhiteSpace(args[2]))
         {
-            Run("<#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number | (player name in)> <message>");
+            Run("<#00FF00FF>★ Help ★</color>", $"Usage: /whisper <player id | (player name)> <message>");
             return;
         }
 
@@ -179,12 +188,12 @@ public class ChatCommand
         else if (whispered.AmOwner)
             Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
         else if (whispered.HasDied() && !CustomPlayer.Local.HasDied())
-            Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
+            Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", $"#({whispered.name}) is not in this world anymore.");
         else if (!whispered.HasDied() && CustomPlayer.Local.HasDied())
             Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not a real Medium!");
         else
         {
-            Run("<#4D4DFFFF>「 Whispers 」</color>", $"You whisper to {whispered.name}: {message}");
+            Run("<#4D4DFFFF>「 Whispers 」</color>", $"You whisper to #({whispered.name}): {message}");
             CallRpc(CustomRPC.Misc, MiscRPC.Whisper, CustomPlayer.Local, whispered, message);
         }
     }
@@ -199,7 +208,7 @@ public class ChatCommand
 
         if (args.Length < 2)
         {
-            Run("<#00FF00FF>★ Help ★</color>", "Usage: /<ignore | i | unignore | ui> <meeting number | (player name in ||)>");
+            Run("<#00FF00FF>★ Help ★</color>", "Usage: /<ignore | unignore | ui> <player id | (player name)>");
             return;
         }
 
@@ -241,7 +250,7 @@ public class ChatCommand
             return;
         }
 
-        var arg = message.Split([ "(", ")" ], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)[1];
+        var arg = message.Replace(args[0], "").Trim();
 
         if (Disallowed.Any(arg.Contains))
             Run("<#FF0000FF>⚠ Name Error ⚠</color>", "Name contains disallowed characters.");
@@ -308,11 +317,11 @@ public class ChatCommand
             return;
         }
 
-        var ban = args[0].Replace("/", "") is "ban" or "b";
+        var ban = args[0][1..].StartsWith("b");
 
         if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
         {
-            Run("<#00FF00FF>★ Help ★</color>", $"Usage: /{(ban ? "<ban | b>" : "<kick | k>")} <player name>");
+            Run("<#00FF00FF>★ Help ★</color>", $"Usage: /{(ban ? "ban" : "kick")} <player name>");
             return;
         }
 
@@ -362,7 +371,7 @@ public class ChatCommand
         }
         else
         {
-            var command = Find(args[0]);
+            var command = Find(args[0].ToLower()[1..]);
         }
     }
 

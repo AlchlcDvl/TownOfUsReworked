@@ -36,7 +36,8 @@ public class Blackmailer : Intruder, IIntimidator
         base.Init();
         Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
-        BlackmailButton ??= new(this, "BLACKMAIL", "Blackmail", AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(BlackmailCd), (PlayerBodyExclusion)Exception1);
+        BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(BlackmailCd),
+            (PlayerBodyExclusion)Exception1);
     }
 
     public void Blackmail(PlayerControl target)

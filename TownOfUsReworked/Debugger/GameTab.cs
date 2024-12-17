@@ -22,12 +22,12 @@ public class GameTab : BaseTab
 
         if (GUILayout.Button("Next Player"))
         {
-            DebuggerBehaviour.Instance.ControllingFigure = CycleByte(AllPlayers().Count - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, true);
+            DebuggerBehaviour.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, true);
             MCIUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
         }
         else if (GUILayout.Button("Previous Player"))
         {
-            DebuggerBehaviour.Instance.ControllingFigure = CycleByte(AllPlayers().Count - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, false);
+            DebuggerBehaviour.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, false);
             MCIUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
         }
 

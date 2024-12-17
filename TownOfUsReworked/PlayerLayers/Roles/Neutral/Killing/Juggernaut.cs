@@ -37,10 +37,10 @@ public class Juggernaut : NKilling
         var cooldown = Interact(Player, target, true, bypass: JuggKills >= 4);
 
         if (cooldown != CooldownType.Fail)
-        {
             JuggKills++;
+
+        if (JuggKills == 4)
             Flash(Color);
-        }
 
         AssaultButton.StartCooldown(cooldown);
     }
