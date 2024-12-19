@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface IDragger : IPlayerLayer
+public interface IDragger : IRole
 {
     DeadBody CurrentlyDragging { get; set; }
 

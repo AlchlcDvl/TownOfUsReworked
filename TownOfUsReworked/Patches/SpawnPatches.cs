@@ -22,7 +22,8 @@ public static class SpawnPatches
         ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);
         HUD().FullScreen.enabled = true;
-        Role.LocalRole.UpdateButtons();
+        var role = CustomPlayer.Local.GetRole();
+        role.UpdateButtons();
         CustomPlayer.Local.RegenTask();
 
         if (MapPatches.CurrentMap is not (4 or 6))
@@ -39,12 +40,12 @@ public static class SpawnPatches
             {
                 var color = "FF00";
 
-                if (Role.LocalRole.TasksDone)
+                if (role.TasksDone)
                     color = "00FF";
-                else if (Role.LocalRole.TasksCompleted > 0)
+                else if (role.TasksCompleted > 0)
                     color = "FFFF";
 
-                text = $"Tasks <#{color}00FF>({Role.LocalRole.TasksCompleted}/{Role.LocalRole.TotalTasks})</color>";
+                text = $"Tasks <#{color}00FF>({role.TasksCompleted}/{role.TotalTasks})</color>";
             }
             else
                 text = "<#FF0000FF>Fake Tasks</color>";
@@ -62,7 +63,7 @@ public static class SpawnPatches
         }
 
         var allLocations = new List<Vector2>();
-        allLocations.AddRanges(AllVents().Select(GetVentPosition), AllConsoles().Select(GetConsolePosition), AllSystemConsoles().Select(GetSystemConsolePosition));
+        allLocations.AddRange(AllVents().Select(x => (Vector2)x.transform.position));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,

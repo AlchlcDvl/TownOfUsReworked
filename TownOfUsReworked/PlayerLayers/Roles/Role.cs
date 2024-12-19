@@ -4,8 +4,6 @@ public abstract class Role : PlayerLayer
 {
     public static readonly List<byte> Cleaned = [];
 
-    public static Role LocalRole => CustomPlayer.Local.GetRole();
-
     public override UColor Color => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
     public override LayerEnum Type => LayerEnum.NoneRole;
@@ -305,13 +303,13 @@ public abstract class Role : PlayerLayer
 
     public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
     {
-        if (killer != Player || (killer == Player && reason2 != DeathReasonEnum.Killed))
+        if (killer != Player)
         {
             KilledBy = " By " + PlayerName;
-            DeathReason = reason2;
+            DeathReason = Meeting() ? DeathReasonEnum.Guessed : reason2;
         }
         else
-            DeathReason = DeathReasonEnum.Suicide;
+            DeathReason = Meeting() ? DeathReasonEnum.Misfire : DeathReasonEnum.Suicide;
 
         if (!GetLayers<Altruist>().Any() && !GetLayers<Necromancer>().Any())
             TrulyDead |= Type != LayerEnum.GuardianAngel;
@@ -428,7 +426,7 @@ public abstract class Role : PlayerLayer
     public override void OnMeetingStart(MeetingHud __instance)
     {
         TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
-        AllRoles().ForEach(x => x.CurrentChannel = ChatChannel.All);
+        GetLayers<Role>().ForEach(x => x.CurrentChannel = ChatChannel.All);
         GetLayers<Arsonist>().ForEach(x => x.Doused.Clear());
 
         if (Requesting && BountyTimer > 2)
@@ -541,13 +539,9 @@ public abstract class Role : PlayerLayer
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
 
-    public static IEnumerable<Role> AllRoles() => AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Role).Cast<Role>();
+    public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Faction == faction && !x.Ignore);
 
-    public static IEnumerable<Role> GetRoles(Faction faction) => AllRoles().Where(x => x.Faction == faction && !x.Ignore);
+    public static IEnumerable<Role> GetRoles(Alignment ra) => GetLayers<Role>().Where(x => x.Alignment == ra && !x.Ignore);
 
-    public static IEnumerable<Role> GetRoles(Alignment ra) => AllRoles().Where(x => x.Alignment == ra && !x.Ignore);
-
-    public static IEnumerable<Role> GetRoles(SubFaction subfaction) => AllRoles().Where(x => x.SubFaction == subfaction && !x.Ignore);
-
-    public static T LocalRoleAs<T>() where T : Role => LocalRole as T;
+    public static IEnumerable<Role> GetRoles(SubFaction subfaction) => GetLayers<Role>().Where(x => x.SubFaction == subfaction && !x.Ignore);
 }

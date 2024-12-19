@@ -53,7 +53,7 @@ public class NameHandler : MonoBehaviour
             else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache))
                 name = ColorNames[cache];
             else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind)
-                name = "";
+                return ("", UColor.clear);
             else
                 name = ColorNames[player.PlayerId];
         }

@@ -125,7 +125,11 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         }
     }
 
-    private bool IsExempt(PlayerVoteArea voteArea) => !voteArea.AmDead || PlayerByVoteArea(voteArea).HasDied() || Dead || !voteArea.IsBase(Faction.Crew);
+    private bool IsExempt(PlayerVoteArea voteArea)
+    {
+        var player = PlayerByVoteArea(voteArea);
+        return !voteArea.AmDead || !player.HasDied() || Dead || !player.IsBase(Faction.Crew);
+    }
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
     {
@@ -248,7 +252,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
                 MediatedPlayers.Add(playerid2);
 
                 if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && Medium.ShowMediumToDead == ShowMediumToDead.AllDead))
-                    LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+                    CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
 
                 break;
             }
@@ -754,7 +758,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
         {
-            LocalRole.AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
+            CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
             Flash(Color);
         }
     }

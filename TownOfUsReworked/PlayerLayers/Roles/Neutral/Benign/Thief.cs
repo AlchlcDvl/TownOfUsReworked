@@ -277,20 +277,22 @@ public class Thief : Neutral
             new Thief().RoleUpdate(role, target, true);
         }
 
+        var local = CustomPlayer.Local.GetRole();
+
         if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals))
         {
             foreach (var snitch in GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
-                    LocalRole.AllArrows.Add(snitch.PlayerId, new(player, CustomColorManager.Snitch));
+                    local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Color));
                 else if (snitch.TasksDone && snitch.Local)
-                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
+                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, snitch.Color));
             }
 
             foreach (var revealer in GetLayers<Revealer>())
             {
                 if (revealer.Revealed && player.AmOwner)
-                    LocalRole.AllArrows.Add(revealer.PlayerId, new(player, CustomColorManager.Revealer));
+                    local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Color));
             }
         }
 

@@ -71,7 +71,7 @@ public class Altruist : Crew
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
         {
-            LocalRole.AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
+            CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
             Flash(Color);
         }
     }

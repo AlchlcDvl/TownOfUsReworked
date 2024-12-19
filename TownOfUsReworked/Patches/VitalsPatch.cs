@@ -6,11 +6,11 @@ public static class VitalsPatch
     [HarmonyPatch(nameof(VitalsMinigame.Update)), HarmonyPostfix]
     public static void UpdatePostfix(VitalsMinigame __instance)
     {
-        var localPlayer = CustomPlayer.Local;
-        var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything();
+        var role = CustomPlayer.Local.GetRole();
+        var isOp = role is Operative || DeadSeeEverything();
 
         if (!isOp)
-            isOp = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOp;
+            isOp = role is Retributionist ret && ret.IsOp;
 
         if (!isOp)
             return;

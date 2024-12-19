@@ -95,7 +95,7 @@ public class Revealer : Crew
             {
                 Revealed = true;
                 Flash(Color);
-                LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+                CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
             }
         }
         else if (TasksDone && !Caught && (Local || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or

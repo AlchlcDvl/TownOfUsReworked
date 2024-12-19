@@ -192,7 +192,7 @@ public static class SetPostmortals
 
         vents.Shuffle();
         var startingVent = vents.Random();
-        player.RpcCustomSnapTo(GetVentPosition(startingVent));
+        player.RpcCustomSnapTo(startingVent.transform.position);
         player.MyPhysics.RpcEnterVent(startingVent.Id);
     }
 

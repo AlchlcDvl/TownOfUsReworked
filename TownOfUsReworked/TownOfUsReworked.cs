@@ -16,10 +16,10 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 14;
+    public const int DevBuild = 15;
 
     public static bool IsTest { get; set; }
-    private static readonly string VersionS = VersionString.Remove(VersionString.Length - 2);
+    private static readonly string VersionS = VersionString[..^2];
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
     private static string TestString => IsTest ? "_test" : "";
     private static string StreamString => IsStream ? "s" : "";

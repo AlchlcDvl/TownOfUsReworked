@@ -13,12 +13,17 @@ public class GameTab : BaseTab
         }
 
         TownOfUsReworked.SameVote.Value = GUILayout.Toggle(TownOfUsReworked.SameVote.Value, "All Bots Vote");
-        Role.SyndicateHasChaosDrive = GUILayout.Toggle(Role.SyndicateHasChaosDrive, "Chaos Drive");
 
-        if (Role.SyndicateHasChaosDrive)
-            AssignChaosDrive();
-        else
+        if (Role.DriveHolder)
+        {
+            if (GUILayout.Button("Assign Chaos Drive"))
+                AssignChaosDrive();
+        }
+        else if (GUILayout.Button("Take Away Chaos Drive"))
+        {
             Role.DriveHolder = null;
+            Role.SyndicateHasChaosDrive = false;
+        }
 
         if (GUILayout.Button("Next Player"))
         {

@@ -3,10 +3,10 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
 public static class AdminPatch
 {
-    private static void SetSabotaged(MapCountOverlay __instance, bool sabotaged)
+    private static void SetSabotaged(MapCountOverlay __instance, bool sabotaged, Role role)
     {
         __instance.isSab = sabotaged;
-        __instance.BackgroundColor.SetColor(sabotaged ? Palette.DisabledGrey : Role.LocalRole.Color);
+        __instance.BackgroundColor.SetColor(sabotaged ? Palette.DisabledGrey : role.Color);
         __instance.SabotageText.gameObject.SetActive(sabotaged);
 
         if (sabotaged)
@@ -98,11 +98,11 @@ public static class AdminPatch
 
     public static bool Prefix(MapCountOverlay __instance)
     {
-        var localPlayer = CustomPlayer.Local;
-        var isOp = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything();
+        var role = CustomPlayer.Local.GetRole();
+        var isOp = role is Operative || DeadSeeEverything();
 
         if (!isOp)
-            isOp = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOp;
+            isOp = role is Retributionist ret && ret.IsOp;
 
         __instance.timer += Time.deltaTime;
 
@@ -110,10 +110,10 @@ public static class AdminPatch
             return false;
 
         __instance.timer = 0f;
-        var sabotaged = PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(localPlayer);
+        var sabotaged = PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(role.Player);
 
         if (sabotaged != __instance.isSab)
-            SetSabotaged(__instance, sabotaged);
+            SetSabotaged(__instance, sabotaged, role);
 
         if (!sabotaged)
             UpdateBlips(__instance, isOp);

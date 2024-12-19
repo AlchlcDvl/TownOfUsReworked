@@ -59,11 +59,10 @@ public abstract class PlayerLayer
 
     public PlayerLayer End()
     {
-        Deinit();
-
         if (Local)
             ExitingLayer();
 
+        Deinit();
         Ignore = true;
         Player = null;
         return this;
@@ -125,13 +124,7 @@ public abstract class PlayerLayer
 
     public void GameEnd()
     {
-        if (WinState != WinLose.None)
-        {
-            EndGame();
-            return;
-        }
-
-        if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Ignore)
+        if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Ignore || WinState != WinLose.None)
             return;
 
         switch (this)
@@ -421,7 +414,7 @@ public abstract class PlayerLayer
 
     public static void DeleteAll()
     {
-        AllLayers.ForEach(x => x.Deinit());
+        AllLayers.ForEach(x => x.End());
         AllLayers.Clear();
     }
 

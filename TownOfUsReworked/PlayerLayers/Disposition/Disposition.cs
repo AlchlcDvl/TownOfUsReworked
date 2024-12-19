@@ -2,8 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 public abstract class Disposition : PlayerLayer
 {
-    public static Disposition LocalDisposition => CustomPlayer.Local.GetDisposition();
-
     public override UColor Color => CustomColorManager.Disposition;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Disposition;
     public override LayerEnum Type => LayerEnum.NoneDisposition;
@@ -16,6 +14,4 @@ public abstract class Disposition : PlayerLayer
         WinLose.TaskmasterWins;
 
     public override void Init() => Player.GetRole().LinkedDisposition = Type;
-
-    public static IEnumerable<Disposition> AllDispositions() => AllLayers.Where(x => x.LayerType == PlayerLayerEnum.Disposition).Cast<Disposition>();
 }

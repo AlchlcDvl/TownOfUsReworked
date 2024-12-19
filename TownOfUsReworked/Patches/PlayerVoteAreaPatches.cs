@@ -6,10 +6,13 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.Select)), HarmonyPrefix]
     public static bool SelectPrefix(PlayerVoteArea __instance)
     {
-        if (!CustomPlayer.Local.Is(LayerEnum.Politician) || CustomPlayer.LocalCustom.Dead || __instance.AmDead || !__instance.Parent || !__instance.Parent.Select(__instance.TargetPlayerId))
+        if (!CustomPlayer.Local.TryGetLayer<Politician>(out var pol) || CustomPlayer.LocalCustom.Dead || __instance.AmDead || !__instance.Parent ||
+            !__instance.Parent.Select(__instance.TargetPlayerId))
+        {
             return true;
+        }
 
-        if (Ability.LocalAbilityAs<Politician>().CanVote)
+        if (pol.CanVote)
         {
             __instance.Buttons.SetActive(true);
             var startPos = __instance.AnimateButtonsFromLeft ? 0.2f : 1.95f;
@@ -25,26 +28,18 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.VoteForMe)), HarmonyPrefix]
     public static bool VoteForMePrefix(PlayerVoteArea __instance)
     {
-        if (!CustomPlayer.Local.Is(LayerEnum.Politician))
+        if (!CustomPlayer.Local.TryGetLayer<Politician>(out var pol))
             return true;
 
-        if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
+        if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results || !pol.CanVote)
             return false;
 
-        if (CustomPlayer.Local.Is(LayerEnum.Politician))
+        if (__instance == pol.Abstain)
+            pol.SelfVote = true;
+        else
         {
-            var pol = (Politician)Ability.LocalAbility;
-
-            if (!pol.CanVote)
-                return false;
-
-            if (__instance == pol.Abstain)
-                pol.SelfVote = true;
-            else
-            {
-                pol.VoteBank--;
-                pol.VotedOnce = true;
-            }
+            pol.VoteBank--;
+            pol.VotedOnce = true;
         }
 
         __instance.Parent.Confirm(__instance.TargetPlayerId);

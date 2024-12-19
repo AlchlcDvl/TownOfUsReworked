@@ -101,11 +101,11 @@ public static class ConsoleCanUsePatch
     [HarmonyPatch(nameof(Console.SetOutline))]
     public static void Postfix(Console __instance, bool mainTarget)
     {
-        if (!Role.LocalRole || !(CustomPlayer.Local && !Meeting() && CustomPlayer.Local.CanDoTasks()))
+        if (!CustomPlayer.Local.TryGetLayer<Role>(out var role) || Meeting())
             return;
 
-        __instance.Image.material.SetColor("_OutlineColor", Role.LocalRole.Color);
-        __instance.Image.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
+        __instance.Image.material.SetColor("_OutlineColor", role.Color);
+        __instance.Image.material.SetColor("_AddColor", mainTarget ? role.Color : UColor.clear);
     }
 }
 #endregion

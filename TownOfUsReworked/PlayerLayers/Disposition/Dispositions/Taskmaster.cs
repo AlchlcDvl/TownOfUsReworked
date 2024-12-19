@@ -24,7 +24,7 @@ public class Taskmaster : Disposition
                 Alignment.NeutralPros)
             {
                 Flash(Color);
-                Role.LocalRole.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+                CustomPlayer.Local.GetRole().AllArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
             }
         }
         else if (TasksDone)

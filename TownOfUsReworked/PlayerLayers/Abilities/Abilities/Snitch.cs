@@ -35,6 +35,8 @@ public class Snitch : Ability
 
     public override void UponTaskComplete(uint taskId)
     {
+        var local = CustomPlayer.Local.GetRole();
+
         if (TasksLeft == SnitchTasksRemaining)
         {
             if (Local)
@@ -43,7 +45,7 @@ public class Snitch : Ability
                 Alignment.NeutralPros && SnitchSeesNeutrals))
             {
                 Flash(Color);
-                Role.LocalRole.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+                local.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
             }
         }
         else if (TasksDone)
@@ -52,7 +54,7 @@ public class Snitch : Ability
             {
                 Flash(UColor.green);
                 AllPlayers().Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros &&
-                    SnitchSeesNeutrals)).ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(Player, Color)));
+                    SnitchSeesNeutrals)).ForEach(x => local.AllArrows.Add(x.PlayerId, new(Player, Color)));
             }
             else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
                 Alignment.NeutralPros && SnitchSeesNeutrals))

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface IIntimidator : IPlayerLayer
+public interface IIntimidator : IRole
 {
     PlayerControl Target { get; set; }
 }

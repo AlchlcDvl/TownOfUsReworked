@@ -267,9 +267,7 @@ public static class RoleGenManager
 
     public static void Gen(PlayerControl player, LayerEnum id, PlayerLayerEnum rpc)
     {
-        if (id == LayerEnum.None)
-            player.GetLayers().Find(x => x.LayerType == rpc)?.End();
-
+        player.GetLayers().Find(x => x.LayerType == rpc)?.End();
         SetLayer(id, rpc).Start(player);
         CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
     }

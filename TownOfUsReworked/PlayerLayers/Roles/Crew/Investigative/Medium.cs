@@ -114,6 +114,6 @@ public class Medium : Crew
         MediatedPlayers.Add(playerid2);
 
         if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && ShowMediumToDead == ShowMediumToDead.AllDead))
-            LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+            CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
     }
 }

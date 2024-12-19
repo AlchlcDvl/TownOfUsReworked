@@ -21,7 +21,7 @@ public class Volatile : Modifier
     public override Func<string> Description => () => "- You experience hallucinations";
     public override bool Hidden => !VolatileKnows && !Exposed && !Dead;
 
-    private static readonly string[] Links = ["https://www.youtube.com/watch?v=79-AwFZCKpA", "https://www.youtube.com/watch?v=xm3YgoEiEDc"];
+    private static readonly string[] Links = [ "https://www.youtube.com/watch?v=79-AwFZCKpA", "https://www.youtube.com/watch?v=xm3YgoEiEDc" ];
 
     public override void Init() => Exposed = VolatileKnows;
 

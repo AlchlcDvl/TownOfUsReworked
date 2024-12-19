@@ -274,7 +274,7 @@ public static class MeetingPatches
         Info($"Was a tie = {tie}");
         Coroutines.Start(PerformSwaps());
 
-        foreach (var role in Role.AllRoles())
+        foreach (var role in PlayerLayer.GetLayers<Role>())
         {
             if (role.Type is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.GuardianAngel or LayerEnum.Jester)
                 continue;

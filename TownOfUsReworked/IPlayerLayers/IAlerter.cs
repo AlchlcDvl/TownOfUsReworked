@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface IAlerter : IPlayerLayer
+public interface IAlerter : IRole
 {
     CustomButton AlertButton { get; set; }
 }

@@ -28,15 +28,7 @@ public static class LayerExtentions
 
     public static bool IsBase(this PlayerControl player, Faction faction) => player.GetRole()?.BaseFaction == faction;
 
-    public static bool IsBase(this PlayerVoteArea player, Faction faction) => PlayerByVoteArea(player).IsBase(faction);
-
     public static bool Is(this PlayerControl player, Alignment alignment) => player.GetRole()?.Alignment == alignment;
-
-    public static bool Is(this PlayerVoteArea player, LayerEnum roleType) => PlayerByVoteArea(player).Is(roleType);
-
-    public static bool Is(this PlayerVoteArea player, SubFaction subFaction) => PlayerByVoteArea(player).Is(subFaction);
-
-    public static bool Is(this PlayerVoteArea player, Faction faction) => PlayerByVoteArea(player).Is(faction);
 
     public static bool IsAssassin(this PlayerControl player) => player.GetAbility() is Bullseye or Hitman or Sniper or Slayer;
 
@@ -79,12 +71,6 @@ public static class LayerExtentions
         return role.Alignment;
     }
 
-    public static Alignment GetAlignment(this PlayerVoteArea player) => PlayerByVoteArea(player).GetAlignment();
-
-    public static Faction GetFaction(this PlayerVoteArea player) => PlayerByVoteArea(player).GetFaction();
-
-    public static SubFaction GetSubFaction(this PlayerVoteArea player) => PlayerByVoteArea(player).GetSubFaction();
-
     public static bool IsRecruit(this PlayerControl player) => player.GetRole().IsRecruit;
 
     public static bool IsBitten(this PlayerControl player) => player.GetRole().IsBitten;
@@ -106,14 +92,6 @@ public static class LayerExtentions
     public static bool IsNeutDefect(this PlayerControl player) => player.GetRole().IsNeutDefect;
 
     public static bool IsDefect(this PlayerControl player) => player.IsCrewDefect() || player.IsIntDefect() || player.IsSynDefect() || player.IsNeutDefect();
-
-    public static bool IsRecruit(this PlayerVoteArea player) => PlayerByVoteArea(player).IsRecruit();
-
-    public static bool IsBitten(this PlayerVoteArea player) => PlayerByVoteArea(player).IsBitten();
-
-    public static bool IsPersuaded(this PlayerVoteArea player) => PlayerByVoteArea(player).IsPersuaded();
-
-    public static bool IsResurrected(this PlayerVoteArea player) => PlayerByVoteArea(player).IsResurrected();
 
     public static bool NotOnTheSameSide(this PlayerControl player) => !player.GetRole().Faithful;
 
@@ -189,16 +167,6 @@ public static class LayerExtentions
         return null;
     }
 
-    public static bool IsGATarget(this PlayerVoteArea player) => PlayerByVoteArea(player).IsGATarget();
-
-    public static bool IsExeTarget(this PlayerVoteArea player) => PlayerByVoteArea(player).IsExeTarget();
-
-    public static bool IsBHTarget(this PlayerVoteArea player) => PlayerByVoteArea(player).IsBHTarget();
-
-    public static bool IsGuessTarget(this PlayerVoteArea player) => PlayerByVoteArea(player).IsGuessTarget();
-
-    public static bool CanDoTasks(this PlayerVoteArea player) => PlayerByVoteArea(player).CanDoTasks();
-
     public static Jackal GetJackal(this PlayerControl player) => PlayerLayer.GetLayers<Jackal>().Find(role => role.Members.Contains(player.PlayerId));
 
     public static Necromancer GetNecromancer(this PlayerControl player) => PlayerLayer.GetLayers<Necromancer>().Find(role => role.Members.Contains(player.PlayerId));
@@ -209,31 +177,13 @@ public static class LayerExtentions
 
     public static Neophyte GetNeophyte(this PlayerControl player) => PlayerLayer.GetLayers<Neophyte>().Find(role => role.Members.Contains(player.PlayerId));
 
-    public static Jackal GetJackal(this PlayerVoteArea player) => PlayerByVoteArea(player).GetJackal();
+    public static bool IsShielded(this PlayerControl player) => PlayerLayer.GetILayers<IShielder>().Any(role => player == role.ShieldedPlayer);
 
-    public static Necromancer GetNecromancer(this PlayerVoteArea player) => PlayerByVoteArea(player).GetNecromancer();
-
-    public static Dracula GetDracula(this PlayerVoteArea player) => PlayerByVoteArea(player).GetDracula();
-
-    public static Whisperer GetWhisperer(this PlayerVoteArea player) => PlayerByVoteArea(player).GetWhisperer();
-
-    public static bool IsShielded(this PlayerControl player)
-    {
-        var medicFlag = PlayerLayer.GetLayers<Medic>().Any(role => player == role.ShieldedPlayer);
-        var retFlag = PlayerLayer.GetLayers<Retributionist>().Any(role => player == role.ShieldedPlayer);
-        return medicFlag || retFlag;
-    }
-
-    public static bool IsTrapped(this PlayerControl player)
-    {
-        var trapFlag = PlayerLayer.GetLayers<Trapper>().Any(role => role.Trapped.Contains(player.PlayerId));
-        var retFlag = PlayerLayer.GetLayers<Retributionist>().Any(role => role.Trapped.Contains(player.PlayerId));
-        return trapFlag || retFlag;
-    }
+    public static bool IsTrapped(this PlayerControl player) => PlayerLayer.GetILayers<ITrapper>().Any(role => role.Trapped.Contains(player.PlayerId));
 
     public static bool IsKnighted(this PlayerControl player) => PlayerLayer.GetLayers<Monarch>().Any(role => role.Knighted.Contains(player.PlayerId));
 
-    public static bool IsSpellbound(this PlayerControl player) => PlayerLayer.GetLayers<Spellslinger>().Any(role => role.Spelled.Contains(player.PlayerId));
+    public static bool IsSpellbound(this PlayerControl player) => PlayerLayer.GetILayers<IHexer>().Any(role => role.Spelled.Contains(player.PlayerId));
 
     public static bool IsArsoDoused(this PlayerControl player) => PlayerLayer.GetLayers<Arsonist>().Any(role => role.Doused.Contains(player.PlayerId));
 
@@ -277,45 +227,15 @@ public static class LayerExtentions
 
     public static bool IsFaithful(this PlayerControl player) => player.GetRole().Faithful;
 
-    public static bool IsBlackmailed(this PlayerControl player)
-    {
-        var bmFlag = PlayerLayer.GetLayers<Blackmailer>().Any(role => role.BlackmailedPlayer == player);
-        var gfFlag = PlayerLayer.GetLayers<PromotedGodfather>().Any(role => role.BlackmailedPlayer == player);
-        return bmFlag || gfFlag;
-    }
+    public static bool IsBlackmailed(this PlayerControl player) => PlayerLayer.GetILayers<IBlackmailer>().Any(role => role.BlackmailedPlayer == player);
 
-    public static bool IsSilenced(this PlayerControl player)
-    {
-        var silFlag = PlayerLayer.GetLayers<Silencer>().Any(role => role.SilencedPlayer == player);
-        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => role.SilencedPlayer == player);
-        return silFlag || rebFlag;
-    }
+    public static bool IsSilenced(this PlayerControl player) => PlayerLayer.GetILayers<ISilencer>().Any(role => role.SilencedPlayer == player);
 
-    public static bool SilenceActive(this PlayerControl player)
-    {
-        var silenced = !player.IsSilenced();
-        var silFlag = PlayerLayer.GetLayers<Silencer>().Any(role => role.HoldsDrive);
-        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => role.HoldsDrive && role.IsSil);
-        return silenced && (silFlag || rebFlag);
-    }
+    public static bool SilenceActive(this PlayerControl player) => !player.IsSilenced() && PlayerLayer.GetILayers<ISyndicate>().Any(role => role.HoldsDrive);
 
-    public static bool IsShielded(this PlayerVoteArea player) => PlayerByVoteArea(player).IsShielded();
-
-    public static bool IsTrapped(this PlayerVoteArea player) => PlayerByVoteArea(player).IsTrapped();
-
-    public static bool IsKnighted(this PlayerVoteArea player) => PlayerByVoteArea(player).IsKnighted();
-
-    public static bool IsSpellbound(this PlayerVoteArea player) => PlayerByVoteArea(player).IsSpellbound();
-
-    public static bool IsArsoDoused(this PlayerVoteArea player) => PlayerByVoteArea(player).IsArsoDoused();
-
-    public static bool IsCryoDoused(this PlayerVoteArea player) => PlayerByVoteArea(player).IsCryoDoused();
-
-    public static bool IsOnAlert(this PlayerControl player) => PlayerLayer.GetILayers<IAlerter>().Any(role => role.Player == player && role.AlertButton.EffectActive);
+    public static bool IsOnAlert(this PlayerControl player) => PlayerLayer.GetILayers<IAlerter>().Any(role => role.Player == player && role.AlertButton?.EffectActive == true);
 
     public static bool IsVesting(this PlayerControl player) => PlayerLayer.GetLayers<Survivor>().Any(role => role.VestButton.EffectActive && player == role.Player);
-
-    public static bool NotTransformed(this PlayerControl player) => PlayerLayer.GetLayers<Werewolf>().Any(role => !role.CanMaul && player == role.Player);
 
     public static bool IsMarked(this PlayerControl player) => PlayerLayer.GetLayers<Ghoul>().Any(role => player == role.MarkedPlayer);
 
@@ -347,21 +267,11 @@ public static class LayerExtentions
 
     public static bool IsFramed(this PlayerControl player) => PlayerLayer.GetLayers<Framer>().Any(role => role.Framed.Contains(player.PlayerId));
 
-    public static bool IsInfected(this PlayerVoteArea player) => PlayerByVoteArea(player).IsInfected();
-
-    public static bool IsFramed(this PlayerVoteArea player) => PlayerByVoteArea(player).IsFramed();
-
-    public static bool IsMarked(this PlayerVoteArea player) => PlayerByVoteArea(player).IsMarked();
-
     public static bool IsWinningRival(this PlayerControl player) => PlayerLayer.GetLayers<Rivals>().Any(x => x.Player == player && x.IsWinningRival);
 
     public static bool IsTurnedTraitor(this PlayerControl player) => player.IsIntTraitor() || player.IsSynTraitor();
 
     public static bool IsTurnedFanatic(this PlayerControl player) => player.IsIntFanatic() || player.IsSynFanatic();
-
-    public static bool IsTurnedTraitor(this PlayerVoteArea player) => PlayerByVoteArea(player).IsTurnedTraitor();
-
-    public static bool IsTurnedFanatic(this PlayerVoteArea player) => PlayerByVoteArea(player).IsTurnedFanatic();
 
     public static bool IsUnturnedFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic fanatic && fanatic.Side == Faction.Crew;
 
@@ -379,20 +289,6 @@ public static class LayerExtentions
 
     public static bool IsIntAlly(this PlayerControl player) => player.GetDisposition() is Allied ally && ally.Side == Faction.Intruder;
 
-    public static bool IsIntFanatic(this PlayerVoteArea player) => PlayerByVoteArea(player).IsIntFanatic();
-
-    public static bool IsSynFanatic(this PlayerVoteArea player) => PlayerByVoteArea(player).IsSynFanatic();
-
-    public static bool IsIntTraitor(this PlayerVoteArea player) => PlayerByVoteArea(player).IsIntTraitor();
-
-    public static bool IsSynTraitor(this PlayerVoteArea player) => PlayerByVoteArea(player).IsSynTraitor();
-
-    public static bool IsCrewAlly(this PlayerVoteArea player) => PlayerByVoteArea(player).IsCrewAlly();
-
-    public static bool IsSynAlly(this PlayerVoteArea player) => PlayerByVoteArea(player).IsSynAlly();
-
-    public static bool IsIntAlly(this PlayerVoteArea player) => PlayerByVoteArea(player).IsIntAlly();
-
     public static bool IsOtherRival(this PlayerControl player, PlayerControl refPlayer) => player.GetOtherRival() == refPlayer;
 
     public static bool IsOtherLover(this PlayerControl player, PlayerControl refPlayer) => player.GetOtherLover() == refPlayer;
@@ -409,12 +305,6 @@ public static class LayerExtentions
         player.Is(LayerEnum.Betrayer)) || player.IsIntDefect() || (player.Is(Faction.Intruder) && !player.IsBase(Faction.Intruder));
 
     public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly() || player.IsCrewDefect() || (player.Is(Faction.Crew) && !player.IsBase(Faction.Crew));
-
-    public static bool SyndicateSided(this PlayerVoteArea player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly();
-
-    public static bool IntruderSided(this PlayerVoteArea player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic();
-
-    public static bool CrewSided(this PlayerVoteArea player) => player.IsCrewAlly();
 
     public static bool Last(PlayerControl player) => (LastImp() && player.Is(Faction.Intruder)) || (LastSyn() && player.Is(Faction.Syndicate));
 
@@ -722,7 +612,7 @@ public static class LayerExtentions
     public static bool SeemsEvil(this PlayerControl player)
     {
         var intruderFlag = player.Is(Faction.Intruder) && !player.Is(LayerEnum.Traitor) && !player.Is(LayerEnum.Fanatic) && !player.Is(LayerEnum.PromotedGodfather);
-        var syndicateFlag = player.Is(Faction.Syndicate) && !player.Is(LayerEnum.Traitor) && !player.Is(LayerEnum.Fanatic) && !player.Is(LayerEnum.PromotedRebel);
+        var syndicateFlag = player.Is(Faction.Syndicate) && !player.Is(LayerEnum.Traitor) && !player.Is(LayerEnum.Fanatic) && !player.Is(LayerEnum.PromotedRebel) && Role.DriveHolder != player;
         var traitorFlag = player.IsTurnedTraitor() && Traitor.TraitorColourSwap;
         var fanaticFlag = player.IsTurnedFanatic() && Fanatic.FanaticColourSwap;
         var nkFlag = player.Is(Alignment.NeutralKill) && !Sheriff.NeutKillingRed;
@@ -730,12 +620,6 @@ public static class LayerExtentions
         var framedFlag = player.IsFramed();
         return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag || fanaticFlag;
     }
-
-    public static bool SeemsGood(this PlayerControl player) => !SeemsEvil(player) || Role.DriveHolder == player;
-
-    public static bool SeemsEvil(this PlayerVoteArea player) => PlayerByVoteArea(player).SeemsEvil();
-
-    public static bool SeemsGood(this PlayerVoteArea player) => PlayerByVoteArea(player).SeemsGood();
 
     public static bool IsBlockImmune(PlayerControl player) => player.GetRole().RoleBlockImmune;
 
@@ -950,6 +834,7 @@ public static class LayerExtentions
             layerHandler.SetUpLayers(newRole);
 
         ButtonUtils.Reset(player: newRole.Player);
+        newRole.Player.RegenTask();
     }
 
     public static string AlignmentName(this Alignment alignment, bool withColors = false) => alignment switch
@@ -1220,7 +1105,7 @@ public static class LayerExtentions
         return overrideDef ?? (DefenseEnum)defense;
     }
 
-    public static IEnumerable<PlayerLayer> GetLayersFromList(this PlayerControl player) => [ .. PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType) ];
+    public static IEnumerable<PlayerLayer> GetLayersFromList(this PlayerControl player) => PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType);
 
     public static IEnumerable<PlayerLayer> GetLayers(this PlayerControl player)
     {
@@ -1229,8 +1114,6 @@ public static class LayerExtentions
 
         return player.GetLayersFromList();
     }
-
-    public static IEnumerable<PlayerLayer> GetLayers(this PlayerVoteArea player) => PlayerByVoteArea(player).GetLayers();
 
     public static T GetLayerFromList<T>(this PlayerControl player) where T : PlayerLayer => PlayerLayer.GetLayers<T>().Find(x => x.Player == player);
 
@@ -1268,8 +1151,6 @@ public static class LayerExtentions
         return player.GetRoleFromList();
     }
 
-    public static Role GetRole(this PlayerVoteArea area) => PlayerByVoteArea(area).GetRole();
-
     public static Disposition GetDispositionFromList(this PlayerControl player) => player.GetLayerFromList<Disposition>();
 
     public static Disposition GetDisposition(this PlayerControl player)
@@ -1282,8 +1163,6 @@ public static class LayerExtentions
 
         return player.GetDispositionFromList();
     }
-
-    public static Disposition GetDisposition(this PlayerVoteArea area) => PlayerByVoteArea(area).GetDisposition();
 
     public static Modifier GetModifierFromList(this PlayerControl player) => player.GetLayerFromList<Modifier>();
 
@@ -1298,8 +1177,6 @@ public static class LayerExtentions
         return player.GetModifierFromList();
     }
 
-    public static Modifier GetModifier(this PlayerVoteArea area) => PlayerByVoteArea(area).GetModifier();
-
     public static Ability GetAbilityFromList(this PlayerControl player) => player.GetLayerFromList<Ability>();
 
     public static Ability GetAbility(this PlayerControl player)
@@ -1312,8 +1189,6 @@ public static class LayerExtentions
 
         return player.GetAbilityFromList();
     }
-
-    public static Ability GetAbility(this PlayerVoteArea area) => PlayerByVoteArea(area).GetAbility();
 
     public static bool TryGetLayer<T>(this PlayerControl player, out T layer) where T : PlayerLayer => layer = player.GetLayer<T>();
 

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Blackmailer : Intruder, IIntimidator
+public class Blackmailer : Intruder, IBlackmailer
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number BlackmailCd { get; set; } = new(25);

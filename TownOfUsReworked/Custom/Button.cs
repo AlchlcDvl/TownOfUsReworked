@@ -5,39 +5,41 @@ public class CustomButton
     // TODO: Make the Owner field a list instead and have each layer have one singular static member that handles all of the buttons for this particular button, might help with some potential lag with having too many ability buttons :thonk:
     public static readonly List<CustomButton> AllButtons = [];
 
-    // Params
+    // Params, required
     public PlayerLayer Owner { get; }
-    public string ButtonSprite { get; }
-    public SpriteFunc SpriteFunc { get; }
     public AbilityTypes Type { get; }
     public string Keybind { get; }
-    public bool PostDeath { get; }
-    public OnClickTargetless DoClickTargetless { get; }
-    public OnClickBody DoClickBody { get; }
-    public OnClickPlayer DoClickPlayer { get; }
-    public OnClickVent DoClickVent { get; }
-    public OnClickConsole DoClickConsole { get; }
-    public EffectVoid Effect { get; }
-    public EffectStartVoid OnEffectStart { get; }
-    public EffectEndVoid OnEffectEnd { get; }
-    public DelayStartVoid OnDelayStart { get; }
-    public DelayEndVoid OnDelayEnd { get; }
-    public DelayVoid ActionDelay { get; }
-    public EndFunc End { get; }
+
+    // Params, optional (but still mostly required)
+    public string ButtonSprite { get; } = "Placeholder";
+    public SpriteFunc SpriteFunc { get; } = BlankButtonSprite;
+    public OnClickTargetless DoClickTargetless { get; } = BlankVoid;
+    public OnClickBody DoClickBody { get; } = BlankVoid;
+    public OnClickPlayer DoClickPlayer { get; } = BlankVoid;
+    public OnClickVent DoClickVent { get; } = BlankVoid;
+    public OnClickConsole DoClickConsole { get; } = BlankVoid;
+    public EffectVoid Effect { get; } = BlankVoid;
+    public EffectStartVoid OnEffectStart { get; } = BlankVoid;
+    public EffectEndVoid OnEffectEnd { get; } = BlankVoid;
+    public DelayStartVoid OnDelayStart { get; } = BlankVoid;
+    public DelayEndVoid OnDelayEnd { get; } = BlankVoid;
+    public DelayVoid ActionDelay { get; } = BlankVoid;
+    public EndFunc End { get; } = BlankFalse;
+    public DifferenceFunc Difference { get; } = BlankZero;
+    public MultiplierFunc Multiplier { get; } = BlankOne;
+    public UsableFunc IsUsable { get; } = BlankTrue;
+    public ConditionFunc Condition { get; } = BlankTrue;
+    public PlayerBodyExclusion PlayerBodyException { get; } = BlankFalse;
+    public VentExclusion VentException { get; } = BlankFalse;
+    public ConsoleExclusion ConsoleException { get; } = BlankFalse;
+    public LabelFunc ButtonLabelFunc { get; } = BlankButtonLabel;
+    public string ButtonLabel { get; } = "ABILITY";
     public float Cooldown { get; } = 1f;
-    public DifferenceFunc Difference { get; }
-    public MultiplierFunc Multiplier { get; }
+    public bool CanClickAgain { get; } = true;
+    public UColor TextColor { get; }
+    public bool PostDeath { get; }
     public float Duration { get; }
     public float Delay { get; }
-    public UsableFunc IsUsable { get; }
-    public ConditionFunc Condition { get; }
-    public bool CanClickAgain { get; } = true;
-    public PlayerBodyExclusion PlayerBodyException { get; }
-    public VentExclusion VentException { get; }
-    public ConsoleExclusion ConsoleException { get; }
-    public LabelFunc ButtonLabelFunc { get; }
-    public string ButtonLabel { get; }
-    public UColor TextColor { get; }
     public int MaxUses { get; set; }
 
     // Other things
@@ -146,29 +148,6 @@ public class CustomButton
                 Warning($"Unassignable proprty of type {prop.GetType().Name}");
         }
 
-        DoClickTargetless ??= BlankVoid;
-        DoClickPlayer ??= BlankVoid;
-        DoClickVent ??= BlankVoid;
-        DoClickBody ??= BlankVoid;
-        DoClickConsole ??= BlankVoid;
-        PlayerBodyException ??= BlankFalse;
-        VentException ??= BlankFalse;
-        ConsoleException ??= BlankFalse;
-        Effect ??= BlankVoid;
-        OnEffectStart ??= BlankVoid;
-        OnEffectEnd ??= BlankVoid;
-        OnDelayEnd ??= BlankVoid;
-        OnDelayStart ??= BlankVoid;
-        ActionDelay ??= BlankVoid;
-        End ??= BlankFalse;
-        IsUsable ??= BlankTrue;
-        Condition ??= BlankTrue;
-        Difference ??= BlankZero;
-        Multiplier ??= BlankOne;
-        ButtonLabelFunc ??= BlankButtonLabel;
-        SpriteFunc ??= BlankButtonSprite;
-        ButtonLabel ??= "ABILITY";
-        ButtonSprite ??= "Placeholder";
         CooldownTime = EffectTime = DelayTime = 0f;
         ID = Sprite() + Owner.Name + Owner.PlayerName + AllButtons.Count;
         Disabled = !Owner.Local;

@@ -34,8 +34,7 @@ public class Fanatic : Disposition
     public override string Name => "Fanatic";
     public override string Symbol => "♠";
     public override LayerEnum Type => LayerEnum.Fanatic;
-    public override Func<string> Description => () => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" :
-        "";
+    public override Func<string> Description => () => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : "";
     public override bool Hidden => !FanaticKnows && !Turned && !Dead;
 
     public override void Init()
@@ -67,12 +66,14 @@ public class Fanatic : Disposition
             _ => () => ""
         };
 
+        var local = CustomPlayer.Local.GetRole();
+
         foreach (var snitch in GetLayers<Snitch>())
         {
             if (Snitch.SnitchSeesFanatic)
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
-                    Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
+                    local.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
                 else if (snitch.TasksDone && snitch.Local)
                     snitch.Player.GetRole().AllArrows.Add(PlayerId, new(snitch.Player, CustomColorManager.Snitch));
             }
@@ -81,7 +82,7 @@ public class Fanatic : Disposition
         foreach (var revealer in GetLayers<Revealer>())
         {
             if (revealer.Revealed && Revealer.RevealerRevealsTraitor && Local)
-                Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
+                local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Mystic) && !Local)

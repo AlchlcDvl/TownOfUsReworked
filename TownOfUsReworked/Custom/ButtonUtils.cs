@@ -37,6 +37,7 @@ public static class ButtonUtils
     {
         var hud = HUD();
         player.GetButtons().ForEach(x => x.SetActive());
+        player.GetRole().UpdateButtons();
         hud.KillButton.gameObject.SetActive(false);
         hud.SabotageButton.gameObject.SetActive(player.CanSabotage() && IsInGame());
         hud.ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward) && !Meeting() && !player.HasDied() && IsInGame());
@@ -139,9 +140,6 @@ public static class ButtonUtils
 
         if (role.Requesting && !start)
             role.BountyTimer++;
-
-        if (!start && Role.SyndicateHasChaosDrive)
-            AssignChaosDrive();
 
         if (role is Escort esc)
             esc.BlockTarget = null;

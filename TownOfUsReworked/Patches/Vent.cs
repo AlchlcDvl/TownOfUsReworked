@@ -112,13 +112,11 @@ public static class VentPatches
     [HarmonyPatch(nameof(Vent.SetOutline))]
     public static void Postfix(Vent __instance, bool mainTarget)
     {
-        var active = CustomPlayer.Local && !Meeting() && CustomPlayer.Local.CanVent();
-
-        if (!Role.LocalRole || !active)
+        if (!CustomPlayer.Local.TryGetLayer<Role>(out var role) || Meeting() || !CustomPlayer.Local.CanVent())
             return;
 
-        __instance.myRend.material.SetColor("_OutlineColor", Role.LocalRole.Color);
-        __instance.myRend.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
+        __instance.myRend.material.SetColor("_OutlineColor", role.Color);
+        __instance.myRend.material.SetColor("_AddColor", mainTarget ? role.Color : UColor.clear);
     }
 
     [HarmonyPatch(nameof(Vent.Use)), HarmonyPrefix]

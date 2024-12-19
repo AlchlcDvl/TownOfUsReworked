@@ -162,7 +162,7 @@ public class Actor : Evil
             Actor or _ => new Amnesiac(),
         };
 
-        newRole.RoleUpdate(this, Player);
+        newRole.RoleUpdate(this);
     }
 
     public bool Usable() => !Targeted;
@@ -173,7 +173,7 @@ public class Actor : Evil
 
         if ((TargetFailed || (Targeted && Failed)) && !Dead)
         {
-            var targetList = (TargetFailed ? AllRoles() : PretendRoles).Where(x => x.Type != Type);
+            var targetList = (TargetFailed ? GetLayers<Role>() : PretendRoles).Where(x => x.Type != Type);
             var role = targetList.Random(x => x.Dead) ?? targetList.Random();
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, role);
             TurnRole(role);

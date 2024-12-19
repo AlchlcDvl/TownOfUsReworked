@@ -22,36 +22,38 @@ public static class AbilityButtonPatch
 public static class ActionButtonPatches
 {
     [HarmonyPatch(nameof(ActionButton.SetCoolDown)), HarmonyPrefix]
-    public static void SetCoolDownPrefix(ActionButton __instance) => __instance.graphic.transform.localPosition = __instance.position;
-
-    [HarmonyPatch(nameof(ActionButton.SetCoolDown))]
-    public static void Postfix(ActionButton __instance, float timer, float maxTimer)
+    public static bool SetCoolDownPrefix(ActionButton __instance, float timer, float maxTimer)
     {
-        if (timer > Mathf.RoundToInt(maxTimer / 2f))
-            __instance.cooldownTimerText.color = UColor.red;
-        else if (timer >= 1f)
-            __instance.cooldownTimerText.color = UColor.yellow;
-        else
-            __instance.cooldownTimerText.color = UColor.white;
-    }
-
-    [HarmonyPatch(nameof(ActionButton.SetFillUp))]
-    public static bool Prefix(ActionButton __instance, float timer, float maxTimer)
-    {
-        var percentCool = Mathf.Clamp((maxTimer - timer) / maxTimer, 0f, 1f);
+        var percentCool = Mathf.Clamp(timer / maxTimer, 0f, 1f);
         __instance.isCoolingDown = percentCool > 0f;
-        __instance.graphic.transform.localPosition = __instance.position + (Vector3)(URandom.insideUnitCircle * (timer < 3f ? URandom.Range(-0.05f, 0.051f) : 0f));
+        __instance.graphic.transform.localPosition = __instance.position;
         __instance.cooldownTimerText.SetText($"{Mathf.CeilToInt(timer)}");
         __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
         __instance.SetCooldownFill(percentCool);
+        __instance.cooldownTimerText.color = percentCool switch
+        {
+            > 0.5f => UColor.red,
+            > 0.1f => UColor.yellow,
+            _ => UColor.white
+        };
+        return false;
+    }
 
-        if (timer > Mathf.RoundToInt(maxTimer / 2f))
-            __instance.cooldownTimerText.color = UColor.white;
-        else if (timer > 3f)
-            __instance.cooldownTimerText.color = UColor.yellow;
-        else
-            __instance.cooldownTimerText.color = UColor.red;
-
+    [HarmonyPatch(nameof(ActionButton.SetFillUp)), HarmonyPrefix]
+    public static bool SetFillUpPrefix(ActionButton __instance, float timer, float maxTimer)
+    {
+        var percentCool = Mathf.Clamp((maxTimer - timer) / maxTimer, 0f, 1f);
+        __instance.isCoolingDown = percentCool > 0f;
+        __instance.graphic.transform.localPosition = __instance.position + (Vector3)(URandom.insideUnitCircle * (percentCool < 0.1f ? URandom.Range(-0.05f, 0.051f) : 0f));
+        __instance.cooldownTimerText.SetText($"{Mathf.CeilToInt(timer)}");
+        __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
+        __instance.SetCooldownFill(percentCool);
+        __instance.cooldownTimerText.color = percentCool switch
+        {
+            > 0.50f => UColor.white,
+            > 0.1f => UColor.yellow,
+            _ => UColor.red
+        };
         return false;
     }
 }

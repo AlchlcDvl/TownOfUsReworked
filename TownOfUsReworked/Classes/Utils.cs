@@ -415,18 +415,15 @@ public static class Utils
         Coroutines.Start(CoPerformKill(killer.KillAnimations.Random(), killer, target, lunge));
     }
 
-    public static void MarkMeetingDead(PlayerControl target, bool doesKill = true, bool noReason = false, bool showAnim = true) => MarkMeetingDead(target, target, doesKill, noReason,
-        showAnim);
+    public static void MarkMeetingDead(PlayerControl target) => MarkMeetingDead(target, target);
 
-    public static void MarkMeetingDead(PlayerControl target, PlayerControl killer, bool doesKill = true, bool noReason = false, bool showAnim = true)
+    public static void MarkMeetingDead(PlayerControl target, PlayerControl killer)
     {
         Play("Kill");
 
         if (target.AmOwner)
         {
-            if (showAnim)
-                HUD().KillOverlay.ShowKillAnimation(killer.Data, target.Data);
-
+            HUD().KillOverlay.ShowKillAnimation(killer.Data, target.Data);
             Meeting().SetForegroundForDead();
             Meeting().ClearVote();
 
@@ -778,8 +775,8 @@ public static class Utils
         var targets = AllPlayers().Where(player => !player.HasDied() && !UninteractiblePlayers.ContainsKey(player.PlayerId) && !player.inVent);
         var coordinates = new Dictionary<byte, Vector2>();
         var allLocations = new List<Vector2>();
-        allLocations.AddRanges(targets.Select(x => (Vector2)x.transform.position), AllVents().Select(GetVentPosition), AllConsoles().Select(GetConsolePosition),
-            AllSystemConsoles().Select(GetSystemConsolePosition), AllBodies().Select(x => (Vector2)x.transform.position));
+        allLocations.AddRanges(targets.Select(x => (Vector2)x.transform.position), AllVents().Select(x => (Vector2)x.transform.position), AllBodies().Select(x =>
+            (Vector2)x.transform.position));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
@@ -797,12 +794,6 @@ public static class Utils
         AllBodies().ForEach(x => coordinates.Add(x.ParentId, allLocations.Random()));
         return coordinates;
     }
-
-    public static Vector2 GetVentPosition(Vent vent) => new(vent.transform.position.x, vent.transform.position.y + 0.3636f);
-
-    public static Vector2 GetConsolePosition(Console console) => new(console.transform.position.x, console.transform.position.y - 0.5f);
-
-    public static Vector2 GetSystemConsolePosition(SystemConsole sysConsole) => new(sysConsole.transform.position.x, sysConsole.transform.position.y - 0.5f);
 
     public static IEnumerator Fade(bool fadeAway)
     {
@@ -1378,7 +1369,8 @@ public static class Utils
         if (player.Data.IsDead)
             return;
 
-        player.logger.Debug($"Player {player.PlayerId} dying for reason {reason} and custom reason {reason2}");
+        killer ??= player;
+        player.logger.Debug($"Player {player.PlayerId} dying to {killer.PlayerId} for reason {reason} and custom reason {reason2}");
 
         if (!TutorialManager.InstanceExists && player.AmOwner)
         {

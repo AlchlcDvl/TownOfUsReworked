@@ -119,22 +119,23 @@ public class Traitor : Disposition
 
         Side = traitorRole.Faction;
         Turned = true;
+        var local = CustomPlayer.Local.GetRole();
 
         foreach (var snitch in GetLayers<Snitch>())
         {
             if (Snitch.SnitchSeesTraitor)
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
-                    Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
+                    local.AllArrows.Add(snitch.PlayerId, new(Player, snitch.Color));
                 else if (snitch.TasksDone && snitch.Local)
-                    snitch.Player.GetRole().AllArrows.Add(Player.PlayerId, new(snitch.Player, CustomColorManager.Snitch));
+                    snitch.Player.GetRole().AllArrows.Add(Player.PlayerId, new(snitch.Player, snitch.Color));
             }
         }
 
         foreach (var revealer in GetLayers<Revealer>())
         {
             if (revealer.Revealed && Revealer.RevealerRevealsTraitor && Local)
-                Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
+                local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Mystic) && !Local)

@@ -15,58 +15,11 @@ public static class CheckEndGame
             return false;
         }
 
-        var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers().Count(y => !y.HasDied()));
-        var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers().Count(y => !y.HasDied()));
+        var hex = PlayerLayer.GetILayers<IHexer>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers().Count(y => !y.HasDied()));
 
         if (TasksDone())
         {
             WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
-            CallRpc(CustomRPC.WinLose, WinState);
-        }
-        else if (spell)
-        {
-            WinState = spell.Faction switch
-            {
-                Faction.Crew => WinLose.CrewWins,
-                Faction.Intruder => WinLose.IntrudersWin,
-                Faction.Neutral => NeutralSettings.NoSolo switch
-                {
-                    NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
-                    NoSolo.AllNKs => WinLose.AllNKsWin,
-                    _ => spell.LinkedDisposition switch
-                    {
-                        LayerEnum.Mafia => WinLose.MafiaWins,
-                        LayerEnum.Lovers => WinLose.LoveWins,
-                        _ => WinLose.DefectorWins
-                    }
-                },
-                Faction.Syndicate => WinLose.SyndicateWins,
-                _ => WinLose.NobodyWins
-            };
-
-            CallRpc(CustomRPC.WinLose, WinState);
-        }
-        else if (reb)
-        {
-            WinState = reb.Faction switch
-            {
-                Faction.Crew => WinLose.CrewWins,
-                Faction.Intruder => WinLose.IntrudersWin,
-                Faction.Neutral => NeutralSettings.NoSolo switch
-                {
-                    NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
-                    NoSolo.AllNKs => WinLose.AllNKsWin,
-                    _ => spell.LinkedDisposition switch
-                    {
-                        LayerEnum.Mafia => WinLose.MafiaWins,
-                        LayerEnum.Lovers => WinLose.LoveWins,
-                        _ => WinLose.DefectorWins
-                    }
-                },
-                Faction.Syndicate => WinLose.SyndicateWins,
-                _ => WinLose.NobodyWins
-            };
-
             CallRpc(CustomRPC.WinLose, WinState);
         }
         else if (Sabotaged() && IntruderSettings.IntrudersCanSabotage)
@@ -74,11 +27,34 @@ public static class CheckEndGame
             WinState = SyndicateSettings.AltImps ? WinLose.SyndicateWins : WinLose.IntrudersWin;
             CallRpc(CustomRPC.WinLose, WinState);
         }
+        else if (hex != null)
+        {
+            WinState = hex.Faction switch
+            {
+                Faction.Crew => WinLose.CrewWins,
+                Faction.Intruder => WinLose.IntrudersWin,
+                Faction.Neutral => NeutralSettings.NoSolo switch
+                {
+                    NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
+                    NoSolo.AllNKs => WinLose.AllNKsWin,
+                    _ => hex.LinkedDisposition switch
+                    {
+                        LayerEnum.Mafia => WinLose.MafiaWins,
+                        LayerEnum.Lovers => WinLose.LoveWins,
+                        _ => WinLose.DefectorWins
+                    }
+                },
+                Faction.Syndicate => WinLose.SyndicateWins,
+                _ => WinLose.NobodyWins
+            };
+
+            CallRpc(CustomRPC.WinLose, WinState);
+        }
         else
         {
-            Disposition.AllDispositions().ForEach(x => x.GameEnd());
-            Role.AllRoles().ForEach(x => x.GameEnd());
             DetectStalemate();
+            PlayerLayer.GetLayers<Role>().ForEach(x => x.GameEnd());
+            PlayerLayer.GetLayers<Disposition>().ForEach(x => x.GameEnd());
         }
 
         return false;
@@ -147,9 +123,9 @@ public static class CheckEndGame
         }
         else
         {
-            var crew = Role.GetRoles(Faction.Crew);
+            var crew = Role.GetRoles(Faction.Crew).Where(x => x.Player.CanDoTasks());
 
-            if (crew.All(x => x.Dead && !CrewSettings.GhostTasksCountToWin) || !crew.Any(x => x.Player.CanDoTasks()))
+            if ((crew.All(x => x.Dead) && !CrewSettings.GhostTasksCountToWin) || !crew.Any())
                 return false;
 
             var allCrew = new List<PlayerControl>();
@@ -157,15 +133,14 @@ public static class CheckEndGame
 
             foreach (var role in crew)
             {
+                if (role.Dead && !CrewSettings.GhostTasksCountToWin)
+                    continue;
+
                 var player = role.Player;
+                allCrew.Add(player);
 
-                if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CrewSettings.GhostTasksCountToWin)))
-                {
-                    allCrew.Add(player);
-
-                    if (role.TasksDone)
-                        crewWithNoTasks.Add(player);
-                }
+                if (role.TasksDone)
+                    crewWithNoTasks.Add(player);
             }
 
             return allCrew.Count == crewWithNoTasks.Count;

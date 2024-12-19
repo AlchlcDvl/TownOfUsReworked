@@ -27,8 +27,8 @@ public class ChatCommand
         new([ "help" ], Help, [ "command name (optional)" ], "Gets a help menu showing the usable commands, or provides a description of a command if the command name is specified"),
         // new([ "testargs", "targ" ], TestArgs, ""),
         // new([ "testargless", "targless" ], TestArgless, ""),
-        // new([ "testargmessage", "targmess" ], TestArgsMessage, ""),
-        // new([ "translate", "trans", "t" ], Translate, ""),
+        // new([ "testargmessage", "targmess", "tam" ], TestArgsMessage, ""),
+        // new([ "translate" ], Translate, ""),
         // new([ "rpc" ], SendRPCArgless, ""),
         // new([ "rpca" ], SendRPCArgs, "")
     ];
@@ -362,12 +362,10 @@ public class ChatCommand
     {
         if (args.Length == 1)
         {
-            var setColor = TownOfUsReworked.IsTest ? "/setname" : "";
-            var comma = setColor.Length == 0 ? "" : ", ";
-            var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
-            var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
-            var lobby = setColor + (!IsNullEmptyOrWhiteSpace(kickBan) ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "");
-            Run("<#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n/ignore{lobby}");
+            var kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "";
+            var test = AllCommands.Any(x => x.Aliases.Contains("rpc")) ? ", /testargs, /testargless, /testargsmessage, /rpc" : "";
+            var lobby = !IsNullEmptyOrWhiteSpace(kickBan) ? $"\n\nCommands available in lobby:\n{kickBan}" : "";
+            Run("<#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n/ignore, /setname{lobby}");
         }
         else
         {

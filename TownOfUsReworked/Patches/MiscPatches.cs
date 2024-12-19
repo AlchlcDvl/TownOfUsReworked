@@ -476,7 +476,7 @@ public static class ShowCustomAnim
         var rend = __instance.flameParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
 
         if (victim == killer || !GameModifiers.ShowKillerRoleColor)
-            rend.color = Role.LocalRole.Color;
+            rend.color = CustomPlayer.Local.GetRole().Color;
         else
             rend.color = killer.Object.GetRole().Color;
 

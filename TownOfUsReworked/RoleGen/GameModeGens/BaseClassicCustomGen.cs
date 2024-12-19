@@ -143,32 +143,48 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
         if (!SyndicateSettings.AltImps)
             AllRoles.AddRange(IntruderRoles);
 
-        if (!AllRoles.Any(x => x.ID == LayerEnum.Dracula))
-        {
-            var count = AllRoles.RemoveAll(x => x.ID == LayerEnum.VampireHunter);
+        NeutralRoles.Clear();
+        CrewRoles.Clear();
+        SyndicateRoles.Clear();
+        IntruderRoles.Clear();
+    }
 
-            for (var i = 0; i < count; i++)
-                AllRoles.Add(GetSpawnItem(LayerEnum.Vigilante));
+    public override void PostAssignment()
+    {
+        var allPlayers = AllPlayers();
+
+        if (!allPlayers.Any(x => x.Is(LayerEnum.Dracula)))
+        {
+            foreach (var player in allPlayers.Where(x => x.Is(LayerEnum.VampireHunter)))
+            {
+                var role = player.GetRole();
+                role.End();
+                Gen(player, LayerEnum.Vigilante, PlayerLayerEnum.Role);
+            }
         }
 
-        if (!AllRoles.Any(x => x.ID is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer))
+        if (!allPlayers.Any(x => x.GetRole() is Dracula or Jackal or Necromancer or Whisperer))
         {
-            var count = AllRoles.RemoveAll(x => x.ID == LayerEnum.Mystic);
-
-            for (var i = 0; i < count; i++)
-                AllRoles.Add(GetSpawnItem(LayerEnum.Seer));
+            foreach (var player in allPlayers.Where(x => x.Is(LayerEnum.Mystic)))
+            {
+                var role = player.GetRole();
+                role.End();
+                new Seer().Start(player);
+            }
         }
 
-        if (!AllRoles.Any(x => x.ID is LayerEnum.VampireHunter or LayerEnum.Amnesiac or LayerEnum.Thief or LayerEnum.Godfather or LayerEnum.Shifter or LayerEnum.Guesser or LayerEnum.Rebel or
-            LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.BountyHunter or LayerEnum.Mystic or LayerEnum.Actor))
+        if (!allPlayers.Any(x => x.GetRole() is VampireHunter or Amnesiac or Thief or Godfather or Shifter or Guesser or Rebel or Executioner or GuardianAngel or BountyHunter or Mystic or
+            Actor || x.GetDisposition() is Traitor or Fanatic))
         {
-            var count = AllRoles.RemoveAll(x => x.ID == LayerEnum.Seer);
-
-            for (var i = 0; i < count; i++)
-                AllRoles.Add(GetSpawnItem(LayerEnum.Sheriff));
+            foreach (var player in allPlayers.Where(x => x.Is(LayerEnum.Seer)))
+            {
+                var role = player.GetRole();
+                role.End();
+                new Sheriff().Start(player);
+            }
         }
 
-        if (AllRoles.Any(x => x.ID == LayerEnum.Cannibal) && AllRoles.Any(x => x.ID == LayerEnum.Janitor) && GameModifiers.JaniCanMutuallyExclusive)
+        if (allPlayers.Any(x => x.Is(LayerEnum.Cannibal)) && allPlayers.Any(x => x.Is(LayerEnum.Janitor)) && GameModifiers.JaniCanMutuallyExclusive)
         {
             var chance = URandom.RandomRangeInt(0, 2);
             var count = AllRoles.RemoveAll(x => x.ID == (chance == 0 ? LayerEnum.Cannibal : LayerEnum.Janitor));
@@ -179,17 +195,14 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
                 AllRoles.Add(value);
         }
 
-        if (GameData.Instance.PlayerCount <= 4 && AllRoles.Any(x => x.ID == LayerEnum.Amnesiac))
+        if (GameData.Instance.PlayerCount <= 4)
         {
-            var count = AllRoles.RemoveAll(x => x.ID == LayerEnum.Amnesiac);
-
-            for (var i = 0; i < count; i++)
-                AllRoles.Add(GetSpawnItem(LayerEnum.Thief));
+            foreach (var player in allPlayers.Where(x => x.Is(LayerEnum.Amnesiac)))
+            {
+                var role = player.GetRole();
+                role.End();
+                new Thief().Start(player);
+            }
         }
-
-        NeutralRoles.Clear();
-        CrewRoles.Clear();
-        SyndicateRoles.Clear();
-        IntruderRoles.Clear();
     }
 }

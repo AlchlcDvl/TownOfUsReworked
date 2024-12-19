@@ -252,13 +252,6 @@ public class Warper : Syndicate
             else
                 player.RpcCustomSnapTo(pos);
         }
-
-        if (CustomPlayer.Local.walkingToVent)
-        {
-            CustomPlayer.Local.inVent = false;
-            CustomPlayer.Local.moveable = true;
-            CustomPlayer.Local.MyPhysics.StopAllCoroutines();
-        }
     }
 
     public void Warp()

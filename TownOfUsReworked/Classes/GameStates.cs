@@ -56,7 +56,7 @@ public static class GameStates
 
     public static bool DeadSeeEverything()
     {
-        if (!CustomPlayer.LocalCustom.Dead || !GameModifiers.DeadSeeEverything || !Role.LocalRole.TrulyDead)
+        if (!GameModifiers.DeadSeeEverything || !CustomPlayer.Local.HasDied() || !CustomPlayer.Local.GetRole().TrulyDead)
             return false;
 
         var otherFlag = false;
