@@ -21,7 +21,7 @@ public class HudHandler : MonoBehaviour
 
         CustomArrow.AllArrows.Where(x => !x.Owner.AmOwner).ForEach(x => x.Update());
         AllButtons.ForEach(x => x.Timers());
-        HUD()?.ReportButton?.ToggleVisible(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is(LayerEnum.Coward) && !CustomPlayer.Local.Is(Faction.GameMode) && !Meeting() &&
+        HUD()?.ReportButton?.ToggleVisible(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is<Coward>() && !CustomPlayer.Local.Is(Faction.GameMode) && !Meeting() &&
             !MapBehaviourPatches.MapActive);
 
         foreach (var id in UninteractiblePlayers.Keys)
@@ -31,7 +31,7 @@ public class HudHandler : MonoBehaviour
             if (player.HasDied())
                 continue;
 
-            if (UninteractiblePlayers.TryGetValue(player.PlayerId, out var time) && time.AddSeconds(UninteractiblePlayers2[player.PlayerId]) < DateTime.UtcNow)
+            if (UninteractiblePlayers.TryGetValue(player.PlayerId, out var time) && Time.time - time < UninteractiblePlayers2[player.PlayerId])
             {
                 UninteractiblePlayers.Remove(player.PlayerId);
                 UninteractiblePlayers2.Remove(player.PlayerId);

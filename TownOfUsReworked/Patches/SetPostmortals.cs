@@ -50,13 +50,8 @@ public static class SetPostmortals
             JesterWin(exiled);
             ExecutionerWin(exiled);
 
-            if (exiled.Is(LayerEnum.Lovers))
-            {
-                var lover = exiled.GetOtherLover();
-
-                if (!lover.Is(Alignment.NeutralApoc) && Lovers.BothLoversDie)
-                    lover?.Exiled();
-            }
+            if (Lovers.BothLoversDie && exiled.TryGetLayer<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.NeutralApoc))
+                lover.OtherLover.Exiled();
         }
 
         foreach (var dict in PlayerLayer.GetLayers<Dictator>())
@@ -220,7 +215,7 @@ public static class SetPostmortals
             if (!ejection)
                 continue;
 
-            if (!rev.Is(LayerEnum.Revealer))
+            if (!rev.Is<Revealer>())
             {
                 var former = rev.GetRole();
                 new Revealer() { FormerRole = former }.RoleUpdate(former, rev);
@@ -270,7 +265,7 @@ public static class SetPostmortals
             if (!ejection)
                 continue;
 
-            if (!phan.Is(LayerEnum.Phantom))
+            if (!phan.Is<Phantom>())
             {
                 var former = phan.GetRole();
                 new Phantom().RoleUpdate(former, phan);
@@ -323,7 +318,7 @@ public static class SetPostmortals
             if (!ejection)
                 continue;
 
-            if (!ban.Is(LayerEnum.Banshee))
+            if (!ban.Is<Banshee>())
             {
                 var former = ban.GetRole();
                 new Banshee().RoleUpdate(former, ban);
@@ -372,7 +367,7 @@ public static class SetPostmortals
             if (!ejection)
                 continue;
 
-            if (!ghoul.Is(LayerEnum.Ghoul))
+            if (!ghoul.Is<Ghoul>())
             {
                 var former = ghoul.GetRole();
                 new Ghoul().RoleUpdate(former, ghoul);

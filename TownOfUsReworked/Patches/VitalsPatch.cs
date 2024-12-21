@@ -23,10 +23,9 @@ public static class VitalsPatch
             if (!panel.IsDead || !KilledPlayers.TryFinding(x => x.PlayerId == info.PlayerId, out var deadBody))
                 continue;
 
-            var num = (float)(DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;
             var tmp = panel.Cardio.GetComponent<TextMeshPro>();
             tmp.color = UColor.red;
-            tmp.SetText($"{Math.Ceiling(num / 1000)}s");
+            tmp.SetText($"{Mathf.RoundToInt(deadBody.KillAge)}s");
             var transform = tmp.transform;
             transform.localPosition = new(-0.85f, -0.4f, 0);
             transform.rotation = Quaternion.Euler(0, 0, 0);

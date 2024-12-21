@@ -42,7 +42,7 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.Is(LayerEnum.Hunted))
+                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.Is<Hunted>())
                 {
                     foreach (var task in playerInfo.Tasks)
                     {
@@ -60,7 +60,7 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.CanDoTasks() && pc.Is(Faction.Crew) && !pc.Is(LayerEnum.Revealer) && (!playerInfo.IsDead ||
+                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.CanDoTasks() && pc.Is(Faction.Crew) && !pc.Is<Revealer>() && (!playerInfo.IsDead ||
                     CrewSettings.GhostTasksCountToWin))
                 {
                     foreach (var task in playerInfo.Tasks)

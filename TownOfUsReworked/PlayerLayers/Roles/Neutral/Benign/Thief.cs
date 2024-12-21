@@ -316,7 +316,7 @@ public class Thief : Neutral
         if (Local && player == Player)
             GuessMenu.HideButtons();
 
-        if (player != Player && player.Is(LayerEnum.Indomitable))
+        if (player != Player && player.Is<Indomitable>())
         {
             if (player.AmOwner)
                 Flash(CustomColorManager.Indomitable);
@@ -328,12 +328,10 @@ public class Thief : Neutral
         {
             MarkMeetingDead(player, Player);
 
-            if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
+            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.NeutralApoc) &&
+                !lovers.OtherLover.Data.IsDead)
             {
-                var otherLover = player.GetOtherLover();
-
-                if (!otherLover.Is(LayerEnum.Pestilence))
-                    RpcMurderPlayer(otherLover, guess, guessTarget);
+                RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);
             }
         }
 

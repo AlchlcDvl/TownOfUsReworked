@@ -71,8 +71,8 @@ public class Vigilante : Crew
     public void Shoot(PlayerControl target)
     {
         var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or
-            Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.IsFramed() ||
-            (target.Is(Alignment.NeutralEvil) && NeutralEvilSettings.VigilanteKillsEvils) || Player.Is(LayerEnum.Corrupted) || target.IsFramed() || (target.Is(Alignment.NeutralBen) &&
+            Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is<Troll>() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.IsFramed() ||
+            (target.Is(Alignment.NeutralEvil) && NeutralEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.IsFramed() || (target.Is(Alignment.NeutralBen) &&
             NeutralBenignSettings.VigilanteKillsBenigns);
         var cooldown = Interact(Player, target, flag4);
 

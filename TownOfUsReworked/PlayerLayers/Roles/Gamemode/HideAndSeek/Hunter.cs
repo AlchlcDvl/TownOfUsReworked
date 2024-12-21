@@ -33,7 +33,7 @@ public class Hunter : HideAndSeek
             HuntButton.StartCooldown();
     }
 
-    public bool Exception(PlayerControl player) => player.Is(LayerEnum.Hunter);
+    public bool Exception(PlayerControl player) => player.Is<Hunter>();
 
     public bool Usable() => !Starting;
 

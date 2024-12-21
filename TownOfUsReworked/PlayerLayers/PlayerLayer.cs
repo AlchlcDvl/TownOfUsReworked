@@ -224,6 +224,7 @@ public abstract class PlayerLayer
                             GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
                             CallRpc(CustomRPC.WinLose, WinLose.OverlordWins);
                         }
+
                         break;
                     }
                 }

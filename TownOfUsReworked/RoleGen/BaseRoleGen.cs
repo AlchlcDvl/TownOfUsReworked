@@ -1,6 +1,6 @@
 using static TownOfUsReworked.Managers.RoleGenManager;
 
-namespace TownOfUsReworked.RoleGen2;
+namespace TownOfUsReworked.RoleGen;
 
 public abstract class BaseRoleGen : BaseGen
 {

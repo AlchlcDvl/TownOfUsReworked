@@ -12,6 +12,31 @@ public abstract class Syndicate : Role
     public override Faction BaseFaction => Faction.Syndicate;
     public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.Basic;
 
+    public static bool SyndicateHasChaosDrive { get; set; }
+
+    private static PlayerControl _driveHolder;
+    public static PlayerControl DriveHolder
+    {
+        get => _driveHolder;
+        set
+        {
+            _driveHolder = value;
+
+            if (!value)
+                return;
+
+            var syndicateRole = value.GetLayer<Syndicate>();
+
+            if (!syndicateRole)
+                return;
+
+            syndicateRole.OnDriveReceived();
+
+            if (value.AmOwner)
+                syndicateRole.OnDriveReceivedLocal();
+        }
+    }
+
     public override void Init()
     {
         base.Init();

@@ -304,18 +304,13 @@ public abstract class Assassin : Ability
             var subfactionflag = $"{player.GetSubFaction()}" == $"{guess}";
             var framedflag = player.IsFramed();
 
-            if (player.Is(LayerEnum.Actor) && guess != LayerEnum.Actor)
+            if (guess != LayerEnum.Actor && player.TryGetLayer<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
             {
-                var actor = player.GetLayer<Actor>();
+                actor.Guessed = true;
+                CallRpc(CustomRPC.WinLose, WinLose.ActorWins, actor);
 
-                if (actor.PretendRoles.Any(x => x.Type == guess))
-                {
-                    actor.Guessed = true;
-                    CallRpc(CustomRPC.WinLose, WinLose.ActorWins, actor);
-
-                    if (!NeutralSettings.AvoidNeutralKingmakers)
-                        RpcMurderPlayer(Player, guess, player);
-                }
+                if (!NeutralSettings.AvoidNeutralKingmakers)
+                    RpcMurderPlayer(Player, guess, player);
             }
 
             var flag = layerflag || subfactionflag || framedflag;
@@ -361,7 +356,7 @@ public abstract class Assassin : Ability
         if (Local && player == Player)
             AssassinMenu.HideButtons();
 
-        if (player.Is(LayerEnum.Indomitable) && player != Player)
+        if (player.TryGetLayer<Indomitable>(out var ind) && player != Player)
         {
             if (Local)
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
@@ -369,28 +364,23 @@ public abstract class Assassin : Ability
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
 
             Flash(CustomColorManager.Indomitable);
-            player.GetLayer<Indomitable>().AttemptedGuess = true;
+            ind.AttemptedGuess = true;
         }
 
-        if (Player.Is(LayerEnum.Professional) && Player == player)
+        if (Player == player && Player.TryGetLayer<Professional>(out var modifier) && !modifier.LifeUsed)
         {
-            var modifier = Player.GetLayer<Professional>();
+            modifier.LifeUsed = true;
+            AssassinMenu.HideSingle(guessTarget.PlayerId);
 
-            if (!modifier.LifeUsed)
+            if (Local)
             {
-                modifier.LifeUsed = true;
-                AssassinMenu.HideSingle(guessTarget.PlayerId);
-
-                if (Local)
-                {
-                    Flash(modifier.Color);
-                    Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
-                }
-                else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything())
-                    Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
-
-                return;
+                Flash(modifier.Color);
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
             }
+            else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything())
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
+
+            return;
         }
 
         if (CanAttack(AttackVal, player.GetDefenseValue(Player)) || player == Player)
@@ -398,13 +388,8 @@ public abstract class Assassin : Ability
             RemainingKills--;
             MarkMeetingDead(player, Player);
 
-            if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
-            {
-                var otherLover = player.GetOtherLover();
-
-                if (!otherLover.Is(Alignment.NeutralApoc))
-                    RpcMurderPlayer(otherLover, guess, guessTarget);
-            }
+            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.NeutralApoc))
+                RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);
         }
 
         if (Local)

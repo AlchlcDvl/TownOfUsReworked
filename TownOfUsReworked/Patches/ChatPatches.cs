@@ -179,7 +179,7 @@ public static class ChatPatches
             Rivals.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) && Linked.LinkedChat && sourcerole.CurrentChannel ==
             ChatChannel.Linked);
 
-        if (DateTime.UtcNow - MeetingPatches.MeetingStartTime < TimeSpan.FromSeconds(1))
+        if (Time.time - MeetingPatches.MeetingStartTime < 1f)
             return shouldSeeMessage;
 
         return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting() &&

@@ -1,6 +1,6 @@
 using static TownOfUsReworked.Managers.RoleGenManager;
 
-namespace TownOfUsReworked.RoleGen2;
+namespace TownOfUsReworked.RoleGen;
 
 public class ModifierGen : BaseGen
 {
@@ -53,19 +53,18 @@ public class ModifierGen : BaseGen
             PlayerControl assigned = null;
 
             if (id == LayerEnum.Bait)
-                assigned = playerList.FirstOrDefault(x => !(x.Is(LayerEnum.Vigilante) || x.Is(LayerEnum.Shifter) || x.Is(LayerEnum.Thief) || x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll)));
+                assigned = playerList.FirstOrDefault(x => !(x.Is<Vigilante>() || x.Is<Shifter>() || x.Is<Thief>() || x.Is<Altruist>() || x.Is<Troll>()));
             else if (id == LayerEnum.Diseased)
-                assigned = playerList.FirstOrDefault(x => !(x.Is(LayerEnum.Altruist) || x.Is(LayerEnum.Troll)));
+                assigned = playerList.FirstOrDefault(x => !(x.Is<Altruist>() || x.Is<Troll>()));
             else if (id == LayerEnum.Professional)
-                assigned = playerList.FirstOrDefault(x => x.Is(LayerEnum.Bullseye) || x.Is(LayerEnum.Slayer) || x.Is(LayerEnum.Hitman) || x.Is(LayerEnum.Sniper));
+                assigned = playerList.FirstOrDefault(x => x.Is<Assassin>());
             else if (GlobalMod.Contains(id))
                 assigned = playerList.FirstOrDefault();
             else if (id == LayerEnum.Shy)
             {
-                assigned = playerList.FirstOrDefault(x => !((x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Swapper) &&
-                    !Swapper.SwapperButton) || (x.Is(LayerEnum.Actor) && !Actor.ActorButton) || (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) &&
-                    !Executioner.ExecutionerButton) || (x.Is(LayerEnum.Politician) && !Politician.PoliticianButton) ||  x.Is(LayerEnum.ButtonBarry) || (!Dictator.DictatorButton &&
-                    x.Is(LayerEnum.Dictator)) || (!Monarch.MonarchButton && x.Is(LayerEnum.Monarch))));
+                assigned = playerList.FirstOrDefault(x => !((x.Is<Mayor>() && !Mayor.MayorButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Swapper>() && !Swapper.SwapperButton) ||
+                    (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) || (x.Is<Politician>() &&
+                    !Politician.PoliticianButton) ||  x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) || (!Monarch.MonarchButton && x.Is<Monarch>())));
             }
 
             if (assigned)

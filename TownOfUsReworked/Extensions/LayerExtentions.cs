@@ -14,6 +14,10 @@ public static class LayerExtentions
     public static string AttackColorString => $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
     public static string DefenseColorString => $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
+    public static bool Is<T>(this PlayerControl player) where T : PlayerLayer => player.TryGetLayer<T>(out _);
+
+    public static bool IIs<T>(this PlayerControl player) where T : IPlayerLayer => player.TryGetILayer<T>(out _);
+
     public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
 
     public static bool Is(this Role role, LayerEnum roleType) => role?.Type == roleType;
@@ -29,8 +33,6 @@ public static class LayerExtentions
     public static bool IsBase(this PlayerControl player, Faction faction) => player.GetRole()?.BaseFaction == faction;
 
     public static bool Is(this PlayerControl player, Alignment alignment) => player.GetRole()?.Alignment == alignment;
-
-    public static bool IsAssassin(this PlayerControl player) => player.GetAbility() is Bullseye or Hitman or Sniper or Slayer;
 
     public static Faction GetFaction(this PlayerControl player)
     {
@@ -123,13 +125,13 @@ public static class LayerExtentions
         var intruderflag = player.Is(Faction.Intruder);
         var syndicateflag = player.Is(Faction.Syndicate);
 
-        var phantomflag = player.Is(LayerEnum.Phantom);
+        var phantomflag = player.Is<Phantom>();
 
         var sideflag = player.NotOnTheSameSide();
-        var taskmasterflag = player.Is(LayerEnum.Taskmaster);
+        var taskmasterflag = player.Is<Taskmaster>();
         var defectflag = player.IsCrewDefect();
 
-        var gmflag = player.Is(LayerEnum.Runner) || player.Is(LayerEnum.Hunted);
+        var gmflag = player.Is<Runner>() || player.Is<Hunted>();
 
         var flag1 = crewflag && !sideflag;
         var flag2 = neutralflag && (taskmasterflag || phantomflag);
@@ -299,18 +301,21 @@ public static class LayerExtentions
         PlayerLayer.GetLayers<PromotedGodfather>().Any(x => x.FlashedPlayers.Contains(player.PlayerId)));
 
     public static bool SyndicateSided(this PlayerControl player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly() || (player.Is(Faction.Syndicate) &&
-        player.Is(LayerEnum.Betrayer)) || player.IsSynDefect() || (player.Is(Faction.Syndicate) && !player.IsBase(Faction.Syndicate));
+        player.Is<Betrayer>()) || player.IsSynDefect() || (player.Is(Faction.Syndicate) && !player.IsBase(Faction.Syndicate));
 
     public static bool IntruderSided(this PlayerControl player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic() || (player.Is(Faction.Intruder) &&
-        player.Is(LayerEnum.Betrayer)) || player.IsIntDefect() || (player.Is(Faction.Intruder) && !player.IsBase(Faction.Intruder));
+        player.Is<Betrayer>()) || player.IsIntDefect() || (player.Is(Faction.Intruder) && !player.IsBase(Faction.Intruder));
 
     public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly() || player.IsCrewDefect() || (player.Is(Faction.Crew) && !player.IsBase(Faction.Crew));
 
     public static bool Last(PlayerControl player) => (LastImp() && player.Is(Faction.Intruder)) || (LastSyn() && player.Is(Faction.Syndicate));
 
-    public static bool CanKill(this PlayerControl player) => player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || player.Is(Alignment.NeutralKill) ||
-        player.Is(Alignment.NeutralHarb) || player.Is(Alignment.NeutralApoc) || player.Is(LayerEnum.Corrupted) || player.Is(LayerEnum.Fanatic) || player.Is(LayerEnum.Traitor) ||
-        player.Is(Alignment.CrewKill);
+    public static bool CanKill(this PlayerControl player)
+    {
+        var role = player.GetRole();
+        return role.BaseFaction is Faction.Intruder or Faction.Syndicate || role.Alignment is Alignment.NeutralKill or Alignment.NeutralHarb or Alignment.NeutralApoc or Alignment.CrewKill ||
+            player.GetDisposition() is Corrupted or Fanatic or Traitor;
+    }
 
     public static bool IsPostmortal(this PlayerControl player) => player.GetRole() is Revealer or Phantom or Ghoul or Banshee && player.HasDied();
 
@@ -332,7 +337,7 @@ public static class LayerExtentions
     }
 
     public static bool IsLinkedTo(this PlayerControl player, PlayerControl refplayer) => player.IsOtherRival(refplayer) || player.IsOtherLover(refplayer) || player.IsOtherLink(refplayer)
-        || (player.Is(LayerEnum.Mafia) && refplayer.Is(LayerEnum.Mafia));
+        || (player.Is<Mafia>() && refplayer.Is<Mafia>());
 
     public static float GetBaseSpeed(this PlayerControl player) => player.HasDied() && (!player.IsPostmortal() || player.Caught()) ? GameSettings.GhostSpeed : GameSettings.PlayerSpeed;
 
@@ -357,9 +362,9 @@ public static class LayerExtentions
         if (player.TryGetLayer<Hunter>(out var hunt))
             return hunt.Starting ? 0f : GameModeSettings.HunterSpeedModifier;
 
-        if (player.Is(LayerEnum.Dwarf))
+        if (player.Is<Dwarf>())
             result *= Dwarf.DwarfSpeed;
-        else if (player.Is(LayerEnum.Giant))
+        else if (player.Is<Giant>())
             result *= Giant.GiantSpeed;
         else if (player.TryGetLayer<Drunk>(out var drunk))
             result *= drunk.Modify;
@@ -422,9 +427,9 @@ public static class LayerExtentions
 
         if (Lobby() || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
-        else if (player.Is(LayerEnum.Dwarf))
+        else if (player.Is<Dwarf>())
             return Dwarf.DwarfScale;
-        else if (player.Is(LayerEnum.Giant))
+        else if (player.Is<Giant>())
             return Giant.GiantScale;
         else
             return 1f;
@@ -504,38 +509,34 @@ public static class LayerExtentions
 
         if (!playerRole)
             mainflag = playerInfo.IsImpostor();
-        else if (player.Is(LayerEnum.Hunter))
+        else if (playerRole is Hunter)
             mainflag = GameModeSettings.HunterVent;
-        else if (player.Is(LayerEnum.Hunted) || player.Is(LayerEnum.Runner))
+        else if (playerRole is Hunted or Runner)
             mainflag = false;
-        else if (player.Is(LayerEnum.Mafia))
+        else if (player.Is<Mafia>())
             mainflag = Mafia.MafVent;
-        else if (player.Is(LayerEnum.Corrupted))
+        else if (player.Is<Corrupted>())
             mainflag = Corrupted.CorruptedVent;
-        else if (player.IsRecruit())
+        else if (playerRole.IsRecruit)
             mainflag = Jackal.RecruitVent;
-        else if (player.IsResurrected())
+        else if (playerRole.IsResurrected)
             mainflag = Necromancer.ResurrectVent;
-        else if (player.IsPersuaded())
+        else if (playerRole.IsPersuaded)
             mainflag = Whisperer.PersuadedVent;
-        else if (player.IsBitten())
+        else if (playerRole.IsBitten)
             mainflag = Dracula.UndeadVent;
-        else if (player.Is(Faction.Syndicate) && playerRole.BaseFaction == Faction.Syndicate)
-            mainflag = (((Syndicate)playerRole).HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
-        else if (player.Is(Faction.Intruder) && playerRole.BaseFaction == Faction.Intruder)
+        else if (playerRole is Syndicate syn)
+            mainflag = (syn.HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
+        else if (playerRole is Intruder)
         {
-            var flag = (player.Is(LayerEnum.Morphling) && !Morphling.MorphlingVent) || (player.Is(LayerEnum.Wraith) && !Wraith.WraithVent) || (player.Is(LayerEnum.Grenadier) &&
-                !Grenadier.GrenadierVent) || (player.Is(LayerEnum.Teleporter) && !Teleporter.TeleVent);
-            mainflag = IntruderSettings.IntrudersVent;
-
-            if (mainflag)
+            if (IntruderSettings.IntrudersVent)
             {
-                if (player.TryGetLayer<Janitor>(out var jani))
+                if (playerRole is Janitor jani)
                 {
                     mainflag = (int)Janitor.JanitorVentOptions is 3 || (jani.CurrentlyDragging && (int)Janitor.JanitorVentOptions is 1) || (!jani.CurrentlyDragging &&
                         (int)Janitor.JanitorVentOptions is 2);
                 }
-                else if (player.TryGetLayer<PromotedGodfather>(out var gf))
+                else if (playerRole is PromotedGodfather gf)
                 {
                     if (gf.IsJani)
                     {
@@ -551,35 +552,43 @@ public static class LayerExtentions
                     else if (gf.IsTele)
                         mainflag = Teleporter.TeleVent;
                 }
-                else if (flag)
-                    mainflag = false;
+                else
+                {
+                    mainflag = (playerRole is Morphling && !Morphling.MorphlingVent) || (playerRole is Wraith && !Wraith.WraithVent) || (playerRole is Grenadier && !Grenadier.GrenadierVent) ||
+                        (playerRole is Teleporter && !Teleporter.TeleVent);
+                }
             }
+            else
+                mainflag = false;
         }
-        else if (player.Is(Faction.Crew) || playerRole.BaseFaction == Faction.Crew)
+        else if (player.Is(Faction.Crew) || playerRole is Crew)
         {
-            mainflag = player.Is(LayerEnum.Engineer) || CrewSettings.CrewVent == CrewVenting.Always || ((CrewSettings.CrewVent == CrewVenting.OnTasksDone ||
-                player.Is(LayerEnum.Tunneler)) && playerRole.TasksDone);
+            mainflag = playerRole is Engineer || CrewSettings.CrewVent == CrewVenting.Always || ((CrewSettings.CrewVent == CrewVenting.OnTasksDone || player.Is<Tunneler>()) &&
+                playerRole.TasksDone);
         }
-        else if (player.Is(Faction.Neutral) || playerRole.BaseFaction == Faction.Neutral)
+        else if (playerRole.Faction is Faction.Neutral || playerRole is Neutral)
         {
-            mainflag = ((player.Is(LayerEnum.Murderer) && Murderer.MurdVent) || (player.Is(LayerEnum.Glitch) && Glitch.GlitchVent) || (player.Is(LayerEnum.Juggernaut) &&
-                Juggernaut.JuggVent) || (player.Is(LayerEnum.Pestilence) && Pestilence.PestVent) || (player.Is(LayerEnum.Jester) && Jester.JesterVent) || (player.Is(LayerEnum.Plaguebearer)
-                && Plaguebearer.PBVent) || (player.Is(LayerEnum.Arsonist) && Arsonist.ArsoVent) || (player.Is(LayerEnum.Executioner) && Executioner.ExeVent) ||
-                (player.Is(LayerEnum.Cannibal) && Cannibal.CannibalVent) || (player.Is(LayerEnum.Dracula) && Dracula.DracVent) || (player.Is(LayerEnum.Survivor) && Survivor.SurvVent) ||
-                (player.Is(LayerEnum.Actor) && Actor.ActorVent) || (player.Is(LayerEnum.GuardianAngel) && GuardianAngel.GAVent) || (player.Is(LayerEnum.Amnesiac) && Amnesiac.AmneVent) ||
-                (player.Is(LayerEnum.Jackal) && Jackal.JackalVent) || (player.Is(LayerEnum.BountyHunter) && BountyHunter.BHVent) || (player.Is(LayerEnum.Betrayer) &&
-                Betrayer.BetrayerVent)) && NeutralSettings.NeutralsVent;
-
-            if (player.TryGetLayer<SerialKiller>(out var sk))
+            if (NeutralSettings.NeutralsVent)
             {
-                mainflag = NeutralSettings.NeutralsVent && (SerialKiller.SKVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SKVentOptions == 1) ||
-                    (!sk.BloodlustButton.EffectActive && (int)SerialKiller.SKVentOptions == 2));
+                if (player.TryGetLayer<SerialKiller>(out var sk))
+                {
+                    mainflag = SerialKiller.SKVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SKVentOptions == 1) || (!sk.BloodlustButton.EffectActive &&
+                        (int)SerialKiller.SKVentOptions == 2);
+                }
+                else if (player.TryGetLayer<Werewolf>(out var ww))
+                    mainflag = Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 3);
+                else
+                {
+                    mainflag = (playerRole is Murderer && Murderer.MurdVent) || (playerRole is Glitch && Glitch.GlitchVent) || (playerRole is Juggernaut && Juggernaut.JuggVent) || (playerRole
+                        is Pestilence && Pestilence.PestVent) || (playerRole is Jester && Jester.JesterVent) || (playerRole is Plaguebearer && Plaguebearer.PBVent) || (playerRole is Arsonist &&
+                        Arsonist.ArsoVent) || (playerRole is Executioner && Executioner.ExeVent) || (playerRole is Cannibal && Cannibal.CannibalVent) || (playerRole is Dracula &&
+                        Dracula.DracVent) || (playerRole is Survivor && Survivor.SurvVent) || (playerRole is Actor && Actor.ActorVent) || (playerRole is GuardianAngel &&
+                        GuardianAngel.GAVent) || (playerRole is Amnesiac && Amnesiac.AmneVent) || (playerRole is Jackal && Jackal.JackalVent) || (playerRole is BountyHunter &&
+                        BountyHunter.BHVent) || (playerRole is Betrayer && Betrayer.BetrayerVent);
+                }
             }
-            else if (player.TryGetLayer<Werewolf>(out var ww))
-            {
-                mainflag = NeutralSettings.NeutralsVent && (Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent ==
-                    3));
-            }
+            else
+                mainflag = false;
         }
         else if (player.IsPostmortal() && player.inVent)
             mainflag = true;
@@ -590,44 +599,47 @@ public static class LayerExtentions
     public static bool CanChat(this PlayerControl player)
     {
         var playerInfo = player?.Data;
+        var disp = player.GetDisposition();
 
         if (!player || !playerInfo)
             return false;
         else if (playerInfo.IsDead || Meeting() || Lobby())
             return true;
-        else if (player.Is(LayerEnum.Lovers))
+        else if (disp is Lovers)
             return Lovers.LoversChat;
-        else if (player.Is(LayerEnum.Rivals))
+        else if (disp is Rivals)
             return Rivals.RivalsChat;
-        else if (player.Is(LayerEnum.Linked))
+        else if (disp is Linked)
             return Linked.LinkedChat;
-        else if (player.Is(LayerEnum.Hunted))
+        else if (player.Is<Hunted>())
             return GameModeSettings.HuntedChat;
-        else
-            return false;
+
+        return false;
     }
 
     public static bool IsBlocked(this PlayerControl player) => player.GetLayers().Any(x => x.IsBlocked);
 
     public static bool SeemsEvil(this PlayerControl player)
     {
-        var intruderFlag = player.Is(Faction.Intruder) && !player.Is(LayerEnum.Traitor) && !player.Is(LayerEnum.Fanatic) && !player.Is(LayerEnum.PromotedGodfather);
-        var syndicateFlag = player.Is(Faction.Syndicate) && !player.Is(LayerEnum.Traitor) && !player.Is(LayerEnum.Fanatic) && !player.Is(LayerEnum.PromotedRebel) && Role.DriveHolder != player;
+        var role = player.GetRole();
+        var disp = player.GetDisposition();
+        var intruderFlag = role.Faction is Faction.Intruder && disp is not (Traitor or Fanatic) && role is PromotedGodfather;
+        var syndicateFlag = role.Faction is Faction.Syndicate && disp is not (Traitor or Fanatic) && role is PromotedRebel && Syndicate.DriveHolder != player;
         var traitorFlag = player.IsTurnedTraitor() && Traitor.TraitorColourSwap;
         var fanaticFlag = player.IsTurnedFanatic() && Fanatic.FanaticColourSwap;
-        var nkFlag = player.Is(Alignment.NeutralKill) && !Sheriff.NeutKillingRed;
-        var neFlag = player.Is(Alignment.NeutralEvil) && !Sheriff.NeutEvilRed;
+        var nkFlag = role.Alignment is Alignment.NeutralKill && !Sheriff.NeutKillingRed;
+        var neFlag = role.Alignment is Alignment.NeutralEvil && !Sheriff.NeutEvilRed;
         var framedFlag = player.IsFramed();
         return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag || fanaticFlag;
     }
 
     public static bool IsBlockImmune(PlayerControl player) => player.GetRole().RoleBlockImmune;
 
-    public static PlayerControl GetOtherLover(this PlayerControl player) => player.Is(LayerEnum.Lovers) ? player.GetLayer<Lovers>().OtherLover : null;
+    public static PlayerControl GetOtherLover(this PlayerControl player) => player.TryGetLayer<Lovers>(out var lovers) ? lovers.OtherLover : null;
 
-    public static PlayerControl GetOtherRival(this PlayerControl player) => player.Is(LayerEnum.Rivals) ? player.GetLayer<Rivals>().OtherRival : null;
+    public static PlayerControl GetOtherRival(this PlayerControl player) => player.TryGetLayer<Rivals>(out var rivals) ? rivals.OtherRival : null;
 
-    public static PlayerControl GetOtherLink(this PlayerControl player) => player.Is(LayerEnum.Linked) ? player.GetLayer<Linked>().OtherLink : null;
+    public static PlayerControl GetOtherLink(this PlayerControl player) => player.TryGetLayer<Linked>(out var linked) ? linked.OtherLink : null;
 
     public static bool NeutralHasUnfinishedBusiness(PlayerControl player)
     {
@@ -824,7 +836,7 @@ public static class LayerExtentions
         if (newRole.Local)
             newRole.UpdateButtons();
 
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
+        if (CustomPlayer.Local.Is<Seer>())
             Flash(CustomColorManager.Seer);
 
         if (player.AmOwner)
@@ -974,49 +986,41 @@ public static class LayerExtentions
     public static bool CanButton(this PlayerControl player, out string name)
     {
         name = "Shy";
-        var result = !player.Is(LayerEnum.Shy) && player.RemainingEmergencies > 0;
+        var result = !player.Is<Shy>() && player.RemainingEmergencies > 0;
+        var role = player.GetRole();
+        var ability = player.GetAbility();
 
-        if (player.Is(LayerEnum.Mayor))
+        if (role is Mayor)
         {
             name = "Mayor";
             result = Mayor.MayorButton;
         }
-        else if (player.Is(LayerEnum.Jester))
+        else if (role is Jester)
         {
             name = "Jester";
             result = Jester.JesterButton;
         }
-        else if (player.Is(LayerEnum.Swapper))
-        {
-            name = "Swapper";
-            result = Swapper.SwapperButton;
-        }
-        else if (player.Is(LayerEnum.Actor))
+        else if (role is Actor)
         {
             name = "Actor";
             result = Actor.ActorButton;
         }
-        else if (player.Is(LayerEnum.Executioner))
+        else if (role is Executioner)
         {
             name = "Executioner";
             result = Executioner.ExecutionerButton;
         }
-        else if (player.Is(LayerEnum.Guesser))
+        else if (role is Guesser)
         {
             name = "Guesser";
             result = Guesser.GuesserButton;
         }
-        else if (player.Is(LayerEnum.Politician))
-        {
-            name = "Politician";
-            result = Politician.PoliticianButton;
-        }
-        else if (player.Is(LayerEnum.Dictator))
+        else if (role is Dictator)
         {
             name = "Dictator";
             result = Dictator.DictatorButton;
         }
-        else if (player.Is(LayerEnum.Monarch))
+        else if (role is Monarch)
         {
             name = "Monarch";
             result = Monarch.MonarchButton;
@@ -1025,6 +1029,16 @@ public static class LayerExtentions
         {
             name = "Knight";
             result = Monarch.KnightButton;
+        }
+        else if (ability is Swapper)
+        {
+            name = "Swapper";
+            result = Swapper.SwapperButton;
+        }
+        else if (ability is Politician)
+        {
+            name = "Politician";
+            result = Politician.PoliticianButton;
         }
         else if (IsTaskRace() || IsCustomHnS())
         {
@@ -1071,7 +1085,7 @@ public static class LayerExtentions
         if ((player.IsAmbushed() || player.IsCrusaded() || player.GetRole().Bombed) && attack < 1)
             attack = 1;
 
-        if (target && target.Is(SubFaction.Undead) && player.Is(LayerEnum.VampireHunter))
+        if (target && target.Is(SubFaction.Undead) && player.Is<VampireHunter>())
             attack = 3;
 
         if (target && player.IsLinkedTo(target))
@@ -1089,7 +1103,7 @@ public static class LayerExtentions
         if ((player.IsShielded() || player.IsAmbushed() || player.IsCrusaded() | player.IsProtected()) && defense < 2)
             defense = 2;
 
-        if (source && source.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead))
+        if (source && source.Is<VampireHunter>() && player.Is(SubFaction.Undead))
             defense = 3;
 
         if (source && player.IsLinkedTo(source))
@@ -1196,38 +1210,38 @@ public static class LayerExtentions
 
     public static void AssignChaosDrive()
     {
-        var all = AllPlayers().Where(x => !x.HasDied() && x.Is(Faction.Syndicate) && x.IsBase(Faction.Syndicate));
+        var all = AllPlayers().Where(x => !x.HasDied()).Select(x => x.GetRole()).Where(x => x.Faction == Faction.Syndicate && x.BaseFaction == Faction.Syndicate);
 
         if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost || !all.Any())
             return;
 
-        PlayerControl chosen = null;
+        Role chosen = null;
 
-        if (!Role.DriveHolder || Role.DriveHolder.HasDied())
+        if (!Syndicate.DriveHolder || Syndicate.DriveHolder.HasDied())
         {
-            if (!all.TryFinding(x => x.Is(LayerEnum.PromotedRebel), out chosen))
-                chosen = all.Find(x => x.Is(Alignment.SyndicateDisrup));
+            if (!all.TryFinding(x => x is PromotedRebel, out chosen))
+                chosen = all.Find(x => x.Alignment == Alignment.SyndicateDisrup);
 
             if (!chosen)
-                chosen = all.Find(x => x.Is(Alignment.SyndicateSupport));
+                chosen = all.Find(x => x.Alignment == Alignment.SyndicateSupport);
 
             if (!chosen)
-                chosen = all.Find(x => x.Is(Alignment.SyndicatePower));
+                chosen = all.Find(x => x.Alignment == Alignment.SyndicatePower);
 
             if (!chosen)
-                chosen = all.Find(x => x.Is(Alignment.SyndicateKill));
+                chosen = all.Find(x => x.Alignment == Alignment.SyndicateKill);
 
             if (!chosen)
-                chosen = all.Find(x => x.GetRole() is Anarchist or Rebel or Sidekick);
+                chosen = all.Find(x => x is Anarchist or Rebel or Sidekick);
         }
 
         if (chosen)
         {
-            Role.DriveHolder = chosen;
+            Syndicate.DriveHolder = chosen.Player;
             CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen);
         }
 
-        Role.SyndicateHasChaosDrive = chosen;
+        Syndicate.SyndicateHasChaosDrive = chosen;
     }
 
     public static void Convert(byte target, byte convert, SubFaction sub, bool condition)
@@ -1282,7 +1296,7 @@ public static class LayerExtentions
 
         if (converted.AmOwner)
             Flash(role1.SubFactionColor);
-        else if (CustomPlayer.Local.Is(LayerEnum.Mystic))
+        else if (CustomPlayer.Local.Is<Mystic>())
             Flash(CustomColorManager.Mystic);
     }
 

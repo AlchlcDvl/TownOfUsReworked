@@ -7,11 +7,13 @@ public class CustomArrow
     private GameObject ArrowObj { get; set; }
     public PlayerControl Owner { get; }
     private float Interval { get; }
-    private DateTime Time { get; set; }
     private Vector3 Target { get; set; }
     private SpriteRenderer Point { get; set; }
     private UColor ArrowColor { get; set; }
     private bool Disabled { get; set; }
+
+    private float _time;
+
     public static readonly List<CustomArrow> AllArrows = [];
 
     public CustomArrow(PlayerControl owner, UColor color, float interval = 0f)
@@ -19,7 +21,7 @@ public class CustomArrow
         Owner = owner;
         Interval = interval;
         ArrowColor = color;
-        Time = DateTime.UnixEpoch;
+        _time = Time.time;
         Instantiate();
         Disabled = !Owner.AmOwner;
         AllArrows.Add(this);
@@ -60,10 +62,10 @@ public class CustomArrow
         if (color.HasValue)
             Render.color = ArrowColor = color.Value;
 
-        if (Time <= DateTime.UtcNow.AddSeconds(-Interval))
+        if (Time.time - _time <= Interval)
         {
             Arrow.target = Target = target;
-            Time = DateTime.UtcNow;
+            _time = Time.time;
         }
     }
 

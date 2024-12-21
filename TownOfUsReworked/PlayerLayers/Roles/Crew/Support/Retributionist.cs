@@ -37,7 +37,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     // Retributionist Stuff
     public PlayerVoteArea Selected { get; set; }
     public PlayerControl Revived { get; set; }
-    public Role RevivedRole => Revived ? (Revived.Is(LayerEnum.Revealer) ? Revived.GetLayer<Revealer>().FormerRole : Revived.GetRole()) : null;
+    public Role RevivedRole => Revived ? (Revived.TryGetLayer<Revealer>(out var rev) ? rev.FormerRole : Revived.GetRole()) : null;
     public CustomMeeting RetMenu { get; set; }
 
     public override UColor Color
@@ -151,7 +151,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             Deinit();
         else if (IsCor)
         {
-            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(Coroner.CoronerArrowDur)));
+            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= Coroner.CoronerArrowDur));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {
@@ -383,7 +383,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
             Reported.Add(info.PlayerId);
             body.Reporter = Player;
-            body.KillAge = (float)(DateTime.UtcNow - body.KillTime).TotalMilliseconds;
             var reportMsg = body.ParseBodyReport();
 
             if (IsNullEmptyOrWhiteSpace(reportMsg))
@@ -566,8 +565,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
         if (cooldown != CooldownType.Fail)
         {
-            Flash(target.IsFramed() || KilledPlayers.Any(x => x.KillerId == target.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <= Detective.RecentKill) ? UColor.red :
-                UColor.green);
+            Flash(target.IsFramed() || KilledPlayers.Any(x => x.KillerId == target.PlayerId && x.KillAge <= Detective.RecentKill) ? UColor.red : UColor.green);
             target.EnsureComponent<FootprintHandler>();
         }
 
@@ -656,8 +654,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     }
 
     public bool SherException(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None))
-        && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is(LayerEnum.Mafia) &&
-        Player.Is(LayerEnum.Mafia) && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
+        && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() &&
+        Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 
     public bool SherUsable() => IsSher;
 
@@ -744,9 +742,9 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
 
-        if (player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
+        if (Lovers.BothLoversDie && player.TryGetLayer<Lovers>(out var lovers))
         {
-            var lover = player.GetOtherLover();
+            var lover = lovers.OtherLover;
             var loverRole = lover.GetRole();
             loverRole.DeathReason = DeathReasonEnum.Revived;
             loverRole.KilledBy = " By " + PlayerName;
@@ -1015,13 +1013,11 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         if (!Player2Body && !WasInVent2)
             AnimateTransport2();
 
-        var time = 0f;
+        var startTime = Time.time;
 
         while (true)
         {
-            time += Time.deltaTime;
-
-            if (time < Transporter.TransportDur)
+            if (Time.time - startTime < Transporter.TransportDur)
                 yield return EndFrame();
             else
                 break;

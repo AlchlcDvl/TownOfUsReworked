@@ -37,12 +37,12 @@ public class Plaguebearer : Harbinger<Pestilence>
         byte id = 0;
         var changed = false;
 
-        if (Infected.Contains(source.PlayerId) || source.Is(LayerEnum.Plaguebearer))
+        if (Infected.Contains(source.PlayerId) || source.Is<Plaguebearer>())
         {
             id = target.PlayerId;
             changed = true;
         }
-        else if (Infected.Contains(target.PlayerId) || target.Is(LayerEnum.Plaguebearer))
+        else if (Infected.Contains(target.PlayerId) || target.Is<Plaguebearer>())
         {
             id = source.PlayerId;
             changed = true;

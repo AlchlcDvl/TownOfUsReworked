@@ -55,7 +55,7 @@ public class Fanatic : Disposition
         fanaticRole.Faction = faction;
         Turned = true;
 
-        if (CustomPlayer.Local.Is(LayerEnum.Mystic) || CustomPlayer.Local.Is(faction))
+        if (CustomPlayer.Local.Is<Mystic>() || CustomPlayer.Local.Is(faction))
             Flash(CustomColorManager.Mystic);
 
         Side = faction;
@@ -85,7 +85,7 @@ public class Fanatic : Disposition
                 local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Mystic) && !Local)
+        if (CustomPlayer.Local.Is<Mystic>() && !Local)
             Flash(CustomColorManager.Mystic);
 
         if (Local || CustomPlayer.Local.Is(faction))

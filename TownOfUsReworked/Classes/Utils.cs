@@ -101,12 +101,11 @@ public static class Utils
     {
         if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis)
         {
-            player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit1(player));
             var rend = player.MyRend();
             var a = player.cosmetics.GetPhantomRoleAlpha();
             yield return PerformTimedAction(1, p =>
             {
-                player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(1, a, p));
+                player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(a, 1, p));
 
                 if (!player.AmOwner)
                 {
@@ -115,15 +114,6 @@ public static class Utils
                     var cbtext = player.ColorBlindText();
                     cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, p);
                 }
-
-                if (!HudHandler.Instance.IsCamoed)
-                {
-                    player.SetHatAndVisorAlpha(p);
-                    var color2 = player.cosmetics.skin.layer.color;
-                    player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
-                }
-
-                PlayerMaterial.SetColors(UColor.Lerp(51.GetColor(false), HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), p), rend);
             });
         }
         else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
@@ -226,15 +216,14 @@ public static class Utils
 
     public static void Invis(PlayerControl player, bool condition = false)
     {
-        var ca = condition || CustomPlayer.LocalCustom.Dead || player.AmOwner || CustomPlayer.Local.Is(LayerEnum.Torch) ? 0.1f : 0f;
+        var ca = condition || CustomPlayer.LocalCustom.Dead || player.AmOwner || CustomPlayer.Local.Is<Torch>() ? 0.1f : 0f;
 
         if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
         {
-            player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit1(player));
+            player.SetOutfit(CustomPlayerOutfitType.Invis, CurrentOutfit(player));
             Coroutines.Start(PerformTimedAction(1, p =>
             {
-                player.cosmetics.SetPhantomRoleAlpha(Mathf.Clamp(1, ca, p));
-                PlayerMaterial.SetColors(UColor.Lerp(HudHandler.Instance.IsCamoed ? UColor.grey : player.Data.DefaultOutfit.ColorId.GetColor(false), 51.GetColor(false), p), player.MyRend());
+                player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(1, ca, p));
 
                 if (!player.AmOwner)
                 {
@@ -243,9 +232,6 @@ public static class Utils
                     var cbtext = player.ColorBlindText();
                     cbtext.color = new(cbtext.color.r, cbtext.color.g, cbtext.color.b, 1 - p);
                 }
-
-                if (p == 1)
-                    player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit2());
             }));
         }
     }
@@ -261,27 +247,7 @@ public static class Utils
         yield break;
     }
 
-    public static NetworkedPlayerInfo.PlayerOutfit InvisOutfit1(PlayerControl player) => new()
-    {
-        ColorId = player.CurrentOutfit.ColorId,
-        HatId = player.CurrentOutfit.HatId,
-        SkinId = player.CurrentOutfit.SkinId,
-        VisorId = player.CurrentOutfit.VisorId,
-        NamePlateId = "nameplate_NoPlate",
-        PlayerName = " ",
-        PetId = "pet_EmptyPet"
-    };
-
-    public static NetworkedPlayerInfo.PlayerOutfit InvisOutfit2() => new()
-    {
-        ColorId = 51,
-        HatId = "hat_NoHat",
-        SkinId = "skin_None",
-        VisorId = "visor_EmptyVisor",
-        NamePlateId = "nameplate_NoPlate",
-        PlayerName = " ",
-        PetId = "pet_EmptyPet"
-    };
+    public static NetworkedPlayerInfo.PlayerOutfit CurrentOutfit(PlayerControl player) => player.CurrentOutfit;
 
     public static NetworkedPlayerInfo.PlayerOutfit BlankOutfit(PlayerControl player) => new()
     {
@@ -301,7 +267,7 @@ public static class Utils
         SkinId = player.CurrentOutfit.SkinId,
         VisorId = player.CurrentOutfit.VisorId,
         NamePlateId = "nameplate_NoPlate",
-        PlayerName = GetRandomisedName(),
+        PlayerName = ClientOptions.OptimisationMode ? "" : GetRandomisedName(),
         PetId = "pet_EmptyPet"
     };
 
@@ -401,7 +367,7 @@ public static class Utils
 
         AchievementManager.Instance.OnMurder(killer.AmOwner, target.AmOwner, CachedMorphs.ContainsKey(killer.PlayerId), CachedMorphs.TryGetValue(killer.PlayerId, out var id) ? id : 255,
             target.PlayerId);
-        lunge &= !killer.Is(LayerEnum.Ninja) && killer != target;
+        lunge &= !killer.Is<Ninja>() && killer != target;
 
         if (IsCustomHnS() || CustomPlayer.LocalCustom.Dead)
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(target, 0);

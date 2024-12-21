@@ -157,13 +157,11 @@ public class Transporter : Crew
         if (!Player2Body && !WasInVent2)
             AnimateTransport2();
 
-        var time = 0f;
+        var startTime = Time.time;
 
         while (true)
         {
-            time += Time.deltaTime;
-
-            if (time < TransportDur)
+            if (Time.time - startTime < TransportDur)
                 yield return EndFrame();
             else
                 break;

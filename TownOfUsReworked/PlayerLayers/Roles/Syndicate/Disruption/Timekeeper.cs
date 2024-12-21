@@ -15,6 +15,8 @@ public class Timekeeper : Syndicate
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool TimeRewindImmunity { get; set; } = true;
 
+    public static bool TKExists { get; set; }
+
     public CustomButton TimeButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Timekeeper: FactionColor;
@@ -30,6 +32,13 @@ public class Timekeeper : Syndicate
         Alignment = Alignment.SyndicateDisrup;
         TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
             (EffectEndVoid)UnControl, new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart);
+        TKExists = true;
+    }
+
+    public override void Deinit()
+    {
+        base.Deinit();
+        TKExists = false;
     }
 
     public void ControlStart() => Flash(Color, TimeDur);

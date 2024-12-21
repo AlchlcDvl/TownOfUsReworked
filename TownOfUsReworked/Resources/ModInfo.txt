@@ -2,15 +2,15 @@ Welcome to Town Of Us Reworked %modversion%!
 
 Town Of Us Reactivated but better! (hopefully)
 
-This mod is a mish mash of code and ideas from different games, mods and forks, mainly from Town Of Salem, Town Of Us Reactivated and The Other Roles. Enjoy the chaos that comes out as a result!
+This mod is a mishmash of code and ideas from different games, mods and forks, mainly from Town Of Salem, Town Of Us Reactivated and The Other Roles. Enjoy the chaos that comes out as a result!
 
-If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
+If you want to know more, try using info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 New!
-- Addition: The main menu buttons now fashion their own icons
+- Addition: The main menu buttons now have their own icons
 - Addition: You can now change the keybind to deselect players (default is still Backspace)
 - Addition: More game options
-- Addition: The player id is now shown similarly to the player level
+- Addition: The player ID is now shown similarly to the player level
 - Addition: Added chat command suggestions
 - Addition: Added dark theme to the chat, which can be toggled in the client settings
 - Addition: Added a player mentioning system, where you can send a differently colored chat message to get a target's attention by adding #playerId or #(player name) to the message
@@ -21,17 +21,17 @@ Changes!
 - Recode: Custom colors have been recoded to be more efficient
 - Recode: Redone game patches and their organisation
 - Recode: Layer assignment has been completely redone to avoid some generation problems
-- Rework: Dictator no longer ejects 3 players at a time, instead they only pick a singular player to eject and has gained ability charges to compensate
+- Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a singular player to eject and have gained ability charges to compensate
 - Change: Actors will now prioritise turning into a dead role
-- Change: Arsonists when igniting will remove the coolant off those doused by a Cryomaniac
-- Change: Cryomaniacs when freezing will remove the gasoline off those doused by an Arsonist
+- Change: Arsonists, when igniting, will remove the coolant off those doused by a Cryomaniac
+- Change: Cryomaniacs, when freezing, will remove the gasoline off those doused by an Arsonist
 - Change: Player names will no longer appear in your vision until more of their body is exposed to your vision
-- Change: The "Pure Crew" is now a "Pure Player" game modifier so it's no longer limited to just Crew roles (originally it was a bandaid fix for task completion issues; those were resolved ages ago)
+- Change: The "Pure Crew" is now a "Pure Player" game modifier, so it's no longer limited to just Crew roles (originally it was a bandaid fix for task completion issues; those were resolved ages ago)
 - Change: The /help command now also provides info on other commands if you specify a command name after it
 - Nerf: Vampire Hunters turned Vigilantes will always have one bullet left
-- Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode, however they will still be roleblock immune the entire game
+- Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Improvement: Improved the mod's loaders
-- Improvement: Mod assets are now no longer loaded all at once, they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
+- Improvement: Mod assets are now no longer loaded all at once; they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
 - Improvement: Made general optimisations to improve the mod's runtime
 - Removed: Removed the "Lobby Cap" toggle in the testing menu due to it not actually functioning and being too much of a hassle to actually get working
 
@@ -39,12 +39,12 @@ Fixes!
 - Critical: Fixed Godfather-Miners being unable to spawn vents
 - Critical: Fixed Lovers, Linked and Rivals not having partners
 - Critical: Fixed Plaguebearer spawning twice
-- Critical: Greatly improved the stutter and fps issues
+- Critical: Greatly improved the stutter and FPS issues
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
-- Compatibility: Fixed the elavator not being properly usable for postmortal roles
-- Visual: Fixed the hud buttons appearing when kicking out bots in local
+- Compatibility: Fixed the elevator not being properly usable for postmortal roles
+- Visual: Fixed the HUD buttons appearing when kicking out bots in local
 - Visual: Fixed tasks being outlined when you can't do them (thanks le killer)
 - Visual: Fixed ability buttons not disappearing when opening the map
 - Visual: Fixed better sabotage settings appearing at the top of the settings list
@@ -56,7 +56,7 @@ Fixes!
 - General: Fixed conversions being inconsistent
 
 Known Bugs :(
-- Critically low fps for everyone, with the host having it the worst, a fix is in progress and the severity has been considerably reduced since discovery
+- Critically low FPS for everyone, with the host having it the worst; a fix is in progress and the severity has been considerably reduced since discovery
 - Loading settings for the first time makes the option texts appear a bit misaligned
 
 Credits-

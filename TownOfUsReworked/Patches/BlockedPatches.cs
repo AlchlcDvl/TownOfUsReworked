@@ -52,7 +52,7 @@ public static class PerformReport
         if (NoPlayers() || IsLobby())
             return true;
 
-        if (CustomPlayer.Local.Is(LayerEnum.Coward))
+        if (CustomPlayer.Local.Is<Coward>())
             return false;
 
         var blocked = LocalNotBlocked();

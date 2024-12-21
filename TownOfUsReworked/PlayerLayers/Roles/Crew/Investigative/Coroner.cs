@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Coroner : Crew
+public class Coroner : Crew, IExaminer
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 2f, 0.05f, Format.Time)]
     public static Number CoronerArrowDur { get; set; } = new(0.1f);
@@ -66,7 +66,7 @@ public class Coroner : Crew
 
         if (!Dead)
         {
-            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CoronerArrowDur)));
+            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= CoronerArrowDur));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {
@@ -110,7 +110,6 @@ public class Coroner : Crew
 
         Reported.Add(info.PlayerId);
         body.Reporter = Player;
-        body.KillAge = (float)(DateTime.UtcNow - body.KillTime).TotalMilliseconds;
         var reportMsg = body.ParseBodyReport();
 
         if (IsNullEmptyOrWhiteSpace(reportMsg))

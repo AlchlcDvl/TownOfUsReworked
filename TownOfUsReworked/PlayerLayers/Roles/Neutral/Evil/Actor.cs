@@ -182,10 +182,10 @@ public class Actor : Evil
 
     public void FillRoles(PlayerControl target)
     {
-        if (!target.Is(LayerEnum.Actor))
+        if (!target.Is<Actor>())
             PretendRoles.Add(target.GetRole());
 
-        var targets = AllPlayers().Where(x => x != Player && x != target && !x.Is(LayerEnum.Actor)).Select(x => x.GetRole());
+        var targets = AllPlayers().Where(x => x != Player && x != target && !x.Is<Actor>()).Select(x => x.GetRole());
         var count = (int)ActorRoleCount;
 
         if (targets.Count() < count)

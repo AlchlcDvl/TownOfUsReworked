@@ -26,4 +26,6 @@ public class Lovers : Disposition
         if (Local && BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.NeutralApoc))
             RpcMurderPlayer(OtherLover);
     }
+
+    public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Lovers;
 }

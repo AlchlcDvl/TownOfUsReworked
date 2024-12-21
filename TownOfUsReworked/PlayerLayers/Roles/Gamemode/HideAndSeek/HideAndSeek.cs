@@ -16,13 +16,7 @@ public abstract class HideAndSeek : Role
     public override List<PlayerControl> Team()
     {
         var team = new List<PlayerControl>();
-
-        foreach (var player in AllPlayers())
-        {
-            if (player.Is(LayerEnum.Hunter))
-                team.Add(player);
-        }
-
+        team.AddRange(GetLayers<Hunter>().Select(x => x.Player));
         return team;
     }
 

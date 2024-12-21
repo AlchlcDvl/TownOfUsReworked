@@ -31,20 +31,17 @@ public static class MeetingPatches
         Ash.DestroyAll();
         MeetingCount++;
 
-        if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Role.SyndicateHasChaosDrive)
-        {
-            Role.SyndicateHasChaosDrive = true;
+        if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Syndicate.SyndicateHasChaosDrive)
             AssignChaosDrive();
-        }
 
         Coroutines.Start(Announcements());
         CachedFirstDead = null;
     }
 
-    public static DateTime MeetingStartTime = DateTime.MinValue;
+    public static float MeetingStartTime;
 
     [HarmonyPatch(nameof(MeetingHud.Start))]
-    public static void Prefix() => MeetingStartTime = DateTime.UtcNow;
+    public static void Prefix() => MeetingStartTime = Time.time;
 
     private static IEnumerator Announcements()
     {
@@ -301,7 +298,7 @@ public static class MeetingPatches
 
         var playerControl = playerInfo.Object;
 
-        if ((playerControl.IsAssassin() || playerControl.Is(LayerEnum.Guesser) || playerControl.Is(LayerEnum.Thief)) && playerInfo.IsDead)
+        if ((playerControl.Is<Assassin>() || playerControl.GetRole() is Guesser or Thief) && playerInfo.IsDead)
         {
             playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
             playerVoteArea.SetDead(false, true);
@@ -322,8 +319,7 @@ public static class MeetingPatches
             for (var i = 0; i < __instance.playerStates.Length; i++)
             {
                 var playerVoteArea = __instance.playerStates[i];
-
-                array[i] = new MeetingHud.VoterState()
+                array[i] = new()
                 {
                     VoterId = playerVoteArea.TargetPlayerId,
                     VotedForId = playerVoteArea.VotedFor
@@ -580,7 +576,7 @@ public static class MeetingPatches
                 if (!player.DidVote || player.AmDead || player.VotedFor == PlayerVoteArea.MissedVote || player.VotedFor == PlayerVoteArea.DeadVote)
                     continue;
 
-                if (PlayerByVoteArea(player).Is(LayerEnum.Tiebreaker))
+                if (PlayerByVoteArea(player).Is<Tiebreaker>())
                 {
                     if (dictionary.TryGetValue(player.VotedFor, out var num))
                         dictionary[player.VotedFor] = num + 1;

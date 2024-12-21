@@ -178,8 +178,11 @@ public static class MinigameBeginPatch
 {
     public static void Postfix(Minigame __instance)
     {
-        if (__instance is TaskAdderGame or HauntMenuMinigame or SpawnInMinigame or ShapeshifterMinigame || !CustomPlayer.Local.Is(LayerEnum.Multitasker))
+        if (__instance.TryCast<TaskAdderGame>() || __instance.TryCast<HauntMenuMinigame>() || __instance.TryCast<SpawnInMinigame>() || __instance.TryCast<ShapeshifterMinigame>() ||
+            !CustomPlayer.Local.Is<Multitasker>())
+        {
             return;
+        }
 
         __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, Multitasker.Transparancy / 100f));
     }

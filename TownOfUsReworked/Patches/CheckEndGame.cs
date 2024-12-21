@@ -74,21 +74,21 @@ public static class CheckEndGame
             var nobuttons2 = player2.RemainingEmergencies == 0;
             var nobuttons = nobuttons1 && nobuttons2;
             var onehasbutton = !nobuttons1 || !nobuttons2;
-            var knighted1 = player1.IsKnighted() || player1.Is(LayerEnum.Tiebreaker);
-            var knighted2 = player2.IsKnighted() || player2.Is(LayerEnum.Tiebreaker);
+            var knighted1 = player1.IsKnighted() || player1.Is<Tiebreaker>();
+            var knighted2 = player2.IsKnighted() || player2.Is<Tiebreaker>();
             var neitherknighted = (knighted1 && knighted2) || (!knighted1 && !knighted2);
             var onisknighted = !knighted1 || !knighted2;
-            var pol1 = player1.Is(LayerEnum.Politician);
-            var pol2 = player2.Is(LayerEnum.Politician);
+            var pol1 = player1.Is<Politician>();
+            var pol2 = player2.Is<Politician>();
             var cankill1 = player1.CanKill();
             var cankill2 = player2.CanKill();
             var cantkill = !cankill1 && !cankill2;
-            var rival1 = player1.Is(LayerEnum.Rivals);
-            var rival2 = player2.Is(LayerEnum.Rivals);
+            var rival1 = player1.Is<Rivals>();
+            var rival2 = player2.Is<Rivals>();
             var rivals = rival1 && rival2;
 
             // NK vs NK when neither can kill each other and Neutrals don't win together
-            if ((player1.Is(LayerEnum.Cryomaniac) && player2.Is(LayerEnum.Cryomaniac) && nosolo && nobuttons && neitherknighted) || NoOneWins() || rivals || (cantkill && nobuttons))
+            if ((player1.Is<Cryomaniac>() && player2.Is<Cryomaniac>() && nosolo && nobuttons && neitherknighted) || NoOneWins() || rivals || (cantkill && nobuttons))
                 PerformStalemate();
         }
         else if (players.Count == 0)
@@ -108,30 +108,23 @@ public static class CheckEndGame
             var allCrew = new List<PlayerControl>();
             var crewWithNoTasks = new List<PlayerControl>();
 
-            foreach (var player in AllPlayers())
+            foreach (var role in PlayerLayer.GetLayers<Hunted>())
             {
-                if (player.Is(LayerEnum.Hunted))
-                {
-                    allCrew.Add(player);
+                var player = role.Player;
+                allCrew.Add(player);
 
-                    if (player.GetRole().TasksDone)
-                        crewWithNoTasks.Add(player);
-                }
+                if (role.TasksDone)
+                    crewWithNoTasks.Add(player);
             }
 
             return allCrew.Count == crewWithNoTasks.Count;
         }
         else
         {
-            var crew = Role.GetRoles(Faction.Crew).Where(x => x.Player.CanDoTasks());
-
-            if ((crew.All(x => x.Dead) && !CrewSettings.GhostTasksCountToWin) || !crew.Any())
-                return false;
-
             var allCrew = new List<PlayerControl>();
             var crewWithNoTasks = new List<PlayerControl>();
 
-            foreach (var role in crew)
+            foreach (var role in Role.GetRoles(Faction.Crew).Where(x => x.Player.CanDoTasks()))
             {
                 if (role.Dead && !CrewSettings.GhostTasksCountToWin)
                     continue;

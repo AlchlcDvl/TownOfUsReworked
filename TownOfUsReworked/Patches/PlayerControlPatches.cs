@@ -92,7 +92,7 @@ public static class PlayerControlPatches
         if (NoPlayers() || IsLobby())
             return true;
 
-        if (CustomPlayer.Local.Is(LayerEnum.Coward))
+        if (CustomPlayer.Local.Is<Coward>())
             return false;
 
         var blocked = LocalNotBlocked();
@@ -115,23 +115,21 @@ public static class PlayerControlPatches
         if (!__instance.AmOwner || !Ship())
             return true;
 
-        var flashlights = false;
         var size = Ship().CalculateLightRadius(__instance.Data);
-
-        if (__instance.Is(Faction.Crew))
-            flashlights = CrewSettings.CrewFlashlight;
-        else if (__instance.Is(Faction.Intruder))
-            flashlights = IntruderSettings.IntruderFlashlight;
-        else if (__instance.Is(Faction.Syndicate))
-            flashlights = SyndicateSettings.SyndicateFlashlight;
-        else if (__instance.Is(Faction.Neutral))
-            flashlights = NeutralSettings.NeutralFlashlight;
-        else if (__instance.Is(LayerEnum.Hunted))
-            flashlights = GameModeSettings.HuntedFlashlight;
-        else if (__instance.Is(LayerEnum.Hunter))
-            flashlights = GameModeSettings.HunterFlashlight;
-
-        flashlights &= !__instance.Data.IsDead;
+        var role = __instance.GetRole();
+        var flashlights = role.Faction switch
+        {
+            Faction.Crew => CrewSettings.CrewFlashlight,
+            Faction.Intruder => IntruderSettings.IntruderFlashlight,
+            Faction.Syndicate => SyndicateSettings.SyndicateFlashlight,
+            Faction.Neutral => NeutralSettings.NeutralFlashlight,
+            _ => role switch
+            {
+                Hunted => GameModeSettings.HuntedFlashlight,
+                Hunter => GameModeSettings.HunterFlashlight,
+                _ => false
+            }
+        } && __instance.Data.IsDead;
 
         if (flashlights)
             size /= Ship().MaxLightRadius;

@@ -138,7 +138,7 @@ public class Traitor : Disposition
                 local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
         }
 
-        if (CustomPlayer.Local.Is(LayerEnum.Mystic) && !Local)
+        if (CustomPlayer.Local.Is<Mystic>() && !Local)
             Flash(CustomColorManager.Mystic);
 
         if (Local || CustomPlayer.Local.Is(traitorRole.Faction))

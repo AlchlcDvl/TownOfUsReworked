@@ -1,6 +1,6 @@
 using static TownOfUsReworked.Managers.RoleGenManager;
 
-namespace TownOfUsReworked.RoleGen2;
+namespace TownOfUsReworked.RoleGen;
 
 public class TargetGen : BaseGen
 {
@@ -155,7 +155,7 @@ public class TargetGen : BaseGen
             foreach (var guess in PlayerLayer.GetLayers<Guesser>())
             {
                 guess.TargetPlayer = AllPlayers().Random(x => x != guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.CrewInvest) &&
-                    !x.Is(LayerEnum.Indomitable));
+                    !x.Is<Indomitable>());
 
                 if (guess.TargetPlayer)
                 {

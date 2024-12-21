@@ -47,7 +47,7 @@ public static class ConfirmEjects
         {
             if (GameSettings.EjectionRevealsRoles)
             {
-                if (player.Is(LayerEnum.Jester) && Jester.JestEjectScreen)
+                if (player.Is<Jester>() && Jester.JestEjectScreen)
                     ejectString = "The <#F7B3DAFF>Jester</color> will get his revenge from beyond the grave!";
                 else if (PlayerLayer.GetLayers<Executioner>().Any(x => x.TargetPlayer == player) && Executioner.ExeEjectScreen)
                     ejectString = "The <#CCCCCCFF>Executioner</color> will avenge the fallen crew!";

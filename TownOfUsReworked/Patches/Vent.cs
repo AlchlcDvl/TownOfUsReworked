@@ -39,26 +39,18 @@ public static class VentPatches
     public static bool Prefix(Vent __instance, bool enabled)
     {
         var player = CustomPlayer.Local;
-        var flag = !player.IsMoving();
-
-        if (player.Is(LayerEnum.Jester) && Jester.JesterVent)
-            flag = Jester.JestSwitchVent;
-        else if (player.Is(LayerEnum.Executioner) && Executioner.ExeVent)
-            flag = Executioner.ExeSwitchVent;
-        else if (player.Is(LayerEnum.Survivor) && Survivor.SurvVent)
-            flag = Survivor.SurvSwitchVent;
-        else if (player.Is(LayerEnum.Amnesiac) && Amnesiac.AmneVent)
-            flag = Amnesiac.AmneSwitchVent;
-        else if (player.Is(LayerEnum.GuardianAngel) && GuardianAngel.GAVent)
-            flag = GuardianAngel.GASwitchVent;
-        else if (player.Is(LayerEnum.Guesser) && Guesser.GuessVent)
-            flag = Guesser.GuessSwitchVent;
-        else if (player.Is(LayerEnum.Troll) && Troll.TrollVent)
-            flag = Troll.TrollSwitchVent;
-        else if (player.Is(LayerEnum.Actor) && Actor.ActorVent)
-            flag = Actor.ActSwitchVent;
-        else if (player.IsPostmortal())
-            flag = false;
+        var flag = !player.IsMoving() && player.GetRole() switch
+        {
+            Jester => Jester.JesterVent && Jester.JestSwitchVent,
+            Executioner => Executioner.ExeVent && Executioner.ExeSwitchVent,
+            Survivor => Survivor.SurvVent && Survivor.SurvSwitchVent,
+            Amnesiac => Amnesiac.AmneVent && Amnesiac.AmneSwitchVent,
+            GuardianAngel => GuardianAngel.GAVent && GuardianAngel.GASwitchVent,
+            Guesser => Guesser.GuessVent && Guesser.GuessSwitchVent,
+            Troll => Troll.TrollVent && Troll.TrollSwitchVent,
+            Actor => Actor.ActorVent && Actor.ActSwitchVent,
+            _ => !player.IsPostmortal()
+        };
 
         // Fix for dlekS
         if (flag)
@@ -91,7 +83,7 @@ public static class VentPatches
                         vector3.z = -10f;
                         buttonBehavior.transform.localPosition = vector3;
                         buttonBehavior.transform.LookAt2d(vent.transform);
-                        var deg = vector.AngleSigned(vector2) > 0f ? __instance.spreadAmount : -__instance.spreadAmount;
+                        var deg = __instance.spreadAmount * (vector.AngleSigned(vector2) > 0f ? 1 : -1);
                         vector3 = vector3.RotateZ(deg);
                         buttonBehavior.transform.localPosition = vector3;
                         buttonBehavior.transform.Rotate(0f, 0f, deg);

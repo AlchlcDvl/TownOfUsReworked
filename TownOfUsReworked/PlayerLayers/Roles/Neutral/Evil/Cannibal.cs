@@ -64,7 +64,7 @@ public class Cannibal : Evil
 
         if (EatArrows && !Dead)
         {
-            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(EatArrowDelay) < DateTime.UtcNow));
+            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= EatArrowDelay));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {

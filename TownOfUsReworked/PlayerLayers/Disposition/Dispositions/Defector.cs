@@ -121,7 +121,7 @@ public class Defector : Disposition
         if (Local)
             Flash(Color);
 
-        if (CustomPlayer.Local.Is(LayerEnum.Mystic))
+        if (CustomPlayer.Local.Is<Mystic>())
             Flash(CustomColorManager.Mystic);
     }
 }

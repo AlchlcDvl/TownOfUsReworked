@@ -4,27 +4,33 @@ public class DeadPlayer(byte killer, byte player)
 {
     public byte KillerId { get; } = killer;
     public byte PlayerId { get; } = player;
-    public DateTime KillTime { get; } = DateTime.UtcNow;
+    public float KillTime { get; } = Time.time;
+    public PlayerControl Killer { get; } = PlayerById(killer);
+    public PlayerControl Body { get; } = PlayerById(player);
 
-    public PlayerControl Killer => PlayerById(KillerId);
-    public PlayerControl Body => PlayerById(PlayerId);
+    public float KillAge => Time.time - KillTime;
 
     public PlayerControl Reporter { get; set; }
-    public float KillAge { get; set; }
 
     public string ParseBodyReport()
     {
-        var report = $"{Body.name}'s Report:";
-        var killerRole = Killer.GetRole();
-        var bodyRole = Body.GetRole();
+        if (!Reporter.IIs<IExaminer>())
+            return "";
 
-        if (!Reporter.IsFlashed())
+        var report = $"{Body.name}'s Report:";
+
+        if (Reporter.IsFlashed())
+            report += "\nYou have been blinded so you cannot tell what happened to the body!";
+        else
         {
-            report += $"\nThey died approximately {Math.Round(KillAge / 1000f)}s ago!";
-            report += $"\nThey were a {bodyRole.Name}!";
+            var killerRole = Killer.GetRole();
+            var bodyRole = Body.GetRole();
+            report += $"\nThey died approximately {Mathf.RoundToInt(KillAge)}s ago!";
 
             if (Body == Killer)
                 report += "\nThere is evidence of self-harm!";
+            else if (Coroner.CoronerReportName && Coroner.CoronerKillerNameTime <= KillAge)
+                report += $"\nThey were killed by {Killer.name}!";
             else
             {
                 if (Coroner.CoronerReportRole)
@@ -39,13 +45,8 @@ public class DeadPlayer(byte killer, byte player)
                     report += "\nThe killer is from the Syndicate!";
 
                 report += $"\nThe killer is a {(Killer.Data.DefaultOutfit.ColorId.IsLighter() ? "lighter" : "darker")} color!";
-
-                if (Coroner.CoronerReportName && Coroner.CoronerKillerNameTime <= (KillAge / 1000))
-                    report += $"\nThey were killed by {Killer.name}!";
             }
         }
-        else
-            report += "\nYou have been blinded so you cannot tell what happened to the body!";
 
         return report;
     }

@@ -679,7 +679,7 @@ public static class CrewUtilityRoles
             var result = CrewmatePriv.Clone();
 
             if (!IsCustom())
-                result.Chance = 100;
+                result.Chance = 0;
 
             return result;
         }
@@ -922,7 +922,7 @@ public static class IntruderUtilityRoles
             if (IsKilling())
                 result.Chance = 5;
             else if (!IsCustom())
-                result.Chance = 100;
+                result.Chance = 0;
 
             return result;
         }
@@ -1001,7 +1001,7 @@ public static class SyndicateUtilityRoles
             if (IsKilling())
                 result.Chance = 5;
             else if (!IsCustom())
-                result.Chance = 100;
+                result.Chance = 0;
 
             return result;
         }

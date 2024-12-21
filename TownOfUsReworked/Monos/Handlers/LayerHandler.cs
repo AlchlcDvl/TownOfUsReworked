@@ -156,7 +156,7 @@ public class LayerHandler : RoleBehaviour
     {
         if (CustomPlayer.LocalCustom.Dead)
             Flash(CustomColorManager.Stalemate);
-        else if (CustomPlayer.Local.Is(LayerEnum.Coroner))
+        else if (CustomPlayer.Local.Is<Coroner>())
             Flash(CustomColorManager.Coroner);
         else if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
             Flash(CustomColorManager.Monarch);

@@ -132,37 +132,58 @@ public static class GameStates
         var faction = role.Faction;
         var alignment = role.Alignment;
         return (faction is Faction.Crew or Faction.Intruder or Faction.Syndicate || (alignment == Alignment.NeutralNeo && role.Type != neo) || alignment is Alignment.NeutralHarb or
-            Alignment.NeutralPros or Alignment.NeutralApoc || player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals)) && role.SubFaction !=
-            sub;
+            Alignment.NeutralPros or Alignment.NeutralApoc || player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals)) && role.SubFaction != sub;
     }
 
-    public static bool SameNKWins(LayerEnum nk) => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) || x.Is(Faction.Syndicate) || (!x.Is(nk) &&
-        x.Is(Alignment.NeutralKill)) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralHarb) || x.Is(Alignment.NeutralApoc) || x.Is(Alignment.NeutralPros) || x.NotOnTheSameSide())) &&
-        NeutralSettings.NoSolo == NoSolo.SameNKs;
+    public static bool SameNKWins(LayerEnum nk) => !AllPlayers().Any(x => !x.HasDied() && x.IsOtherNK(nk)) && NeutralSettings.NoSolo == NoSolo.SameNKs;
 
-    public static bool SoloNKWins(PlayerControl player) => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) || (x.Is(Alignment.NeutralKill) &&
-        x != player) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralHarb) || x.Is(Alignment.NeutralApoc) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralPros) ||
-        x.NotOnTheSameSide())) && NeutralSettings.NoSolo == NoSolo.Never;
+    private static bool IsOtherNK(this PlayerControl player, LayerEnum nk)
+    {
+        var role = player.GetRole();
+        var faction = role.Faction;
+        var alignment = role.Alignment;
+        return faction is Faction.Crew or Faction.Intruder or Faction.Syndicate || alignment is Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or Alignment.NeutralApoc ||
+            player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals) || (role.Type != nk && alignment == Alignment.NeutralKill);
+    }
 
-    public static bool CorruptedWin(PlayerControl player) => !AllPlayers().Any(x => !x.HasDied() && !x.Is(LayerEnum.Corrupted) && ((x != player && !Corrupted.AllCorruptedWin) ||
+    public static bool SoloNKWins(PlayerControl player) => !AllPlayers().Any(x => !x.HasDied() && x.NotSoloNK(player)) && NeutralSettings.NoSolo == NoSolo.Never;
+
+    private static bool NotSoloNK(this PlayerControl player, PlayerControl refPlayer)
+    {
+        var role = player.GetRole();
+        var faction = role.Faction;
+        var alignment = role.Alignment;
+        return faction is Faction.Crew or Faction.Intruder or Faction.Syndicate || alignment is Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or Alignment.NeutralApoc ||
+            player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals) || (player != refPlayer && alignment == Alignment.NeutralKill);
+    }
+
+    public static bool CorruptedWin(PlayerControl player) => !AllPlayers().Any(x => !x.HasDied() && !x.Is<Corrupted>() && ((x != player && !Corrupted.AllCorruptedWin) ||
         Corrupted.AllCorruptedWin));
 
     public static bool LoversWin(PlayerControl player) => AllPlayers().Count(x => !x.HasDied()) <= 3 && PlayerLayer.GetLayers<Lovers>().Any(x => x.LoversAlive && x == player);
 
     public static bool RivalsWin(PlayerControl player) => AllPlayers().Count(x => !x.HasDied()) <= 2 && PlayerLayer.GetLayers<Rivals>().Any(x => x.IsWinningRival && x == player);
 
-    public static bool MafiaWin() => !AllPlayers().Any(x => !x.HasDied() && !x.Is(LayerEnum.Mafia));
+    public static bool MafiaWin() => !AllPlayers().Any(x => !x.HasDied() && !x.Is<Mafia>());
 
-    public static bool ApocWins() => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Faction.Crew) || x.Is(Alignment.NeutralKill) ||
-        x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralPros) || x.NotOnTheSameSide() || (x.Is(Faction.Neutral) && NeutralSettings.NoSolo == NoSolo.AllNeutrals)));
+    public static bool ApocWins() => !AllPlayers().Any(x => !x.HasDied() && x.NotApoc());
 
-    public static bool HunterWins() => !AllPlayers().Any(x => !x.HasDied() && x.Is(LayerEnum.Hunted));
+    private static bool NotApoc(this PlayerControl player)
+    {
+        var role = player.GetRole();
+        var faction = role.Faction;
+        var alignment = role.Alignment;
+        return faction is Faction.Crew or Faction.Intruder or Faction.Syndicate || alignment is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros ||
+            player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals);
+    }
 
-    public static bool HuntedWin() => !AllPlayers().Any(x => !x.HasDied() && x.Is(LayerEnum.Hunter));
+    public static bool HunterWins() => !AllPlayers().Any(x => !x.HasDied() && x.Is<Hunted>());
 
-    public static bool DefectorWins() => !AllPlayers().Any(x => !x.HasDied() && !x.Is(LayerEnum.Defector) && !x.Is(Faction.Neutral));
+    public static bool HuntedWin() => !AllPlayers().Any(x => !x.HasDied() && x.Is<Hunter>());
 
-    public static bool BetrayerWins() => !AllPlayers().Any(x => !x.HasDied() && !x.Is(LayerEnum.Betrayer) && !(x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralEvil)));
+    public static bool DefectorWins() => !AllPlayers().Any(x => !x.HasDied() && !x.Is<Defector>() && !x.Is(Faction.Neutral));
+
+    public static bool BetrayerWins() => !AllPlayers().Any(x => !x.HasDied() && !x.Is<Betrayer>() && !(x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralEvil)));
 
     public static bool OverlordWins() => MeetingPatches.MeetingCount >= Overlord.OverlordMeetingWinCount;
 }

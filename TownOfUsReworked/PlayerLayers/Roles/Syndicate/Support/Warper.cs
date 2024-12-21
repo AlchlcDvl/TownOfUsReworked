@@ -116,13 +116,11 @@ public class Warper : Syndicate
         if (!Player1Body && !WasInVent)
             AnimateWarp();
 
-        var startTime = DateTime.UtcNow;
+        var startTime = Time.time;
 
         while (true)
         {
-            var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
-
-            if (seconds < WarpDur)
+            if (Time.time - startTime < WarpDur)
                 yield return EndFrame();
             else
                 break;

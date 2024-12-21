@@ -130,7 +130,7 @@ public class ZiplineBehaviourUse
 
         try
         {
-            UninteractiblePlayers.TryAdd(player.PlayerId, DateTime.UtcNow);
+            UninteractiblePlayers.TryAdd(player.PlayerId, Time.time);
             UninteractiblePlayers2.TryAdd(player.PlayerId, fromTop ? __instance.upTravelTime : __instance.downTravelTime);
             CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, UninteractiblePlayers2[player.PlayerId], true);
             var hand = __instance.playerIdHands[player.PlayerId];

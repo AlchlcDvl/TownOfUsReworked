@@ -1,6 +1,6 @@
 using static TownOfUsReworked.Managers.RoleGenManager;
 
-namespace TownOfUsReworked.RoleGen2;
+namespace TownOfUsReworked.RoleGen;
 
 public class AbilityGen : BaseGen
 {
@@ -53,7 +53,7 @@ public class AbilityGen : BaseGen
             PlayerControl assigned = null;
 
             if (id == LayerEnum.Snitch)
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew) && !x.Is(LayerEnum.Traitor) && !x.Is(LayerEnum.Fanatic));
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew) && !x.Is<Traitor>() && !x.Is<Fanatic>());
             else if (id == LayerEnum.Sniper)
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Syndicate));
             else if (CrewAb.Contains(id))
@@ -61,11 +61,11 @@ public class AbilityGen : BaseGen
             else if (id == LayerEnum.Slayer)
                 assigned = playerList.FirstOrDefault(x => x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) || x.Is(Alignment.NeutralHarb));
             else if (id == LayerEnum.Hitman)
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) && !(x.Is(LayerEnum.Consigliere) && Consigliere.ConsigInfo == ConsigInfo.Role));
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) && !(x.Is<Consigliere>() && Consigliere.ConsigInfo == ConsigInfo.Role));
             else if (id == LayerEnum.Ninja)
             {
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) ||
-                    x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted));
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) || x.Is<Corrupted>() ||
+                    x.Is(Alignment.CrewKill));
             }
             else if (id == LayerEnum.Torch)
             {
@@ -78,12 +78,12 @@ public class AbilityGen : BaseGen
             else if (Tasked.Contains(id))
                 assigned = playerList.FirstOrDefault(x => x.CanDoTasks());
             else if (id == LayerEnum.Tunneler)
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew) && !x.Is(LayerEnum.Engineer));
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew) && !x.Is<Engineer>());
             else if (id == LayerEnum.ButtonBarry)
             {
-                assigned = playerList.FirstOrDefault(x => !((x.Is(LayerEnum.Mayor) && !Mayor.MayorButton) || (x.Is(LayerEnum.Jester) && !Jester.JesterButton) || (x.Is(LayerEnum.Actor) &&
-                    !Actor.ActorButton) || (x.Is(LayerEnum.Guesser) && !Guesser.GuesserButton) || (x.Is(LayerEnum.Executioner) && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton &&
-                    x.Is(LayerEnum.Monarch)) || (!Dictator.DictatorButton && x.Is(LayerEnum.Dictator))));
+                assigned = playerList.FirstOrDefault(x => !((x.Is<Mayor>() && !Mayor.MayorButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Actor>() && !Actor.ActorButton) ||
+                    (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton && x.Is<Monarch>()) ||
+                    (!Dictator.DictatorButton && x.Is<Dictator>())));
             }
             else if (id == LayerEnum.Politician)
                 assigned = playerList.FirstOrDefault(x => !(x.Is(Alignment.NeutralEvil) || x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralNeo)));
@@ -91,8 +91,8 @@ public class AbilityGen : BaseGen
                 assigned = playerList.FirstOrDefault();
             else if (id == LayerEnum.Ruthless)
             {
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) &&
-                    !x.Is(LayerEnum.Juggernaut)) || x.Is(Alignment.CrewKill) || x.Is(LayerEnum.Corrupted));
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is<Corrupted>() || (x.Is(Alignment.NeutralKill) &&
+                    !x.Is<Juggernaut>()) || x.Is(Alignment.CrewKill));
             }
 
             if (assigned)

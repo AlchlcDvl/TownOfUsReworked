@@ -15,17 +15,10 @@ public abstract class Neutral : Role
     {
         var team = base.Team();
 
-        if (Type == LayerEnum.Jackal)
-        {
-            var jackal = (Jackal)this;
-            team.Add(jackal.Recruit1);
-            team.Add(jackal.Recruit2);
-        }
-
         if (HasTarget && Type != LayerEnum.BountyHunter)
             team.Add(Player.GetTarget());
 
-        if (Player.Is(LayerEnum.Allied) && !Player.Is(Faction.Crew))
+        if (Player.Is<Allied>() && !Player.Is(Faction.Crew))
             team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
 
         return team;

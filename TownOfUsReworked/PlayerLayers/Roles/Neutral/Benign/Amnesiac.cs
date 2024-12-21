@@ -213,7 +213,7 @@ public class Amnesiac : Neutral
 
         if (RememberArrows && !Dead)
         {
-            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(RememberArrowDelay) < DateTime.UtcNow));
+            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= RememberArrowDelay));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {

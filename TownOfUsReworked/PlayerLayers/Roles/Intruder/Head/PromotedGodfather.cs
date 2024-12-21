@@ -377,7 +377,6 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
     public PlayerControl DisguisedPlayer { get; set; }
     public PlayerControl CopiedPlayer { get; set; }
     public CustomButton MeasureButton { get; set; }
-    public DateTime LastMeasured { get; set; }
     public bool IsDisg => FormerRole is Disguiser;
 
     public void Disguise() => Utils.Morph(DisguisedPlayer, CopiedPlayer);
@@ -435,7 +434,6 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
     public CustomButton MorphButton { get; set; }
     public PlayerControl MorphedPlayer { get; set; }
     public PlayerControl SampledPlayer { get; set; }
-    public DateTime LastSampled { get; set; }
     public CustomButton SampleButton { get; set; }
     public bool IsMorph => FormerRole is Morphling;
 
@@ -529,7 +527,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
 
     public bool ConsigException(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None)) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) &&
-        Rivals.RivalsRoles) || (player.Is(LayerEnum.Mafia) && Player.Is(LayerEnum.Mafia) && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
+        Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 
     public bool ConsigUsable() => IsConsig;
 

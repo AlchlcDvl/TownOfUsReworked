@@ -351,7 +351,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
         var isActive = RoleGenManager.GetSpawnItem(Layer).IsActive();
         var color = isActive ? LayerColor : Palette.DisabledGrey;
-        view.labelBackground.color = color;
+        view.labelBackground.color = color.Shadow();
         view.titleText.color = view.chanceText.color = view.chanceTitle.color = view.settingText.color = LeftTitle.color = CenterValue.color = CenterTitle.color = color.Alternate(0.45f);
         view.background.sprite = view.chanceBackground.sprite = CenterBackground.sprite = isActive ? view.crewmateCube : view.disabledCube;
         view.background.color = view.chanceBackground.color = CenterBackground.color = color.Alternate(0.3f);

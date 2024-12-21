@@ -12,7 +12,7 @@ public static class Interactions
             return true;
         else if (target.IsCrusaded() && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && Crusader.CrusadeMates)))
             return true;
-        else if (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead))
+        else if (target.Is<VampireHunter>() && player.Is(SubFaction.Undead))
             return true;
         else
             return false;
@@ -38,9 +38,9 @@ public static class Interactions
         if (!Pestilence.Infected.ContainsKey(targetId))
             return;
 
-        if (interacter.Is(LayerEnum.Pestilence))
+        if (interacter.Is<Pestilence>())
             Pestilence.Infected[target.PlayerId] = Pestilence.MaxStacks;
-        else if (target.Is(LayerEnum.Pestilence))
+        else if (target.Is<Pestilence>())
             Pestilence.Infected[interacter.PlayerId] = Pestilence.MaxStacks;
         else
             Pestilence.Infected[targetId]++;
@@ -63,7 +63,7 @@ public static class Interactions
         var attack = source.GetAttackValue(target);
         var defense = target.GetDefenseValue(source);
         var faction = source.GetFaction();
-        bypass |= source.Is(LayerEnum.Ruthless);
+        bypass |= source.Is<Ruthless>();
         PlayerControl trapper = null;
 
         if (!astral)
@@ -79,34 +79,31 @@ public static class Interactions
                 RpcMurderPlayer(source, target, reason);
                 abilityUsed = true;
             }
+            else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
+            {
+                var fan = target.GetLayer<Fanatic>();
+                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
+                fan.TurnFanatic(faction);
+                abilityUsed = true;
+            }
             else
             {
-                if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
-                {
-                    var fan = target.GetLayer<Fanatic>();
-                    CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
-                    fan.TurnFanatic(faction);
-                    abilityUsed = true;
-                }
-                else
-                {
-                    abilityUsed = !(target.IsTrapped() && trapper && !astral);
+                abilityUsed = !(target.IsTrapped() && trapper && !astral);
 
-                    if (target.IsTrapped() && trapper && !astral)
-                    {
-                        if (source.IsShielded() || source.IsProtected())
-                            abilityUsed = false;
-                        else
-                            RpcMurderPlayer(trapper, source, false);
-                    }
-                    else if (source.IsShielded() || source.IsProtected())
-                    {
+                if (target.IsTrapped() && trapper && !astral)
+                {
+                    if (source.IsShielded() || source.IsProtected())
                         abilityUsed = false;
-                        RpcBreakShield(source);
-                    }
-                    else if (!delayed)
-                        RpcMurderPlayer(source, target, reason);
+                    else
+                        RpcMurderPlayer(trapper, source, false);
                 }
+                else if (source.IsShielded() || source.IsProtected())
+                {
+                    abilityUsed = false;
+                    RpcBreakShield(source);
+                }
+                else if (!delayed)
+                    RpcMurderPlayer(source, target, reason);
             }
         }
         else if (target.IsShielded() && isAttack)

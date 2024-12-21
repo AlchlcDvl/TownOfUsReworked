@@ -1,5 +1,3 @@
-using TownOfUsReworked.RoleGen2;
-
 namespace TownOfUsReworked.Managers;
 
 public static class RoleGenManager
@@ -162,7 +160,8 @@ public static class RoleGenManager
         else if (layer == LayerEnum.Seer)
         {
             result = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor,
-                LayerEnum.Amnesiac, LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter }.Any(x => GetSpawnItem(x).IsActive());
+                LayerEnum.Amnesiac, LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter, LayerEnum.Fanatic }.Any(x =>
+                    GetSpawnItem(x).IsActive());
         }
         else if (layer == LayerEnum.Plaguebearer)
             result = !NeutralApocalypseSettings.DirectSpawn;
@@ -188,9 +187,6 @@ public static class RoleGenManager
             result = GameData.Instance.PlayerCount > 3;
         else if (layer == LayerEnum.Linked)
             result = Role.GetRoles(Faction.Neutral).Count() > 1 && GameData.Instance.PlayerCount > 4;
-
-        if (TownOfUsReworked.IsTest)
-            result = true;
 
         return result;
     }
@@ -379,13 +375,13 @@ public static class RoleGenManager
         Message("Gen Ended");
     }
 
-    public static bool Check(RoleOptionData data, bool sorting = false)
+    public static bool Check(RoleOptionData data)
     {
         if (data.Chance == 0)
             return false;
 
         if (data.Chance == 100)
-            return !sorting;
+            return true;
 
         return URandom.RandomRangeInt(1, 100) <= data.Chance;
     }
@@ -396,8 +392,8 @@ public static class RoleGenManager
 
         MeetingPatches.MeetingCount = 0;
 
-        Role.SyndicateHasChaosDrive = false;
-        Role.DriveHolder = null;
+        PlayerLayers.Roles.Syndicate.SyndicateHasChaosDrive = false;
+        PlayerLayers.Roles.Syndicate.DriveHolder = null;
 
         Role.Cleaned.Clear();
 

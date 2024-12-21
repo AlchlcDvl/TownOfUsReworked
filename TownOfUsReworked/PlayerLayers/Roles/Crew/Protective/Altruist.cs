@@ -57,9 +57,9 @@ public class Altruist : Crew
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
 
-        if (player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie)
+        if (Lovers.BothLoversDie && player.TryGetLayer<Lovers>(out var lovers))
         {
-            var lover = player.GetOtherLover();
+            var lover = lovers.OtherLover;
             var loverRole = lover.GetRole();
             loverRole.DeathReason = DeathReasonEnum.Revived;
             loverRole.KilledBy = " By " + PlayerName;

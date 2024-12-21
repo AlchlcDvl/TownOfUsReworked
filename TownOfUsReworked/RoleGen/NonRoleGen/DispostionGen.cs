@@ -1,6 +1,6 @@
 using static TownOfUsReworked.Managers.RoleGenManager;
 
-namespace TownOfUsReworked.RoleGen2;
+namespace TownOfUsReworked.RoleGen;
 
 public class DispositionGen : BaseGen
 {
@@ -68,7 +68,7 @@ public class DispositionGen : BaseGen
             PlayerControl assigned = null;
 
             if (LoverRival.Contains(id) && playerList.Count > 1)
-                assigned = playerList.FirstOrDefault(x => x.GetRole().Type is not (LayerEnum.Altruist or LayerEnum.Troll or LayerEnum.Actor or LayerEnum.Jester or LayerEnum.Shifter));
+                assigned = playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester or Shifter));
             else if (CrewDisp.Contains(id))
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew));
             else if (NeutralDisp.Contains(id))

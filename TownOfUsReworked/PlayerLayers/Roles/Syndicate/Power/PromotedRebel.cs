@@ -492,7 +492,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
 
     public void UnPoison()
     {
-        if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is(LayerEnum.Pestilence)))
+        if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is<Pestilence>()))
             RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
@@ -735,13 +735,11 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         if (!Player1Body && !WasInVent)
             AnimateWarp();
 
-        var startTime = DateTime.UtcNow;
+        var startTime = Time.time;
 
         while (true)
         {
-            var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
-
-            if (seconds < Warper.WarpDur)
+            if (Time.time - startTime < Warper.WarpDur)
                 yield return EndFrame();
             else
                 break;
@@ -1069,7 +1067,6 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
     public bool DrunkUsable() => IsDrunk;
 
     // Timekeeper Stuff
-    public DateTime LastTimed { get; set; }
     public CustomButton TimeButton { get; set; }
     public bool IsTK => FormerRole is Timekeeper;
 

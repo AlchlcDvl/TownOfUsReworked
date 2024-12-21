@@ -219,13 +219,13 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 
 # Player Layers
 
-All layers provide an attack or defense value to the player, which dictates the power of their actions. If the level of attack is higher then the target's defense and the attack is successful, the target will die. Otherwise, the target will live and the attacker's ability will fail. Unless mentioned otherwise, the layers provide no attack or defense.
+All layers provide an attack or defense value to the player, which dictates the power of their actions. If the level of attack is higher than the target's defense and the attack is successful, the target will die. Otherwise, the target will live and the attacker's ability will fail. Unless mentioned otherwise, the layers provide no attack or defense.
 
 # Neutral Roles
 
 <img align="right" width="" height="200" src="https://github.com/AlchlcDvl/TownOfUsReworked/blob/master/Images/Neutral.png">
 
-Each member of this faction has their own unique way to win, seperate from the other roles in the same faction. The main theme of this faction is free for all. This faction is an uninformed minority of the game, meaning they make up a small part of the crew while not knowing who the other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of existing.
+Each member of this faction has their own unique way to win, separate from the other roles in the same faction. The main theme of this faction is free for all. This faction is an uninformed minority in the game, meaning they make up a small part of the crew while not knowing who the other members are. Each role is unique in its own way; some can be helpful, some exist to destroy others and some just exist for the sake of existing.
 
 ### Neutral Settings
 

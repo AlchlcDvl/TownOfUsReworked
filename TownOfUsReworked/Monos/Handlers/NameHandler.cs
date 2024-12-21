@@ -120,7 +120,7 @@ public class NameHandler : MonoBehaviour
             else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache))
                 name = PlayerNames[cache];
             else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind)
-                name = "";
+                return ("", UColor.clear);
             else
                 name = PlayerNames[player.PlayerId];
         }
@@ -445,7 +445,7 @@ public class NameHandler : MonoBehaviour
                     if (coroner.Reported.Contains(player.PlayerId) && !revealed && meeting)
                     {
                         color = role.Color;
-                        name += $"\n{role}";
+                        name += $"\n{(Coroner.CoronerReportRole ? role : role.Faction)}";
                         revealed = true;
                     }
 
@@ -686,10 +686,13 @@ public class NameHandler : MonoBehaviour
         if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 3 && !deadSeeEverything)
             name += " <#FFFFFFFF>η</color>";
 
-        if ((local.Is(Faction.Syndicate) || deadSeeEverything) && (player == Role.DriveHolder || (SyndicateSettings.GlobalDrive && Role.SyndicateHasChaosDrive && player.Is(Faction.Syndicate))))
+        if ((local.Is(Faction.Syndicate) || deadSeeEverything) && (player == Syndicate.DriveHolder || (SyndicateSettings.GlobalDrive && Syndicate.SyndicateHasChaosDrive && role.Faction ==
+            Faction.Syndicate)))
+        {
             name += " <#008000FF>Δ</color>";
+        }
 
-        if ((deadSeeEverything || local.Is(LayerEnum.Pestilence)) && Pestilence.Infected.TryGetValue(player.PlayerId, out var count))
+        if ((deadSeeEverything || local.Is<Pestilence>()) && Pestilence.Infected.TryGetValue(player.PlayerId, out var count))
         {
             for (var i = 0; i < count; i++)
                 name += " <#424242FF>米</color>";

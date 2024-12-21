@@ -643,7 +643,7 @@ public static class OnGameEndPatches
 
     public static void AddSummaryInfo(PlayerControl player, bool disconnected = false)
     {
-        if (!player || Disconnected.Any(x => x.PlayerName == player.Data.PlayerName) || PlayerRoles.Any(x => x.PlayerName == player.Data.PlayerName))
+        if (!player || !player.Data || Disconnected.Any(x => x.PlayerName == player.Data.PlayerName) || PlayerRoles.Any(x => x.PlayerName == player.Data.PlayerName))
             return;
 
         var summary = "";
@@ -724,7 +724,7 @@ public static class OnGameEndPatches
             cache += " π";
         }
 
-        if (player == Role.DriveHolder && !SyndicateSettings.GlobalDrive)
+        if (player == Syndicate.DriveHolder)
         {
             summary += " <#008000FF>Δ</color>";
             cache += " Δ";

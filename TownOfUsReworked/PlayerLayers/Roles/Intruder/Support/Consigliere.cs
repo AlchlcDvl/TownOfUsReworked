@@ -17,7 +17,7 @@ public class Consigliere : Intruder
     public override LayerEnum Type => LayerEnum.Consigliere;
     public override Func<string> StartText => () => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";
     public override Func<string> Description => () => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}\n{CommonAbilities}";
-    public override Func<string> Attributes => () => Player.IsAssassin() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "";
+    public override Func<string> Attributes => () => Player.Is<Assassin>() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "";
 
     public override void Init()
     {
@@ -40,5 +40,5 @@ public class Consigliere : Intruder
 
     public bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None)) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) &&
-        Rivals.RivalsRoles) || (player.Is(LayerEnum.Mafia) && Player.Is(LayerEnum.Mafia) && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
+        Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 }

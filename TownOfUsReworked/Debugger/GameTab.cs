@@ -14,17 +14,6 @@ public class GameTab : BaseTab
 
         TownOfUsReworked.SameVote.Value = GUILayout.Toggle(TownOfUsReworked.SameVote.Value, "All Bots Vote");
 
-        if (Role.DriveHolder)
-        {
-            if (GUILayout.Button("Assign Chaos Drive"))
-                AssignChaosDrive();
-        }
-        else if (GUILayout.Button("Take Away Chaos Drive"))
-        {
-            Role.DriveHolder = null;
-            Role.SyndicateHasChaosDrive = false;
-        }
-
         if (GUILayout.Button("Next Player"))
         {
             DebuggerBehaviour.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, true);
@@ -38,6 +27,17 @@ public class GameTab : BaseTab
 
         if (GUILayout.Button("End Game"))
             CheckEndGame.PerformStalemate();
+
+        if (Syndicate.DriveHolder)
+        {
+            if (GUILayout.Button("Take Away Chaos Drive"))
+            {
+                Syndicate.DriveHolder = null;
+                Syndicate.SyndicateHasChaosDrive = false;
+            }
+        }
+        else if (GUILayout.Button("Assign Chaos Drive"))
+            AssignChaosDrive();
 
         if (GUILayout.Button("Fix All Sabotages"))
         {

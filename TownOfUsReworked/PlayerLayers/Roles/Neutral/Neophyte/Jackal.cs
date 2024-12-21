@@ -48,6 +48,22 @@ public class Jackal : Neophyte
         Recruit3 = null;
     }
 
+    public override List<PlayerControl> Team()
+    {
+        var team = base.Team();
+
+        if (Recruit1)
+            team.Add(Recruit1);
+
+        if (Recruit2)
+            team.Add(Recruit2);
+
+        if (Recruit3)
+            team.Add(Recruit3);
+
+        return team;
+    }
+
     public void Recruit(PlayerControl target)
     {
         var cooldown = Interact(Player, target);

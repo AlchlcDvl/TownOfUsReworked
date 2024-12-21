@@ -40,7 +40,7 @@ public static class VotePatches
     {
         var player = PlayerById(srcPlayerId);
 
-        if (!player.Is(LayerEnum.Politician))
+        if (!player.TryGetLayer<Politician>(out var pol))
             return true;
 
         var playerVoteArea = VoteAreaById(srcPlayerId);
@@ -49,10 +49,7 @@ public static class VotePatches
             return false;
 
         if (playerVoteArea.DidVote)
-        {
-            if (player.Is(LayerEnum.Politician))
-                player.GetLayer<Politician>().ExtraVotes.Add(suspectPlayerId);
-        }
+            pol.ExtraVotes.Add(suspectPlayerId);
         else
         {
             playerVoteArea.SetVote(suspectPlayerId);

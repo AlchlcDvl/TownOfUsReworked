@@ -65,7 +65,7 @@ public static class RPCHandling
 
                         if (whispered.AmOwner)
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to you: {message}");
-                        else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (CustomPlayer.Local.Is(LayerEnum.Silencer) &&
+                        else if ((CustomPlayer.Local.Is<Blackmailer>() && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (CustomPlayer.Local.Is<Silencer>() &&
                             Silencer.WhispersNotPrivateS))
                         {
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to #({whispered.name}): {message}");
@@ -147,8 +147,8 @@ public static class RPCHandling
                     }
                     case MiscRPC.ChaosDrive:
                     {
-                        Role.DriveHolder = reader.ReadPlayer();
-                        Role.SyndicateHasChaosDrive = Role.DriveHolder;
+                        Syndicate.DriveHolder = reader.ReadPlayer();
+                        Syndicate.SyndicateHasChaosDrive = Syndicate.DriveHolder;
                         break;
                     }
                     case MiscRPC.SyncCustomSettings:
@@ -373,7 +373,7 @@ public static class RPCHandling
                         try
                         {
                             var playerid = reader.ReadByte();
-                            UninteractiblePlayers.TryAdd(playerid, DateTime.UtcNow);
+                            UninteractiblePlayers.TryAdd(playerid, Time.time);
                             UninteractiblePlayers2.TryAdd(playerid, reader.ReadSingle());
 
                             if (reader.ReadBoolean())

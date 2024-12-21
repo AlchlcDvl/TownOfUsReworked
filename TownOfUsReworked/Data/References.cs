@@ -7,7 +7,7 @@ public static class References
     public static readonly List<DeadPlayer> KilledPlayers = [];
     public static readonly Dictionary<byte, float> TransitioningSize = []; // Wheeze
     public static readonly Dictionary<byte, float> TransitioningSpeed = []; // Double wheeze
-    public static readonly Dictionary<byte, DateTime> UninteractiblePlayers = [];
+    public static readonly Dictionary<byte, float> UninteractiblePlayers = [];
     public static readonly Dictionary<byte, float> UninteractiblePlayers2 = [];
     public static readonly Dictionary<byte, string> BodyLocations = [];
     public static DeadBody[] AllBodies() => UObject.FindObjectsOfType<DeadBody>();
@@ -40,7 +40,7 @@ public static class References
         { "%assets%", $"[{TownOfUsReworked.AssetsLink}]Assets[]" }
     };
     // As much as I hate to do this, people will take advantage so we're better off doing this early
-    public static readonly string[] Profanities = [ "fuck", "bastard", "cunt", "nigg", "nig", "neg", "whore", "negro", "yiff", "rape", "rapist" ];
+    public static readonly string[] Profanities = [ "nigg", "whore", "negro", "yiff", "rape", "rapist" ];
     public const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
     // public static readonly char[] Lowercase = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
     // public static readonly char[] Uppercase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
@@ -352,7 +352,7 @@ public static class References
         "",
         "Let me introduce you to our sponsor, Raid-",
         "Push to production is my motto. Bugs? meh public release go brrrr",
-        "It's not a bug, it's a feature",
+        "If it's not a bug, it's a feature",
         "My life like a movie",
         "real",
         "WHERE AM I?!",
@@ -369,6 +369,27 @@ public static class References
         "O_.",
         "ehehehehehehehehe",
         "Think fast chuckle nuts",
+        "I got murder on my mind",
+        "Space is big. You just won't believe how vastly, hugely, mind-bogglingly big it is",
+        "To infinity and beyond!",
+        "Houston, we have a problem",
+        "In space, no one can hear you scream",
+        "One small step for man, one giant leap for mankind",
+        "May the force be with you",
+        "Live long and prosper",
+        "That's no moon. It's a space station",
+        "Beam me up, Scotty",
+        "Ground control to Major Tom",
+        "Open the pod bay doors, HAL",
+        "Fly me to the moon",
+        "Space: the final frontier",
+        "Is there life on Mars?",
+        "Take me to your leader",
+        "Resistance is futile",
+        "Set phasers to stun",
+        "Engage!",
+        "By Grabthar's hammer, you shall be avenged!",
+        "Space madness!",
         "LET. HIM. COOK."
     ];
 }

@@ -27,6 +27,7 @@ global using TownOfUsReworked.Classes;
 global using TownOfUsReworked.Patches;
 global using TownOfUsReworked.Modules;
 global using TownOfUsReworked.Options;
+global using TownOfUsReworked.RoleGen;
 global using TownOfUsReworked.Managers;
 global using TownOfUsReworked.Debugger;
 global using TownOfUsReworked.BetterMaps;

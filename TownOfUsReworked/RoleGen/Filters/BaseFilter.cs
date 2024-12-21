@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.RoleGen2;
+namespace TownOfUsReworked.RoleGen;
 
 public abstract class BaseFilter
 {

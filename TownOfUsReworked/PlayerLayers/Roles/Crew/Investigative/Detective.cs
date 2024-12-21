@@ -40,7 +40,7 @@ public class Detective : Crew
 
         if (cooldown != CooldownType.Fail)
         {
-            Flash(target.IsFramed() || KilledPlayers.Any(x => x.KillerId == target.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <= RecentKill) ? UColor.red : UColor.green);
+            Flash(target.IsFramed() || KilledPlayers.Any(x => x.KillerId == target.PlayerId && x.KillAge <= RecentKill) ? UColor.red : UColor.green);
             target.EnsureComponent<FootprintHandler>();
         }
 

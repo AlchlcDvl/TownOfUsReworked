@@ -17,8 +17,9 @@ public static class CalculateLightRadiusPatch
         }
 
         var pc = player.Object;
+        var role = pc.GetRole();
 
-        if (!pc.GetRole())
+        if (!role)
         {
             __result = __instance.MaxLightRadius * (pc.IsImpostor() ? TownOfUsReworked.NormalOptions.ImpostorLightMod : TownOfUsReworked.NormalOptions.CrewLightMod);
             return false;
@@ -26,22 +27,22 @@ public static class CalculateLightRadiusPatch
 
         if (player.IsDead)
             __result = __instance.MaxLightRadius;
-        else if (pc.Is(Faction.Intruder) || (pc.Is(Alignment.NeutralKill) && NeutralKillingSettings.NKHasImpVision) || pc.Is(LayerEnum.Torch) || (pc.Is(Alignment.NeutralNeo) &&
-            NeutralNeophyteSettings.NNHasImpVision) || (pc.Is(Alignment.NeutralHarb) && NeutralHarbingerSettings.NHHasImpVision) || (pc.Is(Alignment.NeutralEvil) &&
-            NeutralEvilSettings.NEHasImpVision))
+        else if (role.Faction == Faction.Intruder || (role.Alignment == Alignment.NeutralKill && NeutralKillingSettings.NKHasImpVision) || pc.Is<Torch>() || (role.Alignment ==
+            Alignment.NeutralNeo && NeutralNeophyteSettings.NNHasImpVision) || (role.Alignment == Alignment.NeutralHarb && NeutralHarbingerSettings.NHHasImpVision) || (role.Alignment ==
+            Alignment.NeutralEvil && NeutralEvilSettings.NEHasImpVision))
         {
             __result = __instance.MaxLightRadius * IntruderSettings.IntruderVision;
         }
-        else if (pc.Is(Faction.Syndicate))
+        else if (role.Faction == Faction.Syndicate)
             __result = __instance.MaxLightRadius * SyndicateSettings.SyndicateVision;
-        else if (pc.Is(Faction.Neutral) && !NeutralSettings.LightsAffectNeutrals)
+        else if (role.Faction == Faction.Neutral && !NeutralSettings.LightsAffectNeutrals)
             __result = __instance.MaxLightRadius * NeutralSettings.NeutralVision;
-        else if (pc.Is(LayerEnum.Runner))
+        else if (role is Runner)
             __result = __instance.MaxLightRadius;
-        else if (pc.Is(LayerEnum.Hunted))
+        else if (role is Hunted)
             __result = __instance.MaxLightRadius * GameModeSettings.HuntedVision;
-        else if (pc.Is(LayerEnum.Hunter))
-            __result = __instance.MaxLightRadius * (pc.GetLayer<Hunter>().Starting ? 0f : GameModeSettings.HunterVision);
+        else if (role is Hunter hunter)
+            __result = __instance.MaxLightRadius * (hunter.Starting ? 0f : GameModeSettings.HunterVision);
         else
         {
             var t = __instance.MaxLightRadius;
@@ -49,7 +50,7 @@ public static class CalculateLightRadiusPatch
             if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system))
                 t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, system.Cast<SwitchSystem>().Value / 255f);
 
-            __result = t * (pc.Is(Faction.Neutral) ? NeutralSettings.NeutralVision : CrewSettings.CrewVision);
+            __result = t * (role.Faction == Faction.Neutral ? NeutralSettings.NeutralVision : CrewSettings.CrewVision);
         }
 
         if (MapPatches.CurrentMap is 0 or 3 or 6 && MapSettings.SmallMapHalfVision && !IsTaskRace() && !IsCustomHnS())

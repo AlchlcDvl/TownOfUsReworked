@@ -40,8 +40,8 @@ public class Troll : Evil
     {
         base.OnDeath(reason, reason2, killer);
 
-        if (Local && !NeutralSettings.AvoidNeutralKingmakers)
-            RpcMurderPlayer(Player, killer, DeathReasonEnum.Trolled, false);
+        if (!NeutralSettings.AvoidNeutralKingmakers)
+            MurderPlayer(Player, killer, DeathReasonEnum.Trolled, false);
     }
 
     public void Interact(PlayerControl target) => InteractButton.StartCooldown(Interactions.Interact(Player, target));

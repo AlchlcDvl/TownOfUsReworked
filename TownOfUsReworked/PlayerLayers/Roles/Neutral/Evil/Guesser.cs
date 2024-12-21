@@ -388,12 +388,10 @@ public class Guesser : Evil
             {
                 MarkMeetingDead(player, Player);
 
-                if (player.Is(LayerEnum.Lovers) && Lovers.BothLoversDie && AmongUsClient.Instance.AmHost)
+                if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.NeutralApoc) &&
+                    !lovers.OtherLover.Data.IsDead)
                 {
-                    var otherLover = player.GetOtherLover();
-
-                    if (!otherLover.Is(LayerEnum.Pestilence) && !otherLover.Data.IsDead)
-                        RpcMurderPlayer(otherLover, guess, guessTarget);
+                    RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);
                 }
             }
 

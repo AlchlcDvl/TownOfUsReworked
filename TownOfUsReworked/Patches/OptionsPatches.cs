@@ -1134,7 +1134,7 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(NotificationPopper), (nameof(NotificationPopper.AddSettingsChangeMessage)))]
     public static bool Prefix() => false;
 
-    public static IEnumerable<MonoBehaviour> CreateViewOptions(Transform parent, int page = -1)
+    public static void CreateViewOptions(Transform parent, int page = -1)
     {
         if (page == -1)
             page = SettingsPage3;
@@ -1157,7 +1157,6 @@ public static class SettingsPatches
             {
                 option.ViewOptionCreated();
                 option.ViewSetting.gameObject.SetActive(false);
-                yield return option.Setting;
             }
         }
     }
@@ -1268,6 +1267,9 @@ public static class SettingsPatches
 
             foreach (var option in OptionAttribute.GetOptions<AlignmentOptionAttribute>())
             {
+                if (!option.ViewSetting)
+                    continue;
+
                 option.ViewUpdate();
                 option.ViewSetting.transform.localPosition = new(-9.77f, y, -2f);
                 option.ViewSetting.gameObject.SetActive(true);
@@ -1282,8 +1284,11 @@ public static class SettingsPatches
 
                 if (option.GroupHeader != null)
                 {
-                    option.GroupHeader.ViewUpdate();
-                    option.GroupHeader.ViewSetting.gameObject.SetActive(false);
+                    if (option.GroupHeader.ViewSetting)
+                    {
+                        option.GroupHeader.ViewUpdate();
+                        option.GroupHeader.ViewSetting.gameObject.SetActive(false);
+                    }
 
                     var members = option.GroupHeader.GroupMembers.Where(x =>
                     {
@@ -1516,23 +1521,17 @@ public static class SettingsPatches
         }
 
         [HarmonyPatch(nameof(LobbyViewSettingsPane.DrawNormalTab)), HarmonyPrefix]
-        public static bool DrawNormalTabPrefix(LobbyViewSettingsPane __instance)
-        {
-            if (IsHnS())
-                return true;
-
-            SettingsPage3 = 0;
-            OnValueChangedView(__instance);
-            return false;
-        }
+        public static bool DrawNormalTabPrefix(LobbyViewSettingsPane __instance) => TabPrefix(__instance, 0);
 
         [HarmonyPatch(nameof(LobbyViewSettingsPane.DrawRolesTab)), HarmonyPrefix]
-        public static bool DrawRolesTabPrefix(LobbyViewSettingsPane __instance)
+        public static bool DrawRolesTabPrefix(LobbyViewSettingsPane __instance) => TabPrefix(__instance, 1);
+
+        public static bool TabPrefix(LobbyViewSettingsPane __instance, int page)
         {
             if (IsHnS())
                 return true;
 
-            SettingsPage3 = 1;
+            SettingsPage3 = page;
             OnValueChangedView(__instance);
             return false;
         }

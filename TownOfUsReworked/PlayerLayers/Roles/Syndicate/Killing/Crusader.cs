@@ -59,10 +59,10 @@ public class Crusader : Syndicate
             if (player.IsVesting() || player.IsProtected() || player2.IsLinkedTo(player) || player.IsShielded() || (player.Is(Faction.Syndicate) && !CrusadeMates))
                 continue;
 
-            if (!player.Is(LayerEnum.Pestilence))
+            if (!player.Is(Alignment.NeutralApoc))
                 RpcMurderPlayer(player2, player, DeathReasonEnum.Crusaded, false);
 
-            if (player.IsOnAlert() || player.Is(LayerEnum.Pestilence))
+            if (player.IsOnAlert() || player.Is<Pestilence>())
                 RpcMurderPlayer(player, player2);
             else if (player.IsAmbushed())
                 RpcMurderPlayer(player, player2, DeathReasonEnum.Ambushed);

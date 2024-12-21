@@ -16,12 +16,12 @@ public abstract class Role : PlayerLayer
     {
         var team = new List<PlayerControl>() { Player };
 
-        if (Player.Is(LayerEnum.Lovers))
+        if (Player.Is<Lovers>())
             team.Add(Player.GetOtherLover());
-        else if (Player.Is(LayerEnum.Rivals))
+        else if (Player.Is<Rivals>())
             team.Add(Player.GetOtherRival());
-        else if (Player.Is(LayerEnum.Mafia))
-            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(LayerEnum.Mafia)));
+        else if (Player.Is<Mafia>())
+            team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
 
         if (IsRecruit)
         {
@@ -46,37 +46,12 @@ public abstract class Role : PlayerLayer
 
     public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.SectWins or WinLose.UndeadWins;
 
-    public static bool SyndicateHasChaosDrive { get; set; }
-
-    private static PlayerControl _driveHolder;
-    public static PlayerControl DriveHolder
-    {
-        get => _driveHolder;
-        set
-        {
-            _driveHolder = value;
-
-            if (!value)
-                return;
-
-            var syndicateRole = value.GetLayer<Syndicate>();
-
-            if (!syndicateRole)
-                return;
-
-            syndicateRole.OnDriveReceived();
-
-            if (value.AmOwner)
-                syndicateRole.OnDriveReceivedLocal();
-        }
-    }
-
     public Alignment Alignment { get; set; }
     public List<Role> RoleHistory { get; set; }
     public ChatChannel CurrentChannel { get; set; }
     public Dictionary<byte, CustomArrow> AllArrows { get; set; }
     public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
-    public Dictionary<PointInTime, DateTime> Positions { get; set; }
+    public Dictionary<PointInTime, float> Positions { get; set; }
     public Dictionary<byte, CustomArrow> YellerArrows { get; set; }
     public LayerEnum LinkedDisposition { get; set; }
 
@@ -273,18 +248,18 @@ public abstract class Role : PlayerLayer
                 pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position);
         }
 
-        if (!Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode && AllPlayers().Any(x => x.Is(LayerEnum.Timekeeper)))
+        if (Timekeeper.TKExists && !Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode)
         {
             if (!Rewinding)
             {
-                Positions.TryAdd(new(Player.transform.position), DateTime.UtcNow);
+                Positions.TryAdd(new(Player.transform.position), Time.time);
                 var toBeRemoved = new List<PointInTime>();
 
                 foreach (var pair in Positions)
                 {
-                    var seconds = (DateTime.UtcNow - pair.Value).TotalSeconds;
+                    var seconds = Time.time - pair.Value;
 
-                    if (seconds > Timekeeper.TimeDur + 1)
+                    if (seconds > Timekeeper.TimeDur)
                         toBeRemoved.Add(pair.Key);
                 }
 
@@ -397,17 +372,7 @@ public abstract class Role : PlayerLayer
         DeadArrows.Remove(targetPlayerId);
     }
 
-    public override void OnMeetingEnd(MeetingHud __instance)
-    {
-        if (Player.Is(LayerEnum.Lovers))
-            CurrentChannel = ChatChannel.Lovers;
-        else if (Player.Is(LayerEnum.Rivals))
-            CurrentChannel = ChatChannel.Rivals;
-        else if (Player.Is(LayerEnum.Linked))
-            CurrentChannel = ChatChannel.Linked;
-
-        GetLayers<Werewolf>().ForEach(x => x.Rounds++);
-    }
+    public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().ForEach(x => x.Rounds++);
 
     public override void Deinit()
     {

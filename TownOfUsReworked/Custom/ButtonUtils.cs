@@ -40,7 +40,7 @@ public static class ButtonUtils
         player.GetRole().UpdateButtons();
         hud.KillButton.gameObject.SetActive(false);
         hud.SabotageButton.gameObject.SetActive(player.CanSabotage() && IsInGame());
-        hud.ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward) && !Meeting() && !player.HasDied() && IsInGame());
+        hud.ReportButton.gameObject.SetActive(!player.Is<Coward>() && !Meeting() && !player.HasDied() && IsInGame());
         hud.ImpostorVentButton.gameObject.SetActive(player.CanVent() && IsInGame());
 
         if (IsHnS())
@@ -94,7 +94,7 @@ public static class ButtonUtils
 
     public static float GetUnderdogChange(this PlayerControl player)
     {
-        if (!player.Is(LayerEnum.Underdog))
+        if (!player.Is<Underdog>())
             return 0f;
 
         if (Underdog.UnderdogIncreasedCd && !Last(player))
@@ -116,9 +116,9 @@ public static class ButtonUtils
     {
         var num = 1f;
 
-        if (player.Is(LayerEnum.PromotedGodfather))
+        if (player.Is<PromotedGodfather>())
             num *= Godfather.GFPromotionCdDecrease;
-        if (player.Is(LayerEnum.PromotedRebel))
+        else if (player.Is<PromotedRebel>())
             num *= Rebel.RebPromotionCdDecrease;
 
         if (player.Diseased())

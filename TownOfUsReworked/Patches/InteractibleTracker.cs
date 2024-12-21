@@ -7,7 +7,7 @@ public static class SaveLadderPlayer
     {
         try
         {
-            UninteractiblePlayers.TryAdd(__instance.myPlayer.PlayerId, DateTime.UtcNow);
+            UninteractiblePlayers.TryAdd(__instance.myPlayer.PlayerId, Time.time);
             CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local, 6, false);
         }
         catch (Exception e)
@@ -27,7 +27,7 @@ public static class SavePlatformPlayer
     {
         try
         {
-            UninteractiblePlayers.TryAdd(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
+            UninteractiblePlayers.TryAdd(CustomPlayer.Local.PlayerId, Time.time);
             CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local, 6, false);
         }
         catch (Exception e)
