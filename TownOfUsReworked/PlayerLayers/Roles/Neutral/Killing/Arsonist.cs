@@ -106,7 +106,7 @@ public class Arsonist : NKilling
 
     public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
     {
-        if (!source.Is(Type) || Doused.Contains(target.PlayerId) || source != Player)
+        if (!source.Is<Arsonist>() || Doused.Contains(target.PlayerId) || source != Player)
             return;
 
         Doused.Add(target.PlayerId);

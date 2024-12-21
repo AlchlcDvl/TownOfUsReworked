@@ -358,7 +358,7 @@ public static class RoleGenManager
         if (TownOfUsReworked.IsTest)
             Message($"{"Name", -6} -> {"Role", -14} | {"Disposition", -11} | {"Modifier", -12} | {"Ability", -12}");
 
-        CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen);
+        CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls);
 
         foreach (var player in allPlayers)
         {
@@ -419,10 +419,10 @@ public static class RoleGenManager
         AllAbilities.Clear();
         AllDispositions.Clear();
 
-        SetPostmortals.PhantomOn = false;
-        SetPostmortals.RevealerOn = false;
-        SetPostmortals.BansheeOn = false;
-        SetPostmortals.GhoulOn = false;
+        SetPostmortals.Phantoms = 0;
+        SetPostmortals.Revealers = 0;
+        SetPostmortals.Banshees = 0;
+        SetPostmortals.Ghouls = 0;
 
         SetPostmortals.WillBeBanshees.Clear();
         SetPostmortals.WillBeGhouls.Clear();

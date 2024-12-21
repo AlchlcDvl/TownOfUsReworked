@@ -280,7 +280,7 @@ public abstract class Role : PlayerLayer
     {
         if (killer != Player)
         {
-            KilledBy = " By " + PlayerName;
+            KilledBy = " By " + killer.Data.PlayerName;
             DeathReason = Meeting() ? DeathReasonEnum.Guessed : reason2;
         }
         else

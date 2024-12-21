@@ -50,7 +50,7 @@ public static class ActionButtonPatches
         __instance.SetCooldownFill(percentCool);
         __instance.cooldownTimerText.color = percentCool switch
         {
-            > 0.50f => UColor.white,
+            > 0.5f => UColor.white,
             > 0.1f => UColor.yellow,
             _ => UColor.red
         };

@@ -70,13 +70,16 @@ public static class ButtonUtils
 
     public static void SetDelay(this ActionButton button, float timer)
     {
+        var ceil = Mathf.CeilToInt(timer);
         button.isCoolingDown = timer > 0f;
         button.graphic.transform.localPosition = button.position + (Vector3)(URandom.insideUnitCircle * 0.05f);
-        button.cooldownTimerText.SetText($"{Mathf.CeilToInt(timer)}");
+        button.cooldownTimerText.SetText($"{ceil}");
         button.cooldownTimerText.color = UColor.white;
         button.cooldownTimerText.gameObject.SetActive(button.isCoolingDown);
-        button.SetCooldownFill(1f);
+        button.SetCooldownFill(ceil % 2 == 0 ? 1f : 0f);
     }
+
+    public static void ShakeButton(this ActionButton button) => button.graphic.transform.localPosition = button.position + (Vector3)(URandom.insideUnitCircle * 0.05f);
 
     public static void DestroyButtons(this PlayerControl player) => AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Destroy());
 

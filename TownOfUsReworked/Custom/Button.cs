@@ -24,6 +24,9 @@ public class CustomButton
     public DelayStartVoid OnDelayStart { get; } = BlankVoid;
     public DelayEndVoid OnDelayEnd { get; } = BlankVoid;
     public DelayVoid ActionDelay { get; } = BlankVoid;
+    public OtherDelayStartVoid OnOtherDelayStart { get; } = BlankVoid;
+    public OtherDelayEndVoid OnOtherDelayEnd { get; } = BlankVoid;
+    public OtherDelayVoid ActionOtherDelay { get; } = BlankVoid;
     public EndFunc End { get; } = BlankFalse;
     public DifferenceFunc Difference { get; } = BlankZero;
     public MultiplierFunc Multiplier { get; } = BlankOne;
@@ -40,12 +43,14 @@ public class CustomButton
     public bool PostDeath { get; }
     public float Duration { get; }
     public float Delay { get; }
+    public float OtherDelay { get; }
     public int MaxUses { get; set; }
 
     // Other things
     public ActionButton Base { get; set; }
     public bool EffectEnabled { get; set; }
     public bool DelayEnabled { get; set; }
+    public bool OtherDelayEnabled { get; set; }
     public bool Targeting { get; set; }
     public MonoBehaviour Target { get; set; }
     public bool ClickedAgain { get; set; }
@@ -54,6 +59,7 @@ public class CustomButton
     public bool Disabled { get; set; }
     public float EffectTime { get; set; }
     public float DelayTime { get; set; }
+    public float OtherDelayTime { get; set; }
     public float CooldownTime { get; set; }
     public bool BlockExposed { get; set; }
     public int Uses { get; set; }
@@ -61,10 +67,13 @@ public class CustomButton
     // Read-onlys (onlies?)
     public bool HasEffect => Duration > 0f;
     public bool HasDelay => Delay > 0f;
+    public bool HasOtherDelay => OtherDelay > 0f;
     public bool HasUses => MaxUses > 0;
     public bool EffectActive => EffectTime > 0f;
     public bool DelayActive => DelayTime > 0f;
+    public bool OtherDelayActive => OtherDelayTime > 0f;
     public bool CooldownActive => CooldownTime > 0f;
+
     private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
 
     public CustomButton(params object[] properties)
@@ -110,6 +119,12 @@ public class CustomButton
                 OnDelayEnd = offDelay;
             else if (prop is DelayVoid delay)
                 ActionDelay = delay;
+            else if (prop is OtherDelayStartVoid onOtherDelay)
+                OnOtherDelayStart = onOtherDelay;
+            else if (prop is OtherDelayEndVoid offOtherDelay)
+                OnOtherDelayEnd = offOtherDelay;
+            else if (prop is OtherDelayVoid otherDelay)
+                ActionOtherDelay = otherDelay;
             else if (prop is EndFunc end)
                 End = end;
             else if (prop is Cooldown cooldown)
@@ -142,6 +157,8 @@ public class CustomButton
                 ButtonLabel = label;
             else if (prop is UColor color)
                 TextColor = color;
+            else if (prop is OtherDelay oDelay)
+                OtherDelay = oDelay.Value;
             else if (prop is null)
                 Warning("Entered a null prop value");
             else
@@ -246,7 +263,7 @@ public class CustomButton
                 Base.SetUsesRemaining(Uses);
             }
         }
-        else if ((DelayActive || EffectActive) && CanClickAgain)
+        else if (EffectActive && CanClickAgain)
         {
             ClickedAgain = true;
             CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
@@ -261,6 +278,8 @@ public class CustomButton
             ButtonDelay();
         else if (HasEffect)
             ButtonEffect();
+        else if (HasOtherDelay)
+            ButtonOtherDelay();
     }
 
     private void ButtonEffect()
@@ -284,7 +303,6 @@ public class CustomButton
         OnEffectEnd();
         EffectEnabled = false;
         ClickedAgain = false;
-        StartCooldown();
     }
 
     private void ButtonDelay()
@@ -307,8 +325,28 @@ public class CustomButton
     {
         OnDelayEnd();
         DelayEnabled = false;
-        ClickedAgain = false;
-        ButtonEffect();
+    }
+
+    private void ButtonOtherDelay()
+    {
+        if (!OtherDelayEnabled)
+        {
+            OnOtherDelayStart();
+            OtherDelayTime = OtherDelay;
+            OtherDelayEnabled = true;
+        }
+
+        OtherDelayTime -= Time.deltaTime;
+        ActionDelay();
+
+        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
+            OtherDelayTime = 0f;
+    }
+
+    private void ButtonUnOtherDelay()
+    {
+        OnOtherDelayEnd();
+        OtherDelayEnabled = false;
     }
 
     private void Timer()
@@ -413,6 +451,10 @@ public class CustomButton
             ButtonEffect();
         else if (EffectEnabled)
             ButtonUnEffect();
+        else if (OtherDelayActive)
+            ButtonOtherDelay();
+        else if (OtherDelayEnabled)
+            ButtonUnOtherDelay();
         else if (CooldownActive)
             Timer();
     }
@@ -433,6 +475,8 @@ public class CustomButton
 
         if (DelayActive)
             Base.SetDelay(DelayTime);
+        else if (OtherDelayActive)
+            Base.SetDelay(OtherDelayTime);
         else if (EffectActive)
             Base.SetFillUp(EffectTime, Duration);
         else

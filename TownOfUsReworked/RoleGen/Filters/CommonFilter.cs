@@ -4,7 +4,7 @@ public class CommonFilter : BaseFilter
 {
     public override void Filter(List<RoleOptionData> spawnList, int count, bool tryUsePlayerCount = false)
     {
-        if (count == 0 || spawnList.Count == 0)
+        if (count <= 0 || spawnList.Count == 0)
         {
             spawnList.Clear();
             return;
@@ -14,7 +14,15 @@ public class CommonFilter : BaseFilter
             count = spawnList.Count;
 
         var newList = new List<RoleOptionData>();
-        newList.AddRange(spawnList.Where(x => x.Chance == 100));
+        var guaranteed = spawnList.Where(x => x.Chance == 100).ToList();
+        guaranteed.Shuffle();
+
+        foreach (var spawn in guaranteed)
+        {
+            if (newList.Count < count)
+                newList.Add(spawn);
+        }
+
         var optionals = spawnList.Where(x => x.Chance < 100).ToList();
         optionals.Shuffle();
 

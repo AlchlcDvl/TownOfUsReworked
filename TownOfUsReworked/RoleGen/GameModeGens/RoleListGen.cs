@@ -15,10 +15,10 @@ public class RoleListGen : BaseRoleGen
         var anies = entries.Where(x => x.Get() == LayerEnum.Any);
         // I have no idea what plural for any is lmao
 
-        SetPostmortals.PhantomOn = RoleListEntries.EnablePhantom;
-        SetPostmortals.RevealerOn = RoleListEntries.EnableRevealer;
-        SetPostmortals.BansheeOn = RoleListEntries.EnableBanshee;
-        SetPostmortals.GhoulOn = RoleListEntries.EnableGhoul;
+        SetPostmortals.Phantoms = (byte)(RoleListEntries.EnablePhantom ? 1 : 0);
+        SetPostmortals.Revealers = (byte)(RoleListEntries.EnableRevealer ? 1 : 0);
+        SetPostmortals.Banshees = (byte)(RoleListEntries.EnableBanshee ? 1 : 0);
+        SetPostmortals.Ghouls = (byte)(RoleListEntries.EnableGhoul ? 1 : 0);
 
         foreach (var entry in roles)
         {

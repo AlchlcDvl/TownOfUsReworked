@@ -226,6 +226,10 @@ public static class RPCHandling
                             RoleManager.Instance.SetRole(player2, (RoleTypes)100);
                         }
 
+                        SetPostmortals.Revealers = reader.ReadByte();
+                        SetPostmortals.Phantoms = reader.ReadByte();
+                        SetPostmortals.Banshees = reader.ReadByte();
+                        SetPostmortals.Ghouls = reader.ReadByte();
                         break;
                     }
                     case MiscRPC.SetTarget:

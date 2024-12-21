@@ -23,6 +23,24 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         if (minCrew > maxCrew)
             (maxCrew, minCrew) = (minCrew, maxCrew);
 
+        if (maxCI > RoleGenManager.CrewInvestigativeRoles.Count)
+            maxCI = RoleGenManager.CrewInvestigativeRoles.Count;
+
+        if (maxCS > RoleGenManager.CrewSupportRoles.Count)
+            maxCS = RoleGenManager.CrewSupportRoles.Count;
+
+        if (maxCA > RoleGenManager.CrewAuditorRoles.Count)
+            maxCA = RoleGenManager.CrewAuditorRoles.Count;
+
+        if (maxCK > RoleGenManager.CrewKillingRoles.Count)
+            maxCK = RoleGenManager.CrewKillingRoles.Count;
+
+        if (maxCrP > RoleGenManager.CrewProtectiveRoles.Count)
+            maxCrP = RoleGenManager.CrewProtectiveRoles.Count;
+
+        if (maxCSv > RoleGenManager.CrewSovereignRoles.Count)
+            maxCSv = RoleGenManager.CrewSovereignRoles.Count;
+
         var maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
 
         while (maxCrewSum > maxCrew)
@@ -128,6 +146,21 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         if (minInt > maxInt)
             (maxInt, minInt) = (minInt, maxInt);
 
+        if (maxIC > RoleGenManager.IntruderConcealingRoles.Count)
+            maxIC = RoleGenManager.IntruderConcealingRoles.Count;
+
+        if (maxID > RoleGenManager.IntruderDeceptionRoles.Count)
+            maxID = RoleGenManager.IntruderDeceptionRoles.Count;
+
+        if (maxIK > RoleGenManager.IntruderKillingRoles.Count)
+            maxIK = RoleGenManager.IntruderKillingRoles.Count;
+
+        if (maxIS > RoleGenManager.IntruderSupportRoles.Count)
+            maxIS = RoleGenManager.IntruderSupportRoles.Count;
+
+        if (maxIH > RoleGenManager.IntruderHeadRoles.Count)
+            maxIH = RoleGenManager.IntruderHeadRoles.Count;
+
         var maxIntSum = maxIC + maxID + maxIK + maxIS + maxIH;
 
         while (maxIntSum > maxInt)
@@ -224,6 +257,21 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         if (minNeut > maxNeut)
             (maxNeut, minNeut) = (minNeut, maxNeut);
 
+        if (maxNE > RoleGenManager.NeutralEvilRoles.Count)
+            maxNE = RoleGenManager.NeutralEvilRoles.Count;
+
+        if (maxNB > RoleGenManager.NeutralBenignRoles.Count)
+            maxNB = RoleGenManager.NeutralBenignRoles.Count;
+
+        if (maxNK > RoleGenManager.NeutralKillingRoles.Count)
+            maxNK = RoleGenManager.NeutralKillingRoles.Count;
+
+        if (maxNN > RoleGenManager.NeutralNeophyteRoles.Count)
+            maxNN = RoleGenManager.NeutralNeophyteRoles.Count;
+
+        if (maxNH > RoleGenManager.NeutralHarbingerRoles.Count)
+            maxNH = RoleGenManager.NeutralHarbingerRoles.Count;
+
         var maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
 
         while (maxNeutSum > maxNeut)
@@ -318,6 +366,18 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
 
         if (minSyn > maxSyn)
             (maxSyn, minSyn) = (minSyn, maxSyn);
+
+        if (maxSSu > RoleGenManager.SyndicateSupportRoles.Count)
+            maxSSu = RoleGenManager.SyndicateSupportRoles.Count;
+
+        if (maxSD > RoleGenManager.SyndicateDisruptionRoles.Count)
+            maxSD = RoleGenManager.SyndicateDisruptionRoles.Count;
+
+        if (maxSyK > RoleGenManager.SyndicateKillingRoles.Count)
+            maxSyK = RoleGenManager.SyndicateKillingRoles.Count;
+
+        if (maxSP > RoleGenManager.SyndicatePowerRoles.Count)
+            maxSP = RoleGenManager.SyndicatePowerRoles.Count;
 
         var maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
 

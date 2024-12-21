@@ -167,6 +167,15 @@ public static class ListExtensions
         }
     }
 
+    public static void AddMany<T>(this List<T> list, Func<T> item, int count)
+    {
+        while (count > 0)
+        {
+            list.Add(item());
+            count--;
+        }
+    }
+
     public static bool TryFindingAll<T>(this IEnumerable<T> source, Func<T, bool> predicate, out List<T> value)
     {
         var tempValue = new List<T>();

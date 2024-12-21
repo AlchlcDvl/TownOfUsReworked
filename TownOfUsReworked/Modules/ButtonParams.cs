@@ -12,8 +12,11 @@ public delegate void DelayVoid();
 public delegate void EffectVoid();
 public delegate void DelayEndVoid();
 public delegate void EffectEndVoid();
+public delegate void OtherDelayVoid();
 public delegate void DelayStartVoid();
 public delegate void EffectStartVoid();
+public delegate void OtherDelayEndVoid();
+public delegate void OtherDelayStartVoid();
 
 public delegate void OnClickTargetless();
 public delegate void OnClickVent(Vent target);
@@ -32,6 +35,8 @@ public record PostDeath(bool Value);
 
 public record CanClickAgain(bool Value);
 
+public record Manual(bool Value);
+
 public record SpriteName(string Value);
 
 public record Cooldown(float Value);
@@ -39,3 +44,5 @@ public record Cooldown(float Value);
 public record Duration(float Value);
 
 public record Delay(float Value);
+
+public record OtherDelay(float Value);

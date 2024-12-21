@@ -56,7 +56,7 @@ public class Cryomaniac : NKilling
 
     public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
     {
-        if (!source.Is(Type) || Doused.Contains(target.PlayerId) || source != Player)
+        if (!source.Is<Cryomaniac>() || Doused.Contains(target.PlayerId) || source != Player)
             return;
 
         Doused.Add(target.PlayerId);

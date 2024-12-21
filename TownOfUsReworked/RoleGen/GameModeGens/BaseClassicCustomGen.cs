@@ -16,26 +16,29 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             var spawn = GetSpawnItem(layer);
 
             if (layer == LayerEnum.Revealer)
-                SetPostmortals.RevealerOn = Check(spawn);
-            else if (spawn.IsActive())
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
-                    if (layer is LayerEnum.Mayor or LayerEnum.Monarch or LayerEnum.Dictator)
-                        RoleGenManager.CrewSovereignRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Mystic or LayerEnum.VampireHunter)
-                        RoleGenManager.CrewAuditorRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Coroner or LayerEnum.Detective or LayerEnum.Medium or LayerEnum.Operative or LayerEnum.Seer or LayerEnum.Sheriff or LayerEnum.Tracker)
-                        RoleGenManager.CrewInvestigativeRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Bastion or LayerEnum.Vigilante or LayerEnum.Veteran)
-                        RoleGenManager.CrewKillingRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Altruist or LayerEnum.Medic or LayerEnum.Trapper)
-                        RoleGenManager.CrewProtectiveRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Chameleon or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Retributionist or LayerEnum.Shifter or LayerEnum.Transporter)
-                        RoleGenManager.CrewSupportRoles.Add(spawn.Clone());
-                    else if (layer == LayerEnum.Crewmate)
-                        CrewRoles.Add(spawn.Clone());
+                    if (Check(spawn))
+                        SetPostmortals.Revealers++;
                 }
+            }
+            else if (spawn.IsActive())
+            {
+                if (layer is LayerEnum.Mayor or LayerEnum.Monarch or LayerEnum.Dictator)
+                    RoleGenManager.CrewSovereignRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Mystic or LayerEnum.VampireHunter)
+                    RoleGenManager.CrewAuditorRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Coroner or LayerEnum.Detective or LayerEnum.Medium or LayerEnum.Operative or LayerEnum.Seer or LayerEnum.Sheriff or LayerEnum.Tracker)
+                    RoleGenManager.CrewInvestigativeRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Bastion or LayerEnum.Vigilante or LayerEnum.Veteran)
+                    RoleGenManager.CrewKillingRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Altruist or LayerEnum.Medic or LayerEnum.Trapper)
+                    RoleGenManager.CrewProtectiveRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Chameleon or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Retributionist or LayerEnum.Shifter or LayerEnum.Transporter)
+                    RoleGenManager.CrewSupportRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer == LayerEnum.Crewmate)
+                    CrewRoles.AddMany(spawn.Clone, spawn.Count);
             }
         }
     }
@@ -50,24 +53,27 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             var spawn = GetSpawnItem(layer);
 
             if (layer == LayerEnum.Ghoul)
-                SetPostmortals.GhoulOn = Check(spawn);
-            else if (spawn.IsActive(Intruders))
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
-                    if (layer == LayerEnum.Godfather)
-                        RoleGenManager.IntruderHeadRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Blackmailer or LayerEnum.Camouflager or LayerEnum.Grenadier or LayerEnum.Janitor)
-                        RoleGenManager.IntruderConcealingRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Disguiser or LayerEnum.Morphling or LayerEnum.Wraith)
-                        RoleGenManager.IntruderDeceptionRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Ambusher or LayerEnum.Enforcer)
-                        RoleGenManager.IntruderKillingRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Consigliere or LayerEnum.Consort or LayerEnum.Miner or LayerEnum.Teleporter)
-                        RoleGenManager.IntruderSupportRoles.Add(spawn.Clone());
-                    else if (layer == LayerEnum.Impostor)
-                        IntruderRoles.Add(spawn.Clone());
+                    if (Check(spawn))
+                        SetPostmortals.Ghouls++;
                 }
+            }
+            else if (spawn.IsActive(Intruders))
+            {
+                if (layer == LayerEnum.Godfather)
+                    RoleGenManager.IntruderHeadRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Blackmailer or LayerEnum.Camouflager or LayerEnum.Grenadier or LayerEnum.Janitor)
+                    RoleGenManager.IntruderConcealingRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Disguiser or LayerEnum.Morphling or LayerEnum.Wraith)
+                    RoleGenManager.IntruderDeceptionRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Ambusher or LayerEnum.Enforcer)
+                    RoleGenManager.IntruderKillingRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Consigliere or LayerEnum.Consort or LayerEnum.Miner or LayerEnum.Teleporter)
+                    RoleGenManager.IntruderSupportRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer == LayerEnum.Impostor)
+                    IntruderRoles.AddMany(spawn.Clone, spawn.Count);
             }
         }
     }
@@ -83,25 +89,25 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             var spawn = GetSpawnItem(layer);
 
             if (layer == LayerEnum.Phantom)
-                SetPostmortals.PhantomOn = Check(spawn);
-            else if (spawn.IsActive())
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
-                    if (layer is LayerEnum.Plaguebearer or LayerEnum.Pestilence)
-                        RoleGenManager.NeutralHarbingerRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Amnesiac or LayerEnum.GuardianAngel or LayerEnum.Survivor or LayerEnum.Thief)
-                        RoleGenManager.NeutralBenignRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Actor or LayerEnum.BountyHunter or LayerEnum.Cannibal or LayerEnum.Executioner or LayerEnum.Guesser or LayerEnum.Jester or LayerEnum.Troll)
-                        RoleGenManager.NeutralEvilRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Arsonist or LayerEnum.Cryomaniac or LayerEnum.Glitch or LayerEnum.Juggernaut or LayerEnum.Murderer or LayerEnum.SerialKiller or
-                        LayerEnum.Werewolf)
-                    {
-                        RoleGenManager.NeutralKillingRoles.Add(spawn.Clone());
-                    }
-                    else if (layer is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer)
-                        RoleGenManager.NeutralNeophyteRoles.Add(spawn.Clone());
+                    if (Check(spawn))
+                        SetPostmortals.Phantoms++;
                 }
+            }
+            else if (spawn.IsActive())
+            {
+                if (layer is LayerEnum.Plaguebearer or LayerEnum.Pestilence)
+                    RoleGenManager.NeutralHarbingerRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Amnesiac or LayerEnum.GuardianAngel or LayerEnum.Survivor or LayerEnum.Thief)
+                    RoleGenManager.NeutralBenignRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Actor or LayerEnum.BountyHunter or LayerEnum.Cannibal or LayerEnum.Executioner or LayerEnum.Guesser or LayerEnum.Jester or LayerEnum.Troll)
+                    RoleGenManager.NeutralEvilRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Arsonist or LayerEnum.Cryomaniac or LayerEnum.Glitch or LayerEnum.Juggernaut or LayerEnum.Murderer or LayerEnum.SerialKiller or LayerEnum.Werewolf)
+                    RoleGenManager.NeutralKillingRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer)
+                    RoleGenManager.NeutralNeophyteRoles.AddMany(spawn.Clone, spawn.Count);
             }
         }
     }
@@ -116,22 +122,25 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             var spawn = GetSpawnItem(layer);
 
             if (layer == LayerEnum.Banshee)
-                SetPostmortals.BansheeOn = Check(spawn);
-            else if (spawn.IsActive(Syndicate))
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
-                    if (layer is LayerEnum.Rebel or LayerEnum.Spellslinger)
-                        RoleGenManager.SyndicatePowerRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Concealer or LayerEnum.Drunkard or LayerEnum.Framer or LayerEnum.Shapeshifter or LayerEnum.Silencer or LayerEnum.Timekeeper)
-                        RoleGenManager.SyndicateDisruptionRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Bomber or LayerEnum.Collider or LayerEnum.Crusader or LayerEnum.Poisoner)
-                        RoleGenManager.SyndicateKillingRoles.Add(spawn.Clone());
-                    else if (layer is LayerEnum.Stalker or LayerEnum.Warper)
-                        RoleGenManager.SyndicateSupportRoles.Add(spawn.Clone());
-                    else if (layer == LayerEnum.Anarchist)
-                        SyndicateRoles.Add(spawn.Clone());
+                    if (Check(spawn))
+                        SetPostmortals.Banshees++;
                 }
+            }
+            else if (spawn.IsActive(Syndicate))
+            {
+                if (layer is LayerEnum.Rebel or LayerEnum.Spellslinger)
+                    RoleGenManager.SyndicatePowerRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Concealer or LayerEnum.Drunkard or LayerEnum.Framer or LayerEnum.Shapeshifter or LayerEnum.Silencer or LayerEnum.Timekeeper)
+                    RoleGenManager.SyndicateDisruptionRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Bomber or LayerEnum.Collider or LayerEnum.Crusader or LayerEnum.Poisoner)
+                    RoleGenManager.SyndicateKillingRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer is LayerEnum.Stalker or LayerEnum.Warper)
+                    RoleGenManager.SyndicateSupportRoles.AddMany(spawn.Clone, spawn.Count);
+                else if (layer == LayerEnum.Anarchist)
+                    SyndicateRoles.AddMany(spawn.Clone, spawn.Count);
             }
         }
     }

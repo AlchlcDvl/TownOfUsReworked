@@ -192,11 +192,11 @@ public static class SetPostmortals
     }
 
     public static readonly List<byte> WillBeRevealers = [];
-    public static bool RevealerOn;
+    public static byte Revealers;
 
     private static void SetRevealers(PlayerControl dead, bool ejection)
     {
-        if (!RevealerOn)
+        if (Revealers == 0)
             return;
 
         TryAddRevealer(dead);
@@ -237,16 +237,16 @@ public static class SetPostmortals
 
     private static void TryAddRevealer(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBeRevealers.Contains(dead.PlayerId) && WillBeRevealers.Count < CrewUtilityRoles.Revealer.Count && dead.IsBase(Faction.Crew))
+        if (dead.HasDied() && dead && !WillBeRevealers.Contains(dead.PlayerId) && WillBeRevealers.Count < Revealers && dead.IsBase(Faction.Crew))
             WillBeRevealers.Add(dead.PlayerId);
     }
 
     public static readonly List<byte> WillBePhantoms = [];
-    public static bool PhantomOn;
+    public static byte Phantoms;
 
     private static void SetPhantoms(PlayerControl dead, bool ejection)
     {
-        if (!PhantomOn)
+        if (Phantoms == 0)
             return;
 
         TryAddPhantom(dead);
@@ -287,19 +287,16 @@ public static class SetPostmortals
 
     private static void TryAddPhantom(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < NeutralProselyteRoles.Phantom.Count && dead.IsBase(Faction.Neutral) &&
-            !NeutralHasUnfinishedBusiness(dead))
-        {
+        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < Phantoms && dead.IsBase(Faction.Neutral) && !NeutralHasUnfinishedBusiness(dead))
             WillBePhantoms.Add(dead.PlayerId);
-        }
     }
 
     public static readonly List<byte> WillBeBanshees = [];
-    public static bool BansheeOn;
+    public static byte Banshees;
 
     private static void SetBanshees(PlayerControl dead, bool ejection)
     {
-        if (!BansheeOn)
+        if (Banshees == 0)
             return;
 
         TryAddBanshee(dead);
@@ -339,16 +336,16 @@ public static class SetPostmortals
 
     private static void TryAddBanshee(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBeBanshees.Contains(dead.PlayerId) && WillBeBanshees.Count < SyndicateUtilityRoles.Banshee.Count && dead.IsBase(Faction.Syndicate))
+        if (dead.HasDied() && dead && !WillBeBanshees.Contains(dead.PlayerId) && WillBeBanshees.Count < Banshees && dead.IsBase(Faction.Syndicate))
             WillBeBanshees.Add(dead.PlayerId);
     }
 
     public static readonly List<byte> WillBeGhouls = [];
-    public static bool GhoulOn;
+    public static byte Ghouls;
 
     private static void SetGhouls(PlayerControl dead, bool ejection)
     {
-        if (!GhoulOn)
+        if (Ghouls == 0)
             return;
 
         TryAddGhoul(dead);
@@ -388,7 +385,7 @@ public static class SetPostmortals
 
     private static void TryAddGhoul(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBeGhouls.Contains(dead.PlayerId) && WillBeGhouls.Count < IntruderUtilityRoles.Ghoul.Count && dead.IsBase(Faction.Intruder))
+        if (dead.HasDied() && dead && !WillBeGhouls.Contains(dead.PlayerId) && WillBeGhouls.Count < Ghouls && dead.IsBase(Faction.Intruder))
             WillBeGhouls.Add(dead.PlayerId);
     }
 
