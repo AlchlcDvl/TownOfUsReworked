@@ -31,7 +31,7 @@ public static class PlayerControlPatches
             return;
 
         var pc = target.Object;
-        PlayerLayer.GetLayers<Plaguebearer>().ForEach(x => x.RpcSpreadInfection(__instance, pc));
+        PlayerLayer.GetLayers<Plaguebearer>().ForEach(x => x.RpcSpreadInfection(pc, __instance));
         PlayerLayer.GetLayers<Arsonist>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
         PlayerLayer.GetLayers<Cryomaniac>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
     }

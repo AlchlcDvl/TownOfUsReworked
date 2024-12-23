@@ -139,6 +139,7 @@ public static class ButtonUtils
         var role = player.GetRole();
         var start = cooldown == CooldownType.Start;
         var meeting = cooldown == CooldownType.Meeting;
+        var dead = DeadSeeEverything();
         AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.StartCooldown(cooldown));
 
         if (role.Requesting && !start)
@@ -202,7 +203,7 @@ public static class ButtonUtils
             bm.BlackmailedPlayer = null;
         else if (role is Enforcer enf)
             enf.BombedPlayer = null;
-        else if (role is Consigliere consig && player.HasDied() && DeadSeeEverything())
+        else if (role is Consigliere consig && player.HasDied() && dead)
             consig.Investigated.Clear();
         else if (role is Consort cons)
             cons.BlockTarget = null;
@@ -226,7 +227,7 @@ public static class ButtonUtils
             gf.CurrentlyDragging = null;
             gf.TeleportPoint = Vector3.zero;
 
-            if (player.HasDied() && DeadSeeEverything())
+            if (player.HasDied() && dead)
                 gf.Investigated.Clear();
         }
         else if (role is Janitor jani)

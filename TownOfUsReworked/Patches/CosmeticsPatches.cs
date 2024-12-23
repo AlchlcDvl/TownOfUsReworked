@@ -15,11 +15,11 @@ public static class HatManagerPatches
         if (NameplatesLoaded)
             return;
 
+        NameplatesLoaded = true;
         var allPlates = __instance.allNamePlates.ToList();
         allPlates.AddRange(RegisteredNameplates);
         __instance.allNamePlates = allPlates.ToArray();
         RegisteredNameplates.Clear();
-        NameplatesLoaded = true;
     }
 
     private static bool HatsLoaded;
@@ -30,11 +30,11 @@ public static class HatManagerPatches
         if (HatsLoaded)
             return;
 
+        HatsLoaded = true;
         var allHats = __instance.allHats.ToList();
         allHats.AddRange(RegisteredHats);
         __instance.allHats = allHats.ToArray();
         RegisteredHats.Clear();
-        HatsLoaded = true;
     }
 
     private static bool VisorsLoaded;
@@ -45,11 +45,11 @@ public static class HatManagerPatches
         if (VisorsLoaded)
             return;
 
+        VisorsLoaded = true;
         var allVisors = __instance.allVisors.ToList();
         allVisors.AddRange(RegisteredVisors);
         __instance.allVisors = allVisors.ToArray();
         RegisteredVisors.Clear();
-        VisorsLoaded = true;
     }
 }
 

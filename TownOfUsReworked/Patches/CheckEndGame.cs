@@ -63,12 +63,12 @@ public static class CheckEndGame
     // Stalemate detector for unwinnable situations
     private static void DetectStalemate()
     {
-        var players = AllPlayers().Where(x => !x.HasDied()).ToList();
+        var players = AllPlayers().Where(x => !x.HasDied());
 
-        if (players.Count == 2)
+        if (players.Count() == 2)
         {
-            var player1 = players[0];
-            var player2 = players[1];
+            var player1 = players.First();
+            var player2 = players.Last();
             var nosolo = NeutralSettings.NoSolo == NoSolo.Never;
             var nobuttons1 = player1.RemainingEmergencies == 0;
             var nobuttons2 = player2.RemainingEmergencies == 0;
@@ -91,7 +91,7 @@ public static class CheckEndGame
             if ((player1.Is<Cryomaniac>() && player2.Is<Cryomaniac>() && nosolo && nobuttons && neitherknighted) || NoOneWins() || rivals || (cantkill && nobuttons))
                 PerformStalemate();
         }
-        else if (players.Count == 0)
+        else if (!players.Any())
             PerformStalemate();
     }
 

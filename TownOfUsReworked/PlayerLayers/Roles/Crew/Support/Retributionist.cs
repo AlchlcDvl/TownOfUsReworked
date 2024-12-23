@@ -401,24 +401,24 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
         if (IsMys)
         {
-            RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (UsableFunc)MysUsable,
+            RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (UsableFunc)MysUsable,
                 (PlayerBodyExclusion)MysticException, new Cooldown(Mystic.RevealCd));
         }
         else if (IsVH)
         {
-            StakeButton ??= new(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Stake, new Cooldown(VampireHunter.StakeCd),
+            StakeButton ??= new(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stake, new Cooldown(VampireHunter.StakeCd),
                 (UsableFunc)VHUsable);
         }
         else if (IsCor)
         {
-            AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClickBody)Autopsy, (UsableFunc)CorUsable1,
+            AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Autopsy, (UsableFunc)CorUsable1,
                 new Cooldown(Coroner.AutopsyCd));
-            CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(Coroner.CompareCd),
+            CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(Coroner.CompareCd),
                 (UsableFunc)CorUsable2);
         }
         else if (IsDet)
         {
-            ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Examine, (UsableFunc)DetUsable,
+            ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Examine, (UsableFunc)DetUsable,
                 new Cooldown(Detective.ExamineCd));
         }
         else if (IsMed)
@@ -433,17 +433,17 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         }
         else if (IsSeer)
         {
-            SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)See, new Cooldown(Seer.SeerCd),
+            SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)See, new Cooldown(Seer.SeerCd),
                 (UsableFunc)SeerUsable);
         }
         else if (IsSher)
         {
-            InterrogateButton ??= new(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Interrogate, (UsableFunc)SherUsable,
+            InterrogateButton ??= new(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interrogate, (UsableFunc)SherUsable,
                 new Cooldown(Sheriff.InterrogateCd), (PlayerBodyExclusion)SherException);
         }
         else if (IsTrack)
         {
-            TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(Tracker.TrackCd),
+            TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(Tracker.TrackCd),
                 (UsableFunc)TrackUsable, (PlayerBodyExclusion)TrackException, Tracker.MaxTracks);
         }
         else if (IsBast)
@@ -458,17 +458,17 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         }
         else if (IsVig)
         {
-            ShootButton ??= new(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Shoot, new Cooldown(Vigilante.ShootCd),
+            ShootButton ??= new(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Shoot, new Cooldown(Vigilante.ShootCd),
                 Vigilante.MaxBullets, (PlayerBodyExclusion)VigiException, (UsableFunc)VigUsable);
         }
         else if (IsAlt)
         {
-            ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(Altruist.ReviveCd),
+            ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(Altruist.ReviveCd),
                 (EndFunc)ReviveEnd, new Duration(Altruist.ReviveDur), (EffectEndVoid)UponEnd, Altruist.MaxRevives, (UsableFunc)AltUsable);
         }
         else if (IsMedic)
         {
-            ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)MedicException,
+            ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)MedicException,
                 (UsableFunc)MedicUsable);
         }
         else if (IsTrap)
@@ -476,7 +476,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             var wasnull = TrapButton == null;
             BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuildling, (UsableFunc)TrapUsable,
                 new Cooldown(Trapper.BuildCd), new Duration(Trapper.BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
-            TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, (UsableFunc)TrapUsable, Trapper.MaxTraps,
+            TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, (UsableFunc)TrapUsable, Trapper.MaxTraps,
                 new Cooldown(Trapper.TrapCd), (PlayerBodyExclusion)TrapException);
 
             if (wasnull)

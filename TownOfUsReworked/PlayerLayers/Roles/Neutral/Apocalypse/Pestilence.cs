@@ -26,7 +26,7 @@ public class Pestilence : Apocalypse
     {
         base.Init();
         Objectives = () => "- Obliterate anyone who can oppose you";
-        ObliterateButton ??= new(this, new SpriteName("Obliterate"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",
+        ObliterateButton ??= new(this, new SpriteName("Obliterate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",
             new Cooldown(ObliterateCd));
 
         foreach (var player in AllPlayers())

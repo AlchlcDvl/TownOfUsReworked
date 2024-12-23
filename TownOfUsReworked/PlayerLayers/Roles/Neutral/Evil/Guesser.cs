@@ -68,7 +68,7 @@ public class Guesser : Evil
 
         if (GuesserCanPickTargets)
         {
-            TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
+            TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
                 (UsableFunc)Usable);
         }
     }
@@ -207,7 +207,7 @@ public class Guesser : Evil
     public void TurnAct()
     {
         Role role = IsRoleList() ? new Jester() : new Actor();
-        role.RoleUpdate(this, Player);
+        role.RoleUpdate(this);
     }
 
     public bool Usable() => !TargetPlayer;

@@ -22,7 +22,7 @@ public class Mafioso : Intruder
     public void TurnGodfather()
     {
         var gf = new PromotedGodfather() { FormerRole = FormerRole is PromotedGodfather pgf ? pgf.FormerRole : FormerRole };
-        gf.RoleUpdate(this, Player);
+        gf.RoleUpdate(this);
         gf.OnRoleSelected();
     }
 

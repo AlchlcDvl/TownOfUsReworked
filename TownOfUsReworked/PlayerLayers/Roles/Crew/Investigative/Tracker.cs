@@ -29,7 +29,7 @@ public class Tracker : Crew
         base.Init();
         TrackerArrows = [];
         Alignment = Alignment.CrewInvest;
-        TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(TrackCd), MaxTracks,
+        TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);
     }
 

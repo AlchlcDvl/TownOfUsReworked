@@ -23,10 +23,10 @@ public class Seer : Crew
     {
         base.Init();
         Alignment = Alignment.CrewInvest;
-        SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)See, new Cooldown(SeerCd));
+        SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)See, new Cooldown(SeerCd));
     }
 
-    public void TurnSheriff() => new Sheriff().RoleUpdate(this, Player);
+    public void TurnSheriff() => new Sheriff().RoleUpdate(this);
 
     public void See(PlayerControl target)
     {

@@ -101,6 +101,6 @@ public class Fanatic : Disposition
         Betrayed = true;
 
         if (role.Type != LayerEnum.Betrayer)
-            new Betrayer() { Objectives = role.Objectives }.RoleUpdate(role, Player);
+            new Betrayer() { Objectives = role.Objectives }.RoleUpdate(role);
     }
 }

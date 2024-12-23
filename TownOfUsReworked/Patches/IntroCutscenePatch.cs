@@ -34,13 +34,13 @@ public static class ShowRolePatch
         var status = "";
 
         if (!modifier.Hidden)
-            status += $" {modifier?.ColorString}{modifier?.Name}</color>";
+            status += $" {modifier.ColorString}{modifier.Name}</color>";
 
         if (!disposition.Hidden)
-            status += $" {disposition?.ColorString}{disposition?.Name}</color>";
+            status += $" {disposition.ColorString}{disposition.Name}</color>";
 
         if (!ability.Hidden)
-            status += $" {ability?.ColorString}{ability?.Name}</color>";
+            status += $" {ability.ColorString}{ability.Name}</color>";
 
         if (role.IsRecruit && role.Alignment != Alignment.NeutralNeo)
             status += " <#575657FF>Recruited</color>";
@@ -93,7 +93,7 @@ public static class IntroCutscenePatches
     }
 
     [HarmonyPatch(nameof(IntroCutscene.CoBegin))]
-    public static void Postfix()
+    public static void Prefix()
     {
         if (MapPatches.CurrentMap == 0)
             BetterSkeld.ApplyChanges();

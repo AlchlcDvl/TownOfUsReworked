@@ -65,7 +65,7 @@ public class Traitor : Disposition
         Betrayed = true;
 
         if (role.Type != LayerEnum.Betrayer)
-            new Betrayer() { Objectives = role.Objectives }.RoleUpdate(role, Player);
+            new Betrayer() { Objectives = role.Objectives }.RoleUpdate(role);
     }
 
     public static void GetFactionChoice(out bool turnSyndicate, out bool turnIntruder)

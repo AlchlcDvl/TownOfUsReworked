@@ -33,7 +33,7 @@ public class Thief : Neutral
     {
         base.Init();
         Alignment = Alignment.NeutralBen;
-        StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL",
+        StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);
         GuessMenu = new(Player, "Guess", ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);
@@ -270,12 +270,7 @@ public class Thief : Neutral
         newRole.RoleUpdate(this, player, Faction == Faction.Neutral);
 
         if (ThiefSteals)
-        {
-            if (target.AmOwner && target.Is(Faction.Intruder))
-                target.Data.Role.TeamType = RoleTeamTypes.Crewmate;
-
             new Thief().RoleUpdate(role, target, true);
-        }
 
         var local = CustomPlayer.Local.GetRole();
 

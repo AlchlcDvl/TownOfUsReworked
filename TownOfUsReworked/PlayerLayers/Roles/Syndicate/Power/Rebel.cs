@@ -21,7 +21,7 @@ public class Rebel : Syndicate
     {
         base.Init();
         Alignment = Alignment.SyndicatePower;
-        SidekickButton ??= new(this, new SpriteName("Sidekick"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
+        SidekickButton ??= new(this, new SpriteName("Sidekick"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
             (UsableFunc)Usable);
     }
 

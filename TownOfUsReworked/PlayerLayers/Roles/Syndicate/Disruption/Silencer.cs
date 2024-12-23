@@ -36,7 +36,7 @@ public class Silencer : Syndicate, ISilencer
         base.Init();
         Alignment = Alignment.SyndicateDisrup;
         SilencedPlayer = null;
-        SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(SilenceCd), "SILENCE",
+        SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(SilenceCd), "SILENCE",
             (PlayerBodyExclusion)Exception1);
     }
 

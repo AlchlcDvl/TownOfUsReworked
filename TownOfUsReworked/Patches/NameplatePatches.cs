@@ -8,14 +8,14 @@ public static class NameplatesTabOnEnablePatch
 {
     private static TMP_Text Template;
 
-    private static float CreateNameplatePackage(List<NamePlateData> nameplates, string packageName, float YStart, NameplatesTab __instance)
+    private static void CreateNameplatePackage(List<NamePlateData> nameplates, string packageName, ref float yStart, NameplatesTab __instance)
     {
         var isDefaultPackage = "Innersloth" == packageName;
 
         if (!isDefaultPackage)
             nameplates = [ .. nameplates.OrderBy(x => x.name) ];
 
-        var offset = YStart;
+        var offset = yStart;
 
         if (Template)
         {
@@ -23,7 +23,7 @@ public static class NameplatesTabOnEnablePatch
             var material = title.GetComponent<MeshRenderer>().material;
             material.SetFloat("_StencilComp", 4f);
             material.SetFloat("_Stencil", 1f);
-            title.transform.localPosition = new(2.25f, YStart, -1f);
+            title.transform.localPosition = new(2.25f, offset, -1f);
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
@@ -60,9 +60,10 @@ public static class NameplatesTabOnEnablePatch
                 DefaultNameplateCoro(__instance, colorChip.GetComponent<NameplateChip>());
 
             __instance.ColorChips.Add(colorChip);
+            yStart = ypos;
         }
 
-        return offset - ((nameplates.Count - 1) / __instance.NumPerRow * __instance.YOffset) - 1.5f;
+        yStart -= 1.5f;
     }
 
     private static void DefaultNameplateCoro(NameplatesTab __instance, NameplateChip chip) => __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance
@@ -99,7 +100,6 @@ public static class NameplatesTabOnEnablePatch
             value.Add(data);
         }
 
-        var YOffset = __instance.YStart;
         Template = __instance.transform.FindChild("Text").GetComponent<TMP_Text>();
         var keys = packages.Keys.OrderBy(x => x switch
         {
@@ -108,15 +108,16 @@ public static class NameplatesTabOnEnablePatch
             "Misc" => 3,
             _ => 2
         });
-        keys.ForEach(key => YOffset = CreateNameplatePackage(packages[key], key, YOffset, __instance));
+        var yOffset = __instance.YStart;
+        keys.ForEach(key => CreateNameplatePackage(packages[key], key, ref yOffset, __instance));
+        __instance.plateId = DataManager.Player.Customization.NamePlate;
+        __instance.currentNameplateIsEquipped = true;
+        __instance.scroller.ContentYBounds.max = -(yOffset + 3.8f);
+        __instance.scroller.UpdateScrollBars();
 
         if (array.Length != 0)
             __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);
 
-        __instance.plateId = DataManager.Player.Customization.NamePlate;
-        __instance.currentNameplateIsEquipped = true;
-        __instance.SetScrollerBounds();
-        __instance.scroller.ContentYBounds.max = -(YOffset + 3.8f);
         return false;
     }
 }

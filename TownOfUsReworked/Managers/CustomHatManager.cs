@@ -9,8 +9,6 @@ public static class CustomHatManager
 
     public static HatData CreateHatBehaviour(CustomHat ch)
     {
-        var hat = ScriptableObject.CreateInstance<HatData>().DontDestroy();
-
         var viewData = ScriptableObject.CreateInstance<HatViewData>().DontDestroy();
         viewData.MainImage = CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.ID), CosmeticTypeEnum.Hat);
         viewData.BackImage = ch.BackID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.BackID), CosmeticTypeEnum.Hat) : null;
@@ -22,6 +20,7 @@ public static class CustomHatManager
         viewData.LeftFloorImage = ch.FloorFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FloorFlipID), CosmeticTypeEnum.Hat) : viewData.FloorImage;
         viewData.MatchPlayerColor = ch.Adaptive;
 
+        var hat = ScriptableObject.CreateInstance<HatData>().DontDestroy();
         hat.name = ch.Name;
         hat.displayOrder = 99;
         hat.ProductId = "customHat_" + ch.Name.Replace(' ', '_');
@@ -30,8 +29,8 @@ public static class CustomHatManager
         hat.ChipOffset = new(0f, 0.2f);
         hat.Free = true;
         hat.NotInStore = true;
+        hat.PreviewCrewmateColor = ch.Adaptive;
         hat.ViewDataRef = new(viewData.Pointer);
-        hat.CreateAddressableAsset();
 
         var extend = new HatExtension()
         {

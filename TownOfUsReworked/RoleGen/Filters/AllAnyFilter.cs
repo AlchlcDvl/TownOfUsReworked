@@ -21,7 +21,7 @@ public class AllAnyFilter : BaseFilter
         {
             spawnList.Shuffle();
             var first = spawnList[0];
-            newList.Add(first.Unique ? spawnList.TakeFirst() : first);
+            newList.Add(first.Unique ? spawnList.TakeFirst() : first.Clone());
         }
 
         spawnList.Clear();

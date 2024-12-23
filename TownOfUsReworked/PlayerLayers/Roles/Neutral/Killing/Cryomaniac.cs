@@ -40,13 +40,13 @@ public class Cryomaniac : NKilling
         base.Init();
         Objectives = () => "- Freeze anyone who can oppose you";
         Doused = [];
-        DouseButton ??= new(this, new SpriteName("CryoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(CryoDouseCd), "DOUSE",
+        DouseButton ??= new(this, new SpriteName("CryoDouse"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(CryoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
         FreezeButton ??= new(this, new SpriteName("Freeze"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)FreezeUnFreeze, (LabelFunc)Label, (UsableFunc)Doused.Any);
 
         if (CryoLastKillerBoost)
         {
-            KillButton ??= new(this, new SpriteName("CryoKill"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Kill, new Cooldown(VaporiseCd), "VAPORISE", (UsableFunc)Usable,
+            KillButton ??= new(this, new SpriteName("CryoKill"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Kill, new Cooldown(VaporiseCd), "VAPORISE", (UsableFunc)Usable,
                 (PlayerBodyExclusion)Exception);
         }
 

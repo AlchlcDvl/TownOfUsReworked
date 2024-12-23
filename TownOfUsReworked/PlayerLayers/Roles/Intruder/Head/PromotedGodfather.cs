@@ -58,7 +58,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
     {
         if (IsBM)
         {
-            BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(Blackmailer.BlackmailCd),
+            BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(Blackmailer.BlackmailCd),
                 (PlayerBodyExclusion)BMException, (UsableFunc)BMUsable);
         }
         else if (IsCamo)
@@ -73,22 +73,22 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
         }
         else if (IsJani)
         {
-            DragButton ??= new(this, new SpriteName("Drag"), AbilityTypes.Dead, KeybindType.Tertiary, (OnClickBody)Drag, new Cooldown(Janitor.DragCd), "DRAG BODY", (UsableFunc)JaniUsable1);
+            DragButton ??= new(this, new SpriteName("Drag"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)Drag, new Cooldown(Janitor.DragCd), "DRAG BODY", (UsableFunc)JaniUsable1);
             DropButton ??= new(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Drop, "DROP BODY", (UsableFunc)JaniUsable2);
-            CleanButton ??= new(this, new SpriteName("Clean"), AbilityTypes.Dead, KeybindType.Secondary, (OnClickBody)Clean, new Cooldown(Janitor.CleanCd), "CLEAN BODY",
+            CleanButton ??= new(this, new SpriteName("Clean"), AbilityTypes.Body, KeybindType.Secondary, (OnClickBody)Clean, new Cooldown(Janitor.CleanCd), "CLEAN BODY",
                 (UsableFunc)JaniUsable1, (DifferenceFunc)JaniDifference);
         }
         else if (IsDisg)
         {
-            MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(Disguiser.MeasureCd), "MEASURE",
+            MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(Disguiser.MeasureCd), "MEASURE",
                 (PlayerBodyExclusion)MeasureException, (UsableFunc)DisgUsable1);
-            DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(Disguiser.DisguiseCd), "DISGUISE",
+            DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(Disguiser.DisguiseCd), "DISGUISE",
                 new Duration(Disguiser.DisguiseDur), (EffectVoid)Disguise, (EffectEndVoid)UnDisguise, new Delay(Disguiser.DisguiseDelay), (PlayerBodyExclusion)DisgException, (EndFunc)DisgEnd,
                 (UsableFunc)DisgUsable2);
         }
         else if (IsMorph)
         {
-            SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (Morphling.SampleCd), "SAMPLE",
+            SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (Morphling.SampleCd), "SAMPLE",
                 (PlayerBodyExclusion)MorphException, (UsableFunc)MorphUsable1);
             MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMorph, new Cooldown(Morphling.MorphCd), "MORPH",
                 (EffectVoid)Morph, new Duration(Morphling.MorphDur), (EffectEndVoid)UnMorph, (EndFunc)MorphEnd, (UsableFunc)MorphUsable2);
@@ -100,18 +100,18 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
         }
         else if (IsAmb)
         {
-            AmbushButton ??= new(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Ambush, new Cooldown(Ambusher.AmbushCd), "AMBUSH", (EndFunc)AmbEnd,
+            AmbushButton ??= new(this, new SpriteName("Ambush"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Ambush, new Cooldown(Ambusher.AmbushCd), "AMBUSH", (EndFunc)AmbEnd,
                 (UsableFunc)AmbUsable, new Duration(Ambusher.AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)AmbushException);
         }
         else if (IsEnf)
         {
-            BombButton ??= new(this, new SpriteName("Enforce"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Bomb, new Cooldown(Enforcer.EnforceCd), "SET BOMB", (EndFunc)BoomEnd,
+            BombButton ??= new(this, new SpriteName("Enforce"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Bomb, new Cooldown(Enforcer.EnforceCd), "SET BOMB", (EndFunc)BoomEnd,
                 (UsableFunc)EnfUsable, new Duration(Enforcer.EnforceDur), (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(Enforcer.EnforceDelay), new CanClickAgain(false),
                 (PlayerBodyExclusion)EnfException);
         }
         else if (IsConsig)
         {
-            InvestigateButton ??= new(this, new SpriteName("Investigate"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Investigate, (UsableFunc)ConsigUsable, "INVESTIGATE",
+            InvestigateButton ??= new(this, new SpriteName("Investigate"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Investigate, (UsableFunc)ConsigUsable, "INVESTIGATE",
                 new Cooldown(Consigliere.InvestigateCd), (PlayerBodyExclusion)ConsigException);
         }
         else if (IsCons)

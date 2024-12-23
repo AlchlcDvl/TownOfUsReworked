@@ -170,14 +170,13 @@ public static class Interactions
         if (target.IsBombed())
         {
             abilityUsed = false;
-            var bastion = PlayerLayer.GetILayers<IVentBomber>().Find(x => x.BombedIDs.Contains(target.Id));
 
             if (!CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
             {
                 abilityUsed = true;
                 RpcBreakShield(player);
             }
-            else if (bastion != null)
+            else if (PlayerLayer.GetILayers<IVentBomber>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
                 RpcMurderPlayer(bastion.Player, player, DeathReasonEnum.Bombed, false);
 
             Role.BastionBomb(target, Bastion.BombRemovedOnKill);

@@ -38,9 +38,9 @@ public class Disguiser : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderDecep;
-        MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(MeasureCd), "MEASURE",
+        MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(MeasureCd), "MEASURE",
             (PlayerBodyExclusion)Exception2);
-        DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
+        DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
             new Duration(DisguiseDur), (EffectVoid)Disguise, new Delay(DisguiseDelay), (PlayerBodyExclusion)Exception1, (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE");
         DisguisedPlayer = null;
         MeasuredPlayer = null;

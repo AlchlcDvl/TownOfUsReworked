@@ -62,8 +62,8 @@ public enum ThiefActionsRPC : byte
 public enum AbilityTypes : byte
 {
     Targetless = 1 << 0,
-    Alive = 1 << 1,
-    Dead = 1 << 2,
+    Player = 1 << 1,
+    Body = 1 << 2,
     Vent = 1 << 3,
     Console = 1 << 4
 }
@@ -318,22 +318,18 @@ public enum MiscRPC : byte
     Notify,
     SubmergedFixOxygen,
     Whisper,
-    SetSpawnAirship,
     DoorSyncToilet,
     VersionHandshake,
     ChaosDrive,
     FixLights,
     FixMixup,
     SetFirstKilled,
-    SyncPure,
     SyncSummary,
     BodyLocation,
     BastionBomb,
     MoveBody,
     LoadPreset,
     EndRoleGen,
-    SyncConvertible,
-    RemoveTarget,
     SetTarget,
     ChangeRoles,
 

@@ -9,8 +9,6 @@ public static class CustomVisorManager
 
     public static VisorData CreateVisorBehaviour(CustomVisor cv)
     {
-        var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
-
         var viewData = ScriptableObject.CreateInstance<VisorViewData>().DontDestroy();
         viewData.IdleFrame = CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.ID), CosmeticTypeEnum.Visor);
         viewData.FloorFrame = cv.FloorID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.FloorID), CosmeticTypeEnum.Visor) : viewData.IdleFrame;
@@ -18,6 +16,7 @@ public static class CustomVisorManager
         viewData.ClimbFrame = cv.ClimbID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(cv, cv.ClimbID), CosmeticTypeEnum.Visor) : null;
         viewData.MatchPlayerColor = cv.Adaptive;
 
+        var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
         visor.name = cv.Name;
         visor.displayOrder = 99;
         visor.ProductId = "customVisor_" + cv.Name.Replace(' ', '_');
@@ -25,8 +24,8 @@ public static class CustomVisorManager
         visor.Free = true;
         visor.behindHats = !cv.InFront;
         visor.NotInStore = true;
+        visor.PreviewCrewmateColor = cv.Adaptive;
         visor.ViewDataRef = new(viewData.Pointer);
-        visor.CreateAddressableAsset();
 
         var extend = new VisorExtension()
         {

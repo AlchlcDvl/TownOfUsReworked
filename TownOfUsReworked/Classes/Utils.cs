@@ -321,7 +321,7 @@ public static class Utils
             return player.Data.DefaultOutfit.ColorId.GetColor(false);
     }
 
-    public static PlayerControl PlayerById(byte id) => AllPlayers().Find(x => x.PlayerId == id);
+    public static PlayerControl PlayerById(byte id) => GameData.Instance.GetPlayerById(id)?.Object;
 
     public static PlayerVoteArea VoteAreaById(byte id) => AllVoteAreas().Find(x => x.TargetPlayerId == id);
 
@@ -1452,5 +1452,25 @@ public static class Utils
         }
 
         yield break;
+    }
+
+    public static string PadCenter(this string text, int length, char padChar = ' ')
+    {
+        if (text.Length >= length)
+            return text;
+
+        var left = (length - text.Length) / 2;
+        var right = length - text.Length - left;
+        return new string(padChar, left) + text + new string(padChar, right);
+    }
+
+    public static string Repeat(this string text, int count)
+    {
+        var result = "";
+
+        for (var i = 0; i < count; i++)
+            result += text;
+
+        return result;
     }
 }

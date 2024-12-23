@@ -175,10 +175,10 @@ public abstract class Role : PlayerLayer
         if (!IsCustomHnS() && !IsTaskRace())
         {
             if (RoleGenManager.GetSpawnItem(LayerEnum.Enforcer).IsActive())
-                BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
+                BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
 
             if (RoleGenManager.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
-                PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
+                PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
         }
     }
 

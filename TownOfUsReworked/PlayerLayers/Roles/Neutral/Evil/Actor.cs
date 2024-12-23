@@ -40,7 +40,7 @@ public class Actor : Evil
         base.Init();
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +
             $"- Your target roles are {PretendListString()}"));
-        PretendButton ??= new(this, new SpriteName("Pretend"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)PickRole, "PRETEND", (UsableFunc)Usable);
+        PretendButton ??= new(this, new SpriteName("Pretend"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)PickRole, "PRETEND", (UsableFunc)Usable);
         PretendRoles = [];
     }
 

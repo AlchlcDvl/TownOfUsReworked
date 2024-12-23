@@ -20,11 +20,11 @@ public class Mystic : Crew
     {
         base.Init();
         Alignment = Alignment.CrewAudit;
-        RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (PlayerBodyExclusion)Exception,
+        RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (PlayerBodyExclusion)Exception,
             new Cooldown(RevealCd));
     }
 
-    public void TurnSeer() => new Seer().RoleUpdate(this, Player);
+    public void TurnSeer() => new Seer().RoleUpdate(this);
 
     public override void UpdatePlayer()
     {

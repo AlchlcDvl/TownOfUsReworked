@@ -36,7 +36,7 @@ public class Morphling : Intruder
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
-        SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Alive, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE",
+        SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE",
             (PlayerBodyExclusion)Exception1);
         MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
             new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);

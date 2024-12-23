@@ -38,7 +38,7 @@ public class Trapper : Crew, ITrapper
         TriggeredRoles = [];
         BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuildling, new Cooldown(BuildCd), MaxTraps,
             (UsableFunc)Usable, new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
-        TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, new Cooldown(TrapCd), MaxTraps,
+        TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, new Cooldown(TrapCd), MaxTraps,
             (PlayerBodyExclusion)Exception);
         TrapsMade = TrapButton.Uses = 0;
     }

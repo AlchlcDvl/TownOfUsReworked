@@ -26,7 +26,7 @@ public class Ambusher : Intruder
         base.Init();
         Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
-        AmbushButton ??= new(this, new SpriteName("Ambush"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
+        AmbushButton ??= new(this, new SpriteName("Ambush"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
             new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);
     }
 

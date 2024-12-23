@@ -44,7 +44,7 @@ public class Arsonist : NKilling
         base.Init();
         Objectives = () => "- Burn anyone who can oppose you";
         Doused = [];
-        DouseButton ??= new(this, new SpriteName("ArsoDouse"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
+        DouseButton ??= new(this, new SpriteName("ArsoDouse"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
         IgniteButton ??= new(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Ignite, new Cooldown(IgniteCd), "IGNITE",
             (UsableFunc)Doused.Any);

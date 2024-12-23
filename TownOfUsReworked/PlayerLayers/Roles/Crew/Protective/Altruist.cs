@@ -32,7 +32,7 @@ public class Altruist : Crew
     {
         base.Init();
         Alignment = Alignment.CrewProt;
-        ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
+        ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
             MaxRevives, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false));
     }
 

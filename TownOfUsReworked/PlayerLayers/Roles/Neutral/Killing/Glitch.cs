@@ -43,9 +43,9 @@ public class Glitch : NKilling
         base.Init();
         Objectives = () => "- Neutralise anyone who can oppose you";
         MimicMenu = new(Player, Click, Exception3);
-        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
+        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
             new Cooldown(NeutraliseCd));
-        HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
+        HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
             new Duration(HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
         MimicButton ??= new(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
             new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic);

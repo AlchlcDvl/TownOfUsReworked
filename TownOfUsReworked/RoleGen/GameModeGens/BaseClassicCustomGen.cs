@@ -152,6 +152,23 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
         if (!SyndicateSettings.AltImps)
             AllRoles.AddRange(IntruderRoles);
 
+        if (!AllRoles.Any(x => x.ID == LayerEnum.Dracula))
+            AllRoles.AddMany(GetSpawnItem(LayerEnum.Vigilante).Clone, AllRoles.RemoveAll(x => x.ID == LayerEnum.VampireHunter));
+
+        if (!AllRoles.Any(x => x.ID is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer))
+            AllRoles.AddMany(GetSpawnItem(LayerEnum.Seer).Clone, AllRoles.RemoveAll(x => x.ID == LayerEnum.Mystic));
+
+        if (AllRoles.Any(x => x.ID == LayerEnum.Cannibal) && AllRoles.Any(x => x.ID == LayerEnum.Janitor) && GameModifiers.JaniCanMutuallyExclusive)
+        {
+            var chance = URandom.RandomRangeInt(0, 2);
+            var value = chance == 0 ? NeutralRoles.Random(x => x.ID != LayerEnum.Cannibal, GetSpawnItem(LayerEnum.Amnesiac)) : IntruderRoles.Random(x => x.ID != LayerEnum.Janitor,
+                GetSpawnItem(LayerEnum.Impostor));
+            AllRoles.AddMany(value.Clone, AllRoles.RemoveAll(x => x.ID == (chance == 0 ? LayerEnum.Cannibal : LayerEnum.Janitor)));
+        }
+
+        if (GameData.Instance.PlayerCount <= 4 && AllRoles.Any(x => x.ID == LayerEnum.Amnesiac))
+            AllRoles.AddMany(GetSpawnItem(LayerEnum.Thief).Clone, AllRoles.RemoveAll(x => x.ID == LayerEnum.Amnesiac));
+
         NeutralRoles.Clear();
         CrewRoles.Clear();
         SyndicateRoles.Clear();
@@ -162,25 +179,10 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
     {
         var allPlayers = AllPlayers();
 
-        if (!allPlayers.Any(x => x.Is<Dracula>()))
-            allPlayers.Where(x => x.Is<VampireHunter>()).ForEach(x => Gen(x, LayerEnum.Vigilante, PlayerLayerEnum.Role));
-
-        if (!allPlayers.Any(x => x.GetRole() is Dracula or Jackal or Necromancer or Whisperer))
-            allPlayers.Where(x => x.Is<Mystic>()).ForEach(x => Gen(x, LayerEnum.Seer, PlayerLayerEnum.Role));
-
         if (!allPlayers.Any(x => x.GetRole() is VampireHunter or Amnesiac or Thief or Godfather or Shifter or Guesser or Rebel or Executioner or GuardianAngel or BountyHunter or Mystic or Actor
             || x.GetDisposition() is Traitor or Fanatic))
         {
             allPlayers.Where(x => x.Is<Seer>()).ForEach(x => Gen(x, LayerEnum.Sheriff, PlayerLayerEnum.Role));
         }
-
-        if (allPlayers.Any(x => x.Is<Cannibal>()) && allPlayers.Any(x => x.Is<Janitor>()) && GameModifiers.JaniCanMutuallyExclusive)
-        {
-            var chance = URandom.RandomRangeInt(0, 2);
-            allPlayers.Where(x => chance == 0 ? x.Is<Cannibal>() : x.Is<Janitor>()).ForEach(x => Gen(x, chance == 0 ? LayerEnum.Amnesiac : LayerEnum.Impostor, PlayerLayerEnum.Role));
-        }
-
-        if (GameData.Instance.PlayerCount <= 4)
-            allPlayers.Where(x => x.Is<Amnesiac>()).ForEach(x => Gen(x, LayerEnum.Thief, PlayerLayerEnum.Role));
     }
 }

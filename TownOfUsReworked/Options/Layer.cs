@@ -62,8 +62,11 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         if (Diff == default)
             Diff = (Left - Right) / 2;
 
-        Unique.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleUnique);
-        Active1.GetComponent<PassiveButton>().OverrideOnClickListeners(ToggleActive);
+        var unique = Unique.GetComponent<PassiveButton>();
+        unique.OverrideOnClickListeners(ToggleUnique);
+
+        var active = Active1.GetComponent<PassiveButton>();
+        active.OverrideOnClickListeners(ToggleActive);
 
         var cog = role.transform.GetChild(5).gameObject;
         cog.SetActive(GroupHeader != null || OptionParents1.Any(x => x.Item2.Contains(Layer)) || OptionParents2.Any(x => x.Item2.Contains(Layer)));
@@ -80,21 +83,18 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
             Active1.SetActive(false);
         }
 
-        if (!AmongUsClient.Instance.AmHost)
+        if (!AmongUsClient.Instance.AmHost || IsInGame())
         {
-            foreach (var button2 in role.buttons)
-            {
-                if (button2.name == "LayerSubSettingsButton")
-                    continue;
+            role.CountMinusBtn.gameObject.SetActive(false);
+            role.CountPlusBtn.gameObject.SetActive(false);
+            role.ChanceMinusBtn.gameObject.SetActive(false);
+            role.ChancePlusBtn.gameObject.SetActive(false);
 
-                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
+            unique.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.enabled = x != UniqueCheck);
+            active.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.enabled = x != ActiveCheck);
 
-                if (button2 is GameOptionButton goButton)
-                {
-                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
-                    goButton.interactableColor = Palette.DisabledGrey;
-                }
-            }
+            unique.enabled = false;
+            active.enabled = false;
         }
 
         SavedMode = GameMode.None;
@@ -124,6 +124,8 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         Button.gameObject.SetActive(GroupHeader != null || OptionParents1.Any(x => x.Item2.Contains(Layer)) || OptionParents2.Any(x => x.Item2.Contains(Layer)));
         Button.SelectButton(GroupHeader?.Get() == true);
         Button.OverrideOnClickListeners(Toggle);
+
+        view.background.sprite = view.chanceBackground.sprite = CenterBackground.sprite = view.disabledCube;
 
         if (NoParts)
         {
@@ -350,10 +352,9 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         view.checkMarkOff.gameObject.SetActive(SavedMode == GameMode.AllAny && !data.Active);
 
         var isActive = RoleGenManager.GetSpawnItem(Layer).IsActive();
-        var color = isActive ? LayerColor : Palette.DisabledGrey;
-        view.labelBackground.color = color.Shadow();
+        var color = isActive ? LayerColor : Palette.DisabledGrey.Shadow();
+        view.labelBackground.color = color;
         view.titleText.color = view.chanceText.color = view.chanceTitle.color = view.settingText.color = LeftTitle.color = CenterValue.color = CenterTitle.color = color.Alternate(0.45f);
-        view.background.sprite = view.chanceBackground.sprite = CenterBackground.sprite = isActive ? view.crewmateCube : view.disabledCube;
         view.background.color = view.chanceBackground.color = CenterBackground.color = color.Alternate(0.3f);
 
         if (SavedMode == GameModeSettings.GameMode)

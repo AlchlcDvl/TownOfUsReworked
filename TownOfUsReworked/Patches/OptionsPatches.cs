@@ -200,13 +200,13 @@ public static class SettingsPatches
                 title.GetComponent<RectTransform>().sizeDelta = new(5.8f, 0.458f);
                 title.GetComponent<TextMeshPro>().fontSize = 2.9f; // Why is it different for string options??
 
-                var minus = StringPrefab.transform.GetChild(3);
-                minus.GetComponentInChildren<TextMeshPro>().SetText("<");
-                minus.localPosition += new Vector3(0.6f, 0f, 0f);
+                var minus = StringPrefab.MinusBtn;
+                minus.ChangeButtonText("<");
+                minus.transform.localPosition += new Vector3(0.6f, 0f, 0f);
 
-                var plus = StringPrefab.transform.GetChild(4);
-                plus.GetComponentInChildren<TextMeshPro>().SetText(">");
-                plus.localPosition += new Vector3(1.5f, 0f, 0f);
+                var plus = StringPrefab.PlusBtn;
+                plus.ChangeButtonText(">");
+                plus.transform.localPosition += new Vector3(1.5f, 0f, 0f);
 
                 var valueBox = StringPrefab.transform.GetChild(5);
                 valueBox.localPosition += new Vector3(1.05f, 0f, 0f);

@@ -385,7 +385,7 @@ public class ChatCommand
     // {
     //     var message = "You entered the following params:\n";
     //     args[1..].ForEach(arg => message += $"{arg}, ");
-    //     message = message.Remove(message.Length - 2);
+    //     message = message[..^2];
     //     Run("<#FF00FFFF>⚠ TEST ⚠</color>", message);
     // }
 
@@ -393,7 +393,7 @@ public class ChatCommand
     // {
     //     var message = "You entered the following params:\n";
     //     args[1..].ForEach(arg => message += $"{arg}, ");
-    //     message = message.Remove(message.Length - 2);
+    //     message = message[..^2];
     //     message += $"\nAnd this is the while thing you sent:\n{arg}";
     //     Run("<#FF00FFFF>⚠ TEST ⚠</color>", message);
     // }

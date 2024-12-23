@@ -61,7 +61,7 @@ public class GuardianAngel : Neutral
             new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
 
         if (GuardianAngelCanPickTargets)
-            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
+            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
 
         if (ProtectBeyondTheGrave)
         {
@@ -78,7 +78,7 @@ public class GuardianAngel : Neutral
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
     }
 
-    public void TurnSurv() => new Survivor().RoleUpdate(this, Player);
+    public void TurnSurv() => new Survivor().RoleUpdate(this);
 
     public void HitProtect()
     {

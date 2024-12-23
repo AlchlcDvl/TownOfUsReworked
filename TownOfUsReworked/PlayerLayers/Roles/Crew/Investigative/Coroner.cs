@@ -41,8 +41,8 @@ public class Coroner : Crew, IExaminer
         BodyArrows = [];
         Reported = [];
         ReferenceBodies = [];
-        AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClickBody)Autopsy, new Cooldown(AutopsyCd));
-        CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
+        AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Autopsy, new Cooldown(AutopsyCd));
+        CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)

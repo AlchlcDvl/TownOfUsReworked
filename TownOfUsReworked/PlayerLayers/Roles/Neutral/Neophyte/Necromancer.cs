@@ -63,9 +63,9 @@ public class Necromancer : Neophyte
         SubFaction = SubFaction.Reanimated;
         ResurrectedCount = 0;
         KillCount = 0;
-        ResurrectButton ??= new(this, new SpriteName("Revive"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClickBody)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
+        ResurrectButton ??= new(this, new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
             new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, "RESURRECT", (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
-        SacrificeButton ??= new(this, new SpriteName("NecroKill"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
+        SacrificeButton ??= new(this, new SpriteName("NecroKill"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
             (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
     }
 

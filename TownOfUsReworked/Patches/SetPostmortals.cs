@@ -218,7 +218,7 @@ public static class SetPostmortals
             if (!rev.Is<Revealer>())
             {
                 var former = rev.GetRole();
-                new Revealer() { FormerRole = former }.RoleUpdate(former, rev);
+                new Revealer() { FormerRole = former }.RoleUpdate(former);
                 RemoveTasks(rev);
                 rev.gameObject.layer = LayerMask.NameToLayer("Players");
             }
@@ -268,7 +268,7 @@ public static class SetPostmortals
             if (!phan.Is<Phantom>())
             {
                 var former = phan.GetRole();
-                new Phantom().RoleUpdate(former, phan);
+                new Phantom().RoleUpdate(former);
                 RemoveTasks(phan);
                 phan.gameObject.layer = LayerMask.NameToLayer("Players");
             }
@@ -318,7 +318,7 @@ public static class SetPostmortals
             if (!ban.Is<Banshee>())
             {
                 var former = ban.GetRole();
-                new Banshee().RoleUpdate(former, ban);
+                new Banshee().RoleUpdate(former);
                 ban.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
@@ -367,7 +367,7 @@ public static class SetPostmortals
             if (!ghoul.Is<Ghoul>())
             {
                 var former = ghoul.GetRole();
-                new Ghoul().RoleUpdate(former, ghoul);
+                new Ghoul().RoleUpdate(former);
                 ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 

@@ -30,7 +30,7 @@ public class Crusader : Syndicate
         base.Init();
         Alignment = Alignment.SyndicateKill;
         CrusadedPlayer = null;
-        CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(CrusadeCd), "CRUSADE", new Duration(CrusadeDur),
+        CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(CrusadeCd), "CRUSADE", new Duration(CrusadeDur),
             (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
     }
 

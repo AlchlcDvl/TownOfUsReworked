@@ -30,6 +30,9 @@ public static class BetterAirship
     [NumberOption(MultiMenu.Main, 30f, 100f, 5f, Format.Time)]
     public static Number CrashTimer { get; set; } = new(90);
 
+    [NumberOption(MultiMenu.Main, 1f, 20f, 1f, Format.Time)]
+    public static Number CrashCodeResetTimer { get; set; } = new(10);
+
     [ToggleOption(MultiMenu.Main)]
     public static bool EnableCustomSpawns { get; set; } = true;
 
@@ -43,6 +46,7 @@ public static class BetterAirship
             if (!EnableBetterAirship)
                 return;
 
+            // Moving the admin table
             if (MoveAdmin != 0)
             {
                 var adminTable = UObject.FindObjectOfType<MapConsole>();
@@ -68,6 +72,7 @@ public static class BetterAirship
                 }
             }
 
+            // Moving the electrical panel
             if (MoveElectrical != 0)
             {
                 var electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
@@ -87,15 +92,18 @@ public static class BetterAirship
                     electrical.transform.position = new(19.339f, -3.665f, 0f);
             }
 
+            // Moving the vitals panel
             if (MoveVitals)
             {
                 GameObject.Find("Medbay/panel_vitals").transform.position = new(24.55f, -4.780f, 0f);
                 GameObject.Find("Medbay/panel_data").transform.position = new(25.240f, -7.938f, 0f);
             }
 
+            // Moving the fuel task
             if (MoveFuel)
                 GameObject.Find("Storage/task_gas").transform.position = new(36.070f, 1.897f, 0f);
 
+            // Moving the divert task
             if (MoveDivert)
                 GameObject.Find("HallwayMain/DivertRecieve").transform.position = new(13.35f, -1.659f, 0f);
         }
@@ -106,15 +114,18 @@ public static class BetterAirship
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
+            // Skip this if the local player has the Astral modifier or is a postmortal role
             if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
             {
                 __instance.Close();
                 return false;
             }
 
+            // Skip if better airship is disabled or if the map is submerged
             if (!EnableBetterAirship || IsSubmerged())
                 return true;
 
+            // If the spawn type is meeting, teleport the player to the meeting position
             if (SpawnType == AirshipSpawnType.Meeting)
             {
                 __instance.Close();
@@ -123,9 +134,10 @@ public static class BetterAirship
                 return false;
             }
 
-            var spawn = __instance.Locations.ToArray();
-            AddAsset("RolloverDefault", spawn[0].RolloverSfx);
+            var spawn = __instance.Locations.ToArray(); // Getting an array of the default spawn locations
+            AddAsset("RolloverDefault", spawn[0].RolloverSfx); // Caching the default rollover sound effect
 
+            // Adding custom spawn locations
             if (EnableCustomSpawns)
             {
                 AddSpawn(new Vector3(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault"), GetAudio("RolloverDefault"), ref spawn);
@@ -133,9 +145,9 @@ public static class BetterAirship
                 AddSpawn(new Vector3(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical"), GetAudio("RolloverDefault"), ref spawn);
             }
 
-            if (SpawnType == AirshipSpawnType.Fixed)
+            if (SpawnType == AirshipSpawnType.Fixed) // If the spawn type is fixed, set the spawn locations specific locations | TODO: Allow users to change fixed spawn locations
                 __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
-            else if (SpawnType == AirshipSpawnType.RandomSynchronized)
+            else if (SpawnType == AirshipSpawnType.RandomSynchronized) // Use the randomised locations set by the host
             {
                 try
                 {
@@ -146,13 +158,14 @@ public static class BetterAirship
                     __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
                 }
             }
-            else if (SpawnType == AirshipSpawnType.Random)
+            else if (SpawnType == AirshipSpawnType.Random) // Use the randomised locations chosen by the client
                 __instance.Locations = spawn.GetRandomRange(3).ToArray();
 
             return true;
         }
 
-        public static Vector3 GetMeetingPosition(byte playerId)
+        // Getting a meeting position based on the player id
+        private static Vector3 GetMeetingPosition(byte playerId)
         {
             var position = new Vector3(9f, 16f, 0);
 
@@ -167,6 +180,7 @@ public static class BetterAirship
             return position;
         }
 
+        // Adding a new spawn location, a util for adding custom spawn locations
         private static void AddSpawn(Vector3 location, StringNames name, Sprite sprite, AnimationClip rollover, AudioClip sfx, ref SpawnInMinigame.SpawnLocation[] array)
         {
             Array.Resize(ref array, array.Length + 1);
@@ -184,6 +198,7 @@ public static class BetterAirship
     [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]
     public static class HeliCountdownPatch
     {
+        // Setting the timers to the crash, best method I could do was to completely replace the original method
         public static bool Prefix(HeliSabotageSystem __instance, PlayerControl player, MessageReader msgReader)
         {
             if (!EnableBetterAirship || MapPatches.CurrentMap != 4)
@@ -195,7 +210,7 @@ public static class BetterAirship
 
             if (tags == HeliSabotageSystem.Tags.FixBit)
             {
-                __instance.codeResetTimer = 10f;
+                __instance.codeResetTimer = CrashCodeResetTimer;
                 __instance.CompletedConsoles.Add(b2);
             }
             else if (tags == HeliSabotageSystem.Tags.DeactiveBit)

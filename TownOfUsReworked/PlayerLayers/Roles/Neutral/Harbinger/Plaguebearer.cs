@@ -25,7 +25,7 @@ public class Plaguebearer : Harbinger<Pestilence>
         base.Init();
         Objectives = () => "- Infect everyone to become <#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Infected = [ Player.PlayerId ];
-        InfectButton ??= new(this, new SpriteName("Infect"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Infect, new Cooldown(InfectCd), "INFECT",
+        InfectButton ??= new(this, new SpriteName("Infect"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Infect, new Cooldown(InfectCd), "INFECT",
             (PlayerBodyExclusion)Exception);
     }
 

@@ -24,7 +24,7 @@ public static class ModUpdater
             yield break;
 
         Running[updateType] = true;
-        UpdateSplashPatch.SetText($"Fetching {updateType} Data And Loading Compatibility");
+        UpdateSplashPatch.SetText($"Fetching {updateType} Data");
         Message($"Getting update info for {updateType}");
         yield return EndFrame();
 

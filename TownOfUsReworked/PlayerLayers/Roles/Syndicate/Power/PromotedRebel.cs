@@ -156,7 +156,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         }
         else if (IsFram)
         {
-            FrameButton ??= new(this, new SpriteName("Frame"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Frame, new Cooldown(Framer.FrameCd), "FRAME", (UsableFunc)FrameUsable1,
+            FrameButton ??= new(this, new SpriteName("Frame"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Frame, new Cooldown(Framer.FrameCd), "FRAME", (UsableFunc)FrameUsable1,
                 (PlayerBodyExclusion)FrameException);
             RadialFrameButton ??= new(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)RadialFrame, (UsableFunc)FrameUsable2, "FRAME",
                 new Cooldown(Framer.FrameCd));
@@ -175,7 +175,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         }
         else if (IsSil)
         {
-            SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(Silencer.SilenceCd), (UsableFunc)SilUsable,
+            SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(Silencer.SilenceCd), (UsableFunc)SilUsable,
                 "SILENCE", (PlayerBodyExclusion)SilenceException);
         }
         else if (IsTK)
@@ -192,22 +192,22 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         }
         else if (IsCol)
         {
-            PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, "SET POSITIVE", (UsableFunc)ColUsable1,
+            PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, "SET POSITIVE", (UsableFunc)ColUsable1,
                 new Cooldown(Collider.CollideCd), (PlayerBodyExclusion)PlusException);
-            NegativeButton ??= new(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)SetNegative, new Cooldown(Collider.CollideCd),
+            NegativeButton ??= new(this, new SpriteName("Negative"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)SetNegative, new Cooldown(Collider.CollideCd),
                 (PlayerBodyExclusion)MinusException, "SET NEGATIVE", (UsableFunc)ColUsable1);
             ChargeButton ??= new(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Charge, new Cooldown(Collider.ChargeCd), "CHARGE",
                 new Duration(Collider.ChargeDur), (UsableFunc)ColUsable2, (EndFunc)ChargeEnd);
         }
         else if (IsCrus)
         {
-            CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(Crusader.CrusadeCd), (EndFunc)CrusadeEnd,
+            CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(Crusader.CrusadeCd), (EndFunc)CrusadeEnd,
                 "CRUSADE", new Duration(Crusader.CrusadeDur), (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)CrusadeException, (UsableFunc)CrusUsable);
         }
         else if (IsPois)
         {
             var wasnull = PoisonButton == null;
-            PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(Poisoner.PoisonCd), (EndFunc)PoisonEnd,
+            PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(Poisoner.PoisonCd), (EndFunc)PoisonEnd,
                 "POISON", new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)PoisonException, (UsableFunc)PoisUsable1);
             GlobalPoisonButton ??= new(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGlobalPoison, (LabelFunc)PoisLabel,
                 new Cooldown(Poisoner.PoisonCd), new Duration(Poisoner.PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)PoisUsable2, (EndFunc)PoisonEnd);
@@ -217,12 +217,12 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         }
         else if (IsSpell)
         {
-            SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(Spellslinger.SpellCd), (UsableFunc)SpellUsable,
+            SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(Spellslinger.SpellCd), (UsableFunc)SpellUsable,
                 "SPELLBIND", (PlayerBodyExclusion)SpellException, (DifferenceFunc)SpellDifference);
         }
         else if (IsStalk)
         {
-            StalkButton ??= new(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(Stalker.StalkCd), "STALK",
+            StalkButton ??= new(this, new SpriteName("Stalk"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(Stalker.StalkCd), "STALK",
                 (PlayerBodyExclusion)StalkException, (UsableFunc)StalkUsable);
         }
         else if (IsWarp)

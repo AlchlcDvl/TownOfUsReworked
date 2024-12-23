@@ -21,7 +21,7 @@ public class Stalker : Syndicate
         base.Init();
         StalkerArrows = [];
         Alignment = Alignment.SyndicateSupport;
-        StalkButton ??= new(this, new SpriteName("Stalk"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
+        StalkButton ??= new(this, new SpriteName("Stalk"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception1);
     }
 

@@ -74,13 +74,13 @@ public static class PerformSabotage
         if (NoPlayers() || IsLobby())
             return true;
 
+        if (!CustomPlayer.Local.CanSabotage())
+            return false;
+
         var blocked = LocalNotBlocked();
 
         if (!blocked)
             Blocked.BlockExposed = true;
-
-        if (!CustomPlayer.Local.CanSabotage())
-            return false;
 
         if (blocked && !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled())
             HUD().ToggleMapVisible(new() { Mode = MapOptions.Modes.Sabotage });

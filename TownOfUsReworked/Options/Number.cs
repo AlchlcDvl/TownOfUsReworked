@@ -26,18 +26,10 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
         number.Increment = Increment;
         number.ZeroIsInfinity = ZeroIsInfinity;
 
-        if (!AmongUsClient.Instance.AmHost && !ClientOnly)
+        if (!AmongUsClient.Instance.AmHost || (IsInGame() && !ClientOnly))
         {
-            foreach (var button2 in number.buttons)
-            {
-                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
-
-                if (button2 is GameOptionButton goButton)
-                {
-                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
-                    goButton.interactableColor = goButton.buttonSprite.color = Palette.DisabledGrey;
-                }
-            }
+            number.PlusBtn.gameObject.SetActive(false);
+            number.MinusBtn.gameObject.SetActive(false);
         }
 
         Update();

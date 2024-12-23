@@ -59,12 +59,12 @@ public class Executioner : Evil
 
         if (ExecutionerCanPickTargets)
         {
-            TargetButton ??= new(this, new SpriteName("ExeTarget"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
+            TargetButton ??= new(this, new SpriteName("ExeTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
                 (UsableFunc)Usable2);
         }
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
-            DoomButton ??= new(this, new SpriteName("Doom"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Doom, (PlayerBodyExclusion)Exception1, "DOOM", (UsableFunc)Usable1);
+            DoomButton ??= new(this, new SpriteName("Doom"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Doom, (PlayerBodyExclusion)Exception1, "DOOM", (UsableFunc)Usable1);
 
         Rounds = 0;
     }
@@ -93,7 +93,7 @@ public class Executioner : Evil
         }
     }
 
-    public void TurnJest() => new Jester().RoleUpdate(this, Player);
+    public void TurnJest() => new Jester().RoleUpdate(this);
 
     public void Doom(PlayerControl target)
     {

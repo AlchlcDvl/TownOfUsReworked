@@ -44,9 +44,9 @@ public class Collider : Syndicate
         Alignment = Alignment.SyndicateKill;
         Positive = null;
         Negative = null;
-        PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",
+        PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",
             (PlayerBodyExclusion)Exception1);
-        NegativeButton ??= new(this, new SpriteName("Negative"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)SetNegative, new Cooldown(CollideCd), "SET NEGATIVE",
+        NegativeButton ??= new(this, new SpriteName("Negative"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)SetNegative, new Cooldown(CollideCd), "SET NEGATIVE",
             (PlayerBodyExclusion)Exception2);
         ChargeButton ??= new(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Charge, new Cooldown(ChargeCd), "CHARGE", (UsableFunc)Usable,
             new Duration(ChargeDur), (EndFunc)EndEffect);

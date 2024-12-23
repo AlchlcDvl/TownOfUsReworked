@@ -1143,10 +1143,28 @@ public static class Dispositions
     public static RoleOptionData Fanatic { get; set; }
 
     [LayerOption("#FF351FFF", LayerEnum.Linked, max: 7)]
-    public static RoleOptionData Linked { get; set; }
+    private static RoleOptionData LinkedPriv { get; set; }
+    public static RoleOptionData Linked
+    {
+        get
+        {
+            var result = LinkedPriv.Clone();
+            result.Count *= 2;
+            return result;
+        }
+    }
 
     [LayerOption("#FF66CCFF", LayerEnum.Lovers, max: 7)]
-    public static RoleOptionData Lovers { get; set; }
+    private static RoleOptionData LoversPriv { get; set; }
+    public static RoleOptionData Lovers
+    {
+        get
+        {
+            var result = LoversPriv.Clone();
+            result.Count *= 2;
+            return result;
+        }
+    }
 
     [LayerOption("#00EEFFFF", LayerEnum.Mafia, min: 2)]
     public static RoleOptionData Mafia { get; set; }
@@ -1155,7 +1173,16 @@ public static class Dispositions
     public static RoleOptionData Overlord { get; set; }
 
     [LayerOption("#3D2D2CFF", LayerEnum.Rivals, max: 7)]
-    public static RoleOptionData Rivals { get; set; }
+    private static RoleOptionData RivalsPriv { get; set; }
+    public static RoleOptionData Rivals
+    {
+        get
+        {
+            var result = RivalsPriv.Clone();
+            result.Count *= 2;
+            return result;
+        }
+    }
 
     [LayerOption("#ABABFFFF", LayerEnum.Taskmaster)]
     public static RoleOptionData Taskmaster { get; set; }

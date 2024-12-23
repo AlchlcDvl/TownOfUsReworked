@@ -16,11 +16,10 @@ public static class CustomNameplateManager
         else if (cn.TestOnly)
             path = Path.Combine(TownOfUsReworked.Nameplates, "Test", $"{cn.ID}.png");
 
-        var nameplate = ScriptableObject.CreateInstance<NamePlateData>().DontDestroy();
-
         var viewData = ScriptableObject.CreateInstance<NamePlateViewData>().DontDestroy();
         viewData.Image = CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Nameplate);
 
+        var nameplate = ScriptableObject.CreateInstance<NamePlateData>().DontDestroy();
         nameplate.PreviewCrewmateColor = false;
         nameplate.name = cn.Name;
         nameplate.displayOrder = 99;
@@ -29,7 +28,6 @@ public static class CustomNameplateManager
         nameplate.Free = true;
         nameplate.NotInStore = true;
         nameplate.ViewDataRef = new(viewData.Pointer);
-        nameplate.CreateAddressableAsset();
 
         var extend = new NameplateExtension()
         {

@@ -20,14 +20,14 @@ public class VampireHunter : Crew
     {
         base.Init();
         Alignment = Alignment.CrewAudit;
-        StakeButton ??= new(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Stake, new Cooldown(StakeCd));
+        StakeButton ??= new(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stake, new Cooldown(StakeCd));
     }
 
     public void TurnVigilante()
     {
         var vigi = new Vigilante();
-        vigi.RoleUpdate(this, Player);
-        vigi.ShootButton.Uses = 1;
+        vigi.RoleUpdate(this);
+        vigi.ShootButton.MaxUses = vigi.ShootButton.Uses = TasksDone ? 2 : 1;
     }
 
     public override void UpdatePlayer()

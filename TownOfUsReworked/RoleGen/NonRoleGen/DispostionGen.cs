@@ -11,10 +11,7 @@ public class DispositionGen : BaseGen
         foreach (var spawn in GetValuesFromToAndMorph(LayerEnum.Allied, LayerEnum.Traitor, GetSpawnItem))
         {
             if (spawn.IsActive())
-            {
-                for (var j = 0; j < spawn.Count; j++)
-                    AllDispositions.Add(spawn);
-            }
+                AllDispositions.AddMany(spawn.Clone, spawn.Count);
         }
 
         int maxDisp = DispositionsSettings.MaxDispositions;
@@ -26,21 +23,6 @@ public class DispositionGen : BaseGen
 
         while (minDisp > playerCount)
             minDisp--;
-
-        var linked = AllDispositions.Count(x => x.ID == LayerEnum.Linked);
-
-        for (var i = 0; i < linked; i++)
-            AllDispositions.Add(GetSpawnItem(LayerEnum.Linked));
-
-        var lovers = AllDispositions.Count(x => x.ID == LayerEnum.Lovers);
-
-        for (var i = 0; i < lovers; i++)
-            AllDispositions.Add(GetSpawnItem(LayerEnum.Lovers));
-
-        var rivals = AllDispositions.Count(x => x.ID == LayerEnum.Rivals);
-
-        for (var i = 0; i < rivals; i++)
-            AllDispositions.Add(GetSpawnItem(LayerEnum.Rivals));
 
         ModeFilters[GameModeSettings.GameMode].Filter(AllDispositions, GameModeSettings.IgnoreLayerCaps ? playerCount : URandom.RandomRangeInt(minDisp, maxDisp + 1), true);
     }

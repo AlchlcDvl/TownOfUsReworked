@@ -297,14 +297,14 @@ public static class HatsTabOnEnablePatch
 {
     private static TMP_Text Template;
 
-    private static float CreateHatPackage(List<HatData> hats, string packageName, float YStart, HatsTab __instance)
+    private static void CreateHatPackage(List<HatData> hats, string packageName, ref float yStart, HatsTab __instance)
     {
         var isDefaultPackage = "Innersloth" == packageName;
 
         if (!isDefaultPackage)
             hats = [ .. hats.OrderBy(x => x.name) ];
 
-        var offset = YStart;
+        var offset = yStart;
 
         if (Template)
         {
@@ -312,7 +312,7 @@ public static class HatsTabOnEnablePatch
             var material = title.GetComponent<MeshRenderer>().material;
             material.SetFloat("_StencilComp", 4f);
             material.SetFloat("_Stencil", 1f);
-            title.transform.localPosition = new(2.25f, YStart, -1f);
+            title.transform.localPosition = new(2.25f, yStart, -1f);
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
@@ -361,9 +361,10 @@ public static class HatsTabOnEnablePatch
             colorChip.Tag = hat;
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             __instance.ColorChips.Add(colorChip);
+            yStart = ypos;
         }
 
-        return offset - ((hats.Count - 1) / __instance.NumPerRow * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset) - 1.75f;
+        yStart -= 1.75f;
     }
 
     public static bool Prefix(HatsTab __instance)
@@ -397,7 +398,6 @@ public static class HatsTabOnEnablePatch
             value.Add(data);
         }
 
-        var YOffset = __instance.YStart;
         Template = __instance.transform.FindChild("Text").GetComponent<TMP_Text>();
         var keys = packages.Keys.OrderBy(x => x switch
         {
@@ -406,10 +406,11 @@ public static class HatsTabOnEnablePatch
             "Misc" => 3,
             _ => 2
         });
-        keys.ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
+        var yOffset = __instance.YStart;
+        keys.ForEach(key => CreateHatPackage(packages[key], key, ref yOffset, __instance));
         __instance.currentHatIsEquipped = true;
-        __instance.SetScrollerBounds();
-        __instance.scroller.ContentYBounds.max = -(YOffset + 4.1f);
+        __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
+        __instance.scroller.UpdateScrollBars();
 
         if (array.Length != 0)
             __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);

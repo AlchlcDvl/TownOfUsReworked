@@ -40,7 +40,7 @@ public class Cannibal : Evil
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = [];
         EatNeed = Math.Min(BodiesNeeded, GameData.Instance.PlayerCount / 2);
-        EatButton ??= new(this, new SpriteName("Eat"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClickBody)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
+        EatButton ??= new(this, new SpriteName("Eat"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
     }
 
     public void DestroyArrow(byte targetPlayerId)

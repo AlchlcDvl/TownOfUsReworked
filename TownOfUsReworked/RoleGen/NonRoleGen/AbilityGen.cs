@@ -11,10 +11,7 @@ public class AbilityGen : BaseGen
         foreach (var spawn in GetValuesFromToAndMorph(LayerEnum.Bullseye, LayerEnum.Underdog, GetSpawnItem))
         {
             if (spawn.IsActive())
-            {
-                for (var j = 0; j < spawn.Count; j++)
-                    AllAbilities.Add(spawn);
-            }
+                AllDispositions.AddMany(spawn.Clone, spawn.Count);
         }
 
         int maxAb = AbilitiesSettings.MaxAbilities;

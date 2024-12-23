@@ -22,18 +22,10 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         entry.TitleText.SetText(SettingNotif());
         ValueText = Setting.transform.GetChild(3).GetComponent<TextMeshPro>();
 
-        if (!AmongUsClient.Instance.AmHost)
+        if (!AmongUsClient.Instance.AmHost || IsInGame())
         {
-            foreach (var button2 in entry.buttons)
-            {
-                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
-
-                if (button2 is GameOptionButton goButton)
-                {
-                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
-                    goButton.interactableColor = Palette.DisabledGrey;
-                }
-            }
+            entry.CheckMark.transform.parent.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.enabled = false);
+            entry.GetComponentInChildren<PassiveButton>().enabled = false;
         }
 
         Update();

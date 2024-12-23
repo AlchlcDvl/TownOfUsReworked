@@ -78,17 +78,6 @@ public static class RPCHandling
                     case MiscRPC.Start:
                     {
                         RoleGenManager.ResetEverything();
-                        RoleGenManager.RoleGen[GameModeSettings.GameMode].Clear();
-                        break;
-                    }
-                    case MiscRPC.SyncPure:
-                    {
-                        RoleGenManager.Pure = reader.ReadPlayer();
-                        break;
-                    }
-                    case MiscRPC.SyncConvertible:
-                    {
-                        RoleGenManager.Convertible = reader.ReadByte();
                         break;
                     }
                     case MiscRPC.BreakShield:
@@ -137,12 +126,6 @@ public static class RPCHandling
                     {
                         var mixup = Ship().Systems[SystemTypes.MushroomMixupSabotage].Cast<MushroomMixupSabotageSystem>();
                         mixup.secondsForAutoHeal = 0.1f;
-                        break;
-                    }
-                    case MiscRPC.SetSpawnAirship:
-                    {
-                        BetterAirship.SpawnPoints.Clear();
-                        BetterAirship.SpawnPoints.AddRange(reader.ReadByteList());
                         break;
                     }
                     case MiscRPC.ChaosDrive:
@@ -230,6 +213,9 @@ public static class RPCHandling
                         SetPostmortals.Phantoms = reader.ReadByte();
                         SetPostmortals.Banshees = reader.ReadByte();
                         SetPostmortals.Ghouls = reader.ReadByte();
+                        RoleGenManager.Pure = reader.ReadPlayer();
+                        RoleGenManager.Convertible = reader.ReadByte();
+                        BetterAirship.SpawnPoints.AddRange(reader.ReadByteList());
                         break;
                     }
                     case MiscRPC.SetTarget:

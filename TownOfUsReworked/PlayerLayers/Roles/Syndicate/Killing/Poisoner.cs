@@ -27,7 +27,7 @@ public class Poisoner : Syndicate
         PoisonedPlayer = null;
         Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);
-        PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
+        PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
             new Duration(PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
         GlobalPoisonButton ??= new(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGlobalPoison, (LabelFunc)Label,
             new Cooldown(PoisonCd), new Duration(PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);

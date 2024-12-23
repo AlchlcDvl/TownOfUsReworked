@@ -172,7 +172,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
         if (ViewSetting is ViewSettingsInfoPanel viewSettingsInfoPanel)
         {
-            viewSettingsInfoPanel.titleText.SetText(SettingNotif());
+            viewSettingsInfoPanel.titleText.SetText(TranslationManager.Translate(ID));
             viewSettingsInfoPanel.background.gameObject.SetActive(true);
         }
     }

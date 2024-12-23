@@ -16,15 +16,17 @@ public static class PlayerTabPatches
             __instance.scroller = UObject.Instantiate(tab.scroller, __instance.transform, true);
             __instance.scroller.Inner.DestroyChildren();
             __instance.scroller.name = "Scroller";
-            // TODO: Get this working
-            // var track = UObject.Instantiate(tab.transform.Find("UI_ScrollbarTrack"), __instance.transform, true);
-            // track.name = "UI_ScrollbarTrack";
-            // var bar = UObject.Instantiate(tab.transform.Find("UI_Scrollbar").GetComponent<Scrollbar>(), __instance.transform, true);
-            // bar.parent = __instance.scroller;
-            // bar.trackGraphic = track.GetComponent<SpriteRenderer>();
-            // bar.name = "UI_Scrollbar";
-            // __instance.scroller.ScrollbarY = bar;
+            var track = UObject.Instantiate(tab.transform.Find("UI_ScrollbarTrack"), __instance.transform, true);
+            track.name = "UI_ScrollbarTrack";
+            var bar = UObject.Instantiate(tab.transform.Find("UI_Scrollbar").GetComponent<Scrollbar>(), __instance.transform, true);
+            bar.parent = __instance.scroller;
+            bar.trackGraphic = track.GetComponent<SpriteRenderer>();
+            bar.name = "UI_Scrollbar";
+            __instance.scroller.ScrollbarY = bar;
+            __instance.scroller.ScrollbarYBounds = new(-1.45f, 1.28f);
         }
+
+        var offset = __instance.YStart;
 
         for (var i = 0; i < __instance.ColorChips.Count; i++)
         {
@@ -34,13 +36,13 @@ public static class PlayerTabPatches
             colorChip.transform.localPosition = new(xpos, ypos, -1f);
             colorChip.transform.SetParent(__instance.scroller.Inner);
             colorChip.Button.ClickMask = __instance.scroller.Hitbox;
-            colorChip.transform.FindChild("ForeGround").GetComponent<SpriteMask>().Destroy();
+            colorChip.transform.FindChild("ForeGround").GetComponent<SpriteMask>().enabled = false;
             colorChip.transform.GetAllComponents<SpriteRenderer>().ForEach(x => x.maskInteraction = SpriteMaskInteraction.VisibleInsideMask);
+            offset = ypos;
         }
 
-        __instance.SetScrollerBounds();
-        // __instance.scroller.ContentYBounds.max = 1.6f;
-        // __instance.scroller.ContentYBounds.min = -1.6f;
+        __instance.scroller.ContentYBounds.max = -(offset + 2.75f);
+        __instance.scroller.UpdateScrollBars();
     }
 
     private static float TimePassed;

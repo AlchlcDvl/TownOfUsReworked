@@ -2,7 +2,6 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomButton
 {
-    // TODO: Make the Owner field a list instead and have each layer have one singular static member that handles all of the buttons for this particular button, might help with some potential lag with having too many ability buttons :thonk:
     public static readonly List<CustomButton> AllButtons = [];
 
     // Params, required
@@ -303,6 +302,11 @@ public class CustomButton
         OnEffectEnd();
         EffectEnabled = false;
         ClickedAgain = false;
+
+        if (HasOtherDelay)
+            ButtonOtherDelay();
+        else
+            StartCooldown();
     }
 
     private void ButtonDelay()
@@ -325,6 +329,13 @@ public class CustomButton
     {
         OnDelayEnd();
         DelayEnabled = false;
+
+        if (HasEffect)
+            ButtonEffect();
+        else if (HasOtherDelay)
+            ButtonOtherDelay();
+        else
+            StartCooldown();
     }
 
     private void ButtonOtherDelay()
@@ -347,30 +358,42 @@ public class CustomButton
     {
         OnOtherDelayEnd();
         OtherDelayEnabled = false;
+        StartCooldown();
     }
 
     private void Timer()
     {
-        if (!Owner || !Owner.Player || !Local)
+        if (!Owner || !Owner.Player || !Local || Owner.Player.inMovingPlat || Owner.Player.onLadder)
             return;
 
-        if (!((Owner.Player.inVent && !GameModifiers.CooldownInVent) || Owner.Player.inMovingPlat || Owner.Player.onLadder))
-            CooldownTime -= Time.deltaTime;
-
-        if (CooldownTime < 0f)
-            CooldownTime = 0f;
+        if (!Owner.Player.inVent || GameModifiers.CooldownInVent)
+            CooldownTime = Mathf.Clamp(CooldownTime - Time.deltaTime, 0f, MaxCooldown());
     }
 
-    private void SetOutline(Renderer prevRend, Renderer newRend)
+    private void SetOutline(MonoBehaviour prevMono, MonoBehaviour newMono)
     {
-        if (prevRend == newRend)
+        if (prevMono == newMono)
             return;
 
-        if (prevRend)
-            prevRend.SetOutlineColor(UColor.clear);
+        if (prevMono)
+            SetOutline(prevMono);
 
-        if (newRend)
-            newRend.SetOutlineColor(Owner.Color);
+        if (newMono)
+            SetOutline(prevMono, Owner.Color);
+    }
+
+    private static void SetOutline(MonoBehaviour mono, UColor? color = null)
+    {
+        if (!mono)
+            return;
+        else if (mono is PlayerControl player)
+            player.cosmetics.SetOutline(color.HasValue, new(color.GetValueOrDefault()));
+        else if (mono is DeadBody body)
+            body.bodyRenderers.ForEach(x => x.SetOutlineColor(color));
+        else if (mono is Vent vent)
+            vent.MyRend().SetOutlineColor(color);
+        else if (mono is Console console)
+            console.MyRend().SetOutlineColor(color);
     }
 
     public float MaxCooldown() => PostDeath ? Cooldown : Owner.Player.GetModifiedCooldown(Cooldown, Difference(), Multiplier());
@@ -415,10 +438,10 @@ public class CustomButton
             if (Type.HasFlag(AbilityTypes.Console))
                 monos.Add(Owner.Player.GetClosestConsole());
 
-            if (Type.HasFlag(AbilityTypes.Alive))
+            if (Type.HasFlag(AbilityTypes.Player))
                 monos.Add(Owner.Player.GetClosestPlayer());
 
-            if (Type.HasFlag(AbilityTypes.Dead))
+            if (Type.HasFlag(AbilityTypes.Body))
                 monos.Add(Owner.Player.GetClosestBody());
 
             if (Type.HasFlag(AbilityTypes.Vent))
@@ -429,13 +452,13 @@ public class CustomButton
             var previous = Target;
             Target = Owner.Player.GetClosestMono(monos);
             Targeting = Target;
-            SetOutline(previous?.MyRend(), Target?.MyRend());
+            SetOutline(previous, Target);
         }
     }
 
     private void EnableDisable()
     {
-        if (EffectActive || Clickable() || DelayActive)
+        if (EffectActive || DelayActive || OtherDelayActive || Clickable())
             Base.SetEnabled();
         else
             Base.SetDisabled();
@@ -491,11 +514,22 @@ public class CustomButton
         if (Base)
             Base.SetDisabled();
 
+        if (!Targeting)
+            return;
+
         Targeting = false;
 
         if (Target)
         {
-            Target?.MyRend()?.SetOutlineColor(UColor.clear);
+            if (Target is PlayerControl player)
+                player.cosmetics.SetOutline(false);
+            else if (Target is DeadBody body)
+                body.bodyRenderers.ForEach(x => x.SetOutlineColor(UColor.clear));
+            else if (Target is Vent vent)
+                vent.MyRend().SetOutlineColor(UColor.clear);
+            else if (Target is Console console)
+                console.MyRend().SetOutlineColor(UColor.clear);
+
             Target = null;
         }
     }

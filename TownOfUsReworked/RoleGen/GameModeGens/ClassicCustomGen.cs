@@ -11,93 +11,94 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         if (Crew == 0)
             return;
 
-        int maxCI = CrewInvestigativeSettings.MaxCI;
-        int maxCS = CrewSupportSettings.MaxCS;
-        int maxCA = CrewAuditorSettings.MaxCA;
-        int maxCK = CrewKillingSettings.MaxCK;
-        int maxCrP = CrewProtectiveSettings.MaxCrP;
-        int maxCSv = CrewSovereignSettings.MaxCSv;
         int minCrew = CrewSettings.CrewMin;
         int maxCrew = CrewSettings.CrewMax;
 
         if (minCrew > maxCrew)
             (maxCrew, minCrew) = (minCrew, maxCrew);
 
-        if (maxCI > RoleGenManager.CrewInvestigativeRoles.Count)
-            maxCI = RoleGenManager.CrewInvestigativeRoles.Count;
-
-        if (maxCS > RoleGenManager.CrewSupportRoles.Count)
-            maxCS = RoleGenManager.CrewSupportRoles.Count;
-
-        if (maxCA > RoleGenManager.CrewAuditorRoles.Count)
-            maxCA = RoleGenManager.CrewAuditorRoles.Count;
-
-        if (maxCK > RoleGenManager.CrewKillingRoles.Count)
-            maxCK = RoleGenManager.CrewKillingRoles.Count;
-
-        if (maxCrP > RoleGenManager.CrewProtectiveRoles.Count)
-            maxCrP = RoleGenManager.CrewProtectiveRoles.Count;
-
-        if (maxCSv > RoleGenManager.CrewSovereignRoles.Count)
-            maxCSv = RoleGenManager.CrewSovereignRoles.Count;
-
-        var maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
-
-        while (maxCrewSum > maxCrew)
-        {
-            switch (URandom.RandomRangeInt(0, 6))
-            {
-                case 0:
-                {
-                    if (maxCA > 0)
-                        maxCA--;
-
-                    break;
-                }
-                case 1:
-                {
-                    if (maxCI > 0)
-                        maxCI--;
-
-                    break;
-                }
-                case 2:
-                {
-                    if (maxCK > 0)
-                        maxCK--;
-
-                    break;
-                }
-                case 3:
-                {
-                    if (maxCS > 0)
-                        maxCS--;
-
-                    break;
-                }
-                case 4:
-                {
-                    if (maxCSv > 0)
-                        maxCSv--;
-
-                    break;
-                }
-                case 5:
-                {
-                    if (maxCrP > 0)
-                        maxCrP--;
-
-                    break;
-                }
-            }
-
-            maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
-        }
-
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
+            int maxCI = CrewInvestigativeSettings.MaxCI;
+            int maxCS = CrewSupportSettings.MaxCS;
+            int maxCA = CrewAuditorSettings.MaxCA;
+            int maxCK = CrewKillingSettings.MaxCK;
+            int maxCrP = CrewProtectiveSettings.MaxCrP;
+            int maxCSv = CrewSovereignSettings.MaxCSv;
+
+            if (maxCI > RoleGenManager.CrewInvestigativeRoles.Count)
+                maxCI = RoleGenManager.CrewInvestigativeRoles.Count;
+
+            if (maxCS > RoleGenManager.CrewSupportRoles.Count)
+                maxCS = RoleGenManager.CrewSupportRoles.Count;
+
+            if (maxCA > RoleGenManager.CrewAuditorRoles.Count)
+                maxCA = RoleGenManager.CrewAuditorRoles.Count;
+
+            if (maxCK > RoleGenManager.CrewKillingRoles.Count)
+                maxCK = RoleGenManager.CrewKillingRoles.Count;
+
+            if (maxCrP > RoleGenManager.CrewProtectiveRoles.Count)
+                maxCrP = RoleGenManager.CrewProtectiveRoles.Count;
+
+            if (maxCSv > RoleGenManager.CrewSovereignRoles.Count)
+                maxCSv = RoleGenManager.CrewSovereignRoles.Count;
+
+            var maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
+
+            while (maxCrewSum > maxCrew)
+            {
+                switch (URandom.RandomRangeInt(0, 6))
+                {
+                    case 0:
+                    {
+                        if (maxCA > 0)
+                            maxCA--;
+
+                        break;
+                    }
+                    case 1:
+                    {
+                        if (maxCI > 0)
+                            maxCI--;
+
+                        break;
+                    }
+                    case 2:
+                    {
+                        if (maxCK > 0)
+                            maxCK--;
+
+                        break;
+                    }
+                    case 3:
+                    {
+                        if (maxCS > 0)
+                            maxCS--;
+
+                        break;
+                    }
+                    case 4:
+                    {
+                        if (maxCSv > 0)
+                            maxCSv--;
+
+                        break;
+                    }
+                    case 5:
+                    {
+                        if (maxCrP > 0)
+                            maxCrP--;
+
+                        break;
+                    }
+                }
+
+                maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
+            }
+
             filter.Filter(RoleGenManager.CrewAuditorRoles, maxCA);
             filter.Filter(RoleGenManager.CrewInvestigativeRoles, maxCI);
             filter.Filter(RoleGenManager.CrewKillingRoles, maxCK);
@@ -135,82 +136,83 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         if (SyndicateSettings.AltImps || Intruders == 0)
             return;
 
-        int maxIC = IntruderConcealingSettings.MaxIC;
-        int maxID = IntruderDeceptionSettings.MaxID;
-        int maxIK = IntruderKillingSettings.MaxIK;
-        int maxIS = IntruderSupportSettings.MaxIS;
-        int maxIH = IntruderHeadSettings.MaxIH;
         int minInt = IntruderSettings.IntruderMin;
         int maxInt = IntruderSettings.IntruderMax;
 
         if (minInt > maxInt)
             (maxInt, minInt) = (minInt, maxInt);
 
-        if (maxIC > RoleGenManager.IntruderConcealingRoles.Count)
-            maxIC = RoleGenManager.IntruderConcealingRoles.Count;
-
-        if (maxID > RoleGenManager.IntruderDeceptionRoles.Count)
-            maxID = RoleGenManager.IntruderDeceptionRoles.Count;
-
-        if (maxIK > RoleGenManager.IntruderKillingRoles.Count)
-            maxIK = RoleGenManager.IntruderKillingRoles.Count;
-
-        if (maxIS > RoleGenManager.IntruderSupportRoles.Count)
-            maxIS = RoleGenManager.IntruderSupportRoles.Count;
-
-        if (maxIH > RoleGenManager.IntruderHeadRoles.Count)
-            maxIH = RoleGenManager.IntruderHeadRoles.Count;
-
-        var maxIntSum = maxIC + maxID + maxIK + maxIS + maxIH;
-
-        while (maxIntSum > maxInt)
-        {
-            switch (URandom.RandomRangeInt(0, 5))
-            {
-                case 0:
-                {
-                    if (maxIC > 0)
-                        maxIC--;
-
-                    break;
-                }
-                case 1:
-                {
-                    if (maxID > 0)
-                        maxID--;
-
-                    break;
-                }
-                case 2:
-                {
-                    if (maxIK > 0)
-                        maxIK--;
-
-                    break;
-                }
-                case 3:
-                {
-                    if (maxIS > 0)
-                        maxIS--;
-
-                    break;
-                }
-                case 4:
-                {
-                    if (maxIH > 0)
-                        maxIH--;
-
-                    break;
-                }
-            }
-
-            maxIntSum = maxIC + maxID + maxIK + maxIS + maxIH;
-        }
-
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
+            int maxIC = IntruderConcealingSettings.MaxIC;
+            int maxID = IntruderDeceptionSettings.MaxID;
+            int maxIK = IntruderKillingSettings.MaxIK;
+            int maxIS = IntruderSupportSettings.MaxIS;
+            int maxIH = IntruderHeadSettings.MaxIH;
+
+            if (maxIC > RoleGenManager.IntruderConcealingRoles.Count)
+                maxIC = RoleGenManager.IntruderConcealingRoles.Count;
+
+            if (maxID > RoleGenManager.IntruderDeceptionRoles.Count)
+                maxID = RoleGenManager.IntruderDeceptionRoles.Count;
+
+            if (maxIK > RoleGenManager.IntruderKillingRoles.Count)
+                maxIK = RoleGenManager.IntruderKillingRoles.Count;
+
+            if (maxIS > RoleGenManager.IntruderSupportRoles.Count)
+                maxIS = RoleGenManager.IntruderSupportRoles.Count;
+
+            if (maxIH > RoleGenManager.IntruderHeadRoles.Count)
+                maxIH = RoleGenManager.IntruderHeadRoles.Count;
+
+            var maxIntSum = maxIC + maxID + maxIK + maxIS + maxIH;
+
+            while (maxIntSum > maxInt)
+            {
+                switch (URandom.RandomRangeInt(0, 5))
+                {
+                    case 0:
+                    {
+                        if (maxIC > 0)
+                            maxIC--;
+
+                        break;
+                    }
+                    case 1:
+                    {
+                        if (maxID > 0)
+                            maxID--;
+
+                        break;
+                    }
+                    case 2:
+                    {
+                        if (maxIK > 0)
+                            maxIK--;
+
+                        break;
+                    }
+                    case 3:
+                    {
+                        if (maxIS > 0)
+                            maxIS--;
+
+                        break;
+                    }
+                    case 4:
+                    {
+                        if (maxIH > 0)
+                            maxIH--;
+
+                        break;
+                    }
+                }
+
+                maxIntSum = maxIC + maxID + maxIK + maxIS + maxIH;
+            }
+
             filter.Filter(RoleGenManager.IntruderConcealingRoles, maxIC);
             filter.Filter(RoleGenManager.IntruderDeceptionRoles, maxID);
             filter.Filter(RoleGenManager.IntruderKillingRoles, maxIK);
@@ -246,82 +248,83 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         if (Neutrals == 0)
             return;
 
-        int maxNE = NeutralEvilSettings.MaxNE;
-        int maxNB = NeutralBenignSettings.MaxNB;
-        int maxNK = NeutralKillingSettings.MaxNK;
-        int maxNN = NeutralNeophyteSettings.MaxNN;
-        int maxNH = NeutralHarbingerSettings.MaxNH;
         int minNeut = NeutralSettings.NeutralMin;
         int maxNeut = NeutralSettings.NeutralMax;
 
         if (minNeut > maxNeut)
             (maxNeut, minNeut) = (minNeut, maxNeut);
 
-        if (maxNE > RoleGenManager.NeutralEvilRoles.Count)
-            maxNE = RoleGenManager.NeutralEvilRoles.Count;
-
-        if (maxNB > RoleGenManager.NeutralBenignRoles.Count)
-            maxNB = RoleGenManager.NeutralBenignRoles.Count;
-
-        if (maxNK > RoleGenManager.NeutralKillingRoles.Count)
-            maxNK = RoleGenManager.NeutralKillingRoles.Count;
-
-        if (maxNN > RoleGenManager.NeutralNeophyteRoles.Count)
-            maxNN = RoleGenManager.NeutralNeophyteRoles.Count;
-
-        if (maxNH > RoleGenManager.NeutralHarbingerRoles.Count)
-            maxNH = RoleGenManager.NeutralHarbingerRoles.Count;
-
-        var maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
-
-        while (maxNeutSum > maxNeut)
-        {
-            switch (URandom.RandomRangeInt(0, 5))
-            {
-                case 0:
-                {
-                    if (maxNE > 0)
-                        maxNE--;
-
-                    break;
-                }
-                case 1:
-                {
-                    if (maxNB > 0)
-                        maxNB--;
-
-                    break;
-                }
-                case 2:
-                {
-                    if (maxNK > 0)
-                        maxNK--;
-
-                    break;
-                }
-                case 3:
-                {
-                    if (maxNN > 0)
-                        maxNN--;
-
-                    break;
-                }
-                case 4:
-                {
-                    if (maxNH > 0)
-                        maxNH--;
-
-                    break;
-                }
-            }
-
-            maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
-        }
-
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
+            int maxNE = NeutralEvilSettings.MaxNE;
+            int maxNB = NeutralBenignSettings.MaxNB;
+            int maxNK = NeutralKillingSettings.MaxNK;
+            int maxNN = NeutralNeophyteSettings.MaxNN;
+            int maxNH = NeutralHarbingerSettings.MaxNH;
+
+            if (maxNE > RoleGenManager.NeutralEvilRoles.Count)
+                maxNE = RoleGenManager.NeutralEvilRoles.Count;
+
+            if (maxNB > RoleGenManager.NeutralBenignRoles.Count)
+                maxNB = RoleGenManager.NeutralBenignRoles.Count;
+
+            if (maxNK > RoleGenManager.NeutralKillingRoles.Count)
+                maxNK = RoleGenManager.NeutralKillingRoles.Count;
+
+            if (maxNN > RoleGenManager.NeutralNeophyteRoles.Count)
+                maxNN = RoleGenManager.NeutralNeophyteRoles.Count;
+
+            if (maxNH > RoleGenManager.NeutralHarbingerRoles.Count)
+                maxNH = RoleGenManager.NeutralHarbingerRoles.Count;
+
+            var maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
+
+            while (maxNeutSum > maxNeut)
+            {
+                switch (URandom.RandomRangeInt(0, 5))
+                {
+                    case 0:
+                    {
+                        if (maxNE > 0)
+                            maxNE--;
+
+                        break;
+                    }
+                    case 1:
+                    {
+                        if (maxNB > 0)
+                            maxNB--;
+
+                        break;
+                    }
+                    case 2:
+                    {
+                        if (maxNK > 0)
+                            maxNK--;
+
+                        break;
+                    }
+                    case 3:
+                    {
+                        if (maxNN > 0)
+                            maxNN--;
+
+                        break;
+                    }
+                    case 4:
+                    {
+                        if (maxNH > 0)
+                            maxNH--;
+
+                        break;
+                    }
+                }
+
+                maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
+            }
+
             filter.Filter(RoleGenManager.NeutralBenignRoles, maxNB);
             filter.Filter(RoleGenManager.NeutralEvilRoles, maxNE);
             filter.Filter(RoleGenManager.NeutralKillingRoles, maxNK);
@@ -357,71 +360,72 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         if (Syndicate == 0)
             return;
 
-        int maxSSu = SyndicateSupportSettings.MaxSSu;
-        int maxSD = SyndicateDisruptionSettings.MaxSD;
-        int maxSyK = SyndicateKillingSettings.MaxSyK;
-        int maxSP = SyndicatePowerSettings.MaxSP;
         int minSyn = SyndicateSettings.SyndicateMin;
         int maxSyn = SyndicateSettings.SyndicateMax;
 
         if (minSyn > maxSyn)
             (maxSyn, minSyn) = (minSyn, maxSyn);
 
-        if (maxSSu > RoleGenManager.SyndicateSupportRoles.Count)
-            maxSSu = RoleGenManager.SyndicateSupportRoles.Count;
-
-        if (maxSD > RoleGenManager.SyndicateDisruptionRoles.Count)
-            maxSD = RoleGenManager.SyndicateDisruptionRoles.Count;
-
-        if (maxSyK > RoleGenManager.SyndicateKillingRoles.Count)
-            maxSyK = RoleGenManager.SyndicateKillingRoles.Count;
-
-        if (maxSP > RoleGenManager.SyndicatePowerRoles.Count)
-            maxSP = RoleGenManager.SyndicatePowerRoles.Count;
-
-        var maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
-
-        while (maxSynSum > maxSyn)
-        {
-            switch (URandom.RandomRangeInt(0, 4))
-            {
-                case 0:
-                {
-                    if (maxSSu > 0)
-                        maxSSu--;
-
-                    break;
-                }
-                case 1:
-                {
-                    if (maxSD > 0)
-                        maxSD--;
-
-                    break;
-                }
-                case 2:
-                {
-                    if (maxSyK > 0)
-                        maxSyK--;
-
-                    break;
-                }
-                case 3:
-                {
-                    if (maxSP > 0)
-                        maxSP--;
-
-                    break;
-                }
-            }
-
-            maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
-        }
-
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
+            int maxSSu = SyndicateSupportSettings.MaxSSu;
+            int maxSD = SyndicateDisruptionSettings.MaxSD;
+            int maxSyK = SyndicateKillingSettings.MaxSyK;
+            int maxSP = SyndicatePowerSettings.MaxSP;
+
+            if (maxSSu > RoleGenManager.SyndicateSupportRoles.Count)
+                maxSSu = RoleGenManager.SyndicateSupportRoles.Count;
+
+            if (maxSD > RoleGenManager.SyndicateDisruptionRoles.Count)
+                maxSD = RoleGenManager.SyndicateDisruptionRoles.Count;
+
+            if (maxSyK > RoleGenManager.SyndicateKillingRoles.Count)
+                maxSyK = RoleGenManager.SyndicateKillingRoles.Count;
+
+            if (maxSP > RoleGenManager.SyndicatePowerRoles.Count)
+                maxSP = RoleGenManager.SyndicatePowerRoles.Count;
+
+            var maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
+
+            while (maxSynSum > maxSyn)
+            {
+                switch (URandom.RandomRangeInt(0, 4))
+                {
+                    case 0:
+                    {
+                        if (maxSSu > 0)
+                            maxSSu--;
+
+                        break;
+                    }
+                    case 1:
+                    {
+                        if (maxSD > 0)
+                            maxSD--;
+
+                        break;
+                    }
+                    case 2:
+                    {
+                        if (maxSyK > 0)
+                            maxSyK--;
+
+                        break;
+                    }
+                    case 3:
+                    {
+                        if (maxSP > 0)
+                            maxSP--;
+
+                        break;
+                    }
+                }
+
+                maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
+            }
+
             filter.Filter(RoleGenManager.SyndicateSupportRoles, maxSSu);
             filter.Filter(RoleGenManager.SyndicateDisruptionRoles, maxSD);
             filter.Filter(RoleGenManager.SyndicateKillingRoles, maxSyK);

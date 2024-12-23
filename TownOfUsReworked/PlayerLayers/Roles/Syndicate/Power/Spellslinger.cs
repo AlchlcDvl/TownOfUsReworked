@@ -26,7 +26,7 @@ public class Spellslinger : Syndicate, IHexer
         Alignment = Alignment.SyndicatePower;
         Spelled = [];
         SpellCount = 0;
-        SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Alive, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(SpellCd), "SPELLBIND", (DifferenceFunc)Difference,
+        SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(SpellCd), "SPELLBIND", (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception1);
     }
 

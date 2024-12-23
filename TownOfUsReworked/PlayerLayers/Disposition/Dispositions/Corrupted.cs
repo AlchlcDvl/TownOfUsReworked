@@ -24,7 +24,7 @@ public class Corrupted : Disposition
     public override void Init()
     {
         base.Init();
-        CorruptButton ??= new(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Alive, KeybindType.Quarternary, (OnClickPlayer)Corrupt, new Cooldown(CorruptCd));
+        CorruptButton ??= new(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)Corrupt, new Cooldown(CorruptCd));
         Player.GetRole().Faction = Faction.Neutral;
     }
 

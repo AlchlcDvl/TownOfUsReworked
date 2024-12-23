@@ -8,14 +8,14 @@ public static class VisorsTabOnEnablePatch
 {
     private static TMP_Text Template;
 
-    private static float CreateVisorPackage(List<VisorData> visors, string packageName, float YStart, VisorsTab __instance)
+    private static void CreateVisorPackage(List<VisorData> visors, string packageName, ref float yStart, VisorsTab __instance)
     {
         var isDefaultPackage = "Innersloth" == packageName;
 
         if (!isDefaultPackage)
             visors = [ .. visors.OrderBy(x => x.name) ];
 
-        var offset = YStart;
+        var offset = yStart;
 
         if (Template)
         {
@@ -23,7 +23,7 @@ public static class VisorsTabOnEnablePatch
             var material = title.GetComponent<MeshRenderer>().material;
             material.SetFloat("_StencilComp", 4f);
             material.SetFloat("_Stencil", 1f);
-            title.transform.localPosition = new(2.25f, YStart, -1f);
+            title.transform.localPosition = new(2.25f, offset, -1f);
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
@@ -72,16 +72,17 @@ public static class VisorsTabOnEnablePatch
             __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
             var colorId = __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
 
-            if (CustomVisorViewDatas.TryGetValue(visor.ProductId, out var data))
+            if (CustomVisorViewDatas.TryGetValue(visor.ProductId, out var data) && data)
                 ColorChipFix(colorChip, data.IdleFrame, colorId);
             else
                 visor.SetPreview(colorChip.Inner.FrontLayer, colorId);
 
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             __instance.ColorChips.Add(colorChip);
+            yStart = ypos;
         }
 
-        return offset - ((visors.Count - 1) / __instance.NumPerRow * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset) - 1.5f;
+        yStart -= 1.5f;
     }
 
     private static void ColorChipFix(ColorChip chip, Sprite sprite, int colorId)
@@ -124,7 +125,6 @@ public static class VisorsTabOnEnablePatch
             value.Add(data);
         }
 
-        var yOffset = __instance.YStart;
         Template = __instance.transform.FindChild("Text").GetComponent<TMP_Text>();
         var keys = packages.Keys.OrderBy(x => x switch
         {
@@ -133,15 +133,16 @@ public static class VisorsTabOnEnablePatch
             "Misc" => 3,
             _ => 2
         });
-        keys.ForEach(key => yOffset = CreateVisorPackage(packages[key], key, yOffset, __instance));
+        var yOffset = __instance.YStart;
+        keys.ForEach(key => CreateVisorPackage(packages[key], key, ref yOffset, __instance));
+        __instance.visorId = DataManager.Player.Customization.Visor;
+        __instance.currentVisorIsEquipped = true;
+        __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
+        __instance.scroller.UpdateScrollBars();
 
         if (array.Length != 0)
             __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);
 
-        __instance.visorId = DataManager.Player.Customization.Visor;
-        __instance.currentVisorIsEquipped = true;
-        __instance.SetScrollerBounds();
-        __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
         return false;
     }
 }

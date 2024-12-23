@@ -32,7 +32,7 @@ public class Troll : Evil
     {
         base.Init();
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
-        InteractButton ??= new(this, new SpriteName("Interact"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Interact, new Cooldown(InteractCd), "INTERACT",
+        InteractButton ??= new(this, new SpriteName("Interact"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interact, new Cooldown(InteractCd), "INTERACT",
             (UsableFunc)Usable);
     }
 

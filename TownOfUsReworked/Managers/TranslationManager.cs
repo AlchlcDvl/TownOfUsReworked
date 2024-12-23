@@ -29,11 +29,11 @@ public static class TranslationManager
         }
     }
 
-    public static bool IdExists(string id) => AllTranslations.ContainsKey(id);
-
     public static string Translate(string id, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, null);
 
     public static string Translate(string id, string language, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, language);
+
+    public static bool IdExists(string id) => AllTranslations.ContainsKey(id);
 
     public static string Test(string id)
     {

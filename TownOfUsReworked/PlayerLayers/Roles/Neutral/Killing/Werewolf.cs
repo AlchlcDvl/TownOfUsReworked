@@ -31,7 +31,7 @@ public class Werewolf : NKilling
     {
         base.Init();
         Objectives = () => "- Maul anyone who can oppose you";
-        MaulButton ??= new(this, new SpriteName("Maul"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Maul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
+        MaulButton ??= new(this, new SpriteName("Maul"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Maul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception);
     }
 

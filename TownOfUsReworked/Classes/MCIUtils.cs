@@ -156,8 +156,8 @@ public static class MCIUtils
         PlayerLayer.LocalLayers().ForEach(x => x.EnteringLayer());
 
         Chat().SetVisible(newPlayer.CanChat());
-        newPlayer.RpcCustomSnapTo(pos2);
-        savedPlayer.RpcCustomSnapTo(pos);
+        newPlayer.CustomSnapTo(pos2);
+        savedPlayer.CustomSnapTo(pos);
     }
 
     public static void SetForegroundForAlive(this MeetingHud __instance)

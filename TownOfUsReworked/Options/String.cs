@@ -28,18 +28,10 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
         str.TitleText.SetText(TranslationManager.Translate(ID));
         str.Values = new(0);
 
-        if (!AmongUsClient.Instance.AmHost && !ClientOnly)
+        if (!AmongUsClient.Instance.AmHost || (IsInGame() && !ClientOnly))
         {
-            foreach (var button2 in str.buttons)
-            {
-                button2.GetComponentsInChildren<SpriteRenderer>(true).ForEach(x => x.color = Palette.DisabledGrey);
-
-                if (button2 is GameOptionButton goButton)
-                {
-                    goButton.interactableHoveredColor = goButton.interactableClickColor = Palette.DisabledGrey.Shadow();
-                    goButton.interactableColor = Palette.DisabledGrey;
-                }
-            }
+            str.PlusBtn.gameObject.SetActive(false);
+            str.MinusBtn.gameObject.SetActive(false);
         }
 
         Update();

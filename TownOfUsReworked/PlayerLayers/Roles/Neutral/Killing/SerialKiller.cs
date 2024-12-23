@@ -34,7 +34,7 @@ public class SerialKiller : NKilling
         Objectives = () => "- Stab anyone who can oppose you";
         BloodlustButton ??= new(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Lust, new Cooldown(BloodlustCd), (EndFunc)EndEffect,
             new Duration(BloodlustDur), "BLOODLUST");
-        StabButton ??= new(this, new SpriteName("Stab"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Stab, new Cooldown(StabCd), "STAB", (PlayerBodyExclusion)Exception,
+        StabButton ??= new(this, new SpriteName("Stab"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stab, new Cooldown(StabCd), "STAB", (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);
     }
 

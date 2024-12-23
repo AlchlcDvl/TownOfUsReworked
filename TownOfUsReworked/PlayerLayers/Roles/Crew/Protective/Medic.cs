@@ -28,7 +28,7 @@ public class Medic : Crew, IShielder
         base.Init();
         ShieldedPlayer = null;
         Alignment = Alignment.CrewProt;
-        ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)Exception,
+        ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);
     }
 

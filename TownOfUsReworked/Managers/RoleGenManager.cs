@@ -102,7 +102,7 @@ public static class RoleGenManager
     public static readonly LayerEnum[] GlobalAb = [ LayerEnum.Radar, LayerEnum.Tiebreaker ];
 
     public static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6 ];
-    public static readonly List<byte> CustomSpawns = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+    public static readonly List<byte> CustomSpawns = [ .. Spawns, 7, 8, 9 ];
 
     private static readonly TargetGen Targets = new();
     private static readonly ModifierGen Modifiers = new();
@@ -141,6 +141,9 @@ public static class RoleGenManager
         LayerEnum.Banshee => SyndicateUtilityRoles.Banshee,
         LayerEnum.Phantom => NeutralProselyteRoles.Phantom,
         LayerEnum.Pestilence => Options.NeutralHarbingerRoles.Plaguebearer,
+        LayerEnum.Linked => Options.Dispositions.Linked,
+        LayerEnum.Lovers => Options.Dispositions.Lovers,
+        LayerEnum.Rivals => Options.Dispositions.Rivals,
         LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 15, false, false, id),
         _ => OptionAttribute.GetOptions<LayerOptionAttribute>().TryFinding(x => x.Layer == id, out var result) ? result.Get() : new(0, 0, false, false, id)
     };
@@ -309,16 +312,8 @@ public static class RoleGenManager
 
         var allPlayers = AllPlayers();
 
-        if (GameModifiers.PurePlayers)
-        {
+        if (GameModifiers.PurePlayers && allPlayers.Any(x => x.Is<Neophyte>()))
             Pure = allPlayers.Random();
-
-            if (Pure)
-            {
-                CallRpc(CustomRPC.Misc, MiscRPC.SyncPure, Pure);
-                Message("Synced Pure Player");
-            }
-        }
 
         if (gen.AllowNonRoles)
         {
@@ -347,18 +342,18 @@ public static class RoleGenManager
         gen.PostAssignment();
 
         Convertible = (byte)allPlayers.Count(x => x.Is(SubFaction.None) && x != Pure);
-        CallRpc(CustomRPC.Misc, MiscRPC.SyncConvertible, Convertible);
 
         if (MapPatches.CurrentMap == 4)
-        {
             BetterAirship.SpawnPoints.AddRange((BetterAirship.EnableCustomSpawns ? CustomSpawns : Spawns).GetRandomRange(3));
-            CallRpc(CustomRPC.Misc, MiscRPC.SetSpawnAirship, BetterAirship.SpawnPoints);
-        }
 
-        if (TownOfUsReworked.IsTest)
-            Message($"{"Name", -6} -> {"Role", -14} | {"Disposition", -11} | {"Modifier", -12} | {"Ability", -12}");
+        CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
+            BetterAirship.SpawnPoints);
 
-        CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls);
+        var maxName = 4;
+        var maxRole = 4;
+        var maxDisp = 11;
+        var maxMod = 8;
+        var maxAb = 7;
 
         foreach (var player in allPlayers)
         {
@@ -369,7 +364,50 @@ public static class RoleGenManager
             RoleManager.Instance.SetRole(player, (RoleTypes)100);
 
             if (TownOfUsReworked.IsTest)
-                Message($"{player.name, -6} -> {role, -14} | {disp, -11} | {mod, -12} | {ab, -12}");
+            {
+                var name = player.name;
+                var roleStr = role.ToString();
+                var dispStr = disp.ToString();
+                var modStr = mod.ToString();
+                var abStr = ab.ToString();
+
+                if (name.Length > maxName)
+                    maxName = name.Length;
+
+                if (roleStr.Length > maxRole)
+                    maxRole = roleStr.Length;
+
+                if (dispStr.Length > maxDisp)
+                    maxDisp = dispStr.Length;
+
+                if (modStr.Length > maxMod)
+                    maxMod = modStr.Length;
+
+                if (abStr.Length > maxAb)
+                    maxAb = abStr.Length;
+            }
+        }
+
+        if (TownOfUsReworked.IsTest)
+        {
+            Message($"| {"Name".PadCenter(maxName)} -> {"Role".PadCenter(maxRole)} | {"Disposition".PadCenter(maxDisp)} | {"Modifier".PadCenter(maxMod)} | {"Ability".PadCenter(maxAb)} |");
+            Message($"| {"-".Repeat(maxName)} -> {"-".Repeat(maxRole)} | {"-".Repeat(maxDisp)} | {"-".Repeat(maxMod)} | {"-".Repeat(maxAb)} |");
+
+            foreach (var player in allPlayers)
+            {
+                var role = player.GetRole();
+                var mod = player.GetModifier();
+                var ab = player.GetAbility();
+                var disp = player.GetDisposition();
+
+                var name = player.name;
+                var roleStr = role.ToString();
+                var dispStr = disp.ToString();
+                var modStr = mod.ToString();
+                var abStr = ab.ToString();
+
+                Message($"| {name.PadCenter(maxName)} -> {roleStr.PadCenter(maxRole)} | {dispStr.PadCenter(maxDisp)} | {modStr.PadCenter(maxMod)} | {abStr.PadCenter(maxAb)} |");
+            }
         }
 
         Message("Gen Ended");

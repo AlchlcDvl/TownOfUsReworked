@@ -31,7 +31,7 @@ public class Detective : Crew
     {
         base.Init();
         Alignment = Alignment.CrewInvest;
-        ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Examine, new Cooldown(ExamineCd));
+        ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Examine, new Cooldown(ExamineCd));
     }
 
     public void Examine(PlayerControl target)

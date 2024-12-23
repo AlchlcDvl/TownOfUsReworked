@@ -15,7 +15,7 @@ public abstract class Intruder : Role
         base.Init();
         Faction = Faction.Intruder;
         Objectives = () => IntrudersWinCon;
-        KillButton ??= new(this, new SpriteName("IntruderKill"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
+        KillButton ??= new(this, new SpriteName("IntruderKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception, FactionColor);
     }
 

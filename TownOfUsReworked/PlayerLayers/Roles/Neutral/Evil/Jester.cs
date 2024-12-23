@@ -38,7 +38,7 @@ public class Jester : Evil
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
         {
-            HauntButton ??= new(this, new SpriteName("Haunt"), AbilityTypes.Alive, KeybindType.ActionSecondary, (OnClickPlayer)Haunt, (PlayerBodyExclusion)Exception, new PostDeath(true),
+            HauntButton ??= new(this, new SpriteName("Haunt"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Haunt, (PlayerBodyExclusion)Exception, new PostDeath(true),
                 "HAUNT", (UsableFunc)Usable);
         }
     }

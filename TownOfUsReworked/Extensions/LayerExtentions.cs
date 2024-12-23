@@ -502,7 +502,7 @@ public static class LayerExtentions
         else if (player.inVent || GameModifiers.WhoCanVent == WhoCanVentOptions.Everyone)
             return true;
         else if (playerInfo.IsDead)
-            return !player.Caught();
+            return player.IsPostmortal() && !player.Caught() && player.inVent;
 
         var playerRole = player.GetRole();
         var mainflag = false;
@@ -517,13 +517,13 @@ public static class LayerExtentions
             mainflag = Mafia.MafVent;
         else if (player.Is<Corrupted>())
             mainflag = Corrupted.CorruptedVent;
-        else if (playerRole.IsRecruit)
+        else if (playerRole.IsRecruit && playerRole.Alignment != Alignment.NeutralNeo)
             mainflag = Jackal.RecruitVent;
-        else if (playerRole.IsResurrected)
+        else if (playerRole.IsResurrected && playerRole.Alignment != Alignment.NeutralNeo)
             mainflag = Necromancer.ResurrectVent;
-        else if (playerRole.IsPersuaded)
+        else if (playerRole.IsPersuaded && playerRole.Alignment != Alignment.NeutralNeo)
             mainflag = Whisperer.PersuadedVent;
-        else if (playerRole.IsBitten)
+        else if (playerRole.IsBitten && playerRole.Alignment != Alignment.NeutralNeo)
             mainflag = Dracula.UndeadVent;
         else if (playerRole is Syndicate syn)
             mainflag = (syn.HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
@@ -551,12 +551,16 @@ public static class LayerExtentions
                         mainflag = Grenadier.GrenadierVent;
                     else if (gf.IsTele)
                         mainflag = Teleporter.TeleVent;
+                    else
+                        mainflag = true;
+                }
+                else if ((playerRole is Morphling && !Morphling.MorphlingVent) || (playerRole is Wraith && !Wraith.WraithVent) || (playerRole is Grenadier && !Grenadier.GrenadierVent) ||
+                    (playerRole is Teleporter && !Teleporter.TeleVent))
+                {
+                    mainflag = false;
                 }
                 else
-                {
-                    mainflag = (playerRole is Morphling && !Morphling.MorphlingVent) || (playerRole is Wraith && !Wraith.WraithVent) || (playerRole is Grenadier && !Grenadier.GrenadierVent) ||
-                        (playerRole is Teleporter && !Teleporter.TeleVent);
-                }
+                    mainflag = true;
             }
             else
                 mainflag = false;
@@ -570,12 +574,12 @@ public static class LayerExtentions
         {
             if (NeutralSettings.NeutralsVent)
             {
-                if (player.TryGetLayer<SerialKiller>(out var sk))
+                if (playerRole is SerialKiller sk)
                 {
                     mainflag = SerialKiller.SKVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SKVentOptions == 1) || (!sk.BloodlustButton.EffectActive &&
                         (int)SerialKiller.SKVentOptions == 2);
                 }
-                else if (player.TryGetLayer<Werewolf>(out var ww))
+                else if (playerRole is Werewolf ww)
                     mainflag = Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 3);
                 else
                 {
@@ -590,8 +594,6 @@ public static class LayerExtentions
             else
                 mainflag = false;
         }
-        else if (player.IsPostmortal() && player.inVent)
-            mainflag = true;
 
         return mainflag;
     }
@@ -802,6 +804,12 @@ public static class LayerExtentions
                     player.myTasks.Remove(task3);
             }
         } catch {}
+    }
+
+    public static void RoleUpdate(this Role newRole, PlayerControl player, Role former = null, bool retainFaction = false)
+    {
+        former ??= player.GetRole();
+        newRole.RoleUpdate(former, player, retainFaction);
     }
 
     public static void RoleUpdate(this Role newRole, Role former, PlayerControl player = null, bool retainFaction = false)

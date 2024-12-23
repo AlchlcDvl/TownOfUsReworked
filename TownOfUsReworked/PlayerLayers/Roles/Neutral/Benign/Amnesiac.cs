@@ -36,7 +36,7 @@ public class Amnesiac : Neutral
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows = [];
-        RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Dead, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");
+        RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -52,7 +52,7 @@ public class Amnesiac : Neutral
         BodyArrows.Clear();
     }
 
-    public void TurnThief() => new Thief().RoleUpdate(this, Player);
+    public void TurnThief() => new Thief().RoleUpdate(this);
 
     public void Remember(DeadBody target)
     {
