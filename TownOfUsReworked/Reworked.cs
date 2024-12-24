@@ -43,6 +43,7 @@ public partial class TownOfUsReworked
         AllMonos.RegisterMonos();
         SetUpConfigs();
         LoadAssets();
+        CustomStatsManager.Setup();
         IL2CPPChainloader.Instance.Finished += Initialise;
     }
 }

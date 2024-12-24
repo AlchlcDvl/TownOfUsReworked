@@ -16,7 +16,7 @@ public class Rivals : Disposition
     public override string Name => "Rivals";
     public override string Symbol => "α";
     public override LayerEnum Type => LayerEnum.Rivals;
-    public override Func<string> Description => () => OtherRival.HasDied() ? "- Live to the final 2" : $"- Get {OtherRival.Data.PlayerName} killed";
+    public override Func<string> Description => () => OtherRival.HasDied() ? "- Live to the final 2" : $"- Get {OtherRival.name} killed";
 
     public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Rivals;
 }

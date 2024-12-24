@@ -12,7 +12,7 @@ public class ToggleOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
         var toggle = Setting.Cast<ToggleOption>();
         toggle.TitleText.SetText(TranslationManager.Translate(ID));
 
-        if (!AmongUsClient.Instance.AmHost || (IsInGame() && !ClientOnly))
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly)
         {
             toggle.CheckMark.transform.parent.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.enabled = x != toggle.CheckMark);
             toggle.GetComponentInChildren<PassiveButton>().enabled = false;

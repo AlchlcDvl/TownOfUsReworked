@@ -11,13 +11,13 @@ public class TargetGen : BaseGen
             foreach (var ally in PlayerLayer.GetLayers<Allied>())
             {
                 var alliedRole = ally.Player.GetRole();
-                var factions = new byte[] { 1, 3, 0 };
-                var faction = (Faction)(Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions[(int)Allied.AlliedFaction - 1]);
+                var factions = new List<Faction>() { Faction.Crew, Faction.Intruder, Faction.Syndicate };
+                var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions[(int)Allied.AlliedFaction - 1];
                 ally.Side = alliedRole.Faction = faction;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
             }
 
-            Message("Allied Faction Set Done");
+            Message("Allied Factions Set");
         }
 
         if (GetSpawnItem(LayerEnum.Lovers).IsActive())

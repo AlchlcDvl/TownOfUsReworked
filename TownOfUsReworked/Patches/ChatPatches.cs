@@ -84,7 +84,7 @@ public static class ChatPatches
             {
                 foreach (var player in AllPlayers())
                 {
-                    if (chat.NameText.text.Contains(player.Data.PlayerName))
+                    if (chat.NameText.text.Contains(player.name))
                     {
                         var role = player.GetRole();
 
@@ -103,7 +103,7 @@ public static class ChatPatches
                                 chat.NameText.color = UColor.white;
                         }
 
-                        if (GameModifiers.Whispers && !chat.NameText.text.Contains($"[#{player.PlayerId}]"))
+                        if (GameModifiers.Whispers && !chat.NameText.text.StartsWith($"[#{player.PlayerId}]"))
                             chat.NameText.SetText($"[#{player.PlayerId}] {chat.NameText.text}");
                     }
                 }
@@ -164,7 +164,7 @@ public static class ChatPatches
             return false;
 
         if ((ChatHistory.Count == 0 || ChatHistory[^1].Contains(chatText)) && !chatText.StartsWith("/"))
-            ChatHistory.Add($"{sourcePlayer.Data.PlayerName}: {chatText}");
+            ChatHistory.Add($"{sourcePlayer.name}: {chatText}");
 
         if (__instance != Chat())
             return true;
@@ -326,8 +326,8 @@ public static class ChatPatches
         var theme = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
         var invert = ClientOptions.UseDarkTheme ? UColor.black : UColor.white;
 
-        bubble.TextArea.color = bubble.TextArea.text.ContainsAny($"#{CustomPlayer.Local.PlayerId}", $"#({CustomPlayer.Local.Data.PlayerName})") ? invert : theme;
-        bubble.Background.color = (bubble.TextArea.text.ContainsAny($"#{CustomPlayer.Local.PlayerId}", $"#({CustomPlayer.Local.Data.PlayerName})") ? theme : invert)
+        bubble.TextArea.color = bubble.TextArea.text.ContainsAny($"#{CustomPlayer.Local.PlayerId}", $"#{CustomPlayer.Local.name}", $"#({CustomPlayer.Local.name})") ? invert : theme;
+        bubble.Background.color = (bubble.TextArea.text.ContainsAny($"#{CustomPlayer.Local.PlayerId}", $"#{CustomPlayer.Local.name}", $"#({CustomPlayer.Local.name})") ? theme : invert)
             .SetAlpha(bubble.Xmark.enabled ? 0.5f : 1f);
     }
 
@@ -385,7 +385,7 @@ public static class ChatNotifFixPatch
         __instance.gameObject.SetActive(true);
         __instance.SetCosmetics(sender.Data);
         __instance.playerColorText.SetText(__instance.player.ColorBlindName);
-        __instance.playerNameText.SetText(sender.Data.PlayerName.IsNullOrWhiteSpace() ? "..." : sender.Data.PlayerName);
+        __instance.playerNameText.SetText(sender.name.IsNullOrWhiteSpace() ? "..." : sender.name);
         __instance.playerNameText.color = Palette.TextColors[__instance.player.ColorId];
         __instance.playerNameText.outlineColor = Palette.TextOutlineColors[__instance.player.ColorId];
         __instance.chatText.richText = true;

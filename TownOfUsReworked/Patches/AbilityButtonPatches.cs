@@ -44,15 +44,15 @@ public static class ActionButtonPatches
     {
         var percentCool = Mathf.Clamp((maxTimer - timer) / maxTimer, 0f, 1f);
         __instance.isCoolingDown = percentCool > 0f;
-        __instance.graphic.transform.localPosition = __instance.position + (Vector3)(URandom.insideUnitCircle * (percentCool < 0.1f ? URandom.Range(-0.05f, 0.051f) : 0f));
+        __instance.graphic.transform.localPosition = __instance.position + (Vector3)(URandom.insideUnitCircle * (percentCool > 0.9f ? URandom.Range(-0.05f, 0.051f) : 0f));
         __instance.cooldownTimerText.SetText($"{Mathf.CeilToInt(timer)}");
         __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
         __instance.SetCooldownFill(percentCool);
         __instance.cooldownTimerText.color = percentCool switch
         {
-            > 0.5f => UColor.white,
-            > 0.1f => UColor.yellow,
-            _ => UColor.red
+            > 0.9f => UColor.red,
+            > 0.5f => UColor.yellow,
+            _ => UColor.white
         };
         return false;
     }

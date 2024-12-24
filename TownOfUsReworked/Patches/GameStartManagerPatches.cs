@@ -159,7 +159,7 @@ public static class GameStartManagerPatches
                         // Somehow something's still not matching, so just display that the player has something wrong
                         versionMismatch = true;
                         message += $"You or {client.PlayerName} somehow still has a version mismatch, please share logs\n";
-                        Warning($"{client.PlayerName}\nGuid - {pv.GuidMatches} Version String - {pv.VersionFinal} Version - {pv.Version}\n\n{CustomPlayer.Local.Data.PlayerName}\nGuid - "
+                        Warning($"{client.PlayerName}\nGuid - {pv.GuidMatches} Version String - {pv.VersionFinal} Version - {pv.Version}\n\n{CustomPlayer.Local.name}\nGuid - "
                             + $"{SelfVersion.GuidMatches} Version String - {SelfVersion.VersionFinal} Version - {SelfVersion.Version}");
                     }
                 }

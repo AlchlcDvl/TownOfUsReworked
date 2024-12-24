@@ -28,7 +28,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
         str.TitleText.SetText(TranslationManager.Translate(ID));
         str.Values = new(0);
 
-        if (!AmongUsClient.Instance.AmHost || (IsInGame() && !ClientOnly))
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly)
         {
             str.PlusBtn.gameObject.SetActive(false);
             str.MinusBtn.gameObject.SetActive(false);

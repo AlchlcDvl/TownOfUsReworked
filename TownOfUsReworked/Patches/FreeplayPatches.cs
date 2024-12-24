@@ -108,7 +108,7 @@ public static class FreeplayPatches
         var num = 0f;
         var num2 = 0f;
         var num3 = 0f;
-        taskFolder.SubFolders = taskFolder.SubFolders.ToArray().OrderBy(x => x.FolderName).ToList().ToIl2Cpp();
+        taskFolder.SubFolders = taskFolder.SubFolders.ToArray().OrderBy(x => x.FolderName).ToIl2Cpp();
 
         foreach (var sub in taskFolder.SubFolders)
         {
@@ -185,7 +185,7 @@ public static class FreeplayPatches
         else
         {
             var flag = false;
-            taskFolder.Children = taskFolder.Children.ToArray().OrderBy(t => t.TaskType).ToList().ToIl2Cpp();
+            taskFolder.Children = taskFolder.Children.ToArray().OrderBy(t => t.TaskType).ToIl2Cpp();
 
             foreach (var task in taskFolder.Children)
             {

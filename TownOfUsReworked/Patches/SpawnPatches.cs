@@ -12,6 +12,7 @@ public static class SpawnPatches
 
     private static void DoTheThing(bool intro = false, bool meeting = false)
     {
+        ShowRolePatch.Starting = false;
         Chat()?.SetVisible(CustomPlayer.Local.CanChat());
 
         if (intro && CustomPlayer.Local.Data.Role is LayerHandler handler)

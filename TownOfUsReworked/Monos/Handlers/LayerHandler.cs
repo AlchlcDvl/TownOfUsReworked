@@ -181,14 +181,29 @@ public class LayerHandler : RoleBehaviour
     public override void Initialize(PlayerControl player)
     {
         Player = player;
+
         SetUpLayers();
+
         IntroSound = GetAudio($"{CustomRole}Intro", false) ?? GetAudio($"{(CustomRole.Faction is Faction.Intruder or Faction.Syndicate ? "Impostor" : "Crewmate")}Intro");
+
         InitializeAbilityButton();
 
         CustomRole.PostAssignment();
         CustomAbility.PostAssignment();
         CustomModifier.PostAssignment();
         CustomDisposition.PostAssignment();
+
+        if (player.AmOwner)
+        {
+            CustomStatsManager.IncrementStat(CustomRole.Faction switch
+            {
+                Faction.Crew => CustomStatsManager.StatsGamesCrew,
+                Faction.Intruder => CustomStatsManager.StatsGamesIntruder,
+                Faction.Neutral => CustomStatsManager.StatsGamesNeutral,
+                Faction.Syndicate => CustomStatsManager.StatsGamesSyndicate,
+                _ => StringNames.None
+            });
+        }
     }
 
     public override void OnMeetingStart()

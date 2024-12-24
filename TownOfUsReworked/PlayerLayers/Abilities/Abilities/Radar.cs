@@ -16,13 +16,7 @@ public class Radar : Ability
     public override void UpdateHud(HudManager __instance)
     {
         if (!Dead)
-        {
-            var closest = Player.GetClosestPlayer(ignoreWalls: true);
-            var body = Player.GetClosestBody(ignoreWalls: true);
-            var transform = body && Vector2.Distance(closest.transform.position, Player.transform.position) > Vector2.Distance(body.transform.position, Player.transform.position) ?
-                body.transform : closest.transform;
-            RadarArrow.Update(transform.position);
-        }
+            RadarArrow.Update(Player.GetClosestMono([ Player.GetClosestPlayer(ignoreWalls: true), Player.GetClosestBody(ignoreWalls: true) ], ignoreWalls: true).transform.position);
     }
 
     public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer) => Deinit();

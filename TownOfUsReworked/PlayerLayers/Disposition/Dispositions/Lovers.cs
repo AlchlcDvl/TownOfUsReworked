@@ -19,7 +19,7 @@ public class Lovers : Disposition
     public override string Name => "Lovers";
     public override string Symbol => "♥";
     public override LayerEnum Type => LayerEnum.Lovers;
-    public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.Data.PlayerName}";
+    public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.name}";
 
     public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
     {

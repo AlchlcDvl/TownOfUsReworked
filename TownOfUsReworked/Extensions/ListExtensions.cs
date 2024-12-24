@@ -30,6 +30,8 @@ public static class ListExtensions
 
     public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
 
+    public static void Add<T>(this ISystem.List<T> main, params T[] items) => items.ForEach(main.Add);
+
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
 
     public static IEnumerable<T> ToSystem<T>(this ISystem.List<T> list)
@@ -38,7 +40,7 @@ public static class ListExtensions
             yield return item;
     }
 
-    public static ISystem.List<T> ToIl2Cpp<T>(this List<T> list)
+    public static ISystem.List<T> ToIl2Cpp<T>(this IEnumerable<T> list)
     {
         var newList = new ISystem.List<T>();
         list.ForEach(newList.Add);

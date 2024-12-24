@@ -59,7 +59,7 @@ public class Guesser : Evil
     {
         base.Init();
         RemainingGuesses = MaxGuesses == 0 ? 10000 : MaxGuesses;
-        Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer.Data.PlayerName} was" : (!TargetPlayer ? "- Find someone to be guessed by you" : ("- Guess " +
+        Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer.name} was" : (!TargetPlayer ? "- Find someone to be guessed by you" : ("- Guess " +
             $"{TargetPlayer?.name}'s role"));
         GuessMenu = new(Player, "Guess", GuesserAfterVoting, Guess, IsExempt, SetLists);
         Rounds = 0;

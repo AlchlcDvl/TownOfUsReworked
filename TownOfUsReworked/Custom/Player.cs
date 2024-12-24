@@ -12,7 +12,7 @@ public class CustomPlayer
     public Vector3 SizeFactor => new(0.7f * Size, 0.7f * Size, 1f);
     public float Size => IsLobby() || Dead || Disconnected || HasTask(TaskTypes.MushroomMixupSabotage) ? 1f : Player.GetModifiedSize();
     public NetworkedPlayerInfo.PlayerOutfit DefaultOutfit => Data.DefaultOutfit;
-    public string PlayerName => Data.PlayerName;
+    public string PlayerName => Player.name;
 
     public static PlayerControl Local => PlayerControl.LocalPlayer;
     public static CustomPlayer LocalCustom => Custom(Local);

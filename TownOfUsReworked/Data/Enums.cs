@@ -96,8 +96,8 @@ public enum Faction : byte
     None,
     Crew,
     Intruder,
-    Neutral,
     Syndicate,
+    Neutral,
     GameMode
 }
 
@@ -751,9 +751,9 @@ public enum RevealerCanBeClickedBy : byte
 public enum AlliedFaction : byte
 {
     Random,
+    Crew,
     Intruder,
-    Syndicate,
-    Crew
+    Syndicate
 }
 
 public enum GFActionsRPC : byte

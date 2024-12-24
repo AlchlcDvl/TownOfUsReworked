@@ -6,9 +6,6 @@ public static class PlayerTabPatches
     [HarmonyPatch(nameof(PlayerTab.OnEnable)), HarmonyPostfix]
     public static void OnEnablePostfix(PlayerTab __instance)
     {
-        if (!PlayerCustomizationMenu.Instance)
-            return;
-
         var tab = PlayerCustomizationMenu.Instance.Tabs[1].Tab;
 
         if (!__instance.scroller && tab)
@@ -41,7 +38,7 @@ public static class PlayerTabPatches
             offset = ypos;
         }
 
-        __instance.scroller.ContentYBounds.max = -(offset + 2.75f);
+        __instance.scroller.ContentYBounds.max = -(offset + 1.25f);
         __instance.scroller.UpdateScrollBars();
     }
 

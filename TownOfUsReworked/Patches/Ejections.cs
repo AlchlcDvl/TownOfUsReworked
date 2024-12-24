@@ -29,7 +29,7 @@ public static class ConfirmEjects
         {
             if (ClientOptions.CustomEjects)
             {
-                ejectString = $"{player.Data.PlayerName} " + (MapPatches.CurrentMap switch
+                ejectString = $"{player.name} " + (MapPatches.CurrentMap switch
                 {
                     1 => "is now learning about free fall",
                     2 => "is now enjoying a hot bath",
@@ -41,7 +41,7 @@ public static class ConfirmEjects
                 }) + ".";
             }
             else
-                ejectString = $"{player.Data.PlayerName} was ejected.";
+                ejectString = $"{player.name} was ejected.";
         }
         else
         {
@@ -52,12 +52,12 @@ public static class ConfirmEjects
                 else if (PlayerLayer.GetLayers<Executioner>().Any(x => x.TargetPlayer == player) && Executioner.ExeEjectScreen)
                     ejectString = "The <#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
                 else
-                    ejectString = $"{player.Data.PlayerName} was the {role.ColorString}{role.Name}</color>.";
+                    ejectString = $"{player.name} was the {role.ColorString}{role.Name}</color>.";
             }
             else if (!player.Is(SubFaction.None))
-                ejectString = $"{player.Data.PlayerName} was {role.SubFactionColorString}{role.SubFactionName}</color>.";
+                ejectString = $"{player.name} was {role.SubFactionColorString}{role.SubFactionName}</color>.";
             else
-                ejectString = $"{player.Data.PlayerName} was {role.FactionColorString}{role.FactionName}</color>.";
+                ejectString = $"{player.name} was {role.FactionColorString}{role.FactionName}</color>.";
 
             var totalEvilsCount = AllPlayers().Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
                 !x.HasDied());

@@ -514,7 +514,6 @@ public static class RoleGenManager
     public static void ResetEverything()
     {
         Clear();
-        Targets.Clear();
         Modifiers.Clear();
         Abilities.Clear();
         Dispositions.Clear();

@@ -26,7 +26,7 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
         number.Increment = Increment;
         number.ZeroIsInfinity = ZeroIsInfinity;
 
-        if (!AmongUsClient.Instance.AmHost || (IsInGame() && !ClientOnly))
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly)
         {
             number.PlusBtn.gameObject.SetActive(false);
             number.MinusBtn.gameObject.SetActive(false);

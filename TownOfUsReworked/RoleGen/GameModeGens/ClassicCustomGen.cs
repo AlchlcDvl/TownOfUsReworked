@@ -17,6 +17,12 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         if (minCrew > maxCrew)
             (maxCrew, minCrew) = (minCrew, maxCrew);
 
+        while (maxCrew > Crew)
+            maxCrew--;
+
+        while (minCrew > Crew)
+            minCrew--;
+
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
@@ -110,12 +116,6 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         CrewRoles.AddRanges(RoleGenManager.CrewAuditorRoles, RoleGenManager.CrewInvestigativeRoles, RoleGenManager.CrewKillingRoles, RoleGenManager.CrewSupportRoles,
             RoleGenManager.CrewProtectiveRoles, RoleGenManager.CrewSovereignRoles);
 
-        while (maxCrew > Crew)
-            maxCrew--;
-
-        while (minCrew > Crew)
-            minCrew--;
-
         filter.Filter(CrewRoles, GameModeSettings.IgnoreFactionCaps ? Crew : URandom.RandomRangeInt(minCrew, maxCrew + 1));
 
         while (CrewRoles.Count < Crew)
@@ -141,6 +141,12 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
 
         if (minInt > maxInt)
             (maxInt, minInt) = (minInt, maxInt);
+
+        while (maxInt > Intruders)
+            maxInt--;
+
+        while (minInt > Intruders)
+            minInt--;
 
         var filter = ModeFilters[GameModeSettings.GameMode];
 
@@ -223,12 +229,6 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         IntruderRoles.AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles, RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles,
             RoleGenManager.IntruderHeadRoles);
 
-        while (maxInt > Intruders)
-            maxInt--;
-
-        while (minInt > Intruders)
-            minInt--;
-
         filter.Filter(IntruderRoles, GameModeSettings.IgnoreFactionCaps ? Intruders : URandom.RandomRangeInt(minInt, maxInt + 1));
 
         while (IntruderRoles.Count < Intruders)
@@ -253,6 +253,12 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
 
         if (minNeut > maxNeut)
             (maxNeut, minNeut) = (minNeut, maxNeut);
+
+        while (maxNeut > Neutrals)
+            maxNeut--;
+
+        while (minNeut > Neutrals)
+            minNeut--;
 
         var filter = ModeFilters[GameModeSettings.GameMode];
 
@@ -335,12 +341,6 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles, RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles,
             RoleGenManager.NeutralHarbingerRoles);
 
-        while (maxNeut > Neutrals)
-            maxNeut--;
-
-        while (minNeut > Neutrals)
-            minNeut--;
-
         filter.Filter(NeutralRoles, GameModeSettings.IgnoreFactionCaps ? Neutrals : URandom.RandomRangeInt(minNeut, maxNeut + 1));
 
         while (NeutralRoles.Count < Neutrals)
@@ -365,6 +365,12 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
 
         if (minSyn > maxSyn)
             (maxSyn, minSyn) = (minSyn, maxSyn);
+
+        while (maxSyn > Syndicate)
+            maxSyn--;
+
+        while (minSyn > Syndicate)
+            minSyn--;
 
         var filter = ModeFilters[GameModeSettings.GameMode];
 
@@ -433,12 +439,6 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         }
 
         SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
-
-        while (maxSyn > Syndicate)
-            maxSyn--;
-
-        while (minSyn > Syndicate)
-            minSyn--;
 
         filter.Filter(SyndicateRoles, GameModeSettings.IgnoreFactionCaps ? Syndicate : URandom.RandomRangeInt(minSyn, maxSyn + 1));
 

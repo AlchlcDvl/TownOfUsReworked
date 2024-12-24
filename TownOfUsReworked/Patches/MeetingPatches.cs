@@ -66,9 +66,9 @@ public static class MeetingPatches
                 var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
 
                 if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
-                    report = $"They were killed by the <b>{killerRole}</b>.";
+                    report = $"They were killed by the {killerRole}.";
                 else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
-                    report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
+                    report = $"They were killed by the {killerRole.FactionName}.";
                 else
                     report = "They were killed by an unknown assailant.";
 
@@ -77,9 +77,9 @@ public static class MeetingPatches
                 var role = player.GetRole();
 
                 if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
-                    report = $"They were the <b>{role}</b>.";
+                    report = $"They were the {role}.";
                 else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
-                    report = $"They were the <b>{role.FactionName}</b>.";
+                    report = $"They were the {role.FactionName}.";
                 else
                     report = $"We could not determine what {player.name} was.";
 
@@ -95,7 +95,7 @@ public static class MeetingPatches
                 if (playerid != check.PlayerId)
                 {
                     var player = PlayerById(playerid);
-                    var report = $"{player} was found dead last round.";
+                    var report = $"{player.name} was found dead last round.";
                     Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
                     report = "It is unknown where they died.";
@@ -107,9 +107,9 @@ public static class MeetingPatches
                     if (Role.Cleaned.Contains(player.PlayerId))
                         report = "They were killed by an unknown assailant.";
                     else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
-                        report = $"They were killed by the <b>{killerRole.Name}</b>.";
+                        report = $"They were killed by the {killerRole.Name}.";
                     else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
-                        report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
+                        report = $"They were killed by the {killerRole.FactionName}.";
                     else
                         report = "They were killed by an unknown assailant.";
 
@@ -118,13 +118,13 @@ public static class MeetingPatches
                     var role = player.GetRole();
 
                     if (Role.Cleaned.Contains(player.PlayerId))
-                        report = $"We could not determine what {player} was.";
+                        report = $"We could not determine what {player.name} was.";
                     else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
-                        report = $"They were the <b>{role}</b>.";
+                        report = $"They were the {role}.";
                     else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
-                        report = $"They were the <b>{role.FactionName}</b>.";
+                        report = $"They were the {role.FactionName}.";
                     else
-                        report = $"We could not determine what {player} was.";
+                        report = $"We could not determine what {player.name} was.";
 
                     Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return Wait(2f);
@@ -135,7 +135,7 @@ public static class MeetingPatches
             {
                 if (player != check.PlayerId)
                 {
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} killed themselves last round.");
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player).name} killed themselves last round.");
                     yield return Wait(2f);
                 }
             }
@@ -144,7 +144,7 @@ public static class MeetingPatches
             {
                 if (player != check.PlayerId)
                 {
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} accomplished their objective and escaped last round.");
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player).name} accomplished their objective and escaped last round.");
                     yield return Wait(2f);
                 }
             }
@@ -153,7 +153,7 @@ public static class MeetingPatches
             {
                 if (player != check.PlayerId)
                 {
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player)} was ejected for their misuse of power.");
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player).name} was ejected for their misuse of power.");
                     yield return Wait(2f);
                 }
             }
@@ -162,7 +162,7 @@ public static class MeetingPatches
             {
                 if (player != check.PlayerId)
                 {
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {PlayerById(player)} to be ejected!");
+                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {PlayerById(player).name} to be ejected!");
                     yield return Wait(2f);
                 }
             }
@@ -173,13 +173,13 @@ public static class MeetingPatches
         if (SyndicateSettings.SyndicateCount > 0)
         {
             if (MeetingCount < SyndicateSettings.ChaosDriveMeetingCount - 1)
-                message = $"{SyndicateSettings.ChaosDriveMeetingCount - MeetingCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
+                message = $"{SyndicateSettings.ChaosDriveMeetingCount - MeetingCount} meetings remain till the Syndicate gets their hands on the Chaos Drive!";
             else if (MeetingCount == SyndicateSettings.ChaosDriveMeetingCount - 1)
-                message = "This is the last meeting before the <b>Syndicate</b> gets their hands on the Chaos Drive!";
+                message = "This is the last meeting before the Syndicate gets their hands on the Chaos Drive!";
             else if (MeetingCount == SyndicateSettings.ChaosDriveMeetingCount)
-                message = "The <b>Syndicate</b> now possesses the Chaos Drive!";
+                message = "The Syndicate now possesses the Chaos Drive!";
             else
-                message = "The <b>Syndicate</b> possesses the Chaos Drive.";
+                message = "The Syndicate possesses the Chaos Drive.";
 
             Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
 
@@ -189,9 +189,9 @@ public static class MeetingPatches
         if (PlayerLayer.GetLayers<Overlord>().Any(x => x.Alive))
         {
             if (MeetingCount == Overlord.OverlordMeetingWinCount - 1)
-                message = "This is the last meeting to find and kill the <b>Overlord</b>. Should you fail, you will all lose!";
+                message = "This is the last meeting to find and kill the Overlord. Should you fail, you will all lose!";
             else if (MeetingCount < Overlord.OverlordMeetingWinCount - 1)
-                message = "There seems to be an <b>Overlord</b> bent on dominating the mission! Kill them before they are successful!";
+                message = "There seems to be an Overlord bent on dominating the mission! Kill them before they are successful!";
 
             if (!IsNullEmptyOrWhiteSpace(message))
                 Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
@@ -213,7 +213,7 @@ public static class MeetingPatches
 
                     if (!knight.HasDied())
                     {
-                        message = $"{knight.name} was knighted by a <b>Monarch</b>!";
+                        message = $"{knight.name} was knighted by a Monarch!";
                         Run("<#6C29ABFF>》 Game Announcement 《</color>", message);
                         knighted.Add(id);
                     }

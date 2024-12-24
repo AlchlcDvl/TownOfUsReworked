@@ -77,6 +77,13 @@ public abstract class Role : PlayerLayer
                 _ => CustomColorManager.Faction
             };
             Alignment = Alignment.GetNewAlignment(value);
+            Objectives = value switch
+            {
+                Faction.Intruder => () => IntrudersWinCon,
+                Faction.Syndicate => () => SyndicateWinCon,
+                Faction.Crew => () => CrewWinCon,
+                _ => Objectives
+            };
         }
     }
     private SubFaction _subFaction;
@@ -280,7 +287,7 @@ public abstract class Role : PlayerLayer
     {
         if (killer != Player)
         {
-            KilledBy = " By " + killer.Data.PlayerName;
+            KilledBy = " By " + killer.name;
             DeathReason = Meeting() ? DeathReasonEnum.Guessed : reason2;
         }
         else
@@ -480,7 +487,7 @@ public abstract class Role : PlayerLayer
             role2.ShieldBroken = true;
 
             if (TownOfUsReworked.IsTest)
-                Message(player.Data.PlayerName + " Is Now Ex-Shielded");
+                Message(player.name + " Is Now Ex-Shielded");
         }
     }
 

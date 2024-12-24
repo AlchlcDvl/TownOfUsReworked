@@ -25,7 +25,7 @@ public abstract class PlayerLayer
     public bool Local => Player?.AmOwner ?? false;
 
     public NetworkedPlayerInfo Data => Player?.Data;
-    public string PlayerName => Data?.PlayerName ?? "";
+    public string PlayerName => Player?.name ?? Data?.PlayerName ?? "";
     public byte PlayerId => Player?.PlayerId ?? 255;
     public int TasksLeft => Data?.Tasks?.Count(x => !x.Complete) ?? -1;
     public int TasksCompleted => Data?.Tasks?.Count(x => x.Complete) ?? -1;

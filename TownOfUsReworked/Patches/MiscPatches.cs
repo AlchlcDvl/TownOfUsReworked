@@ -103,12 +103,6 @@ public static class PooledMapIconPatch
     }
 }
 
-[HarmonyPatch(typeof(StatsManager), nameof(StatsManager.AmBanned), MethodType.Getter)]
-public static class AmBanned
-{
-    public static void Postfix(out bool __result) => __result = false;
-}
-
 [HarmonyPatch]
 public static class PlayerDataPatch
 {
@@ -218,7 +212,7 @@ public static class AirshipSpawnInPatch
         {
             foreach (var player in AllPlayers())
             {
-                if (player.Data.PlayerName.Contains("Bot"))
+                if (player.name.StartsWith("Bot"))
                     player.RpcCustomSnapTo(__instance.Locations.Random().Location);
             }
         }
@@ -568,7 +562,7 @@ public static class OverrideKillAnim
 {
     public static bool Prefix(KillAnimation __instance, PlayerControl source, PlayerControl target, ref Il2CppSystem.Collections.IEnumerator __result)
     {
-        __result = CoPerformKill(__instance, source, target, true).WrapToIl2Cpp();
+        __result = CoPerformKill(__instance, source, target, DeathReasonEnum.Killed, true).WrapToIl2Cpp();
         return false;
     }
 }
@@ -586,13 +580,13 @@ public static class PlayerDataPatches
     [HarmonyPatch(nameof(NetworkedPlayerInfo.GetPlayerColorString))]
     public static bool Prefix(NetworkedPlayerInfo __instance, PlayerOutfitType outfitType, ref string __result)
     {
-		if (__instance.Outfits.TryGetValue(outfitType, out var outfit))
+        if (__instance.Outfits.TryGetValue(outfitType, out var outfit))
         {
             var translation = Palette.GetColorName(outfit.ColorId);
             __result = outfit.ColorId.IsDefault() ? (translation[0] + translation[1..].ToLower()) : translation;
         }
         else
-			__result = "";
+            __result = "";
 
         return false;
     }
@@ -657,14 +651,26 @@ public static class PatchColours
 {
     public static bool Prefix(StringNames id, ref string __result)
     {
-        var result = CustomColorManager.AllColors.Values.TryFinding(x => x.StringID == (int)id && !x.Default, out var color) && color != null;
+        var intId = (int)id;
 
-        if (result)
+        if (CustomColorManager.AllColors.Values.TryFinding(x => x.StringID == intId && !x.Default, out var color) && color != null)
         {
             var translation = TranslationManager.Translate($"Colors.{color.Name}");
             __result = translation == $"Colors.{color.Name}" ? color.Name : translation;
+            return false;
         }
 
-        return !result;
+        if (CustomStatsManager.VanillaToCustomStatsMap.TryGetValue(id, out var customStat))
+        {
+            __result = TranslationManager.Translate($"Stats.{CustomStatsManager.CustomStatTranslations[customStat]}");
+            return false;
+        }
+        else if (CustomStatsManager.CustomStatTranslations.TryGetValue(id, out var stat))
+        {
+            __result = TranslationManager.Translate($"Stats.{stat}");
+            return false;
+        }
+
+        return true;
     }
 }

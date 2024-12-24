@@ -1120,7 +1120,7 @@ public static class LayerExtentions
         if (PlayerLayer.GetLayers<Glitch>().Any(x => x.HackTarget == player && !x.Player.IsLinkedTo(player)))
             defense = 0;
 
-        if (player.Data.PlayerName == CachedFirstDead)
+        if (player.name == CachedFirstDead)
             defense = 3;
 
         defense = Mathf.Clamp(defense, 0, 3);

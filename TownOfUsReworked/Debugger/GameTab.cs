@@ -85,7 +85,7 @@ public class GameTab : BaseTab
 
         if (GUILayout.Button("Log Dump"))
         {
-            Message(CustomPlayer.Local.Data.PlayerName);
+            Message(CustomPlayer.Local.name);
             PlayerLayer.LocalLayers().ForEach(Message);
             Message("Is Dead - " + CustomPlayer.Local.HasDied());
             Message("Location - " + CustomPlayer.LocalCustom.Position);

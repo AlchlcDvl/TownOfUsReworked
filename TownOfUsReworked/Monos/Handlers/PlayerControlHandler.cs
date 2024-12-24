@@ -20,7 +20,7 @@ public class PlayerControlHandler : NameHandler
         if (!Player || !Player.Data)
             return;
 
-        PlayerNames[Player.PlayerId] = Player.Data.PlayerName;
+        PlayerNames[Player.PlayerId] = Player.name;
         ColorNames[Player.PlayerId] = Player.Data.ColorName;
 
         if (Meeting())

@@ -45,7 +45,7 @@ public class ColorLoader : AssetLoader<CustomColor>
             color.TimeSpeed = color.TimeSpeed == 0f ? 1f : color.TimeSpeed;
 
             if (!color.Default)
-                color.StringID = 999999 - color.ColorID;
+                color.StringID = (int)TranslationManager.GetNextName();
 
             AllColors[i] = color;
             time += Time.deltaTime;

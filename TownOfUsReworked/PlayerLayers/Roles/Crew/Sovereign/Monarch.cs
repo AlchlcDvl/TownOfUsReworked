@@ -51,8 +51,8 @@ public class Monarch : Crew
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
             ToBeKnighted.Add(target.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
         }
 
         KnightingButton.StartCooldown(cooldown);

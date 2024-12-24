@@ -74,3 +74,4 @@ global using InnerNet;
 global using HarmonyLib;
 
 global using ISystem = Il2CppSystem.Collections.Generic;
+global using IlIO = Il2CppSystem.IO;

@@ -353,9 +353,6 @@ public static class Utils
 
     public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
-        if (!killer || !target)
-            return;
-
         MurderPlayer(killer, target, reason, lunge);
         CallRpc(CustomRPC.Action, ActionsRPC.BypassKill, killer, target, reason, lunge);
     }
@@ -378,7 +375,7 @@ public static class Utils
         if (killer.AmOwner || target.AmOwner)
             Play("Kill");
 
-        Coroutines.Start(CoPerformKill(killer.KillAnimations.Random(), killer, target, lunge));
+        Coroutines.Start(CoPerformKill(killer.KillAnimations.Random(), killer, target, reason, lunge));
     }
 
     public static void MarkMeetingDead(PlayerControl target) => MarkMeetingDead(target, target);
@@ -687,7 +684,7 @@ public static class Utils
 
     public static IEnumerator FlashCoro(UColor color, float duration)
     {
-        if (IntroCutscene.Instance)
+        if (IntroCutscene.Instance || ShowRolePatch.Starting)
             yield break;
 
         color.a = 0.3f;
@@ -961,6 +958,9 @@ public static class Utils
 
         foreach (var mono in allMonos)
         {
+            if (!mono)
+                continue;
+
             var distance = Vector3.Distance(position, mono.transform.position);
             var vector = mono.transform.position - position;
             var maxDistance = trueMaxDistance;
@@ -1344,12 +1344,18 @@ public static class Utils
             StatsManager.Instance.BanPoints--;
         }
 
+        if (killer != player && killer.AmOwner)
+            CustomStatsManager.IncrementStat(CustomStatsManager.StatsKilled);
+
+        if (player.AmOwner)
+            CustomStatsManager.IncrementStat(StringNames.StatsTimesMurdered);
+
         GameData.LastDeathReason = reason;
 
         if (player.inMovingPlat)
             ShipStatus.Instance.TryCast<FungleShipStatus>()?.Zipline.CancelZiplineUseForPlayer(player);
 
-        FirstDead ??= player.Data.PlayerName;
+        FirstDead ??= player.name;
         player.cosmetics.AnimatePetMourning();
         player.FixMixedUpOutfit();
         player.Data.IsDead = true;
@@ -1404,7 +1410,7 @@ public static class Utils
         killer.GetLayers().ForEach(x => x.OnKill(player));
     }
 
-    public static IEnumerator CoPerformKill(KillAnimation __instance, PlayerControl source, PlayerControl target, bool lunge)
+    public static IEnumerator CoPerformKill(KillAnimation __instance, PlayerControl source, PlayerControl target, DeathReasonEnum reason, bool lunge)
     {
         var cam = HUD().PlayerCam;
         var isParticipant = source.AmOwner || target.AmOwner;
@@ -1433,7 +1439,7 @@ public static class Utils
             CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
         }
 
-        target.CustomDie(DeathReason.Kill, DeathReasonEnum.Killed, source);
+        target.CustomDie(DeathReason.Kill, reason, source);
         yield return source.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
 
         if (lunge)

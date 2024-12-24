@@ -139,7 +139,7 @@ public class NameHandler : MonoBehaviour
         if (player.IsMarked())
             name += " <#F1C40FFF>χ</color>";
 
-        if (player.Data.PlayerName == CachedFirstDead && ((amOwner && (int)GameModifiers.WhoSeesFirstKillShield == 1) || GameModifiers.WhoSeesFirstKillShield == 0))
+        if (player.name == CachedFirstDead && ((amOwner && (int)GameModifiers.WhoSeesFirstKillShield == 1) || GameModifiers.WhoSeesFirstKillShield == 0))
             name += " <#C2185BFF>Γ</color>";
 
         if (!deadSeeEverything && !amOwner)

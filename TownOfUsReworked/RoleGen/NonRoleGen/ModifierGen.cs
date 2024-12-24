@@ -11,7 +11,7 @@ public class ModifierGen : BaseGen
         foreach (var spawn in GetValuesFromToAndMorph(LayerEnum.Astral, LayerEnum.Yeller, GetSpawnItem))
         {
             if (spawn.IsActive())
-                AllDispositions.AddMany(spawn.Clone, spawn.Count);
+                AllModifiers.AddMany(spawn.Clone, spawn.Count);
         }
 
         int maxMod = ModifiersSettings.MaxModifiers;

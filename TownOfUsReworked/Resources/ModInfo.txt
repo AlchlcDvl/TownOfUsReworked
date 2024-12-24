@@ -13,7 +13,7 @@ New!
 - Addition: The player ID is now shown similarly to the player level
 - Addition: Added chat command suggestions
 - Addition: Added dark theme to the chat, which can be toggled in the client settings
-- Addition: Added a player mentioning system, where you can send a differently colored chat message to get a target's attention by adding #playerId or #(player name) to the message
+- Addition: Added a player mentioning system, where you can send a differently colored chat message to get a target's attention by adding #player ID or #player name (use brackets if the name has more than one word) to the message
 - Addition: Added the usage of some effect sounds
 - Addition: The role screen will now make use of the background bar to make up for the black space on the screen
 - Addition: Added a scroll bar to the player colors menu
@@ -44,6 +44,7 @@ Fixes!
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
+- Disposition: Fixed Allied factions not being set properly
 - Compatibility: Fixed the elevator not being properly usable for postmortal roles
 - Visual: Fixed the HUD buttons appearing when kicking out bots in local
 - Visual: Fixed tasks being outlined when you can't do them (thanks le killer)
@@ -52,12 +53,14 @@ Fixes!
 - Visual: Fixed button sprites sometimes being weirdly missing
 - Visual: Fixed target outlines not appearing correctly
 - Visual: Fixed layer option names blending with the color banners when active
+- Visual: Fixed the end game screen not showing yourself at the forefront if you won
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
 - General: Fixed All Any role gen being a bit broken in some aspects
 - General: Fixed fake players not spawning in locations correctly on Airship and Submerged
 - General: Fixed some instances of layer assignment breaking
 - General: Fixed venting capabilities being incorrect for some roles and dispositions
 - General: Fixed conversions being inconsistent
+- General: Fixed meeting announcements using "PlayerControl" instead of the player's actual name
 
 Known Bugs :(
 - Critically low FPS for everyone, with the host having it the worst; a fix is in progress and the severity has been considerably reduced since discovery

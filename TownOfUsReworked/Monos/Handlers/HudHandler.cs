@@ -31,7 +31,7 @@ public class HudHandler : MonoBehaviour
             if (player.HasDied())
                 continue;
 
-            if (UninteractiblePlayers.TryGetValue(player.PlayerId, out var time) && Time.time - time < UninteractiblePlayers2[player.PlayerId])
+            if (UninteractiblePlayers.TryGetValue(player.PlayerId, out var time) && UninteractiblePlayers2.TryGetValue(player.PlayerId, out var limit) && Time.time - time < limit)
             {
                 UninteractiblePlayers.Remove(player.PlayerId);
                 UninteractiblePlayers2.Remove(player.PlayerId);

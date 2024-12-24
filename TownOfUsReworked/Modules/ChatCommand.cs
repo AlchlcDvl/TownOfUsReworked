@@ -180,7 +180,12 @@ public class ChatCommand
             args[2..].ForEach(arg2 => message += $"{arg2} ");
             message = message.Trim();
         }
-        else if (AllPlayers().TryFinding(x => x.Data.PlayerName == args2[1], out whispered))
+        else if (AllPlayers().TryFinding(x => x.name == args[1], out whispered))
+        {
+            args[2..].ForEach(arg2 => message += $"{arg2} ");
+            message = message.Trim();
+        }
+        else if (AllPlayers().TryFinding(x => x.name == args2[1], out whispered))
             message = args2[^1];
 
         if (!whispered)
@@ -223,7 +228,7 @@ public class ChatCommand
 
             Run("<#99007FFF>《 Ignoring 》</color>", $"Toggled ignore for {id}");
         }
-        else if (AllPlayers().TryFinding(x => x.Data.PlayerName == args2[1], out var player))
+        else if (AllPlayers().TryFinding(x => x.name == args2[1], out var player))
         {
             if (arg.Contains("unignore"))
                 ChatPatches.Ignored.RemoveAll(x => x == player.PlayerId);
@@ -333,7 +338,7 @@ public class ChatCommand
             allPlayers.TryFinding(x => x.PlayerId == id, out target);
 
         if (split.Length > 1)
-            allPlayers.TryFinding(x => x.Data.PlayerName == split[1], out target);
+            allPlayers.TryFinding(x => x.name == split[1], out target);
 
         if (!target)
         {

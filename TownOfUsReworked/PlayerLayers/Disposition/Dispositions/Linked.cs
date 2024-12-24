@@ -15,7 +15,7 @@ public class Linked : Disposition
     public override string Name => "Linked";
     public override string Symbol => "Ψ";
     public override LayerEnum Type => LayerEnum.Linked;
-    public override Func<string> Description => () => $"- Help {OtherLink.Data.PlayerName} win";
+    public override Func<string> Description => () => $"- Help {OtherLink.name} win";
 
     public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Linked;
 }

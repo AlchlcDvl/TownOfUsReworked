@@ -25,7 +25,7 @@ public abstract class CustomMenu
                 return;
 
             Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
-            Menu.name = $"{Owner.Data.PlayerName}{Type}Menu";
+            Menu.name = $"{Owner.name}{Type}Menu";
             PlayerMaterial.SetColors(CustomPlayer.Local.CurrentOutfit.ColorId, Menu.transform.GetChild(0).GetChild(1).GetComponent<SpriteRenderer>());
             PlayerMaterial.SetColors(CustomPlayer.Local.CurrentOutfit.ColorId, Menu.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>());
         }

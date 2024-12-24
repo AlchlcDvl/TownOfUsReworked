@@ -522,7 +522,7 @@ public class CustomButton
         if (Target)
         {
             if (Target is PlayerControl player)
-                player.cosmetics.SetOutline(false);
+                player.cosmetics.SetOutline(false, new(UColor.clear));
             else if (Target is DeadBody body)
                 body.bodyRenderers.ForEach(x => x.SetOutlineColor(UColor.clear));
             else if (Target is Vent vent)
