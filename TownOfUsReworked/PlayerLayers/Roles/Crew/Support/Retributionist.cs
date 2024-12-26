@@ -24,6 +24,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         Selected = null;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
+        BlockTarget = null;
         Player1Body = null;
         Player2Body = null;
         WasInVent1 = false;
@@ -82,25 +83,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     {
         base.Deinit();
 
-        if (BodyArrows.Count > 0)
-        {
-            BodyArrows.Values.ToList().DestroyAll();
-            BodyArrows.Clear();
-        }
-
-        if (MediateArrows.Count > 0)
-        {
-            MediateArrows.Values.ToList().DestroyAll();
-            MediateArrows.Clear();
-            MediatedPlayers.Clear();
-        }
-
-        if (TrackerArrows.Count > 0)
-        {
-            TrackerArrows.Values.ToList().DestroyAll();
-            TrackerArrows.Clear();
-        }
-
         if (Bugs.Count > 0)
         {
             Bugs.ForEach(x => x?.gameObject?.Destroy());
@@ -111,14 +93,30 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         Transport2?.Destroy();
     }
 
+    public override void ClearArrows()
+    {
+        base.ClearArrows();
+
+        BodyArrows.Values.DestroyAll();
+        BodyArrows.Clear();
+
+        MediateArrows.Values.DestroyAll();
+        MediateArrows.Clear();
+        MediatedPlayers.Clear();
+
+        TrackerArrows.Values.DestroyAll();
+        TrackerArrows.Clear();
+    }
+
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        base.OnDeath(reason, reason2, killer);
+        ClearArrows();
+    }
+
     public void DestroyArrow(byte targetPlayerId)
     {
-        if (IsTrack)
-        {
-            TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-            TrackerArrows.Remove(targetPlayerId);
-        }
-        else if (IsCor)
+        if (IsCor)
         {
             BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
             BodyArrows.Remove(targetPlayerId);
@@ -147,9 +145,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     {
         base.UpdateHud(__instance);
 
-        if (Dead)
-            Deinit();
-        else if (IsCor)
+        if (IsCor)
         {
             var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= Coroner.CoronerArrowDur));
 
@@ -161,23 +157,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
             foreach (var body in validBodies)
             {
-                if (BodyArrows.TryGetValue(body.ParentId, out var arrow))
-                    arrow.Update(body.TruePosition);
-                else
-                    BodyArrows[body.ParentId] = new(Player, Color);
-            }
-        }
-        else if (IsTrack)
-        {
-            foreach (var pair in TrackerArrows)
-            {
-                var player = PlayerById(pair.Key);
-                var body = BodyById(pair.Key);
-
-                if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
-                    DestroyArrow(pair.Key);
-                else
-                    pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());
+                if (!BodyArrows.ContainsKey(body.ParentId))
+                    BodyArrows[body.ParentId] = new(Player, body.TruePosition, Color);
             }
         }
         else if (IsTrans)
@@ -207,7 +188,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             if (!MediateArrows.TryGetValue(__instance.PlayerId, out var arrow))
                 return;
 
-            arrow?.Update(__instance.transform.position, __instance.GetPlayerColor(false, !Medium.ShowMediatePlayer));
+            arrow?.Update(__instance.GetPlayerColor(false, !Medium.ShowMediatePlayer));
 
             if (!Medium.ShowMediatePlayer)
             {
@@ -236,14 +217,9 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
                 Coroutines.Start(retRole3.TransportPlayers());
                 break;
             }
-            case RetActionsRPC.ProtectAdd:
+            case RetActionsRPC.Shield:
             {
                 ShieldedPlayer = reader.ReadPlayer();
-                break;
-            }
-            case RetActionsRPC.ProtectRemove:
-            {
-                ShieldedPlayer = null;
                 break;
             }
             case RetActionsRPC.Mediate:
@@ -252,7 +228,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
                 MediatedPlayers.Add(playerid2);
 
                 if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && Medium.ShowMediumToDead == ShowMediumToDead.AllDead))
-                    CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+                    CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color, skipBody: true));
 
                 break;
             }
@@ -492,6 +468,11 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             FixButton ??= new(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Fix, Engineer.MaxFixes,
                 (ConditionFunc)EngiCondition, new Cooldown(Engineer.FixCd), (UsableFunc)EngiUsable);
         }
+        else if (IsEsc)
+        {
+            BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, (EffectVoid)Block,
+                (EffectEndVoid)UnBlock, new Cooldown(Escort.EscortCd), new Duration(Escort.EscortDur), (EndFunc)BlockEnd, (EffectStartVoid)BlockStart, (UsableFunc)EscUsable);
+        }
         else if (IsTrans)
         {
             var wasnull = TransportButton == null;
@@ -525,7 +506,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     }
 
     // Coroner Stuff
-    public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
+    public Dictionary<byte, PositionalArrow> BodyArrows { get; set; }
     public CustomButton AutopsyButton { get; set; }
     public CustomButton CompareButton { get; set; }
     public List<DeadPlayer> ReferenceBodies { get; set; }
@@ -575,7 +556,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     public bool DetUsable() => IsDet;
 
     // Medium Stuff
-    public Dictionary<byte, CustomArrow> MediateArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> MediateArrows { get; set; }
     public CustomButton MediateButton { get; set; }
     public List<byte> MediatedPlayers { get; set; }
     public bool IsMed => RevivedRole is Medium;
@@ -599,7 +580,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             {
                 if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                 {
-                    MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                    MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
                     MediatedPlayers.Add(dead.PlayerId);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
 
@@ -614,7 +595,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
             if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
             {
-                MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
                 MediatedPlayers.Add(dead.PlayerId);
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
             }
@@ -660,7 +641,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     public bool SherUsable() => IsSher;
 
     // Tracker Stuff
-    public Dictionary<byte, CustomArrow> TrackerArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> TrackerArrows { get; set; }
     public CustomButton TrackButton { get; set; }
     public bool IsTrack => RevivedRole is Tracker;
 
@@ -669,7 +650,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            TrackerArrows.Add(target.PlayerId, new(Player, target.GetPlayerColor(), Tracker.UpdateInterval));
+            TrackerArrows.Add(target.PlayerId, new(Player, target, target.GetPlayerColor(), Tracker.UpdateInterval));
 
         TrackButton.StartCooldown(cooldown);
     }
@@ -756,7 +737,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
         {
-            CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
+            CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, player, Color));
             Flash(Color);
         }
     }
@@ -781,19 +762,15 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
     public void Protect(PlayerControl target)
     {
-        if (Interact(Player, target) != CooldownType.Fail)
+        var cooldown = Interact(Player, target);
+
+        if (cooldown != CooldownType.Fail)
         {
-            if (ShieldedPlayer)
-            {
-                ShieldedPlayer = null;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.ProtectRemove);
-            }
-            else
-            {
-                ShieldedPlayer = target;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.ProtectAdd, target);
-            }
+            ShieldedPlayer = ShieldedPlayer ? null : target;
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Shield, ShieldedPlayer?.PlayerId ?? 255);
         }
+
+        ShieldButton.StartCooldown(cooldown);
     }
 
     public bool MedicException(PlayerControl player)
@@ -801,7 +778,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
         else
-            return (player.TryGetLayer<Mayor>(out var mayor) && mayor.Revealed) || (player.TryGetLayer<Dictator>(out var dictator) && dictator.Revealed);
+            return player.TryGetILayer<IRevealer>(out var irev) && irev.Revealed;
     }
 
     public bool MedicUsable() => !ShieldBroken && IsMedic;
@@ -889,6 +866,12 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     }
 
     public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
+
+    public void BlockStart()
+    {
+        if (BlockTarget.AmOwner)
+            CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
+    }
 
     public void Roleblock(PlayerControl target)
     {

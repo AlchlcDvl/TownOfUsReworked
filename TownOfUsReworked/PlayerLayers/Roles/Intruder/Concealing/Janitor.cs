@@ -26,7 +26,7 @@ public class Janitor : Intruder, IDragger
     public CustomButton DropButton { get; set; }
     public DeadBody CurrentlyDragging { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Janitor: FactionColor;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Janitor : FactionColor;
     public override string Name => "Janitor";
     public override LayerEnum Type => LayerEnum.Janitor;
     public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Neccessary";

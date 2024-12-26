@@ -36,7 +36,7 @@ public class Whisperer : Neophyte
     public Dictionary<byte, byte> PlayerConversion { get; set; }
     public int WhisperConversion { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : FactionColor;
     public override string Name => "Whisperer";
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";

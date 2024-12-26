@@ -72,44 +72,49 @@ public static class Interactions
             Trigger(source, target, CanAttack(attack, defense) && isAttack && !bypass, out trapper);
         }
 
-        if (CanAttack(attack, defense) && isAttack)
+        if (isAttack)
         {
-            if (bypass)
+            if (CanAttack(attack, defense))
             {
-                RpcMurderPlayer(source, target, reason);
-                abilityUsed = true;
-            }
-            else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
-            {
-                var fan = target.GetLayer<Fanatic>();
-                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
-                fan.TurnFanatic(faction);
-                abilityUsed = true;
+                if (bypass)
+                    RpcMurderPlayer(source, target, reason);
+                else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
+                {
+                    CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
+                    var fan = target.GetLayer<Fanatic>();
+                    CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
+                    fan.TurnFanatic(faction);
+                }
+                else
+                {
+                    abilityUsed = !(target.IsTrapped() && trapper && !astral);
+
+                    if (target.IsTrapped() && trapper && !astral)
+                    {
+                        if (source.IsShielded() || source.IsProtected())
+                            abilityUsed = false;
+                        else
+                            RpcMurderPlayer(trapper, source, false);
+                    }
+                    else if (source.IsShielded() || source.IsProtected())
+                    {
+                        abilityUsed = false;
+                        RpcBreakShield(source);
+                    }
+                    else if (!delayed)
+                        RpcMurderPlayer(source, target, reason);
+                }
             }
             else
             {
-                abilityUsed = !(target.IsTrapped() && trapper && !astral);
+                CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
 
-                if (target.IsTrapped() && trapper && !astral)
+                if (target.IsShielded())
                 {
-                    if (source.IsShielded() || source.IsProtected())
-                        abilityUsed = false;
-                    else
-                        RpcMurderPlayer(trapper, source, false);
-                }
-                else if (source.IsShielded() || source.IsProtected())
-                {
+                    RpcBreakShield(target);
                     abilityUsed = false;
-                    RpcBreakShield(source);
                 }
-                else if (!delayed)
-                    RpcMurderPlayer(source, target, reason);
             }
-        }
-        else if (target.IsShielded() && isAttack)
-        {
-            RpcBreakShield(target);
-            abilityUsed = false;
         }
 
         if (TargetShouldAttack(source, target, isAttack && !bypass))
@@ -123,37 +128,40 @@ public static class Interactions
                 Trigger(target, source, CanAttack(attack, defense) && isAttack, out trapper);
             }
 
-            if (CanAttack(attack, defense) && isAttack)
+            if (isAttack)
             {
-                if (bypass)
+                if (CanAttack(attack, defense))
                 {
-                    RpcMurderPlayer(source, target);
-                    abilityUsed = true;
-                }
-                else
-                {
-                    abilityUsed = !(source.IsTrapped() && trapper && !astral);
+                    if (bypass)
+                    {
+                        RpcMurderPlayer(source, target);
+                        abilityUsed = true;
+                    }
+                    else
+                    {
+                        abilityUsed = !(source.IsTrapped() && trapper && !astral);
 
-                    if (source.IsTrapped() && trapper && !astral)
-                    {
-                        if (target.IsShielded() || target.IsProtected())
+                        if (source.IsTrapped() && trapper && !astral)
+                        {
+                            if (target.IsShielded() || target.IsProtected())
+                                abilityUsed = false;
+                            else
+                                RpcMurderPlayer(trapper, target, false);
+                        }
+                        else if (target.IsShielded() || target.IsProtected())
+                        {
                             abilityUsed = false;
-                        else
-                            RpcMurderPlayer(trapper, target, false);
+                            RpcBreakShield(target);
+                        }
+                        else if (!delayed)
+                            RpcMurderPlayer(target, source);
                     }
-                    else if (target.IsShielded() || target.IsProtected())
-                    {
-                        abilityUsed = false;
-                        RpcBreakShield(target);
-                    }
-                    else if (!delayed)
-                        RpcMurderPlayer(target, source);
                 }
-            }
-            else if (source.IsShielded() && isAttack)
-            {
-                RpcBreakShield(source);
-                abilityUsed = false;
+                else if (source.IsShielded())
+                {
+                    RpcBreakShield(source);
+                    abilityUsed = false;
+                }
             }
         }
 

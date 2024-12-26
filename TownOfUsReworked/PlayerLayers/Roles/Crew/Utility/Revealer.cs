@@ -32,7 +32,7 @@ public class Revealer : Crew
     public bool Faded { get; set; }
     public Role FormerRole { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Revealer: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Revealer : FactionColor;
     public override string Name => "Revealer";
     public override LayerEnum Type => LayerEnum.Revealer;
     public override Func<string> StartText => () => "OOOOOOO";
@@ -50,7 +50,6 @@ public class Revealer : Crew
             return;
 
         Faded = true;
-        var color = new UColor(1f, 1f, 1f, 0f);
 
         var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
         var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
@@ -59,15 +58,12 @@ public class Revealer : Crew
         distPercent = Mathf.Max(0, distPercent - 1);
 
         var velocity = Player.GetComponent<Rigidbody2D>().velocity.magnitude;
-        color.a = 0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f);
-        color.a = Mathf.Lerp(color.a, 0, distPercent);
 
         if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
             Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
 
-        Player.MyRend().color = color;
-        Player.NameText().color = new(0f, 0f, 0f, 0f);
-        Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
+        Player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f), 0, distPercent));
+        Player.NameText().color = Player.cosmetics.colorBlindText.color = UColor.clear;
 
         if (Local)
             Camouflage();
@@ -95,7 +91,7 @@ public class Revealer : Crew
             {
                 Revealed = true;
                 Flash(Color);
-                CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+                CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
             }
         }
         else if (TasksDone && !Caught && (Local || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or

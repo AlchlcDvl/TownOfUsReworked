@@ -19,9 +19,7 @@ New!
 - Addition: Added a scroll bar to the player colors menu
 
 Changes!
-- Recode: Custom colors have been recoded to be more efficient
-- Recode: Redone game patches and their organisation
-- Recode: Layer assignment has been completely redone to avoid some generation problems
+- Recode: Overhauled a lot of the code base in favour of optimisation and avoiding potential issues
 - Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a singular player to eject and have gained ability charges to compensate
 - Change: Actors will now prioritise turning into a dead role
 - Change: Arsonists, when igniting, will remove the coolant off those doused by a Cryomaniac
@@ -61,6 +59,7 @@ Fixes!
 - General: Fixed venting capabilities being incorrect for some roles and dispositions
 - General: Fixed conversions being inconsistent
 - General: Fixed meeting announcements using "PlayerControl" instead of the player's actual name
+- General: Fixed the buttons not behaving as intended for a lot of roles*
 
 Known Bugs :(
 - Critically low FPS for everyone, with the host having it the worst; a fix is in progress and the severity has been considerably reduced since discovery

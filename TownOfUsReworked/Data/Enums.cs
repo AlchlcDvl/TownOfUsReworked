@@ -708,8 +708,7 @@ public enum BecomeEnum : byte
 
 public enum RetActionsRPC : byte
 {
-    ProtectAdd,
-    ProtectRemove,
+    Shield,
     Roleblock,
     Transport,
     Mediate,
@@ -897,12 +896,6 @@ public enum DefenseEnum : byte
     Basic,
     Powerful,
     Invincible
-}
-
-public enum MedicActionsRPC : byte
-{
-    Add,
-    Remove
 }
 
 public enum TrapperActionsRPC : byte

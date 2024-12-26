@@ -45,7 +45,7 @@ public class Snitch : Ability
                 Alignment.NeutralPros && SnitchSeesNeutrals))
             {
                 Flash(Color);
-                local.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+                local.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
             }
         }
         else if (TasksDone)
@@ -54,7 +54,7 @@ public class Snitch : Ability
             {
                 Flash(UColor.green);
                 AllPlayers().Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros &&
-                    SnitchSeesNeutrals)).ForEach(x => local.AllArrows.Add(x.PlayerId, new(Player, Color)));
+                    SnitchSeesNeutrals)).ForEach(x => local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
             }
             else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
                 Alignment.NeutralPros && SnitchSeesNeutrals))

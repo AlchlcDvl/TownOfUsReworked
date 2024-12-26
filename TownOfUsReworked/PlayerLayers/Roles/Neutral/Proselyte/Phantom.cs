@@ -12,7 +12,7 @@ public class Phantom : Neutral
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Phantom: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Phantom : FactionColor;
     public override string Name => "Phantom";
     public override LayerEnum Type => LayerEnum.Phantom;
     public override Func<string> StartText => () => "Peek-A-Boo!";
@@ -78,5 +78,14 @@ public class Phantom : Neutral
             Fade();
         else if (Faded)
             UnFade();
+    }
+
+    public override void CheckWin()
+    {
+        if (TasksDone && Faithful)
+        {
+            WinState = WinLose.PhantomWins;
+            CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
+        }
     }
 }

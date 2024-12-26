@@ -10,4 +10,13 @@ public abstract class Evil : Neutral
         base.Init();
         Alignment = Alignment.NeutralEvil;
     }
+
+    public override void CheckWin()
+    {
+        if (NeutralEvilSettings.NeutralEvilsEndGame && HasWon)
+        {
+            WinState = EndState;
+            Winner = true;
+        }
+    }
 }

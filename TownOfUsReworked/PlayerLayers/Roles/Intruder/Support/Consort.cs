@@ -13,7 +13,7 @@ public class Consort : Intruder
     public PlayerControl BlockTarget { get; set; }
     public CustomPlayerMenu BlockMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consort: FactionColor;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consort : FactionColor;
     public override string Name => "Consort";
     public override LayerEnum Type => LayerEnum.Consort;
     public override Func<string> StartText => () => "Roleblock The <#8CFFFFFF>Crew</color> From Progressing";
@@ -28,7 +28,7 @@ public class Consort : Intruder
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
         BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
-            new Duration(ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock);
+            new Duration(ConsortDur), (EffectVoid)Block, (EffectEndVoid)UnBlock, (EffectStartVoid)BlockStart, (EndFunc)EndEffect);
     }
 
     public void UnBlock()
@@ -43,6 +43,12 @@ public class Consort : Intruder
     }
 
     public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
+
+    public void BlockStart()
+    {
+        if (BlockTarget.AmOwner)
+            CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
+    }
 
     public void Click(PlayerControl player)
     {

@@ -21,11 +21,11 @@ public class Cannibal : Evil
     public CustomButton EatButton { get; set; }
     public int EatNeed { get; set; }
     public bool Eaten { get; set; }
-    public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
+    public Dictionary<byte, PositionalArrow> BodyArrows { get; set; }
     public bool EatWin => EatNeed == 0;
     public bool CanEat => !Eaten || (Eaten && !NeutralSettings.AvoidNeutralKingmakers);
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cannibal: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cannibal : FactionColor;
     public override string Name => "Cannibal";
     public override LayerEnum Type => LayerEnum.Cannibal;
     public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
@@ -49,10 +49,10 @@ public class Cannibal : Evil
         BodyArrows.Remove(targetPlayerId);
     }
 
-    public override void Deinit()
+    public override void ClearArrows()
     {
-        base.Deinit();
-        BodyArrows.Values.ToList().DestroyAll();
+        base.ClearArrows();
+        BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();
     }
 
@@ -62,26 +62,22 @@ public class Cannibal : Evil
     {
         base.UpdateHud(__instance);
 
-        if (EatArrows && !Dead)
+        if (!EatArrows || Dead)
+            return;
+
+        var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= EatArrowDelay));
+
+        foreach (var bodyArrow in BodyArrows.Keys)
         {
-            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= EatArrowDelay));
-
-            foreach (var bodyArrow in BodyArrows.Keys)
-            {
-                if (!validBodies.Any(x => x.ParentId == bodyArrow))
-                    DestroyArrow(bodyArrow);
-            }
-
-            foreach (var body in validBodies)
-            {
-                if (BodyArrows.TryGetValue(body.ParentId, out var arrow))
-                    arrow.Update(body.TruePosition);
-                else
-                    BodyArrows[body.ParentId] = new(Player, Color);
-            }
+            if (!validBodies.Any(x => x.ParentId == bodyArrow))
+                DestroyArrow(bodyArrow);
         }
-        else if (BodyArrows.Count != 0)
-            Deinit();
+
+        foreach (var body in validBodies)
+        {
+            if (!BodyArrows.ContainsKey(body.ParentId))
+                BodyArrows[body.ParentId] = new(Player, body.TruePosition, Color);
+        }
     }
 
     public void Eat(DeadBody target)

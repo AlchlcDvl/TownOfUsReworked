@@ -3,6 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Apocalypse : Neutral
 {
     public override Func<string> StartText => () => "THE APOCALYPSE IS NIGH";
+    public override DefenseEnum DefenseVal => DefenseEnum.Invincible;
 
     public override void Init()
     {

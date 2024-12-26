@@ -41,7 +41,7 @@ public class Executioner : Evil
     public CustomButton TargetButton { get; set; }
     public bool TargetFailed => !TargetPlayer && Rounds > 2;
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Executioner: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Executioner : FactionColor;
     public override string Name => "Executioner";
     public override LayerEnum Type => LayerEnum.Executioner;
     public override Func<string> StartText => () => "Find Someone To Eject";

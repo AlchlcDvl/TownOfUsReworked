@@ -4,8 +4,6 @@ public static class CustomStatsManager
 {
     public static bool MigratedFromVanillaStats;
 
-    public static StringNames Buffer;
-
     public static StringNames StatsGamesWon;
     public static StringNames StatsGamesLost;
     public static StringNames StatsGamesDrawn;
@@ -17,11 +15,6 @@ public static class CustomStatsManager
     public static StringNames StatsGamesSyndicate;
     public static StringNames StatsGamesNeutral;
 
-    public static float FastestGame;
-    public static float SlowestGame;
-
-    public static Dictionary<StringNames, string> CustomStatTranslations;
-    public static Dictionary<StringNames, StringNames> VanillaToCustomStatsMap;
     public static List<StringNames> OrderedStats;
     private static readonly List<StringNames> SupportVanillaStats =
     [
@@ -52,32 +45,16 @@ public static class CustomStatsManager
 
     public static void Setup()
     {
-        Buffer = TranslationManager.GetNextName();
-
-        StatsGamesWon = TranslationManager.GetNextName();
-        StatsGamesLost = TranslationManager.GetNextName();
-        StatsGamesDrawn = TranslationManager.GetNextName();
-        StatsRoleblocked = TranslationManager.GetNextName();
-        StatsKilled = TranslationManager.GetNextName();
-        StatsHitImmune = TranslationManager.GetNextName();
-        StatsGamesCrew = TranslationManager.GetNextName();
-        StatsGamesIntruder = TranslationManager.GetNextName();
-        StatsGamesSyndicate = TranslationManager.GetNextName();
-        StatsGamesNeutral = TranslationManager.GetNextName();
-
-        CustomStatTranslations = new()
-        {
-            { StatsGamesWon, "Stats.GamesWon" },
-            { StatsGamesLost, "Stats.GamesLost" },
-            { StatsGamesDrawn, "Stats.GamesDrawn" },
-            { StatsRoleblocked, "Stats.Roleblocked" },
-            { StatsKilled, "Stats.Killed" },
-            { StatsHitImmune, "Stats.HitImmune" },
-            { StatsGamesCrew, "Stats.CrewGames" },
-            { StatsGamesIntruder, "Stats.IntruderGames" },
-            { StatsGamesSyndicate, "Stats.SyndicateGames" },
-            { StatsGamesNeutral, "Stats.NeutralGames" }
-        };
+        StatsGamesWon = TranslationManager.GetNextName("Stats.GamesWon", isStartup: true);
+        StatsGamesLost = TranslationManager.GetNextName("Stats.GamesLost", isStartup: true);
+        StatsGamesDrawn = TranslationManager.GetNextName("Stats.GamesDrawn", isStartup: true);
+        StatsRoleblocked = TranslationManager.GetNextName("Stats.Roleblocked", isStartup: true);
+        StatsKilled = TranslationManager.GetNextName("Stats.Killed", StringNames.StatsImpostorKills, true);
+        StatsHitImmune = TranslationManager.GetNextName("Stats.HitImmune", isStartup: true);
+        StatsGamesCrew = TranslationManager.GetNextName("Stats.CrewGames", StringNames.StatsGamesCrewmate, true);
+        StatsGamesIntruder = TranslationManager.GetNextName("Stats.IntruderGames", StringNames.StatsGamesImpostor, true);
+        StatsGamesSyndicate = TranslationManager.GetNextName("Stats.SyndicateGames", isStartup: true);
+        StatsGamesNeutral = TranslationManager.GetNextName("Stats.NeutralGames", isStartup: true);
 
         OrderedStats =
         [
@@ -104,13 +81,6 @@ public static class CustomStatsManager
             StringNames.StatsImpostorKills_HideAndSeek,
             StringNames.StatsTimesPettedPet
         ];
-
-        VanillaToCustomStatsMap = new()
-        {
-            { StringNames.StatsImpostorKills, StatsKilled },
-            { StringNames.StatsGamesImpostor, StatsGamesIntruder },
-            { StringNames.StatsGamesCrewmate, StatsGamesCrew }
-        };
     }
 
     public static void Reset()
@@ -141,7 +111,7 @@ public static class CustomStatsManager
         {
             if (stats.stats.gameplayStats.TryGetValue(stat, out value))
             {
-                if (VanillaToCustomStatsMap.TryGetValue(stat, out var customStat))
+                if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
                     CustomStats[customStat] = value;
                 else
                     CustomStats[stat] = value;
@@ -180,7 +150,7 @@ public static class CustomStatsManager
             return;
         }
 
-        if (VanillaToCustomStatsMap.TryGetValue(stat, out var customStat))
+        if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
             stat = customStat;
 
         if (!CustomStats.ContainsKey(stat))
@@ -236,7 +206,7 @@ public static class CustomStatsManager
     public static void SerializeCustomStats(BinaryWriter writer)
     {
         writer.Write(MigratedFromVanillaStats);
-        writer.Write(System.Convert.ToUInt32(Buffer)); // To use to compare with the next time we deserialize and the game added more translations since the last time the stats were saved
+        writer.Write(System.Convert.ToUInt32(ReworkedStart)); // Used to mark the start of custom translations, this value changes as more translations are added in the base game
         WriteEnumDict(writer, MapWins);
         WriteEnumDict(writer, LayerWins);
         WriteEnumDict(writer, CustomStats);
@@ -245,12 +215,12 @@ public static class CustomStatsManager
     public static void DeserializeCustomStats(BinaryReader reader)
     {
         MigratedFromVanillaStats = reader.ReadBoolean();
-        Buffer = Enum.Parse<StringNames>($"{reader.ReadUInt32()}");
+        ReworkedStart = Enum.Parse<StringNames>($"{reader.ReadUInt32()}");
         ReadEnumDict(reader, MapWins);
         ReadEnumDict(reader, LayerWins);
         ReadEnumDict(reader, CustomStats);
 
-        var diff = StatsGamesWon - Buffer - 1; // The extra 1 is to account for the buffer itself
+        var diff = StatsGamesWon - ReworkedStart - 1; // The extra 1 is to account for the buffer itself
 
         if (diff > 0)
         {

@@ -15,4 +15,14 @@ public class Overlord : Disposition
     public override LayerEnum Type => LayerEnum.Overlord;
     public override Func<string> Description => () => $"- Stay alive for {OverlordMeetingWinCount} rounds";
     public override bool Hidden => !OverlordKnows && !Dead;
+
+    public override void CheckWin()
+    {
+        if (Alive && OverlordWins())
+        {
+            WinState = WinLose.OverlordWins;
+            GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
+            CallRpc(CustomRPC.WinLose, WinLose.OverlordWins);
+        }
+    }
 }

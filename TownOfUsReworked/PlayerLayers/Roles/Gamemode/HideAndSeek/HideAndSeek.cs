@@ -3,7 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class HideAndSeek : Role
 {
     public override Faction BaseFaction => Faction.GameMode;
-    public override UColor Color => CustomColorManager.HideAndSeek;
     public override string FactionName => "Hide And Seek";
 
     public override void Init()

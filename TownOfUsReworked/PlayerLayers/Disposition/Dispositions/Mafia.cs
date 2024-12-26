@@ -20,4 +20,14 @@ public class Mafia : Disposition
         base.Init();
         Player.GetRole().Alignment = Player.GetRole().Alignment.GetNewAlignment(Faction.Neutral);
     }
+
+    public override void CheckWin()
+    {
+        if (MafiaWin())
+        {
+            WinState = WinLose.MafiaWins;
+            Winner = true;
+            CallRpc(CustomRPC.WinLose, WinLose.MafiaWins);
+        }
+    }
 }

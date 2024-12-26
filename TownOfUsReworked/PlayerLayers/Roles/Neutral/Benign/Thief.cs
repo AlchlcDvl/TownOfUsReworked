@@ -22,7 +22,7 @@ public class Thief : Neutral
     public CustomMeeting GuessMenu { get; set; }
     public CustomRolesMenu GuessingMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Thief: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Thief : FactionColor;
     public override string Name => "Thief";
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";
@@ -279,15 +279,15 @@ public class Thief : Neutral
             foreach (var snitch in GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
-                    local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Color));
+                    local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Player, snitch.Color));
                 else if (snitch.TasksDone && snitch.Local)
-                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, snitch.Color));
+                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, Player, snitch.Color));
             }
 
             foreach (var revealer in GetLayers<Revealer>())
             {
                 if (revealer.Revealed && player.AmOwner)
-                    local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Color));
+                    local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Player, revealer.Color));
             }
         }
 

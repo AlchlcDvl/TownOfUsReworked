@@ -28,7 +28,7 @@ public class Glitch : NKilling
     public PlayerControl MimicTarget { get; set; }
     public CustomPlayerMenu MimicMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Glitch: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Glitch : FactionColor;
     public override string Name => "Glitch";
     public override LayerEnum Type => LayerEnum.Glitch;
     public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";
@@ -46,7 +46,7 @@ public class Glitch : NKilling
         NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
             new Cooldown(NeutraliseCd));
         HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
-            new Duration(HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
+            new Duration(HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK", (EffectStartVoid)HackStart);
         MimicButton ??= new(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
             new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic);
     }
@@ -66,6 +66,12 @@ public class Glitch : NKilling
     }
 
     public void Hack() => HackTarget.GetLayers().ForEach(x => x.IsBlocked = !HackTarget.GetRole().RoleBlockImmune);
+
+    public void HackStart()
+    {
+        if (HackTarget.AmOwner)
+            CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
+    }
 
     public void Mimic() => Morph(Player, MimicTarget);
 

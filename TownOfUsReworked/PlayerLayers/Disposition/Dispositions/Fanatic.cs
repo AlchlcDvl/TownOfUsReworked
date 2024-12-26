@@ -73,16 +73,16 @@ public class Fanatic : Disposition
             if (Snitch.SnitchSeesFanatic)
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
-                    local.AllArrows.Add(snitch.PlayerId, new(Player, CustomColorManager.Snitch));
+                    local.AllArrows.Add(snitch.PlayerId, new(Player, snitch.Player, snitch.Color));
                 else if (snitch.TasksDone && snitch.Local)
-                    snitch.Player.GetRole().AllArrows.Add(PlayerId, new(snitch.Player, CustomColorManager.Snitch));
+                    snitch.Player.GetRole().AllArrows.Add(PlayerId, new(snitch.Player, Player, snitch.Color));
             }
         }
 
         foreach (var revealer in GetLayers<Revealer>())
         {
             if (revealer.Revealed && Revealer.RevealerRevealsTraitor && Local)
-                local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
+                local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Player, revealer.Color));
         }
 
         if (CustomPlayer.Local.Is<Mystic>() && !Local)

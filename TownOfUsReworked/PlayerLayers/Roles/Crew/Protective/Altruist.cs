@@ -21,7 +21,7 @@ public class Altruist : Crew
     public CustomButton ReviveButton { get; set; }
     public byte ParentId { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Altruist: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Altruist : FactionColor;
     public override string Name => "Altruist";
     public override LayerEnum Type => LayerEnum.Altruist;
     public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
@@ -71,7 +71,7 @@ public class Altruist : Crew
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
         {
-            CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
+            CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, player, Color));
             Flash(Color);
         }
     }

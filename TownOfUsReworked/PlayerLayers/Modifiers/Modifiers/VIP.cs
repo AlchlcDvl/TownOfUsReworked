@@ -16,7 +16,7 @@ public class VIP : Modifier
     {
         Flash(Player.GetRole().Color);
         var local = CustomPlayer.Local.GetRole();
-        local.AllArrows.TryAdd(Player.PlayerId, new(CustomPlayer.Local, Color));
+        local.AllArrows.TryAdd(Player.PlayerId, new(CustomPlayer.Local, Player, Color));
         local.AllArrows[Player.PlayerId].Update(Color);
     }
 }

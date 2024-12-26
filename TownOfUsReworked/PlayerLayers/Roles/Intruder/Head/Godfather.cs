@@ -9,7 +9,7 @@ public class Godfather : Intruder
     public bool HasDeclared { get; set; }
     public CustomButton DeclareButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Godfather: FactionColor;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Godfather : FactionColor;
     public override string Name => "Godfather";
     public override LayerEnum Type => LayerEnum.Godfather;
     public override Func<string> StartText => () => "Promote Your Fellow <#FF1919FF>Intruder</color> To Do Better";
@@ -21,8 +21,7 @@ public class Godfather : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderHead;
-        DeclareButton ??= new(this, new SpriteName("Promote"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE",
-            (UsableFunc)Usable);
+        DeclareButton ??= new(this, new SpriteName("Promote"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 
     public void Declare(PlayerControl target)

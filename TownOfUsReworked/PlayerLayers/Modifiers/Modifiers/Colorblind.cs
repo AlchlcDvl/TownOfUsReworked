@@ -46,13 +46,7 @@ public class Colorblind : Modifier
         var fit = player.GetCustomOutfitType();
 
         if (fit is not (CustomPlayerOutfitType.Colorblind or CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly))
-        {
             player.SetOutfit(CustomPlayerOutfitType.Colorblind, ColorblindOutfit());
-            player.cosmetics.SetBodyColor(15);
-            player.MyRend().color = UColor.grey;
-            player.NameText().color = UColor.clear;
-            player.cosmetics.colorBlindText.color = UColor.clear;
-        }
     }
 
     private static void AllToNormal()

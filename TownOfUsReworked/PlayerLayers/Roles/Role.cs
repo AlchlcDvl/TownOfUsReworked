@@ -49,10 +49,10 @@ public abstract class Role : PlayerLayer
     public Alignment Alignment { get; set; }
     public List<Role> RoleHistory { get; set; }
     public ChatChannel CurrentChannel { get; set; }
-    public Dictionary<byte, CustomArrow> AllArrows { get; set; }
-    public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> AllArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> DeadArrows { get; set; }
     public Dictionary<PointInTime, float> Positions { get; set; }
-    public Dictionary<byte, CustomArrow> YellerArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> YellerArrows { get; set; }
     public LayerEnum LinkedDisposition { get; set; }
 
     private Faction _faction;
@@ -218,41 +218,10 @@ public abstract class Role : PlayerLayer
 
     public override void UpdateHud(HudManager __instance)
     {
-        foreach (var pair in DeadArrows)
+        foreach (var id in DeadArrows.Keys)
         {
-            var player = PlayerById(pair.Key);
-
-            if (!player)
-                DestroyArrowD(pair.Key);
-            else
-                pair.Value?.Update(player.transform.position);
-        }
-
-        foreach (var yeller in GetLayers<Yeller>())
-        {
-            if (yeller.Player != Player)
-            {
-                if (!yeller.Dead)
-                {
-                    if (YellerArrows.TryGetValue(yeller.PlayerId, out var arrow))
-                        arrow.Update(yeller.Player.transform.position, CustomColorManager.Yeller);
-                    else
-                        YellerArrows.Add(yeller.PlayerId, new(Player, CustomColorManager.Yeller));
-                }
-                else
-                    DestroyArrowY(yeller.PlayerId);
-            }
-        }
-
-        foreach (var pair in AllArrows)
-        {
-            var player = PlayerById(pair.Key);
-            var body = BodyById(pair.Key);
-
-            if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
-                DestroyArrowR(pair.Key);
-            else
-                pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position);
+            if (!PlayerById(id))
+                DestroyArrowD(id);
         }
 
         if (Timekeeper.TKExists && !Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode)
@@ -295,6 +264,91 @@ public abstract class Role : PlayerLayer
 
         if (!GetLayers<Altruist>().Any() && !GetLayers<Necromancer>().Any())
             TrulyDead |= Type != LayerEnum.GuardianAngel;
+    }
+
+    public override void CheckWin()
+    {
+        if ((IsRecruit || Type == LayerEnum.Jackal) && CabalWin())
+        {
+            WinState = WinLose.CabalWins;
+            CallRpc(CustomRPC.WinLose, WinLose.CabalWins, this);
+        }
+        else if ((IsPersuaded || Type == LayerEnum.Whisperer) && SectWin())
+        {
+            WinState = WinLose.SectWins;
+            CallRpc(CustomRPC.WinLose, WinLose.SectWins);
+        }
+        else if ((IsBitten || Type == LayerEnum.Dracula) && UndeadWin())
+        {
+            WinState = WinLose.UndeadWins;
+            CallRpc(CustomRPC.WinLose, WinLose.UndeadWins);
+        }
+        else if ((IsResurrected || Type == LayerEnum.Necromancer) && ReanimatedWin())
+        {
+            WinState = WinLose.ReanimatedWins;
+            CallRpc(CustomRPC.WinLose, WinLose.ReanimatedWins);
+        }
+        else if (Faction == Faction.Syndicate && (Faithful || Type == LayerEnum.Betrayer || IsSynAlly || IsSynDefect || IsSynFanatic || IsSynTraitor) && SyndicateWins())
+        {
+            WinState = WinLose.SyndicateWins;
+            CallRpc(CustomRPC.WinLose, WinLose.SyndicateWins);
+        }
+        else if (Faction == Faction.Intruder && (Faithful || Type == LayerEnum.Betrayer || IsIntDefect || IsIntAlly || IsIntFanatic || IsIntTraitor) && IntrudersWin())
+        {
+            WinState = WinLose.IntrudersWin;
+            CallRpc(CustomRPC.WinLose, WinLose.IntrudersWin);
+        }
+        else if (Faction == Faction.Crew && (Faithful || IsCrewAlly || IsCrewDefect) && CrewWins())
+        {
+            WinState = WinLose.CrewWins;
+            CallRpc(CustomRPC.WinLose, WinLose.CrewWins);
+        }
+        else if (Faithful && ApocWins() && Alignment is Alignment.NeutralApoc or Alignment.NeutralHarb)
+        {
+            WinState = WinLose.ApocalypseWins;
+            CallRpc(CustomRPC.WinLose, WinLose.ApocalypseWins);
+        }
+        else if (Faithful && Faction == Faction.Neutral && AllNeutralsWin())
+        {
+            WinState = WinLose.AllNeutralsWin;
+            CallRpc(CustomRPC.WinLose, WinLose.AllNeutralsWin);
+        }
+        else if (Faithful && Alignment == Alignment.NeutralKill && AllNKsWin())
+        {
+            WinState = WinLose.AllNKsWin;
+            CallRpc(CustomRPC.WinLose, WinLose.AllNKsWin);
+        }
+        else if (Faithful && Alignment == Alignment.NeutralKill && (SameNKWins(Type) || SoloNKWins(Player)))
+        {
+            WinState = Type switch
+            {
+                LayerEnum.Arsonist => WinLose.ArsonistWins,
+                LayerEnum.Cryomaniac => WinLose.CryomaniacWins,
+                LayerEnum.Glitch => WinLose.GlitchWins,
+                LayerEnum.Juggernaut => WinLose.JuggernautWins,
+                LayerEnum.Murderer => WinLose.MurdererWins,
+                LayerEnum.SerialKiller => WinLose.SerialKillerWins,
+                LayerEnum.Werewolf => WinLose.WerewolfWins,
+                _ => WinLose.None,
+            };
+
+            if (NeutralSettings.NoSolo == NoSolo.SameNKs)
+            {
+                foreach (var role2 in GetLayers<Neutral>().Where(x => x.Type == Type))
+                {
+                    if (!role2.Disconnected && role2.Faithful)
+                        role2.Winner = true;
+                }
+            }
+
+            Winner = true;
+            CallRpc(CustomRPC.WinLose, WinState, this);
+        }
+        else if (Type == LayerEnum.Betrayer && Faction == Faction.Neutral)
+        {
+            WinState = WinLose.BetrayerWins;
+            CallRpc(CustomRPC.WinLose, WinLose.BetrayerWins);
+        }
     }
 
     public bool BombUsable() => Bombed;
@@ -361,12 +415,6 @@ public abstract class Role : PlayerLayer
         yield break;
     }*/
 
-    public void DestroyArrowR(byte targetPlayerId)
-    {
-        AllArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        AllArrows.Remove(targetPlayerId);
-    }
-
     public void DestroyArrowY(byte targetPlayerId)
     {
         YellerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
@@ -381,13 +429,7 @@ public abstract class Role : PlayerLayer
 
     public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().ForEach(x => x.Rounds++);
 
-    public override void Deinit()
-    {
-        AllArrows.Values.ToList().DestroyAll();
-        AllArrows.Clear();
-
-        RoleHistory.Clear();
-    }
+    public override void Deinit() => RoleHistory.Clear();
 
     public override void UpdateMap(MapBehaviour __instance)
     {
@@ -433,6 +475,12 @@ public abstract class Role : PlayerLayer
             cryo.FreezeUsed = false;
             cryo.Doused.Clear();
         }
+    }
+
+    public override void ClearArrows()
+    {
+        AllArrows.Values.DestroyAll();
+        AllArrows.Clear();
     }
 
     public const string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <#FF0000FF>Intruders</color>";

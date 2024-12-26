@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Mayor : Crew
+public class Mayor : Crew, IRevealer
 {
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
     public static Number MayorVoteCount { get; set; } = new(2);
@@ -16,7 +16,7 @@ public class Mayor : Crew
     public CustomButton RevealButton { get; set; }
     public bool Revealed { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mayor: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mayor : FactionColor;
     public override string Name => "Mayor";
     public override LayerEnum Type => LayerEnum.Mayor;
     public override Func<string> StartText => () => "Reveal Yourself To Commit Voter Fraud";

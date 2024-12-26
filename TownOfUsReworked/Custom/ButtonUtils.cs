@@ -162,7 +162,7 @@ public static class ButtonUtils
             if (Tracker.ResetOnNewRound)
             {
                 track.TrackButton.Uses = track.TrackButton.MaxUses;
-                track.Deinit();
+                track.ClearArrows();
             }
         }
         else if (role is Transporter trans)
@@ -175,14 +175,14 @@ public static class ButtonUtils
         else if (role is Monarch mon)
             mon.RoundOne = start && Monarch.RoundOneNoKnighting;
         else if (role is Medium)
-            role.Deinit();
+            role.ClearArrows();
         else if (role is Retributionist ret)
         {
             ret.BuggedPlayers.Clear();
             ret.BlockTarget = null;
             ret.TransportPlayer1 = null;
             ret.TransportPlayer2 = null;
-            ret.MediateArrows.Values.ToList().DestroyAll();
+            ret.MediateArrows.Values.DestroyAll();
             ret.MediateArrows.Clear();
             ret.MediatedPlayers.Clear();
 
@@ -194,7 +194,7 @@ public static class ButtonUtils
 
             if (Tracker.ResetOnNewRound)
             {
-                ret.TrackerArrows.Values.ToList().DestroyAll();
+                ret.TrackerArrows.Values.DestroyAll();
                 ret.TrackerArrows.Clear();
                 ret.TrackButton.Uses = ret.TrackButton.MaxUses;
             }

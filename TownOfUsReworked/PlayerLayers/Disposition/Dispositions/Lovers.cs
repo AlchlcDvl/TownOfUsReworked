@@ -23,9 +23,20 @@ public class Lovers : Disposition
 
     public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
     {
-        if (Local && BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.NeutralApoc))
-            RpcMurderPlayer(OtherLover);
+        if (BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.NeutralApoc))
+            MurderPlayer(OtherLover);
     }
 
     public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Lovers;
+
+    public override void CheckWin()
+    {
+        if (LoversWin(Player))
+        {
+            WinState = WinLose.LoveWins;
+            Winner = true;
+            OtherLover.GetDisposition().Winner = true;
+            CallRpc(CustomRPC.WinLose, WinLose.LoveWins, this);
+        }
+    }
 }

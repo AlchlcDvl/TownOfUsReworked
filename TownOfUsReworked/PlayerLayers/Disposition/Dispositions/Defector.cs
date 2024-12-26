@@ -44,13 +44,34 @@ public class Defector : Disposition
         Side = Player.GetFaction();
     }
 
-    public override void UpdatePlayer()
+    public override void UpdateHud(HudManager __instance)
     {
-        if (Defect && !Turned && AmongUsClient.Instance.AmHost)
+        if (Defect && !Turned)
         {
             GetFactionChoice(out var crew, out var evil, out var neut);
             CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, crew, evil, neut);
             TurnSides(crew, evil, neut);
+        }
+    }
+
+    public override void CheckWin()
+    {
+        if (DefectorWins())
+        {
+            if (Side == Faction.Neutral)
+            {
+                WinState = NeutralSettings.NoSolo switch
+                {
+                    NoSolo.AllNKs => WinLose.AllNKsWin,
+                    NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
+                    _ => WinLose.None
+                };
+            }
+
+            if (WinState == WinLose.None)
+                WinState = WinLose.DefectorWins;
+
+            CallRpc(CustomRPC.WinLose, WinState, this);
         }
     }
 

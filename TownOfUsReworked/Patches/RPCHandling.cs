@@ -200,15 +200,7 @@ public static class RPCHandling
                     }
                     case MiscRPC.EndRoleGen:
                     {
-                        foreach (var player2 in AllPlayers())
-                        {
-                            _ = player2.GetRoleFromList() ?? new Roleless().Start(player2);
-                            _ = player2.GetAbilityFromList() ?? new Abilityless().Start(player2);
-                            _ = player2.GetModifierFromList() ?? new Modifierless().Start(player2);
-                            _ = player2.GetDispositionFromList() ?? new Dispositionless().Start(player2);
-                            RoleManager.Instance.SetRole(player2, (RoleTypes)100);
-                        }
-
+                        AllPlayers().ForEach(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
                         SetPostmortals.Revealers = reader.ReadByte();
                         SetPostmortals.Phantoms = reader.ReadByte();
                         SetPostmortals.Banshees = reader.ReadByte();

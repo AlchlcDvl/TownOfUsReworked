@@ -24,7 +24,7 @@ public class Silencer : Syndicate, ISilencer
         set => Target = value;
     }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Silencer: FactionColor;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Silencer : FactionColor;
     public override string Name => "Silencer";
     public override LayerEnum Type => LayerEnum.Silencer;
     public override Func<string> StartText => () => "You Are The One Who Hushes";

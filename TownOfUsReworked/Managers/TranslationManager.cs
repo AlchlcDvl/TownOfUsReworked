@@ -2,54 +2,90 @@ namespace TownOfUsReworked.Managers;
 
 public static class TranslationManager
 {
-    public static readonly Dictionary<string, Language> AllTranslations = [];
+    public static readonly Dictionary<string, Language> AllTranslations = []; // Used to store all translations
+    public static readonly Dictionary<StringNames, string> CustomStringNames = []; // Used to store custom string names
+    // public static readonly Dictionary<string, StringNames> CustomStringNamesAgain = []; // Used to store custom string names, but in reverse
+    public static readonly Dictionary<StringNames, StringNames> VanillaToCustomMap = []; // Used to remap vanilla string names to custom ones
+
+    // Values for comparisons
     private static int LastID = -1;
+    private static int NextID = -1;
 
-    private static string CurrentLanguage => DataManager.Settings.Language.CurrentLanguage switch
-    {
-        SupportedLangs.SChinese => "SChinese",
-        _ => "English"
-    };
-
-    public static readonly string[] SupportedLangNames = [ "English", "SChinese" ];
+    private static string CurrentLanguage => DataManager.Settings.Language.CurrentLanguage.ToString();
 
     public static string Translate(string id, (string Key, string Value)[] toReplace, string language)
     {
-        language ??= CurrentLanguage;
+        language ??= CurrentLanguage; // Get the current language if none is provided
 
         try
         {
-            var result = AllTranslations[id]?[language];
-            toReplace.ForEach(x => result = result.Replace(x.Key, x.Value));
-            return result ?? throw new UnsupportedLanguageException($"{language}:{id}");
+            var result = AllTranslations[id][language]; // Get and translate the result
+            toReplace.ForEach(x => result = result.Replace(x.Key, x.Value)); // Replace the placeholders with the given values
+            return result;
         }
-        catch
+        catch (Exception e)
         {
-            Error($"Unable to translate {id} to {language}");
+            // Any error should just return the original id and let client know in the logs
+            Error(e);
             return id;
         }
     }
 
+    // Overrides for the translate method above
     public static string Translate(string id, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, null);
 
     public static string Translate(string id, string language, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, language);
 
     public static bool IdExists(string id) => AllTranslations.ContainsKey(id);
 
-    public static string Test(string id)
-    {
-        var result = $"ID: {id}";
-        result += $"\nCurrent Language: {CurrentLanguage}";
-        SupportedLangNames.ForEach(x => result += $"\n{x}: {Translate(id, x)}");
-        return result;
-    }
-
-    public static StringNames GetNextName()
+    public static StringNames GetNextName(string id, StringNames vanillaName = StringNames.None, bool isStartup = false)
     {
         if (LastID == -1)
-            LastID = (int)Enum.GetValues<StringNames>().Last();
+            LastID = NextID = (int)Enum.GetValues<StringNames>().Last(); // Getting the very last enum value and casting it to int
 
-        LastID++;
-        return (StringNames)LastID;
+        NextID++; // Increment to the next value
+        var value = (StringNames)NextID; // Cast the int to the enum
+        CustomStringNames[value] = id; // Add the id to the dictionary
+        // CustomStringNamesAgain[id] = value; // Add the id to the reverse dictionary
+
+        if (vanillaName != StringNames.None) // If the custom value overrides translations of a vanilla one, add it to the dictionary for later remapping
+            VanillaToCustomMap[vanillaName] = value;
+
+        if (!isStartup && !IdExists(id))
+            Fatal(id);
+
+        return value;
     }
+
+    public static bool Translate(StringNames id, out string result)
+    {
+        result = "STRMISS"; // Set a default value for the result
+
+        // Check if the given ID has a custom mapping and update the ID if found
+        if (VanillaToCustomMap.TryGetValue(id, out var customId))
+            id = customId;
+
+        // Try to find a language module for the given (possibly updated) ID
+        if (CustomStringNames.TryGetValue(id, out var value))
+        {
+            var lang = Translate(value);
+
+            // If the translation is successful, update the result with the translated string
+            if (lang != value)
+                result = lang;
+        }
+
+        return result != "STRMISS"; // Return true if the result was translated
+    }
+
+    // public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None)
+    // {
+    //     if (CustomStringNamesAgain.TryGetValue(id, out var value)) // Try to find a custom string name by the given id
+    //         return value;
+
+    //     if (VanillaToCustomMap.TryGetValue(vanillaName, out var customName)) // Contingency in case the value could not be found
+    //         return customName;
+
+    //     return GetNextName(id, vanillaName); // Add the new id if it could not be found
+    // }
 }

@@ -48,7 +48,7 @@ public class Necromancer : Neophyte
     public int ResurrectedCount { get; set; }
     public int KillCount { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Necromancer: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Necromancer : FactionColor;
     public override string Name => "Necromancer";
     public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";

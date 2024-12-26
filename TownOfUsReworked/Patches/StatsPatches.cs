@@ -97,7 +97,7 @@ public static class PatchPopup
         StatsPopup.AppendStat(sb, StringNames.StatsFastestImpostorWin_HideAndSeek, StatsPopup.GetFloatStatStr(StatsManager.Instance.GetFastestHideAndSeekImpostorWin()));
         StatsPopup.AppendStat(sb, StringNames.StatsHideAndSeekCrewmateVictory, StatsManager.Instance.GetWinReason(GameOverReason.HideAndSeek_ByTimer));
         StatsPopup.AppendStat(sb, StringNames.StatsHideAndSeekImpostorVictory, StatsManager.Instance.GetWinReason(GameOverReason.HideAndSeek_ByKills));
-        __instance.StatsText.SetText(sb.ToString());
+        __instance.StatsText.SetText(sb);
         return false;
     }
 }

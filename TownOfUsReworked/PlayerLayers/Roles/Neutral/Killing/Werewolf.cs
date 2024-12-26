@@ -19,7 +19,7 @@ public class Werewolf : NKilling
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Werewolf: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Werewolf : FactionColor;
     public override string Name => "Werewolf";
     public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText => () => "AWOOOOOOOOOO";

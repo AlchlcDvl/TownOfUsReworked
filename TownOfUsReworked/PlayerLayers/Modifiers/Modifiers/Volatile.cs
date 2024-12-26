@@ -27,7 +27,7 @@ public class Volatile : Modifier
 
     public override void UpdateHud(HudManager __instance)
     {
-        if (ActiveTask() || IntroCutscene.Instance || Dead)
+        if (ActiveTask() || IntroCutscene.Instance || ShowRolePatch.Starting || Dead)
             return;
 
         _time += Time.deltaTime;

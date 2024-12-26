@@ -12,7 +12,7 @@ public class Shifter : Crew
     public CustomButton ShiftButton { get; set; }
     public CustomPlayerMenu ShifterMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Shifter: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Shifter : FactionColor;
     public override string Name => "Shifter";
     public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText => () => "Shift Around Roles";

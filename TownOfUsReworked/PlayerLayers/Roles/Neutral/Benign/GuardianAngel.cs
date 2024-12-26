@@ -44,7 +44,7 @@ public class GuardianAngel : Neutral
     public CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer ? !TargetAlive : Rounds > 2;
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.GuardianAngel: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.GuardianAngel : FactionColor;
     public override string Name => "Guardian Angel";
     public override LayerEnum Type => LayerEnum.GuardianAngel;
     public override Func<string> StartText => () => "Find Someone To Protect";

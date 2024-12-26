@@ -13,6 +13,4 @@ public class Professional : Modifier
     public override LayerEnum Type => LayerEnum.Professional;
     public override Func<string> Description => () => "- You have an extra life when assassinating";
     public override bool Hidden => !ProfessionalKnows && !LifeUsed && !Dead;
-
-    public override void Init() => LifeUsed = false;
 }

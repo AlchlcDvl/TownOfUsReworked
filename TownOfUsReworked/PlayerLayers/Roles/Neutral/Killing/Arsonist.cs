@@ -30,7 +30,7 @@ public class Arsonist : NKilling
         or Alignment.NeutralPros or Alignment.NeutralNeo or Alignment.NeutralKill) && x != Player) && ArsoLastKillerBoost;
     public List<byte> Doused { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist : FactionColor;
     public override string Name => "Arsonist";
     public override LayerEnum Type => LayerEnum.Arsonist;
     public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";

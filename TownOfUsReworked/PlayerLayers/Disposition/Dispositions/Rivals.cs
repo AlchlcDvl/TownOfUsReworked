@@ -19,4 +19,14 @@ public class Rivals : Disposition
     public override Func<string> Description => () => OtherRival.HasDied() ? "- Live to the final 2" : $"- Get {OtherRival.name} killed";
 
     public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Rivals;
+
+    public override void CheckWin()
+    {
+        if (RivalsWin(Player))
+        {
+            WinState = WinLose.RivalWins;
+            Winner = true;
+            CallRpc(CustomRPC.WinLose, WinLose.RivalWins, this);
+        }
+    }
 }

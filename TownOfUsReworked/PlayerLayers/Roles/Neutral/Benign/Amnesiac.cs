@@ -20,10 +20,10 @@ public class Amnesiac : Neutral
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AmneToThief { get; set; } = true;
 
-    public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
+    public Dictionary<byte, PositionalArrow> BodyArrows { get; set; }
     public CustomButton RememberButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Amnesiac: FactionColor;
+    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Amnesiac : FactionColor;
     public override string Name => "Amnesiac";
     public override LayerEnum Type => LayerEnum.Amnesiac;
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
@@ -45,10 +45,10 @@ public class Amnesiac : Neutral
         BodyArrows.Remove(targetPlayerId);
     }
 
-    public override void Deinit()
+    public override void ClearArrows()
     {
-        base.Deinit();
-        BodyArrows.Values.ToList().DestroyAll();
+        base.ClearArrows();
+        BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();
     }
 
@@ -188,15 +188,15 @@ public class Amnesiac : Neutral
             foreach (var snitch in GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
-                    local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Color));
+                    local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Player, snitch.Color));
                 else if (snitch.TasksDone && snitch.Local)
-                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, snitch.Color));
+                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, player, snitch.Color));
             }
 
             foreach (var revealer in GetLayers<Revealer>())
             {
                 if (revealer.Revealed && player.AmOwner)
-                    local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Color));
+                    local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Player, revealer.Color));
             }
         }
 
@@ -211,26 +211,22 @@ public class Amnesiac : Neutral
     {
         base.UpdateHud(__instance);
 
-        if (RememberArrows && !Dead)
+        if (!RememberArrows || Dead)
+            return;
+
+        var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= RememberArrowDelay));
+
+        foreach (var bodyArrow in BodyArrows.Keys)
         {
-            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= RememberArrowDelay));
-
-            foreach (var bodyArrow in BodyArrows.Keys)
-            {
-                if (!validBodies.Any(x => x.ParentId == bodyArrow))
-                    DestroyArrow(bodyArrow);
-            }
-
-            foreach (var body in validBodies)
-            {
-                if (BodyArrows.TryGetValue(body.ParentId, out var arrow))
-                    arrow.Update(body.TruePosition);
-                else
-                    BodyArrows[body.ParentId] = new(Player, Color);
-            }
+            if (!validBodies.Any(x => x.ParentId == bodyArrow))
+                DestroyArrow(bodyArrow);
         }
-        else if (BodyArrows.Count > 0 || AllPlayers().Count(x => !x.HasDied()) <= 4)
-            Deinit();
+
+        foreach (var body in validBodies)
+        {
+            if (!BodyArrows.ContainsKey(body.ParentId))
+                BodyArrows[body.ParentId] = new(Player, body.TruePosition, Color);
+        }
     }
 
     public override void UpdatePlayer()

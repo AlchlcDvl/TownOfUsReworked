@@ -30,4 +30,14 @@ public class Runner : Role
         if (TasksLeft == 1)
             Flash(Color);
     }
+
+    public override void CheckWin()
+    {
+        if (TasksDone)
+        {
+            WinState = WinLose.TaskRunnerWins;
+            Winner = true;
+            CallRpc(CustomRPC.WinLose, WinLose.TaskRunnerWins, this);
+        }
+    }
 }

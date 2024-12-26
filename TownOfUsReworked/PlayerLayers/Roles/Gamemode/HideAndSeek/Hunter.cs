@@ -6,7 +6,6 @@ public class Hunter : HideAndSeek
     public override LayerEnum Type => LayerEnum.Hunter;
     public override Func<string> StartText => () => "Hunt Them All Down";
     public override UColor Color => CustomColorManager.Hunter;
-    public override string FactionName => "Hide And Seek";
 
     public CustomButton HuntButton { get; set; }
     public float StartingTimer { get; set; }
@@ -64,4 +63,13 @@ public class Hunter : HideAndSeek
     }
 
     public override void ReadRPC(MessageReader reader) => TurnHunter(reader.ReadPlayer());
+
+    public override void CheckWin()
+    {
+        if (HunterWins())
+        {
+            WinState = WinLose.HunterWins;
+            CallRpc(CustomRPC.WinLose, WinLose.HunterWins);
+        }
+    }
 }

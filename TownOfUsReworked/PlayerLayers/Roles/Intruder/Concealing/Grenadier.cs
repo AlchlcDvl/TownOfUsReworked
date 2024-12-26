@@ -22,9 +22,9 @@ public class Grenadier : Intruder
     public static bool GrenadierVent { get; set; } = false;
 
     public CustomButton FlashButton { get; set; }
-    public List<byte> FlashedPlayers { get; set; }
+    public IEnumerable<byte> FlashedPlayers { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Grenadier: FactionColor;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Grenadier : FactionColor;
     public override string Name => "Grenadier";
     public override LayerEnum Type => LayerEnum.Grenadier;
     public override Func<string> StartText => () => "Blind The <#8CFFFFFF>Crew</color> With Your Magnificent Figure";
@@ -95,7 +95,7 @@ public class Grenadier : Intruder
 
     public void UnFlash()
     {
-        FlashedPlayers.Clear();
+        FlashedPlayers = [];
         SetFullScreenHUD();
     }
 
@@ -105,7 +105,7 @@ public class Grenadier : Intruder
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player, FlashRadius).Select(x => x.PlayerId) ];
+    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player, FlashRadius).Select(x => x.PlayerId);
 
     public bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !SaboFlash;
 }

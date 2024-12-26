@@ -31,7 +31,7 @@ public class Vigilante : Crew
     public CustomButton ShootButton { get; set; }
     public bool RoundOne { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Vigilante: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Vigilante : FactionColor;
     public override string Name => "Vigilante";
     public override LayerEnum Type => LayerEnum.Vigilante;
     public override Func<string> StartText => () => "Shoot The <#FF0000FF>Evildoers</color>";

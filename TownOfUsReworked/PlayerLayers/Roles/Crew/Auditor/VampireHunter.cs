@@ -9,7 +9,7 @@ public class VampireHunter : Crew
     public static bool VampsDead => !AllPlayers().Any(x => !x.HasDied() && x.Is(SubFaction.Undead));
     private CustomButton StakeButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.VampireHunter: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.VampireHunter : FactionColor;
     public override string Name => "Vampire Hunter";
     public override LayerEnum Type => LayerEnum.VampireHunter;
     public override Func<string> StartText => () => "Stake The <#7B8968FF>Undead</color>";

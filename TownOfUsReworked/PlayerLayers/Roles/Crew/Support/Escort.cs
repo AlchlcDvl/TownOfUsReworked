@@ -12,7 +12,7 @@ public class Escort : Crew
     public PlayerControl BlockTarget { get; set; }
     public CustomButton BlockButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Escort: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Escort : FactionColor;
     public override string Name => "Escort";
     public override LayerEnum Type => LayerEnum.Escort;
     public override Func<string> StartText => () => "Roleblock Players From Harming The <#8CFFFFFF>Crew</color>";
@@ -26,7 +26,7 @@ public class Escort : Crew
         Alignment = Alignment.CrewSupport;
         BlockTarget = null;
         BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, (EffectVoid)Block,
-            (EffectEndVoid)UnBlock,  new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect);
+            (EffectEndVoid)UnBlock,  new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect, (EffectStartVoid)BlockStart);
     }
 
     public void UnBlock()
@@ -41,6 +41,12 @@ public class Escort : Crew
     }
 
     public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
+
+    public void BlockStart()
+    {
+        if (BlockTarget.AmOwner)
+            CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
+    }
 
     public void Roleblock(PlayerControl target)
     {

@@ -357,7 +357,9 @@ public static class Utils
         CallRpc(CustomRPC.Action, ActionsRPC.BypassKill, killer, target, reason, lunge);
     }
 
-    public static void MurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason, bool lunge)
+    public static void MurderPlayer(PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true) => MurderPlayer(self, self, reason, lunge);
+
+    public static void MurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
         if (!killer || !target || !target.Data || target.Data.IsDead || !killer.Data)
             return;
@@ -516,18 +518,13 @@ public static class Utils
 
     public static IEnumerator BaitReportDelay(PlayerControl killer, PlayerControl target)
     {
-        if (!killer || !target || killer == target)
+        if (!killer || !target || killer == target || !AmongUsClient.Instance.AmHost)
             yield break;
 
-        yield return Wait(URandom.RandomRange(Bait.BaitMinDelay, Bait.BaitMaxDelay));
+        yield return Wait(URandom.RandomRange((float)Bait.BaitMinDelay, Bait.BaitMaxDelay));
 
         if (BodyById(target.PlayerId))
-        {
-            if (AmongUsClient.Instance.AmHost)
-                killer.ReportDeadBody(target.Data);
-            else
-                CallRpc(CustomRPC.Action, ActionsRPC.BaitReport, killer, target);
-        }
+            killer.ReportDeadBody(target.Data);
 
         yield break;
     }
@@ -1210,12 +1207,8 @@ public static class Utils
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
 
-            var role = player.GetRole();
-
-            if (role is Janitor jani)
-                jani.Drop();
-            else if (role is PromotedGodfather gf)
-                gf.Drop();
+            if (player.GetRole() is IDragger dragger)
+                dragger.Drop();
         }
 
         player.moveable = true;

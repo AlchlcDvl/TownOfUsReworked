@@ -74,23 +74,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
             Message("Removed a target");
         }
 
-        if (IsStalk)
-        {
-            if (Dead)
-                return;
-
-            foreach (var pair in StalkerArrows)
-            {
-                var player = PlayerById(pair.Key);
-                var body = BodyById(pair.Key);
-
-                if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
-                    DestroyArrow(pair.Key);
-                else
-                    pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive));
-            }
-        }
-        else if (IsCol)
+        if (IsCol)
         {
             if (Dead)
                 return;
@@ -257,18 +241,23 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         Bombs.ForEach(x => x?.gameObject?.Destroy());
         Bombs.Clear();
 
-        StalkerArrows.Values.ToList().DestroyAll();
-        StalkerArrows.Clear();
-
         WarpObj?.Destroy();
 
         ResetCharges();
     }
 
+    public override void ClearArrows()
+    {
+        base.ClearArrows();
+
+        StalkerArrows.Values.DestroyAll();
+        StalkerArrows.Clear();
+    }
+
     public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
     {
         base.OnDeath(reason, reason2, killer);
-        Deinit();
+        ClearArrows();
     }
 
     public override void BeforeMeeting()
@@ -373,7 +362,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
             foreach (var player in AllPlayers())
             {
                 if (!StalkerArrows.ContainsKey(player.PlayerId))
-                    StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));
+                    StalkerArrows.Add(player.PlayerId, new(Player, player, player.GetPlayerColor(false)));
             }
         }
     }
@@ -992,7 +981,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
     public float SpellDifference() => SpellCount * Spellslinger.SpellCdIncrease;
 
     // Stalker Stuff
-    public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> StalkerArrows { get; set; }
     public CustomButton StalkButton { get; set; }
     public bool IsStalk => FormerRole is Stalker;
 
@@ -1009,7 +998,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            StalkerArrows.Add(target.PlayerId, new(Player, target.GetPlayerColor(!HoldsDrive)));
+            StalkerArrows.Add(target.PlayerId, new(Player, target, target.GetPlayerColor(!HoldsDrive)));
 
         StalkButton.StartCooldown(cooldown);
     }

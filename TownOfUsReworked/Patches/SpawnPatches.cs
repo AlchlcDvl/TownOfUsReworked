@@ -18,7 +18,7 @@ public static class SpawnPatches
         if (intro && CustomPlayer.Local.Data.Role is LayerHandler handler)
             handler.OnIntroEnd();
 
-        AllPlayers().ForEach(x => x?.MyPhysics?.ResetAnimState());
+        AllPlayers().ForEach(x => x.MyPhysics.ResetAnimState());
         AllBodies().ForEach(x => x.gameObject.Destroy());
         ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);

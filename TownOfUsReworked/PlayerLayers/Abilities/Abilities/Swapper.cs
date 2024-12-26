@@ -48,15 +48,15 @@ public class Swapper : Ability
         SwapMenu.GenButtons(__instance);
     }
 
+    public override void ConfirmVotePrefix(MeetingHud __instance) => SwapMenu.Voted();
+
+    public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update(__instance);
+
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
         return player.HasDied() || (Local && Player == player && !SwapSelf) || Dead;
     }
-
-    public override void ConfirmVotePrefix(MeetingHud __instance) => SwapMenu.Voted();
-
-    public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update(__instance);
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
     {

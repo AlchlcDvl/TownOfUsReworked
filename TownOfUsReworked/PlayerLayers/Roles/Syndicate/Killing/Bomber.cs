@@ -35,7 +35,7 @@ public class Bomber : Syndicate
     public CustomButton DetonateButton { get; set; }
     public List<Bomb> Bombs { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Bomber: FactionColor;
+    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Bomber : FactionColor;
     public override string Name => "Bomber";
     public override LayerEnum Type => LayerEnum.Bomber;
     public override Func<string> StartText => () => "Make People Go Boom";

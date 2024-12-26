@@ -24,7 +24,7 @@ public class Blackmailer : Intruder, IBlackmailer
         set => Target = value;
     }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Blackmailer: FactionColor;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Blackmailer : FactionColor;
     public override string Name => "Blackmailer";
     public override LayerEnum Type => LayerEnum.Blackmailer;
     public override Func<string> StartText => () => "You Know Their Secrets";

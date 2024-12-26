@@ -24,7 +24,7 @@ public class Taskmaster : Disposition
                 Alignment.NeutralPros)
             {
                 Flash(Color);
-                CustomPlayer.Local.GetRole().AllArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+                CustomPlayer.Local.GetRole().AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
             }
         }
         else if (TasksDone)
@@ -33,6 +33,16 @@ public class Taskmaster : Disposition
                 Flash(Color);
 
             WinTasksDone = true;
+        }
+    }
+
+    public override void CheckWin()
+    {
+        if (TasksDone)
+        {
+            WinState = WinLose.TaskmasterWins;
+            Winner = true;
+            CallRpc(CustomRPC.WinLose, WinLose.TaskmasterWins, this);
         }
     }
 }

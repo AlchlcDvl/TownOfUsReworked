@@ -18,13 +18,13 @@ public class Medium : Crew
     [StringOption(MultiMenu.LayerSubOptions)]
     public static DeadRevealed DeadRevealed { get; set; } = DeadRevealed.Oldest;
 
-    public Dictionary<byte, CustomArrow> MediateArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> MediateArrows { get; set; }
     public CustomButton MediateButton { get; set; }
-    public CustomButton SeanceButton { get; set; }
-    public bool HasSeanced { get; set; }
     public List<byte> MediatedPlayers { get; set; }
+    // public CustomButton SeanceButton { get; set; }
+    // public bool HasSeanced { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medium: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medium : FactionColor;
     public override string Name => "Medium";
     public override LayerEnum Type => LayerEnum.Medium;
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
@@ -45,10 +45,10 @@ public class Medium : Crew
     // private void Seance() { /*Currently blank, gonna work on this later*/ }
     // Can you believe this guy? Over a year and this mofo still hasn't worked on it :skull:
 
-    public override void Deinit()
+    public override void ClearArrows()
     {
-        base.Deinit();
-        MediateArrows.Values.ToList().DestroyAll();
+        base.ClearArrows();
+        MediateArrows.Values.DestroyAll();
         MediateArrows.Clear();
         MediatedPlayers.Clear();
     }
@@ -58,7 +58,7 @@ public class Medium : Crew
         if (Dead || !MediateArrows.TryGetValue(__instance.PlayerId, out var arrow))
             return;
 
-        arrow?.Update(__instance.transform.position, __instance.GetPlayerColor(false, !ShowMediatePlayer));
+        arrow?.Update(__instance.GetPlayerColor(false, !ShowMediatePlayer));
 
         if (!ShowMediatePlayer)
         {
@@ -83,7 +83,7 @@ public class Medium : Crew
 
             if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
             {
-                MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
                 MediatedPlayers.Add(dead.PlayerId);
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
             }
@@ -97,7 +97,7 @@ public class Medium : Crew
             {
                 if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                 {
-                    MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                    MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
                     MediatedPlayers.Add(dead.PlayerId);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
 
@@ -114,6 +114,6 @@ public class Medium : Crew
         MediatedPlayers.Add(playerid2);
 
         if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && ShowMediumToDead == ShowMediumToDead.AllDead))
-            CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
+            CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color, skipBody: true));
     }
 }

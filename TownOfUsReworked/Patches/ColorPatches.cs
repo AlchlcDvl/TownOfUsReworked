@@ -42,22 +42,11 @@ public static class PlayerTabPatches
         __instance.scroller.UpdateScrollBars();
     }
 
-    private static float TimePassed;
-    private static bool Shadow;
-
     [HarmonyPatch(nameof(PlayerTab.Update)), HarmonyPostfix]
     public static void UpdatePostfix(PlayerTab __instance)
     {
-        TimePassed += Time.deltaTime;
-
-        if (TimePassed > 2f)
-        {
-            TimePassed = 0f;
-            Shadow = !Shadow;
-        }
-
         for (var i = 0; i < __instance.ColorChips.Count; i++)
-            __instance.ColorChips[i].Inner.SpriteColor = i.GetColor(Shadow);
+            __instance.ColorChips[i].Inner.SpriteColor = i.GetColor(false);
     }
 
     [HarmonyPatch(nameof(PlayerTab.UpdateAvailableColors))]

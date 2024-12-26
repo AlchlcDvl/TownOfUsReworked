@@ -146,6 +146,31 @@ public class LayerHandler : RoleBehaviour
         CustomAbility = Player.GetAbility();
         CustomModifier = Player.GetModifier();
         CustomDisposition = Player.GetDisposition();
+
+        if (!CustomRole)
+        {
+            CustomRole = new Roleless();
+            CustomRole.Start(Player);
+        }
+
+        if (!CustomAbility)
+        {
+            CustomAbility = new Abilityless();
+            CustomAbility.Start(Player);
+        }
+
+        if (!CustomModifier)
+        {
+            CustomModifier = new Modifierless();
+            CustomModifier.Start(Player);
+        }
+
+        if (!CustomDisposition)
+        {
+            CustomDisposition = new Dispositionless();
+            CustomDisposition.Start(Player);
+        }
+
         CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
         ResetButtons();
     }
@@ -224,10 +249,10 @@ public class LayerHandler : RoleBehaviour
 
     public override void Deinitialize(PlayerControl targetPlayer)
     {
-        CustomRole.Deinit();
-        CustomAbility.Deinit();
-        CustomModifier.Deinit();
-        CustomDisposition.Deinit();
+        CustomRole.End();
+        CustomAbility.End();
+        CustomModifier.End();
+        CustomDisposition.End();
     }
 
     public override bool CanUse(IUsable console)

@@ -24,7 +24,7 @@ public class Morphling : Intruder
     public PlayerControl SampledPlayer { get; set; }
     public bool Morphed => MorphButton.EffectActive;
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Morphling: FactionColor;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Morphling : FactionColor;
     public override string Name => "Morphling";
     public override LayerEnum Type => LayerEnum.Morphling;
     public override Func<string> StartText => () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
@@ -36,8 +36,7 @@ public class Morphling : Intruder
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
-        SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE",
-            (PlayerBodyExclusion)Exception1);
+        SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE", (PlayerBodyExclusion)Exception1);
         MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
             new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);
     }

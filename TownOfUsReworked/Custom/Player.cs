@@ -5,7 +5,7 @@ public class CustomPlayer
     public PlayerControl Player { get; }
     public NetworkedPlayerInfo Data => Player?.Data;
     public Transform Transform => Player.transform;
-    public Vector3 Position => Transform.position;
+    public Vector3 Position => Player.transform.position;
     public bool Dead => Data.IsDead;
     public bool Disconnected => Data.Disconnected;
     public float SpeedFactor => Player.GetBaseSpeed() * Player.GetModifiedSpeed();

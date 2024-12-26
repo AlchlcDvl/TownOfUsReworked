@@ -42,6 +42,7 @@ public partial class TownOfUsReworked
         NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
         AllMonos.RegisterMonos();
         SetUpConfigs();
+        ReworkedStart = TranslationManager.GetNextName("Translation.ReworkedStart", isStartup: true);
         LoadAssets();
         CustomStatsManager.Setup();
         IL2CPPChainloader.Instance.Finished += Initialise;

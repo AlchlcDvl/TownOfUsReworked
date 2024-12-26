@@ -19,7 +19,7 @@ public class Enforcer : Intruder
     public PlayerControl BombedPlayer { get; set; }
     public bool BombSuccessful { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Enforcer: FactionColor;
+    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Enforcer : FactionColor;
     public override string Name => "Enforcer";
     public override LayerEnum Type => LayerEnum.Enforcer;
     public override Func<string> StartText => () => "Force The <#8CFFFFFF>Crew</color> To Do Your Bidding";

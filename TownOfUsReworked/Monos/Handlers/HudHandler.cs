@@ -19,7 +19,7 @@ public class HudHandler : MonoBehaviour
         if (LocalBlocked() && ActiveTask())
             ActiveTask().Close();
 
-        CustomArrow.AllArrows.Where(x => !x.Owner.AmOwner).ForEach(x => x.Update());
+        CustomArrow.AllArrows.ForEach(x => x.Update());
         AllButtons.ForEach(x => x.Timers());
         HUD()?.ReportButton?.ToggleVisible(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is<Coward>() && !CustomPlayer.Local.Is(Faction.GameMode) && !Meeting() &&
             !MapBehaviourPatches.MapActive);

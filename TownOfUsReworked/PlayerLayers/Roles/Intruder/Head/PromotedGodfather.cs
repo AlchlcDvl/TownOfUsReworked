@@ -117,8 +117,8 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
         else if (IsCons)
         {
             var wasnull = BlockButton == null;
-            BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, (UsableFunc)ConsUsable,
-                (EffectEndVoid)UnBlock, new Cooldown(Consort.ConsortCd), new Duration(Consort.ConsortDur), (EffectVoid)Block, (LabelFunc)ConsLabel);
+            BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, (UsableFunc)ConsUsable, (EndFunc)BlockEnd,
+                (EffectEndVoid)UnBlock, new Cooldown(Consort.ConsortCd), new Duration(Consort.ConsortDur), (EffectVoid)Block, (LabelFunc)ConsLabel, (EffectStartVoid)BlockStart);
 
             if (wasnull && BlockMenu == null)
                 BlockMenu = new(Player, ConsClick, ConsException);
@@ -253,7 +253,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
 
     // Grenadier Stuff
     public CustomButton FlashButton { get; set; }
-    public List<byte> FlashedPlayers { get; set; }
+    public IEnumerable<byte> FlashedPlayers { get; set; }
     public bool IsGren => FormerRole is Grenadier;
 
     public void Flash()
@@ -312,7 +312,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
 
     public void UnFlash()
     {
-        FlashedPlayers.Clear();
+        FlashedPlayers = [];
         SetFullScreenHUD();
     }
 
@@ -322,7 +322,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = [ .. GetClosestPlayers(Player, Grenadier.FlashRadius).Select(x => x.PlayerId) ];
+    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player, Grenadier.FlashRadius).Select(x => x.PlayerId);
 
     public bool GrenCondition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !Grenadier.SaboFlash;
 
@@ -614,6 +614,12 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
     }
 
     public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
+
+    public void BlockStart()
+    {
+        if (BlockTarget.AmOwner)
+            CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
+    }
 
     public void ConsClick(PlayerControl player)
     {

@@ -29,4 +29,19 @@ public class Corrupted : Disposition
     }
 
     private void Corrupt(PlayerControl target) => CorruptButton.StartCooldown(Interact(Player, target, true));
+
+    public override void CheckWin()
+    {
+        if (CorruptedWin(Player))
+        {
+            WinState = WinLose.CorruptedWins;
+
+            if (AllCorruptedWin)
+                GetLayers<Corrupted>().ForEach(x => x.Winner = true);
+            else
+                Winner = true;
+
+            CallRpc(CustomRPC.WinLose, WinLose.CorruptedWins, this);
+        }
+    }
 }

@@ -111,7 +111,9 @@ public static class MCIUtils
 
         PlayerLayer.LocalLayers().ForEach(x => x.ExitingLayer());
 
-        CustomPlayer.Local.RpcCustomSnapTo(CustomPlayer.LocalCustom.Position);
+        CustomPlayer.Local.CustomSnapTo(CustomPlayer.LocalCustom.Position);
+        CustomPlayer.Local.MyPhysics.ResetMoveState();
+        CustomPlayer.Local.MyPhysics.ResetAnimState();
         CustomPlayer.Local.moveable = false;
 
         var light = CustomPlayer.Local.lightSource;
@@ -134,7 +136,8 @@ public static class MCIUtils
         light.transform.localPosition = newPlayer.Collider.offset;
 
         HUD().PlayerCam.SetTarget(newPlayer);
-        newPlayer.MyPhysics.ResetMoveState(true);
+        newPlayer.MyPhysics.ResetMoveState();
+        newPlayer.MyPhysics.ResetAnimState();
         KillAnimation.SetMovement(newPlayer, true);
         newPlayer.MyPhysics.inputHandler.enabled = true;
 

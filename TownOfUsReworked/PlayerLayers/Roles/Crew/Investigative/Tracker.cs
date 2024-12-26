@@ -15,10 +15,10 @@ public class Tracker : Crew
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
     public static Number UpdateInterval { get; set; } = new(5);
 
-    public Dictionary<byte, CustomArrow> TrackerArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> TrackerArrows { get; set; }
     public CustomButton TrackButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Tracker: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Tracker : FactionColor;
     public override string Name => "Tracker";
     public override LayerEnum Type => LayerEnum.Tracker;
     public override Func<string> StartText => () => "Track Everyone's Movements";
@@ -33,19 +33,6 @@ public class Tracker : Crew
             (PlayerBodyExclusion)Exception);
     }
 
-    public void DestroyArrow(byte targetPlayerId)
-    {
-        TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        TrackerArrows.Remove(targetPlayerId);
-    }
-
-    public override void Deinit()
-    {
-        base.Deinit();
-        TrackerArrows.Values.ToList().DestroyAll();
-        TrackerArrows.Clear();
-    }
-
     public bool Exception(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
 
     public void Track(PlayerControl target)
@@ -53,33 +40,21 @@ public class Tracker : Crew
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            TrackerArrows.Add(target.PlayerId, new(Player, target.GetPlayerColor(), UpdateInterval));
+            TrackerArrows.Add(target.PlayerId, new(Player, target, target.GetPlayerColor(), UpdateInterval));
 
         TrackButton.StartCooldown(cooldown);
     }
 
-    public override void UpdateHud(HudManager __instance)
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
     {
-        base.UpdateHud(__instance);
+        base.OnDeath(reason, reason2, killer);
+        ClearArrows();
+    }
 
-        if (Dead)
-            Deinit();
-        else
-        {
-            var toDestroy = new List<byte>();
-
-            foreach (var pair in TrackerArrows)
-            {
-                var player = PlayerById(pair.Key);
-                var body = BodyById(pair.Key);
-
-                if (!player || player.Data.Disconnected || (player.Data.IsDead && !body))
-                    toDestroy.Add(pair.Key);
-                else
-                    pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());
-            }
-
-            toDestroy.ForEach(DestroyArrow);
-        }
+    public override void ClearArrows()
+    {
+        base.ClearArrows();
+        TrackerArrows.Values.DestroyAll();
+        TrackerArrows.Clear();
     }
 }

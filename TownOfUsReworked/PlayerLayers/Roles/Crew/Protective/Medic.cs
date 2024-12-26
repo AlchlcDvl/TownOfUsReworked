@@ -16,7 +16,7 @@ public class Medic : Crew, IShielder
     public bool ShieldBroken { get; set; }
     public CustomButton ShieldButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medic: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medic : FactionColor;
     public override string Name => "Medic";
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
@@ -38,16 +38,8 @@ public class Medic : Crew, IShielder
 
         if (cooldown != CooldownType.Fail)
         {
-            if (ShieldedPlayer)
-            {
-                ShieldedPlayer = null;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MedicActionsRPC.Remove);
-            }
-            else
-            {
-                ShieldedPlayer = target;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MedicActionsRPC.Add, target);
-            }
+            ShieldedPlayer = ShieldedPlayer ? null : target;
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ShieldedPlayer?.PlayerId ?? 255);
         }
 
         ShieldButton.StartCooldown(cooldown);
@@ -58,10 +50,10 @@ public class Medic : Crew, IShielder
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
         else
-            return (player.TryGetLayer<Mayor>(out var mayor) && mayor.Revealed) || (player.TryGetLayer<Dictator>(out var dictator) && dictator.Revealed);
+            return player.TryGetILayer<IRevealer>(out var irev) && irev.Revealed;
     }
 
     public bool Usable() => !ShieldBroken;
 
-    public override void ReadRPC(MessageReader reader) => ShieldedPlayer = reader.ReadEnum<MedicActionsRPC>() == MedicActionsRPC.Add ? reader.ReadPlayer() : null;
+    public override void ReadRPC(MessageReader reader) => ShieldedPlayer = reader.ReadPlayer();
 }

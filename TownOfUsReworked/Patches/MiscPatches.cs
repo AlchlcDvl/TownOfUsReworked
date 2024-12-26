@@ -651,26 +651,11 @@ public static class PatchColours
 {
     public static bool Prefix(StringNames id, ref string __result)
     {
-        var intId = (int)id;
+        var result = TranslationManager.Translate(id, out var customString);
 
-        if (CustomColorManager.AllColors.Values.TryFinding(x => x.StringID == intId && !x.Default, out var color) && color != null)
-        {
-            var translation = TranslationManager.Translate($"Colors.{color.Name}");
-            __result = translation == $"Colors.{color.Name}" ? color.Name : translation;
-            return false;
-        }
+        if (result)
+            __result = customString;
 
-        if (CustomStatsManager.VanillaToCustomStatsMap.TryGetValue(id, out var customStat))
-        {
-            __result = TranslationManager.Translate($"Stats.{CustomStatsManager.CustomStatTranslations[customStat]}");
-            return false;
-        }
-        else if (CustomStatsManager.CustomStatTranslations.TryGetValue(id, out var stat))
-        {
-            __result = TranslationManager.Translate($"Stats.{stat}");
-            return false;
-        }
-
-        return true;
+        return !result;
     }
 }

@@ -41,9 +41,7 @@ public abstract class PlayerLayer
     ~PlayerLayer() => End();
 
     // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
-    public T Start<T>(PlayerControl player) where T : PlayerLayer => Start(player) as T;
-
-    public PlayerLayer Start(PlayerControl player)
+    public void Start(PlayerControl player)
     {
         Player = player;
         Ignore = false;
@@ -51,21 +49,17 @@ public abstract class PlayerLayer
 
         if (Local)
             EnteringLayer();
-
-        return this;
     }
 
-    public T End<T>() where T : PlayerLayer => End() as T;
-
-    public PlayerLayer End()
+    public void End()
     {
         if (Local)
             ExitingLayer();
 
         Deinit();
+        ClearArrows();
         Ignore = true;
         Player = null;
-        return this;
     }
 
     public virtual void Init() {}
@@ -122,263 +116,16 @@ public abstract class PlayerLayer
 
     public virtual void OnKill(PlayerControl victim) {}
 
+    public virtual void ClearArrows() {}
+
+    public virtual void CheckWin() {}
+
     public void GameEnd()
     {
         if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Ignore || WinState != WinLose.None)
             return;
 
-        switch (this)
-        {
-            case Disposition disp:
-            {
-                switch (disp)
-                {
-                    case Corrupted:
-                    {
-                        if (CorruptedWin(Player))
-                        {
-                            WinState = WinLose.CorruptedWins;
-
-                            if (Corrupted.AllCorruptedWin)
-                                GetLayers<Corrupted>().ForEach(x => x.Winner = true);
-                            else
-                                Winner = true;
-
-                            CallRpc(CustomRPC.WinLose, WinLose.CorruptedWins, this);
-                        }
-
-                        break;
-                    }
-                    case Lovers lovers:
-                    {
-                        if (LoversWin(Player))
-                        {
-                            WinState = WinLose.LoveWins;
-                            Winner = true;
-                            lovers.OtherLover.GetDisposition().Winner = true;
-                            CallRpc(CustomRPC.WinLose, WinLose.LoveWins, this);
-                        }
-
-                        break;
-                    }
-                    case Rivals:
-                    {
-                        if (RivalsWin(Player))
-                        {
-                            WinState = WinLose.RivalWins;
-                            Winner = true;
-                            CallRpc(CustomRPC.WinLose, WinLose.RivalWins, this);
-                        }
-
-                        break;
-                    }
-                    case Taskmaster:
-                    {
-                        if (TasksDone)
-                        {
-                            WinState = WinLose.TaskmasterWins;
-                            Winner = true;
-                            CallRpc(CustomRPC.WinLose, WinLose.TaskmasterWins, this);
-                        }
-
-                        break;
-                    }
-                    case Mafia:
-                    {
-                        if (MafiaWin())
-                        {
-                            WinState = WinLose.MafiaWins;
-                            Winner = true;
-                            CallRpc(CustomRPC.WinLose, WinLose.MafiaWins);
-                        }
-
-                        break;
-                    }
-                    case Defector defector:
-                    {
-                        if (DefectorWins())
-                        {
-                            if (defector.Side == Faction.Neutral)
-                            {
-                                WinState = NeutralSettings.NoSolo switch
-                                {
-                                    NoSolo.AllNKs => WinLose.AllNKsWin,
-                                    NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
-                                    _ => WinLose.None
-                                };
-                            }
-
-                            if (WinState == WinLose.None)
-                                WinState = WinLose.DefectorWins;
-
-                            CallRpc(CustomRPC.WinLose, WinState, this);
-                        }
-
-                        break;
-                    }
-                    case Overlord:
-                    {
-                        if (Alive && OverlordWins())
-                        {
-                            WinState = WinLose.OverlordWins;
-                            GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
-                            CallRpc(CustomRPC.WinLose, WinLose.OverlordWins);
-                        }
-
-                        break;
-                    }
-                }
-
-                return;
-            }
-            case Role role:
-            {
-                switch (role)
-                {
-                    case Phantom phantom:
-                    {
-                        if (TasksDone && phantom.Faithful)
-                        {
-                            WinState = WinLose.PhantomWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
-                        }
-
-                        break;
-                    }
-                    case Evil evil:
-                    {
-                        if (NeutralEvilSettings.NeutralEvilsEndGame && evil.HasWon)
-                        {
-                            WinState = evil.EndState;
-                            Winner = true;
-                        }
-
-                        break;
-                    }
-                    case Runner:
-                    {
-                        if (TasksDone)
-                        {
-                            WinState = WinLose.TaskRunnerWins;
-                            Winner = true;
-                            CallRpc(CustomRPC.WinLose, WinLose.TaskRunnerWins, this);
-                        }
-
-                        break;
-                    }
-                    case Hunter:
-                    {
-                        if (HunterWins())
-                        {
-                            WinState = WinLose.HunterWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.HunterWins);
-                        }
-
-                        break;
-                    }
-                    case Hunted:
-                    {
-                        if (HuntedWin())
-                        {
-                            WinState = WinLose.HuntedWin;
-                            CallRpc(CustomRPC.WinLose, WinLose.HuntedWin);
-                        }
-
-                        break;
-                    }
-                    default:
-                    {
-                        if ((role.IsRecruit || Type == LayerEnum.Jackal) && CabalWin())
-                        {
-                            WinState = WinLose.CabalWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.CabalWins, this);
-                        }
-                        else if ((role.IsPersuaded || Type == LayerEnum.Whisperer) && SectWin())
-                        {
-                            WinState = WinLose.SectWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.SectWins);
-                        }
-                        else if ((role.IsBitten || Type == LayerEnum.Dracula) && UndeadWin())
-                        {
-                            WinState = WinLose.UndeadWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.UndeadWins);
-                        }
-                        else if ((role.IsResurrected || Type == LayerEnum.Necromancer) && ReanimatedWin())
-                        {
-                            WinState = WinLose.ReanimatedWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.ReanimatedWins);
-                        }
-                        else if (role.Faction == Faction.Syndicate && (role.Faithful || Type == LayerEnum.Betrayer || role.IsSynAlly || role.IsSynDefect || role.IsSynFanatic ||
-                            role.IsSynTraitor) && SyndicateWins())
-                        {
-                            WinState = WinLose.SyndicateWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.SyndicateWins);
-                        }
-                        else if (role.Faction == Faction.Intruder && (role.Faithful || Type == LayerEnum.Betrayer || role.IsIntDefect || role.IsIntAlly || role.IsIntFanatic ||
-                            role.IsIntTraitor) && IntrudersWin())
-                        {
-                            WinState = WinLose.IntrudersWin;
-                            CallRpc(CustomRPC.WinLose, WinLose.IntrudersWin);
-                        }
-                        else if (role.Faction == Faction.Crew && (role.Faithful || role.IsCrewAlly || role.IsCrewDefect) && CrewWins())
-                        {
-                            WinState = WinLose.CrewWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.CrewWins);
-                        }
-                        else if (role.Faithful && ApocWins() && role.Alignment is Alignment.NeutralApoc or Alignment.NeutralHarb)
-                        {
-                            WinState = WinLose.ApocalypseWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.ApocalypseWins);
-                        }
-                        else if (role.Faithful && role.Faction == Faction.Neutral && AllNeutralsWin())
-                        {
-                            WinState = WinLose.AllNeutralsWin;
-                            CallRpc(CustomRPC.WinLose, WinLose.AllNeutralsWin);
-                        }
-                        else if (role.Faithful && role.Alignment == Alignment.NeutralKill && AllNKsWin())
-                        {
-                            WinState = WinLose.AllNKsWin;
-                            CallRpc(CustomRPC.WinLose, WinLose.AllNKsWin);
-                        }
-                        else if (role.Faithful && role.Alignment == Alignment.NeutralKill && (SameNKWins(role.Type) || SoloNKWins(Player)))
-                        {
-                            WinState = role.Type switch
-                            {
-                                LayerEnum.Arsonist => WinLose.ArsonistWins,
-                                LayerEnum.Cryomaniac => WinLose.CryomaniacWins,
-                                LayerEnum.Glitch => WinLose.GlitchWins,
-                                LayerEnum.Juggernaut => WinLose.JuggernautWins,
-                                LayerEnum.Murderer => WinLose.MurdererWins,
-                                LayerEnum.SerialKiller => WinLose.SerialKillerWins,
-                                LayerEnum.Werewolf => WinLose.WerewolfWins,
-                                _ => WinLose.None,
-                            };
-
-                            if (NeutralSettings.NoSolo == NoSolo.SameNKs)
-                            {
-                                foreach (var role2 in GetLayers<Neutral>().Where(x => x.Type == role.Type))
-                                {
-                                    if (!role2.Disconnected && role2.Faithful)
-                                        role2.Winner = true;
-                                }
-                            }
-
-                            Winner = true;
-                            CallRpc(CustomRPC.WinLose, WinState, this);
-                        }
-                        else if (Type == LayerEnum.Betrayer && role.Faction == Faction.Neutral)
-                        {
-                            WinState = WinLose.BetrayerWins;
-                            CallRpc(CustomRPC.WinLose, WinLose.BetrayerWins);
-                        }
-
-                        break;
-                    }
-                }
-
-                break;
-            }
-        }
+        CheckWin();
     }
 
     public static bool operator ==(PlayerLayer a, PlayerLayer b)

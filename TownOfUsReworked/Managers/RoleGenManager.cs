@@ -349,22 +349,22 @@ public static class RoleGenManager
         CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
             BetterAirship.SpawnPoints);
 
-        var maxName = 4;
-        var maxRole = 4;
-        var maxDisp = 11;
-        var maxMod = 8;
-        var maxAb = 7;
-
-        foreach (var player in allPlayers)
+        if (TownOfUsReworked.IsTest)
         {
-            var role = player.GetRoleFromList() ?? new Roleless().Start(player);
-            var mod = player.GetModifierFromList() ?? new Modifierless().Start(player);
-            var ab = player.GetAbilityFromList() ?? new Abilityless().Start(player);
-            var disp = player.GetDispositionFromList() ?? new Dispositionless().Start(player);
-            RoleManager.Instance.SetRole(player, (RoleTypes)100);
+            var maxName = 4;
+            var maxRole = 4;
+            var maxDisp = 11;
+            var maxMod = 8;
+            var maxAb = 7;
 
-            if (TownOfUsReworked.IsTest)
+            foreach (var player in allPlayers)
             {
+                RoleManager.Instance.SetRole(player, (RoleTypes)100);
+
+                var role = player.GetRoleFromList();
+                var mod = player.GetModifierFromList();
+                var ab = player.GetAbilityFromList();
+                var disp = player.GetDispositionFromList();
                 var name = player.name;
                 var roleStr = role.ToString();
                 var dispStr = disp.ToString();
@@ -386,10 +386,7 @@ public static class RoleGenManager
                 if (abStr.Length > maxAb)
                     maxAb = abStr.Length;
             }
-        }
 
-        if (TownOfUsReworked.IsTest)
-        {
             Message($"| {"Name".PadCenter(maxName)} -> {"Role".PadCenter(maxRole)} | {"Disposition".PadCenter(maxDisp)} | {"Modifier".PadCenter(maxMod)} | {"Ability".PadCenter(maxAb)} |");
             Message($"| {"-".Repeat(maxName)} -> {"-".Repeat(maxRole)} | {"-".Repeat(maxDisp)} | {"-".Repeat(maxMod)} | {"-".Repeat(maxAb)} |");
 
@@ -409,6 +406,8 @@ public static class RoleGenManager
                 Message($"| {name.PadCenter(maxName)} -> {roleStr.PadCenter(maxRole)} | {dispStr.PadCenter(maxDisp)} | {modStr.PadCenter(maxMod)} | {abStr.PadCenter(maxAb)} |");
             }
         }
+        else
+            allPlayers.ForEach(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
 
         Message("Gen Ended");
     }

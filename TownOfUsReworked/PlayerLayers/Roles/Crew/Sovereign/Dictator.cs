@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Dictator : Crew
+public class Dictator : Crew, IRevealer
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RoundOneNoDictReveal { get; set; } = false;
@@ -22,7 +22,7 @@ public class Dictator : Crew
     public CustomButton RevealButton { get; set; }
     public CustomMeeting DictMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Dictator: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Dictator : FactionColor;
     public override string Name => "Dictator";
     public override LayerEnum Type => LayerEnum.Dictator;
     public override Func<string> StartText => () => "You Have The Final Say";

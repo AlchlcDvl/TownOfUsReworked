@@ -96,7 +96,7 @@ public class NameplateExtension : CosmeticExtension;
 public class CustomColor : CustomCosmetic
 {
     [JsonPropertyName("stringid")]
-    public int StringID { get; set; }
+    public StringNames StringID { get; set; }
 
     [JsonPropertyName("default")]
     public bool Default { get; set; }
@@ -150,10 +150,10 @@ public class CustomColor : CustomCosmetic
         return ShadowColor = LerpColors(TimeSpeed, ShadowColors, ShadowColor);
     }
 
-    public static UColor LerpColors(float mul, UColor[] colors, UColor? prevColor = null)
+    public static UColor LerpColors(float mul, UColor[] colors, UColor prevColor)
     {
         if (colors.Length == 1)
-            return colors[0];
+            return colors.First();
 
         try
         {
@@ -170,7 +170,7 @@ public class CustomColor : CustomCosmetic
         }
         catch
         {
-            return prevColor ?? colors[0];
+            return prevColor;
         }
     }
 }

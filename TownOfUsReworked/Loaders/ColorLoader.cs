@@ -45,7 +45,7 @@ public class ColorLoader : AssetLoader<CustomColor>
             color.TimeSpeed = color.TimeSpeed == 0f ? 1f : color.TimeSpeed;
 
             if (!color.Default)
-                color.StringID = (int)TranslationManager.GetNextName();
+                color.StringID = TranslationManager.GetNextName($"Colors.{color.Name}");
 
             AllColors[i] = color;
             time += Time.deltaTime;
@@ -58,7 +58,7 @@ public class ColorLoader : AssetLoader<CustomColor>
             }
         }
 
-        Palette.ColorNames = colors.Select(x => (StringNames)x.StringID).ToArray();
+        Palette.ColorNames = colors.Select(x => x.StringID).ToArray();
         Palette.PlayerColors = colors.Select(x => (Color32)x.GetColor()).ToArray();
         Palette.ShadowColors = colors.Select(x => (Color32)x.GetShadowColor()).ToArray();
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();

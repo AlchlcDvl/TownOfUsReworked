@@ -21,13 +21,13 @@ public class Coroner : Crew, IExaminer
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number AutopsyCd { get; set; } = new(25);
 
-    public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
+    public Dictionary<byte, PositionalArrow> BodyArrows { get; set; }
     public List<byte> Reported { get; set; }
     public CustomButton CompareButton { get; set; }
     public List<DeadPlayer> ReferenceBodies { get; set; }
     public CustomButton AutopsyButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Coroner: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Coroner : FactionColor;
     public override string Name => "Coroner";
     public override LayerEnum Type => LayerEnum.Coroner;
     public override Func<string> StartText => () => "Examine The Dead For Information";
@@ -51,10 +51,10 @@ public class Coroner : Crew, IExaminer
         BodyArrows.Remove(targetPlayerId);
     }
 
-    public override void Deinit()
+    public override void ClearArrows()
     {
-        base.Deinit();
-        BodyArrows.Values.ToList().DestroyAll();
+        base.ClearArrows();
+        BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();
     }
 
@@ -64,26 +64,22 @@ public class Coroner : Crew, IExaminer
     {
         base.UpdateHud(__instance);
 
-        if (!Dead)
+        if (Dead)
+            return;
+
+        var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= CoronerArrowDur));
+
+        foreach (var bodyArrow in BodyArrows.Keys)
         {
-            var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= CoronerArrowDur));
-
-            foreach (var bodyArrow in BodyArrows.Keys)
-            {
-                if (!validBodies.Any(x => x.ParentId == bodyArrow))
-                    DestroyArrow(bodyArrow);
-            }
-
-            foreach (var body in validBodies)
-            {
-                if (BodyArrows.TryGetValue(body.ParentId, out var arrow))
-                    arrow.Update(body.TruePosition);
-                else
-                    BodyArrows[body.ParentId] = new(Player, Color);
-            }
+            if (!validBodies.Any(x => x.ParentId == bodyArrow))
+                DestroyArrow(bodyArrow);
         }
-        else if (BodyArrows.Count > 0)
-            Deinit();
+
+        foreach (var body in validBodies)
+        {
+            if (!BodyArrows.ContainsKey(body.ParentId))
+                BodyArrows[body.ParentId] = new(Player, body.TruePosition, Color);
+        }
     }
 
     public void Autopsy(DeadBody target)

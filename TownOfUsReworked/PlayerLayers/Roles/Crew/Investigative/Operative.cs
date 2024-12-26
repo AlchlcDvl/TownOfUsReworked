@@ -31,7 +31,7 @@ public class Operative : Crew
     public List<LayerEnum> BuggedPlayers { get; set; }
     public CustomButton BugButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Operative: FactionColor;
+    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Operative : FactionColor;
     public override string Name => "Operative";
     public override LayerEnum Type => LayerEnum.Operative;
     public override Func<string> StartText => () => "Detect Which Roles Are Here";
