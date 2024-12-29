@@ -104,6 +104,14 @@ public static class ListExtensions
             action(item);
     }
 
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
+    {
+        var num = 0;
+
+        foreach (var item in source)
+            action(item, num++);
+    }
+
     public static List<List<T>> Split<T>(this List<T> list, int splitCount)
     {
         var result = new List<List<T>>();
@@ -162,49 +170,20 @@ public static class ListExtensions
 
     public static void AddMany<T>(this List<T> list, T item, int count)
     {
-        while (count > 0)
-        {
+        while (count-- > 0)
             list.Add(item);
-            count--;
-        }
     }
 
     public static void AddMany<T>(this List<T> list, Func<T> item, int count)
     {
-        while (count > 0)
-        {
+        while (count-- > 0)
             list.Add(item());
-            count--;
-        }
     }
 
-    public static bool TryFindingAll<T>(this IEnumerable<T> source, Func<T, bool> predicate, out List<T> value)
+    public static bool TryFindingAll<T>(this IEnumerable<T> source, Func<T, bool> predicate, out IEnumerable<T> value)
     {
-        var tempValue = new List<T>();
-        var result = false;
-
-        while (source.TryFinding(x => predicate(x) && !tempValue.Contains(x), out var temp))
-        {
-            tempValue.Add(temp);
-            result = true;
-        }
-
-        value = tempValue;
-        return result;
-    }
-
-    public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action)
-    {
-        foreach (var (key, value) in dict)
-            action(key, value);
-    }
-
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
-    {
-        var num = 0;
-
-        foreach (var item in source)
-            action(item, num++);
+        value = source.Where(predicate);
+        return value.Any();
     }
 
     public static T Find<T>(this IEnumerable<T> source, Func<T, bool> predicate)
@@ -252,6 +231,12 @@ public static class ListExtensions
         }
 
         return -1;
+    }
+
+    public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action)
+    {
+        foreach (var (key, value) in dict)
+            action(key, value);
     }
 
     public static IEnumerable<T> GetValues<T>(T start, T end) where T : struct, Enum

@@ -239,6 +239,9 @@ public static class AssetManager
 
     public static UObject AddAsset(string name, UObject obj)
     {
+        if (!obj)
+            return null;
+
         if (!UnityLoadedObjects.TryGetValue(name, out var value))
             UnityLoadedObjects[name] = [ obj ];
         else if (!value.Contains(obj))
@@ -249,6 +252,9 @@ public static class AssetManager
 
     public static object AddAsset(string name, object obj)
     {
+        if (obj == null)
+            return null;
+
         if (!SystemLoadedObjects.TryGetValue(name, out var value))
             SystemLoadedObjects[name] = [ obj ];
         else if (!value.Contains(obj))

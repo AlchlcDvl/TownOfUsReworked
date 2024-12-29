@@ -159,8 +159,6 @@ public abstract class Role : PlayerLayer
         !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction && !Player.IsTurnedFanatic() &&
         !Player.IsTurnedTraitor() && !Ignore;
 
-    public bool HasTarget => Type is LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.Guesser or LayerEnum.BountyHunter;
-
     public override void Init()
     {
         Faction = Faction.None;

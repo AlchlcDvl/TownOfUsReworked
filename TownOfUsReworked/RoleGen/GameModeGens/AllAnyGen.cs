@@ -49,15 +49,14 @@ public class AllAnyGen : BaseClassicCustomAllAnyGen
 
         if (Intruders == 0 && Syndicate == 0)
         {
-            var random = URandom.RandomRangeInt(0, 2);
-
-            if (random == 0)
-                Intruders++;
-            else if (random == 1)
-                Syndicate++;
+            _ = URandom.RandomRangeInt(0, 2) switch
+            {
+                0 => Intruders++,
+                _ => Syndicate++
+            };
         }
 
-        Neutrals = URandom.RandomRangeInt(0, players - Intruders - Syndicate);
+        Neutrals = URandom.RandomRangeInt(0, players - Intruders - Syndicate + 1);
         Crew = players - Intruders - Syndicate - Neutrals;
 
         while (Crew == 0 && (Intruders > 0 || Syndicate > 0 || Neutrals > 0) && players > 1)

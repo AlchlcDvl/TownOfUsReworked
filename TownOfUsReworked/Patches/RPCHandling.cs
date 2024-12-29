@@ -272,7 +272,7 @@ public static class RPCHandling
                                 fanatic.TurnFanatic(reader.ReadEnum<Faction>());
                         }
                         else if (layer2 is Actor act)
-                            act.TurnRole(reader.ReadLayer<Role>());
+                            act.TurnRole(reader.ReadEnum<LayerEnum>());
 
                         break;
                     }

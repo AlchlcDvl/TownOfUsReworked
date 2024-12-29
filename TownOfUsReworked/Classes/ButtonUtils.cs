@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Custom;
+namespace TownOfUsReworked.Classes;
 
 public static class ButtonUtils
 {

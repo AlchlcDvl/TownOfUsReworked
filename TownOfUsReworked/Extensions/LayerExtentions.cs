@@ -152,23 +152,6 @@ public static class LayerExtentions
 
     public static bool IsGuessTarget(this PlayerControl player) => PlayerLayer.GetLayers<Guesser>(true).Any(x => x.TargetPlayer == player);
 
-    public static PlayerControl GetTarget(this PlayerControl player)
-    {
-        if (!player.GetRole().HasTarget)
-            return null;
-
-        if (player.TryGetLayer<Executioner>(out var exe))
-            return exe.TargetPlayer;
-        else if (player.TryGetLayer<GuardianAngel>(out var ga))
-            return ga.TargetPlayer;
-        else if (player.TryGetLayer<Guesser>(out var guesser))
-            return guesser.TargetPlayer;
-        else if (player.TryGetLayer<BountyHunter>(out var bh))
-            return bh.TargetPlayer;
-
-        return null;
-    }
-
     public static Jackal GetJackal(this PlayerControl player) => PlayerLayer.GetLayers<Jackal>().Find(role => role.Members.Contains(player.PlayerId));
 
     public static Necromancer GetNecromancer(this PlayerControl player) => PlayerLayer.GetLayers<Necromancer>().Find(role => role.Members.Contains(player.PlayerId));
@@ -600,12 +583,15 @@ public static class LayerExtentions
 
     public static bool CanChat(this PlayerControl player)
     {
+        if (Lobby() || Meeting())
+            return true;
+
         var playerInfo = player?.Data;
         var disp = player.GetDisposition();
 
         if (!player || !playerInfo)
             return false;
-        else if (playerInfo.IsDead || Meeting() || Lobby())
+        else if (playerInfo.IsDead)
             return true;
         else if (disp is Lovers)
             return Lovers.LoversChat;
@@ -819,11 +805,11 @@ public static class LayerExtentions
         CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
         former.End();
         newRole.Start(player);
+        newRole.PostAssignment();
 
         if (!retainFaction)
             newRole.Faction = former.Faction;
 
-        newRole.Alignment = newRole.Alignment.GetNewAlignment(newRole.Faction);
         newRole.SubFaction = former.SubFaction;
         newRole.DeathReason = former.DeathReason;
         newRole.KilledBy = former.KilledBy;
@@ -833,28 +819,22 @@ public static class LayerExtentions
         newRole.RoleHistory.Add(former);
         newRole.RoleHistory.AddRange(former.RoleHistory);
         former.RoleHistory.Clear();
+        former.Ignore = true;
         PlayerLayer.AllLayers.Remove(former);
-
-        if (newRole.Local || former.Local)
-        {
-            ButtonUtils.Reset();
-            Flash(newRole.Color);
-        }
-
-        if (newRole.Local)
-            newRole.UpdateButtons();
-
-        if (CustomPlayer.Local.Is<Seer>())
-            Flash(CustomColorManager.Seer);
-
-        if (player.AmOwner)
-            Flash(newRole.Color);
 
         if (player.Data.Role is LayerHandler layerHandler)
             layerHandler.SetUpLayers(newRole);
 
-        ButtonUtils.Reset(player: newRole.Player);
-        newRole.Player.RegenTask();
+        if (newRole.Local)
+        {
+            ButtonUtils.Reset();
+            newRole.UpdateButtons();
+            newRole.Player.RegenTask();
+            Flash(newRole.Color);
+        }
+
+        if (CustomPlayer.Local.TryGetLayer<Seer>(out var seer))
+            Flash(seer.Color);
     }
 
     public static string AlignmentName(this Alignment alignment, bool withColors = false) => alignment switch

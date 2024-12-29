@@ -44,7 +44,6 @@ public partial class TownOfUsReworked
         SetUpConfigs();
         ReworkedStart = TranslationManager.GetNextName("Translation.ReworkedStart", isStartup: true);
         LoadAssets();
-        CustomStatsManager.Setup();
         IL2CPPChainloader.Instance.Finished += Initialise;
     }
 }

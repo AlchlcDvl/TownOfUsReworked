@@ -57,16 +57,26 @@ public class Executioner : Evil
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (!TargetPlayer ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
         ToDoom = [];
 
-        if (ExecutionerCanPickTargets)
-        {
-            TargetButton ??= new(this, new SpriteName("ExeTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
-                (UsableFunc)Usable2);
-        }
-
         if (!NeutralSettings.AvoidNeutralKingmakers)
             DoomButton ??= new(this, new SpriteName("Doom"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Doom, (PlayerBodyExclusion)Exception1, "DOOM", (UsableFunc)Usable1);
 
         Rounds = 0;
+    }
+
+    public override void PostAssignment()
+    {
+        if (ExecutionerCanPickTargets || !TargetPlayer)
+        {
+            TargetButton ??= new(this, new SpriteName("ExeTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
+                (UsableFunc)Usable2);
+        }
+    }
+
+    public override List<PlayerControl> Team()
+    {
+        var team = base.Team();
+        team.Add(TargetPlayer);
+        return team;
     }
 
     public void SelectTarget(PlayerControl target)

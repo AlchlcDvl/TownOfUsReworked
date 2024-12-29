@@ -15,9 +15,6 @@ public abstract class Neutral : Role
     {
         var team = base.Team();
 
-        if (HasTarget && Type != LayerEnum.BountyHunter)
-            team.Add(Player.GetTarget());
-
         if (Player.Is<Allied>() && !Player.Is(Faction.Crew))
             team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
 

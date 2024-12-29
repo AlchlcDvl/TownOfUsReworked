@@ -65,12 +65,22 @@ public class Guesser : Evil
         Rounds = 0;
         Letters = [];
         GuessingMenu = new(Player, GuessPlayer);
+    }
 
-        if (GuesserCanPickTargets)
+    public override void PostAssignment()
+    {
+        if (GuesserCanPickTargets || !TargetPlayer)
         {
             TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
                 (UsableFunc)Usable);
         }
+    }
+
+    public override List<PlayerControl> Team()
+    {
+        var team = base.Team();
+        team.Add(TargetPlayer);
+        return team;
     }
 
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=

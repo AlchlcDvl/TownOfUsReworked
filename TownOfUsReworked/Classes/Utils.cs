@@ -562,17 +562,7 @@ public static class Utils
             return num > min && num < max;
     }
 
-    public static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
-    {
-        if (minInclusive && maxInclusive)
-            return num >= min && num <= max;
-        else if (minInclusive)
-            return num >= min && num < max;
-        else if (maxInclusive)
-            return num > min && num <= max;
-        else
-            return num > min && num < max;
-    }
+    public static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
 
     public static string GetRandomisedName()
     {
@@ -1463,13 +1453,13 @@ public static class Utils
         return new string(padChar, left) + text + new string(padChar, right);
     }
 
-    public static string Repeat(this string text, int count)
-    {
-        var result = "";
+    // public static string Repeat(this string text, int count)
+    // {
+    //     var result = "";
 
-        for (var i = 0; i < count; i++)
-            result += text;
+    //     for (var i = 0; i < count; i++)
+    //         result += text;
 
-        return result;
-    }
+    //     return result;
+    // }
 }

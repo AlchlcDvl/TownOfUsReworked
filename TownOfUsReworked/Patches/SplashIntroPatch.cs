@@ -133,6 +133,7 @@ public static class UpdateSplashPatch
         ModUpdater.CanDownloadSubmerged = !SubLoaded && ModUpdater.URLs.ContainsKey("Submerged");
         ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
 
+        CustomStatsManager.Setup();
         Generate.GenerateAll();
         Modules.Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();

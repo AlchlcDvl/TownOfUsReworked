@@ -154,7 +154,7 @@ public static class RPC
 
     public static object ReadEnum(this MessageReader reader, Type type) => Enum.Parse(type, $"{reader.ReadByte()}");
 
-    public static T ReadEnum<T>(this MessageReader reader) where T : struct => Enum.Parse<T>($"{reader.ReadByte()}");
+    public static T ReadEnum<T>(this MessageReader reader) where T : struct, Enum => (T)(object)reader.ReadByte();
 
     public static Number ReadNumber(this MessageReader reader) => new(reader.ReadSingle());
 

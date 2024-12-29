@@ -59,14 +59,16 @@ public class BountyHunter : Evil
         GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);
         HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(BHHuntCd), "HUNT", (UsableFunc)Usable2);
+        Letters = [];
+    }
 
-        if (BountyHunterCanPickTargets)
+    public override void PostAssignment()
+    {
+        if (BountyHunterCanPickTargets || !TargetPlayer)
         {
             RequestButton ??= new(this, new SpriteName("Request"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
                 (UsableFunc)Usable3);
         }
-
-        Letters = [];
     }
 
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.GetRole().Requesting || (player.Is(SubFaction) && SubFaction !=

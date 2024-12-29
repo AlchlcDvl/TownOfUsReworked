@@ -54,7 +54,7 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
 
             var maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
 
-            while (maxCrewSum > maxCrew)
+            while (maxCrewSum > maxCrew && maxCrewSum > 0)
             {
                 switch (URandom.RandomRangeInt(0, 6))
                 {
@@ -175,7 +175,7 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
 
             var maxIntSum = maxIC + maxID + maxIK + maxIS + maxIH;
 
-            while (maxIntSum > maxInt)
+            while (maxIntSum > maxInt && maxIntSum > 0)
             {
                 switch (URandom.RandomRangeInt(0, 5))
                 {
@@ -287,7 +287,7 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
 
             var maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
 
-            while (maxNeutSum > maxNeut)
+            while (maxNeutSum > maxNeut && maxNeutSum > 0)
             {
                 switch (URandom.RandomRangeInt(0, 5))
                 {
@@ -395,7 +395,7 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
 
             var maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
 
-            while (maxSynSum > maxSyn)
+            while (maxSynSum > maxSyn && maxSynSum > 0)
             {
                 switch (URandom.RandomRangeInt(0, 4))
                 {

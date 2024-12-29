@@ -142,10 +142,10 @@ public class LayerHandler : RoleBehaviour
     [HideFromIl2Cpp]
     public void SetUpLayers(Role newRole = null)
     {
-        CustomRole = newRole ?? Player.GetRole();
-        CustomAbility = Player.GetAbility();
-        CustomModifier = Player.GetModifier();
-        CustomDisposition = Player.GetDisposition();
+        CustomRole = newRole ?? Player.GetRoleFromList();
+        CustomAbility = Player.GetAbilityFromList();
+        CustomModifier = Player.GetModifierFromList();
+        CustomDisposition = Player.GetDispositionFromList();
 
         if (!CustomRole)
         {
@@ -184,7 +184,7 @@ public class LayerHandler : RoleBehaviour
         else if (CustomPlayer.Local.Is<Coroner>())
             Flash(CustomColorManager.Coroner);
         else if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
-            Flash(CustomColorManager.Monarch);
+            Flash(mon.Color);
     }
 
     public override bool DidWin(GameOverReason gameOverReason)

@@ -7,6 +7,7 @@ This mod is a mishmash of code and ideas from different games, mods and forks, m
 If you want to know more, try using info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 New!
+- Addition: The mod now has it's own custom stats, it now replaces the stats held by the base game
 - Addition: The main menu buttons now have their own icons
 - Addition: You can now change the keybind to deselect players (default is still Backspace)
 - Addition: More game options
@@ -21,7 +22,7 @@ New!
 Changes!
 - Recode: Overhauled a lot of the code base in favour of optimisation and avoiding potential issues
 - Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a singular player to eject and have gained ability charges to compensate
-- Change: Actors will now prioritise turning into a dead role
+- Change: Actor role change now has a priority system; it will prioritise roles that are not currently in game, followed by those that are dead and lastly any other role
 - Change: Arsonists, when igniting, will remove the coolant off those doused by a Cryomaniac
 - Change: Cryomaniacs, when freezing, will remove the gasoline off those doused by an Arsonist
 - Change: Player names will no longer appear in your vision until more of their body is exposed to your vision

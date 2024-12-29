@@ -19,6 +19,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<VoteAreaHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<DeadBodyHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<FootprintHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<StatsHandler>();
 
         // Paging
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();

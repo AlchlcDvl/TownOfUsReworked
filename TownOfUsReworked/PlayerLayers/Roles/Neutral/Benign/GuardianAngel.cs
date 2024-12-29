@@ -60,9 +60,6 @@ public class GuardianAngel : Neutral
         ProtectButton ??= new(this, new SpriteName("Protect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT",
             new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
 
-        if (GuardianAngelCanPickTargets)
-            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
-
         if (ProtectBeyondTheGrave)
         {
             GraveProtectButton ??= new(this, new SpriteName("GraveProtect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGraveProtect, new PostDeath(true),
@@ -70,6 +67,19 @@ public class GuardianAngel : Neutral
         }
 
         Rounds = 0;
+    }
+
+    public override void PostAssignment()
+    {
+        if (GuardianAngelCanPickTargets || !TargetPlayer)
+            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
+    }
+
+    public override List<PlayerControl> Team()
+    {
+        var team = base.Team();
+        team.Add(TargetPlayer);
+        return team;
     }
 
     public void SelectTarget(PlayerControl target)

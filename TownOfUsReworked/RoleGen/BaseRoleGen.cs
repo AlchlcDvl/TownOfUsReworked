@@ -57,7 +57,7 @@ public abstract class BaseRoleGen : BaseGen
         var players = GameData.Instance.PlayerCount;
         Intruders = IntruderSettings.IntruderCount;
         Syndicate = SyndicateSettings.SyndicateCount;
-        Neutrals = IsKilling() ? GameModeSettings.NeutralsCount : URandom.RandomRangeInt(NeutralSettings.NeutralMin, NeutralSettings.NeutralMax + 1);
+        Neutrals = this is KillingOnlyGen ? GameModeSettings.NeutralsCount : URandom.RandomRangeInt(NeutralSettings.NeutralMin, NeutralSettings.NeutralMax + 1);
 
         if (Intruders == 0 && Syndicate == 0 && Neutrals == 0)
         {
@@ -71,6 +71,14 @@ public abstract class BaseRoleGen : BaseGen
 
         while (Neutrals >= players - Intruders - Syndicate)
             Neutrals--;
+
+        while (Intruders + Syndicate >= players)
+        {
+            if (Intruders > Syndicate)
+                Intruders--;
+            else
+                Syndicate--;
+        }
 
         Crew = players - Intruders - Syndicate - Neutrals;
     }

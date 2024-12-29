@@ -95,21 +95,21 @@ public static class MCIUtils
         if (!newPlayer)
             return;
 
-        if (ActiveTask())
-            ActiveTask().Close();
-
-        if (Meeting())
+        if (IsInGame())
         {
-            PlayerLayer.LocalLayers().ForEach(x => x.OnMeetingEnd(Meeting()));
-            ButtonUtils.DisableAllButtons();
-        }
-        else
-        {
-            CustomPlayer.Local.DisableButtons();
-            CustomPlayer.Local.DisableArrows();
-        }
+            if (ActiveTask())
+                ActiveTask().Close();
 
-        PlayerLayer.LocalLayers().ForEach(x => x.ExitingLayer());
+            if (Meeting())
+            {
+                PlayerLayer.LocalLayers().ForEach(x => x.OnMeetingEnd(Meeting()));
+                ButtonUtils.DisableAllButtons();
+            }
+            else
+                CustomPlayer.Local.DisableButtons();
+
+            PlayerLayer.LocalLayers().ForEach(x => x.ExitingLayer());
+        }
 
         CustomPlayer.Local.CustomSnapTo(CustomPlayer.LocalCustom.Position);
         CustomPlayer.Local.MyPhysics.ResetMoveState();
@@ -141,22 +141,22 @@ public static class MCIUtils
         KillAnimation.SetMovement(newPlayer, true);
         newPlayer.MyPhysics.inputHandler.enabled = true;
 
-        if (Meeting())
+        if (IsInGame())
         {
-            PlayerLayer.LocalLayers().ForEach(x => x.OnMeetingStart(Meeting()));
+            if (Meeting())
+            {
+                PlayerLayer.LocalLayers().ForEach(x => x.OnMeetingStart(Meeting()));
 
-            if (newPlayer.Data.IsDead)
-                Meeting().SetForegroundForDead();
+                if (newPlayer.Data.IsDead)
+                    Meeting().SetForegroundForDead();
+                else
+                    Meeting().SetForegroundForAlive();
+            }
             else
-                Meeting().SetForegroundForAlive();
-        }
-        else
-        {
-            newPlayer.EnableButtons();
-            newPlayer.EnableArrows();
-        }
+                newPlayer.EnableButtons();
 
-        PlayerLayer.LocalLayers().ForEach(x => x.EnteringLayer());
+            PlayerLayer.LocalLayers().ForEach(x => x.EnteringLayer());
+        }
 
         Chat().SetVisible(newPlayer.CanChat());
         newPlayer.CustomSnapTo(pos2);

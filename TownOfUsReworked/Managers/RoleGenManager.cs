@@ -388,7 +388,7 @@ public static class RoleGenManager
             }
 
             Message($"| {"Name".PadCenter(maxName)} -> {"Role".PadCenter(maxRole)} | {"Disposition".PadCenter(maxDisp)} | {"Modifier".PadCenter(maxMod)} | {"Ability".PadCenter(maxAb)} |");
-            Message($"| {"-".Repeat(maxName)} -> {"-".Repeat(maxRole)} | {"-".Repeat(maxDisp)} | {"-".Repeat(maxMod)} | {"-".Repeat(maxAb)} |");
+            Message($"| {new string('-', maxName)} -> {new string('-', maxRole)} | {new string('-', maxDisp)} | {new string('-', maxMod)} | {new string('-', maxAb)} |");
 
             foreach (var player in allPlayers)
             {
