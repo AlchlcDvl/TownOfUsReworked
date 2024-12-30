@@ -143,4 +143,11 @@ public static class ClientOptions
             TownOfUsReworked.UseDarkTheme.Value = value;
         }
     }
+
+    [ToggleOption(MultiMenu.Client, ClientOnly = true)]
+    public static bool NoWelcome
+    {
+        get => TownOfUsReworked.NoWelcome.Value;
+        set => TownOfUsReworked.NoWelcome.Value = value;
+    }
 }

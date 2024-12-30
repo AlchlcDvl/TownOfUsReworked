@@ -1328,10 +1328,16 @@ public static class Utils
         }
 
         if (killer != player && killer.AmOwner)
+        {
             CustomStatsManager.IncrementStat(CustomStatsManager.StatsKilled);
+            CustomAchievementManager.UnlockAchievement("TasteForDeath");
+        }
 
         if (player.AmOwner)
+        {
             CustomStatsManager.IncrementStat(StringNames.StatsTimesMurdered);
+            CustomAchievementManager.UnlockAchievement("Fatality");
+        }
 
         GameData.LastDeathReason = reason;
 
@@ -1453,13 +1459,5 @@ public static class Utils
         return new string(padChar, left) + text + new string(padChar, right);
     }
 
-    // public static string Repeat(this string text, int count)
-    // {
-    //     var result = "";
-
-    //     for (var i = 0; i < count; i++)
-    //         result += text;
-
-    //     return result;
-    // }
+    public static bool IsAny<T>(this T item, params T[] items) where T : MonoBehaviour => items.Any(x => x == item);
 }

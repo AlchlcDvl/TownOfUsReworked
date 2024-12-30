@@ -212,6 +212,12 @@ public static class ListExtensions
 
     public static bool ContainsAny(this string source, params string[] values) => values.Any(source.Contains);
 
+    public static IEnumerable<T> GetRange<T>(this IEnumerable<T> source, int start, int count)
+    {
+        for (var i = start; i < start + count && i < source.Count(); i++)
+            yield return source.ElementAt(i);
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)
@@ -237,16 +243,6 @@ public static class ListExtensions
     {
         foreach (var (key, value) in dict)
             action(key, value);
-    }
-
-    public static IEnumerable<T> GetValues<T>(T start, T end) where T : struct, Enum
-    {
-        var allValues = Enum.GetValues<T>().ToList();
-        return allValues.Where(x =>
-        {
-            var xIndex = allValues.IndexOf(x);
-            return xIndex >= allValues.IndexOf(start) && xIndex <= allValues.IndexOf(end);
-        });
     }
 
     public static bool ContainsAny<T>(this IEnumerable<T> source, T[] values) => values.Any(source.Contains);

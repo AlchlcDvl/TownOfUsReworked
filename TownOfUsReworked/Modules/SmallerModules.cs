@@ -78,3 +78,20 @@ public readonly struct Number(float num)
 }
 
 public class UnsupportedLanguageException(string message) : Exception($"Selected language is unsupported {message}");
+
+public class Achievement(string name, bool unlocked = false, bool hidden = false, bool eog = false, string icon = "Placeholder")
+{
+    public string Name { get; } = name;
+    public bool Hidden { get; } = hidden;
+    public bool EndOfGame { get; } = eog;
+    public string Icon { get; } = icon;
+    public bool Unlocked { get; set; } = unlocked;
+
+    public void Serialize(BinaryWriter writer)
+    {
+        writer.Write(Name);
+        writer.Write(Unlocked);
+    }
+
+    public static Achievement Deserialize(BinaryReader reader) => new(reader.ReadString(), reader.ReadBoolean());
+}

@@ -365,6 +365,8 @@ public static class LobbyBehaviourPatch
 
         if (count > 0 && TownOfUsReworked.Persistence.Value && !IsOnlineGame())
             MCIUtils.CreatePlayerInstances(count);
+
+        CustomAchievementManager.QueuedAchievements.ForEach(x => x.ShowAchievement());
     }
 }
 
@@ -373,30 +375,11 @@ public static class DeathPopUpPatch
 {
     public static void Prefix(HideAndSeekDeathPopup __instance)
     {
-        if (IsCustomHnS())
+        if (IsCustomHnS() && !__instance.name.StartsWith("Achievement"))
         {
             __instance.text.GetComponent<TextTranslatorTMP>().Destroy();
             __instance.text.SetText($"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}");
         }
-    }
-}
-
-[HarmonyPatch(typeof(SkinLayer), nameof(SkinLayer.IsPlayingRunAnim))]
-public static class FixLogSpam
-{
-    public static bool Prefix(SkinLayer __instance, ref bool __result)
-    {
-        try
-        {
-            var anim = __instance.animator.GetCurrentAnimation();
-            __result = anim == __instance.skin.RunAnim || anim == __instance.skin.RunLeftAnim;
-        }
-        catch
-        {
-            __result = false;
-        }
-
-        return false;
     }
 }
 
@@ -411,7 +394,7 @@ public static class RefreshPatch
 [HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]
 public static class MeetingCooldowns
 {
-    public static void Postfix(UObject obj)
+    public static void Prefix(UObject obj)
     {
         if (!obj)
             return;
@@ -657,5 +640,11 @@ public static class PatchColours
             __result = customString;
 
         return !result;
+    }
+
+    public static void Postfix(StringNames id, ref string __result)
+    {
+        if (__result.StartsWith("STRMISS") && !__result.Contains('('))
+            __result += $" ({id})";
     }
 }

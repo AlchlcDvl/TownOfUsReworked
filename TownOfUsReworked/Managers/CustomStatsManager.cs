@@ -97,13 +97,13 @@ public static class CustomStatsManager
             try
             {
                 using var reader = new BinaryReader(File.OpenRead(path));
-                DeserializeCustomStats(reader);
+                reader.DeserializeCustomStats();
             } catch {}
         }
 
         StatsManager.Instance.LoadStats(); // Forcing stat loading to ensure proper stats are loaded
 
-        // Preloading missing stats
+        // Preloading any missing stats
         Enum.GetValues<MapEnum>().ForEach(x => GetMapWins(x));
         LayerDictionary.Keys.ForEach(x => GetLayerWins(x));
         Enum.GetValues<StringNames>().ForEach(x => GetStat(x));
@@ -121,8 +121,6 @@ public static class CustomStatsManager
             OrderedStats.Add(val);
             LayerMap[val] = layer;
         }
-
-        StatsManager.Instance.SaveStats();
     }
 
     public static void Reset()
@@ -266,26 +264,40 @@ public static class CustomStatsManager
     public static void AddWin(byte map, IEnumerable<PlayerLayer> layers)
     {
         IncrementStat(StatsGamesWon);
+        IncrementStat(StringNames.StatsGamesFinished);
         IncrementStat((MapEnum)map);
 
         foreach (var layer in layers)
         {
             IncrementStat(layer.Type);
 
+            if (GetLayerWins(layer.Type) == 5)
+                CustomAchievementManager.UnlockAchievement($"LayerWins.{layer.Type}");
+
             if (layer is Role role)
             {
-                IncrementStat(role.SubFaction switch
+                var type = role.SubFaction switch
                 {
                     SubFaction.Undead => LayerEnum.Undead,
                     SubFaction.Cabal => LayerEnum.Cabal,
                     SubFaction.Sect => LayerEnum.Sect,
                     SubFaction.Reanimated => LayerEnum.Reanimated,
                     _ => LayerEnum.None
-                });
+                };
+                IncrementStat(type);
+
+                if (GetLayerWins(type) == 5)
+                    CustomAchievementManager.UnlockAchievement($"LayerWins.{type}");
+
+                foreach (var role2 in role.RoleHistory)
+                {
+                    IncrementStat(role2.Type);
+
+                    if (GetLayerWins(role2.Type) == 5)
+                        CustomAchievementManager.UnlockAchievement($"LayerWins.{role2.Type}");
+                }
             }
         }
-
-        IncrementStat(StringNames.StatsGamesFinished);
     }
 
     public static void AddLoss()
@@ -300,28 +312,26 @@ public static class CustomStatsManager
         IncrementStat(StringNames.StatsGamesFinished);
     }
 
-    public static void SerializeCustomStats(BinaryWriter writer)
+    public static void SerializeCustomStats(this BinaryWriter writer)
     {
         writer.Write(MigratedFromVanillaStats);
-        writer.Write(System.Convert.ToUInt32(ReworkedStart)); // Used to mark the start of custom translations, this value changes as more translations are added in the base game
         writer.Write(TranslationManager.LastID);
-        WriteEnumDict(writer, MapWins);
-        WriteEnumDict(writer, LayerWins);
-        WriteEnumDict(writer, CustomStats);
+        writer.WriteEnumDict(MapWins);
+        writer.WriteEnumDict(LayerWins);
+        writer.WriteEnumDict(CustomStats);
     }
 
-    public static void DeserializeCustomStats(BinaryReader reader)
+    public static void DeserializeCustomStats(this BinaryReader reader)
     {
         MigratedFromVanillaStats = reader.ReadBoolean();
-        ReworkedStart = (StringNames)reader.ReadUInt32();
         TranslationManager.PreviousLastID = reader.ReadInt32();
-        ReadEnumDict(reader, MapWins);
-        ReadEnumDict(reader, LayerWins);
-        ReadEnumDict(reader, CustomStats);
+        reader.ReadEnumDict(MapWins);
+        reader.ReadEnumDict(LayerWins);
+        reader.ReadEnumDict(CustomStats);
 
-        var diff = TranslationManager.LastID - TranslationManager.PreviousLastID;
+        var diff = TranslationManager.LastID - TranslationManager.PreviousLastID; // Accounting for any changes to the translations in the base game
 
-        if (diff > 0)
+        if (diff != 0)
         {
             var keys = CustomStats.Keys.ToList();
             var values = CustomStats.Values.ToList();
@@ -335,7 +345,7 @@ public static class CustomStatsManager
         }
     }
 
-    public static void WriteEnumDict<T>(BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
+    public static void WriteEnumDict<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
     {
         writer.Write((uint)dict.Count);
 
@@ -346,7 +356,7 @@ public static class CustomStatsManager
         }
     }
 
-    public static void ReadEnumDict<T>(BinaryReader reader, Dictionary<T, uint> dict) where T : struct, Enum
+    public static void ReadEnumDict<T>(this BinaryReader reader, Dictionary<T, uint> dict) where T : struct, Enum
     {
         var num = reader.ReadUInt32();
 

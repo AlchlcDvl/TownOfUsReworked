@@ -9,11 +9,21 @@ public static class StatsPatches
         try
         {
             using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(PlatformPaths.persistentDataPath, "reworkedStats")));
-            CustomStatsManager.SerializeCustomStats(writer);
+            writer.SerializeCustomStats();
         }
         catch (Exception ex)
         {
-            __instance.logger.Error($"Failed to write out stats reworked: {ex}");
+            __instance.logger.Error($"Failed to write out reworked stats: {ex}");
+        }
+
+        try
+        {
+            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(PlatformPaths.persistentDataPath, "reworkedAchievements")));
+            writer.SerializeCustomAchievements();
+        }
+        catch (Exception ex)
+        {
+            __instance.logger.Error($"Failed to write out reworked achievements: {ex}");
         }
     }
 

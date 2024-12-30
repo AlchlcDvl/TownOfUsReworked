@@ -8,6 +8,7 @@ If you want to know more, try using info commands, visiting the %github% page or
 
 New!
 - Addition: The mod now has it's own custom stats, it now replaces the stats held by the base game
+- Addition: The mod now also has it's own custom achievements, you can access them similar to how you access your stats
 - Addition: The main menu buttons now have their own icons
 - Addition: You can now change the keybind to deselect players (default is still Backspace)
 - Addition: More game options
@@ -53,6 +54,8 @@ Fixes!
 - Visual: Fixed target outlines not appearing correctly
 - Visual: Fixed layer option names blending with the color banners when active
 - Visual: Fixed the end game screen not showing yourself at the forefront if you won
+- Visual: Fixed the mod logo appearing behind the account menu
+- Visual: Fixed the downloader not correctly displaying the result of the download
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
 - General: Fixed All Any role gen being a bit broken in some aspects
 - General: Fixed fake players not spawning in locations correctly on Airship and Submerged

@@ -134,6 +134,7 @@ public static class UpdateSplashPatch
         ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
 
         CustomStatsManager.Setup();
+        CustomAchievementManager.Setup();
         Generate.GenerateAll();
         Modules.Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();

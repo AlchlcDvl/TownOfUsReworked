@@ -16,7 +16,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 21;
+    public const int DevBuild = 22;
 
     public static bool IsTest { get; set; }
     private static readonly string VersionS = VersionString[..^2];
@@ -76,6 +76,7 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> LockCameraSway { get; set; }
     public static ConfigEntry<bool> ForceUseLocal { get; set; }
     public static ConfigEntry<bool> UseDarkTheme { get; set; }
+    public static ConfigEntry<bool> NoWelcome { get; set; }
 
     public static ConfigEntry<bool> RedirectLogger { get; set; }
     public static ConfigEntry<bool> AutoPlayAgain { get; set; }

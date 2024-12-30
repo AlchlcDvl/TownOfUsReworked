@@ -26,7 +26,7 @@ public static class TranslationManager
         catch
         {
             // Any error should just return the original id and let client know in the logs
-            return id;
+            return $"STRMISS ({id})";
         }
     }
 
@@ -72,7 +72,7 @@ public static class TranslationManager
             var lang = Translate(value);
 
             // If the translation is successful, update the result with the translated string
-            if (lang != value)
+            if (!lang.Contains(value))
                 result = lang;
             else
                 result += $" ({value})";

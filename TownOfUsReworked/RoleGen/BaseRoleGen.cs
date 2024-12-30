@@ -69,9 +69,6 @@ public abstract class BaseRoleGen : BaseGen
             };
         }
 
-        while (Neutrals >= players - Intruders - Syndicate)
-            Neutrals--;
-
         while (Intruders + Syndicate >= players)
         {
             if (Intruders > Syndicate)
@@ -79,6 +76,9 @@ public abstract class BaseRoleGen : BaseGen
             else
                 Syndicate--;
         }
+
+        while (Neutrals >= players - Intruders - Syndicate)
+            Neutrals--;
 
         Crew = players - Intruders - Syndicate - Neutrals;
     }

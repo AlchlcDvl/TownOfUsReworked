@@ -41,6 +41,10 @@ public class DebuggerBehaviour : MonoBehaviour
 
             var mouse = Input.mousePosition;
             GUILayout.Label($"Mouse Position\nx: {mouse.x:00.00} y: {mouse.y:00.00} z: {mouse.z:00.00}");
+
+            if (!IsLocalGame())
+                return;
+
             GUILayout.BeginHorizontal();
 
             foreach (var tab in Tabs)

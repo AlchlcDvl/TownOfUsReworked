@@ -197,7 +197,7 @@ public static class ModUpdater
         if (hasError)
             Error(error);
 
-        Popup.TextAreaTMP.SetText(hasError ? TranslationManager.Translate("Updates.Mod.Success", ("%mod%", updateType)) : TranslationManager.Translate("Updates.Mod.NoSuccess"));
+        Popup.TextAreaTMP.SetText(hasError ? TranslationManager.Translate("Updates.Mod.NoSuccess") : TranslationManager.Translate("Updates.Mod.Success", ("%mod%", updateType)));
         button.SetActive(true);
         yield break;
     }

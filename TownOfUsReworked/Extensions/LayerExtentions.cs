@@ -99,10 +99,10 @@ public static class LayerExtentions
 
     public static bool CanSabotage(this PlayerControl player)
     {
-        if (IsHnS())
+        if (IsHnS() || Meeting() || IsCustomHnS() || IsTaskRace())
             return false;
 
-        var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps)) && !Meeting() && IntruderSettings.IntrudersCanSabotage;
+        var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps)) && IntruderSettings.IntrudersCanSabotage;
 
         if (!player.Data.IsDead)
             return result;

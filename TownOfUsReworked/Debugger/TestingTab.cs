@@ -52,5 +52,8 @@ public class TestingTab : BaseTab
 
         if (GUILayout.Button("Load Last Settings"))
             OptionAttribute.LoadPreset("Debugging", null);
+
+        if (GUILayout.Button("Test Achievement"))
+            CustomAchievementManager.UnlockAchievement("Test");
     }
 }

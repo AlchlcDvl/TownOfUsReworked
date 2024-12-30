@@ -1006,7 +1006,7 @@ public static class SettingsPatches
 
             if (__instance.myPlayer.AmOwner)
             {
-                if (!SentOnce)
+                if (!SentOnce && !ClientOptions.NoWelcome)
                 {
                     Run("<#5411F8FF>人 Welcome! 人</color>", "Welcome to Town Of Us Reworked! Type /help to get started!");
                     SentOnce = true;

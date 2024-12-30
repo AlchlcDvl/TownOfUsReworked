@@ -85,7 +85,7 @@ public static class CrowdedPatches
         __instance.MaxPlayerButtons.ToArray().Skip(1).ForEach(x =>
         {
             if (x)
-                x.enabled = x?.GetComponentInChildren<TextMeshPro>()?.text == opts?.MaxPlayers.ToString();
+                x.enabled = x.GetComponentInChildren<TextMeshPro>()?.text == opts?.MaxPlayers.ToString();
         });
         return false;
     }
