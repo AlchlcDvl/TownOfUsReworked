@@ -140,12 +140,18 @@ public class Transporter : Crew
         {
             TransportPlayer1.moveable = false;
             TransportPlayer1.NetTransform.Halt();
+            TransportPlayer1.MyPhysics.ResetMoveState();
+            TransportPlayer1.MyPhysics.ResetAnimState();
+            TransportPlayer1.MyPhysics.StopAllCoroutines();
         }
 
         if (!TransportPlayer2.HasDied())
         {
             TransportPlayer2.moveable = false;
             TransportPlayer2.NetTransform.Halt();
+            TransportPlayer2.MyPhysics.ResetMoveState();
+            TransportPlayer2.MyPhysics.ResetAnimState();
+            TransportPlayer2.MyPhysics.StopAllCoroutines();
         }
 
         if (TransportPlayer1.AmOwner || TransportPlayer2.AmOwner)

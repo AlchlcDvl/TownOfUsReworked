@@ -3,7 +3,6 @@ namespace TownOfUsReworked.Monos;
 public class DeadBodyHandler : NameHandler
 {
     private DeadBody Body { get; set; }
-    private Vector3 Size { get; set; }
     private int ColorId { get; set; }
     private SpriteRenderer Rend { get; set; }
 
@@ -13,7 +12,7 @@ public class DeadBodyHandler : NameHandler
         Player = PlayerByBody(Body);
         Custom = CustomPlayer.Custom(Player);
         Rend = Body.bodyRenderers[0];
-        Size = Custom.SizeFactor;
+        Size = Body.transform.localScale;
         ColorId = Player.Data.DefaultOutfit.ColorId;
     }
 
@@ -26,6 +25,6 @@ public class DeadBodyHandler : NameHandler
         else
             CustomColorManager.SetColor(Rend, ColorId);
 
-        Body.transform.localScale = Size;
+        Body.transform.localScale = Size * Custom.Size;
     }
 }

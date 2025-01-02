@@ -716,6 +716,9 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         {
             WarpPlayer1.moveable = false;
             WarpPlayer1.NetTransform.Halt();
+            WarpPlayer1.MyPhysics.ResetMoveState();
+            WarpPlayer1.MyPhysics.ResetAnimState();
+            WarpPlayer1.MyPhysics.StopAllCoroutines();
         }
 
         if (WarpPlayer1.AmOwner)

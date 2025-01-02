@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Monarch : Crew
+public class Monarch : Crew, ISovereign
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number KnightingCd { get; set; } = new(25);
@@ -25,7 +25,6 @@ public class Monarch : Crew
     public CustomButton KnightingButton { get; set; }
     public List<byte> ToBeKnighted { get; set; }
     public List<byte> Knighted { get; set; }
-    public bool Protected => Knighted.Any();
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Monarch : FactionColor;
     public override string Name => "Monarch";

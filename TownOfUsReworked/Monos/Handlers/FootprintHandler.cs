@@ -29,7 +29,7 @@ public class FootprintHandler : MonoBehaviour
     private void SpawnFootprint()
     {
         var gameObject = new GameObject("Footprint") { layer = 11 };
-        var print = gameObject.AddComponent<FootprintB>();
+        var print = gameObject.AddComponent<Footprint>();
         print.Player = Player;
         print.IsEven = IsEven = !IsEven;
     }

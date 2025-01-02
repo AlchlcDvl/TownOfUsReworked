@@ -21,7 +21,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.StartMeeting))]
     public static void Prefix(PlayerControl __instance, NetworkedPlayerInfo target)
     {
-        if (CustomPlayer.Local.Data.Role is LayerHandler handler)
+        if (CustomPlayer.Local?.Data?.Role is LayerHandler handler)
             handler.BeforeMeeting();
 
         MeetingPatches.Reported = target;
@@ -76,12 +76,13 @@ public static class PlayerControlPatches
         HUD().AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS());
         HUD().SabotageButton.gameObject.SetActive(__instance.CanSabotage());
         HUD().ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
-        ButtonUtils.Reset(player: __instance);
+        ButtonUtils.Reset();
 
         if (Chat().IsOpenOrOpening)
             Chat().ForceClosed();
 
         Chat().SetVisible(__instance.CanChat());
+        CustomAchievementManager.UnlockAchievement("Revitalised");
         return false;
     }
 
@@ -92,7 +93,7 @@ public static class PlayerControlPatches
         if (NoPlayers() || IsLobby())
             return true;
 
-        if (CustomPlayer.Local.Is<Coward>())
+        if (CustomPlayer.Local.Is<Coward>() || !PerformReport.ReportPressed)
             return false;
 
         var blocked = LocalNotBlocked();
@@ -115,8 +116,12 @@ public static class PlayerControlPatches
         if (!__instance.AmOwner || !Ship())
             return true;
 
-        var size = Ship().CalculateLightRadius(__instance.Data);
         var role = __instance.GetRole();
+
+        if (!role)
+            return true;
+
+        var size = Ship().CalculateLightRadius(__instance.Data);
         var flashlights = role.Faction switch
         {
             Faction.Crew => CrewSettings.CrewFlashlight,

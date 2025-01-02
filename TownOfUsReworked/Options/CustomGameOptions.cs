@@ -316,6 +316,9 @@ public static class GameModifiers
 
     [ToggleOption(MultiMenu.Main)]
     public static bool PurePlayers { get; set; } = false;
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool NoVentingUncleanedVents { get; set; } = false;
 }
 
 [HeaderOption(MultiMenu.Main)]

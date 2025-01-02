@@ -15,7 +15,7 @@ public static class SpawnPatches
         ShowRolePatch.Starting = false;
         Chat()?.SetVisible(CustomPlayer.Local.CanChat());
 
-        if (intro && CustomPlayer.Local.Data.Role is LayerHandler handler)
+        if (intro && CustomPlayer.Local?.Data?.Role is LayerHandler handler)
             handler.OnIntroEnd();
 
         AllPlayers().ForEach(x => x.MyPhysics.ResetAnimState());

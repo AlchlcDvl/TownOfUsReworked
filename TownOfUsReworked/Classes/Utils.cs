@@ -321,7 +321,7 @@ public static class Utils
             return player.Data.DefaultOutfit.ColorId.GetColor(false);
     }
 
-    public static PlayerControl PlayerById(byte id) => GameData.Instance.GetPlayerById(id)?.Object;
+    public static PlayerControl PlayerById(byte id) => GameData.Instance?.GetPlayerById(id)?.Object;
 
     public static PlayerVoteArea VoteAreaById(byte id) => AllVoteAreas().Find(x => x.TargetPlayerId == id);
 
@@ -333,9 +333,9 @@ public static class Utils
 
     public static PlayerVoteArea VoteAreaByPlayer(PlayerControl player) => VoteAreaById(player.PlayerId);
 
-    public static Vent VentById(int id) => AllVents().Find(x => x.Id == id);
-
     public static PlayerControl PlayerByVoteArea(PlayerVoteArea state) => PlayerById(state.TargetPlayerId);
+
+    public static Vent VentById(int id) => AllVents().Find(x => x.Id == id);
 
     public static Vector2 GetSize() => Vector2.Scale(AllVents()[0].GetComponent<BoxCollider2D>().size, AllVents()[0].transform.localScale) * 0.75f;
 
@@ -666,6 +666,8 @@ public static class Utils
             id++;
         }
     }
+
+    public static void Flash(Color32 color, float duration = 0.5f) => Coroutines.Start(FlashCoro(color, duration));
 
     public static void Flash(UColor color, float duration = 0.5f) => Coroutines.Start(FlashCoro(color, duration));
 

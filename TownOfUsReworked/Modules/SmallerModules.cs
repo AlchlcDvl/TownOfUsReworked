@@ -86,12 +86,4 @@ public class Achievement(string name, bool unlocked = false, bool hidden = false
     public bool EndOfGame { get; } = eog;
     public string Icon { get; } = icon;
     public bool Unlocked { get; set; } = unlocked;
-
-    public void Serialize(BinaryWriter writer)
-    {
-        writer.Write(Name);
-        writer.Write(Unlocked);
-    }
-
-    public static Achievement Deserialize(BinaryReader reader) => new(reader.ReadString(), reader.ReadBoolean());
 }

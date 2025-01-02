@@ -26,7 +26,6 @@ public static class MainMenuPatches
         LoadVanillaSounds();
         AllMonos.AddComponents();
         CachedFirstDead = null;
-        TownOfUsReworked.IsTest = false;
         var rightPanel = GameObject.Find("RightPanel");
 
         if (!Logo && rightPanel)

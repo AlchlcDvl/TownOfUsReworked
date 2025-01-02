@@ -35,7 +35,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<Range>();
         ClassInjector.RegisterTypeInIl2Cpp<Bug>();
         ClassInjector.RegisterTypeInIl2Cpp<Bomb>();
-        ClassInjector.RegisterTypeInIl2Cpp<FootprintB>();
+        ClassInjector.RegisterTypeInIl2Cpp<Footprint>();
     }
 
     public static void AddComponents()
@@ -57,7 +57,7 @@ public static class AllMonos
 
         LayerHandler.HauntMenu = LayerHandler.CrewmateGhost.TryCast<CrewmateGhostRole>().HauntMenu;
 
-        var prefab = (RoleBehaviour)new GameObject("LayerHandler").DontDestroy().DontUnload().AddComponent(Il2CppType.Of<LayerHandler>());
+        var prefab = (RoleBehaviour)new GameObject("LayerHandler").DontDestroy().DontUnload().AddComponent<LayerHandler>();
         prefab.Role = (RoleTypes)100;
         prefab.TeamType = (RoleTeamTypes)5;
         prefab.CanBeKilled = true;
@@ -68,6 +68,7 @@ public static class AllMonos
         prefab.DefaultGhostRole = (RoleTypes)100;
         prefab.AffectedByLightAffectors = true;
         prefab.IntroSound = null;
+        prefab.TasksCountTowardProgress = false;
         prefab.Ability = LayerHandler.CrewmateGhost.Ability;
 
         var allRoles = RoleManager.Instance.AllRoles.ToList();

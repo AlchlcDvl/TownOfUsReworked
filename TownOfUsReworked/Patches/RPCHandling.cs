@@ -276,6 +276,15 @@ public static class RPCHandling
 
                         break;
                     }
+                    case MiscRPC.Achievement:
+                    {
+                        if (reader.ReadPlayer().AmOwner)
+                            CustomAchievementManager.UnlockAchievement(reader.ReadString());
+                        else
+                            reader.ReadString();
+
+                        break;
+                    }
                     default:
                     {
                         Error($"Received unknown RPC - {(int)misc}");

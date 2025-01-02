@@ -37,7 +37,7 @@ public static class ButtonUtils
     {
         var hud = HUD();
         player.GetButtons().ForEach(x => x.SetActive());
-        player.GetRole().UpdateButtons();
+        player.GetRole()?.UpdateButtons();
         hud.KillButton.gameObject.SetActive(false);
         hud.SabotageButton.gameObject.SetActive(player.CanSabotage() && IsInGame());
         hud.ReportButton.gameObject.SetActive(!player.Is<Coward>() && !Meeting() && !player.HasDied() && IsInGame());
@@ -137,6 +137,10 @@ public static class ButtonUtils
 
         player ??= CustomPlayer.Local;
         var role = player.GetRole();
+
+        if (!role)
+            return;
+
         var start = cooldown == CooldownType.Start;
         var meeting = cooldown == CooldownType.Meeting;
         var dead = DeadSeeEverything();

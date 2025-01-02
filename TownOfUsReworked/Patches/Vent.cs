@@ -4,20 +4,25 @@ namespace TownOfUsReworked.Patches;
 public static class VentPatches
 {
     [HarmonyPatch(nameof(Vent.CanUse))]
-    public static void Postfix(Vent __instance, NetworkedPlayerInfo pc, bool canUse, bool couldUse, float __result)
+    public static bool Prefix(Vent __instance, NetworkedPlayerInfo pc, out bool canUse, out bool couldUse, ref float __result)
     {
+        canUse = couldUse = false;
+
+        if (IsHnS())
+            return true;
+
         var num = float.MaxValue;
         var playerControl = pc.Object;
+        var usable = __instance.TryCast<IUsable>();
+        couldUse = GameManager.Instance.LogicUsables.CanUse(usable, playerControl) && pc.Role.CanUse(usable) && playerControl.CanVent();
 
-        if (IsNormal())
-            couldUse = playerControl.CanVent();
-        else if (IsHnS())
-            couldUse = !pc.IsImpostor();
+        if (GameModifiers.NoVentingUncleanedVents)
+        {
+            var ventitaltionSystem = Ship().Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
-        var ventitaltionSystem = Ship().Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
-
-        if (ventitaltionSystem != null && ventitaltionSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
-            couldUse = false;
+            if (ventitaltionSystem != null && ventitaltionSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
+                couldUse = false;
+        }
 
         canUse = couldUse;
 
@@ -28,18 +33,20 @@ public static class VentPatches
             num = Vector2.Distance(center, position);
             canUse &= num <= __instance.UsableDistance;
 
-            if (__instance.Id != 14 || !IsSubmerged())
+            if (!IsSubmerged() || __instance.Id != 14)
                 canUse &= !PhysicsHelpers.AnythingBetween(playerControl.Collider, center, position, Constants.ShipOnlyMask, false);
         }
 
         __result = num;
+        return false;
     }
 
     [HarmonyPatch(nameof(Vent.SetButtons))]
     public static bool Prefix(Vent __instance, bool enabled)
     {
         var player = CustomPlayer.Local;
-        var flag = !player.IsMoving() && player.GetRole() switch
+        var role = player.GetRole();
+        var flag = !player.IsMoving() && role switch
         {
             Jester => Jester.JesterVent && Jester.JestSwitchVent,
             Executioner => Executioner.ExeVent && Executioner.ExeSwitchVent,
@@ -49,7 +56,7 @@ public static class VentPatches
             Guesser => Guesser.GuessVent && Guesser.GuessSwitchVent,
             Troll => Troll.TrollVent && Troll.TrollSwitchVent,
             Actor => Actor.ActorVent && Actor.ActSwitchVent,
-            _ => !player.IsPostmortal()
+            _ => role ? !player.IsPostmortal() : true
         };
 
         // Fix for dlekS
@@ -112,33 +119,21 @@ public static class VentPatches
     }
 
     [HarmonyPatch(nameof(Vent.Use)), HarmonyPrefix]
-    public static bool UsePrefix(Vent __instance)
-    {
-        if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
-            return false;
-
-        if (__instance.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
-        {
-            RpcMurderPlayer(CustomPlayer.Local);
-            Role.BastionBomb(__instance, Bastion.BombRemovedOnKill);
-            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, __instance);
-            return false;
-        }
-
-        return true;
-    }
+    public static bool UsePrefix(Vent __instance) => CheckMoveVent(__instance);
 
     [HarmonyPatch(nameof(Vent.TryMoveToVent)), HarmonyPrefix]
-    public static bool TryMoveToVentPrefix(Vent otherVent)
+    public static bool TryMoveToVentPrefix(Vent otherVent) => CheckMoveVent(otherVent);
+
+    private static bool CheckMoveVent(Vent vent)
     {
         if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
             return false;
 
-        if (otherVent.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
+        if (vent.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
         {
             RpcMurderPlayer(CustomPlayer.Local);
-            Role.BastionBomb(otherVent, Bastion.BombRemovedOnKill);
-            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, otherVent);
+            Role.BastionBomb(vent, Bastion.BombRemovedOnKill);
+            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
             return false;
         }
 
@@ -171,5 +166,15 @@ public static class VentPatches
         var vector = pc.GetTruePosition() - truePosition;
         return vector.magnitude < CustomPlayer.Local.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude,
             Constants.ShipAndObjectsMask);
+    }
+}
+
+[HarmonyPatch(typeof(VentilationSystem), nameof(VentilationSystem.IsVentCurrentlyBeingCleaned))]
+public static class GetCorrectResult
+{
+    public static bool Prefix(VentilationSystem __instance, int id, ref bool __result)
+    {
+        __result = __instance.PlayersCleaningVents.Any((x, y) => y == id && PlayerById(x).CanDoTasks());
+        return false;
     }
 }

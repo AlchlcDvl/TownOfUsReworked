@@ -43,6 +43,7 @@ public class GuardianAngel : Neutral
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer ? !TargetAlive : Rounds > 2;
+    public bool Protecting { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.GuardianAngel : FactionColor;
     public override string Name => "Guardian Angel";
@@ -58,12 +59,12 @@ public class GuardianAngel : Neutral
         Alignment = Alignment.NeutralBen;
         TargetPlayer = null;
         ProtectButton ??= new(this, new SpriteName("Protect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT",
-            new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
+            new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect, (EffectStartVoid)ProtectStart, (EffectEndVoid)ProtectEnd);
 
         if (ProtectBeyondTheGrave)
         {
             GraveProtectButton ??= new(this, new SpriteName("GraveProtect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGraveProtect, new PostDeath(true),
-                "PROTECT", new Cooldown(ProtectCd), new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect);
+                "PROTECT", new Cooldown(ProtectCd), new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect, (EffectStartVoid)ProtectStart, (EffectEndVoid)ProtectEnd);
         }
 
         Rounds = 0;
@@ -105,6 +106,10 @@ public class GuardianAngel : Neutral
         ProtectButton.Uses--;
         TrulyDead = ProtectButton.Uses <= 0 && Dead;
     }
+
+    public void ProtectStart() => Protecting = true;
+
+    public void ProtectEnd() => Protecting = false;
 
     public bool Usable1() => !Failed && TargetPlayer && TargetAlive;
 

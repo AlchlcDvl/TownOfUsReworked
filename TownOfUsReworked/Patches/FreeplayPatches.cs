@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Patches;
 
-// I'll leave the code here for now and get back to it later
 [HarmonyPatch(typeof(TaskAdderGame))]
 public static class FreeplayPatches
 {
@@ -37,7 +36,7 @@ public static class FreeplayPatches
         var button = UObject.Instantiate(__instance.RoleButton);
         button.SafePositionWorld = __instance.SafePositionWorld;
         button.Text.SetText(button.name = $"{TranslationManager.Translate($"CustomOption.{layer}")}.{extension}");
-        button.Role = RoleManager.Instance.AllRoles[0];
+        button.Role = RoleManager.Instance.AllRoles[^1];
         button.FileImage.color = button.RolloverHandler.OutColor = entry.Color;
         button.RolloverHandler.OverColor = entry.Color.Alternate(0.4f);
         button.Overlay.enabled = CustomPlayer.Local.Is(layer);
@@ -57,16 +56,19 @@ public static class FreeplayPatches
 
             selected.Start(CustomPlayer.Local);
             ButtonUtils.Reset();
+
+            if (CustomPlayer.Local.Data.Role is LayerHandler handler)
+                handler.SetUpLayers();
         });
         __instance.AddFileAsChild(folder, button, ref num, ref num2, ref num3);
         RoleButtons[button.name] = layer;
     }
 
     [HarmonyPatch(nameof(TaskAdderGame.Begin))]
-    public static void Prefix(TaskAdderGame __instance)
+    public static void Prefix(/*TaskAdderGame __instance*/)
     {
         FolderNames.Clear();
-        Info($"File Width: {__instance.fileWidth} Line Width: {__instance.lineWidth} Folder Width {__instance.folderWidth}");
+        // Info($"File Width: {__instance.fileWidth} Line Width: {__instance.lineWidth} Folder Width {__instance.folderWidth}");
     }
 
     [HarmonyPatch(nameof(TaskAdderGame.PopulateRoot))]
@@ -93,7 +95,7 @@ public static class FreeplayPatches
     public static bool Prefix(TaskAdderGame __instance, TaskFolder taskFolder)
     {
         RoleButtons.Clear();
-        var stringBuilder = new StringBuilder();
+        var stringBuilder = new Il2CppSystem.Text.StringBuilder();
         __instance.Hierarchy.Add(taskFolder);
 
         foreach (var folder in __instance.Hierarchy)
@@ -102,7 +104,7 @@ public static class FreeplayPatches
             stringBuilder.Append('\\');
         }
 
-        __instance.PathText.SetText($"{stringBuilder}");
+        __instance.PathText.SetText(stringBuilder);
         __instance.ActiveItems.ForEach(x => x.gameObject.Destroy());
         __instance.ActiveItems.Clear();
         var num = 0f;
@@ -141,44 +143,39 @@ public static class FreeplayPatches
         if (FolderNames.Contains(taskFolder.FolderName))
         {
             var layerEnum = Enum.TryParse<PlayerLayerEnum>(taskFolder.FolderName, out var h) ? h : PlayerLayerEnum.None;
-            var (start, end) = layerEnum switch
+            var range = layerEnum switch
             {
-                PlayerLayerEnum.Modifier => ((int)LayerEnum.Astral, (int)LayerEnum.Yeller),
-                PlayerLayerEnum.Disposition => ((int)LayerEnum.Allied, (int)LayerEnum.Traitor),
-                PlayerLayerEnum.Ability => ((int)LayerEnum.ButtonBarry, (int)LayerEnum.Underdog),
-                _ => (-1, -1)
+                PlayerLayerEnum.Modifier => GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller),
+                PlayerLayerEnum.Disposition => GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor),
+                PlayerLayerEnum.Ability => GetValuesFromTo(LayerEnum.ButtonBarry, LayerEnum.Underdog),
+                _ => []
             };
 
             if (Enum.TryParse<Faction>(taskFolder.FolderName, out var faction))
             {
-                (start, end) = faction switch
+                range = faction switch
                 {
-                    Faction.Crew => ((int)LayerEnum.Altruist, (int)LayerEnum.Vigilante),
-                    Faction.Neutral => ((int)LayerEnum.Actor, (int)LayerEnum.Whisperer),
-                    Faction.Intruder => ((int)LayerEnum.Ambusher, (int)LayerEnum.Wraith),
-                    Faction.GameMode => ((int)LayerEnum.Hunter, (int)LayerEnum.Runner),
-                    Faction.Syndicate => ((int)LayerEnum.Anarchist, (int)LayerEnum.Warper),
-                    _ => (-1, -1)
+                    Faction.Crew => GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante),
+                    Faction.Neutral => GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer),
+                    Faction.Intruder => GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith),
+                    Faction.GameMode => GetValuesFromTo(LayerEnum.Hunter, LayerEnum.Runner),
+                    Faction.Syndicate => GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper),
+                    _ => []
                 };
             }
 
-            if (start != -1 && end != -1)
+            foreach (var layer in range)
             {
-                for (var k = start; k <= end; k++)
+                if (layer is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer)
+                    continue;
+
+                try
                 {
-                    var layer = (LayerEnum)k;
-
-                    if (layer is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer)
-                        continue;
-
-                    try
-                    {
-                        CreateRoleButton(__instance, taskFolder, layer, ref num, ref num2, ref num3);
-                    }
-                    catch (Exception e)
-                    {
-                        Error($"Layer: {layer}\n{e}");
-                    }
+                    CreateRoleButton(__instance, taskFolder, layer, ref num, ref num2, ref num3);
+                }
+                catch (Exception e)
+                {
+                    Error($"Layer: {layer}\n{e}");
                 }
             }
         }
@@ -220,9 +217,7 @@ public static class FreeplayPatches
 
                     if (__instance.Hierarchy.Count != 1 && !flag)
                     {
-                        var component = ControllerManager.Instance.CurrentUiState.CurrentSelection.GetComponent<TaskFolder>();
-
-                        if (component)
+                        if (ControllerManager.Instance.CurrentUiState.CurrentSelection.TryGetComponent<TaskFolder>(out var component) && component)
                             __instance.restorePreviousSelectionByFolderName = component.FolderName;
 
                         ControllerManager.Instance.SetDefaultSelection(taskAddButton.Button, null);
@@ -250,4 +245,10 @@ public static class UpdateRoleButtons
 
         return true;
     }
+}
+
+[HarmonyPatch(typeof(TutorialManager), nameof(TutorialManager.Awake))]
+public static class TutorialManagerRunTutorial
+{
+    public static void Postfix(TutorialManager __instance) => __instance.StartCoroutine(CustomPlayer.Local.CoSetRole((RoleTypes)100, false));
 }

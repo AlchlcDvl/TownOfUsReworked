@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Monos;
 
 public class LayerHandler : RoleBehaviour
 {
-    public override bool IsDead => Player?.Data?.IsDead ?? false;
+    public override bool IsDead => Player.HasDied();
     public override bool IsAffectedByComms => false;
 
     public bool Local => Player.AmOwner;
@@ -171,8 +171,18 @@ public class LayerHandler : RoleBehaviour
             CustomDisposition.Start(Player);
         }
 
+        CustomRole.PostAssignment();
+        CustomAbility.PostAssignment();
+        CustomModifier.PostAssignment();
+        CustomDisposition.PostAssignment();
+
         CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
         ResetButtons();
+
+        TasksCountTowardProgress = Player.CanDoTasks() && ((CustomRole.Faction == Faction.Crew && CustomRole.BaseFaction == Faction.Crew) || CustomRole is Runner or Hunted);
+        CanVent = Player.CanVent();
+        CanUseKillButton = Player.CanKill();
+        AffectedByLightAffectors = CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate;
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;
@@ -213,12 +223,7 @@ public class LayerHandler : RoleBehaviour
 
         InitializeAbilityButton();
 
-        CustomRole.PostAssignment();
-        CustomAbility.PostAssignment();
-        CustomModifier.PostAssignment();
-        CustomDisposition.PostAssignment();
-
-        if (player.AmOwner)
+        if (player.AmOwner && !TutorialManager.InstanceExists)
         {
             CustomStatsManager.IncrementStat(CustomRole.Faction switch
             {
@@ -259,7 +264,7 @@ public class LayerHandler : RoleBehaviour
     {
         // This is such a cheesy way to handle this omg
         var isCrew = CustomRole.Faction is Faction.Neutral or Faction.Crew || (CustomRole.Faction == Faction.GameMode && CustomRole.Type != LayerEnum.Hunter);
-        var role = Player.HasDied() ? (isCrew ? CrewmateGhost : ImpostorGhost) : (isCrew ? Crewmate : Impostor);
+        var role = IsDead ? (isCrew ? CrewmateGhost : ImpostorGhost) : (isCrew ? Crewmate : Impostor);
         role.Player = Player;
         var result = role.CanUse(console);
         role.Player = null;

@@ -38,7 +38,7 @@ public static class StatsPatches
     }
 
     [HarmonyPatch(nameof(StatsManager.AmBanned), MethodType.Getter)]
-    public static void Postfix(out bool __result) => __result = false;
+    public static void Postfix(ref bool __result) => __result = false;
 }
 
 [HarmonyPatch(typeof(StatsPopup))]
@@ -59,9 +59,9 @@ public static class PatchPopup
 [HarmonyPatch(typeof(StatsManager.Stats), nameof(StatsManager.Stats.Deserialize))]
 public static class TryMigrateStats
 {
-    public static void Postfix()
+    public static void Postfix(StatsManager.Stats __instance)
     {
         if (!CustomStatsManager.MigratedFromVanillaStats)
-            CustomStatsManager.MigrateFromVanillaStats(StatsManager.Instance);
+            __instance.MigrateFromVanillaStats();
     }
 }

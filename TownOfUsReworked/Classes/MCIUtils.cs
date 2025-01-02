@@ -132,7 +132,7 @@ public static class MCIUtils
         HUD().SetHudActive(true);
         HUD().ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
 
-        light.transform.SetParent(CustomPlayer.LocalCustom.Transform, false);
+        light.transform.SetParent(CustomPlayer.Local.transform, false);
         light.transform.localPosition = newPlayer.Collider.offset;
 
         HUD().PlayerCam.SetTarget(newPlayer);

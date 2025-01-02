@@ -69,11 +69,14 @@ public class Altruist : Crew
         if (ReviveButton.Uses == 0 && Local && Sacrifice)
             RpcMurderPlayer(Player);
 
-        if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
+        if (formerKiller.Contains(CustomPlayer.Local.name))
         {
             CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, player, Color));
             Flash(Color);
         }
+
+        if (Local && player.IIs<ISovereign>())
+            CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
     public void Revive(DeadBody target)

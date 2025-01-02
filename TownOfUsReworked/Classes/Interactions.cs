@@ -107,7 +107,11 @@ public static class Interactions
             }
             else
             {
-                CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
+                if (attack > AttackEnum.None)
+                {
+                    CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
+                    CustomAchievementManager.RpcUnlockAchievement(target, "Resilient");
+                }
 
                 if (target.IsShielded())
                 {

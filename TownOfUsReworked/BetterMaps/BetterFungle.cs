@@ -36,7 +36,7 @@ public static class BetterFungle
     }
 
     [HarmonyPatch(nameof(MushroomMixupSabotageSystem.GenerateRandomOutfit))]
-    public static void Postfix(MushroomMixupSabotageSystem __instance, MushroomMixupSabotageSystem.CondensedOutfit __result)
+    public static void Postfix(MushroomMixupSabotageSystem __instance, ref MushroomMixupSabotageSystem.CondensedOutfit __result)
     {
         List<byte> list = [ .. __instance.cachedOutfitsByPlayerId.keys ];
         list.RemoveAll(x => __instance.cachedOutfitsByPlayerId[x].ColorId.IsChanging());

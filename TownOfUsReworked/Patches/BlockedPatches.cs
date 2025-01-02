@@ -3,9 +3,10 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch]
 public static class BlockPatches
 {
-    [HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
-    [HarmonyPatch(typeof(PetButton), nameof(PetButton.DoClick))]
-    [HarmonyPatch(typeof(AdminButton), nameof(AdminButton.DoClick))]
+    [HarmonyPatch(typeof(UseButton))]
+    [HarmonyPatch(typeof(PetButton))]
+    [HarmonyPatch(typeof(AdminButton))]
+    [HarmonyPatch("DoClick")]
     public static bool Prefix()
     {
         if (NoPlayers() || IsLobby())
@@ -45,23 +46,7 @@ public static class PerformReport
 {
     public static bool ReportPressed;
 
-    public static bool Prefix()
-    {
-        ReportPressed = true;
-
-        if (NoPlayers() || IsLobby())
-            return true;
-
-        if (CustomPlayer.Local.Is<Coward>())
-            return false;
-
-        var blocked = LocalNotBlocked();
-
-        if (!blocked)
-            Blocked.BlockExposed = true;
-
-        return blocked;
-    }
+    public static bool Prefix() => ReportPressed = true;
 
     public static void Postfix() => ReportPressed = false;
 }
@@ -111,7 +96,7 @@ public static class Blocked
         if (!CustomPlayer.Local || IsLobby())
             return;
 
-        if (CustomPlayer.LocalCustom.Data.Role is LayerHandler handler)
+        if (CustomPlayer.Local.Data?.Role is LayerHandler handler)
             handler.UpdateHud(__instance);
 
         if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
@@ -215,10 +200,7 @@ public static class Blocked
         }
 
         if (!IsHnS())
-        {
-            __instance.KillButton.SetTarget(null);
             __instance.KillButton.gameObject.SetActive(false);
-        }
 
         if (!__instance.ImpostorVentButton.currentTarget || BlockIsExposed())
             __instance.ImpostorVentButton.SetDisabled();

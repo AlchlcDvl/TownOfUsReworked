@@ -88,7 +88,7 @@ public static class CheckEndGame
             var rivals = rival1 && rival2;
 
             // NK vs NK when neither can kill each other and Neutrals don't win together
-            if ((player1.Is<Cryomaniac>() && player2.Is<Cryomaniac>() && nosolo && nobuttons && neitherknighted) || NoOneWins() || rivals || (cantkill && nobuttons))
+            if ((player1.Is<Cryomaniac>() && player2.Is<Cryomaniac>() && nosolo && nobuttons && neitherknighted) || rivals || (cantkill && nobuttons))
                 PerformStalemate();
         }
         else if (!players.Any())
@@ -103,6 +103,9 @@ public static class CheckEndGame
 
     private static bool TasksDone()
     {
+        if (TaskSettings.LongTasks + (int)TaskSettings.CommonTasks + TaskSettings.ShortTasks == 0)
+            return IsCustomHnS();
+
         if (IsCustomHnS())
         {
             var allCrew = new List<PlayerControl>();
@@ -198,7 +201,7 @@ public static class OverrideTaskEndGame1
     {
         if (TutorialManager.InstanceExists)
         {
-            if (CustomPlayer.Local.myTasks.All(t => t.IsComplete))
+            if (CustomPlayer.Local.AllTasksCompleted())
             {
                 HUD().ShowPopUp(TranslationController.Instance.GetString(StringNames.GameOverTaskWin));
                 Ship().Begin();

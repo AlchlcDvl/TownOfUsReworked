@@ -332,6 +332,7 @@ public enum MiscRPC : byte
     EndRoleGen,
     SetTarget,
     ChangeRoles,
+    Achievement,
 
     None
 }

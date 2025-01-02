@@ -237,7 +237,7 @@ public class BountyHunter : Evil
     {
         if (target != TargetPlayer && !TargetKilled)
         {
-            Flash(new(255, 0, 0, 255));
+            Flash(UColor.red);
             HuntButton.StartCooldown();
         }
         else if (target == TargetPlayer && !TargetKilled)

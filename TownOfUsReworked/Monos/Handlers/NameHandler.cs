@@ -6,6 +6,7 @@ public class NameHandler : MonoBehaviour
     public static readonly Dictionary<byte, string> ColorNames = [];
 
     public PlayerControl Player { get; set; }
+    public Vector3 Size { get; set; }
 
     [HideFromIl2Cpp]
     public CustomPlayer Custom { get; set; }

@@ -287,7 +287,7 @@ public static class SetPostmortals
 
     private static void TryAddPhantom(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < Phantoms && dead.IsBase(Faction.Neutral) && !NeutralHasUnfinishedBusiness(dead))
+        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < Phantoms && dead.IsBase(Faction.Neutral) && !IsExcludedNeutral(dead))
             WillBePhantoms.Add(dead.PlayerId);
     }
 

@@ -34,6 +34,7 @@ Changes!
 - Improvement: Improved the mod's loaders
 - Improvement: Mod assets are now no longer loaded all at once; they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
 - Improvement: Made general optimisations to improve the mod's runtime
+- Improvement: The mod is now more integrated into the game, allowing for a smoother experience
 - Removed: Removed the "Lobby Cap" toggle in the testing menu due to it not actually functioning and being too much of a hassle to actually get working
 
 Fixes!
@@ -45,6 +46,7 @@ Fixes!
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
 - Disposition: Fixed Allied factions not being set properly
+- Modifier: Fixed some visual aspects of Giant and Dwarf
 - Compatibility: Fixed the elevator not being properly usable for postmortal roles
 - Visual: Fixed the HUD buttons appearing when kicking out bots in local
 - Visual: Fixed tasks being outlined when you can't do them (thanks le killer)

@@ -10,7 +10,6 @@ public class Volatile : Modifier
     public static bool VolatileKnows { get; set; } = true;
 
     private float _time;
-    private int OtherNumber { get; set; }
     private bool Exposed { get; set; }
 
     private static bool LMAO;
@@ -41,10 +40,10 @@ public class Volatile : Modifier
             // Flashes
             if (randomNumber == 0)
             {
-                OtherNumber = URandom.RandomRangeInt(0, 256);
-                var otherNumber2 = URandom.RandomRangeInt(0, 256);
-                var otherNumber3 = URandom.RandomRangeInt(0, 256);
-                Flash(new((byte)OtherNumber, (byte)otherNumber2, (byte)otherNumber3, 255));
+                var otherNumber = (byte)URandom.RandomRangeInt(0, 256);
+                var otherNumber2 = (byte)URandom.RandomRangeInt(0, 256);
+                var otherNumber3 = (byte)URandom.RandomRangeInt(0, 256);
+                Flash(new Color32(otherNumber, otherNumber2, otherNumber3, 255));
             }
             // Fake someone killing you
             else if (randomNumber == 1)

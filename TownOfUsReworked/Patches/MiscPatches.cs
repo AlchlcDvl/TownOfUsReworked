@@ -172,8 +172,8 @@ public static class MinigameBeginPatch
 {
     public static void Postfix(Minigame __instance)
     {
-        if (__instance.TryCast<TaskAdderGame>() || __instance.TryCast<HauntMenuMinigame>() || __instance.TryCast<SpawnInMinigame>() || __instance.TryCast<ShapeshifterMinigame>() ||
-            !CustomPlayer.Local.Is<Multitasker>())
+        if (!CustomPlayer.Local.Is<Multitasker>() || __instance.TryCast<TaskAdderGame>() || __instance.TryCast<HauntMenuMinigame>() || __instance.TryCast<SpawnInMinigame>() ||
+            __instance.TryCast<ShapeshifterMinigame>())
         {
             return;
         }
@@ -242,13 +242,7 @@ public static class ExitGamePatch
 public static class GetPurchasePatch
 {
     [HarmonyPatch(nameof(PlayerPurchasesData.GetPurchase))]
-    public static bool Prefix(ref bool __result)
-    {
-        if (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream)
-            __result = true;
-
-        return !(TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
-    }
+    public static bool Prefix(ref bool __result) => !(__result = TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
 
     [HarmonyPatch(nameof(PlayerPurchasesData.SetPurchased))]
     public static bool Prefix() => !(TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
@@ -328,13 +322,12 @@ public static class EmergencyMinigameUpdatePatch
     {
         if ((!CustomPlayer.Local.CanButton(out var name) || CustomPlayer.Local.RemainingEmergencies == 0) && !CustomPlayer.Local.myTasks.Any(PlayerTask.TaskIsEmergency))
         {
-            var title = name switch
+            __instance.StatusText.SetText(name switch
             {
                 "Shy" => "You are too shy to call a meeting",
                 "GameMode" => "Don't call meetings",
                 _ => $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
-            };
-            __instance.StatusText.SetText(title);
+            });
             __instance.NumberText.SetText("");
             __instance.ClosedLid.gameObject.SetActive(true);
             __instance.OpenLid.gameObject.SetActive(false);
@@ -350,7 +343,6 @@ public static class LobbyBehaviourPatch
     {
         SetFullScreenHUD();
         RoleGenManager.ResetEverything();
-        TownOfUsReworked.IsTest = IsLocalGame() && (TownOfUsReworked.IsDev || (TownOfUsReworked.IsTest && TownOfUsReworked.MCIActive));
         StopAll();
         DefaultOutfitAll();
         var count = MCIUtils.Clients.Count;
@@ -388,6 +380,7 @@ public static class RefreshPatch
 {
     [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
     [HarmonyPatch(typeof(GameData), nameof(GameData.DirtyAllData))]
+    [HarmonyPatch(typeof(KillButton), nameof(KillButton.SetTarget))]
     public static bool Prefix() => false;
 }
 
@@ -447,6 +440,11 @@ public static class ShowCustomAnim
             _selfDeath.KillType = (KillAnimType)10;
 
             _selfDeath.AddComponent<CustomKillAnimationPlayer>();
+
+            var array = HUD().KillOverlay.KillAnims.ToList();
+            array.Add(_selfDeath);
+            HUD().KillOverlay.KillAnims = array.ToArray();
+
             return _selfDeath;
         }
     }
@@ -475,7 +473,7 @@ public static class WaitForFinishPatch
     {
         var flag = __instance.TryGetComponent<CustomKillAnimationPlayer>(out var customKillAnim);
 
-        if (customKillAnim)
+        if (flag && customKillAnim)
             __result = customKillAnim.WaitForFinish().WrapToIl2Cpp();
 
         return !flag;
@@ -646,5 +644,36 @@ public static class PatchColours
     {
         if (__result.StartsWith("STRMISS") && !__result.Contains('('))
             __result += $" ({id})";
+    }
+}
+
+[HarmonyPatch(typeof(MedScanMinigame))]
+public static class MedScanMinigamePatch
+{
+    [HarmonyPatch(nameof(MedScanMinigame.Begin))]
+    public static void Postfix(MedScanMinigame __instance)
+    {
+        var newHeightFeet = 0;
+        var newHeightInch = Mathf.RoundToInt(((3f * 12f) + 6f) * CustomPlayer.Local.GetModifiedSize());
+        var newWeight = Mathf.RoundToInt(92f * CustomPlayer.Local.GetModifiedSize());
+
+        while (newHeightInch >= 12)
+        {
+            newHeightFeet++;
+            newHeightInch -= 12;
+        }
+
+        __instance.completeString = __instance.completeString.Replace("3' 6", $"{newHeightFeet}' {newHeightInch}").Replace("92lb", $"{newWeight}lb");
+    }
+
+    [HarmonyPatch(nameof(MedScanMinigame.FixedUpdate))]
+    public static void Prefix(MedScanMinigame __instance)
+    {
+        if (GameModifiers.ParallelMedScans)
+        {
+            // Allows multiple medbay scans at once
+            __instance.medscan.CurrentUser = CustomPlayer.Local.PlayerId;
+            __instance.medscan.UsersList.Clear();
+        }
     }
 }

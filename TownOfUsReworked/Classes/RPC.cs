@@ -16,7 +16,7 @@ public static class RPC
         else
             options = [ .. OptionAttribute.AllOptions ];
 
-        options.RemoveAll(x => x.Type is CustomOptionType.Header or CustomOptionType.Alignment || x.ClientOnly);
+        options.RemoveAll(x => x is IOptionGroup || x.ClientOnly);
         var split = options.Split(60);
         Info($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
 
@@ -49,7 +49,7 @@ public static class RPC
             CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, 255, 255, MapSettings.Map);
 
         if (save)
-            OptionAttribute.SaveSettings(TownOfUsReworked.IsTest ? "Debugging" : "LastUsed");
+            OptionAttribute.SaveSettings("LastUsed");
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)

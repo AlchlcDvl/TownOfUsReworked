@@ -208,9 +208,7 @@ public static class LayerExtentions
         return result;
     }
 
-    public static bool IsProtectedMonarch(this PlayerControl player) => PlayerLayer.GetLayers<Monarch>().Any(role => role.Protected && role.Player == player);
-
-    public static bool IsFaithful(this PlayerControl player) => player.GetRole().Faithful;
+    public static bool IsFaithful(this PlayerControl player) => player.GetRole()?.Faithful ?? false;
 
     public static bool IsBlackmailed(this PlayerControl player) => PlayerLayer.GetILayers<IBlackmailer>().Any(role => role.BlackmailedPlayer == player);
 
@@ -245,8 +243,7 @@ public static class LayerExtentions
         return crusFlag || rebFlag;
     }
 
-    public static bool IsProtected(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>().Any(role => (role.ProtectButton.EffectActive || role.GraveProtectButton?.EffectActive
-        == true) && player == role.TargetPlayer);
+    public static bool IsProtected(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>().Any(role => role.Protecting && player == role.TargetPlayer);
 
     public static bool IsInfected(this PlayerControl player) => PlayerLayer.GetLayers<Plaguebearer>().Any(role => role.Infected.Contains(player.PlayerId) || player == role.Player);
 
@@ -319,8 +316,8 @@ public static class LayerExtentions
         return true;
     }
 
-    public static bool IsLinkedTo(this PlayerControl player, PlayerControl refplayer) => player.IsOtherRival(refplayer) || player.IsOtherLover(refplayer) || player.IsOtherLink(refplayer)
-        || (player.Is<Mafia>() && refplayer.Is<Mafia>());
+    public static bool IsLinkedTo(this PlayerControl player, PlayerControl refplayer) => player.IsOtherRival(refplayer) || player.IsOtherLover(refplayer) || player.IsOtherLink(refplayer) ||
+        (player.Is<Mafia>() && refplayer.Is<Mafia>());
 
     public static float GetBaseSpeed(this PlayerControl player) => player.HasDied() && (!player.IsPostmortal() || player.Caught()) ? GameSettings.GhostSpeed : GameSettings.PlayerSpeed;
 
@@ -361,31 +358,22 @@ public static class LayerExtentions
             result *= -1;
         }
 
-        if (PlayerLayer.GetLayers<Timekeeper>().Any(x => x.TimeButton.EffectActive))
+        if (PlayerLayer.GetLayers<Timekeeper>().Any(x => x.TimeButton.EffectActive) || PlayerLayer.GetLayers<PromotedRebel>().Any(x => x.IsTK && x.TimeButton.EffectActive))
         {
-            if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && PlayerLayer.GetLayers<Timekeeper>().Any(x => x.TimeButton.EffectActive) && !Timekeeper.TimeRewindImmunity))
+            if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && !Timekeeper.TimeRewindImmunity))
                 result = 0f;
         }
 
-        if (PlayerLayer.GetLayers<PromotedRebel>().Any(x => x.TimeButton.EffectActive))
-        {
-            if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && PlayerLayer.GetLayers<PromotedRebel>().Any(x => x.TimeButton.EffectActive && x.IsTK) &&
-                !Timekeeper.TimeRewindImmunity))
-            {
-                result = 0f;
-            }
-        }
+        if (player.TryGetLayer<Trapper>(out var trap))
+            result *= trap.Building ? 0f : 1f;
 
         if (Ship() && Ship().Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
         {
             var lifeSuppSystemType = life.Cast<LifeSuppSystemType>();
 
             if (lifeSuppSystemType.IsActive && BetterSabotages.OxySlow && !player.Data.IsDead)
-                result *= Math.Clamp(lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration, 0.25f, 1f);
+                result *= Mathf.Lerp(1f, 0.25f, lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration);
         }
-
-        if (player.TryGetLayer<Trapper>(out var trap))
-            result *= trap.Building ? 0f : 1f;
 
         return result;
     }
@@ -629,7 +617,7 @@ public static class LayerExtentions
 
     public static PlayerControl GetOtherLink(this PlayerControl player) => player.TryGetLayer<Linked>(out var linked) ? linked.OtherLink : null;
 
-    public static bool NeutralHasUnfinishedBusiness(PlayerControl player)
+    public static bool IsExcludedNeutral(PlayerControl player)
     {
         if (player.TryGetLayer<GuardianAngel>(out var ga))
             return ga.TargetAlive;
@@ -805,7 +793,6 @@ public static class LayerExtentions
         CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
         former.End();
         newRole.Start(player);
-        newRole.PostAssignment();
 
         if (!retainFaction)
             newRole.Faction = former.Faction;
@@ -860,7 +847,7 @@ public static class LayerExtentions
         Alignment.IntruderAudit => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Auditor</color>)</color>" : "Intruder (Auditor)",
         Alignment.IntruderProt => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Protective</color>)</color>" : "Intruder (Protective)",
         Alignment.IntruderSov => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
-        Alignment.IntruderDisrup=> withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
+        Alignment.IntruderDisrup => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
         Alignment.IntruderPower => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Power</color>)</color>" : "Intruder (Power)",
         Alignment.IntruderHead => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
         Alignment.NeutralKill => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Killing</color>)</color>" : "Neutral (Killing)",
@@ -1037,12 +1024,7 @@ public static class LayerExtentions
         return result;
     }
 
-    public static bool IsBombed(this Vent vent)
-    {
-        var bastflag = PlayerLayer.GetLayers<Bastion>().Any(x => x.BombedIDs.Contains(vent.Id));
-        var retflag = PlayerLayer.GetLayers<Retributionist>().Any(x => x.BombedIDs.Contains(vent.Id) && x.IsBast);
-        return bastflag || retflag;
-    }
+    public static bool IsBombed(this Vent vent) => PlayerLayer.GetILayers<IVentBomber>().Any(x => x.BombedIDs.Contains(vent.Id));
 
     public static PlayerLayerEnum GetLayerType(this LayerEnum layer)
     {
@@ -1111,7 +1093,7 @@ public static class LayerExtentions
 
     public static IEnumerable<PlayerLayer> GetLayers(this PlayerControl player)
     {
-        if (player.Data.Role is LayerHandler handler)
+        if (player?.Data?.Role is LayerHandler handler)
             return handler.CustomLayers;
 
         return player.GetLayersFromList();
@@ -1123,10 +1105,7 @@ public static class LayerExtentions
 
     public static T GetLayer<T>(this PlayerControl player) where T : PlayerLayer
     {
-        if (!player || !player.Data)
-            return null;
-
-        if (player.Data.Role is LayerHandler handler)
+        if (player?.Data?.Role is LayerHandler handler)
             return handler.GetLayer<T>();
 
         return player.GetLayerFromList<T>();
@@ -1134,10 +1113,7 @@ public static class LayerExtentions
 
     public static T GetILayer<T>(this PlayerControl player) where T : IPlayerLayer
     {
-        if (!player || !player.Data)
-            return default;
-
-        if (player.Data.Role is LayerHandler handler)
+        if (player?.Data?.Role is LayerHandler handler)
             return handler.GetILayer<T>();
 
         return player.GetILayerFromList<T>();
@@ -1147,7 +1123,7 @@ public static class LayerExtentions
 
     public static Role GetRole(this PlayerControl player)
     {
-        if (player.Data.Role is LayerHandler handler)
+        if (player?.Data?.Role is LayerHandler handler)
             return handler.CustomRole;
 
         return player.GetRoleFromList();
@@ -1157,10 +1133,7 @@ public static class LayerExtentions
 
     public static Disposition GetDisposition(this PlayerControl player)
     {
-        if (!player || !player.Data)
-            return null;
-
-        if (player.Data.Role is LayerHandler handler)
+        if (player?.Data?.Role is LayerHandler handler)
             return handler.CustomDisposition;
 
         return player.GetDispositionFromList();
@@ -1170,10 +1143,7 @@ public static class LayerExtentions
 
     public static Modifier GetModifier(this PlayerControl player)
     {
-        if (!player || !player.Data)
-            return null;
-
-        if (player.Data.Role is LayerHandler handler)
+        if (player.Data?.Role is LayerHandler handler)
             return handler.CustomModifier;
 
         return player.GetModifierFromList();
@@ -1183,10 +1153,7 @@ public static class LayerExtentions
 
     public static Ability GetAbility(this PlayerControl player)
     {
-        if (!player || !player.Data)
-            return null;
-
-        if (player.Data.Role is LayerHandler handler)
+        if (player?.Data?.Role is LayerHandler handler)
             return handler.CustomAbility;
 
         return player.GetAbilityFromList();
@@ -1198,9 +1165,12 @@ public static class LayerExtentions
 
     public static void AssignChaosDrive()
     {
+        if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost)
+            return;
+
         var all = AllPlayers().Where(x => !x.HasDied()).Select(x => x.GetRole()).Where(x => x.Faction == Faction.Syndicate && x.BaseFaction == Faction.Syndicate);
 
-        if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost || !all.Any())
+        if (!all.Any())
             return;
 
         Role chosen = null;
@@ -1223,13 +1193,9 @@ public static class LayerExtentions
                 chosen = all.Find(x => x is Anarchist or Rebel or Sidekick);
         }
 
-        if (chosen)
-        {
-            Syndicate.DriveHolder = chosen.Player;
-            CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen);
-        }
-
+        Syndicate.DriveHolder = chosen.Player;
         Syndicate.SyndicateHasChaosDrive = chosen;
+        CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen.Player?.PlayerId ?? 255);
     }
 
     public static void Convert(byte target, byte convert, SubFaction sub, bool condition)

@@ -106,7 +106,7 @@ public class Necromancer : Neophyte
 
         if (RoleGenManager.Convertible <= 0 || !player.Is(SubFaction.None))
         {
-            Flash(new(255, 0, 0, 255));
+            Flash(UColor.red);
             ResurrectButton.StartCooldown();
         }
         else
@@ -123,6 +123,9 @@ public class Necromancer : Neophyte
             if (NecroCooldownsLinked)
                 SacrificeButton.StartCooldown();
         }
+
+        if (Local && player.IIs<ISovereign>())
+            CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
     public bool Exception(PlayerControl player) => Members.Contains(player.PlayerId) || Player.IsLinkedTo(player);

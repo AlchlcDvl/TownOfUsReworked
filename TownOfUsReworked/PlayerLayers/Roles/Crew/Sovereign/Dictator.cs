@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Dictator : Crew, IRevealer
+public class Dictator : Crew, IRevealer, ISovereign
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RoundOneNoDictReveal { get; set; } = false;

@@ -130,20 +130,20 @@ public static class CustomStatsManager
         CustomStats.Clear();
     }
 
-    public static void MigrateFromVanillaStats(StatsManager stats)
+    public static void MigrateFromVanillaStats(this StatsManager.Stats stats)
     {
         if (MigratedFromVanillaStats)
             return;
 
         foreach (var map in Enum.GetValues<MapEnum>())
         {
-            if (stats.stats.mapWins.TryGetValue((MapNames)(byte)map, out var value))
+            if (stats.mapWins.TryGetValue((MapNames)(byte)map, out var value))
                 MapWins[map] = value;
         }
 
         foreach (var stat in SupportVanillaStats)
         {
-            if (stats.stats.gameplayStats.TryGetValue(stat, out var value))
+            if (stats.gameplayStats.TryGetValue(stat, out var value))
             {
                 if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
                     CustomStats[customStat] = value;

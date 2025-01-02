@@ -81,17 +81,6 @@ public static class ListExtensions
         return false;
     }
 
-    public static bool All<T>(this ISystem.List<T> list, Func<T, bool> predicate)
-    {
-        foreach (var item in list)
-        {
-            if (!predicate(item))
-                return false;
-        }
-
-        return true;
-    }
-
     public static void ForEach<T>(this ISystem.List<T> source, Action<T> action)
     {
         foreach (var item in source)
@@ -112,7 +101,7 @@ public static class ListExtensions
             action(item, num++);
     }
 
-    public static List<List<T>> Split<T>(this List<T> list, int splitCount)
+    public static List<List<T>> Split<T>(this IEnumerable<T> list, int splitCount)
     {
         var result = new List<List<T>>();
         var temp = new List<T>();
@@ -134,7 +123,7 @@ public static class ListExtensions
         return result;
     }
 
-    public static List<T> GetRandomRange<T>(this IEnumerable<T> list, int count)
+    public static IEnumerable<T> GetRandomRange<T>(this IEnumerable<T> list, int count)
     {
         var temp = new List<T>();
 
@@ -149,8 +138,6 @@ public static class ListExtensions
         temp.Shuffle();
         return temp;
     }
-
-    public static IEnumerable<T> GetRandomRange<T>(this IEnumerable<T> list, int count, Func<T, bool> predicate) => list.Where(predicate).GetRandomRange(count);
 
     public static bool AllAnyOrEmpty<T>(this IEnumerable<T> source, Func<T, bool> predicate, bool all = false) => !source.Any() || (all ? source.All(predicate) : source.Any(predicate));
 
@@ -218,6 +205,17 @@ public static class ListExtensions
             yield return source.ElementAt(i);
     }
 
+    public static bool Any<TKey, TValue>(this ISystem.Dictionary<TKey, TValue> dict, Func<TKey, TValue, bool> predicate)
+    {
+        foreach (var (key, value) in dict)
+        {
+            if (predicate(key, value))
+                return true;
+        }
+
+        return false;
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)
@@ -239,6 +237,19 @@ public static class ListExtensions
         return -1;
     }
 
+    public static IEnumerable<T> GetRandomRange<T>(this IEnumerable<T> list, int count, Func<T, bool> predicate) => list.Where(predicate).GetRandomRange(count);
+
+    public static bool All<T>(this ISystem.List<T> list, Func<T, bool> predicate)
+    {
+        foreach (var item in list)
+        {
+            if (!predicate(item))
+                return false;
+        }
+
+        return true;
+    }
+
     public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action)
     {
         foreach (var (key, value) in dict)
@@ -249,7 +260,7 @@ public static class ListExtensions
 
     public static bool ContainsAnyKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey[] keys) => keys.Any(dict.ContainsKey);
 
-    public static List<List<T>> Split<T>(this List<T> list, Func<T, bool> splitCondition, bool includeSatisfier = true)
+    public static List<List<T>> Split<T>(this IEnumerable<T> list, Func<T, bool> splitCondition, bool includeSatisfier = true)
     {
         var result = new List<List<T>>();
         var temp = new List<T>();

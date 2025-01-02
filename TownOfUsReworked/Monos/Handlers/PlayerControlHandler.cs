@@ -13,11 +13,12 @@ public class PlayerControlHandler : NameHandler
         Color = Player.ColorBlindText();
         Color.transform.localPosition = new(0f, -1.5f, -0.5f);
         Name.transform.localPosition = new(0f, -0.2f, -0.5f);
+        Size = Player.transform.localScale;
     }
 
     public void Update()
     {
-        if (!Player || !Player.Data)
+        if (!Player || !Player.Data || NoLobby())
             return;
 
         PlayerNames[Player.PlayerId] = Player.name;
@@ -34,7 +35,7 @@ public class PlayerControlHandler : NameHandler
             localHandler.UpdatePlayer(Player);
             (Name.text, Name.color) = UpdateGameName(handler, localHandler, out var revealed);
             Name.transform.localPosition = new(0f, revealed ? -0.05f : -0.2f, -0.5f);
-            Player.transform.localScale = Custom.SizeFactor;
+            Player.transform.localScale = Size * Custom.Size;
         }
     }
 

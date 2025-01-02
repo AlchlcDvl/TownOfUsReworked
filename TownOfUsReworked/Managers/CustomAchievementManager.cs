@@ -13,7 +13,7 @@ public static class CustomAchievementManager
         new("FirstBlood", eog: true, icon: "IntruderKill"), // First kill of the game
         new("LastBlood", eog: true, icon: "IntruderKill"), // Last kill of the game
         new("TasteForDeath", icon: "IntruderKill"), // First kill
-        new("Fatality"), // First death
+        new("Fatality", icon: "IntruderKill"), // First death
         new("Resilient", eog: true), // Survive an attack
         new("Revitalised"), // Get revived
 
@@ -57,21 +57,30 @@ public static class CustomAchievementManager
 
     private static void DeserializeCustomAchievements(this BinaryReader reader)
     {
-        var count = reader.ReadInt32();
+        var count = reader.ReadUInt32();
 
-        while(count-- > 0)
+        while (count-- > 0)
         {
-            var achievement = Achievement.Deserialize(reader);
+            var name = reader.ReadString();
 
-            if (AllAchievements.TryFinding(a => a.Name == achievement.Name, out var found))
-                found.Unlocked = achievement.Unlocked;
+            if (AllAchievements.TryFinding(a => a.Name == name, out var found))
+                found.Unlocked = true;
         }
     }
 
     public static void SerializeCustomAchievements(this BinaryWriter writer)
     {
-        writer.Write(AllAchievements.Count);
-        AllAchievements.ForEach(a => a.Serialize(writer));
+        var unlocked = AllAchievements.Where(a => a.Unlocked);
+        writer.Write((uint)unlocked.Count());
+        unlocked.ForEach(a => writer.Write(a.Name));
+    }
+
+    public static void RpcUnlockAchievement(PlayerControl player, string name)
+    {
+        if (player.AmOwner)
+            UnlockAchievement(name);
+        else
+            CallRpc(CustomRPC.Misc, MiscRPC.Achievement, player, name);
     }
 
     public static void UnlockAchievement(string name)

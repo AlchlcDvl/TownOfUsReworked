@@ -69,19 +69,22 @@ public class GameTab : BaseTab
         }
 
         if (GUILayout.Button("Kill Self"))
-            RpcMurderPlayer(CustomPlayer.Local);
+            MurderPlayer(CustomPlayer.Local);
 
         if (GUILayout.Button("Kill All"))
-            AllPlayers().ForEach(x => RpcMurderPlayer(x));
+            AllPlayers().ForEach(x => MurderPlayer(x));
 
         if (GUILayout.Button("Kill All But Me"))
-            AllPlayers().Where(x => !x.AmOwner).ForEach(x => RpcMurderPlayer(x));
+            AllPlayers().Where(x => !x.AmOwner).ForEach(x => MurderPlayer(x));
 
         if (GUILayout.Button("Revive Self"))
             CustomPlayer.Local.Revive();
 
         if (GUILayout.Button("Revive All"))
             AllPlayers().ForEach(x => x.Revive());
+
+        if (GUILayout.Button("Revive All But Me"))
+            AllPlayers().Where(x => !x.AmOwner).ForEach(x => x.Revive());
 
         if (GUILayout.Button("Log Dump"))
         {
