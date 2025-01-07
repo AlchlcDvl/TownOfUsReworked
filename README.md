@@ -153,7 +153,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 
 | Among Us           | Mod Version | Download Link                                                                                   |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
-| 2024.10.29 (s & e) | 0.7.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.7/Reworked.zip) |
+| 2024.10.29 (s & e) | 0.7.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.7.0/Reworked.zip) |
 
 <details>
 <summary>Older Versions</summary>
