@@ -5,7 +5,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     public string[] Values { get; set; }
     public int Index { get; set; }
     private string[] IgnoreStrings { get; } = ignoreStrings ?? [];
-    private List<Enum> EnumValues { get; set; }
+    private Enum[] EnumValues { get; set; }
 
     public string GetString() => Values[Index];
 
@@ -33,23 +33,15 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
             str.PlusBtn.gameObject.SetActive(false);
             str.MinusBtn.gameObject.SetActive(false);
         }
-
-        Update();
     }
 
     public override string Format() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{GetString()}");
 
     public override void PostLoadSetup()
     {
-        Values = [ .. Enum.GetNames(TargetType).Where(x => !IgnoreStrings.Contains(x)) ];
+        Values = [ .. Enum.GetNames(TargetType).Except(IgnoreStrings) ];
         EnumValues = [ .. Enum.GetValues(TargetType).Cast<Enum>().Where(x => !IgnoreStrings.Contains($"{x}")) ];
         Index = EnumValues.IndexOf(Value);
-    }
-
-    public override void ViewOptionCreated()
-    {
-        base.ViewOptionCreated();
-        ViewUpdate();
     }
 
     public override void ViewUpdate()

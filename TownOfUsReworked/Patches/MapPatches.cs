@@ -49,7 +49,7 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
             TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
             TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
-            TownOfUsReworked.NormalOptions.GhostsDoTasks = CrewSettings.GhostTasksCountToWin;
+            TownOfUsReworked.NormalOptions.GhostsDoTasks = TaskSettings.GhostTasksCountToWin;
             TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
             TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
@@ -57,11 +57,11 @@ public static class MapPatches
             CustomPlayer.Local.MaxReportDistance = GameSettings.ReportDistance;
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
-            // AmongUsClient.Instance.ShipLoadingAsyncHandle seems to be having an issue in its setter, I wonder what's up with that
-            var async = AmongUsClient.Instance.ShipPrefabs[CurrentMap].InstantiateAsync();
+            // __instance.ShipLoadingAsyncHandle seems to be having an issue in its setter, I wonder what's up with that
+            var async = __instance.ShipPrefabs[CurrentMap].InstantiateAsync();
             yield return async;
             ShipStatus.Instance = async.Result.GetComponent<ShipStatus>();
-            AmongUsClient.Instance.Spawn(Ship());
+            __instance.Spawn(Ship());
         }
 
         var timer = 0f;
@@ -74,19 +74,19 @@ public static class MapPatches
             if (CurrentMap is 5 or 4)
                 num2 = 15;
 
-            lock (AmongUsClient.Instance.allClients)
+            lock (__instance.allClients)
             {
-                foreach (var clientData in AmongUsClient.Instance.allClients)
+                foreach (var clientData in __instance.allClients)
                 {
-                    if (clientData.Id != AmongUsClient.Instance.ClientId && !clientData.IsReady)
+                    if (clientData.Id != __instance.ClientId && !clientData.IsReady)
                     {
                         if (timer < num2)
                             stopWaiting = false;
                         else
                         {
-                            AmongUsClient.Instance.SendLateRejection(clientData.Id, DisconnectReasons.ClientTimeout);
+                            __instance.SendLateRejection(clientData.Id, DisconnectReasons.ClientTimeout);
                             clientData.IsReady = true;
-                            AmongUsClient.Instance.OnPlayerLeft(clientData, DisconnectReasons.ClientTimeout);
+                            __instance.OnPlayerLeft(clientData, DisconnectReasons.ClientTimeout);
                         }
                     }
                 }
@@ -100,10 +100,10 @@ public static class MapPatches
             timer += Time.deltaTime;
         }
 
-        RoleManager.Instance.SelectRoles();
+        RoleGenManager.BeginRoleGen();
         ShipStatus.Instance.Begin();
-        AmongUsClient.Instance.SendClientReady();
-        yield break;
+        __instance.SendClientReady();
+        __instance.StartCoroutine(HUD().CoShowIntro());
     }
 
     private static byte GetSelectedMap()

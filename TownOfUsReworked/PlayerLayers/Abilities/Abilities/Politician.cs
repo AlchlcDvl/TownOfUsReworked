@@ -9,11 +9,13 @@ public class Politician : Ability
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PoliticianButton { get; set; } = true;
 
-    public List<byte> ExtraVotes { get; set; }
     public int VoteBank { get; set; }
     public bool SelfVote { get; set; }
     public bool VotedOnce { get; set; }
     public PlayerVoteArea Abstain { get; set; }
+
+    public List<byte> ExtraVotes { get; } = [];
+
     public bool CanVote => VoteBank > 0 && !SelfVote;
     public bool CanKill => Player.CanKill();
 
@@ -26,7 +28,7 @@ public class Politician : Ability
     public override void Init()
     {
         VoteBank = PoliticianVoteBank;
-        ExtraVotes = [];
+        ExtraVotes.Clear();
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -95,7 +97,8 @@ public class Politician : Ability
         {
             case PoliticianActionsRPC.Remove:
             {
-                ExtraVotes = reader.ReadByteList();
+                ExtraVotes.Clear();
+                ExtraVotes.AddRange(reader.ReadByteList());
                 VoteBank -= ExtraVotes.Count;
                 break;
             }

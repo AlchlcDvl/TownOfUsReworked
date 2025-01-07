@@ -622,7 +622,12 @@ public static class SettingsPatches
                     option.SetClickMask(__instance.RoleSettingsTab.ButtonClickMask);
             }
 
-            __instance.RoleSettingsTab.ControllerSelectable.AddRange(new(__instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>(true).Pointer));
+            foreach (var elem in __instance.RoleSettingsTab.scrollBar.GetComponentsInChildren<UiElement>(true))
+            {
+                if (!__instance.RoleSettingsTab.ControllerSelectable.Contains(elem))
+                    __instance.RoleSettingsTab.ControllerSelectable.Add(elem);
+            }
+
             __instance.RoleSettingsTab.scrollBar.ScrollToTop();
             SpawnOptionsCreated = true;
         }
@@ -679,6 +684,8 @@ public static class SettingsPatches
             LayerOptionsCreated[SettingsPage] = true;
         }
 
+        var menu = (MultiMenu)SettingsPage;
+
         if (SettingsPage is 0 or 3 or 4)
         {
             var y = SettingsPage switch
@@ -698,7 +705,6 @@ public static class SettingsPatches
                 {
                     if (option.Setting)
                     {
-                        var menu = (MultiMenu)SettingsPage;
                         var flag = option.Menus.Contains(menu) && option.Active();
                         option.Setting.gameObject.SetActive(flag);
                         option.Update();
@@ -743,7 +749,6 @@ public static class SettingsPatches
             {
                 if (option.Setting)
                 {
-                    var menu = (MultiMenu)SettingsPage;
                     var flag = option.Menus.Contains(menu) && option.Active();
                     option.Setting.gameObject.SetActive(flag);
                     option.Update();
@@ -1001,7 +1006,7 @@ public static class SettingsPatches
 
         public static void Postfix(PlayerPhysics __instance)
         {
-            if (!AmongUsClient.Instance || !CustomPlayer.Local || !__instance.myPlayer)
+            if (!AmongUsClient.Instance || !CustomPlayer.Local || !__instance.myPlayer || IsFreePlay())
                 return;
 
             if (__instance.myPlayer.AmOwner)

@@ -1,3 +1,5 @@
+using MonoMod.Utils;
+
 namespace TownOfUsReworked.Extensions;
 
 public static class LayerExtentions
@@ -293,7 +295,7 @@ public static class LayerExtentions
     public static bool CanKill(this PlayerControl player)
     {
         var role = player.GetRole();
-        return role.BaseFaction is Faction.Intruder or Faction.Syndicate || role.Alignment is Alignment.NeutralKill or Alignment.NeutralHarb or Alignment.NeutralApoc or Alignment.CrewKill ||
+        return role?.BaseFaction is Faction.Intruder or Faction.Syndicate || role?.Alignment is Alignment.NeutralKill or Alignment.NeutralHarb or Alignment.NeutralApoc or Alignment.CrewKill ||
             player.GetDisposition() is Corrupted or Fanatic or Traitor;
     }
 
@@ -388,13 +390,8 @@ public static class LayerExtentions
 
     public static float GetSize(this PlayerControl player)
     {
-        if (Ship()?.Systems?.TryGetValue(SystemTypes.MushroomMixupSabotage, out var sab) == true)
-        {
-            var mixup = sab.TryCast<MushroomMixupSabotageSystem>();
-
-            if (mixup && mixup.IsActive)
-                return 1f;
-        }
+        if (Ship()?.Systems?.TryGetValue(SystemTypes.MushroomMixupSabotage, out var sab) == true && sab.TryCast<MushroomMixupSabotageSystem>(out var mixup) && mixup.IsActive)
+            return 1f;
 
         if (Lobby() || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
@@ -551,7 +548,7 @@ public static class LayerExtentions
                         (int)SerialKiller.SKVentOptions == 2);
                 }
                 else if (playerRole is Werewolf ww)
-                    mainflag = Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 3);
+                    mainflag = Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 2);
                 else
                 {
                     mainflag = (playerRole is Murderer && Murderer.MurdVent) || (playerRole is Glitch && Glitch.GlitchVent) || (playerRole is Juggernaut && Juggernaut.JuggVent) || (playerRole
@@ -768,16 +765,14 @@ public static class LayerExtentions
 
     public static void RegenTask(this PlayerControl player)
     {
-        try
+        foreach (var task in player.myTasks)
         {
-            foreach (var task2 in player.myTasks)
-            {
-                var task3 = task2?.TryCast<ImportantTextTask>();
+            if (!task.TryCast<ImportantTextTask>(out var imp))
+                continue;
 
-                if (task3.Text.Contains("Sabotage and kill everyone") || task3.Text.Contains("Fake Tasks") || task3.Text.Contains("tasks to win"))
-                    player.myTasks.Remove(task3);
-            }
-        } catch {}
+            if (imp.Text.Contains("Sabotage and kill everyone") || imp.Text.Contains("Fake Tasks") || imp.Text.Contains("tasks to win"))
+                player.myTasks.Remove(imp);
+        }
     }
 
     public static void RoleUpdate(this Role newRole, PlayerControl player, Role former = null, bool retainFaction = false)
@@ -802,15 +797,12 @@ public static class LayerExtentions
         newRole.KilledBy = former.KilledBy;
         newRole.IsBlocked = former.IsBlocked;
         newRole.Diseased = former.Diseased;
-        newRole.AllArrows = former.AllArrows;
+        newRole.AllArrows.AddRange(former.AllArrows);
         newRole.RoleHistory.Add(former);
         newRole.RoleHistory.AddRange(former.RoleHistory);
         former.RoleHistory.Clear();
         former.Ignore = true;
         PlayerLayer.AllLayers.Remove(former);
-
-        if (player.Data.Role is LayerHandler layerHandler)
-            layerHandler.SetUpLayers(newRole);
 
         if (newRole.Local)
         {
@@ -822,6 +814,9 @@ public static class LayerExtentions
 
         if (CustomPlayer.Local.TryGetLayer<Seer>(out var seer))
             Flash(seer.Color);
+
+        if (player.Data.Role is LayerHandler layerHandler)
+            layerHandler.SetUpLayers();
     }
 
     public static string AlignmentName(this Alignment alignment, bool withColors = false) => alignment switch

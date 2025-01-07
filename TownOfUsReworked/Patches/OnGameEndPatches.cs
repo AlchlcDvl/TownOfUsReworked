@@ -17,10 +17,7 @@ public static class OnGameEndPatches
             // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             // AD says "Done".
             AllPlayers().ForEach(x => AddSummaryInfo(x));
-
-            if (CameraEffect.Instance)
-                CameraEffect.Instance.Materials.Clear();
-
+            CameraEffect.Instance?.Materials?.Clear();
             EndGameResult.CachedGameOverReason = (GameOverReason)9;
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();
@@ -420,7 +417,15 @@ public static class OnGameEndPatches
                 }
             }
 
-            EndGameResult.CachedWinners = Winners.Select(x => new CachedPlayerData(x.Value.First().Data)).ToIl2Cpp();
+            EndGameResult.CachedWinners.AddRange(Winners.Select(x => new CachedPlayerData(x.Value.First().Data)));
+
+            if (CustomPlayer.Local.CanKill() && EndGameResult.CachedWinners.Any(x => x.PlayerName == CustomPlayer.Local.name))
+            {
+                if (!KillCounts.TryGetValue(CustomPlayer.Local.PlayerId, out var count) || count == 0)
+                    CustomAchievementManager.UnlockAchievement("Pacifist");
+                else if (count >= KillCounts.Values.Max())
+                    CustomAchievementManager.UnlockAchievement("Bloodthirsty");
+            }
         }
     }
 

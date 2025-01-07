@@ -236,7 +236,6 @@ public static class MeetingPatches
         Reported = null;
         DisconnectHandler.Disconnected.Clear();
         GivingAnnouncements = false;
-        yield break;
     }
 
     [HarmonyPatch(nameof(MeetingHud.Close)), HarmonyPostfix]
@@ -367,24 +366,8 @@ public static class MeetingPatches
 
     private static IEnumerator Slide2D(Transform target, Vector3 source, Vector3 dest, float duration)
     {
-        var temp = (Vector3)default;
-        temp.z = target.position.z;
-
-        for (var time = 0f; time < duration; time += Time.deltaTime)
-        {
-            var t = time / duration;
-            temp.x = Mathf.SmoothStep(source.x, dest.x, t);
-            temp.y = Mathf.SmoothStep(source.y, dest.y, t);
-            temp.z = Mathf.SmoothStep(source.z, dest.z, t);
-            target.position = temp;
-            yield return EndFrame();
-        }
-
-        temp.x = dest.x;
-        temp.y = dest.y;
-        temp.z = dest.z;
-        target.position = temp;
-        yield break;
+        yield return PerformTimedAction(duration, p => target.position = Vector3.Lerp(source, dest, p));
+        target.position = dest;
     }
 
     private static IEnumerator PerformSwaps()
@@ -480,8 +463,6 @@ public static class MeetingPatches
 
             yield return Wait(duration);
         }
-
-        yield break;
     }
 
     private static Dictionary<byte, int> CalculateAllVotes(this MeetingHud __instance, out bool tie, out KeyValuePair<byte, int> max)

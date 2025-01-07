@@ -16,12 +16,10 @@ public static class VentPatches
         var usable = __instance.TryCast<IUsable>();
         couldUse = GameManager.Instance.LogicUsables.CanUse(usable, playerControl) && pc.Role.CanUse(usable) && playerControl.CanVent();
 
-        if (GameModifiers.NoVentingUncleanedVents)
+        if (GameModifiers.NoVentingUncleanedVents && Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>(out var ventitaltionSystem) &&
+            ventitaltionSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
         {
-            var ventitaltionSystem = Ship().Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
-
-            if (ventitaltionSystem != null && ventitaltionSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
-                couldUse = false;
+            couldUse = false;
         }
 
         canUse = couldUse;

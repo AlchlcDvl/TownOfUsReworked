@@ -189,7 +189,6 @@ public class Warper : Syndicate
         WarpPlayer1 = null;
         WarpPlayer2 = null;
         Warping = false;
-        yield break;
     }
 
     public void Click1(PlayerControl player)

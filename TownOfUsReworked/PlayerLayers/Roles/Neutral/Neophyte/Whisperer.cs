@@ -33,7 +33,7 @@ public class Whisperer : Neophyte
     public CustomButton WhisperButton { get; set; }
     public int WhisperCount { get; set; }
     public int ConversionCount { get; set; }
-    public Dictionary<byte, byte> PlayerConversion { get; set; }
+    public Dictionary<byte, byte> PlayerConversion { get; } = [];
     public int WhisperConversion { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : FactionColor;
@@ -52,7 +52,7 @@ public class Whisperer : Neophyte
         WhisperConversion = WhisperRate;
         WhisperButton ??= new(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);
-        PlayerConversion = [];
+        PlayerConversion.Clear();
         AllPlayers().ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
         Members.ForEach(x => PlayerConversion.Remove(x));
     }

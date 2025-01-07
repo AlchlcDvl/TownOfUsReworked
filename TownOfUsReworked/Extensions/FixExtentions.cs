@@ -48,114 +48,78 @@ public static class FixExtentions
         if (ship.Systems == null)
             return;
 
-        var system = ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>();
-
-        if (system == null || !system.AnyActive)
+        if (ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>(out var system) || !system.AnyActive)
             return;
 
         switch (MapPatches.CurrentMap)
         {
             case 1:
             {
-                var comms2 = ship.Systems[SystemTypes.Comms].TryCast<IActivatable>();
-
-                if (comms2.IsActive)
+                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixMiraComms();
 
-                var reactor2 = ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>();
-
-                if (reactor2.IsActive)
+                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Reactor);
 
-                var oxygen2 = ship.Systems[SystemTypes.LifeSupp].TryCast<IActivatable>();
-
-                if (oxygen2.IsActive)
+                if (ship.Systems[SystemTypes.LifeSupp].TryCast(out activatable) && activatable.IsActive)
                     FixOxygen();
 
-                var lights2 = ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>();
-
-                if (lights2.IsActive)
-                    FixLights(lights2);
+                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
+                    FixLights(lights);
 
                 break;
             }
             case 2:
             {
-                var comms3 = ship.Systems[SystemTypes.Comms].TryCast<IActivatable>();
-
-                if (comms3.IsActive)
+                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
 
-                var seismic = ship.Systems[SystemTypes.Laboratory].TryCast<IActivatable>();
-
-                if (seismic.IsActive)
+                if (ship.Systems[SystemTypes.Laboratory].TryCast(out activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Laboratory);
 
-                var lights3 = ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>();
-
-                if (lights3.IsActive)
-                    FixLights(lights3);
+                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
+                    FixLights(lights);
 
                 break;
             }
             case 0 or 3:
             {
-                var comms1 = ship.Systems[SystemTypes.Comms].TryCast<IActivatable>();
-
-                if (comms1.IsActive)
+                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
 
-                var reactor1 = ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>();
-
-                if (reactor1.IsActive)
+                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Reactor);
 
-                var oxygen1 = ship.Systems[SystemTypes.LifeSupp].TryCast<IActivatable>();
-
-                if (oxygen1.IsActive)
+                if (ship.Systems[SystemTypes.LifeSupp].TryCast(out activatable) && activatable.IsActive)
                     FixOxygen();
 
-                var lights1 = ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>();
-
-                if (lights1.IsActive)
-                    FixLights(lights1);
+                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
+                    FixLights(lights);
 
                 break;
             }
             case 4:
             {
-                var comms4 = ship.Systems[SystemTypes.Comms].TryCast<IActivatable>();
-
-                if (comms4.IsActive)
+                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
 
-                var reactor = ship.Systems[SystemTypes.HeliSabotage].TryCast<IActivatable>();
-
-                if (reactor.IsActive)
+                if (ship.Systems[SystemTypes.HeliSabotage].TryCast(out activatable) && activatable.IsActive)
                     FixHeli();
 
-                var lights4 = ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>();
-
-                if (lights4.IsActive)
-                    FixLights(lights4);
+                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
+                    FixLights(lights);
 
                 break;
             }
             case 5:
             {
-                var comms7 = ship.Systems[SystemTypes.Comms].TryCast<IActivatable>();
-
-                if (comms7.IsActive)
+                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
 
-                var reactor3 = ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>();
-
-                if (reactor3.IsActive)
+                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Reactor);
 
-                var mixup = ship.Systems[SystemTypes.MushroomMixupSabotage].TryCast<MushroomMixupSabotageSystem>();
-
-                if (mixup.IsActive)
+                if (ship.Systems[SystemTypes.MushroomMixupSabotage].TryCast<MushroomMixupSabotageSystem>(out var mixup) && mixup.IsActive)
                     FixMixup(mixup);
 
                 break;
@@ -165,20 +129,14 @@ public static class FixExtentions
                 if (!SubLoaded)
                     break;
 
-                var reactor5 = ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>();
+                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
+                    FixComms();
 
-                if (reactor5.IsActive)
+                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Reactor);
 
-                var lights5 = ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>();
-
-                if (lights5.IsActive)
-                    FixLights(lights5);
-
-                var comms5 = ship.Systems[SystemTypes.Comms].TryCast<IActivatable>();
-
-                if (comms5.IsActive)
-                    FixComms();
+                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
+                    FixLights(lights);
 
                 if (HasTask(RetrieveOxygenMask))
                     FixSubOxygen();
@@ -190,35 +148,23 @@ public static class FixExtentions
                 if (!LILoaded)
                     break;
 
-                var comms6 = ship.Systems[SystemTypes.Comms].TryCast<IActivatable>();
-
-                if (comms6.IsActive)
+                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
 
-                var oxygen6 = ship.Systems[SystemTypes.LifeSupp].TryCast<IActivatable>();
-
-                if (oxygen6.IsActive)
+                if (ship.Systems[SystemTypes.LifeSupp].TryCast(out activatable) && activatable.IsActive)
                     FixOxygen();
 
-                var lights6 = ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>();
-
-                if (lights6.IsActive)
-                    FixLights(lights6);
-
-                var mixup2 = ship.Systems[SystemTypes.MushroomMixupSabotage].TryCast<MushroomMixupSabotageSystem>();
-
-                if (mixup2.IsActive)
-                    FixMixup(mixup2);
-
-                var reactor7 = ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>();
-
-                if (reactor7.IsActive)
+                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Reactor);
 
-                var reactor6 = ship.Systems[SystemTypes.Laboratory].TryCast<IActivatable>();
-
-                if (reactor6.IsActive)
+                if (ship.Systems[SystemTypes.Laboratory].TryCast(out activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Laboratory);
+
+                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
+                    FixLights(lights);
+
+                if (ship.Systems[SystemTypes.MushroomMixupSabotage].TryCast<MushroomMixupSabotageSystem>(out var mixup) && mixup.IsActive)
+                    FixMixup(mixup);
 
                 break;
             }

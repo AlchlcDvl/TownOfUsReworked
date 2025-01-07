@@ -10,6 +10,7 @@ public static class References
     public static readonly Dictionary<byte, float> UninteractiblePlayers = [];
     public static readonly Dictionary<byte, float> UninteractiblePlayers2 = [];
     public static readonly Dictionary<byte, string> BodyLocations = [];
+    public static readonly Dictionary<byte, int> KillCounts = [];
     public static DeadBody[] AllBodies() => UObject.FindObjectsOfType<DeadBody>();
     public static Vent[] AllVents() => UObject.FindObjectsOfType<Vent>();
     public static Vent[] AllMapVents() => Ship().AllVents;
@@ -28,6 +29,7 @@ public static class References
     public static ChatController Chat() => HUD().Chat;
     public static string FirstDead { get; set; }
     public static string CachedFirstDead { get; set; }
+    public static string MostRecentKiller { get; set; }
     public static bool Shapeshifted { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
     public static StringNames ReworkedStart { get; set; }

@@ -59,7 +59,7 @@ public class Shifter : Crew
         Role newRole = role switch
         {
             Altruist => new Altruist(),
-            Bastion bastion => new Bastion() { BombedIDs = bastion.BombedIDs },
+            Bastion bastion => new Bastion(),
             Chameleon => new Chameleon(),
             Coroner => new Coroner(),
             Crewmate => new Crewmate(),
@@ -70,25 +70,19 @@ public class Shifter : Crew
             Mayor => new Mayor(),
             Medic medic => new Medic() { ShieldedPlayer = medic.ShieldedPlayer },
             Medium => new Medium(),
-            Monarch mon => new Monarch()
-            {
-                ToBeKnighted = mon.ToBeKnighted,
-                Knighted = mon.Knighted
-            },
+            Monarch mon => new Monarch(),
             Mystic => new Mystic(),
             Operative => new Operative(),
             Retributionist ret => new Retributionist()
             {
                 Selected = ret.Selected,
-                ShieldedPlayer = ret.ShieldedPlayer,
-                BombedIDs = ret.BombedIDs,
-                Trapped = ret.Trapped
+                ShieldedPlayer = ret.ShieldedPlayer
             },
             Seer => new Seer(),
             Sheriff => new Sheriff(),
             Tracker => new Tracker(),
             Transporter => new Transporter(),
-            Trapper trap => new Trapper() { Trapped = trap.Trapped },
+            Trapper trap => new Trapper(),
             VampireHunter => new VampireHunter(),
             Veteran => new Veteran(),
             Vigilante => new Vigilante(),
@@ -96,6 +90,22 @@ public class Shifter : Crew
         };
 
         newRole.RoleUpdate(this, player, true);
+
+        if (role is Monarch mon1 && newRole is Monarch mon2)
+        {
+            mon2.Knighted.AddRange(mon1.Knighted);
+            mon2.ToBeKnighted.AddRange(mon1.ToBeKnighted);
+        }
+        else if (role is Bastion bast1 && newRole is Bastion bast2)
+            bast2.BombedIDs.AddRange(bast1.BombedIDs);
+        else if (role is Trapper trap1 && newRole is Trapper trap2)
+            trap2.Trapped.AddRange(trap1.Trapped);
+        else if (role is Retributionist ret1 && newRole is Retributionist ret2)
+        {
+            ret2.Trapped.AddRange(ret1.Trapped);
+            ret2.BombedIDs.AddRange(ret1.BombedIDs);
+        }
+
         Role newRole2 = ShiftedBecomes == BecomeEnum.Shifter ? new Shifter() : new Crewmate();
         newRole2.RoleUpdate(role, other, true);
 

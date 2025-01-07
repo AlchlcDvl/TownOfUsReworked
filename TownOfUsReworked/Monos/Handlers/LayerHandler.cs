@@ -95,12 +95,15 @@ public class LayerHandler : RoleBehaviour
         CustomModifier.UponTaskComplete(idx);
         CustomDisposition.UponTaskComplete(idx);
 
+        if (!CustomRole.TasksDone)
+            return;
+
         foreach (var button in Buttons)
         {
             if (button.HasUses)
             {
-                button.Uses++;
-                button.MaxUses++;
+                button.uses++;
+                button.maxUses++;
             }
         }
     }
@@ -139,10 +142,9 @@ public class LayerHandler : RoleBehaviour
 
     public void ResetButtons() => Buttons = Player.GetButtonsFromList();
 
-    [HideFromIl2Cpp]
-    public void SetUpLayers(Role newRole = null)
+    public void SetUpLayers()
     {
-        CustomRole = newRole ?? Player.GetRoleFromList();
+        CustomRole = Player.GetRoleFromList();
         CustomAbility = Player.GetAbilityFromList();
         CustomModifier = Player.GetModifierFromList();
         CustomDisposition = Player.GetDispositionFromList();
@@ -179,10 +181,10 @@ public class LayerHandler : RoleBehaviour
         CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
         ResetButtons();
 
-        TasksCountTowardProgress = Player.CanDoTasks() && ((CustomRole.Faction == Faction.Crew && CustomRole.BaseFaction == Faction.Crew) || CustomRole is Runner or Hunted);
+        TasksCountTowardProgress = Player.CanDoTasks() && (CustomRole.Faction == Faction.Crew || CustomRole is Runner or Hunted);
         CanVent = Player.CanVent();
         CanUseKillButton = Player.CanKill();
-        AffectedByLightAffectors = CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate;
+        AffectedByLightAffectors = !(CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate);
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;
@@ -195,15 +197,11 @@ public class LayerHandler : RoleBehaviour
             Flash(CustomColorManager.Coroner);
         else if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
             Flash(mon.Color);
+
+        TasksCountTowardProgress &= TaskSettings.GhostTasksCountToWin;
     }
 
-    public override bool DidWin(GameOverReason gameOverReason)
-    {
-        if (gameOverReason != (GameOverReason)9)
-            return false;
-
-        return CustomRole.Winner || CustomDisposition.Winner;
-    }
+    public override bool DidWin(GameOverReason gameOverReason) => CustomRole.Winner || CustomDisposition.Winner;
 
     public override void SpawnTaskHeader(PlayerControl playerControl)
     {
@@ -223,7 +221,7 @@ public class LayerHandler : RoleBehaviour
 
         InitializeAbilityButton();
 
-        if (player.AmOwner && !TutorialManager.InstanceExists)
+        if (player.AmOwner && !TutorialManager.Instance && !TownOfUsReworked.MCIActive)
         {
             CustomStatsManager.IncrementStat(CustomRole.Faction switch
             {

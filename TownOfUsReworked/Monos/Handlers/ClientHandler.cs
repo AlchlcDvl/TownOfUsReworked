@@ -109,28 +109,32 @@ public class ClientHandler : MonoBehaviour
             MaxSize = __instance.transform.localScale * 4f;
     }
 
-    public void OnLobbyStart(LobbyBehaviour __instance)
+    public void OnLobbyStart()
     {
         if (!Prefab)
         {
-            var options = __instance.transform.FindChild("SmallBox").GetChild(0).GetComponent<OptionsConsole>();
-            Prefab = Instantiate(options.MenuPrefab, null).DontUnload().DontDestroy();
+            Prefab = Instantiate(GameStartManager.Instance.PlayerOptionsMenu, null).DontUnload().DontDestroy();
             Prefab.SetActive(false);
-            Prefab.name = "ClientOptionsMenuPrefab";
-            Pos = options.CustomPosition;
+            Prefab.name = "ReworkedOptionsMenuPrefab";
+            Pos = GameStartManager.Instance.GameOptionsPosition;
         }
     }
 
     public void Update()
     {
-        if (IsHnS() || !CustomPlayer.Local || !HUD().SettingsButton || !HUD().MapButton || !ButtonsParent)
+        var hud = HUD();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            hud.SettingsButton?.GetComponent<PassiveButton>()?.OnClick?.Invoke();
+
+        if (IsHnS() || !CustomPlayer.Local || !ButtonsParent)
             return;
 
         ResetButtonPos();
         var part2 = !IntroCutscene.Instance && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance && !PlayerCustomizationMenu.Instance;
         WikiRCButton.gameObject.SetActive(part2);
         ClientOptionsButton.gameObject.SetActive(part2 && !RoleCardActive);
-        ZoomButton.gameObject.SetActive(HUD().MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() ||
+        ZoomButton.gameObject.SetActive(hud.MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() ||
             CustomPlayer.Local.Caught()) && !Meeting() && !RoleCardActive);
 
         if (PhoneText)
@@ -148,14 +152,11 @@ public class ClientHandler : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-            CloseMenus();
-
         if (!IsInGame())
             return;
 
         var part = !RoleCardActive && !SettingsActive && !Zooming && !(Map() && Map().IsOpen) && !WikiActive && !IsCustomHnS() && !GameSettingMenu.Instance;
-        HUD()?.TaskPanel?.gameObject?.SetActive(part && !Meeting() && !IsCustomHnS());
+        hud.TaskPanel?.gameObject?.SetActive(part && !Meeting() && !IsCustomHnS());
         TaskBar?.gameObject?.SetActive(part && GameSettings.TaskBarMode != TBMode.Invisible);
     }
 
@@ -185,8 +186,6 @@ public class ClientHandler : MonoBehaviour
             HUD().UICamera.orthographicSize = size;
             HUD().transform.localScale = Vector3.Lerp(originalSize, sizeLimit, p);
         });
-
-        yield break;
     }
 
     public void OpenRoleCard()
@@ -255,8 +254,11 @@ public class ClientHandler : MonoBehaviour
         var currentMenu = Instantiate(Prefab);
         currentMenu.transform.SetParent(Camera.main.transform, false);
         currentMenu.transform.localPosition = Pos;
-        currentMenu.name = "ClientOptionsMenu";
+        currentMenu.name = "ReworkedOptionsMenu";
         TransitionFade.Instance.DoTransitionFade(null, currentMenu.gameObject, null);
+        GameStartManager.Instance.RulesViewPanel?.SetActive(false);
+        GameStartManager.Instance.SelectViewButton(false);
+        GameStartManager.Instance.LobbyInfoPane?.DeactivatePane();
     }
 
     public static void OpenWiki()

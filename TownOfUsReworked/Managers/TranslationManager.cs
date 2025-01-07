@@ -26,6 +26,7 @@ public static class TranslationManager
         catch
         {
             // Any error should just return the original id and let client know in the logs
+            Fatal(id);
             return $"STRMISS ({id})";
         }
     }
@@ -83,14 +84,14 @@ public static class TranslationManager
         return false;
     }
 
-    // public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None, bool isStartup = false)
-    // {
-    //     if (CustomStringNamesAgain.TryGetValue(id, out var value)) // Try to find a custom string name by the given id
-    //         return value;
+    public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None, bool isStartup = false)
+    {
+        if (CustomStringNamesAgain.TryGetValue(id, out var value)) // Try to find a custom string name by the given id
+            return value;
 
-    //     if (VanillaToCustomMap.TryGetValue(vanillaName, out var customName)) // Contingency in case the value could not be found
-    //         return customName;
+        if (VanillaToCustomMap.TryGetValue(vanillaName, out var customName)) // Contingency in case the value could not be found
+            return customName;
 
-    //     return GetNextName(id, vanillaName, isStartup); // Add the new id if it could not be found
-    // }
+        return GetNextName(id, vanillaName, isStartup); // Add the new id if it could not be found
+    }
 }

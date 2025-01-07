@@ -7,8 +7,7 @@ This mod is a mishmash of code and ideas from different games, mods and forks, m
 If you want to know more, try using info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 New!
-- Addition: The mod now has it's own custom stats, it now replaces the stats held by the base game
-- Addition: The mod now also has it's own custom achievements, you can access them similar to how you access your stats
+- Mega Addition: The mod now has its own custom stats and achievements!
 - Addition: The main menu buttons now have their own icons
 - Addition: You can now change the keybind to deselect players (default is still Backspace)
 - Addition: More game options
@@ -23,6 +22,7 @@ New!
 Changes!
 - Recode: Overhauled a lot of the code base in favour of optimisation and avoiding potential issues
 - Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a singular player to eject and have gained ability charges to compensate
+- Rework: Altruist and Necromancer now need to gain mana from bodies to be able to revive players
 - Change: Actor role change now has a priority system; it will prioritise roles that are not currently in game, followed by those that are dead and lastly any other role
 - Change: Arsonists, when igniting, will remove the coolant off those doused by a Cryomaniac
 - Change: Cryomaniacs, when freezing, will remove the gasoline off those doused by an Arsonist
@@ -45,6 +45,7 @@ Fixes!
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
+- Role: Fixed Spellslingers and Rebel-Spellslingers not ending the game when they successfully spell bind everyone
 - Disposition: Fixed Allied factions not being set properly
 - Modifier: Fixed some visual aspects of Giant and Dwarf
 - Compatibility: Fixed the elevator not being properly usable for postmortal roles
@@ -65,7 +66,7 @@ Fixes!
 - General: Fixed venting capabilities being incorrect for some roles and dispositions
 - General: Fixed conversions being inconsistent
 - General: Fixed meeting announcements using "PlayerControl" instead of the player's actual name
-- General: Fixed the buttons not behaving as intended for a lot of roles*
+- General: Fixed the buttons not behaving as intended*
 
 Known Bugs :(
 - Critically low FPS for everyone, with the host having it the worst; a fix is in progress and the severity has been considerably reduced since discovery

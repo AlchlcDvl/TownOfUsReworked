@@ -2,10 +2,14 @@
 
 public static class ModCompatibility
 {
+    public static MethodInfo TryCastMethod;
+
     public static void Initialise()
     {
         SubLoaded = InitializeSubmerged();
         LILoaded = InitializeLevelImpostor();
+
+        TryCastMethod = AccessTools.Method(typeof(Il2CppObjectBase), nameof(Il2CppObjectBase.TryCast));
     }
 
     public const string SM_GUID = "Submerged";
@@ -219,7 +223,6 @@ public static class ModCompatibility
             yield return EndFrame();
 
         next();
-        yield break;
     }
 
     public static void GhostRoleFix(PlayerPhysics __instance)
@@ -301,8 +304,6 @@ public static class ModCompatibility
         var comp = bot?.gameObject?.AddComponent(Il2CppType.From(CustomPlayerDataType));
         HasMapField.SetValue(comp, true);
     }
-
-    public static object TryCast(this Il2CppObjectBase self, Type type) => AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self, null);
 
     public const string LI_GUID = "com.DigiWorm.LevelImposter";
     public const ShipStatus.MapType LI_MAP_TYPE = (ShipStatus.MapType)7;

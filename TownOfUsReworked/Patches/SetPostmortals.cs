@@ -37,7 +37,7 @@ public static class SetPostmortals
                 ghoul.MarkedPlayer = null;
             else if (ghoul.MarkedPlayer && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.NeutralApoc))
             {
-                ghoul.MarkedPlayer.Exiled();
+                ghoul.MarkedPlayer.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
                 MarkedPlayers.Add(ghoul.MarkedPlayer.PlayerId);
                 ghoul.MarkedPlayer = null;
             }
@@ -51,22 +51,18 @@ public static class SetPostmortals
             ExecutionerWin(exiled);
 
             if (Lovers.BothLoversDie && exiled.TryGetLayer<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.NeutralApoc))
-                lover.OtherLover.Exiled();
+                lover.OtherLover.CustomDie(DeathReasonEnum.Suicide);
         }
 
         foreach (var dict in PlayerLayer.GetLayers<Dictator>())
         {
             if (dict.Revealed && dict.ToBeEjected)
             {
-                dict.ToBeEjected.Exiled();
-                var role = dict.ToBeEjected.GetRole();
-                role.KilledBy = " By " + dict.PlayerName;
-                role.DeathReason = DeathReasonEnum.Dictated;
+                dict.ToBeEjected.CustomDie(DeathReasonEnum.Dictated, dict.Player);
 
                 if (dict.ToBeEjected.Is(Faction.Crew) && dict.ToBeEjected.Is(SubFaction.None))
                 {
-                    dict.Player.Exiled();
-                    dict.DeathReason = DeathReasonEnum.Suicide;
+                    dict.Player.CustomDie(DeathReasonEnum.Suicide);
                     MisfiredPlayers.Add(dict.Player.PlayerId);
                 }
 
@@ -78,8 +74,7 @@ public static class SetPostmortals
         {
             if (vigi.PostMeetingDie)
             {
-                vigi.Player.Exiled();
-                vigi.DeathReason = DeathReasonEnum.Suicide;
+                vigi.Player.CustomDie(DeathReasonEnum.Suicide);
                 MisfiredPlayers.Add(vigi.Player.PlayerId);
             }
         }
@@ -90,8 +85,7 @@ public static class SetPostmortals
             {
                 if (bh.TargetKilled && !bh.Dead)
                 {
-                    bh.Player.Exiled();
-                    bh.DeathReason = DeathReasonEnum.Escaped;
+                    bh.Player.CustomDie(DeathReasonEnum.Escaped);
                     EscapedPlayers.Add(bh.Player.PlayerId);
                 }
             }
@@ -100,8 +94,7 @@ public static class SetPostmortals
             {
                 if (exe.TargetVotedOut && !exe.Dead)
                 {
-                    exe.Player.Exiled();
-                    exe.DeathReason = DeathReasonEnum.Escaped;
+                    exe.Player.CustomDie(DeathReasonEnum.Escaped);
                     EscapedPlayers.Add(exe.Player.PlayerId);
                 }
             }
@@ -110,8 +103,7 @@ public static class SetPostmortals
             {
                 if (guess.TargetGuessed && !guess.Dead)
                 {
-                    guess.Player.Exiled();
-                    guess.DeathReason = DeathReasonEnum.Escaped;
+                    guess.Player.CustomDie(DeathReasonEnum.Escaped);
                     EscapedPlayers.Add(guess.Player.PlayerId);
                 }
             }
@@ -120,8 +112,7 @@ public static class SetPostmortals
             {
                 if (cann.Eaten && !cann.Dead)
                 {
-                    cann.Player.Exiled();
-                    cann.DeathReason = DeathReasonEnum.Escaped;
+                    cann.Player.CustomDie(DeathReasonEnum.Escaped);
                     EscapedPlayers.Add(cann.Player.PlayerId);
                 }
             }
@@ -172,18 +163,14 @@ public static class SetPostmortals
         if (!player.Data.IsDead || !player.IsPostmortal() || player.Caught())
             return;
 
-        var vents = AllMapVents().ToList();
+        var ventsArray = AllMapVents();
+        var vents = ventsArray.ToList();
 
-        if (Ship().Systems.TryGetValue(SystemTypes.Ventilation, out var systemType))
-        {
-            var ventilationSystem = systemType.TryCast<VentilationSystem>();
-
-            if (ventilationSystem != null)
-                vents.RemoveAll(x => !ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id));
-        }
+        if (Ship().Systems.TryGetValue(SystemTypes.Ventilation, out var systemType) && systemType.TryCast<VentilationSystem>(out var ventilationSystem))
+            vents.RemoveAll(x => !ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id));
 
         if (IsSubmerged())
-            vents.RemoveAll(x => Array.IndexOf(AllMapVents(), x) is 0 or 14);
+            vents.RemoveAll(x => ventsArray.IndexOf(x) is 0 or 14);
 
         vents.Shuffle();
         var startingVent = vents.Random();

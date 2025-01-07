@@ -117,7 +117,6 @@ public static class UpdateSplashPatch
 
         __instance.sceneChanger.AllowFinishLoadingScene();
         __instance.startedSceneLoad = true;
-        yield break;
     }
 
     public static void SetText(string text) => TMP.SetText(text);
@@ -142,6 +141,5 @@ public static class UpdateSplashPatch
         DataSet = true;
 
         yield return EndFrame();
-        yield break;
     }
 }

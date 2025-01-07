@@ -9,7 +9,7 @@ public class Consigliere : Intruder
     [StringOption(MultiMenu.LayerSubOptions)]
     public static ConsigInfo ConsigInfo { get; set; } = ConsigInfo.Role;
 
-    public List<byte> Investigated { get; set; }
+    public List<byte> Investigated { get; } = [];
     public CustomButton InvestigateButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consigliere : FactionColor;
@@ -23,7 +23,7 @@ public class Consigliere : Intruder
     {
         base.Init();
         Alignment = Alignment.IntruderSupport;
-        Investigated = [];
+        Investigated.Clear();
         InvestigateButton ??= new(this, new SpriteName("Investigate"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
             (PlayerBodyExclusion)Exception1);
     }

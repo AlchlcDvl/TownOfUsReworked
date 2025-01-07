@@ -34,7 +34,7 @@ public class BountyHunter : Evil
     public bool Failed => (!TargetPlayer && Rounds > 2) || (!GuessButton.Usable() && !TargetFound) || (!TargetKilled && TargetPlayer && TargetPlayer.HasDied());
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
-    private List<string> Letters { get; set; }
+    private List<string> Letters { get; } = [];
     public bool CanHunt => TargetPlayer && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !NeutralSettings.AvoidNeutralKingmakers));
     public bool CanRequest => RequestingPlayer.HasDied() && !TargetPlayer;
     public bool Assigned { get; set; }
@@ -59,7 +59,7 @@ public class BountyHunter : Evil
         GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);
         HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(BHHuntCd), "HUNT", (UsableFunc)Usable2);
-        Letters = [];
+        Letters.Clear();
     }
 
     public override void PostAssignment()

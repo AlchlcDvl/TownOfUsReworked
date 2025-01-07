@@ -34,6 +34,8 @@ public static class ListExtensions
 
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
 
+    public static void AddRange<T>(this ISystem.List<T> main, IEnumerable<T> items) => items.ForEach(main.Add);
+
     public static IEnumerable<T> ToSystem<T>(this ISystem.List<T> list)
     {
         foreach (var item in list)
@@ -207,13 +209,28 @@ public static class ListExtensions
 
     public static bool Any<TKey, TValue>(this ISystem.Dictionary<TKey, TValue> dict, Func<TKey, TValue, bool> predicate)
     {
-        foreach (var (key, value) in dict)
+        foreach (var pair in dict)
         {
-            if (predicate(key, value))
+            if (predicate(pair.Key, pair.Value))
                 return true;
         }
 
         return false;
+    }
+
+    public static int IndexOf<T>(this IEnumerable<T> source, T item)
+    {
+        var num = 0;
+
+        foreach (var check in source)
+        {
+            if (Equals(item, check))
+                return num;
+
+            num++;
+        }
+
+        return -1;
     }
 
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
@@ -235,6 +252,20 @@ public static class ListExtensions
         }
 
         return -1;
+    }
+
+    public static IEnumerable<T> GetRangeOrDefault<T>(this IEnumerable<T> source, int start, int count)
+    {
+        for (var i = start; i < start + count; i++)
+            yield return source.ElementAtOrDefault(i);
+    }
+
+    public static void AddRange<T>(this ISystem.List<T> main, params T[] items) => items.ForEach(main.Add);
+
+    public static void AddRanges<T>(this ISystem.List<T> main, params IEnumerable<T>[] items)
+    {
+        foreach (var item in items)
+            item.ForEach(main.Add);
     }
 
     public static IEnumerable<T> GetRandomRange<T>(this IEnumerable<T> list, int count, Func<T, bool> predicate) => list.Where(predicate).GetRandomRange(count);

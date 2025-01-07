@@ -38,7 +38,7 @@ public class Guesser : Evil
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private string RoleName { get; set; }
-    public List<string> Letters { get; set; }
+    public List<string> Letters { get; } = [];
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
@@ -63,7 +63,7 @@ public class Guesser : Evil
             $"{TargetPlayer?.name}'s role"));
         GuessMenu = new(Player, "Guess", GuesserAfterVoting, Guess, IsExempt, SetLists);
         Rounds = 0;
-        Letters = [];
+        Letters.Clear();
         GuessingMenu = new(Player, GuessPlayer);
     }
 

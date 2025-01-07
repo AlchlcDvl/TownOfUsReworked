@@ -21,7 +21,7 @@ public class Cryomaniac : NKilling
     public CustomButton FreezeButton { get; set; }
     public CustomButton DouseButton { get; set; }
     public CustomButton KillButton { get; set; }
-    public List<byte> Doused { get; set; }
+    public List<byte> Doused { get; } = [];
     public bool FreezeUsed { get; set; }
     public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CryoLastKillerBoost;
@@ -39,7 +39,7 @@ public class Cryomaniac : NKilling
     {
         base.Init();
         Objectives = () => "- Freeze anyone who can oppose you";
-        Doused = [];
+        Doused.Clear();
         DouseButton ??= new(this, new SpriteName("CryoDouse"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(CryoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
         FreezeButton ??= new(this, new SpriteName("Freeze"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)FreezeUnFreeze, (LabelFunc)Label, (UsableFunc)Doused.Any);

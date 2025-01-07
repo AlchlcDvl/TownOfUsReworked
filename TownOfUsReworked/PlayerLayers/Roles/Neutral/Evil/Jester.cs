@@ -16,7 +16,7 @@ public class Jester : Evil
     public static bool JestEjectScreen { get; set; } = false;
 
     public bool VotedOut { get; set; }
-    public List<byte> ToHaunt { get; set; }
+    public List<byte> ToHaunt { get; } = [];
     public bool HasHaunted { get; set; }
     public CustomButton HauntButton { get; set; }
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !NeutralSettings.AvoidNeutralKingmakers;
@@ -34,7 +34,7 @@ public class Jester : Evil
     {
         base.Init();
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
-        ToHaunt = [];
+        ToHaunt.Clear();
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
         {

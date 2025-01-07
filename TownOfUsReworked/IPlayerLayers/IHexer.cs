@@ -2,5 +2,5 @@ namespace TownOfUsReworked.IPlayerLayers;
 
 public interface IHexer : IRole
 {
-    List<byte> Spelled { get; set; }
+    List<byte> Spelled { get; }
 }

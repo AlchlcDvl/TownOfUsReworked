@@ -10,17 +10,17 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     {
         base.Init();
         Alignment = Alignment.CrewSupport;
-        BodyArrows = [];
-        MediatedPlayers = [];
-        Bugs = [];
-        TrackerArrows = [];
-        Reported = [];
-        ReferenceBodies = [];
-        BombedIDs = [];
-        BuggedPlayers = [];
-        Trapped = [];
-        TriggeredRoles = [];
-        MediateArrows = [];
+        BodyArrows.Clear();
+        MediatedPlayers.Clear();
+        Bugs.Clear();
+        TrackerArrows.Clear();
+        Reported.Clear();
+        ReferenceBodies.Clear();
+        BombedIDs.Clear();
+        BuggedPlayers.Clear();
+        Trapped.Clear();
+        TriggeredRoles.Clear();
+        MediateArrows.Clear();
         Selected = null;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
@@ -32,7 +32,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         Vent1 = null;
         Vent2 = null;
         RetMenu = new(Player, "RetActive", "RetDisabled", ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
-        TrapsMade = 0;
     }
 
     // Retributionist Stuff
@@ -321,31 +320,30 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
                 message = message[..^2];
             }
 
-            // Only Retributionist-Operative can see this
-            if (HUD())
+            if (!IsNullEmptyOrWhiteSpace(message))
                 Run("<#8D0F8CFF>〖 Bug Results 〗</color>", message);
         }
         else if (IsTrap)
         {
-            if (!AttackedSomeone && TriggeredRoles.Any())
+            var message = "";
+
+            if (AttackedSomeone)
+                message = "Your trap attacked someone!";
+            else if (TriggeredRoles.Any())
             {
-                var message = "Your trap detected the following roles: ";
+                message = "Your trap detected the following roles: ";
                 TriggeredRoles.Shuffle();
                 TriggeredRoles.ForEach(x => message += $"{x}, ");
                 message = message[..^2];
-
-                if (IsNullEmptyOrWhiteSpace(message))
-                    return;
-
-                // Only Retributionist-Trapper can see this
-                if (HUD())
-                    Run("<#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
             }
-            else if (AttackedSomeone && HUD())
-                Run("<#8D0F8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
+
+            if (!IsNullEmptyOrWhiteSpace(message))
+                Run("<#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
 
             TriggeredRoles.Clear();
         }
+        else if (IsAlt)
+            ReviveButton.Uses += Altruist.PassiveManaGain;
 
         Revived = null;
     }
@@ -361,11 +359,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             body.Reporter = Player;
             var reportMsg = body.ParseBodyReport();
 
-            if (IsNullEmptyOrWhiteSpace(reportMsg))
-                return;
-
-            // Only Retributionist-Coroner can see this
-            if (HUD())
+            if (!IsNullEmptyOrWhiteSpace(reportMsg))
                 Run("<#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
         }
     }
@@ -439,8 +433,12 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         }
         else if (IsAlt)
         {
+            var wasnull = ReviveButton == null;
             ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(Altruist.ReviveCd),
-                (EndFunc)ReviveEnd, new Duration(Altruist.ReviveDur), (EffectEndVoid)UponEnd, Altruist.MaxRevives, (UsableFunc)AltUsable);
+                (EndFunc)ReviveEnd, new Duration(Altruist.ReviveDur), (EffectEndVoid)UponEnd, Altruist.MaxMana, (UsableFunc)AltUsable);
+
+            if (wasnull)
+                ReviveButton.uses = 0;
         }
         else if (IsMedic)
         {
@@ -450,13 +448,13 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         else if (IsTrap)
         {
             var wasnull = TrapButton == null;
-            BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuildling, (UsableFunc)TrapUsable,
+            BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuildling, (UsableFunc)BuildUsable,
                 new Cooldown(Trapper.BuildCd), new Duration(Trapper.BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
             TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, (UsableFunc)TrapUsable, Trapper.MaxTraps,
                 new Cooldown(Trapper.TrapCd), (PlayerBodyExclusion)TrapException);
 
             if (wasnull)
-                TrapButton.Uses = 0;
+                TrapsMade = TrapButton.uses = 0;
         }
         else if (IsCham)
         {
@@ -506,11 +504,11 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     }
 
     // Coroner Stuff
-    public Dictionary<byte, PositionalArrow> BodyArrows { get; set; }
+    public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
     public CustomButton AutopsyButton { get; set; }
     public CustomButton CompareButton { get; set; }
-    public List<DeadPlayer> ReferenceBodies { get; set; }
-    public List<byte> Reported { get; set; }
+    public List<DeadPlayer> ReferenceBodies { get; } = [];
+    public List<byte> Reported { get; } = [];
     public bool IsCor => RevivedRole is Coroner;
 
     public void Autopsy(DeadBody target)
@@ -556,9 +554,9 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     public bool DetUsable() => IsDet;
 
     // Medium Stuff
-    public Dictionary<byte, PlayerArrow> MediateArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> MediateArrows { get; } = [];
     public CustomButton MediateButton { get; set; }
-    public List<byte> MediatedPlayers { get; set; }
+    public List<byte> MediatedPlayers { get; } = [];
     public bool IsMed => RevivedRole is Medium;
 
     public void Mediate()
@@ -605,8 +603,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     public bool MedUsable() => IsMed;
 
     // Operative Stuff
-    public List<Bug> Bugs { get; set; }
-    public List<LayerEnum> BuggedPlayers { get; set; }
+    public List<Bug> Bugs { get; } = [];
+    public List<LayerEnum> BuggedPlayers { get; } = [];
     public CustomButton BugButton { get; set; }
     public bool IsOp => RevivedRole is Operative;
 
@@ -641,7 +639,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     public bool SherUsable() => IsSher;
 
     // Tracker Stuff
-    public Dictionary<byte, PlayerArrow> TrackerArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
     public CustomButton TrackButton { get; set; }
     public bool IsTrack => RevivedRole is Tracker;
 
@@ -697,10 +695,13 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
     // Altruist Stuff
     public CustomButton ReviveButton { get; set; }
+    public CustomButton ManaButton { get; set; }
     public byte ParentId { get; set; }
     public bool IsAlt => RevivedRole is Altruist;
 
     public bool AltUsable() => IsAlt;
+
+    public bool AltUsable1() => AltUsable() && ReviveButton.uses != ReviveButton.maxUses;
 
     public void UponEnd()
     {
@@ -732,14 +733,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             lover.Revive();
         }
 
-        if (ReviveButton.Uses == 0 && Local && Altruist.Sacrifice)
-            RpcMurderPlayer(Player);
-
-        if (formerKiller.Contains(CustomPlayer.Local.name))
-        {
-            CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, player, Color));
-            Flash(Color);
-        }
+        if (Local && player.IIs<ISovereign>())
+            CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
     public void Revive(DeadBody target)
@@ -752,6 +747,14 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
         if (Altruist.AltruistTargetBody)
             target?.gameObject.Destroy();
+    }
+
+    public void GainMana(DeadBody target)
+    {
+        ReviveButton.Uses += Altruist.ManaGainedPerBody;
+        Spread(Player, PlayerByBody(target));
+        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
+        FadeBody(target);
     }
 
     // Medic Stuff
@@ -1094,7 +1097,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Transporting = false;
-        yield break;
     }
 
     public void AnimateTransport1()
@@ -1175,7 +1177,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
     // Bastion Stuff
     public CustomButton BombButton { get; set; }
-    public List<int> BombedIDs { get; set; }
+    public List<int> BombedIDs { get; } = [];
     public bool IsBast => RevivedRole is Bastion;
 
     public bool BastException(Vent vent) => BombedIDs.Contains(vent.Id);
@@ -1199,8 +1201,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     private CustomButton BuildButton { get; set; }
     private CustomButton TrapButton { get; set; }
     public bool Building { get ; set; }
-    public List<byte> Trapped { get; set; }
-    private List<Role> TriggeredRoles { get; set; }
+    public List<byte> Trapped { get; } = [];
+    private List<Role> TriggeredRoles { get; } = [];
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }
     public bool IsTrap => RevivedRole is Trapper;
@@ -1216,7 +1218,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         TrapButton.Uses++;
         TrapsMade++;
         Building = false;
-        TrapButton.Base.SetUsesRemaining(TrapButton.Uses);
     }
 
     private void SetTrap(PlayerControl target)
@@ -1248,4 +1249,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     }
 
     public bool TrapUsable() => IsTrap;
+
+    public bool BuildUsable() => TrapUsable() && TrapsMade <= Trapper.MaxTraps;
 }

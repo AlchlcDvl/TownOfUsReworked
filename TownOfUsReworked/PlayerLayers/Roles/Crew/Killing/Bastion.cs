@@ -13,7 +13,7 @@ public class Bastion : Crew, IVentBomber
     public static bool BombRemovedOnKill { get; set; } = true;
 
     public CustomButton BombButton { get; set; }
-    public List<int> BombedIDs { get; set; }
+    public List<int> BombedIDs { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Bastion : FactionColor;
     public override string Name => "Bastion";
@@ -26,7 +26,7 @@ public class Bastion : Crew, IVentBomber
     {
         base.Init();
         Alignment = Alignment.CrewKill;
-        BombedIDs = [];
+        BombedIDs.Clear();
         BombButton ??= new(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClickVent)Bomb, new Cooldown(BastionCd), MaxBombs,
             (VentExclusion)Exception);
     }

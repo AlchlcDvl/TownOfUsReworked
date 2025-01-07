@@ -52,29 +52,25 @@ public static class CustomVisorManager
         return path;
     }
 
-    public static List<string> GenerateDownloadList(IEnumerable<CustomVisor> visors)
+    public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomVisor> visors)
     {
-        var markedfordownload = new List<string>();
-
         foreach (var visor in visors)
         {
             if (visor.StreamOnly && !TownOfUsReworked.IsStream)
                 continue;
 
             if (!File.Exists(Path.Combine(TownOfUsReworked.Visors, $"{visor.ID}.png")))
-                markedfordownload.Add(visor.ID);
+                yield return visor.ID;
 
             if (visor.FlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Visors, $"{visor.FlipID}.png")))
-                markedfordownload.Add(visor.FlipID);
+                yield return visor.FlipID;
 
             if (visor.ClimbID != null && !File.Exists(Path.Combine(TownOfUsReworked.Visors, $"{visor.ClimbID}.png")))
-                markedfordownload.Add(visor.ClimbID);
+                yield return visor.ClimbID;
 
             if (visor.FloorID != null && !File.Exists(Path.Combine(TownOfUsReworked.Visors, $"{visor.FloorID}.png")))
-                markedfordownload.Add(visor.FloorID);
+                yield return visor.FloorID;
         }
-
-        return markedfordownload;
     }
 
     public static VisorExtension GetExtention(this VisorData visor)

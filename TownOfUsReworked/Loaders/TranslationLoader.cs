@@ -20,6 +20,6 @@ public class TranslationLoader : AssetLoader<Language>
         }
 
         Message($"Found {AllTranslations.Count} translations");
-        yield break;
+        yield return EndFrame();
     }
 }

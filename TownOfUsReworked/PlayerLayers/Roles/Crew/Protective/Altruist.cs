@@ -3,8 +3,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Altruist : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static Number MaxRevives { get; set; } = new(5);
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static Number ManaCd { get; set; } = new(25);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
+    public static Number MaxMana { get; set; } = new(5);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
+    public static Number ManaGainedPerBody { get; set; } = new(1);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
+    public static Number PassiveManaGain { get; set; } = new(0);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
+    public static Number ManaCost { get; set; } = new(2);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number ReviveCd { get; set; } = new(25);
@@ -15,10 +27,8 @@ public class Altruist : Crew
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AltruistTargetBody { get; set; } = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool Sacrifice { get; set; } = true;
-
     public CustomButton ReviveButton { get; set; }
+    public CustomButton ManaButton { get; set; }
     public byte ParentId { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Altruist : FactionColor;
@@ -32,8 +42,10 @@ public class Altruist : Crew
     {
         base.Init();
         Alignment = Alignment.CrewProt;
+        ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(ManaCd), (UsableFunc)Usable);
         ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
-            MaxRevives, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false));
+            MaxMana, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(ManaCost));
+        ReviveButton.uses = 0;
     }
 
     public bool EndEffect() => Dead;
@@ -66,15 +78,6 @@ public class Altruist : Crew
             lover.Revive();
         }
 
-        if (ReviveButton.Uses == 0 && Local && Sacrifice)
-            RpcMurderPlayer(Player);
-
-        if (formerKiller.Contains(CustomPlayer.Local.name))
-        {
-            CustomPlayer.Local.GetRole().AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, player, Color));
-            Flash(Color);
-        }
-
         if (Local && player.IIs<ISovereign>())
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
@@ -89,6 +92,23 @@ public class Altruist : Crew
 
         if (AltruistTargetBody)
             target.gameObject.Destroy();
+    }
+
+    public void GainMana(DeadBody target)
+    {
+        ReviveButton.Uses += ManaGainedPerBody;
+        Spread(Player, PlayerByBody(target));
+        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
+        FadeBody(target);
+        ManaButton.StartCooldown();
+    }
+
+    public bool Usable() => ReviveButton.uses != ReviveButton.maxUses;
+
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        base.OnMeetingStart(__instance);
+        ReviveButton.Uses += PassiveManaGain;
     }
 
     public override void ReadRPC(MessageReader reader)

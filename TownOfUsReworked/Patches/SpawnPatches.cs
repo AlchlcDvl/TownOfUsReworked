@@ -13,11 +13,17 @@ public static class SpawnPatches
     private static void DoTheThing(bool intro = false, bool meeting = false)
     {
         ShowRolePatch.Starting = false;
+
+        if (intro)
+        {
+            if (CustomPlayer.Local?.Data?.Role is LayerHandler handler)
+                handler.OnIntroEnd();
+
+            KillCounts.Clear();
+            MostRecentKiller = null;
+        }
+
         Chat()?.SetVisible(CustomPlayer.Local.CanChat());
-
-        if (intro && CustomPlayer.Local?.Data?.Role is LayerHandler handler)
-            handler.OnIntroEnd();
-
         AllPlayers().ForEach(x => x.MyPhysics.ResetAnimState());
         AllBodies().ForEach(x => x.gameObject.Destroy());
         ButtonUtils.Reset(CooldownType.Start);

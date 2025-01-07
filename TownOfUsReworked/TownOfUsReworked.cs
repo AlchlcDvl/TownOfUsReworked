@@ -16,7 +16,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    public const int DevBuild = 23;
+    public const int DevBuild = 24;
 
     public static bool IsTest => IsLocalGame() && (IsDev || MCIActive);
     private static readonly string VersionS = VersionString[..^2];

@@ -15,7 +15,7 @@ public class Tracker : Crew
     [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
     public static Number UpdateInterval { get; set; } = new(5);
 
-    public Dictionary<byte, PlayerArrow> TrackerArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
     public CustomButton TrackButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Tracker : FactionColor;
@@ -27,7 +27,7 @@ public class Tracker : Crew
     public override void Init()
     {
         base.Init();
-        TrackerArrows = [];
+        TrackerArrows.Clear();
         Alignment = Alignment.CrewInvest;
         TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);

@@ -23,12 +23,7 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         ValueText = Setting.transform.GetChild(3).GetComponent<TextMeshPro>();
 
         if (!AmongUsClient.Instance.AmHost || IsInGame())
-        {
-            entry.CheckMark.transform.parent.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.enabled = false);
-            entry.GetComponentInChildren<PassiveButton>().enabled = false;
-        }
-
-        Update();
+            entry.CheckMark.transform.parent.gameObject.SetActive(false);
     }
 
     public override void ViewOptionCreated()
@@ -37,7 +32,6 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
         viewSettingsInfoPanel.checkMark.gameObject.SetActive(false);
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(false);
-        ViewUpdate();
     }
 
     public override void ViewUpdate()

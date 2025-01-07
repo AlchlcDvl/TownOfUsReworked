@@ -47,13 +47,15 @@ public abstract class Role : PlayerLayer
     public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.SectWins or WinLose.UndeadWins;
 
     public Alignment Alignment { get; set; }
-    public List<Role> RoleHistory { get; set; }
     public ChatChannel CurrentChannel { get; set; }
-    public Dictionary<byte, PlayerArrow> AllArrows { get; set; }
-    public Dictionary<byte, PlayerArrow> DeadArrows { get; set; }
-    public Dictionary<PointInTime, float> Positions { get; set; }
-    public Dictionary<byte, PlayerArrow> YellerArrows { get; set; }
     public LayerEnum LinkedDisposition { get; set; }
+
+    public Dictionary<byte, PlayerArrow> AllArrows { get; } = [];
+    public Dictionary<byte, PlayerArrow> DeadArrows { get; } = [];
+    public Dictionary<PointInTime, float> Positions { get; } = [];
+    public Dictionary<byte, PlayerArrow> YellerArrows { get; } = [];
+
+    public List<Role> RoleHistory { get; } = [];
 
     private Faction _faction;
     public Faction Faction
@@ -165,11 +167,11 @@ public abstract class Role : PlayerLayer
         SubFaction = SubFaction.None;
         CurrentChannel = ChatChannel.All;
 
-        RoleHistory = [];
-        AllArrows = [];
-        DeadArrows = [];
-        Positions = [];
-        YellerArrows = [];
+        RoleHistory.Clear();
+        AllArrows.Clear();
+        DeadArrows.Clear();
+        Positions.Clear();
+        YellerArrows.Clear();
 
         /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
         {
@@ -410,7 +412,6 @@ public abstract class Role : PlayerLayer
         yield return Effects.Wait(0.1f);
 
         PlateformIsUsed = false;
-        yield break;
     }*/
 
     public void DestroyArrowY(byte targetPlayerId)

@@ -23,8 +23,8 @@ public class Monarch : Crew, ISovereign
 
     public bool RoundOne { get; set; }
     public CustomButton KnightingButton { get; set; }
-    public List<byte> ToBeKnighted { get; set; }
-    public List<byte> Knighted { get; set; }
+    public List<byte> ToBeKnighted { get; } = [];
+    public List<byte> Knighted { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Monarch : FactionColor;
     public override string Name => "Monarch";
@@ -38,8 +38,8 @@ public class Monarch : Crew, ISovereign
     {
         base.Init();
         Alignment = Alignment.CrewSov;
-        Knighted = [];
-        ToBeKnighted = [];
+        Knighted.Clear();
+        ToBeKnighted.Clear();
         KnightingButton ??= new(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Knight, new Cooldown(KnightingCd), KnightCount,
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }

@@ -32,7 +32,7 @@ public class Executioner : Evil
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetVotedOut { get; set; }
-    public List<byte> ToDoom { get; set; }
+    public List<byte> ToDoom { get; } = [];
     public bool HasDoomed { get; set; }
     public CustomButton DoomButton { get; set; }
     public bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !NeutralSettings.AvoidNeutralKingmakers;
@@ -55,7 +55,7 @@ public class Executioner : Evil
     {
         base.Init();
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (!TargetPlayer ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
-        ToDoom = [];
+        ToDoom.Clear();
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
             DoomButton ??= new(this, new SpriteName("Doom"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Doom, (PlayerBodyExclusion)Exception1, "DOOM", (UsableFunc)Usable1);

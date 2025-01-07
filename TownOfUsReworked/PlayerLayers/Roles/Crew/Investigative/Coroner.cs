@@ -21,11 +21,12 @@ public class Coroner : Crew, IExaminer
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number AutopsyCd { get; set; } = new(25);
 
-    public Dictionary<byte, PositionalArrow> BodyArrows { get; set; }
-    public List<byte> Reported { get; set; }
     public CustomButton CompareButton { get; set; }
-    public List<DeadPlayer> ReferenceBodies { get; set; }
     public CustomButton AutopsyButton { get; set; }
+
+    public List<byte> Reported { get; } = [];
+    public List<DeadPlayer> ReferenceBodies { get; } = [];
+    public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Coroner : FactionColor;
     public override string Name => "Coroner";
@@ -38,9 +39,9 @@ public class Coroner : Crew, IExaminer
     {
         base.Init();
         Alignment = Alignment.CrewInvest;
-        BodyArrows = [];
-        Reported = [];
-        ReferenceBodies = [];
+        BodyArrows.Clear();
+        Reported.Clear();
+        ReferenceBodies.Clear();
         AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Autopsy, new Cooldown(AutopsyCd));
         CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
     }
@@ -101,18 +102,14 @@ public class Coroner : Crew, IExaminer
 
     public override void OnBodyReport(NetworkedPlayerInfo info)
     {
-        if (info == null || !KilledPlayers.TryFinding(x => x.PlayerId == info.PlayerId, out var body))
+        if (info == null || !ReferenceBodies.TryFinding(x => x.PlayerId == info.PlayerId, out var body))
             return;
 
         Reported.Add(info.PlayerId);
         body.Reporter = Player;
         var reportMsg = body.ParseBodyReport();
 
-        if (IsNullEmptyOrWhiteSpace(reportMsg))
-            return;
-
-        // Only Coroner can see this
-        if (HUD())
+        if (!IsNullEmptyOrWhiteSpace(reportMsg))
             Run("<#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
     }
 }

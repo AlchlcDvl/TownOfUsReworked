@@ -26,21 +26,10 @@ public static class VersionShowerPatch
 [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
 public static class PingTracker_Update
 {
-    private static GameObject PingLogo;
-
     public static bool Prefix(PingTracker __instance)
     {
-        if (!__instance.text || !AmongUsClient.Instance)
+        if (!__instance?.text || !AmongUsClient.Instance)
             return true;
-
-        if (!PingLogo)
-        {
-            PingLogo = new GameObject("PingLogo") { layer = 5 };
-            PingLogo.AddComponent<SpriteRenderer>().sprite = GetSprite("SettingsButton");
-            PingLogo.transform.SetParent(__instance.transform);
-            PingLogo.transform.localPosition = new(-1f, -0.5f, -1f);
-            PingLogo.transform.localScale *= 0.5f;
-        }
 
         __instance.text.SetText($"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {Mathf.Round(1f / Time.deltaTime)}</size>");
         return false;

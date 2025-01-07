@@ -6,6 +6,9 @@ public static class RPC
 
     public static void SendOptionRPC(OptionAttribute setting = null, int targetClientId = -1, bool save = true)
     {
+        if (save)
+            OptionAttribute.SaveSettings("LastUsed");
+
         if (TownOfUsReworked.MCIActive || !CustomPlayer.Local)
             return;
 
@@ -47,9 +50,6 @@ public static class RPC
 
         if (options.Count > 1)
             CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, 255, 255, MapSettings.Map);
-
-        if (save)
-            OptionAttribute.SaveSettings("LastUsed");
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)
@@ -60,7 +60,7 @@ public static class RPC
         var count = reader.ReadByte();
         Info($"{count} options received:");
 
-        for (var i = 0; i < count; i++)
+        while (count-- > 0)
         {
             var superId = reader.ReadByte();
             var id = reader.ReadByte();
@@ -77,7 +77,7 @@ public static class RPC
                     continue;
                 }
 
-                var value = customOption.Type switch
+                customOption.SetBase(customOption.Type switch
                 {
                     CustomOptionType.Toggle => reader.ReadBoolean(),
                     CustomOptionType.Number => reader.ReadNumber(),
@@ -85,8 +85,7 @@ public static class RPC
                     CustomOptionType.Layer => reader.ReadRoleOptionData(),
                     CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
                     _ => true
-                };
-                customOption.SetBase(value, false);
+                }, false);
             }
         }
 
@@ -221,30 +220,10 @@ public static class RPC
             writer.Write(version);
         else if (item is Number num)
             writer.Write(num.Value);
-        else if (item is List<Role> roles)
+        else if (item is IEnumerable<PlayerLayer> roles)
         {
-            writer.Write((byte)roles.Count);
+            writer.Write((byte)roles.Count());
             roles.ForEach(x => writer.Write(layer: x));
-        }
-        else if (item is List<Ability> abs)
-        {
-            writer.Write((byte)abs.Count);
-            abs.ForEach(x => writer.Write(layer: x));
-        }
-        else if (item is List<Modifier> mods)
-        {
-            writer.Write((byte)mods.Count);
-            mods.ForEach(x => writer.Write(layer: x));
-        }
-        else if (item is List<Disposition> disps)
-        {
-            writer.Write((byte)disps.Count);
-            disps.ForEach(x => writer.Write(layer: x));
-        }
-        else if (item is List<PlayerLayer> layers)
-        {
-            writer.Write((byte)layers.Count);
-            layers.ForEach(x => writer.Write(layer: x));
         }
         else if (item is null)
             Error($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");

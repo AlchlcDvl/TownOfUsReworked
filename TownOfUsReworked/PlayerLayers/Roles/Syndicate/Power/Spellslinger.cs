@@ -10,7 +10,7 @@ public class Spellslinger : Syndicate, IHexer
     public static Number SpellCdIncrease { get; set; } = new(5);
 
     public CustomButton SpellButton { get; set; }
-    public List<byte> Spelled { get; set; }
+    public List<byte> Spelled { get; } = [];
     public int SpellCount { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Spellslinger : FactionColor;
@@ -24,7 +24,7 @@ public class Spellslinger : Syndicate, IHexer
     {
         base.Init();
         Alignment = Alignment.SyndicatePower;
-        Spelled = [];
+        Spelled.Clear();
         SpellCount = 0;
         SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(SpellCd), "SPELLBIND", (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception1);
@@ -43,6 +43,9 @@ public class Spellslinger : Syndicate, IHexer
                 SpellCount = 0;
             else
                 SpellCount++;
+
+            if (AmongUsClient.Instance.AmHost)
+                CheckEndGame.CheckEnd();
         }
 
         SpellButton.StartCooldown(cooldown);
@@ -50,7 +53,13 @@ public class Spellslinger : Syndicate, IHexer
 
     public bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate);
 
-    public override void ReadRPC(MessageReader reader) => Spelled.Add(reader.ReadByte());
+    public override void ReadRPC(MessageReader reader)
+    {
+        Spelled.Add(reader.ReadByte());
+
+        if (AmongUsClient.Instance.AmHost)
+            CheckEndGame.CheckEnd();
+    }
 
     public float Difference() => SpellCount * SpellCdIncrease;
 }

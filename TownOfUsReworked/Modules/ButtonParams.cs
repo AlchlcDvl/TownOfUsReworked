@@ -46,3 +46,5 @@ public record Duration(float Value);
 public record Delay(float Value);
 
 public record OtherDelay(float Value);
+
+public record UsesDecrement(int Value);

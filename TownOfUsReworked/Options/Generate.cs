@@ -26,7 +26,7 @@ public static class Generate
         // This ensures that every ID is unique (I hope)
         foreach (var opt in opts)
         {
-            var index = OptionAttribute.AllOptions.Where(x => x.ID == opt.ID).ToList().IndexOf(opt);
+            var index = OptionAttribute.AllOptions.Where(x => x.ID == opt.ID).IndexOf(opt);
             var toAdd = index == 0 ? "" : $"{index}";
             opt.ID += toAdd;
             opt.Name += toAdd;
@@ -48,6 +48,6 @@ public static class Generate
 
         OptionAttribute.LoadPreset("LastUsed", null);
 
-        Message($"There exist {OptionAttribute.AllOptions.Count(x => x is not IOptionGroup)} total options lmao (number jumpscare)");
+        Message($"There exist {OptionAttribute.AllOptions.Count(x => x is not IOptionGroup) + 1} total options lmao (number jumpscare)");
     }
 }

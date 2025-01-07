@@ -18,8 +18,8 @@ public class Trapper : Crew, ITrapper
     private CustomButton BuildButton { get; set; }
     private CustomButton TrapButton { get; set; }
     public bool Building { get ; set; }
-    public List<byte> Trapped { get; set; }
-    private List<Role> TriggeredRoles { get; set; }
+    public List<byte> Trapped { get; } = [];
+    private List<Role> TriggeredRoles { get; } = [];
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }
 
@@ -34,13 +34,13 @@ public class Trapper : Crew, ITrapper
     {
         base.Init();
         Alignment = Alignment.IntruderSupport;
-        Trapped = [];
-        TriggeredRoles = [];
+        Trapped.Clear();
+        TriggeredRoles.Clear();
         BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuildling, new Cooldown(BuildCd), MaxTraps,
             (UsableFunc)Usable, new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
         TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, new Cooldown(TrapCd), MaxTraps,
             (PlayerBodyExclusion)Exception);
-        TrapsMade = TrapButton.Uses = 0;
+        TrapsMade = TrapButton.uses = 0;
     }
 
     private void StartBuildling()
@@ -54,7 +54,6 @@ public class Trapper : Crew, ITrapper
         TrapButton.Uses++;
         TrapsMade++;
         Building = false;
-        TrapButton.Base.SetUsesRemaining(TrapButton.Uses);
     }
 
     private void SetTrap(PlayerControl target)
@@ -114,23 +113,20 @@ public class Trapper : Crew, ITrapper
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
+        var message = "";
 
-        if (!AttackedSomeone && TriggeredRoles.Any())
+        if (AttackedSomeone)
+            message = "Your trap attacked someone!";
+        else if (TriggeredRoles.Any())
         {
-            var message = "Your trap detected the following roles: ";
+            message = "Your trap detected the following roles: ";
             TriggeredRoles.Shuffle();
             TriggeredRoles.ForEach(x => message += $"{x}, ");
             message = message[..^2];
-
-            if (IsNullEmptyOrWhiteSpace(message))
-                return;
-
-            // Only Trapper can see this
-            if (HUD())
-                Run("<#BE1C8CFF>〖 Trap Triggers 〗</color>", message);
         }
-        else if (AttackedSomeone && HUD())
-            Run("<#BE1C8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
+
+        if (!IsNullEmptyOrWhiteSpace(message))
+            Run("<#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
 
         TriggeredRoles.Clear();
     }

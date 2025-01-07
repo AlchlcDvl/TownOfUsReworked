@@ -3,19 +3,48 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(LogicGameFlowNormal))]
 public static class CheckEndGame
 {
-    [HarmonyPatch(nameof(LogicGameFlowNormal.CheckEndCriteria)), HarmonyPrefix]
-    public static bool CheckEndCriteriaPrefix()
+    [HarmonyPatch(nameof(LogicGameFlowNormal.CheckEndCriteria))]
+    public static bool Prefix(LogicGameFlowNormal __instance)
     {
-        if (IsFreePlay() || IsHnS() || !AmongUsClient.Instance.AmHost)
+        if (!AmongUsClient.Instance.AmHost || WinState == WinLose.None)
             return false;
 
-        if (WinState != WinLose.None)
+        if (IsFreePlay())
         {
-            EndGame();
-            return false;
+            HUD().ShowPopUp("The game would have normally ended here, but since this is practice mode, we've reversed everything!");
+            __instance.Manager.ReviveEveryoneFreeplay();
+            WinState = WinLose.None;
+            Ship().Begin();
         }
+        else
+            EndGame();
 
-        var hex = PlayerLayer.GetILayers<IHexer>().Find(x => !x.Dead && !x.Disconnected && x.Spelled.Count == AllPlayers().Count(y => !y.HasDied()));
+        return false;
+    }
+
+    public static void CheckEnd()
+    {
+        var players = AllPlayers();
+        var hex = PlayerLayer.GetILayers<IHexer>().Find(hexer =>
+        {
+            var faction = hexer.Faction;
+            Func<PlayerControl, bool> factionCheck = faction switch
+            {
+                Faction.Syndicate or Faction.Crew or Faction.Intruder => x => x.Is(faction),
+                _ => NeutralSettings.NoSolo switch
+                {
+                    NoSolo.AllNeutrals => x => x.Is(faction),
+                    NoSolo.AllNKs => x => x.Is(Alignment.NeutralKill),
+                    _ => hexer.LinkedDisposition switch
+                    {
+                        LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
+                        LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
+                        _ => x => x == hexer.Player
+                    }
+                }
+            };
+            return !hexer.Player.HasDied() && hexer.Spelled.Count == players.Count(plr => !plr.HasDied() && !factionCheck(plr));
+        });
 
         if (TasksDone())
         {
@@ -56,8 +85,6 @@ public static class CheckEndGame
             PlayerLayer.GetLayers<Role>().ForEach(x => x.GameEnd());
             PlayerLayer.GetLayers<Disposition>().ForEach(x => x.GameEnd());
         }
-
-        return false;
     }
 
     // Stalemate detector for unwinnable situations
@@ -86,9 +113,10 @@ public static class CheckEndGame
             var rival1 = player1.Is<Rivals>();
             var rival2 = player2.Is<Rivals>();
             var rivals = rival1 && rival2;
+            var cryo = player1.Is<Cryomaniac>() && player2.Is<Cryomaniac>();
 
             // NK vs NK when neither can kill each other and Neutrals don't win together
-            if ((player1.Is<Cryomaniac>() && player2.Is<Cryomaniac>() && nosolo && nobuttons && neitherknighted) || rivals || (cantkill && nobuttons))
+            if ((cryo && nosolo && nobuttons && neitherknighted) || rivals || (cantkill && nobuttons))
                 PerformStalemate();
         }
         else if (!players.Any())
@@ -103,76 +131,36 @@ public static class CheckEndGame
 
     private static bool TasksDone()
     {
-        if (TaskSettings.LongTasks + (int)TaskSettings.CommonTasks + TaskSettings.ShortTasks == 0)
+        GameData.Instance.RecomputeTaskCounts();
+
+        if ((int)TaskSettings.LongTasks + (int)TaskSettings.CommonTasks + (int)TaskSettings.ShortTasks == 0)
             return IsCustomHnS();
 
-        if (IsCustomHnS())
+        var allCrew = new List<PlayerControl>();
+        var crewWithNoTasks = new List<PlayerControl>();
+        var roles = IsCustomHnS() ? PlayerLayer.GetLayers<Hunted>() : Role.GetRoles(Faction.Crew).Where(x => x.Player.CanDoTasks());
+
+        foreach (var role in roles)
         {
-            var allCrew = new List<PlayerControl>();
-            var crewWithNoTasks = new List<PlayerControl>();
+            if (role.Dead && !TaskSettings.GhostTasksCountToWin)
+                continue;
 
-            foreach (var role in PlayerLayer.GetLayers<Hunted>())
-            {
-                var player = role.Player;
-                allCrew.Add(player);
+            allCrew.Add(role.Player);
 
-                if (role.TasksDone)
-                    crewWithNoTasks.Add(player);
-            }
-
-            return allCrew.Count == crewWithNoTasks.Count;
+            if (role.TasksDone)
+                crewWithNoTasks.Add(role.Player);
         }
-        else
-        {
-            var allCrew = new List<PlayerControl>();
-            var crewWithNoTasks = new List<PlayerControl>();
 
-            foreach (var role in Role.GetRoles(Faction.Crew).Where(x => x.Player.CanDoTasks()))
-            {
-                if (role.Dead && !CrewSettings.GhostTasksCountToWin)
-                    continue;
-
-                var player = role.Player;
-                allCrew.Add(player);
-
-                if (role.TasksDone)
-                    crewWithNoTasks.Add(player);
-            }
-
-            return allCrew.Count == crewWithNoTasks.Count;
-        }
+        return allCrew.Count == crewWithNoTasks.Count;
     }
 
     private static bool Sabotaged()
     {
-        var systems = Ship().Systems;
-
-        if (systems.TryGetValue(SystemTypes.LifeSupp, out var life))
+        foreach (var sab in Ship().Systems.Values)
         {
-            var lifeSuppSystemType = life.TryCast<LifeSuppSystemType>();
-
-            if (lifeSuppSystemType.Countdown <= 0f)
+            if (sab.TryCast<LifeSuppSystemType>(out var life) && life.Countdown <= 0f)
                 return true;
-        }
-        else if (systems.TryGetValue(SystemTypes.Laboratory, out var lab))
-        {
-            var reactorSystemType = lab.TryCast<ReactorSystemType>();
-
-            if (reactorSystemType.Countdown <= 0f)
-                return true;
-        }
-        else if (systems.TryGetValue(SystemTypes.Reactor, out var reactor))
-        {
-            var reactorSystemType = reactor.TryCast<ICriticalSabotage>();
-
-            if (reactorSystemType.Countdown <= 0f)
-                return true;
-        }
-        else if (systems.TryGetValue(SystemTypes.HeliSabotage, out var heli))
-        {
-            var reactorSystemType = heli.TryCast<HeliSabotageSystem>();
-
-            if (reactorSystemType.Countdown <= 0f)
+            else if (sab.TryCast<ICriticalSabotage>(out var crit) && crit.Countdown <= 0f)
                 return true;
         }
 
@@ -182,34 +170,18 @@ public static class CheckEndGame
     [HarmonyPatch(nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
     public static bool Prefix(ref bool __result) => __result = false;
 
-    [HarmonyPatch(nameof(LogicGameFlowNormal.EndGameForSabotage)), HarmonyPrefix]
-    public static bool EndGameForSabotagePrefix() => false;
+    [HarmonyPatch(nameof(LogicGameFlowNormal.EndGameForSabotage))]
+    public static bool Prefix() => false;
 }
 
 [HarmonyPatch(typeof(GameManager))]
-public static class OverrideTaskEndGame1
+public static class OverrideTaskEndGame
 {
-    [HarmonyPatch(nameof(GameManager.CheckEndGameViaTasks)), HarmonyPrefix]
-    public static bool Prefix1(ref bool __result)
+    [HarmonyPatch(nameof(GameManager.CheckEndGameViaTasks))]
+    [HarmonyPatch(nameof(GameManager.CheckTaskCompletion))]
+    public static bool Prefix(ref bool __result)
     {
         GameData.Instance.RecomputeTaskCounts();
-        return __result = IsHnS();
-    }
-
-    [HarmonyPatch(nameof(GameManager.CheckTaskCompletion)), HarmonyPrefix]
-    public static bool Prefix2(ref bool __result)
-    {
-        if (TutorialManager.InstanceExists)
-        {
-            if (CustomPlayer.Local.AllTasksCompleted())
-            {
-                HUD().ShowPopUp(TranslationController.Instance.GetString(StringNames.GameOverTaskWin));
-                Ship().Begin();
-            }
-        }
-        else
-            GameData.Instance.RecomputeTaskCounts();
-
         return __result = IsHnS();
     }
 }

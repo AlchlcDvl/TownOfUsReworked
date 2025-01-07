@@ -41,7 +41,6 @@ public class ColorLoader : AssetLoader<CustomColor>
             if (color.ShadowColorValues != null)
                 color.ShadowColors = [ .. color.ShadowColorValues.Select(FromHex) ];
 
-            color.Changing = color.MainColorValues?.Length > 1;
             color.TimeSpeed = color.TimeSpeed == 0f ? 1f : color.TimeSpeed;
 
             if (!color.Default)
@@ -64,6 +63,5 @@ public class ColorLoader : AssetLoader<CustomColor>
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
         Palette.TextColors = Palette.PlayerColors;
         colors.Clear();
-        yield break;
     }
 }

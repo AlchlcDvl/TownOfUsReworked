@@ -49,6 +49,16 @@ public static class RPCHandling
 
                 switch (misc)
                 {
+                    case MiscRPC.SyncMaxUses:
+                    {
+                        reader.ReadButton().MaxUses = reader.ReadInt32();
+                        break;
+                    }
+                    case MiscRPC.SyncUses:
+                    {
+                        reader.ReadButton().Uses = reader.ReadInt32();
+                        break;
+                    }
                     case MiscRPC.SetLayer:
                     {
                         RoleGenManager.SetLayer(reader.ReadEnum<LayerEnum>(), reader.ReadEnum<PlayerLayerEnum>()).Start(reader.ReadPlayer());
@@ -61,7 +71,7 @@ public static class RPCHandling
 
                         var whisperer = reader.ReadPlayer();
                         var whispered = reader.ReadPlayer();
-                        var message = reader.ReadString();
+                        var message = reader.ReadString().Trim();
 
                         if (whispered.AmOwner)
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to you: {message}");
@@ -167,7 +177,7 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
                         TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
                         TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
-                        TownOfUsReworked.NormalOptions.GhostsDoTasks = CrewSettings.GhostTasksCountToWin;
+                        TownOfUsReworked.NormalOptions.GhostsDoTasks = TaskSettings.GhostTasksCountToWin;
                         TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
                         TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
                         TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
@@ -208,6 +218,7 @@ public static class RPCHandling
                         RoleGenManager.Pure = reader.ReadPlayer();
                         RoleGenManager.Convertible = reader.ReadByte();
                         BetterAirship.SpawnPoints.AddRange(reader.ReadByteList());
+                        AmongUsClient.Instance.StartCoroutine(HUD().CoShowIntro());
                         break;
                     }
                     case MiscRPC.SetTarget:
@@ -223,7 +234,10 @@ public static class RPCHandling
                         else if (layer is BountyHunter hunter)
                             hunter.TargetPlayer = reader.ReadPlayer();
                         else if (layer is Actor actor)
-                            actor.PretendRoles = reader.ReadLayerList<Role>();
+                        {
+                            actor.PretendRoles.Clear();
+                            actor.PretendRoles.AddRange(reader.ReadLayerList<Role>());
+                        }
                         else if (layer is Allied ally)
                         {
                             var alliedRole = ally.Player.GetRole();

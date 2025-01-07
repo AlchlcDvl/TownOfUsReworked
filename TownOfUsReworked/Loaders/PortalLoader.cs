@@ -28,8 +28,6 @@ public class PortalLoader : AssetLoader<Asset>
                 yield return EndFrame();
             }
         }
-
-        yield break;
     }
 
     private static bool ShouldDownload(string id) => !File.Exists(Path.Combine(TownOfUsReworked.Portal, $"{id}.png"));

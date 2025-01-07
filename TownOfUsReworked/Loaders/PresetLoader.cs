@@ -14,6 +14,6 @@ public class PresetLoader : AssetLoader<Asset>
     public override IEnumerator AfterLoading(Asset[] response)
     {
         Message($"Found {response.Length} presets");
-        yield break;
+        yield return EndFrame();
     }
 }

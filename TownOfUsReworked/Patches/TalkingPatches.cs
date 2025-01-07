@@ -32,7 +32,6 @@ public static class TalkingPatches
         yield return HUD().CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         BeingBlackmailed = false;
         BeingSilenced = false;
-        yield break;
     }
 
     public static Sprite CachedOverlay;

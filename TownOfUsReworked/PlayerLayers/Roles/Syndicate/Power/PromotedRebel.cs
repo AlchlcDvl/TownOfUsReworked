@@ -7,10 +7,10 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         base.Init();
         Alignment = Alignment.SyndicatePower;
         SpellCount = 0;
-        Framed = [];
-        StalkerArrows = [];
-        Spelled = [];
-        Bombs = [];
+        Framed.Clear();
+        StalkerArrows.Clear();
+        Spelled.Clear();
+        Bombs.Clear();
         ConcealedPlayer = null;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;
@@ -314,6 +314,10 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
             case RebActionsRPC.Spellbind:
             {
                 Spelled.Add(reader.ReadByte());
+
+                if (AmongUsClient.Instance.AmHost)
+                    CheckEndGame.CheckEnd();
+
                 break;
             }
             case RebActionsRPC.Frame:
@@ -433,7 +437,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
 
     // Framer Stuff
     public CustomButton FrameButton { get; set; }
-    public List<byte> Framed { get; set; }
+    public List<byte> Framed { get; } = [];
     public CustomButton RadialFrameButton { get; set; }
     public bool IsFram => FormerRole is Framer;
 
@@ -615,7 +619,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
     // Bomber Stuff
     public CustomButton BombButton { get; set; }
     public CustomButton DetonateButton { get; set; }
-    public List<Bomb> Bombs { get; set; }
+    public List<Bomb> Bombs { get; } = [];
     public bool IsBomb => FormerRole is Bomber;
 
     public void Place()
@@ -797,7 +801,6 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         WarpPlayer1 = null;
         WarpPlayer2 = null;
         Warping = false;
-        yield break;
     }
 
     public void AnimateWarp()
@@ -955,7 +958,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
 
     // Spellslinger Stuff
     public CustomButton SpellButton { get; set; }
-    public List<byte> Spelled { get; set; }
+    public List<byte> Spelled { get; } = [];
     public int SpellCount { get; set; }
     public bool IsSpell => FormerRole is Spellslinger;
 
@@ -974,6 +977,9 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
                 SpellCount = 0;
             else
                 SpellCount++;
+
+            if (AmongUsClient.Instance.AmHost)
+                CheckEndGame.CheckEnd();
         }
 
         SpellButton.StartCooldown(cooldown);
@@ -984,7 +990,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
     public float SpellDifference() => SpellCount * Spellslinger.SpellCdIncrease;
 
     // Stalker Stuff
-    public Dictionary<byte, PlayerArrow> StalkerArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> StalkerArrows { get; } = [];
     public CustomButton StalkButton { get; set; }
     public bool IsStalk => FormerRole is Stalker;
 

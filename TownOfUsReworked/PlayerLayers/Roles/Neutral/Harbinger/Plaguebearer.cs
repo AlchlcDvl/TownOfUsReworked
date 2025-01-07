@@ -9,7 +9,7 @@ public class Plaguebearer : Harbinger<Pestilence>
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PBVent { get; set; } = false;
 
-    public List<byte> Infected { get; set; }
+    public List<byte> Infected { get; } = [];
     public CustomButton InfectButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Plaguebearer : FactionColor;
@@ -24,7 +24,8 @@ public class Plaguebearer : Harbinger<Pestilence>
     {
         base.Init();
         Objectives = () => "- Infect everyone to become <#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
-        Infected = [ Player.PlayerId ];
+        Infected.Clear();
+        Infected.Add(PlayerId);
         InfectButton ??= new(this, new SpriteName("Infect"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Infect, new Cooldown(InfectCd), "INFECT",
             (PlayerBodyExclusion)Exception);
     }

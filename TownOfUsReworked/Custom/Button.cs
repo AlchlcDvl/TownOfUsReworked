@@ -43,14 +43,13 @@ public class CustomButton
     public float Duration { get; }
     public float Delay { get; }
     public float OtherDelay { get; }
-    public int MaxUses { get; set; }
+    public int UseDecrement { get; } = 1;
 
     // Other things
     public ActionButton Base { get; set; }
     public bool EffectEnabled { get; set; }
     public bool DelayEnabled { get; set; }
     public bool OtherDelayEnabled { get; set; }
-    public bool Targeting { get; set; }
     public MonoBehaviour Target { get; set; }
     public bool ClickedAgain { get; set; }
     private GameObject Block { get; set; }
@@ -61,19 +60,55 @@ public class CustomButton
     public float OtherDelayTime { get; set; }
     public float CooldownTime { get; set; }
     public bool BlockExposed { get; set; }
-    public int Uses { get; set; }
 
     // Read-onlys (onlies?)
     public bool HasEffect => Duration > 0f;
     public bool HasDelay => Delay > 0f;
     public bool HasOtherDelay => OtherDelay > 0f;
-    public bool HasUses => MaxUses > 0;
+    public bool HasUses => maxUses > -1;
     public bool EffectActive => EffectTime > 0f;
     public bool DelayActive => DelayTime > 0f;
     public bool OtherDelayActive => OtherDelayTime > 0f;
     public bool CooldownActive => CooldownTime > 0f;
-
+    public bool Targeting => Target || Type.HasFlag(AbilityTypes.Targetless);
     private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
+
+    // Special
+    public int maxUses = -1;
+    public int MaxUses
+    {
+        get => maxUses;
+        set
+        {
+            if (value == maxUses)
+                return;
+
+            maxUses = value;
+
+            if (Owner.Local)
+                CallRpc(CustomRPC.Misc, MiscRPC.SyncMaxUses, this, value);
+
+            Uses = Mathf.Clamp(Uses, 0, maxUses);
+        }
+    }
+    public int uses = -1;
+    public int Uses
+    {
+        get => uses;
+        set
+        {
+            if (!HasUses || value == uses)
+                return;
+
+            uses = Mathf.Clamp(value, 0, maxUses);
+
+            if (Owner.Local)
+            {
+                CallRpc(CustomRPC.Misc, MiscRPC.SyncUses, this, value);
+                Base.SetUsesRemaining(uses);
+            }
+        }
+    }
 
     public CustomButton(params object[] properties)
     {
@@ -136,10 +171,10 @@ public class CustomButton
                 Duration = duration.Value;
             else if (prop is Delay delay1)
                 Delay = delay1.Value;
-            else if (prop is Number uses)
-                Uses = MaxUses = uses;
+            else if (prop is Number usesNum)
+                uses = maxUses = usesNum;
             else if (prop is int number)
-                Uses = MaxUses = number;
+                uses = maxUses = number;
             else if (prop is UsableFunc usable)
                 IsUsable = usable;
             else if (prop is ConditionFunc condition)
@@ -158,6 +193,8 @@ public class CustomButton
                 TextColor = color;
             else if (prop is OtherDelay oDelay)
                 OtherDelay = oDelay.Value;
+            else if (prop is UsesDecrement usesDecrement)
+                UseDecrement = usesDecrement.Value;
             else if (prop is null)
                 Warning("Entered a null prop value");
             else
@@ -192,7 +229,7 @@ public class CustomButton
         Block.transform.localPosition = new(0f, 0f, -5f);
 
         if (HasUses)
-            Base.SetUsesRemaining(Uses);
+            Base.SetUsesRemaining(uses);
         else
             Base.SetInfiniteUses();
     }
@@ -243,6 +280,9 @@ public class CustomButton
 
         if (Clickable())
         {
+            if (HasUses)
+                Uses -= UseDecrement;
+
             if (Type.HasFlag(AbilityTypes.Targetless))
                 DoClickTargetless();
             else if (Target is PlayerControl player)
@@ -253,14 +293,6 @@ public class CustomButton
                 DoClickBody(body);
             else if (Target is Console console)
                 DoClickConsole(console);
-            else
-                return;
-
-            if (HasUses)
-            {
-                Uses--;
-                Base.SetUsesRemaining(Uses);
-            }
         }
         else if (EffectActive && CanClickAgain)
         {
@@ -293,7 +325,7 @@ public class CustomButton
         EffectTime -= Time.deltaTime;
         Effect();
 
-        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
+        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner?.Player)
             EffectTime = 0f;
     }
 
@@ -321,7 +353,7 @@ public class CustomButton
         DelayTime -= Time.deltaTime;
         ActionDelay();
 
-        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
+        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner?.Player)
             DelayTime = 0f;
     }
 
@@ -350,7 +382,7 @@ public class CustomButton
         OtherDelayTime -= Time.deltaTime;
         ActionDelay();
 
-        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner || !Owner.Player)
+        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner?.Player)
             OtherDelayTime = 0f;
     }
 
@@ -363,7 +395,7 @@ public class CustomButton
 
     private void Timer()
     {
-        if (!Owner || !Owner.Player || !Local || Owner.Player.inMovingPlat || Owner.Player.onLadder)
+        if (!Owner?.Player || !Local || Owner.Player.inMovingPlat || Owner.Player.onLadder)
             return;
 
         if (!Owner.Player.inVent || GameModifiers.CooldownInVent)
@@ -421,17 +453,15 @@ public class CustomButton
         return result;
     }
 
-    public bool Usable() => IsUsable() && (!(HasUses && Uses <= 0) || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() &&
+    public bool Usable() => IsUsable() && (!HasUses || uses > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() &&
         !IsLobby() && !NoPlayers() && Owner.Player && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled &&
-        Base.isActiveAndEnabled;
+        Base.isActiveAndEnabled && (!HasUses || Uses - UseDecrement >= 0);
 
     private void SetTarget()
     {
-        if (Type.HasFlag(AbilityTypes.Targetless))
-            Targeting = true;
-        else
+        if (!Type.HasFlag(AbilityTypes.Targetless))
         {
             var monos = new List<MonoBehaviour>();
 
@@ -451,7 +481,6 @@ public class CustomButton
 
             var previous = Target;
             Target = Owner.Player.GetClosestMono(monos);
-            Targeting = Target;
             SetOutline(previous, Target);
         }
     }
@@ -516,8 +545,6 @@ public class CustomButton
 
         if (!Targeting)
             return;
-
-        Targeting = false;
 
         if (Target)
         {

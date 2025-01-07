@@ -40,28 +40,12 @@ public class HudHandler : MonoBehaviour
 
         if (BetterSabotages.CamouflagedComms)
         {
-            if (Ship().Systems.TryGetValue(SystemTypes.Comms, out var comms))
+            if (Ship().Systems.TryGetValue(SystemTypes.Comms, out var sab) && sab.TryCast<IActivatable>(out var comms) && comms.IsActive)
             {
-                var comms1 = comms.TryCast<HudOverrideSystemType>();
-
-                if (comms1 != null && comms1.IsActive)
-                {
-                    CommsEnabled = true;
-                    Camouflage();
-                    return;
-                }
-
-                var comms2 = comms.TryCast<HqHudSystemType>();
-
-                if (comms2 != null && comms2.IsActive)
-                {
-                    CommsEnabled = true;
-                    Camouflage();
-                    return;
-                }
+                CommsEnabled = true;
+                Camouflage();
             }
-
-            if (CommsEnabled && !(CamouflagerEnabled || GodfatherEnabled))
+            else if (CommsEnabled && !(CamouflagerEnabled || GodfatherEnabled))
             {
                 CommsEnabled = false;
                 DefaultOutfitAll();

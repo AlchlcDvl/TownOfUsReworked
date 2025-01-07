@@ -333,6 +333,8 @@ public enum MiscRPC : byte
     SetTarget,
     ChangeRoles,
     Achievement,
+    SyncUses,
+    SyncMaxUses,
 
     None
 }
@@ -605,6 +607,7 @@ public enum DeathReasonEnum : byte
     Converted,
     Infected,
     Clicked,
+    Marked,
 
     None
 }

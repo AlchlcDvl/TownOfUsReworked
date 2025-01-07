@@ -33,7 +33,7 @@ public class Bomber : Syndicate
 
     public CustomButton BombButton { get; set; }
     public CustomButton DetonateButton { get; set; }
-    public List<Bomb> Bombs { get; set; }
+    public List<Bomb> Bombs { get; } = [];
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Bomber : FactionColor;
     public override string Name => "Bomber";
@@ -45,7 +45,7 @@ public class Bomber : Syndicate
     {
         base.Init();
         Alignment = Alignment.SyndicateKill;
-        Bombs = [];
+        Bombs.Clear();
         BombButton ??= new(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Place, new Cooldown(BombCd), "PLACE BOMB",
             (ConditionFunc)Condition);
         DetonateButton ??= new(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any,

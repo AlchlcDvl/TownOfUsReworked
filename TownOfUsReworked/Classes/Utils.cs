@@ -91,8 +91,6 @@ public static class Utils
 
             player.SetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
         }
-
-        yield break;
     }
 
     public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(DefaultOutfitCoro(player));
@@ -181,7 +179,6 @@ public static class Utils
             player.SetOutfit(CustomPlayerOutfitType.Default);
 
         Shapeshifted = false;
-        yield break;
     }
 
     public static void Camouflage() => AllPlayers().ForEach(CamoSingle);
@@ -243,8 +240,6 @@ public static class Utils
             duration -= Time.deltaTime;
             yield return EndFrame();
         }
-
-        yield break;
     }
 
     public static NetworkedPlayerInfo.PlayerOutfit CurrentOutfit(PlayerControl player) => player.CurrentOutfit;
@@ -424,7 +419,7 @@ public static class Utils
             }
         }
 
-        target.CustomDie(DeathReason.Kill, DeathReasonEnum.Guessed, killer);
+        target.CustomDie(DeathReasonEnum.Guessed, killer);
         var voteArea = VoteAreaByPlayer(target);
         voteArea.AmDead = true;
         voteArea.Overlay.gameObject.SetActive(true);
@@ -521,12 +516,10 @@ public static class Utils
         if (!killer || !target || killer == target || !AmongUsClient.Instance.AmHost)
             yield break;
 
-        yield return Wait(URandom.RandomRange((float)Bait.BaitMinDelay, Bait.BaitMaxDelay));
+        yield return Wait(URandom.RandomRange(Bait.BaitMinDelay.Value, Bait.BaitMaxDelay.Value));
 
         if (BodyById(target.PlayerId))
             killer.ReportDeadBody(target.Data);
-
-        yield break;
     }
 
     public static void EndGame()
@@ -671,14 +664,14 @@ public static class Utils
 
     public static void Flash(UColor color, float duration = 0.5f) => Coroutines.Start(FlashCoro(color, duration));
 
-    public static IEnumerator FlashCoro(UColor color, float duration)
+    private static IEnumerator FlashCoro(UColor color, float duration)
     {
         if (IntroCutscene.Instance || ShowRolePatch.Starting)
             yield break;
 
         color.a = 0.3f;
 
-        if (HudManager.InstanceExists && HUD().FullScreen)
+        if (HudManager.Instance && HUD().FullScreen)
         {
             var fullscreen = HUD().FullScreen;
             fullscreen.enabled = true;
@@ -688,17 +681,15 @@ public static class Utils
 
         yield return Wait(duration);
 
-        if (HudManager.InstanceExists && HUD().FullScreen)
+        if (HudManager.Instance && HUD().FullScreen)
             SetFullScreenHUD();
-
-        yield break;
     }
 
     public static void SetFullScreenHUD()
     {
         var fullscreen = HUD().FullScreen;
 
-        if (!HudManager.InstanceExists || !fullscreen || !Ship() || Lobby())
+        if (!HudManager.Instance || !fullscreen || !Ship() || Lobby())
             return;
 
         fullscreen.color = new(0.6f, 0.6f, 0.6f, 0f);
@@ -769,7 +760,6 @@ public static class Utils
         }
 
         SetFullScreenHUD();
-        yield break;
     }
 
     public static IEnumerator CoTeleportPlayer(PlayerControl __instance, Vector2 position)
@@ -779,7 +769,6 @@ public static class Utils
         __instance.RpcCustomSnapTo(position);
         yield return Wait(0.25f);
         yield return Fade(true);
-        yield break;
     }
 
     public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false,
@@ -982,9 +971,7 @@ public static class Utils
     {
         foreach (var task in player.myTasks)
         {
-            var normalPlayerTask = task.TryCast<NormalPlayerTask>();
-
-            if (normalPlayerTask)
+            if (task.TryCast<NormalPlayerTask>(out var normalPlayerTask))
             {
                 var updateArrow = normalPlayerTask.taskStep > 0;
                 normalPlayerTask.taskStep = 0;
@@ -1065,7 +1052,7 @@ public static class Utils
             {
                 for (var startIndex = 0; startIndex < word.Length; startIndex += word1.Length)
                 {
-                    word1 = word.Substring(startIndex, Math.Min(width, word.Length - startIndex));
+                    word1 = word.Substring(startIndex, Mathf.Min(width, word.Length - startIndex));
                     AddWord(word1);
                 }
             }
@@ -1220,11 +1207,13 @@ public static class Utils
         }
 
         action(1f);
-        yield break;
     }
 
     public static void OverrideOnClickListeners(this PassiveButton passive, Action action, bool enabled = true)
     {
+        if (!passive)
+            return;
+
         passive.OnClick?.RemoveAllListeners();
         passive.OnClick = new();
         passive.OnClick.AddListener(action);
@@ -1233,6 +1222,9 @@ public static class Utils
 
     public static void OverrideOnMouseOverListeners(this PassiveButton passive, Action action, bool enabled = true)
     {
+        if (!passive)
+            return;
+
         passive.OnMouseOver?.RemoveAllListeners();
         passive.OnMouseOver = new();
         passive.OnMouseOver.AddListener(action);
@@ -1241,6 +1233,9 @@ public static class Utils
 
     public static void OverrideOnMouseOutListeners(this PassiveButton passive, Action action, bool enabled = true)
     {
+        if (!passive)
+            return;
+
         passive.OnMouseOut?.RemoveAllListeners();
         passive.OnMouseOut = new();
         passive.OnMouseOut.AddListener(action);
@@ -1302,9 +1297,9 @@ public static class Utils
     public static IEnumerable<T> GetValuesFromTo<T>(T start, T end, Func<T, bool> predicate = null, bool startInclusive = true, bool endInclusive = true) where T : struct, Enum
     {
         var values = Enum.GetValues<T>();
-        var startIndex = Array.IndexOf(values, start);
-        var endIndex = Array.IndexOf(values, end);
-        var result = values.Where(x => Array.IndexOf(values, x).IsInRange(startIndex, endIndex, startInclusive, endInclusive));
+        var startIndex = values.IndexOf(start);
+        var endIndex = values.IndexOf(end);
+        var result = values.Where(x => values.IndexOf(x).IsInRange(startIndex, endIndex, startInclusive, endInclusive));
 
         if (predicate != null)
             result = result.Where(predicate);
@@ -1315,24 +1310,38 @@ public static class Utils
     public static IEnumerable<TResult> GetValuesFromToAndMorph<TValue, TResult>(TValue start, TValue end, Func<TValue, TResult> select, Func<TValue, bool> predicate = null, bool startInclusive
         = true, bool endInclusive = true) where TValue : struct, Enum => GetValuesFromTo(start, end, predicate, startInclusive, endInclusive).Select(select);
 
-    public static void CustomDie(this PlayerControl player, DeathReason reason, DeathReasonEnum reason2, PlayerControl killer = null)
+    public static void CustomDie(this PlayerControl player, DeathReasonEnum customReason, PlayerControl killer = null, DeathReason reason = DeathReason.Kill)
     {
         if (player.Data.IsDead)
             return;
 
         killer ??= player;
-        player.logger.Debug($"Player {player.PlayerId} dying to {killer.PlayerId} for reason {reason} and custom reason {reason2}");
+        player.logger.Debug($"Player {player.PlayerId} dying to {killer.PlayerId} for reason {reason} and custom reason {customReason}");
 
-        if (!TutorialManager.InstanceExists && player.AmOwner)
+        if (!TutorialManager.Instance && player.AmOwner)
         {
             StatsManager.Instance.LastGameStarted = Il2CppSystem.DateTime.MinValue;
             StatsManager.Instance.BanPoints--;
         }
 
-        if (killer != player && killer.AmOwner)
+        if (killer != player)
         {
-            CustomStatsManager.IncrementStat(CustomStatsManager.StatsKilled);
-            CustomAchievementManager.UnlockAchievement("TasteForDeath");
+            var prevKiller = MostRecentKiller;
+            MostRecentKiller = killer.name;
+
+            if (!KillCounts.TryGetValue(killer.PlayerId, out var count))
+                count = 0;
+
+            KillCounts[killer.PlayerId] = count + 1;
+
+            if (killer.AmOwner)
+            {
+                CustomStatsManager.IncrementStat(CustomStatsManager.StatsKilled);
+                CustomAchievementManager.UnlockAchievement("TasteForDeath");
+
+                if (IsNullEmptyOrWhiteSpace(prevKiller))
+                    CustomAchievementManager.UnlockAchievement("FirstBlood");
+            }
         }
 
         if (player.AmOwner)
@@ -1343,8 +1352,8 @@ public static class Utils
 
         GameData.LastDeathReason = reason;
 
-        if (player.inMovingPlat)
-            ShipStatus.Instance.TryCast<FungleShipStatus>()?.Zipline.CancelZiplineUseForPlayer(player);
+        if (player.inMovingPlat && ShipStatus.Instance.TryCast<FungleShipStatus>(out var fungle))
+            fungle.Zipline.CancelZiplineUseForPlayer(player);
 
         FirstDead ??= player.name;
         player.cosmetics.AnimatePetMourning();
@@ -1397,8 +1406,11 @@ public static class Utils
         SetPostmortals.BeginPostmortals(player, false);
         Pestilence.Infected.Remove(player.PlayerId);
 
-        player.GetLayers().ForEach(x => x.OnDeath(reason, reason2, killer));
+        player.GetLayers().ForEach(x => x.OnDeath(reason, customReason, killer));
         killer.GetLayers().ForEach(x => x.OnKill(player));
+
+        if (AmongUsClient.Instance.AmHost)
+            CheckEndGame.CheckEnd();
     }
 
     public static IEnumerator CoPerformKill(KillAnimation __instance, PlayerControl source, PlayerControl target, DeathReasonEnum reason, bool lunge)
@@ -1430,7 +1442,7 @@ public static class Utils
             CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
         }
 
-        target.CustomDie(DeathReason.Kill, reason, source);
+        target.CustomDie(reason, source);
         yield return source.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
 
         if (lunge)
@@ -1447,8 +1459,6 @@ public static class Utils
             CustomPlayer.Local.isKilling = false;
             source.isKilling = false;
         }
-
-        yield break;
     }
 
     public static string PadCenter(this string text, int length, char padChar = ' ')
@@ -1462,4 +1472,10 @@ public static class Utils
     }
 
     public static bool IsAny<T>(this T item, params T[] items) where T : MonoBehaviour => items.Any(x => x == item);
+
+    public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) != null;
+
+    public static object TryCast(this Il2CppObjectBase self, Type type) => TryCastMethod.MakeGenericMethod(type).Invoke(self, null);
+
+    // public static bool TryCast(this Il2CppObjectBase obj, Type type, out object result) => (result = obj.TryCast(type)) != null;
 }

@@ -27,7 +27,7 @@ public class VampireHunter : Crew
     {
         var vigi = new Vigilante();
         vigi.RoleUpdate(this);
-        vigi.ShootButton.MaxUses = vigi.ShootButton.Uses = TasksDone ? 2 : 1;
+        vigi.ShootButton.maxUses = vigi.ShootButton.uses = TasksDone ? 2 : 1;
     }
 
     public override void UpdatePlayer()

@@ -40,20 +40,16 @@ public static class CustomNameplateManager
         return nameplate;
     }
 
-    public static List<string> GenerateDownloadList(IEnumerable<CustomNameplate> nameplates)
+    public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomNameplate> nameplates)
     {
-        var markedfordownload = new List<string>();
-
         foreach (var nameplate in nameplates)
         {
             if (nameplate.StreamOnly && !TownOfUsReworked.IsStream)
                 continue;
 
             if (!File.Exists(Path.Combine(TownOfUsReworked.Nameplates, $"{nameplate.ID}.png")))
-                markedfordownload.Add(nameplate.ID);
+                yield return nameplate.ID;
         }
-
-        return markedfordownload;
     }
 
     public static NameplateExtension GetExtention(this NamePlateData nameplate)

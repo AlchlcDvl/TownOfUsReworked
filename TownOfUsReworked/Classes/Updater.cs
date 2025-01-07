@@ -121,7 +121,6 @@ public static class ModUpdater
         }
 
         yield return EndFrame();
-        yield break;
     }
 
     public static IEnumerator DownloadUpdate(string updateType)
@@ -199,6 +198,5 @@ public static class ModUpdater
 
         Popup.TextAreaTMP.SetText(hasError ? TranslationManager.Translate("Updates.Mod.NoSuccess") : TranslationManager.Translate("Updates.Mod.Success", ("%mod%", updateType)));
         button.SetActive(true);
-        yield break;
     }
 }

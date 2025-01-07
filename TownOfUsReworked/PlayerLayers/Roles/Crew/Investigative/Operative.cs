@@ -27,8 +27,8 @@ public class Operative : Crew
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool PreciseOperativeInfo { get; set; } = false;
 
-    public List<Bug> Bugs { get; set; }
-    public List<LayerEnum> BuggedPlayers { get; set; }
+    public List<Bug> Bugs { get; } = [];
+    public List<LayerEnum> BuggedPlayers { get; } = [];
     public CustomButton BugButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Operative : FactionColor;
@@ -42,9 +42,9 @@ public class Operative : Crew
     {
         base.Init();
         Alignment = Alignment.CrewInvest;
-        BuggedPlayers = [];
-        Bugs = [];
-        BugButton ??= new(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)PlaceBug, new Cooldown(BugCd),  MaxBugs,
+        BuggedPlayers.Clear();
+        Bugs.Clear();
+        BugButton ??= new(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)PlaceBug, new Cooldown(BugCd), MaxBugs,
             (ConditionFunc)Condition);
     }
 
@@ -88,8 +88,7 @@ public class Operative : Crew
             message = message[..^2];
         }
 
-        if (HUD())
-            Run("<#A7D1B3FF>〖 Bug Results 〗</color>", message);
+        Run("<#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
     public bool Condition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);

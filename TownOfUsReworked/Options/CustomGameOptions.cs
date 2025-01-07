@@ -101,15 +101,6 @@ public static class GameModeSettings
     [StringOption(MultiMenu.Main)]
     public static HnSMode HnSMode { get; set; } = HnSMode.Classic;
 
-    [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static Number HnSShortTasks { get; set; } = new(4);
-
-    [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static Number HnSCommonTasks { get; set; } = new(4);
-
-    [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static Number HnSLongTasks { get; set; } = new(4);
-
     [NumberOption(MultiMenu.Main, 1, 13, 1)]
     public static Number HunterCount { get; set; } = new(1);
 
@@ -139,15 +130,22 @@ public static class GameModeSettings
 
     [ToggleOption(MultiMenu.Main)]
     public static bool HuntedChat { get; set; } = true;
+}
 
-    [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static Number TRShortTasks { get; set; } = new(4);
+[HeaderOption(MultiMenu.Main)]
+public static class TaskSettings
+{
+    [NumberOption(MultiMenu.Main, 0, 100, 1)]
+    public static Number CommonTasks { get; set; } = new(2);
 
-    [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static Number TRCommonTasks { get; set; } = new(4);
+    [NumberOption(MultiMenu.Main, 0, 100, 1)]
+    public static Number LongTasks { get; set; } = new(1);
 
-    [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static Number TRLongTasks { get; set; } = new(1);
+    [NumberOption(MultiMenu.Main, 0, 100, 1)]
+    public static Number ShortTasks { get; set; } = new(4);
+
+    [ToggleOption(MultiMenu.Main)]
+    public static bool GhostTasksCountToWin { get; set; } = true;
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -394,18 +392,6 @@ public static class MapSettings
 [HeaderOption(MultiMenu.Main)]
 public static class CrewSettings
 {
-    [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static Number CommonTasks { get; set; } = new(2);
-
-    [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static Number LongTasks { get; set; } = new(1);
-
-    [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static Number ShortTasks { get; set; } = new(4);
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool GhostTasksCountToWin { get; set; } = true;
-
     [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
     public static Number CrewVision { get; set; } = new(1);
 
@@ -514,28 +500,6 @@ public static class SyndicateSettings
 
     [NumberOption(MultiMenu.Main, 1, 14, 1)]
     public static Number SyndicateMin { get; set; } = new(1);
-}
-
-public static class TaskSettings
-{
-    public static Number ShortTasks => GameModeSettings.GameMode switch
-    {
-        GameMode.TaskRace => GameModeSettings.TRShortTasks,
-        GameMode.HideAndSeek => GameModeSettings.HnSShortTasks,
-        _ => CrewSettings.ShortTasks
-    };
-    public static Number LongTasks => GameModeSettings.GameMode switch
-    {
-        GameMode.TaskRace => GameModeSettings.TRLongTasks,
-        GameMode.HideAndSeek => GameModeSettings.HnSLongTasks,
-        _ => CrewSettings.LongTasks
-    };
-    public static Number CommonTasks => GameModeSettings.GameMode switch
-    {
-        GameMode.TaskRace => GameModeSettings.TRCommonTasks,
-        GameMode.HideAndSeek => GameModeSettings.HnSCommonTasks,
-        _ => CrewSettings.CommonTasks
-    };
 }
 
 [AlignmentOption(LayerEnum.CrewAudit)]

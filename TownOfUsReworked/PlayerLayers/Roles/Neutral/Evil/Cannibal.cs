@@ -21,7 +21,7 @@ public class Cannibal : Evil
     public CustomButton EatButton { get; set; }
     public int EatNeed { get; set; }
     public bool Eaten { get; set; }
-    public Dictionary<byte, PositionalArrow> BodyArrows { get; set; }
+    public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
     public bool EatWin => EatNeed == 0;
     public bool CanEat => !Eaten || (Eaten && !NeutralSettings.AvoidNeutralKingmakers);
 
@@ -38,8 +38,8 @@ public class Cannibal : Evil
     {
         base.Init();
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
-        BodyArrows = [];
-        EatNeed = Math.Min(BodiesNeeded, GameData.Instance.PlayerCount / 2);
+        BodyArrows.Clear();
+        EatNeed = Mathf.Min(BodiesNeeded, GameData.Instance.PlayerCount / 2);
         EatButton ??= new(this, new SpriteName("Eat"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
     }
 

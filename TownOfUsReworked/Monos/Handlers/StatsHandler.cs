@@ -16,11 +16,16 @@ public class StatsHandler : MonoBehaviour
 
     public void Update()
     {
+        var round = Mathf.CeilToInt(Input.mouseScrollDelta.y);
+
+        if (round == 0)
+            return;
+
         var i = I;
-        var round = Mathf.RoundToInt(Input.mouseScrollDelta.y);
-        I = Mathf.Clamp(I - round, 0, ViewingAchievements
-            ? (CustomAchievementManager.AllAchievements.Count(x => (!x.Hidden || x.Unlocked) && x.Name != "Test") - 15)
-            : (CustomStatsManager.OrderedStats.Count - 39));
+        I = Mathf.Clamp(I - round, 0, (ViewingAchievements
+            ? CustomAchievementManager.AllAchievements.Count(x => (!x.Hidden || x.Unlocked) && x.Name != "Test")
+            : (CustomStatsManager.OrderedStats.Count - 24))
+            - 15);
 
         if (i != I)
             UpdateText();

@@ -6,7 +6,7 @@ public class Stalker : Syndicate
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number StalkCd { get; set; } = new(25);
 
-    public Dictionary<byte, PlayerArrow> StalkerArrows { get; set; }
+    public Dictionary<byte, PlayerArrow> StalkerArrows { get; } = [];
     public CustomButton StalkButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Stalker : FactionColor;
@@ -19,7 +19,7 @@ public class Stalker : Syndicate
     public override void Init()
     {
         base.Init();
-        StalkerArrows = [];
+        StalkerArrows.Clear();
         Alignment = Alignment.SyndicateSupport;
         StalkButton ??= new(this, new SpriteName("Stalk"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception1);

@@ -7,9 +7,9 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
         base.Init();
         Alignment = Alignment.IntruderHead;
         TeleportPoint = Vector3.zero;
-        Investigated = [];
+        Investigated.Clear();
         FlashedPlayers = [];
-        Vents = [];
+        Vents.Clear();
         CopiedPlayer = null;
         DisguisedPlayer = null;
         MorphedPlayer = null;
@@ -496,7 +496,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
 
     // Miner Stuff
     public CustomButton MineButton { get; set; }
-    public List<Vent> Vents { get; set; }
+    public List<Vent> Vents { get; } = [];
     public bool IsMiner => FormerRole is Miner;
 
     public void Mine()
@@ -511,7 +511,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
     public bool MinerUsable() => IsMiner;
 
     // Consigliere Stuff
-    public List<byte> Investigated { get; set; }
+    public List<byte> Investigated { get; } = [];
     public CustomButton InvestigateButton { get; set; }
     public bool IsConsig => FormerRole is Consigliere;
 

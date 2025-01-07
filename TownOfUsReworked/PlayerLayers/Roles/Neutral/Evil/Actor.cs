@@ -19,7 +19,7 @@ public class Actor : Evil
     public static Number ActorRoleCount { get; set; } = new(3);
 
     public bool Guessed { get; set; }
-    public List<Role> PretendRoles { get; set; }
+    public List<Role> PretendRoles { get; } = [];
     public bool Failed => !Ability.GetAssassins().Any(x => x.Alive);
     public CustomButton PretendButton { get; set; }
     public int Rounds { get; set; }
@@ -41,7 +41,7 @@ public class Actor : Evil
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +
             $"- Your target roles are {PretendListString()}"));
         PretendButton ??= new(this, new SpriteName("Pretend"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)PickRole, "PRETEND", (UsableFunc)Usable);
-        PretendRoles = [];
+        PretendRoles.Clear();
     }
 
     public string PretendListString()

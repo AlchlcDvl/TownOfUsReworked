@@ -18,14 +18,6 @@ public abstract class CustomCosmetic : Asset
     public bool TestOnly { get; set; }
 }
 
-public abstract class CosmeticExtension
-{
-    public string Artist { get; set; }
-    public string Condition { get; set; }
-    public bool StreamOnly { get; set; }
-    public bool TestOnly { get; set; }
-}
-
 public class CustomHat : CustomCosmetic
 {
     [JsonPropertyName("flipid")]
@@ -59,12 +51,6 @@ public class CustomHat : CustomCosmetic
     public bool Behind { get; set; }
 }
 
-public class HatExtension : CosmeticExtension
-{
-    public Sprite FlipImage { get; set; }
-    public Sprite BackFlipImage { get; set; }
-}
-
 public class CustomVisor : CustomCosmetic
 {
     [JsonPropertyName("flipid")]
@@ -83,15 +69,7 @@ public class CustomVisor : CustomCosmetic
     public bool InFront { get; set; }
 }
 
-public class VisorExtension : CosmeticExtension
-{
-    public Sprite ClimbImage { get; set; }
-    public Sprite FloorImage { get; set; }
-}
-
 public class CustomNameplate : CustomCosmetic;
-
-public class NameplateExtension : CosmeticExtension;
 
 public class CustomColor : CustomCosmetic
 {
@@ -117,6 +95,9 @@ public class CustomColor : CustomCosmetic
     public float TimeSpeed { get; set; }
 
     [JsonIgnore]
+    public bool Changing => MainColorValues?.Length > 1 || ShadowColorValues?.Length > 1;
+
+    [JsonIgnore]
     public int ColorID { get; set; }
 
     [JsonIgnore]
@@ -124,9 +105,6 @@ public class CustomColor : CustomCosmetic
 
     [JsonIgnore]
     public UColor[] ShadowColors { get; set; }
-
-    [JsonIgnore]
-    public bool Changing { get; set; }
 
     [JsonIgnore]
     public UColor MainColor { get; set; }
@@ -174,6 +152,28 @@ public class CustomColor : CustomCosmetic
         }
     }
 }
+
+public abstract class CosmeticExtension
+{
+    public string Artist { get; set; }
+    public string Condition { get; set; }
+    public bool StreamOnly { get; set; }
+    public bool TestOnly { get; set; }
+}
+
+public class HatExtension : CosmeticExtension
+{
+    public Sprite FlipImage { get; set; }
+    public Sprite BackFlipImage { get; set; }
+}
+
+public class VisorExtension : CosmeticExtension
+{
+    public Sprite ClimbImage { get; set; }
+    public Sprite FloorImage { get; set; }
+}
+
+public class NameplateExtension : CosmeticExtension;
 
 // Idk why i did it, but ig i just really wanted it for consistency's sake
 // public class ColorExtention : CosmeticExtension;

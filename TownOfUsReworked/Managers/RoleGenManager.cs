@@ -516,6 +516,7 @@ public static class RoleGenManager
         Modifiers.Clear();
         Abilities.Clear();
         Dispositions.Clear();
+        Targets.Clear();
         RoleGen.Values.ForEach(x => x.Clear());
     }
 }

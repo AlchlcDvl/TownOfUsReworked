@@ -14,7 +14,7 @@ public static class CustomAchievementManager
         new("LastBlood", eog: true, icon: "IntruderKill"), // Last kill of the game
         new("TasteForDeath", icon: "IntruderKill"), // First kill
         new("Fatality", icon: "IntruderKill"), // First death
-        new("Resilient", eog: true), // Survive an attack
+        new("Resilient", eog: true, icon: "Shield"), // Survive an attack
         new("Revitalised"), // Get revived
 
         // Special
@@ -91,6 +91,9 @@ public static class CustomAchievementManager
 
     public static void UnlockAchievement(Achievement achievement)
     {
+        // if (TownOfUsReworked.MCIActive || IsFreePlay() || !IsInGame())
+        //     return;
+
         if (!Prefab)
         {
             Prefab = UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, null).DontDestroy().DontUnload();
@@ -111,7 +114,7 @@ public static class CustomAchievementManager
         achievement.Unlocked = achievement.Name != "Test";
         StatsManager.Instance.SaveStats();
 
-        if (achievement.EndOfGame && IsInGame())
+        if ((achievement.EndOfGame && IsInGame()) || !CustomPlayer.Local)
             QueuedAchievements.Add(achievement);
         else
             achievement.ShowAchievement();

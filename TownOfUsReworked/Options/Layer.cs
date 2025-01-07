@@ -90,15 +90,11 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
             role.ChanceMinusBtn.gameObject.SetActive(false);
             role.ChancePlusBtn.gameObject.SetActive(false);
 
-            unique.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.enabled = x != UniqueCheck);
-            active.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.enabled = x != ActiveCheck);
-
             unique.enabled = false;
             active.enabled = false;
         }
 
         SavedMode = GameMode.None;
-        Update();
     }
 
     public override void ViewOptionCreated()
@@ -135,7 +131,6 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         }
 
         SavedMode = GameMode.None;
-        ViewUpdate();
     }
 
     public int GetChance() => IsClassic() || IsCustom() || IsKilling() ? Get().Chance : 0;

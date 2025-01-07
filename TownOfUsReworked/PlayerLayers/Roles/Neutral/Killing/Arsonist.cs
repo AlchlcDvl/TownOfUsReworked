@@ -28,7 +28,7 @@ public class Arsonist : NKilling
     public CustomButton DouseButton { get; set; }
     public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.CrewKill or Alignment.CrewAudit
         or Alignment.NeutralPros or Alignment.NeutralNeo or Alignment.NeutralKill) && x != Player) && ArsoLastKillerBoost;
-    public List<byte> Doused { get; set; }
+    public List<byte> Doused { get; } = [];
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist : FactionColor;
     public override string Name => "Arsonist";
@@ -43,7 +43,7 @@ public class Arsonist : NKilling
     {
         base.Init();
         Objectives = () => "- Burn anyone who can oppose you";
-        Doused = [];
+        Doused.Clear();
         DouseButton ??= new(this, new SpriteName("ArsoDouse"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
         IgniteButton ??= new(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Ignite, new Cooldown(IgniteCd), "IGNITE",

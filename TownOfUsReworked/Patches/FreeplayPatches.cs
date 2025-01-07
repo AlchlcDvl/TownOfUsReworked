@@ -188,30 +188,17 @@ public static class FreeplayPatches
             {
                 var taskAddButton = UObject.Instantiate(__instance.TaskPrefab);
                 taskAddButton.MyTask = task;
-
-                if (taskAddButton.MyTask.TaskType == TaskTypes.DivertPower)
+                taskAddButton.Text.SetText(taskAddButton.MyTask.TaskType switch
                 {
-                    var divert = taskAddButton.MyTask.TryCast<DivertPowerTask>();
-
-                    if (divert)
-                        taskAddButton.Text.SetText(TranslationController.Instance.GetString(StringNames.DivertPowerTo, TranslationController.Instance.GetString(divert.TargetSystem)));
-                }
-                else if (taskAddButton.MyTask.TaskType == TaskTypes.FixWeatherNode)
-                {
-                    var node = taskAddButton.MyTask.TryCast<WeatherNodeTask>();
-
-                    if (node)
-                    {
-                        taskAddButton.Text.SetText(TranslationController.Instance.GetString(StringNames.FixWeatherNode) + " " +
-                            TranslationController.Instance.GetString(WeatherSwitchGame.ControlNames[node.NodeId]));
-                    }
-                }
-                else
-                    taskAddButton.Text.SetText(TranslationController.Instance.GetString(taskAddButton.MyTask.TaskType));
-
+                    TaskTypes.DivertPower => TranslationController.Instance.GetString(StringNames.DivertPowerTo,
+                        TranslationController.Instance.GetString(taskAddButton.MyTask.Cast<DivertPowerTask>().TargetSystem)),
+                    TaskTypes.FixWeatherNode => TranslationController.Instance.GetString(StringNames.FixWeatherNode) + " " +
+                            TranslationController.Instance.GetString(WeatherSwitchGame.ControlNames[taskAddButton.MyTask.Cast<WeatherNodeTask>().NodeId]),
+                    _ => TranslationController.Instance.GetString(taskAddButton.MyTask.TaskType)
+                });
                 __instance.AddFileAsChild(taskFolder, taskAddButton, ref num, ref num2, ref num3);
 
-                if (taskAddButton && taskAddButton.Button)
+                if (taskAddButton.Button)
                 {
                     ControllerManager.Instance.AddSelectableUiElement(taskAddButton.Button, false);
 
@@ -245,10 +232,4 @@ public static class UpdateRoleButtons
 
         return true;
     }
-}
-
-[HarmonyPatch(typeof(TutorialManager), nameof(TutorialManager.Awake))]
-public static class TutorialManagerRunTutorial
-{
-    public static void Postfix(TutorialManager __instance) => __instance.StartCoroutine(CustomPlayer.Local.CoSetRole((RoleTypes)100, false));
 }

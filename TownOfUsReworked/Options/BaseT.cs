@@ -45,17 +45,18 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type, 
             return;
 
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
+        var hud = HUD();
 
-        if (LastChangedSetting == ID && HUD().Notifier.activeMessages.Count > 0)
-            HUD().Notifier.activeMessages[^1].UpdateMessage(changed);
+        if (LastChangedSetting == ID && hud.Notifier.activeMessages.Count > 0)
+            hud.Notifier.activeMessages[^1].UpdateMessage(changed);
         else
         {
             LastChangedSetting = ID;
-            var newMessage = UObject.Instantiate(HUD().Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD().Notifier.transform);
+            var newMessage = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, hud.Notifier.transform);
             newMessage.transform.localPosition = new(0f, 0f, -2f);
-            newMessage.SetUp(changed, HUD().Notifier.settingsChangeSprite, HUD().Notifier.settingsChangeColor, (Action)(() => HUD().Notifier.OnMessageDestroy(newMessage)));
-            HUD().Notifier.ShiftMessages();
-            HUD().Notifier.AddMessageToQueue(newMessage);
+            newMessage.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(newMessage)));
+            hud.Notifier.ShiftMessages();
+            hud.Notifier.AddMessageToQueue(newMessage);
         }
     }
 }

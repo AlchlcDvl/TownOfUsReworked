@@ -20,9 +20,10 @@ public class Medium : Crew
 
     public Dictionary<byte, PlayerArrow> MediateArrows { get; set; }
     public CustomButton MediateButton { get; set; }
-    public List<byte> MediatedPlayers { get; set; }
     // public CustomButton SeanceButton { get; set; }
     // public bool HasSeanced { get; set; }
+
+    public List<byte> MediatedPlayers { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medium : FactionColor;
     public override string Name => "Medium";
@@ -34,7 +35,7 @@ public class Medium : Crew
     public override void Init()
     {
         base.Init();
-        MediatedPlayers = [];
+        MediatedPlayers.Clear();
         MediateArrows = [];
         Alignment = Alignment.CrewInvest;
         MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));

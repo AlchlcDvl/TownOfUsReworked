@@ -10,7 +10,7 @@ public class Banshee : Syndicate
     public static Number ScreamDur { get; set; } = new(10);
 
     public CustomButton ScreamButton { get; set; }
-    public List<byte> Blocked { get; set; }
+    public List<byte> Blocked { get; } = [];
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
@@ -25,7 +25,7 @@ public class Banshee : Syndicate
     {
         base.Init();
         Alignment = Alignment.SyndicateUtil;
-        Blocked = [];
+        Blocked.Clear();
         ScreamButton ??= new(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
             new Duration(ScreamDur), (EffectVoid)Scream, (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
     }

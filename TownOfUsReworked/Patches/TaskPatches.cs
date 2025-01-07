@@ -25,16 +25,14 @@ public static class RecomputeTaskCounts
                 var mostRole = most.GetRole();
                 var pcRole = pc.GetRole();
 
-                if (!most || (pcRole && mostRole && pcRole.TasksLeft >= mostRole.TasksLeft))
+                if (!most || pcRole?.TasksLeft >= mostRole?.TasksLeft)
                     most = pc;
             }
 
-            var mostRole2 = most.GetRole();
-
-            if (mostRole2)
+            if (most.TryGetLayer<Role>(out var mostRole2))
                 __instance.CompletedTasks = mostRole2.TasksCompleted;
 
-            __instance.TotalTasks = TaskSettings.ShortTasks + TaskSettings.CommonTasks;
+            __instance.TotalTasks = TaskSettings.ShortTasks + TaskSettings.CommonTasks + TaskSettings.LongTasks;
         }
         else if (IsCustomHnS())
         {
@@ -42,7 +40,7 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.Is<Hunted>())
+                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.Is<Hunted>() && (!playerInfo.IsDead || TaskSettings.GhostTasksCountToWin))
                 {
                     foreach (var task in playerInfo.Tasks)
                     {
@@ -61,7 +59,7 @@ public static class RecomputeTaskCounts
                 var pc = playerInfo.Object;
 
                 if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.CanDoTasks() && pc.Is(Faction.Crew) && !pc.Is<Revealer>() && (!playerInfo.IsDead ||
-                    CrewSettings.GhostTasksCountToWin))
+                    TaskSettings.GhostTasksCountToWin))
                 {
                     foreach (var task in playerInfo.Tasks)
                     {
@@ -74,6 +72,7 @@ public static class RecomputeTaskCounts
             }
         }
 
+        CheckEndGame.CheckEnd();
         return false;
     }
 }

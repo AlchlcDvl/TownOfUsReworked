@@ -51,6 +51,5 @@ public class VisorLoader : AssetLoader<CustomVisor>
         }
 
         cache.Clear();
-        yield break;
     }
 }

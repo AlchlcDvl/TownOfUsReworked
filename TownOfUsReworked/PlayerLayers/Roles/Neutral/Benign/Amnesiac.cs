@@ -20,7 +20,7 @@ public class Amnesiac : Neutral
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AmneToThief { get; set; } = true;
 
-    public Dictionary<byte, PositionalArrow> BodyArrows { get; set; }
+    public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
     public CustomButton RememberButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Amnesiac : FactionColor;
@@ -28,14 +28,14 @@ public class Amnesiac : Neutral
     public override LayerEnum Type => LayerEnum.Amnesiac;
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
     public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"
-        + " to their body") : "") + "\n- If there are less than 6 players alive, you will become a <#80FF00FF>Thief</color>";
+        + " to their body") : "") + "\n- If there are less than 4 players alive, you will become a <#80FF00FF>Thief</color>";
 
     public override void Init()
     {
         base.Init();
         Alignment = Alignment.NeutralBen;
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
-        BodyArrows = [];
+        BodyArrows.Clear();
         RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");
     }
 
@@ -99,7 +99,7 @@ public class Amnesiac : Neutral
             Vigilante => new Vigilante(),
 
             // Neutral roles
-            Actor actor => new Actor() { PretendRoles = actor.PretendRoles },
+            Actor actor => new Actor(),
             Arsonist => new Arsonist(),
             Betrayer => new Betrayer() { Faction = role.Faction },
             BountyHunter bh => new BountyHunter() { TargetPlayer = bh.TargetPlayer },
@@ -180,6 +180,8 @@ public class Amnesiac : Neutral
             else if (role is Whisperer whisperer1 && newRole is Whisperer whisperer2)
                 whisperer2.PlayerConversion.AddRange(whisperer1.PlayerConversion);
         }
+        else if (role is Actor act1 && newRole is Actor act2)
+            act2.PretendRoles.AddRange(act1.PretendRoles);
 
         var local = CustomPlayer.Local.GetRole();
 

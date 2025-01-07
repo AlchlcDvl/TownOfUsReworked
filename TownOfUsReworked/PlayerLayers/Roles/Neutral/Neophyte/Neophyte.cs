@@ -2,13 +2,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Neophyte : Neutral
 {
-    public List<byte> Members { get; set; }
+    public List<byte> Members { get; } = [];
 
     public override void Init()
     {
         base.Init();
         Alignment = Alignment.NeutralNeo;
-        Members = [ Player.PlayerId ];
+        Members.Clear();
+        Members.Add(PlayerId);
     }
 
     public override void Deinit()

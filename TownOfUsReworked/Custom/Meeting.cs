@@ -10,12 +10,15 @@ public class CustomMeeting
     public string DisabledSprite { get; }
     public MeetingTypes Type { get; }
     public Vector3 Position { get; set; }
-    public Dictionary<byte, bool> Actives { get; set; }
-    public Dictionary<byte, GameObject> Buttons { get; set; }
+    public Dictionary<byte, bool> Actives { get; }
+    public Dictionary<byte, GameObject> Buttons { get; }
     public bool AfterVote { get; }
+
     public delegate void OnClick(PlayerVoteArea voteArea, MeetingHud __instance);
     public delegate bool Exemption(PlayerVoteArea voteArea);
+
     private static Vector3 BasePosition => new(-0.95f, 0.03f, -1.3f);
+
     public static readonly List<CustomMeeting> AllCustomMeetings = [];
 
     public CustomMeeting(PlayerControl owner, string active, string disabled, bool vote, OnClick click, Exemption isExempt = null, Vector3? position = null) : this(owner, active, disabled,
@@ -58,7 +61,6 @@ public class CustomMeeting
         if (!Buttons.TryGetValue(targetId, out var button) || !button)
             return;
 
-        button.GetComponent<PassiveButton>().WipeListeners();
         button.SetActive(false);
         button.Destroy();
         Buttons[targetId] = null;

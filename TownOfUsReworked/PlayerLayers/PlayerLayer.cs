@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers;
 
-public abstract class PlayerLayer
+public abstract class PlayerLayer : IPlayerLayer
 {
     public virtual UColor Color => CustomColorManager.Layer;
     public virtual string Name => "None";

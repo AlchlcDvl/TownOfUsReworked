@@ -52,6 +52,5 @@ public class HatLoader : AssetLoader<CustomHat>
         }
 
         cache.Clear();
-        yield break;
     }
 }

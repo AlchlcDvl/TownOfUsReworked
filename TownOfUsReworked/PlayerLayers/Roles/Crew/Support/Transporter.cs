@@ -254,7 +254,6 @@ public class Transporter : Crew
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Transporting = false;
-        yield break;
     }
 
     public void Click1(PlayerControl player)

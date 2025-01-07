@@ -51,6 +51,5 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
         }
 
         cache.Clear();
-        yield break;
     }
 }

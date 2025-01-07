@@ -60,9 +60,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         ( [ "TaskBar" ], [ GameMode.Classic, GameMode.Custom, GameMode.AllAny, GameMode.KillingOnly, GameMode.RoleList, GameMode.Vanilla ] ),
         ( [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic, GameMode.Custom ] ),
         ( [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ], [ GameMode.KillingOnly ] ),
-        ( [ "HnSShortTasks", "HnSCommonTasks", "HnSLongTasks", "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat",
-            "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [ GameMode.HideAndSeek ] ),
-        ( [ "TRShortTasks", "TRCommonTasks", "TRLongTasks" ], [ GameMode.TaskRace ] ),
+        ( [ "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [
+            GameMode.HideAndSeek ] ),
         ( [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ] ),
         ( [ "RandomMapSubmerged" ], [ MapEnum.Random, "SubLoaded" ] ),
         ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, "LILoaded" ] ),
@@ -115,19 +114,12 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
     private bool IsActive(object option)
     {
-        var result = option == null;
+        var result = false;
 
         if (option is MapEnum map)
             result = MapSettings.Map == map;
         else if (option is GameMode mode)
             result = GameModeSettings.GameMode == mode;
-        else if (option is LayerEnum layer)
-        {
-            AddMenuIndex(6 + (int)layer);
-            result = Menus.Any(x => (int)x == SettingsPatches.SettingsPage) || RoleGenManager.GetSpawnItem(layer).IsActive();
-        }
-        else if (option is MultiMenu menu)
-            result = Menus.Contains(menu);
         else if (option is int num)
             result = SettingsPatches.SettingsPage == num;
         else if (option is VigiOptions vigiop)
@@ -139,9 +131,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             if (id == Name)
                 return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them even with this line active
 
-            var optionatt = GetOption(id);
-
-            if (optionatt != null)
+            if (AllOptions.TryFinding(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id, out var optionatt))
             {
                 result = optionatt.Active();
 
@@ -151,6 +141,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             else if (!MapToLoaded.TryGetValue(id, out result))
                 MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
         }
+        else
+            result = true;
 
         return result;
     }
@@ -161,7 +153,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
         if (Setting is OptionBehaviour option)
         {
-            option.Title = (StringNames)999999999;
+            option.Title = TranslationManager.GetOrAddName("Option.Option");
             option.OnValueChanged = (Action<OptionBehaviour>)BlankVoid;
         }
     }
@@ -286,7 +278,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         text.color = color;
         yield return Wait(0.5f);
         text.color = cache;
-        yield break;
     }
 
     public static void LoadSettings(string settingsData) => Coroutines.Start(CoLoadSettings(settingsData));
@@ -345,7 +336,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         }
 
         SendOptionRPC(save: false);
-        yield break;
     }
 
     public static IEnumerable<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x is T).Cast<T>();

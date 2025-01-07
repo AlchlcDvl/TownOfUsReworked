@@ -280,11 +280,23 @@ public static class HudPatches
         }
     }
 
+    [HarmonyPatch(nameof(HudManager.Update))]
+    public static bool Prefix() => CustomPlayer.Local;
+
     [HarmonyPatch(nameof(HudManager.Start))]
     public static void Postfix(HudManager __instance) => ClientHandler.Instance.OnHudStart(__instance);
 
-    [HarmonyPatch(nameof(HudManager.Update))]
-    public static bool Prefix() => CustomPlayer.Local;
+    [HarmonyPatch(nameof(HudManager.Start)), HarmonyPrefix]
+    public static bool StartPrefix(HudManager __instance)
+    {
+        __instance.playerListPrompt?.SetActive(false);
+        __instance.DelayedInitTouchType();
+        __instance.MapButton.OverrideOnClickListeners(() => __instance.ToggleMapVisible(GameManager.Instance?.GetMapOptions()));
+        return false;
+    }
+
+    [HarmonyPatch(nameof(HudManager.CoShowIntro)), HarmonyPrefix]
+    public static void CoShowIntroPrefix(HudManager __instance) => __instance.GameLoadAnimation.SetActive(false);
 }
 
 [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.FixedUpdate))]
@@ -307,12 +319,6 @@ public static class IsModdedPatch
 public static class DiscordPatch
 {
     public static void Prefix(Activity activity) => activity.Details += " Town Of Us Reworked";
-}
-
-[HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
-public static class SetRoles
-{
-    public static void Postfix() => RoleGenManager.BeginRoleGen();
 }
 
 [HarmonyPatch(typeof(EmergencyMinigame), nameof(EmergencyMinigame.Update))]
@@ -339,7 +345,7 @@ public static class EmergencyMinigameUpdatePatch
 [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
 public static class LobbyBehaviourPatch
 {
-    public static void Postfix(LobbyBehaviour __instance)
+    public static void Postfix()
     {
         SetFullScreenHUD();
         RoleGenManager.ResetEverything();
@@ -349,7 +355,7 @@ public static class LobbyBehaviourPatch
         MCIUtils.Clients.Clear();
         MCIUtils.PlayerClientIDs.Clear();
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame();
-        ClientHandler.Instance.OnLobbyStart(__instance);
+        ClientHandler.Instance.OnLobbyStart();
         ClientHandler.Instance.Page = 0;
         ClientHandler.Instance.Buttons.Clear();
         ClientHandler.Instance.CloseMenus();

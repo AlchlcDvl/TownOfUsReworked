@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
+[HarmonyPatch(typeof(MapCountOverlay))]
 public static class AdminPatch
 {
     private static void SetSabotaged(MapCountOverlay __instance, bool sabotaged, Role role)
@@ -96,6 +96,7 @@ public static class AdminPatch
         }
     }
 
+    [HarmonyPatch(nameof(MapCountOverlay.Update))]
     public static bool Prefix(MapCountOverlay __instance)
     {
         var role = CustomPlayer.Local.GetRole();
@@ -119,5 +120,13 @@ public static class AdminPatch
             UpdateBlips(__instance, isOp);
 
         return false;
+    }
+
+    [HarmonyPatch(nameof(MapCountOverlay.OnEnable))]
+    public static void Postfix(MapCountOverlay __instance)
+    {
+        __instance.BackgroundColor.SetColor(PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(CustomPlayer.Local)
+            ? Palette.DisabledGrey
+            : (CustomPlayer.Local.GetRole()?.Color ?? Palette.AcceptedGreen));
     }
 }

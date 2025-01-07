@@ -11,7 +11,7 @@ public class Framer : Syndicate
 
     public CustomButton FrameButton { get; set; }
     public CustomButton RadialFrameButton { get; set; }
-    public List<byte> Framed { get; set; }
+    public List<byte> Framed { get; } = [];
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Framer : FactionColor;
     public override string Name => "Framer";
@@ -24,7 +24,7 @@ public class Framer : Syndicate
     {
         base.Init();
         Alignment = Alignment.SyndicateDisrup;
-        Framed = [];
+        Framed.Clear();
         FrameButton ??= new(this, new SpriteName("Frame"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
             (PlayerBodyExclusion)Exception1);
         RadialFrameButton ??= new(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)RadialFrame, new Cooldown(FrameCd), "FRAME",

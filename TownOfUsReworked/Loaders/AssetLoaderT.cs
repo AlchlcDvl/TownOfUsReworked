@@ -79,7 +79,6 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
 
         Array.Clear(response);
         yield return EndFrame();
-        yield break;
     }
 
     public virtual IEnumerator BeginDownload(T[] response) => EndFrame();

@@ -56,8 +56,6 @@ public abstract class AssetLoader
             www.Dispose();
             yield return EndFrame();
         }
-
-        yield break;
     }
 
     public static IEnumerator InitLoaders()
@@ -74,6 +72,5 @@ public abstract class AssetLoader
         VisorLoader.Instance = new();
         BundleLoader.Instance = new();
         yield return EndFrame();
-        yield break;
     }
 }

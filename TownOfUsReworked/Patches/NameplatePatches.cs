@@ -53,11 +53,12 @@ public static class NameplatesTabOnEnablePatch
             colorChip.ProductId = nameplate.ProductId;
             colorChip.Tag = nameplate;
             colorChip.SelectionHighlight.gameObject.SetActive(false);
+            var chip = colorChip.GetComponent<NameplateChip>();
 
             if (CustomNameplateViewDatas.TryGetValue(colorChip.ProductId, out var viewData))
-                colorChip.GetComponent<NameplateChip>().image.sprite = viewData.Image;
+                chip.image.sprite = viewData.Image;
             else
-                DefaultNameplateCoro(__instance, colorChip.GetComponent<NameplateChip>());
+                DefaultNameplateCoro(__instance, chip);
 
             __instance.ColorChips.Add(colorChip);
             yStart = ypos;

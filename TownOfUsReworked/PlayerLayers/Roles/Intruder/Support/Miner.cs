@@ -10,7 +10,7 @@ public class Miner : Intruder, IDigger
     public static bool MinerSpawnOnMira { get; set; } = true;
 
     public CustomButton MineButton { get; set; }
-    public List<Vent> Vents { get; set; }
+    public List<Vent> Vents { get; } = [];
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Miner : FactionColor;
     public override string Name => MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner";
@@ -25,7 +25,7 @@ public class Miner : Intruder, IDigger
         Alignment = Alignment.IntruderSupport;
         MineButton ??= new(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label,
             (ConditionFunc)Condition);
-        Vents = [];
+        Vents.Clear();
     }
 
     public static string SpriteName => MapPatches.CurrentMap switch

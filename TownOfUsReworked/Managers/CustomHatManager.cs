@@ -57,41 +57,37 @@ public static class CustomHatManager
         return path;
     }
 
-    public static List<string> GenerateDownloadList(IEnumerable<CustomHat> hats)
+    public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomHat> hats)
     {
-        var markedfordownload = new List<string>();
-
         foreach (var hat in hats)
         {
             if (hat.StreamOnly && !TownOfUsReworked.IsStream)
                 continue;
 
             if (!File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.ID}.png")))
-                markedfordownload.Add(hat.ID);
+                yield return hat.ID;
 
             if (hat.BackID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackID}.png")))
-                markedfordownload.Add(hat.BackID);
+                yield return hat.BackID;
 
             if (hat.ClimbID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbID}.png")))
-                markedfordownload.Add(hat.ClimbID);
+                yield return hat.ClimbID;
 
             if (hat.FlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.FlipID}.png")))
-                markedfordownload.Add(hat.FlipID);
+                yield return hat.FlipID;
 
             if (hat.BackFlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackFlipID}.png")))
-                markedfordownload.Add(hat.BackFlipID);
+                yield return hat.BackFlipID;
 
             if (hat.FloorID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorID}.png")))
-                markedfordownload.Add(hat.FloorID);
+                yield return hat.FloorID;
 
             if (hat.FloorFlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorFlipID}.png")))
-                markedfordownload.Add(hat.FloorFlipID);
+                yield return hat.FloorFlipID;
 
             if (hat.ClimbFlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbFlipID}.png")))
-                markedfordownload.Add(hat.ClimbFlipID);
+                yield return hat.ClimbFlipID;
         }
-
-        return markedfordownload;
     }
 
     public static HatExtension GetExtention(this HatData hat)

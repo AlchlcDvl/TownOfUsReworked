@@ -36,8 +36,8 @@ public static class PlayerControlPatches
         PlayerLayer.GetLayers<Cryomaniac>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
     }
 
-    [HarmonyPatch(nameof(PlayerControl.Revive))]
-    public static bool Prefix(PlayerControl __instance)
+    [HarmonyPatch(nameof(PlayerControl.Revive)), HarmonyPrefix]
+    public static bool RevivePrefix(PlayerControl __instance)
     {
         if (!__instance.Data.IsDead)
             return false;
@@ -67,6 +67,9 @@ public static class PlayerControlPatches
 
         if (__instance.Data.Role is LayerHandler layerHandler)
             layerHandler.OnRevive();
+
+        if (AmongUsClient.Instance.AmHost)
+            CheckEndGame.CheckEnd();
 
         if (!__instance.AmOwner)
             return false;
@@ -189,11 +192,18 @@ public static class PlayerControlPatches
         }
     }
 
-    [HarmonyPatch(nameof(PlayerControl.Awake))]
-    public static void Postfix(PlayerControl __instance)
+    [HarmonyPatch(nameof(PlayerControl.Awake)), HarmonyPostfix]
+    public static void AwakePostfix(PlayerControl __instance)
     {
         __instance.AddComponent<PlayerControlHandler>();
         AddAsset("Kill", __instance.KillSfx);
+    }
+
+    [HarmonyPatch(nameof(PlayerControl.Start)), HarmonyPostfix]
+    public static void StartPostfix(PlayerControl __instance)
+    {
+        if (MostRecentKiller == __instance.name && __instance.AmOwner)
+            CustomAchievementManager.UnlockAchievement("LastBlood");
     }
 
     [HarmonyPatch(nameof(PlayerControl.Visible), MethodType.Setter), HarmonyPrefix]
@@ -213,7 +223,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.CanMove), MethodType.Getter), HarmonyPrefix]
     public static bool CanMovePrefix(PlayerControl __instance, ref bool __result)
     {
-        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen && !Meeting() &&
+        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.Instance || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen && !Meeting() &&
             !HUD().GameMenu.IsOpen)) && (!Map() || !Map().IsOpenStopped) && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
         return false;
     }
@@ -221,11 +231,18 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.Exiled)), HarmonyPrefix]
     public static bool ExiledPrefix(PlayerControl __instance)
     {
-        __instance.CustomDie(DeathReason.Exile, DeathReasonEnum.Ejected);
+        __instance.CustomDie(DeathReasonEnum.Ejected, reason: DeathReason.Exile);
 
         if (__instance.AmOwner)
             StatsManager.Instance.IncrementStat(StringNames.StatsTimesEjected);
 
+        return false;
+    }
+
+    [HarmonyPatch(nameof(PlayerControl.Die)), HarmonyPrefix]
+    public static bool DiePrefix(PlayerControl __instance, DeathReason reason)
+    {
+        __instance.CustomDie(DeathReasonEnum.Killed, reason: reason);
         return false;
     }
 }
