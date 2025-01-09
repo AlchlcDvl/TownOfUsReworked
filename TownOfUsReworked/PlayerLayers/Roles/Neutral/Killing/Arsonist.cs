@@ -53,6 +53,7 @@ public class Arsonist : NKilling
     public void Ignite()
     {
         Play("Ignite");
+        var disappear = new List<byte>();
 
         foreach (var arso in GetLayers<Arsonist>())
         {
@@ -67,21 +68,24 @@ public class Arsonist : NKilling
                     continue;
 
                 if (CanAttack(AttackVal, player.GetDefenseValue()))
-                    RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
-            }
-
-            if (IgnitionCremates)
-            {
-                CallRpc(CustomRPC.Action, ActionsRPC.Burn, arso);
-
-                foreach (var body in AllBodies())
                 {
-                    if (arso.Doused.Contains(body.ParentId))
-                        Ash.CreateAsh(body);
+                    RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
+                    disappear.Add(playerId);
                 }
             }
 
             arso.Doused.Clear();
+        }
+
+        if (IgnitionCremates)
+        {
+            CallRpc(CustomRPC.Action, ActionsRPC.Burn, disappear);
+
+            foreach (var body in AllBodies())
+            {
+                if (disappear.Contains(body.ParentId))
+                    Ash.CreateAsh(body);
+            }
         }
 
         if (!LastKiller)

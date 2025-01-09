@@ -48,7 +48,9 @@ Fixes!
 - Role: Fixed Spellslingers and Rebel-Spellslingers not ending the game when they successfully spell bind everyone
 - Disposition: Fixed Allied factions not being set properly
 - Modifier: Fixed some visual aspects of Giant and Dwarf
-- Compatibility: Fixed the elevator not being properly usable for postmortal roles
+- Compatibility: Fixed certain consoles not being properly usable for postmortal roles
+- Cosmetic: Fixed visors not being properly equipped or visible
+- Cosmetic: Fixed nameplates behaving weirdly in the nameplates tab
 - Visual: Fixed the HUD buttons appearing when kicking out bots in local
 - Visual: Fixed tasks being outlined when you can't do them (thanks le killer)
 - Visual: Fixed ability buttons not disappearing when opening the map

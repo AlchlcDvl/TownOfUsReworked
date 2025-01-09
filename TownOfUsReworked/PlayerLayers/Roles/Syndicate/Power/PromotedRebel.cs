@@ -1110,6 +1110,9 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
         {
             SilencedPlayer = target;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.Silence, SilencedPlayer);
+
+            if (target.IsBlackmailed())
+                CustomAchievementManager.UnlockAchievement("EerieSilence");
         }
 
         SilenceButton.StartCooldown(cooldown);

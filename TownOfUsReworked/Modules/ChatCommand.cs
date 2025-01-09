@@ -243,7 +243,7 @@ public class ChatCommand
 
     private static void SetName(string[] args, string message)
     {
-        if (!TownOfUsReworked.IsTest || !IsLobby())
+        if (!IsLobby())
         {
             Run("<#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;

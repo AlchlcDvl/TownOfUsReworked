@@ -46,13 +46,6 @@ public static class PlayerVoteAreaPatches
         return false;
     }
 
-    [HarmonyPatch(nameof(PlayerVoteArea.PreviewNameplate))]
-    public static void Postfix(PlayerVoteArea __instance, string plateID)
-    {
-        if (CustomNameplateManager.CustomNameplateViewDatas.TryGetValue(plateID, out var viewData))
-            __instance.Background.sprite = viewData?.Image;
-    }
-
     [HarmonyPatch(nameof(PlayerVoteArea.SetCosmetics)), HarmonyPostfix]
     public static void SetCosmeticsPostfix(PlayerVoteArea __instance)
     {

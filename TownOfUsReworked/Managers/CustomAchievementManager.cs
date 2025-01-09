@@ -1,3 +1,5 @@
+using Innersloth.Assets;
+
 namespace TownOfUsReworked.Managers;
 
 public static class CustomAchievementManager
@@ -12,13 +14,17 @@ public static class CustomAchievementManager
         // Generic
         new("FirstBlood", eog: true, icon: "IntruderKill"), // First kill of the game
         new("LastBlood", eog: true, icon: "IntruderKill"), // Last kill of the game
+        new("ParticipationTrophy", icon: "IntruderKill"), // Be the first to die
+        new("LastOneStanding", eog: true, icon: "IntruderKill"), // Be alive when the game ends
         new("TasteForDeath", icon: "IntruderKill"), // First kill
         new("Fatality", icon: "IntruderKill"), // First death
         new("Resilient", eog: true, icon: "Shield"), // Survive an attack
         new("Revitalised"), // Get revived
 
         // Special
-        new("RekindledPower", eog: true), // Revive a Crew Sovereign role as either a Necromancer or an Altruist
+        new("RekindledPower", eog: true), // Revive a Crew Sovereign role as either a Necromancer or an Altruist (or a Retributionist-Altruist)
+        new("HiddenAlliance", eog: true), // Knight an unrevealed Dictator or Mayor as the Monarch OR be knighted as an unrevealed Dictator or Mayor
+        new("EerieSilence", eog: true), // Blackmail a silenced player OR Silence a blackmailed player
 
         // Hidden
         new("Pacifist", eog: true, hidden: true), // Win as a killing role without actually killing anyone
@@ -106,7 +112,7 @@ public static class CustomAchievementManager
             var rend = UObject.Instantiate(Prefab.nameplate.background, Prefab.nameplate.background.transform.parent);
             rend.sprite = GetSprite("Placeholder");
             rend.name = "Icon";
-            rend.transform.localPosition = new(-0.9f, 0f, -10f);
+            rend.transform.localPosition = new(-1f, 0f, -10f);
             rend.transform.localScale = new(0.21f, 0.9f, 1f);
             Prefab.gameObject.SetActive(false);
         }
@@ -127,7 +133,7 @@ public static class CustomAchievementManager
         popup.nameplate.SetMaskLayer(CustomPlayer.Local.PlayerId);
         popup.nameplate.nameText.SetText(TranslationManager.Translate($"Achievement.{achievement.Name}.Title"));
         var rend = popup.nameplate.transform.FindChild("Icon").GetComponent<SpriteRenderer>();
-        rend.enabled = achievement.Icon != "Placeholder";
+        rend.enabled = achievement.Icon != "Placeholder" || achievement.Name == "Test";
 
         if (rend.enabled)
             rend.sprite = GetSprite(achievement.Icon);
@@ -139,6 +145,14 @@ public static class CustomAchievementManager
 
     private static IEnumerator ShowPopup(this HideAndSeekDeathPopup popup, Achievement achievement)
     {
+        if (CustomNameplateManager.CustomNameplateRegistry.TryGetValue(CustomPlayer.Local.Data.DefaultOutfit.NamePlateId, out var cn))
+            popup.nameplate.background.sprite = cn.ViewData.Image;
+        else
+        {
+            yield return popup.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance.GetNamePlateById(CustomPlayer.Local.Data.DefaultOutfit.NamePlateId).ViewDataRef,
+                (Action<NamePlateViewData>)(viewData => popup.nameplate.background.sprite = viewData?.Image));
+        }
+
         ActivePopups.Add(popup);
         popup.gameObject.SetActive(true);
         ReorderPopups();

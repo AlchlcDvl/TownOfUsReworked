@@ -15,7 +15,7 @@ public static class SetPostmortals
         if (CustomPlayer.LocalCustom.Disconnected)
             return;
 
-        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast) && !CustomPlayer.LocalCustom.Dead)
+        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
             ast.SetPosition();
 
         foreach (var id in AssassinatedPlayers)

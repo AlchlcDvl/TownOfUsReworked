@@ -14,7 +14,6 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
     private GameObject Single { get; set; }
     private TextMeshPro ButtonText { get; set; }
     private PassiveButton Button { get; set; }
-    private Type ClassType { get; set; }
     private GameMode SavedMode { get; set; }
 
     public override void OptionCreated()
@@ -143,32 +142,9 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
         }
     }
 
-    public void SetTypeAndOptions(Type type)
-    {
-        ClassType = type;
-        Name = ClassType.Name;
-        Value = DefaultValue = false;
-        ID = $"CustomOption.{Name}";
-        AllOptions.Add(this);
-        var members = new List<OptionAttribute>();
-
-        foreach (var prop in AccessTools.GetDeclaredProperties(ClassType))
-        {
-            var att = prop.GetCustomAttribute<OptionAttribute>();
-
-            if (att != null)
-            {
-                att.SetProperty(prop);
-                att.Priority = Priority;
-                members.Add(att);
-            }
-        }
-
-        GroupMembers = [ .. members ];
-    }
-
     public override void PostLoadSetup()
     {
+        TargetType = typeof(bool);
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Name.Replace("Roles", "") + "Settings");
         GroupHeader?.AddMenuIndex(6 + (int)Alignment);
         GroupMemberStrings = [ .. GroupMembers.Select(x => x.Name) ];

@@ -7,15 +7,6 @@ public readonly struct PointInTime(Vector3 position)
     public readonly Vector3 Position { get; } = position;
 }
 
-public record class PlayerVersion(Guid Guid, string VersionFinal, Version Version)
-{
-    public int Diff => TownOfUsReworked.Version.CompareTo(Version);
-    public bool VersionMatches => Diff == 0;
-    public bool GuidMatches => TownOfUsReworked.Core.ManifestModule.ModuleVersionId.Equals(Guid);
-    public bool VersionStringMatches => VersionFinal.Replace("_test", "") == TownOfUsReworked.VersionFinal.Replace("_test", "");
-    public bool EverythingMatches => GuidMatches && VersionStringMatches && VersionMatches;
-}
-
 public class GitHubApiObject
 {
     [JsonPropertyName("tag_name")]
@@ -52,7 +43,7 @@ public struct RoleOptionData(int chance, int count, bool unique, bool active, La
 
     public static RoleOptionData Parse(string input)
     {
-        var parts = input.Split(',');
+        var parts = input.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         return new(int.Parse(parts[0]), int.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
     }
 

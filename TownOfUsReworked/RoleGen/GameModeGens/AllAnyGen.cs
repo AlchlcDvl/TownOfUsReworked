@@ -80,7 +80,7 @@ public class AllAnyGen : BaseClassicCustomAllAnyGen
             }
         }
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive)
             Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Neutrals}");
     }
 }

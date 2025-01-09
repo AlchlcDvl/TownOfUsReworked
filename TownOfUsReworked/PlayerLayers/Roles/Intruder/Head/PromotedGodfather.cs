@@ -215,6 +215,9 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
         {
             BlackmailedPlayer = target;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GFActionsRPC.Blackmail, BlackmailedPlayer);
+
+            if (target.IsSilenced())
+                CustomAchievementManager.UnlockAchievement("EerieSilence");
         }
 
         BlackmailButton.StartCooldown(cooldown);
@@ -258,6 +261,8 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
 
     public void Flash()
     {
+        var hud = HUD();
+
         foreach (var id in FlashedPlayers)
         {
             var player = PlayerById(id);
@@ -269,31 +274,31 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
                     var fade = (FlashButton.EffectTime - Grenadier.FlashDur) * -2f;
 
                     if (ShouldPlayerBeBlinded(player))
-                        HUD().FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.BlindVision, fade);
+                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.BlindVision, fade);
                     else if (ShouldPlayerBeDimmed(player))
-                        HUD().FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.DimVision, fade);
+                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.DimVision, fade);
                     else
-                        HUD().FullScreen.color = CustomColorManager.NormalVision;
+                        hud.FullScreen.color = CustomColorManager.NormalVision;
                 }
                 else if (FlashButton.EffectTime.IsInRange(0.5f, Grenadier.FlashDur - 0.5f, true, true))
                 {
                     if (ShouldPlayerBeBlinded(player))
-                        HUD().FullScreen.color = CustomColorManager.BlindVision;
+                        hud.FullScreen.color = CustomColorManager.BlindVision;
                     else if (ShouldPlayerBeDimmed(player))
-                        HUD().FullScreen.color = CustomColorManager.DimVision;
+                        hud.FullScreen.color = CustomColorManager.DimVision;
                     else
-                        HUD().FullScreen.color = CustomColorManager.NormalVision;
+                        hud.FullScreen.color = CustomColorManager.NormalVision;
                 }
                 else if (FlashButton.EffectTime < 0.5f)
                 {
                     var fade2 = (FlashButton.EffectTime * -2) + 1;
 
                     if (ShouldPlayerBeBlinded(player))
-                        HUD().FullScreen.color = Color32.Lerp(CustomColorManager.BlindVision, CustomColorManager.NormalVision, fade2);
+                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.BlindVision, CustomColorManager.NormalVision, fade2);
                     else if (ShouldPlayerBeDimmed(player))
-                        HUD().FullScreen.color = Color32.Lerp(CustomColorManager.DimVision, CustomColorManager.NormalVision, fade2);
+                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.DimVision, CustomColorManager.NormalVision, fade2);
                     else
-                        HUD().FullScreen.color = CustomColorManager.NormalVision;
+                        hud.FullScreen.color = CustomColorManager.NormalVision;
                 }
 
                 if (MapBehaviourPatches.MapActive)

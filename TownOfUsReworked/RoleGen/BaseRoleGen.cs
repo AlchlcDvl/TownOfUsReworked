@@ -28,7 +28,7 @@ public abstract class BaseRoleGen : BaseGen
         AllRoles.Shuffle();
         players.Shuffle();
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive && AllRoles.Any())
         {
             var ids = "";
 

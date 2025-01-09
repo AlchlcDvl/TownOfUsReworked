@@ -47,9 +47,6 @@ public static class RPC
 
             writer.EndRpc();
         }
-
-        if (options.Count > 1)
-            CallTargetedRpc(targetClientId, CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, 255, 255, MapSettings.Map);
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)
@@ -64,48 +61,27 @@ public static class RPC
         {
             var superId = reader.ReadByte();
             var id = reader.ReadByte();
+            var customOption = OptionAttribute.GetOption(superId, id);
 
-            if (id == 255 && superId == 255)
-                SettingsPatches.SetMap(reader.ReadEnum<MapEnum>());
-            else
+            if (customOption == null)
             {
-                var customOption = OptionAttribute.GetOption(superId, id);
-
-                if (customOption == null)
-                {
-                    Error($"No option found for id: {id}");
-                    continue;
-                }
-
-                customOption.SetBase(customOption.Type switch
-                {
-                    CustomOptionType.Toggle => reader.ReadBoolean(),
-                    CustomOptionType.Number => reader.ReadNumber(),
-                    CustomOptionType.String => reader.ReadEnum(customOption.TargetType),
-                    CustomOptionType.Layer => reader.ReadRoleOptionData(),
-                    CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
-                    _ => true
-                }, false);
+                Error($"No option found for id: {id}");
+                continue;
             }
+
+            customOption.SetBase(customOption.Type switch
+            {
+                CustomOptionType.Toggle => reader.ReadBoolean(),
+                CustomOptionType.Number => reader.ReadNumber(),
+                CustomOptionType.String => reader.ReadEnum(customOption.TargetType),
+                CustomOptionType.Layer => reader.ReadRoleOptionData(),
+                CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
+                _ => true
+            }, false);
         }
 
         OptionAttribute.SaveSettings("LastUsed");
     }
-
-    public static PlayerVersion ShareGameVersion()
-    {
-        if (TownOfUsReworked.MCIActive)
-            return null;
-
-        var version = new PlayerVersion(TownOfUsReworked.Core.ManifestModule.ModuleVersionId, TownOfUsReworked.VersionFinal, TownOfUsReworked.Version);
-        var writer = CallOpenRpc(CustomRPC.Misc, MiscRPC.VersionHandshake, version);
-        writer.WritePacked(AmongUsClient.Instance.ClientId);
-        writer.EndRpc();
-        VersionHandshake(version, AmongUsClient.Instance.ClientId);
-        return version;
-    }
-
-    public static void VersionHandshake(PlayerVersion version, int clientId) => GameStartManagerPatches.PlayerVersions.TryAdd(clientId, version);
 
     public static PlayerControl ReadPlayer(this MessageReader reader) => PlayerById(reader.ReadByte());
 
@@ -125,7 +101,7 @@ public static class RPC
     public static CustomButton ReadButton(this MessageReader reader)
     {
         var id = reader.ReadString();
-        return AllButtons.Find(x => x.ID == id);
+        return CustomButton.AllButtons.Find(x => x.ID == id);
     }
 
     public static T ReadLayer<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayer() as T;
@@ -149,8 +125,6 @@ public static class RPC
 
     public static Version ReadVersion(this MessageReader reader) => new(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
 
-    public static PlayerVersion ReadPlayerVersion(this MessageReader reader) => new(new(reader.ReadString()), reader.ReadString(), reader.ReadVersion());
-
     public static object ReadEnum(this MessageReader reader, Type type) => Enum.Parse(type, $"{reader.ReadByte()}");
 
     public static T ReadEnum<T>(this MessageReader reader) where T : struct, Enum => (T)(object)reader.ReadByte();
@@ -171,13 +145,6 @@ public static class RPC
         writer.Write(version.Minor);
         writer.Write(version.Build);
         writer.Write(version.Revision);
-    }
-
-    public static void Write(this MessageWriter writer, PlayerVersion pv)
-    {
-        writer.Write($"{pv.Guid}");
-        writer.Write(pv.VersionFinal);
-        writer.Write(pv.Version);
     }
 
     public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(System.Convert.ToByte(enumVal));
@@ -214,8 +181,6 @@ public static class RPC
             writer.WriteBytesAndSize(list.ToArray());
         else if (item is CustomButton button)
             writer.Write(button.ID);
-        else if (item is PlayerVersion pv)
-            writer.Write(pv);
         else if (item is Version version)
             writer.Write(version);
         else if (item is Number num)

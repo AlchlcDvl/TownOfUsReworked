@@ -3,7 +3,7 @@ using static TownOfUsReworked.Managers.CustomNameplateManager;
 
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(NameplatesTab), nameof(NameplatesTab.OnEnable))]
+[HarmonyPatch(typeof(NameplatesTab))]
 public static class NameplatesTabOnEnablePatch
 {
     private static TMP_Text Template;
@@ -55,10 +55,10 @@ public static class NameplatesTabOnEnablePatch
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             var chip = colorChip.GetComponent<NameplateChip>();
 
-            if (CustomNameplateViewDatas.TryGetValue(colorChip.ProductId, out var viewData))
-                chip.image.sprite = viewData.Image;
+            if (CustomNameplateRegistry.TryGetValue(colorChip.ProductId, out var cn))
+                chip.image.sprite = cn.ViewData.Image;
             else
-                DefaultNameplateCoro(__instance, chip);
+                DefaultNameplateCoro(__instance, nameplate, chip);
 
             __instance.ColorChips.Add(colorChip);
             yStart = ypos;
@@ -67,9 +67,10 @@ public static class NameplatesTabOnEnablePatch
         yStart -= 1.5f;
     }
 
-    private static void DefaultNameplateCoro(NameplatesTab __instance, NameplateChip chip) => __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance
-        .GetNamePlateById(chip.ProductId).ViewDataRef, (Action<NamePlateViewData>)(viewData => chip.image.sprite = viewData?.Image)));
+    private static void DefaultNameplateCoro(NameplatesTab __instance, NamePlateData data, NameplateChip chip) => __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(data
+        .ViewDataRef, (Action<NamePlateViewData>)(viewData => chip.image.sprite = viewData?.Image)));
 
+    [HarmonyPatch(nameof(NameplatesTab.OnEnable))]
     public static bool Prefix(NameplatesTab __instance)
     {
         __instance.PlayerPreview.gameObject.SetActive(true);
@@ -86,11 +87,10 @@ public static class NameplatesTabOnEnablePatch
 
         foreach (var data in array)
         {
-            var ext = data.GetExtention();
             var package = "Innersloth";
 
-            if (ext != null)
-                package = ext.StreamOnly ? "Stream" : ext.Artist;
+            if (CustomNameplateRegistry.TryGetValue(data.ProductId, out var cn))
+                package = cn.StreamOnly ? "Stream" : cn.Artist;
 
             if (IsNullEmptyOrWhiteSpace(package))
                 package = "Misc";
@@ -119,6 +119,23 @@ public static class NameplatesTabOnEnablePatch
         if (array.Length != 0)
             __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);
 
+        return false;
+    }
+
+    [HarmonyPatch(nameof(NameplatesTab.SelectNameplate))]
+    public static bool Prefix(NameplatesTab __instance, NamePlateData plate)
+    {
+        if (!CustomNameplateRegistry.TryGetValue(plate.ProductId, out var cn))
+            return true;
+
+        __instance.plateId = plate.ProdId;
+        __instance.currentNameplateIsEquipped = DataManager.Player.Customization.NamePlate == plate.ProdId;
+		__instance.previewArea.gameObject.SetActive(true);
+        __instance.previewArea.PlayerIcon.gameObject.SetActive(false);
+        __instance.previewArea.NameText.text = DataManager.Player.Customization.Name;
+        __instance.previewArea.LevelNumberText.text = ProgressionManager.Instance.CurrentVisualLevel;
+        __instance.previewArea.Background.sprite = cn.ViewData.Image;
+        PlayerCustomizationMenu.Instance.SetItemName(plate.GetItemName());
         return false;
     }
 }

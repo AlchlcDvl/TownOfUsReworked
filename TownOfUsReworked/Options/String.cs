@@ -2,23 +2,24 @@ namespace TownOfUsReworked.Options;
 
 public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null) : OptionAttribute<Enum>(menu, CustomOptionType.String)
 {
-    public string[] Values { get; set; }
+    public IEnumerable<string> Values { get; set; }
     public int Index { get; set; }
     private string[] IgnoreStrings { get; } = ignoreStrings ?? [];
-    private Enum[] EnumValues { get; set; }
+    private IEnumerable<Enum> EnumValues { get; set; }
+    private int Count { get; set; }
 
-    public string GetString() => Values[Index];
+    public string GetString() => Values.ElementAt(Index);
 
     public void Increase()
     {
-        Index = CycleInt(Values.Length - 1, 0, Index, true);
-        Set(EnumValues[Index]);
+        Index = CycleInt(Count, 0, Index, true);
+        Set(EnumValues.ElementAt(Index));
     }
 
     public void Decrease()
     {
-        Index = CycleInt(Values.Length - 1, 0, Index, false);
-        Set(EnumValues[Index]);
+        Index = CycleInt(Count, 0, Index, false);
+        Set(EnumValues.ElementAt(Index));
     }
 
     public override void OptionCreated()
@@ -39,9 +40,10 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
 
     public override void PostLoadSetup()
     {
-        Values = [ .. Enum.GetNames(TargetType).Except(IgnoreStrings) ];
-        EnumValues = [ .. Enum.GetValues(TargetType).Cast<Enum>().Where(x => !IgnoreStrings.Contains($"{x}")) ];
+        Values = Enum.GetNames(TargetType).Except(IgnoreStrings);
+        EnumValues = Enum.GetValues(TargetType).Cast<Enum>().Where(x => !IgnoreStrings.Contains($"{x}"));
         Index = EnumValues.IndexOf(Value);
+        Count = Values.Count() - 1;
     }
 
     public override void ViewUpdate()
@@ -54,7 +56,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     public override void Update()
     {
         var str = Setting.Cast<StringOption>();
-        str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Values.Length - 1);
+        str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Count);
         str.ValueText.SetText(Format());
     }
 

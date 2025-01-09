@@ -116,11 +116,6 @@ public static class RPCHandling
                         SaveText("Summary", reader.ReadString(), TownOfUsReworked.Other);
                         break;
                     }
-                    case MiscRPC.VersionHandshake:
-                    {
-                        VersionHandshake(reader.ReadPlayerVersion(), reader.ReadPackedInt32());
-                        break;
-                    }
                     case MiscRPC.SubmergedFixOxygen:
                     {
                         RepairOxygen();
@@ -149,6 +144,11 @@ public static class RPCHandling
                         ReceiveOptionRPC(reader);
                         break;
                     }
+                    case MiscRPC.SyncMap:
+                    {
+                        SettingsPatches.SetMap(reader.ReadEnum<MapEnum>());
+                        break;
+                    }
                     case MiscRPC.Notify:
                     {
                         ChatPatches.Notify(reader.ReadByte());
@@ -157,32 +157,7 @@ public static class RPCHandling
                     case MiscRPC.SetSettings:
                     {
                         TownOfUsReworked.NormalOptions.MapId = MapPatches.CurrentMap = reader.ReadByte();
-                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
-                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
-                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
-                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
-                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
-                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
-                        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
-                        TownOfUsReworked.NormalOptions.CrewLightMod = CrewSettings.CrewVision;
-                        TownOfUsReworked.NormalOptions.ImpostorLightMod = IntruderSettings.IntruderVision;
-                        TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
-                        TownOfUsReworked.NormalOptions.VisualTasks = GameModifiers.VisualTasks;
-                        TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameSettings.PlayerSpeed;
-                        TownOfUsReworked.NormalOptions.NumImpostors = IntruderSettings.IntruderCount;
-                        TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
-                        TownOfUsReworked.NormalOptions.ConfirmImpostor = GameSettings.ConfirmEjects;
-                        TownOfUsReworked.NormalOptions.VotingTime = GameSettings.VotingTime;
-                        TownOfUsReworked.NormalOptions.DiscussionTime = GameSettings.DiscussionTime;
-                        TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
-                        TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
-                        TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
-                        TownOfUsReworked.NormalOptions.GhostsDoTasks = TaskSettings.GhostTasksCountToWin;
-                        TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
-                        TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
-                        TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
-                        TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-                        CustomPlayer.Local.MaxReportDistance = GameSettings.ReportDistance;
+                        MapPatches.SetDefaults();
                         MapPatches.AdjustSettings();
                         break;
                     }
@@ -321,8 +296,7 @@ public static class RPCHandling
                     }
                     case VanillaRPC.SetColor:
                     {
-                        var player = reader.ReadPlayer();
-                        player.SetColor(reader.ReadByte());
+                        reader.ReadPlayer().SetColor(reader.ReadByte());
                         break;
                     }
                     default:
@@ -421,17 +395,16 @@ public static class RPCHandling
                         var dragger = reader.ReadPlayer();
                         var dragged1 = BodyById(DragHandler.Instance.Dragging[dragger.PlayerId]);
                         DragHandler.Instance.StopDrag(dragger);
-                        PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging == dragged1).ToList().ForEach(x => x.CurrentlyDragging = null);
-                        PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.IsJani && x.CurrentlyDragging == dragged1).ToList().ForEach(x => x.CurrentlyDragging = null);
+                        PlayerLayer.GetILayers<IDragger>().Where(x => x.CurrentlyDragging == dragged1).ForEach(x => x.CurrentlyDragging = null);
                         break;
                     }
                     case ActionsRPC.Burn:
                     {
-                        var arsoRole = reader.ReadLayer<Arsonist>();
+                        var disappear = reader.ReadByteList();
 
                         foreach (var body in AllBodies())
                         {
-                            if (arsoRole.Doused.Contains(body.ParentId))
+                            if (disappear.Contains(body.ParentId))
                                 Ash.CreateAsh(body);
                         }
 
@@ -480,8 +453,7 @@ public static class RPCHandling
 
                 switch (WinState)
                 {
-                    case WinLose.ArsonistWins or WinLose.CryomaniacWins or WinLose.GlitchWins or WinLose.MurdererWins or WinLose.JuggernautWins or WinLose.SerialKillerWins or
-                        WinLose.WerewolfWins:
+                    case >= WinLose.ArsonistWins and <= WinLose.WerewolfWins:
                     {
                         var nkRole = reader.ReadLayer<Role>();
 

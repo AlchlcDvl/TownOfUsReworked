@@ -14,16 +14,14 @@ public partial class TownOfUsReworked : BasePlugin
     public const string VersionString = "0.7.1.0";
     public static readonly Version Version = new(VersionString);
 
-    public const bool IsDev = true;
-    public const bool IsStream = true;
-    public const int DevBuild = 24;
+    public static readonly bool IsDev = true;
+    public static readonly bool IsStream = true;
+    public const int DevBuild = 25;
 
-    public static bool IsTest => IsLocalGame() && (IsDev || MCIActive);
     private static readonly string VersionS = VersionString[..^2];
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
-    private static string TestString => IsTest ? "_test" : "";
     private static string StreamString => IsStream ? "s" : "";
-    public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}{TestString}";
+    public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}";
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -77,9 +75,9 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> ForceUseLocal { get; set; }
     public static ConfigEntry<bool> UseDarkTheme { get; set; }
     public static ConfigEntry<bool> NoWelcome { get; set; }
+    public static ConfigEntry<bool> AutoPlayAgain { get; set; }
 
     public static ConfigEntry<bool> RedirectLogger { get; set; }
-    public static ConfigEntry<bool> AutoPlayAgain { get; set; }
     public static ConfigEntry<bool> DisableTimeout { get; set; }
     public static ConfigEntry<bool> Persistence { get; set; }
     public static ConfigEntry<bool> SameVote { get; set; }
@@ -94,7 +92,7 @@ public partial class TownOfUsReworked : BasePlugin
 
         if (CheckAbort(out var mod))
         {
-            Fatal($"Unsupported mod {mod} detected, aborting mod loading");
+            Critical($"Unsupported mod {mod} detected, aborting mod loading");
             return;
         }
 
@@ -116,6 +114,6 @@ public partial class TownOfUsReworked : BasePlugin
         ModInstance = null;
         Harmony.UnpatchSelf();
         Fatal($"Mod Unloaded - {this}");
-        return base.Unload();
+        return true;
     }
 }

@@ -26,7 +26,7 @@ public static class References
     public static MapBehaviour Map() => MapBehaviour.Instance;
     public static Minigame ActiveTask() => Minigame.Instance;
     public static LobbyBehaviour Lobby() => LobbyBehaviour.Instance;
-    public static ChatController Chat() => HUD().Chat;
+    public static ChatController Chat() => HUD()?.Chat;
     public static string FirstDead { get; set; }
     public static string CachedFirstDead { get; set; }
     public static string MostRecentKiller { get; set; }

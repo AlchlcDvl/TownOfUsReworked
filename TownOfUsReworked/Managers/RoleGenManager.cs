@@ -349,7 +349,7 @@ public static class RoleGenManager
         CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
             BetterAirship.SpawnPoints);
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive)
         {
             var maxName = 4;
             var maxRole = 4;
@@ -491,7 +491,7 @@ public static class RoleGenManager
         CustomMeeting.DestroyAll();
         CustomArrow.DestroyAll();
         CustomMenu.DestroyAll();
-        DestroyAll();
+        CustomButton.DestroyAll();
 
         Ash.DestroyAll();
 

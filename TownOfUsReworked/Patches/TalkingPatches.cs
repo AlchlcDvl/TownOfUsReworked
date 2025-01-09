@@ -20,16 +20,17 @@ public static class TalkingPatches
 
     private static IEnumerator Shhh(string status)
     {
-        yield return HUD().CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
-        var TempPosition = HUD().shhhEmblem.transform.localPosition;
-        var TempDuration = HUD().shhhEmblem.HoldDuration;
-        HUD().shhhEmblem.transform.localPosition += new Vector3(0f, 0f, 1f);
-        HUD().shhhEmblem.TextImage.SetText(status);
-        HUD().shhhEmblem.HoldDuration = 2.5f;
-        yield return HUD().ShowEmblem(true);
-        HUD().shhhEmblem.transform.localPosition = TempPosition;
-        HUD().shhhEmblem.HoldDuration = TempDuration;
-        yield return HUD().CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
+        var hud = HUD();
+        yield return hud.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
+        var TempPosition = hud.shhhEmblem.transform.localPosition;
+        var TempDuration = hud.shhhEmblem.HoldDuration;
+        hud.shhhEmblem.transform.localPosition += new Vector3(0f, 0f, 1f);
+        hud.shhhEmblem.TextImage.SetText(status);
+        hud.shhhEmblem.HoldDuration = 2.5f;
+        yield return hud.ShowEmblem(true);
+        hud.shhhEmblem.transform.localPosition = TempPosition;
+        hud.shhhEmblem.HoldDuration = TempDuration;
+        yield return hud.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         BeingBlackmailed = false;
         BeingSilenced = false;
     }

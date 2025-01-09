@@ -191,27 +191,31 @@ public abstract class Role : PlayerLayer
 
     public void UpdateButtons()
     {
-        HUD().SabotageButton.graphic.sprite = GetSprite(Faction switch
+        try
         {
-            Faction.Syndicate => "SyndicateSabotage",
-            Faction.Intruder => "IntruderSabotage",
-            _ => "IntruderSabotage"
-        });
-        HUD().SabotageButton.graphic.SetCooldownNormalizedUvs();
-        HUD().ImpostorVentButton.graphic.sprite = GetSprite(Faction switch
-        {
-            Faction.Syndicate => "SyndicateVent",
-            Faction.Intruder => "IntruderVent",
-            Faction.Crew => "CrewVent",
-            Faction.Neutral => "NeutralVent",
-            _ => "IntruderVent"
-        });
-        HUD().ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
-        HUD().ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
-        HUD().UseButton.buttonLabelText.SetOutlineColor(FactionColor);
-        HUD().PetButton.buttonLabelText.SetOutlineColor(FactionColor);
-        HUD().ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
-        HUD().SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
+            var hud = HUD();
+            hud.SabotageButton.graphic.sprite = GetSprite(Faction switch
+            {
+                Faction.Syndicate => "SyndicateSabotage",
+                Faction.Intruder => "IntruderSabotage",
+                _ => "IntruderSabotage"
+            });
+            hud.SabotageButton.graphic.SetCooldownNormalizedUvs();
+            hud.ImpostorVentButton.graphic.sprite = GetSprite(Faction switch
+            {
+                Faction.Syndicate => "SyndicateVent",
+                Faction.Intruder => "IntruderVent",
+                Faction.Crew => "CrewVent",
+                Faction.Neutral => "NeutralVent",
+                _ => "IntruderVent"
+            });
+            hud.ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
+            hud.ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
+            hud.UseButton.buttonLabelText.SetOutlineColor(FactionColor);
+            hud.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
+            hud.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
+            hud.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
+        } catch {}
     }
 
     public override void OnIntroEnd() => UpdateButtons();
@@ -458,7 +462,7 @@ public abstract class Role : PlayerLayer
                 bh.Assigned = true;
 
                 // Ensures only the Bounty Hunter sees this
-                if (HUD() && bh.Local)
+                if (bh.Local)
                     Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
             }
         }
@@ -533,7 +537,7 @@ public abstract class Role : PlayerLayer
             role2.ShieldedPlayer = null;
             role2.ShieldBroken = true;
 
-            if (TownOfUsReworked.IsTest)
+            if (TownOfUsReworked.MCIActive)
                 Message(player.name + " Is Now Ex-Shielded");
         }
     }

@@ -6,7 +6,7 @@ public static class AbilityButtonPatch
     [HarmonyPatch(nameof(AbilityButton.Update)), HarmonyPrefix]
     public static bool UpdatePrefix(AbilityButton __instance)
     {
-        var result = !AllButtons.TryFinding(x => x.Base == __instance && !x.Disabled, out var button);
+        var result = !CustomButton.AllButtons.TryFinding(x => x.Base == __instance && !x.Disabled, out var button);
 
         if (!result)
             button.Update();
@@ -15,7 +15,7 @@ public static class AbilityButtonPatch
     }
 
     [HarmonyPatch(nameof(AbilityButton.DoClick)), HarmonyPrefix]
-    public static bool DoClickPrefix(AbilityButton __instance) => !AllButtons.Any(x => x.Base == __instance);
+    public static bool DoClickPrefix(AbilityButton __instance) => !CustomButton.AllButtons.Any(x => x.Base == __instance);
 }
 
 [HarmonyPatch(typeof(ActionButton))]

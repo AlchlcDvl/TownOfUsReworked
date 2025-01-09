@@ -46,7 +46,7 @@ public static class ChatPatches
                 SuggestionText.SetText(result);
 
                 if (Input.GetKeyDown(KeyCode.Tab))
-                    __instance.freeChatField.textArea.SetText(result.Split(' ')[0]);
+                    __instance.freeChatField.textArea.SetText(result.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0]);
             }
             else
                 SuggestionText.SetText($"{text} UNKNOWN COMMAND");

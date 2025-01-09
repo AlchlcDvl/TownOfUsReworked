@@ -48,7 +48,7 @@ public static class VisorsTabOnEnablePatch
             else
                 colorChip.Button.OverrideOnClickListeners(() => __instance.SelectVisor(visor));
 
-            if (visor.GetExtention() != null)
+            if (CustomVisorRegistry.ContainsKey(visor.ProductId))
             {
                 var background = colorChip.transform.FindChild("Background");
                 var foreground = colorChip.transform.FindChild("ForeGround");
@@ -72,8 +72,8 @@ public static class VisorsTabOnEnablePatch
             __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
             var colorId = __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
 
-            if (CustomVisorViewDatas.TryGetValue(visor.ProductId, out var data) && data)
-                ColorChipFix(colorChip, data.IdleFrame, colorId);
+            if (CustomVisorRegistry.TryGetValue(visor.ProductId, out var cv))
+                ColorChipFix(colorChip, cv.ViewData.IdleFrame, colorId);
             else
                 visor.SetPreview(colorChip.Inner.FrontLayer, colorId);
 
@@ -110,11 +110,10 @@ public static class VisorsTabOnEnablePatch
 
         foreach (var data in array)
         {
-            var ext = data.GetExtention();
             var package = "Innersloth";
 
-            if (ext != null)
-                package = ext.StreamOnly ? "Stream" : ext.Artist;
+            if (CustomVisorRegistry.TryGetValue(data.ProductId, out var cv))
+                package = cv.StreamOnly ? "Stream" : cv.Artist;
 
             if (IsNullEmptyOrWhiteSpace(package))
                 package = "Misc";
@@ -153,11 +152,17 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.UpdateMaterial)), HarmonyPrefix]
     public static bool UpdateMaterialPrefix(VisorLayer __instance)
     {
-        if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out var asset) || !asset)
+        try
+        {
+            __instance.viewAsset.GetAsset();
+            return true;
+        } catch {}
+
+        if (!__instance.visorData || !CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         var maskType = __instance.matProperties.MaskType;
-        var masked = __instance.visorData && __instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor;
+        var masked = __instance.visorData && __instance.IsLoaded && cv.ViewData.MatchPlayerColor;
         __instance.Image.sharedMaterial = maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI
             ? (masked ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial)
             : (masked ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader);
@@ -169,7 +174,7 @@ public static class VisorPatches
         };
         __instance.Image.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
 
-        if (__instance.visorData && __instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor)
+        if (__instance.visorData && __instance.IsLoaded && cv.ViewData.MatchPlayerColor)
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.Image);
 
         if (__instance.matProperties.MaskLayer <= 0)
@@ -181,25 +186,26 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.SetFlipX)), HarmonyPrefix]
     public static bool SetFlipXPrefix(VisorLayer __instance, bool flipX)
     {
-        if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out var asset) || !asset)
+        if (!__instance.visorData || !CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         __instance.Image.flipX = flipX;
 
-        if (!__instance.IsLoaded)
+        if (!__instance.IsLoaded || !cv.ViewData)
             return false;
 
-        __instance.Image.sprite = flipX && asset.LeftIdleFrame ? asset.LeftIdleFrame : asset.IdleFrame;
+        __instance.Image.sprite = flipX && cv.ViewData.LeftIdleFrame ? cv.ViewData.LeftIdleFrame : cv.ViewData.IdleFrame;
         return false;
     }
 
     [HarmonyPatch(nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int)), HarmonyPrefix]
     public static bool SetVisorPrefix(VisorLayer __instance, VisorData data, int color)
     {
-        if (!CustomVisorViewDatas.TryGetValue(data.ProductId, out var asset) || !asset)
+        if (!CustomVisorRegistry.TryGetValue(data.ProductId, out var cv))
             return true;
 
         __instance.visorData = data;
+        __instance.viewAsset = null;
         __instance.SetMaterialColor(color);
         __instance.PopulateFromViewData();
         return false;
@@ -208,15 +214,13 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.PopulateFromViewData)), HarmonyPrefix]
     public static bool PopulateFromViewDataPrefix(VisorLayer __instance)
     {
-        VisorViewData asset = null;
-
         try
         {
-            asset = __instance.viewAsset.GetAsset();
+            __instance.viewAsset.GetAsset();
             return true;
         } catch {}
 
-        if (!__instance.visorData || !CustomVisorViewDatas.TryGetValue(__instance.visorData.ProductId, out asset) || !asset)
+        if (!__instance.visorData || !CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         __instance.UpdateMaterial();
@@ -228,23 +232,36 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.SetFloorAnim)), HarmonyPrefix]
     public static bool SetFloorAnimPrefix(VisorLayer __instance)
     {
-        var result = CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor);
+        try
+        {
+            __instance.viewAsset.GetAsset();
+            return true;
+        } catch {}
 
-        if (result)
-            __instance.Image.sprite = visor.FloorImage;
+        if (!__instance.visorData || !CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+            return true;
 
-        return !result;
+        __instance.Image.sprite = cv.ViewData.FloorFrame;
+        return false;
     }
 
     [HarmonyPatch(nameof(VisorLayer.SetClimbAnim)), HarmonyPrefix]
-    public static bool SetClimbAnimPrefix(VisorLayer __instance)
+    public static bool SetClimbAnimPrefix(VisorLayer __instance, PlayerBodyTypes bodyType)
     {
-        if (!CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor))
+        if (__instance.options.HideDuringClimb || bodyType == PlayerBodyTypes.Horse || !CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor))
             return true;
 
-        if (!__instance.options.HideDuringClimb)
-            __instance.Image.sprite = visor.ClimbImage;
-
+        __instance.transform.SetLocalZ(0f);
+        __instance.Image.sprite = visor.ViewData.ClimbFrame;
         return false;
+    }
+
+    [HarmonyPatch(nameof(VisorLayer.IsLoaded), MethodType.Getter)]
+    public static bool Prefix(VisorLayer __instance, ref bool __result)
+    {
+        if (!__instance.visorData && !CustomVisorRegistry.ContainsKey(__instance.visorData.ProductId))
+            return true;
+
+        return !(__result = true);
     }
 }

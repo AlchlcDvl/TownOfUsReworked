@@ -7,7 +7,6 @@ public class TestingTab : BaseTab
     public override void OnGUI()
     {
         TownOfUsReworked.Persistence.Value = GUILayout.Toggle(TownOfUsReworked.Persistence.Value, "Bot Persistence");
-        TownOfUsReworked.AutoPlayAgain.Value = GUILayout.Toggle(TownOfUsReworked.AutoPlayAgain.Value, "Auto Play Again");
         TownOfUsReworked.DisableTimeout.Value = GUILayout.Toggle(TownOfUsReworked.DisableTimeout.Value, "Disable Lobby Timeout");
         TownOfUsReworked.RedirectLogger.Value = GUILayout.Toggle(TownOfUsReworked.RedirectLogger.Value, "Redirect Logger");
 

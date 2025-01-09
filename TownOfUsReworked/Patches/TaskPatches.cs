@@ -72,7 +72,6 @@ public static class RecomputeTaskCounts
             }
         }
 
-        CheckEndGame.CheckEnd();
         return false;
     }
 }

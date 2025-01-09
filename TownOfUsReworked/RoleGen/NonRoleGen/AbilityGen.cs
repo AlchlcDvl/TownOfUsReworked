@@ -34,7 +34,7 @@ public class AbilityGen : BaseGen
         AllAbilities.Shuffle();
         var invalid = new List<LayerEnum>();
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive && AllAbilities.Any())
         {
             var ids = "";
 
@@ -105,7 +105,7 @@ public class AbilityGen : BaseGen
             }
         }
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive && invalid.Any())
         {
             var ids = "";
 

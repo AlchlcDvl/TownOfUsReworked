@@ -129,13 +129,15 @@ public static class MCIUtils
         AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
         AmongUsClient.Instance.HostId = newPlayer.OwnerId;
 
-        HUD().SetHudActive(true);
-        HUD().ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
+        var hud = HUD();
+
+        hud.SetHudActive(true);
+        hud.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
 
         light.transform.SetParent(CustomPlayer.Local.transform, false);
         light.transform.localPosition = newPlayer.Collider.offset;
 
-        HUD().PlayerCam.SetTarget(newPlayer);
+        hud.PlayerCam.SetTarget(newPlayer);
         newPlayer.MyPhysics.ResetMoveState();
         newPlayer.MyPhysics.ResetAnimState();
         KillAnimation.SetMovement(newPlayer, true);

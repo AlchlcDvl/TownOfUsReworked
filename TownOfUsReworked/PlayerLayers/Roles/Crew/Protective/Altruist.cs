@@ -4,19 +4,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Altruist : Crew
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ManaCd { get; set; } = new(25);
+    public static Number AltManaCd { get; set; } = new(25);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number MaxMana { get; set; } = new(5);
+    public static Number MaxAltMana { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number ManaGainedPerBody { get; set; } = new(1);
+    public static Number AltManaGainedPerBody { get; set; } = new(1);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number PassiveManaGain { get; set; } = new(0);
+    public static Number PassiveAltManaGain { get; set; } = new(0);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number ManaCost { get; set; } = new(2);
+    public static Number AltManaCost { get; set; } = new(2);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number ReviveCd { get; set; } = new(25);
@@ -42,9 +42,9 @@ public class Altruist : Crew
     {
         base.Init();
         Alignment = Alignment.CrewProt;
-        ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(ManaCd), (UsableFunc)Usable);
+        ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(AltManaCd), (UsableFunc)Usable);
         ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
-            MaxMana, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(ManaCost));
+            MaxAltMana, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(AltManaCost));
         ReviveButton.uses = 0;
     }
 
@@ -96,7 +96,7 @@ public class Altruist : Crew
 
     public void GainMana(DeadBody target)
     {
-        ReviveButton.Uses += ManaGainedPerBody;
+        ReviveButton.Uses += AltManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
         FadeBody(target);
@@ -108,7 +108,7 @@ public class Altruist : Crew
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        ReviveButton.Uses += PassiveManaGain;
+        ReviveButton.Uses += PassiveAltManaGain;
     }
 
     public override void ReadRPC(MessageReader reader)

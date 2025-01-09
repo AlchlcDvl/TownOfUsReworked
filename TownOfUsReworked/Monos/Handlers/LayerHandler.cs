@@ -95,6 +95,9 @@ public class LayerHandler : RoleBehaviour
         CustomModifier.UponTaskComplete(idx);
         CustomDisposition.UponTaskComplete(idx);
 
+        if (AmongUsClient.Instance.AmHost)
+            CheckEndGame.CheckEnd();
+
         if (!CustomRole.TasksDone)
             return;
 
@@ -221,7 +224,7 @@ public class LayerHandler : RoleBehaviour
 
         InitializeAbilityButton();
 
-        if (player.AmOwner && !TutorialManager.Instance && !TownOfUsReworked.MCIActive)
+        if (player.AmOwner && !TutorialManager.InstanceExists && !TownOfUsReworked.MCIActive)
         {
             CustomStatsManager.IncrementStat(CustomRole.Faction switch
             {
@@ -280,10 +283,11 @@ public class LayerHandler : RoleBehaviour
             return;
         else
         {
-            var minigame = Instantiate(HauntMenu, HUD().AbilityButton.transform, false);
+            var hud = HUD();
+            var minigame = Instantiate(HauntMenu, hud.AbilityButton.transform, false);
             minigame.transform.SetLocalZ(-5f);
             minigame.Begin(null);
-            HUD().AbilityButton.SetDisabled();
+            hud.AbilityButton.SetDisabled();
         }
     }
 }

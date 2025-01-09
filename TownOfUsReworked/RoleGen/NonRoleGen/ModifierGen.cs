@@ -34,7 +34,7 @@ public class ModifierGen : BaseGen
         AllModifiers.Shuffle();
         var invalid = new List<LayerEnum>();
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive && AllModifiers.Any())
         {
             var ids = "";
 
@@ -77,7 +77,7 @@ public class ModifierGen : BaseGen
             }
         }
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive && invalid.Any())
         {
             var ids = "";
 

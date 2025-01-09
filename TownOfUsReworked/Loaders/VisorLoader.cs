@@ -1,5 +1,4 @@
 using static TownOfUsReworked.Managers.CustomVisorManager;
-using Cpp2IL.Core.Extensions;
 
 namespace TownOfUsReworked.Loaders;
 
@@ -16,7 +15,7 @@ public class VisorLoader : AssetLoader<CustomVisor>
 
     public override IEnumerator AfterLoading(CustomVisor[] response)
     {
-        UnregisteredVisors.AddRange(response);
+        var unregistered = new List<CustomVisor>(response);
 
         if (TownOfUsReworked.IsStream)
         {
@@ -26,30 +25,28 @@ public class VisorLoader : AssetLoader<CustomVisor>
             {
                 var data = JsonSerializer.Deserialize<CustomVisor[]>(File.ReadAllText(filePath));
                 data.ForEach(x => x.StreamOnly = true);
-                UnregisteredVisors.AddRange(data);
+                unregistered.AddRange(data);
                 Array.Clear(data);
             }
         }
 
-        Message($"Found {UnregisteredVisors.Count} visors");
-        var cache = UnregisteredVisors.Clone();
+        Message($"Found {unregistered.Count} visors");
         var time = 0f;
 
-        for (var i = 0; i < cache.Count; i++)
+        for (var i = 0; i < unregistered.Count; i++)
         {
-            var file = cache[i];
-            RegisteredVisors.Add(CreateVisorBehaviour(file));
-            UnregisteredVisors.Remove(file);
+            var file = unregistered[i];
+            CreateVisorBehaviour(file);
             time += Time.deltaTime;
 
             if (time > 1f)
             {
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Visors ({i + 1}/{cache.Count})");
+                UpdateSplashPatch.SetText($"Loading Visors ({i + 1}/{unregistered.Count})");
                 yield return EndFrame();
             }
         }
 
-        cache.Clear();
+        unregistered.Clear();
     }
 }

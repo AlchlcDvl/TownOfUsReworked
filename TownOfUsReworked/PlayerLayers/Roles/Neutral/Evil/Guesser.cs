@@ -358,7 +358,7 @@ public class Guesser : Evil
         }
 
         // Ensures only the Guesser sees this
-        if (HUD() && !IsNullEmptyOrWhiteSpace(something))
+        if (!IsNullEmptyOrWhiteSpace(something))
             Run("<#EEE5BEFF>〖 Guess Hint 〗</color>", something);
     }
 

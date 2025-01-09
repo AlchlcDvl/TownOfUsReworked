@@ -74,11 +74,12 @@ public static class PlayerControlPatches
         if (!__instance.AmOwner)
             return false;
 
-        HUD().ShadowQuad.gameObject.SetActive(true);
-        HUD().KillButton.gameObject.SetActive(IsHnS());
-        HUD().AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS());
-        HUD().SabotageButton.gameObject.SetActive(__instance.CanSabotage());
-        HUD().ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
+        var hud = HUD();
+        hud.ShadowQuad.gameObject.SetActive(true);
+        hud.KillButton.gameObject.SetActive(IsHnS());
+        hud.AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS());
+        hud.SabotageButton.gameObject.SetActive(__instance.CanSabotage());
+        hud.ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
         ButtonUtils.Reset();
 
         if (Chat().IsOpenOrOpening)
@@ -108,10 +109,10 @@ public static class PlayerControlPatches
     }
 
     [HarmonyPatch(nameof(PlayerControl.CheckUseZipline))]
-    public static void Prefix(PlayerControl target, ref bool __state) => CanUsePatch.Prefix(target, ref __state);
+    public static void Prefix(PlayerControl target, ref bool __state) => CanUsePatch.Prefix(target.Data, ref __state);
 
     [HarmonyPatch(nameof(PlayerControl.CheckUseZipline))]
-    public static void Postfix(PlayerControl target, ref bool __state) => CanUsePatch.Postfix(target, ref __state);
+    public static void Postfix(PlayerControl target, ref bool __state) => CanUsePatch.Postfix(target.Data, ref __state);
 
     [HarmonyPatch(nameof(PlayerControl.AdjustLighting)), HarmonyPrefix]
     public static bool AdjustLightingPrefix(PlayerControl __instance)
@@ -169,7 +170,9 @@ public static class PlayerControlPatches
         if (__instance.Data.Role is LayerHandler handler)
             handler.UponTaskComplete(idx);
 
-        if (HUD().TaskPanel)
+        var hud = HUD();
+
+        if (hud.TaskPanel)
         {
             var text = "";
 
@@ -188,7 +191,7 @@ public static class PlayerControlPatches
             else
                 text = "<#FF0000FF>Fake Tasks</color>";
 
-            HUD().TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
+            hud.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
         }
     }
 
@@ -223,7 +226,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.CanMove), MethodType.Getter), HarmonyPrefix]
     public static bool CanMovePrefix(PlayerControl __instance, ref bool __result)
     {
-        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.Instance || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen && !Meeting() &&
+        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen && !Meeting() &&
             !HUD().GameMenu.IsOpen)) && (!Map() || !Map().IsOpenStopped) && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
         return false;
     }

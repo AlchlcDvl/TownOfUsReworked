@@ -656,7 +656,7 @@ public static class OnGameEndPatches
     {
         public static void Postfix(EndGameNavigation __instance)
         {
-            if (TownOfUsReworked.AutoPlayAgain.Value && TownOfUsReworked.MCIActive)
+            if (ClientOptions.AutoPlayAgain)
                 __instance.NextGame();
         }
     }

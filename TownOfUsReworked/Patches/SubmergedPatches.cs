@@ -30,7 +30,7 @@ public static class SubmergedExile
 
         if (obj.name.Contains("ExileCutscene"))
             SetPostmortals.ExileControllerPostfix(Ejection());
-        else if (obj.name.Contains("SpawnInMinigame") && CustomPlayer.Local.TryGetLayer<Astral>(out var ast) && !CustomPlayer.LocalCustom.Dead)
+        else if (obj.name.Contains("SpawnInMinigame") && CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
         {
             ast.SetPosition();
             SetFullScreenHUD();

@@ -4,16 +4,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Necromancer : Neophyte
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
+    public static Number NecroManaCd { get; set; } = new(25);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
+    public static Number MaxNecroMana { get; set; } = new(5);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
+    public static Number NecroManaGainedPerBody { get; set; } = new(1);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
+    public static Number PassiveNecroManaGain { get; set; } = new(0);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
+    public static Number NecroManaCost { get; set; } = new(2);
+
+    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number ResurrectCd { get; set; } = new(25);
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ResurrectCdIncreases { get; set; } = true;
-
-    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static Number ResurrectCdIncrease { get; set; } = new(5);
-
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
-    public static Number MaxResurrections { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number SacrificeCd { get; set; } = new(25);
@@ -45,8 +51,7 @@ public class Necromancer : Neophyte
     public byte ParentId { get; set; }
     public CustomButton ResurrectButton { get; set; }
     public CustomButton SacrificeButton { get; set; }
-    public int ResurrectedCount { get; set; }
-    public int KillCount { get; set; }
+    public CustomButton ManaButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Necromancer : FactionColor;
     public override string Name => "Necromancer";
@@ -61,10 +66,9 @@ public class Necromancer : Neophyte
         base.Init();
         Objectives = () => "- Resurrect or kill anyone who can oppose the <#E6108AFF>Reanimated</color>";
         SubFaction = SubFaction.Reanimated;
-        ResurrectedCount = 0;
-        KillCount = 0;
-        ResurrectButton ??= new(this, new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Resurrect, new Cooldown(ResurrectCd), MaxResurrections,
-            new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, "RESURRECT", (DifferenceFunc)Difference1, (EndFunc)EndEffect, new CanClickAgain(false));
+        ManaButton ??= new(this, "GAIN MANA", new SpriteName("NecroManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(NecroManaCd), (UsableFunc)Usable);
+        ResurrectButton ??= new(this, new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Resurrect, new Cooldown(ResurrectCd), MaxNecroMana, "RESURRECT",
+            new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, (EndFunc)EndEffect, new CanClickAgain(false));
         SacrificeButton ??= new(this, new SpriteName("NecroKill"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
             (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
     }
@@ -86,7 +90,6 @@ public class Necromancer : Neophyte
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
         Convert(player.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
-        ResurrectedCount++;
         player.Revive();
 
         if (Lovers.BothLoversDie && player.TryGetLayer<Lovers>(out var lovers))
@@ -134,18 +137,30 @@ public class Necromancer : Neophyte
     {
         var cooldown = Interact(Player, target, true);
 
-        if (cooldown != CooldownType.Fail)
-            KillCount++;
-
         SacrificeButton.StartCooldown(cooldown);
 
         if (NecroCooldownsLinked)
             ResurrectButton.StartCooldown(cooldown);
     }
 
-    public float Difference1() => ResurrectCdIncreases ? (ResurrectedCount * ResurrectCdIncrease) : 0;
+    public void GainMana(DeadBody target)
+    {
+        ResurrectButton.Uses += NecroManaGainedPerBody;
+        Spread(Player, PlayerByBody(target));
+        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
+        FadeBody(target);
+        ManaButton.StartCooldown();
+    }
 
-    public float Difference2() => SacrificeCdIncreases ? (KillCount * SacrificeCdIncrease) : 0;
+    public bool Usable() => ResurrectButton.uses != ResurrectButton.maxUses;
+
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        base.OnMeetingStart(__instance);
+        ResurrectButton.Uses += PassiveNecroManaGain;
+    }
+
+    public float Difference2() => SacrificeCdIncreases ? ((KillCounts.TryGetValue(PlayerId, out var count) ? count : 0) * SacrificeCdIncrease) : 0;
 
     public bool EndEffect() => Dead;
 

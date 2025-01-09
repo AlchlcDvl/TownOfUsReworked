@@ -382,7 +382,7 @@ public class OtherInfo(string name, string shortF, string description, UColor co
         result += ColorIt($"Name: {Name}");
         result += "\n" + ColorIt($"Short Form: {Short}");
         result += "\n" + ColorIt(WrapText($"Description: {Description}"));
-        result += "\n" + ColorIt(WrapTexts(OtherNotes.Split('\n')));
+        result += "\n" + ColorIt(WrapTexts(OtherNotes.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)));
     }
 }
 

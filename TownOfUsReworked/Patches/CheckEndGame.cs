@@ -6,7 +6,16 @@ public static class CheckEndGame
     [HarmonyPatch(nameof(LogicGameFlowNormal.CheckEndCriteria))]
     public static bool Prefix(LogicGameFlowNormal __instance)
     {
-        if (!AmongUsClient.Instance.AmHost || WinState == WinLose.None)
+        if (!AmongUsClient.Instance.AmHost)
+            return false;
+
+        if (Sabotaged() && IntruderSettings.IntrudersCanSabotage)
+        {
+            WinState = SyndicateSettings.AltImps ? WinLose.SyndicateWins : WinLose.IntrudersWin;
+            CallRpc(CustomRPC.WinLose, WinState);
+        }
+
+        if (WinState == WinLose.None)
             return false;
 
         if (IsFreePlay())
@@ -131,8 +140,6 @@ public static class CheckEndGame
 
     private static bool TasksDone()
     {
-        GameData.Instance.RecomputeTaskCounts();
-
         if ((int)TaskSettings.LongTasks + (int)TaskSettings.CommonTasks + (int)TaskSettings.ShortTasks == 0)
             return IsCustomHnS();
 
@@ -154,9 +161,9 @@ public static class CheckEndGame
         return allCrew.Count == crewWithNoTasks.Count;
     }
 
-    private static bool Sabotaged()
+    public static bool Sabotaged()
     {
-        foreach (var sab in Ship().Systems.Values)
+        foreach (var sab in Ship().Systems?.Values)
         {
             if (sab.TryCast<LifeSuppSystemType>(out var life) && life.Countdown <= 0f)
                 return true;

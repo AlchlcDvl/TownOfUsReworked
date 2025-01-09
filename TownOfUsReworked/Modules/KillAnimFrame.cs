@@ -12,7 +12,7 @@ public struct KillAnimFrame
 
     public static KillAnimFrame Deserialize(string dataString)
     {
-        var data = dataString.Split(',');
+        var data = dataString.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         return new()
         {

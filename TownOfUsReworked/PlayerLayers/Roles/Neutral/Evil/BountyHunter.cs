@@ -172,7 +172,7 @@ public class BountyHunter : Evil
             return;
 
         // Ensures only the Bounty Hunter sees this
-        if (HUD() && !IsNullEmptyOrWhiteSpace(something))
+        if (!IsNullEmptyOrWhiteSpace(something))
             Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", something);
     }
 

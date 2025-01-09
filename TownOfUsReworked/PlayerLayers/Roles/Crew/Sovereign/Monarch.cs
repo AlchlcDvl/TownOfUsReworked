@@ -31,7 +31,7 @@ public class Monarch : Crew, ISovereign
     public override LayerEnum Type => LayerEnum.Monarch;
     public override Func<string> StartText => () => "Knight Those Who You Trust";
     public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"
-        + " you cannot be killed";
+        + " you cannot be killed\n- You will know when a knight of yours dies";
     public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;
 
     public override void Init()
@@ -52,6 +52,9 @@ public class Monarch : Crew, ISovereign
         {
             ToBeKnighted.Add(target.PlayerId);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
+
+            if (target.TryGetILayer<IRevealer>(out var rev) && !rev.Revealed)
+                CustomAchievementManager.UnlockAchievement("HiddenAlliance");
         }
 
         KnightingButton.StartCooldown(cooldown);
@@ -59,26 +62,20 @@ public class Monarch : Crew, ISovereign
 
     public bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();
 
-    public override void ReadRPC(MessageReader reader) => ToBeKnighted.Add(reader.ReadByte());
+    public override void ReadRPC(MessageReader reader)
+    {
+        var id = reader.ReadByte();
+        ToBeKnighted.Add(id);
+
+        if (CustomPlayer.Local.PlayerId == id && CustomPlayer.Local.TryGetILayer<IRevealer>(out var rev) && !rev.Revealed)
+            CustomAchievementManager.UnlockAchievement("HiddenAlliance");
+    }
 
     public bool Usable() => !RoundOne;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        var remove = new List<byte>();
-
-        foreach (var id in Knighted)
-        {
-            var knight = PlayerById(id);
-
-            if (knight.HasDied())
-            {
-                remove.Add(id);
-                Run("<#FF004EFF>〖 Alert 〗</color>", "A Knight as died!");
-            }
-        }
-
-        remove.ForEach(x => Knighted.Remove(x));
+        Knighted.RemoveAll(x => PlayerById(x).HasDied());
     }
 }

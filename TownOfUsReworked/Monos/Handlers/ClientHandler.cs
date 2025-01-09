@@ -59,7 +59,13 @@ public class ClientHandler : MonoBehaviour
 
     public void OnHudStart(HudManager __instance)
     {
-        if (!ButtonsParent)
+        if (MinSize == Vector3.zero)
+            MinSize = __instance.transform.localScale;
+
+        if (MaxSize == Vector3.zero)
+            MaxSize = __instance.transform.localScale * 4f;
+
+        if (!ButtonsParent && __instance.AbilityButton)
         {
             var obj = __instance.AbilityButton.transform.parent;
             ButtonsParent = Instantiate(obj, obj.parent);
@@ -71,6 +77,9 @@ public class ClientHandler : MonoBehaviour
             grid.CellSize = new(0.85f, 0.8f);
             ButtonsParent.DestroyChildren();
         }
+
+        if (!ButtonsParent)
+            return;
 
         if (!WikiRCButton)
         {
@@ -101,12 +110,6 @@ public class ClientHandler : MonoBehaviour
             ZoomButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("MinusActive");
             ZoomButton.transform.Find("Background").localPosition = Vector3.zero;
         }
-
-        if (MinSize == Vector3.zero)
-            MinSize = __instance.transform.localScale;
-
-        if (MaxSize == Vector3.zero)
-            MaxSize = __instance.transform.localScale * 4f;
     }
 
     public void OnLobbyStart()
@@ -136,6 +139,7 @@ public class ClientHandler : MonoBehaviour
         ClientOptionsButton.gameObject.SetActive(part2 && !RoleCardActive);
         ZoomButton.gameObject.SetActive(hud.MapButton.gameObject.active && IsNormal() && CustomPlayer.LocalCustom.Dead && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() ||
             CustomPlayer.Local.Caught()) && !Meeting() && !RoleCardActive);
+        hud.MapButton.gameObject.SetActive(IsInGame());
 
         if (PhoneText)
         {
@@ -177,14 +181,15 @@ public class ClientHandler : MonoBehaviour
         var original = Camera.main.orthographicSize;
 
         var sizeLimit = inOut ? MaxSize : MinSize;
-        var originalSize = HUD().transform.localScale;
+        var hud = HUD();
+        var originalSize = hud.transform.localScale;
 
         yield return PerformTimedAction(1f, p =>
         {
             var size = Meeting() ? 3f : Mathf.Lerp(original, limit, p);
             Camera.main.orthographicSize = size;
-            HUD().UICamera.orthographicSize = size;
-            HUD().transform.localScale = Vector3.Lerp(originalSize, sizeLimit, p);
+            hud.UICamera.orthographicSize = size;
+            hud.transform.localScale = Vector3.Lerp(originalSize, sizeLimit, p);
         });
     }
 
@@ -385,7 +390,7 @@ public class ClientHandler : MonoBehaviour
                 }
             }
 
-            Instance.Buttons.ToList().ForEach(x =>
+            Instance.Buttons.ForEach(x =>
             {
                 if (!x.Value.Any())
                     Instance.Buttons.Remove(x.Key);
@@ -525,7 +530,7 @@ public class ClientHandler : MonoBehaviour
     {
         Entry.Clear();
         ResultPage = 0;
-        var texts = result.Split('\n');
+        var texts = result.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var pos = 0;
         var result2 = "";
 

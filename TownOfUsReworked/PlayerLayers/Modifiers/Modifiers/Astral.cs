@@ -19,7 +19,7 @@ public class Astral : Modifier
 
     public void SetPosition()
     {
-        if (LastPosition == Vector3.zero)
+        if (Dead || LastPosition == Vector3.zero)
             return;
 
         Player.RpcCustomSnapTo(LastPosition);

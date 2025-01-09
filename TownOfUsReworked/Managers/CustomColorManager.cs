@@ -46,6 +46,26 @@ public static class CustomColorManager
 
     public static bool IsColorDark(this Color32 color) => color is { r: < 128, g: < 128, b: 128 };
 
+    public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
+    {
+        if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
+            return UColor.grey.Shadow();
+        else if (player.IsMimicking(out var mimicked) && morphCondition)
+            return mimicked.Data.DefaultOutfit.ColorId.GetColor(true);
+        else
+            return player.Data.DefaultOutfit.ColorId.GetColor(true);
+    }
+
+    public static UColor GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
+    {
+        if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
+            return UColor.grey;
+        else if (player.IsMimicking(out var mimicked) && morphCondition)
+            return mimicked.Data.DefaultOutfit.ColorId.GetColor(false);
+        else
+            return player.Data.DefaultOutfit.ColorId.GetColor(false);
+    }
+
     // Layer Colors
     public static readonly UColor Role = FromHex("#FFD700FF");
     public static readonly UColor Modifier = FromHex("#7F7F7FFF");

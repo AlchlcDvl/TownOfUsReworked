@@ -202,11 +202,12 @@ public static class AirshipSpawnInPatch
 {
     public static void Postfix(SpawnInMinigame __instance)
     {
-        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast) && ast.LastPosition != Vector3.zero)
+        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
             ast.SetPosition();
 
-        HUD().FullScreen.enabled = true;
-        HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
+        var hud = HUD();
+        hud.FullScreen.enabled = true;
+        hud.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
 
         if (TownOfUsReworked.MCIActive)
         {
@@ -271,11 +272,11 @@ public static class HudPatches
     [HarmonyPatch(nameof(HudManager.Update))]
     public static void Postfix()
     {
-        if (IsLobby())
+        if (IsLobby() && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
         {
             var players = AllPlayers();
 
-            while (players.Count() > GameSettings.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+            while (players.Count() > GameSettings.LobbySize)
                 AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.Last().OwnerId).Id, DisconnectReasons.GameFull);
         }
     }
@@ -283,17 +284,11 @@ public static class HudPatches
     [HarmonyPatch(nameof(HudManager.Update))]
     public static bool Prefix() => CustomPlayer.Local;
 
+    [HarmonyPatch(nameof(HudManager.Start)), HarmonyPrefix]
+    public static bool StartPrefix(HudManager __instance) => __instance.playerListPrompt;
+
     [HarmonyPatch(nameof(HudManager.Start))]
     public static void Postfix(HudManager __instance) => ClientHandler.Instance.OnHudStart(__instance);
-
-    [HarmonyPatch(nameof(HudManager.Start)), HarmonyPrefix]
-    public static bool StartPrefix(HudManager __instance)
-    {
-        __instance.playerListPrompt?.SetActive(false);
-        __instance.DelayedInitTouchType();
-        __instance.MapButton.OverrideOnClickListeners(() => __instance.ToggleMapVisible(GameManager.Instance?.GetMapOptions()));
-        return false;
-    }
 
     [HarmonyPatch(nameof(HudManager.CoShowIntro)), HarmonyPrefix]
     public static void CoShowIntroPrefix(HudManager __instance) => __instance.GameLoadAnimation.SetActive(false);
@@ -360,6 +355,9 @@ public static class LobbyBehaviourPatch
         ClientHandler.Instance.Buttons.Clear();
         ClientHandler.Instance.CloseMenus();
         FreeplayPatches.PreviouslySelected.Clear();
+        var hud = HUD();
+        hud.enabled = false;
+        hud.enabled = true;
 
         if (count > 0 && TownOfUsReworked.Persistence.Value && !IsOnlineGame())
             MCIUtils.CreatePlayerInstances(count);

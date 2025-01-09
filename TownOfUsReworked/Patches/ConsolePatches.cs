@@ -1,16 +1,28 @@
 namespace TownOfUsReworked.Patches;
 
+[HarmonyPatch]
+public static class CanUsePatches
+{
+    public static IEnumerable<MethodBase> TargetMethods()
+    {
+        yield return AccessTools.Method(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse));
+        yield return AccessTools.Method(typeof(DoorConsole), nameof(DoorConsole.CanUse));
+        yield return AccessTools.Method(typeof(Ladder), nameof(Ladder.CanUse));
+        yield return AccessTools.Method(typeof(PlatformConsole), nameof(PlatformConsole.CanUse));
+        yield return AccessTools.Method(typeof(DeconControl), nameof(DeconControl.CanUse));
+        yield return AccessTools.Method(typeof(ZiplineConsole), nameof(ZiplineConsole.CanUse));
+        yield return AccessTools.Method(typeof(Console), nameof(Console.CanUse));
+    }
+
+    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc, ref __state);
+
+    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc, ref __state);
+}
+
 #region OpenDoorConsole
-[HarmonyPatch(typeof(OpenDoorConsole))]
+[HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
 public static class OpenDoorConsolePatches
 {
-    [HarmonyPatch(nameof(OpenDoorConsole.CanUse))]
-    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
-
-    [HarmonyPatch(nameof(OpenDoorConsole.CanUse))]
-    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-
-    [HarmonyPatch(nameof(OpenDoorConsole.Use))]
     public static bool Prefix(OpenDoorConsole __instance)
     {
         __instance.CanUse(CustomPlayer.LocalCustom.Data, out var canUse, out _);
@@ -27,51 +39,13 @@ public static class OpenDoorConsolePatches
 }
 #endregion
 
-#region DoorConsole
-[HarmonyPatch(typeof(DoorConsole), nameof(DoorConsole.CanUse))]
-public static class DoorConsoleCanUse
-{
-    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
-
-    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-}
-#endregion
-
-#region Ladder
-[HarmonyPatch(typeof(Ladder), nameof(Ladder.CanUse))]
-public static class LadderCanUse
-{
-    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
-
-    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-}
-#endregion
-
-#region PlatformConsole
-[HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.CanUse))]
-public static class PlatformConsoleCanUse
-{
-    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
-
-    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-}
-
+#region Platform
 [HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl))]
 public static class MovingPlatformBehaviourUse
 {
-    public static void Prefix(PlayerControl player, ref bool __state) => CanUsePatch.Prefix(player, ref __state);
+    public static void Prefix(PlayerControl player, ref bool __state) => CanUsePatch.Prefix(player.Data, ref __state);
 
-    public static void Postfix(PlayerControl player, ref bool __state) => CanUsePatch.Postfix(player, ref __state);
-}
-#endregion
-
-#region DeconControl
-[HarmonyPatch(typeof(DeconControl), nameof(DeconControl.CanUse))]
-public static class DeconControlUse
-{
-    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
-
-    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+    public static void Postfix(PlayerControl player, ref bool __state) => CanUsePatch.Postfix(player.Data, ref __state);
 }
 #endregion
 
@@ -82,8 +56,6 @@ public static class ConsoleCanUsePatch
     [HarmonyPatch(nameof(Console.CanUse))]
     public static bool Prefix(Console __instance, NetworkedPlayerInfo pc, ref float __result, ref bool canUse, ref bool couldUse, ref bool __state)
     {
-        CanUsePatch.Prefix(pc.Object, ref __state);
-
         // If the console is not a sabotage repair console
         if (!pc.Object.CanDoTasks() && !__instance.AllowImpostor)
         {
@@ -94,9 +66,6 @@ public static class ConsoleCanUsePatch
 
         return true;
     }
-
-    [HarmonyPatch(nameof(Console.CanUse))]
-    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
 
     [HarmonyPatch(nameof(Console.SetOutline))]
     public static void Postfix(Console __instance, bool mainTarget)
@@ -110,23 +79,13 @@ public static class ConsoleCanUsePatch
 }
 #endregion
 
-#region ZiplineConsole
-[HarmonyPatch(typeof(ZiplineConsole), nameof(ZiplineConsole.CanUse))]
-public static class ZiplineConsoleCanUse
-{
-    public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
-
-    public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
-}
-
+#region Zipline
 [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), typeof(PlayerControl), typeof(bool))]
 public class ZiplineBehaviourUse
 {
-    public static void Postfix(PlayerControl player, ref bool __state) => CanUsePatch.Postfix(player, ref __state);
-
     public static void Prefix(ZiplineBehaviour __instance, PlayerControl player, bool fromTop, ref bool __state)
     {
-        CanUsePatch.Prefix(player, ref __state);
+        CanUsePatch.Prefix(player.Data, ref __state);
 
         try
         {
@@ -154,6 +113,8 @@ public class ZiplineBehaviourUse
         if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
             ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
+
+    public static void Postfix(PlayerControl player, ref bool __state) => CanUsePatch.Postfix(player.Data, ref __state);
 }
 #endregion
 
@@ -181,21 +142,21 @@ public class CanUseCrew
 
 public static class CanUsePatch
 {
-    public static void Prefix(PlayerControl player, ref bool __state)
+    public static void Prefix(NetworkedPlayerInfo player, ref bool __state)
     {
         __state = false;
 
-        if (player.IsPostmortal() && !player.Caught())
+        if (player.Object.IsPostmortal() && !player.Object.Caught())
         {
-            player.Data.IsDead = false;
+            player.IsDead = false;
             __state = true;
         }
     }
 
-    public static void Postfix(PlayerControl player, ref bool __state)
+    public static void Postfix(NetworkedPlayerInfo player, ref bool __state)
     {
         if (__state)
-            player.Data.IsDead = true;
+            player.IsDead = true;
     }
 }
 #endregion

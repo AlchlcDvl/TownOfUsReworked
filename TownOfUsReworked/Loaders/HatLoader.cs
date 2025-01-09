@@ -1,5 +1,4 @@
 using static TownOfUsReworked.Managers.CustomHatManager;
-using Cpp2IL.Core.Extensions;
 
 namespace TownOfUsReworked.Loaders;
 
@@ -16,8 +15,7 @@ public class HatLoader : AssetLoader<CustomHat>
 
     public override IEnumerator AfterLoading(CustomHat[] response)
     {
-        UnregisteredHats.AddRange(response);
-        UnregisteredHats.ForEach(ch => ch.Behind = ch.BackID != null || ch.BackFlipID != null);
+        var unregistered = new List<CustomHat>(response);
 
         if (TownOfUsReworked.IsStream)
         {
@@ -27,30 +25,28 @@ public class HatLoader : AssetLoader<CustomHat>
             {
                 var data = JsonSerializer.Deserialize<CustomHat[]>(File.ReadAllText(filePath));
                 data.ForEach(x => x.StreamOnly = true);
-                UnregisteredHats.AddRange(data);
+                unregistered.AddRange(data);
                 Array.Clear(data);
             }
         }
 
-        Message($"Found {UnregisteredHats.Count} hats");
-        var cache = UnregisteredHats.Clone();
+        Message($"Found {unregistered.Count} hats");
         var time = 0f;
 
-        for (var i = 0; i < cache.Count; i++)
+        for (var i = 0; i < unregistered.Count; i++)
         {
-            var file = cache[i];
-            RegisteredHats.Add(CreateHatBehaviour(file));
-            UnregisteredHats.Remove(file);
+            var file = unregistered[i];
+            CreateHatBehaviour(file);
             time += Time.deltaTime;
 
             if (time > 1f)
             {
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Hats ({i + 1}/{cache.Count})");
+                UpdateSplashPatch.SetText($"Loading Hats ({i + 1}/{unregistered.Count})");
                 yield return EndFrame();
             }
         }
 
-        cache.Clear();
+        unregistered.Clear();
     }
 }

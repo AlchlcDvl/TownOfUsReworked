@@ -8,29 +8,22 @@ public static class PlayerPhysicsHandleAnimationPatch
 {
     public static void Postfix(PlayerPhysics __instance)
     {
-        try
-        {
-            if (!__instance.myPlayer || !CustomHatViewDatas.TryGetValue(__instance.myPlayer.cosmetics.hat.Hat.ProductId, out var viewData))
-                return;
+        if (!__instance.myPlayer)
+            return;
 
-            var currentAnimation = __instance.Animations.Animator.GetCurrentAnimation();
+        var currentAnimation = __instance.Animations.Animator.GetCurrentAnimation();
 
-            if (currentAnimation == __instance.Animations.group.ClimbUpAnim || currentAnimation == __instance.Animations.group.ClimbDownAnim)
-                return;
+        if (currentAnimation.IsAny(__instance.Animations.group.ClimbUpAnim, __instance.Animations.group.ClimbDownAnim))
+            return;
 
-            var hp = __instance.myPlayer.cosmetics.hat;
+        var hp = __instance.myPlayer.cosmetics.hat;
 
-            if (!hp || !hp.Hat)
-                return;
+        if (!hp || !hp.Hat || !CustomHatRegistry.TryGetValue(hp.Hat.ProductId, out var ch))
+            return;
 
-            var extend = hp.Hat.GetExtention();
-
-            if (extend.FlipImage)
-                hp.FrontLayer.sprite = __instance.FlipX ? extend.FlipImage : viewData.MainImage;
-
-            if (extend.BackFlipImage)
-                hp.BackLayer.sprite = __instance.FlipX ? extend.BackFlipImage : viewData.BackImage;
-        } catch {}
+        var viewData = ch.ViewData;
+        hp.FrontLayer.sprite = __instance.FlipX && viewData.LeftMainImage ? viewData.LeftMainImage : viewData.MainImage;
+        hp.BackLayer.sprite = __instance.FlipX && viewData.LeftBackImage ? viewData.LeftMainImage : viewData.BackImage;
     }
 }
 
@@ -40,32 +33,21 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.UpdateMaterial)), HarmonyPrefix]
     public static bool UpdateMaterialPrefix(HatParent __instance)
     {
-        HatViewData asset;
-
         try
         {
-            asset = __instance.viewAsset.GetAsset();
+            __instance.viewAsset.GetAsset();
             return true;
-        }
-        catch
-        {
-            try
-            {
-                if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out asset))
-                    return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        } catch {}
 
-        if (!asset)
+        if (!__instance.Hat || !CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
+            return true;
+
+        if (!ch.ViewData)
             return false;
 
         var maskType = __instance.matProperties.MaskType;
 
-        if (__instance.IsLoaded && asset.MatchPlayerColor)
+        if (__instance.IsLoaded && ch.ViewData.MatchPlayerColor)
         {
             if (maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI)
             {
@@ -99,7 +81,7 @@ public static class HatPatches
         __instance.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
         __instance.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
 
-        if (__instance.IsLoaded && __instance.viewAsset.GetAsset().MatchPlayerColor)
+        if (__instance.IsLoaded && ch.ViewData.MatchPlayerColor)
         {
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.BackLayer);
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.FrontLayer);
@@ -114,20 +96,28 @@ public static class HatPatches
         return false;
     }
 
+    [HarmonyPatch(nameof(HatParent.IsLoaded), MethodType.Getter)]
+    public static bool Prefix(HatParent __instance, ref bool __result)
+    {
+        if (!__instance.Hat && !CustomHatRegistry.ContainsKey(__instance.Hat.ProductId))
+            return true;
+
+        return !(__result = true);
+    }
+
     [HarmonyPatch(nameof(HatParent.PopulateFromViewData)), HarmonyPrefix]
     public static bool PopulateFromViewDataPrefix(HatParent __instance)
     {
-        HatViewData asset = null;
-
         try
         {
-            asset = __instance.viewAsset.GetAsset();
+            __instance.viewAsset.GetAsset();
             return true;
         } catch {}
 
-        if (!__instance.Hat || !CustomHatViewDatas.TryGetValue(__instance.Hat?.ProductId, out asset) || !asset)
+        if (!__instance.Hat || !CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch) || !ch.ViewData)
             return true;
 
+        var asset = ch.ViewData;
         __instance.UpdateMaterial();
         __instance.SpriteSyncNode ??= __instance.GetComponent<SpriteAnimNodeSync>();
 
@@ -167,49 +157,36 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.LateUpdate)), HarmonyPrefix]
     public static bool LateUpdatePrefix(HatParent __instance)
     {
-        if (!__instance.Parent || !__instance.Hat)
+        if (!__instance.Hat)
             return false;
-
-        HatViewData hatViewData;
 
         try
         {
-            hatViewData = __instance.viewAsset.GetAsset();
+            __instance.viewAsset.GetAsset();
             return true;
-        }
-        catch
-        {
-            try
-            {
-                CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out hatViewData);
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        } catch {}
 
-        if (!hatViewData)
+        if (!CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch) || !ch.ViewData)
             return false;
 
-        if (__instance.FrontLayer.sprite != hatViewData.ClimbImage && __instance.FrontLayer.sprite != hatViewData.FloorImage)
+        if (__instance.FrontLayer.sprite != ch.ViewData.ClimbImage && __instance.FrontLayer.sprite != ch.ViewData.FloorImage)
         {
-            if ((__instance.Hat.InFront || hatViewData.BackImage) && hatViewData.LeftMainImage)
-                __instance.FrontLayer.sprite = __instance.Parent.flipX ? hatViewData.LeftMainImage : hatViewData.MainImage;
+            if ((__instance.Hat.InFront || ch.ViewData.BackImage) && ch.ViewData.LeftMainImage)
+                __instance.FrontLayer.sprite = __instance.Parent.flipX ? ch.ViewData.LeftMainImage : ch.ViewData.MainImage;
 
-            if (hatViewData.BackImage && hatViewData.LeftBackImage)
+            if (ch.ViewData.BackImage && ch.ViewData.LeftBackImage)
             {
-                __instance.BackLayer.sprite = __instance.Parent.flipX ? hatViewData.LeftBackImage : hatViewData.BackImage;
+                __instance.BackLayer.sprite = __instance.Parent.flipX ? ch.ViewData.LeftBackImage : ch.ViewData.BackImage;
                 return false;
             }
 
-            if (!hatViewData.BackImage && !__instance.Hat.InFront && hatViewData.LeftMainImage)
+            if (!ch.ViewData.BackImage && !__instance.Hat.InFront && ch.ViewData.LeftMainImage)
             {
-                __instance.BackLayer.sprite = __instance.Parent.flipX ? hatViewData.LeftMainImage : hatViewData.MainImage;
+                __instance.BackLayer.sprite = __instance.Parent.flipX ? ch.ViewData.LeftMainImage : ch.ViewData.MainImage;
                 return false;
             }
         }
-        else if (__instance.FrontLayer.sprite == hatViewData.ClimbImage || __instance.FrontLayer.sprite == hatViewData.LeftClimbImage)
+        else if (__instance.FrontLayer.sprite == ch.ViewData.ClimbImage || __instance.FrontLayer.sprite == ch.ViewData.LeftClimbImage)
         {
             __instance.SpriteSyncNode ??= __instance.GetComponent<SpriteAnimNodeSync>();
 
@@ -223,7 +200,7 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.SetHat), typeof(int)), HarmonyPrefix]
     public static bool SetHatPrefix(HatParent __instance, int color)
     {
-        if (!CustomHatViewDatas.ContainsKey(__instance.Hat.ProductId))
+        if (!__instance.Hat || !CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
             return true;
 
         __instance.UnloadAsset();
@@ -236,50 +213,38 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.SetFloorAnim))]
     public static bool SetFloorAnimPrefix(HatParent __instance)
     {
-        HatViewData hatViewData;
+        if (!__instance.Hat)
+            return true;
 
         try
         {
-            hatViewData = __instance.viewAsset.GetAsset();
+            __instance.viewAsset.GetAsset();
             return true;
         } catch {}
 
-        if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out hatViewData))
+        if (!CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
             return true;
 
         __instance.BackLayer.enabled = false;
         __instance.FrontLayer.enabled = true;
-        __instance.FrontLayer.sprite = hatViewData.FloorImage;
-        return false;
-    }
-
-    [HarmonyPatch(nameof(HatParent.SetIdleAnim)), HarmonyPrefix]
-    public static bool SetIdleAnimPrefix(HatParent __instance, int colorId)
-    {
-        if (!__instance.Hat)
-            return false;
-
-        if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out var hatViewData))
-            return true;
-
-        __instance.viewAsset = null;
-        __instance.PopulateFromViewData();
-        __instance.SetMaterialColor(colorId);
+        __instance.FrontLayer.flipX = false;
+        __instance.FrontLayer.sprite = ch.ViewData.FloorImage;
         return false;
     }
 
     [HarmonyPatch(nameof(HatParent.SetClimbAnim)), HarmonyPrefix]
     public static bool SetClimbAnimPrefix(HatParent __instance)
     {
-        HatViewData hatViewData;
+        if (!__instance.Hat)
+            return true;
 
         try
         {
-            hatViewData = __instance.viewAsset.GetAsset();
+            __instance.viewAsset.GetAsset();
             return true;
         } catch {}
 
-        if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out hatViewData))
+        if (!CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
             return true;
 
         if (!__instance.options.ShowForClimb)
@@ -287,7 +252,7 @@ public static class HatPatches
 
         __instance.BackLayer.enabled = false;
         __instance.FrontLayer.enabled = true;
-        __instance.FrontLayer.sprite = hatViewData.ClimbImage;
+        __instance.FrontLayer.sprite = ch.ViewData.ClimbImage;
         return false;
     }
 }
@@ -337,7 +302,7 @@ public static class HatsTabOnEnablePatch
             else
                 colorChip.Button.OverrideOnClickListeners(() => __instance.SelectHat(hat));
 
-            if (hat.GetExtention() != null)
+            if (CustomHatRegistry.ContainsKey(hat.ProductId))
             {
                 var background = colorChip.transform.FindChild("Background");
                 var foreground = colorChip.transform.FindChild("ForeGround");
@@ -383,11 +348,10 @@ public static class HatsTabOnEnablePatch
 
         foreach (var data in array)
         {
-            var ext = data.GetExtention();
             var package = "Innersloth";
 
-            if (ext != null)
-                package = ext.StreamOnly ? "Stream" : ext.Artist;
+            if (CustomHatRegistry.TryGetValue(data.ProductId, out var ch))
+                package = ch.StreamOnly ? "Stream" : ch.Artist;
 
             if (IsNullEmptyOrWhiteSpace(package))
                 package = "Misc";

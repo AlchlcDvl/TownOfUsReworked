@@ -20,54 +20,34 @@ public static class ModCompatibility
     private static BasePlugin SubPlugin { get; set; }
     private static Assembly SubAssembly { get; set; }
     private static Type[] SubTypes { get; set; }
-    private static Dictionary<string, Type> SubInjectedTypes { get; set; }
 
     public static bool IsSubmerged() => SubLoaded && Ship() && Ship().Type == SUBMERGED_MAP_TYPE && MapPatches.CurrentMap == 6;
-
-    private static Type SubmarineStatusType;
 
     private static MethodInfo RpcRequestChangeFloorMethod;
     private static MethodInfo RegisterFloorOverrideMethod;
     private static Type FloorHandlerType;
     private static MethodInfo GetFloorHandlerMethod;
 
-    private static Type VentPatchDataType;
     private static PropertyInfo InTrasntionProperty;
 
-    private static Type CustomTaskTypesType;
-    private static FieldInfo RetrieveOxygenMaskField;
-
-    private static Type SubmarineOxygenSystemType;
     private static PropertyInfo SubmarineOxygenSystemInstanceProperty;
     private static MethodInfo RepairDamageMethod;
-    private static FieldInfo RetTaskTypeField;
     public static TaskTypes RetrieveOxygenMask;
 
-    private static Type SubmergedExileControllerType;
-    private static MethodInfo SubmergedExileWrapUpMethod;
-
-    private static Type SubmarineElevatorType;
     private static MethodInfo GetInElevatorMethod;
     private static MethodInfo GetMovementStageFromTimeMethod;
     private static FieldInfo GetSubElevatorSystemField;
 
-    private static Type SubmarineElevatorSystemType;
     private static FieldInfo UpperDeckIsTargetFloorField;
 
     private static FieldInfo SubmergedInstanceField;
     private static FieldInfo SubmergedElevatorsField;
 
-    private static Type CustomPlayerDataType;
+    private static Il2CppSystem.Type CustomPlayerDataType;
     private static FieldInfo HasMapField;
 
     private static Type SpawnInStateType;
     private static FieldInfo CurrentStateField;
-
-    private static Type SubSpawnSystemType;
-    private static MethodInfo GetReadyPlayerAmountMethod;
-
-    private static Type ElevatorConsoleType;
-    private static MethodInfo CanUseMethod;
 
     public static bool InitializeSubmerged()
     {
@@ -85,58 +65,56 @@ public static class ModCompatibility
             SubAssembly = SubPlugin.GetType().Assembly;
             SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly);
 
-            SubInjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Array.Find(SubTypes, t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null, null);
-
-            SubmarineStatusType = SubTypes.First(t => t.Name == "SubmarineStatus");
-            SubmergedInstanceField = AccessTools.Field(SubmarineStatusType, "instance");
-            SubmergedElevatorsField = AccessTools.Field(SubmarineStatusType, "elevators");
+            var submarineStatusType = SubTypes.First(t => t.Name == "SubmarineStatus");
+            SubmergedInstanceField = AccessTools.Field(submarineStatusType, "instance");
+            SubmergedElevatorsField = AccessTools.Field(submarineStatusType, "elevators");
 
             FloorHandlerType = SubTypes.First(t => t.Name == "FloorHandler");
             GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", [ typeof(PlayerControl) ]);
             RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
             RegisterFloorOverrideMethod = AccessTools.Method(FloorHandlerType, "RegisterFloorOverride");
 
-            VentPatchDataType = SubTypes.First(t => t.Name == "VentPatchData");
-            InTrasntionProperty = AccessTools.Property(VentPatchDataType, "InTransition");
+            var ventPatchDataType = SubTypes.First(t => t.Name == "VentPatchData");
+            InTrasntionProperty = AccessTools.Property(ventPatchDataType, "InTransition");
 
-            CustomTaskTypesType = SubTypes.First(t => t.Name == "CustomTaskTypes");
-            RetrieveOxygenMaskField = AccessTools.Field(CustomTaskTypesType, "RetrieveOxygenMask");
-            RetTaskTypeField = AccessTools.Field(CustomTaskTypesType, "taskType");
-            RetrieveOxygenMask = RetTaskTypeField.GetValue<TaskTypes>(RetrieveOxygenMaskField.GetValue(null));
+            var customTaskTypesType = SubTypes.First(t => t.Name == "CustomTaskTypes");
+            var retrieveOxygenMaskField = AccessTools.Field(customTaskTypesType, "RetrieveOxygenMask");
+            var retTaskTypeField = AccessTools.Field(customTaskTypesType, "taskType");
+            RetrieveOxygenMask = retTaskTypeField.GetValue<TaskTypes>(retrieveOxygenMaskField.GetValue(null));
 
-            SubmarineOxygenSystemType = SubTypes.First(t => t.Name == "SubmarineOxygenSystem");
-            SubmarineOxygenSystemInstanceProperty = AccessTools.Property(SubmarineOxygenSystemType, "Instance");
+            var submarineOxygenSystemType = SubTypes.First(t => t.Name == "SubmarineOxygenSystem");
+            SubmarineOxygenSystemInstanceProperty = AccessTools.Property(submarineOxygenSystemType, "Instance");
+            RepairDamageMethod = AccessTools.Method(submarineOxygenSystemType, "RepairDamage");
 
-            RepairDamageMethod = AccessTools.Method(SubmarineOxygenSystemType, "RepairDamage");
+            var submergedExileControllerType = SubTypes.First(t => t.Name == "SubmergedExileController");
+            var submergedExileWrapUpMethod = AccessTools.Method(submergedExileControllerType, "WrapUpAndSpawn");
 
-            SubmergedExileControllerType = SubTypes.First(t => t.Name == "SubmergedExileController");
-            SubmergedExileWrapUpMethod = AccessTools.Method(SubmergedExileControllerType, "WrapUpAndSpawn");
+            var submarineElevatorType = SubTypes.First(t => t.Name == "SubmarineElevator");
+            GetInElevatorMethod = AccessTools.Method(submarineElevatorType, "GetInElevator", [ typeof(PlayerControl) ]);
+            GetMovementStageFromTimeMethod = AccessTools.Method(submarineElevatorType, "GetMovementStageFromTime");
+            GetSubElevatorSystemField = AccessTools.Field(submarineElevatorType, "system");
 
-            SubmarineElevatorType = SubTypes.First(t => t.Name == "SubmarineElevator");
-            GetInElevatorMethod = AccessTools.Method(SubmarineElevatorType, "GetInElevator", [ typeof(PlayerControl) ]);
-            GetMovementStageFromTimeMethod = AccessTools.Method(SubmarineElevatorType, "GetMovementStageFromTime");
-            GetSubElevatorSystemField = AccessTools.Field(SubmarineElevatorType, "system");
+            var submarineElevatorSystemType = SubTypes.First(t => t.Name == "SubmarineElevatorSystem");
+            UpperDeckIsTargetFloorField = AccessTools.Field(submarineElevatorSystemType, "upperDeckIsTargetFloor");
 
-            SubmarineElevatorSystemType = SubTypes.First(t => t.Name == "SubmarineElevatorSystem");
-            UpperDeckIsTargetFloorField = AccessTools.Field(SubmarineElevatorSystemType, "upperDeckIsTargetFloor");
-
-            CustomPlayerDataType = SubInjectedTypes.Where(t => t.Key == "CustomPlayerData").Select(x => x.Value).First();
-            HasMapField = AccessTools.Field(CustomPlayerDataType, "_hasMap");
+            var customPlayerDataType = SubTypes.First(t => t.Name == "CustomPlayerData");
+            CustomPlayerDataType = Il2CppType.From(customPlayerDataType);
+            HasMapField = AccessTools.Field(customPlayerDataType, "_hasMap");
 
             SpawnInStateType = SubTypes.First(t => t.Name == "SpawnInState");
 
-            SubSpawnSystemType = SubTypes.First(t => t.Name == "SubmarineSpawnInSystem");
-            GetReadyPlayerAmountMethod = AccessTools.Method(SubSpawnSystemType, "GetReadyPlayerAmount");
-            CurrentStateField = AccessTools.Field(SubSpawnSystemType, "currentState");
+            var subSpawnSystemType = SubTypes.First(t => t.Name == "SubmarineSpawnInSystem");
+            var getReadyPlayerAmountMethod = AccessTools.Method(subSpawnSystemType, "GetReadyPlayerAmount");
+            CurrentStateField = AccessTools.Field(subSpawnSystemType, "currentState");
 
-            ElevatorConsoleType = SubTypes.First(t => t.Name == "ElevatorConsole");
-            CanUseMethod = AccessTools.Method(ElevatorConsoleType, "CanUse");
+            var elevatorConsoleType = SubTypes.First(t => t.Name == "ElevatorConsole");
+            var canUseMethod = AccessTools.Method(elevatorConsoleType, "CanUse");
 
             var compatType = typeof(ModCompatibility);
 
-            TownOfUsReworked.ModInstance.Harmony.Patch(SubmergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(GetReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(CanUseMethod, new(AccessTools.Method(compatType, nameof(ElevatorPrefix))), new(AccessTools.Method(compatType, nameof(ElevatorPostfix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(submergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(getReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(ElevatorPrefix))), new(AccessTools.Method(compatType, nameof(ElevatorPostfix))));
 
             Message("Submerged compatibility finished");
             return true;
@@ -148,9 +126,9 @@ public static class ModCompatibility
         }
     }
 
-    private static void ElevatorPrefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc.Object, ref __state);
+    private static void ElevatorPrefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc, ref __state);
 
-    private static void ElevatorPostfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc.Object, ref __state);
+    private static void ElevatorPostfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc, ref __state);
 
     public static void CheckOutOfBoundsElevator(PlayerControl player)
     {
@@ -248,13 +226,13 @@ public static class ModCompatibility
         }
     }
 
-    public static MonoBehaviour AddSubmergedComponent(this GameObject obj, string typeName)
+    public static Component AddSubmergedComponent(this GameObject obj, string typeName)
     {
         if (!IsSubmerged())
             return obj.AddComponent<MissingBehaviour>();
 
-        var validType = SubInjectedTypes.TryGetValue(typeName, out var type);
-        return validType ? obj.AddComponent(Il2CppType.From(type)).TryCast<MonoBehaviour>() : obj.AddComponent<MissingBehaviour>();
+        var type = SubTypes.Find(x => x.Name == typeName);
+        return type == null ? obj.AddComponent<MissingBehaviour>() : obj.AddComponent(Il2CppType.From(type));
     }
 
     public static void ChangeFloor(bool toUpper)
@@ -301,7 +279,7 @@ public static class ModCompatibility
 
     public static void ImpartSub(PlayerControl bot)
     {
-        var comp = bot?.gameObject?.AddComponent(Il2CppType.From(CustomPlayerDataType));
+        var comp = bot?.gameObject?.AddComponent(CustomPlayerDataType);
         HasMapField.SetValue(comp, true);
     }
 
@@ -332,6 +310,13 @@ public static class ModCompatibility
             LIAssembly = LIPlugin.GetType().Assembly;
             LITypes = AccessTools.GetTypesFromAssembly(LIAssembly);
 
+            var triggerConsoleType = LITypes.First(x => x.Name == "TriggerConsole");
+            var canUseMethod = AccessTools.Method(triggerConsoleType, "CanUse");
+
+            var compatType = typeof(ModCompatibility);
+
+            TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(TriggerPrefix))), new(AccessTools.Method(compatType, nameof(TriggerPostfix))));
+
             Message("LevelImpostor compatibility finished");
             return true;
         }
@@ -341,6 +326,10 @@ public static class ModCompatibility
             return false;
         }
     }
+
+    private static void TriggerPrefix(NetworkedPlayerInfo playerInfo, ref bool __state) => CanUsePatch.Prefix(playerInfo, ref __state);
+
+    private static void TriggerPostfix(NetworkedPlayerInfo playerInfo, ref bool __state) => CanUsePatch.Postfix(playerInfo, ref __state);
 
     private static readonly string[] Unsupported = [ "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI" ];
 

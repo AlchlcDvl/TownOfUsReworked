@@ -48,6 +48,9 @@ public class Blackmailer : Intruder, IBlackmailer
         {
             BlackmailedPlayer = target;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BlackmailedPlayer);
+
+            if (target.IsSilenced())
+                CustomAchievementManager.UnlockAchievement("EerieSilence");
         }
 
         BlackmailButton.StartCooldown(cooldown);

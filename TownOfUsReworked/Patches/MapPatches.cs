@@ -29,32 +29,7 @@ public static class MapPatches
         if (!Ship())
         {
             TownOfUsReworked.NormalOptions.MapId = CurrentMap = GetSelectedMap();
-            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
-            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
-            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
-            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
-            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
-            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
-            TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
-            TownOfUsReworked.NormalOptions.CrewLightMod = CrewSettings.CrewVision;
-            TownOfUsReworked.NormalOptions.ImpostorLightMod = IntruderSettings.IntruderVision;
-            TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
-            TownOfUsReworked.NormalOptions.VisualTasks = GameModifiers.VisualTasks;
-            TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameSettings.PlayerSpeed;
-            TownOfUsReworked.NormalOptions.NumImpostors = IntruderSettings.IntruderCount;
-            TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
-            TownOfUsReworked.NormalOptions.ConfirmImpostor = GameSettings.ConfirmEjects;
-            TownOfUsReworked.NormalOptions.VotingTime = GameSettings.VotingTime;
-            TownOfUsReworked.NormalOptions.DiscussionTime = GameSettings.DiscussionTime;
-            TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
-            TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
-            TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
-            TownOfUsReworked.NormalOptions.GhostsDoTasks = TaskSettings.GhostTasksCountToWin;
-            TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
-            TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
-            TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
-            TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-            CustomPlayer.Local.MaxReportDistance = GameSettings.ReportDistance;
+            SetDefaults();
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
             // __instance.ShipLoadingAsyncHandle seems to be having an issue in its setter, I wonder what's up with that
@@ -185,5 +160,35 @@ public static class MapPatches
             if (option is NumberOptionAttribute number)
                 number.Set(new(number.Value.Value + change));
         }
+    }
+
+    public static void SetDefaults()
+    {
+        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
+        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
+        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
+        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
+        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
+        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
+        TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
+        TownOfUsReworked.NormalOptions.CrewLightMod = CrewSettings.CrewVision;
+        TownOfUsReworked.NormalOptions.ImpostorLightMod = IntruderSettings.IntruderVision;
+        TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
+        TownOfUsReworked.NormalOptions.VisualTasks = GameModifiers.VisualTasks;
+        TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameSettings.PlayerSpeed;
+        TownOfUsReworked.NormalOptions.NumImpostors = IntruderSettings.IntruderCount;
+        TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
+        TownOfUsReworked.NormalOptions.ConfirmImpostor = GameSettings.ConfirmEjects;
+        TownOfUsReworked.NormalOptions.VotingTime = GameSettings.VotingTime;
+        TownOfUsReworked.NormalOptions.DiscussionTime = GameSettings.DiscussionTime;
+        TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
+        TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
+        TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
+        TownOfUsReworked.NormalOptions.GhostsDoTasks = TaskSettings.GhostTasksCountToWin;
+        TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
+        TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
+        TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
+        TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
+        CustomPlayer.Local.MaxReportDistance = GameSettings.ReportDistance;
     }
 }

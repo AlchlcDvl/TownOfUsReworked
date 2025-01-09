@@ -21,12 +21,12 @@ public partial class TownOfUsReworked
         ForceUseLocal = Config.Bind("Client", "Force Use Local Files", false, "Forces the loaders to pull from local json files rather than ones available online");
         UseDarkTheme = Config.Bind("Client", "Use Dark Theme Chat", false, "Enables dark mode for chat");
         NoWelcome = Config.Bind("Client", "No Welcome Message", false, "Disables the welcome message when joining a lobby for the first time in a session");
+        AutoPlayAgain = Config.Bind("Client", "Auto Play Again", false, "Automatically calls Play Again after game ends");
 
         Ip = Config.Bind("Config", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
         Port = Config.Bind("Config", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
 
         RedirectLogger = Config.Bind("Debugging", "Redirect Logger", false, "Redirect base game Logger calls into BepInEx logging");
-        AutoPlayAgain = Config.Bind("Debugging", "Auto Play Again", false, "Automatically calls Play Again after game ends");
         DisableTimeout = Config.Bind("Debugging", "Disable Timeout", false, "Disable the network disconnection timeout");
         Persistence = Config.Bind("Debugging", "Persistence", false, "Enables whether or not bots will respawn after each test");
         SameVote = Config.Bind("Debugging", "Same Vote", false, "Disables whether or not each vote votes for the same player you do");
@@ -40,7 +40,7 @@ public partial class TownOfUsReworked
         if (!File.Exists(text))
             File.WriteAllText(text, "945360");
 
-        NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
+        NormalGameOptionsV08.MinPlayers = System.Linq.Enumerable.Repeat(1, 127).ToArray();
         AllMonos.RegisterMonos();
         SetUpConfigs();
         ReworkedStart = TranslationManager.GetNextName("Translation.ReworkedStart", isStartup: true);

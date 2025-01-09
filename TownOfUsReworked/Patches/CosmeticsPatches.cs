@@ -17,9 +17,8 @@ public static class HatManagerPatches
 
         NameplatesLoaded = true;
         var allPlates = __instance.allNamePlates.ToList();
-        allPlates.AddRange(RegisteredNameplates);
+        allPlates.AddRange(CustomNameplateRegistry.Values.Select(x => x.CosmeticData));
         __instance.allNamePlates = allPlates.ToArray();
-        RegisteredNameplates.Clear();
     }
 
     private static bool HatsLoaded;
@@ -32,9 +31,8 @@ public static class HatManagerPatches
 
         HatsLoaded = true;
         var allHats = __instance.allHats.ToList();
-        allHats.AddRange(RegisteredHats);
+        allHats.AddRange(CustomHatRegistry.Values.Select(x => x.CosmeticData));
         __instance.allHats = allHats.ToArray();
-        RegisteredHats.Clear();
     }
 
     private static bool VisorsLoaded;
@@ -47,9 +45,8 @@ public static class HatManagerPatches
 
         VisorsLoaded = true;
         var allVisors = __instance.allVisors.ToList();
-        allVisors.AddRange(RegisteredVisors);
+        allVisors.AddRange(CustomVisorRegistry.Values.Select(x => x.CosmeticData));
         __instance.allVisors = allVisors.ToArray();
-        RegisteredVisors.Clear();
     }
 }
 
@@ -59,27 +56,27 @@ public static class CosmeticsCacheGetCosmeticsPatches
     [HarmonyPatch(nameof(CosmeticsCache.GetNameplate))]
     public static bool Prefix(CosmeticsCache __instance, string id, ref NamePlateViewData __result)
     {
-        if (!CustomNameplateViewDatas.TryGetValue(id, out __result))
+        if (!CustomNameplateRegistry.TryGetValue(id, out var cn))
             return true;
 
-        return !(__result ??= __instance.nameplates["nameplate_NoPlate"].GetAsset());
+        return !(__result = cn.ViewData ?? __instance.nameplates["nameplate_NoPlate"].GetAsset());
     }
 
     [HarmonyPatch(nameof(CosmeticsCache.GetHat))]
     public static bool Prefix(CosmeticsCache __instance, string id, ref HatViewData __result)
     {
-        if (!CustomHatViewDatas.TryGetValue(id, out __result))
+        if (!CustomHatRegistry.TryGetValue(id, out var ch))
             return true;
 
-        return !(__result ??= __instance.hats["hat_NoHat"].GetAsset());
+        return !(__result = ch.ViewData ?? __instance.hats["hat_NoHat"].GetAsset());
     }
 
     [HarmonyPatch(nameof(CosmeticsCache.GetVisor))]
     public static bool Prefix(CosmeticsCache __instance, string id, ref VisorViewData __result)
     {
-        if (!CustomVisorViewDatas.TryGetValue(id, out __result))
+        if (!CustomVisorRegistry.TryGetValue(id, out var cv))
             return true;
 
-        return !(__result ??= __instance.visors["visor_EmptyVisor"].GetAsset());
+        return !(__result = cv.ViewData ?? __instance.visors["visor_EmptyVisor"].GetAsset());
     }
 }

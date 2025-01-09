@@ -166,9 +166,9 @@ public abstract class PlayerLayer : IPlayerLayer
         AllLayers.Clear();
     }
 
-    public static IEnumerable<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => (!x.Ignore || includeIgnored) && x.Player).OfType<T>();
+    public static IEnumerable<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => !x.Ignore || includeIgnored).OfType<T>();
 
-    public static IEnumerable<T> GetILayers<T>(bool includeIgnored = false) where T : IPlayerLayer => AllLayers.Where(x => (!x.Ignore || includeIgnored) && x.Player).OfType<T>();
+    public static IEnumerable<T> GetILayers<T>(bool includeIgnored = false) where T : IPlayerLayer => AllLayers.Where(x => !x.Ignore || includeIgnored).OfType<T>();
 
     public static IEnumerable<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
 }

@@ -34,7 +34,7 @@ public class DispositionGen : BaseGen
         AllDispositions.Shuffle();
         var invalid = new List<LayerEnum>();
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive && AllDispositions.Any())
         {
             var ids = "";
 
@@ -75,7 +75,7 @@ public class DispositionGen : BaseGen
             }
         }
 
-        if (TownOfUsReworked.IsTest)
+        if (TownOfUsReworked.MCIActive && invalid.Any())
         {
             var ids = "";
 

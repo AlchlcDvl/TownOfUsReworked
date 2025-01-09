@@ -2,14 +2,8 @@ namespace TownOfUsReworked.Modules;
 
 public abstract class CustomCosmetic : Asset
 {
-    [JsonPropertyName("artist")]
-    public string Artist { get; set; }
-
     [JsonPropertyName("name")]
     public string Name { get; set; }
-
-    [JsonPropertyName("condition")]
-    public string Condition { get; set; }
 
     [JsonPropertyName("stream")]
     public bool StreamOnly { get; set; }
@@ -18,7 +12,19 @@ public abstract class CustomCosmetic : Asset
     public bool TestOnly { get; set; }
 }
 
-public class CustomHat : CustomCosmetic
+public abstract class CustomCosmetic<View, Data> : CustomCosmetic where View : ScriptableObject where Data : CosmeticData
+{
+    [JsonPropertyName("artist")]
+    public string Artist { get; set; }
+
+    [JsonIgnore]
+    public View ViewData { get; set; }
+
+    [JsonIgnore]
+    public Data CosmeticData { get; set; }
+}
+
+public class CustomHat : CustomCosmetic<HatViewData, HatData>
 {
     [JsonPropertyName("flipid")]
     public string FlipID { get; set; }
@@ -48,10 +54,10 @@ public class CustomHat : CustomCosmetic
     public bool Adaptive { get; set; }
 
     [JsonIgnore]
-    public bool Behind { get; set; }
+    public bool Behind => BackID != null || BackFlipID != null;
 }
 
-public class CustomVisor : CustomCosmetic
+public class CustomVisor : CustomCosmetic<VisorViewData, VisorData>
 {
     [JsonPropertyName("flipid")]
     public string FlipID { get; set; }
@@ -69,7 +75,7 @@ public class CustomVisor : CustomCosmetic
     public bool InFront { get; set; }
 }
 
-public class CustomNameplate : CustomCosmetic;
+public class CustomNameplate : CustomCosmetic<NamePlateViewData, NamePlateData>;
 
 public class CustomColor : CustomCosmetic
 {
@@ -152,28 +158,3 @@ public class CustomColor : CustomCosmetic
         }
     }
 }
-
-public abstract class CosmeticExtension
-{
-    public string Artist { get; set; }
-    public string Condition { get; set; }
-    public bool StreamOnly { get; set; }
-    public bool TestOnly { get; set; }
-}
-
-public class HatExtension : CosmeticExtension
-{
-    public Sprite FlipImage { get; set; }
-    public Sprite BackFlipImage { get; set; }
-}
-
-public class VisorExtension : CosmeticExtension
-{
-    public Sprite ClimbImage { get; set; }
-    public Sprite FloorImage { get; set; }
-}
-
-public class NameplateExtension : CosmeticExtension;
-
-// Idk why i did it, but ig i just really wanted it for consistency's sake
-// public class ColorExtention : CosmeticExtension;

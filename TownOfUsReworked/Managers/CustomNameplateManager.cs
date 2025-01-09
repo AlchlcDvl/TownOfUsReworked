@@ -2,12 +2,9 @@ namespace TownOfUsReworked.Managers;
 
 public static class CustomNameplateManager
 {
-    public static readonly List<CustomNameplate> UnregisteredNameplates = [];
-    public static readonly List<NamePlateData> RegisteredNameplates = [];
-    public static readonly Dictionary<string, NameplateExtension> CustomNameplateRegistry = [];
-    public static readonly Dictionary<string, NamePlateViewData> CustomNameplateViewDatas = [];
+    public static readonly Dictionary<string, CustomNameplate> CustomNameplateRegistry = [];
 
-    public static NamePlateData CreateNameplateBehaviour(CustomNameplate cn)
+    public static void CreateNameplateBehaviour(CustomNameplate cn)
     {
         var path = Path.Combine(TownOfUsReworked.Nameplates, $"{cn.ID}.png");
 
@@ -29,15 +26,11 @@ public static class CustomNameplateManager
         nameplate.NotInStore = true;
         nameplate.ViewDataRef = new(viewData.Pointer);
 
-        var extend = new NameplateExtension()
-        {
-            Artist = cn.Artist ?? "Unknown",
-            StreamOnly = cn.StreamOnly,
-            TestOnly = cn.TestOnly
-        };
-        CustomNameplateRegistry.TryAdd(nameplate.name, extend);
-        CustomNameplateViewDatas.TryAdd(nameplate.ProductId, viewData);
-        return nameplate;
+        cn.Artist ??= "Unknown";
+        cn.ViewData = viewData;
+        cn.CosmeticData = nameplate;
+
+        CustomNameplateRegistry[nameplate.ProductId] = cn;
     }
 
     public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomNameplate> nameplates)
@@ -50,14 +43,5 @@ public static class CustomNameplateManager
             if (!File.Exists(Path.Combine(TownOfUsReworked.Nameplates, $"{nameplate.ID}.png")))
                 yield return nameplate.ID;
         }
-    }
-
-    public static NameplateExtension GetExtention(this NamePlateData nameplate)
-    {
-        if (!nameplate)
-            return null;
-
-        CustomNameplateRegistry.TryGetValue(nameplate.name, out var ret);
-        return ret;
     }
 }

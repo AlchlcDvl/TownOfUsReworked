@@ -24,22 +24,29 @@ public static class SpawnPatches
         }
 
         Chat()?.SetVisible(CustomPlayer.Local.CanChat());
-        AllPlayers().ForEach(x => x.MyPhysics.ResetAnimState());
+
+        foreach (var player in AllPlayers())
+        {
+            player.MyPhysics.ResetAnimState();
+            player.MyPhysics.ResetMoveState();
+        }
+
         AllBodies().ForEach(x => x.gameObject.Destroy());
         ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);
-        HUD().FullScreen.enabled = true;
+        var hud = HUD();
+        hud.FullScreen.enabled = true;
         var role = CustomPlayer.Local.GetRole();
         role.UpdateButtons();
         CustomPlayer.Local.RegenTask();
 
         if (MapPatches.CurrentMap is not (4 or 6))
-            HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
+            hud.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
 
-        HUD().ImpostorVentButton.buttonLabelText.fontSharedMaterial = HUD().ReportButton.buttonLabelText.fontSharedMaterial = HUD().UseButton.buttonLabelText.fontSharedMaterial =
-            HUD().PetButton.buttonLabelText.fontSharedMaterial = HUD().SabotageButton.buttonLabelText.fontSharedMaterial;
+        hud.ImpostorVentButton.buttonLabelText.fontSharedMaterial = hud.ReportButton.buttonLabelText.fontSharedMaterial = hud.UseButton.buttonLabelText.fontSharedMaterial =
+            hud.PetButton.buttonLabelText.fontSharedMaterial = hud.SabotageButton.buttonLabelText.fontSharedMaterial;
 
-        if (HUD().TaskPanel)
+        if (hud.TaskPanel)
         {
             var text = "";
 
@@ -57,7 +64,7 @@ public static class SpawnPatches
             else
                 text = "<#FF0000FF>Fake Tasks</color>";
 
-            HUD().TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
+            hud.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
         }
     }
 

@@ -101,10 +101,10 @@ public static class LayerExtentions
 
     public static bool CanSabotage(this PlayerControl player)
     {
-        if (IsHnS() || Meeting() || IsCustomHnS() || IsTaskRace())
+        if (IsHnS() || Meeting() || IsCustomHnS() || IsTaskRace() || !IntruderSettings.IntrudersCanSabotage)
             return false;
 
-        var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps)) && IntruderSettings.IntrudersCanSabotage;
+        var result = player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps);
 
         if (!player.Data.IsDead)
             return result;
@@ -112,7 +112,7 @@ public static class LayerExtentions
             return result && IntruderSettings.GhostsCanSabotage && !Role.GetRoles(player.GetFaction()).All(x => x.Dead);
     }
 
-    public static bool HasAliveLover(this PlayerControl player) => PlayerLayer.GetLayers<Lovers>().Any(x => x.Player == player && x.LoversAlive);
+    public static bool HasAliveLover(this PlayerControl player) => player.TryGetLayer<Lovers>(out var lovers) && lovers.LoversAlive;
 
     public static bool CanDoTasks(this PlayerControl player)
     {
@@ -784,7 +784,7 @@ public static class LayerExtentions
     public static void RoleUpdate(this Role newRole, Role former, PlayerControl player = null, bool retainFaction = false)
     {
         player ??= former.Player;
-        AllButtons.Where(x => x.Owner == former || !x.Owner.Player).ForEach(x => x.Destroy());
+        CustomButton.AllButtons.Where(x => x.Owner == former || !x.Owner.Player).ForEach(x => x.Destroy());
         CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
         former.End();
         newRole.Start(player);

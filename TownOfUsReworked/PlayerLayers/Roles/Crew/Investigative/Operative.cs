@@ -88,7 +88,8 @@ public class Operative : Crew
             message = message[..^2];
         }
 
-        Run("<#A7D1B3FF>〖 Bug Results 〗</color>", message);
+        if (!IsNullEmptyOrWhiteSpace(message))
+            Run("<#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
     public bool Condition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);

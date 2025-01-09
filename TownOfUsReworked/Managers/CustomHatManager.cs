@@ -2,22 +2,26 @@ namespace TownOfUsReworked.Managers;
 
 public static class CustomHatManager
 {
-    public static readonly List<CustomHat> UnregisteredHats = [];
-    public static readonly List<HatData> RegisteredHats = [];
-    public static readonly Dictionary<string, HatViewData> CustomHatViewDatas = [];
-    public static readonly Dictionary<string, HatExtension> CustomHatRegistry = [];
+    public static readonly Dictionary<string, CustomHat> CustomHatRegistry = [];
 
-    public static HatData CreateHatBehaviour(CustomHat ch)
+    public static void CreateHatBehaviour(CustomHat ch)
     {
+        var path = Path.Combine(TownOfUsReworked.Hats, $"{ch.ID}.png");
+
+        if (ch.StreamOnly)
+            path = Path.Combine(TownOfUsReworked.Hats, "Stream", $"{ch.ID}.png");
+        else if (ch.TestOnly)
+            path = Path.Combine(TownOfUsReworked.Hats, "Test", $"{ch.ID}.png");
+
         var viewData = ScriptableObject.CreateInstance<HatViewData>().DontDestroy();
-        viewData.MainImage = CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.ID), CosmeticTypeEnum.Hat);
-        viewData.BackImage = ch.BackID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.BackID), CosmeticTypeEnum.Hat) : null;
-        viewData.ClimbImage = ch.ClimbID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.ClimbID), CosmeticTypeEnum.Hat) : null;
-        viewData.LeftBackImage = ch.BackFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.BackFlipID), CosmeticTypeEnum.Hat) : viewData.BackImage;
-        viewData.LeftClimbImage = ch.ClimbFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.ClimbFlipID), CosmeticTypeEnum.Hat) : viewData.ClimbImage;
-        viewData.FloorImage = ch.FloorID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FloorID), CosmeticTypeEnum.Hat) : viewData.MainImage;
-        viewData.LeftMainImage = ch.FlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FlipID), CosmeticTypeEnum.Hat) : viewData.MainImage;
-        viewData.LeftFloorImage = ch.FloorFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(GetPath(ch, ch.FloorFlipID), CosmeticTypeEnum.Hat) : viewData.FloorImage;
+        viewData.MainImage = CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat);
+        viewData.BackImage = ch.BackID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat) : null;
+        viewData.ClimbImage = ch.ClimbID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat) : null;
+        viewData.LeftBackImage = ch.BackFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat) : viewData.BackImage;
+        viewData.LeftClimbImage = ch.ClimbFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat) : viewData.ClimbImage;
+        viewData.FloorImage = ch.FloorID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat) : viewData.MainImage;
+        viewData.LeftMainImage = ch.FlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat) : viewData.MainImage;
+        viewData.LeftFloorImage = ch.FloorFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat) : viewData.FloorImage;
         viewData.MatchPlayerColor = ch.Adaptive;
 
         var hat = ScriptableObject.CreateInstance<HatData>().DontDestroy();
@@ -32,29 +36,11 @@ public static class CustomHatManager
         hat.PreviewCrewmateColor = ch.Adaptive;
         hat.ViewDataRef = new(viewData.Pointer);
 
-        var extend = new HatExtension()
-        {
-            Artist = ch.Artist ?? "Unknown",
-            FlipImage = viewData.LeftMainImage,
-            BackFlipImage = viewData.LeftBackImage,
-            StreamOnly = ch.StreamOnly,
-            TestOnly = ch.TestOnly
-        };
-        CustomHatRegistry.TryAdd(hat.name, extend);
-        CustomHatViewDatas.TryAdd(hat.ProductId, viewData);
-        return hat;
-    }
+        ch.Artist ??= "Unknown";
+        ch.ViewData = viewData;
+        ch.CosmeticData = hat;
 
-    private static string GetPath(CustomHat ch, string id)
-    {
-        var path = Path.Combine(TownOfUsReworked.Hats, $"{id}.png");
-
-        if (ch.StreamOnly)
-            path = Path.Combine(TownOfUsReworked.Hats, "Stream", $"{id}.png");
-        else if (ch.TestOnly)
-            path = Path.Combine(TownOfUsReworked.Hats, "Test", $"{id}.png");
-
-        return path;
+        CustomHatRegistry[hat.ProductId] = ch;
     }
 
     public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomHat> hats)
@@ -88,14 +74,5 @@ public static class CustomHatManager
             if (hat.ClimbFlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbFlipID}.png")))
                 yield return hat.ClimbFlipID;
         }
-    }
-
-    public static HatExtension GetExtention(this HatData hat)
-    {
-        if (!hat)
-            return null;
-
-        CustomHatRegistry.TryGetValue(hat.name, out var ret);
-        return ret;
     }
 }

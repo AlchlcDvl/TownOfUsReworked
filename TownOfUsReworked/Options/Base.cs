@@ -204,12 +204,11 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             layer.Set((RoleOptionData)value, rpc, notify);
     }
 
-    public static string SettingsToString(List<OptionAttribute> list = null)
+    public static string SettingsToString()
     {
-        list ??= AllOptions;
         var builder = new StringBuilder();
 
-        foreach (var option in list)
+        foreach (var option in AllOptions)
         {
             if (option.Type is CustomOptionType.Header or CustomOptionType.Alignment || option.ClientOnly || !option.ID.Contains("CustomOption"))
                 continue;
@@ -284,8 +283,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
     public static IEnumerator CoLoadSettings(string settingsData)
     {
-        var splitText = settingsData.Split('\n').ToList();
-        splitText.RemoveAll(IsNullEmptyOrWhiteSpace);
+        var splitText = settingsData.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
         var pos = 0;
 
         while (splitText.Any())
@@ -293,7 +291,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             pos++;
             var opt = splitText[0];
             splitText.RemoveAt(0);
-            var parts = opt.Split(':');
+            var parts = opt.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             var name = parts[0];
             var option = AllOptions.Where(x => x is not IOptionGroup).FirstOrDefault(x => x.ID == name);
 
@@ -336,6 +334,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         }
 
         SendOptionRPC(save: false);
+        CallRpc(CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
     }
 
     public static IEnumerable<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x is T).Cast<T>();

@@ -319,7 +319,6 @@ public enum MiscRPC : byte
     SubmergedFixOxygen,
     Whisper,
     DoorSyncToilet,
-    VersionHandshake,
     ChaosDrive,
     FixLights,
     FixMixup,
@@ -335,6 +334,7 @@ public enum MiscRPC : byte
     Achievement,
     SyncUses,
     SyncMaxUses,
+    SyncMap,
 
     None
 }

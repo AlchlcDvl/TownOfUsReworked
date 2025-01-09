@@ -236,8 +236,9 @@ public class CustomButton
 
     private static ActionButton InstantiateButton()
     {
-        var button = UObject.Instantiate(HUD().AbilityButton, HUD().AbilityButton.transform.parent);
-        button.buttonLabelText.fontSharedMaterial = HUD().SabotageButton.buttonLabelText.fontSharedMaterial;
+        var hud = HUD();
+        var button = UObject.Instantiate(hud.AbilityButton, hud.AbilityButton.transform.parent);
+        button.buttonLabelText.fontSharedMaterial = hud.SabotageButton.buttonLabelText.fontSharedMaterial;
         button.graphic.enabled = true;
         button.buttonLabelText.enabled = true;
         button.usesRemainingText.enabled = true;
@@ -453,8 +454,8 @@ public class CustomButton
         return result;
     }
 
-    public bool Usable() => IsUsable() && (!HasUses || uses > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() &&
-        !IsLobby() && !NoPlayers() && Owner.Player && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
+    public bool Usable() => IsUsable() && (!HasUses || uses > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() && !IsLobby() &&
+        !NoPlayers() && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled &&
         Base.isActiveAndEnabled && (!HasUses || Uses - UseDecrement >= 0);
@@ -520,17 +521,17 @@ public class CustomButton
         Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
         Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && BlockIsExposed());
 
-        if (!EffectActive && !DelayActive && !CooldownActive && !Disabled && PostDeath == Owner.Dead)
+        if (!Base.isCoolingDown && !Disabled && PostDeath == Owner.Dead)
             SetTarget();
 
         EnableDisable();
 
         if (DelayActive)
             Base.SetDelay(DelayTime);
-        else if (OtherDelayActive)
-            Base.SetDelay(OtherDelayTime);
         else if (EffectActive)
             Base.SetFillUp(EffectTime, Duration);
+        else if (OtherDelayActive)
+            Base.SetDelay(OtherDelayTime);
         else
             Base.SetCoolDown(CooldownTime, MaxCooldown());
 

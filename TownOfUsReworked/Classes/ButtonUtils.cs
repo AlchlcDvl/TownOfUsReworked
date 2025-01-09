@@ -17,7 +17,7 @@ public static class ButtonUtils
         hud.AbilityButton.gameObject.SetActive(false);
     }
 
-    public static IEnumerable<CustomButton> GetButtonsFromList(this PlayerControl player) => AllButtons.Where(x => x.Owner.Player == player);
+    public static IEnumerable<CustomButton> GetButtonsFromList(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player);
 
     public static IEnumerable<CustomButton> GetButtons(this PlayerControl player)
     {
@@ -58,7 +58,7 @@ public static class ButtonUtils
     {
         var hud = HUD();
         Use = hud.UseButton.isActiveAndEnabled;
-        AllButtons.ForEach(x => x.Disable());
+        CustomButton.AllButtons.ForEach(x => x.Disable());
         hud.KillButton.gameObject.SetActive(false);
         hud.SabotageButton.gameObject.SetActive(false);
         hud.ReportButton.gameObject.SetActive(false);
@@ -79,9 +79,7 @@ public static class ButtonUtils
         button.SetCooldownFill(ceil % 2 == 0 ? 1f : 0f);
     }
 
-    public static void ShakeButton(this ActionButton button) => button.graphic.transform.localPosition = button.position + (Vector3)(URandom.insideUnitCircle * 0.05f);
-
-    public static void DestroyButtons(this PlayerControl player) => AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Destroy());
+    public static void DestroyButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Destroy());
 
     public static bool CannotUse(this PlayerControl player) => player.onLadder || player.inVent || player.inMovingPlat;
 
@@ -144,7 +142,7 @@ public static class ButtonUtils
         var start = cooldown == CooldownType.Start;
         var meeting = cooldown == CooldownType.Meeting;
         var dead = DeadSeeEverything();
-        AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.StartCooldown(cooldown));
+        CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.StartCooldown(cooldown));
 
         if (role.Requesting && !start)
             role.BountyTimer++;

@@ -150,4 +150,11 @@ public static class ClientOptions
         get => TownOfUsReworked.NoWelcome.Value;
         set => TownOfUsReworked.NoWelcome.Value = value;
     }
+
+    [ToggleOption(MultiMenu.Client, ClientOnly = true)]
+    public static bool AutoPlayAgain
+    {
+        get => TownOfUsReworked.AutoPlayAgain.Value;
+        set => TownOfUsReworked.AutoPlayAgain.Value = value;
+    }
 }

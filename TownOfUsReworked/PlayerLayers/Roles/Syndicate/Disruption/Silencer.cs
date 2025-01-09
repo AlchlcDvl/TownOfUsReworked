@@ -48,6 +48,9 @@ public class Silencer : Syndicate, ISilencer
         {
             SilencedPlayer = target;
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SilencedPlayer);
+
+            if (target.IsBlackmailed())
+                CustomAchievementManager.UnlockAchievement("EerieSilence");
         }
 
         SilenceButton.StartCooldown(cooldown);

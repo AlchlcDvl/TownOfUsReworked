@@ -44,7 +44,6 @@ global using TownOfUsReworked.PlayerLayers.Abilities;
 global using TownOfUsReworked.PlayerLayers.Modifiers;
 global using static TownOfUsReworked.Classes.GameStates;
 global using TownOfUsReworked.PlayerLayers.Dispositions;
-global using static TownOfUsReworked.Custom.CustomButton;
 global using static TownOfUsReworked.Modules.ChatCommand;
 global using static TownOfUsReworked.Classes.Interactions;
 global using static TownOfUsReworked.Managers.AssetManager;
@@ -74,4 +73,4 @@ global using InnerNet;
 global using HarmonyLib;
 
 global using ISystem = Il2CppSystem.Collections.Generic;
-global using IlIO = Il2CppSystem.IO;
+global using Il2CppSystem.Linq;

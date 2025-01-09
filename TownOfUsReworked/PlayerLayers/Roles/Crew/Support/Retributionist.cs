@@ -343,7 +343,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             TriggeredRoles.Clear();
         }
         else if (IsAlt)
-            ReviveButton.Uses += Altruist.PassiveManaGain;
+            ReviveButton.Uses += Altruist.PassiveAltManaGain;
 
         Revived = null;
     }
@@ -435,7 +435,9 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
         {
             var wasnull = ReviveButton == null;
             ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(Altruist.ReviveCd),
-                (EndFunc)ReviveEnd, new Duration(Altruist.ReviveDur), (EffectEndVoid)UponEnd, Altruist.MaxMana, (UsableFunc)AltUsable);
+                (EndFunc)ReviveEnd, new Duration(Altruist.ReviveDur), (EffectEndVoid)UponEnd, Altruist.MaxAltMana, (UsableFunc)AltUsable);
+            ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(Altruist.AltManaCd),
+                (UsableFunc)AltUsable1);
 
             if (wasnull)
                 ReviveButton.uses = 0;
@@ -751,7 +753,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
 
     public void GainMana(DeadBody target)
     {
-        ReviveButton.Uses += Altruist.ManaGainedPerBody;
+        ReviveButton.Uses += Altruist.AltManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
         FadeBody(target);

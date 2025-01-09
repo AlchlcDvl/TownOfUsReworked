@@ -1024,6 +1024,7 @@ public static class SettingsPatches
                 return;
 
             SendOptionRPC(targetClientId: __instance.myPlayer.OwnerId);
+            CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
             CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SyncSummary, ReadDiskText("Summary", TownOfUsReworked.Other));
 
             if (CachedFirstDead != null)
@@ -1059,6 +1060,12 @@ public static class SettingsPatches
                 });
             }
 
+            if (SubLoaded)
+            {
+                while (__instance.AllMapIcons.Count(x => x.Name == (MapNames)6) > 1)
+                    __instance.AllMapIcons.Remove(__instance.AllMapIcons.ToArray().Find(x => x.Name == (MapNames)6));
+            }
+
             __instance.mapButtons.ForEach(x => x.gameObject.Destroy());
             __instance.mapButtons.Clear();
             __instance.transform.GetChild(1).localPosition = new(-1.134f, 0.733f, -1);
@@ -1081,7 +1088,7 @@ public static class SettingsPatches
                     __instance.selectedButton = mapButton;
                     __instance.selectedButton.Button.SelectButton(true);
                     __instance.SelectMap(thisVal);
-                    CallRpc(CustomRPC.Misc, MiscRPC.SyncCustomSettings, 1, "Map", MapSettings.Map);
+                    CallRpc(CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
                 });
 
                 if (k > 0)
@@ -1102,23 +1109,25 @@ public static class SettingsPatches
         }
 
         [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(int))]
-        public static void Postfix(int mapId) => SetMap(mapId);
+        public static void Postfix(int mapId) => SetMap((MapEnum)mapId);
 
         [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
-        public static void Postfix(MapIconByName mapInfo) => SetMap((int)mapInfo.Name);
+        public static void Postfix(MapIconByName mapInfo) => SetMap((MapEnum)mapInfo.Name);
     }
 
     private static readonly string[] Maps = [ "The Skeld", "Mira HQ", "Polus", "ehT dlekS", "Airship", "Fungle", "Submerged", "Level Impostor", "Random" ];
     private static LobbyNotificationMessage MapChangeNotif;
 
-    private static void SetMap(int mapId) => SetMap((MapEnum)mapId);
-
     public static void SetMap(MapEnum map)
     {
-        if (MapSettings.Map == map || IsInGame() || !CustomPlayer.Local)
+        if (IsInGame())
             return;
 
         MapSettings.Map = map;
+
+        if (!CustomPlayer.Local)
+            return;
+
         TownOfUsReworked.NormalOptions.MapId = (byte)map;
         OnValueChanged();
 
@@ -1128,11 +1137,12 @@ public static class SettingsPatches
             MapChangeNotif.UpdateMessage(changed);
         else
         {
-            MapChangeNotif = UObject.Instantiate(HUD().Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, HUD().Notifier.transform);
+            var hud = HUD();
+            MapChangeNotif = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, hud.Notifier.transform);
             MapChangeNotif.transform.localPosition = new(0f, 0f, -2f);
-            MapChangeNotif.SetUp(changed, HUD().Notifier.settingsChangeSprite, HUD().Notifier.settingsChangeColor, (Action)(() => HUD().Notifier.OnMessageDestroy(MapChangeNotif)));
-            HUD().Notifier.ShiftMessages();
-            HUD().Notifier.AddMessageToQueue(MapChangeNotif);
+            MapChangeNotif.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(MapChangeNotif)));
+            hud.Notifier.ShiftMessages();
+            hud.Notifier.AddMessageToQueue(MapChangeNotif);
         }
     }
 

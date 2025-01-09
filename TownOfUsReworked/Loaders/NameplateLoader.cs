@@ -1,5 +1,4 @@
 using static TownOfUsReworked.Managers.CustomNameplateManager;
-using Cpp2IL.Core.Extensions;
 
 namespace TownOfUsReworked.Loaders;
 
@@ -16,7 +15,7 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
 
     public override IEnumerator AfterLoading(CustomNameplate[] response)
     {
-        UnregisteredNameplates.AddRange(response);
+        var unregistered = new List<CustomNameplate>(response);
 
         if (TownOfUsReworked.IsStream)
         {
@@ -26,30 +25,28 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
             {
                 var data = JsonSerializer.Deserialize<CustomNameplate[]>(File.ReadAllText(filePath));
                 data.ForEach(x => x.StreamOnly = true);
-                UnregisteredNameplates.AddRange(data);
+                unregistered.AddRange(data);
                 Array.Clear(data);
             }
         }
 
-        Message($"Found {UnregisteredNameplates.Count} nameplates");
-        var cache = UnregisteredNameplates.Clone();
+        Message($"Found {unregistered.Count} nameplates");
         var time = 0f;
 
-        for (var i = 0; i < cache.Count; i++)
+        for (var i = 0; i < unregistered.Count; i++)
         {
-            var file = cache[i];
-            RegisteredNameplates.Add(CreateNameplateBehaviour(file));
-            UnregisteredNameplates.Remove(file);
+            var file = unregistered[i];
+            CreateNameplateBehaviour(file);
             time += Time.deltaTime;
 
             if (time > 1f)
             {
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Nameplates ({i + 1}/{cache.Count})");
+                UpdateSplashPatch.SetText($"Loading Nameplates ({i + 1}/{unregistered.Count})");
                 yield return EndFrame();
             }
         }
 
-        cache.Clear();
+        unregistered.Clear();
     }
 }

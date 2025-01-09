@@ -233,6 +233,12 @@ public static class ListExtensions
         return -1;
     }
 
+    public static void AddUnique<T>(this ISystem.List<T> self, T item)
+    {
+        if (!self.Contains(item))
+            self.Add(item);
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)

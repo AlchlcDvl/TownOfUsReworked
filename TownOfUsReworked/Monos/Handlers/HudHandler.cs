@@ -13,15 +13,15 @@ public class HudHandler : MonoBehaviour
 
     public void Update()
     {
-        if (IsLobby() || IsEnded() || NoPlayers() || IsHnS() || !HUD() || !Ship() || IntroCutscene.Instance)
+        if (IsLobby() || IsEnded() || NoPlayers() || IsHnS() || !HudManager.InstanceExists || !Ship() || IntroCutscene.Instance)
             return;
 
         if (LocalBlocked() && ActiveTask())
             ActiveTask().Close();
 
         CustomArrow.AllArrows.ForEach(x => x.Update());
-        AllButtons.ForEach(x => x.Timers());
-        HUD()?.ReportButton?.ToggleVisible(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is<Coward>() && !CustomPlayer.Local.Is(Faction.GameMode) && !Meeting() &&
+        CustomButton.AllButtons.ForEach(x => x.Timers());
+        HUD().ReportButton?.ToggleVisible(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is<Coward>() && !CustomPlayer.Local.Is(Faction.GameMode) && !Meeting() &&
             !MapBehaviourPatches.MapActive);
 
         foreach (var id in UninteractiblePlayers.Keys)

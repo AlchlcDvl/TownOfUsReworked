@@ -290,32 +290,6 @@ public static class Utils
 
     public static void DefaultOutfitAll() => AllPlayers().ForEach(DefaultOutfit);
 
-    public static void AddUnique<T>(this ISystem.List<T> self, T item) where T : IDisconnectHandler
-    {
-        if (!self.Contains(item))
-            self.Add(item);
-    }
-
-    public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
-    {
-        if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
-            return UColor.grey.Shadow();
-        else if (player.IsMimicking(out var mimicked) && morphCondition)
-            return mimicked.Data.DefaultOutfit.ColorId.GetColor(true);
-        else
-            return player.Data.DefaultOutfit.ColorId.GetColor(true);
-    }
-
-    public static UColor GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
-    {
-        if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
-            return UColor.grey;
-        else if (player.IsMimicking(out var mimicked) && morphCondition)
-            return mimicked.Data.DefaultOutfit.ColorId.GetColor(false);
-        else
-            return player.Data.DefaultOutfit.ColorId.GetColor(false);
-    }
-
     public static PlayerControl PlayerById(byte id) => GameData.Instance?.GetPlayerById(id)?.Object;
 
     public static PlayerVoteArea VoteAreaById(byte id) => AllVoteAreas().Find(x => x.TargetPlayerId == id);
@@ -398,7 +372,7 @@ public static class Utils
             {
                 dict.DictMenu.HideButtons();
                 dict.ToBeEjected = null;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, DictActionsRPC.SelectToEject, dict.ToBeEjected);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, DictActionsRPC.SelectToEject, 255);
             }
             else if (target.TryGetLayer<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
@@ -529,11 +503,11 @@ public static class Utils
     }
 
     public static IEnumerable<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => AllPlayers().Where(x => Vector2.Distance(truePosition,
-        x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead)));
+        x.GetTruePosition()) <= radius && (!x.Data.IsDead || includeDead));
 
     public static IEnumerable<PlayerControl> GetClosestPlayers(PlayerControl player, float radius, Func<PlayerControl, bool> filter = null, bool includeDead = false)
     {
-        var result = AllPlayers().Where(x => Vector2.Distance(player.transform.position, x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead)) && x != player);
+        var result = AllPlayers().Where(x => Vector2.Distance(player.GetTruePosition(), x.GetTruePosition()) <= radius && (!x.Data.IsDead || includeDead) && x != player);
 
         if (filter != null)
             result = result.Where(filter);
@@ -666,32 +640,24 @@ public static class Utils
 
     private static IEnumerator FlashCoro(UColor color, float duration)
     {
-        if (IntroCutscene.Instance || ShowRolePatch.Starting)
+        if (IntroCutscene.Instance || ShowRolePatch.Starting || !HudManager.InstanceExists)
             yield break;
 
         color.a = 0.3f;
-
-        if (HudManager.Instance && HUD().FullScreen)
-        {
-            var fullscreen = HUD().FullScreen;
-            fullscreen.enabled = true;
-            fullscreen.gameObject.active = true;
-            fullscreen.color = color;
-        }
-
+        var fullscreen = HUD().FullScreen;
+        fullscreen.enabled = true;
+        fullscreen.gameObject.active = true;
+        fullscreen.color = color;
         yield return Wait(duration);
-
-        if (HudManager.Instance && HUD().FullScreen)
-            SetFullScreenHUD();
+        SetFullScreenHUD();
     }
 
     public static void SetFullScreenHUD()
     {
-        var fullscreen = HUD().FullScreen;
-
-        if (!HudManager.Instance || !fullscreen || !Ship() || Lobby())
+        if (!HudManager.InstanceExists || !Ship() || Lobby())
             return;
 
+        var fullscreen = HUD().FullScreen;
         fullscreen.color = new(0.6f, 0.6f, 0.6f, 0f);
         fullscreen.enabled = true;
         fullscreen.gameObject.active = true;
@@ -740,13 +706,17 @@ public static class Utils
 
     public static IEnumerator Fade(bool fadeAway)
     {
-        HUD().FullScreen.enabled = true;
+        if (!HudManager.InstanceExists)
+            yield break;
+
+        var hud = HUD();
+        hud.FullScreen.enabled = true;
 
         if (fadeAway)
         {
             for (var i = 1f; i >= 0; i -= Time.deltaTime)
             {
-                HUD().FullScreen.color = new(0, 0, 0, i);
+                hud.FullScreen.color = new(0, 0, 0, i);
                 yield return EndFrame();
             }
         }
@@ -754,7 +724,7 @@ public static class Utils
         {
             for (var i = 0f; i <= 1; i += Time.deltaTime)
             {
-                HUD().FullScreen.color = new(0, 0, 0, i);
+                hud.FullScreen.color = new(0, 0, 0, i);
                 yield return EndFrame();
             }
         }
@@ -1136,9 +1106,9 @@ public static class Utils
         path = path.Replace(".png", "");
         path = path.Replace(".wav", "");
         path = path.Replace(".txt", "");
-        path = path.Split('/')[^1];
-        path = path.Split('\\')[^1];
-        path = path.Split('.')[^1];
+        path = path.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[^1];
+        path = path.Split('\\', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[^1];
+        path = path.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[^1];
         return path;
     }
 
@@ -1318,12 +1288,6 @@ public static class Utils
         killer ??= player;
         player.logger.Debug($"Player {player.PlayerId} dying to {killer.PlayerId} for reason {reason} and custom reason {customReason}");
 
-        if (!TutorialManager.Instance && player.AmOwner)
-        {
-            StatsManager.Instance.LastGameStarted = Il2CppSystem.DateTime.MinValue;
-            StatsManager.Instance.BanPoints--;
-        }
-
         if (killer != player)
         {
             var prevKiller = MostRecentKiller;
@@ -1342,12 +1306,6 @@ public static class Utils
                 if (IsNullEmptyOrWhiteSpace(prevKiller))
                     CustomAchievementManager.UnlockAchievement("FirstBlood");
             }
-        }
-
-        if (player.AmOwner)
-        {
-            CustomStatsManager.IncrementStat(StringNames.StatsTimesMurdered);
-            CustomAchievementManager.UnlockAchievement("Fatality");
         }
 
         GameData.LastDeathReason = reason;
@@ -1370,14 +1328,17 @@ public static class Utils
 
         if (player.AmOwner)
         {
+            CustomStatsManager.IncrementStat(StringNames.StatsTimesMurdered);
+            CustomAchievementManager.UnlockAchievement("Fatality");
             Chat().SetVisible(true);
-            HUD().ShadowQuad.gameObject.SetActive(false);
+            var hud = HUD();
+            hud.ShadowQuad.gameObject.SetActive(false);
             player.AdjustLighting();
             AllPlayers().ForEach(x => x.cosmetics.ToggleNameVisible(GameManager.Instance.LogicOptions.GetShowCrewmateNames()));
             player.RpcSetScanner(false);
-            HUD().KillOverlay.ShowKillAnimation(killer.Data, player.Data);
+            hud.KillOverlay.ShowKillAnimation(killer.Data, player.Data);
             player.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
-            var tracker = HUD().roomTracker.text;
+            var tracker = hud.roomTracker.text;
             var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
             BodyLocations[player.PlayerId] = location;
             CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, player, location);
@@ -1390,6 +1351,20 @@ public static class Utils
 
             if (MapBehaviourPatches.MapActive)
                 Map().Close();
+
+            if (!TutorialManager.InstanceExists)
+            {
+                StatsManager.Instance.LastGameStarted = Il2CppSystem.DateTime.MinValue;
+                StatsManager.Instance.BanPoints--;
+            }
+
+            if (FirstDead == player.name)
+            {
+                CustomAchievementManager.UnlockAchievement("ParticipationTrophy");
+
+                if (player.Is<Troll>())
+                    CustomAchievementManager.UnlockAchievement("Martyrdom");
+            }
         }
 
         if (player.walkingToVent)
@@ -1471,7 +1446,7 @@ public static class Utils
         return new string(padChar, left) + text + new string(padChar, right);
     }
 
-    public static bool IsAny<T>(this T item, params T[] items) where T : MonoBehaviour => items.Any(x => x == item);
+    public static bool IsAny<T>(this T item, params T[] items) where T : UObject => items.Any(x => x == item);
 
     public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) != null;
 

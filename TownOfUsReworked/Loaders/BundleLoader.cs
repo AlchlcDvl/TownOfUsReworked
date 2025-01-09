@@ -34,5 +34,6 @@ public class BundleLoader : AssetLoader<Asset>
 
     private static bool ShouldDownload(string id) => !File.Exists(Path.Combine(TownOfUsReworked.Misc, id));
 
-    private static string ConvertToBaseName(string name) => name.Split('/').Last().Split('.').First();
+    private static string ConvertToBaseName(string name) => name.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Last().Split('.',
+        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).First();
 }

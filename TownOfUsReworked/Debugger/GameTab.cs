@@ -53,8 +53,9 @@ public class GameTab : BaseTab
 
         if (GUILayout.Button("Redo Intro Sequence"))
         {
-            HUD().StartCoroutine(HUD().CoFadeFullScreen(UColor.clear, UColor.black));
-            HUD().StartCoroutine(HUD().CoShowIntro());
+            var hud = HUD();
+            hud.StartCoroutine(hud.CoFadeFullScreen(UColor.clear, UColor.black));
+            hud.StartCoroutine(hud.CoShowIntro());
         }
 
         if (Meeting())

@@ -73,15 +73,15 @@ public class CustomKillAnimationPlayer : MonoBehaviour
             return;
         }
 
-        var currentFrame = Frames[(int)Mathf.Floor(PlayHead / (2.5f / Frames.Count))];
+        var currentFrame = Frames[Mathf.FloorToInt(PlayHead / (2.5f / Frames.Count))];
         UpdateVisuals(currentFrame.Time, currentFrame.Offset, currentFrame.Animation);
     }
 
     public void UpdateVisuals(float sampleTime, Vector2 characterOffset, int animation)
     {
         var skinData = Overlay.victimParts.cosmetics.skin.skin;
-        UpdateVisuals(sampleTime, characterOffset, HudManager.Instance.KillOverlay.KillAnims[animation].victimParts.cosmetics.bodySprites[0].BodySprite.GetComponent<SpriteAnim>()
-            .m_defaultAnim, animation switch
+        UpdateVisuals(sampleTime, characterOffset, HUD().KillOverlay.KillAnims[animation].victimParts.cosmetics.bodySprites[0].BodySprite.GetComponent<SpriteAnim>().m_defaultAnim,
+            animation switch
             {
                 0 => skinData.KillStabVictim,
                 1 => skinData.KillNeckVictim,
@@ -107,7 +107,7 @@ public class CustomKillAnimationPlayer : MonoBehaviour
         var frameCount = 0;
         Frames.Clear();
 
-        foreach (var dataString in toLoad.Split(';', StringSplitOptions.RemoveEmptyEntries))
+        foreach (var dataString in toLoad.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
             var frame = KillAnimFrame.Deserialize(dataString);
 
