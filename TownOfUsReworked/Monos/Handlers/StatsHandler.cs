@@ -46,7 +46,11 @@ public class StatsHandler : MonoBehaviour
 
     private static void AppendAchievement(Il2CppSystem.Text.StringBuilder str, Achievement achievement)
     {
-        str.AppendLine($"{(char)(achievement.Unlocked ? 0x25A0 : 0x25A1)} {TranslationManager.Translate($"Achievement.{achievement.Name}.Title")}:");
-        str.AppendLine($"     {TranslationManager.Translate($"Achievement.{achievement.Name}.Description")}");
+        str.AppendLine($"{(char)(achievement.Unlocked ? 0x25A0 : 0x25A1)} {TranslationManager.Translate($"Achievement.{achievement.Name}.Title")}");
+
+        if (achievement.Name.Contains("LayerWins"))
+            str.AppendLine($"     {TranslationManager.Translate($"Achievement.LayerWins.Description", ("%layer%", $"CustomOption.{achievement.Name.Split('.')[^1]}"))}");
+        else
+            str.AppendLine($"     {TranslationManager.Translate($"Achievement.{achievement.Name}.Description")}");
     }
 }

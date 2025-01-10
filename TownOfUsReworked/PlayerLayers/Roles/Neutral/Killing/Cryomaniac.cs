@@ -127,7 +127,7 @@ public class Cryomaniac : NKilling
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)cryoAction}");
+                Error($"Received unknown RPC - {cryoAction}");
                 break;
             }
         }

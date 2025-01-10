@@ -15,7 +15,7 @@ public static class CustomAchievementManager
         new("FirstBlood", eog: true, icon: "IntruderKill"), // First kill of the game
         new("LastBlood", eog: true, icon: "IntruderKill"), // Last kill of the game
         new("ParticipationTrophy", icon: "IntruderKill"), // Be the first to die
-        new("LastOneStanding", eog: true, icon: "IntruderKill"), // Be alive when the game ends
+        new("LastOneStanding", eog: true, icon: "IntruderKill"), // Be the last one alive when the game ends
         new("TasteForDeath", icon: "IntruderKill"), // First kill
         new("Fatality", icon: "IntruderKill"), // First death
         new("Resilient", eog: true, icon: "Shield"), // Survive an attack
@@ -86,7 +86,7 @@ public static class CustomAchievementManager
         if (player.AmOwner)
             UnlockAchievement(name);
         else
-            CallRpc(CustomRPC.Misc, MiscRPC.Achievement, player, name);
+            CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.Achievement, name);
     }
 
     public static void UnlockAchievement(string name)

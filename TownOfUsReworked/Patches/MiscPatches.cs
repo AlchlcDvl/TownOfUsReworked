@@ -121,8 +121,6 @@ public static class SecurityLoggerPatch
 [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
 public static class DisconnectHandler
 {
-    public static readonly List<byte> Disconnected = [];
-
     public static void Prefix(PlayerControl player)
     {
         CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player || !x.Player);
@@ -137,7 +135,6 @@ public static class DisconnectHandler
             return;
 
         SetPostmortals.RemoveFromPostmortals(player);
-        Disconnected.Add(player.PlayerId);
         OnGameEndPatches.AddSummaryInfo(player, true);
     }
 }

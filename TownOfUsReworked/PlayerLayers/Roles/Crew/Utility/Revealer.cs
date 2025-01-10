@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Revealer : Crew
+public class Revealer : Crew, IGhosty
 {
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
     public static Number RevealerTasksRemainingClicked { get; set; } = new(5);
@@ -44,42 +44,6 @@ public class Revealer : Crew
         Alignment = Alignment.CrewUtil;
     }
 
-    public void Fade()
-    {
-        if (Disconnected)
-            return;
-
-        Faded = true;
-
-        var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
-        var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
-
-        var distPercent = distance / maxDistance;
-        distPercent = Mathf.Max(0, distPercent - 1);
-
-        var velocity = Player.GetComponent<Rigidbody2D>().velocity.magnitude;
-
-        if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-            Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
-
-        Player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f), 0, distPercent));
-        Player.NameText().color = Player.cosmetics.colorBlindText.color = UColor.clear;
-
-        if (Local)
-            Camouflage();
-    }
-
-    public void UnFade()
-    {
-        Player.MyRend().color = UColor.white;
-        Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
-        Faded = false;
-        Player.MyPhysics.ResetMoveState();
-
-        if (Local)
-            DefaultOutfitAll();
-    }
-
     public override void UponTaskComplete(uint taskId)
     {
         if (TasksLeft == RevealerTasksRemainingAlert && !Caught)
@@ -101,11 +65,5 @@ public class Revealer : Crew
         }
     }
 
-    public override void UpdatePlayer()
-    {
-        if (!Caught)
-            Fade();
-        else if (Faded)
-            UnFade();
-    }
+    public override void UpdatePlayer() => (this as IGhosty).UpdateGhost();
 }

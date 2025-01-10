@@ -353,7 +353,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)rebAction}");
+                Error($"Received unknown RPC - {rebAction}");
                 break;
             }
         }

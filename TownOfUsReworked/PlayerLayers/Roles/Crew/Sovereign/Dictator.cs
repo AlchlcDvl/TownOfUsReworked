@@ -38,7 +38,7 @@ public class Dictator : Crew, IRevealer, ISovereign
 
     public void Reveal()
     {
-        if (!Revealed)
+        if (!Revealed && !GetLayers<Dictator>().Any(x => !x.Dead && x.Revealed))
         {
             CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
             PublicReveal(Player);
@@ -112,7 +112,7 @@ public class Dictator : Crew, IRevealer, ISovereign
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)dictAction}");
+                Error($"Received unknown RPC - {dictAction}");
                 break;
             }
         }

@@ -36,7 +36,7 @@ public static class RPCHandling
                     }
                     default:
                     {
-                        Error($"Received unknown RPC - {(int)test}");
+                        Error($"Received unknown test RPC - {test}");
                         break;
                     }
                 }
@@ -267,16 +267,12 @@ public static class RPCHandling
                     }
                     case MiscRPC.Achievement:
                     {
-                        if (reader.ReadPlayer().AmOwner)
-                            CustomAchievementManager.UnlockAchievement(reader.ReadString());
-                        else
-                            reader.ReadString();
-
+                        CustomAchievementManager.UnlockAchievement(reader.ReadString());
                         break;
                     }
                     default:
                     {
-                        Error($"Received unknown RPC - {(int)misc}");
+                        Error($"Received unknown misc RPC - {misc}");
                         break;
                     }
                 }
@@ -301,7 +297,7 @@ public static class RPCHandling
                     }
                     default:
                     {
-                        Error($"Received unknown RPC - {(int)vanilla}");
+                        Error($"Received unknown vanilla RPC - {vanilla}");
                         break;
                     }
                 }
@@ -440,7 +436,7 @@ public static class RPCHandling
                     }
                     default:
                     {
-                        Error($"Received unknown RPC - {(int)action}");
+                        Error($"Received unknown action RPC - {action}");
                         break;
                     }
                 }
@@ -541,7 +537,7 @@ public static class RPCHandling
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)rpc}");
+                Error($"Received unknown custom RPC - {rpc}");
                 break;
             }
         }

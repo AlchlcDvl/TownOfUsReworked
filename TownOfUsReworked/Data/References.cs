@@ -3,6 +3,7 @@ namespace TownOfUsReworked.Data;
 public static class References
 {
     public static readonly List<byte> RecentlyKilled = [];
+    public static readonly List<byte> Cleaned = [];
     public static readonly Dictionary<byte, byte> CachedMorphs = [];
     public static readonly List<DeadPlayer> KilledPlayers = [];
     public static readonly Dictionary<byte, float> TransitioningSize = []; // Wheeze

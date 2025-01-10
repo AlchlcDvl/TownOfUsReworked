@@ -265,7 +265,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)retAction}");
+                Error($"Received unknown RPC - {retAction}");
                 break;
             }
         }

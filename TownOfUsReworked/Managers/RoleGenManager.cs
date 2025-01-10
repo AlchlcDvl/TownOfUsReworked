@@ -432,7 +432,7 @@ public static class RoleGenManager
         PlayerLayers.Roles.Syndicate.SyndicateHasChaosDrive = false;
         PlayerLayers.Roles.Syndicate.DriveHolder = null;
 
-        Role.Cleaned.Clear();
+        Cleaned.Clear();
 
         MeetingPatches.MeetingCount = 0;
 
@@ -447,11 +447,7 @@ public static class RoleGenManager
 
         PlayerLayer.DeleteAll();
 
-        SetPostmortals.AssassinatedPlayers.Clear();
-        SetPostmortals.MisfiredPlayers.Clear();
-        SetPostmortals.MarkedPlayers.Clear();
-        SetPostmortals.EscapedPlayers.Clear();
-
+        AllRoles.Clear();
         AllModifiers.Clear();
         AllAbilities.Clear();
         AllDispositions.Clear();
@@ -472,8 +468,6 @@ public static class RoleGenManager
         Convertible = 0;
 
         RecentlyKilled.Clear();
-
-        DisconnectHandler.Disconnected.Clear();
 
         SettingsPatches.SettingsPage = 0;
 

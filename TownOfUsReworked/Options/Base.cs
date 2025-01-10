@@ -293,33 +293,33 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             splitText.RemoveAt(0);
             var parts = opt.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             var name = parts[0];
-            var option = AllOptions.Where(x => x is not IOptionGroup).FirstOrDefault(x => x.ID == name);
+            var value = parts[1];
 
-            if (option == null && name != "Map")
+            if (name == "Map")
+            {
+                SettingsPatches.SetMap(Enum.Parse<MapEnum>(value));
+                continue;
+            }
+
+            var option = GetOption(name);
+
+            if (option == null)
             {
                 Warning($"{opt} doesn't exist");
                 continue;
             }
 
-            var value = parts[1];
-
             try
             {
-                if (name == "Map")
-                    SettingsPatches.SetMap(Enum.Parse<MapEnum>(value));
-                else
+                option.SetBase(option.Type switch
                 {
-                    var val = option.Type switch
-                    {
-                        CustomOptionType.Toggle => bool.Parse(value),
-                        CustomOptionType.Number => Number.Parse(value),
-                        CustomOptionType.Layer => RoleOptionData.Parse(value),
-                        CustomOptionType.String => Enum.Parse(option.TargetType, value),
-                        CustomOptionType.Entry => Enum.Parse<LayerEnum>(value),
-                        _ => true
-                    };
-                    option.SetBase(val, false);
-                }
+                    CustomOptionType.Toggle => bool.Parse(value),
+                    CustomOptionType.Number => Number.Parse(value),
+                    CustomOptionType.Layer => RoleOptionData.Parse(value),
+                    CustomOptionType.String => Enum.Parse(option.TargetType, value),
+                    CustomOptionType.Entry => Enum.Parse<LayerEnum>(value),
+                    _ => true
+                }, false);
             }
             catch (Exception e)
             {

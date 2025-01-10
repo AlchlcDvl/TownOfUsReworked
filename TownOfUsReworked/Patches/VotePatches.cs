@@ -23,7 +23,6 @@ public static class VotePatches
         }
 
         CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == pc || !x.Player);
-        DisconnectHandler.Disconnected.Add(pc.PlayerId);
         SetPostmortals.RemoveFromPostmortals(pc);
         MarkMeetingDead(pc);
         OnGameEndPatches.AddSummaryInfo(pc, true);

@@ -478,7 +478,6 @@ public static class Utils
                 }
             }
 
-            SetPostmortals.AssassinatedPlayers.Add(target.PlayerId);
             Meeting().CheckForEndVoting();
         }
     }
@@ -561,7 +560,7 @@ public static class Utils
             if (p == 1)
             {
                 body?.gameObject?.Destroy();
-                Role.Cleaned.Add(body.ParentId);
+                Cleaned.Add(body.ParentId);
             }
         }));
     }
@@ -745,12 +744,12 @@ public static class Utils
         Func<PlayerControl, bool> predicate = null, bool includeDead = false)
     {
         if (predicate != null)
-            return GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls, x => x != refPlayer && predicate(x), includeDead);
+            return GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls, x => x != refPlayer && predicate(x), includeDead);
         else
-            return GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls, x => x != refPlayer, includeDead);
+            return GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls, x => x != refPlayer, includeDead);
     }
 
-    public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<PlayerControl,
+    public static PlayerControl GetClosestPlayer(Vector2 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<PlayerControl,
         bool> predicate = null, bool includeDead = false)
     {
         var closestDistance = float.MaxValue;
@@ -771,8 +770,9 @@ public static class Utils
                 continue;
             }
 
-            var distance = Vector3.Distance(position, player.transform.position);
-            var vector = player.transform.position - position;
+            var truePos = player.GetTruePosition();
+            var distance = Vector2.Distance(position, truePos);
+            var vector = truePos - position;
 
             if (distance > closestDistance || distance > maxDistance)
                 continue;
@@ -788,9 +788,9 @@ public static class Utils
     }
 
     public static Vent GetClosestVent(this PlayerControl refPlayer, IEnumerable<Vent> allVents = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Vent, bool> predicate =
-        null) => GetClosestVent(refPlayer.transform.position, allVents, maxDistance, ignoreWalls, predicate);
+        null) => GetClosestVent(refPlayer.GetTruePosition(), allVents, maxDistance, ignoreWalls, predicate);
 
-    public static Vent GetClosestVent(Vector3 position, IEnumerable<Vent> allVents = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
+    public static Vent GetClosestVent(Vector2 position, IEnumerable<Vent> allVents = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
     {
         var closestDistance = float.MaxValue;
         Vent closestVent = null;
@@ -804,8 +804,8 @@ public static class Utils
 
         foreach (var vent in allVents)
         {
-            var distance = Vector3.Distance(position, vent.transform.position);
-            var vector = vent.transform.position - position;
+            var distance = Vector2.Distance(position, vent.transform.position);
+            var vector = (Vector2)vent.transform.position - position;
 
             if (distance > maxDistance || distance > closestDistance)
                 continue;
@@ -821,9 +821,9 @@ public static class Utils
     }
 
     public static DeadBody GetClosestBody(this PlayerControl refPlayer, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool>
-        predicate = null) => GetClosestBody(refPlayer.transform.position, allBodies, maxDistance, ignoreWalls, predicate);
+        predicate = null) => GetClosestBody(refPlayer.GetTruePosition(), allBodies, maxDistance, ignoreWalls, predicate);
 
-    public static DeadBody GetClosestBody(Vector3 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool> predicate =
+    public static DeadBody GetClosestBody(Vector2 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool> predicate =
         null)
     {
         var closestDistance = float.MaxValue;
@@ -838,11 +838,11 @@ public static class Utils
 
         foreach (var body in allBodies)
         {
-            if (Role.Cleaned.Any(x => x == body.ParentId))
+            if (Cleaned.Any(x => x == body.ParentId))
                 continue;
 
-            var distance = Vector3.Distance(position, body.transform.position);
-            var vector = body.transform.position - position;
+            var distance = Vector2.Distance(position, body.TruePosition);
+            var vector = body.TruePosition - position;
 
             if (distance > maxDistance || distance > closestDistance)
                 continue;
@@ -858,9 +858,9 @@ public static class Utils
     }
 
     public static Console GetClosestConsole(this PlayerControl refPlayer, IEnumerable<Console> allConsoles = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Console, bool>
-        predicate = null) => GetClosestConsole(refPlayer.transform.position, allConsoles, maxDistance, ignoreWalls, predicate);
+        predicate = null) => GetClosestConsole(refPlayer.GetTruePosition(), allConsoles, maxDistance, ignoreWalls, predicate);
 
-    public static Console GetClosestConsole(Vector3 position, IEnumerable<Console> allConsoles = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Console, bool> predicate =
+    public static Console GetClosestConsole(Vector2 position, IEnumerable<Console> allConsoles = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Console, bool> predicate =
         null)
     {
         var closestDistance = float.MaxValue;
@@ -872,8 +872,8 @@ public static class Utils
 
         foreach (var console in allConsoles)
         {
-            var distance = Vector3.Distance(position, console.transform.position);
-            var vector = console.transform.position - position;
+            var distance = Vector2.Distance(position, console.transform.position);
+            var vector = (Vector2)console.transform.position - position;
             var tempMaxDistance = maxDistance;
 
             if (float.IsNaN(tempMaxDistance))
@@ -893,9 +893,9 @@ public static class Utils
     }
 
     public static MonoBehaviour GetClosestMono(this PlayerControl player, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour,
-        bool> predicate = null) => GetClosestMono(player.transform.position, allMonos, trueMaxDistance, ignoreWalls, predicate);
+        bool> predicate = null) => GetClosestMono(player.GetTruePosition(), allMonos, trueMaxDistance, ignoreWalls, predicate);
 
-    public static MonoBehaviour GetClosestMono(Vector3 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour, bool>
+    public static MonoBehaviour GetClosestMono(Vector2 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour, bool>
         predicate = null)
     {
         var closestDistance = float.MaxValue;
@@ -909,8 +909,8 @@ public static class Utils
             if (!mono)
                 continue;
 
-            var distance = Vector3.Distance(position, mono.transform.position);
-            var vector = mono.transform.position - position;
+            var distance = Vector2.Distance(position, mono.transform.position);
+            var vector = (Vector2)mono.transform.position - position;
             var maxDistance = trueMaxDistance;
 
             if (float.IsNaN(maxDistance))
@@ -1282,7 +1282,7 @@ public static class Utils
 
     public static void CustomDie(this PlayerControl player, DeathReasonEnum customReason, PlayerControl killer = null, DeathReason reason = DeathReason.Kill)
     {
-        if (player.Data.IsDead)
+        if (player.Data.IsDead && !player.IsPostmortal())
             return;
 
         killer ??= player;

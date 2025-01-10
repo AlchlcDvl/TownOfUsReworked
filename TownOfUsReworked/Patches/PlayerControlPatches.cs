@@ -51,7 +51,7 @@ public static class PlayerControlPatches
         __instance.cosmetics.SetNameMask(true);
         KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || !AllPlayers().Any(y => y.PlayerId == x.PlayerId));
         RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || !AllPlayers().Any(y => y.PlayerId == x));
-        Role.Cleaned.RemoveAll(x => x == __instance.PlayerId || !AllPlayers().Any(y => y.PlayerId == x) || !PlayerById(x));
+        Cleaned.RemoveAll(x => x == __instance.PlayerId || !AllPlayers().Any(y => y.PlayerId == x) || !PlayerById(x));
         BodyLocations.Remove(__instance.PlayerId);
         SetPostmortals.RemoveFromPostmortals(__instance);
         var body = BodyByPlayer(__instance);

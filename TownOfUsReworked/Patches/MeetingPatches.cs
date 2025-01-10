@@ -104,7 +104,7 @@ public static class MeetingPatches
 
                     var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
 
-                    if (Role.Cleaned.Contains(player.PlayerId))
+                    if (Cleaned.Contains(player.PlayerId))
                         report = "They were killed by an unknown assailant.";
                     else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
                         report = $"They were killed by the {killerRole.Name}.";
@@ -117,7 +117,7 @@ public static class MeetingPatches
                     yield return Wait(2f);
                     var role = player.GetRole();
 
-                    if (Role.Cleaned.Contains(player.PlayerId))
+                    if (Cleaned.Contains(player.PlayerId))
                         report = $"We could not determine what {player.name} was.";
                     else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
                         report = $"They were the {role}.";
@@ -127,42 +127,6 @@ public static class MeetingPatches
                         report = $"We could not determine what {player.name} was.";
 
                     Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                    yield return Wait(2f);
-                }
-            }
-
-            foreach (var player in DisconnectHandler.Disconnected)
-            {
-                if (player != check.PlayerId)
-                {
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player).name} killed themselves last round.");
-                    yield return Wait(2f);
-                }
-            }
-
-            foreach (var player in SetPostmortals.EscapedPlayers)
-            {
-                if (player != check.PlayerId)
-                {
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player).name} accomplished their objective and escaped last round.");
-                    yield return Wait(2f);
-                }
-            }
-
-            foreach (var player in SetPostmortals.MisfiredPlayers)
-            {
-                if (player != check.PlayerId)
-                {
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"{PlayerById(player).name} was ejected for their misuse of power.");
-                    yield return Wait(2f);
-                }
-            }
-
-            foreach (var player in SetPostmortals.MarkedPlayers)
-            {
-                if (player != check.PlayerId)
-                {
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {PlayerById(player).name} to be ejected!");
                     yield return Wait(2f);
                 }
             }
@@ -232,9 +196,8 @@ public static class MeetingPatches
         }
 
         RecentlyKilled.Clear();
-        Role.Cleaned.Clear();
+        Cleaned.Clear();
         Reported = null;
-        DisconnectHandler.Disconnected.Clear();
         GivingAnnouncements = false;
     }
 

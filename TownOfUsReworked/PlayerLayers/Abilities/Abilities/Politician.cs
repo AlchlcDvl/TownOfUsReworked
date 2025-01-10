@@ -109,7 +109,7 @@ public class Politician : Ability
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)polAction}");
+                Error($"Received unknown RPC - {polAction}");
                 break;
             }
         }

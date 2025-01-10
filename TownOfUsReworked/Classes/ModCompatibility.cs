@@ -110,10 +110,14 @@ public static class ModCompatibility
             var elevatorConsoleType = SubTypes.First(t => t.Name == "ElevatorConsole");
             var canUseMethod = AccessTools.Method(elevatorConsoleType, "CanUse");
 
+            var submarineSelectSpawnType = SubTypes.First(t => t.Name == "SubmarineSelectSpawn");
+            var startMethod = AccessTools.Method(submarineSelectSpawnType, "Start");
+
             var compatType = typeof(ModCompatibility);
 
             TownOfUsReworked.ModInstance.Harmony.Patch(submergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
             TownOfUsReworked.ModInstance.Harmony.Patch(getReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(startMethod, new(AccessTools.Method(compatType, nameof(SpawnPatch))));
             TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(ElevatorPrefix))), new(AccessTools.Method(compatType, nameof(ElevatorPostfix))));
 
             Message("Submerged compatibility finished");
@@ -184,11 +188,7 @@ public static class ModCompatibility
         return (false, null);
     }
 
-    public static void ExileRoleChangePostfix()
-    {
-        Coroutines.Start(WaitAction(() => ButtonUtils.Reset(CooldownType.Meeting)));
-        SetPostmortals.ExileControllerPostfix(Ejection());
-    }
+    public static void ExileRoleChangePostfix() => SetPostmortals.Postfix(Ejection());
 
     public static IEnumerator WaitAction(Action next)
     {
@@ -271,6 +271,18 @@ public static class ModCompatibility
             __result = __instance.GetTotalPlayerAmount();
             Enum.TryParse(SpawnInStateType, "Done", true, out var e);
             CurrentStateField.SetValue(__instance, e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static bool SpawnPatch(dynamic __instance)
+    {
+        if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(out var astral) && astral.LastPosition != Vector3.zero && !astral.Dead))
+        {
+            HUD().FullScreen.color = HUD().FullScreen.color.SetAlpha(0f);
+            __instance.Close();
             return false;
         }
 

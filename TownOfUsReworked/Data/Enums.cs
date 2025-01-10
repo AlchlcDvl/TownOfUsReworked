@@ -606,7 +606,7 @@ public enum DeathReasonEnum : byte
     Escaped,
     Converted,
     Infected,
-    Clicked,
+    Caught,
     Marked,
 
     None

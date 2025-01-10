@@ -426,6 +426,9 @@ public static class OnGameEndPatches
                 else if (count >= KillCounts.Values.Max())
                     CustomAchievementManager.UnlockAchievement("Bloodthirsty");
             }
+
+            if (AllPlayers().Count(x => !x.HasDied()) == 1 && !CustomPlayer.Local.HasDied())
+                CustomAchievementManager.UnlockAchievement("LastOneStanding");
         }
     }
 
@@ -440,7 +443,7 @@ public static class OnGameEndPatches
 
             CustomStatsManager.IncrementStat(StringNames.StatsGamesFinished);
             __instance.Navigation.HideButtons();
-            var cachedPlayerData = EndGameResult.CachedWinners.ToSystem().FirstOrDefault(h => h.IsYou);
+            var cachedPlayerData = EndGameResult.CachedWinners.ToSystem().Find(h => h.IsYou);
 
             if (cachedPlayerData != null)
             {

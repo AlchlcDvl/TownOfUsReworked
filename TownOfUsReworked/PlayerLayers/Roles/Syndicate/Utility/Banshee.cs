@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Banshee : Syndicate
+public class Banshee : Syndicate, IGhosty
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number ScreamCd { get; set; } = new(25);
@@ -47,46 +47,6 @@ public class Banshee : Syndicate
         Blocked.Clear();
     }
 
-    public void Fade()
-    {
-        if (Disconnected)
-            return;
-
-        Faded = true;
-        var color = new UColor(1f, 1f, 1f, 0f);
-
-        var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
-        var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
-
-        var distPercent = distance / maxDistance;
-        distPercent = Mathf.Max(0, distPercent - 1);
-
-        var velocity = Player.GetComponent<Rigidbody2D>().velocity.magnitude;
-        color.a = 0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f);
-        color.a = Mathf.Lerp(color.a, 0, distPercent);
-
-        if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-            Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
-
-        Player.MyRend().color = color;
-        Player.NameText().color = new(0f, 0f, 0f, 0f);
-        Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
-
-        if (Local)
-            Camouflage();
-    }
-
-    public void UnFade()
-    {
-        Player.MyRend().color = UColor.white;
-        Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
-        Faded = false;
-        Player.MyPhysics.ResetMoveState();
-
-        if (Local)
-            DefaultOutfitAll();
-    }
-
     public void HitScream()
     {
         foreach (var player in AllPlayers())
@@ -112,11 +72,5 @@ public class Banshee : Syndicate
         }
     }
 
-    public override void UpdatePlayer()
-    {
-        if (!Caught)
-            Fade();
-        else if (Faded)
-            UnFade();
-    }
+    public override void UpdatePlayer() => (this as IGhosty).UpdateGhost();
 }

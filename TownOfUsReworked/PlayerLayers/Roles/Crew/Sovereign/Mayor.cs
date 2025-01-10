@@ -35,5 +35,5 @@ public class Mayor : Crew, IRevealer, ISovereign
         PublicReveal(Player);
     }
 
-    public bool Usable() => !RoundOne && !Revealed;
+    public bool Usable() => !RoundOne && !Revealed && !GetLayers<Mayor>().Any(x => !x.Dead && x.Revealed);
 }

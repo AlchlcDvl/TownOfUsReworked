@@ -153,7 +153,7 @@ public class Glitch : NKilling
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)glitchAction}");
+                Error($"Received unknown RPC - {glitchAction}");
                 break;
             }
         }

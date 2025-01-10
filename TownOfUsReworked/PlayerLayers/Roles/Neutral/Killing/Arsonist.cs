@@ -138,7 +138,7 @@ public class Arsonist : NKilling
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)arsoAction}");
+                Error($"Received unknown RPC - {arsoAction}");
                 break;
             }
         }

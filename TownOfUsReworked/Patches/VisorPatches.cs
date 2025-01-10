@@ -152,13 +152,16 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.UpdateMaterial)), HarmonyPrefix]
     public static bool UpdateMaterialPrefix(VisorLayer __instance)
     {
+        if (!__instance.visorData)
+            return true;
+
         try
         {
             __instance.viewAsset.GetAsset();
             return true;
         } catch {}
 
-        if (!__instance.visorData || !CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+        if (!CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         var maskType = __instance.matProperties.MaskType;
@@ -214,13 +217,16 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.PopulateFromViewData)), HarmonyPrefix]
     public static bool PopulateFromViewDataPrefix(VisorLayer __instance)
     {
+        if (!__instance.visorData)
+            return true;
+
         try
         {
             __instance.viewAsset.GetAsset();
             return true;
         } catch {}
 
-        if (!__instance.visorData || !CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+        if (!CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         __instance.UpdateMaterial();
@@ -232,13 +238,16 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.SetFloorAnim)), HarmonyPrefix]
     public static bool SetFloorAnimPrefix(VisorLayer __instance)
     {
+        if (!__instance.visorData)
+            return true;
+
         try
         {
             __instance.viewAsset.GetAsset();
             return true;
         } catch {}
 
-        if (!__instance.visorData || !CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+        if (!CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         __instance.Image.sprite = cv.ViewData.FloorFrame;
@@ -248,7 +257,7 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.SetClimbAnim)), HarmonyPrefix]
     public static bool SetClimbAnimPrefix(VisorLayer __instance, PlayerBodyTypes bodyType)
     {
-        if (__instance.options.HideDuringClimb || bodyType == PlayerBodyTypes.Horse || !CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor))
+        if (!__instance.visorData || __instance.options.HideDuringClimb || bodyType == PlayerBodyTypes.Horse || !CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor))
             return true;
 
         __instance.transform.SetLocalZ(0f);
@@ -259,7 +268,7 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.IsLoaded), MethodType.Getter)]
     public static bool Prefix(VisorLayer __instance, ref bool __result)
     {
-        if (!__instance.visorData && !CustomVisorRegistry.ContainsKey(__instance.visorData.ProductId))
+        if (!__instance.visorData || !CustomVisorRegistry.ContainsKey(__instance.visorData.ProductId))
             return true;
 
         return !(__result = true);

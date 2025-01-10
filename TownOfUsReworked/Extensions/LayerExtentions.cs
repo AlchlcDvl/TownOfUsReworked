@@ -299,21 +299,15 @@ public static class LayerExtentions
             player.GetDisposition() is Corrupted or Fanatic or Traitor;
     }
 
-    public static bool IsPostmortal(this PlayerControl player) => player.GetRole() is Revealer or Phantom or Ghoul or Banshee && player.HasDied();
+    public static bool IsPostmortal(this PlayerControl player) => player.HasDied() && player.IIs<IGhosty>();
 
     public static bool Caught(this PlayerControl player)
     {
         if (!player.IsPostmortal())
             return true;
 
-        if (player.TryGetLayer<Phantom>(out var phan))
-            return phan.Caught;
-        else if (player.TryGetLayer<Revealer>(out var rev))
-            return rev.Caught;
-        else if (player.TryGetLayer<Ghoul>(out var ghoul))
-            return ghoul.Caught;
-        else if (player.TryGetLayer<Banshee>(out var ban))
-            return ban.Caught;
+        if (player.TryGetILayer<IGhosty>(out var iGhost))
+            return iGhost.Caught;
 
         return true;
     }
@@ -802,7 +796,6 @@ public static class LayerExtentions
         newRole.RoleHistory.AddRange(former.RoleHistory);
         former.RoleHistory.Clear();
         former.Ignore = true;
-        PlayerLayer.AllLayers.Remove(former);
 
         if (newRole.Local)
         {

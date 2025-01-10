@@ -386,8 +386,8 @@ public static class ChatNotifFixPatch
         __instance.SetCosmetics(sender.Data);
         __instance.playerColorText.SetText(__instance.player.ColorBlindName);
         __instance.playerNameText.SetText(sender.name.IsNullOrWhiteSpace() ? "..." : sender.name);
-        __instance.playerNameText.color = Palette.TextColors[__instance.player.ColorId];
-        __instance.playerNameText.outlineColor = Palette.TextOutlineColors[__instance.player.ColorId];
+        __instance.playerNameText.color = __instance.player.ColorId.GetColor(false);
+        __instance.playerNameText.outlineColor = __instance.player.ColorId.GetColor(true);
         __instance.chatText.richText = true;
         __instance.chatText.SetText(text);
         return false;

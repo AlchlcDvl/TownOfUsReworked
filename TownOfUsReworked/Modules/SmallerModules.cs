@@ -78,3 +78,84 @@ public class Achievement(string name, bool unlocked = false, bool hidden = false
     public string Icon { get; } = icon;
     public bool Unlocked { get; set; } = unlocked;
 }
+
+public struct PlayerRecord()
+{
+    public readonly List<LayerEnum> Layers = [];
+    public readonly List<LayerEnum> History = [];
+    public readonly List<string> Titles = [];
+
+    public string PlayerName { get; set; }
+    public uint ColorId { get; set; }
+    public string SkinId { get; set; }
+    public string HatId { get; set; }
+    public string VisorId { get; set; }
+
+    public bool CanDoTasks { get; set; }
+    public uint TasksDone { get; set; }
+    public uint TasksLeft { get; set; }
+
+    public bool IsExeTarget { get; set; }
+    public bool IsGATarget { get; set; }
+    public bool IsGuessTarget { get; set; }
+    public bool IsBHTarget { get; set; }
+
+    public bool DriveHolder { get; set; }
+
+    public SubFaction SubFaction { get; set; }
+    public DeathReasonEnum DeathReason { get; set; }
+
+    public static PlayerRecord Generate(PlayerControl player)
+    {
+        var info = player.GetLayers();
+        var role = (Role)info.First();
+        role.RoleHistory.Reverse();
+        var outfit = player.Data.DefaultOutfit;
+
+        var record = new PlayerRecord()
+        {
+            PlayerName = outfit.PlayerName,
+            ColorId = (uint)outfit.ColorId,
+            SkinId = outfit.SkinId,
+            HatId = outfit.HatId,
+            VisorId = outfit.VisorId,
+            CanDoTasks = player.CanDoTasks(),
+            TasksLeft = (uint)role.TasksLeft,
+            TasksDone = (uint)(role.TotalTasks - role.TasksLeft),
+            IsExeTarget = player.IsExeTarget(),
+            IsGATarget = player.IsGATarget(),
+            IsBHTarget = player.IsBHTarget(),
+            IsGuessTarget = player.IsGuessTarget(),
+            DriveHolder = Syndicate.DriveHolder == player,
+            DeathReason = role.DeathReason,
+            SubFaction = role.SubFaction
+        };
+
+        record.Layers.AddRange(info.Select(x => x.Type));
+        record.History.AddRange(role.RoleHistory.Select(x => x.Type));
+
+        if (player.CanKill())
+        {
+            if (!KillCounts.TryGetValue(player.PlayerId, out var count) || count == 0)
+                record.Titles.Add("Pacifist");
+            else if (count >= KillCounts.Values.Max())
+                record.Titles.Add("Bloodthirsty");
+        }
+
+        return record;
+    }
+
+    public static bool operator ==(PlayerRecord a, PlayerRecord b) => a.PlayerName == b.PlayerName;
+
+    public static bool operator !=(PlayerRecord a, PlayerRecord b) => a.PlayerName != b.PlayerName;
+
+    public override readonly bool Equals(object obj)
+    {
+        if (obj is PlayerRecord other)
+            return PlayerName == other.PlayerName;
+
+        return false;
+    }
+
+    public override readonly int GetHashCode() => HashCode.Combine(PlayerName, ColorId, SkinId, HatId, VisorId);
+}

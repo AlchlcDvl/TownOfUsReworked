@@ -66,9 +66,7 @@ public static class PlayerControlOnClick
         else
             return;
 
-        player.Exiled();
-        role.KilledBy = " By " + clicker.name;
-        role.DeathReason = DeathReasonEnum.Clicked;
+        player.CustomDie(DeathReasonEnum.Caught, clicker);
     }
 }
 

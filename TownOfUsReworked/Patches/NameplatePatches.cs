@@ -58,7 +58,7 @@ public static class NameplatesTabOnEnablePatch
             if (CustomNameplateRegistry.TryGetValue(colorChip.ProductId, out var cn))
                 chip.image.sprite = cn.ViewData.Image;
             else
-                DefaultNameplateCoro(__instance, nameplate, chip);
+                __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(nameplate.ViewDataRef, (Action<NamePlateViewData>)(viewData => chip.image.sprite = viewData?.Image)));
 
             __instance.ColorChips.Add(colorChip);
             yStart = ypos;
@@ -66,9 +66,6 @@ public static class NameplatesTabOnEnablePatch
 
         yStart -= 1.5f;
     }
-
-    private static void DefaultNameplateCoro(NameplatesTab __instance, NamePlateData data, NameplateChip chip) => __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(data
-        .ViewDataRef, (Action<NamePlateViewData>)(viewData => chip.image.sprite = viewData?.Image)));
 
     [HarmonyPatch(nameof(NameplatesTab.OnEnable))]
     public static bool Prefix(NameplatesTab __instance)
@@ -119,23 +116,6 @@ public static class NameplatesTabOnEnablePatch
         if (array.Length != 0)
             __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);
 
-        return false;
-    }
-
-    [HarmonyPatch(nameof(NameplatesTab.SelectNameplate))]
-    public static bool Prefix(NameplatesTab __instance, NamePlateData plate)
-    {
-        if (!CustomNameplateRegistry.TryGetValue(plate.ProductId, out var cn))
-            return true;
-
-        __instance.plateId = plate.ProdId;
-        __instance.currentNameplateIsEquipped = DataManager.Player.Customization.NamePlate == plate.ProdId;
-		__instance.previewArea.gameObject.SetActive(true);
-        __instance.previewArea.PlayerIcon.gameObject.SetActive(false);
-        __instance.previewArea.NameText.text = DataManager.Player.Customization.Name;
-        __instance.previewArea.LevelNumberText.text = ProgressionManager.Instance.CurrentVisualLevel;
-        __instance.previewArea.Background.sprite = cn.ViewData.Image;
-        PlayerCustomizationMenu.Instance.SetItemName(plate.GetItemName());
         return false;
     }
 }

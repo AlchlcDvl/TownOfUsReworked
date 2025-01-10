@@ -8,6 +8,7 @@ public static class SpawnPatches
     public static void Prefix() => DoTheThing(true);
 
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
+    [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
     public static void Postfix() => DoTheThing(meeting: true);
 
     private static void DoTheThing(bool intro = false, bool meeting = false)

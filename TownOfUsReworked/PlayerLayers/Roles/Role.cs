@@ -2,8 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Role : PlayerLayer
 {
-    public static readonly List<byte> Cleaned = [];
-
     public override UColor Color => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
     public override LayerEnum Type => LayerEnum.NoneRole;

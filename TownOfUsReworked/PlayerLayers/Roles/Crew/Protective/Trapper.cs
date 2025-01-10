@@ -104,7 +104,7 @@ public class Trapper : Crew, ITrapper
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)trapAction}");
+                Error($"Received unknown RPC - {trapAction}");
                 break;
             }
         }

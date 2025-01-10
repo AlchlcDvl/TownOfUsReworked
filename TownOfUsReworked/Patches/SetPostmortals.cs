@@ -3,33 +3,15 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch]
 public static class SetPostmortals
 {
-    public static readonly List<byte> AssassinatedPlayers = [];
-    public static readonly List<byte> EscapedPlayers = [];
-    public static readonly List<byte> MarkedPlayers = [];
-    public static readonly List<byte> MisfiredPlayers = [];
-
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
-    public static void ExileControllerPostfix(ExileController __instance)
+    public static void Postfix(ExileController __instance)
     {
-        if (CustomPlayer.LocalCustom.Disconnected)
+        if (CustomPlayer.Local.Data.Disconnected)
             return;
 
         if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
             ast.SetPosition();
-
-        foreach (var id in AssassinatedPlayers)
-        {
-            var player = PlayerById(id);
-
-            if (!player.HasDied())
-                player.Exiled();
-        }
-
-        AssassinatedPlayers.Clear();
-        EscapedPlayers.Clear();
-        MarkedPlayers.Clear();
-        MisfiredPlayers.Clear();
 
         foreach (var ghoul in PlayerLayer.GetLayers<Ghoul>())
         {
@@ -38,7 +20,6 @@ public static class SetPostmortals
             else if (ghoul.MarkedPlayer && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.NeutralApoc))
             {
                 ghoul.MarkedPlayer.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
-                MarkedPlayers.Add(ghoul.MarkedPlayer.PlayerId);
                 ghoul.MarkedPlayer = null;
             }
         }
@@ -61,10 +42,7 @@ public static class SetPostmortals
                 dict.ToBeEjected.CustomDie(DeathReasonEnum.Dictated, dict.Player);
 
                 if (dict.ToBeEjected.Is(Faction.Crew) && dict.ToBeEjected.Is(SubFaction.None))
-                {
                     dict.Player.CustomDie(DeathReasonEnum.Suicide);
-                    MisfiredPlayers.Add(dict.Player.PlayerId);
-                }
 
                 dict.ToBeEjected = null;
             }
@@ -73,54 +51,26 @@ public static class SetPostmortals
         foreach (var vigi in PlayerLayer.GetLayers<Vigilante>())
         {
             if (vigi.PostMeetingDie)
-            {
                 vigi.Player.CustomDie(DeathReasonEnum.Suicide);
-                MisfiredPlayers.Add(vigi.Player.PlayerId);
-            }
         }
 
         if (NeutralSettings.AvoidNeutralKingmakers)
         {
-            foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
+            foreach (var ne in PlayerLayer.GetLayers<Evil>())
             {
-                if (bh.TargetKilled && !bh.Dead)
-                {
-                    bh.Player.CustomDie(DeathReasonEnum.Escaped);
-                    EscapedPlayers.Add(bh.Player.PlayerId);
-                }
-            }
-
-            foreach (var exe in PlayerLayer.GetLayers<Executioner>())
-            {
-                if (exe.TargetVotedOut && !exe.Dead)
-                {
-                    exe.Player.CustomDie(DeathReasonEnum.Escaped);
-                    EscapedPlayers.Add(exe.Player.PlayerId);
-                }
-            }
-
-            foreach (var guess in PlayerLayer.GetLayers<Guesser>())
-            {
-                if (guess.TargetGuessed && !guess.Dead)
-                {
-                    guess.Player.CustomDie(DeathReasonEnum.Escaped);
-                    EscapedPlayers.Add(guess.Player.PlayerId);
-                }
-            }
-
-            foreach (var cann in PlayerLayer.GetLayers<Cannibal>())
-            {
-                if (cann.Eaten && !cann.Dead)
-                {
-                    cann.Player.CustomDie(DeathReasonEnum.Escaped);
-                    EscapedPlayers.Add(cann.Player.PlayerId);
-                }
+                if (ne.HasWon && !ne.Dead)
+                    ne.Player.CustomDie(DeathReasonEnum.Escaped);
             }
         }
 
         BeginPostmortals(exiled, true);
-        AllPlayers().ForEach(x => x?.MyPhysics?.ResetAnimState());
         AllBodies().ForEach(x => x?.gameObject?.Destroy());
+
+        foreach (var player in AllPlayers())
+        {
+            player.MyPhysics.ResetAnimState();
+            player.MyPhysics.ResetMoveState();
+        }
     }
 
     public static void BeginPostmortals(PlayerControl player, bool ejection)

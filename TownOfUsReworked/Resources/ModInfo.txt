@@ -29,6 +29,7 @@ Changes!
 - Change: Player names will no longer appear in your vision until more of their body is exposed to your vision
 - Change: The "Pure Crew" is now a "Pure Player" game modifier, so it's no longer limited to just Crew roles (originally it was a bandaid fix for task completion issues; those were resolved ages ago)
 - Change: The /help command now also provides info on other commands if you specify a command name after it
+- Change: Dictators and Mayors cannot reveal themselves if there is another of the same role revealed, however unrevealed Dictators can still call a tribunal
 - Nerf: Vampire Hunters turned Vigilantes will always have one bullet left
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Improvement: Improved the mod's loaders

@@ -16,7 +16,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
-    public const int DevBuild = 25;
+    public const int DevBuild = 26;
 
     private static readonly string VersionS = VersionString[..^2];
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";

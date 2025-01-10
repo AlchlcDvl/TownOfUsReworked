@@ -161,7 +161,7 @@ public static class CheckEndGame
         return allCrew.Count == crewWithNoTasks.Count;
     }
 
-    public static bool Sabotaged()
+    private static bool Sabotaged()
     {
         foreach (var sab in Ship().Systems?.Values)
         {

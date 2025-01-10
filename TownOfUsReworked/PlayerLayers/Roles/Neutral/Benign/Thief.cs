@@ -163,7 +163,7 @@ public class Thief : Neutral
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)thiefAction}");
+                Error($"Received unknown RPC - {thiefAction}");
                 break;
             }
         }

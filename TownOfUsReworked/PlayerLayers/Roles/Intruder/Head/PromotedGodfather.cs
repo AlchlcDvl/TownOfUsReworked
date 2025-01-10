@@ -179,7 +179,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
             }
             default:
             {
-                Error($"Received unknown RPC - {(int)gfAction}");
+                Error($"Received unknown RPC - {gfAction}");
                 break;
             }
         }

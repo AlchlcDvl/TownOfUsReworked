@@ -34,13 +34,14 @@ public partial class TownOfUsReworked
 
     public void LoadComponents()
     {
+        ReactorCredits.Register<TownOfUsReworked>(x => x is ReactorCredits.Location.MainMenu);
         Harmony.PatchAll();
         var text = Path.Combine(DataPath, "steam_appid.txt");
 
         if (!File.Exists(text))
             File.WriteAllText(text, "945360");
 
-        NormalGameOptionsV08.MinPlayers = System.Linq.Enumerable.Repeat(1, 127).ToArray();
+        NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
         AllMonos.RegisterMonos();
         SetUpConfigs();
         ReworkedStart = TranslationManager.GetNextName("Translation.ReworkedStart", isStartup: true);
