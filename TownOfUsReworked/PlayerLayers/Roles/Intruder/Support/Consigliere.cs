@@ -13,7 +13,6 @@ public class Consigliere : Intruder
     public CustomButton InvestigateButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consigliere : FactionColor;
-    public override string Name => "Consigliere";
     public override LayerEnum Type => LayerEnum.Consigliere;
     public override Func<string> StartText => () => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";
     public override Func<string> Description => () => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}\n{CommonAbilities}";

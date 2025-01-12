@@ -51,7 +51,7 @@ public class TargetGen : BaseGen
                     NullLayer(lover.Player, PlayerLayerEnum.Disposition);
             }
 
-            Message("Lovers Set");
+            Success("Lovers Set");
         }
 
         if (GetSpawnItem(LayerEnum.Rivals).IsActive())
@@ -85,7 +85,7 @@ public class TargetGen : BaseGen
                     NullLayer(rival.Player, PlayerLayerEnum.Disposition);
             }
 
-            Message("Rivals Set");
+            Success("Rivals Set");
         }
 
         if (GetSpawnItem(LayerEnum.Linked).IsActive())
@@ -119,7 +119,7 @@ public class TargetGen : BaseGen
                     NullLayer(link.Player, PlayerLayerEnum.Disposition);
             }
 
-            Message("Linked Set");
+            Success("Linked Set");
         }
 
         if (GetSpawnItem(LayerEnum.Mafia).IsActive())
@@ -129,7 +129,7 @@ public class TargetGen : BaseGen
             if (mafia.Count() == 1)
                 NullLayer(mafia.First().Player, PlayerLayerEnum.Disposition);
 
-            Message("Mafia Set");
+            Success("Mafia Set");
         }
 
         if (!Executioner.ExecutionerCanPickTargets && GetSpawnItem(LayerEnum.Executioner).IsActive())
@@ -147,7 +147,7 @@ public class TargetGen : BaseGen
                 }
             }
 
-            Message("Exe Targets Set");
+            Success("Exe Targets Set");
         }
 
         if (!Guesser.GuesserCanPickTargets && GetSpawnItem(LayerEnum.Guesser).IsActive())
@@ -166,7 +166,7 @@ public class TargetGen : BaseGen
                 }
             }
 
-            Message("Guess Targets Set");
+            Success("Guess Targets Set");
         }
 
         if (!GuardianAngel.GuardianAngelCanPickTargets && GetSpawnItem(LayerEnum.GuardianAngel).IsActive())
@@ -184,7 +184,7 @@ public class TargetGen : BaseGen
                 }
             }
 
-            Message("GA Target Set");
+            Success("GA Target Set");
         }
 
         if (!BountyHunter.BountyHunterCanPickTargets && GetSpawnItem(LayerEnum.BountyHunter).IsActive())
@@ -202,7 +202,7 @@ public class TargetGen : BaseGen
                 }
             }
 
-            Message("BH Targets Set");
+            Success("BH Targets Set");
         }
 
         if (!Actor.ActorCanPickRole && GetSpawnItem(LayerEnum.Actor).IsActive())
@@ -216,7 +216,7 @@ public class TargetGen : BaseGen
                     Message($"Act Targets = {act.PretendListString()}");
             }
 
-            Message("Act Variables Set");
+            Success("Act Variables Set");
         }
 
         if (GetSpawnItem(LayerEnum.Jackal).IsActive())
@@ -242,7 +242,7 @@ public class TargetGen : BaseGen
                     Message($"Recruits = {jackal.Recruit1.name} & {jackal.Recruit2.name}");
             }
 
-            Message("Jackal Recruits Set");
+            Success("Jackal Recruits Set");
         }
     }
 }

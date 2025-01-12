@@ -65,7 +65,7 @@ public static class RPC
 
             if (customOption == null)
             {
-                Error($"No option found for id: {id}");
+                Failure($"No option found for id: {id}");
                 continue;
             }
 
@@ -236,6 +236,8 @@ public static class RPC
             writer.Write(layer: layer2);
         else if (item is bool boolean)
             writer.Write(boolean);
+        else if (item is Number num)
+            writer.Write(num.Value);
         else if (item is int integer)
             writer.Write(integer);
         else if (item is float Float)
@@ -252,17 +254,15 @@ public static class RPC
             writer.WriteBytesAndSize(list.ToArray());
         else if (item is CustomButton button)
             writer.Write(button.ID);
-        else if (item is Number num)
-            writer.Write(num.Value);
-        else if (item is IEnumerable<PlayerLayer> roles)
+        else if (item is IEnumerable<PlayerLayer> layers)
         {
-            writer.Write((uint)roles.Count());
-            roles.ForEach(x => writer.Write(layer: x));
+            writer.Write((uint)layers.Count());
+            layers.ForEach(x => writer.Write(layer: x));
         }
         else if (item is null)
-            Error($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");
+            Failure($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");
         else
-            Error($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type - {item.GetType()}");
+            Failure($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type - {item.GetType().Name}");
     }
 
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallOpenRpc(rpc, data)?.EndRpc();
@@ -297,7 +297,7 @@ public static class RPC
     public static void EndRpc(this MessageWriter writer)
     {
         if (writer == null)
-            Error("RPC writer was null");
+            Failure("RPC writer was null");
         else
             AmongUsClient.Instance.FinishRpcImmediately(writer);
     }

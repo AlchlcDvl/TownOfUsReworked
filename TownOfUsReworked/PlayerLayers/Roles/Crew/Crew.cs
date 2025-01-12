@@ -3,7 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Crew : Role
 {
     public override UColor Color => CustomColorManager.Crew;
-    public override Faction BaseFaction => Faction.Crew;
 
     public override void Init()
     {

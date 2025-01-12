@@ -9,21 +9,26 @@ public static class Logging
     public static DiskLogListener DiskLog { get; set; }
     public static string SavedLogs { get; set; } = "";
 
-    private static void LogSomething(object message, LogLevel type)
+    private static void LogSomething(object message, Enum type)
     {
         message ??= "message is null";
-        Log?.Log(type, message);
         SavedLogs += $"[{type, -7}] {message}\n";
+
+        if (type is LogLevel bll)
+            BIELog(message, bll);
+        else if (type is ReworkedLogLevel rll)
+            RewLog(message, rll);
     }
 
-    private static void LogSomething(object message, ReworkedLogLevel type)
+    private static void BIELog(object message, LogLevel type) => Log?.Log(type, message);
+
+    private static void RewLog(object message, ReworkedLogLevel type)
     {
-        message ??= "message was null";
-        DiskLog.LogWriter.WriteLine($"[{type, -7}:{"Reworked",10}] {message}");
+        var console = $"[{type, -7}:{"Reworked",10}] {message}";
+        DiskLog.LogWriter.WriteLine(console);
         ConsoleManager.SetConsoleColor(type.GetConsoleColor());
-        ConsoleManager.ConsoleStream?.Write($"[{type,-7}:{"Reworked",10}] {message}{Environment.NewLine}");
+        ConsoleManager.ConsoleStream?.Write($"{console}{Environment.NewLine}");
         ConsoleManager.SetConsoleColor(ConsoleColor.Gray);
-        SavedLogs += $"[{type, -7}] {message}\n";
     }
 
     public static void Error(object message) => LogSomething(message, LogLevel.Error);
@@ -38,9 +43,15 @@ public static class Logging
 
     public static void Critical(object message) => LogSomething(message, ReworkedLogLevel.Critical);
 
+    public static void Success(object message) => LogSomething(message, ReworkedLogLevel.Success);
+
+    public static void Failure(object message) => LogSomething(message, ReworkedLogLevel.Failure);
+
     private static ConsoleColor GetConsoleColor(this ReworkedLogLevel type) => type switch // I'd like me even more colors :P
     {
         ReworkedLogLevel.Critical => ConsoleColor.Blue,
+        ReworkedLogLevel.Success => ConsoleColor.Green,
+        ReworkedLogLevel.Failure => ConsoleColor.Magenta,
         _ => ConsoleColor.DarkGray
     };
 }

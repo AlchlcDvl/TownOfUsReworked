@@ -83,7 +83,7 @@ public static class OnGameEndPatches
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
-                    if (!defect.Disconnected && defect.Side == Faction.Crew && !defect.Player.IsBase(defect.Side))
+                    if (!defect.Disconnected && defect.Side == Faction.Crew && defect.Turned)
                         Winners[defect.PlayerName] = defect.Player.GetLayers();
                 }
             }
@@ -115,7 +115,7 @@ public static class OnGameEndPatches
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
-                    if (!defect.Disconnected && defect.Side == Faction.Intruder && !defect.Player.IsBase(defect.Side))
+                    if (!defect.Disconnected && defect.Side == Faction.Intruder && defect.Turned)
                         Winners[defect.PlayerName] = defect.Player.GetLayers();
                 }
             }
@@ -147,7 +147,7 @@ public static class OnGameEndPatches
 
                 foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
-                    if (!defect.Disconnected && defect.Side == Faction.Syndicate && !defect.Player.IsBase(defect.Side))
+                    if (!defect.Disconnected && defect.Side == Faction.Syndicate && defect.Turned)
                         Winners[defect.PlayerName] = defect.Player.GetLayers();
                 }
             }
@@ -686,22 +686,24 @@ public static class OnGameEndPatches
         {
             if (role.RoleHistory.Any())
             {
-                role.RoleHistory.Reverse();
-
                 foreach (var role2 in role.RoleHistory)
                 {
-                    summary += $"{role2.ColorString}{role2.Name}</color> → ";
-                    cache += $"{role2.Name} → ";
+                    var part = TranslationManager.Translate($"Layer.{role2}");
+
+                    if (LayerDictionary.TryGetValue(role2, out var entry))
+                        summary += $"<color=#{entry.Color.ToHtmlStringRGBA()}>{part}</color> → ";
+
+                    cache += $"{part} → ";
                 }
             }
 
-            summary += $"{role?.ColorString}{role?.Name}</color>";
+            summary += $"{role.ColorString}{role.Name}</color>";
             cache += role.Name;
 
             if (role.SubFaction != SubFaction.None && !player.Is(Alignment.NeutralNeo))
             {
-                summary += $" {role?.SubFactionColorString}{role?.SubFactionSymbol}</color>";
-                cache += $" {role?.SubFactionSymbol}";
+                summary += $" {role.SubFactionColorString}{role.SubFactionSymbol}</color>";
+                cache += $" {role.SubFactionSymbol}";
             }
         }
 

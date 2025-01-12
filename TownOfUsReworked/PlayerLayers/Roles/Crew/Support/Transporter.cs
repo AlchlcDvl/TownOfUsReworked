@@ -1,9 +1,9 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Transporter : Crew
+public class Transporter : Crew, ITransporter
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxTransports { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
@@ -33,7 +33,6 @@ public class Transporter : Crew
     public Vent Vent2 { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Transporter : FactionColor;
-    public override string Name => "Transporter";
     public override LayerEnum Type => LayerEnum.Transporter;
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";

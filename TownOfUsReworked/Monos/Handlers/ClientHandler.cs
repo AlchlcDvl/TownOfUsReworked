@@ -1,5 +1,3 @@
-using Cpp2IL.Core.Extensions;
-
 namespace TownOfUsReworked.Monos;
 
 public class ClientHandler : MonoBehaviour
@@ -275,7 +273,7 @@ public class ClientHandler : MonoBehaviour
 
         if (!Instance.PagesSet)
         {
-            var clone = Modules.Info.AllInfo.Clone();
+            var clone = Modules.Info.AllInfo.Clone().ToList();
             clone.RemoveAll(x => x.Name is "Invalid" or "None" || x.Type == InfoType.Lore);
             var i = 0;
             var j = 0;

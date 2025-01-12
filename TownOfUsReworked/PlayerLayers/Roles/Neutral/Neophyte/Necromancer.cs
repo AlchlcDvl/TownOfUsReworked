@@ -30,7 +30,7 @@ public class Necromancer : Neophyte
     [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
     public static Number SacrificeCdIncrease { get; set; } = new(5);
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxSacrifices { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
@@ -54,7 +54,6 @@ public class Necromancer : Neophyte
     public CustomButton ManaButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Necromancer : FactionColor;
-    public override string Name => "Necromancer";
     public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
     public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +

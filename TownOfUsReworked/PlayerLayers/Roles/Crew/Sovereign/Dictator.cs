@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Dictator : Crew, IRevealer, ISovereign
+public class Dictator : Crew, IRevealer
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RoundOneNoDictReveal { get; set; } = false;
@@ -12,7 +12,7 @@ public class Dictator : Crew, IRevealer, ISovereign
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool DictatorButton { get; set; } = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 10, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 10, 1, zeroIsInf: true)]
     public static Number MaxTribunals { get; set; } = new(2);
 
     public bool RoundOne { get; set; }
@@ -23,7 +23,6 @@ public class Dictator : Crew, IRevealer, ISovereign
     public CustomMeeting DictMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Dictator : FactionColor;
-    public override string Name => "Dictator";
     public override LayerEnum Type => LayerEnum.Dictator;
     public override Func<string> StartText => () => "You Have The Final Say";
     public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
@@ -38,7 +37,7 @@ public class Dictator : Crew, IRevealer, ISovereign
 
     public void Reveal()
     {
-        if (!Revealed && !GetLayers<Dictator>().Any(x => !x.Dead && x.Revealed))
+        if (!Revealed && !GetLayers<Dictator>().Any(x => !x.TrulyDead && x.Revealed))
         {
             CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
             PublicReveal(Player);
@@ -112,7 +111,7 @@ public class Dictator : Crew, IRevealer, ISovereign
             }
             default:
             {
-                Error($"Received unknown RPC - {dictAction}");
+                Failure($"Received unknown RPC - {dictAction}");
                 break;
             }
         }

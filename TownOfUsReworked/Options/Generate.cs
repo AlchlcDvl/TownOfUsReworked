@@ -1,5 +1,3 @@
-using Cpp2IL.Core.Extensions;
-
 namespace TownOfUsReworked.Options;
 
 public static class Generate
@@ -33,7 +31,6 @@ public static class Generate
         }
 
         opts.Clear();
-        d.Clear();
 
         // Simple enough, I'm too cautious to let something fuck me up while I set the properties
         foreach (var option in OptionAttribute.AllOptions)
@@ -48,6 +45,6 @@ public static class Generate
 
         OptionAttribute.LoadPreset("LastUsed", null);
 
-        Message($"There exist {OptionAttribute.AllOptions.Count(x => x is not IOptionGroup) + 1} total options lmao (number jumpscare)");
+        Success($"There exist {OptionAttribute.AllOptions.Count(x => x is not IOptionGroup) + 1} total options lmao (number jumpscare)");
     }
 }

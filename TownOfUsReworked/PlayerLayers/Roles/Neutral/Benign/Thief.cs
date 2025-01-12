@@ -23,7 +23,6 @@ public class Thief : Neutral
     public CustomRolesMenu GuessingMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Thief : FactionColor;
-    public override string Name => "Thief";
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
@@ -163,7 +162,7 @@ public class Thief : Neutral
             }
             default:
             {
-                Error($"Received unknown RPC - {thiefAction}");
+                Failure($"Received unknown RPC - {thiefAction}");
                 break;
             }
         }

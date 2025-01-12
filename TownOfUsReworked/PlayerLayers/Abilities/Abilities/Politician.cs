@@ -20,7 +20,6 @@ public class Politician : Ability
     public bool CanKill => Player.CanKill();
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Politician : CustomColorManager.Ability;
-    public override string Name => "Politician";
     public override LayerEnum Type => LayerEnum.Politician;
     public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
@@ -109,7 +108,7 @@ public class Politician : Ability
             }
             default:
             {
-                Error($"Received unknown RPC - {polAction}");
+                Failure($"Received unknown RPC - {polAction}");
                 break;
             }
         }

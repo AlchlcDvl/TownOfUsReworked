@@ -26,7 +26,6 @@ public class Cannibal : Evil
     public bool CanEat => !Eaten || (Eaten && !NeutralSettings.AvoidNeutralKingmakers);
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cannibal : FactionColor;
-    public override string Name => "Cannibal";
     public override LayerEnum Type => LayerEnum.Cannibal;
     public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their "
@@ -45,8 +44,11 @@ public class Cannibal : Evil
 
     public void DestroyArrow(byte targetPlayerId)
     {
-        BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        BodyArrows.Remove(targetPlayerId);
+        if (BodyArrows.TryGetValue(targetPlayerId, out var arrow))
+        {
+            arrow.Destroy();
+            BodyArrows.Remove(targetPlayerId);
+        }
     }
 
     public override void ClearArrows()

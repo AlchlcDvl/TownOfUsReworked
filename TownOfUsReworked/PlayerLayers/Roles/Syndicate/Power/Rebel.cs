@@ -10,7 +10,6 @@ public class Rebel : Syndicate
     public CustomButton SidekickButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Rebel : FactionColor;
-    public override string Name => "Rebel";
     public override LayerEnum Type => LayerEnum.Rebel;
     public override Func<string> StartText => () => "Promote Your Fellow <#008000FF>Syndicate</color> To Do Better";
     public override Func<string> Description => () => "- You can promote a fellow <#008000FF>Syndicate</color> into becoming your successor\n- Promoting a <#008000FF>" +
@@ -49,7 +48,7 @@ public class Rebel : Syndicate
         }.RoleUpdate(formerRole, target);
     }
 
-    public bool Exception1(PlayerControl player) => player.GetRole() is PromotedRebel or Roles.Sidekick or Rebel || !(player.IsBase(Faction.Syndicate) && player.Is(Faction));
+    public bool Exception1(PlayerControl player) => player.GetRole() is PromotedRebel or Roles.Sidekick or Rebel || !(player.Is<Syndicate>() && player.Is(Faction));
 
     public override void ReadRPC(MessageReader reader) => Sidekick(reader.ReadPlayer());
 

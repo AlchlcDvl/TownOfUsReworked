@@ -15,7 +15,7 @@ public class Giant : Modifier
     private static string Text => Chonk && Snail ? "big and slow" : (Chonk ? "big" : (Snail ? "slow" : ""));
 
     public override UColor Color => !ClientOptions.CustomModColors || Useless ? CustomColorManager.Modifier : CustomColorManager.Giant;
-    public override string Name => Useless ? "Useless" : (Chonk ? (Snail ? "Chonker" : "Giant") : "Sloth");
+    public override string Name => TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Chonk ? (Snail ? "Chonker" : "Giant") : "Sloth"))}");
     public override LayerEnum Type => LayerEnum.Giant;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
 }

@@ -89,10 +89,10 @@ public class GameTab : BaseTab
 
         if (GUILayout.Button("Log Dump"))
         {
-            Message(CustomPlayer.Local.name);
-            PlayerLayer.LocalLayers().ForEach(Message);
-            Message("Is Dead - " + CustomPlayer.Local.HasDied());
-            Message("Location - " + CustomPlayer.LocalCustom.Position);
+            Critical(CustomPlayer.Local.name);
+            PlayerLayer.LocalLayers().ForEach(Critical);
+            Critical("Is Dead - " + CustomPlayer.Local.HasDied());
+            Critical("Location - " + CustomPlayer.LocalCustom.Position);
         }
 
         if (GUILayout.Button("Flash"))

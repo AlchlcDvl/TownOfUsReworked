@@ -176,7 +176,7 @@ public static class MainMenuPatches
 
             if (!template)
             {
-                Error("Pop up was null");
+                Failure("Pop up was null");
                 return;
             }
 

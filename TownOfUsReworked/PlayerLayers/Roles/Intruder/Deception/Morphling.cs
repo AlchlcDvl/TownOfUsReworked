@@ -25,7 +25,6 @@ public class Morphling : Intruder
     public bool Morphed => MorphButton.EffectActive;
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Morphling : FactionColor;
-    public override string Name => "Morphling";
     public override LayerEnum Type => LayerEnum.Morphling;
     public override Func<string> StartText => () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";

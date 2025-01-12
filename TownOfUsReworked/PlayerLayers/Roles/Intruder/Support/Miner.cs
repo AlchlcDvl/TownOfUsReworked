@@ -13,7 +13,7 @@ public class Miner : Intruder, IDigger
     public List<Vent> Vents { get; } = [];
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Miner : FactionColor;
-    public override string Name => MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner";
+    public override string Name => TranslationManager.Translate($"Layer.{(MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner")}");
     public override LayerEnum Type => LayerEnum.Miner;
     public override Func<string> StartText => () => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
         "From The Top, Make It Drop, Boom, That's A Vent";

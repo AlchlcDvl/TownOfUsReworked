@@ -408,7 +408,7 @@ public class ChatCommand
     // private static void SendRPCArgless()
     // {
     //     CallRpc(CustomRPC.Test, TestRPC.Argless);
-    //     Message("RPC Sent!");
+    //     Success("RPC Sent!");
     //     Run("<#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
     // }
 
@@ -424,7 +424,7 @@ public class ChatCommand
     //     }
 
     //     writer.EndRpc();
-    //     Message("RPC Sent!");
+    //     Success("RPC Sent!");
     //     Run("<#FF00FFFF>⚠ RPC TEST ⚠</color>", $"RPC Sent!\nWith the following message: {message}");
     // }
 

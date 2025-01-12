@@ -340,8 +340,7 @@ public static class Utils
         if (IsCustomHnS() || CustomPlayer.LocalCustom.Dead)
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(target, 0);
 
-        if (IsCustomHnS())
-            GameData.Instance.RecomputeTaskCounts();
+        GameData.Instance.RecomputeTaskCounts();
 
         if (killer.AmOwner || target.AmOwner)
             Play("Kill");
@@ -1418,10 +1417,12 @@ public static class Utils
         }
 
         target.CustomDie(reason, source);
-        yield return source.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
 
         if (lunge)
+        {
+            yield return source.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
             source.NetTransform.SnapTo(target.transform.position);
+        }
 
         source.MyPhysics.Animations.PlayIdleAnimation();
         KillAnimation.SetMovement(source, true);
@@ -1450,7 +1451,7 @@ public static class Utils
 
     public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) != null;
 
-    public static object TryCast(this Il2CppObjectBase self, Type type) => TryCastMethod.MakeGenericMethod(type).Invoke(self, null);
+    // public static object TryCast(this Il2CppObjectBase self, Type type) => TryCastMethod.MakeGenericMethod(type).Invoke(self, null);
 
     // public static bool TryCast(this Il2CppObjectBase obj, Type type, out object result) => (result = obj.TryCast(type)) != null;
 }

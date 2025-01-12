@@ -9,7 +9,6 @@ public abstract class Syndicate : Role
     public bool IsPromoted;
 
     public override UColor Color => CustomColorManager.Syndicate;
-    public override Faction BaseFaction => Faction.Syndicate;
     public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.Basic;
 
     public static bool SyndicateHasChaosDrive { get; set; }

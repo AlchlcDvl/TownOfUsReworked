@@ -117,7 +117,7 @@ public static class CustomStatsManager
 
         foreach (var layer in LayerWins.Keys)
         {
-            var val = TranslationManager.GetNextName($"LayerWins.{layer}");
+            var val = TranslationManager.GetNextName($"Stats.LayerWins.{layer}", isStartup: true);
             OrderedStats.Add(val);
             LayerMap[val] = layer;
         }
@@ -291,10 +291,10 @@ public static class CustomStatsManager
 
                 foreach (var role2 in role.RoleHistory)
                 {
-                    IncrementStat(role2.Type);
+                    IncrementStat(role2);
 
-                    if (GetLayerWins(role2.Type) == 5)
-                        CustomAchievementManager.UnlockAchievement($"LayerWins.{role2.Type}");
+                    if (GetLayerWins(role2) == 5)
+                        CustomAchievementManager.UnlockAchievement($"LayerWins.{role2}");
                 }
             }
         }
@@ -339,7 +339,7 @@ public static class CustomStatsManager
 
             CustomStats.Clear();
 
-            // Remapping stats to ids that have been pushed further down the enum
+            // Remapping stats to ids that have been pushed further up or down the enum
             for (var i = 0; i < count; i++)
                 CustomStats[keys[i] + diff] = values[i];
         }

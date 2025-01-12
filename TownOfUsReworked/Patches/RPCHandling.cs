@@ -36,7 +36,7 @@ public static class RPCHandling
                     }
                     default:
                     {
-                        Error($"Received unknown test RPC - {test}");
+                        Failure($"Received unknown test RPC - {test}");
                         break;
                     }
                 }
@@ -272,7 +272,7 @@ public static class RPCHandling
                     }
                     default:
                     {
-                        Error($"Received unknown misc RPC - {misc}");
+                        Failure($"Received unknown misc RPC - {misc}");
                         break;
                     }
                 }
@@ -297,7 +297,7 @@ public static class RPCHandling
                     }
                     default:
                     {
-                        Error($"Received unknown vanilla RPC - {vanilla}");
+                        Failure($"Received unknown vanilla RPC - {vanilla}");
                         break;
                     }
                 }
@@ -436,7 +436,7 @@ public static class RPCHandling
                     }
                     default:
                     {
-                        Error($"Received unknown action RPC - {action}");
+                        Failure($"Received unknown action RPC - {action}");
                         break;
                     }
                 }
@@ -537,7 +537,7 @@ public static class RPCHandling
             }
             default:
             {
-                Error($"Received unknown custom RPC - {rpc}");
+                Failure($"Received unknown custom RPC - {rpc}");
                 break;
             }
         }

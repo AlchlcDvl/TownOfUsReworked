@@ -967,5 +967,7 @@ public enum TempLocation : byte
 
 public enum ReworkedLogLevel : byte
 {
-    Critical
+    Critical,
+    Success,
+    Failure
 }

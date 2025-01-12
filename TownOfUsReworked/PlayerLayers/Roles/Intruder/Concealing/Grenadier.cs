@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Grenadier : Intruder
+public class Grenadier : Intruder, IFlasher
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number FlashCd { get; set; } = new(25);
@@ -25,7 +25,6 @@ public class Grenadier : Intruder
     public IEnumerable<byte> FlashedPlayers { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Grenadier : FactionColor;
-    public override string Name => "Grenadier";
     public override LayerEnum Type => LayerEnum.Grenadier;
     public override Func<string> StartText => () => "Blind The <#8CFFFFFF>Crew</color> With Your Magnificent Figure";
     public override Func<string> Description => () => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
@@ -90,8 +89,8 @@ public class Grenadier : Intruder
         }
     }
 
-    private bool ShouldPlayerBeDimmed(PlayerControl player) => (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None) || player.Data.IsDead) && !Meeting()) || player == Player || Meeting();
+    private bool ShouldPlayerBeDimmed(PlayerControl player) => player.HasDied() || (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+        SubFaction != SubFaction.None)) && !Meeting()) || player == Player || Meeting();
 
     private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player);
 
@@ -107,7 +106,7 @@ public class Grenadier : Intruder
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player, FlashRadius).Select(x => x.PlayerId);
+    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player, FlashRadius, includeDead: true).Select(x => x.PlayerId);
 
     public bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !SaboFlash;
 }

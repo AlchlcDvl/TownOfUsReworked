@@ -29,7 +29,6 @@ public class Coroner : Crew, IExaminer
     public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Coroner : FactionColor;
-    public override string Name => "Coroner";
     public override LayerEnum Type => LayerEnum.Coroner;
     public override Func<string> StartText => () => "Examine The Dead For Information";
     public override Func<string> Description => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +
@@ -43,13 +42,17 @@ public class Coroner : Crew, IExaminer
         Reported.Clear();
         ReferenceBodies.Clear();
         AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Autopsy, new Cooldown(AutopsyCd));
-        CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(CompareCd), (UsableFunc)Usable);
+        CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(CompareCd),
+            (UsableFunc)ReferenceBodies.Any);
     }
 
     public void DestroyArrow(byte targetPlayerId)
     {
-        BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        BodyArrows.Remove(targetPlayerId);
+        if (BodyArrows.TryGetValue(targetPlayerId, out var arrow))
+        {
+            arrow.Destroy();
+            BodyArrows.Remove(targetPlayerId);
+        }
     }
 
     public override void ClearArrows()
@@ -58,8 +61,6 @@ public class Coroner : Crew, IExaminer
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();
     }
-
-    public bool Usable() => ReferenceBodies.Any();
 
     public override void UpdateHud(HudManager __instance)
     {

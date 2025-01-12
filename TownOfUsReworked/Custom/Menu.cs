@@ -5,7 +5,7 @@ public abstract class CustomMenu
     public static readonly List<CustomMenu> AllMenus = [];
 
     public ShapeshifterMinigame Menu { get; set; }
-    public PlayerControl Owner { get; }
+    public PlayerControl Owner { get; set; }
     private string Type { get; set; }
 
     public static bool IsActive;

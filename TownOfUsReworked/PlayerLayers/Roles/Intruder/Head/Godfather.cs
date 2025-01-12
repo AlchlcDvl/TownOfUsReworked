@@ -10,7 +10,6 @@ public class Godfather : Intruder
     public CustomButton DeclareButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Godfather : FactionColor;
-    public override string Name => "Godfather";
     public override LayerEnum Type => LayerEnum.Godfather;
     public override Func<string> StartText => () => "Promote Your Fellow <#FF1919FF>Intruder</color> To Do Better";
     public override Func<string> Description => () => "- You can promote a fellow <#FF1919FF>Intruder</color> into becoming your successor\n- Promoting an <#FF1919FF>" +
@@ -48,7 +47,7 @@ public class Godfather : Intruder
         }.RoleUpdate(formerRole, target);
     }
 
-    public bool Exception1(PlayerControl player) => player.GetRole() is PromotedGodfather or Mafioso or Godfather || !(player.IsBase(Faction.Intruder) && player.Is(Faction));
+    public bool Exception1(PlayerControl player) => player.GetRole() is PromotedGodfather or Mafioso or Godfather || !(player.Is<Intruder>() && player.Is(Faction));
 
     public bool Usable() => !HasDeclared;
 

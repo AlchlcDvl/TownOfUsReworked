@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Bastion : Crew, IVentBomber
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxBombs { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
@@ -16,7 +16,6 @@ public class Bastion : Crew, IVentBomber
     public List<int> BombedIDs { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Bastion : FactionColor;
-    public override string Name => "Bastion";
     public override LayerEnum Type => LayerEnum.Bastion;
     public override Func<string> StartText => () => "Place Traps To Deter Venters";
     public override Func<string> Description => () => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";

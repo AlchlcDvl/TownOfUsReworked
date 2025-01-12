@@ -7,7 +7,6 @@ public abstract class Intruder : Role
         "call sabotages to distract the <#8CFFFFFF>Crew</color>") : "");
 
     public override UColor Color => CustomColorManager.Intruder;
-    public override Faction BaseFaction => Faction.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()

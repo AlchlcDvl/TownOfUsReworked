@@ -32,7 +32,6 @@ public class Collider : Syndicate
     private float Range => CollideRange + (HoldsDrive ? CollideRangeIncrease : 0);
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Collider : FactionColor;
-    public override string Name => "Collider";
     public override LayerEnum Type => LayerEnum.Collider;
     public override Func<string> StartText => () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
     public override Func<string> Description => () => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die together" +

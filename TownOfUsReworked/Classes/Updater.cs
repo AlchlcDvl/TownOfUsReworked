@@ -73,7 +73,7 @@ public static class ModUpdater
 
         if (IsNullEmptyOrWhiteSpace(jsonText))
         {
-            Error($"Unable to load online or local JSON data for {updateType}");
+            Failure($"Unable to load online or local JSON data for {updateType}");
             yield break;
         }
 
@@ -81,19 +81,19 @@ public static class ModUpdater
 
         if (data.Tag == null)
         {
-            Error($"{updateType} tag doesn't exist");
+            Failure($"{updateType} tag doesn't exist");
             yield break; // Something went wrong
         }
 
         if (data.Description == null)
         {
-            Error($"{updateType} description doesn't exist");
+            Failure($"{updateType} description doesn't exist");
             yield break; // Something went wrong part 2
         }
 
         if (data.Assets == null)
         {
-            Error($"No assets found for {updateType}");
+            Failure($"No assets found for {updateType}");
             yield break; // Something went wrong part 3
         }
 
@@ -139,7 +139,7 @@ public static class ModUpdater
 
         if (!URLs.TryGetValue(updateType, out var link))
         {
-            Error($"No link found for {updateType}");
+            Failure($"No link found for {updateType}");
             Popup.TextAreaTMP.SetText(TranslationManager.Translate("Updates.Mod.Manually"));
             button.SetActive(true);
             yield break;

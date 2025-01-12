@@ -76,10 +76,10 @@ public static class PlayerControlPatches
 
         var hud = HUD();
         hud.ShadowQuad.gameObject.SetActive(true);
-        hud.KillButton.gameObject.SetActive(IsHnS());
-        hud.AdminButton.gameObject.SetActive(__instance.IsImpostor() && IsHnS());
-        hud.SabotageButton.gameObject.SetActive(__instance.CanSabotage());
-        hud.ImpostorVentButton.gameObject.SetActive(__instance.CanVent());
+        hud.KillButton.ToggleVisible(IsHnS());
+        hud.AdminButton.ToggleVisible(__instance.IsImpostor() && IsHnS());
+        hud.SabotageButton.ToggleVisible(__instance.CanSabotage());
+        hud.ImpostorVentButton.ToggleVisible(__instance.CanVent());
         ButtonUtils.Reset();
 
         if (Chat().IsOpenOrOpening)

@@ -6,7 +6,7 @@ public class BountyHunter : Evil
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BountyHunterCanPickTargets { get; set; } = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number BountyHunterGuesses { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
@@ -41,7 +41,6 @@ public class BountyHunter : Evil
     public int Rounds { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.BountyHunter : FactionColor;
-    public override string Name => "Bounty Hunter";
     public override LayerEnum Type => LayerEnum.BountyHunter;
     public override Func<string> StartText => () => "Find And Kill Your Target";
     public override Func<string> Description => () => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +

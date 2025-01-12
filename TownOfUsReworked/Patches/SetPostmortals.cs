@@ -174,7 +174,7 @@ public static class SetPostmortals
 
     private static void TryAddRevealer(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBeRevealers.Contains(dead.PlayerId) && WillBeRevealers.Count < Revealers && dead.IsBase(Faction.Crew))
+        if (dead.HasDied() && dead && !WillBeRevealers.Contains(dead.PlayerId) && WillBeRevealers.Count < Revealers && dead.Is<Crew>())
             WillBeRevealers.Add(dead.PlayerId);
     }
 
@@ -224,7 +224,7 @@ public static class SetPostmortals
 
     private static void TryAddPhantom(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < Phantoms && dead.IsBase(Faction.Neutral) && !IsExcludedNeutral(dead))
+        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < Phantoms && dead.Is<Neutral>() && !IsExcludedNeutral(dead))
             WillBePhantoms.Add(dead.PlayerId);
     }
 
@@ -273,7 +273,7 @@ public static class SetPostmortals
 
     private static void TryAddBanshee(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBeBanshees.Contains(dead.PlayerId) && WillBeBanshees.Count < Banshees && dead.IsBase(Faction.Syndicate))
+        if (dead.HasDied() && dead && !WillBeBanshees.Contains(dead.PlayerId) && WillBeBanshees.Count < Banshees && dead.Is<Syndicate>())
             WillBeBanshees.Add(dead.PlayerId);
     }
 
@@ -322,7 +322,7 @@ public static class SetPostmortals
 
     private static void TryAddGhoul(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBeGhouls.Contains(dead.PlayerId) && WillBeGhouls.Count < Ghouls && dead.IsBase(Faction.Intruder))
+        if (dead.HasDied() && dead && !WillBeGhouls.Contains(dead.PlayerId) && WillBeGhouls.Count < Ghouls && dead.Is<Intruder>())
             WillBeGhouls.Add(dead.PlayerId);
     }
 

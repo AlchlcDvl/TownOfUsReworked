@@ -409,7 +409,7 @@ public static class RoleGenManager
         else
             allPlayers.ForEach(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
 
-        Message("Gen Ended");
+        Success("Gen Ended");
     }
 
     public static bool Check(RoleOptionData data)
@@ -445,7 +445,7 @@ public static class RoleGenManager
 
         Monos.Range.AllItems.Clear();
 
-        PlayerLayer.DeleteAll();
+        PlayerLayer.AllLayers.Clear();
 
         AllRoles.Clear();
         AllModifiers.Clear();

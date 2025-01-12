@@ -10,7 +10,6 @@ public class Mafia : Disposition
     public static bool MafVent { get; set; } = false;
 
     public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Mafia : CustomColorManager.Disposition;
-    public override string Name => "Mafia";
     public override string Symbol => "ω";
     public override LayerEnum Type => LayerEnum.Mafia;
     public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";

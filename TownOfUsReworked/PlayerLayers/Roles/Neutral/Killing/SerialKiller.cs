@@ -19,7 +19,6 @@ public class SerialKiller : NKilling
     public CustomButton StabButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.SerialKiller : FactionColor;
-    public override string Name => "Serial Killer";
     public override LayerEnum Type => LayerEnum.SerialKiller;
     public override Func<string> StartText => () => "You Like To Play With Knives";
     public override Func<string> Description => () => "- You can go into bloodlust\n- When in bloodlust, your kill cooldown is very short\n- If and when an <#803333FF>Escort</color>," +

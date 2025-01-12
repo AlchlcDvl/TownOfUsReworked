@@ -3,31 +3,27 @@
 public class Bullseye : Assassin
 {
     public override LayerEnum Type => LayerEnum.Bullseye;
-    public override string Name => "Bullseye";
 }
 
 public class Hitman : Assassin
 {
     public override LayerEnum Type => LayerEnum.Hitman;
-    public override string Name => "Hitman";
 }
 
 public class Slayer : Assassin
 {
     public override LayerEnum Type => LayerEnum.Slayer;
-    public override string Name => "Slayer";
 }
 
 public class Sniper : Assassin
 {
     public override LayerEnum Type => LayerEnum.Sniper;
-    public override string Name => "Sniper";
 }
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public abstract class Assassin : Ability
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number AssassinKills { get; set; } = new(0);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]

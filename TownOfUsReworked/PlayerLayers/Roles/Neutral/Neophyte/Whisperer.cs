@@ -37,7 +37,6 @@ public class Whisperer : Neophyte
     public int WhisperConversion { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : FactionColor;
-    public override string Name => "Whisperer";
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
@@ -93,6 +92,9 @@ public class Whisperer : Neophyte
         WhisperButton.StartCooldown();
         var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, (byte)PlayerConversion.Count);
 
+        if (writer == null)
+            return;
+
         foreach (var (id, perc) in PlayerConversion)
         {
             writer.Write(id);
@@ -108,7 +110,7 @@ public class Whisperer : Neophyte
     {
         var count = reader.ReadByte();
 
-        for (var i = 0; i <= count; i++)
+        while (count-- > 0)
             PlayerConversion[reader.ReadByte()] = reader.ReadByte();
 
         Members.ForEach(x => PlayerConversion.Remove(x));

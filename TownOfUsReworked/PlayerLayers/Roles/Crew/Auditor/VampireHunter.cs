@@ -10,7 +10,6 @@ public class VampireHunter : Crew
     private CustomButton StakeButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.VampireHunter : FactionColor;
-    public override string Name => "Vampire Hunter";
     public override LayerEnum Type => LayerEnum.VampireHunter;
     public override Func<string> StartText => () => "Stake The <#7B8968FF>Undead</color>";
     public override Func<string> Description => () => "- You can stake players to see if they have been turned\n- When you stake a turned person, or an <#7B8968FF>Undead</color> " +

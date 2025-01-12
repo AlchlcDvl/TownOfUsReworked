@@ -13,7 +13,6 @@ public class Phantom : Neutral, IGhosty
     public bool Faded { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Phantom : FactionColor;
-    public override string Name => "Phantom";
     public override LayerEnum Type => LayerEnum.Phantom;
     public override Func<string> StartText => () => "Peek-A-Boo!";
     public override Func<string> Description => () => "- You end the game upon finishing your objective";

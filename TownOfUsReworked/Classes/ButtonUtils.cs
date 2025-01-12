@@ -2,19 +2,16 @@ namespace TownOfUsReworked.Classes;
 
 public static class ButtonUtils
 {
-    private static bool Use;
-
     public static void DisableButtons(this PlayerControl player)
     {
         var hud = HUD();
-        Use = hud.UseButton.isActiveAndEnabled;
         player.GetButtons().ForEach(x => x.Disable());
-        hud.SabotageButton.gameObject.SetActive(false);
-        hud.ReportButton.gameObject.SetActive(false);
-        hud.ImpostorVentButton.gameObject.SetActive(false);
-        hud.UseButton.gameObject.SetActive(false);
-        hud.PetButton.gameObject.SetActive(false);
-        hud.AbilityButton.gameObject.SetActive(false);
+        hud.SabotageButton.ToggleVisible(false);
+        hud.ReportButton.ToggleVisible(false);
+        hud.ImpostorVentButton.ToggleVisible(false);
+        hud.UseButton.ToggleVisible(false);
+        hud.PetButton.ToggleVisible(false);
+        hud.AbilityButton.ToggleVisible(false);
     }
 
     public static IEnumerable<CustomButton> GetButtonsFromList(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player);
@@ -38,34 +35,30 @@ public static class ButtonUtils
         var hud = HUD();
         player.GetButtons().ForEach(x => x.SetActive());
         player.GetRole()?.UpdateButtons();
-        hud.KillButton.gameObject.SetActive(false);
-        hud.SabotageButton.gameObject.SetActive(player.CanSabotage() && IsInGame());
-        hud.ReportButton.gameObject.SetActive(!player.Is<Coward>() && !Meeting() && !player.HasDied() && IsInGame());
-        hud.ImpostorVentButton.gameObject.SetActive(player.CanVent() && IsInGame());
+        hud.KillButton.ToggleVisible(false);
+        hud.UseButton.ToggleVisible(true);
+        hud.PetButton.ToggleVisible(true);
+        hud.SabotageButton.ToggleVisible(player.CanSabotage() && IsInGame());
+        hud.ReportButton.ToggleVisible(!player.Is<Coward>() && !Meeting() && !player.HasDied() && IsInGame());
+        hud.ImpostorVentButton.ToggleVisible(player.CanVent() && IsInGame());
 
         if (IsHnS())
-            hud.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor() && IsInGame());
+            hud.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor() && IsInGame());
         else
-            hud.AbilityButton.gameObject.SetActive(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && IsInGame() && CustomPlayer.Local.HasDied());
-
-        if (Use)
-            hud.UseButton.gameObject.SetActive(true);
-        else
-            hud.PetButton.gameObject.SetActive(true);
+            hud.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && IsInGame() && CustomPlayer.Local.HasDied());
     }
 
     public static void DisableAllButtons()
     {
         var hud = HUD();
-        Use = hud.UseButton.isActiveAndEnabled;
         CustomButton.AllButtons.ForEach(x => x.Disable());
-        hud.KillButton.gameObject.SetActive(false);
-        hud.SabotageButton.gameObject.SetActive(false);
-        hud.ReportButton.gameObject.SetActive(false);
-        hud.ImpostorVentButton.gameObject.SetActive(false);
-        hud.UseButton.gameObject.SetActive(false);
-        hud.PetButton.gameObject.SetActive(false);
-        hud.AbilityButton.gameObject.SetActive(false);
+        hud.KillButton.ToggleVisible(false);
+        hud.SabotageButton.ToggleVisible(false);
+        hud.ReportButton.ToggleVisible(false);
+        hud.ImpostorVentButton.ToggleVisible(false);
+        hud.UseButton.ToggleVisible(false);
+        hud.PetButton.ToggleVisible(false);
+        hud.AbilityButton.ToggleVisible(false);
     }
 
     public static void SetDelay(this ActionButton button, float timer)
@@ -79,9 +72,9 @@ public static class ButtonUtils
         button.SetCooldownFill(ceil % 2 == 0 ? 1f : 0f);
     }
 
-    public static void DestroyButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Destroy());
+    public static void DestroyButtons(this PlayerControl player) => player.GetButtons().ForEach(x => x.Destroy());
 
-    public static bool CannotUse(this PlayerControl player) => player.onLadder || player.inVent || player.inMovingPlat;
+    public static bool CannotUse(this PlayerControl player) => player.onLadder || player.inVent || player.inMovingPlat || player.isKilling;
 
     public static float GetModifiedCooldown(this PlayerControl player, float cooldown, float difference = 0f, float factor = 1f)
     {
@@ -142,7 +135,7 @@ public static class ButtonUtils
         var start = cooldown == CooldownType.Start;
         var meeting = cooldown == CooldownType.Meeting;
         var dead = DeadSeeEverything();
-        CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.StartCooldown(cooldown));
+        player.GetButtons().ForEach(x => x.StartCooldown(cooldown));
 
         if (role.Requesting && !start)
             role.BountyTimer++;

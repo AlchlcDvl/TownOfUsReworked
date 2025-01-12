@@ -27,7 +27,6 @@ public class Janitor : Intruder, IDragger
     public DeadBody CurrentlyDragging { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Janitor : FactionColor;
-    public override string Name => "Janitor";
     public override LayerEnum Type => LayerEnum.Janitor;
     public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Neccessary";
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +

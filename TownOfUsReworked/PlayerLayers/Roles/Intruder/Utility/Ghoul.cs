@@ -12,7 +12,6 @@ public class Ghoul : Intruder, IGhosty
     public PlayerControl MarkedPlayer { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Ghoul : FactionColor;
-    public override string Name => "Ghoul";
     public override LayerEnum Type => LayerEnum.Ghoul;
     public override Func<string> StartText => () => "BOO!";
     public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next" +

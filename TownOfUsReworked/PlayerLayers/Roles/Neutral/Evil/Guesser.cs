@@ -21,7 +21,7 @@ public class Guesser : Evil
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool MultipleGuesses { get; set; } = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxGuesses { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
@@ -46,7 +46,6 @@ public class Guesser : Evil
     public CustomRolesMenu GuessingMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Guesser : FactionColor;
-    public override string Name => "Guesser";
     public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText => () => "Guess What Someone Might Be";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :

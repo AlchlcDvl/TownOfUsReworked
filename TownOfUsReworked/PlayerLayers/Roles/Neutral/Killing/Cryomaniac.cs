@@ -27,7 +27,6 @@ public class Cryomaniac : NKilling
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CryoLastKillerBoost;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac : FactionColor;
-    public override string Name => "Cryomaniac";
     public override LayerEnum Type => LayerEnum.Cryomaniac;
     public override Func<string> StartText => () => "Who Likes Ice Cream?";
     public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
@@ -127,7 +126,7 @@ public class Cryomaniac : NKilling
             }
             default:
             {
-                Error($"Received unknown RPC - {cryoAction}");
+                Failure($"Received unknown RPC - {cryoAction}");
                 break;
             }
         }

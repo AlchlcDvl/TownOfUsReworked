@@ -32,8 +32,6 @@ public static class GameStates
 
     public static bool IsKilling() => GameModeSettings.GameMode == GameMode.KillingOnly;
 
-    public static bool IsVanilla() => GameModeSettings.GameMode == GameMode.Vanilla;
-
     public static bool IsRoleList() => GameModeSettings.GameMode == GameMode.RoleList;
 
     public static bool IsTaskRace() => GameModeSettings.GameMode == GameMode.TaskRace;

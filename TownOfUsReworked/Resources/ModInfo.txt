@@ -47,6 +47,7 @@ Fixes!
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
 - Role: Fixed Spellslingers and Rebel-Spellslingers not ending the game when they successfully spell bind everyone
+- Role: Fixed Rebel-Framer frames not actually functioning the way they should
 - Disposition: Fixed Allied factions not being set properly
 - Modifier: Fixed some visual aspects of Giant and Dwarf
 - Compatibility: Fixed certain consoles not being properly usable for postmortal roles

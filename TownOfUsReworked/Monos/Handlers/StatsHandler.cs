@@ -39,7 +39,7 @@ public class StatsHandler : MonoBehaviour
         if (ViewingAchievements)
             CustomAchievementManager.AllAchievements.Where(x => (!x.Hidden || x.Unlocked) && x.Name != "Test").GetRange(I, 15).ForEach(x => AppendAchievement(sb, x));
         else
-            CustomStatsManager.OrderedStats.GetRange(I, 38).ForEach(x => StatsPopup.AppendStat(sb, x, CustomStatsManager.GetStat(x)));
+            CustomStatsManager.OrderedStats.GetRange(I, 38).ForEach(x => AppendStat(sb, x, CustomStatsManager.GetStat(x)));
 
         Popup.StatsText.SetText(sb);
     }
@@ -49,8 +49,19 @@ public class StatsHandler : MonoBehaviour
         str.AppendLine($"{(char)(achievement.Unlocked ? 0x25A0 : 0x25A1)} {TranslationManager.Translate($"Achievement.{achievement.Name}.Title")}");
 
         if (achievement.Name.Contains("LayerWins"))
-            str.AppendLine($"     {TranslationManager.Translate($"Achievement.LayerWins.Description", ("%layer%", $"CustomOption.{achievement.Name.Split('.')[^1]}"))}");
+            str.AppendLine($"     {TranslationManager.Translate($"Achievement.LayerWins.Description", ("%layer%", TranslationManager.Translate($"Layer.{achievement.Name.Split('.')[^1]}")))}");
         else
             str.AppendLine($"     {TranslationManager.Translate($"Achievement.{achievement.Name}.Description")}");
+    }
+
+    private static void AppendStat(Il2CppSystem.Text.StringBuilder str, StringNames statName, Il2CppSystem.Object stat)
+    {
+        if (TranslationManager.CustomStringNames.TryGetValue(statName, out var id) && id.StartsWith("Stats.LayerWins"))
+        {
+            str.AppendLine($"<align=left>{TranslationManager.Translate("Stats.LayerWins", ("%layer%", TranslationManager.Translate($"Layer.{id.Split('.')[^1]}")))}<line-height=0>");
+            str.AppendLine($"<align=right>{stat?.ToString()}<line-height=1em>");
+        }
+        else
+            StatsPopup.AppendStat(str, statName, stat);
     }
 }

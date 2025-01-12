@@ -25,7 +25,6 @@ public class Silencer : Syndicate, ISilencer
     }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Silencer : FactionColor;
-    public override string Name => "Silencer";
     public override LayerEnum Type => LayerEnum.Silencer;
     public override Func<string> StartText => () => "You Are The One Who Hushes";
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say" + (SilenceRevealed ? "\n- Everyone will be alerted at the "  +

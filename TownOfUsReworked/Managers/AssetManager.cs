@@ -101,7 +101,7 @@ public static class AssetManager
         }
         catch
         {
-            Error($"Unable to save text to {fileName}{(diskLocation != null ? $" in {diskLocation}" : "")}");
+            Failure($"Unable to save text to {fileName}{(diskLocation != null ? $" in {diskLocation}" : "")}");
         }
     }
 
@@ -113,7 +113,7 @@ public static class AssetManager
         }
         catch
         {
-            Error($"Error reading {fileName}{(diskLocation != null ? $" from {diskLocation}" : "")}");
+            Failure($"Error reading {fileName}{(diskLocation != null ? $" from {diskLocation}" : "")}");
             return "";
         }
     }
@@ -203,7 +203,7 @@ public static class AssetManager
                 return result as T;
         }
 
-        // Error($"{name} does not exist");
+        // Failure($"{name} does not exist");
         return null;
     }
 
@@ -212,7 +212,7 @@ public static class AssetManager
         if (SystemLoadedObjects.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result))
             return (T)result;
 
-        // Error($"{name} does not exist");
+        // Failure($"{name} does not exist");
         return default;
     }
 

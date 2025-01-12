@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
+public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher
 {
     public override void Init()
     {
@@ -24,7 +24,6 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
     // PromotedGodfather Stuff
     public Role FormerRole { get; set; }
 
-    public override string Name => "Godfather";
     public override LayerEnum Type => LayerEnum.PromotedGodfather;
     public override Func<string> StartText => () => "Lead The <#FF1919FF>Intruders</color>";
     public override Func<string> Description => () => "- You have succeeded the former <#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities"
@@ -179,7 +178,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
             }
             default:
             {
-                Error($"Received unknown RPC - {gfAction}");
+                Failure($"Received unknown RPC - {gfAction}");
                 break;
             }
         }
@@ -310,8 +309,8 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
         }
     }
 
-    private bool ShouldPlayerBeDimmed(PlayerControl player) =>  (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None) || player.Data.IsDead) && !Meeting()) || player == Player || Meeting();
+    private bool ShouldPlayerBeDimmed(PlayerControl player) => player.HasDied() || (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+        SubFaction != SubFaction.None)) && !Meeting()) || player == Player || Meeting();
 
     private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player);
 
@@ -327,7 +326,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player, Grenadier.FlashRadius).Select(x => x.PlayerId);
+    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player, Grenadier.FlashRadius, includeDead: true).Select(x => x.PlayerId);
 
     public bool GrenCondition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !Grenadier.SaboFlash;
 

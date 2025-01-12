@@ -20,7 +20,6 @@ public class Werewolf : NKilling
     public int Rounds { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Werewolf : FactionColor;
-    public override string Name => "Werewolf";
     public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText => () => "AWOOOOOOOOOO";
     public override Func<string> Description => () => $"- You kill everyone within {MaulRadius}m";

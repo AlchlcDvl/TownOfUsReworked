@@ -2,7 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Hunter : HideAndSeek
 {
-    public override string Name => "Hunter";
     public override LayerEnum Type => LayerEnum.Hunter;
     public override Func<string> StartText => () => "Hunt Them All Down";
     public override UColor Color => CustomColorManager.Hunter;
@@ -39,7 +38,7 @@ public class Hunter : HideAndSeek
     public void TurnHunter(PlayerControl player)
     {
         var newRole = new Hunter();
-        newRole.RoleUpdate(player);
+        newRole.RoleUpdate(player.GetRole());
         newRole.KilledBy = " By " + PlayerName;
         newRole.DeathReason = DeathReasonEnum.Converted;
         newRole.HuntButton.StartCooldown();
@@ -55,8 +54,8 @@ public class Hunter : HideAndSeek
             RpcMurderPlayer(Player, target);
         else if (GameModeSettings.HnSMode == HnSMode.Infection)
         {
-            TurnHunter(target);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+            TurnHunter(target);
         }
 
         HuntButton.StartCooldown();

@@ -5,7 +5,6 @@ public class Radar : Ability
     private CustomArrow RadarArrow { get; set; }
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Radar : CustomColorManager.Ability;
-    public override string Name => "Radar";
     public override LayerEnum Type => LayerEnum.Radar;
     public override Func<string> Description => () => "- You are aware of those close to you";
 

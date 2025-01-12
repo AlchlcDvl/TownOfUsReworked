@@ -9,7 +9,7 @@ public class Monarch : Crew, ISovereign
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool RoundOneNoKnighting { get; set; } = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number KnightCount { get; set; } = new(2);
 
     [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
@@ -27,7 +27,6 @@ public class Monarch : Crew, ISovereign
     public List<byte> Knighted { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Monarch : FactionColor;
-    public override string Name => "Monarch";
     public override LayerEnum Type => LayerEnum.Monarch;
     public override Func<string> StartText => () => "Knight Those Who You Trust";
     public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface IRevealer : IPlayerLayer
+public interface IRevealer : ISovereign
 {
     public bool Revealed { get; set; }
 }

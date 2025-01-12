@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Warper : Syndicate
+public class Warper : Syndicate, IWarper
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number WarpCd { get; set; } = new(25);
@@ -26,7 +26,6 @@ public class Warper : Syndicate
     public Vent Vent { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Warper : FactionColor;
-    public override string Name => "Warper";
     public override LayerEnum Type => LayerEnum.Warper;
     public override Func<string> StartText => () => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :

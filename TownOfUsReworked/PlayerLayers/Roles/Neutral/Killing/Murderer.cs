@@ -12,7 +12,6 @@ public class Murderer : NKilling
     public CustomButton MurderButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Murderer : FactionColor;
-    public override string Name => "Murderer";
     public override LayerEnum Type => LayerEnum.Murderer;
     public override Func<string> StartText => () => "I Got Murder On My Mind";
     public override Func<string> Description => () => "- You can kill";

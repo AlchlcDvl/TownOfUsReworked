@@ -2,14 +2,14 @@
 
 public static class ModCompatibility
 {
-    public static MethodInfo TryCastMethod;
+    // public static MethodInfo TryCastMethod;
 
     public static void Initialise()
     {
         SubLoaded = InitializeSubmerged();
         LILoaded = InitializeLevelImpostor();
 
-        TryCastMethod = AccessTools.Method(typeof(Il2CppObjectBase), nameof(Il2CppObjectBase.TryCast));
+        // TryCastMethod = AccessTools.Method(typeof(Il2CppObjectBase), nameof(Il2CppObjectBase.TryCast));
     }
 
     public const string SM_GUID = "Submerged";
@@ -25,7 +25,6 @@ public static class ModCompatibility
 
     private static MethodInfo RpcRequestChangeFloorMethod;
     private static MethodInfo RegisterFloorOverrideMethod;
-    private static Type FloorHandlerType;
     private static MethodInfo GetFloorHandlerMethod;
 
     private static PropertyInfo InTrasntionProperty;
@@ -69,10 +68,10 @@ public static class ModCompatibility
             SubmergedInstanceField = AccessTools.Field(submarineStatusType, "instance");
             SubmergedElevatorsField = AccessTools.Field(submarineStatusType, "elevators");
 
-            FloorHandlerType = SubTypes.First(t => t.Name == "FloorHandler");
-            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", [ typeof(PlayerControl) ]);
-            RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
-            RegisterFloorOverrideMethod = AccessTools.Method(FloorHandlerType, "RegisterFloorOverride");
+            var floorHandlerType = SubTypes.First(t => t.Name == "FloorHandler");
+            GetFloorHandlerMethod = AccessTools.Method(floorHandlerType, "GetFloorHandler", [ typeof(PlayerControl) ]);
+            RpcRequestChangeFloorMethod = AccessTools.Method(floorHandlerType, "RpcRequestChangeFloor");
+            RegisterFloorOverrideMethod = AccessTools.Method(floorHandlerType, "RegisterFloorOverride");
 
             var ventPatchDataType = SubTypes.First(t => t.Name == "VentPatchData");
             InTrasntionProperty = AccessTools.Property(ventPatchDataType, "InTransition");
@@ -120,12 +119,12 @@ public static class ModCompatibility
             TownOfUsReworked.ModInstance.Harmony.Patch(startMethod, new(AccessTools.Method(compatType, nameof(SpawnPatch))));
             TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(ElevatorPrefix))), new(AccessTools.Method(compatType, nameof(ElevatorPostfix))));
 
-            Message("Submerged compatibility finished");
+            Success("Submerged compatibility finished");
             return true;
         }
         catch (Exception e)
         {
-            Error($"Could not load Submerged Compatibility\n{e}");
+            Failure($"Could not load Submerged Compatibility\n{e}");
             return false;
         }
     }
@@ -240,7 +239,7 @@ public static class ModCompatibility
         if (!IsSubmerged())
             return;
 
-        var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, [ CustomPlayer.Local ])).TryCast(FloorHandlerType) as MonoBehaviour;
+        var _floorHandler = GetFloorHandlerMethod.Invoke(null, [ CustomPlayer.Local ]);
         RpcRequestChangeFloorMethod.Invoke(_floorHandler, [ toUpper ]);
         RegisterFloorOverrideMethod.Invoke(_floorHandler, [ toUpper ]);
     }
@@ -329,12 +328,12 @@ public static class ModCompatibility
 
             TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(TriggerPrefix))), new(AccessTools.Method(compatType, nameof(TriggerPostfix))));
 
-            Message("LevelImpostor compatibility finished");
+            Success("LevelImpostor compatibility finished");
             return true;
         }
         catch (Exception e)
         {
-            Error($"Could not load LevelImposter Compatibility\n{e}");
+            Failure($"Could not load LevelImposter Compatibility\n{e}");
             return false;
         }
     }

@@ -574,7 +574,7 @@ public class CustomButton
             return;
 
         Base.enabled = false;
-        Base.gameObject.SetActive(false);
+        Base.ToggleVisible(false);
     }
 
     public void Enable()
@@ -584,7 +584,7 @@ public class CustomButton
 
         Disabled = false;
         Base.enabled = true;
-        Base.gameObject.SetActive(true);
+        Base.ToggleVisible(true);
     }
 
     public void Destroy()

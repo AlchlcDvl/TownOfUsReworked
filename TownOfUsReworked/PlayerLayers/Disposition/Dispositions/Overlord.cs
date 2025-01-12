@@ -10,7 +10,6 @@ public class Overlord : Disposition
     public static Number OverlordMeetingWinCount { get; set; } = new(3);
 
     public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Overlord : CustomColorManager.Disposition;
-    public override string Name => "Overlord";
     public override string Symbol => "β";
     public override LayerEnum Type => LayerEnum.Overlord;
     public override Func<string> Description => () => $"- Stay alive for {OverlordMeetingWinCount} rounds";

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Crusader : Syndicate
+public class Crusader : Syndicate, ICrusader
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number CrusadeCd { get; set; } = new(25);
@@ -19,7 +19,6 @@ public class Crusader : Syndicate
     public CustomButton CrusadeButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Crusader : FactionColor;
-    public override string Name => "Crusader";
     public override LayerEnum Type => LayerEnum.Crusader;
     public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +

@@ -12,7 +12,7 @@ public class Operative : Crew
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool BugsRemoveOnNewRound { get; set; } = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxBugs { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
@@ -32,7 +32,6 @@ public class Operative : Crew
     public CustomButton BugButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Operative : FactionColor;
-    public override string Name => "Operative";
     public override LayerEnum Type => LayerEnum.Operative;
     public override Func<string> StartText => () => "Detect Which Roles Are Here";
     public override Func<string> Description => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +

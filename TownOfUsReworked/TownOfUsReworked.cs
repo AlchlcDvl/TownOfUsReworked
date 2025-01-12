@@ -16,7 +16,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
-    public const int DevBuild = 26;
+    public const int DevBuild = 27;
 
     private static readonly string VersionS = VersionString[..^2];
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
@@ -77,6 +77,7 @@ public partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> NoWelcome { get; set; }
     public static ConfigEntry<bool> AutoPlayAgain { get; set; }
 
+    public static ConfigEntry<bool> BlockBaseGameLogger { get; set; }
     public static ConfigEntry<bool> RedirectLogger { get; set; }
     public static ConfigEntry<bool> DisableTimeout { get; set; }
     public static ConfigEntry<bool> Persistence { get; set; }
@@ -100,7 +101,7 @@ public partial class TownOfUsReworked : BasePlugin
         {
             ModInstance = this;
             LoadComponents();
-            Message($"Mod Loaded - {this}");
+            Success($"Mod Loaded - {this}");
         }
         catch (Exception e)
         {

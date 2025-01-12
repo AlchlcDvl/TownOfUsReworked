@@ -9,7 +9,7 @@ public class Survivor : Neutral
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static Number VestDur { get; set; } = new(10);
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxVests { get; set; } = new(5);
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
@@ -21,7 +21,6 @@ public class Survivor : Neutral
     public CustomButton VestButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Survivor : FactionColor;
-    public override string Name => "Survivor";
     public override LayerEnum Type => LayerEnum.Survivor;
     public override Func<string> StartText => () => "Do Whatever It Takes To Live";
     public override Func<string> Description => () => "- You can put on a vest, which makes you unkillable for a short duration of time";

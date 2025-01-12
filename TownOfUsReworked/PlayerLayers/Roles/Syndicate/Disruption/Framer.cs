@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Framer : Syndicate
+public class Framer : Syndicate, IFramer
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number FrameCd { get; set; } = new(25f);
@@ -14,7 +14,6 @@ public class Framer : Syndicate
     public List<byte> Framed { get; } = [];
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Framer : FactionColor;
-    public override string Name => "Framer";
     public override LayerEnum Type => LayerEnum.Framer;
     public override Func<string> StartText => () => "Make Everyone Suspicious";
     public override Func<string> Description => () => $"- You can frame a{(HoldsDrive ? $"ll players within a {ChaosDriveFrameRadius}m radius" : " player")}\n- Till you are dead, framed " +

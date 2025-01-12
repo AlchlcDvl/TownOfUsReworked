@@ -20,7 +20,6 @@ public class Enforcer : Intruder
     public bool BombSuccessful { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Enforcer : FactionColor;
-    public override string Name => "Enforcer";
     public override LayerEnum Type => LayerEnum.Enforcer;
     public override Func<string> StartText => () => "Force The <#8CFFFFFF>Crew</color> To Do Your Bidding";
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +

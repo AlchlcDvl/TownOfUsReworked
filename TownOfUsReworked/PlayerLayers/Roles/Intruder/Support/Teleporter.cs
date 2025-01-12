@@ -20,7 +20,6 @@ public class Teleporter : Intruder
     public Vector3 TeleportPoint { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Teleporter : FactionColor;
-    public override string Name => "Teleporter";
     public override LayerEnum Type => LayerEnum.Teleporter;
     public override Func<string> StartText => () => "X Marks The Spot";
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";

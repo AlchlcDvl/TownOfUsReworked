@@ -239,6 +239,33 @@ public static class ListExtensions
             self.Add(item);
     }
 
+    public static IEnumerable<T> Clone<T>(this IEnumerable<T> source)
+    {
+        foreach (var item in source)
+            yield return item;
+    }
+
+    public static IDictionary<TKey, TValue> Clone<TKey, TValue>(this IDictionary<TKey, TValue> source)
+    {
+        var dict = new Dictionary<TKey, TValue>();
+
+        foreach (var (key, value) in source)
+            dict[key] = value;
+
+        return dict;
+    }
+
+    public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> target, IDictionary<TKey, TValue> source, bool overrideValues = true)
+    {
+        foreach (var (key, value) in source)
+        {
+            if (overrideValues)
+                target[key] = value;
+            else
+                target.TryAdd(key, value);
+        }
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)

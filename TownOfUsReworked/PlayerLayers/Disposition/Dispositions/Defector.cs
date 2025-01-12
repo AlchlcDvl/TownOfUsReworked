@@ -9,7 +9,7 @@ public class Defector : Disposition
     [StringOption(MultiMenu.LayerSubOptions)]
     public static DefectorFaction DefectorFaction { get; set; } = DefectorFaction.Random;
 
-    private bool Turned { get; set; }
+    public bool Turned { get; set; }
     public Faction Side { get; set; }
     private bool Defect => ((Side == Faction.Intruder && LastImp()) || (Side == Faction.Syndicate && LastSyn())) && !Dead && !Turned;
 
@@ -32,7 +32,6 @@ public class Defector : Disposition
                 return ClientOptions.CustomDispColors ? CustomColorManager.Defector : CustomColorManager.Disposition;
         }
     }
-    public override string Name => "Defector";
     public override string Symbol => "ε";
     public override LayerEnum Type => LayerEnum.Defector;
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";

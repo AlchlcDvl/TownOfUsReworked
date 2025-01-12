@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedRebel : Syndicate, ISilencer, IHexer
+public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, IFramer
 {
     public override void Init()
     {
@@ -40,7 +40,6 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
                 return FormerRole?.Color ?? CustomColorManager.Rebel;
         }
     }
-    public override string Name => "Rebel";
     public override LayerEnum Type => LayerEnum.PromotedRebel;
     public override Func<string> StartText => () => "Lead The <#008000FF>Syndicate</color>";
     public override Func<string> Description => () => "- You have succeeded the former <#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities" +
@@ -353,7 +352,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
             }
             default:
             {
-                Error($"Received unknown RPC - {rebAction}");
+                Failure($"Received unknown RPC - {rebAction}");
                 break;
             }
         }
@@ -995,12 +994,6 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer
     public bool IsStalk => FormerRole is Stalker;
 
     public bool StalkException(PlayerControl player) => StalkerArrows.ContainsKey(player.PlayerId);
-
-    public void DestroyArrow(byte targetPlayerId)
-    {
-        StalkerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        StalkerArrows.Remove(targetPlayerId);
-    }
 
     public void Stalk(PlayerControl target)
     {

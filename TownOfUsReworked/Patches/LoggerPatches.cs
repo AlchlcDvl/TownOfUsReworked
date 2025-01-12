@@ -9,28 +9,28 @@ public static class RedirectLoggerPatch
 {
     private static readonly ManualLogSource _log = BepInEx.Logging.Logger.CreateLogSource("Among Us");
 
-    private static bool Enabled => TownOfUsReworked.RedirectLogger.Value;
-
     private static bool Patch(Logger __instance, LogLevel level, IObject message, UObject context)
     {
-        if (Enabled)
-        {
-            var finalMessage = new StringBuilder();
+        if (TownOfUsReworked.BlockBaseGameLogger.Value)
+            return false;
 
-            if (__instance.category != Logger.Category.None)
-                finalMessage.Append($"[{__instance.category}] ");
+        if (!TownOfUsReworked.RedirectLogger.Value)
+            return true;
 
-            if (!IsNullEmptyOrWhiteSpace(__instance.tag))
-                finalMessage.Append($"[{__instance.tag}] ");
+        var finalMessage = "";
 
-            if (context != null)
-                finalMessage.Append($"[{context.name} ({context.GetIl2CppType().FullName})]");
+        if (__instance.category != Logger.Category.None)
+            finalMessage += $"[{__instance.category}] ";
 
-            finalMessage.Append($" {message.ToString()}");
-            _log.Log(level, finalMessage);
-        }
+        if (!IsNullEmptyOrWhiteSpace(__instance.tag))
+            finalMessage += $"[{__instance.tag}] ";
 
-        return !Enabled;
+        if (context != null)
+            finalMessage += $"[{context.name} ({context.GetIl2CppType().FullName})]";
+
+        finalMessage += $" {message.ToString()}";
+        _log.Log(level, finalMessage);
+        return false;
     }
 
     [HarmonyPatch(nameof(Logger.Debug)), HarmonyPrefix]

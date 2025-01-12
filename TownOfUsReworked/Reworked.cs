@@ -26,6 +26,7 @@ public partial class TownOfUsReworked
         Ip = Config.Bind("Config", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
         Port = Config.Bind("Config", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
 
+        BlockBaseGameLogger = Config.Bind("Debugging", "Block Logger", false, "Block base game Logger calls from appearing in the console");
         RedirectLogger = Config.Bind("Debugging", "Redirect Logger", false, "Redirect base game Logger calls into BepInEx logging");
         DisableTimeout = Config.Bind("Debugging", "Disable Timeout", false, "Disable the network disconnection timeout");
         Persistence = Config.Bind("Debugging", "Persistence", false, "Enables whether or not bots will respawn after each test");

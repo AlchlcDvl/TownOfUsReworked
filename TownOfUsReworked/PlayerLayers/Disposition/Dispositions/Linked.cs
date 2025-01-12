@@ -12,7 +12,6 @@ public class Linked : Disposition
     public PlayerControl OtherLink { get; set; }
 
     public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Linked : CustomColorManager.Disposition;
-    public override string Name => "Linked";
     public override string Symbol => "Ψ";
     public override LayerEnum Type => LayerEnum.Linked;
     public override Func<string> Description => () => $"- Help {OtherLink.name} win";

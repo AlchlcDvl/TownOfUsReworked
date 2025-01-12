@@ -72,6 +72,16 @@ public static class CustomAchievementManager
             if (AllAchievements.TryFinding(a => a.Name == name, out var found))
                 found.Unlocked = true;
         }
+
+        count = reader.ReadUInt32();
+
+        while (count-- > 0)
+        {
+            var name = reader.ReadString();
+
+            if (AllAchievements.TryFinding(a => a.Name == name, out var found))
+                QueuedAchievements.Add(found);
+        }
     }
 
     public static void SerializeCustomAchievements(this BinaryWriter writer)
@@ -79,6 +89,8 @@ public static class CustomAchievementManager
         var unlocked = AllAchievements.Where(a => a.Unlocked);
         writer.Write((uint)unlocked.Count());
         unlocked.ForEach(a => writer.Write(a.Name));
+        writer.Write((uint)QueuedAchievements.Count);
+        QueuedAchievements.ForEach(a => writer.Write(a.Name));
     }
 
     public static void RpcUnlockAchievement(PlayerControl player, string name)
@@ -112,7 +124,7 @@ public static class CustomAchievementManager
             var rend = UObject.Instantiate(Prefab.nameplate.background, Prefab.nameplate.background.transform.parent);
             rend.sprite = GetSprite("Placeholder");
             rend.name = "Icon";
-            rend.transform.localPosition = new(-1f, 0f, -10f);
+            rend.transform.localPosition = new(-0.9f, 0f, -10f);
             rend.transform.localScale = new(0.21f, 0.9f, 1f);
             Prefab.gameObject.SetActive(false);
         }

@@ -254,7 +254,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
         if (IsNullEmptyOrWhiteSpace(text))
         {
-            Error($"{presetName} no exist");
+            Failure($"{presetName} no exist");
             FlashText(tmp, UColor.red);
         }
         else
@@ -323,7 +323,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             }
             catch (Exception e)
             {
-                Error($"Unable to set - {opt}\nException:\n{e}");
+                Failure($"Unable to set - {opt}\nException:\n{e}");
             }
 
             if (pos >= 50)

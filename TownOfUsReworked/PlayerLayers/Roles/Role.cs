@@ -6,7 +6,6 @@ public abstract class Role : PlayerLayer
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
     public override LayerEnum Type => LayerEnum.NoneRole;
 
-    public virtual Faction BaseFaction => Faction.None;
     public virtual Func<string> StartText => () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
 
@@ -53,7 +52,7 @@ public abstract class Role : PlayerLayer
     public Dictionary<PointInTime, float> Positions { get; } = [];
     public Dictionary<byte, PlayerArrow> YellerArrows { get; } = [];
 
-    public List<Role> RoleHistory { get; } = [];
+    public List<LayerEnum> RoleHistory { get; } = [];
 
     private Faction _faction;
     public Faction Faction
@@ -151,13 +150,12 @@ public abstract class Role : PlayerLayer
     public bool IsSynAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Syndicate;
     public bool IsSynFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Syndicate;
     public bool IsCrewAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Crew;
-    public bool IsCrewDefect => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Crew && BaseFaction != Faction.Crew;
-    public bool IsIntDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Intruder && BaseFaction != Faction.Intruder;
-    public bool IsSynDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Syndicate && BaseFaction != Faction.Syndicate;
-    public bool IsNeutDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Neutral && BaseFaction != Faction.Neutral;
+    public bool IsCrewDefect => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Crew && this is not Crew;
+    public bool IsIntDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Intruder && this is not Intruder;
+    public bool IsSynDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Syndicate && this is not Syndicate;
+    public bool IsNeutDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Neutral && this is not Neutral;
     public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && LinkedDisposition is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) &&
-        !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction && !Player.IsTurnedFanatic() &&
-        !Player.IsTurnedTraitor() && !Ignore;
+        !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor() && !Ignore;
 
     public override void Init()
     {
@@ -418,14 +416,20 @@ public abstract class Role : PlayerLayer
 
     public void DestroyArrowY(byte targetPlayerId)
     {
-        YellerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        YellerArrows.Remove(targetPlayerId);
+        if (YellerArrows.TryGetValue(targetPlayerId, out var arrow))
+        {
+            arrow.Destroy();
+            YellerArrows.Remove(targetPlayerId);
+        }
     }
 
     public void DestroyArrowD(byte targetPlayerId)
     {
-        DeadArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        DeadArrows.Remove(targetPlayerId);
+        if (DeadArrows.TryGetValue(targetPlayerId, out var arrow))
+        {
+            arrow.Destroy();
+            DeadArrows.Remove(targetPlayerId);
+        }
     }
 
     public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().ForEach(x => x.Rounds++);
@@ -482,6 +486,10 @@ public abstract class Role : PlayerLayer
     {
         AllArrows.Values.DestroyAll();
         AllArrows.Clear();
+        YellerArrows.Values.DestroyAll();
+        YellerArrows.Clear();
+        DeadArrows.Values.DestroyAll();
+        DeadArrows.Clear();
     }
 
     public const string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <#FF0000FF>Intruders</color>";

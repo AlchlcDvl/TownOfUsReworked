@@ -200,7 +200,7 @@ public static class Blocked
         }
 
         if (!IsHnS())
-            __instance.KillButton.gameObject.SetActive(false);
+            __instance.KillButton.ToggleVisible(false);
 
         if (!__instance.ImpostorVentButton.currentTarget || BlockIsExposed())
             __instance.ImpostorVentButton.SetDisabled();
@@ -208,7 +208,7 @@ public static class Blocked
             __instance.ImpostorVentButton.SetEnabled();
 
         __instance.ImpostorVentButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "VENT");
-        __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
+        __instance.ImpostorVentButton.ToggleVisible((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
         var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: GameSettings.ReportDistance);
 
         if (!closestDead || CustomPlayer.Local.CannotUse())
@@ -238,13 +238,13 @@ public static class Blocked
             __instance.SabotageButton.SetEnabled();
 
         __instance.SabotageButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "SABOTAGE");
-        __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
+        __instance.SabotageButton.ToggleVisible(CustomPlayer.Local.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
 
         if (!IsInGame() || IsLobby())
-            __instance.AbilityButton.gameObject.SetActive(false);
+            __instance.AbilityButton.ToggleVisible(false);
         else if (IsHnS())
-            __instance.AbilityButton.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
+            __instance.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor());
         else
-            __instance.AbilityButton.gameObject.SetActive(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.Dead);
+            __instance.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.Dead);
     }
 }

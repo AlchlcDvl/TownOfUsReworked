@@ -20,7 +20,6 @@ public class Timekeeper : Syndicate
     public CustomButton TimeButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Timekeeper : FactionColor;
-    public override string Name => "Timekeeper";
     public override LayerEnum Type => LayerEnum.Timekeeper;
     public override Func<string> StartText => () => "Bend Time To Your Will";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +

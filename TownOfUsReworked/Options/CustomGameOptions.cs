@@ -64,7 +64,7 @@ public static class GameSettings
     [NumberOption(MultiMenu.Main, 0, 3, 0.1f, Format.Time)]
     public static Number ChatCooldown { get; set; } = new(3);
 
-    [NumberOption(MultiMenu.Main, 0, 2000, 50, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.Main, 0, 2000, 50, zeroIsInf: true)]
     public static Number ChatCharacterLimit { get; set; } = new(200);
 
     [NumberOption(MultiMenu.Main, 2, 127, 1)]
@@ -420,11 +420,11 @@ public static class NeutralSettings
     [ToggleOption(MultiMenu.Main)]
     public static bool NeutralFlashlight { get; set; } = false;
 
-    [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static Number NeutralMax { get; set; } = new(3);
+    [NumberOption(MultiMenu.Main, 0, 14, 1)]
+    public static Number NeutralMax { get; set; } = new(1);
 
-    [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static Number NeutralMin { get; set; } = new(1);
+    [NumberOption(MultiMenu.Main, 0, 14, 1)]
+    public static Number NeutralMin { get; set; } = new(0);
 
     [StringOption(MultiMenu.Main)]
     public static NoSolo NoSolo { get; set; } = NoSolo.Never;

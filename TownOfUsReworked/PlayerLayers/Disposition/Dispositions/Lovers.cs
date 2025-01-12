@@ -16,7 +16,6 @@ public class Lovers : Disposition
     public bool LoversAlive => !Player.HasDied() && !OtherLover.HasDied();
 
     public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Lovers : CustomColorManager.Disposition;
-    public override string Name => "Lovers";
     public override string Symbol => "♥";
     public override LayerEnum Type => LayerEnum.Lovers;
     public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.name}";

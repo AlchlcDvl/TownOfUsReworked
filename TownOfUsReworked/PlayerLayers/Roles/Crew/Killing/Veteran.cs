@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Veteran : Crew, IAlerter
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxAlerts { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
@@ -15,7 +15,6 @@ public class Veteran : Crew, IAlerter
     public CustomButton AlertButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Veteran : FactionColor;
-    public override string Name => "Veteran";
     public override LayerEnum Type => LayerEnum.Veteran;
     public override Func<string> StartText => () => "Alert To Kill Anyone Who Dares To Touch You";
     public override Func<string> Description => () => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";

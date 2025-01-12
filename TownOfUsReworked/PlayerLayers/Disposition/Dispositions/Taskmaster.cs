@@ -9,7 +9,6 @@ public class Taskmaster : Disposition
     public bool WinTasksDone { get; set; }
 
     public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Taskmaster : CustomColorManager.Disposition;
-    public override string Name => "Taskmaster";
     public override string Symbol => "µ";
     public override LayerEnum Type => LayerEnum.Taskmaster;
     public override Func<string> Description => () => "- Finish your tasks before the game ends";

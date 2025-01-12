@@ -42,7 +42,6 @@ public class Executioner : Evil
     public bool TargetFailed => !TargetPlayer && Rounds > 2;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Executioner : FactionColor;
-    public override string Name => "Executioner";
     public override LayerEnum Type => LayerEnum.Executioner;
     public override Func<string> StartText => () => "Find Someone To Eject";
     public override Func<string> Description => () => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +

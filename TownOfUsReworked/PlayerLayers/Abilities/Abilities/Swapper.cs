@@ -17,7 +17,6 @@ public class Swapper : Ability
     public CustomMeeting SwapMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Swapper : CustomColorManager.Ability;
-    public override string Name => "Swapper";
     public override LayerEnum Type => LayerEnum.Swapper;
     public override Func<string> Description => () => "- You can swap the votes against 2 players in meetings";
 

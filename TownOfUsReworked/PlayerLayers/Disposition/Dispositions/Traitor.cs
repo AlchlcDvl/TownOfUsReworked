@@ -31,7 +31,6 @@ public class Traitor : Disposition
                 return ClientOptions.CustomDispColors ? CustomColorManager.Traitor : CustomColorManager.Disposition;
         }
     }
-    public override string Name => "Traitor";
     public override string Symbol => "♣";
     public override LayerEnum Type => LayerEnum.Traitor;
     public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : "";

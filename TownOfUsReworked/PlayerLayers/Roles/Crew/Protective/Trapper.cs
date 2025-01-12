@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Trapper : Crew, ITrapper
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxTraps { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
@@ -24,7 +24,6 @@ public class Trapper : Crew, ITrapper
     private bool AttackedSomeone { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Trapper : FactionColor;
-    public override string Name => "Trapper";
     public override LayerEnum Type => LayerEnum.Trapper;
     public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
     public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
@@ -104,7 +103,7 @@ public class Trapper : Crew, ITrapper
             }
             default:
             {
-                Error($"Received unknown RPC - {trapAction}");
+                Failure($"Received unknown RPC - {trapAction}");
                 break;
             }
         }

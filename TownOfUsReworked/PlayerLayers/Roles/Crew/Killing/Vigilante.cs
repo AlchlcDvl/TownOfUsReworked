@@ -18,7 +18,7 @@ public class Vigilante : Crew
     [StringOption(MultiMenu.LayerSubOptions)]
     public static VigiNotif HowIsVigilanteNotified { get; set; } = VigiNotif.Never;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxBullets { get; set; } = new(5);
 
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
@@ -32,7 +32,6 @@ public class Vigilante : Crew
     public bool RoundOne { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Vigilante : FactionColor;
-    public override string Name => "Vigilante";
     public override LayerEnum Type => LayerEnum.Vigilante;
     public override Func<string> StartText => () => "Shoot The <#FF0000FF>Evildoers</color>";
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";

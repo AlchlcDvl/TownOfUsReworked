@@ -132,7 +132,7 @@ public struct PlayerRecord()
         };
 
         record.Layers.AddRange(info.Select(x => x.Type));
-        record.History.AddRange(role.RoleHistory.Select(x => x.Type));
+        record.History.AddRange(role.RoleHistory);
 
         if (player.CanKill())
         {

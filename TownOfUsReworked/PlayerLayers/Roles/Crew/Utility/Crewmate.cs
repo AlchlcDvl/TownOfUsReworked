@@ -2,7 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Crewmate : Crew
 {
-    public override string Name => "Crewmate";
     public override LayerEnum Type => LayerEnum.Crewmate;
     public override Func<string> StartText => () => "Do Your Tasks";
 

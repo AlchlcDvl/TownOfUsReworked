@@ -29,7 +29,6 @@ public class Glitch : NKilling
     public CustomPlayerMenu MimicMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Glitch : FactionColor;
-    public override string Name => "Glitch";
     public override LayerEnum Type => LayerEnum.Glitch;
     public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";
     public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
@@ -153,7 +152,7 @@ public class Glitch : NKilling
             }
             default:
             {
-                Error($"Received unknown RPC - {glitchAction}");
+                Failure($"Received unknown RPC - {glitchAction}");
                 break;
             }
         }

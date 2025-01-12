@@ -10,7 +10,6 @@ public class Stalker : Syndicate
     public CustomButton StalkButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Stalker : FactionColor;
-    public override string Name => "Stalker";
     public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
     public override Func<string> Description => () => $"- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
@@ -23,12 +22,6 @@ public class Stalker : Syndicate
         Alignment = Alignment.SyndicateSupport;
         StalkButton ??= new(this, new SpriteName("Stalk"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception1);
-    }
-
-    public void DestroyArrow(byte targetPlayerId)
-    {
-        StalkerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        StalkerArrows.Remove(targetPlayerId);
     }
 
     public override void ClearArrows()

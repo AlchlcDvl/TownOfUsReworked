@@ -17,7 +17,6 @@ public class Drunk : Modifier
     private bool Exposed { get; set; }
 
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Drunk : CustomColorManager.Modifier;
-    public override string Name => "Drunk";
     public override LayerEnum Type => LayerEnum.Drunk;
     public override Func<string> Description => () => DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
     public override bool Hidden => !DrunkKnows && !Exposed && !Dead;

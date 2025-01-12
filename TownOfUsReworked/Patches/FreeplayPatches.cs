@@ -175,7 +175,7 @@ public static class FreeplayPatches
                 }
                 catch (Exception e)
                 {
-                    Error($"Layer: {layer}\n{e}");
+                    Failure($"Layer: {layer}\n{e}");
                 }
             }
         }

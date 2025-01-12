@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
+public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, ITransporter
 {
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ReviveAfterVoting { get; set; } = true;
@@ -50,7 +50,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
                 return CustomColorManager.Crew;
         }
     }
-    public override string Name => "Retributionist";
     public override LayerEnum Type => LayerEnum.Retributionist;
     public override Func<string> StartText => () => "Mimic the Dead";
     public override Func<string> Description => () => "- You can mimic the abilities of dead <#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description()}" : "");
@@ -117,15 +116,18 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
     {
         if (IsCor)
         {
-            BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-            BodyArrows.Remove(targetPlayerId);
+            if (BodyArrows.TryGetValue(targetPlayerId, out var arrow))
+            {
+                arrow.Destroy();
+                BodyArrows.Remove(targetPlayerId);
+            }
         }
     }
 
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return !voteArea.AmDead || !player.HasDied() || Dead || !player.IsBase(Faction.Crew);
+        return !voteArea.AmDead || !player.HasDied() || Dead || !player.Is<Crew>();
     }
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -265,7 +267,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter
             }
             default:
             {
-                Error($"Received unknown RPC - {retAction}");
+                Failure($"Received unknown RPC - {retAction}");
                 break;
             }
         }

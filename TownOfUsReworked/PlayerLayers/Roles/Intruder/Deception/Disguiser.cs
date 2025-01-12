@@ -29,7 +29,6 @@ public class Disguiser : Intruder
     public bool Disguised => DisguiseButton.EffectActive;
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Disguiser : FactionColor;
-    public override string Name => "Disguiser";
     public override LayerEnum Type => LayerEnum.Disguiser;
     public override Func<string> StartText => () => "Disguise The <#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";

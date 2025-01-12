@@ -12,7 +12,7 @@ public class GuardianAngel : Neutral
     [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
     public static Number ProtectDur { get; set; } = new(10);
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, ZeroIsInfinity = true)]
+    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number MaxProtects { get; set; } = new(5);
 
     [StringOption(MultiMenu.LayerSubOptions)]
@@ -46,7 +46,6 @@ public class GuardianAngel : Neutral
     public bool Protecting { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.GuardianAngel : FactionColor;
-    public override string Name => "Guardian Angel";
     public override LayerEnum Type => LayerEnum.GuardianAngel;
     public override Func<string> StartText => () => "Find Someone To Protect";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +

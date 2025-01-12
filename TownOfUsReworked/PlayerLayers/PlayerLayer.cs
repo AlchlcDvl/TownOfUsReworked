@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers;
 public abstract class PlayerLayer : IPlayerLayer
 {
     public virtual UColor Color => CustomColorManager.Layer;
-    public virtual string Name => "None";
+    public virtual string Name => TranslationManager.Translate($"Layer.{Type}");
     public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
     public virtual LayerEnum Type => LayerEnum.None;
     public virtual Func<string> Description => () => "- None";
@@ -53,11 +53,12 @@ public abstract class PlayerLayer : IPlayerLayer
 
     public void End()
     {
+        ClearArrows();
+
         if (Local)
             ExitingLayer();
 
         Deinit();
-        ClearArrows();
         Ignore = true;
         Player = null;
     }
@@ -156,15 +157,9 @@ public abstract class PlayerLayer : IPlayerLayer
         return Equals(pl);
     }
 
-    public override int GetHashCode() => HashCode.Combine(Player, Type, LayerType);
+    public override int GetHashCode() => HashCode.Combine(PlayerId, Type, LayerType);
 
     public override string ToString() => Name;
-
-    public static void DeleteAll()
-    {
-        AllLayers.ForEach(x => x.End());
-        AllLayers.Clear();
-    }
 
     public static IEnumerable<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => !x.Ignore || includeIgnored).OfType<T>();
 

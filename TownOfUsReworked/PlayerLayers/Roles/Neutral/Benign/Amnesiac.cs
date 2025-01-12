@@ -1,5 +1,3 @@
-using MonoMod.Utils;
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
@@ -24,7 +22,6 @@ public class Amnesiac : Neutral
     public CustomButton RememberButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Amnesiac : FactionColor;
-    public override string Name => "Amnesiac";
     public override LayerEnum Type => LayerEnum.Amnesiac;
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
     public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"
@@ -41,8 +38,11 @@ public class Amnesiac : Neutral
 
     public void DestroyArrow(byte targetPlayerId)
     {
-        BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
-        BodyArrows.Remove(targetPlayerId);
+        if (BodyArrows.TryGetValue(targetPlayerId, out var arrow))
+        {
+            arrow.Destroy();
+            BodyArrows.Remove(targetPlayerId);
+        }
     }
 
     public override void ClearArrows()

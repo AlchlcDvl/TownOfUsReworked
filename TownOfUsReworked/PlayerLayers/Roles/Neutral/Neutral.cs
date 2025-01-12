@@ -3,7 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Neutral : Role
 {
     public override UColor Color => CustomColorManager.Neutral;
-    public override Faction BaseFaction => Faction.Neutral;
 
     public override void Init()
     {
