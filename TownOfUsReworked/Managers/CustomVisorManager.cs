@@ -29,7 +29,6 @@ public static class CustomVisorManager
         visor.behindHats = !cv.InFront;
         visor.NotInStore = true;
         visor.PreviewCrewmateColor = cv.Adaptive;
-        visor.ViewDataRef = new(viewData.Pointer);
 
         cv.Artist ??= "Unknown";
         cv.ViewData = viewData;

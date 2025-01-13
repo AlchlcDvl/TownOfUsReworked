@@ -52,7 +52,7 @@ public static class FreeplayPatches
                 changing.End();
 
             if (!PreviouslySelected.TryFinding(x => x.Type == layer, out var selected))
-                selected = RoleGenManager.SetLayer(layer, type);
+                selected = RoleGenManager.GetLayer(layer, type);
 
             selected.Start(CustomPlayer.Local);
             ButtonUtils.Reset();
@@ -65,11 +65,7 @@ public static class FreeplayPatches
     }
 
     [HarmonyPatch(nameof(TaskAdderGame.Begin))]
-    public static void Prefix(/*TaskAdderGame __instance*/)
-    {
-        FolderNames.Clear();
-        // Info($"File Width: {__instance.fileWidth} Line Width: {__instance.lineWidth} Folder Width {__instance.folderWidth}");
-    }
+    public static void Prefix() => FolderNames.Clear();
 
     [HarmonyPatch(nameof(TaskAdderGame.PopulateRoot))]
     public static void Postfix(TaskAdderGame __instance, ISystem.Dictionary<SystemTypes, TaskFolder> folders, TaskFolder rootFolder)

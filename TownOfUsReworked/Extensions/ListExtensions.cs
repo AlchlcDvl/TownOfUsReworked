@@ -95,12 +95,12 @@ public static class ListExtensions
             action(item);
     }
 
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> indexedAction)
     {
         var num = 0;
 
         foreach (var item in source)
-            action(item, num++);
+            indexedAction(item, num++);
     }
 
     public static List<List<T>> Split<T>(this IEnumerable<T> list, int splitCount)
@@ -285,6 +285,18 @@ public static class ListExtensions
         }
 
         return -1;
+    }
+
+    public static void Add<T>(this T[] main, T item)
+    {
+        Array.Resize(ref main, main.Length + 1);
+        main[^1] = item;
+    }
+
+    public static void AddRanges<T1, T2>(this List<T1> main, params IEnumerable<T2>[] items) where T2 : T1
+    {
+        foreach (var itemSet in items)
+            itemSet.ForEach(x => main.Add(x));
     }
 
     public static IEnumerable<T> GetRangeOrDefault<T>(this IEnumerable<T> source, int start, int count)

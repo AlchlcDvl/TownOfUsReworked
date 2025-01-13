@@ -3,9 +3,11 @@ namespace TownOfUsReworked.Managers;
 public static class TranslationManager
 {
     public static readonly Dictionary<string, Language> AllTranslations = []; // Used to store all translations
-    public static readonly Dictionary<StringNames, string> CustomStringNames = []; // Used to store custom string names
-    public static readonly Dictionary<string, StringNames> CustomStringNamesAgain = []; // Used to store custom string names, but in reverse
+    public static readonly ValueMap<StringNames, string> CustomStringNames = []; // Used to store custom string names that trace to a string id
     public static readonly Dictionary<StringNames, StringNames> VanillaToCustomMap = []; // Used to remap vanilla string names to custom ones
+    public static readonly Dictionary<StringNames, List<StringNames>> CustomToCustom = []; // Used to map multiple custom ids to the same one
+    public static readonly Dictionary<string, (string Key, Func<string> Value)[]> ReplacementsMap = [];
+    private static readonly List<string> MissingIds = [];
 
     // Values for comparisons
     public static int LastID = -1;
@@ -26,7 +28,12 @@ public static class TranslationManager
         catch
         {
             // Any error should just return the original id and let client know in the logs
-            Fatal(id);
+            if (!MissingIds.Contains(id))
+            {
+                Fatal(id);
+                MissingIds.Add(id);
+            }
+
             return $"STRMISS ({id})";
         }
     }
@@ -38,7 +45,8 @@ public static class TranslationManager
 
     public static bool IdExists(string id) => AllTranslations.ContainsKey(id);
 
-    public static StringNames GetNextName(string id, StringNames vanillaName = StringNames.None, bool isStartup = false)
+    private static StringNames GetNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string>
+        Value)[] replacements = null)
     {
         if (LastID == -1)
             LastID = NextID = (int)Enum.GetValues<StringNames>().Last(); // Getting the very last enum value and casting it to int
@@ -46,15 +54,22 @@ public static class TranslationManager
         NextID++; // Increment to the next value
         var value = (StringNames)NextID; // Cast the int to the enum
         CustomStringNames[value] = id; // Add the id to the dictionary
-        CustomStringNamesAgain[id] = value; // Add the id to the reverse dictionary
 
         // If the custom value overrides translations of a vanilla one, add it to the dictionary for later remapping
         if (vanillaName != StringNames.None)
             VanillaToCustomMap[vanillaName] = value;
 
-        // Debug log the id if I forgot to add a translation for it
-        if (!isStartup && !IdExists(id))
-            Fatal(id);
+        // If the custom value basically has the same id as the provided one, then add it to the dictionary for easy mapping
+        if (customName != StringNames.None)
+        {
+            if (CustomToCustom.TryGetValue(customName, out var list))
+                list.Add(value);
+            else
+                CustomToCustom[customName] = [ value ];
+        }
+
+        if (replacements != null)
+            ReplacementsMap[id] = replacements;
 
         return value;
     }
@@ -67,10 +82,17 @@ public static class TranslationManager
         if (VanillaToCustomMap.TryGetValue(id, out var customId))
             id = customId;
 
+        (string Key, Func<string> Value)[] replacements = null;
+        var hasReplacements = CustomStringNames.TryGetValue(id, out var val) && ReplacementsMap.TryGetValue(val, out replacements);
+
+        // Check if the id is linked to another
+        if (CustomToCustom.TryFinding(x => x.Value.Contains(id), out var pair))
+            id = pair.Key;
+
         // Try to find a language module for the given (possibly updated) ID
         if (CustomStringNames.TryGetValue(id, out var value))
         {
-            var lang = Translate(value);
+            var lang = hasReplacements ? Translate(value, [ .. replacements.Select(x => (x.Key, x.Value())) ]) : Translate(value);
 
             // If the translation is successful, update the result with the translated string
             if (!lang.Contains(value))
@@ -84,14 +106,15 @@ public static class TranslationManager
         return false;
     }
 
-    public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None, bool isStartup = false)
+    public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string>
+        Value)[] replacements = null)
     {
-        if (CustomStringNamesAgain.TryGetValue(id, out var value)) // Try to find a custom string name by the given id
+        if (CustomStringNames.TryGetKey(id, out var value)) // Try to find a custom string name by the given id
             return value;
 
-        if (VanillaToCustomMap.TryGetValue(vanillaName, out var customName)) // Contingency in case the value could not be found
-            return customName;
+        if (VanillaToCustomMap.TryGetValue(vanillaName, out value)) // Contingency in case the value could not be found
+            return value;
 
-        return GetNextName(id, vanillaName, isStartup); // Add the new id if it could not be found
+        return GetNextName(id, vanillaName, customName, replacements); // Add and return the new id if it could not be found
     }
 }

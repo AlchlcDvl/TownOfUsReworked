@@ -14,6 +14,8 @@ public static class CustomStatsManager
     public static StringNames StatsGamesIntruder;
     public static StringNames StatsGamesSyndicate;
     public static StringNames StatsGamesNeutral;
+    public static StringNames StatsLayerWins;
+    public static StringNames StatsMapWins;
 
     public static List<StringNames> OrderedStats;
     private static readonly List<StringNames> SupportVanillaStats =
@@ -37,28 +39,30 @@ public static class CustomStatsManager
         StringNames.StatsHideAndSeekImpostorVictory,
 
         // These are mapped to custom stats
-        StringNames.StatsImpostorKills,
+        StringNames.StatsImpostorKills
     ];
 
     public static readonly Dictionary<MapEnum, uint> MapWins = [];
     public static readonly Dictionary<LayerEnum, uint> LayerWins = [];
     public static readonly Dictionary<StringNames, uint> CustomStats = [];
 
-    private static readonly Dictionary<StringNames, MapEnum> MapMap = [];
-    private static readonly Dictionary<StringNames, LayerEnum> LayerMap = [];
+    public static readonly Dictionary<StringNames, MapEnum> MapMap = [];
+    public static readonly Dictionary<StringNames, LayerEnum> LayerMap = [];
 
     public static void Setup()
     {
-        StatsGamesWon = TranslationManager.GetNextName("Stats.GamesWon");
-        StatsGamesLost = TranslationManager.GetNextName("Stats.GamesLost");
-        StatsGamesDrawn = TranslationManager.GetNextName("Stats.GamesDrawn");
-        StatsRoleblocked = TranslationManager.GetNextName("Stats.Roleblocked");
-        StatsKilled = TranslationManager.GetNextName("Stats.Killed", StringNames.StatsImpostorKills);
-        StatsHitImmune = TranslationManager.GetNextName("Stats.HitImmune");
-        StatsGamesCrew = TranslationManager.GetNextName("Stats.CrewGames");
-        StatsGamesIntruder = TranslationManager.GetNextName("Stats.IntruderGames");
-        StatsGamesSyndicate = TranslationManager.GetNextName("Stats.SyndicateGames");
-        StatsGamesNeutral = TranslationManager.GetNextName("Stats.NeutralGames");
+        StatsGamesWon = TranslationManager.GetOrAddName("Stats.GamesWon");
+        StatsGamesLost = TranslationManager.GetOrAddName("Stats.GamesLost");
+        StatsGamesDrawn = TranslationManager.GetOrAddName("Stats.GamesDrawn");
+        StatsRoleblocked = TranslationManager.GetOrAddName("Stats.Roleblocked");
+        StatsKilled = TranslationManager.GetOrAddName("Stats.Killed", StringNames.StatsImpostorKills);
+        StatsHitImmune = TranslationManager.GetOrAddName("Stats.HitImmune");
+        StatsGamesCrew = TranslationManager.GetOrAddName("Stats.CrewGames");
+        StatsGamesIntruder = TranslationManager.GetOrAddName("Stats.IntruderGames");
+        StatsGamesSyndicate = TranslationManager.GetOrAddName("Stats.SyndicateGames");
+        StatsGamesNeutral = TranslationManager.GetOrAddName("Stats.NeutralGames");
+        StatsLayerWins = TranslationManager.GetOrAddName("Stats.LayerWins");
+        StatsMapWins = TranslationManager.GetOrAddName("Stats.MapWins");
 
         OrderedStats =
         [
@@ -101,8 +105,6 @@ public static class CustomStatsManager
             } catch {}
         }
 
-        StatsManager.Instance.LoadStats(); // Forcing stat loading to ensure proper stats are loaded
-
         // Preloading any missing stats
         Enum.GetValues<MapEnum>().ForEach(x => GetMapWins(x));
         LayerDictionary.Keys.ForEach(x => GetLayerWins(x));
@@ -110,14 +112,14 @@ public static class CustomStatsManager
 
         foreach (var map in MapWins.Keys)
         {
-            var val = TranslationManager.GetNextName($"MapWins.{map}");
+            var val = TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [ ("%map%", () => TranslationManager.Translate($"Map.{map}")) ]);
             OrderedStats.Add(val);
             MapMap[val] = map;
         }
 
         foreach (var layer in LayerWins.Keys)
         {
-            var val = TranslationManager.GetNextName($"Stats.LayerWins.{layer}", isStartup: true);
+            var val = TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [ ("%layer%", () => TranslationManager.Translate($"Layer.{layer}")) ]);
             OrderedStats.Add(val);
             LayerMap[val] = layer;
         }
@@ -178,7 +180,7 @@ public static class CustomStatsManager
 
     public static void IncrementStat(StringNames stat, out bool success)
     {
-        success = SupportVanillaStats.Contains(stat) || stat > ReworkedStart;
+        success = !(IsFreePlay() || TownOfUsReworked.MCIActive) && (SupportVanillaStats.Contains(stat) || stat > ReworkedStart);
 
         if (!success)
             return;
@@ -233,10 +235,10 @@ public static class CustomStatsManager
         if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
             stat = customStat;
 
-        if (!CustomStats.ContainsKey(stat))
-            CustomStats[stat] = 0;
+        if (!CustomStats.TryGetValue(stat, out var val))
+            return CustomStats[stat] = 0;
 
-        return CustomStats[stat];
+        return val;
     }
 
     public static uint GetMapWins(MapEnum map)
@@ -244,10 +246,10 @@ public static class CustomStatsManager
         if (map == MapEnum.Random)
             return 0;
 
-        if (!MapWins.ContainsKey(map))
-            MapWins[map] = 0;
+        if (!MapWins.TryGetValue(map, out var val))
+            return MapWins[map] = 0;
 
-        return MapWins[map];
+        return val;
     }
 
     public static uint GetLayerWins(LayerEnum layer)
@@ -255,10 +257,10 @@ public static class CustomStatsManager
         if (!LayerDictionary.ContainsKey(layer))
             return 0;
 
-        if (!LayerWins.ContainsKey(layer))
-            LayerWins[layer] = 0;
+        if (!LayerWins.TryGetValue(layer, out var val))
+            return LayerWins[layer] = 0;
 
-        return LayerWins[layer];
+        return val;
     }
 
     public static void AddWin(byte map, IEnumerable<PlayerLayer> layers)
@@ -315,7 +317,6 @@ public static class CustomStatsManager
     public static void SerializeCustomStats(this BinaryWriter writer)
     {
         writer.Write(MigratedFromVanillaStats);
-        writer.Write(TranslationManager.LastID);
         writer.WriteEnumDict(MapWins);
         writer.WriteEnumDict(LayerWins);
         writer.WriteEnumDict(CustomStats);
@@ -324,7 +325,6 @@ public static class CustomStatsManager
     public static void DeserializeCustomStats(this BinaryReader reader)
     {
         MigratedFromVanillaStats = reader.ReadBoolean();
-        TranslationManager.PreviousLastID = reader.ReadInt32();
         reader.ReadEnumDict(MapWins);
         reader.ReadEnumDict(LayerWins);
         reader.ReadEnumDict(CustomStats);

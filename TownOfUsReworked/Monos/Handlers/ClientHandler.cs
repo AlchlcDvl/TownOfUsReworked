@@ -346,7 +346,7 @@ public class ClientHandler : MonoBehaviour
             Instance.LoreButton = Instance.CreateButton("WikiLore", "Lore", () =>
             {
                 Instance.LoreActive = !Instance.LoreActive;
-                Instance.SetEntryText(Modules.Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short).Description)));
+                Instance.SetEntryText(Modules.Info.ColorIt(WrapText(AllInfo.AllLore.Find(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short).Description)));
                 Instance.PhoneText.SetText(Instance.Entry[0]);
                 Instance.PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
                 Instance.SelectionActive = true;
@@ -423,7 +423,7 @@ public class ClientHandler : MonoBehaviour
 
         if (Instance.Selected != null)
         {
-            if (LayerInfo.AllLore.Any(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short) && Instance.LoreButton)
+            if (AllInfo.AllLore.Any(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short) && Instance.LoreButton)
             {
                 Instance.LoreButton.gameObject.SetActive(!Instance.LoreActive);
                 Instance.LoreButton.transform.localPosition = new(0f, -1.7f, 0f);

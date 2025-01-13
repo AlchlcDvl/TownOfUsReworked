@@ -267,13 +267,15 @@ public static class RoleGenManager
     public static void Gen(PlayerControl player, LayerEnum id, PlayerLayerEnum rpc)
     {
         player.GetLayers().Find(x => x.LayerType == rpc)?.End();
-        SetLayer(id, rpc).Start(player);
-        CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
+        GetLayer(id, rpc).Start(player);
+
+        if (!TownOfUsReworked.MCIActive)
+            CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
     }
 
     public static void NullLayer(PlayerControl player, PlayerLayerEnum rpc) => Gen(player, LayerEnum.None, rpc);
 
-    public static PlayerLayer SetLayer(LayerEnum id, PlayerLayerEnum rpc)
+    public static PlayerLayer GetLayer(LayerEnum id, PlayerLayerEnum rpc)
     {
         if (LayerDictionary.TryGetValue(id, out var dictEntry))
             return (PlayerLayer)Activator.CreateInstance(dictEntry.LayerType);
@@ -346,12 +348,9 @@ public static class RoleGenManager
         if (MapPatches.CurrentMap == 4)
             BetterAirship.SpawnPoints.AddRange((BetterAirship.EnableCustomSpawns ? CustomSpawns : Spawns).GetRandomRange(3));
 
-        CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
-            BetterAirship.SpawnPoints);
-
         if (TownOfUsReworked.MCIActive)
         {
-            var maxName = 4;
+            var maxName = 1;
             var maxRole = 4;
             var maxDisp = 11;
             var maxMod = 8;
@@ -387,8 +386,8 @@ public static class RoleGenManager
                     maxAb = abStr.Length;
             }
 
-            Message($"| {"Name".PadCenter(maxName)} -> {"Role".PadCenter(maxRole)} | {"Disposition".PadCenter(maxDisp)} | {"Modifier".PadCenter(maxMod)} | {"Ability".PadCenter(maxAb)} |");
-            Message($"| {new string('-', maxName)} -> {new string('-', maxRole)} | {new string('-', maxDisp)} | {new string('-', maxMod)} | {new string('-', maxAb)} |");
+            Message($"| {"Name".PadCenter(maxName)} | {"Role".PadCenter(maxRole)} | {"Disposition".PadCenter(maxDisp)} | {"Modifier".PadCenter(maxMod)} | {"Ability".PadCenter(maxAb)} |");
+            Message($"| {new string('-', maxName)} | {new string('-', maxRole)} | {new string('-', maxDisp)} | {new string('-', maxMod)} | {new string('-', maxAb)} |");
 
             foreach (var player in allPlayers)
             {
@@ -403,11 +402,15 @@ public static class RoleGenManager
                 var modStr = mod.ToString();
                 var abStr = ab.ToString();
 
-                Message($"| {name.PadCenter(maxName)} -> {roleStr.PadCenter(maxRole)} | {dispStr.PadCenter(maxDisp)} | {modStr.PadCenter(maxMod)} | {abStr.PadCenter(maxAb)} |");
+                Message($"| {name.PadCenter(maxName)} | {roleStr.PadCenter(maxRole)} | {dispStr.PadCenter(maxDisp)} | {modStr.PadCenter(maxMod)} | {abStr.PadCenter(maxAb)} |");
             }
         }
         else
+        {
             allPlayers.ForEach(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
+            CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
+                BetterAirship.SpawnPoints);
+        }
 
         Success("Gen Ended");
     }

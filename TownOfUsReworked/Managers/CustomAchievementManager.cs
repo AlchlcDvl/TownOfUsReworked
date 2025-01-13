@@ -23,12 +23,12 @@ public static class CustomAchievementManager
 
         // Special
         new("RekindledPower", eog: true), // Revive a Crew Sovereign role as either a Necromancer or an Altruist (or a Retributionist-Altruist)
-        new("HiddenAlliance", eog: true), // Knight an unrevealed Dictator or Mayor as the Monarch OR be knighted as an unrevealed Dictator or Mayor
         new("EerieSilence", eog: true), // Blackmail a silenced player OR Silence a blackmailed player
 
         // Hidden
         new("Pacifist", eog: true, hidden: true), // Win as a killing role without actually killing anyone
         new("Bloodthirsty", eog: true, hidden: true), // Win as a killing role by killing the most number of players
+        new("HiddenAlliance", eog: true, hidden: true), // Knight an unrevealed Dictator or Mayor as the Monarch OR be knighted as an unrevealed Dictator or Mayor
     ];
 
     public static readonly List<Achievement> QueuedAchievements = [];
@@ -57,11 +57,9 @@ public static class CustomAchievementManager
             if (map != MapEnum.Random)
                 AllAchievements.Add(new($"MapWins.{map}"));
         }
-
-        StatsManager.Instance.SaveStats(); // Force save the stats to save any new achievements and stats
     }
 
-    private static void DeserializeCustomAchievements(this BinaryReader reader)
+    public static void DeserializeCustomAchievements(this BinaryReader reader)
     {
         var count = reader.ReadUInt32();
 
@@ -72,16 +70,6 @@ public static class CustomAchievementManager
             if (AllAchievements.TryFinding(a => a.Name == name, out var found))
                 found.Unlocked = true;
         }
-
-        count = reader.ReadUInt32();
-
-        while (count-- > 0)
-        {
-            var name = reader.ReadString();
-
-            if (AllAchievements.TryFinding(a => a.Name == name, out var found))
-                QueuedAchievements.Add(found);
-        }
     }
 
     public static void SerializeCustomAchievements(this BinaryWriter writer)
@@ -89,8 +77,6 @@ public static class CustomAchievementManager
         var unlocked = AllAchievements.Where(a => a.Unlocked);
         writer.Write((uint)unlocked.Count());
         unlocked.ForEach(a => writer.Write(a.Name));
-        writer.Write((uint)QueuedAchievements.Count);
-        QueuedAchievements.ForEach(a => writer.Write(a.Name));
     }
 
     public static void RpcUnlockAchievement(PlayerControl player, string name)

@@ -13,7 +13,6 @@ public class Miner : Intruder, IDigger
     public List<Vent> Vents { get; } = [];
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Miner : FactionColor;
-    public override string Name => TranslationManager.Translate($"Layer.{(MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner")}");
     public override LayerEnum Type => LayerEnum.Miner;
     public override Func<string> StartText => () => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
         "From The Top, Make It Drop, Boom, That's A Vent";
@@ -22,6 +21,7 @@ public class Miner : Intruder, IDigger
     public override void Init()
     {
         base.Init();
+        Name = TranslationManager.Translate($"Layer.{(MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner")}");
         Alignment = Alignment.IntruderSupport;
         MineButton ??= new(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label,
             (ConditionFunc)Condition);

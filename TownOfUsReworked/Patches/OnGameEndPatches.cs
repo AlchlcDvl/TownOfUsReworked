@@ -755,7 +755,7 @@ public static class OnGameEndPatches
             cache += " Δ";
         }
 
-        if (player.CanDoTasks() && info[0])
+        if (player.CanDoTasks() && role)
         {
             if (!role.TasksDone)
             {
@@ -764,8 +764,8 @@ public static class OnGameEndPatches
             }
             else
             {
-                summary += " ✔";
-                cache += " ✔";
+                summary += $" {(char)0x25A0}";
+                cache += $" {(char)0x25A0}";
             }
         }
 

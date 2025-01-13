@@ -25,6 +25,16 @@ public static class StatsPatches
         {
             __instance.logger.Error($"Failed to write out reworked achievements: {ex}");
         }
+
+        try
+        {
+            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(PlatformPaths.persistentDataPath, "reworkedData")));
+            writer.SerializeReworkedData();
+        }
+        catch (Exception ex)
+        {
+            __instance.logger.Error($"Failed to write out reworked data: {ex}");
+        }
     }
 
     [HarmonyPatch(nameof(StatsManager.ResetStatDisplay))]

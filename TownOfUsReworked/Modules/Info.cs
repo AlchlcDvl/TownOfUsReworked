@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Modules;
 
-public class Info(string name, string shortF, string description, UColor color, InfoType type, bool footer = false)
+public abstract class Info(string name, string shortF, string description, UColor color, InfoType type, bool footer = false)
 {
     public string Name { get; } = name;
     public string Short { get; set; } = shortF;
@@ -10,16 +10,20 @@ public class Info(string name, string shortF, string description, UColor color, 
     public bool Footer { get; } = footer;
 
     public static readonly List<Info> AllInfo = [];
+    public static readonly List<LayerInfo> AllLayerInfo = [];
 
-    public static void SetAllInfo() => AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllDispositions, LayerInfo.AllFactions,
-        LayerInfo.AllSubFactions, LayerInfo.AllModes, LayerInfo.AllOthers, LayerInfo.AllSymbols);
+    public static void SetAllInfo()
+    {
+        AllLayerInfo.AddRanges(Data.AllInfo.AllRoles, Data.AllInfo.AllModifiers, Data.AllInfo.AllAbilities, Data.AllInfo.AllDispositions);
+        AllInfo.AddRanges(AllLayerInfo, Data.AllInfo.AllFactions, Data.AllInfo.AllSubFactions, Data.AllInfo.AllModes, Data.AllInfo.AllOthers, Data.AllInfo.AllSymbols);
+    }
 
     public static string ColorIt(string result, bool bold = true)
     {
         foreach (var info in AllInfo.Where(x => x.Type is not (InfoType.Alignment or InfoType.Lore)))
             result = result.Replace(info.Name, $"<b><#{info.Color.ToHtmlStringRGBA()}>{info.Name}</color></b>");
 
-        foreach (var info in LayerInfo.AllSymbols)
+        foreach (var info in Data.AllInfo.AllSymbols)
             result = result.Replace(info.Symbol, $"<b><#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
 
         for (var i = 0; i < 56; i++)
@@ -41,8 +45,14 @@ public class Info(string name, string shortF, string description, UColor color, 
     public virtual void WikiEntry(out string result) => result = "";
 }
 
+public abstract class LayerInfo(string name, string shortF, string description, UColor color, LayerEnum layer, InfoType type, bool footer = false) : Info(name, shortF, description, color, type,
+    footer)
+{
+    public LayerEnum Layer { get; } = layer;
+}
+
 public class RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, UColor color, LayerEnum role, string attack = "None", string
-    defense = "None", string wincon = "", bool footer = false) : Info(name, shortF, description, color, InfoType.Role, footer)
+    defense = "None", string wincon = "", bool footer = false) : LayerInfo(name, shortF, description, color, role, InfoType.Role, footer)
 {
     public string Alignment { get; } = alignmentEnum.AlignmentName();
     public string ColoredAlignment { get; } = alignmentEnum.AlignmentName(true);
@@ -58,7 +68,6 @@ public class RoleInfo(string name, string shortF, string description, Alignment 
     public string Attack { get; } = attack;
     public string Defense { get; } = defense;
     public Faction Faction { get; } = faction;
-    public LayerEnum Role { get; } = role;
 
     private const string IntruderObjective = "Have a critical sabotage set off by the Intruders reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew and opposing Neutrals.";
     private const string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, Crew and opposing Neutrals.";
@@ -310,11 +319,10 @@ public class AlignmentInfo : Info
     }
 }
 
-public class ModifierInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum modifier, bool footer = false) : Info(name, shortF, description, color,
-    InfoType.Modifier, footer)
+public class ModifierInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum modifier, bool footer = false) : LayerInfo(name, shortF, description, color,
+    modifier, InfoType.Modifier, footer)
 {
     public string AppliesTo { get; } = applies;
-    public LayerEnum Modifier { get; } = modifier;
 
     public override void WikiEntry(out string result)
     {
@@ -327,12 +335,11 @@ public class ModifierInfo(string name, string shortF, string description, string
 }
 
 public class DispositionInfo(string name, string shortF, string description, string wincon, string applies, string symbol, UColor color, LayerEnum disposition, bool footer = false) :
-    Info(name, shortF, description, color, InfoType.Disposition, footer)
+    LayerInfo(name, shortF, description, color, disposition, InfoType.Disposition, footer)
 {
     public string AppliesTo { get; } = applies;
     public string WinCon { get; } = wincon;
     public string Symbol { get; } = symbol;
-    public LayerEnum Disposition { get; } = disposition;
 
     public override void WikiEntry(out string result)
     {
@@ -346,11 +353,10 @@ public class DispositionInfo(string name, string shortF, string description, str
     }
 }
 
-public class AbilityInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum ability, bool footer = false) : Info(name, shortF, description, color,
-    InfoType.Ability, footer)
+public class AbilityInfo(string name, string shortF, string description, string applies, UColor color, LayerEnum ability, bool footer = false) : LayerInfo(name, shortF, description, color,
+    ability, InfoType.Ability, footer)
 {
     public string AppliesTo { get; } = applies;
-    public LayerEnum Ability { get; } = ability;
 
     public override void WikiEntry(out string result)
     {

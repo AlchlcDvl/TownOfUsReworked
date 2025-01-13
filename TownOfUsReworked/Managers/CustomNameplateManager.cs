@@ -24,7 +24,6 @@ public static class CustomNameplateManager
         nameplate.ChipOffset = new(0f, 0.2f);
         nameplate.Free = true;
         nameplate.NotInStore = true;
-        nameplate.ViewDataRef = new(viewData.Pointer);
 
         cn.Artist ??= "Unknown";
         cn.ViewData = viewData;

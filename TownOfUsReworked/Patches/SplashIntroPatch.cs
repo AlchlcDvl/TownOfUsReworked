@@ -30,14 +30,8 @@ public static class UpdateSplashPatch
         rend.sprite = GetSprite("Banner");
         rend.transform.localScale = Vector3.one * 1.8f;
         rend.color = UColor.clear;
-        var num = 0f;
 
-        while (num < 1f)
-        {
-            num += Time.deltaTime;
-            rend.color = UColor.white.AlphaMultiplied(num);
-            yield return EndFrame();
-        }
+        yield return PerformTimedAction(1f, p => rend.color = UColor.white.SetAlpha(p));
 
         rend.color = UColor.white;
         TMP = UObject.Instantiate(__instance.errorPopup.InfoText, loading.transform);
@@ -50,14 +44,7 @@ public static class UpdateSplashPatch
         SetText("Loading...");
         yield return EndFrame();
 
-        num = 0f;
-
-        while (num < 1f)
-        {
-            num += Time.deltaTime;
-            TMP.color = UColor.white.AlphaMultiplied(num);
-            yield return EndFrame();
-        }
+        yield return PerformTimedAction(0.5f, p => TMP.color = UColor.white.SetAlpha(p));
 
         if (!Directory.Exists(TownOfUsReworked.Assets))
             Directory.CreateDirectory(TownOfUsReworked.Assets);
@@ -90,26 +77,24 @@ public static class UpdateSplashPatch
         yield return LoadModData();
 
         SetText("Loaded!");
-        yield return Wait(0.5f);
 
-        num = 0.5f;
-
-        while (num > 0f)
+        foreach (var customColor in CustomColorManager.AllColors.Values)
         {
-            num -= Time.deltaTime * 2;
-            TMP.color = UColor.white.AlphaMultiplied(num);
-            yield return EndFrame();
+            if (customColor.MainColors != null)
+            {
+                foreach (var color in customColor.MainColors)
+                {
+                    TMP.color = color;
+                    yield return EndFrame();
+                }
+            }
         }
+
+        yield return PerformTimedAction(0.5f, p => TMP.color = UColor.white.SetAlpha(1 - p));
 
         SetText("");
-        num = 1f;
 
-        while (num > 0f)
-        {
-            num -= Time.deltaTime;
-            rend.color = UColor.white.AlphaMultiplied(num);
-            yield return EndFrame();
-        }
+        yield return PerformTimedAction(1f, p => rend.color = UColor.white.SetAlpha(1 - p));
 
         rend.color = UColor.clear;
         loading.Destroy();
@@ -132,8 +117,7 @@ public static class UpdateSplashPatch
         ModUpdater.CanDownloadSubmerged = !SubLoaded && ModUpdater.URLs.ContainsKey("Submerged");
         ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
 
-        CustomStatsManager.Setup();
-        CustomAchievementManager.Setup();
+        ReworkedDataManager.Setup();
         Generate.GenerateAll();
         Modules.Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();

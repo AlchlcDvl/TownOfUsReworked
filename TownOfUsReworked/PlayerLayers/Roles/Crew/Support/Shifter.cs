@@ -59,6 +59,7 @@ public class Shifter : Crew
         role.RoleHistory.Clear();
         role.RoleHistory.AddRange(RoleHistory);
         role.RoleHistory.Add(LayerEnum.Shifter);
+        ShiftButton.Destroy();
 
         if (ShiftedBecomes == BecomeEnum.Crewmate)
         {
@@ -76,6 +77,7 @@ public class Shifter : Crew
             ShifterMenu.Owner = other;
             RoleHistory.Add(role.Type);
             RoleHistory.AddRange(historyClone);
+            ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)ShifterMenu.Open, new Cooldown(ShiftCd));
         }
 
         if (player.Data.Role is LayerHandler handler)

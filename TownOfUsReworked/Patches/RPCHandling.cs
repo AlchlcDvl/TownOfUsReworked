@@ -61,7 +61,7 @@ public static class RPCHandling
                     }
                     case MiscRPC.SetLayer:
                     {
-                        RoleGenManager.SetLayer(reader.ReadEnum<LayerEnum>(), reader.ReadEnum<PlayerLayerEnum>()).Start(reader.ReadPlayer());
+                        RoleGenManager.GetLayer(reader.ReadEnum<LayerEnum>(), reader.ReadEnum<PlayerLayerEnum>()).Start(reader.ReadPlayer());
                         break;
                     }
                     case MiscRPC.Whisper:

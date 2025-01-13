@@ -34,7 +34,6 @@ public static class CustomHatManager
         hat.Free = true;
         hat.NotInStore = true;
         hat.PreviewCrewmateColor = ch.Adaptive;
-        hat.ViewDataRef = new(viewData.Pointer);
 
         ch.Artist ??= "Unknown";
         ch.ViewData = viewData;

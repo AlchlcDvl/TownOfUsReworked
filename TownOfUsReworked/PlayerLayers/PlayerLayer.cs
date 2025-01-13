@@ -3,7 +3,6 @@ namespace TownOfUsReworked.PlayerLayers;
 public abstract class PlayerLayer : IPlayerLayer
 {
     public virtual UColor Color => CustomColorManager.Layer;
-    public virtual string Name => TranslationManager.Translate($"Layer.{Type}");
     public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
     public virtual LayerEnum Type => LayerEnum.None;
     public virtual Func<string> Description => () => "- None";
@@ -12,12 +11,13 @@ public abstract class PlayerLayer : IPlayerLayer
     public virtual DefenseEnum DefenseVal => DefenseEnum.None;
     public virtual bool Hidden => false;
 
+    public string Name { get; set; }
     public PlayerControl Player { get; set; }
     public bool IsBlocked { get; set; }
     public bool Winner { get; set; }
     public bool Ignore { get; set; }
 
-    // public string Short => Modules.Info.AllInfo.Find(x => x.Name == Name)?.Short;
+    // public string Short => Modules.Info.AllAllInfo.Find(x => x.Layer == Type)?.Short;
 
     public bool Dead => Data?.IsDead ?? true;
     public bool Disconnected => Data?.Disconnected ?? true;
@@ -43,6 +43,7 @@ public abstract class PlayerLayer : IPlayerLayer
     // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
     public void Start(PlayerControl player)
     {
+        Name = TranslationManager.Translate($"Layer.{Type}");
         Player = player;
         Ignore = false;
         Init();

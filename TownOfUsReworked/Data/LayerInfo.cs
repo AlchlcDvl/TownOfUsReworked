@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data;
 
-public static class LayerInfo
+public static class AllInfo
 {
     public static readonly IEnumerable<RoleInfo> AllRoles =
     [
