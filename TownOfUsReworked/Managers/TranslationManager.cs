@@ -92,7 +92,15 @@ public static class TranslationManager
         // Try to find a language module for the given (possibly updated) ID
         if (CustomStringNames.TryGetValue(id, out var value))
         {
-            var lang = hasReplacements ? Translate(value, [ .. replacements.Select(x => (x.Key, x.Value())) ]) : Translate(value);
+            (string Key, Func<string> Value)[] otherReplacements = null;
+            var hasOtherReplacements = val != value && ReplacementsMap.TryGetValue(value, out otherReplacements);
+            var lang = hasOtherReplacements
+                ? (hasReplacements
+                    ? Translate(value, [ .. replacements.Select(x => (x.Key, x.Value())), .. otherReplacements.Select(x => (x.Key, x.Value())) ])
+                    : Translate(value, [ .. otherReplacements.Select(x => (x.Key, x.Value())) ]))
+                : (hasReplacements
+                    ? Translate(value, [ .. replacements.Select(x => (x.Key, x.Value())) ])
+                    : Translate(value));
 
             // If the translation is successful, update the result with the translated string
             if (!lang.Contains(value))

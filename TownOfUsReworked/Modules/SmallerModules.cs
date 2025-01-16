@@ -53,7 +53,10 @@ public struct RoleOptionData(int chance, int count, bool unique, bool active, La
         ID.IsValid(relatedCount);
 }
 
-public record class LayerDictionaryEntry(Type LayerType, UColor Color, string Name);
+public record class LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)
+{
+    public string Name => TranslationManager.Translate($"Layer.{Layer}");
+}
 
 public readonly struct Number(float num)
 {

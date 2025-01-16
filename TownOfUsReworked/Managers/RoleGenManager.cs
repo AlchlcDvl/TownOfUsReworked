@@ -2,7 +2,6 @@ namespace TownOfUsReworked.Managers;
 
 public static class RoleGenManager
 {
-    public static readonly List<RoleOptionData> CrewAuditorRoles = [];
     public static readonly List<RoleOptionData> CrewKillingRoles = [];
     public static readonly List<RoleOptionData> CrewSupportRoles = [];
     public static readonly List<RoleOptionData> CrewSovereignRoles = [];
@@ -38,14 +37,14 @@ public static class RoleGenManager
     public static PlayerControl Pure;
     public static byte Convertible;
 
-    public static readonly LayerEnum[] CA = [ LayerEnum.Mystic, LayerEnum.VampireHunter ];
-    public static readonly LayerEnum[] CI = [ LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Medium, LayerEnum.Coroner, LayerEnum.Operative, LayerEnum.Seer, LayerEnum.Detective ];
+    public static readonly LayerEnum[] CI = [ LayerEnum.Mystic, LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Medium, LayerEnum.Coroner, LayerEnum.Operative, LayerEnum.Seer,
+        LayerEnum.Detective ];
     public static readonly LayerEnum[] CSv = [ LayerEnum.Mayor, LayerEnum.Dictator, LayerEnum.Monarch ];
     public static readonly LayerEnum[] CrP = [ LayerEnum.Altruist, LayerEnum.Medic, LayerEnum.Trapper ];
     public static readonly LayerEnum[] CU = [ LayerEnum.Crewmate ];
     public static readonly LayerEnum[] CK = [ LayerEnum.Vigilante, LayerEnum.Veteran, LayerEnum.Bastion ];
     public static readonly LayerEnum[] CS = [ LayerEnum.Engineer, LayerEnum.Transporter, LayerEnum.Escort, LayerEnum.Shifter, LayerEnum.Chameleon, LayerEnum.Retributionist ];
-    public static readonly LayerEnum[][] Crew = [ CA, CI, CSv, CrP, CK, CS, CU ];
+    public static readonly LayerEnum[][] Crew = [ CI, CSv, CrP, CK, CS, CU ];
     public static readonly LayerEnum[][] RegCrew = [ CI, CrP, CK, CS ];
     public static readonly LayerEnum[][][] NonCrew = [ Neutral, Intruders, Syndicate ];
 
@@ -81,14 +80,14 @@ public static class RoleGenManager
 
     public static readonly LayerEnum[][][] FactionedEvils = [ Neutral, Crew ];
 
-    public static readonly LayerEnum[] AlignmentEntries = [ LayerEnum.CrewSupport, LayerEnum.CrewInvest, LayerEnum.CrewSov, LayerEnum.CrewProt, LayerEnum.CrewKill, LayerEnum.CrewAudit,
-        LayerEnum.IntruderSupport, LayerEnum.IntruderConceal, LayerEnum.IntruderDecep, LayerEnum.IntruderKill, LayerEnum.NeutralApoc, LayerEnum.NeutralHarb, LayerEnum.NeutralBen,
-        LayerEnum.NeutralEvil, LayerEnum.NeutralKill, LayerEnum.NeutralNeo, LayerEnum.SyndicateDisrup, LayerEnum.SyndicateKill, LayerEnum.SyndicatePower, LayerEnum.IntruderUtil,
-        LayerEnum.CrewUtil, LayerEnum.SyndicateUtil, LayerEnum.IntruderHead ];
+    public static readonly LayerEnum[] AlignmentEntries = [ LayerEnum.CrewSupport, LayerEnum.CrewInvest, LayerEnum.CrewSov, LayerEnum.CrewProt, LayerEnum.CrewKill, LayerEnum.IntruderSupport,
+        LayerEnum.IntruderConceal, LayerEnum.IntruderDecep, LayerEnum.IntruderKill, LayerEnum.NeutralApoc, LayerEnum.NeutralHarb, LayerEnum.NeutralBen, LayerEnum.NeutralEvil, LayerEnum.CrewUtil,
+        LayerEnum.NeutralKill, LayerEnum.NeutralNeo, LayerEnum.SyndicateDisrup, LayerEnum.SyndicateKill, LayerEnum.SyndicatePower, LayerEnum.IntruderUtil, LayerEnum.SyndicateUtil,
+        LayerEnum.IntruderHead ];
     public static readonly LayerEnum[] RandomEntries = [ LayerEnum.RandomCrew, LayerEnum.RandomIntruder, LayerEnum.RandomSyndicate, LayerEnum.RandomNeutral, LayerEnum.RegularCrew,
         LayerEnum.RegularIntruder, LayerEnum.RegularNeutral, LayerEnum.RegularSyndicate, LayerEnum.HarmfulNeutral, LayerEnum.NonCrew, LayerEnum.NonIntruder, LayerEnum.NonNeutral,
         LayerEnum.FactionedEvil, LayerEnum.NonSyndicate ];
-    public static readonly LayerEnum[][] Alignments = [ CA, CI, CSv, CrP, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, NA ];
+    public static readonly LayerEnum[][] Alignments = [ CI, CSv, CrP, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, NA ];
 
     public static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.VIP, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
         LayerEnum.Indomitable, LayerEnum.Yeller, LayerEnum.Colorblind ];
@@ -156,15 +155,12 @@ public static class RoleGenManager
             result = GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne;
         else if (layer is LayerEnum.Crewmate or LayerEnum.Impostor or LayerEnum.Anarchist)
             result = IsCustom();
-        else if (layer == LayerEnum.VampireHunter)
-            result = GetSpawnItem(LayerEnum.Dracula).IsActive();
         else if (layer == LayerEnum.Mystic)
             result = new List<LayerEnum>() { LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Whisperer }.Any(x => GetSpawnItem(x).IsActive());
         else if (layer == LayerEnum.Seer)
         {
-            result = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor,
-                LayerEnum.Amnesiac, LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter, LayerEnum.Fanatic }.Any(x =>
-                    GetSpawnItem(x).IsActive());
+            result = new List<LayerEnum>() { LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor, LayerEnum.Amnesiac,
+                LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter, LayerEnum.Fanatic }.Any(x => GetSpawnItem(x).IsActive());
         }
         else if (layer == LayerEnum.Plaguebearer)
             result = !NeutralApocalypseSettings.DirectSpawn;

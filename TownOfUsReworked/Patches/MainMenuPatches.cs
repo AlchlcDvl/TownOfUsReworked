@@ -78,12 +78,12 @@ public static class MainMenuPatches
     private static void CreatDownloadButton(string downloadType, float yValue1, float yValue2, string spriteName)
     {
         var template = GameObject.Find("ExitGameButton");
-        var rightPanel = GameObject.Find("RightPanel");
+        var rightPanel = GameObject.Find("RightPanel")?.transform;
 
         if (!template || !rightPanel)
             return;
 
-        var button = UObject.Instantiate(template, rightPanel.transform);
+        var button = UObject.Instantiate(template, rightPanel);
         button.transform.localPosition = new(button.transform.localPosition.x, yValue1, button.transform.localPosition.z);
         button.transform.localScale = new(0.44f, 0.84f, 1f);
         button.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = button.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite(spriteName);
@@ -96,7 +96,7 @@ public static class MainMenuPatches
         button.GetComponent<PassiveButton>().OverrideOnClickListeners(() =>
         {
             Coroutines.Start(ModUpdater.DownloadUpdate(downloadType));
-            button.SetActive(false);
+            button.gameObject.SetActive(false);
         });
 
         Coroutines.Start(PerformTimedAction(0.1f, _ =>
@@ -145,7 +145,7 @@ public static class MainMenuPatches
         ghObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = ghObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("GitHub");
         ghObj.transform.GetChild(3).gameObject.Destroy();
         ghObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-        ghObj.buttonText.SetText("GitHub Repo");
+        ghObj.buttonText.text = "GitHub Repo";
         __instance.mainButtons.Add(ghObj);
         __instance.newsButton.ControllerNav.selectOnRight = ghObj;
         ghObj.ControllerNav.selectOnLeft = __instance.newsButton;
@@ -158,7 +158,7 @@ public static class MainMenuPatches
         discObj.transform.localPosition = pos;
         discObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = discObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Discord");
         discObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-        discObj.buttonText.SetText("Reworked Discord");
+        discObj.buttonText.text = "Reworked Discord";
         discObj.ControllerNav.selectOnUp = ghObj;
         __instance.mainButtons.Add(discObj);
         __instance.settingsButton.ControllerNav.selectOnRight = discObj;
@@ -208,7 +208,7 @@ public static class MainMenuPatches
         credObj.ControllerNav.selectOnUp = discObj;
         discObj.ControllerNav.selectOnDown = credObj;
         credObj.ControllerNav.selectOnDown = __instance.quitButton;
-        credObj.buttonText.SetText("Reworked Info");
+        credObj.buttonText.text = "Reworked Info";
 
         __instance.quitButton.ControllerNav.selectOnUp = credObj;
 
@@ -218,7 +218,7 @@ public static class MainMenuPatches
         popup.gameObject.SetActive(false);
         var title = popup.transform.FindChild("Title_TMP").GetComponent<TextMeshPro>();
         title.GetComponent<TextTranslatorTMP>().Destroy();
-        title.SetText(TranslationManager.Translate("Title.Achievements"));
+        title.text = TranslationManager.Translate("Title.Achievements");
 
         var achievementsButton = UObject.Instantiate(__instance.accountCTAButton, __instance.accountCTAButton.transform.parent);
         var statsButton = __instance.accountCTAButton.transform.parent.GetChild(__instance.accountCTAButton.transform.GetSiblingIndex() + 1).GetComponent<PassiveButton>();
@@ -227,7 +227,7 @@ public static class MainMenuPatches
         achievementsButton.transform.localPosition = achPos;
         achievementsButton.name = "AchievementsButton";
         achievementsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-        achievementsButton.buttonText.SetText(TranslationManager.Translate("Title.Achievements"));
+        achievementsButton.buttonText.text = TranslationManager.Translate("Title.Achievements");
         achievementsButton.OverrideOnClickListeners(() => popup.gameObject.SetActive(true));
         achievementsButton.ControllerNav.selectOnUp = statsButton;
         statsButton.ControllerNav.selectOnDown = achievementsButton;

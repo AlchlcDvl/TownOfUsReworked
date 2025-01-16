@@ -235,7 +235,7 @@ public static class MeetingPatches
 
         foreach (var role in PlayerLayer.GetLayers<Role>())
         {
-            if (role.Type is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.GuardianAngel or LayerEnum.Jester)
+            if (role.Type is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.GuardianAngel or LayerEnum.Jester || !role.Dead)
                 continue;
 
             role.TrulyDead = true;
@@ -260,7 +260,7 @@ public static class MeetingPatches
 
         var playerControl = playerInfo.Object;
 
-        if ((playerControl.Is<Assassin>() || playerControl.GetRole() is Guesser or Thief) && playerInfo.IsDead)
+        if (playerInfo.IsDead)
         {
             playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
             playerVoteArea.SetDead(false, true);
@@ -276,7 +276,7 @@ public static class MeetingPatches
         {
             var self = __instance.CalculateAllVotes(out var tie, out var maxIdx);
             var array = new Il2CppStructArray<MeetingHud.VoterState>(__instance.playerStates.Length);
-            var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == maxIdx.Key);
+            var exiled = tie ? null : GameData.Instance.GetPlayerById(maxIdx.Key);
 
             for (var i = 0; i < __instance.playerStates.Length; i++)
             {
@@ -335,17 +335,11 @@ public static class MeetingPatches
 
     private static IEnumerator PerformSwaps()
     {
-        foreach (var role in PlayerLayer.GetLayers<Swapper>())
+        var swappers = PlayerLayer.GetLayers<Swapper>().Where(x => x.Alive && !PlayerByVoteArea(x.Swap1).HasDied() && !PlayerByVoteArea(x.Swap2).HasDied());
+        var duration = 1f / (swappers.Count() + 1);
+
+        foreach (var role in swappers)
         {
-            if (!role.Alive || !role.Swap1 || !role.Swap2)
-                continue;
-
-            var swapPlayer1 = PlayerByVoteArea(role.Swap1);
-            var swapPlayer2 = PlayerByVoteArea(role.Swap2);
-
-            if (swapPlayer1.HasDied() || swapPlayer2.HasDied())
-                continue;
-
             var pool1 = role.Swap1.PlayerIcon.transform;
             var name1 = role.Swap1.NameText.transform;
             var background1 = role.Swap1.Background.transform;
@@ -402,8 +396,6 @@ public static class MeetingPatches
 
             votes2.ForEach(x => x.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap1.MaskLayer));
             votes1.ForEach(x => x.GetComponent<SpriteRenderer>().material.SetInt(PlayerMaterial.MaskLayer, role.Swap2.MaskLayer));
-
-            var duration = 1f / (PlayerLayer.GetLayers<Swapper>().Count(x => x.Alive && x.Swap1 && x.Swap2) + 1);
 
             Coroutines.Start(Slide2D(cb1, cbdest1, cbdest2, duration));
             Coroutines.Start(Slide2D(cb2, cbdest2, cbdest1, duration));
@@ -487,17 +479,8 @@ public static class MeetingPatches
             }
         }
 
-        foreach (var swapper in PlayerLayer.GetLayers<Swapper>())
+        foreach (var swapper in PlayerLayer.GetLayers<Swapper>().Where(x => x.Alive && !PlayerByVoteArea(x.Swap1).HasDied() && !PlayerByVoteArea(x.Swap2).HasDied()))
         {
-            if (swapper.Player.HasDied() || !swapper.Swap1 || !swapper.Swap2)
-                continue;
-
-            var swapPlayer1 = PlayerByVoteArea(swapper.Swap1);
-            var swapPlayer2 = PlayerByVoteArea(swapper.Swap2);
-
-            if (swapPlayer1.HasDied() || swapPlayer2.HasDied())
-                continue;
-
             var swap1 = 0;
             var swap2 = 0;
 

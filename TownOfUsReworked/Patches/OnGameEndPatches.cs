@@ -39,6 +39,8 @@ public static class OnGameEndPatches
                 }
             }
 
+            if (WinState == WinLose.EveryoneWins)
+                AllPlayers().ForEach(x => Winners[x.name] = x.GetLayers());
             if (WinState == WinLose.AllNeutralsWin)
             {
                 foreach (var role2 in Role.GetRoles(Faction.Neutral))
@@ -451,19 +453,19 @@ public static class OnGameEndPatches
                 AchievementManager.Instance.SetWinMap(MapPatches.CurrentMap);
                 UnityTelemetry.Instance.WonGame(cachedPlayerData.ColorId, cachedPlayerData.HatId, cachedPlayerData.SkinId, cachedPlayerData.PetId, cachedPlayerData.VisorId,
                     cachedPlayerData.NamePlateId);
-                __instance.WinText.SetText(TranslationController.Instance.GetString(StringNames.Victory));
+                __instance.WinText.text = TranslationController.Instance.GetString(StringNames.Victory);
                 __instance.WinText.color = UColor.blue;
             }
             else if (WinState == WinLose.NobodyWins)
             {
                 CustomStatsManager.AddDraw();
-                __instance.WinText.SetText("Stalemate");
+                __instance.WinText.text = "Stalemate";
                 __instance.WinText.color = UColor.white;
             }
             else
             {
                 CustomStatsManager.AddLoss();
-                __instance.WinText.SetText(TranslationController.Instance.GetString(StringNames.Defeat));
+                __instance.WinText.text = TranslationController.Instance.GetString(StringNames.Defeat);
                 __instance.WinText.color = UColor.red;
             }
 
@@ -541,7 +543,7 @@ public static class OnGameEndPatches
                     WinLose.LoveWins => ("Love Wins", "IntruderWin", CustomColorManager.Lovers),
                     WinLose.TaskmasterWins => ("Taskmaster Wins", "IntruderWin", CustomColorManager.Taskmaster),
                     WinLose.RivalWins => ("The Rival Wins", "IntruderWin", CustomColorManager.Rivals),
-                    WinLose.CorruptedWins => ("The Corrupted Win", "IntruderWin", CustomColorManager.Corrupted),
+                    WinLose.CorruptedWins => ("The Corrupt Win", "IntruderWin", CustomColorManager.Corrupted),
                     WinLose.OverlordWins => ("Overlords Win", "IntruderWin", CustomColorManager.Overlord),
                     WinLose.MafiaWins => ("The Mafia Wins", "IntruderWin", CustomColorManager.Mafia),
                     WinLose.DefectorWins => ("Defector Wins", "IntruderWin", CustomColorManager.Defector),
@@ -553,7 +555,7 @@ public static class OnGameEndPatches
                 };
                 __instance.BackgroundBar.material.color = text.color = color;
                 __instance.WinText.transform.localPosition += new Vector3(0f, 1.5f, 0f);
-                text.SetText($"<size=50%>{texttext}!</size>");
+                text.text = $"<size=50%>{texttext}!</size>";
                 Play(winsound);
             }
 
@@ -645,7 +647,7 @@ public static class OnGameEndPatches
             roleSummaryTextMesh.fontSizeMin = 1.5f;
             roleSummaryTextMesh.fontSizeMax = 1.5f;
             roleSummaryTextMesh.fontSize = 1.5f;
-            roleSummaryTextMesh.SetText($"{roleSummaryText}");
+            roleSummaryTextMesh.text = $"{roleSummaryText}";
             roleSummaryTextMesh.GetComponent<RectTransform>().anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
             SaveText("Summary", $"{roleSummaryCache}", TownOfUsReworked.Other);
             PlayerRoles.Clear();

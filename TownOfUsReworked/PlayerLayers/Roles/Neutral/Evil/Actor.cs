@@ -90,7 +90,6 @@ public class Actor : Evil
             LayerEnum.Tracker => new Tracker(),
             LayerEnum.Transporter => new Transporter(),
             LayerEnum.Trapper => new Trapper(),
-            LayerEnum.VampireHunter => new VampireHunter(),
             LayerEnum.Veteran => new Veteran(),
             LayerEnum.Vigilante => new Vigilante(),
 

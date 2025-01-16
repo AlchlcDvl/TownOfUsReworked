@@ -14,7 +14,6 @@ public class ClientHandler : MonoBehaviour
     public PassiveButton ToTheWiki;
     public PassiveButton NextButton;
     public PassiveButton BackButton;
-    public PassiveButton LoreButton;
     public PassiveButton YourStatus;
     public readonly Dictionary<int, List<(Info, PassiveButton)>> Buttons = [];
     public readonly Dictionary<int, KeyValuePair<string, Info>> Sorted = [];
@@ -125,7 +124,7 @@ public class ClientHandler : MonoBehaviour
     {
         var hud = HUD();
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !ActiveTask() && !MapBehaviourPatches.MapActive)
             hud.SettingsButton?.GetComponent<PassiveButton>()?.OnClick?.Invoke();
 
         if (IsHnS() || !CustomPlayer.Local || !ButtonsParent)
@@ -142,7 +141,7 @@ public class ClientHandler : MonoBehaviour
         if (PhoneText)
         {
             if (RoleCardActive)
-                PhoneText.SetText(CustomPlayer.Local.RoleCardInfo());
+                PhoneText.text = CustomPlayer.Local.RoleCardInfo();
             else if ((LoreActive || SelectionActive) && Entry.Count > 1)
             {
                 if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
@@ -150,14 +149,14 @@ public class ClientHandler : MonoBehaviour
                 else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
                     ResultPage = CycleInt(Entry.Count - 1, 0, ResultPage, true);
 
-                PhoneText.SetText(Entry[ResultPage]);
+                PhoneText.text = Entry[ResultPage];
             }
         }
 
         if (!IsInGame())
             return;
 
-        var part = !RoleCardActive && !SettingsActive && !Zooming && !(Map() && Map().IsOpen) && !WikiActive && !IsCustomHnS() && !GameSettingMenu.Instance;
+        var part = !RoleCardActive && !SettingsActive && !Zooming && !MapBehaviourPatches.MapActive && !WikiActive && !IsCustomHnS() && !GameSettingMenu.Instance;
         hud.TaskPanel?.gameObject?.SetActive(part && !Meeting() && !IsCustomHnS());
         TaskBar?.gameObject?.SetActive(part && GameSettings.TaskBarMode != TBMode.Invisible);
     }
@@ -219,7 +218,7 @@ public class ClientHandler : MonoBehaviour
         }
 
         RoleCardActive = !RoleCardActive;
-        PhoneText.SetText(CustomPlayer.Local.RoleCardInfo());
+        PhoneText.text = CustomPlayer.Local.RoleCardInfo();
         PhoneText.gameObject.SetActive(RoleCardActive);
         Phone.gameObject.SetActive(RoleCardActive);
         ToTheWiki.gameObject.SetActive(RoleCardActive && IsNormal() && IsInGame());
@@ -274,14 +273,14 @@ public class ClientHandler : MonoBehaviour
         if (!Instance.PagesSet)
         {
             var clone = Modules.Info.AllInfo.Clone().ToList();
-            clone.RemoveAll(x => x.Name is "Invalid" or "None" || x.Type == InfoType.Lore);
+            clone.RemoveAll(x => x.ID.ContainsAny("Invalid", "None"));
             var i = 0;
             var j = 0;
             var k = 0;
 
             foreach (var pair in clone)
             {
-                Instance.Sorted.Add(j, new(pair is SymbolInfo symbol ? symbol.Symbol : pair.Name, pair));
+                Instance.Sorted.Add(j, new(pair is SymbolInfo symbol ? symbol.Symbol : pair.ID, pair));
                 j++;
                 k++;
 
@@ -321,7 +320,6 @@ public class ClientHandler : MonoBehaviour
                 {
                     Instance.Selected = null;
                     Instance.SelectionActive = false;
-                    Instance.LoreButton.gameObject.SetActive(false);
                     Instance.NextButton.gameObject.SetActive(true);
                     Instance.NextButton.transform.localPosition = new(2.5f, 1.6f, 0f);
                     Instance.PhoneText.gameObject.SetActive(false);
@@ -338,18 +336,6 @@ public class ClientHandler : MonoBehaviour
             {
                 OpenWiki();
                 Instance.OpenRoleCard();
-            });
-        }
-
-        if (!Instance.LoreButton)
-        {
-            Instance.LoreButton = Instance.CreateButton("WikiLore", "Lore", () =>
-            {
-                Instance.LoreActive = !Instance.LoreActive;
-                Instance.SetEntryText(Modules.Info.ColorIt(WrapText(AllInfo.AllLore.Find(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short).Description)));
-                Instance.PhoneText.SetText(Instance.Entry[0]);
-                Instance.PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
-                Instance.SelectionActive = true;
             });
         }
 
@@ -422,15 +408,7 @@ public class ClientHandler : MonoBehaviour
             Instance.ToTheWiki.transform.localPosition = new(-2.6f, 1.6f, 0f);
 
         if (Instance.Selected != null)
-        {
-            if (AllInfo.AllLore.Any(x => x.Name == Instance.Selected.Name || x.Short == Instance.Selected.Short) && Instance.LoreButton)
-            {
-                Instance.LoreButton.gameObject.SetActive(!Instance.LoreActive);
-                Instance.LoreButton.transform.localPosition = new(0f, -1.7f, 0f);
-            }
-
             return;
-        }
 
         var m = 0;
 
@@ -460,11 +438,10 @@ public class ClientHandler : MonoBehaviour
         if (PhoneText)
             PhoneText.gameObject.Destroy();
 
-        Selected.WikiEntry(out var result);
-        SetEntryText(result);
+        SetEntryText(Selected.WikiEntry());
         PhoneText = Instantiate(HUD().TaskPanel.taskText, Phone.transform);
         PhoneText.color = UColor.white;
-        PhoneText.SetText(Entry[0]);
+        PhoneText.text = Entry[0];
         PhoneText.enableWordWrapping = false;
         PhoneText.transform.localScale = Vector3.one * 0.75f;
         PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
@@ -484,7 +461,7 @@ public class ClientHandler : MonoBehaviour
         button.GetComponent<BoxCollider2D>().size = new(2.5f, 0.55f);
         var label = Instantiate(HUD().TaskPanel.taskText, button.transform);
         label.color = textColor ?? UColor.white;
-        label.SetText(labelText);
+        label.text = labelText;
         label.enableWordWrapping = false;
         label.transform.localPosition = new(0f, 0f, label.transform.localPosition.z);
         label.transform.localScale *= 1.55f;

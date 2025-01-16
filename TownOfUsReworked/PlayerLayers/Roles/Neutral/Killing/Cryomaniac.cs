@@ -23,8 +23,8 @@ public class Cryomaniac : NKilling
     public CustomButton KillButton { get; set; }
     public List<byte> Doused { get; } = [];
     public bool FreezeUsed { get; set; }
-    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
-        x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CryoLastKillerBoost;
+    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.CrewKill or Alignment.NeutralPros
+        or Alignment.NeutralNeo or Alignment.NeutralKill) && x != Player) && CryoLastKillerBoost;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac : FactionColor;
     public override LayerEnum Type => LayerEnum.Cryomaniac;

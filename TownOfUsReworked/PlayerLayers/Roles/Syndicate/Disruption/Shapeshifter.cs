@@ -134,7 +134,7 @@ public class Shapeshifter : Syndicate
         if (HoldsDrive)
             return;
 
-        if (KeyboardJoystick.player.GetButton("Delete"))
+        if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
             if (!ShapeshiftButton.EffectActive)
             {

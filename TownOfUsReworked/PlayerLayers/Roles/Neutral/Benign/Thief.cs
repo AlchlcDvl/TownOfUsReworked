@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Thief : Neutral
+public class Thief : Neutral, IGuesser
 {
     [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
     public static Number StealCd { get; set; } = new(25);
@@ -11,9 +11,6 @@ public class Thief : Neutral
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ThiefCanGuess { get; set; } = false;
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ThiefCanGuessAfterVoting { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool ThiefVent { get; set; } = false;
@@ -34,7 +31,7 @@ public class Thief : Neutral
         Alignment = Alignment.NeutralBen;
         StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);
-        GuessMenu = new(Player, "Guess", ThiefCanGuessAfterVoting, Guess, IsExempt, SetLists);
+        GuessMenu = new(Player, "Guess", Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);
     }
 
@@ -45,11 +42,11 @@ public class Thief : Neutral
         // Adds all the roles that have a non-zero chance of being in the game
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
         {
-            var nks = new List<LayerEnum>() { LayerEnum.VampireHunter, LayerEnum.Bastion, LayerEnum.Veteran, LayerEnum.Vigilante };
+            var cks = new List<LayerEnum>() { LayerEnum.Bastion, LayerEnum.Veteran, LayerEnum.Vigilante };
 
-            foreach (var layer in nks)
+            foreach (var layer in cks)
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !GuessingMenu.Mapping.Contains(LayerEnum.Vigilante) && GuessingMenu.Mapping.Contains(LayerEnum.VampireHunter)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                     GuessingMenu.Mapping.Add(layer);
             }
         }
@@ -58,15 +55,13 @@ public class Thief : Neutral
         {
             GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
-            for (var h = 52; h < 70; h++)
+            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Impostor)))
             {
-                var layer = (LayerEnum)h;
-
-                if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.Impostor)
-                    continue;
-
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) && GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) &&
+                    GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                {
                     GuessingMenu.Mapping.Add(layer);
+                }
             }
         }
 
@@ -74,15 +69,13 @@ public class Thief : Neutral
         {
             GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
-            for (var h = 70; h < 88; h++)
+            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Anarchist or LayerEnum.Banshee)))
             {
-                var layer = (LayerEnum)h;
-
-                if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel or LayerEnum.Anarchist)
-                    continue;
-
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) && GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) &&
+                    GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                {
                     GuessingMenu.Mapping.Add(layer);
+                }
             }
         }
 
@@ -182,7 +175,7 @@ public class Thief : Neutral
             if (cooldown != CooldownType.Fail)
             {
                 if (target.GetFaction() is Faction.Intruder or Faction.Syndicate || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or
-                    Alignment.CrewKill || target.GetRole() is VampireHunter)
+                    Alignment.CrewKill)
                 {
                     Utils.RpcMurderPlayer(Player, target);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
@@ -207,7 +200,6 @@ public class Thief : Neutral
         {
             // Crew roles
             Bastion => new Bastion(),
-            VampireHunter => new VampireHunter(),
             Veteran => new Veteran(),
             Vigilante => new Vigilante(),
 
@@ -355,12 +347,6 @@ public class Thief : Neutral
     public override void VoteComplete(MeetingHud __instance)
     {
         GuessMenu.HideButtons();
-        GuessingMenu.Close();
-    }
-
-    public override void ConfirmVotePrefix(MeetingHud __instance)
-    {
-        GuessMenu.Voted();
         GuessingMenu.Close();
     }
 }

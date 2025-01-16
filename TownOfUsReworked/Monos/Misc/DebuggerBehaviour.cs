@@ -19,7 +19,7 @@ public class DebuggerBehaviour : MonoBehaviour
     [HideFromIl2Cpp]
     public BaseTab SelectedTab { get; private set; }
 
-    public byte ControllingFigure;
+    public byte ControllingFigure { get; set; }
 
     public static DebuggerBehaviour Instance { get; private set; }
 

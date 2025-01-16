@@ -22,9 +22,8 @@ public class Dracula : Neophyte
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : FactionColor;
     public override LayerEnum Type => LayerEnum.Dracula;
     public override Func<string> StartText => () => "Lead The <#7B8968FF>Undead</color> To Victory";
-    public override Func<string> Description => () => "- You can convert the <#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of " +
-        $"alive <#7B8968FF>Undead</color> exceeds {AliveVampCount}, you will kill them instead\n- Attempting to convert a <#C0C0C0FF>Vampire Hunter</color> will force them to " +
-        "kill you";
+    public override Func<string> Description => () => "- You can convert the <#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of alive" +
+        $" <#7B8968FF>Undead</color> exceeds {AliveVampCount}, you will kill them instead";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()

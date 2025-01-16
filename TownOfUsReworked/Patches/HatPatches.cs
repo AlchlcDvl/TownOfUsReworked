@@ -282,7 +282,7 @@ public static class HatsTabOnEnablePatch
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
             title.GetComponent<TextTranslatorTMP>().Destroy();
-            title.SetText(packageName);
+            title.text = packageName;
             offset -= 0.8f * __instance.YOffset;
         }
 

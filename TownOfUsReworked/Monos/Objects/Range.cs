@@ -19,10 +19,9 @@ public abstract class Range : MonoBehaviour
         var rend = item.AddComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Range");
         rend.color = color;
-        item.SetActive(true);
         Number = AllItems.Count + 1;
         var numberText = Instantiate(HUD().KillButton.cooldownTimerText, transform);
-        numberText.SetText($"<size=300%>{Number}</size>");
+        numberText.text = $"<size=300%>{Number}</size>";
         numberText.fontStyle = FontStyles.Bold;
         numberText.name = $"{name}Number{Number}";
         numberText.gameObject.SetActive(true);

@@ -94,7 +94,6 @@ public class Amnesiac : Neutral
             Tracker => new Tracker(),
             Transporter => new Transporter(),
             Trapper => new Trapper(),
-            VampireHunter => new VampireHunter(),
             Veteran => new Veteran(),
             Vigilante => new Vigilante(),
 

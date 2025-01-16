@@ -103,7 +103,7 @@ public static class CustomAchievementManager
             Prefab = UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, null).DontDestroy().DontUnload();
             Prefab.name = "AchievementPrefab";
             Prefab.text.GetComponent<TextTranslatorTMP>().Destroy();
-            Prefab.text.SetText("Achievement Unlocked!");
+            Prefab.text.text = "Achievement Unlocked!";
             Prefab.nameplate.playerIcon.gameObject.SetActive(false);
             Prefab.nameplate.levelText.transform.parent.gameObject.SetActive(false);
             Prefab.nameplate.nameText.transform.localPosition -= new Vector3(0.06f, 0f, 0f);
@@ -129,7 +129,7 @@ public static class CustomAchievementManager
         var popup = UObject.Instantiate(Prefab, HUD().transform.parent);
         popup.name = $"AchievementPopup({achievement.Name})";
         popup.nameplate.SetMaskLayer(CustomPlayer.Local.PlayerId);
-        popup.nameplate.nameText.SetText(TranslationManager.Translate($"Achievement.{achievement.Name}.Title"));
+        popup.nameplate.nameText.text = TranslationManager.Translate($"Achievement.{achievement.Name}.Title");
         var rend = popup.nameplate.transform.FindChild("Icon").GetComponent<SpriteRenderer>();
         rend.enabled = achievement.Icon != "Placeholder" || achievement.Name == "Test";
 

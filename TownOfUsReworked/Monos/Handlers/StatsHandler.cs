@@ -40,7 +40,7 @@ public class StatsHandler : MonoBehaviour
         else
             CustomStatsManager.OrderedStats.GetRange(I, 39).ForEach(x => StatsPopup.AppendStat(sb, x, CustomStatsManager.GetStat(x)));
 
-        Popup.StatsText.SetText(sb);
+        Popup.StatsText.text = sb.ToString();
     }
 
     private static void AppendAchievement(Il2CppSystem.Text.StringBuilder str, Achievement achievement)

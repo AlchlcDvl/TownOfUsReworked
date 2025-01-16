@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher
+public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher, ITeleporter
 {
     public override void Init()
     {
@@ -44,7 +44,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     {
         base.UpdateHud(__instance);
 
-        if (KeyboardJoystick.player.GetButton("Delete"))
+        if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
             if (BlockTarget && !BlockButton.EffectActive && IsCons)
                 BlockTarget = null;
@@ -174,6 +174,11 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             case GFActionsRPC.Ambush:
             {
                 AmbushedPlayer = reader.ReadPlayer();
+                break;
+            }
+            case GFActionsRPC.Teleport:
+            {
+                Coroutines.Start(Teleporter.TeleportPlayer(reader.ReadVector2(), this));
                 break;
             }
             default:
@@ -537,8 +542,9 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
 
     // Teleporter Stuff
     public CustomButton TeleportButton { get; set; }
-    public Vector3 TeleportPoint { get; set; }
+    public Vector2 TeleportPoint { get; set; }
     public CustomButton MarkButton { get; set; }
+    public bool Teleporting { get; set; }
     public bool IsTele => FormerRole is Teleporter;
 
     public void Mark()
@@ -552,8 +558,8 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
 
     public void Teleport()
     {
-        Player.RpcCustomSnapTo(TeleportPoint);
-        Utils.Flash(Color);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GFActionsRPC.Teleport, TeleportPoint);
+        Coroutines.Start(Teleporter.TeleportPlayer(TeleportPoint, this));
         TeleportButton.StartCooldown();
 
         if (Teleporter.TeleCooldownsLinked)
@@ -561,13 +567,13 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     }
 
     public bool MarkCondition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5))
-        && Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != Player.transform.position;
+        && Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != (Vector2)Player.transform.position;
 
     public bool TeleUsable1() => IsTele;
 
-    public bool TeleUsable2() => IsTele && TeleportPoint != Vector3.zero;
+    public bool TeleUsable2() => IsTele && TeleportPoint != Vector2.zero;
 
-    public bool TeleCondition() => Player.transform.position != TeleportPoint;
+    public bool TeleCondition() => (Vector2)Player.transform.position != TeleportPoint && !Teleporting;
 
     // Ambusher Stuff
     public PlayerControl AmbushedPlayer { get; set; }

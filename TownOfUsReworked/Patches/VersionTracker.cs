@@ -14,7 +14,7 @@ public static class VersionShowerPatch
         {
             ModVersion = UObject.Instantiate(__instance.text, MainMenuPatches.Logo.transform);
             ModVersion.transform.localPosition = new(0, -2f, 0);
-            ModVersion.SetText($"<size=175%><b>{TownOfUsReworked.VersionFinal}\nBy <#C50000FF>AlchlcSystm</color></b></size>");
+            ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nBy <#C50000FF>AlchlcSystm</color></b></size>";
             ModVersion.alignment = TextAlignmentOptions.Center;
             ModVersion.fontStyle = FontStyles.Bold;
             ModVersion.font = GetFont("Placeholder");
@@ -31,7 +31,7 @@ public static class PingTracker_Update
         if (!__instance?.text || !AmongUsClient.Instance)
             return true;
 
-        __instance.text.SetText($"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {Mathf.Round(1f / Time.deltaTime)}</size>");
+        __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {Mathf.Round(1f / Time.deltaTime)}</size>";
         return false;
     }
 }

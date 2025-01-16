@@ -79,7 +79,7 @@ public class Consort : Intruder
     {
         base.UpdateHud(__instance);
 
-        if (KeyboardJoystick.player.GetButton("Delete"))
+        if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
             if (BlockTarget && !BlockButton.EffectActive)
                 BlockTarget = null;

@@ -26,8 +26,8 @@ public class Arsonist : NKilling
 
     public CustomButton IgniteButton { get; set; }
     public CustomButton DouseButton { get; set; }
-    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.CrewKill or Alignment.CrewAudit
-        or Alignment.NeutralPros or Alignment.NeutralNeo or Alignment.NeutralKill) && x != Player) && ArsoLastKillerBoost;
+    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.CrewKill or Alignment.NeutralPros
+        or Alignment.NeutralNeo or Alignment.NeutralKill) && x != Player) && ArsoLastKillerBoost;
     public List<byte> Doused { get; } = [];
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist : FactionColor;

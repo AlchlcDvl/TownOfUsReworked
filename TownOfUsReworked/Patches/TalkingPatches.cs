@@ -25,7 +25,7 @@ public static class TalkingPatches
         var TempPosition = hud.shhhEmblem.transform.localPosition;
         var TempDuration = hud.shhhEmblem.HoldDuration;
         hud.shhhEmblem.transform.localPosition += new Vector3(0f, 0f, 1f);
-        hud.shhhEmblem.TextImage.SetText(status);
+        hud.shhhEmblem.TextImage.text = status;
         hud.shhhEmblem.HoldDuration = 2.5f;
         yield return hud.ShowEmblem(true);
         hud.shhhEmblem.transform.localPosition = TempPosition;

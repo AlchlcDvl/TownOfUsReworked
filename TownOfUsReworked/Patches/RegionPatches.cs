@@ -131,7 +131,7 @@ public static class RegionInfoOpenPatch
             return true;
 
         ServerManager.Instance.SetRegion(region);
-        __instance.RegionText.SetText("Custom");
+        __instance.RegionText.text = "Custom";
 
         foreach (var button in __instance.ButtonPool.activeChildren)
         {

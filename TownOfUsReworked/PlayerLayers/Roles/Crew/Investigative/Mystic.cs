@@ -18,7 +18,7 @@ public class Mystic : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewAudit;
+        Alignment = Alignment.CrewInvest;
         RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (PlayerBodyExclusion)Exception,
             new Cooldown(RevealCd));
     }

@@ -239,6 +239,9 @@ public class LayerHandler : RoleBehaviour
 
     public override void OnMeetingStart()
     {
+        if (!Local)
+            return;
+
         CustomRole.OnMeetingStart(Meeting());
         CustomAbility.OnMeetingStart(Meeting());
         CustomModifier.OnMeetingStart(Meeting());
@@ -247,6 +250,9 @@ public class LayerHandler : RoleBehaviour
 
     public override void OnVotingComplete()
     {
+        if (!Local)
+            return;
+
         CustomRole.VoteComplete(Meeting());
         CustomAbility.VoteComplete(Meeting());
         CustomModifier.VoteComplete(Meeting());

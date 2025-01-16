@@ -21,7 +21,7 @@ public class Sniper : Assassin
 }
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public abstract class Assassin : Ability
+public abstract class Assassin : Ability, IGuesser
 {
     [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
     public static Number AssassinKills { get; set; } = new(0);
@@ -50,12 +50,9 @@ public abstract class Assassin : Ability
     [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool AssassinGuessAbilities { get; set; } = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinateAfterVoting { get; set; } = false;
-
     public static int RemainingKills { get; set; }
 
-    public CustomMeeting AssassinMenu { get; set; }
+    public CustomMeeting GuessMenu { get; set; }
     public CustomRolesMenu GuessingMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Assassin : CustomColorManager.Ability;
@@ -64,27 +61,21 @@ public abstract class Assassin : Ability
 
     public override void Init()
     {
-        AssassinMenu = new(Player, "Guess", AssassinateAfterVoting, Guess, IsExempt, SetLists);
+        GuessMenu = new(Player, "Guess", Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        AssassinMenu.GenButtons(__instance, RemainingKills > 0);
+        GuessMenu.GenButtons(__instance, RemainingKills > 0);
     }
 
-    public override void UpdateMeeting(MeetingHud __instance) => AssassinMenu.Update(__instance);
+    public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update(__instance);
 
     public override void VoteComplete(MeetingHud __instance)
     {
-        AssassinMenu.HideButtons();
-        GuessingMenu.Close();
-    }
-
-    public override void ConfirmVotePrefix(MeetingHud __instance)
-    {
-        AssassinMenu.Voted();
+        GuessMenu.HideButtons();
         GuessingMenu.Close();
     }
 
@@ -100,18 +91,16 @@ public abstract class Assassin : Ability
             if (!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Crewmate);
 
-            for (var h = 0; h < 26; h++)
+            foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante, x => x is not (LayerEnum.Revealer or LayerEnum.Crewmate)))
             {
-                var layer = (LayerEnum)h;
-
-                if (layer is LayerEnum.Revealer or LayerEnum.Crewmate || (layer is LayerEnum.Coroner or LayerEnum.Detective or LayerEnum.Medium or LayerEnum.Operative or LayerEnum.Seer or
-                    LayerEnum.Sheriff or LayerEnum.Tracker && !AssassinGuessInvestigative))
+                if (layer is LayerEnum.Coroner or LayerEnum.Detective or LayerEnum.Medium or LayerEnum.Operative or LayerEnum.Seer or LayerEnum.Sheriff or LayerEnum.Tracker &&
+                    !AssassinGuessInvestigative)
                 {
                     continue;
                 }
 
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Vigilante && !GuessingMenu.Mapping.Contains(LayerEnum.Vigilante) && GuessingMenu.Mapping.Contains(LayerEnum.VampireHunter)) || (layer ==
-                    LayerEnum.Sheriff && !GuessingMenu.Mapping.Contains(LayerEnum.Sheriff) && GuessingMenu.Mapping.Contains(LayerEnum.Seer)) || (layer == LayerEnum.Seer && !GuessingMenu.Mapping.Contains(LayerEnum.Seer) &&
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sheriff && !GuessingMenu.Mapping.Contains(LayerEnum.Sheriff) &&
+                    GuessingMenu.Mapping.Contains(LayerEnum.Seer)) || (layer == LayerEnum.Seer && !GuessingMenu.Mapping.Contains(LayerEnum.Seer) &&
                     GuessingMenu.Mapping.Contains(LayerEnum.Mystic)))
                 {
                     GuessingMenu.Mapping.Add(layer);
@@ -124,15 +113,13 @@ public abstract class Assassin : Ability
             if (!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
-            for (var h = 52; h < 70; h++)
+            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Impostor)))
             {
-                var layer = (LayerEnum)h;
-
-                if (layer is LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.Impostor)
-                    continue;
-
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) && GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) &&
+                    GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                {
                     GuessingMenu.Mapping.Add(layer);
+                }
             }
         }
 
@@ -141,15 +128,13 @@ public abstract class Assassin : Ability
             if (!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
-            for (var h = 70; h < 88; h++)
+            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Anarchist or LayerEnum.Banshee)))
             {
-                var layer = (LayerEnum)h;
-
-                if (layer is LayerEnum.Banshee or LayerEnum.PromotedRebel or LayerEnum.Anarchist)
-                    continue;
-
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) && GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) &&
+                    GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                {
                     GuessingMenu.Mapping.Add(layer);
+                }
             }
         }
 
@@ -243,10 +228,8 @@ public abstract class Assassin : Ability
         // Add Dispositions if enabled
         if (AssassinGuessDispositions)
         {
-            for (var h = 107; h < 118; h++)
+            foreach (var layer in GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor))
             {
-                var layer = (LayerEnum)h;
-
                 if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
                     if (Player.Is(layer) && ((layer is LayerEnum.Lovers or LayerEnum.Rivals or LayerEnum.Linked or LayerEnum.Mafia) || (layer == LayerEnum.Corrupted &&
@@ -263,10 +246,8 @@ public abstract class Assassin : Ability
         // Add Abilities if enabled
         if (AssassinGuessAbilities)
         {
-            for (var h = 107; h < 118; h++)
+            foreach (var layer in GetValuesFromTo(LayerEnum.Bullseye, LayerEnum.Underdog))
             {
-                var layer = (LayerEnum)h;
-
                 if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
                     if ((layer == LayerEnum.Hitman && Player.Is(Faction.Intruder)) || (layer == LayerEnum.Sniper && Player.Is(Faction.Syndicate)) || (layer is LayerEnum.Bullseye or
@@ -314,9 +295,9 @@ public abstract class Assassin : Ability
             RpcMurderPlayer(toDie, guess, player);
 
             if (RemainingKills <= 0 || !AssassinMultiKill)
-                AssassinMenu.HideButtons();
+                GuessMenu.HideButtons();
             else
-                AssassinMenu.HideSingle(player.PlayerId);
+                GuessMenu.HideSingle(player.PlayerId);
 
             GuessingMenu.SelectedPanel = null;
         }
@@ -350,7 +331,7 @@ public abstract class Assassin : Ability
         var guessString = LayerDictionary[guess].Name;
 
         if (Local && player == Player)
-            AssassinMenu.HideButtons();
+            GuessMenu.HideButtons();
 
         if (player.TryGetLayer<Indomitable>(out var ind) && player != Player)
         {
@@ -366,7 +347,7 @@ public abstract class Assassin : Ability
         if (Player == player && Player.TryGetLayer<Professional>(out var modifier) && !modifier.LifeUsed)
         {
             modifier.LifeUsed = true;
-            AssassinMenu.HideSingle(guessTarget.PlayerId);
+            GuessMenu.HideSingle(guessTarget.PlayerId);
 
             if (Local)
             {

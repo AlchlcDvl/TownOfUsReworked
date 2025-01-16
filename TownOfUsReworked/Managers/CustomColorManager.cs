@@ -122,7 +122,6 @@ public static class CustomColorManager
     public static readonly UColor Operative = FromHex("#A7D1B3FF");
     public static readonly UColor Detective = FromHex("#4D4DFFFF");
     public static readonly UColor Shifter = FromHex("#DF851FFF");
-    public static readonly UColor VampireHunter = FromHex("#C0C0C0FF");
     public static readonly UColor Escort = FromHex("#803333FF");
     public static readonly UColor Bastion = FromHex("#7E3C64FF");
     public static readonly UColor Revealer = FromHex("#D3D3D3FF");
@@ -133,6 +132,7 @@ public static class CustomColorManager
     public static readonly UColor Monarch = FromHex("#FF004EFF");
     public static readonly UColor Dictator = FromHex("#00CB97FF");
     public static readonly UColor Trapper = FromHex("#BE1C8CFF");
+    public static readonly UColor Trickster = FromHex("#1A3270FF");
 
     // Neutral Colors
     public static readonly UColor Jester = FromHex("#F7B3DAFF");
@@ -265,7 +265,7 @@ public static class CustomColorManager
     // #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038 #EDC240 #6a1515 #569d29 #f1612b #7d86e1 #EC62A5 #78c689 #fccc52 #6b2d2a
     // #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C #1E300B #F3A6D3 #F9BFA7
     // #E1E4E4 #869919 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14
-    // #1A3270 #20A1B7 #606168 #99007F #ECFF45 #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929
+    // #20A1B7 #606168 #99007F #ECFF45 #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #C0C0C0
     // #B34D99 #FFC34F #A9A9A9 #8BFDFD
 
     // Symbol Storage

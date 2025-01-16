@@ -10,11 +10,11 @@ public static class ShowTeamPatch
 
         ShowRolePatch.Starting = true;
         var role = CustomPlayer.Local.GetRole();
-        __instance.__4__this.TeamTitle.SetText(role.FactionName);
+        __instance.__4__this.TeamTitle.text = role.FactionName;
         __instance.__4__this.TeamTitle.color = role.FactionColor;
         __instance.__4__this.TeamTitle.outlineColor = UColor.black;
         __instance.__4__this.BackgroundBar.material.color = role.FactionColor;
-        __instance.__4__this.ImpostorText.SetText("");
+        __instance.__4__this.ImpostorText.text = "";
     }
 }
 
@@ -52,9 +52,9 @@ public static class ShowRolePatch
         if (status.Length != 0)
             statusString = $"\n<#{CustomColorManager.Status.ToHtmlStringRGBA()}>Status</color>:{status}";
 
-        __instance.__4__this.RoleText.SetText(role.Name);
+        __instance.__4__this.RoleText.text = role.Name;
         __instance.__4__this.RoleText.color = __instance.__4__this.YouAreText.color = __instance.__4__this.RoleBlurbText.color = __instance.__4__this.BackgroundBar.material.color = role.Color;
-        __instance.__4__this.RoleBlurbText.SetText(role.StartText() + statusString);
+        __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
         __instance.__4__this.BackgroundBar.transform.SetLocalZ(-15f);
     }
 }

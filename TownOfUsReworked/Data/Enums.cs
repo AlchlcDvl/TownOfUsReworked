@@ -74,23 +74,6 @@ public enum MeetingTypes : byte
     Click
 }
 
-public enum InfoType : byte
-{
-    Role,
-    Disposition,
-    Ability,
-    Modifier,
-    Lore,
-    Faction,
-    SubFaction,
-    Alignment,
-    GameMode,
-    Symbol,
-    Other,
-
-    None
-}
-
 public enum Faction : byte
 {
     None,
@@ -109,7 +92,6 @@ public enum Alignment : byte
     CrewKill,
     CrewUtil,
     CrewSov,
-    CrewAudit,
     CrewConceal,
     CrewDecep,
     CrewPower,
@@ -124,7 +106,6 @@ public enum Alignment : byte
     IntruderInvest,
     IntruderProt,
     IntruderSov,
-    IntruderAudit,
     IntruderPower,
     IntruderDisrup,
     IntruderHead,
@@ -137,7 +118,6 @@ public enum Alignment : byte
     NeutralApoc,
     NeutralHarb,
     NeutralInvest,
-    NeutralAudit,
     NeutralSov,
     NeutralProt,
     NeutralSupport,
@@ -156,7 +136,6 @@ public enum Alignment : byte
     SyndicateInvest,
     SyndicateProt,
     SyndicateSov,
-    SyndicateAudit,
     SyndicateConceal,
     SyndicateDecep,
     SyndicateHead,
@@ -397,7 +376,7 @@ public enum LayerEnum : byte
     Tracker,
     Transporter,
     Trapper,
-    VampireHunter,
+    Trickster,
     Veteran,
     Vigilante,
 
@@ -535,7 +514,6 @@ public enum LayerEnum : byte
     CrewProt,
     CrewKill,
     CrewSov,
-    CrewAudit,
     CrewUtil,
     RegularCrew,
 
@@ -766,7 +744,8 @@ public enum GFActionsRPC : byte
     Drag,
     Blackmail,
     Roleblock,
-    Ambush
+    Ambush,
+    Teleport
 }
 
 public enum SyndicateVentOptions : byte
@@ -970,4 +949,10 @@ public enum ReworkedLogLevel : byte
     Critical,
     Success,
     Failure
+}
+
+public enum MenuType : byte
+{
+    Single,
+    MultiSelect
 }

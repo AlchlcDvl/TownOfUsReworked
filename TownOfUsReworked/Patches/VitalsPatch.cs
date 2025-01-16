@@ -25,7 +25,7 @@ public static class VitalsPatch
 
             var tmp = panel.Cardio.GetComponent<TextMeshPro>();
             tmp.color = UColor.red;
-            tmp.SetText($"{Mathf.RoundToInt(deadBody.KillAge)}s");
+            tmp.text = $"{Mathf.RoundToInt(deadBody.KillAge)}s";
             var transform = tmp.transform;
             transform.localPosition = new(-0.85f, -0.4f, 0);
             transform.rotation = Quaternion.Euler(0, 0, 0);

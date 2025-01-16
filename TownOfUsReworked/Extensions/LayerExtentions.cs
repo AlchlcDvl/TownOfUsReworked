@@ -138,8 +138,7 @@ public static class LayerExtentions
         return flag1 || flag2 || flag3 || flag4 || gmflag;
     }
 
-    public static bool IsMoving(this PlayerControl player) => PlayerLayer.GetILayers<ITransporter>().Any(x => (x.TransportPlayer1 == player || x.TransportPlayer2 == player) && x.Transporting) ||
-        PlayerLayer.GetILayers<IWarper>().Any(x => x.WarpPlayer1 == player && x.Warping);
+    public static bool IsMoving(this PlayerControl player) => Moving.Contains(player.PlayerId);
 
     public static bool IsGATarget(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>(true).Any(x => x.TargetPlayer == player);
 
@@ -684,10 +683,7 @@ public static class LayerExtentions
         else if (player.IsPersuaded())
             objectives += $"\n<#{CustomColorManager.Sect.ToHtmlStringRGBA()}>- You are a member of the Sect. Help {neo.PlayerName} in taking over the mission Λ</color>";
         else if (player.IsBitten())
-        {
             objectives += $"\n<#{CustomColorManager.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {neo.PlayerName} in taking over the mission γ</color>";
-            abilities += $"\n{role.ColorString}- Attempting to interact with a <#C0C0C0FF>Vampire Hunter</color> will force them to kill you</color>";
-        }
 
         objectives += "</color>";
 
@@ -793,7 +789,6 @@ public static class LayerExtentions
         Alignment.CrewKill => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Killing</color>)</color>" : "Crew (Killing)",
         Alignment.CrewUtil => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Utility</color>)</color>" : "Crew (Utility)",
         Alignment.CrewSov => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Sovereign</color>)</color>" : "Crew (Sovereign)",
-        Alignment.CrewAudit => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Auditor</color>)</color>" : "Crew (Auditor)",
         Alignment.CrewDecep => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Deception</color>)</color>" : "Crew (Deception)",
         Alignment.CrewConceal => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Concealing</color>)</color>" : "Crew (Concealing)",
         Alignment.CrewPower => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Power</color>)</color>" : "Crew (Power)",
@@ -805,7 +800,6 @@ public static class LayerExtentions
         Alignment.IntruderKill => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Killing</color>)</color>" : "Intruder (Killing)",
         Alignment.IntruderUtil => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Utility</color>)</color>" : "Intruder (Utility)",
         Alignment.IntruderInvest => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Investigative</color>)</color>" : "Intruder (Investigative)",
-        Alignment.IntruderAudit => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Auditor</color>)</color>" : "Intruder (Auditor)",
         Alignment.IntruderProt => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Protective</color>)</color>" : "Intruder (Protective)",
         Alignment.IntruderSov => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
         Alignment.IntruderDisrup => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
@@ -821,7 +815,6 @@ public static class LayerExtentions
         Alignment.NeutralProt => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Protective</color>)</color>" : "Neutral (Protective)",
         Alignment.NeutralUtil => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Utility</color>)</color>" : "Neutral (Utility)",
         Alignment.NeutralSov => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Sovereign</color>)</color>" : "Neutral (Sovereign)",
-        Alignment.NeutralAudit => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Auditor</color>)</color>" : "Neutral (Auditor)",
         Alignment.NeutralConceal => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Concealing</color>)</color>" : "Neutral (Concealing)",
         Alignment.NeutralDecep => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Deception</color>)</color>" : "Neutral (Deception)",
         Alignment.NeutralPower => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Power</color>)</color>" : "Neutral (Power)",
@@ -835,7 +828,6 @@ public static class LayerExtentions
         Alignment.SyndicatePower => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Power</color>)</color>" : "Syndicate (Power)",
         Alignment.SyndicateUtil => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Utility</color>)</color>" : "Syndicate (Utility)",
         Alignment.SyndicateInvest => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Investigative</color>)</color>" : "Syndicate (Investigative)",
-        Alignment.SyndicateAudit => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Auditor</color>)</color>" : "Syndicate (Auditor)",
         Alignment.SyndicateSov => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Sovereign</color>)</color>" : "Syndicate (Sovereign)",
         Alignment.SyndicateProt => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Protective</color>)</color>" : "Syndicate (Protective)",
         Alignment.SyndicateConceal => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Concealing</color>)</color>" : "Syndicate (Concealing)",
@@ -881,8 +873,6 @@ public static class LayerExtentions
             Alignment.CrewKill or Alignment.SyndicateKill or Alignment.NeutralKill => Alignment.IntruderKill,
             Alignment.CrewUtil or Alignment.SyndicateUtil => Alignment.IntruderUtil,
             Alignment.CrewSov => Alignment.IntruderSov,
-            Alignment.CrewAudit => Alignment.IntruderAudit,
-            Alignment.SyndicateDisrup => Alignment.IntruderDisrup,
             Alignment.SyndicatePower => Alignment.IntruderPower,
             _ => alignment
         },
@@ -894,7 +884,6 @@ public static class LayerExtentions
             Alignment.CrewKill or Alignment.NeutralKill or Alignment.IntruderKill => Alignment.SyndicateKill,
             Alignment.CrewUtil or Alignment.IntruderUtil => Alignment.SyndicateUtil,
             Alignment.CrewSov => Alignment.SyndicateSov,
-            Alignment.CrewAudit => Alignment.SyndicateAudit,
             Alignment.IntruderConceal => Alignment.SyndicateConceal,
             Alignment.IntruderDecep => Alignment.SyndicateDecep,
             Alignment.IntruderHead => Alignment.SyndicateHead,
@@ -908,7 +897,6 @@ public static class LayerExtentions
             Alignment.CrewKill or Alignment.SyndicateUtil or Alignment.IntruderUtil => Alignment.NeutralKill,
             Alignment.CrewUtil or Alignment.SyndicateKill or Alignment.IntruderKill => Alignment.NeutralUtil,
             Alignment.CrewSov => Alignment.NeutralSov,
-            Alignment.CrewAudit => Alignment.NeutralAudit,
             Alignment.IntruderConceal => Alignment.NeutralConceal,
             Alignment.IntruderDecep => Alignment.NeutralDecep,
             Alignment.SyndicateDisrup => Alignment.NeutralDisrup,
@@ -1016,9 +1004,6 @@ public static class LayerExtentions
         if ((player.IsAmbushed() || player.IsCrusaded() || player.GetRole().Bombed) && attack < 1)
             attack = 1;
 
-        if (target && target.Is(SubFaction.Undead) && player.Is<VampireHunter>())
-            attack = 3;
-
         if (target && player.IsLinkedTo(target))
             attack = 0;
 
@@ -1033,9 +1018,6 @@ public static class LayerExtentions
 
         if ((player.IsShielded() || player.IsAmbushed() || player.IsCrusaded() | player.IsProtected()) && defense < 2)
             defense = 2;
-
-        if (source && source.Is<VampireHunter>() && player.Is(SubFaction.Undead))
-            defense = 3;
 
         if (source && player.IsLinkedTo(source))
             defense = 3;

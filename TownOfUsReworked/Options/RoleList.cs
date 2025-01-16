@@ -19,10 +19,10 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
     {
         base.OptionCreated();
         var entry = Setting.Cast<ToggleOption>();
-        entry.TitleText.SetText(SettingNotif());
+        entry.TitleText.text = SettingNotif();
         ValueText = Setting.transform.GetChild(3).GetComponent<TextMeshPro>();
 
-        if (!AmongUsClient.Instance.AmHost || IsInGame())
+        if (!AmongUsClient.Instance.AmHost || (IsInGame() && !TownOfUsReworked.MCIActive))
             entry.CheckMark.transform.parent.gameObject.SetActive(false);
     }
 
@@ -37,7 +37,7 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
     public override void ViewUpdate()
     {
         var valueText = ViewSetting.Cast<ViewSettingsInfoPanel>().settingText;
-        valueText.SetText(Format());
+        valueText.text = Format();
 
         if (LayerDictionary.TryGetValue(Value, out var entry))
             valueText.color = entry.Color;
@@ -45,7 +45,7 @@ public class RoleListEntryAttribute() : OptionAttribute<LayerEnum>(MultiMenu.Mai
 
     public override void Update()
     {
-        ValueText.SetText(Format());
+        ValueText.text = Format();
 
         if (LayerDictionary.TryGetValue(Value, out var entry))
             ValueText.color = entry.Color;

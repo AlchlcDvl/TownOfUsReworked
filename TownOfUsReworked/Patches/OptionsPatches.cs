@@ -57,12 +57,12 @@ public static class SettingsPatches
             __instance.GamePresetsButton.transform.localPosition = pos3;
 
             __instance.RoleSettingsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-            __instance.RoleSettingsButton.buttonText.SetText(TranslationManager.Translate("GameSettings.Layers"));
+            __instance.RoleSettingsButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
 
             ClientSettingsButton = UObject.Instantiate(__instance.RoleSettingsButton, __instance.RoleSettingsButton.transform.parent);
             ClientSettingsButton.name = "ClientSettingsButton";
             ClientSettingsButton.buttonText.GetComponent<TextTranslatorTMP>()?.Destroy();
-            ClientSettingsButton.buttonText.SetText(TranslationManager.Translate("CustomOption.ClientOptions"));
+            ClientSettingsButton.buttonText.text = TranslationManager.Translate("CustomOption.ClientOptions");
             ClientSettingsButton.OverrideOnClickListeners(() => __instance.ChangeTab(3, false));
             ClientSettingsButton.OverrideOnMouseOverListeners(() => __instance.ChangeTab(3, true));
             ClientSettingsButton.transform.localPosition = pos4;
@@ -77,7 +77,7 @@ public static class SettingsPatches
                 ButtonPrefab.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
                 ButtonPrefab.buttonText.alignment = TextAlignmentOptions.Center;
                 ButtonPrefab.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-                ButtonPrefab.buttonText.SetText("");
+                ButtonPrefab.buttonText.text = "";
                 ButtonPrefab.gameObject.SetActive(false);
             }
 
@@ -115,10 +115,11 @@ public static class SettingsPatches
             SettingsPage = 0;
             SpawnOptionsCreated = false;
             RLOptionsCreated = false;
-            PresetsButtons.Clear();
+            PresetButtons.Clear();
             LayerOptionsCreated.Keys.ForEach(x => LayerOptionsCreated[x] = false);
             RoleListEntryAttribute.ChoiceButtons.Clear();
             ScrollerLocation = default;
+            Overwriting = false;
         }
 
         [HarmonyPatch(nameof(GameSettingMenu.Update))]
@@ -261,7 +262,7 @@ public static class SettingsPatches
                 var newButton = UObject.Instantiate(StringPrefab.transform.GetChild(3), HeaderPrefab.transform);
                 newButton.localPosition += new Vector3(1.5f, -0.14f, 0f);
                 newButton.localScale *= 0.7f;
-                newButton.GetComponentInChildren<TextMeshPro>().SetText("-");
+                newButton.GetComponentInChildren<TextMeshPro>().text = "-";
                 newButton.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
                 newButton.name = "Collapse";
 
@@ -409,7 +410,7 @@ public static class SettingsPatches
                 var newButton = UObject.Instantiate(LayersPrefab.CountMinusBtn, AlignmentPrefab.transform);
                 newButton.name = "Collapse";
                 newButton.transform.localPosition = new(-5.839f, -0.45f, -2f);
-                newButton.GetComponentInChildren<TextMeshPro>().SetText("-");
+                newButton.GetComponentInChildren<TextMeshPro>().text = "-";
                 newButton.OverrideOnClickListeners(BlankVoid);
                 newButton.transform.localScale *= 0.7f;
 
@@ -473,14 +474,14 @@ public static class SettingsPatches
                 if (!RoleListEntryAttribute.ChoiceButtons.TryFinding(x => x.name == name, out var button) && instantiate)
                 {
                     button = CreateButton(name, parent);
-                    button.buttonText.SetText(TranslationManager.Translate($"RoleList.{layer}"));
+                    button.buttonText.text = TranslationManager.Translate($"RoleList.{layer}");
                     button.OverrideOnClickListeners(() => SetValue(layer));
                     button.transform.GetChild(2).transform.localScale += new Vector3(0.32f, 0f, 0f);
                     button.transform.GetChild(1).localScale = button.transform.GetChild(2).transform.localScale;
                     button.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().sizeDelta = new(3f, 0.6123f);
 
                     if (LayerDictionary.TryGetValue(layer, out var entry))
-                        button.buttonText.SetText($"<#{entry.Color.ToHtmlStringRGBA()}>{button.buttonText.text}</color>");
+                        button.buttonText.text = $"<#{entry.Color.ToHtmlStringRGBA()}>{button.buttonText.text}</color>";
 
                     RoleListEntryAttribute.ChoiceButtons.Add(button);
                 }
@@ -581,7 +582,7 @@ public static class SettingsPatches
             RolesButton.OverrideOnClickListeners(AllLayers);
             RolesButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             RolesButton.buttonText.alignment = TextAlignmentOptions.Center;
-            RolesButton.buttonText.SetText(TranslationManager.Translate("View.AllLayers"));
+            RolesButton.buttonText.text = TranslationManager.Translate("View.AllLayers");
             RolesButton.name = "AllLayers";
             RolesButton.transform.localPosition = new(0.1117f, 1.626f, -2f);
             buttons.Add(RolesButton);
@@ -590,7 +591,7 @@ public static class SettingsPatches
             AlignmentsButton.OverrideOnClickListeners(AllAlignments);
             AlignmentsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
             AlignmentsButton.buttonText.alignment = TextAlignmentOptions.Center;
-            AlignmentsButton.buttonText.SetText(TranslationManager.Translate("View.AllAlignments"));
+            AlignmentsButton.buttonText.text = TranslationManager.Translate("View.AllAlignments");
             AlignmentsButton.name = "AllAlignments";
             AlignmentsButton.transform.localPosition = new(3.4727f, 1.626f, -2f);
             buttons.Add(AlignmentsButton);
@@ -785,7 +786,7 @@ public static class SettingsPatches
 
     private static void NextPage(bool increment)
     {
-        SettingsPage2 = CycleInt(PresetsButtons.Count / 24, 0, SettingsPage2, increment);
+        SettingsPage2 = CycleInt(PresetButtons.Count / 24, 0, SettingsPage2, increment);
         OnPageChanged();
     }
 
@@ -1191,7 +1192,7 @@ public static class SettingsPatches
                 var tmp = gmt.GetComponent<TextMeshPro>();
 
                 if (tmp.text != CurrentPreset)
-                    tmp.SetText(CurrentPreset);
+                    tmp.text = CurrentPreset;
             }
 
             var ml = GameObject.Find("ModeLabel")?.transform?.GetChild(1).gameObject;
@@ -1202,7 +1203,7 @@ public static class SettingsPatches
                 var translation = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
 
                 if (tmp.text != translation)
-                    tmp.SetText(translation);
+                    tmp.text = translation;
             }
         }
     }
@@ -1289,11 +1290,11 @@ public static class SettingsPatches
                 option.ViewSetting.transform.localPosition = new(-9.77f, y, -2f);
                 option.ViewSetting.gameObject.SetActive(true);
                 __instance.settingsInfo.Add(option.ViewSetting.gameObject);
-                y -= 0.16f;
+                y -= 0.3f;
 
                 if (!option.Value)
                 {
-                    y -= 0.35f;
+                    y -= 0.21f;
                     continue;
                 }
 
@@ -1326,7 +1327,7 @@ public static class SettingsPatches
                         __instance.settingsInfo.Add(optionn.ViewSetting.gameObject);
                     }
 
-                    y -= members.Length > 0 ? 0.62f : 0.35f;
+                    y -= members.Length > 0 ? 0.6f : 0.35f;
                 }
                 else
                     y -= 0.543f;
@@ -1404,7 +1405,7 @@ public static class SettingsPatches
         public static void Postfix(LobbyViewSettingsPane __instance)
         {
             __instance.rolesTabButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-            __instance.rolesTabButton.buttonText.SetText(TranslationManager.Translate("GameSettings.Layers"));
+            __instance.rolesTabButton.buttonText.text = TranslationManager.Translate("GameSettings.Layers");
 
             var prefabs = new List<MonoBehaviour>();
 
@@ -1413,7 +1414,7 @@ public static class SettingsPatches
                 ClientOptionsButton = UObject.Instantiate(__instance.rolesTabButton, __instance.rolesTabButton.transform.parent);
                 ClientOptionsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
                 ClientOptionsButton.name = "ClientOptionsTab";
-                ClientOptionsButton.buttonText.SetText(TranslationManager.Translate("CustomOption.ClientOptions"));
+                ClientOptionsButton.buttonText.text = TranslationManager.Translate("CustomOption.ClientOptions");
                 ClientOptionsButton.transform.localPosition = __instance.rolesTabButton.transform.localPosition + new Vector3(__instance.rolesTabButton.transform.localPosition.x -
                     __instance.taskTabButton.transform.localPosition.x, 0f, 0f);
                 ClientOptionsButton.OverrideOnClickListeners(() =>
@@ -1437,7 +1438,7 @@ public static class SettingsPatches
                 HeaderViewPrefab.transform.GetChild(1).gameObject.SetActive(false);
 
                 var button = UObject.Instantiate(__instance.rolesTabButton, HeaderViewPrefab.transform);
-                button.buttonText.SetText("");
+                button.buttonText.text = "";
                 button.name = "TitleButton";
                 button.SelectButton(false);
                 button.transform.localPosition = new(-0.75f, -0.05f, 0f);
@@ -1449,8 +1450,8 @@ public static class SettingsPatches
 
             if (!LayerViewPrefab)
             {
-                // Left Box = 0, Title = 1, Right Box = 2, Label = 3, Role Icon = 4, Button = 5, Center Box = 6
-                // ┗------------------------┗----------------------------------------------------┗- Value Text = 0, Background = 1, Other BG = 2, Tick = 3, Cross = 4, Label = 5
+                // Title = 0, Left Box = 1, Center Box = 2, Right Box = 3, Button = 4, Role Icon = 5, Label = 6
+                //            ┗-------------┗---------------┗------------ Value Text = 0, Background = 1, _ = 2, Tick = 3, Cross = 4, Title = 5
                 LayerViewPrefab = UObject.Instantiate(__instance.infoPanelRoleOrigin, null).DontUnload().DontDestroy();
                 LayerViewPrefab.name = "LayerViewPrefab";
 
@@ -1460,14 +1461,15 @@ public static class SettingsPatches
                 var leftBox = LayerViewPrefab.transform.GetChild(0);
                 leftBox.name = "Left";
                 leftBox.localPosition -= new Vector3(1.2f, 0f, 0f);
+                leftBox.SetSiblingIndex(1);
 
                 var leftText = UObject.Instantiate(LayerViewPrefab.titleText, leftBox);
-                leftText.name = "LeftText";
+                leftText.name = "Title";
                 leftText.GetComponent<TextTranslatorTMP>()?.Destroy();
-                leftText.transform.SetParent(leftBox);
 
                 LayerViewPrefab.titleText.alignment = TextAlignmentOptions.MidlineLeft;
                 LayerViewPrefab.titleText.transform.localPosition = new(-3.4703f, -0.0223f, -2f);
+                LayerViewPrefab.titleText.transform.SetSiblingIndex(0);
 
                 var button = UObject.Instantiate(HeaderViewPrefab.transform.Find("TitleButton"), LayerViewPrefab.transform);
                 button.name = "Toggle";
@@ -1490,13 +1492,14 @@ public static class SettingsPatches
                 UObject.Instantiate(LayerViewPrefab.checkMark, rightBox).name = "UniqueOn";
                 UObject.Instantiate(LayerViewPrefab.checkMarkOff, rightBox).name = "UniqueOff";
 
-                LayerViewPrefab.chanceTitle.name = "RightText";
+                LayerViewPrefab.chanceTitle.name = "Title";
                 LayerViewPrefab.chanceTitle.GetComponent<TextTranslatorTMP>()?.Destroy();
                 LayerViewPrefab.chanceTitle.transform.SetParent(rightBox);
 
                 var centerBox = UObject.Instantiate(rightBox, rightBox.parent);
                 centerBox.name = "Centre";
                 centerBox.localPosition = rightBox.localPosition + ((leftBox.localPosition - rightBox.localPosition) / 2);
+                centerBox.SetSiblingIndex(2);
 
                 prefabs.Add(LayerViewPrefab);
             }
@@ -1552,10 +1555,12 @@ public static class SettingsPatches
         }
     }
 
-    public static readonly List<PassiveButton> PresetsButtons = [];
+    public static readonly List<PassiveButton> PresetButtons = [];
     public static GameObject Prev;
     public static GameObject Next;
     public static PassiveButton Save;
+    public static PassiveButton Overwrite;
+    public static bool Overwriting;
 
     [HarmonyPatch(typeof(GamePresetsTab), nameof(GamePresetsTab.Start))]
     public static class GamePresetsStart
@@ -1577,8 +1582,18 @@ public static class SettingsPatches
                 Save.OverrideOnClickListeners(OptionAttribute.SaveSettings);
                 Save.name = "SaveSettingsButton";
                 Save.transform.localPosition = new(0.26345f, 2.6164f, -2f);
-                Save.buttonText.SetText(TranslationManager.Translate("ImportExport.Save"));
+                Save.buttonText.text = TranslationManager.Translate("ImportExport.Save");
                 Save.gameObject.SetActive(true);
+            }
+
+            if (!Overwrite)
+            {
+                Overwrite = UObject.Instantiate(ButtonPrefab, __instance.StandardPresetButton.transform.parent);
+                Overwrite.OverrideOnClickListeners(OptionAttribute.SaveSettings);
+                Overwrite.name = "OverwriteSettingsButton";
+                Overwrite.transform.localPosition = new(0.26345f, 2.6164f, -2f);
+                Overwrite.buttonText.text = TranslationManager.Translate("ImportExport.Overwrite");
+                Overwrite.gameObject.SetActive(true);
             }
 
             Directory.GetFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).Select(x => x.SanitisePath()).ForEach(CreatePresetButton);
@@ -1588,11 +1603,20 @@ public static class SettingsPatches
         }
     }
 
+    private static void BeginOverwriting()
+    {
+        Overwriting = true;
+        OnPageChanged();
+    }
+
     public static void OnPageChanged()
     {
-        for (var i = 0; i < PresetsButtons.Count; i++)
+        PresetButtons.RemoveAll(x => !x);
+
+        for (var i = 0; i < PresetButtons.Count; i++)
         {
-            var button = PresetsButtons[i];
+            var button = PresetButtons[i];
+            button.SelectButton(Overwrite);
 
             if (i >= (SettingsPage2 * 24) && i < ((SettingsPage2 + 1) * 24))
             {
@@ -1606,15 +1630,18 @@ public static class SettingsPatches
                 button.gameObject.SetActive(false);
         }
 
-        Prev.gameObject.SetActive(PresetsButtons.Count > 24);
-        Next.gameObject.SetActive(PresetsButtons.Count > 24);
+        Prev.gameObject.SetActive(PresetButtons.Count > 24);
+        Next.gameObject.SetActive(PresetButtons.Count > 24);
     }
 
     public static void CreatePresetButton(string presetName)
     {
+        if (PresetButtons.Any(x => x.name == presetName))
+            return;
+
         var presetButton = CreateButton(presetName, GameSettingMenu.Instance.PresetsTab.StandardPresetButton.transform.parent);
-        presetButton.OverrideOnClickListeners(() => OptionAttribute.LoadPreset(presetName, presetButton.buttonText));
-        PresetsButtons.Add(presetButton);
+        presetButton.OverrideOnClickListeners(() => OptionAttribute.HandlePreset(presetName, presetButton.buttonText));
+        PresetButtons.Add(presetButton);
     }
 
     private static PassiveButton CreateButton(string name, Transform parent)
@@ -1624,7 +1651,7 @@ public static class SettingsPatches
         button.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
         button.buttonText.alignment = TextAlignmentOptions.Center;
         button.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-        button.buttonText.SetText(button.name = name);
+        button.buttonText.text = button.name = name;
         return button;
     }
 }

@@ -1,11 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
 public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, ITransporter
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ReviveAfterVoting { get; set; } = true;
-
     public override void Init()
     {
         base.Init();
@@ -22,16 +18,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         TriggeredRoles.Clear();
         MediateArrows.Clear();
         Selected = null;
-        TransportPlayer1 = null;
-        TransportPlayer2 = null;
         BlockTarget = null;
-        Player1Body = null;
-        Player2Body = null;
-        WasInVent1 = false;
-        WasInVent2 = false;
-        Vent1 = null;
-        Vent2 = null;
-        RetMenu = new(Player, "RetActive", "RetDisabled", ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
+        RetMenu = new(Player, "RetActive", "RetDisabled", SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 
     // Retributionist Stuff
@@ -86,9 +74,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             Bugs.ForEach(x => x?.gameObject?.Destroy());
             Bugs.Clear();
         }
-
-        Transport1?.Destroy();
-        Transport2?.Destroy();
     }
 
     public override void ClearArrows()
@@ -164,15 +149,10 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         }
         else if (IsTrans)
         {
-            if (KeyboardJoystick.player.GetButton("Delete"))
+            if (KeyboardJoystick.player.GetButtonDown("Delete"))
             {
-                if (!Transporting)
-                {
-                    if (TransportPlayer2)
-                        TransportPlayer2 = null;
-                    else if (TransportPlayer1)
-                        TransportPlayer1 = null;
-                }
+                if (!Transporting && TransportMenu.Selected.Count > 0)
+                    TransportMenu.Selected.TakeLast();
 
                 Message("Removed a target");
             }
@@ -212,10 +192,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             }
             case RetActionsRPC.Transport:
             {
-                var retRole3 = reader.ReadLayer<Retributionist>();
-                retRole3.TransportPlayer1 = reader.ReadPlayer();
-                retRole3.TransportPlayer2 = reader.ReadPlayer();
-                Coroutines.Start(retRole3.TransportPlayers());
+                Coroutines.Start(Transporter.TransportPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
                 break;
             }
             case RetActionsRPC.Shield:
@@ -272,8 +249,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             }
         }
     }
-
-    public override void ConfirmVotePrefix(MeetingHud __instance) => RetMenu.Voted();
 
     public override void UpdateMeeting(MeetingHud __instance) => RetMenu.Update(__instance);
 
@@ -376,11 +351,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (UsableFunc)MysUsable,
                 (PlayerBodyExclusion)MysticException, new Cooldown(Mystic.RevealCd));
         }
-        else if (IsVH)
-        {
-            StakeButton ??= new(this, "STAKE", new SpriteName("Stake"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stake, new Cooldown(VampireHunter.StakeCd),
-                (UsableFunc)VHUsable);
-        }
         else if (IsCor)
         {
             AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Autopsy, (UsableFunc)CorUsable1,
@@ -481,27 +451,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             TransportButton ??= new(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Transport, Transporter.MaxTransports,
                 (LabelFunc)TransLabel, new Cooldown(Transporter.TransportCd), (UsableFunc)TransUsable);
 
-            if (wasnull && (!Transport1 || !Transport2 || TransportMenu1 == null || TransportMenu2 == null))
-            {
-                Transport1 = new("RetTransport1") { layer = 5 };
-                Transport2 = new("RetTransport2") { layer = 5 };
-                Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
-                Transport2.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
-                AnimationPlaying1 = Transport1.AddComponent<SpriteRenderer>();
-                AnimationPlaying2 = Transport2.AddComponent<SpriteRenderer>();
-                AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
-                AnimationPlaying1.material = AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
-                Transport1.SetActive(true);
-                Transport2.SetActive(true);
-                TransportMenu1 = new(Player, Click1, TransException1);
-                TransportMenu2 = new(Player, Click2, TransException2);
-
-                if (IsSubmerged())
-                {
-                    Transport1.AddSubmergedComponent("ElevatorMover");
-                    Transport2.AddSubmergedComponent("ElevatorMover");
-                }
-            }
+            if (wasnull && TransportMenu == null)
+                TransportMenu = new(Player, Click, TransException);
         }
 
         Player.ResetButtons();
@@ -671,17 +622,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         Player.IsLinkedTo(player);
 
     public bool VigUsable() => IsVig;
-
-    // Vampire Hunter Stuff
-    public CustomButton StakeButton { get; set; }
-    public bool IsVH => RevivedRole is VampireHunter;
-
-    private void Stake(PlayerControl target) => StakeButton.StartCooldown(Interact(Player, target, ShouldKill(target)));
-
-    public bool VHUsable() => IsVH && !VampireHunter.VampsDead;
-
-    private bool ShouldKill(PlayerControl player) => (player.Is(SubFaction.Undead) && SubFaction == SubFaction.None) || player.IsFramed() || (!player.Is(SubFaction) && SubFaction !=
-        SubFaction.None);
 
     // Veteran Stuff
     public CustomButton AlertButton { get; set; }
@@ -899,282 +839,49 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     public bool EscUsable() => IsEsc;
 
     // Transporter Stuff
-    public PlayerControl TransportPlayer1 { get; set; }
-    public PlayerControl TransportPlayer2 { get; set; }
     public CustomButton TransportButton { get; set; }
-    public CustomPlayerMenu TransportMenu1 { get; set; }
-    public CustomPlayerMenu TransportMenu2 { get; set; }
-    public SpriteRenderer AnimationPlaying1 { get; set; }
-    public SpriteRenderer AnimationPlaying2 { get; set; }
-    public GameObject Transport1 { get; set; }
-    public GameObject Transport2 { get; set; }
-    public DeadBody Player1Body { get; set; }
-    public DeadBody Player2Body { get; set; }
-    public bool WasInVent1 { get; set; }
-    public bool WasInVent2 { get; set; }
-    public Vent Vent1 { get; set; }
-    public Vent Vent2 { get; set; }
+    public CustomPlayerMenu TransportMenu { get; set; }
     public bool Transporting { get; set; }
     public bool IsTrans => RevivedRole is Transporter;
 
-    public bool TransException1(PlayerControl player) => (player == Player && !Transporter.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
-        (!BodyById(player.PlayerId) && player.Data.IsDead) || player == TransportPlayer2;
-
-    public bool TransException2(PlayerControl player) => (player == Player && !Transporter.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
-        (!BodyById(player.PlayerId) && player.Data.IsDead) || player == TransportPlayer1;
+    public bool TransException(PlayerControl player) => (player == Player && !Transporter.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
+        (!BodyById(player.PlayerId) && player.Data.IsDead);
 
     public bool TransUsable() => IsTrans;
 
-    public string TransLabel()
+    public string TransLabel() => TransportMenu.Selected.Count switch
     {
-        if (TransportPlayer1 && TransportPlayer2)
-            return "TRANSPORT";
-        else if (TransportPlayer1)
-            return "SECOND TARGET";
-        else
-            return "FIRST TARGET";
-    }
+        0 => "FIRST TARGET",
+        1 => "SECOND TARGET",
+        _ =>  "TRANSPORT"
+    };
 
-    public IEnumerator TransportPlayers()
-    {
-        Player1Body = null;
-        Player2Body = null;
-        WasInVent1 = false;
-        WasInVent2 = false;
-        Vent1 = null;
-        Vent2 = null;
-
-        if (TransportPlayer1.Data.IsDead)
-        {
-            Player1Body = BodyById(TransportPlayer1.PlayerId);
-
-            if (!Player1Body)
-                yield break;
-        }
-
-        if (TransportPlayer2.Data.IsDead)
-        {
-            Player2Body = BodyById(TransportPlayer2.PlayerId);
-
-            if (!Player2Body)
-                yield break;
-        }
-
-        if (TransportPlayer1.inVent)
-        {
-            while (GetInTransition())
-                yield return EndFrame();
-
-            TransportPlayer1.MyPhysics.ExitAllVents();
-            Vent1 = TransportPlayer1.GetClosestVent();
-            WasInVent1 = true;
-        }
-
-        if (TransportPlayer2.inVent)
-        {
-            while (GetInTransition())
-                yield return EndFrame();
-
-            TransportPlayer2.MyPhysics.ExitAllVents();
-            Vent2 = TransportPlayer2.GetClosestVent();
-            WasInVent2 = true;
-        }
-
-        Transporting = true;
-
-        if (!TransportPlayer1.HasDied())
-        {
-            TransportPlayer1.moveable = false;
-            TransportPlayer1.NetTransform.Halt();
-            TransportPlayer1.MyPhysics.ResetMoveState();
-            TransportPlayer1.MyPhysics.ResetAnimState();
-            TransportPlayer1.MyPhysics.StopAllCoroutines();
-        }
-
-        if (!TransportPlayer2.HasDied())
-        {
-            TransportPlayer2.moveable = false;
-            TransportPlayer2.NetTransform.Halt();
-            TransportPlayer2.MyPhysics.ResetMoveState();
-            TransportPlayer2.MyPhysics.ResetAnimState();
-            TransportPlayer2.MyPhysics.StopAllCoroutines();
-        }
-
-        if (TransportPlayer1.AmOwner || TransportPlayer2.AmOwner)
-            Flash(Color, Transporter.TransportDur);
-
-        if (!Player1Body && !WasInVent1)
-            AnimateTransport1();
-
-        if (!Player2Body && !WasInVent2)
-            AnimateTransport2();
-
-        var startTime = Time.time;
-
-        while (true)
-        {
-            if (Time.time - startTime < Transporter.TransportDur)
-                yield return EndFrame();
-            else
-                break;
-
-            if (Meeting())
-            {
-                AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
-                yield break;
-            }
-        }
-
-        if (!Player1Body && !Player2Body)
-        {
-            TransportPlayer1.MyPhysics.ResetMoveState();
-            TransportPlayer2.MyPhysics.ResetMoveState();
-            var TempPosition = TransportPlayer1.GetTruePosition();
-            TransportPlayer1.CustomSnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
-            TransportPlayer2.CustomSnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
-
-            if (IsSubmerged())
-            {
-                if (TransportPlayer1.AmOwner)
-                {
-                    ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                    CheckOutOfBoundsElevator(CustomPlayer.Local);
-                }
-                else if (TransportPlayer2.AmOwner)
-                {
-                    ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                    CheckOutOfBoundsElevator(CustomPlayer.Local);
-                }
-            }
-
-            if (TransportPlayer1.CanVent() && Vent2 && WasInVent2)
-                TransportPlayer1.MyPhysics.RpcEnterVent(Vent2.Id);
-
-            if (TransportPlayer2.CanVent() && Vent1 && WasInVent1)
-                TransportPlayer2.MyPhysics.RpcEnterVent(Vent1.Id);
-        }
-        // TODO: Merge the next two cases
-        else if (Player1Body && !Player2Body)
-        {
-            StopDragging(Player1Body.ParentId);
-            TransportPlayer2.MyPhysics.ResetMoveState();
-            var TempPosition = Player1Body.TruePosition;
-            Player1Body.transform.position = TransportPlayer2.GetTruePosition();
-            TransportPlayer2.CustomSnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
-
-            if (IsSubmerged() && TransportPlayer2.AmOwner)
-            {
-                ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
-            }
-        }
-        else if (!Player1Body && Player2Body)
-        {
-            StopDragging(Player2Body.ParentId);
-            TransportPlayer1.MyPhysics.ResetMoveState();
-            var TempPosition = TransportPlayer1.GetTruePosition();
-            TransportPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
-            Player2Body.transform.position = TempPosition;
-
-            if (IsSubmerged() && TransportPlayer1.AmOwner)
-            {
-                ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
-            }
-        }
-        else if (Player1Body && Player2Body)
-        {
-            StopDragging(Player1Body.ParentId);
-            StopDragging(Player2Body.ParentId);
-            (Player1Body.transform.position, Player2Body.transform.position) = (Player2Body.TruePosition, Player1Body.TruePosition);
-        }
-
-        if (TransportPlayer1.AmOwner || TransportPlayer2.AmOwner)
-        {
-            if (ActiveTask())
-                ActiveTask().Close();
-
-            if (MapBehaviourPatches.MapActive)
-                Map().Close();
-        }
-
-        TransportPlayer1 = null;
-        TransportPlayer2 = null;
-        Transporting = false;
-    }
-
-    public void AnimateTransport1()
-    {
-        Transport1.transform.position = new(TransportPlayer1.GetTruePosition().x, TransportPlayer1.GetTruePosition().y + 0.35f, (TransportPlayer1.GetTruePosition().y / 1000f) + 0.01f);
-        AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
-        AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
-
-        Coroutines.Start(PerformTimedAction(Transporter.TransportDur, p =>
-        {
-            var index = (int)(p * PortalAnimation.Count);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
-            AnimationPlaying1.sprite = PortalAnimation[index];
-            TransportPlayer1.SetPlayerMaterialColors(AnimationPlaying1);
-
-            if (p == 1)
-                AnimationPlaying1.sprite = PortalAnimation[0];
-        }));
-    }
-
-    public void AnimateTransport2()
-    {
-        Transport2.transform.position = new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.35f, (TransportPlayer2.GetTruePosition().y / 1000f) + 0.01f);
-        AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
-        AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
-
-        Coroutines.Start(PerformTimedAction(Transporter.TransportDur, p =>
-        {
-            var index = (int)(p * PortalAnimation.Count);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
-            AnimationPlaying2.sprite = PortalAnimation[index];
-            TransportPlayer2.SetPlayerMaterialColors(AnimationPlaying2);
-
-            if (p == 1)
-                AnimationPlaying2.sprite = PortalAnimation[0];
-        }));
-    }
-
-    public void Click1(PlayerControl player)
+    public bool Click(PlayerControl player, out bool shouldClose)
     {
         var cooldown = Interact(Player, player);
+        shouldClose = false;
 
         if (cooldown != CooldownType.Fail)
-            TransportPlayer1 = player;
+            return true;
         else
             TransportButton.StartCooldown(cooldown);
-    }
 
-    public void Click2(PlayerControl player)
-    {
-        var cooldown = Interact(Player, player);
-
-        if (cooldown != CooldownType.Fail)
-            TransportPlayer2 = player;
-        else
-            TransportButton.StartCooldown(cooldown);
+        shouldClose = true;
+        return false;
     }
 
     public void Transport()
     {
-        if (!TransportPlayer1)
+        if (TransportMenu.Selected.Count < 2)
         {
-            TransportMenu1.Open();
-            TransportButton.Uses++;
-        }
-        else if (!TransportPlayer2)
-        {
-            TransportMenu2.Open();
+            TransportMenu.Open();
             TransportButton.Uses++;
         }
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Transport, TransportPlayer1, TransportPlayer2);
-            Coroutines.Start(TransportPlayers());
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Transport, TransportMenu.Selected[0], TransportMenu.Selected[1]);
+            Coroutines.Start(Transporter.TransportPlayers(PlayerById(TransportMenu.Selected[0]), PlayerById(TransportMenu.Selected[1]), this));
+            TransportMenu.Selected.Clear();
             TransportButton.StartCooldown();
         }
     }

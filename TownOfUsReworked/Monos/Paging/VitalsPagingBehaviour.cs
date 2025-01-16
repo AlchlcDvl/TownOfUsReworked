@@ -25,12 +25,12 @@ public class VitalsPagingBehaviour : BasePagingBehaviour
     {
         if (PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(CustomPlayer.Local))
         {
-            PageText.SetText("ERROR");
+            PageText.text = "ERROR";
             return;
         }
 
         var i = 0;
-        PageText.SetText($"({PageIndex + 1}/{MaxPageIndex + 1})");
+        PageText.text = $"({PageIndex + 1}/{MaxPageIndex + 1})";
 
         foreach (var panel in Targets)
         {

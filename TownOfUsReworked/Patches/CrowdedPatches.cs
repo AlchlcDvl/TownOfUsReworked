@@ -12,7 +12,7 @@ public static class CrowdedPatches
         var options = __instance.GetTargetOptions();
 
         var firstButtonRenderer = __instance.MaxPlayerButtons[0];
-        firstButtonRenderer.GetComponentInChildren<TextMeshPro>().SetText("-");
+        firstButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "-";
         firstButtonRenderer.enabled = false;
 
         var firstButtonButton = firstButtonRenderer.GetComponent<PassiveButton>();
@@ -23,7 +23,7 @@ public static class CrowdedPatches
                 var playerButton = __instance.MaxPlayerButtons[i];
                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                 var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name) - 3);
-                tmp.SetText($"{newValue}");
+                tmp.text = $"{newValue}";
             }
 
             __instance.UpdateMaxPlayersButtons(options);
@@ -32,7 +32,7 @@ public static class CrowdedPatches
         firstButtonRenderer.Destroy();
 
         var lastButtonRenderer = __instance.MaxPlayerButtons[^1];
-        lastButtonRenderer.GetComponentInChildren<TextMeshPro>().SetText("+");
+        lastButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "+";
         lastButtonRenderer.enabled = false;
 
         var lastButtonButton = lastButtonRenderer.GetComponent<PassiveButton>();
@@ -43,7 +43,7 @@ public static class CrowdedPatches
                 var playerButton = __instance.MaxPlayerButtons[i];
                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                 var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 113);
-                tmp.SetText($"{newValue}");
+                tmp.text = $"{newValue}";
             }
 
             __instance.UpdateMaxPlayersButtons(options);

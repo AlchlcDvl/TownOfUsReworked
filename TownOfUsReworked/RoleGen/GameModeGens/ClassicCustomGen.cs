@@ -29,7 +29,6 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
         {
             int maxCI = CrewInvestigativeSettings.MaxCI;
             int maxCS = CrewSupportSettings.MaxCS;
-            int maxCA = CrewAuditorSettings.MaxCA;
             int maxCK = CrewKillingSettings.MaxCK;
             int maxCrP = CrewProtectiveSettings.MaxCrP;
             int maxCSv = CrewSovereignSettings.MaxCSv;
@@ -40,9 +39,6 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
             if (maxCS > RoleGenManager.CrewSupportRoles.Count)
                 maxCS = RoleGenManager.CrewSupportRoles.Count;
 
-            if (maxCA > RoleGenManager.CrewAuditorRoles.Count)
-                maxCA = RoleGenManager.CrewAuditorRoles.Count;
-
             if (maxCK > RoleGenManager.CrewKillingRoles.Count)
                 maxCK = RoleGenManager.CrewKillingRoles.Count;
 
@@ -52,19 +48,12 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
             if (maxCSv > RoleGenManager.CrewSovereignRoles.Count)
                 maxCSv = RoleGenManager.CrewSovereignRoles.Count;
 
-            var maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
+            var maxCrewSum = maxCI + maxCK + maxCrP + maxCS + maxCSv;
 
             while (maxCrewSum > maxCrew && maxCrewSum > 0)
             {
-                switch (URandom.RandomRangeInt(0, 6))
+                switch (URandom.RandomRangeInt(1, 6))
                 {
-                    case 0:
-                    {
-                        if (maxCA > 0)
-                            maxCA--;
-
-                        break;
-                    }
                     case 1:
                     {
                         if (maxCI > 0)
@@ -102,10 +91,9 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
                     }
                 }
 
-                maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
+                maxCrewSum = maxCI + maxCK + maxCrP + maxCS + maxCSv;
             }
 
-            filter.Filter(RoleGenManager.CrewAuditorRoles, maxCA);
             filter.Filter(RoleGenManager.CrewInvestigativeRoles, maxCI);
             filter.Filter(RoleGenManager.CrewKillingRoles, maxCK);
             filter.Filter(RoleGenManager.CrewProtectiveRoles, maxCrP);
@@ -113,15 +101,14 @@ public class ClassicCustomGen : BaseClassicCustomAllAnyGen
             filter.Filter(RoleGenManager.CrewSovereignRoles, maxCSv);
         }
 
-        CrewRoles.AddRanges(RoleGenManager.CrewAuditorRoles, RoleGenManager.CrewInvestigativeRoles, RoleGenManager.CrewKillingRoles, RoleGenManager.CrewSupportRoles,
-            RoleGenManager.CrewProtectiveRoles, RoleGenManager.CrewSovereignRoles);
+        CrewRoles.AddRanges(RoleGenManager.CrewInvestigativeRoles, RoleGenManager.CrewKillingRoles, RoleGenManager.CrewSupportRoles, RoleGenManager.CrewProtectiveRoles,
+            RoleGenManager.CrewSovereignRoles);
 
         filter.Filter(CrewRoles, GameModeSettings.IgnoreFactionCaps ? Crew : URandom.RandomRangeInt(minCrew, maxCrew + 1));
 
         while (CrewRoles.Count < Crew)
             CrewRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
 
-        RoleGenManager.CrewAuditorRoles.Clear();
         RoleGenManager.CrewInvestigativeRoles.Clear();
         RoleGenManager.CrewSupportRoles.Clear();
         RoleGenManager.CrewProtectiveRoles.Clear();

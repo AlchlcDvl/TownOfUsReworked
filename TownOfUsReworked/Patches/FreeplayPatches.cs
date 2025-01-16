@@ -35,7 +35,7 @@ public static class FreeplayPatches
         };
         var button = UObject.Instantiate(__instance.RoleButton);
         button.SafePositionWorld = __instance.SafePositionWorld;
-        button.Text.SetText(button.name = $"{TranslationManager.Translate($"CustomOption.{layer}")}.{extension}");
+        button.Text.text = button.name = $"{TranslationManager.Translate($"CustomOption.{layer}")}.{extension}";
         button.Role = RoleManager.Instance.AllRoles[^1];
         button.FileImage.color = button.RolloverHandler.OutColor = entry.Color;
         button.RolloverHandler.OverColor = entry.Color.Alternate(0.4f);
@@ -100,7 +100,7 @@ public static class FreeplayPatches
             stringBuilder.Append('\\');
         }
 
-        __instance.PathText.SetText(stringBuilder);
+        __instance.PathText.text = stringBuilder.ToString();
         __instance.ActiveItems.ForEach(x => x.gameObject.Destroy());
         __instance.ActiveItems.Clear();
         var num = 0f;
@@ -184,14 +184,14 @@ public static class FreeplayPatches
             {
                 var taskAddButton = UObject.Instantiate(__instance.TaskPrefab);
                 taskAddButton.MyTask = task;
-                taskAddButton.Text.SetText(taskAddButton.MyTask.TaskType switch
+                taskAddButton.Text.text = taskAddButton.MyTask.TaskType switch
                 {
                     TaskTypes.DivertPower => TranslationController.Instance.GetString(StringNames.DivertPowerTo,
                         TranslationController.Instance.GetString(taskAddButton.MyTask.Cast<DivertPowerTask>().TargetSystem)),
                     TaskTypes.FixWeatherNode => TranslationController.Instance.GetString(StringNames.FixWeatherNode) + " " +
                             TranslationController.Instance.GetString(WeatherSwitchGame.ControlNames[taskAddButton.MyTask.Cast<WeatherNodeTask>().NodeId]),
                     _ => TranslationController.Instance.GetString(taskAddButton.MyTask.TaskType)
-                });
+                };
                 __instance.AddFileAsChild(taskFolder, taskAddButton, ref num, ref num2, ref num3);
 
                 if (taskAddButton.Button)

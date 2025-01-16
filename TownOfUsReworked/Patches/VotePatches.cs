@@ -65,7 +65,7 @@ public static class VotePatches
     public static bool Prefix(MeetingHud __instance, Il2CppStructArray<MeetingHud.VoterState> states)
     {
         var allNums = new Dictionary<int, int>();
-        __instance.TitleText.SetText(TranslationController.Instance.GetString(StringNames.MeetingVotingResults));
+        __instance.TitleText.text = TranslationController.Instance.GetString(StringNames.MeetingVotingResults);
         var amountOfSkippedVoters = 0;
 
         for (var i = 0; i < __instance.playerStates.Length; i++)

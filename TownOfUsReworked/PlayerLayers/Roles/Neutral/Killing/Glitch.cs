@@ -121,7 +121,7 @@ public class Glitch : NKilling
     {
         base.UpdateHud(__instance);
 
-        if (KeyboardJoystick.player.GetButton("Delete"))
+        if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
             if (MimicTarget && !MimicButton.EffectActive)
                 MimicTarget = null;

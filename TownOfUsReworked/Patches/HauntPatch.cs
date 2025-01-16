@@ -11,7 +11,7 @@ public static class HauntPatches
 
         if (!DeadSeeEverything())
         {
-            __instance.FilterText.SetText("");
+            __instance.FilterText.text = "";
             return false;
         }
 
@@ -37,7 +37,7 @@ public static class HauntPatches
         if (otherString.Length != 0)
             objectiveString += "\n" + otherString;
 
-        __instance.FilterText.SetText($"<size=75%>{objectiveString}</size>");
+        __instance.FilterText.text = $"<size=75%>{objectiveString}</size>";
         return false;
     }
 

@@ -55,9 +55,9 @@ public static class GameStartManagerPatches
 
         __instance.UpdateMapImage((MapNames)MapSettings.Map);
         __instance.CheckSettingsDiffs();
-        __instance.RulesPresetText.SetText(TranslationController.Instance.GetString(GameOptionsManager.Instance.CurrentGameOptions.GetRulesPresetTitle()));
-        __instance.privatePublicPanelText.SetText(TranslationController.Instance.GetString(GameCode.IntToGameName(AmongUsClient.Instance.GameId) == null ? StringNames.LocalButton :
-            (AmongUsClient.Instance.IsGamePublic ? StringNames.PublicHeader : StringNames.PrivateHeader)));
+        __instance.RulesPresetText.text = TranslationController.Instance.GetString(GameOptionsManager.Instance.CurrentGameOptions.GetRulesPresetTitle());
+        __instance.privatePublicPanelText.text = TranslationController.Instance.GetString(GameCode.IntToGameName(AmongUsClient.Instance.GameId) == null ? StringNames.LocalButton :
+            (AmongUsClient.Instance.IsGamePublic ? StringNames.PublicHeader : StringNames.PrivateHeader));
         __instance.HostPrivateButton.gameObject.SetActive(!AmongUsClient.Instance.IsGamePublic);
         __instance.HostPublicButton.gameObject.SetActive(AmongUsClient.Instance.IsGamePublic);
 
@@ -80,7 +80,7 @@ public static class GameStartManagerPatches
             else if (__instance.LastPlayerCount == __instance.MinPlayers)
                 arg = "FFFF";
 
-            __instance.PlayerCounter.SetText($"<#{arg}00FF>{__instance.LastPlayerCount}/{GameSettings.LobbySize}</color>");
+            __instance.PlayerCounter.text = $"<#{arg}00FF>{__instance.LastPlayerCount}/{GameSettings.LobbySize}</color>";
             __instance.PlayerCounter.enableWordWrapping = false;
             __instance.StartButton.SetButtonEnableState(__instance.LastPlayerCount >= __instance.MinPlayers);
             __instance.StartButtonGlyph?.SetColor(__instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear);
@@ -96,7 +96,7 @@ public static class GameStartManagerPatches
             }
         }
 
-        __instance.GameStartText.SetText(IsCountDown() ? TranslationController.Instance.GetString(StringNames.GameStarting, Seconds) : "");
+        __instance.GameStartText.text = IsCountDown() ? TranslationController.Instance.GetString(StringNames.GameStarting, Seconds) : "";
         __instance.GameStartTextParent.SetActive(IsCountDown());
 
         if (__instance.LobbyInfoPane.gameObject.activeSelf && Chat().IsOpenOrOpening)
@@ -127,7 +127,7 @@ public static class GameStartManagerPatches
                     SoundManager.Instance.PlaySound(__instance.gameStartSound, false);
 
                 __instance.GameStartTextParent.SetActive(true);
-                __instance.GameStartText.SetText(TranslationController.Instance.GetString(StringNames.GameStarting, Seconds));
+                __instance.GameStartText.text = TranslationController.Instance.GetString(StringNames.GameStarting, Seconds);
 
                 if (num != Seconds)
                     CustomPlayer.Local.RpcSetStartCounter(Seconds);
@@ -139,7 +139,7 @@ public static class GameStartManagerPatches
         else
         {
             __instance.GameStartTextParent.SetActive(false);
-            __instance.GameStartText.SetText("");
+            __instance.GameStartText.text = "";
         }
     }
 }

@@ -65,7 +65,7 @@ public static class SpawnPatches
             else
                 text = "<#FF0000FF>Fake Tasks</color>";
 
-            hud.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText(text);
+            hud.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().text = text;
         }
     }
 

@@ -80,7 +80,7 @@ public class Drunkard : Syndicate
         if (HoldsDrive)
             return;
 
-        if (KeyboardJoystick.player.GetButton("Delete"))
+        if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
             if (ConfusedPlayer && !ConfuseButton.EffectActive)
                 ConfusedPlayer = null;

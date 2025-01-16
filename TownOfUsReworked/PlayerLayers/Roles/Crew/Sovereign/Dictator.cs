@@ -7,9 +7,6 @@ public class Dictator : Crew, IRevealer
     public static bool RoundOneNoDictReveal { get; set; } = false;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool DictateAfterVoting { get; set; } = false;
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool DictatorButton { get; set; } = true;
 
     [NumberOption(MultiMenu.LayerSubOptions, 0, 10, 1, zeroIsInf: true)]
@@ -32,7 +29,7 @@ public class Dictator : Crew, IRevealer
         base.Init();
         Alignment = Alignment.CrewSov;
         RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable);
-        DictMenu = new(Player, "DictActive", "DictDisabled", DictateAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
+        DictMenu = new(Player, "DictActive", "DictDisabled", SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 
     public void Reveal()
@@ -85,8 +82,6 @@ public class Dictator : Crew, IRevealer
         var player = PlayerByVoteArea(voteArea);
         return player.HasDied() || player.AmOwner || Dead || !Revealed;
     }
-
-    public override void ConfirmVotePrefix(MeetingHud __instance) => DictMenu.Voted();
 
     public override void UpdateMeeting(MeetingHud __instance) => DictMenu.Update(__instance);
 

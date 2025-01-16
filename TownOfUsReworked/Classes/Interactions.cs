@@ -12,8 +12,6 @@ public static class Interactions
             return true;
         else if (target.IsCrusaded() && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && Crusader.CrusadeMates)))
             return true;
-        else if (target.Is<VampireHunter>() && player.Is(SubFaction.Undead))
-            return true;
         else
             return false;
     }

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius))]
+[HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius)), HarmonyPriority(Priority.Low)]
 public static class CalculateLightRadiusPatch
 {
     public static bool Prefix(ShipStatus __instance, NetworkedPlayerInfo player, ref float __result)
@@ -42,13 +42,13 @@ public static class CalculateLightRadiusPatch
         else if (role is Hunted)
             __result = __instance.MaxLightRadius * GameModeSettings.HuntedVision;
         else if (role is Hunter hunter)
-            __result = __instance.MaxLightRadius * (hunter.Starting ? 0f : GameModeSettings.HunterVision);
+            __result = __instance.MaxLightRadius * (hunter.Starting ? 0.01f : GameModeSettings.HunterVision);
         else
         {
             var t = __instance.MaxLightRadius;
 
             if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system))
-                t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, system.Cast<SwitchSystem>().Value / 255f);
+                t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, system.Cast<SwitchSystem>().Level);
 
             __result = t * (role.Faction == Faction.Neutral ? NeutralSettings.NeutralVision : CrewSettings.CrewVision);
         }

@@ -81,5 +81,5 @@ public class Jackal : Neophyte
 
     public bool Usable2() => AllRecruitsDead;
 
-    public IEnumerable<PlayerControl> GetOtherRecruits(PlayerControl recruit) => Members.Where(x => x != recruit.PlayerId).Select(PlayerById);
+    public IEnumerable<PlayerControl> GetOtherRecruits(PlayerControl recruit) => Members.Where(x => x != recruit.PlayerId).Select(x => PlayerById(x));
 }

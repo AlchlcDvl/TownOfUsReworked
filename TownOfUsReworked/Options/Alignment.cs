@@ -6,8 +6,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
     public LayerEnum Alignment { get; } = alignment;
     private bool NoParts { get; set; } = noParts;
     public HeaderOptionAttribute GroupHeader { get; set; }
-    public string[] GroupMemberStrings { get; set; }
-    public OptionAttribute[] GroupMembers { get; set; }
+    public IEnumerable<OptionAttribute> GroupMembers { get; set; }
     private TextMeshPro Left { get; set; }
     private TextMeshPro Right { get; set; }
     private TextMeshPro Center { get; set; }
@@ -15,12 +14,16 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
     private TextMeshPro ButtonText { get; set; }
     private PassiveButton Button { get; set; }
     private GameMode SavedMode { get; set; }
+    private GameObject Cog { get; set; }
+    private Transform PlsMnsBtn { get; set; }
+
+    private static Vector3 DefaultPos { get; set; } = Vector3.zero;
 
     public override void OptionCreated()
     {
         base.OptionCreated();
         var header = Setting.Cast<CategoryHeaderMasked>();
-        header.Title.SetText($"<b>{TranslationManager.Translate(ID)}</b>");
+        header.Title.text = $"<b>{TranslationManager.Translate(ID)}</b>";
 
         var quota = header.transform.GetChild(2);
 
@@ -30,24 +33,27 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
 
         Single = quota.GetChild(5).gameObject;
 
-        var flag = GroupHeader != null || OptionParents1.Any(x => x.Item2.Contains(Alignment)) || OptionParents2.Any(x => x.Item2.Contains(Alignment));
-        var cog = header.transform.GetChild(4).gameObject;
-        cog.SetActive(flag);
-        var button = cog.GetComponent<GameOptionButton>();
+        var flag = ChildrenActive();
+        Cog = header.transform.GetChild(4).gameObject;
+        Cog.SetActive(flag);
+        var button = Cog.GetComponent<GameOptionButton>();
         button.OverrideOnClickListeners(SetUpOptionsMenu);
+        PlsMnsBtn = header.transform.GetChild(3);
+
+        if (DefaultPos == Vector3.zero)
+            DefaultPos = PlsMnsBtn.localPosition;
 
         if (!flag)
-            header.transform.GetChild(3).localPosition = new(-5.539f, -0.45f, -2f);
+            PlsMnsBtn.localPosition = new(-5.539f, -0.45f, -2f);
 
         var collapse = header.transform.FindChild("Collapse");
         collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
         ButtonText = collapse.GetComponentInChildren<TextMeshPro>();
-        ButtonText.SetText(Get() ? "-" : "+");
+        ButtonText.text = Get() ? "-" : "+";
 
         var color = Alignment switch
         {
-            LayerEnum.CrewSupport or LayerEnum.CrewInvest or LayerEnum.CrewProt or LayerEnum.CrewKill or LayerEnum.CrewUtil or LayerEnum.CrewSov or LayerEnum.CrewAudit =>
-                CustomColorManager.Crew,
+            LayerEnum.CrewSupport or LayerEnum.CrewInvest or LayerEnum.CrewProt or LayerEnum.CrewKill or LayerEnum.CrewUtil or LayerEnum.CrewSov => CustomColorManager.Crew,
             LayerEnum.IntruderSupport or LayerEnum.IntruderConceal or LayerEnum.IntruderDecep or LayerEnum.IntruderKill or LayerEnum.IntruderUtil or LayerEnum.IntruderHead =>
                 CustomColorManager.Intruder,
             LayerEnum.NeutralKill or LayerEnum.NeutralNeo or LayerEnum.NeutralEvil or LayerEnum.NeutralBen or LayerEnum.NeutralPros or LayerEnum.NeutralApoc or LayerEnum.NeutralHarb =>
@@ -77,11 +83,13 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
         Update();
     }
 
+    private bool ChildrenActive() => GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true;
+
     public override void ViewOptionCreated()
     {
         base.ViewOptionCreated();
         Button = ViewSetting.transform.Find("TitleButton").GetComponent<PassiveButton>();
-        Button.buttonText.SetText($"<b>{TranslationManager.Translate(ID)}</b>");
+        Button.buttonText.text = $"<b>{TranslationManager.Translate(ID)}</b>";
         Button.OverrideOnClickListeners(Toggle);
         Button.SelectButton(Value);
 
@@ -96,7 +104,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
 
         if (Setting)
         {
-            ButtonText.SetText(Value ? "-" : "+");
+            ButtonText.text = Value ? "-" : "+";
             SettingsPatches.OnValueChanged();
         }
 
@@ -109,6 +117,10 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
 
     public override void Update()
     {
+        var flag = ChildrenActive();
+        Cog.SetActive(flag);
+        PlsMnsBtn.localPosition = flag ? DefaultPos : new(-5.539f, -0.45f, -2f);
+
         if (SavedMode == GameModeSettings.GameMode)
             return;
 
@@ -121,24 +133,24 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
             Center.gameObject.SetActive(SavedMode is GameMode.Classic or GameMode.RoleList or GameMode.KillingOnly);
             Single.SetActive(SavedMode is not (GameMode.Custom or GameMode.AllAny));
 
-            Center.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
+            Center.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Classic or GameMode.KillingOnly => "Chance",
                 GameMode.RoleList => "Unique",
                 _ => ""
-            })));
-            Right.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
+            }));
+            Right.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Custom => "Chance",
                 GameMode.AllAny => "Unique",
                 _ => ""
-            })));
-            Left.SetText(TranslationManager.Translate("RoleOption." + (SavedMode switch
+            }));
+            Left.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
                 GameMode.Custom => "Count",
                 GameMode.AllAny => "Active",
                 _ => ""
-            })));
+            }));
         }
     }
 
@@ -147,8 +159,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
         TargetType = typeof(bool);
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Name.Replace("Roles", "") + "Settings");
         GroupHeader?.AddMenuIndex(6 + (int)Alignment);
-        GroupMemberStrings = [ .. GroupMembers.Select(x => x.Name) ];
-        OptionParents1.Add((GroupMemberStrings, [ Name ]));
+        OptionParents3.Add((GroupMembers, this));
     }
 
     public void SetUpOptionsMenu()

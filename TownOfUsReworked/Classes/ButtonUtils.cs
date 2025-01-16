@@ -66,7 +66,7 @@ public static class ButtonUtils
         var ceil = Mathf.CeilToInt(timer);
         button.isCoolingDown = timer > 0f;
         button.graphic.transform.localPosition = button.position + (Vector3)(URandom.insideUnitCircle * 0.05f);
-        button.cooldownTimerText.SetText($"{ceil}");
+        button.cooldownTimerText.text = $"{ceil}";
         button.cooldownTimerText.color = UColor.white;
         button.cooldownTimerText.gameObject.SetActive(button.isCoolingDown);
         button.SetCooldownFill(ceil % 2 == 0 ? 1f : 0f);
@@ -160,11 +160,6 @@ public static class ButtonUtils
                 track.ClearArrows();
             }
         }
-        else if (role is Transporter trans)
-        {
-            trans.TransportPlayer1 = null;
-            trans.TransportPlayer2 = null;
-        }
         else if (role is Mayor mayor)
             mayor.RoundOne = start && Mayor.RoundOneNoMayorReveal;
         else if (role is Monarch mon)
@@ -175,8 +170,6 @@ public static class ButtonUtils
         {
             ret.BuggedPlayers.Clear();
             ret.BlockTarget = null;
-            ret.TransportPlayer1 = null;
-            ret.TransportPlayer2 = null;
             ret.MediateArrows.Values.DestroyAll();
             ret.MediateArrows.Clear();
             ret.MediatedPlayers.Clear();
@@ -220,7 +213,7 @@ public static class ButtonUtils
             gf.AmbushedPlayer = null;
             gf.BombedPlayer = null;
             gf.CurrentlyDragging = null;
-            gf.TeleportPoint = Vector3.zero;
+            gf.TeleportPoint = Vector2.zero;
 
             if (player.HasDied() && dead)
                 gf.Investigated.Clear();
@@ -233,7 +226,7 @@ public static class ButtonUtils
             morph.MorphedPlayer = null;
         }
         else if (role is Teleporter tele)
-            tele.TeleportPoint = Vector3.zero;
+            tele.TeleportPoint = Vector2.zero;
         else if (role is Ambusher amb)
             amb.AmbushedPlayer = null;
         else if (role is Concealer conc)
@@ -257,8 +250,6 @@ public static class ButtonUtils
             reb.ShapeshiftPlayer2 = null;
             reb.PoisonedPlayer = null;
             reb.ConcealedPlayer = null;
-            reb.WarpPlayer1 = null;
-            reb.WarpPlayer2 = null;
             reb.Positive = null;
             reb.Negative = null;
             reb.SilencedPlayer = null;
@@ -277,11 +268,6 @@ public static class ButtonUtils
         {
             ss.ShapeshiftPlayer1 = null;
             ss.ShapeshiftPlayer2 = null;
-        }
-        else if (role is Warper warp)
-        {
-            warp.WarpPlayer1 = null;
-            warp.WarpPlayer2 = null;
         }
         else if (role is PlayerLayers.Roles.Collider col)
         {

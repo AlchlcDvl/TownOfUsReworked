@@ -98,7 +98,7 @@ public static class PooledMapIconPatch
         }
 
         text.transform.localPosition = new(0, 0, -20);
-        text.SetText("");
+        text.text = "";
         text.gameObject.SetActive(false);
     }
 }
@@ -320,13 +320,13 @@ public static class EmergencyMinigameUpdatePatch
     {
         if ((!CustomPlayer.Local.CanButton(out var name) || CustomPlayer.Local.RemainingEmergencies == 0) && !CustomPlayer.Local.myTasks.Any(PlayerTask.TaskIsEmergency))
         {
-            __instance.StatusText.SetText(name switch
+            __instance.StatusText.text = name switch
             {
                 "Shy" => "You are too shy to call a meeting",
                 "GameMode" => "Don't call meetings",
                 _ => $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
-            });
-            __instance.NumberText.SetText("");
+            };
+            __instance.NumberText.text = "";
             __instance.ClosedLid.gameObject.SetActive(true);
             __instance.OpenLid.gameObject.SetActive(false);
             __instance.ButtonActive = false;
@@ -371,7 +371,7 @@ public static class DeathPopUpPatch
         if (IsCustomHnS() && !__instance.name.StartsWith("Achievement"))
         {
             __instance.text.GetComponent<TextTranslatorTMP>().Destroy();
-            __instance.text.SetText($"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}");
+            __instance.text.text = $"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}";
         }
     }
 }
@@ -524,10 +524,10 @@ public static class HostInfoPanelPatch
         }
 
         var text = ColorUtility.ToHtmlStringRGB(__instance.player.ColorId.GetColor(false));
-        __instance.hostLabel.SetText(TranslationController.Instance.GetString(StringNames.HostNounLabel));
-        __instance.playerName.SetText($"{(string.IsNullOrEmpty(host.PlayerName) ? "..." : $"<#{text}>{host.PlayerName}</color>")} " + (AmongUsClient.Instance.AmHost ?
+        __instance.hostLabel.text = TranslationController.Instance.GetString(StringNames.HostNounLabel);
+        __instance.playerName.text = $"{(string.IsNullOrEmpty(host.PlayerName) ? "..." : $"<#{text}>{host.PlayerName}</color>")} " + (AmongUsClient.Instance.AmHost ?
             $"<size=90%><b><font=\"Barlow-BoldItalic SDF\" material=\"Barlow-BoldItalic SDF Outline\">{TranslationController.Instance.GetString(StringNames.HostYouLabel)}" :
-            $"({__instance.player.ColorBlindName})"));
+            $"({__instance.player.ColorBlindName})");
         var x = __instance.playerName.GetRenderedValues().x;
         var num = __instance.hostWidth + 0.48f;
         __instance.content.transform.localPosition = new((-0.43f + num) / 2f, __instance.content.transform.localPosition.y, __instance.content.transform.localPosition.z);

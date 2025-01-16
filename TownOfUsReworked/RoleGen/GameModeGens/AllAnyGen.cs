@@ -6,15 +6,14 @@ public class AllAnyGen : BaseClassicCustomAllAnyGen
 {
     public override void Filter()
     {
-        CrewRoles.AddRanges(RoleGenManager.CrewAuditorRoles, RoleGenManager.CrewInvestigativeRoles, RoleGenManager.CrewKillingRoles, RoleGenManager.CrewSupportRoles,
-            RoleGenManager.CrewProtectiveRoles, RoleGenManager.CrewSovereignRoles);
+        CrewRoles.AddRanges(RoleGenManager.CrewInvestigativeRoles, RoleGenManager.CrewKillingRoles, RoleGenManager.CrewSupportRoles, RoleGenManager.CrewProtectiveRoles,
+            RoleGenManager.CrewSovereignRoles);
         IntruderRoles.AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles, RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles,
             RoleGenManager.IntruderHeadRoles);
         SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
         NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles, RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles,
             RoleGenManager.NeutralHarbingerRoles);
 
-        RoleGenManager.CrewAuditorRoles.Clear();
         RoleGenManager.CrewInvestigativeRoles.Clear();
         RoleGenManager.CrewSupportRoles.Clear();
         RoleGenManager.CrewProtectiveRoles.Clear();

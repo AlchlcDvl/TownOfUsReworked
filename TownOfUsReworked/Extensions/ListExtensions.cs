@@ -28,6 +28,20 @@ public static class ListExtensions
         }
     }
 
+    public static T TakeLast<T>(this List<T> list)
+    {
+        try
+        {
+            var item = list[^1];
+            list.RemoveAt(list.Count - 1);
+            return item;
+        }
+        catch
+        {
+            return default;
+        }
+    }
+
     public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
 
     public static void Add<T>(this ISystem.List<T> main, params T[] items) => items.ForEach(main.Add);
@@ -266,6 +280,12 @@ public static class ListExtensions
         }
     }
 
+    public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action)
+    {
+        foreach (var (key, value) in dict)
+            action(key, value);
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)
@@ -324,12 +344,6 @@ public static class ListExtensions
         }
 
         return true;
-    }
-
-    public static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action)
-    {
-        foreach (var (key, value) in dict)
-            action(key, value);
     }
 
     public static bool ContainsAny<T>(this IEnumerable<T> source, T[] values) => values.Any(source.Contains);
@@ -469,7 +483,21 @@ public static class ListExtensions
 
     public static T Random<T>(this ISystem.List<T> list, Func<T, bool> predicate, T defaultVal = default) => list.ToSystem().Random(predicate, defaultVal);
 
-    public static T Find<T>(this ISystem.List<T> list, Predicate<T> predicate) => list.ToSystem().Find(predicate);
+    public static T Find<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().Find(predicate);
+
+    public static T TakeLast<T>(this ISystem.List<T> list)
+    {
+        try
+        {
+            var item = list[^1];
+            list.RemoveAt(list.Count - 1);
+            return item;
+        }
+        catch
+        {
+            return default;
+        }
+    }
 
     public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, Func<TValue> newValue) where TKey : notnull
     {

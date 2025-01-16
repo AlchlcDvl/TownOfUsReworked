@@ -22,7 +22,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
     // This one is for those depending on other options
     public static readonly List<(string[], object[])> OptionParents1 =
     [
-        ( [ "EjectionRevealsRole" ], [ "ConfirmEjects" ] ),
+        ( [ "EjectionRevealsRoles" ], [ "ConfirmEjects" ] ),
         ( [ "InitialCooldowns" ], [ "EnableInitialCds" ] ),
         ( [ "MeetingCooldowns" ], [ "EnableMeetingCds" ] ),
         ( [ "FailCooldowns" ], [ "EnableFailCds" ] ),
@@ -42,7 +42,6 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         ( [ "WhisperRateDecrease" ], [ "WhisperRateDecreases" ] ),
         ( [ "WhisperCdIncrease" ], [ "WhisperCdIncreases" ] ),
         ( [ "NecroKillCdIncrease" ], [ "NecroKillCdIncreases" ] ),
-        ( [ "ResurrectCdIncrease" ], [ "ResurrectCdIncreases" ] ),
         ( [ "JestSwitchVent" ], [ "JesterVent" ] ),
         ( [ "ExeSwitchVent" ], [ "ExeVent" ] ),
         ( [ "SurvSwitchVent" ], [ "SurvVent" ] ),
@@ -51,6 +50,10 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         ( [ "GuessSwitchVent" ], [ "GuessVent" ] ),
         ( [ "TrollSwitchVent" ], [ "TrollVent" ] ),
         ( [ "InteractCd" ], [ "CanInteract" ] ),
+        ( [ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ "not+IgnoreFactionCaps" ] ),
+        ( [ "MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers" ], [ "not+IgnoreLayerCaps" ] ),
+        ( [ "MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu" ], [
+            "not+IgnoreAlignmentCaps" ] ),
         ( [ "ActSwitchVent" ], [ "ActorVent" ] )
     ];
     // I need a second one because for some dumb reason the game likes crashing
@@ -75,12 +78,13 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         ( [ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ] ),
         ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
         ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom, GameMode.Vanilla, GameMode.KillingOnly, GameMode.RoleList ] ),
-        ( [ "CrewMax", "CrewMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
+        ( [ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
         ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
         ( [ "RoleListEntries", "RoleListBans" ], [ GameMode.RoleList ] ),
         ( [ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom ] ),
         ( [ "NoSolo" ], [ NoSolo.SameNKs ] )
     ];
+    public static readonly List<(IEnumerable<OptionAttribute>, IOptionGroup)> OptionParents3 = []; // This is for option headers
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
     public virtual void SetProperty(PropertyInfo property)
@@ -99,7 +103,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
     public virtual void ViewUpdate() {}
 
-    public bool Active()
+    public bool PartiallyActive()
     {
         var result = true;
 
@@ -108,6 +112,16 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
         if (OptionParents2.TryFindingAll(x => x.Item1.Contains(Name), out parents))
             result &= parents.AllAnyOrEmpty(x => x.Item2.AllAnyOrEmpty(IsActive, All), All);
+
+        return result;
+    }
+
+    public bool Active()
+    {
+        var result = PartiallyActive();
+
+        if (OptionParents3.TryFinding(x => x.Item1.Contains(this), out var header))
+            result &= header.Item2.Get();
 
         return result;
     }
@@ -131,12 +145,15 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             if (id == Name)
                 return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them even with this line active
 
+            var invertVal = id.StartsWith("not+");
+            id = id.Replace("not+", "");
+
             if (AllOptions.TryFinding(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id, out var optionatt))
             {
                 result = optionatt.Active();
 
                 if (optionatt is OptionAttribute<bool> boolOpt)
-                    result &= boolOpt.Get();
+                    result &= invertVal ? !boolOpt.Get() : boolOpt.Get();
             }
             else if (!MapToLoaded.TryGetValue(id, out result))
                 MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
@@ -164,7 +181,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
         if (ViewSetting is ViewSettingsInfoPanel viewSettingsInfoPanel)
         {
-            viewSettingsInfoPanel.titleText.SetText(TranslationManager.Translate(ID));
+            viewSettingsInfoPanel.titleText.text = TranslationManager.Translate(ID);
             viewSettingsInfoPanel.background.gameObject.SetActive(true);
         }
     }
@@ -240,11 +257,19 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
     {
         SaveText($"{fileName}.txt", SettingsToString(), TownOfUsReworked.Options);
 
-        if (!SettingsPatches.Save || SettingsPatches.PresetsButtons.Any(x => x.name == fileName))
+        if (!SettingsPatches.Save)
             return;
 
         SettingsPatches.CreatePresetButton(fileName);
         SettingsPatches.OnPageChanged();
+    }
+
+    public static void HandlePreset(string presetName, TextMeshPro tmp)
+    {
+        if (SettingsPatches.Overwriting)
+            SaveSettings(presetName);
+        else
+            LoadPreset(presetName, tmp);
     }
 
     public static void LoadPreset(string presetName, TextMeshPro tmp)

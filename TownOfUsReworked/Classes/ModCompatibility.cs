@@ -42,9 +42,6 @@ public static class ModCompatibility
     private static FieldInfo SubmergedInstanceField;
     private static FieldInfo SubmergedElevatorsField;
 
-    private static Il2CppSystem.Type CustomPlayerDataType;
-    private static FieldInfo HasMapField;
-
     private static Type SpawnInStateType;
     private static FieldInfo CurrentStateField;
 
@@ -96,10 +93,6 @@ public static class ModCompatibility
             var submarineElevatorSystemType = SubTypes.First(t => t.Name == "SubmarineElevatorSystem");
             UpperDeckIsTargetFloorField = AccessTools.Field(submarineElevatorSystemType, "upperDeckIsTargetFloor");
 
-            var customPlayerDataType = SubTypes.First(t => t.Name == "CustomPlayerData");
-            CustomPlayerDataType = Il2CppType.From(customPlayerDataType);
-            HasMapField = AccessTools.Field(customPlayerDataType, "_hasMap");
-
             SpawnInStateType = SubTypes.First(t => t.Name == "SpawnInState");
 
             var subSpawnSystemType = SubTypes.First(t => t.Name == "SubmarineSpawnInSystem");
@@ -112,12 +105,29 @@ public static class ModCompatibility
             var submarineSelectSpawnType = SubTypes.First(t => t.Name == "SubmarineSelectSpawn");
             var startMethod = AccessTools.Method(submarineSelectSpawnType, "Start");
 
+            var customPlayerDataType = SubTypes.First(t => t.Name == "CustomPlayerData");
+            var hasMapGetter = AccessTools.PropertyGetter(customPlayerDataType, "HasMap");
+
+            // Why do the following patches even exist in submerged??
+            var lightFlickerPatchesType = SubTypes.First(x => x.Name == "LightFlickerPatches");
+            var patch1 = AccessTools.Method(lightFlickerPatchesType, "CantClickDeadBodyPatch");
+            var patch2 = AccessTools.Method(lightFlickerPatchesType, "CantClickReportButtonPatch");
+            var patch3 = AccessTools.Method(lightFlickerPatchesType, "DontShowReportButtonPatch");
+
+            var showReportButtonDisabledPatchesType = SubTypes.First(x => x.Name == "ShowReportButtonDisabledPatches");
+            var patch4 = AccessTools.Method(showReportButtonDisabledPatchesType, "DontShowReportButtonPatch");
+
             var compatType = typeof(ModCompatibility);
 
             TownOfUsReworked.ModInstance.Harmony.Patch(submergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
             TownOfUsReworked.ModInstance.Harmony.Patch(getReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
             TownOfUsReworked.ModInstance.Harmony.Patch(startMethod, new(AccessTools.Method(compatType, nameof(SpawnPatch))));
             TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(ElevatorPrefix))), new(AccessTools.Method(compatType, nameof(ElevatorPostfix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(hasMapGetter, new(AccessTools.Method(compatType, nameof(HasMapPatch))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(patch1, new(AccessTools.Method(compatType, nameof(FixPrefix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(patch2, new(AccessTools.Method(compatType, nameof(FixPrefix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(patch3, new(AccessTools.Method(compatType, nameof(FixPrefix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(patch4, new(AccessTools.Method(compatType, nameof(FixPrefix))));
 
             Success("Submerged compatibility finished");
             return true;
@@ -128,6 +138,8 @@ public static class ModCompatibility
             return false;
         }
     }
+
+    private static bool FixPrefix() => false;
 
     private static void ElevatorPrefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc, ref __state);
 
@@ -288,10 +300,15 @@ public static class ModCompatibility
         return true;
     }
 
-    public static void ImpartSub(PlayerControl bot)
+    public static bool HasMapPatch(ref bool __result)
     {
-        var comp = bot?.gameObject?.AddComponent(CustomPlayerDataType);
-        HasMapField.SetValue(comp, true);
+        if (TownOfUsReworked.MCIActive)
+        {
+            __result = true;
+            return false;
+        }
+
+        return true;
     }
 
     public const string LI_GUID = "com.DigiWorm.LevelImposter";

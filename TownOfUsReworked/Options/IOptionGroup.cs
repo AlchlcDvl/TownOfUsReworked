@@ -2,12 +2,14 @@ namespace TownOfUsReworked.Options;
 
 public interface IOptionGroup
 {
-    OptionAttribute[] GroupMembers { get; set; }
+    IEnumerable<OptionAttribute> GroupMembers { get; set; }
     string Name { get; set; }
     string ID { get; set; }
     int Priority { get; set; }
     bool Value { get; set; }
     bool DefaultValue { get; set; }
+
+    public bool Get() => Value;
 
     public void SetTypeAndOptions(Type type)
     {
@@ -34,6 +36,6 @@ public interface IOptionGroup
             }
         }
 
-        GroupMembers = [ .. members ];
+        GroupMembers = members;
     }
 }

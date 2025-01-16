@@ -20,6 +20,8 @@ public static class Blanks
 
     public static bool BlankFalse(PlayerVoteArea _) => false;
 
+    public static bool BlankFalse(PlayerControl _, out bool shouldClose) => shouldClose = false;
+
     public static float BlankOne() => 1f;
 
     public static float BlankZero() => 0f;

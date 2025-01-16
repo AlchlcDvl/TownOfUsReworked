@@ -517,7 +517,7 @@ public class CustomButton
         if (!Base || !Owner.Player || Disabled)
             return;
 
-        Base.buttonLabelText.SetText(Label());
+        Base.buttonLabelText.text = Label();
         Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
         Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && BlockIsExposed());
 
@@ -535,7 +535,7 @@ public class CustomButton
         else
             Base.SetCoolDown(CooldownTime, MaxCooldown());
 
-        if (KeyboardJoystick.player.GetButton(Keybind))
+        if (KeyboardJoystick.player.GetButtonDown(Keybind))
             Clicked();
     }
 

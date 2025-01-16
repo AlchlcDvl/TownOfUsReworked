@@ -11,11 +11,8 @@ public class ValueMap<T1, T2> : IDictionary<T1, T2> where T1: notnull where T2 :
     private readonly Dictionary<T2, T1> Backward;
 
     public int Count => Forward.Count;
-
     public bool IsReadOnly => false;
-
     public ICollection<T1> Keys => Forward.Keys;
-
     public ICollection<T2> Values => Forward.Values;
 
     public ValueMap()

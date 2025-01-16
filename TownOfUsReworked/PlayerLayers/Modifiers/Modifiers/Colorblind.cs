@@ -17,7 +17,9 @@ public class Colorblind : Modifier
     public override void ExitingLayer()
     {
         AllToNormal();
-        CameraEffect.Instance.Materials.Clear();
+
+        if (CameraEffect.Instance)
+            CameraEffect.Instance.Materials.Clear();
     }
 
     public override void EnteringLayer()

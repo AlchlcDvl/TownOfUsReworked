@@ -60,9 +60,6 @@ public static class MCIUtils
         sampleC.Character.MyPhysics.ResetAnimState();
         sampleC.Character.MyPhysics.ResetMoveState();
 
-        if (SubLoaded)
-            ImpartSub(sampleC.Character);
-
         yield return sampleC.Character.MyPhysics.CoSpawnPlayer(Lobby());
     }
 
@@ -80,14 +77,16 @@ public static class MCIUtils
 
     public static void RemoveAllPlayers()
     {
-        PlayerClientIDs.Keys.ForEach(RemovePlayer);
         SwitchTo(0);
+        PlayerClientIDs.Keys.ForEach(RemovePlayer);
     }
 
     public static void SwitchTo(byte playerId)
     {
         if (!TownOfUsReworked.MCIActive)
             return;
+
+        DebuggerBehaviour.Instance.ControllingFigure = playerId;
 
         // Setup new player
         var newPlayer = PlayerById(playerId);

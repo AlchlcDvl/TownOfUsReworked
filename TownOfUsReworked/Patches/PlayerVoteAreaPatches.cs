@@ -107,12 +107,12 @@ public static class PlayerVoteAreaPatches
 
         var label = id.Find("LevelLabel");
         label.GetComponent<TextTranslatorTMP>().Destroy();
-        label.GetComponent<TextMeshPro>().SetText("ID");
+        label.GetComponent<TextMeshPro>().text = "ID";
         label.name = "IDLabel";
 
         var number = id.Find("LevelNumber");
         number.GetComponent<TextTranslatorTMP>().Destroy();
-        number.GetComponent<TextMeshPro>().SetText($"{__instance.TargetPlayerId}");
+        number.GetComponent<TextMeshPro>().text = $"{__instance.TargetPlayerId}";
         number.name = "IDNumber";
 
         id.position -= new Vector3(0f, 0.33f, 0f);

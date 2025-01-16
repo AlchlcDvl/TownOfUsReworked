@@ -140,7 +140,7 @@ public static class ModUpdater
         if (!URLs.TryGetValue(updateType, out var link))
         {
             Failure($"No link found for {updateType}");
-            Popup.TextAreaTMP.SetText(TranslationManager.Translate("Updates.Mod.Manually"));
+            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Manually");
             button.SetActive(true);
             yield break;
         }
@@ -151,21 +151,21 @@ public static class ModUpdater
         while (!operation.isDone)
         {
             var stars = Mathf.CeilToInt(www.downloadProgress * 10);
-            Popup.TextAreaTMP.SetText($"{TranslationManager.Translate("Updates.Mod.Updating", ("%mod%", updateType))}");
+            Popup.TextAreaTMP.text = $"{TranslationManager.Translate("Updates.Mod.Updating", ("%mod%", updateType))}";
             Popup.TextAreaTMP.text += $"\n{new string((char)0x25A0, stars)}{new string((char)0x25A1, 10 - stars)}";
             yield return EndFrame();
         }
 
         if (www.isNetworkError || www.isHttpError)
         {
-            Popup.TextAreaTMP.SetText(TranslationManager.Translate("Updates.Mod.NoSuccess"));
+            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.NoSuccess");
             Error(www.error);
             www.downloadHandler.Dispose();
             www.Dispose();
             yield break;
         }
 
-        Popup.TextAreaTMP.SetText(TranslationManager.Translate("Updates.Mod.Copying", ("%mod%", updateType)));
+        Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Copying", ("%mod%", updateType));
         var filePath = Path.Combine(TownOfUsReworked.ModsFolder, $"{updateType}.dll");
 
         if (File.Exists(filePath + ".old"))
@@ -196,7 +196,7 @@ public static class ModUpdater
         if (hasError)
             Error(error);
 
-        Popup.TextAreaTMP.SetText(hasError ? TranslationManager.Translate("Updates.Mod.NoSuccess") : TranslationManager.Translate("Updates.Mod.Success", ("%mod%", updateType)));
+        Popup.TextAreaTMP.text = hasError ? TranslationManager.Translate("Updates.Mod.NoSuccess") : TranslationManager.Translate("Updates.Mod.Success", ("%mod%", updateType));
         button.SetActive(true);
     }
 }

@@ -7,9 +7,6 @@ public class Swapper : Ability
     public static bool SwapperButton { get; set; } = true;
 
     [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SwapAfterVoting { get; set; } = false;
-
-    [ToggleOption(MultiMenu.LayerSubOptions)]
     public static bool SwapSelf { get; set; } = true;
 
     public PlayerVoteArea Swap1 { get; set; }
@@ -24,7 +21,7 @@ public class Swapper : Ability
     {
         Swap1 = null;
         Swap2 = null;
-        SwapMenu = new(Player, "SwapActive", "SwapDisabled", SwapAfterVoting, SetActive, IsExempt, position: null);
+        SwapMenu = new(Player, "SwapActive", "SwapDisabled", SetActive, IsExempt, position: null);
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -46,8 +43,6 @@ public class Swapper : Ability
         base.OnMeetingStart(__instance);
         SwapMenu.GenButtons(__instance);
     }
-
-    public override void ConfirmVotePrefix(MeetingHud __instance) => SwapMenu.Voted();
 
     public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update(__instance);
 

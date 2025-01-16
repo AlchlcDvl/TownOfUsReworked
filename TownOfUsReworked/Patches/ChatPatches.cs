@@ -43,16 +43,16 @@ public static class ChatPatches
                 else
                     result = $"/{closestCommand.FindAlias(first)} {closestCommand.ConstructParameters(split)}";
 
-                SuggestionText.SetText(result);
+                SuggestionText.text = result;
 
                 if (Input.GetKeyDown(KeyCode.Tab))
                     __instance.freeChatField.textArea.SetText(result.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0]);
             }
             else
-                SuggestionText.SetText($"{text} UNKNOWN COMMAND");
+                SuggestionText.text = $"{text} UNKNOWN COMMAND";
         }
         else
-            SuggestionText.SetText("");
+            SuggestionText.text = "";
 
         return false;
     }
@@ -69,8 +69,8 @@ public static class ChatPatches
             __instance.sendRateMessageText.gameObject.SetActive(false);
         else
         {
-            __instance.sendRateMessageText.SetText(TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
-                __instance.timeSinceLastMessage)));
+            __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
+                __instance.timeSinceLastMessage));
         }
     }
 
@@ -104,7 +104,7 @@ public static class ChatPatches
                         }
 
                         if (GameModifiers.Whispers && !chat.NameText.text.StartsWith($"[#{player.PlayerId}]"))
-                            chat.NameText.SetText($"[#{player.PlayerId}] {chat.NameText.text}");
+                            chat.NameText.text = $"[#{player.PlayerId}] {chat.NameText.text}";
                     }
                 }
             }
@@ -227,8 +227,8 @@ public static class ChatPatches
             if (GameSettings.ChatCooldown > __instance.timeSinceLastMessage)
             {
                 __instance.sendRateMessageText.gameObject.SetActive(true);
-                __instance.sendRateMessageText.SetText(TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
-                    __instance.timeSinceLastMessage)));
+                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
+                    __instance.timeSinceLastMessage));
             }
             else if (!IsNullEmptyOrWhiteSpace(text))
             {
@@ -342,12 +342,12 @@ public static class OverrideCharCountPatch
     {
         if (GameSettings.ChatCharacterLimit == 0)
         {
-            __instance.charCountText.SetText("");
+            __instance.charCountText.text = "";
             return false;
         }
 
         var length = __instance.Text.Length;
-        __instance.charCountText.SetText($"{length}/{GameSettings.ChatCharacterLimit}");
+        __instance.charCountText.text = $"{length}/{GameSettings.ChatCharacterLimit}";
 
         if (length <= GameSettings.ChatCharacterLimit / 2)
             __instance.charCountText.color = UColor.black;
@@ -384,12 +384,12 @@ public static class ChatNotifFixPatch
         __instance.timeOnScreen = 4f;
         __instance.gameObject.SetActive(true);
         __instance.SetCosmetics(sender.Data);
-        __instance.playerColorText.SetText(__instance.player.ColorBlindName);
-        __instance.playerNameText.SetText(sender.name.IsNullOrWhiteSpace() ? "..." : sender.name);
+        __instance.playerColorText.text = __instance.player.ColorBlindName;
+        __instance.playerNameText.text = sender.name.IsNullOrWhiteSpace() ? "..." : sender.name;
         __instance.playerNameText.color = __instance.player.ColorId.GetColor(false);
         __instance.playerNameText.outlineColor = __instance.player.ColorId.GetColor(true);
         __instance.chatText.richText = true;
-        __instance.chatText.SetText(text);
+        __instance.chatText.text = text;
         return false;
     }
 }

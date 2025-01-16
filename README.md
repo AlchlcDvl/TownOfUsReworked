@@ -79,7 +79,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 |                                    |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |                               |
 |                                    |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |                               |
 |                                    |                               | [Trapper](#trapper)               | [Thief](#thief)                   |                               |
-|                                    |                               | [Vampire Hunter](#vampire-hunter) | [Troll](#troll)                   |                               |
+|                                    |                               | [Trickster](#trickster)           | [Troll](#troll)                   |                               |
 |                                    |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |                               |
 |                                    |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |                               |
 
@@ -231,7 +231,7 @@ Each member has a special ability which determines who’s who and can help weed
 
 **Origin**: Town Of Us, based off of the original Retributionist in Town Of Salem
 
-**Revive** (Round, Controlled): The Altruist can revive dead players. This, however, takes time. If the revive is interrupted by a meeting, the player will not be revived, however the Altruist will not be refunded their revive attempt. When a player is revived, all evil players will be notified of the revival and will have an arrow pointing towards the revived player. If set to do so, the Altruist will sacrifice themselves on the end of their last revive. If the revived player has a [Lover](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Dispositions#lovers) and both lovers die together, that Lover is also revived.
+The Altruist is capable of reviving dead players at a cost. The Altruist can extract mana from dead bodies, cleaning them as a result. The Altruist can then use this gained mana to revive other bodies. This reviving takes time and if it's interuppted by a meeting, then the body stays dead forever.
 
 **Game Options**
 
@@ -247,9 +247,9 @@ Each member has a special ability which determines who’s who and can help weed
 
 **Origin**: Town Of Host: The Other Roles
 
-**Attack**: Powerful
+**Attack**: Powerful when the trap attacks
 
-**Bomb** (Round, Limited): The Bastion can place bombs in vents. Anyone who tries to interact with or move to the bombed vent will be attacked.
+The Bastion can booby trap vents. Anyone who tries to interact with the trapped vent will be attacked.
 
 **Game Options**
 
@@ -265,7 +265,7 @@ Each member has a special ability which determines who’s who and can help weed
 
 **Origin**: Town Of Us
 
-**Stalk** (Round, Limited): The Chameleon can go invisible to stalk players and see what they do when no one is around.
+The Chameleon can go invisible to stalk players and see what they do when no one is around.
 
 <br>
 
@@ -275,10 +275,7 @@ Each member has a special ability which determines who’s who and can help weed
 
 **Alignment**: Crew (Investigative)
 
-**Autopsy** (Round): The Coroner can autopsy a body to gain information on the body's killer. After autopsying the Coroner can report the body to get a report.
-
-**Body Report** (Meeting, Passive): At the start of the meeting, the
-The Coroner gets an alert when someone dies and gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information on the killer. The Coroner can then compare that information with players to see if they killed the body or not. They also gets body reports from the bodies they report. The report will include the cause and time of death, the body's faction/role, the killer's faction/role and the killer's name; all of which depend on the settings. The Coroner will not get any information if they report a body when blinded by a Grenadier and framed players will always appear to be the killer.
+The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. The Coroner can then compare that information with players to see if they killed the body or not. They also gets body reports from the bodies they report. The report will include the cause and time of death, the body's faction/role, the killer's faction/role and (according to the settings) the killer's name. The Coroner will not get any information if they report a body when blinded by a Grenadier and framed players will always appear to be the killer.
 
 **Game Options**
 
@@ -439,7 +436,7 @@ The Monarch can appoint players as knights. When the next meeting is called, all
 
 <img align="right" width="" height="200" src="./Images/Mystic.png">
 
-**Alignment**: Crew (Auditor)
+**Alignment**: Crew (Investigative)
 
 The Mystic can only spawn when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target belongs to a subfaction, or that the target's subfaction is different from the Mystic's (in the case of a converted Mystic), the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might still be evil. Once all subfactions are dead, the Mystic becomes a Seer. Framed players will appear to have their subfactions changed.
 
@@ -583,23 +580,17 @@ The Transporter can swap the locations of two players at will. Being transported
 
 **Origin**: Town Of Salem
 
-**Attack**: Powerful
+**Attack**: Powerful when the trap attacks
 
 The Trapper can build traps and place them on other players. These traps will either register an interacter's role, or attack an attacker. At the start of the next meeting, the Trapper is told whether they attacked someone or not. If not, the Trapper gets a list of roles that interacted with the trapped targets in a random order. Trapped players have a pink ∮ next to their names.
 
-## Vampire Hunter
+## Trickster
 
-<img align="right" width="" height="200" src="./Images/VampireHunter.png">
+<img align="right" width="" height="200" src="./Images/Trickster.png">
 
-**Alignment**: Crew (Auditor)
+**Alignment**: Crew (Protective)
 
-**Origin**: Town Of Salem
-
-**Attack**: Unstoppable against Undead only
-
-**Defense**: Invincible against Undead only
-
-The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante with one bullet. Interacting with a Vampire Hunter as an Undead will force the Vampire Hunter to attack you. Framed players will behave like an Undead to the Vampire Hunter. The Vampire Hunter knows if they target they actually killed is an Undead or not.
+During a meeting, the Trickster can choose to redirect all interactions from one player to another. Each time a redirection takes place, the Trickster will be notified. However, each time the Trickster redirects a player, they will interact with both targets and the interactor, making them easily susceptible to interaction sensitive roles. During the round, the Trickster can choose to nullify the redirection for a short time, making it so that the interactions return to normal for a short while.
 
 ## Veteran
 

@@ -22,12 +22,12 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     {
         base.OptionCreated();
         var number = Setting.Cast<NumberOption>();
-        number.TitleText.SetText(TranslationManager.Translate(ID));
+        number.TitleText.text = TranslationManager.Translate(ID);
         number.ValidRange = new(Min, Max);
         number.Increment = Increment;
         number.ZeroIsInfinity = ZeroIsInfinity;
 
-        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly)
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly && !TownOfUsReworked.MCIActive)
         {
             number.PlusBtn.gameObject.SetActive(false);
             number.MinusBtn.gameObject.SetActive(false);
@@ -62,13 +62,13 @@ public class NumberOptionAttribute(MultiMenu menu, float min, float max, float i
     {
         var number = Setting.Cast<NumberOption>();
         number.Value = number.oldValue = Get();
-        number.ValueText.SetText(Format());
+        number.ValueText.text = Format();
     }
 
     public override void ViewUpdate()
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.SetText(Format());
+        viewSettingsInfoPanel.settingText.text = Format();
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 }

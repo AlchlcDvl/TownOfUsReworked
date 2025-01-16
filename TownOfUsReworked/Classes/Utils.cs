@@ -290,19 +290,19 @@ public static class Utils
 
     public static void DefaultOutfitAll() => AllPlayers().ForEach(DefaultOutfit);
 
-    public static PlayerControl PlayerById(byte id) => GameData.Instance?.GetPlayerById(id)?.Object;
+    public static PlayerControl PlayerById(byte? id) => GameData.Instance?.GetPlayerById(id ?? 255)?.Object;
 
-    public static PlayerVoteArea VoteAreaById(byte id) => AllVoteAreas().Find(x => x.TargetPlayerId == id);
+    public static PlayerVoteArea VoteAreaById(byte? id) => AllVoteAreas().Find(x => x.TargetPlayerId == id);
 
-    public static DeadBody BodyById(byte id) => AllBodies().Find(x => x.ParentId == id);
+    public static DeadBody BodyById(byte? id) => AllBodies().Find(x => x.ParentId == id);
 
-    public static DeadBody BodyByPlayer(PlayerControl player) => BodyById(player.PlayerId);
+    public static DeadBody BodyByPlayer(PlayerControl player) => BodyById(player?.PlayerId);
 
-    public static PlayerControl PlayerByBody(DeadBody body) => PlayerById(body.ParentId);
+    public static PlayerControl PlayerByBody(DeadBody body) => PlayerById(body?.ParentId);
 
-    public static PlayerVoteArea VoteAreaByPlayer(PlayerControl player) => VoteAreaById(player.PlayerId);
+    public static PlayerVoteArea VoteAreaByPlayer(PlayerControl player) => VoteAreaById(player?.PlayerId);
 
-    public static PlayerControl PlayerByVoteArea(PlayerVoteArea state) => PlayerById(state.TargetPlayerId);
+    public static PlayerControl PlayerByVoteArea(PlayerVoteArea state) => PlayerById(state?.TargetPlayerId);
 
     public static Vent VentById(int id) => AllVents().Find(x => x.Id == id);
 
@@ -375,20 +375,10 @@ public static class Utils
             }
             else if (target.TryGetLayer<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
-            else if (target.TryGetLayer<Assassin>(out var assassin))
+            else if (target.TryGetILayer<IGuesser>(out var assassin))
             {
                 assassin.GuessingMenu.Close();
-                assassin.AssassinMenu.HideButtons();
-            }
-            else if (target.TryGetLayer<Guesser>(out var guesser))
-            {
-                guesser.GuessingMenu.Close();
-                guesser.GuessMenu.HideButtons();
-            }
-            else if (target.TryGetLayer<Thief>(out var thief))
-            {
-                thief.GuessingMenu.Close();
-                thief.GuessMenu.HideButtons();
+                assassin.GuessMenu.HideButtons();
             }
         }
 
@@ -414,20 +404,10 @@ public static class Utils
 
         if (!CustomPlayer.LocalCustom.Dead)
         {
-            if (CustomPlayer.Local.TryGetLayer<Assassin>(out var assassin))
+            if (CustomPlayer.Local.TryGetILayer<IGuesser>(out var assassin))
             {
                 assassin.GuessingMenu.Close();
-                assassin.AssassinMenu.HideSingle(target.PlayerId);
-            }
-            else if (CustomPlayer.Local.TryGetLayer<Guesser>(out var guesser))
-            {
-                guesser.GuessingMenu.Close();
-                guesser.GuessMenu.HideSingle(target.PlayerId);
-            }
-            else if (CustomPlayer.Local.TryGetLayer<Thief>(out var thief))
-            {
-                thief.GuessingMenu.Close();
-                thief.GuessMenu.HideSingle(target.PlayerId);
+                assassin.GuessMenu.HideSingle(target.PlayerId);
             }
             else if (CustomPlayer.Local.TryGetLayer<Swapper>(out var swapper))
             {
@@ -1162,6 +1142,7 @@ public static class Utils
         player.moveable = true;
         player.Collider.enabled = !player.Data.IsDead;
         player.MyPhysics.ResetMoveState();
+        player.MyPhysics.ResetAnimState();
     }
 
     public static NetworkedPlayerInfo.PlayerOutfit GetCurrentOutfit(this PlayerControl player) => player.Data.Outfits.TryGetValue(player.CurrentOutfitType, out var outfit) ? outfit :
@@ -1309,7 +1290,7 @@ public static class Utils
 
         GameData.LastDeathReason = reason;
 
-        if (player.inMovingPlat && ShipStatus.Instance.TryCast<FungleShipStatus>(out var fungle))
+        if (player.inMovingPlat && Ship().TryCast<FungleShipStatus>(out var fungle))
             fungle.Zipline.CancelZiplineUseForPlayer(player);
 
         FirstDead ??= player.name;
@@ -1450,6 +1431,37 @@ public static class Utils
     public static bool IsAny<T>(this T item, params T[] items) where T : UObject => items.Any(x => x == item);
 
     public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) != null;
+
+    public static void AnimatePortal(PlayerControl player, float duration)
+    {
+        var go = new GameObject($"PortalAnim{player.name}") { layer = LayerMask.NameToLayer("Players") };
+        var anim = go.AddComponent<SpriteRenderer>();
+        anim.sprite = PortalAnimation[0];
+        anim.material = HatManager.Instance.PlayerMaterial;
+        anim.transform.position = new(player.GetTruePosition().x, player.GetTruePosition().y + 0.35f, player.transform.position.z - 0.01f);
+        anim.flipX = player.MyRend().flipX;
+        anim.transform.localScale *= 0.89f * player.GetModifiedSize();
+
+        if (IsSubmerged())
+            go.AddSubmergedComponent("ElevatorMover");
+
+        Coroutines.Start(PerformTimedAction(duration, p =>
+        {
+            if (Meeting())
+                anim.sprite = PortalAnimation[0];
+            else
+            {
+                anim.sprite = PortalAnimation[Mathf.Clamp((int)(p * PortalAnimation.Count), 0, PortalAnimation.Count - 1)];
+                player.SetPlayerMaterialColors(anim);
+            }
+
+            if (p == 1)
+            {
+                anim.sprite = PortalAnimation[0];
+                go.Destroy();
+            }
+        }));
+    }
 
     // public static object TryCast(this Il2CppObjectBase self, Type type) => TryCastMethod.MakeGenericMethod(type).Invoke(self, null);
 

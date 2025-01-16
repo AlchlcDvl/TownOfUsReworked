@@ -28,7 +28,7 @@ public class NameHandler : MonoBehaviour
         {
             var distance = Vector2.Distance(local.transform.position, player.transform.position);
 
-            if (distance > ShipStatus.Instance?.CalculateLightRadius(local.Data))
+            if (distance > Ship()?.CalculateLightRadius(local.Data))
                 return ("", UColor.clear);
 
             var vector = player.transform.position - local.transform.position;
@@ -79,14 +79,14 @@ public class NameHandler : MonoBehaviour
 
         var deadSeeEverything = DeadSeeEverything();
         var local = localHandler.Player;
-        var meeting = Meeting();
+        var meeting = (bool)Meeting();
         var amOwner = player.AmOwner;
 
         if (!meeting)
         {
             var distance = Vector2.Distance(local.transform.position, player.transform.position);
 
-            if (distance > ShipStatus.Instance?.CalculateLightRadius(local.Data))
+            if (distance > Ship()?.CalculateLightRadius(local.Data))
                 return ("", UColor.white);
 
             var vector = player.transform.position - local.transform.position;

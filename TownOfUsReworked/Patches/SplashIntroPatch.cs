@@ -104,7 +104,7 @@ public static class UpdateSplashPatch
         __instance.startedSceneLoad = true;
     }
 
-    public static void SetText(string text) => TMP.SetText(text);
+    public static void SetText(string text) => TMP.text = text;
 
     private static IEnumerator LoadModData()
     {

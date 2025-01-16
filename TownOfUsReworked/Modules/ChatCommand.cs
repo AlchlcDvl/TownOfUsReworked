@@ -127,7 +127,7 @@ public class ChatCommand
             pooledBubble.TextArea.richText = withColor;
             pooledBubble.NameText.richText = true;
             pooledBubble.SetName(title, false, false, nameColor ?? UColor.white);
-            pooledBubble.SetText(withColor && !hasColor ? Info.ColorIt(text) : text);
+            pooledBubble.SetText(text);
             pooledBubble.NameText.transform.localPosition -= new Vector3(0.7f, 0.05f, 0f);
             pooledBubble.TextArea.transform.localPosition -= new Vector3(0.7f, 0.1f, 0f);
             pooledBubble.ColorBlindName.gameObject.SetActive(false);

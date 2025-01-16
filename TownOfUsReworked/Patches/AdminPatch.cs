@@ -40,7 +40,7 @@ public static class AdminPatch
             if (text && isOp && DataManager.Settings.Accessibility.ColorBlindMode)
             {
                 text.gameObject.SetActive(true);
-                text.SetText($"{colorMapping[i]}");
+                text.text = $"{colorMapping[i]}";
 
                 // Show first row numbers below player icons
                 // Show second row numbers above player icons

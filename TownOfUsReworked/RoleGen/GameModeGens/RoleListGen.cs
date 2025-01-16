@@ -45,7 +45,6 @@ public class RoleListGen : BaseRoleGen
             {
                 var random = id switch
                 {
-                    LayerEnum.CrewAudit => CA.Random(),
                     LayerEnum.CrewInvest => CI.Random(),
                     LayerEnum.CrewSov => CSv.Random(),
                     LayerEnum.CrewProt => CrP.Random(),

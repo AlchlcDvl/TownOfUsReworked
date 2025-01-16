@@ -46,8 +46,8 @@ public static class CustomStatsManager
     public static readonly Dictionary<LayerEnum, uint> LayerWins = [];
     public static readonly Dictionary<StringNames, uint> CustomStats = [];
 
-    public static readonly Dictionary<StringNames, MapEnum> MapMap = [];
-    public static readonly Dictionary<StringNames, LayerEnum> LayerMap = [];
+    public static readonly ValueMap<StringNames, MapEnum> MapMap = [];
+    public static readonly ValueMap<StringNames, LayerEnum> LayerMap = [];
 
     public static void Setup()
     {
@@ -94,6 +94,20 @@ public static class CustomStatsManager
             StringNames.StatsHideAndSeekImpostorVictory
         ];
 
+        foreach (var map in MapWins.Keys)
+        {
+            var val = TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [ ("%map%", () => TranslationManager.Translate($"Map.{map}")) ]);
+            OrderedStats.Add(val);
+            MapMap[val] = map;
+        }
+
+        foreach (var layer in LayerWins.Keys)
+        {
+            var val = TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [ ("%layer%", () => TranslationManager.Translate($"Layer.{layer}")) ]);
+            OrderedStats.Add(val);
+            LayerMap[val] = layer;
+        }
+
         var path = Path.Combine(PlatformPaths.persistentDataPath, "reworkedStats");
 
         if (File.Exists(path))
@@ -109,20 +123,6 @@ public static class CustomStatsManager
         Enum.GetValues<MapEnum>().ForEach(x => GetMapWins(x));
         LayerDictionary.Keys.ForEach(x => GetLayerWins(x));
         Enum.GetValues<StringNames>().ForEach(x => GetStat(x));
-
-        foreach (var map in MapWins.Keys)
-        {
-            var val = TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [ ("%map%", () => TranslationManager.Translate($"Map.{map}")) ]);
-            OrderedStats.Add(val);
-            MapMap[val] = map;
-        }
-
-        foreach (var layer in LayerWins.Keys)
-        {
-            var val = TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [ ("%layer%", () => TranslationManager.Translate($"Layer.{layer}")) ]);
-            OrderedStats.Add(val);
-            LayerMap[val] = layer;
-        }
     }
 
     public static void Reset()
@@ -317,17 +317,40 @@ public static class CustomStatsManager
     public static void SerializeCustomStats(this BinaryWriter writer)
     {
         writer.Write(MigratedFromVanillaStats);
-        writer.WriteEnumDict(MapWins);
-        writer.WriteEnumDict(LayerWins);
-        writer.WriteEnumDict(CustomStats);
+
+        writer.Write((uint)CustomStats.Count);
+
+        foreach (var (key, value) in CustomStats)
+        {
+            writer.Write(key);
+            writer.Write(value);
+        }
+
+        writer.Write((uint)LayerWins.Count);
+
+        foreach (var (layer, wins) in LayerWins)
+        {
+            writer.Write(layer);
+            writer.Write(wins);
+        }
+
+        writer.Write((uint)MapWins.Count);
+
+        foreach (var (map, wins) in MapWins)
+        {
+            writer.Write(map);
+            writer.Write(wins);
+        }
     }
 
     public static void DeserializeCustomStats(this BinaryReader reader)
     {
         MigratedFromVanillaStats = reader.ReadBoolean();
-        reader.ReadEnumDict(MapWins);
-        reader.ReadEnumDict(LayerWins);
-        reader.ReadEnumDict(CustomStats);
+
+        var num = reader.ReadUInt32();
+
+        while (num-- > 0)
+            CustomStats[reader.ReadEnum<StringNames>()] = reader.ReadUInt32();
 
         var diff = TranslationManager.LastID - TranslationManager.PreviousLastID; // Accounting for any changes to the translations in the base game
 
@@ -343,24 +366,19 @@ public static class CustomStatsManager
             for (var i = 0; i < count; i++)
                 CustomStats[keys[i] + diff] = values[i];
         }
-    }
 
-    public static void WriteEnumDict<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
-    {
-        writer.Write((uint)dict.Count);
-
-        foreach (var (key, value) in dict)
-        {
-            writer.Write(System.Convert.ToUInt32(key));
-            writer.Write(value);
-        }
-    }
-
-    public static void ReadEnumDict<T>(this BinaryReader reader, Dictionary<T, uint> dict) where T : struct, Enum
-    {
-        var num = reader.ReadUInt32();
+        num = reader.ReadUInt32();
 
         while (num-- > 0)
-            dict[(T)(object)reader.ReadUInt32()] = reader.ReadUInt32();
+            LayerWins[reader.ReadEnum<LayerEnum>()] = reader.ReadUInt32();
+
+        num = reader.ReadUInt32();
+
+        while (num-- > 0)
+            MapWins[reader.ReadEnum<MapEnum>()] = reader.ReadUInt32();
     }
+
+    public static T ReadEnum<T>(this BinaryReader reader) where T : struct, Enum => Enum.Parse<T>(reader.ReadString());
+
+    public static void Write(this BinaryWriter writer, Enum @enum) => writer.Write($"{@enum}");
 }

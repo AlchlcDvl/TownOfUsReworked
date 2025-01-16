@@ -13,17 +13,8 @@ public class Warper : Syndicate, IWarper
     public static bool WarpSelf { get; set; } = true;
 
     public CustomButton WarpButton { get; set; }
-    public PlayerControl WarpPlayer1 { get; set; }
-    public PlayerControl WarpPlayer2 { get; set; }
-    public CustomPlayerMenu WarpMenu1 { get; set; }
-    public CustomPlayerMenu WarpMenu2 { get; set; }
-    public SpriteRenderer AnimationPlaying { get; set; }
-    public GameObject WarpObj { get; set; }
+    public CustomPlayerMenu WarpMenu { get; set; }
     public bool Warping { get; set; }
-    public DeadBody Player1Body { get; set; }
-    public DeadBody Player2Body { get; set; }
-    public bool WasInVent { get; set; }
-    public Vent Vent { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Warper : FactionColor;
     public override LayerEnum Type => LayerEnum.Warper;
@@ -35,88 +26,68 @@ public class Warper : Syndicate, IWarper
     {
         base.Init();
         Alignment = Alignment.SyndicateSupport;
-        WarpPlayer1 = null;
-        WarpPlayer2 = null;
-        WarpMenu1 = new(Player, Click1, Exception1);
-        WarpMenu2 = new(Player, Click2, Exception2);
+        WarpMenu = new(Player, Click, Exception1);
         WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
-        Player1Body = null;
-        Player2Body = null;
-        WasInVent = false;
-        Vent = null;
-        WarpObj = new("Warp") { layer = 5 };
-        WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
-        AnimationPlaying = WarpObj.AddComponent<SpriteRenderer>();
-        AnimationPlaying.sprite = PortalAnimation[0];
-        AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
-        WarpObj.SetActive(true);
-
-        if (IsSubmerged())
-            WarpObj.AddSubmergedComponent("ElevatorMover");
     }
 
-    public override void Deinit()
+    public static IEnumerator WarpPlayers(PlayerControl player1, PlayerControl player2, IWarper warper)
     {
-        base.Deinit();
-        WarpObj.Destroy();
-    }
+        var player1Body = (DeadBody)null;
+        var player2Body = (DeadBody)null;
+        var wasInVent = false;
+        var vent = (Vent)null;
 
-    public IEnumerator WarpPlayers()
-    {
-        Player1Body = null;
-        Player2Body = null;
-        WasInVent = false;
-        Vent = null;
-
-        if (WarpPlayer1.Data.IsDead)
+        if (player1.Data.IsDead)
         {
-            Player1Body = BodyById(WarpPlayer1.PlayerId);
+            player1Body = BodyById(player1.PlayerId);
 
-            if (!Player1Body)
+            if (!player1Body)
                 yield break;
         }
 
-        if (WarpPlayer2.Data.IsDead)
+        if (player2.Data.IsDead)
         {
-            Player2Body = BodyById(WarpPlayer2.PlayerId);
+            player2Body = BodyById(player2.PlayerId);
 
-            if (!Player2Body)
+            if (!player2Body)
                 yield break;
         }
 
-        if (WarpPlayer1.inVent)
+        Moving.Add(player1.PlayerId);
+
+        if (player1.inVent)
         {
             while (GetInTransition())
                 yield return EndFrame();
 
-            WarpPlayer1.MyPhysics.ExitAllVents();
+            player1.MyPhysics.ExitAllVents();
         }
 
-        if (WarpPlayer2.inVent)
+        if (player2.inVent)
         {
             while (GetInTransition())
                 yield return EndFrame();
 
-            Vent = WarpPlayer2.GetClosestVent();
-            WasInVent = true;
+            vent = player2.GetClosestVent();
+            wasInVent = true;
         }
 
-        Warping = true;
+        warper.Warping = true;
 
-        if (!WarpPlayer1.HasDied())
+        if (!player1.HasDied())
         {
-            WarpPlayer1.moveable = false;
-            WarpPlayer1.NetTransform.Halt();
-            WarpPlayer1.MyPhysics.ResetMoveState();
-            WarpPlayer1.MyPhysics.ResetAnimState();
-            WarpPlayer1.MyPhysics.StopAllCoroutines();
+            player1.moveable = false;
+            player1.NetTransform.Halt();
+            player1.MyPhysics.ResetMoveState();
+            player1.MyPhysics.ResetAnimState();
+            player1.MyPhysics.StopAllCoroutines();
         }
 
-        if (WarpPlayer1.AmOwner)
-            Flash(Color, WarpDur);
+        if (player1.AmOwner)
+            Flash(warper.Color, WarpDur);
 
-        if (!Player1Body && !WasInVent)
-            AnimateWarp();
+        if (!player1Body && !wasInVent)
+            AnimatePortal(player1, WarpDur);
 
         var startTime = Time.time;
 
@@ -129,110 +100,81 @@ public class Warper : Syndicate, IWarper
 
             if (Meeting())
             {
-                AnimationPlaying.sprite = PortalAnimation[0];
+                Moving.RemoveAll(x => x == player1.PlayerId);
+                warper.Warping = false;
                 yield break;
             }
         }
 
-        if (!Player1Body && !Player2Body)
+        if (player1.Data.IsDead)
         {
-            WarpPlayer1.MyPhysics.ResetMoveState();
-            WarpPlayer1.CustomSnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
+            player1Body = BodyById(player1.PlayerId);
 
-            if (IsSubmerged() && WarpPlayer1.AmOwner)
+            if (!player1Body)
             {
-                ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
-            }
-
-            if (WarpPlayer1.CanVent() && Vent && WasInVent)
-                WarpPlayer1.MyPhysics.RpcEnterVent(Vent.Id);
-        }
-        else if (Player1Body && !Player2Body)
-        {
-            StopDragging(Player1Body.ParentId);
-            Player1Body.transform.position = WarpPlayer2.GetTruePosition();
-
-            if (IsSubmerged() && WarpPlayer2.AmOwner)
-            {
-                ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
+                Moving.RemoveAll(x => x == player1.PlayerId);
+                warper.Warping = false;
+                yield break;
             }
         }
-        else if (!Player1Body && Player2Body)
-        {
-            WarpPlayer1.MyPhysics.ResetMoveState();
-            WarpPlayer1.CustomSnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-            if (IsSubmerged() && WarpPlayer1.AmOwner)
+        if (player2.Data.IsDead)
+        {
+            player2Body = BodyById(player2.PlayerId);
+
+            if (!player2Body)
             {
-                ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
+                Moving.RemoveAll(x => x == player1.PlayerId);
+                warper.Warping = false;
+                yield break;
             }
         }
-        else if (Player1Body && Player2Body)
+
+        if (!player1Body && !player2Body)
         {
-            StopDragging(Player1Body.ParentId);
-            Player1Body.transform.position = Player2Body.TruePosition;
+            player1.CustomSnapTo(new(player2.GetTruePosition().x, player2.GetTruePosition().y + 0.3636f));
+
+            if (player1.CanVent() && vent && wasInVent)
+                player1.MyPhysics.RpcEnterVent(vent.Id);
+        }
+        else if (player1Body && !player2Body)
+        {
+            StopDragging(player1Body.ParentId);
+            player1Body.transform.position = player2.GetTruePosition();
+        }
+        else if (!player1Body && player2Body)
+        {
+            player1.CustomSnapTo(new(player2Body.TruePosition.x, player2Body.TruePosition.y + 0.3636f));
+
+            if (player1.CanVent() && vent && wasInVent)
+                player1.MyPhysics.RpcEnterVent(vent.Id);
+        }
+        else if (player1Body && player2Body)
+        {
+            StopDragging(player1Body.ParentId);
+            player1Body.transform.position = player2Body.TruePosition;
         }
 
-        if (WarpPlayer1.AmOwner)
-        {
-            if (ActiveTask())
-                ActiveTask().Close();
-
-            if (MapBehaviourPatches.MapActive)
-                Map().Close();
-        }
-
-        WarpPlayer1 = null;
-        WarpPlayer2 = null;
-        Warping = false;
+        Moving.RemoveAll(x => x == player1.PlayerId);
+        warper.Warping = false;
     }
 
-    public void Click1(PlayerControl player)
+    public bool Click(PlayerControl player, out bool shouldClose)
     {
         var cooldown = Interact(Player, player);
+        shouldClose = false;
 
         if (cooldown != CooldownType.Fail)
-            WarpPlayer1 = player;
+            return true;
         else
             WarpButton.StartCooldown(cooldown);
+
+        shouldClose = true;
+        return false;
     }
 
-    public void Click2(PlayerControl player)
-    {
-        var cooldown = Interact(Player, player);
-
-        if (cooldown != CooldownType.Fail)
-            WarpPlayer2 = player;
-        else
-            WarpButton.StartCooldown(cooldown);
-    }
-
-    public bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 || player.IsMoving() ||
-        (!BodyById(player.PlayerId) && player.Data.IsDead);
-
-    public bool Exception2(PlayerControl player) => (player == Player && !WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 || player.IsMoving() ||
-        (!BodyById(player.PlayerId) && player.Data.IsDead);
-
-    public void AnimateWarp()
-    {
-        WarpObj.transform.position = new(WarpPlayer1.GetTruePosition().x, WarpPlayer1.GetTruePosition().y + 0.35f, (WarpPlayer1.GetTruePosition().y / 1000f) + 0.01f);
-        AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
-        AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
-
-        Coroutines.Start(PerformTimedAction(WarpDur, p =>
-        {
-            var index = (int)(p * PortalAnimation.Count);
-            index = Mathf.Clamp(index, 0, PortalAnimation.Count - 1);
-            AnimationPlaying.sprite = PortalAnimation[index];
-            WarpPlayer1.SetPlayerMaterialColors(AnimationPlaying);
-
-            if (p == 1)
-                AnimationPlaying.sprite = PortalAnimation[0];
-        }));
-    }
+    public bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId) &&
+        player.Data.IsDead);
 
     public static void WarpAll()
     {
@@ -260,49 +202,42 @@ public class Warper : Syndicate, IWarper
             WarpAll();
             WarpButton.StartCooldown();
         }
-        else if (!WarpPlayer1)
-            WarpMenu1.Open();
-        else if (!WarpPlayer2)
-            WarpMenu2.Open();
+        else if (WarpMenu.Selected.Count < 2)
+            WarpMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpPlayer1, WarpPlayer2);
-            Coroutines.Start(WarpPlayers());
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpMenu.Selected[0], WarpMenu.Selected[1]);
+            Coroutines.Start(WarpPlayers(PlayerById(WarpMenu.Selected[0]), PlayerById(WarpMenu.Selected[1]), this));
+            WarpMenu.Selected.Clear();
+            WarpButton.StartCooldown();
         }
     }
 
-    public override void ReadRPC(MessageReader reader)
-    {
-        WarpPlayer1 = reader.ReadPlayer();
-        WarpPlayer2 = reader.ReadPlayer();
-        Coroutines.Start(WarpPlayers());
-    }
+    public override void ReadRPC(MessageReader reader) => Coroutines.Start(WarpPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
 
     public string Label()
     {
         if (HoldsDrive)
             return "WARP";
-        else if (!WarpPlayer1)
-            return "FIRST TARGET";
-        else if (!WarpPlayer2)
-            return "SECOND TARGET";
         else
-            return "WARP";
+        {
+            return WarpMenu.Selected.Count switch
+            {
+                0 => "FIRST TARGET",
+                1 => "SECOND TARGET",
+                _ =>  "WARP"
+            };
+        }
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (KeyboardJoystick.player.GetButton("Delete"))
+        if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
-            if (!HoldsDrive && !Warping)
-            {
-                if (WarpPlayer2)
-                    WarpPlayer2 = null;
-                else if (WarpPlayer1)
-                    WarpPlayer1 = null;
-            }
+            if (!HoldsDrive && !Warping && WarpMenu.Selected.Count > 0)
+                WarpMenu.Selected.TakeLast();
 
             Message("Removed a target");
         }

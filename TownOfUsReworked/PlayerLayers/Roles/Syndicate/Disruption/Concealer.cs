@@ -87,7 +87,7 @@ public class Concealer : Syndicate
         if (HoldsDrive)
             return;
 
-        if (KeyboardJoystick.player.GetButton("Delete"))
+        if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
             if (ConcealedPlayer && !ConcealButton.EffectActive)
                 ConcealedPlayer = null;

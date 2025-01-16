@@ -26,10 +26,10 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     {
         base.OptionCreated();
         var str = Setting.Cast<StringOption>();
-        str.TitleText.SetText(TranslationManager.Translate(ID));
+        str.TitleText.text = TranslationManager.Translate(ID);
         str.Values = new(0);
 
-        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly)
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly && !TownOfUsReworked.MCIActive)
         {
             str.PlusBtn.gameObject.SetActive(false);
             str.MinusBtn.gameObject.SetActive(false);
@@ -49,7 +49,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     public override void ViewUpdate()
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.SetText(Format());
+        viewSettingsInfoPanel.settingText.text = Format();
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 
@@ -57,7 +57,7 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     {
         var str = Setting.Cast<StringOption>();
         str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Count);
-        str.ValueText.SetText(Format());
+        str.ValueText.text = Format();
     }
 
     public override void Debug()

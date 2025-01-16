@@ -78,13 +78,13 @@ public static class GameModeSettings
     public static GameMode GameMode { get; set; } = GameMode.Classic;
 
     [ToggleOption(MultiMenu.Main)]
-    public static bool IgnoreFactionCaps { get; set; } = false;
+    public static bool IgnoreFactionCaps { get; set; } = true;
 
     [ToggleOption(MultiMenu.Main)]
-    public static bool IgnoreAlignmentCaps { get; set; } = false;
+    public static bool IgnoreAlignmentCaps { get; set; } = true;
 
     [ToggleOption(MultiMenu.Main)]
-    public static bool IgnoreLayerCaps { get; set; } = false;
+    public static bool IgnoreLayerCaps { get; set; } = true;
 
     [NumberOption(MultiMenu.Main, 0, 13, 1)]
     public static Number NeutralsCount { get; set; } = new(1);
@@ -398,14 +398,14 @@ public static class CrewSettings
     [ToggleOption(MultiMenu.Main)]
     public static bool CrewFlashlight { get; set; } = false;
 
+    [StringOption(MultiMenu.Main)]
+    public static CrewVenting CrewVent { get; set; } = CrewVenting.Never;
+
     [NumberOption(MultiMenu.Main, 0, 14, 1)]
     public static Number CrewMax { get; set; } = new(5);
 
     [NumberOption(MultiMenu.Main, 0, 14, 1)]
     public static Number CrewMin { get; set; } = new(5);
-
-    [StringOption(MultiMenu.Main)]
-    public static CrewVenting CrewVent { get; set; } = CrewVenting.Never;
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -502,16 +502,6 @@ public static class SyndicateSettings
     public static Number SyndicateMin { get; set; } = new(1);
 }
 
-[AlignmentOption(LayerEnum.CrewAudit)]
-public static class CrewAuditorRoles
-{
-    [LayerOption("#708EEFFF", LayerEnum.Mystic)]
-    public static RoleOptionData Mystic { get; set; }
-
-    [LayerOption("#C0C0C0FF", LayerEnum.VampireHunter)]
-    public static RoleOptionData VampireHunter { get; set; }
-}
-
 [AlignmentOption(LayerEnum.CrewInvest)]
 public static class CrewInvestigativeRoles
 {
@@ -523,6 +513,9 @@ public static class CrewInvestigativeRoles
 
     [LayerOption("#A680FFFF", LayerEnum.Medium)]
     public static RoleOptionData Medium { get; set; }
+
+    [LayerOption("#708EEFFF", LayerEnum.Mystic)]
+    public static RoleOptionData Mystic { get; set; }
 
     [LayerOption("#A7D1B3FF", LayerEnum.Operative)]
     public static RoleOptionData Operative { get; set; }
@@ -1156,13 +1149,6 @@ public static class Dispositions
 
     [LayerOption("#370D43FF", LayerEnum.Traitor)]
     public static RoleOptionData Traitor { get; set; }
-}
-
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
-public static class CrewAuditorSettings
-{
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxCA { get; set; } = new(1);
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]

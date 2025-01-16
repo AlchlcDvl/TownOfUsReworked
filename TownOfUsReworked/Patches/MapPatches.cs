@@ -76,7 +76,7 @@ public static class MapPatches
         }
 
         RoleGenManager.BeginRoleGen();
-        ShipStatus.Instance.Begin();
+        Ship().Begin();
         __instance.SendClientReady();
         __instance.StartCoroutine(HUD().CoShowIntro());
     }

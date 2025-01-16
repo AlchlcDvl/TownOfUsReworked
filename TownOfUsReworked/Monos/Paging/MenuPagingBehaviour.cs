@@ -24,7 +24,7 @@ public class MenuPagingBehaviour : BasePagingBehaviour
     public override void OnPageChanged()
     {
         var i = 0;
-        PageText.SetText($"({PageIndex + 1}/{MaxPageIndex + 1})");
+        PageText.text = $"({PageIndex + 1}/{MaxPageIndex + 1})";
 
         foreach (var panel in Targets)
         {
