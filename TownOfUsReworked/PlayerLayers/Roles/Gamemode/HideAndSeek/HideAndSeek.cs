@@ -7,7 +7,7 @@ public abstract class HideAndSeek : GameModeRole
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.GameModeHideAndSeek;
+        Alignment = Alignment.HideAndSeek;
     }
 
     public override List<PlayerControl> Team() => [ .. GetLayers<Hunter>().Select(x => x.Player) ];

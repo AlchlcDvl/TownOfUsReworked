@@ -5,7 +5,7 @@ public abstract class Harbinger : Neutral
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralHarb;
+        Alignment = Alignment.Harbinger;
     }
 }
 

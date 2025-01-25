@@ -1,21 +1,21 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int priority = -1) : Attribute
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+public abstract class OptionAttribute(CustomOptionType type) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];
-    public static readonly List<OptionAttribute> SortedOptions = [];
+    public static readonly List<BaseHeaderOptionAttribute> SortedOptions = [];
     public string ID { get; set; }
-    public readonly List<MultiMenu> Menus = [ menu ];
     public MonoBehaviour Setting { get; set; }
     public MonoBehaviour ViewSetting { get; set; }
     public CustomOptionType Type { get; } = type;
     public bool All { get; set; }
     public bool ClientOnly { get; set; }
     public PropertyInfo Property { get; set; }
+    public FieldInfo Field { get; set; }
+    public bool IsProperty => Property != null;
+    public bool IsField => Field != null;
     public string Name { get; set; } // Not actually the setting text, just the property/class name :]
-    public Type TargetType { get; set; }
-    public int Priority { get; set; } = priority;
     public KeyValuePair<byte, byte> RpcId { get; set; }
 
     // Apparently, setting the parents in the attibutes doesn't seem to work
@@ -60,9 +60,8 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
     // This is for everything else
     public static readonly List<(string[], object[])> OptionParents2 =
     [
-        ( [ "TaskBar" ], [ GameMode.Classic, GameMode.Custom, GameMode.AllAny, GameMode.KillingOnly, GameMode.RoleList, GameMode.Vanilla ] ),
-        ( [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic, GameMode.Custom ] ),
-        ( [ "NeutralsCount", "AddArsonist", "AddCryomaniac", "AddPlaguebearer" ], [ GameMode.KillingOnly ] ),
+        ( [ "TaskBar" ], [ GameMode.Classic, GameMode.AllAny, GameMode.RoleList, GameMode.Vanilla ] ),
+        ( [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic ] ),
         ( [ "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [
             GameMode.HideAndSeek ] ),
         ( [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ] ),
@@ -77,23 +76,34 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         ( [ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ] ),
         ( [ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ] ),
         ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
-        ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom, GameMode.Vanilla, GameMode.KillingOnly, GameMode.RoleList ] ),
-        ( [ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Custom ] ),
+        ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.Vanilla, GameMode.RoleList ] ),
+        ( [ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny ] ),
         ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
         ( [ "RoleListEntries", "RoleListBans" ], [ GameMode.RoleList ] ),
-        ( [ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom ] ),
+        ( [ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.RoleList, GameMode.AllAny ] ),
         ( [ "NoSolo" ], [ NoSolo.SameNKs ] )
     ];
-    public static readonly List<(IEnumerable<OptionAttribute>, IOptionGroup)> OptionParents3 = []; // This is for option headers
+    public BaseHeaderOptionAttribute Header { get; set; }
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
     public virtual void SetProperty(PropertyInfo property)
     {
         Property = property;
         Name = property.Name.Replace("Priv", "");
+        Set();
+    }
+
+    public virtual void SetField(FieldInfo field)
+    {
+        Field = field;
+        Name = field.Name.Replace("Priv", "");
+        Set();
+    }
+
+    private void Set()
+    {
         ID = $"CustomOption.{Name}";
-        TargetType = property.PropertyType;
-        RpcId = new((byte)(AllOptions.Count / 255), (byte)(AllOptions.Count % 255));
+        RpcId = new((byte)(AllOptions.Count / 255), (byte)(AllOptions.Count % 255)); // Gotta love being able to theoretically have 2^16 options
         AllOptions.Add(this);
     }
 
@@ -116,15 +126,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         return result;
     }
 
-    public bool Active()
-    {
-        var result = PartiallyActive();
-
-        if (OptionParents3.TryFinding(x => x.Item1.Contains(this), out var header))
-            result &= header.Item2.Get();
-
-        return result;
-    }
+    public bool Active() => PartiallyActive() && (Header == null || Header.Get());
 
     private bool IsActive(object option)
     {
@@ -148,9 +150,9 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
             var invertVal = id.StartsWith("not+");
             id = id.Replace("not+", "");
 
-            if (AllOptions.TryFinding(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id, out var optionatt))
+            if (AllOptions.TryFinding(x => x.Name == id, out var optionatt))
             {
-                result = optionatt.Active();
+                result = optionatt.PartiallyActive();
 
                 if (optionatt is OptionAttribute<bool> boolOpt)
                     result &= invertVal ? !boolOpt.Get() : boolOpt.Get();
@@ -177,7 +179,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
     public virtual void ViewOptionCreated()
     {
-        ViewSetting.name = ID;
+        ViewSetting.name = $"{ID}.View";
 
         if (ViewSetting is ViewSettingsInfoPanel viewSettingsInfoPanel)
         {
@@ -190,36 +192,13 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
     public virtual string SettingNotif() => TranslationManager.Translate(ID);
 
-    public virtual void Debug()
-    {
-        if (!TranslationManager.IdExists(ID))
-            Fatal(ID);
-    }
+    public virtual void Debug() => TranslationManager.DebugId(ID);
 
-    public virtual void AddMenuIndex(int index)
-    {
-        var menu = (MultiMenu)index;
+    public virtual void ReadValueRpc(MessageReader reader) {}
 
-        if (!Menus.Contains(menu))
-            Menus.Add(menu);
-    }
+    public virtual void WriteValueRpc(MessageWriter writer) {}
 
-    public void SetBase(object value, bool rpc = true, bool notify = true)
-    {
-        if (IsInGame() && !ClientOnly)
-            return;
-
-        if (this is ToggleOptionAttribute toggle)
-            toggle.Set((bool)value, rpc, notify);
-        else if (this is NumberOptionAttribute number)
-            number.Set((Number)value, rpc, notify);
-        else if (this is StringOptionAttribute stringOpt)
-            stringOpt.Set((Enum)value, rpc, notify);
-        else if (this is RoleListEntryAttribute entry)
-            entry.Set((LayerEnum)value, rpc, notify);
-        else if (this is LayerOptionAttribute layer)
-            layer.Set((RoleOptionData)value, rpc, notify);
-    }
+    public virtual void ReadValueString(string value) {}
 
     public static string SettingsToString()
     {
@@ -260,6 +239,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         if (!SettingsPatches.Save)
             return;
 
+        SettingsPatches.Overwriting = false;
         SettingsPatches.CreatePresetButton(fileName);
         SettingsPatches.OnPageChanged();
     }
@@ -336,19 +316,11 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
 
             try
             {
-                option.SetBase(option.Type switch
-                {
-                    CustomOptionType.Toggle => bool.Parse(value),
-                    CustomOptionType.Number => Number.Parse(value),
-                    CustomOptionType.Layer => RoleOptionData.Parse(value),
-                    CustomOptionType.String => Enum.Parse(option.TargetType, value),
-                    CustomOptionType.Entry => Enum.Parse<LayerEnum>(value),
-                    _ => true
-                }, false);
+                option.ReadValueString(value);
             }
             catch (Exception e)
             {
-                Failure($"Unable to set - {opt}\nException:\n{e}");
+                Failure($"Unable to set - {name}:{value}\n{e}");
             }
 
             if (pos >= 50)
@@ -362,7 +334,7 @@ public abstract class OptionAttribute(MultiMenu menu, CustomOptionType type, int
         CallRpc(CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
     }
 
-    public static IEnumerable<T> GetOptions<T>() where T : OptionAttribute => AllOptions.Where(x => x is T).Cast<T>();
+    public static IEnumerable<T> GetOptions<T>() where T : OptionAttribute => AllOptions.OfType<T>();
 
     public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
 

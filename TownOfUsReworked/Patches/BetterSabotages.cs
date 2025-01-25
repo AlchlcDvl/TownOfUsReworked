@@ -4,29 +4,29 @@ namespace TownOfUsReworked.Patches;
 [HeaderOption(MultiMenu.Main, priority: 0)]
 public static class BetterSabotages
 {
-    [ToggleOption(MultiMenu.Main)]
-    public static bool CamouflagedComms { get; set; } = true;
+    [ToggleOption]
+    public static bool CamouflagedComms = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool CamouflagedMeetings { get; set; } = false;
+    [ToggleOption]
+    public static bool CamouflagedMeetings = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool NightVision { get; set; } = false;
+    [ToggleOption]
+    public static bool NightVision = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EvilsIgnoreNV { get; set; } = false;
+    [ToggleOption]
+    public static bool EvilsIgnoreNV = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool OxySlow { get; set; } = true;
+    [ToggleOption]
+    public static bool OxySlow = true;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 5, Format.Percent)]
-    public static Number ReactorShake { get; set; } = new(30);
+    [NumberOption(0, 100, 5, Format.Percent)]
+    public static Number ReactorShake = 30;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool CamoHideSize { get; set; } = false;
+    [ToggleOption]
+    public static bool CamoHideSize = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool CamoHideSpeed { get; set; } = false;
+    [ToggleOption]
+    public static bool CamoHideSpeed = false;
 
     public static void Postfix(HudManager __instance)
     {

@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Thief : Neutral, IGuesser
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number StealCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number StealCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ThiefSteals { get; set; } = false;
+    [ToggleOption]
+    public static bool ThiefSteals = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ThiefCanGuess { get; set; } = false;
+    [ToggleOption]
+    public static bool ThiefCanGuess = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ThiefVent { get; set; } = false;
+    [ToggleOption]
+    public static bool ThiefVent = false;
 
     public CustomButton StealButton { get; set; }
     public CustomMeeting GuessMenu { get; set; }
@@ -28,7 +28,7 @@ public class Thief : Neutral, IGuesser
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralBen;
+        Alignment = Alignment.Benign;
         StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);
         GuessMenu = new(Player, "Guess", Guess, IsExempt, SetLists);
@@ -174,8 +174,7 @@ public class Thief : Neutral, IGuesser
 
             if (cooldown != CooldownType.Fail)
             {
-                if (target.GetFaction() is Faction.Intruder or Faction.Syndicate || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or
-                    Alignment.CrewKill)
+                if (target.GetFaction() is Faction.Intruder or Faction.Syndicate || target.GetAlignment() is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
                 {
                     Utils.RpcMurderPlayer(Player, target);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
@@ -314,7 +313,7 @@ public class Thief : Neutral, IGuesser
         {
             MarkMeetingDead(player, Player);
 
-            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.NeutralApoc) &&
+            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.Apocalypse) &&
                 !lovers.OtherLover.Data.IsDead)
             {
                 RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);

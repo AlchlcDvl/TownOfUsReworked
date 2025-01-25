@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Pestilence : Apocalypse
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ObliterateCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ObliterateCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 2, 10, 1)]
-    public static Number MaxStacks { get; set; } = new(4);
+    [NumberOption(2, 10, 1)]
+    public static Number MaxStacks = 4;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool PestVent { get; set; } = true;
+    [ToggleOption]
+    public static bool PestVent = true;
 
     private CustomButton ObliterateButton { get; set; }
 
@@ -29,7 +29,7 @@ public class Pestilence : Apocalypse
 
         foreach (var player in AllPlayers())
         {
-            if (player.GetAlignment() is not (Alignment.NeutralApoc or Alignment.NeutralHarb))
+            if (player.GetAlignment() is not (Alignment.Apocalypse or Alignment.Harbinger))
                 Infected[player.PlayerId] = 1;
         }
     }

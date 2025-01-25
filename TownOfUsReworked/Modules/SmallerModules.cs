@@ -49,7 +49,7 @@ public struct RoleOptionData(int chance, int count, bool unique, bool active, La
 
     public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
 
-    public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && (IsClassic() || IsCustom())) || (Active && IsAA()) || (IsRoleList() && RoleListEntryAttribute.IsAdded(ID))) &&
+    public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsRoleList() && ListEntryAttribute.IsAdded(ID))) &&
         ID.IsValid(relatedCount);
 }
 
@@ -58,7 +58,7 @@ public record class LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum
     public string Name => TranslationManager.Translate($"Layer.{Layer}");
 }
 
-public readonly struct Number(float num)
+public readonly struct Number(float num) : IComparable, IConvertible, ISpanFormattable, IEquatable<Number>, IComparable<Number>
 {
     public float Value { get; } = num;
 
@@ -66,9 +66,84 @@ public readonly struct Number(float num)
 
     public static implicit operator int(Number number) => (int)number.Value;
 
+    public static implicit operator byte(Number number) => (byte)number.Value;
+
+    public static implicit operator Number(float num) => new(num);
+
+    public static implicit operator Number(int num) => new(num);
+
+    public static bool operator ==(Number a, Number b) => a.Value == b.Value;
+
+    public static bool operator !=(Number a, Number b) => a.Value != b.Value;
+
+    public static bool operator >(Number a, Number b) => a.Value > b.Value;
+
+    public static bool operator >=(Number a, Number b) => a.Value >= b.Value;
+
+    public static bool operator <(Number a, Number b) => a.Value < b.Value;
+
+    public static bool operator <=(Number a, Number b) => a.Value <= b.Value;
+
+    public static Number operator ^(Number a, Number b) => Mathf.Pow(a.Value, b.Value);
+
     public override readonly string ToString() => Value.ToString();
 
+    public readonly string ToString(string? format, IFormatProvider? formatProvider) => Value.ToString(format, formatProvider);
+
+    public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider) =>
+        Value.TryFormat(destination, out charsWritten, format, provider);
+
+    public override readonly bool Equals(object obj) => obj is Number number && Equals(number);
+
+    public readonly bool Equals(Number other) => Value == other.Value;
+
+    public override readonly int GetHashCode() => Value.GetHashCode();
+
     public static Number Parse(string value) => new(float.Parse(value));
+
+    public TypeCode GetTypeCode() => TypeCode.Single;
+
+    public bool ToBoolean(IFormatProvider? provider) => Convert.ToBoolean(Value, provider);
+
+    public byte ToByte(IFormatProvider? provider) => Convert.ToByte(Value, provider);
+
+    public char ToChar(IFormatProvider? provider) => Convert.ToChar(Value, provider);
+
+    public DateTime ToDateTime(IFormatProvider? provider) => Convert.ToDateTime(Value, provider);
+
+    public decimal ToDecimal(IFormatProvider? provider) => Convert.ToDecimal(Value, provider);
+
+    public double ToDouble(IFormatProvider? provider) => Convert.ToDouble(Value, provider);
+
+    public short ToInt16(IFormatProvider? provider) => Convert.ToInt16(Value, provider);
+
+    public int ToInt32(IFormatProvider? provider) => Convert.ToInt32(Value, provider);
+
+    public long ToInt64(IFormatProvider? provider) => Convert.ToInt64(Value, provider);
+
+    public sbyte ToSByte(IFormatProvider? provider) => Convert.ToSByte(Value, provider);
+
+    public float ToSingle(IFormatProvider? provider) => Convert.ToSingle(Value, provider);
+
+    public string ToString(IFormatProvider? provider) => Convert.ToString(Value, provider);
+
+    public object ToType(Type conversionType, IFormatProvider? provider) => Convert.ChangeType(Value, conversionType, provider);
+
+    public ushort ToUInt16(IFormatProvider? provider) => Convert.ToUInt16(Value, provider);
+
+    public uint ToUInt32(IFormatProvider? provider) => Convert.ToUInt32(Value, provider);
+
+    public ulong ToUInt64(IFormatProvider? provider) => Convert.ToUInt64(Value, provider);
+
+    public int CompareTo(object? obj)
+    {
+        if (obj is Number other)
+            return Value.CompareTo(other.Value);
+
+        throw new ArgumentException("Object is not a Number");
+    }
+
+    public int CompareTo(Number other) => Value.CompareTo(other.Value);
 }
 
 public class UnsupportedLanguageException(string message) : Exception($"Selected language is unsupported {message}");

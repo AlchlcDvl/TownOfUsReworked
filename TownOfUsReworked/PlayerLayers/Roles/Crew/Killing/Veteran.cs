@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Veteran : Crew, IAlerter
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxAlerts { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxAlerts = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number AlertCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number AlertCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number AlertDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number AlertDur = 10;
 
     public CustomButton AlertButton { get; set; }
 
@@ -24,7 +24,7 @@ public class Veteran : Crew, IAlerter
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewKill;
+        Alignment = Alignment.Killing;
         AlertButton ??= new(this, "ALERT", new SpriteName("Alert"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Alert, new Cooldown(AlertCd), MaxAlerts,
             (EndFunc)EndEffect, new Duration(AlertDur));
     }

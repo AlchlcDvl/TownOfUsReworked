@@ -31,7 +31,7 @@ public static class MeetingPatches
         Ash.DestroyAll();
         MeetingCount++;
 
-        if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || IsKilling()) && !Syndicate.SyndicateHasChaosDrive)
+        if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || SyndicateSettings.AssignOnGameStart) && !Syndicate.SyndicateHasChaosDrive)
             AssignChaosDrive();
 
         Coroutines.Start(Announcements());
@@ -65,10 +65,12 @@ public static class MeetingPatches
                 yield return Wait(2f);
                 var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
 
-                if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
+                if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Both)
+                    report = $"They were killed by member of the {killerRole.FactionName}, the {killerRole}.";
+                else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
                     report = $"They were killed by the {killerRole}.";
                 else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
-                    report = $"They were killed by the {killerRole.FactionName}.";
+                    report = $"They were killed by a member of the {killerRole.FactionName}.";
                 else
                     report = "They were killed by an unknown assailant.";
 
@@ -76,10 +78,12 @@ public static class MeetingPatches
                 yield return Wait(2f);
                 var role = player.GetRole();
 
-                if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
+                if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Both)
+                    report = $"They were a member of the {role.FactionName}, the {role}.";
+                else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
                     report = $"They were the {role}.";
                 else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
-                    report = $"They were the {role.FactionName}.";
+                    report = $"They were a member of the {role.FactionName}.";
                 else
                     report = $"We could not determine what {player.name} was.";
 

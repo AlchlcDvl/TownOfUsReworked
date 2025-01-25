@@ -8,129 +8,112 @@ public class RoleListGen : BaseRoleGen
 
     public override void InitList()
     {
-        var entries = OptionAttribute.GetOptions<RoleListEntryAttribute>().Where(x => x.Name.Contains("Entry"));
-        var alignments = entries.Where(x => AlignmentEntries.Contains(x.Get()));
-        var randoms = entries.Where(x => RandomEntries.Contains(x.Get()));
-        var roles = entries.Where(x => Alignments.Any(y => y.Contains(x.Get())));
-        var anies = entries.Where(x => x.Get() == LayerEnum.Any);
-        // I have no idea what plural for any is lmao
+        SetPostmortals.Phantoms = GameModeSettings.PhantomCount;
+        SetPostmortals.Revealers = GameModeSettings.RevealerCount;
+        SetPostmortals.Banshees = GameModeSettings.BansheeCount;
+        SetPostmortals.Ghouls = GameModeSettings.GhoulCount;
 
-        SetPostmortals.Phantoms = (byte)(RoleListEntries.EnablePhantom ? 1 : 0);
-        SetPostmortals.Revealers = (byte)(RoleListEntries.EnableRevealer ? 1 : 0);
-        SetPostmortals.Banshees = (byte)(RoleListEntries.EnableBanshee ? 1 : 0);
-        SetPostmortals.Ghouls = (byte)(RoleListEntries.EnableGhoul ? 1 : 0);
-
-        foreach (var entry in roles)
+        foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role))
         {
-            var ratelimit = 0;
-            var id = entry.Get();
-            var cachedCount = AllRoles.Count;
+            var entries = new List<LayerEnum>();
 
-            while (cachedCount == AllRoles.Count && ratelimit < 10000)
+            foreach (var id in entry.Get())
             {
-                if (CannotAdd(id))
-                    ratelimit++;
-                else
-                    AllRoles.Add(GetSpawnItem(id));
-            }
-        }
+                var rateLimit = 0;
+                var cachedCount = AllRoles.Count;
 
-        foreach (var entry in alignments)
-        {
-            var cachedCount = AllRoles.Count;
-            var id = entry.Get();
-            var ratelimit = 0;
-
-            while (cachedCount == AllRoles.Count && ratelimit < 10000)
-            {
-                var random = id switch
+                while (rateLimit < 10000 && AllRoles.Count == cachedCount)
                 {
-                    LayerEnum.CrewInvest => CI.Random(),
-                    LayerEnum.CrewSov => CSv.Random(),
-                    LayerEnum.CrewProt => CrP.Random(),
-                    LayerEnum.CrewKill => CK.Random(),
-                    LayerEnum.CrewSupport => CS.Random(),
-                    LayerEnum.NeutralBen => NB.Random(),
-                    LayerEnum.NeutralEvil => NE.Random(),
-                    LayerEnum.NeutralNeo => NN.Random(),
-                    LayerEnum.NeutralHarb => NH.Random(),
-                    LayerEnum.NeutralApoc => NA.Random(),
-                    LayerEnum.NeutralKill => NK.Random(),
-                    LayerEnum.IntruderConceal => IC.Random(),
-                    LayerEnum.IntruderDecep => ID.Random(),
-                    LayerEnum.IntruderKill => IK.Random(),
-                    LayerEnum.IntruderSupport => IS.Random(),
-                    LayerEnum.SyndicateSupport => SSu.Random(),
-                    LayerEnum.SyndicatePower => SP.Random(),
-                    LayerEnum.SyndicateDisrup => SD.Random(),
-                    LayerEnum.SyndicateKill => SyK.Random(),
-                    LayerEnum.IntruderHead => IH.Random(),
-                    _ => LayerEnum.None
-                };
+                    if (id is not LayerEnum layer)
+                    {
+                        layer = (LayerEnum)(id switch
+                        {
+                            RoleListSlot.CrewInvest => CI.Random(),
+                            RoleListSlot.CrewSupport => CS.Random(),
+                            RoleListSlot.CrewProt => CrP.Random(),
+                            RoleListSlot.CrewKill => CK.Random(),
+                            RoleListSlot.CrewSov => CSv.Random(),
+                            RoleListSlot.CrewUtil => CU.Random(),
+                            RoleListSlot.RegularCrew => RegCrew.Random().Random(),
+                            RoleListSlot.PowerCrew => PowerCrew.Random().Random(),
+                            RoleListSlot.RandomCrew => RoleGenManager.Crew.Random().Random(),
+                            RoleListSlot.NonCrew => NonCrew.Random().Random().Random(),
+                            RoleListSlot.NeutralKill or RoleListSlot.ComplianceKill => NK.Random(),
+                            RoleListSlot.NeutralHarb or RoleListSlot.ComplianceHarb => NH.Random(),
+                            RoleListSlot.NeutralNeo or RoleListSlot.ComplianceNeo => NN.Random(),
+                            RoleListSlot.NeutralBen => NB.Random(),
+                            RoleListSlot.NeutralEvil => NE.Random(),
+                            RoleListSlot.RandomNeutral => RoleGenManager.Neutral.Random().Random(),
+                            RoleListSlot.RegularNeutral or RoleListSlot.NonCompNeutral => RegNeutral.Random().Random(),
+                            RoleListSlot.HarmfulNeutral or RoleListSlot.RandomCompliance => HarmNeutral.Random().Random(),
+                            RoleListSlot.NonNeutral => NonNeutral.Random().Random().Random(),
+                            RoleListSlot.IntruderSupport => IS.Random(),
+                            RoleListSlot.IntruderConceal => IC.Random(),
+                            RoleListSlot.IntruderDecep => ID.Random(),
+                            RoleListSlot.IntruderKill => IK.Random(),
+                            RoleListSlot.IntruderUtil => IU.Random(),
+                            RoleListSlot.IntruderHead => IH.Random(),
+                            RoleListSlot.RandomIntruder => RoleGenManager.Intruders.Random().Random(),
+                            RoleListSlot.RegularIntruder => RegNeutral.Random().Random(),
+                            RoleListSlot.PowerIntruder => PowerIntruders.Random().Random(),
+                            RoleListSlot.NonIntruder => NonIntruders.Random().Random().Random(),
+                            RoleListSlot.SyndicateKill => SyK.Random(),
+                            RoleListSlot.SyndicateSupport => SSu.Random(),
+                            RoleListSlot.SyndicateDisrup => SD.Random(),
+                            RoleListSlot.SyndicatePower => SP.Random(),
+                            RoleListSlot.SyndicateUtil => SU.Random(),
+                            RoleListSlot.RandomSyndicate => RoleGenManager.Syndicate.Random().Random(),
+                            RoleListSlot.RegularSyndicate => RegSyndicate.Random().Random(),
+                            RoleListSlot.PowerSyndicate => PowerSyndicate.Random().Random(),
+                            RoleListSlot.NonSyndicate => NonSyndicate.Random().Random().Random(),
+                            RoleListSlot.PandoraKill => PK.Random(),
+                            RoleListSlot.PandoraConceal => PC.Random(),
+                            RoleListSlot.PandoraDecep => PDe.Random(),
+                            RoleListSlot.PandoraDisrup => PDi.Random(),
+                            RoleListSlot.PandoraPower => PP.Random(),
+                            RoleListSlot.PandoraSupport => PS.Random(),
+                            RoleListSlot.PandoraHead => PH.Random(),
+                            RoleListSlot.PandoraUtil => PU.Random(),
+                            RoleListSlot.RandomPandora => Pandorica.Random().Random(),
+                            RoleListSlot.RegularPandora => RegPandorica.Random().Random(),
+                            RoleListSlot.PowerPandora => PowerPandorica.Random().Random(),
+                            RoleListSlot.NonPandora => NonPandorica.Random().Random().Random(),
+                            RoleListSlot.NonCompliance => NonCompliance.Random().Random().Random(),
+                            RoleListSlot.IlluminatiKill => IlK.Random(),
+                            RoleListSlot.IlluminatiConceal => IlC.Random(),
+                            RoleListSlot.IlluminatiDecep => IlDe.Random(),
+                            RoleListSlot.IlluminatiDisrup => IlDi.Random(),
+                            RoleListSlot.IlluminatiPower => IP.Random(),
+                            RoleListSlot.IlluminatiSupport => IlS.Random(),
+                            RoleListSlot.IlluminatiHead => IlHe.Random(),
+                            RoleListSlot.IlluminatiUtil => IlU.Random(),
+                            RoleListSlot.IlluminatiHarb => IlHa.Random(),
+                            RoleListSlot.IlluminatiNeo => IN.Random(),
+                            RoleListSlot.RandomIlluminati => Illuminati.Random().Random(),
+                            RoleListSlot.RegularIlluminati => RegIlluminati.Random().Random(),
+                            RoleListSlot.PowerIlluminati => PowerIlluminati.Random().Random(),
+                            RoleListSlot.NonIlluminati => NonIlluminati.Random().Random().Random(),
+                            _ => Alignments.Random().Random(),
+                        });
+                    }
 
-                if (CannotAdd(random))
-                    ratelimit++;
-                else
-                    AllRoles.Add(GetSpawnItem(random));
-            }
-        }
-
-        foreach (var entry in randoms)
-        {
-            var cachedCount = AllRoles.Count;
-            var id = entry.Get();
-            var ratelimit = 0;
-
-            while (cachedCount == AllRoles.Count && ratelimit < 10000)
-            {
-                var random = id switch
-                {
-                    LayerEnum.RandomCrew => RoleGenManager.Crew.Random().Random(),
-                    LayerEnum.RandomNeutral => RoleGenManager.Neutral.Random().Random(),
-                    LayerEnum.RandomIntruder => RoleGenManager.Intruders.Random().Random(),
-                    LayerEnum.RandomSyndicate => RoleGenManager.Syndicate.Random().Random(),
-                    LayerEnum.RegularCrew => RegCrew.Random().Random(),
-                    LayerEnum.RegularIntruder => RegIntruders.Random().Random(),
-                    LayerEnum.RegularNeutral => RegNeutral.Random().Random(),
-                    LayerEnum.HarmfulNeutral => HarmNeutral.Random().Random(),
-                    LayerEnum.RegularSyndicate => RegSyndicate.Random().Random(),
-                    LayerEnum.NonIntruder => NonIntruders.Random().Random().Random(),
-                    LayerEnum.NonCrew => NonCrew.Random().Random().Random(),
-                    LayerEnum.NonNeutral => NonNeutral.Random().Random().Random(),
-                    LayerEnum.NonSyndicate => NonSyndicate.Random().Random().Random(),
-                    LayerEnum.FactionedEvil => FactionedEvils.Random().Random().Random(),
-                    _ => LayerEnum.None
-                };
-
-                if (CannotAdd(random))
-                    ratelimit++;
-                else
-                    AllRoles.Add(GetSpawnItem(random));
-            }
-        }
-
-        foreach (var entry in anies)
-        {
-            var cachedCount = AllRoles.Count;
-            var ratelimit = 0;
-
-            while (cachedCount == AllRoles.Count && ratelimit < 10000)
-            {
-                var random = Alignments.Random().Random();
-
-                if (CannotAdd(random))
-                    ratelimit++;
-                else
-                    AllRoles.Add(GetSpawnItem(random));
+                    if (CannotAdd(layer))
+                        rateLimit++;
+                    else
+                        AllRoles.Add(GetSpawnItem(layer));
+                }
             }
         }
 
         // Added rate limits to ensure the loops do not go on forever if roles have been set to unique
+
+        while (AllRoles.Count > GameData.Instance.PlayerCount)
+            AllRoles.TakeLast();
 
         // In case if the ratelimits and bans disallow the spawning of roles from the role list, vanilla Crewmate should spawn
         while (AllRoles.Count < GameData.Instance.PlayerCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
-    private static bool CannotAdd(LayerEnum id) => AllRoles.Any(x => x.ID == id && x.Unique) || RoleListEntryAttribute.IsBanned(id);
+    private static bool CannotAdd(LayerEnum id) => AllRoles.Any(x => x.ID == id && x.Unique) || ListEntryAttribute.IsBanned(id);
 }

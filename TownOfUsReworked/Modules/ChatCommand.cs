@@ -423,7 +423,7 @@ public class ChatCommand
     //         message += $"{arg} ";
     //     }
 
-    //     writer.EndRpc();
+    //     writer.CloseRpc();
     //     Success("RPC Sent!");
     //     Run("<#FF00FFFF>⚠ RPC TEST ⚠</color>", $"RPC Sent!\nWith the following message: {message}");
     // }

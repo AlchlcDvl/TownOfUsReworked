@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Professional : Modifier
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ProfessionalKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool ProfessionalKnows = true;
 
     public bool LifeUsed { get; set; }
 

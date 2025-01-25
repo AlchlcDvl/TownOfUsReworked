@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Drunk : Modifier
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool DrunkControlsSwap { get; set; } = false;
+    [ToggleOption]
+    public static bool DrunkControlsSwap = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool DrunkKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool DrunkKnows = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
-    public static Number DrunkInterval { get; set; } = new(10);
+    [NumberOption(1f, 20f, 1f, Format.Time)]
+    public static Number DrunkInterval = 10;
 
     private static float _time;
     public int Modify { get; set; }

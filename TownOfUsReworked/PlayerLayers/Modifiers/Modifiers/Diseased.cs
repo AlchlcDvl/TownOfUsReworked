@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Diseased : Modifier
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool DiseasedKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool DiseasedKnows = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1.5f, 5f, 0.5f, Format.Multiplier)]
-    public static Number DiseasedMultiplier { get; set; } = new(3);
+    [NumberOption(1.5f, 5f, 0.5f, Format.Multiplier)]
+    public static Number DiseasedMultiplier = 3;
 
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Diseased : CustomColorManager.Modifier;
     public override LayerEnum Type => LayerEnum.Diseased;

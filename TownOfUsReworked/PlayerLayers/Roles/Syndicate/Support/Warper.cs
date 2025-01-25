@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Warper : Syndicate, IWarper
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number WarpCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number WarpCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
-    public static Number WarpDur { get; set; } = new(5);
+    [NumberOption(1f, 20f, 1f, Format.Time)]
+    public static Number WarpDur = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool WarpSelf { get; set; } = true;
+    [ToggleOption]
+    public static bool WarpSelf = true;
 
     public CustomButton WarpButton { get; set; }
     public CustomPlayerMenu WarpMenu { get; set; }
@@ -25,7 +25,7 @@ public class Warper : Syndicate, IWarper
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateSupport;
+        Alignment = Alignment.Support;
         WarpMenu = new(Player, Click, Exception1);
         WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
     }
@@ -73,15 +73,6 @@ public class Warper : Syndicate, IWarper
         }
 
         warper.Warping = true;
-
-        if (!player1.HasDied())
-        {
-            player1.moveable = false;
-            player1.NetTransform.Halt();
-            player1.MyPhysics.ResetMoveState();
-            player1.MyPhysics.ResetAnimState();
-            player1.MyPhysics.StopAllCoroutines();
-        }
 
         if (player1.AmOwner)
             Flash(warper.Color, WarpDur);
@@ -144,7 +135,7 @@ public class Warper : Syndicate, IWarper
         }
         else if (!player1Body && player2Body)
         {
-            player1.CustomSnapTo(new(player2Body.TruePosition.x, player2Body.TruePosition.y + 0.3636f));
+            player1.CustomSnapTo(player2Body.TruePosition);
 
             if (player1.CanVent() && vent && wasInVent)
                 player1.MyPhysics.RpcEnterVent(vent.Id);
@@ -161,8 +152,12 @@ public class Warper : Syndicate, IWarper
 
     public bool Click(PlayerControl player, out bool shouldClose)
     {
-        var cooldown = Interact(Player, player);
         shouldClose = false;
+
+        if (player.IsMoving())
+            return false;
+
+        var cooldown = Interact(Player, player);
 
         if (cooldown != CooldownType.Fail)
             return true;
@@ -176,9 +171,11 @@ public class Warper : Syndicate, IWarper
     public bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId) &&
         player.Data.IsDead);
 
-    public static void WarpAll()
+    public static IEnumerator WarpAll(Dictionary<byte, Vector2> coords, IWarper warper)
     {
-        var coords = GenerateWarpCoordinates();
+        Flash(warper.Color, WarpDur);
+        AllPlayers().ForEach(x => AnimatePortal(x, WarpDur));
+        yield return Wait(WarpDur);
 
         foreach (var (id, pos) in coords)
         {
@@ -186,12 +183,9 @@ public class Warper : Syndicate, IWarper
             var body = BodyById(id);
 
             if (body)
-            {
                 body.transform.position = pos;
-                CallRpc(CustomRPC.Misc, MiscRPC.MoveBody, body, pos);
-            }
             else
-                player.RpcCustomSnapTo(pos);
+                player.CustomSnapTo(pos);
         }
     }
 
@@ -199,21 +193,65 @@ public class Warper : Syndicate, IWarper
     {
         if (HoldsDrive)
         {
-            WarpAll();
+            var coords = GenerateWarpCoordinates();
+            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.All);
+
+            if (writer != null)
+            {
+                writer.Write((byte)coords.Count);
+
+                foreach (var (id, pos) in coords)
+                {
+                    writer.Write(id);
+                    writer.Write(pos);
+                }
+
+                writer.CloseRpc();
+            }
+
+            Coroutines.Start(WarpAll(coords, this));
             WarpButton.StartCooldown();
         }
         else if (WarpMenu.Selected.Count < 2)
             WarpMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpMenu.Selected[0], WarpMenu.Selected[1]);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.Single, WarpMenu.Selected[0], WarpMenu.Selected[1]);
             Coroutines.Start(WarpPlayers(PlayerById(WarpMenu.Selected[0]), PlayerById(WarpMenu.Selected[1]), this));
             WarpMenu.Selected.Clear();
             WarpButton.StartCooldown();
         }
     }
 
-    public override void ReadRPC(MessageReader reader) => Coroutines.Start(WarpPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
+    public override void ReadRPC(MessageReader reader)
+    {
+        var warpAction = reader.ReadEnum<WarpActionsRPC>();
+
+        switch (warpAction)
+        {
+            case WarpActionsRPC.All:
+            {
+                var coords = new Dictionary<byte, Vector2>();
+                var num = reader.ReadByte();
+
+                while (num-- > 0)
+                    coords[reader.ReadByte()] = reader.ReadVector2();
+
+                Coroutines.Start(WarpAll(coords, this));
+                break;
+            }
+            case WarpActionsRPC.Single:
+            {
+                Coroutines.Start(WarpPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
+                break;
+            }
+            default:
+            {
+                Failure($"Received unknown RPC - {warpAction}");
+                break;
+            }
+        }
+    }
 
     public string Label()
     {

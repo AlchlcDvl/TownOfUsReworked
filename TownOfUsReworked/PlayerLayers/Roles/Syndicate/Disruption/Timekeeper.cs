@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Timekeeper : Syndicate
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number TimeCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number TimeCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number TimeDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number TimeDur = 10;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TimeFreezeImmunity { get; set; } = true;
+    [ToggleOption]
+    public static bool TimeFreezeImmunity = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TimeRewindImmunity { get; set; } = true;
+    [ToggleOption]
+    public static bool TimeRewindImmunity = true;
 
     public static bool TKExists { get; set; }
 
@@ -28,7 +28,7 @@ public class Timekeeper : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateDisrup;
+        Alignment = Alignment.Disruption;
         TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
             (EffectEndVoid)UnControl, new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart);
         TKExists = true;

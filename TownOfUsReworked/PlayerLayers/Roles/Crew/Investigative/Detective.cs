@@ -3,20 +3,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Detective : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ExamineCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ExamineCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 60f, 2.5f, Format.Time)]
-    public static Number RecentKill { get; set; } = new(10);
+    [NumberOption(5f, 60f, 2.5f, Format.Time)]
+    public static Number RecentKill = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.05f, 2f, 0.05f, Format.Time)]
-    public static Number FootprintInterval { get; set; } = new(0.15f);
+    [NumberOption(0.05f, 2f, 0.05f, Format.Time)]
+    public static Number FootprintInterval = 0.15f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 10f, 0.5f, Format.Time)]
-    public static Number FootprintDur { get; set; } = new(10);
+    [NumberOption(1f, 10f, 0.5f, Format.Time)]
+    public static Number FootprintDur = 10;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static FootprintVisibility AnonymousFootPrint { get; set; } = FootprintVisibility.OnlyWhenCamouflaged;
+    [StringOption<FootprintVisibility>]
+    public static FootprintVisibility AnonymousFootPrint = FootprintVisibility.OnlyWhenCamouflaged;
 
     public CustomButton ExamineButton { get; set; }
 
@@ -29,7 +29,7 @@ public class Detective : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewInvest;
+        Alignment = Alignment.Investigative;
         ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Examine, new Cooldown(ExamineCd));
     }
 

@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Tracker : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxTracks { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxTracks = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number TrackCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number TrackCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ResetOnNewRound { get; set; } = false;
+    [ToggleOption]
+    public static bool ResetOnNewRound = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
-    public static Number UpdateInterval { get; set; } = new(5);
+    [NumberOption(0f, 15f, 0.5f, Format.Time)]
+    public static Number UpdateInterval = 5;
 
     public Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
     public CustomButton TrackButton { get; set; }
@@ -27,7 +27,7 @@ public class Tracker : Crew
     {
         base.Init();
         TrackerArrows.Clear();
-        Alignment = Alignment.CrewInvest;
+        Alignment = Alignment.Investigative;
         TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);
     }

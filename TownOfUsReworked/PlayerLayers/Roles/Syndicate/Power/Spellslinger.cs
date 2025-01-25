@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Spellslinger : Syndicate, IHexer
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number SpellCd { get; set; } = new(25f);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number SpellCd { get; set; } = 25f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static Number SpellCdIncrease { get; set; } = new(5);
+    [NumberOption(2.5f, 30f, 2.5f, Format.Time)]
+    public static Number SpellCdIncrease { get; set; } = 5;
 
     public CustomButton SpellButton { get; set; }
     public List<byte> Spelled { get; } = [];
@@ -22,7 +22,7 @@ public class Spellslinger : Syndicate, IHexer
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicatePower;
+        Alignment = Alignment.Power;
         Spelled.Clear();
         SpellCount = 0;
         SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(SpellCd), "SPELLBIND", (DifferenceFunc)Difference,

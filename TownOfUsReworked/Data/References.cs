@@ -13,13 +13,13 @@ public static class References
     public static readonly Dictionary<byte, float> UninteractiblePlayers2 = [];
     public static readonly Dictionary<byte, string> BodyLocations = [];
     public static readonly Dictionary<byte, int> KillCounts = [];
-    public static DeadBody[] AllBodies() => UObject.FindObjectsOfType<DeadBody>();
-    public static Vent[] AllVents() => UObject.FindObjectsOfType<Vent>();
-    public static Vent[] AllMapVents() => Ship().AllVents;
-    public static GameObject[] AllGameObjects() => UObject.FindObjectsOfType<GameObject>();
-    public static Console[] AllConsoles() => UObject.FindObjectsOfType<Console>();
-    public static SystemConsole[] AllSystemConsoles() => UObject.FindObjectsOfType<SystemConsole>();
-    public static PlayerVoteArea[] AllVoteAreas() => Meeting().playerStates;
+    public static IEnumerable<DeadBody> AllBodies() => UObject.FindObjectsOfType<DeadBody>();
+    public static IEnumerable<Vent> AllVents() => UObject.FindObjectsOfType<Vent>();
+    public static IEnumerable<Vent> AllMapVents() => Ship().AllVents;
+    public static IEnumerable<GameObject> AllGameObjects() => UObject.FindObjectsOfType<GameObject>();
+    public static IEnumerable<Console> AllConsoles() => UObject.FindObjectsOfType<Console>();
+    public static IEnumerable<SystemConsole> AllSystemConsoles() => UObject.FindObjectsOfType<SystemConsole>();
+    public static IEnumerable<PlayerVoteArea> AllVoteAreas() => Meeting().playerStates;
     public static IEnumerable<PlayerControl> AllPlayers() => PlayerControl.AllPlayerControls.ToSystem();
     public static HudManager HUD() => HudManager.Instance;
     public static MeetingHud Meeting() => MeetingHud.Instance;
@@ -49,7 +49,7 @@ public static class References
     public const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
     // public static readonly char[] Lowercase = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
     // public static readonly char[] Uppercase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-    public static readonly Vector2[] SkeldSpawns =
+    public static readonly IEnumerable<Vector2> SkeldSpawns =
     [
         new(-2.2f, 2.2f), // Cafeteria. botton. top left
         new(0.7f, 2.2f), // Caffeteria. button. top right
@@ -90,7 +90,7 @@ public static class References
         new(-10.5f, -2), // Medbay top
         new(-6.5f, -4.5f) // Medbay bottom
     ];
-    public static readonly Vector2[] MiraSpawns =
+    public static readonly IEnumerable<Vector2> MiraSpawns =
     [
         new(-4.5f, 3.5f), // Launchpad top
         new(-4.5f, -1.4f), // Launchpad bottom
@@ -114,7 +114,7 @@ public static class References
         new(19f, 4f), // Storage
         new(22f, -2f) // Balcony
     ];
-    public static readonly Vector2[] PolusSpawns =
+    public static readonly IEnumerable<Vector2> PolusSpawns =
     [
         new(16.6f, -1f), // Dropship top
         new(16.6f, -5f), // Dropship bottom
@@ -160,7 +160,7 @@ public static class References
         new(15f, -17f), // Between coms-office
         new(17.5f, -25.7f) // Snowman under office
     ];
-    public static readonly Vector2[] dlekSSpawns =
+    public static readonly IEnumerable<Vector2> dlekSSpawns =
     [
         new(2.2f, 2.2f), // Cafeteria. botton. top left
         new(-0.7f, 2.2f), // Caffeteria. button. top right
@@ -336,7 +336,7 @@ public static class References
         { LayerEnum.Tunneler, new(typeof(Tunneler), CustomColorManager.Tunneler, LayerEnum.Tunneler) },
         { LayerEnum.Underdog, new(typeof(Underdog), CustomColorManager.Underdog, LayerEnum.Underdog) },
         { LayerEnum.Cabal, new(null, CustomColorManager.Cabal, LayerEnum.Cabal) },
-        { LayerEnum.Sect, new(null, CustomColorManager.Sect, LayerEnum.Sect) },
+        { LayerEnum.Cult, new(null, CustomColorManager.Cult, LayerEnum.Cult) },
         { LayerEnum.Reanimated, new(null, CustomColorManager.Reanimated, LayerEnum.Reanimated) },
         { LayerEnum.Undead, new(null, CustomColorManager.Undead, LayerEnum.Undead) }
     };

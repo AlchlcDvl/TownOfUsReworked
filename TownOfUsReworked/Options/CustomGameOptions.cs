@@ -5,648 +5,592 @@ namespace TownOfUsReworked.Options;
 [HeaderOption(MultiMenu.Main)]
 public static class GameSettings
 {
-    [NumberOption(MultiMenu.Main, 0.25f, 10, 0.25f, Format.Multiplier)]
-    public static Number PlayerSpeed { get; set; } = new(1.25f);
+    [NumberOption(0.25f, 10, 0.25f, Format.Multiplier)]
+    public static Number PlayerSpeed = 1.25f;
 
-    [NumberOption(MultiMenu.Main, 0.25f, 10, 0.25f, Format.Multiplier)]
-    public static Number GhostSpeed { get; set; } = new(3);
+    [NumberOption(0.25f, 10, 0.25f, Format.Multiplier)]
+    public static Number GhostSpeed = 3;
 
-    [NumberOption(MultiMenu.Main, 0.5f, 5, 0.5f, Format.Distance)]
-    public static Number InteractionDistance { get; set; } = new(2);
+    [NumberOption(0.5f, 5, 0.5f, Format.Distance)]
+    public static Number InteractionDistance = 2;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static Number EmergencyButtonCount { get; set; } = new(1);
+    [NumberOption(0, 100, 1)]
+    public static Number EmergencyButtonCount = 1;
 
-    [NumberOption(MultiMenu.Main, 0, 300, 2.5f, Format.Time)]
-    public static Number EmergencyButtonCooldown { get; set; } = new(25);
+    [NumberOption(0, 300, 2.5f, Format.Time)]
+    public static Number EmergencyButtonCooldown = 25;
 
-    [NumberOption(MultiMenu.Main, 0, 300, 5, Format.Time)]
-    public static Number DiscussionTime { get; set; } = new(30);
+    [NumberOption(0, 300, 5, Format.Time)]
+    public static Number DiscussionTime = 30;
 
-    [NumberOption(MultiMenu.Main, 5, 600, 15, Format.Time)]
-    public static Number VotingTime { get; set; } = new(60);
+    [NumberOption(5, 600, 15, Format.Time)]
+    public static Number VotingTime = 60;
 
-    [StringOption(MultiMenu.Main)]
-    private static TBMode TaskBar { get; set; } = TBMode.MeetingOnly;
+    [StringOption<TBMode>]
+    private static TBMode TaskBar = TBMode.MeetingOnly;
     public static TBMode TaskBarMode => GameModeSettings.GameMode switch
     {
         GameMode.TaskRace or GameMode.HideAndSeek => TBMode.Normal,
         _ => TaskBar
     }; // I want this to actually change according to the game modes
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool ConfirmEjects { get; set; } = false;
+    [ToggleOption]
+    public static bool ConfirmEjects = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EjectionRevealsRoles { get; set; } = false;
+    [ToggleOption]
+    public static bool EjectionRevealsRoles = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableInitialCds { get; set; } = true;
+    [ToggleOption]
+    public static bool EnableInitialCds = true;
 
-    [NumberOption(MultiMenu.Main, 0, 30, 2.5f, Format.Time)]
-    public static Number InitialCooldowns { get; set; } = new(10);
+    [NumberOption(0, 30, 2.5f, Format.Time)]
+    public static Number InitialCooldowns = 10;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableMeetingCds { get; set; } = true;
+    [ToggleOption]
+    public static bool EnableMeetingCds = true;
 
-    [NumberOption(MultiMenu.Main, 0, 30, 2.5f, Format.Time)]
-    public static Number MeetingCooldowns { get; set; } = new(15);
+    [NumberOption(0, 30, 2.5f, Format.Time)]
+    public static Number MeetingCooldowns = 15;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableFailCds { get; set; } = true;
+    [ToggleOption]
+    public static bool EnableFailCds = true;
 
-    [NumberOption(MultiMenu.Main, 0, 30, 2.5f, Format.Time)]
-    public static Number FailCooldowns { get; set; } = new(5);
+    [NumberOption(0, 30, 2.5f, Format.Time)]
+    public static Number FailCooldowns = 5;
 
-    [NumberOption(MultiMenu.Main, 1, 20, 0.25f, Format.Distance)]
-    public static Number ReportDistance { get; set; } = new(3.5f);
+    [NumberOption(1, 20, 0.25f, Format.Distance)]
+    public static Number ReportDistance = 3.5f;
 
-    [NumberOption(MultiMenu.Main, 0, 3, 0.1f, Format.Time)]
-    public static Number ChatCooldown { get; set; } = new(3);
+    [NumberOption(0, 3, 0.1f, Format.Time)]
+    public static Number ChatCooldown = 3;
 
-    [NumberOption(MultiMenu.Main, 0, 2000, 50, zeroIsInf: true)]
-    public static Number ChatCharacterLimit { get; set; } = new(200);
+    [NumberOption(0, 2000, 50, zeroIsInf: true)]
+    public static Number ChatCharacterLimit = 200;
 
-    [NumberOption(MultiMenu.Main, 2, 127, 1)]
-    public static Number LobbySize { get; set; } = new(15);
+    [NumberOption(2, 127, 1)]
+    public static Number LobbySize = 15;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class GameModeSettings
 {
-    [StringOption(MultiMenu.Main, [ "None" ])]
-    public static GameMode GameMode { get; set; } = GameMode.Classic;
+    [StringOption<GameMode>(GameMode.None)]
+    public static GameMode GameMode = GameMode.Classic;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool IgnoreFactionCaps { get; set; } = true;
+    [ToggleOption]
+    public static bool IgnoreFactionCaps = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool IgnoreAlignmentCaps { get; set; } = true;
+    [ToggleOption]
+    public static bool IgnoreAlignmentCaps = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool IgnoreLayerCaps { get; set; } = true;
+    [ToggleOption]
+    public static bool IgnoreLayerCaps = true;
 
-    [NumberOption(MultiMenu.Main, 0, 13, 1)]
-    public static Number NeutralsCount { get; set; } = new(1);
+    [StringOption<HnSMode>]
+    public static HnSMode HnSMode = HnSMode.Classic;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool AddArsonist { get; set; } = false;
+    [NumberOption(1, 13, 1)]
+    public static Number HunterCount = 1;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool AddCryomaniac { get; set; } = false;
+    [NumberOption(5f, 60f, 5f, Format.Time)]
+    public static Number HuntCd = 10;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool AddPlaguebearer { get; set; } = false;
+    [NumberOption(5f, 60f, 5f, Format.Time)]
+    public static Number StartTime = 10;
 
-    [StringOption(MultiMenu.Main)]
-    public static HnSMode HnSMode { get; set; } = HnSMode.Classic;
+    [ToggleOption]
+    public static bool HunterVent = true;
 
-    [NumberOption(MultiMenu.Main, 1, 13, 1)]
-    public static Number HunterCount { get; set; } = new(1);
+    [NumberOption(0.1f, 1f, 0.05f, Format.Multiplier)]
+    public static Number HunterVision = 0.25f;
 
-    [NumberOption(MultiMenu.Main, 5f, 60f, 5f, Format.Time)]
-    public static Number HuntCd { get; set; } = new(10);
+    [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
+    public static Number HuntedVision = 1.5f;
 
-    [NumberOption(MultiMenu.Main, 5f, 60f, 5f, Format.Time)]
-    public static Number StartTime { get; set; } = new(10);
+    [NumberOption(1f, 1.5f, 0.05f, Format.Multiplier)]
+    public static Number HunterSpeedModifier = 1.25f;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool HunterVent { get; set; } = true;
+    [ToggleOption]
+    public static bool HunterFlashlight = false;
 
-    [NumberOption(MultiMenu.Main, 0.1f, 1f, 0.05f, Format.Multiplier)]
-    public static Number HunterVision { get; set;} = new(0.25f);
+    [ToggleOption]
+    public static bool HuntedFlashlight = false;
 
-    [NumberOption(MultiMenu.Main, 1f, 2f, 0.05f, Format.Multiplier)]
-    public static Number HuntedVision { get; set;} = new(1.5f);
+    [ToggleOption]
+    public static bool HuntedChat = true;
 
-    [NumberOption(MultiMenu.Main, 1f, 1.5f, 0.05f, Format.Multiplier)]
-    public static Number HunterSpeedModifier { get; set; } = new(1.25f);
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry1 = [ RoleListSlot.None ];
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool HunterFlashlight { get; set; } = false;
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry2 = [ RoleListSlot.None ];
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool HuntedFlashlight { get; set; } = false;
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry3 = [ RoleListSlot.None ];
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool HuntedChat { get; set; } = true;
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry4 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry5 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry6 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry7 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry8 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry9 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry10 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry11 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry12 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry13 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry14 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleEntry15 = [ RoleListSlot.None ];
+
+    [NumberOption(0, 15, 1)]
+    public static Number RevealerCount = 0;
+
+    [NumberOption(0, 15, 1)]
+    public static Number PhantomCount = 0;
+
+    [NumberOption(0, 15, 1)]
+    public static Number GhoulCount = 0;
+
+    [NumberOption(0, 15, 1)]
+    public static Number BansheeCount = 0;
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleBan1 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleBan2 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleBan3 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleBan4 = [ RoleListSlot.None ];
+
+    [ListEntry(PlayerLayerEnum.Role)]
+    public static List<Enum> RoleBan5 = [ RoleListSlot.None ];
+
+    [ToggleOption]
+    public static bool BanCrewmate = true;
+
+    [ToggleOption]
+    public static bool BanMurderer = true;
+
+    [ToggleOption]
+    public static bool BanImpostor = true;
+
+    [ToggleOption]
+    public static bool BanAnarchist = true;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class TaskSettings
 {
-    [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static Number CommonTasks { get; set; } = new(2);
+    [NumberOption(0, 100, 1)]
+    public static Number CommonTasks = 2;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static Number LongTasks { get; set; } = new(1);
+    [NumberOption(0, 100, 1)]
+    public static Number LongTasks = 1;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 1)]
-    public static Number ShortTasks { get; set; } = new(4);
+    [NumberOption(0, 100, 1)]
+    public static Number ShortTasks = 4;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool GhostTasksCountToWin { get; set; } = true;
-}
-
-[HeaderOption(MultiMenu.Main)]
-public static class RoleListEntries
-{
-    [RoleListEntry]
-    public static LayerEnum Entry1 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry2 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry3 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry4 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry5 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry6 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry7 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry8 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry9 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry10 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry11 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry12 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry13 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry14 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Entry15 { get; set; } = LayerEnum.None;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableRevealer { get; set; } = false;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnablePhantom { get; set; } = false;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableGhoul { get; set; } = false;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableBanshee { get; set; } = false;
-}
-
-[HeaderOption(MultiMenu.Main)]
-public static class RoleListBans
-{
-    [RoleListEntry]
-    public static LayerEnum Ban1 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Ban2 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Ban3 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Ban4 { get; set; } = LayerEnum.None;
-
-    [RoleListEntry]
-    public static LayerEnum Ban5 { get; set; } = LayerEnum.None;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool BanCrewmate { get; set; } = true;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool BanMurderer { get; set; } = true;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool BanImpostor { get; set; } = true;
-
-    [ToggleOption(MultiMenu.Main)]
-    public static bool BanAnarchist { get; set; } = true;
+    [ToggleOption]
+    public static bool GhostTasksCountToWin = true;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class GameModifiers
 {
-    [StringOption(MultiMenu.Main)]
-    public static WhoCanVentOptions WhoCanVent { get; set; } = WhoCanVentOptions.Default;
+    [StringOption<WhoCanVentOptions>]
+    public static WhoCanVentOptions WhoCanVent = WhoCanVentOptions.Default;
 
-    [StringOption(MultiMenu.Main)]
-    public static AnonVotes AnonymousVoting { get; set; } = AnonVotes.Enabled;
+    [StringOption<AnonVotes>]
+    public static AnonVotes AnonymousVoting = AnonVotes.Enabled;
 
-    [StringOption(MultiMenu.Main)]
-    public static DisableSkipButtonMeetings NoSkipping { get; set; } = DisableSkipButtonMeetings.Never;
+    [StringOption<DisableSkipButtonMeetings>]
+    public static DisableSkipButtonMeetings NoSkipping = DisableSkipButtonMeetings.Never;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool FirstKillShield { get; set; } = false;
+    [ToggleOption]
+    public static bool FirstKillShield = false;
 
-    [StringOption(MultiMenu.Main)]
-    public static WhoCanSeeFirstKillShield WhoSeesFirstKillShield { get; set; } = WhoCanSeeFirstKillShield.Everyone;
+    [StringOption<WhoCanSeeFirstKillShield>]
+    public static WhoCanSeeFirstKillShield WhoSeesFirstKillShield = WhoCanSeeFirstKillShield.Everyone;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool FactionSeeRoles { get; set; } = true;
+    [ToggleOption]
+    public static bool FactionSeeRoles = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool VisualTasks { get; set; } = false;
+    [ToggleOption]
+    public static bool VisualTasks = false;
 
-    [StringOption(MultiMenu.Main)]
-    public static PlayerNames PlayerNames { get; set; } = PlayerNames.Obstructed;
+    [StringOption<PlayerNames>]
+    public static PlayerNames PlayerNames = PlayerNames.Obstructed;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool Whispers { get; set; } = true;
+    [ToggleOption]
+    public static bool Whispers = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool WhispersAnnouncement { get; set; } = true;
+    [ToggleOption]
+    public static bool WhispersAnnouncement = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool AppearanceAnimation { get; set; } = true;
+    [ToggleOption]
+    public static bool AppearanceAnimation = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableAbilities { get; set; } = true;
+    [ToggleOption]
+    public static bool EnableAbilities = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableModifiers { get; set; } = true;
+    [ToggleOption]
+    public static bool EnableModifiers = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool EnableDispositions { get; set; } = true;
+    [ToggleOption]
+    public static bool EnableDispositions = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool VentTargeting { get; set; } = true;
+    [ToggleOption]
+    public static bool VentTargeting = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool CooldownInVent { get; set; } = false;
+    [ToggleOption]
+    public static bool CooldownInVent = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool DeadSeeEverything { get; set; } = true;
+    [ToggleOption]
+    public static bool DeadSeeEverything = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool ParallelMedScans { get; set; } = false;
+    [ToggleOption]
+    public static bool ParallelMedScans = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool HideVentAnims { get; set; } = true;
+    [ToggleOption]
+    public static bool HideVentAnims = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool JaniCanMutuallyExclusive { get; set; } = false;
+    [ToggleOption]
+    public static bool JaniCanMutuallyExclusive = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool IndicateReportedBodies { get; set; } = false;
+    [ToggleOption]
+    public static bool IndicateReportedBodies = false;
 
-    [StringOption(MultiMenu.Main)]
-    public static RandomSpawning RandomSpawns { get; set; } = RandomSpawning.Disabled;
+    [StringOption<RandomSpawning>]
+    public static RandomSpawning RandomSpawns = RandomSpawning.Disabled;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool ShowKillerRoleColor { get; set; } = false;
+    [ToggleOption]
+    public static bool ShowKillerRoleColor = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool PurePlayers { get; set; } = false;
+    [ToggleOption]
+    public static bool PurePlayers = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool NoVentingUncleanedVents { get; set; } = false;
+    [ToggleOption]
+    public static bool NoVentingUncleanedVents = false;
+
+    [ToggleOption]
+    public static bool PandorasBox = false;
+
+    [ToggleOption]
+    public static bool OrderOfCompliance = false;
+
+    [ToggleOption]
+    public static bool IlluminatiUnleashed = false;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class GameAnnouncementSettings
 {
-    [ToggleOption(MultiMenu.Main)]
-    public static bool GameAnnouncements { get; set; } = false;
+    [ToggleOption]
+    public static bool GameAnnouncements = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool LocationReports { get; set; } = false;
+    [ToggleOption]
+    public static bool LocationReports = false;
 
-    [StringOption(MultiMenu.Main)]
-    public static RoleFactionReports RoleFactionReports { get; set; } = RoleFactionReports.Neither;
+    [StringOption<RoleFactionReports>]
+    public static RoleFactionReports RoleFactionReports = RoleFactionReports.Neither;
 
-    [StringOption(MultiMenu.Main)]
-    public static RoleFactionReports KillerReports { get; set; } = RoleFactionReports.Neither;
+    [StringOption<RoleFactionReports>]
+    public static RoleFactionReports KillerReports = RoleFactionReports.Neither;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class MapSettings
 {
-    public static MapEnum Map { get; set; }
+    public static MapEnum Map;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static Number RandomMapSkeld { get; set; } = new(10);
+    [NumberOption(0, 100, 10, Format.Percent)]
+    public static Number RandomMapSkeld = 10;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static Number RandomMapMira { get; set; } = new(10);
+    [NumberOption(0, 100, 10, Format.Percent)]
+    public static Number RandomMapMira = 10;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static Number RandomMapPolus { get; set; } = new(10);
+    [NumberOption(0, 100, 10, Format.Percent)]
+    public static Number RandomMapPolus = 10;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static Number RandomMapdlekS { get; set; } = new(10);
+    [NumberOption(0, 100, 10, Format.Percent)]
+    public static Number RandomMapdlekS = 10;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static Number RandomMapAirship { get; set; } = new(10);
+    [NumberOption(0, 100, 10, Format.Percent)]
+    public static Number RandomMapAirship = 10;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent)]
-    public static Number RandomMapFungle { get; set; } = new(10);
+    [NumberOption(0, 100, 10, Format.Percent)]
+    public static Number RandomMapFungle = 10;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent, All = true)]
-    public static Number RandomMapSubmerged { get; set; } = new(10);
+    [NumberOption(0, 100, 10, Format.Percent, All = true)]
+    public static Number RandomMapSubmerged = 10;
 
-    [NumberOption(MultiMenu.Main, 0, 100, 10, Format.Percent, All = true)]
-    public static Number RandomMapLevelImpostor { get; set; } = new(10);
+    [NumberOption(0, 100, 10, Format.Percent, All = true)]
+    public static Number RandomMapLevelImpostor = 10;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool AutoAdjustSettings { get; set; } = false;
+    [ToggleOption]
+    public static bool AutoAdjustSettings = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool SmallMapHalfVision { get; set; } = false;
+    [ToggleOption]
+    public static bool SmallMapHalfVision = false;
 
-    [NumberOption(MultiMenu.Main, 0f, 15f, 2.5f, Format.Time)]
-    public static Number SmallMapDecreasedCooldown { get; set; } = new(0);
+    [NumberOption(0f, 15f, 2.5f, Format.Time)]
+    public static Number SmallMapDecreasedCooldown = 0;
 
-    [NumberOption(MultiMenu.Main, 0f, 15f, 2.5f, Format.Time)]
-    public static Number LargeMapIncreasedCooldown { get; set; } = new(0);
+    [NumberOption(0f, 15f, 2.5f, Format.Time)]
+    public static Number LargeMapIncreasedCooldown = 0;
 
-    [NumberOption(MultiMenu.Main, 0, 5, 1)]
-    public static Number SmallMapIncreasedShortTasks { get; set; } = new(0);
+    [NumberOption(0, 5, 1)]
+    public static Number SmallMapIncreasedShortTasks = 0;
 
-    [NumberOption(MultiMenu.Main, 0, 3, 1)]
-    public static Number SmallMapIncreasedLongTasks { get; set; } = new(0);
+    [NumberOption(0, 3, 1)]
+    public static Number SmallMapIncreasedLongTasks = 0;
 
-    [NumberOption(MultiMenu.Main, 0, 5, 1)]
-    public static Number LargeMapDecreasedShortTasks { get; set; } = new(0);
+    [NumberOption(0, 5, 1)]
+    public static Number LargeMapDecreasedShortTasks = 0;
 
-    [NumberOption(MultiMenu.Main, 0, 3, 1)]
-    public static Number LargeMapDecreasedLongTasks { get; set; } = new(0);
+    [NumberOption(0, 3, 1)]
+    public static Number LargeMapDecreasedLongTasks = 0;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class CrewSettings
 {
-    [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static Number CrewVision { get; set; } = new(1);
+    [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
+    public static Number CrewVision = 1;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool CrewFlashlight { get; set; } = false;
+    [ToggleOption]
+    public static bool CrewFlashlight = false;
 
-    [StringOption(MultiMenu.Main)]
-    public static CrewVenting CrewVent { get; set; } = CrewVenting.Never;
+    [StringOption<CrewVenting>]
+    public static CrewVenting CrewVent = CrewVenting.Never;
 
-    [NumberOption(MultiMenu.Main, 0, 14, 1)]
-    public static Number CrewMax { get; set; } = new(5);
+    [NumberOption(0, 14, 1)]
+    public static Number CrewMax = 5;
 
-    [NumberOption(MultiMenu.Main, 0, 14, 1)]
-    public static Number CrewMin { get; set; } = new(5);
+    [NumberOption(0, 14, 1)]
+    public static Number CrewMin = 5;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class NeutralSettings
 {
-    [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static Number NeutralVision { get; set; } = new(1.5f);
+    [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
+    public static Number NeutralVision = 1.5f;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool LightsAffectNeutrals { get; set; } = true;
+    [ToggleOption]
+    public static bool LightsAffectNeutrals = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool NeutralFlashlight { get; set; } = false;
+    [ToggleOption]
+    public static bool NeutralFlashlight = false;
 
-    [NumberOption(MultiMenu.Main, 0, 14, 1)]
-    public static Number NeutralMax { get; set; } = new(1);
+    [NumberOption(0, 14, 1)]
+    public static Number NeutralMax = 1;
 
-    [NumberOption(MultiMenu.Main, 0, 14, 1)]
-    public static Number NeutralMin { get; set; } = new(0);
+    [NumberOption(0, 14, 1)]
+    public static Number NeutralMin = 0;
 
-    [StringOption(MultiMenu.Main)]
-    public static NoSolo NoSolo { get; set; } = NoSolo.Never;
+    [StringOption<NoSolo>]
+    public static NoSolo NoSolo = NoSolo.Never;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool AvoidNeutralKingmakers { get; set; } = false;
+    [ToggleOption]
+    public static bool AvoidNeutralKingmakers = false;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool NeutralsVent { get; set; } = true;
+    [ToggleOption]
+    public static bool NeutralsVent = true;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class IntruderSettings
 {
-    [NumberOption(MultiMenu.Main, 0, 4, 1)]
-    public static Number IntruderCount { get; set; } = new(1);
+    [NumberOption(0, 4, 1)]
+    public static Number IntruderCount = 1;
 
-    [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static Number IntruderVision { get; set; } = new(2);
+    [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
+    public static Number IntruderVision = 2;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool IntruderFlashlight { get; set; } = false;
+    [ToggleOption]
+    public static bool IntruderFlashlight = false;
 
-    [NumberOption(MultiMenu.Main, 10f, 60f, 2.5f, Format.Time)]
-    public static Number IntKillCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number IntKillCd = 25;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool IntrudersVent { get; set; } = true;
+    [ToggleOption]
+    public static bool IntrudersVent = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool IntrudersCanSabotage { get; set; } = true;
+    [ToggleOption]
+    public static bool IntrudersCanSabotage = true;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool GhostsCanSabotage { get; set; } = false;
+    [ToggleOption]
+    public static bool GhostsCanSabotage = false;
 
-    [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static Number IntruderMax { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number IntruderMax = 1;
 
-    [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static Number IntruderMin { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number IntruderMin = 1;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class SyndicateSettings
 {
-    [NumberOption(MultiMenu.Main, 0, 4, 1)]
-    public static Number SyndicateCount { get; set; } = new(1);
+    [NumberOption(0, 4, 1)]
+    public static Number SyndicateCount = 1;
 
-    [NumberOption(MultiMenu.Main, 0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static Number SyndicateVision { get; set; } = new(2);
+    [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
+    public static Number SyndicateVision = 2;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool SyndicateFlashlight { get; set; } = false;
+    [ToggleOption]
+    public static bool SyndicateFlashlight = false;
 
-    [NumberOption(MultiMenu.Main, 1, 10, 1)]
-    public static Number ChaosDriveMeetingCount { get; set; } = new(3);
+    [NumberOption(1, 10, 1)]
+    public static Number ChaosDriveMeetingCount = 3;
 
-    [NumberOption(MultiMenu.Main, 10f, 60f, 2.5f, Format.Time)]
-    public static Number CDKillCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number CDKillCd = 25;
 
-    [StringOption(MultiMenu.Main)]
-    public static SyndicateVentOptions SyndicateVent { get; set; } = SyndicateVentOptions.Always;
+    [StringOption<SyndicateVentOptions>]
+    public static SyndicateVentOptions SyndicateVent = SyndicateVentOptions.Always;
 
-    [ToggleOption(MultiMenu.Main)]
-    private static bool AltImpsPriv { get; set; } = false;
+    [ToggleOption]
+    private static bool AltImpsPriv = false;
     public static bool AltImps => AltImpsPriv || IntruderSettings.IntruderCount == 0;
 
-    [ToggleOption(MultiMenu.Main)]
-    public static bool GlobalDrive { get; set; } = false;
+    [ToggleOption]
+    public static bool GlobalDrive = false;
 
-    [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static Number SyndicateMax { get; set; } = new(1);
+    [ToggleOption]
+    public static bool AssignOnGameStart = false;
 
-    [NumberOption(MultiMenu.Main, 1, 14, 1)]
-    public static Number SyndicateMin { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number SyndicateMax = 1;
+
+    [NumberOption(1, 14, 1)]
+    public static Number SyndicateMin = 1;
 }
 
-[AlignmentOption(LayerEnum.CrewInvest)]
+[AlignmentOption(RoleListSlot.CrewInvest)]
 public static class CrewInvestigativeRoles
 {
     [LayerOption("#4D99E6FF", LayerEnum.Coroner)]
-    public static RoleOptionData Coroner { get; set; }
+    public static RoleOptionData Coroner;
 
     [LayerOption("#4D4DFFFF", LayerEnum.Detective)]
-    public static RoleOptionData Detective { get; set; }
+    public static RoleOptionData Detective;
 
     [LayerOption("#A680FFFF", LayerEnum.Medium)]
-    public static RoleOptionData Medium { get; set; }
+    public static RoleOptionData Medium;
 
     [LayerOption("#708EEFFF", LayerEnum.Mystic)]
-    public static RoleOptionData Mystic { get; set; }
+    public static RoleOptionData Mystic;
 
     [LayerOption("#A7D1B3FF", LayerEnum.Operative)]
-    public static RoleOptionData Operative { get; set; }
+    public static RoleOptionData Operative;
 
     [LayerOption("#71368AFF", LayerEnum.Seer)]
-    public static RoleOptionData Seer { get; set; }
+    public static RoleOptionData Seer;
 
     [LayerOption("#FFCC80FF", LayerEnum.Sheriff)]
-    public static RoleOptionData Sheriff { get; set; }
+    public static RoleOptionData Sheriff;
 
     [LayerOption("#009900FF", LayerEnum.Tracker)]
-    public static RoleOptionData Tracker { get; set; }
+    public static RoleOptionData Tracker;
 }
 
-[AlignmentOption(LayerEnum.CrewKill)]
+[AlignmentOption(RoleListSlot.CrewKill)]
 public static class CrewKillingRoles
 {
     [LayerOption("#7E3C64FF", LayerEnum.Bastion)]
-    private static RoleOptionData BastionPriv { get; set; }
-    public static RoleOptionData Bastion
-    {
-        get
-        {
-            var result = BastionPriv.Clone();
-
-            if (IsKilling())
-                result.Chance = 100;
-
-            return result;
-        }
-    }
+    public static RoleOptionData Bastion;
 
     [LayerOption("#998040FF", LayerEnum.Veteran)]
-    private static RoleOptionData VeteranPriv { get; set; }
-    public static RoleOptionData Veteran
-    {
-        get
-        {
-            var result = VeteranPriv.Clone();
-
-            if (IsKilling())
-                result.Chance = 100;
-
-            return result;
-        }
-    }
+    public static RoleOptionData Veteran;
 
     [LayerOption("#FFFF00FF", LayerEnum.Vigilante)]
-    private static RoleOptionData VigilantePriv { get; set; }
-    public static RoleOptionData Vigilante
-    {
-        get
-        {
-            var result = VigilantePriv.Clone();
-
-            if (IsKilling())
-                result.Chance = 100;
-
-            return result;
-        }
-    }
+    public static RoleOptionData Vigilante;
 }
 
-[AlignmentOption(LayerEnum.CrewProt)]
+[AlignmentOption(RoleListSlot.CrewProt)]
 public static class CrewProtectiveRoles
 {
     [LayerOption("#660000FF", LayerEnum.Altruist)]
-    public static RoleOptionData Altruist { get; set; }
+    public static RoleOptionData Altruist;
 
     [LayerOption("#006600FF", LayerEnum.Medic)]
-    public static RoleOptionData Medic { get; set; }
+    public static RoleOptionData Medic;
 
     [LayerOption("#BE1C8CFF", LayerEnum.Trapper)]
-    public static RoleOptionData Trapper { get; set; }
+    public static RoleOptionData Trapper;
 }
 
-[AlignmentOption(LayerEnum.CrewSov)]
+[AlignmentOption(RoleListSlot.CrewSov)]
 public static class CrewSovereignRoles
 {
     [LayerOption("#00CB97FF", LayerEnum.Dictator)]
-    public static RoleOptionData Dictator { get; set; }
+    public static RoleOptionData Dictator;
 
     [LayerOption("#704FA8FF", LayerEnum.Mayor)]
-    public static RoleOptionData Mayor { get; set; }
+    public static RoleOptionData Mayor;
 
     [LayerOption("#FF004EFF", LayerEnum.Monarch)]
-    public static RoleOptionData Monarch { get; set; }
+    public static RoleOptionData Monarch;
 }
 
-[AlignmentOption(LayerEnum.CrewSupport)]
+[AlignmentOption(RoleListSlot.CrewSupport)]
 public static class CrewSupportRoles
 {
     [LayerOption("#5411F8FF", LayerEnum.Chameleon)]
-    public static RoleOptionData Chameleon { get; set; }
+    public static RoleOptionData Chameleon;
 
     [LayerOption("#FFA60AFF", LayerEnum.Engineer)]
-    public static RoleOptionData Engineer { get; set; }
+    public static RoleOptionData Engineer;
 
     [LayerOption("#803333FF", LayerEnum.Escort)]
-    public static RoleOptionData Escort { get; set; }
+    public static RoleOptionData Escort;
 
     [LayerOption("#8D0F8CFF", LayerEnum.Retributionist)]
-    public static RoleOptionData Retributionist { get; set; }
+    public static RoleOptionData Retributionist;
 
     [LayerOption("#DF851FFF", LayerEnum.Shifter)]
-    public static RoleOptionData Shifter { get; set; }
+    public static RoleOptionData Shifter;
 
     [LayerOption("#00EEFFFF", LayerEnum.Transporter)]
-    public static RoleOptionData Transporter { get; set; }
+    public static RoleOptionData Transporter;
 }
 
-[AlignmentOption(LayerEnum.CrewUtil)]
+[AlignmentOption(RoleListSlot.CrewUtil)]
 public static class CrewUtilityRoles
 {
-    [LayerOption("#8CFFFFFF", LayerEnum.Crewmate)]
-    private static RoleOptionData CrewmatePriv { get; set; }
-    public static RoleOptionData Crewmate
-    {
-        get
-        {
-            var result = CrewmatePriv.Clone();
-
-            if (!IsCustom())
-                result.Chance = 0;
-
-            return result;
-        }
-    }
+    [LayerOption("#8CFFFFFF", LayerEnum.Crewmate, true)]
+    public static RoleOptionData Crewmate;
 
     [LayerOption("#D3D3D3FF", LayerEnum.Revealer)]
-    private static RoleOptionData RevealerPriv { get; set; }
+    private static RoleOptionData RevealerPriv;
     public static RoleOptionData Revealer
     {
         get
@@ -654,129 +598,117 @@ public static class CrewUtilityRoles
             var result = RevealerPriv.Clone();
 
             if (IsRoleList())
-                result.Count = 1;
+                result.Count = GameModeSettings.RevealerCount;
 
             return result;
         }
     }
 }
 
-[AlignmentOption(LayerEnum.NeutralApoc, true)]
+[AlignmentOption(RoleListSlot.NeutralApoc, true)]
 public static class NeutralApocalypseRoles
 {
     [LayerOption("#424242FF", LayerEnum.Pestilence, true)]
-    public static RoleOptionData Pestilence { get; set; }
+    public static RoleOptionData Pestilence;
 }
 
-[AlignmentOption(LayerEnum.NeutralBen)]
+[AlignmentOption(RoleListSlot.NeutralBen)]
 public static class NeutralBenignRoles
 {
     [LayerOption("#22FFFFFF", LayerEnum.Amnesiac)]
-    public static RoleOptionData Amnesiac { get; set; }
+    public static RoleOptionData Amnesiac;
 
     [LayerOption("#FFFFFFFF", LayerEnum.GuardianAngel)]
-    public static RoleOptionData GuardianAngel { get; set; }
+    public static RoleOptionData GuardianAngel;
 
     [LayerOption("#DDDD00FF", LayerEnum.Survivor)]
-    public static RoleOptionData Survivor { get; set; }
+    public static RoleOptionData Survivor;
 
     [LayerOption("#80FF00FF", LayerEnum.Thief)]
-    public static RoleOptionData Thief { get; set; }
+    public static RoleOptionData Thief;
 }
 
-[AlignmentOption(LayerEnum.NeutralEvil)]
+[AlignmentOption(RoleListSlot.NeutralEvil)]
 public static class NeutralEvilRoles
 {
     [LayerOption("#00ACC2FF", LayerEnum.Actor)]
-    public static RoleOptionData Actor { get; set; }
+    public static RoleOptionData Actor;
 
     [LayerOption("#B51E39FF", LayerEnum.BountyHunter)]
-    public static RoleOptionData BountyHunter { get; set; }
+    public static RoleOptionData BountyHunter;
 
     [LayerOption("#8C4005FF", LayerEnum.Cannibal)]
-    public static RoleOptionData Cannibal { get; set; }
+    public static RoleOptionData Cannibal;
 
     [LayerOption("#CCCCCCFF", LayerEnum.Executioner)]
-    public static RoleOptionData Executioner { get; set; }
+    public static RoleOptionData Executioner;
 
     [LayerOption("#EEE5BEFF", LayerEnum.Guesser)]
-    public static RoleOptionData Guesser { get; set; }
+    public static RoleOptionData Guesser;
 
     [LayerOption("#F7B3DAFF", LayerEnum.Jester)]
-    public static RoleOptionData Jester { get; set; }
+    public static RoleOptionData Jester;
 
     [LayerOption("#678D36FF", LayerEnum.Troll)]
-    public static RoleOptionData Troll { get; set; }
+    public static RoleOptionData Troll;
 }
 
-[AlignmentOption(LayerEnum.NeutralHarb)]
+[AlignmentOption(RoleListSlot.NeutralHarb)]
 public static class NeutralHarbingerRoles
 {
     [LayerOption("#CFFE61FF", LayerEnum.Plaguebearer)]
-    public static RoleOptionData Plaguebearer { get; set; }
+    public static RoleOptionData Plaguebearer;
 }
 
-[AlignmentOption(LayerEnum.NeutralKill)]
+[AlignmentOption(RoleListSlot.NeutralKill)]
 public static class NeutralKillingRoles
 {
     [LayerOption("#EE7600FF", LayerEnum.Arsonist)]
-    public static RoleOptionData Arsonist { get; set; }
+    public static RoleOptionData Arsonist;
 
     [LayerOption("#642DEAFF", LayerEnum.Cryomaniac)]
-    public static RoleOptionData Cryomaniac { get; set; }
+    public static RoleOptionData Cryomaniac;
 
     [LayerOption("#00FF00FF", LayerEnum.Glitch)]
-    public static RoleOptionData Glitch { get; set; }
+    public static RoleOptionData Glitch;
 
     [LayerOption("#A12B56FF", LayerEnum.Juggernaut)]
-    public static RoleOptionData Juggernaut { get; set; }
+    public static RoleOptionData Juggernaut;
 
     [LayerOption("#6F7BEAFF", LayerEnum.Murderer)]
-    private static RoleOptionData MurdererPriv { get; set; }
-    public static RoleOptionData Murderer
-    {
-        get
-        {
-            var result = MurdererPriv.Clone();
-
-            if (IsKilling())
-                result.Chance = 5;
-
-            return result;
-        }
-    }
+    public static RoleOptionData Murderer;
 
     [LayerOption("#336EFFFF", LayerEnum.SerialKiller)]
-    public static RoleOptionData SerialKiller { get; set; }
+    public static RoleOptionData SerialKiller;
 
     [LayerOption("#9F703AFF", LayerEnum.Werewolf)]
-    public static RoleOptionData Werewolf { get; set; }
+    public static RoleOptionData Werewolf;
 }
 
-[AlignmentOption(LayerEnum.NeutralNeo)]
+[AlignmentOption(RoleListSlot.NeutralNeo)]
 public static class NeutralNeophyteRoles
 {
     [LayerOption("#AC8A00FF", LayerEnum.Dracula)]
-    public static RoleOptionData Dracula { get; set; }
+    public static RoleOptionData Dracula;
 
     [LayerOption("#45076AFF", LayerEnum.Jackal)]
-    public static RoleOptionData Jackal { get; set; }
+    public static RoleOptionData Jackal;
 
     [LayerOption("#BF5FFFFF", LayerEnum.Necromancer)]
-    public static RoleOptionData Necromancer { get; set; }
+    public static RoleOptionData Necromancer;
 
     [LayerOption("#2D6AA5FF", LayerEnum.Whisperer)]
-    public static RoleOptionData Whisperer { get; set; }
+    public static RoleOptionData Whisperer;
 }
 
-[AlignmentOption(LayerEnum.NeutralPros)]
+[AlignmentOption(RoleListSlot.NeutralPros)]
 public static class NeutralProselyteRoles
 {
     [LayerOption("#11806AFF", LayerEnum.Betrayer, true)]
-    public static RoleOptionData Betrayer { get; set; }
+    public static RoleOptionData Betrayer;
 
     [LayerOption("#662962FF", LayerEnum.Phantom)]
-    private static RoleOptionData PhantomPriv { get; set; }
+    private static RoleOptionData PhantomPriv;
     public static RoleOptionData Phantom
     {
         get
@@ -784,80 +716,80 @@ public static class NeutralProselyteRoles
             var result = PhantomPriv.Clone();
 
             if (IsRoleList())
-                result.Count = 1;
+                result.Count = GameModeSettings.PhantomCount;
 
             return result;
         }
     }
 }
 
-[AlignmentOption(LayerEnum.IntruderConceal)]
+[AlignmentOption(RoleListSlot.IntruderConceal)]
 public static class IntruderConcealingRoles
 {
     [LayerOption("#02A752FF", LayerEnum.Blackmailer)]
-    public static RoleOptionData Blackmailer { get; set; }
+    public static RoleOptionData Blackmailer;
 
     [LayerOption("#378AC0FF", LayerEnum.Camouflager)]
-    public static RoleOptionData Camouflager { get; set; }
+    public static RoleOptionData Camouflager;
 
     [LayerOption("#85AA5BFF", LayerEnum.Grenadier)]
-    public static RoleOptionData Grenadier { get; set; }
+    public static RoleOptionData Grenadier;
 
     [LayerOption("#2647A2FF", LayerEnum.Janitor)]
-    public static RoleOptionData Janitor { get; set; }
+    public static RoleOptionData Janitor;
 }
 
-[AlignmentOption(LayerEnum.IntruderDecep)]
+[AlignmentOption(RoleListSlot.IntruderDecep)]
 public static class IntruderDeceptionRoles
 {
     [LayerOption("#40B4FFFF", LayerEnum.Disguiser)]
-    public static RoleOptionData Disguiser { get; set; }
+    public static RoleOptionData Disguiser;
 
     [LayerOption("#BB45B0FF", LayerEnum.Morphling)]
-    public static RoleOptionData Morphling { get; set; }
+    public static RoleOptionData Morphling;
 
     [LayerOption("#5C4F75FF", LayerEnum.Wraith)]
-    public static RoleOptionData Wraith { get; set; }
+    public static RoleOptionData Wraith;
 }
 
-[AlignmentOption(LayerEnum.IntruderHead)]
+[AlignmentOption(RoleListSlot.IntruderHead)]
 public static class IntruderHeadRoles
 {
     [LayerOption("#404C08FF", LayerEnum.Godfather)]
-    public static RoleOptionData Godfather { get; set; }
+    public static RoleOptionData Godfather;
 }
 
-[AlignmentOption(LayerEnum.IntruderKill)]
+[AlignmentOption(RoleListSlot.IntruderKill)]
 public static class IntruderKillingRoles
 {
     [LayerOption("#2BD29CFF", LayerEnum.Ambusher)]
-    public static RoleOptionData Ambusher { get; set; }
+    public static RoleOptionData Ambusher;
 
     [LayerOption("#005643FF", LayerEnum.Enforcer)]
-    public static RoleOptionData Enforcer { get; set; }
+    public static RoleOptionData Enforcer;
 }
 
-[AlignmentOption(LayerEnum.IntruderSupport)]
+[AlignmentOption(RoleListSlot.IntruderSupport)]
 public static class IntruderSupportRoles
 {
     [LayerOption("#FFFF99FF", LayerEnum.Consigliere)]
-    public static RoleOptionData Consigliere { get; set; }
+    public static RoleOptionData Consigliere;
 
     [LayerOption("#801780FF", LayerEnum.Consort)]
-    public static RoleOptionData Consort { get; set; }
+    public static RoleOptionData Consort;
 
     [LayerOption("#AA7632FF", LayerEnum.Miner)]
-    public static RoleOptionData Miner { get; set; }
+    public static RoleOptionData Miner;
 
     [LayerOption("#939593FF", LayerEnum.Teleporter)]
-    public static RoleOptionData Teleporter { get; set; }
+    public static RoleOptionData Teleporter;
 }
 
-[AlignmentOption(LayerEnum.IntruderUtil)]
+[AlignmentOption(RoleListSlot.IntruderUtil)]
 public static class IntruderUtilityRoles
 {
     [LayerOption("#F1C40FFF", LayerEnum.Ghoul)]
-    private static RoleOptionData GhoulPriv { get; set; }
+    private static RoleOptionData GhoulPriv;
     public static RoleOptionData Ghoul
     {
         get
@@ -865,110 +797,82 @@ public static class IntruderUtilityRoles
             var result = GhoulPriv.Clone();
 
             if (IsRoleList())
-                result.Count = 1;
+                result.Count = GameModeSettings.GhoulCount;
 
             return result;
         }
     }
 
-    [LayerOption("#FF1919FF", LayerEnum.Impostor)]
-    private static RoleOptionData ImpostorPriv { get; set; }
-    public static RoleOptionData Impostor
-    {
-        get
-        {
-            var result = ImpostorPriv.Clone();
-
-            if (IsKilling())
-                result.Chance = 5;
-            else if (!IsCustom())
-                result.Chance = 0;
-
-            return result;
-        }
-    }
+    [LayerOption("#FF1919FF", LayerEnum.Impostor, true)]
+    public static RoleOptionData Impostor;
 }
 
-[AlignmentOption(LayerEnum.SyndicateDisrup)]
+[AlignmentOption(RoleListSlot.SyndicateDisrup)]
 public static class SyndicateDisruptionRoles
 {
     [LayerOption("#C02525FF", LayerEnum.Concealer)]
-    public static RoleOptionData Concealer { get; set; }
+    public static RoleOptionData Concealer;
 
     [LayerOption("#FF7900FF", LayerEnum.Drunkard)]
-    public static RoleOptionData Drunkard { get; set; }
+    public static RoleOptionData Drunkard;
 
     [LayerOption("#00FFFFFF", LayerEnum.Framer)]
-    public static RoleOptionData Framer { get; set; }
+    public static RoleOptionData Framer;
 
     [LayerOption("#2DFF00FF", LayerEnum.Shapeshifter)]
-    public static RoleOptionData Shapeshifter { get; set; }
+    public static RoleOptionData Shapeshifter;
 
     [LayerOption("#AAB43EFF", LayerEnum.Silencer)]
-    public static RoleOptionData Silencer { get; set; }
+    public static RoleOptionData Silencer;
 
     [LayerOption("#3769FEFF", LayerEnum.Timekeeper)]
-    public static RoleOptionData Timekeeper { get; set; }
+    public static RoleOptionData Timekeeper;
 }
 
-[AlignmentOption(LayerEnum.SyndicateKill)]
+[AlignmentOption(RoleListSlot.SyndicateKill)]
 public static class SyndicateKillingRoles
 {
     [LayerOption("#C9CC3FFF", LayerEnum.Bomber)]
-    public static RoleOptionData Bomber { get; set; }
+    public static RoleOptionData Bomber;
 
     [LayerOption("#B345FFFF", LayerEnum.Collider)]
-    public static RoleOptionData Collider { get; set; }
+    public static RoleOptionData Collider;
 
     [LayerOption("#DF7AE8FF", LayerEnum.Crusader)]
-    public static RoleOptionData Crusader { get; set; }
+    public static RoleOptionData Crusader;
 
     [LayerOption("#B5004CFF", LayerEnum.Poisoner)]
-    public static RoleOptionData Poisoner { get; set; }
+    public static RoleOptionData Poisoner;
 }
 
-[AlignmentOption(LayerEnum.SyndicatePower)]
+[AlignmentOption(RoleListSlot.SyndicatePower)]
 public static class SyndicatePowerRoles
 {
     [LayerOption("#FFFCCEFF", LayerEnum.Rebel)]
-    public static RoleOptionData Rebel { get; set; }
+    public static RoleOptionData Rebel;
 
     [LayerOption("#0028F5FF", LayerEnum.Spellslinger)]
-    public static RoleOptionData Spellslinger { get; set; }
+    public static RoleOptionData Spellslinger;
 }
 
-[AlignmentOption(LayerEnum.SyndicateSupport)]
+[AlignmentOption(RoleListSlot.SyndicateSupport)]
 public static class SyndicateSupportRoles
 {
     [LayerOption("#7E4D00FF", LayerEnum.Stalker)]
-    public static RoleOptionData Stalker { get; set; }
+    public static RoleOptionData Stalker;
 
     [LayerOption("#8C7140FF", LayerEnum.Warper)]
-    public static RoleOptionData Warper { get; set; }
+    public static RoleOptionData Warper;
 }
 
-[AlignmentOption(LayerEnum.SyndicateUtil)]
+[AlignmentOption(RoleListSlot.SyndicateUtil)]
 public static class SyndicateUtilityRoles
 {
-    [LayerOption("#008000FF", LayerEnum.Anarchist)]
-    private static RoleOptionData AnarchistPriv { get; set; }
-    public static RoleOptionData Anarchist
-    {
-        get
-        {
-            var result = AnarchistPriv.Clone();
-
-            if (IsKilling())
-                result.Chance = 5;
-            else if (!IsCustom())
-                result.Chance = 0;
-
-            return result;
-        }
-    }
+    [LayerOption("#008000FF", LayerEnum.Anarchist, true)]
+    public static RoleOptionData Anarchist;
 
     [LayerOption("#E67E22FF", LayerEnum.Banshee)]
-    private static RoleOptionData BansheePriv { get; set; }
+    private static RoleOptionData BansheePriv;
     public static RoleOptionData Banshee
     {
         get
@@ -976,134 +880,134 @@ public static class SyndicateUtilityRoles
             var result = BansheePriv.Clone();
 
             if (IsRoleList())
-                result.Count = 1;
+                result.Count = GameModeSettings.BansheeCount;
 
             return result;
         }
     }
 }
 
-[AlignmentOption(LayerEnum.Modifier)]
+[AlignmentOption(colorHex: "#7F7F7FFF")]
 public static class Modifiers
 {
     [LayerOption("#612BEFFF", LayerEnum.Astral)]
-    public static RoleOptionData Astral { get; set; }
+    public static RoleOptionData Astral;
 
     [LayerOption("#00B3B3FF", LayerEnum.Bait)]
-    public static RoleOptionData Bait { get; set; }
+    public static RoleOptionData Bait;
 
     [LayerOption("#B34D99FF", LayerEnum.Colorblind)]
-    public static RoleOptionData Colorblind { get; set; }
+    public static RoleOptionData Colorblind;
 
     [LayerOption("#456BA8FF", LayerEnum.Coward)]
-    public static RoleOptionData Coward { get; set; }
+    public static RoleOptionData Coward;
 
     [LayerOption("#374D1EFF", LayerEnum.Diseased)]
-    public static RoleOptionData Diseased { get; set; }
+    public static RoleOptionData Diseased;
 
     [LayerOption("#758000FF", LayerEnum.Drunk)]
-    public static RoleOptionData Drunk { get; set; }
+    public static RoleOptionData Drunk;
 
     [LayerOption("#FF8080FF", LayerEnum.Dwarf)]
-    public static RoleOptionData Dwarf { get; set; }
+    public static RoleOptionData Dwarf;
 
     [LayerOption("#FFB34DFF", LayerEnum.Giant)]
-    public static RoleOptionData Giant { get; set; }
+    public static RoleOptionData Giant;
 
     [LayerOption("#2DE5BEFF", LayerEnum.Indomitable)]
-    public static RoleOptionData Indomitable { get; set; }
+    public static RoleOptionData Indomitable;
 
     [LayerOption("#860B7AFF", LayerEnum.Professional)]
-    public static RoleOptionData Professional { get; set; }
+    public static RoleOptionData Professional;
 
     [LayerOption("#1002C5FF", LayerEnum.Shy)]
-    public static RoleOptionData Shy { get; set; }
+    public static RoleOptionData Shy;
 
     [LayerOption("#DCEE85FF", LayerEnum.VIP)]
-    public static RoleOptionData VIP { get; set; }
+    public static RoleOptionData VIP;
 
     [LayerOption("#FFA60AFF", LayerEnum.Volatile)]
-    public static RoleOptionData Volatile { get; set; }
+    public static RoleOptionData Volatile;
 
     [LayerOption("#F6AAB7FF", LayerEnum.Yeller)]
-    public static RoleOptionData Yeller { get; set; }
+    public static RoleOptionData Yeller;
 }
 
-[AlignmentOption(LayerEnum.Ability)]
+[AlignmentOption(colorHex: "#FF9900FF")]
 public static class Abilities
 {
     [LayerOption("#073763FF", LayerEnum.Assassin, true)]
-    public static RoleOptionData Assassin { get; set; }
+    public static RoleOptionData Assassin;
 
     [LayerOption("#8CFFFFFF", LayerEnum.Bullseye)]
-    public static RoleOptionData Bullseye { get; set; }
+    public static RoleOptionData Bullseye;
 
     [LayerOption("#E600FFFF", LayerEnum.ButtonBarry)]
-    public static RoleOptionData ButtonBarry { get; set; }
+    public static RoleOptionData ButtonBarry;
 
     [LayerOption("#FF1919FF", LayerEnum.Hitman)]
-    public static RoleOptionData Hitman { get; set; }
+    public static RoleOptionData Hitman;
 
     [LayerOption("#26FCFBFF", LayerEnum.Insider)]
-    public static RoleOptionData Insider { get; set; }
+    public static RoleOptionData Insider;
 
     [LayerOption("#FF804DFF", LayerEnum.Multitasker)]
-    public static RoleOptionData Multitasker { get; set; }
+    public static RoleOptionData Multitasker;
 
     [LayerOption("#A84300FF", LayerEnum.Ninja)]
-    public static RoleOptionData Ninja { get; set; }
+    public static RoleOptionData Ninja;
 
     [LayerOption("#CCA3CCFF", LayerEnum.Politician)]
-    public static RoleOptionData Politician { get; set; }
+    public static RoleOptionData Politician;
 
     [LayerOption("#FF0080FF", LayerEnum.Radar)]
-    public static RoleOptionData Radar { get; set; }
+    public static RoleOptionData Radar;
 
     [LayerOption("#2160DDFF", LayerEnum.Ruthless)]
-    public static RoleOptionData Ruthless { get; set; }
+    public static RoleOptionData Ruthless;
 
     [LayerOption("#B3B3B3FF", LayerEnum.Slayer)]
-    public static RoleOptionData Slayer { get; set; }
+    public static RoleOptionData Slayer;
 
     [LayerOption("#008000FF", LayerEnum.Sniper)]
-    public static RoleOptionData Sniper { get; set; }
+    public static RoleOptionData Sniper;
 
     [LayerOption("#D4AF37FF", LayerEnum.Snitch)]
-    public static RoleOptionData Snitch { get; set; }
+    public static RoleOptionData Snitch;
 
     [LayerOption("#66E666FF", LayerEnum.Swapper)]
-    public static RoleOptionData Swapper { get; set; }
+    public static RoleOptionData Swapper;
 
     [LayerOption("#99E699FF", LayerEnum.Tiebreaker)]
-    public static RoleOptionData Tiebreaker { get; set; }
+    public static RoleOptionData Tiebreaker;
 
     [LayerOption("#FFFF99FF", LayerEnum.Torch)]
-    public static RoleOptionData Torch { get; set; }
+    public static RoleOptionData Torch;
 
     [LayerOption("#E91E63FF", LayerEnum.Tunneler)]
-    public static RoleOptionData Tunneler { get; set; }
+    public static RoleOptionData Tunneler;
 
     [LayerOption("#841A7FFF", LayerEnum.Underdog)]
-    public static RoleOptionData Underdog { get; set; }
+    public static RoleOptionData Underdog;
 }
 
-[AlignmentOption(LayerEnum.Disposition)]
+[AlignmentOption(colorHex: "#DD585BFF")]
 public static class Dispositions
 {
     [LayerOption("#4545A9FF", LayerEnum.Allied)]
-    public static RoleOptionData Allied { get; set; }
+    public static RoleOptionData Allied;
 
     [LayerOption("#4545FFFF", LayerEnum.Corrupted)]
-    public static RoleOptionData Corrupted { get; set; }
+    public static RoleOptionData Corrupted;
 
     [LayerOption("#E1C849FF", LayerEnum.Defector)]
-    public static RoleOptionData Defector { get; set; }
+    public static RoleOptionData Defector;
 
     [LayerOption("#678D36FF", LayerEnum.Fanatic)]
-    public static RoleOptionData Fanatic { get; set; }
+    public static RoleOptionData Fanatic;
 
     [LayerOption("#FF351FFF", LayerEnum.Linked, max: 7)]
-    private static RoleOptionData LinkedPriv { get; set; }
+    private static RoleOptionData LinkedPriv;
     public static RoleOptionData Linked
     {
         get
@@ -1115,7 +1019,7 @@ public static class Dispositions
     }
 
     [LayerOption("#FF66CCFF", LayerEnum.Lovers, max: 7)]
-    private static RoleOptionData LoversPriv { get; set; }
+    private static RoleOptionData LoversPriv;
     public static RoleOptionData Lovers
     {
         get
@@ -1127,13 +1031,13 @@ public static class Dispositions
     }
 
     [LayerOption("#00EEFFFF", LayerEnum.Mafia, min: 2)]
-    public static RoleOptionData Mafia { get; set; }
+    public static RoleOptionData Mafia;
 
     [LayerOption("#008080FF", LayerEnum.Overlord)]
-    public static RoleOptionData Overlord { get; set; }
+    public static RoleOptionData Overlord;
 
     [LayerOption("#3D2D2CFF", LayerEnum.Rivals, max: 7)]
-    private static RoleOptionData RivalsPriv { get; set; }
+    private static RoleOptionData RivalsPriv;
     public static RoleOptionData Rivals
     {
         get
@@ -1145,205 +1049,205 @@ public static class Dispositions
     }
 
     [LayerOption("#ABABFFFF", LayerEnum.Taskmaster)]
-    public static RoleOptionData Taskmaster { get; set; }
+    public static RoleOptionData Taskmaster;
 
     [LayerOption("#370D43FF", LayerEnum.Traitor)]
-    public static RoleOptionData Traitor { get; set; }
+    public static RoleOptionData Traitor;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewInvestigativeSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxCI { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxCI = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewKillingSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxCK { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxCK = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewProtectiveSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxCrP { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxCrP = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewSovereignSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxCSv { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxCSv = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewSupportSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxCS { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxCS = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralApocalypseSettings
 {
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool DirectSpawn { get; set; } = false;
+    [ToggleOption]
+    public static bool DirectSpawn = false;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool PlayersAlerted { get; set; } = true;
+    [ToggleOption]
+    public static bool PlayersAlerted = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralBenignSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxNB { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxNB = 1;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool VigilanteKillsBenigns { get; set; } = true;
+    [ToggleOption]
+    public static bool VigilanteKillsBenigns = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralEvilSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxNE { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxNE = 1;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool NeutralEvilsEndGame { get; set; } = false;
+    [ToggleOption]
+    public static bool NeutralEvilsEndGame = false;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool VigilanteKillsEvils { get; set; } = true;
+    [ToggleOption]
+    public static bool VigilanteKillsEvils = true;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool NEHasImpVision { get; set; } = true;
+    [ToggleOption]
+    public static bool NEHasImpVision = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralHarbingerSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxNH { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxNH = 1;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool NHHasImpVision { get; set; } = true;
+    [ToggleOption]
+    public static bool NHHasImpVision = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralKillingSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxNK { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxNK = 1;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool NKHasImpVision { get; set; } = true;
+    [ToggleOption]
+    public static bool NKHasImpVision = true;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool KnowEachOther { get; set; } = false;
+    [ToggleOption]
+    public static bool KnowEachOther = false;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralNeophyteSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxNN { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxNN = 1;
 
-    [ToggleOption(MultiMenu.AlignmentSubOptions)]
-    public static bool NNHasImpVision { get; set; } = true;
+    [ToggleOption]
+    public static bool NNHasImpVision = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderConcealingSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxIC { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxIC = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderDeceptionSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxID { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxID = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderHeadSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxIH { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxIH = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderKillingSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxIK { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxIK = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderSupportSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxIS { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxIS = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateDisruptionSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxSD { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxSD = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateKillingSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxSyK { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxSyK = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicatePowerSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxSP { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxSP = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class SyndicateSupportSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxSSu { get; set; } = new(1);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxSSu = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class ModifiersSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxModifiers { get; set; } = new(5);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxModifiers = 5;
 
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MinModifiers { get; set; } = new(5);
+    [NumberOption(1, 14, 1)]
+    public static Number MinModifiers = 5;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class AbilitiesSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxAbilities { get; set; } = new(5);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxAbilities = 5;
 
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MinAbilities { get; set; } = new(5);
+    [NumberOption(1, 14, 1)]
+    public static Number MinAbilities = 5;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class DispositionsSettings
 {
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MaxDispositions { get; set; } = new(5);
+    [NumberOption(1, 14, 1)]
+    public static Number MaxDispositions = 5;
 
-    [NumberOption(MultiMenu.AlignmentSubOptions, 1, 14, 1)]
-    public static Number MinDispositions { get; set; } = new(5);
+    [NumberOption(1, 14, 1)]
+    public static Number MinDispositions = 5;
 }

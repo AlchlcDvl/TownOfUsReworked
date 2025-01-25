@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public class AllAnyGen : BaseClassicCustomAllAnyGen
+public class AllAnyGen : BaseClassicAllAnyGen
 {
     public override void Filter()
     {
@@ -81,5 +81,75 @@ public class AllAnyGen : BaseClassicCustomAllAnyGen
 
         if (TownOfUsReworked.MCIActive)
             Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Neutrals}");
+    }
+
+    private static int GetRandomCount()
+    {
+        var random = URandom.RandomRangeInt(0, 100);
+        return GameData.Instance.PlayerCount switch
+        {
+            <= 6 => random <= 5 ? 0 : 1,
+            7 => random switch
+            {
+                < 5 => 0,
+                < 20 => 2,
+                _ => 1
+            },
+            8 => random switch
+            {
+                < 5 => 0,
+                < 40 => 2,
+                _ => 1
+            },
+            9 => random switch
+            {
+                < 5 => 0,
+                < 50 => 2,
+                _ => 1
+            },
+            10 => random switch
+            {
+                < 5 => 0,
+                < 10 => 3,
+                < 60 => 2,
+                _ => 1
+            },
+            11 => random switch
+            {
+                < 5 => 0,
+                < 40 => 3,
+                < 70 => 2,
+                _ => 1
+            },
+            12 => random switch
+            {
+                < 5 => 0,
+                < 60 => 3,
+                < 80 => 2,
+                _ => 1
+            },
+            13 => random switch
+            {
+                < 5 => 0,
+                < 60 => 3,
+                < 90 => 2,
+                _ => 1
+            },
+            14 => random switch
+            {
+                < 5 => 0,
+                < 25 => 1,
+                < 60 => 3,
+                _ => 2
+            },
+            _ => random switch
+            {
+                < 5 => 0,
+                < 20 => 1,
+                < 60 => 3,
+                < 90 => 2,
+                _ => 4
+            }
+        };
     }
 }

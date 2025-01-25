@@ -159,7 +159,7 @@ public static class MCIUtils
             PlayerLayer.LocalLayers().ForEach(x => x.EnteringLayer());
         }
 
-        Chat().SetVisible(newPlayer.CanChat());
+        Chat()?.SetVisible(newPlayer.CanChat());
         newPlayer.CustomSnapTo(pos2);
         savedPlayer.CustomSnapTo(pos);
     }

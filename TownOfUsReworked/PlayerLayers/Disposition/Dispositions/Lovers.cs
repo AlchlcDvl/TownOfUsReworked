@@ -3,14 +3,17 @@
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Lovers : Disposition
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BothLoversDie { get; set; } = true;
+    [ToggleOption]
+    public static bool BothLoversDie = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool LoversChat { get; set; } = true;
+    [ToggleOption]
+    public static bool LoversChat = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool LoversRoles { get; set; } = true;
+    [ToggleOption]
+    public static bool LoversRoles = true;
+
+    [ToggleOption]
+    public static bool ConvertLovers = true;
 
     public PlayerControl OtherLover { get; set; }
     public bool LoversAlive => !Player.HasDied() && !OtherLover.HasDied();
@@ -22,7 +25,7 @@ public class Lovers : Disposition
 
     public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
     {
-        if (BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.NeutralApoc))
+        if (BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.Apocalypse))
             MurderPlayer(OtherLover);
     }
 

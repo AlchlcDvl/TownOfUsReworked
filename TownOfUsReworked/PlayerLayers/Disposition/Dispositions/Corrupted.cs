@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Corrupted : Disposition
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number CorruptCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number CorruptCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AllCorruptedWin { get; set; } = false;
+    [ToggleOption]
+    public static bool AllCorruptedWin = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CorruptedVent { get; set; } = false;
+    [ToggleOption]
+    public static bool CorruptedVent = false;
 
     private CustomButton CorruptButton { get; set; }
 

@@ -1,12 +1,12 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false) : OptionAttribute<bool>(MultiMenu.Layer, CustomOptionType.Alignment), IOptionGroup
+public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None, bool noParts = false, string colorHex = null, int priority = -1, MultiMenu menu = MultiMenu.Layer) :
+    BaseHeaderOptionAttribute (menu, CustomOptionType.Alignment, priority)
 {
-    public LayerEnum Alignment { get; } = alignment;
-    private bool NoParts { get; set; } = noParts;
-    public HeaderOptionAttribute GroupHeader { get; set; }
-    public IEnumerable<OptionAttribute> GroupMembers { get; set; }
+    public RoleListSlot Alignment { get; } = alignment;
+    private bool NoParts { get; } = noParts;
+    public BaseHeaderOptionAttribute GroupHeader { get; set; }
     private TextMeshPro Left { get; set; }
     private TextMeshPro Right { get; set; }
     private TextMeshPro Center { get; set; }
@@ -16,6 +16,7 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
     private GameMode SavedMode { get; set; }
     private GameObject Cog { get; set; }
     private Transform PlsMnsBtn { get; set; }
+    private UColor Color { get; } = CustomColorManager.FromHex(colorHex ?? "#FFFFFFFF");
 
     private static Vector3 DefaultPos { get; set; } = Vector3.zero;
 
@@ -53,16 +54,11 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
 
         var color = Alignment switch
         {
-            LayerEnum.CrewSupport or LayerEnum.CrewInvest or LayerEnum.CrewProt or LayerEnum.CrewKill or LayerEnum.CrewUtil or LayerEnum.CrewSov => CustomColorManager.Crew,
-            LayerEnum.IntruderSupport or LayerEnum.IntruderConceal or LayerEnum.IntruderDecep or LayerEnum.IntruderKill or LayerEnum.IntruderUtil or LayerEnum.IntruderHead =>
-                CustomColorManager.Intruder,
-            LayerEnum.NeutralKill or LayerEnum.NeutralNeo or LayerEnum.NeutralEvil or LayerEnum.NeutralBen or LayerEnum.NeutralPros or LayerEnum.NeutralApoc or LayerEnum.NeutralHarb =>
-                CustomColorManager.Neutral,
-            LayerEnum.SyndicateKill or LayerEnum.SyndicateSupport or LayerEnum.SyndicateDisrup or LayerEnum.SyndicatePower or LayerEnum.SyndicateUtil => CustomColorManager.Syndicate,
-            LayerEnum.Ability => CustomColorManager.Ability,
-            LayerEnum.Modifier => CustomColorManager.Modifier,
-            LayerEnum.Disposition => CustomColorManager.Disposition,
-            _ => UColor.white
+            >= RoleListSlot.CrewSupport and <= RoleListSlot.CrewUtil => CustomColorManager.Crew,
+            >= RoleListSlot.IntruderSupport and <= RoleListSlot.IntruderHead => CustomColorManager.Intruder,
+            >= RoleListSlot.NeutralPros and <= RoleListSlot.NeutralEvil => CustomColorManager.Neutral,
+            >= RoleListSlot.SyndicateKill and <= RoleListSlot.SyndicateUtil => CustomColorManager.Syndicate,
+            _ => Color
         };
 
         quota.GetChild(0).GetComponent<SpriteRenderer>().color = color.Alternate(0.35f);
@@ -97,10 +93,10 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
         ViewUpdate();
     }
 
-    public void Toggle()
+    public override void Toggle()
     {
         Value = !Get();
-        GroupHeader?.Toggle();
+        (GroupHeader as HeaderOptionAttribute)?.Toggle();
 
         if (Setting)
         {
@@ -128,26 +124,25 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
 
         if (!NoParts)
         {
-            Left.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
-            Right.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
-            Center.gameObject.SetActive(SavedMode is GameMode.Classic or GameMode.RoleList or GameMode.KillingOnly);
-            Single.SetActive(SavedMode is not (GameMode.Custom or GameMode.AllAny));
+            Left.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
+            Right.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
+            Center.gameObject.SetActive(SavedMode == GameMode.RoleList);
+            Single.SetActive(SavedMode is not (GameMode.Classic or GameMode.AllAny));
 
             Center.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
-                GameMode.Classic or GameMode.KillingOnly => "Chance",
                 GameMode.RoleList => "Unique",
                 _ => ""
             }));
             Right.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
-                GameMode.Custom => "Chance",
+                GameMode.Classic => "Chance",
                 GameMode.AllAny => "Unique",
                 _ => ""
             }));
             Left.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
-                GameMode.Custom => "Count",
+                GameMode.Classic => "Count",
                 GameMode.AllAny => "Active",
                 _ => ""
             }));
@@ -156,25 +151,18 @@ public class AlignmentOptionAttribute(LayerEnum alignment, bool noParts = false)
 
     public override void PostLoadSetup()
     {
-        TargetType = typeof(bool);
-        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name == Name.Replace("Roles", "") + "Settings");
-        GroupHeader?.AddMenuIndex(6 + (int)Alignment);
-        OptionParents3.Add((GroupMembers, this));
+        base.PostLoadSetup();
+        GroupHeader = GetOption<HeaderOptionAttribute>($"{Name.Replace("Roles", "")}Settings");
     }
 
     public void SetUpOptionsMenu()
     {
-        SettingsPatches.SettingsPage = 6 + (int)Alignment;
+        SettingsPatches.SettingsPage = 5;
         SettingsPatches.CachedPage = 1;
         var scrollbar = GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
         SettingsPatches.ScrollerLocation = scrollbar.Inner.transform.localPosition;
         scrollbar.ScrollToTop();
+        SettingsPatches.SelectedSubOptions = GroupHeader;
         SettingsPatches.OnValueChanged();
-    }
-
-    public override void AddMenuIndex(int index)
-    {
-        base.AddMenuIndex(index);
-        GroupHeader?.AddMenuIndex(index);
     }
 }

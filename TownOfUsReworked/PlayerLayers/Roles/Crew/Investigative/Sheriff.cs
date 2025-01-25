@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Sheriff : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number InterrogateCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number InterrogateCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool NeutEvilRed { get; set; } = false;
+    [ToggleOption]
+    public static bool NeutEvilRed = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool NeutKillingRed { get; set; } = false;
+    [ToggleOption]
+    public static bool NeutKillingRed = false;
 
     public CustomButton InterrogateButton { get; set; }
 
@@ -22,7 +22,7 @@ public class Sheriff : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewKill;
+        Alignment = Alignment.Investigative;
         InterrogateButton ??= new(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interrogate, new Cooldown(InterrogateCd),
             (PlayerBodyExclusion)Exception);
     }

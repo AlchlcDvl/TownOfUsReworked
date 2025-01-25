@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
+public abstract class BaseClassicAllAnyGen : BaseRoleGen
 {
     public override void InitList() => GetAdjustedFactions();
 
@@ -19,7 +19,7 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
-                    if (Check(spawn))
+                    if (Check(spawn.Chance))
                         SetPostmortals.Revealers++;
                 }
             }
@@ -54,7 +54,7 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
-                    if (Check(spawn))
+                    if (Check(spawn.Chance))
                         SetPostmortals.Ghouls++;
                 }
             }
@@ -90,7 +90,7 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
-                    if (Check(spawn))
+                    if (Check(spawn.Chance))
                         SetPostmortals.Phantoms++;
                 }
             }
@@ -123,7 +123,7 @@ public abstract class BaseClassicCustomAllAnyGen : BaseRoleGen
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
-                    if (Check(spawn))
+                    if (Check(spawn.Chance))
                         SetPostmortals.Banshees++;
                 }
             }

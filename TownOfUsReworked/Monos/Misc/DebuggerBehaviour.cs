@@ -71,10 +71,7 @@ public class DebuggerBehaviour : MonoBehaviour
             TestWindow.Enabled = !TestWindow.Enabled;
 
             if (!TestWindow.Enabled && IsLobby() && IsLocalGame())
-            {
                 MCIUtils.RemoveAllPlayers();
-                TownOfUsReworked.MCIActive = false;
-            }
         }
     }
 

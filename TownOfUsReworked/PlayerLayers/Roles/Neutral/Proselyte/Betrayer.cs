@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Betrayer : Neutral
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number BetrayCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number BetrayCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BetrayerVent { get; set; } = true;
+    [ToggleOption]
+    public static bool BetrayerVent = true;
 
     public CustomButton KillButton { get; set; }
 
@@ -21,7 +21,7 @@ public class Betrayer : Neutral
     {
         base.Init();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
-        Alignment = Alignment.NeutralPros;
+        Alignment = Alignment.Proselyte;
         KillButton ??= new(this, new SpriteName("BetrayerKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(BetrayCd), "BACKSTAB",
             (PlayerBodyExclusion)Exception);
     }

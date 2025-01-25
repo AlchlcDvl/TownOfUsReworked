@@ -3,23 +3,23 @@
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Glitch : NKilling
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number MimicCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number MimicCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number MimicDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number MimicDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number HackCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number HackCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number HackDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number HackDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number NeutraliseCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number NeutraliseCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GlitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool GlitchVent = false;
 
     public CustomButton HackButton { get; set; }
     public CustomButton MimicButton { get; set; }

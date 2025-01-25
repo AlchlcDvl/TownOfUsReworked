@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Drunkard : Syndicate
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ConfuseCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ConfuseCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number ConfuseDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number ConfuseDur = 10;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ConfuseImmunity { get; set; } = true;
+    [ToggleOption]
+    public static bool ConfuseImmunity = true;
 
     public CustomButton ConfuseButton { get; set; }
     public float Modifier => ConfuseButton.EffectActive ? -1 : 1;
@@ -25,7 +25,7 @@ public class Drunkard : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateDisrup;
+        Alignment = Alignment.Disruption;
         ConfuseMenu = new(Player, Click, Exception1);
         ConfusedPlayer = null;
         ConfuseButton ??= new(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,

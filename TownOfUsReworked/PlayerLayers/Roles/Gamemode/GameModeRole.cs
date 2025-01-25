@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.PlayerLayers;
+namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class GameModeRole : Role
 {

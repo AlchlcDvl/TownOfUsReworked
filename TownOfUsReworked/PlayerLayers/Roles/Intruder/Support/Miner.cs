@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Miner : Intruder, IDigger
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number MineCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number MineCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool MinerSpawnOnMira { get; set; } = true;
+    [ToggleOption]
+    public static bool MinerSpawnOnMira = true;
 
     public CustomButton MineButton { get; set; }
     public List<Vent> Vents { get; } = [];
@@ -22,7 +22,7 @@ public class Miner : Intruder, IDigger
     {
         base.Init();
         Name = TranslationManager.Translate($"Layer.{(MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner")}");
-        Alignment = Alignment.IntruderSupport;
+        Alignment = Alignment.Support;
         MineButton ??= new(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label,
             (ConditionFunc)Condition);
         Vents.Clear();

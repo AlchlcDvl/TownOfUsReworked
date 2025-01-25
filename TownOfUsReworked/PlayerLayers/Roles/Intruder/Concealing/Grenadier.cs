@@ -3,23 +3,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Grenadier : Intruder, IFlasher
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number FlashCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number FlashCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number FlashDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number FlashDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 10f, 0.5f, Format.Distance)]
-    public static Number FlashRadius { get; set; } = new(4.5f);
+    [NumberOption(0.5f, 10f, 0.5f, Format.Distance)]
+    public static Number FlashRadius = 4.5f;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GrenadierIndicators { get; set; } = false;
+    [ToggleOption]
+    public static bool GrenadierIndicators = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SaboFlash { get; set; } = false;
+    [ToggleOption]
+    public static bool SaboFlash = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GrenadierVent { get; set; } = false;
+    [ToggleOption]
+    public static bool GrenadierVent = false;
 
     public CustomButton FlashButton { get; set; }
     public IEnumerable<byte> FlashedPlayers { get; set; }
@@ -32,7 +32,7 @@ public class Grenadier : Intruder, IFlasher
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderConceal;
+        Alignment = Alignment.Concealing;
         FlashedPlayers = [];
         FlashButton ??= new(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
             "FLASH", new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition);

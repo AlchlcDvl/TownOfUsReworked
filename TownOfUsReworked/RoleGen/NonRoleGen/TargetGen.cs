@@ -136,7 +136,7 @@ public class TargetGen : BaseGen
         {
             foreach (var exe in PlayerLayer.GetLayers<Executioner>())
             {
-                exe.TargetPlayer = AllPlayers().Random(x => x != exe.Player && !x.IsLinkedTo(exe.Player) && !x.Is(Alignment.CrewSov));
+                exe.TargetPlayer = AllPlayers().Random(x => x != exe.Player && !x.IsLinkedTo(exe.Player) && !x.Is(Alignment.Sovereign));
 
                 if (exe.TargetPlayer)
                 {
@@ -154,7 +154,7 @@ public class TargetGen : BaseGen
         {
             foreach (var guess in PlayerLayer.GetLayers<Guesser>())
             {
-                guess.TargetPlayer = AllPlayers().Random(x => x != guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.CrewInvest) &&
+                guess.TargetPlayer = AllPlayers().Random(x => x != guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.Evil) && !x.Is(Alignment.Investigative) &&
                     !x.Is<Indomitable>());
 
                 if (guess.TargetPlayer)
@@ -173,7 +173,7 @@ public class TargetGen : BaseGen
         {
             foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
             {
-                ga.TargetPlayer = AllPlayers().Random(x => x != ga.Player && !x.IsLinkedTo(ga.Player) && !x.Is(Alignment.NeutralEvil));
+                ga.TargetPlayer = AllPlayers().Random(x => x != ga.Player && !x.IsLinkedTo(ga.Player) && !x.Is(Alignment.Evil));
 
                 if (ga.TargetPlayer)
                 {
@@ -223,11 +223,11 @@ public class TargetGen : BaseGen
         {
             foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
             {
-                jackal.Recruit1 = AllPlayers().Random(x => !x.Is(Alignment.NeutralNeo) && x.Is(SubFaction.None) && !x.Is(Alignment.NeutralEvil) && !x.Is(Alignment.NeutralBen));
+                jackal.Recruit1 = AllPlayers().Random(x => !x.Is(Alignment.Neophyte) && x.Is(SubFaction.None) && !x.Is(Alignment.Evil) && !x.Is(Alignment.Benign));
 
                 if (jackal.Recruit1)
                 {
-                    jackal.Recruit2 = AllPlayers().Random(x => x.GetAlignment() is not (Alignment.NeutralNeo or Alignment.NeutralEvil or Alignment.NeutralBen) && x.Is(SubFaction.None) &&
+                    jackal.Recruit2 = AllPlayers().Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.Is(SubFaction.None) &&
                         (jackal.Recruit1.GetFaction() != x.GetFaction() || (jackal.Recruit1.GetFaction() == Faction.Neutral && x.GetFaction() == Faction.Neutral && x.GetRole().Type !=
                         jackal.Recruit1.GetRole().Type)));
                 }

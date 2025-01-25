@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Overlord : Disposition
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool OverlordKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool OverlordKnows = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 20, 1)]
-    public static Number OverlordMeetingWinCount { get; set; } = new(3);
+    [NumberOption(1, 20, 1)]
+    public static Number OverlordMeetingWinCount = 3;
 
     public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Overlord : CustomColorManager.Disposition;
     public override string Symbol => "β";

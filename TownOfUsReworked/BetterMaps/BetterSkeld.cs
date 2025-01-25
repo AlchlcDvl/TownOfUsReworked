@@ -3,17 +3,17 @@ namespace TownOfUsReworked.BetterMaps;
 [HeaderOption(MultiMenu.Main)]
 public static class BetterSkeld
 {
-    [ToggleOption(MultiMenu.Main)]
+    [ToggleOption]
     public static bool EnableBetterSkeld { get; set; } = true;
 
-    [ToggleOption(MultiMenu.Main)]
+    [ToggleOption]
     public static bool SkeldVentImprovements { get; set; } = false;
 
-    [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
-    public static Number SkeldReactorTimer { get; set; } = new(60);
+    [NumberOption(30f, 90f, 5f, Format.Time)]
+    public static Number SkeldReactorTimer { get; set; } = 60;
 
-    [NumberOption(MultiMenu.Main, 30f, 90f, 5f, Format.Time)]
-    public static Number SkeldO2Timer { get; set; } = new(60);
+    [NumberOption(30f, 90f, 5f, Format.Time)]
+    public static Number SkeldO2Timer { get; set; } = 60;
 
     private static readonly Vector3 ReactorVentNewPos = new(-2.95f, -10.95f, 2f);
     private static readonly Vector3 ShieldsVentNewPos = new(2f, -15f, 2f);

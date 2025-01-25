@@ -7,8 +7,14 @@ This mod is a mishmash of code and ideas from different games, mods and forks, m
 If you want to know more, try using info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 New!
+- New Role: Trickster [Crew (Protective)]*
+- New Role: Burning Potato [Hot Potato]*
+- New Role: Charred Potato [Hot Potato]*
+- New Role: Cold Potato [Hot Potato]*
+- New Factions: Pandorica, Compliance, Illuminati
+- New Special Game Modifiers: Pandora's Box, Order of Compliance, Illuminati Unleashed
+- New Game Mode: Hot Potato game mode*
 - Mega Addition: The mod now has its own custom stats and achievements!
-- Addition: Trickster [Crew (Protective)]
 - Addition: The main menu buttons now have their own icons
 - Addition: You can now change the keybind to deselect players (default is still Backspace)
 - Addition: More game options
@@ -20,6 +26,8 @@ New!
 - Addition: The role screen will now make use of the background bar to make up for the black space on the screen
 - Addition: Added a scroll bar to the player colors menu
 - Addition: You can now overwrite setting presets if you want to
+- Addition: Added new multi select options and modified existing settings to match*
+- Addition: You can now set Modifier, Ability and Disposition lists in the Role List game mode*
 
 Changes!
 - Recode: Overhauled a lot of the code base in favour of optimisation and avoiding potential issues
@@ -33,15 +41,18 @@ Changes!
 - Change: The /help command now also provides info on other commands if you specify a command name after it
 - Change: Dictators and Mayors cannot reveal themselves if there is another of the same role revealed, however unrevealed Dictators can still call a tribunal
 - Change: You can no longer report bodies in the dark, your report button will light
-- Change: Teleporters and Godfather-Teleporters now also have to go through an animation to teleport
+- Change: Teleporters now also have to go through an animation to teleport to maintain parity
+- Change: Drive holding Warpers will now play an animation for everyone before warping
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Improvement: Improved the mod's loaders
 - Improvement: Mod assets are now no longer loaded all at once; they are now only loaded and stored when needed to ensure assets that are never needed don't hog memory
 - Improvement: Made general optimisations to improve the mod's runtime
 - Improvement: The mod is now more integrated into the game, allowing for a smoother experience
 - Improvement: Portal animations now occur within the player's vision, to not expose player positions
+- Improvement: Changed how player selection menus are handled (like for Transporter and Warper)
 - Removed: Removed the "Lobby Cap" toggle in the testing menu due to it not actually functioning and being too much of a hassle to actually get working
 - Removed: Removed Vampire Hunter as it's too hard of a counter to the Undead (and I couldn't really think of role names for the other sub faction counters)
+- Removed: Custom and Killing Only as their functionalities have been merged into other modes
 
 Fixes!
 - Critical: Fixed Godfather-Miners being unable to spawn vents
@@ -51,7 +62,7 @@ Fixes!
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
-- Role: Fixed Spellslingers and Rebel-Spellslingers not ending the game when they successfully spell bind everyone
+- Role: Fixed Spellslingers not ending the game when they successfully spell bind everyone
 - Role: Fixed Rebel-Framer frames not actually functioning the way they should
 - Disposition: Fixed Allied factions not being set properly
 - Modifier: Fixed some visual aspects of Giant and Dwarf
@@ -70,7 +81,8 @@ Fixes!
 - Visual: Fixed the end game screen not showing yourself at the forefront if you won
 - Visual: Fixed the mod logo appearing behind the account menu
 - Visual: Fixed the downloader not correctly displaying the result of the download
-- Visual: Fixed the visibility of options not being correctly altered based on other settings
+- Visual: Fixed the visibility of options not being correctly altered based on toggle settings
+- Visual: Fixed the texts being misaligned the first time you open settings
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
 - General: Fixed All Any role gen being a bit broken in some aspects
 - General: Fixed fake players not spawning in locations correctly on Airship and Submerged
@@ -82,7 +94,6 @@ Fixes!
 
 Known Bugs :(
 - Critically low FPS for everyone, with the host having it the worst; a fix is in progress and the severity has been considerably reduced since discovery
-- Loading settings for the first time makes the option texts appear a bit misaligned
 - You can't report bodies on Submerged due its own implementation of a body report system
 
 Credits-

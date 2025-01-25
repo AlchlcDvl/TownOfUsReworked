@@ -3,29 +3,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Revealer : Crew, IGhosty
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
-    public static Number RevealerTasksRemainingClicked { get; set; } = new(5);
+    [NumberOption(1, 10, 1)]
+    public static Number RevealerTasksRemainingClicked = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static Number RevealerTasksRemainingAlert { get; set; } = new(1);
+    [NumberOption(1, 5, 1)]
+    public static Number RevealerTasksRemainingAlert = 1;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RevealerRevealsNeutrals { get; set; } = false;
+    [ToggleOption]
+    public static bool RevealerRevealsNeutrals = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RevealerRevealsCrew { get; set; } = false;
+    [ToggleOption]
+    public static bool RevealerRevealsCrew = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RevealerRevealsRoles { get; set; } = false;
+    [ToggleOption]
+    public static bool RevealerRevealsRoles = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RevealerRevealsTraitor { get; set; } = false;
+    [ToggleOption]
+    public static bool RevealerRevealsTraitor = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RevealerRevealsFanatic { get; set; } = false;
+    [ToggleOption]
+    public static bool RevealerRevealsFanatic = false;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static RevealerCanBeClickedBy RevealerCanBeClickedBy { get; set; } = RevealerCanBeClickedBy.Everyone;
+    [StringOption<RevealerCanBeClickedBy>]
+    public static RevealerCanBeClickedBy RevealerCanBeClickedBy = RevealerCanBeClickedBy.Everyone;
 
     public bool Caught { get; set; }
     public bool Revealed { get; set; }
@@ -40,7 +40,7 @@ public class Revealer : Crew, IGhosty
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewUtil;
+        Alignment = Alignment.Utility;
     }
 
     public override void UponTaskComplete(uint taskId)
@@ -49,16 +49,16 @@ public class Revealer : Crew, IGhosty
         {
             if (Local)
                 Flash(Color);
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
-                Alignment.NeutralPros && RevealerRevealsNeutrals))
+            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte or
+                Alignment.Harbinger or Alignment.Apocalypse || CustomPlayer.Local.GetRole() is NKilling) && RevealerRevealsNeutrals))
             {
                 Revealed = true;
                 Flash(Color);
                 CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
             }
         }
-        else if (TasksDone && !Caught && (Local || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or
-            Alignment.NeutralNeo or Alignment.NeutralPros && RevealerRevealsNeutrals)))
+        else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte or
+            Alignment.Harbinger or Alignment.Apocalypse || CustomPlayer.Local.GetRole() is NKilling) && RevealerRevealsNeutrals))
         {
             Flash(Color);
         }

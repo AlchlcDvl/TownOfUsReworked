@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Rebel : Syndicate
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0.25f, 0.9f, 0.05f, Format.Multiplier)]
-    public static Number RebPromotionCdDecrease { get; set; } = new(0.75f);
+    [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
+    public static Number RebPromotionCdDecrease = 0.75f;
 
     public bool HasDeclared { get; set; }
     public CustomButton SidekickButton { get; set; }
@@ -19,7 +19,7 @@ public class Rebel : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicatePower;
+        Alignment = Alignment.Power;
         SidekickButton ??= new(this, new SpriteName("Sidekick"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
             (UsableFunc)Usable);
     }

@@ -3,32 +3,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Whisperer : Neophyte
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number WhisperCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number WhisperCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool WhisperCdIncreases { get; set; } = false;
+    [ToggleOption]
+    public static bool WhisperCdIncreases = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static Number WhisperCdIncrease { get; set; } = new(5);
+    [NumberOption(2.5f, 30f, 2.5f, Format.Time)]
+    public static Number WhisperCdIncrease = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number WhisperRadius { get; set; } = new(1.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number WhisperRadius = 1.5f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5, 50, 5, Format.Percent)]
-    public static Number WhisperRate { get; set; } = new(5);
+    [NumberOption(5, 50, 5, Format.Percent)]
+    public static Number WhisperRate = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool WhisperRateDecreases { get; set; } = false;
+    [ToggleOption]
+    public static bool WhisperRateDecreases = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5, 50, 5, Format.Percent)]
-    public static Number WhisperRateDecrease { get; set; } = new(5);
+    [NumberOption(5, 50, 5, Format.Percent)]
+    public static Number WhisperRateDecrease = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool WhispVent { get; set; } = false;
+    [ToggleOption]
+    public static bool WhispVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool PersuadedVent { get; set; } = false;
+    [ToggleOption]
+    public static bool PersuadedVent = false;
 
     public CustomButton WhisperButton { get; set; }
     public int WhisperCount { get; set; }
@@ -40,14 +40,14 @@ public class Whisperer : Neophyte
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
-        "defect and join the <#F995FCFF>Sect</color>";
+        "defect and join the <#F995FCFF>Cult</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()
     {
         base.Init();
-        Objectives = () => "- Persuade or kill anyone who can oppose the <#F995FCFF>Sect</color>";
-        SubFaction = SubFaction.Sect;
+        Objectives = () => "- Persuade or kill anyone who can oppose the <#F995FCFF>Cult</color>";
+        SubFaction = SubFaction.Cult;
         WhisperConversion = WhisperRate;
         WhisperButton ??= new(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);
@@ -81,7 +81,7 @@ public class Whisperer : Neophyte
                     WhisperConversion = 2;
 
                 ConversionCount++;
-                RpcConvert(player, PlayerId, SubFaction.Sect);
+                RpcConvert(player, PlayerId, SubFaction.Cult);
                 removals.Add(player);
             }
         }
@@ -101,7 +101,7 @@ public class Whisperer : Neophyte
             writer.Write(perc);
         }
 
-        writer.EndRpc();
+        writer.CloseRpc();
     }
 
     public float Difference() => WhisperCdIncreases ? (WhisperCdIncrease * WhisperCount) : 0;

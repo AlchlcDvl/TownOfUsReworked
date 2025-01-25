@@ -3,28 +3,28 @@
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Cryomaniac : NKilling
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number CryoDouseCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number CryoDouseCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CryoFreezeAll { get; set; } = false;
+    [ToggleOption]
+    public static bool CryoFreezeAll = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CryoLastKillerBoost { get; set; } = false;
+    [ToggleOption]
+    public static bool CryoLastKillerBoost = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number VaporiseCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number VaporiseCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CryoVent { get; set; } = false;
+    [ToggleOption]
+    public static bool CryoVent = false;
 
     public CustomButton FreezeButton { get; set; }
     public CustomButton DouseButton { get; set; }
     public CustomButton KillButton { get; set; }
     public List<byte> Doused { get; } = [];
     public bool FreezeUsed { get; set; }
-    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.CrewKill or Alignment.NeutralPros
-        or Alignment.NeutralNeo or Alignment.NeutralKill) && x != Player) && CryoLastKillerBoost;
+    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
+        or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac : FactionColor;
     public override LayerEnum Type => LayerEnum.Cryomaniac;

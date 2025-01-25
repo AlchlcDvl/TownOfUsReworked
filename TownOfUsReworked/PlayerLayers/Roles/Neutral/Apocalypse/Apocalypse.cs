@@ -8,7 +8,7 @@ public abstract class Apocalypse : Neutral
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralApoc;
+        Alignment = Alignment.Apocalypse;
 
         if (NeutralApocalypseSettings.PlayersAlerted)
             Flash(Color);

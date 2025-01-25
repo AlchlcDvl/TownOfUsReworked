@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Politician : Ability
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 10, 1)]
-    public static Number PoliticianVoteBank { get; set; } = new(0);
+    [NumberOption(0, 10, 1)]
+    public static Number PoliticianVoteBank = 0;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool PoliticianButton { get; set; } = true;
+    [ToggleOption]
+    public static bool PoliticianButton = true;
 
     public int VoteBank { get; set; }
     public bool SelfVote { get; set; }

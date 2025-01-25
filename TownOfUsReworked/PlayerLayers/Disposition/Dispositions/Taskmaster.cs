@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Taskmaster : Disposition
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static Number TMTasksRemaining { get; set; } = new(1);
+    [NumberOption(1, 5, 1)]
+    public static Number TMTasksRemaining = 1;
 
     public bool WinTasksDone { get; set; }
 
@@ -17,10 +17,10 @@ public class Taskmaster : Disposition
     {
         if (TasksLeft == TMTasksRemaining)
         {
-            if (Local || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is Alignment.NeutralBen or Alignment.NeutralEvil)
+            if (Local || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is Alignment.Benign or Alignment.Evil)
                 Flash(Color);
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
-                Alignment.NeutralPros)
+            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || CustomPlayer.Local.GetAlignment() is Alignment.Killing or Alignment.Neophyte or
+                Alignment.Proselyte or Alignment.Harbinger or Alignment.Apocalypse)
             {
                 Flash(Color);
                 CustomPlayer.Local.GetRole().AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));

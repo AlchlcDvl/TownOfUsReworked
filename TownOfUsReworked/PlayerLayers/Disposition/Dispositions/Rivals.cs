@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Rivals : Disposition
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RivalsChat { get; set; } = true;
+    [ToggleOption]
+    public static bool RivalsChat = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RivalsRoles { get; set; } = true;
+    [ToggleOption]
+    public static bool RivalsRoles = true;
 
     public PlayerControl OtherRival { get; set; }
     public bool IsWinningRival =>  OtherRival.HasDied() && !Player.HasDied();

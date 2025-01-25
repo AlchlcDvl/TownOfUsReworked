@@ -23,32 +23,32 @@ public class Sniper : Assassin
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public abstract class Assassin : Ability, IGuesser
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number AssassinKills { get; set; } = new(0);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number AssassinKills = 0;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinMultiKill { get; set; } = false;
+    [ToggleOption]
+    public static bool AssassinMultiKill = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessNeutralBenign { get; set; } = false;
+    [ToggleOption]
+    public static bool AssassinGuessNeutralBenign = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessNeutralEvil { get; set; } = false;
+    [ToggleOption]
+    public static bool AssassinGuessNeutralEvil = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessInvestigative { get; set; } = false;
+    [ToggleOption]
+    public static bool AssassinGuessInvestigative = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessApoc { get; set; } = false;
+    [ToggleOption]
+    public static bool AssassinGuessApoc = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessModifiers { get; set; } = false;
+    [ToggleOption]
+    public static bool AssassinGuessModifiers = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessDispositions { get; set; } = false;
+    [ToggleOption]
+    public static bool AssassinGuessDispositions = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AssassinGuessAbilities { get; set; } = false;
+    [ToggleOption]
+    public static bool AssassinGuessAbilities = false;
 
     public static int RemainingKills { get; set; }
 
@@ -148,7 +148,7 @@ public abstract class Assassin : Ability, IGuesser
                     GuessingMenu.Mapping.Add(layer);
             }
 
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Plaguebearer).IsActive() && !Player.Is(Alignment.NeutralHarb) && !Player.Is(Alignment.NeutralApoc))
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Plaguebearer).IsActive() && !Player.Is(Alignment.Harbinger) && !Player.Is(Alignment.Apocalypse))
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Plaguebearer);
 
@@ -174,10 +174,10 @@ public abstract class Assassin : Ability, IGuesser
                 GuessingMenu.Mapping.Add(LayerEnum.Reanimated);
             }
 
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Whisperer).IsActive() && !Player.Is(SubFaction.Sect))
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Whisperer).IsActive() && !Player.Is(SubFaction.Cult))
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Whisperer);
-                GuessingMenu.Mapping.Add(LayerEnum.Sect);
+                GuessingMenu.Mapping.Add(LayerEnum.Cult);
             }
 
             // Add certain Neutral roles if enabled
@@ -365,7 +365,7 @@ public abstract class Assassin : Ability, IGuesser
             RemainingKills--;
             MarkMeetingDead(player, Player);
 
-            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.NeutralApoc))
+            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && (!lovers.OtherLover.Is(Alignment.Apocalypse) || AssassinGuessApoc))
                 RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);
         }
 

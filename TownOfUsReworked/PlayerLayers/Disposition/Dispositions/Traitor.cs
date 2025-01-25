@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Traitor : Disposition
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TraitorKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool TraitorKnows = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TraitorColourSwap { get; set; } = false;
+    [ToggleOption]
+    public static bool TraitorColourSwap = false;
 
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }

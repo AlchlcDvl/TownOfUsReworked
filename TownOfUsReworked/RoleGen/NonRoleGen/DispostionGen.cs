@@ -4,6 +4,10 @@ namespace TownOfUsReworked.RoleGen;
 
 public class DispositionGen : BaseGen
 {
+    public static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
+    public static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
+    public static readonly LayerEnum[] NeutralDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
+
     public override void Clear() => AllDispositions.Clear();
 
     public override void InitList()
@@ -56,7 +60,7 @@ public class DispositionGen : BaseGen
             else if (NeutralDisp.Contains(id))
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Neutral));
             else if (id == LayerEnum.Allied)
-                assigned = playerList.FirstOrDefault(x => x.Is(Alignment.NeutralKill));
+                assigned = playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Neutral));
             else if (id == LayerEnum.Mafia && playerList.Count > 1)
                 assigned = playerList.FirstOrDefault();
             else if (id == LayerEnum.Defector && playerList.Count > 1)

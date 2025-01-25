@@ -145,6 +145,9 @@ public class NameHandler : MonoBehaviour
 
         if (!deadSeeEverything && !amOwner)
         {
+            // role.UpdateSelfName(ref name, ref color, ref revealed, ref removeFromConsig);
+            // localRole.UpdatePlayerName(playerHandler, ref name, ref color, ref revealed, ref removeFromConsig);
+
             switch (role)
             {
                 case Mayor mayor:

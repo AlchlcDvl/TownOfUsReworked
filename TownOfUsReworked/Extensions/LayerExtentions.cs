@@ -2,25 +2,23 @@ namespace TownOfUsReworked.Extensions;
 
 public static class LayerExtentions
 {
-    public static string RoleColorString => $"<#{CustomColorManager.Role.ToHtmlStringRGBA()}>";
-    public static string AlignmentColorString => $"<#{CustomColorManager.Alignment.ToHtmlStringRGBA()}>";
-    public static string ObjectivesColorString => $"<#{CustomColorManager.Objectives.ToHtmlStringRGBA()}>";
-    public static string AttributesColorString => $"<#{CustomColorManager.Attributes.ToHtmlStringRGBA()}>";
-    public static string AbilitiesColorString => $"<#{CustomColorManager.Abilities.ToHtmlStringRGBA()}>";
-    public static string DispositionColorString => $"<#{CustomColorManager.Disposition.ToHtmlStringRGBA()}>";
-    public static string ModifierColorString => $"<#{CustomColorManager.Modifier.ToHtmlStringRGBA()}>";
-    public static string AbilityColorString => $"<#{CustomColorManager.Ability.ToHtmlStringRGBA()}>";
-    public static string SubFactionColorString => $"<#{CustomColorManager.SubFaction.ToHtmlStringRGBA()}>";
-    public static string AttackColorString => $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
-    public static string DefenseColorString => $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
+    public static readonly string RoleColorString = $"<#{CustomColorManager.Role.ToHtmlStringRGBA()}>";
+    public static readonly string AlignmentColorString = $"<#{CustomColorManager.Alignment.ToHtmlStringRGBA()}>";
+    public static readonly string ObjectivesColorString = $"<#{CustomColorManager.Objectives.ToHtmlStringRGBA()}>";
+    public static readonly string AttributesColorString = $"<#{CustomColorManager.Attributes.ToHtmlStringRGBA()}>";
+    public static readonly string AbilitiesColorString = $"<#{CustomColorManager.Abilities.ToHtmlStringRGBA()}>";
+    public static readonly string DispositionColorString = $"<#{CustomColorManager.Disposition.ToHtmlStringRGBA()}>";
+    public static readonly string ModifierColorString = $"<#{CustomColorManager.Modifier.ToHtmlStringRGBA()}>";
+    public static readonly string AbilityColorString = $"<#{CustomColorManager.Ability.ToHtmlStringRGBA()}>";
+    public static readonly string SubFactionColorString = $"<#{CustomColorManager.SubFaction.ToHtmlStringRGBA()}>";
+    public static readonly string AttackColorString = $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
+    public static readonly string DefenseColorString = $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
     public static bool Is<T>(this PlayerControl player) where T : PlayerLayer => player.TryGetLayer<T>(out _);
 
     public static bool IIs<T>(this PlayerControl player) where T : IPlayerLayer => player.TryGetILayer<T>(out _);
 
     public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
-
-    public static bool Is(this Role role, LayerEnum roleType) => role?.Type == roleType;
 
     public static bool Is(this Disposition disp, LayerEnum dispositionType) => disp?.Type == dispositionType;
 
@@ -31,6 +29,12 @@ public static class LayerExtentions
     public static bool Is(this PlayerControl player, Faction faction) => player.GetFaction() == faction;
 
     public static bool Is(this PlayerControl player, Alignment alignment) => player.GetRole()?.Alignment == alignment;
+
+    public static bool Is(this PlayerControl player, Faction faction, Alignment alignment)
+    {
+        var role = player.GetRole();
+        return role?.Faction == faction && role?.Alignment == alignment;
+    }
 
     public static Faction GetFaction(this PlayerControl player)
     {
@@ -274,8 +278,7 @@ public static class LayerExtentions
     public static bool CanKill(this PlayerControl player)
     {
         var role = player.GetRole();
-        return role is Intruder or Syndicate || role?.Alignment is Alignment.NeutralKill or Alignment.NeutralHarb or Alignment.NeutralApoc or Alignment.CrewKill || player.GetDisposition() is
-            Corrupted or Fanatic or Traitor;
+        return role is Intruder or Syndicate || role?.Alignment is Alignment.Killing or Alignment.Harbinger or Alignment.Apocalypse || player.GetDisposition() is Corrupted or Fanatic or Traitor;
     }
 
     public static bool IsPostmortal(this PlayerControl player) => player.HasDied() && player.IIs<IGhosty>();
@@ -458,13 +461,13 @@ public static class LayerExtentions
             mainflag = Mafia.MafVent;
         else if (player.Is<Corrupted>())
             mainflag = Corrupted.CorruptedVent;
-        else if (playerRole.IsRecruit && playerRole.Alignment != Alignment.NeutralNeo)
+        else if (playerRole.IsRecruit && playerRole.Alignment != Alignment.Neophyte)
             mainflag = Jackal.RecruitVent;
-        else if (playerRole.IsResurrected && playerRole.Alignment != Alignment.NeutralNeo)
+        else if (playerRole.IsResurrected && playerRole.Alignment != Alignment.Neophyte)
             mainflag = Necromancer.ResurrectVent;
-        else if (playerRole.IsPersuaded && playerRole.Alignment != Alignment.NeutralNeo)
+        else if (playerRole.IsPersuaded && playerRole.Alignment != Alignment.Neophyte)
             mainflag = Whisperer.PersuadedVent;
-        else if (playerRole.IsBitten && playerRole.Alignment != Alignment.NeutralNeo)
+        else if (playerRole.IsBitten && playerRole.Alignment != Alignment.Neophyte)
             mainflag = Dracula.UndeadVent;
         else if (playerRole is Syndicate syn)
             mainflag = (syn.HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
@@ -573,8 +576,8 @@ public static class LayerExtentions
         var syndicateFlag = role.Faction is Faction.Syndicate && disp is not (Traitor or Fanatic) && role is PromotedRebel && Syndicate.DriveHolder != player;
         var traitorFlag = player.IsTurnedTraitor() && Traitor.TraitorColourSwap;
         var fanaticFlag = player.IsTurnedFanatic() && Fanatic.FanaticColourSwap;
-        var nkFlag = role.Alignment is Alignment.NeutralKill && !Sheriff.NeutKillingRed;
-        var neFlag = role.Alignment is Alignment.NeutralEvil && !Sheriff.NeutEvilRed;
+        var nkFlag = role.Alignment is Alignment.Killing && !Sheriff.NeutKillingRed;
+        var neFlag = role.Alignment is Alignment.Evil && !Sheriff.NeutEvilRed;
         var framedFlag = player.IsFramed();
         return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag || fanaticFlag;
     }
@@ -591,18 +594,8 @@ public static class LayerExtentions
     {
         if (player.TryGetLayer<GuardianAngel>(out var ga))
             return ga.TargetAlive;
-        else if (player.TryGetLayer<Executioner>(out var exe))
-            return exe.TargetVotedOut;
-        else if (player.TryGetLayer<Jester>(out var jest))
-            return jest.VotedOut;
-        else if (player.TryGetLayer<Guesser>(out var guess))
-            return guess.TargetGuessed;
-        else if (player.TryGetLayer<BountyHunter>(out var bh))
-            return bh.TargetKilled;
-        else if (player.TryGetLayer<Actor>(out var act))
-            return act.Guessed;
-        else if (player.TryGetLayer<Troll>(out var troll))
-            return troll.Killed;
+        else if (player.TryGetLayer<Evil>(out var exe))
+            return exe.HasWon;
 
         return false;
     }
@@ -630,11 +623,11 @@ public static class LayerExtentions
         var subfaction = $"{SubFactionColorString}Sub-Faction: <b>";
         var attdef = $"{AttackColorString}Attack/{DefenseColorString}Defense</color>: <b>";
 
-        if (info[0])
+        if (role)
         {
             roleName += $"{role.ColorString}{role}</color>";
             objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
-            alignment += $"{role.Alignment.AlignmentName(true)}";
+            alignment += $"{role.FactionColorString}{role.Faction}({AlignmentColorString}{role.Alignment}</color>)</color>";
             subfaction += $"{role.SubFactionColorString}{role.SubFactionName} {role.SubFactionSymbol}</color>";
             attdef += $"{player.GetAttackValue()}/{DefenseColorString}{player.GetDefenseValue()}</color>";
         }
@@ -681,7 +674,7 @@ public static class LayerExtentions
         else if (player.IsResurrected())
             objectives += $"\n<#{CustomColorManager.Reanimated.ToHtmlStringRGBA()}>- You are a member of the Reanimated. Help {neo.PlayerName} in taking over the mission Σ</color>";
         else if (player.IsPersuaded())
-            objectives += $"\n<#{CustomColorManager.Sect.ToHtmlStringRGBA()}>- You are a member of the Sect. Help {neo.PlayerName} in taking over the mission Λ</color>";
+            objectives += $"\n<#{CustomColorManager.Cult.ToHtmlStringRGBA()}>- You are a member of the Cult. Help {neo.PlayerName} in taking over the mission Λ</color>";
         else if (player.IsBitten())
             objectives += $"\n<#{CustomColorManager.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {neo.PlayerName} in taking over the mission γ</color>";
 
@@ -781,132 +774,6 @@ public static class LayerExtentions
             layerHandler.SetUpLayers();
     }
 
-    public static string AlignmentName(this Alignment alignment, bool withColors = false) => alignment switch
-    {
-        Alignment.CrewSupport => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Support</color>)</color>" : "Crew (Support)",
-        Alignment.CrewInvest => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Investigative</color>)</color>" : "Crew (Investigative)",
-        Alignment.CrewProt => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Protective</color>)</color>" : "Crew (Protective)",
-        Alignment.CrewKill => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Killing</color>)</color>" : "Crew (Killing)",
-        Alignment.CrewUtil => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Utility</color>)</color>" : "Crew (Utility)",
-        Alignment.CrewSov => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Sovereign</color>)</color>" : "Crew (Sovereign)",
-        Alignment.CrewDecep => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Deception</color>)</color>" : "Crew (Deception)",
-        Alignment.CrewConceal => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Concealing</color>)</color>" : "Crew (Concealing)",
-        Alignment.CrewPower => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Power</color>)</color>" : "Crew (Power)",
-        Alignment.CrewDisrup => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Disruption</color>)</color>" : "Crew (Disruption)",
-        Alignment.CrewHead => withColors ? "<#8CFFFFFF>Crew (<#1D7CF2FF>Head</color>)</color>" : "Crew (Head)",
-        Alignment.IntruderSupport => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Support</color>)</color>" : "Intruder (Support)",
-        Alignment.IntruderConceal => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Concealing</color>)</color>" : "Intruder (Concealing)",
-        Alignment.IntruderDecep => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Deception</color>)</color>" : "Intuder (Deception)",
-        Alignment.IntruderKill => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Killing</color>)</color>" : "Intruder (Killing)",
-        Alignment.IntruderUtil => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Utility</color>)</color>" : "Intruder (Utility)",
-        Alignment.IntruderInvest => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Investigative</color>)</color>" : "Intruder (Investigative)",
-        Alignment.IntruderProt => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Protective</color>)</color>" : "Intruder (Protective)",
-        Alignment.IntruderSov => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
-        Alignment.IntruderDisrup => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
-        Alignment.IntruderPower => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Power</color>)</color>" : "Intruder (Power)",
-        Alignment.IntruderHead => withColors ? "<#FF1919FF>Intruder (<#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
-        Alignment.NeutralKill => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Killing</color>)</color>" : "Neutral (Killing)",
-        Alignment.NeutralNeo => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Neophyte</color>)</color>" : "Neutral (Neophyte)",
-        Alignment.NeutralEvil => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Evil</color>)</color>" : "Neutral (Evil)",
-        Alignment.NeutralBen => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Benign</color>)</color>" : "Neutral (Benign)",
-        Alignment.NeutralPros => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Proselyte</color>)</color>" : "Neutral (Proselyte)",
-        Alignment.NeutralSupport => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Support</color>)</color>" : "Neutral (Support)",
-        Alignment.NeutralInvest => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Investigative</color>)</color>" : "Neutral (Investigative)",
-        Alignment.NeutralProt => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Protective</color>)</color>" : "Neutral (Protective)",
-        Alignment.NeutralUtil => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Utility</color>)</color>" : "Neutral (Utility)",
-        Alignment.NeutralSov => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Sovereign</color>)</color>" : "Neutral (Sovereign)",
-        Alignment.NeutralConceal => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Concealing</color>)</color>" : "Neutral (Concealing)",
-        Alignment.NeutralDecep => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Deception</color>)</color>" : "Neutral (Deception)",
-        Alignment.NeutralPower => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Power</color>)</color>" : "Neutral (Power)",
-        Alignment.NeutralDisrup => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Disruption</color>)</color>" : "Neutral (Disruption)",
-        Alignment.NeutralApoc => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Apocalypse</color>)</color>" : "Neutral (Apocalypse)",
-        Alignment.NeutralHarb => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Harbinger</color>)</color>" : "Neutral (Harbinger)",
-        Alignment.NeutralHead => withColors ? "<#B3B3B3FF>Neutral (<#1D7CF2FF>Head</color>)</color>" : "Neutral (Head)",
-        Alignment.SyndicateKill => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Killing</color>)</color>" : "Syndicate (Killing)",
-        Alignment.SyndicateSupport => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Support</color>)</color>" : "Syndicate (Support)",
-        Alignment.SyndicateDisrup => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Disruption</color>)</color>" : "Syndicate (Disruption)",
-        Alignment.SyndicatePower => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Power</color>)</color>" : "Syndicate (Power)",
-        Alignment.SyndicateUtil => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Utility</color>)</color>" : "Syndicate (Utility)",
-        Alignment.SyndicateInvest => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Investigative</color>)</color>" : "Syndicate (Investigative)",
-        Alignment.SyndicateSov => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Sovereign</color>)</color>" : "Syndicate (Sovereign)",
-        Alignment.SyndicateProt => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Protective</color>)</color>" : "Syndicate (Protective)",
-        Alignment.SyndicateConceal => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Concealing</color>)</color>" : "Syndicate (Concealing)",
-        Alignment.SyndicateDecep => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Deception</color>)</color>" : "Syndicate (Deception)",
-        Alignment.SyndicateHead => withColors ? "<#008000FF>Syndicate (<#1D7CF2FF>Head</color>)</color>" : "Syndicate (Head)",
-        Alignment.GameModeHideAndSeek => withColors ? "<#A81538FF>Game Mode (<#7500AFFF>Hide And Seek</color>)</color>" : "Game Mode (Hide And Seek)",
-        Alignment.GameModeTaskRace => withColors ? "<#A81538FF>Game Mode (<#1E49CFFF>Task Race</color>)</color>" : "Game Mode (Task Race)",
-        _ => $"{alignment}"
-    };
-
-    public static string GameModeName(this GameMode mode, bool withColors = false) => mode switch
-    {
-        GameMode.TaskRace => withColors ? "<#1E49CFFF>Task Race</color>" : "Task Race",
-        GameMode.HideAndSeek => withColors ? "<#7500AFFF>Hide And Seek</color>" : "Hide And Seek",
-        GameMode.Classic => withColors ? "<#C02A2CFF>Classic</color>" : "Classic",
-        GameMode.AllAny => withColors ? "<#CBD542FF>All Any</color>" : "All Any",
-        GameMode.KillingOnly => withColors ? "<#06E00CFF>Killing Only</color>" : "Killing Only",
-        GameMode.Custom => withColors ? "<#E6956AFF>Custom</color>" : "Custom",
-        GameMode.Vanilla => "Vanilla",
-        GameMode.RoleList => withColors ? "<#FA1C79FF>Role List</color>" : "Role List",
-        _ => "Invalid"
-    };
-
-    public static Alignment GetNewAlignment(this Alignment alignment, Faction faction) => faction switch
-    {
-        Faction.Crew => alignment switch
-        {
-            Alignment.NeutralKill or Alignment.SyndicateKill or Alignment.IntruderKill => Alignment.CrewKill,
-            Alignment.IntruderSupport or Alignment.SyndicateSupport => Alignment.CrewSupport,
-            Alignment.IntruderConceal => Alignment.CrewConceal,
-            Alignment.IntruderDecep => Alignment.CrewDecep,
-            Alignment.IntruderUtil or Alignment.SyndicateUtil => Alignment.CrewUtil,
-            Alignment.SyndicateDisrup => Alignment.CrewDisrup,
-            Alignment.SyndicatePower => Alignment.CrewPower,
-            Alignment.IntruderHead => Alignment.CrewHead,
-            _ => alignment
-        },
-        Faction.Intruder => alignment switch
-        {
-            Alignment.CrewSupport or Alignment.SyndicateSupport => Alignment.IntruderSupport,
-            Alignment.CrewInvest => Alignment.IntruderInvest,
-            Alignment.CrewProt => Alignment.IntruderProt,
-            Alignment.CrewKill or Alignment.SyndicateKill or Alignment.NeutralKill => Alignment.IntruderKill,
-            Alignment.CrewUtil or Alignment.SyndicateUtil => Alignment.IntruderUtil,
-            Alignment.CrewSov => Alignment.IntruderSov,
-            Alignment.SyndicatePower => Alignment.IntruderPower,
-            _ => alignment
-        },
-        Faction.Syndicate =>  alignment switch
-        {
-            Alignment.CrewSupport or Alignment.IntruderSupport => Alignment.SyndicateSupport,
-            Alignment.CrewInvest => Alignment.SyndicateInvest,
-            Alignment.CrewProt => Alignment.SyndicateProt,
-            Alignment.CrewKill or Alignment.NeutralKill or Alignment.IntruderKill => Alignment.SyndicateKill,
-            Alignment.CrewUtil or Alignment.IntruderUtil => Alignment.SyndicateUtil,
-            Alignment.CrewSov => Alignment.SyndicateSov,
-            Alignment.IntruderConceal => Alignment.SyndicateConceal,
-            Alignment.IntruderDecep => Alignment.SyndicateDecep,
-            Alignment.IntruderHead => Alignment.SyndicateHead,
-            _ => alignment
-        },
-        Faction.Neutral => alignment switch
-        {
-            Alignment.CrewSupport or Alignment.IntruderSupport or Alignment.SyndicateSupport => Alignment.NeutralSupport,
-            Alignment.CrewInvest => Alignment.NeutralInvest,
-            Alignment.CrewProt => Alignment.NeutralProt,
-            Alignment.CrewKill or Alignment.SyndicateUtil or Alignment.IntruderUtil => Alignment.NeutralKill,
-            Alignment.CrewUtil or Alignment.SyndicateKill or Alignment.IntruderKill => Alignment.NeutralUtil,
-            Alignment.CrewSov => Alignment.NeutralSov,
-            Alignment.IntruderConceal => Alignment.NeutralConceal,
-            Alignment.IntruderDecep => Alignment.NeutralDecep,
-            Alignment.SyndicateDisrup => Alignment.NeutralDisrup,
-            Alignment.SyndicatePower => Alignment.NeutralDisrup,
-            Alignment.IntruderHead => Alignment.NeutralHead,
-            _ => alignment
-        },
-        _ => alignment
-    };
-
     public static bool CanButton(this PlayerControl player, out string name)
     {
         name = "Shy";
@@ -993,6 +860,9 @@ public static class LayerExtentions
 
     public static AttackEnum GetAttackValue(this PlayerControl player, PlayerControl target = null, AttackEnum? overrideAtt = null)
     {
+        if (overrideAtt.HasValue)
+            return overrideAtt.Value;
+
         var attack = 0;
 
         foreach (var layer in player.GetLayers())
@@ -1008,11 +878,14 @@ public static class LayerExtentions
             attack = 0;
 
         attack = Mathf.Clamp(attack, 0, 3);
-        return overrideAtt ?? (AttackEnum)attack;
+        return (AttackEnum)attack;
     }
 
     public static DefenseEnum GetDefenseValue(this PlayerControl player, PlayerControl source = null, DefenseEnum? overrideDef = null)
     {
+        if (overrideDef.HasValue)
+            return overrideDef.Value;
+
         var defense = 0;
         player.GetLayers().ForEach(x => defense += (int)x.DefenseVal);
 
@@ -1029,7 +902,7 @@ public static class LayerExtentions
             defense = 3;
 
         defense = Mathf.Clamp(defense, 0, 3);
-        return overrideDef ?? (DefenseEnum)defense;
+        return (DefenseEnum)defense;
     }
 
     public static IEnumerable<PlayerLayer> GetLayersFromList(this PlayerControl player) => PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType);
@@ -1121,16 +994,16 @@ public static class LayerExtentions
         if (!Syndicate.DriveHolder || Syndicate.DriveHolder.HasDied())
         {
             if (!all.TryFinding(x => x is PromotedRebel, out chosen))
-                chosen = all.Find(x => x.Alignment == Alignment.SyndicateDisrup);
+                chosen = all.Find(x => x.Alignment == Alignment.Disruption);
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.SyndicateSupport);
+                chosen = all.Find(x => x.Alignment == Alignment.Support);
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.SyndicatePower);
+                chosen = all.Find(x => x.Alignment == Alignment.Power);
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.SyndicateKill);
+                chosen = all.Find(x => x.Alignment == Alignment.Killing);
 
             if (!chosen)
                 chosen = all.Find(x => x is Anarchist or Rebel or Sidekick);
@@ -1141,13 +1014,13 @@ public static class LayerExtentions
         CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen.Player?.PlayerId ?? 255);
     }
 
-    public static void Convert(byte target, byte convert, SubFaction sub, bool condition)
+    public static void ConvertPlayer(byte target, byte convert, SubFaction sub, bool skip)
     {
         var converted = PlayerById(target);
         var converter = PlayerById(convert);
-        var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.NeutralNeo));
+        var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.Neophyte));
 
-        if (condition || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts)
+        if (skip || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts)
         {
             if (AmongUsClient.Instance.AmHost)
                 Interact(converter, converted, true, true);
@@ -1160,21 +1033,19 @@ public static class LayerExtentions
 
         if (role2 is Neophyte neophyte)
         {
-            if (converts)
-            {
-                neophyte.Members.Add(target);
+            neophyte.Members.Add(target);
 
-                if (converted.Is(SubFaction.None) && neophyte is Jackal jackal)
-                {
-                    if (!jackal.Recruit1)
-                        jackal.Recruit1 = converted;
-                    else if (!jackal.Recruit2)
-                        jackal.Recruit2 = converted;
-                    else if (!jackal.Recruit3)
-                        jackal.Recruit3 = converted;
-                }
+            if (converted.Is(SubFaction.None) && neophyte is Jackal jackal)
+            {
+                if (!jackal.Recruit1)
+                    jackal.Recruit1 = converted;
+                else if (!jackal.Recruit2)
+                    jackal.Recruit2 = converted;
+                else if (!jackal.Recruit3)
+                    jackal.Recruit3 = converted;
             }
-            else if (role1 is Neophyte neophyte1 && role1.Type == role2.Type)
+
+            if (role1 is Neophyte neophyte1 && role1.Type == role2.Type)
             {
                 neophyte1.Members.AddRange(neophyte.Members);
                 neophyte.Members.AddRange(neophyte1.Members);
@@ -1199,7 +1070,7 @@ public static class LayerExtentions
 
     public static void RpcConvert(byte target, byte convert, SubFaction sub, bool condition = false)
     {
-        Convert(target, convert, sub, condition);
+        ConvertPlayer(target, convert, sub, condition);
         CallRpc(CustomRPC.Action, ActionsRPC.Convert, convert, target, sub, condition);
     }
 }

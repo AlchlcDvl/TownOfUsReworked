@@ -15,7 +15,7 @@ public class Sidekick : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateUtil;
+        Alignment = Alignment.Utility;
     }
 
     public void TurnRebel()

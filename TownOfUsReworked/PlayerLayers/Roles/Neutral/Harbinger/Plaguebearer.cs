@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Plaguebearer : Harbinger<Pestilence>
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number InfectCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number InfectCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool PBVent { get; set; } = false;
+    [ToggleOption]
+    public static bool PBVent = false;
 
     public List<byte> Infected { get; } = [];
     public CustomButton InfectButton { get; set; }

@@ -3,31 +3,31 @@
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Arsonist : NKilling
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ArsoDouseCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ArsoDouseCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 60f, 2.5f, Format.Time)]
-    public static Number IgniteCd { get; set; } = new(25);
+    [NumberOption(5f, 60f, 2.5f, Format.Time)]
+    public static Number IgniteCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ArsoLastKillerBoost { get; set; } = false;
+    [ToggleOption]
+    public static bool ArsoLastKillerBoost = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ArsoIgniteAll { get; set; } = false;
+    [ToggleOption]
+    public static bool ArsoIgniteAll = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ArsoCooldownsLinked { get; set; } = false;
+    [ToggleOption]
+    public static bool ArsoCooldownsLinked = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool IgnitionCremates { get; set; } = false;
+    [ToggleOption]
+    public static bool IgnitionCremates = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ArsoVent { get; set; } = false;
+    [ToggleOption]
+    public static bool ArsoVent = false;
 
     public CustomButton IgniteButton { get; set; }
     public CustomButton DouseButton { get; set; }
-    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.CrewKill or Alignment.NeutralPros
-        or Alignment.NeutralNeo or Alignment.NeutralKill) && x != Player) && ArsoLastKillerBoost;
+    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
+        or Alignment.Neophyte) && x != Player) && ArsoLastKillerBoost;
     public List<byte> Doused { get; } = [];
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist : FactionColor;

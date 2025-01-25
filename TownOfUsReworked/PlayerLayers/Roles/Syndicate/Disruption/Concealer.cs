@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Concealer : Syndicate
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ConcealCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ConcealCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number ConcealDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number ConcealDur = 10;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ConcealMates { get; set; } = false;
+    [ToggleOption]
+    public static bool ConcealMates = false;
 
     public CustomButton ConcealButton { get; set; }
     public PlayerControl ConcealedPlayer { get; set; }
@@ -24,7 +24,7 @@ public class Concealer : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateDisrup;
+        Alignment = Alignment.Disruption;
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;
         ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(ConcealCd), (EffectVoid)Conceal,

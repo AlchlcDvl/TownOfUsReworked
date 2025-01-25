@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Enforcer : Intruder
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number EnforceCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number EnforceCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number EnforceDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number EnforceDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
-    public static Number EnforceDelay { get; set; } = new(5);
+    [NumberOption(1f, 15f, 1f, Format.Time)]
+    public static Number EnforceDelay = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number EnforceRadius { get; set; } = new(1.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number EnforceRadius = 1.5f;
 
     public CustomButton BombButton { get; set; }
     public PlayerControl BombedPlayer { get; set; }
@@ -28,7 +28,7 @@ public class Enforcer : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderKill;
+        Alignment = Alignment.Killing;
         BombedPlayer = null;
         BombButton ??= new(this, new SpriteName("Enforce"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Bomb, new Cooldown(EnforceCd), "SET BOMB", new Duration(EnforceDur),
             (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(EnforceDelay), (PlayerBodyExclusion)Exception1, new CanClickAgain(false), (EndFunc)EndEffect);

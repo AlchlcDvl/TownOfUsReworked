@@ -1,8 +1,8 @@
 namespace TownOfUsReworked.Options;
 
-public class ToggleOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu, CustomOptionType.Toggle)
+public class ToggleOptionAttribute() : OptionAttribute<bool>(CustomOptionType.Toggle)
 {
-    public void Toggle() => Set(!Get());
+    private void Toggle() => Set(!Get());
 
     public override string Format() => Get() ? "On" : "Off";
 
@@ -11,9 +11,12 @@ public class ToggleOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
         base.OptionCreated();
         var toggle = Setting.Cast<ToggleOption>();
         toggle.TitleText.text = TranslationManager.Translate(ID);
+        var button = toggle.GetComponentInChildren<PassiveButton>();
 
-        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly && !TownOfUsReworked.MCIActive)
-            toggle.GetComponentInChildren<PassiveButton>().enabled = false;
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MCIActive))
+            button.enabled = false;
+        else
+            button.OverrideOnClickListeners(Toggle);
     }
 
     public override void ViewUpdate()
@@ -33,4 +36,10 @@ public class ToggleOptionAttribute(MultiMenu menu) : OptionAttribute<bool>(menu,
         if (toggle.CheckMark)
             toggle.CheckMark.enabled = newValue;
     }
+
+    public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadBoolean(), false);
+
+    public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
+
+    public override void ReadValueString(string value) => Set(bool.Parse(value), false);
 }

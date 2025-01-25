@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Allied : Disposition
 {
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static AlliedFaction AlliedFaction { get; set; } = AlliedFaction.Random;
+    [StringOption<AlliedFaction>]
+    public static AlliedFaction AlliedFaction = AlliedFaction.Random;
 
     public Faction Side { get; set; }
 

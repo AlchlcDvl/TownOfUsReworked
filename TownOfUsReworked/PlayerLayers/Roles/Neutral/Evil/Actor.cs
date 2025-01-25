@@ -3,20 +3,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Actor : Evil
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ActorCanPickRole { get; set; } = false;
+    [ToggleOption]
+    public static bool ActorCanPickRole = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ActorButton { get; set; } = true;
+    [ToggleOption]
+    public static bool ActorButton = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ActorVent { get; set; } = false;
+    [ToggleOption]
+    public static bool ActorVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ActSwitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool ActSwitchVent = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static Number ActorRoleCount { get; set; } = new(3);
+    [NumberOption(1, 5, 1)]
+    public static Number ActorRoleCount = 3;
 
     public bool Guessed { get; set; }
     public List<Role> PretendRoles { get; } = [];

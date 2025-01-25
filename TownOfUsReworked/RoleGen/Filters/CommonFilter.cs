@@ -31,7 +31,7 @@ public class CommonFilter : BaseFilter
             if (newList.Count >= count)
                 break;
 
-            if (RoleGenManager.Check(spawn))
+            if (RoleGenManager.Check(spawn.Chance))
                 newList.Add(spawn);
         }
 

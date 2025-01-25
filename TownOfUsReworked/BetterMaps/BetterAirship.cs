@@ -3,37 +3,37 @@ namespace TownOfUsReworked.BetterMaps;
 [HeaderOption(MultiMenu.Main)]
 public static class BetterAirship
 {
-    [ToggleOption(MultiMenu.Main)]
+    [ToggleOption]
     public static bool EnableBetterAirship { get; set; } = true;
 
-    [StringOption(MultiMenu.Main)]
+    [StringOption<AirshipSpawnType>]
     public static AirshipSpawnType SpawnType { get; set; } = AirshipSpawnType.Normal;
 
-    [ToggleOption(MultiMenu.Main)]
+    [ToggleOption]
     public static bool MoveVitals { get; set; } = false;
 
-    [ToggleOption(MultiMenu.Main)]
+    [ToggleOption]
     public static bool MoveFuel { get; set; } = false;
 
-    [ToggleOption(MultiMenu.Main)]
+    [ToggleOption]
     public static bool MoveDivert { get; set; } = false;
 
-    [StringOption(MultiMenu.Main)]
+    [StringOption<MoveAdmin>]
     public static MoveAdmin MoveAdmin { get; set; } = MoveAdmin.DontMove;
 
-    [StringOption(MultiMenu.Main)]
+    [StringOption<MoveElectrical>]
     public static MoveElectrical MoveElectrical { get; set; } = MoveElectrical.DontMove;
 
-    [NumberOption(MultiMenu.Main, 0f, 10f, 0.1f)]
-    public static Number MinDoorSwipeTime { get; set; } = new(0.4f);
+    [NumberOption(0f, 10f, 0.1f)]
+    public static Number MinDoorSwipeTime { get; set; } = 0.4f;
 
-    [NumberOption(MultiMenu.Main, 30f, 100f, 5f, Format.Time)]
-    public static Number CrashTimer { get; set; } = new(90);
+    [NumberOption(30f, 100f, 5f, Format.Time)]
+    public static Number CrashTimer { get; set; } = 90;
 
-    [NumberOption(MultiMenu.Main, 1f, 20f, 1f, Format.Time)]
-    public static Number CrashCodeResetTimer { get; set; } = new(10);
+    [NumberOption(1f, 20f, 1f, Format.Time)]
+    public static Number CrashCodeResetTimer { get; set; } = 10;
 
-    [ToggleOption(MultiMenu.Main)]
+    [ToggleOption]
     public static bool EnableCustomSpawns { get; set; } = true;
 
     public static readonly List<byte> SpawnPoints = [];

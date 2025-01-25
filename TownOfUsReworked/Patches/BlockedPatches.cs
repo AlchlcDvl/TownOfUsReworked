@@ -46,7 +46,7 @@ public static class PerformReport
 {
     public static bool ReportPressed;
 
-    public static bool Prefix() => ReportPressed = CustomPlayer.Local.GetClosestBody(maxDistance: Mathf.Min(GameSettings.ReportDistance,
+    public static bool Prefix() => ReportPressed = IsInGame() && CustomPlayer.Local.GetClosestBody(maxDistance: Mathf.Min(GameSettings.ReportDistance,
         Ship().CalculateLightRadius(CustomPlayer.Local.Data)));
 
     public static void Postfix() => ReportPressed = false;
@@ -210,6 +210,14 @@ public static class Blocked
 
         __instance.ImpostorVentButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.ToggleVisible((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
+        var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: Mathf.Min(GameSettings.ReportDistance, Ship().CalculateLightRadius(CustomPlayer.Local.Data)));
+
+        if (!closestDead || CustomPlayer.Local.CannotUse())
+            __instance.ReportButton.SetDisabled();
+        else
+            __instance.ReportButton.SetEnabled();
+
+        __instance.ReportButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "REPORT");
 
         if (CustomPlayer.Local.closest == null || BlockIsExposed())
             __instance.UseButton.SetDisabled();

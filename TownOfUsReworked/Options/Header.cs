@@ -1,9 +1,8 @@
 namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : OptionAttribute<bool>(menu, CustomOptionType.Header, priority), IOptionGroup
+public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : BaseHeaderOptionAttribute(menu, CustomOptionType.Header, priority)
 {
-    public IEnumerable<OptionAttribute> GroupMembers { get; set; }
     private TextMeshPro ButtonText { get; set; }
     public PassiveButton Button { get; set; }
     private GameObject Collapse { get; set; }
@@ -29,7 +28,7 @@ public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : OptionAt
         Button.SelectButton(Value);
     }
 
-    public void Toggle()
+    public override void Toggle()
     {
         Value = !Get();
 
@@ -44,18 +43,6 @@ public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : OptionAt
             Button.SelectButton(Value);
             SettingsPatches.OnValueChangedView();
         }
-    }
-
-    public override void AddMenuIndex(int index)
-    {
-        base.AddMenuIndex(index);
-        GroupMembers.ForEach(x => x.AddMenuIndex(index));
-    }
-
-    public override void PostLoadSetup()
-    {
-        TargetType = typeof(bool);
-        OptionParents3.Add((GroupMembers, this));
     }
 
     public override void Update() => Collapse.SetActive(GroupMembers.Any(x => x.PartiallyActive()));

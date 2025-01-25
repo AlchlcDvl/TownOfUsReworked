@@ -282,7 +282,7 @@ public static class CustomStatsManager
                 {
                     SubFaction.Undead => LayerEnum.Undead,
                     SubFaction.Cabal => LayerEnum.Cabal,
-                    SubFaction.Sect => LayerEnum.Sect,
+                    SubFaction.Cult => LayerEnum.Cult,
                     SubFaction.Reanimated => LayerEnum.Reanimated,
                     _ => LayerEnum.None
                 };
@@ -317,40 +317,17 @@ public static class CustomStatsManager
     public static void SerializeCustomStats(this BinaryWriter writer)
     {
         writer.Write(MigratedFromVanillaStats);
-
-        writer.Write((uint)CustomStats.Count);
-
-        foreach (var (key, value) in CustomStats)
-        {
-            writer.Write(key);
-            writer.Write(value);
-        }
-
-        writer.Write((uint)LayerWins.Count);
-
-        foreach (var (layer, wins) in LayerWins)
-        {
-            writer.Write(layer);
-            writer.Write(wins);
-        }
-
-        writer.Write((uint)MapWins.Count);
-
-        foreach (var (map, wins) in MapWins)
-        {
-            writer.Write(map);
-            writer.Write(wins);
-        }
+        writer.Write(CustomStats);
+        writer.Write(LayerWins);
+        writer.Write(MapWins);
     }
 
     public static void DeserializeCustomStats(this BinaryReader reader)
     {
         MigratedFromVanillaStats = reader.ReadBoolean();
-
-        var num = reader.ReadUInt32();
-
-        while (num-- > 0)
-            CustomStats[reader.ReadEnum<StringNames>()] = reader.ReadUInt32();
+        reader.ReadEnumDict(CustomStats);
+        reader.ReadEnumDict(LayerWins);
+        reader.ReadEnumDict(MapWins);
 
         var diff = TranslationManager.LastID - TranslationManager.PreviousLastID; // Accounting for any changes to the translations in the base game
 
@@ -364,21 +341,35 @@ public static class CustomStatsManager
 
             // Remapping stats to ids that have been pushed further up or down the enum
             for (var i = 0; i < count; i++)
-                CustomStats[keys[i] + diff] = values[i];
+            {
+                if (keys[i] < ReworkedStart)
+                    CustomStats[keys[i]] = values[i];
+                else
+                    CustomStats[keys[i] + diff] = values[i];
+            }
         }
+    }
 
-        num = reader.ReadUInt32();
-
-        while (num-- > 0)
-            LayerWins[reader.ReadEnum<LayerEnum>()] = reader.ReadUInt32();
-
-        num = reader.ReadUInt32();
+    public static void ReadEnumDict<T>(this BinaryReader reader, Dictionary<T, uint> dict) where T : struct, Enum
+    {
+        var num = reader.ReadUInt32();
 
         while (num-- > 0)
-            MapWins[reader.ReadEnum<MapEnum>()] = reader.ReadUInt32();
+            dict[reader.ReadEnum<T>()] = reader.ReadUInt32();
     }
 
     public static T ReadEnum<T>(this BinaryReader reader) where T : struct, Enum => Enum.Parse<T>(reader.ReadString());
 
     public static void Write(this BinaryWriter writer, Enum @enum) => writer.Write($"{@enum}");
+
+    public static void Write<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
+    {
+        writer.Write((uint)dict.Count);
+
+        foreach (var (key, stat) in dict)
+        {
+            writer.Write(key);
+            writer.Write(stat);
+        }
+    }
 }

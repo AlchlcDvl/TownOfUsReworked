@@ -3,29 +3,29 @@
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Operative : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number BugCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number BugCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
-    public static Number MinAmountOfTimeInBug { get; set; } = new(0);
+    [NumberOption(0f, 15f, 0.5f, Format.Time)]
+    public static Number MinAmountOfTimeInBug = 0;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BugsRemoveOnNewRound { get; set; } = true;
+    [ToggleOption]
+    public static bool BugsRemoveOnNewRound = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxBugs { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxBugs = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number BugRange { get; set; } = new(1.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number BugRange = 1.5f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
-    public static Number MinAmountOfPlayersInBug { get; set; } = new(1);
+    [NumberOption(1, 10, 1)]
+    public static Number MinAmountOfPlayersInBug = 1;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static AdminDeadPlayers WhoSeesDead { get; set; } = AdminDeadPlayers.Nobody;
+    [StringOption<AdminDeadPlayers>]
+    public static AdminDeadPlayers WhoSeesDead = AdminDeadPlayers.Nobody;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool PreciseOperativeInfo { get; set; } = false;
+    [ToggleOption]
+    public static bool PreciseOperativeInfo = false;
 
     public List<Bug> Bugs { get; } = [];
     public List<LayerEnum> BuggedPlayers { get; } = [];
@@ -40,7 +40,7 @@ public class Operative : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewInvest;
+        Alignment = Alignment.Investigative;
         BuggedPlayers.Clear();
         Bugs.Clear();
         BugButton ??= new(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)PlaceBug, new Cooldown(BugCd), MaxBugs,

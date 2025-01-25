@@ -3,14 +3,14 @@
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Juggernaut : NKilling
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number AssaultCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number AssaultCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static Number AssaultBonus { get; set; } = new(5);
+    [NumberOption(2.5f, 30f, 2.5f, Format.Time)]
+    public static Number AssaultBonus = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool JuggVent { get; set; } = false;
+    [ToggleOption]
+    public static bool JuggVent = false;
 
     public int JuggKills { get; set; }
     public CustomButton AssaultButton { get; set; }

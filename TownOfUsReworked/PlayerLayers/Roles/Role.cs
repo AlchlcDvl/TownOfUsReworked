@@ -41,7 +41,7 @@ public abstract class Role : PlayerLayer
 
     public static bool FactionWins => WinState is WinLose.CrewWins or WinLose.IntrudersWin or WinLose.SyndicateWins or WinLose.AllNeutralsWin;
 
-    public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.SectWins or WinLose.UndeadWins;
+    public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.CultWins or WinLose.UndeadWins;
 
     public Alignment Alignment { get; set; }
     public ChatChannel CurrentChannel { get; set; }
@@ -60,22 +60,24 @@ public abstract class Role : PlayerLayer
         get => _faction;
         set
         {
-            _faction = value;
             FactionColor = value switch
             {
                 Faction.Intruder => CustomColorManager.Intruder,
                 Faction.Crew => CustomColorManager.Crew,
                 Faction.Syndicate => CustomColorManager.Syndicate,
                 Faction.Neutral => CustomColorManager.Neutral,
+                Faction.Pandorica => CustomColorManager.Pandorica,
+                Faction.Compliance => CustomColorManager.Compliance,
+                Faction.Illuminati => CustomColorManager.Illuminati,
                 Faction.GameMode => Alignment switch
                 {
-                    Alignment.GameModeHideAndSeek => CustomColorManager.HideAndSeek,
-                    Alignment.GameModeTaskRace => CustomColorManager.TaskRace,
+                    Alignment.HideAndSeek => CustomColorManager.HideAndSeek,
+                    Alignment.TaskRace => CustomColorManager.TaskRace,
+                    Alignment.HotPotato => CustomColorManager.HotPotato,
                     _ => CustomColorManager.Faction
                 },
                 _ => CustomColorManager.Faction
             };
-            Alignment = Alignment.GetNewAlignment(value);
             Objectives = value switch
             {
                 Faction.Intruder => () => IntrudersWinCon,
@@ -83,6 +85,7 @@ public abstract class Role : PlayerLayer
                 Faction.Crew => () => CrewWinCon,
                 _ => Objectives
             };
+            _faction = value;
         }
     }
     private SubFaction _subFaction;
@@ -92,21 +95,13 @@ public abstract class Role : PlayerLayer
         set
         {
             _subFaction = value;
-            SubFactionColor = value switch
+            (SubFactionColor, SubFactionSymbol) = value switch
             {
-                SubFaction.Undead => CustomColorManager.Undead,
-                SubFaction.Sect => CustomColorManager.Sect,
-                SubFaction.Cabal => CustomColorManager.Cabal,
-                SubFaction.Reanimated => CustomColorManager.Reanimated,
-                _ => CustomColorManager.SubFaction
-            };
-            SubFactionSymbol = value switch
-            {
-                SubFaction.Cabal => "$",
-                SubFaction.Sect => "Λ",
-                SubFaction.Reanimated => "Σ",
-                SubFaction.Undead => "γ",
-                _ => "φ"
+                SubFaction.Undead => (CustomColorManager.Undead, "γ"),
+                SubFaction.Cult => (CustomColorManager.Cult, "Λ"),
+                SubFaction.Cabal => (CustomColorManager.Cabal, "$"),
+                SubFaction.Reanimated => (CustomColorManager.Reanimated, "Σ"),
+                _ => (CustomColorManager.SubFaction, "φ")
             };
         }
     }
@@ -141,7 +136,7 @@ public abstract class Role : PlayerLayer
 
     public bool IsRecruit => SubFaction == SubFaction.Cabal;
     public bool IsResurrected => SubFaction == SubFaction.Reanimated;
-    public bool IsPersuaded => SubFaction == SubFaction.Sect;
+    public bool IsPersuaded => SubFaction == SubFaction.Cult;
     public bool IsBitten => SubFaction == SubFaction.Undead;
     public bool IsIntTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Intruder;
     public bool IsIntAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Intruder;
@@ -273,10 +268,10 @@ public abstract class Role : PlayerLayer
             WinState = WinLose.CabalWins;
             CallRpc(CustomRPC.WinLose, WinLose.CabalWins, this);
         }
-        else if ((IsPersuaded || Type == LayerEnum.Whisperer) && SectWin())
+        else if ((IsPersuaded || Type == LayerEnum.Whisperer) && CultWin())
         {
-            WinState = WinLose.SectWins;
-            CallRpc(CustomRPC.WinLose, WinLose.SectWins);
+            WinState = WinLose.CultWins;
+            CallRpc(CustomRPC.WinLose, WinLose.CultWins);
         }
         else if ((IsBitten || Type == LayerEnum.Dracula) && UndeadWin())
         {
@@ -303,7 +298,7 @@ public abstract class Role : PlayerLayer
             WinState = WinLose.CrewWins;
             CallRpc(CustomRPC.WinLose, WinLose.CrewWins);
         }
-        else if (Faithful && ApocWins() && Alignment is Alignment.NeutralApoc or Alignment.NeutralHarb)
+        else if (Faithful && ApocWins() && Alignment is Alignment.Apocalypse or Alignment.Harbinger)
         {
             WinState = WinLose.ApocalypseWins;
             CallRpc(CustomRPC.WinLose, WinLose.ApocalypseWins);
@@ -313,12 +308,12 @@ public abstract class Role : PlayerLayer
             WinState = WinLose.AllNeutralsWin;
             CallRpc(CustomRPC.WinLose, WinLose.AllNeutralsWin);
         }
-        else if (Faithful && Alignment == Alignment.NeutralKill && AllNKsWin())
+        else if (Faithful && Faction == Faction.Neutral && Alignment == Alignment.Killing && AllNKsWin())
         {
             WinState = WinLose.AllNKsWin;
             CallRpc(CustomRPC.WinLose, WinLose.AllNKsWin);
         }
-        else if (Faithful && Alignment == Alignment.NeutralKill && (SameNKWins(Type) || SoloNKWins(Player)))
+        else if (Faithful && Faction == Faction.Neutral && Alignment == Alignment.Killing && (SameNKWins(Type) || SoloNKWins(Player)))
         {
             WinState = Type switch
             {

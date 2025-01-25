@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace TownOfUsReworked.Modules;
 
 // Yoinked this lovely piece of code from Daemon at https://github.com/DaemonBeast/Mitochondria/blob/main/Mitochondria.Core/Utilities/Structures/Map.cs albeit with a few changes of my own
-public class ValueMap<T1, T2> : IDictionary<T1, T2> where T1: notnull where T2 : notnull
+public class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<T1, T2> where T1: notnull where T2 : notnull
 {
     public ValueMap<T2, T1> Reverse { get; }
 
@@ -12,8 +12,12 @@ public class ValueMap<T1, T2> : IDictionary<T1, T2> where T1: notnull where T2 :
 
     public int Count => Forward.Count;
     public bool IsReadOnly => false;
-    public ICollection<T1> Keys => Forward.Keys;
-    public ICollection<T2> Values => Forward.Values;
+
+    public IEnumerable<T1> Keys => Forward.Keys;
+    public IEnumerable<T2> Values => Forward.Values;
+
+    ICollection<T1> IDictionary<T1, T2>.Keys => Forward.Keys;
+    ICollection<T2> IDictionary<T1, T2>.Values => Forward.Values;
 
     public ValueMap()
     {
@@ -70,9 +74,13 @@ public class ValueMap<T1, T2> : IDictionary<T1, T2> where T1: notnull where T2 :
 
     public bool ContainsValue(T2 value) => Backward.ContainsKey(value);
 
-    public bool Remove(T1 key) => Forward.TryGetValue(key, out var value) && Forward.Remove(key) && Backward.Remove(value);
+    public bool Remove(T1 key, out T2 value) => Forward.Remove(key, out value) && Backward.Remove(value);
 
-    public bool Remove(T2 value) => Backward.TryGetValue(value, out var key) && Backward.Remove(value) && Forward.Remove(key);
+    public bool Remove(T2 value, out T1 key) => Backward.Remove(value, out key) && Forward.Remove(key);
+
+    public bool Remove(T1 key) => Forward.Remove(key, out var value) && Backward.Remove(value);
+
+    public bool Remove(T2 value) => Backward.Remove(value, out var key) && Forward.Remove(key);
 
     public bool TryGetValue(T1 key, [MaybeNullWhen(false)] out T2 value) => Forward.TryGetValue(key, out value);
 

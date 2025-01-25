@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Jester : Evil
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool JesterButton { get; set; } = true;
+    [ToggleOption]
+    public static bool JesterButton = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool JesterVent { get; set; } = false;
+    [ToggleOption]
+    public static bool JesterVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool JestSwitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool JestSwitchVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool JestEjectScreen { get; set; } = false;
+    [ToggleOption]
+    public static bool JestEjectScreen = false;
 
     public bool VotedOut { get; set; }
     public List<byte> ToHaunt { get; } = [];
@@ -61,7 +61,7 @@ public class Jester : Evil
     }
 
     public bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player) ||
-        player.Is(Alignment.NeutralApoc);
+        player.Is(Alignment.Apocalypse);
 
     public void Haunt(PlayerControl target)
     {

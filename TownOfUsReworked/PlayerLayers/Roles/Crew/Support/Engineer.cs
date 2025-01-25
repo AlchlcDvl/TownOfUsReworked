@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Engineer : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxFixes { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxFixes = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number FixCd { get; set; } = new(5);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number FixCd = 5;
 
     public CustomButton FixButton { get; set; }
 
@@ -19,7 +19,7 @@ public class Engineer : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewSupport;
+        Alignment = Alignment.Support;
         FixButton ??= new(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Fix, new Cooldown(FixCd), MaxFixes,
             (ConditionFunc)Condition);
     }

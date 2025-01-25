@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Consigliere : Intruder
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number InvestigateCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number InvestigateCd = 25;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static ConsigInfo ConsigInfo { get; set; } = ConsigInfo.Role;
+    [StringOption<ConsigInfo>]
+    public static ConsigInfo ConsigInfo = ConsigInfo.Role;
 
     public List<byte> Investigated { get; } = [];
     public CustomButton InvestigateButton { get; set; }
@@ -21,7 +21,7 @@ public class Consigliere : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderSupport;
+        Alignment = Alignment.Support;
         Investigated.Clear();
         InvestigateButton ??= new(this, new SpriteName("Investigate"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
             (PlayerBodyExclusion)Exception1);

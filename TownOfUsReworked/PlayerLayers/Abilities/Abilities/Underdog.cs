@@ -3,14 +3,14 @@
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Underdog : Ability
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool UnderdogKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool UnderdogKnows = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static Number UnderdogCdBonus { get; set; } = new(5);
+    [NumberOption(2.5f, 30f, 2.5f, Format.Time)]
+    public static Number UnderdogCdBonus = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool UnderdogIncreasedCd { get; set; } = true;
+    [ToggleOption]
+    public static bool UnderdogIncreasedCd = true;
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Underdog : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Underdog;

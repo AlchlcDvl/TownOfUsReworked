@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Poisoner : Syndicate
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number PoisonCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number PoisonCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
-    public static Number PoisonDur { get; set; } = new(5);
+    [NumberOption(1f, 15f, 1f, Format.Time)]
+    public static Number PoisonDur = 5;
 
     public CustomButton PoisonButton { get; set; }
     public CustomButton GlobalPoisonButton { get; set; }
@@ -24,7 +24,7 @@ public class Poisoner : Syndicate
     {
         base.Init();
         PoisonedPlayer = null;
-        Alignment = Alignment.SyndicateKill;
+        Alignment = Alignment.Killing;
         PoisonMenu = new(Player, Click, Exception1);
         PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
             new Duration(PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);

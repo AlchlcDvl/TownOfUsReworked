@@ -3,26 +3,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Collider : Syndicate
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number CollideCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number CollideCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ChargeCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ChargeCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number ChargeDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number ChargeDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number CollideRange { get; set; } = new(1.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number CollideRange = 1.5f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number CollideRangeIncrease { get; set; } = new(0.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number CollideRangeIncrease = 0.5f;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ChargeCooldownsLinked { get; set; } = false;
+    [ToggleOption]
+    public static bool ChargeCooldownsLinked = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CollideResetsCooldown { get; set; } = false;
+    [ToggleOption]
+    public static bool CollideResetsCooldown = false;
 
     public CustomButton PositiveButton { get; set; }
     public CustomButton NegativeButton { get; set; }
@@ -40,7 +40,7 @@ public class Collider : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateKill;
+        Alignment = Alignment.Killing;
         Positive = null;
         Negative = null;
         PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",

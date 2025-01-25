@@ -3,23 +3,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class BountyHunter : Evil
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BountyHunterCanPickTargets { get; set; } = false;
+    [ToggleOption]
+    public static bool BountyHunterCanPickTargets = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number BountyHunterGuesses { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number BountyHunterGuesses = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number GuessCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number GuessCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number BHHuntCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number BHHuntCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BHVent { get; set; } = false;
+    [ToggleOption]
+    public static bool BHVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BHToTroll { get; set; } = true;
+    [ToggleOption]
+    public static bool BHToTroll = true;
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetKilled { get; set; }

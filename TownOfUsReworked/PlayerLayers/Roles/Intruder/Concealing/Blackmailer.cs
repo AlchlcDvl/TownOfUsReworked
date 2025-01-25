@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Blackmailer : Intruder, IBlackmailer
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number BlackmailCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number BlackmailCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool WhispersNotPrivateB { get; set; } = true;
+    [ToggleOption]
+    public static bool WhispersNotPrivateB = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BlackmailMates { get; set; } = false;
+    [ToggleOption]
+    public static bool BlackmailMates = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BMRevealed { get; set; } = true;
+    [ToggleOption]
+    public static bool BMRevealed = true;
 
     public CustomButton BlackmailButton { get; set; }
     public bool ShookAlready { get; set; }
@@ -33,7 +33,7 @@ public class Blackmailer : Intruder, IBlackmailer
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderConceal;
+        Alignment = Alignment.Concealing;
         BlackmailedPlayer = null;
         BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(BlackmailCd),
             (PlayerBodyExclusion)Exception1);

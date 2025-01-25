@@ -22,6 +22,12 @@ public enum ActionsRPC : byte
     None
 }
 
+public enum WarpActionsRPC : byte
+{
+    All,
+    Single
+}
+
 public enum BomberActionsRPC : byte
 {
     DropBomb,
@@ -81,71 +87,35 @@ public enum Faction : byte
     Intruder,
     Syndicate,
     Neutral,
+    Pandorica, // Int + Syn
+    Compliance, // NK + NH + NA + NN
+    Illuminati, // Pand + Comp
     GameMode
 }
 
 public enum Alignment : byte
 {
-    CrewSupport,
-    CrewInvest,
-    CrewProt,
-    CrewKill,
-    CrewUtil,
-    CrewSov,
-    CrewConceal,
-    CrewDecep,
-    CrewPower,
-    CrewDisrup,
-    CrewHead,
+    Support,
+    Investigative,
+    Protective,
+    Killing,
+    Utility,
+    Sovereign,
+    Deception,
+    Concealing,
+    Power,
+    Disruption,
+    Head,
+    Harbinger,
+    Apocalypse,
+    Neophyte,
+    Proselyte,
+    Evil,
+    Benign,
 
-    IntruderSupport,
-    IntruderConceal,
-    IntruderDecep,
-    IntruderKill,
-    IntruderUtil,
-    IntruderInvest,
-    IntruderProt,
-    IntruderSov,
-    IntruderPower,
-    IntruderDisrup,
-    IntruderHead,
-
-    NeutralKill,
-    NeutralNeo,
-    NeutralEvil,
-    NeutralBen,
-    NeutralPros,
-    NeutralApoc,
-    NeutralHarb,
-    NeutralInvest,
-    NeutralSov,
-    NeutralProt,
-    NeutralSupport,
-    NeutralUtil,
-    NeutralConceal,
-    NeutralDecep,
-    NeutralDisrup,
-    NeutralPower,
-    NeutralHead,
-
-    SyndicateKill,
-    SyndicateSupport,
-    SyndicateDisrup,
-    SyndicatePower,
-    SyndicateUtil,
-    SyndicateInvest,
-    SyndicateProt,
-    SyndicateSov,
-    SyndicateConceal,
-    SyndicateDecep,
-    SyndicateHead,
-
-    GameModeTaskRace,
-    GameModeHideAndSeek,
-
-    Ability,
-    Modifier,
-    Disposition,
+    TaskRace,
+    HideAndSeek,
+    HotPotato,
 
     None
 }
@@ -155,7 +125,7 @@ public enum SubFaction : byte
     Undead,
     Cabal,
     Reanimated,
-    Sect,
+    Cult,
 
     None
 }
@@ -168,6 +138,7 @@ public enum CustomOptionType : byte
     String,
     Layer,
     Entry,
+    MultiSelect,
     Alignment
 }
 
@@ -177,9 +148,8 @@ public enum MultiMenu : byte
     Layer,
     Presets,
     Client,
-    RoleList,
     LayerSubOptions,
-    AlignmentSubOptions = 250
+    AlignmentSubOptions
 }
 
 public enum WhoCanVentOptions : byte
@@ -200,7 +170,8 @@ public enum RoleFactionReports : byte
 {
     Neither,
     Role,
-    Faction
+    Faction,
+    Both
 }
 
 public enum AirshipSpawnType : byte
@@ -230,11 +201,10 @@ public enum GameMode : byte
 {
     Classic,
     AllAny,
-    KillingOnly,
     RoleList,
     HideAndSeek,
     TaskRace,
-    Custom,
+    HotPotato,
     Vanilla,
     None
 }
@@ -445,10 +415,14 @@ public enum LayerEnum : byte
     Timekeeper,
     Warper,
 
-    Hunter,
     Hunted,
+    Hunter,
 
     Runner,
+
+    BurningPotato,
+    CharredPotato,
+    CoolPotato,
 
     NoneRole,
 
@@ -502,61 +476,113 @@ public enum LayerEnum : byte
     NoneAbility,
 
     Undead,
-    Sect,
+    Cult,
     Cabal,
     Reanimated,
 
-    Any,
+    None
+}
 
-    RandomCrew,
+public enum RoleListSlot : byte
+{
+    None,
+
     CrewSupport,
     CrewInvest,
     CrewProt,
     CrewKill,
     CrewSov,
     CrewUtil,
-    RegularCrew,
 
-    RandomIntruder,
+    RegularCrew,
+    PowerCrew,
+    RandomCrew,
+
+    NonCrew,
+
+    NeutralPros,
+    NeutralApoc,
+    NeutralKill,
+    NeutralHarb,
+    NeutralNeo,
+    NeutralBen,
+    NeutralEvil,
+
+    RandomNeutral,
+    RegularNeutral,
+    HarmfulNeutral,
+
+    NonNeutral,
+    NonCompNeutral,
+
     IntruderSupport,
     IntruderConceal,
     IntruderDecep,
     IntruderKill,
     IntruderUtil,
     IntruderHead,
+
+    RandomIntruder,
     RegularIntruder,
+    PowerIntruder,
 
-    RandomNeutral,
-    NeutralKill,
-    NeutralNeo,
-    NeutralEvil,
-    NeutralBen,
-    NeutralPros,
-    NeutralApoc,
-    NeutralHarb,
-    RegularNeutral,
-    HarmfulNeutral,
+    NonIntruder,
 
-    RandomSyndicate,
     SyndicateKill,
     SyndicateSupport,
     SyndicateDisrup,
     SyndicatePower,
     SyndicateUtil,
+
+    RandomSyndicate,
     RegularSyndicate,
+    PowerSyndicate,
 
-    NonCrew,
-    NonIntruder,
     NonSyndicate,
-    NonNeutral,
 
-    FactionedEvil,
+    PandoraKill,
+    PandoraConceal,
+    PandoraDecep,
+    PandoraDisrup,
+    PandoraPower,
+    PandoraSupport,
+    PandoraHead,
+    PandoraUtil,
 
-    Ability,
-    Modifier,
-    Disposition,
+    RandomPandora,
+    RegularPandora,
+    PowerPandora,
 
-    None
+    NonPandora,
+
+    ComplianceApoc,
+    ComplianceKill,
+    ComplianceHarb,
+    ComplianceNeo,
+
+    RandomCompliance,
+
+    NonCompliance,
+
+    IlluminatiApoc,
+    IlluminatiKill,
+    IlluminatiConceal,
+    IlluminatiDecep,
+    IlluminatiDisrup,
+    IlluminatiPower,
+    IlluminatiSupport,
+    IlluminatiHead,
+    IlluminatiUtil,
+    IlluminatiHarb,
+    IlluminatiNeo,
+
+    RandomIlluminati,
+    RegularIlluminati,
+    PowerIlluminati,
+
+    NonIlluminati,
+
+    Any
 }
 
 public enum DeathReasonEnum : byte
@@ -609,7 +635,7 @@ public enum WinLose : byte
 
     UndeadWins,
     CabalWins,
-    SectWins,
+    CultWins,
     ReanimatedWins,
 
     AllNKsWin,
@@ -622,6 +648,10 @@ public enum WinLose : byte
     MurdererWins,
     SerialKillerWins,
     WerewolfWins,
+
+    IlluminatiWins,
+    ComplianceWins,
+    PandoricaWins,
 
     LoveWins,
     TaskmasterWins,
@@ -637,6 +667,8 @@ public enum WinLose : byte
 
     HunterWins,
     HuntedWin,
+
+    PotatoWin,
 
     EveryoneWins,
 
@@ -758,7 +790,8 @@ public enum SyndicateVentOptions : byte
 public enum RebActionsRPC : byte
 {
     Poison,
-    Warp,
+    WarpSingle,
+    WarpAll,
     Conceal,
     Shapeshift,
     Frame,
@@ -805,7 +838,7 @@ public enum ChatChannel : byte
     Syndicate,
 
     Undead,
-    Sect,
+    Cult,
     Cabal,
     Reanimated,
 

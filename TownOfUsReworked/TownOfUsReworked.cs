@@ -16,7 +16,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
-    public const int DevBuild = 29;
+    public const int DevBuild = 30;
 
     private static readonly string VersionS = VersionString[..^2];
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
@@ -49,7 +49,7 @@ public partial class TownOfUsReworked : BasePlugin
     public static NormalGameOptionsV08 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV08 HNSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
 
-    public static bool MCIActive { get; set; }
+    public static bool MCIActive => MCIUtils.Clients.Count > 0;
 
     public readonly Harmony Harmony = new(Id);
 

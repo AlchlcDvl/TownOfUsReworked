@@ -7,7 +7,7 @@ public abstract class Neophyte : Neutral
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralNeo;
+        Alignment = Alignment.Neophyte;
         Members.Clear();
         Members.Add(PlayerId);
     }

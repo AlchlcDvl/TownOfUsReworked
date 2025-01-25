@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Silencer : Syndicate, ISilencer
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number SilenceCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number SilenceCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool WhispersNotPrivateS { get; set; } = true;
+    [ToggleOption]
+    public static bool WhispersNotPrivateS = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SilenceMates { get; set; } = false;
+    [ToggleOption]
+    public static bool SilenceMates = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SilenceRevealed { get; set; } = true;
+    [ToggleOption]
+    public static bool SilenceRevealed = true;
 
     public CustomButton SilenceButton { get; set; }
     public bool ShookAlready { get; set; }
@@ -33,7 +33,7 @@ public class Silencer : Syndicate, ISilencer
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateDisrup;
+        Alignment = Alignment.Disruption;
         SilencedPlayer = null;
         SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(SilenceCd), "SILENCE",
             (PlayerBodyExclusion)Exception1);

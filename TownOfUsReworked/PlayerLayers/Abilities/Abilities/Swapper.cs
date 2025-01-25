@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Swapper : Ability
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SwapperButton { get; set; } = true;
+    [ToggleOption]
+    public static bool SwapperButton = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SwapSelf { get; set; } = true;
+    [ToggleOption]
+    public static bool SwapSelf = true;
 
     public PlayerVoteArea Swap1 { get; set; }
     public PlayerVoteArea Swap2 { get; set; }

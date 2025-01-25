@@ -3,20 +3,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Medium : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number MediateCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number MediateCd = 25;
 
-    // [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    // public static Number SeanceCd { get; set; } = new(25);
+    // [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    // public static Number SeanceCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ShowMediatePlayer { get; set; } = true;
+    [ToggleOption]
+    public static bool ShowMediatePlayer = true;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static ShowMediumToDead ShowMediumToDead { get; set; } = ShowMediumToDead.Never;
+    [StringOption<ShowMediumToDead>]
+    public static ShowMediumToDead ShowMediumToDead = ShowMediumToDead.Never;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static DeadRevealed DeadRevealed { get; set; } = DeadRevealed.Oldest;
+    [StringOption<DeadRevealed>]
+    public static DeadRevealed DeadRevealed = DeadRevealed.Oldest;
 
     public Dictionary<byte, PlayerArrow> MediateArrows { get; set; }
     public CustomButton MediateButton { get; set; }
@@ -36,7 +36,7 @@ public class Medium : Crew
         base.Init();
         MediatedPlayers.Clear();
         MediateArrows = [];
-        Alignment = Alignment.CrewInvest;
+        Alignment = Alignment.Investigative;
         MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));
         // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), 1,
         //     new PostDeath(true));
@@ -78,16 +78,7 @@ public class Medium : Crew
         var bodies = AllBodies();
 
         if (DeadRevealed == DeadRevealed.Random)
-        {
-            var dead = playersDead.Random();
-
-            if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
-            {
-                MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
-                MediatedPlayers.Add(dead.PlayerId);
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
-            }
-        }
+            MediatePlayer(playersDead.Random(), bodies);
         else
         {
             if (DeadRevealed == DeadRevealed.Newest)
@@ -95,17 +86,23 @@ public class Medium : Crew
 
             foreach (var dead in playersDead)
             {
-                if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
-                {
-                    MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
-                    MediatedPlayers.Add(dead.PlayerId);
-                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
-
-                    if (DeadRevealed != DeadRevealed.Everyone)
-                        break;
-                }
+                if (MediatePlayer(playersDead.Random(), bodies) && DeadRevealed != DeadRevealed.Everyone)
+                    break;
             }
         }
+    }
+
+    private bool MediatePlayer(DeadPlayer dead, IEnumerable<DeadBody> bodies)
+    {
+        if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+        {
+            MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
+            MediatedPlayers.Add(dead.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
+            return true;
+        }
+
+        return false;
     }
 
     public override void ReadRPC(MessageReader reader)

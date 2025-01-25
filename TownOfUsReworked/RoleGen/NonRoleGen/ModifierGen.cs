@@ -4,6 +4,9 @@ namespace TownOfUsReworked.RoleGen;
 
 public class ModifierGen : BaseGen
 {
+    private static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.VIP, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
+        LayerEnum.Indomitable, LayerEnum.Yeller, LayerEnum.Colorblind ];
+
     public override void Clear() => AllModifiers.Clear();
 
     public override void InitList()

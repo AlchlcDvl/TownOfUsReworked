@@ -6,6 +6,7 @@ public static class VitalsPatch
     [HarmonyPatch(nameof(VitalsMinigame.Update)), HarmonyPostfix]
     public static void UpdatePostfix(VitalsMinigame __instance)
     {
+        __instance.BatteryText.gameObject.SetActive(false);
         var role = CustomPlayer.Local.GetRole();
         var isOp = role is Operative || DeadSeeEverything();
 
@@ -25,7 +26,7 @@ public static class VitalsPatch
 
             var tmp = panel.Cardio.GetComponent<TextMeshPro>();
             tmp.color = UColor.red;
-            tmp.text = $"{Mathf.RoundToInt(deadBody.KillAge)}s";
+            tmp.text = $"{Mathf.FloorToInt(deadBody.KillAge)}s";
             var transform = tmp.transform;
             transform.localPosition = new(-0.85f, -0.4f, 0);
             transform.rotation = Quaternion.Euler(0, 0, 0);

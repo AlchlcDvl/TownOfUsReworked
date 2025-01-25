@@ -3,29 +3,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Guesser : Evil, IGuesser
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GuesserCanPickTargets { get; set; } = false;
+    [ToggleOption]
+    public static bool GuesserCanPickTargets = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GuesserButton { get; set; } = true;
+    [ToggleOption]
+    public static bool GuesserButton = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GuessVent { get; set; } = false;
+    [ToggleOption]
+    public static bool GuessVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GuessSwitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool GuessSwitchVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GuessTargetKnows { get; set; } = false;
+    [ToggleOption]
+    public static bool GuessTargetKnows = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool MultipleGuesses { get; set; } = true;
+    [ToggleOption]
+    public static bool MultipleGuesses = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxGuesses { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxGuesses = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GuessToAct { get; set; } = true;
+    [ToggleOption]
+    public static bool GuessToAct = true;
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetGuessed { get; set; }
@@ -79,7 +79,7 @@ public class Guesser : Evil, IGuesser
         return team;
     }
 
-    public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
+    public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.Investigative) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
     public void SelectTarget(PlayerControl target)
@@ -149,7 +149,7 @@ public class Guesser : Evil, IGuesser
             }
 
             if (GuessingMenu.Mapping.Contains(LayerEnum.Whisperer))
-                GuessingMenu.Mapping.Add(LayerEnum.Sect);
+                GuessingMenu.Mapping.Add(LayerEnum.Cult);
 
             if (GuessingMenu.Mapping.Contains(LayerEnum.Necromancer))
                 GuessingMenu.Mapping.Add(LayerEnum.Reanimated);
@@ -333,7 +333,7 @@ public class Guesser : Evil, IGuesser
         }
         else if (!AlignmentHintGiven && LettersExhausted)
         {
-            something = $"Your target's role belongs to {targetRole.Alignment.AlignmentName()} alignment!";
+            something = $"Your target's role belongs to the {targetRole.Alignment} alignment!";
             AlignmentHintGiven = true;
         }
 
@@ -378,7 +378,7 @@ public class Guesser : Evil, IGuesser
             {
                 MarkMeetingDead(player, Player);
 
-                if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.NeutralApoc) &&
+                if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.Apocalypse) &&
                     !lovers.OtherLover.Data.IsDead)
                 {
                     RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);

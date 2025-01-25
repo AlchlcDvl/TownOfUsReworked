@@ -9,7 +9,7 @@ public static class RPC
         if (save)
             OptionAttribute.SaveSettings("LastUsed");
 
-        if (TownOfUsReworked.MCIActive || !CustomPlayer.Local)
+        if (TownOfUsReworked.MCIActive || !CustomPlayer.Local || AllPlayers().Count() == 1)
             return;
 
         List<OptionAttribute> options;
@@ -19,7 +19,7 @@ public static class RPC
         else
             options = [ .. OptionAttribute.AllOptions ];
 
-        options.RemoveAll(x => x is IOptionGroup || x.ClientOnly);
+        options.RemoveAll(x => x is BaseHeaderOptionAttribute || x.ClientOnly);
         var split = options.Split(60);
         Info($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
 
@@ -32,20 +32,10 @@ public static class RPC
                 // Info($"Sending {option}");
                 writer.Write(option.RpcId.Key);
                 writer.Write(option.RpcId.Value);
-
-                if (option is ToggleOptionAttribute toggle)
-                    writer.Write(toggle.Value);
-                else if (option is NumberOptionAttribute number)
-                    writer.Write(number.Value.Value);
-                else if (option is StringOptionAttribute stringOpt)
-                    writer.Write(stringOpt.Value);
-                else if (option is RoleListEntryAttribute entry)
-                    writer.Write(entry.Value);
-                else if (option is LayerOptionAttribute layer)
-                    writer.Write(layer.Value);
+                option.WriteValueRpc(writer);
             }
 
-            writer.EndRpc();
+            writer.CloseRpc();
         }
     }
 
@@ -63,21 +53,10 @@ public static class RPC
             var id = reader.ReadByte();
             var customOption = OptionAttribute.GetOption(superId, id);
 
-            if (customOption == null)
-            {
+            if (customOption != null)
+                customOption.ReadValueRpc(reader);
+            else
                 Failure($"No option found for id: {id}");
-                continue;
-            }
-
-            customOption.SetBase(customOption.Type switch
-            {
-                CustomOptionType.Toggle => reader.ReadBoolean(),
-                CustomOptionType.Number => reader.ReadNumber(),
-                CustomOptionType.String => reader.ReadEnum(customOption.TargetType),
-                CustomOptionType.Layer => reader.ReadRoleOptionData(),
-                CustomOptionType.Entry => reader.ReadEnum<LayerEnum>(),
-                _ => true
-            }, false);
         }
 
         OptionAttribute.SaveSettings("LastUsed");
@@ -110,7 +89,7 @@ public static class RPC
 
     public static T ReadILayer<T>(this MessageReader reader) where T : IPlayerLayer => (T)reader.ReadILayer();
 
-    public static List<byte> ReadByteList(this MessageReader reader) => [ .. reader.ReadBytesAndSize() ];
+    public static IEnumerable<byte> ReadByteList(this MessageReader reader) => reader.ReadBytesAndSize();
 
     public static List<PlayerLayer> ReadLayerList(this MessageReader reader)
     {
@@ -127,9 +106,15 @@ public static class RPC
 
     public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Parse(reader.ReadString());
 
-    public static object ReadEnum(this MessageReader reader, Type type) => Enum.Parse(type, $"{reader.ReadByte()}");
+    public static Enum ReadEnum(this MessageReader reader, Type type) => (Enum)Enum.Parse(type, $"{reader.ReadByte()}");
 
-    public static T ReadEnum<T>(this MessageReader reader) where T : struct, Enum => (T)(object)reader.ReadByte();
+    public static T ReadEnum<T>(this MessageReader reader) where T : struct, Enum
+    {
+        if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
+            return (T)(object)reader.ReadByte();
+        else
+            return (T)(object)reader.ReadInt32();
+    }
 
     public static Number ReadNumber(this MessageReader reader) => new(reader.ReadSingle());
 
@@ -142,14 +127,14 @@ public static class RPC
             SkinId = reader.ReadString(),
             HatId = reader.ReadString(),
             VisorId = reader.ReadString(),
-            CanDoTasks = reader.ReadBoolean(),
             IsExeTarget = reader.ReadBoolean(),
             IsGATarget = reader.ReadBoolean(),
             IsBHTarget = reader.ReadBoolean(),
             IsGuessTarget = reader.ReadBoolean(),
             DriveHolder = reader.ReadBoolean(),
             DeathReason = reader.ReadEnum<DeathReasonEnum>(),
-            SubFaction = reader.ReadEnum<SubFaction>()
+            SubFaction = reader.ReadEnum<SubFaction>(),
+            CanDoTasks = reader.ReadBoolean()
         };
 
         if (record.CanDoTasks)
@@ -176,6 +161,17 @@ public static class RPC
         return record;
     }
 
+    public static List<T> ReadEnumList<T>(this MessageReader reader) where T : struct, Enum
+    {
+        var enums = new List<T>();
+        var count = reader.ReadUInt32();
+
+        while (count-- > 0)
+            enums.Add(reader.ReadEnum<T>());
+
+        return enums;
+    }
+
     public static void Write(this MessageWriter writer, PlayerLayer layer)
     {
         writer.Write(layer.PlayerId);
@@ -184,7 +180,15 @@ public static class RPC
 
     public static void Write(this MessageWriter writer, RoleOptionData data) => writer.Write($"{data}");
 
-    public static void Write(this MessageWriter writer, Enum enumVal) => writer.Write(System.Convert.ToByte(enumVal));
+    public static void Write(this MessageWriter writer, Enum enumVal)
+    {
+        var enumType = enumVal.GetType();
+
+        if (enumType.GetEnumUnderlyingType() == typeof(byte))
+            writer.Write(Convert.ToByte(enumVal));
+        else
+            writer.Write(Convert.ToInt32(enumVal));
+    }
 
     public static void Write(this MessageWriter writer, PlayerRecord record)
     {
@@ -193,7 +197,6 @@ public static class RPC
         writer.Write(record.SkinId);
         writer.Write(record.HatId);
         writer.Write(record.VisorId);
-        writer.Write(record.CanDoTasks);
 
         writer.Write(record.IsExeTarget);
         writer.Write(record.IsGATarget);
@@ -203,6 +206,8 @@ public static class RPC
 
         writer.Write(record.DeathReason);
         writer.Write(record.SubFaction);
+
+        writer.Write(record.CanDoTasks);
 
         if (record.CanDoTasks)
         {
@@ -250,7 +255,7 @@ public static class RPC
             writer.Write(vector2);
         else if (item is byte[] array)
             writer.WriteBytesAndSize(array);
-        else if (item is List<byte> list)
+        else if (item is IEnumerable<byte> list)
             writer.WriteBytesAndSize(list.ToArray());
         else if (item is CustomButton button)
             writer.Write(button.ID);
@@ -265,11 +270,11 @@ public static class RPC
             Failure($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type - {item.GetType().Name}");
     }
 
-    public static void CallRpc(CustomRPC rpc, params object[] data) => CallOpenRpc(rpc, data)?.EndRpc();
+    public static void CallRpc(CustomRPC rpc, params object[] data) => CallOpenRpc(rpc, data)?.CloseRpc();
 
     public static MessageWriter CallOpenRpc(CustomRPC rpc, params object[] data) => CallTargetedOpenRpc(-1, rpc, data);
 
-    public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data) => CallTargetedOpenRpc(targetClientId, rpc, data)?.EndRpc();
+    public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data) => CallTargetedOpenRpc(targetClientId, rpc, data)?.CloseRpc();
 
     public static MessageWriter CallTargetedOpenRpc(int targetClientId, CustomRPC rpc, params object[] data)
     {
@@ -294,7 +299,7 @@ public static class RPC
         return writer;
     }
 
-    public static void EndRpc(this MessageWriter writer)
+    public static void CloseRpc(this MessageWriter writer)
     {
         if (writer == null)
             Failure("RPC writer was null");

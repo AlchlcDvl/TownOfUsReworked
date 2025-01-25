@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class ButtonBarry : Ability
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ButtonCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ButtonCd = 25;
 
     private bool ButtonUsed { get; set; }
     public CustomButton ButtonButton { get; set; }

@@ -9,8 +9,8 @@ public static class TalkingPatches
     [HarmonyPatch(nameof(MeetingHud.Start)), HarmonyPostfix]
     public static void StartPostfix()
     {
-        BeingBlackmailed = CustomPlayer.Local.IsBlackmailed() && !CustomPlayer.LocalCustom.Dead;
-        BeingSilenced = CustomPlayer.Local.IsSilenced() && !CustomPlayer.LocalCustom.Dead;
+        BeingBlackmailed = CustomPlayer.Local.IsBlackmailed() && !CustomPlayer.Local.HasDied();
+        BeingSilenced = CustomPlayer.Local.IsSilenced() && !CustomPlayer.Local.HasDied();
 
         if (BeingBlackmailed && BeingSilenced)
             Coroutines.Start(Shhh("RIP YOU ARE BLACKMAILED AND SILENCED"));
@@ -46,41 +46,19 @@ public static class TalkingPatches
 
         if (Blackmailer.BMRevealed)
         {
-            foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
+            foreach (var role in PlayerLayer.GetILayers<IBlackmailer>())
             {
-                if (!role.BlackmailedPlayer)
+                if (!role.Target)
                     continue;
 
-                if (!role.BlackmailedPlayer.HasDied())
+                if (!role.Target.HasDied())
                 {
-                    var playerState = VoteAreaByPlayer(role.BlackmailedPlayer);
+                    var playerState = VoteAreaByPlayer(role.Target);
                     playerState.Overlay.gameObject.SetActive(true);
                     CachedOverlay ??= playerState.Overlay.sprite;
                     CachedColor ??= playerState.Overlay.color;
                     playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
-
-                    if (!role.ShookAlready)
-                    {
-                        role.ShookAlready = true;
-                        __instance.StartCoroutine(Effects.SwayX(playerState.transform));
-                    }
-                }
-            }
-
-            foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
-            {
-                if (!role.BlackmailedPlayer || !role.IsBM)
-                    continue;
-
-                if (!role.BlackmailedPlayer.HasDied())
-                {
-                    var playerState = VoteAreaByPlayer(role.BlackmailedPlayer);
-                    playerState.Overlay.gameObject.SetActive(true);
-                    CachedOverlay ??= playerState.Overlay.sprite;
-                    CachedColor ??= playerState.Overlay.color;
-                    playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
+                    playerState.Overlay.color = role.Target.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
 
                     if (!role.ShookAlready)
                     {
@@ -93,41 +71,19 @@ public static class TalkingPatches
 
         if (Silencer.SilenceRevealed)
         {
-            foreach (var role in PlayerLayer.GetLayers<Silencer>())
+            foreach (var role in PlayerLayer.GetILayers<ISilencer>())
             {
-                if (!role.SilencedPlayer)
+                if (!role.Target)
                     continue;
 
-                if (!role.SilencedPlayer.HasDied())
+                if (!role.Target.HasDied())
                 {
-                    var playerState = VoteAreaByPlayer(role.SilencedPlayer);
+                    var playerState = VoteAreaByPlayer(role.Target);
                     playerState.Overlay.gameObject.SetActive(true);
                     CachedOverlay ??= playerState.Overlay.sprite;
                     CachedColor ??= playerState.Overlay.color;
                     playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
-
-                    if (!role.ShookAlready)
-                    {
-                        role.ShookAlready = true;
-                        __instance.StartCoroutine(Effects.SwayX(playerState.transform));
-                    }
-                }
-            }
-
-            foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
-            {
-                if (!role.SilencedPlayer || !role.IsSil)
-                    continue;
-
-                if (!role.SilencedPlayer.HasDied())
-                {
-                    var playerState = VoteAreaByPlayer(role.SilencedPlayer);
-                    playerState.Overlay.gameObject.SetActive(true);
-                    CachedOverlay ??= playerState.Overlay.sprite;
-                    CachedColor ??= playerState.Overlay.color;
-                    playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
+                    playerState.Overlay.color = role.Target.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
 
                     if (!role.ShookAlready)
                     {

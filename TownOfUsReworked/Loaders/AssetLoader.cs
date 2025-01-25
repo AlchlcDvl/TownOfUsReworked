@@ -58,7 +58,7 @@ public abstract class AssetLoader
         }
     }
 
-    public static IEnumerator InitLoaders()
+    public static void InitLoaders()
     {
         UpdateSplashPatch.SetText("Initialising Loaders");
         ColorLoader.Instance = new();
@@ -71,6 +71,5 @@ public abstract class AssetLoader
         TranslationLoader.Instance = new();
         VisorLoader.Instance = new();
         BundleLoader.Instance = new();
-        yield return EndFrame();
     }
 }

@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Crusader : Syndicate, ICrusader
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number CrusadeCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number CrusadeCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number CrusadeDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number CrusadeDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number ChaosDriveCrusadeRadius { get; set; } = new(1.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number ChaosDriveCrusadeRadius = 1.5f;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CrusadeMates { get; set; } = false;
+    [ToggleOption]
+    public static bool CrusadeMates = false;
 
     public PlayerControl CrusadedPlayer { get; set; }
     public CustomButton CrusadeButton { get; set; }
@@ -27,7 +27,7 @@ public class Crusader : Syndicate, ICrusader
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateKill;
+        Alignment = Alignment.Killing;
         CrusadedPlayer = null;
         CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(CrusadeCd), "CRUSADE", new Duration(CrusadeDur),
             (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
@@ -58,7 +58,7 @@ public class Crusader : Syndicate, ICrusader
             if (player.IsVesting() || player.IsProtected() || player2.IsLinkedTo(player) || player.IsShielded() || (player.Is(Faction.Syndicate) && !CrusadeMates))
                 continue;
 
-            if (!player.Is(Alignment.NeutralApoc))
+            if (!player.Is(Alignment.Apocalypse))
                 RpcMurderPlayer(player2, player, DeathReasonEnum.Crusaded, false);
 
             if (player.IsOnAlert() || player.Is<Pestilence>())

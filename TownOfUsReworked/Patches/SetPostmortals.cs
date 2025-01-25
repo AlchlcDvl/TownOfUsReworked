@@ -17,9 +17,13 @@ public static class SetPostmortals
         {
             if (ghoul.Caught)
                 ghoul.MarkedPlayer = null;
-            else if (ghoul.MarkedPlayer && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.NeutralApoc))
+            else if (ghoul.MarkedPlayer && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.Apocalypse))
             {
                 ghoul.MarkedPlayer.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
+
+                if (Lovers.BothLoversDie && ghoul.MarkedPlayer.TryGetLayer<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.Apocalypse))
+                    lover.OtherLover.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
+
                 ghoul.MarkedPlayer = null;
             }
         }
@@ -31,7 +35,7 @@ public static class SetPostmortals
             JesterWin(exiled);
             ExecutionerWin(exiled);
 
-            if (Lovers.BothLoversDie && exiled.TryGetLayer<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.NeutralApoc))
+            if (Lovers.BothLoversDie && exiled.TryGetLayer<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.Apocalypse))
                 lover.OtherLover.CustomDie(DeathReasonEnum.Suicide);
         }
 
@@ -113,7 +117,7 @@ public static class SetPostmortals
         if (!player.Data.IsDead || !player.IsPostmortal() || player.Caught())
             return;
 
-        var ventsArray = AllMapVents();
+        var ventsArray = AllMapVents().ToArray();
         var vents = ventsArray.ToList();
 
         if (Ship().Systems.TryGetValue(SystemTypes.Ventilation, out var systemType) && systemType.TryCast<VentilationSystem>(out var ventilationSystem))

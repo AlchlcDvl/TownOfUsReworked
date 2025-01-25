@@ -3,38 +3,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class GuardianAngel : Neutral
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GuardianAngelCanPickTargets { get; set; } = false;
+    [ToggleOption]
+    public static bool GuardianAngelCanPickTargets = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ProtectCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ProtectCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number ProtectDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number ProtectDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxProtects { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxProtects = 5;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static ProtectOptions ShowProtect { get; set; } = ProtectOptions.Protected;
+    [StringOption<ProtectOptions>]
+    public static ProtectOptions ShowProtect = ProtectOptions.Protected;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GATargetKnows { get; set; } = false;
+    [ToggleOption]
+    public static bool GATargetKnows = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ProtectBeyondTheGrave { get; set; } = false;
+    [ToggleOption]
+    public static bool ProtectBeyondTheGrave = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GAKnowsTargetRole { get; set; } = false;
+    [ToggleOption]
+    public static bool GAKnowsTargetRole = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GAVent { get; set; } = false;
+    [ToggleOption]
+    public static bool GAVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GASwitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool GASwitchVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool GAToSurv { get; set; } = true;
+    [ToggleOption]
+    public static bool GAToSurv = true;
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetAlive => !Disconnected && !TargetPlayer.HasDied();
@@ -55,7 +55,7 @@ public class GuardianAngel : Neutral
     {
         base.Init();
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
-        Alignment = Alignment.NeutralBen;
+        Alignment = Alignment.Benign;
         TargetPlayer = null;
         ProtectButton ??= new(this, new SpriteName("Protect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT",
             new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect, (EffectStartVoid)ProtectStart, (EffectEndVoid)ProtectEnd);

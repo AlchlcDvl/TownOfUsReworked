@@ -3,17 +3,17 @@
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class SerialKiller : NKilling
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number BloodlustCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number BloodlustCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number BloodlustDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number BloodlustDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 15f, 0.5f, Format.Time)]
-    public static Number StabCd { get; set; } = new(5);
+    [NumberOption(0.5f, 15f, 0.5f, Format.Time)]
+    public static Number StabCd = 5;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static SKVentOptions SKVentOptions { get; set; } = SKVentOptions.Always;
+    [StringOption<SKVentOptions>]
+    public static SKVentOptions SKVentOptions = SKVentOptions.Always;
 
     public CustomButton BloodlustButton { get; set; }
     public CustomButton StabButton { get; set; }

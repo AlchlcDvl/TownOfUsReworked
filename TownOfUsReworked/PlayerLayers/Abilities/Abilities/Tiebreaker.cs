@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Tiebreaker : Ability
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TiebreakerKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool TiebreakerKnows = true;
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Tiebreaker : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Tiebreaker;

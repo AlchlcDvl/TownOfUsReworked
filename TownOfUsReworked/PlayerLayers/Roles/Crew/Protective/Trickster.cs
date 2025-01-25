@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.PlayerLayers;
+namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Trickster : Role
 {
@@ -10,6 +10,6 @@ public class Trickster : Role
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewProt;
+        Alignment = Alignment.Protective;
     }
 }

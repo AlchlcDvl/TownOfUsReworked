@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Insider : Ability
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool InsiderKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool InsiderKnows = true;
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Insider : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Insider;

@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Mystic : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number RevealCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number RevealCd = 25;
 
     private bool ConvertedDead => !AllPlayers().Any(x => !x.HasDied() && !x.Is(SubFaction.None) && !x.Is(SubFaction));
     private CustomButton RevealButton { get; set; }
@@ -18,7 +18,7 @@ public class Mystic : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewInvest;
+        Alignment = Alignment.Investigative;
         RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (PlayerBodyExclusion)Exception,
             new Cooldown(RevealCd));
     }
@@ -36,7 +36,7 @@ public class Mystic : Crew
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash((!target.Is(SubFaction) && SubFaction != SubFaction.None && !target.Is(Alignment.NeutralNeo)) || target.IsFramed() ? UColor.red : UColor.green);
+            Flash((!target.Is(SubFaction) && SubFaction != SubFaction.None && !target.Is(Alignment.Neophyte)) || target.IsFramed() ? UColor.red : UColor.green);
 
         RevealButton.StartCooldown(cooldown);
     }

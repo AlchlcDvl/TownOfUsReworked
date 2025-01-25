@@ -4,6 +4,10 @@ namespace TownOfUsReworked.RoleGen;
 
 public class AbilityGen : BaseGen
 {
+    public static readonly LayerEnum[] CrewAb = [ LayerEnum.Bullseye, LayerEnum.Swapper ];
+    public static readonly LayerEnum[] Tasked = [ LayerEnum.Insider, LayerEnum.Multitasker ];
+    public static readonly LayerEnum[] GlobalAb = [ LayerEnum.Radar, LayerEnum.Tiebreaker ];
+
     public override void Clear() => AllAbilities.Clear();
 
     public override void InitList()
@@ -56,19 +60,16 @@ public class AbilityGen : BaseGen
             else if (CrewAb.Contains(id))
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew));
             else if (id == LayerEnum.Slayer)
-                assigned = playerList.FirstOrDefault(x => x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) || x.Is(Alignment.NeutralHarb));
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Neutral) && (x.Is(Alignment.Neophyte) || x.Is(Alignment.Killing) || x.Is(Alignment.Harbinger)));
             else if (id == LayerEnum.Hitman)
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) && !(x.Is<Consigliere>() && Consigliere.ConsigInfo == ConsigInfo.Role));
             else if (id == LayerEnum.Ninja)
-            {
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralKill) || x.Is<Corrupted>() ||
-                    x.Is(Alignment.CrewKill));
-            }
+                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.Neophyte) || x.Is(Alignment.Killing) || x.Is<Corrupted>());
             else if (id == LayerEnum.Torch)
             {
-                assigned = playerList.FirstOrDefault(x => !((x.Is(Alignment.NeutralKill) && !NeutralKillingSettings.NKHasImpVision) || x.Is(Faction.Syndicate) || x.Is(Faction.Intruder) ||
-                    (x.Is(Faction.Neutral) && !NeutralSettings.LightsAffectNeutrals) || (x.Is(Alignment.NeutralNeo) && !NeutralNeophyteSettings.NNHasImpVision) ||
-                    (x.Is(Alignment.NeutralEvil) && !NeutralEvilSettings.NEHasImpVision) || (x.Is(Alignment.NeutralHarb) && !NeutralHarbingerSettings.NHHasImpVision)));
+                assigned = playerList.FirstOrDefault(x => !(x.GetFaction() is Faction.Syndicate or Faction.Intruder || (x.Is(Faction.Neutral) && (!NeutralSettings.LightsAffectNeutrals ||
+                    (x.Is(Alignment.Killing) && !NeutralKillingSettings.NKHasImpVision) || (x.Is(Alignment.Neophyte) && !NeutralNeophyteSettings.NNHasImpVision) || (x.Is(Alignment.Evil) &&
+                    !NeutralEvilSettings.NEHasImpVision) || (x.Is(Alignment.Harbinger) && !NeutralHarbingerSettings.NHHasImpVision)))));
             }
             else if (id == LayerEnum.Underdog)
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate));
@@ -83,13 +84,13 @@ public class AbilityGen : BaseGen
                     (!Dictator.DictatorButton && x.Is<Dictator>())));
             }
             else if (id == LayerEnum.Politician)
-                assigned = playerList.FirstOrDefault(x => !(x.Is(Alignment.NeutralEvil) || x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralNeo)));
+                assigned = playerList.FirstOrDefault(x => !(x.Is(Alignment.Evil) || x.Is(Alignment.Benign) || x.Is(Alignment.Neophyte)));
             else if (GlobalAb.Contains(id))
                 assigned = playerList.FirstOrDefault();
             else if (id == LayerEnum.Ruthless)
             {
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.NeutralNeo) || x.Is<Corrupted>() || (x.Is(Alignment.NeutralKill) &&
-                    !x.Is<Juggernaut>()) || x.Is(Alignment.CrewKill));
+                assigned = playerList.FirstOrDefault(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.Is(Alignment.Neophyte) || x.Is<Corrupted>() ||
+                    (x.Is(Faction.Neutral, Alignment.Killing) && !x.Is<Juggernaut>()) || x.Is(Faction.Crew, Alignment.Killing));
             }
 
             if (assigned)

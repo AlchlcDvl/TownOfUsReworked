@@ -8,6 +8,6 @@ public class Crewmate : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewUtil;
+        Alignment = Alignment.Utility;
     }
 }

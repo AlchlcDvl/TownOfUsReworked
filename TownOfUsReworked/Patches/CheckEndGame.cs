@@ -43,7 +43,7 @@ public static class CheckEndGame
                 _ => NeutralSettings.NoSolo switch
                 {
                     NoSolo.AllNeutrals => x => x.Is(faction),
-                    NoSolo.AllNKs => x => x.Is(Alignment.NeutralKill),
+                    NoSolo.AllNKs => x => x.Is(Alignment.Killing),
                     _ => hexer.LinkedDisposition switch
                     {
                         LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),

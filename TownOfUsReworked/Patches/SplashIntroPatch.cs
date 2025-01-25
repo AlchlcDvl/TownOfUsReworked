@@ -23,9 +23,12 @@ public static class UpdateSplashPatch
             yield break;
 
         Loading = true;
-        var loading = new GameObject("LoadingLogo");
+        LoadAssets();
+
+        var loading = new GameObject("Loading");
         loading.transform.localPosition = new(0f, 1.4f, -5f);
         loading.transform.localScale = new(1f, 1f, 1f);
+
         var rend = loading.AddComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Banner");
         rend.transform.localScale = Vector3.one * 1.8f;
@@ -42,9 +45,20 @@ public static class UpdateSplashPatch
         AddAsset("Placeholder", TMP.font);
 
         SetText("Loading...");
-        yield return EndFrame();
 
         yield return PerformTimedAction(0.5f, p => TMP.color = UColor.white.SetAlpha(p));
+
+        ReactorCredits.Register<TownOfUsReworked>(x => x is ReactorCredits.Location.MainMenu);
+        var text = Path.Combine(TownOfUsReworked.DataPath, "steam_appid.txt");
+
+        if (!File.Exists(text))
+            File.WriteAllText(text, "945360");
+
+        NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
+        ReworkedStart = TranslationManager.GetOrAddName("Translation.ReworkedStart");
+        AllMonos.RegisterMonos();
+
+        yield return Wait(0.2f);
 
         if (!Directory.Exists(TownOfUsReworked.Assets))
             Directory.CreateDirectory(TownOfUsReworked.Assets);
@@ -57,7 +71,9 @@ public static class UpdateSplashPatch
 
         Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
 
-        yield return AssetLoader.InitLoaders();
+        AssetLoader.InitLoaders();
+
+        yield return Wait(0.1f);
 
         yield return TranslationLoader.Instance.CoFetch();
         yield return HatLoader.Instance.CoFetch();

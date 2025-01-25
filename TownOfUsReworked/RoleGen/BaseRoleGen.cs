@@ -57,7 +57,7 @@ public abstract class BaseRoleGen : BaseGen
         var players = GameData.Instance.PlayerCount;
         Intruders = IntruderSettings.IntruderCount;
         Syndicate = SyndicateSettings.SyndicateCount;
-        Neutrals = this is KillingOnlyGen ? GameModeSettings.NeutralsCount : URandom.RandomRangeInt(NeutralSettings.NeutralMin, NeutralSettings.NeutralMax + 1);
+        Neutrals = URandom.RandomRangeInt(NeutralSettings.NeutralMin, NeutralSettings.NeutralMax + 1);
 
         if (Intruders == 0 && Syndicate == 0 && Neutrals == 0)
         {

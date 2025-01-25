@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Indomitable : Modifier
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool IndomitableKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool IndomitableKnows = true;
 
     public bool AttemptedGuess { get; set; }
 

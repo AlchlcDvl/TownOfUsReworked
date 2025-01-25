@@ -3,29 +3,29 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Snitch : Ability
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SnitchKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool SnitchKnows = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SnitchSeesNeutrals { get; set; } = false;
+    [ToggleOption]
+    public static bool SnitchSeesNeutrals = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SnitchSeesCrew { get; set; } = false;
+    [ToggleOption]
+    public static bool SnitchSeesCrew = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SnitchSeesRoles { get; set; } = false;
+    [ToggleOption]
+    public static bool SnitchSeesRoles = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static Number SnitchTasksRemaining { get; set; } = new(1);
+    [NumberOption(1, 5, 1)]
+    public static Number SnitchTasksRemaining = 1;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SnitchSeesTargetsInMeeting { get; set; } = true;
+    [ToggleOption]
+    public static bool SnitchSeesTargetsInMeeting = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SnitchSeesTraitor { get; set; } = true;
+    [ToggleOption]
+    public static bool SnitchSeesTraitor = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SnitchSeesFanatic { get; set; } = true;
+    [ToggleOption]
+    public static bool SnitchSeesFanatic = true;
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Snitch : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Snitch;
@@ -40,8 +40,7 @@ public class Snitch : Ability
         {
             if (Local)
                 Flash(Color);
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
-                Alignment.NeutralPros && SnitchSeesNeutrals))
+            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
             {
                 Flash(Color);
                 local.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
@@ -52,11 +51,10 @@ public class Snitch : Ability
             if (Local)
             {
                 Flash(UColor.green);
-                AllPlayers().Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros &&
-                    SnitchSeesNeutrals)).ForEach(x => local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
+                AllPlayers().Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.GetFaction() == Faction.Neutral && SnitchSeesNeutrals)).ForEach(x =>
+                    local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
             }
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
-                Alignment.NeutralPros && SnitchSeesNeutrals))
+            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
             {
                 Flash(UColor.red);
             }

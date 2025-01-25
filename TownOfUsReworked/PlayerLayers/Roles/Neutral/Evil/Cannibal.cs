@@ -3,20 +3,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Cannibal : Evil
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number EatCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number EatCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 5, 1)]
-    public static Number BodiesNeeded { get; set; } = new(1);
+    [NumberOption(1, 5, 1)]
+    public static Number BodiesNeeded = 2;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool EatArrows { get; set; } = false;
+    [ToggleOption]
+    public static bool EatArrows = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
-    public static Number EatArrowDelay { get; set; } = new(5);
+    [NumberOption(0f, 15f, 1f, Format.Time)]
+    public static Number EatArrowDelay = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CannibalVent { get; set; } = false;
+    [ToggleOption]
+    public static bool CannibalVent = false;
 
     public CustomButton EatButton { get; set; }
     public int EatNeed { get; set; }

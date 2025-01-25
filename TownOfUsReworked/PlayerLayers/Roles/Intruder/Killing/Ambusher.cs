@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Ambusher : Intruder, IAmbusher
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number AmbushCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number AmbushCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number AmbushDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number AmbushDur = 10;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AmbushMates { get; set; } = false;
+    [ToggleOption]
+    public static bool AmbushMates = false;
 
     public PlayerControl AmbushedPlayer { get; set; }
     public CustomButton AmbushButton { get; set; }
@@ -23,7 +23,7 @@ public class Ambusher : Intruder, IAmbusher
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderKill;
+        Alignment = Alignment.Killing;
         AmbushedPlayer = null;
         AmbushButton ??= new(this, new SpriteName("Ambush"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
             new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);

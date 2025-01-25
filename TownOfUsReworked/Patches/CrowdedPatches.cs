@@ -76,7 +76,7 @@ public static class CrowdedPatches
     }
 
     [HarmonyPatch(nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
-    public static void Postfix(int maxPlayers) => OptionAttribute.GetOption("LobbySize").SetBase(new Number(maxPlayers), false);
+    public static void Postfix(int maxPlayers) => OptionAttribute.GetOption<NumberOptionAttribute>("LobbySize").Set(maxPlayers, false);
 
     [HarmonyPatch(nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
     public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)

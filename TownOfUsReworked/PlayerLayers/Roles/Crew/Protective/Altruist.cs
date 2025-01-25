@@ -3,29 +3,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Altruist : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number AltManaCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number AltManaCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number MaxAltMana { get; set; } = new(5);
+    [NumberOption(0, 15, 1)]
+    public static Number MaxAltMana = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number AltManaGainedPerBody { get; set; } = new(1);
+    [NumberOption(0, 15, 1)]
+    public static Number AltManaGainedPerBody = 1;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number PassiveAltManaGain { get; set; } = new(0);
+    [NumberOption(0, 15, 1)]
+    public static Number PassiveAltManaGain = 0;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number AltManaCost { get; set; } = new(2);
+    [NumberOption(0, 15, 1)]
+    public static Number AltManaCost = 2;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ReviveCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ReviveCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
-    public static Number ReviveDur { get; set; } = new(10);
+    [NumberOption(1f, 15f, 1f, Format.Time)]
+    public static Number ReviveDur = 10;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AltruistTargetBody { get; set; } = false;
+    [ToggleOption]
+    public static bool AltruistTargetBody = false;
 
     public CustomButton ReviveButton { get; set; }
     public CustomButton ManaButton { get; set; }
@@ -40,7 +40,7 @@ public class Altruist : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewProt;
+        Alignment = Alignment.Protective;
         ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(AltManaCd), (UsableFunc)Usable);
         ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
             MaxAltMana, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(AltManaCost));

@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Jackal : Neophyte
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number RecruitCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number RecruitCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool JackalVent { get; set; } = false;
+    [ToggleOption]
+    public static bool JackalVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RecruitVent { get; set; } = false;
+    [ToggleOption]
+    public static bool RecruitVent = false;
 
     public PlayerControl Recruit1 { get; set; }
     public PlayerControl Recruit2 { get; set; }

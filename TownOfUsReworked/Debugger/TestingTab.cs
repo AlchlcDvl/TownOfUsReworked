@@ -24,7 +24,6 @@ public class TestingTab : BaseTab
                     {
                         MCIUtils.CleanUpLoad();
                         MCIUtils.CreatePlayerInstance();
-                        TownOfUsReworked.MCIActive = true;
                     }
                 }
 
@@ -32,16 +31,12 @@ public class TestingTab : BaseTab
                 {
                     MCIUtils.RemovePlayer((byte)MCIUtils.Clients.Count);
                     DebuggerBehaviour.Instance.ControllingFigure = 0;
-
-                    if (MCIUtils.Clients.Count == 0)
-                        TownOfUsReworked.MCIActive = false;
                 }
 
                 if (GUILayout.Button("Remove All Bots"))
                 {
                     MCIUtils.RemoveAllPlayers();
                     DebuggerBehaviour.Instance.ControllingFigure = 0;
-                    TownOfUsReworked.MCIActive = false;
                 }
             }
         }

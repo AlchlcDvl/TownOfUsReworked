@@ -1,26 +1,21 @@
 namespace TownOfUsReworked.Options;
 
-public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null) : OptionAttribute<Enum>(menu, CustomOptionType.String)
+public class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(CustomOptionType.String) where T : struct, Enum
 {
-    public IEnumerable<string> Values { get; set; }
-    public int Index { get; set; }
-    private string[] IgnoreStrings { get; } = ignoreStrings ?? [];
-    private IEnumerable<Enum> EnumValues { get; set; }
+    private int Index { get; set; }
+    private IEnumerable<T> Ignore { get; } = ignore;
+    private IEnumerable<T> Values { get; set; }
     private int Count { get; set; }
 
-    public string GetString() => Values.ElementAt(Index);
-
-    public void Increase()
+    public void Change(bool incrementing)
     {
-        Index = CycleInt(Count, 0, Index, true);
-        Set(EnumValues.ElementAt(Index));
+        Index = CycleInt(Count, 0, Index, incrementing);
+        Set(Values.ElementAt(Index));
     }
 
-    public void Decrease()
-    {
-        Index = CycleInt(Count, 0, Index, false);
-        Set(EnumValues.ElementAt(Index));
-    }
+    private void Increase() => Change(true);
+
+    private void Decrease() => Change(false);
 
     public override void OptionCreated()
     {
@@ -28,21 +23,27 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
         var str = Setting.Cast<StringOption>();
         str.TitleText.text = TranslationManager.Translate(ID);
         str.Values = new(0);
+        str.ValueText.transform.localPosition += new Vector3(1.05f, 0f, 0f);
 
-        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !ClientOnly && !TownOfUsReworked.MCIActive)
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MCIActive))
         {
             str.PlusBtn.gameObject.SetActive(false);
             str.MinusBtn.gameObject.SetActive(false);
         }
+        else
+        {
+            str.PlusBtn.OverrideOnClickListeners(Increase);
+            str.MinusBtn.OverrideOnClickListeners(Decrease);
+        }
     }
 
-    public override string Format() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{GetString()}");
+    public override string Format() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{ValueString()}");
 
     public override void PostLoadSetup()
     {
-        Values = Enum.GetNames(TargetType).Except(IgnoreStrings);
-        EnumValues = Enum.GetValues(TargetType).Cast<Enum>().Where(x => !IgnoreStrings.Contains($"{x}"));
-        Index = EnumValues.IndexOf(Value);
+        base.PostLoadSetup();
+        Values = Enum.GetValues<T>().Except(Ignore);
+        Index = Values.IndexOf(Value);
         Count = Values.Count() - 1;
     }
 
@@ -56,20 +57,19 @@ public class StringOptionAttribute(MultiMenu menu, string[] ignoreStrings = null
     public override void Update()
     {
         var str = Setting.Cast<StringOption>();
-        str.Value = str.oldValue = Index = Mathf.Clamp(EnumValues.IndexOf(Value), 0, Count);
+        str.Value = str.oldValue = Index = Mathf.Clamp(Values.IndexOf(Value), 0, Count);
         str.ValueText.text = Format();
     }
 
     public override void Debug()
     {
         base.Debug();
-
-        foreach (var name in Values)
-        {
-            var id = $"CustomOption.{TargetType.Name}.{name}";
-
-            if (!TranslationManager.IdExists(id))
-                Fatal(id);
-        }
+        Values.ForEach(x => TranslationManager.DebugId($"CustomOption.{TargetType.Name}.{x}"));
     }
+
+    public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadEnum<T>(), false);
+
+    public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
+
+    public override void ReadValueString(string value) => Set(Enum.Parse<T>(value), false);
 }

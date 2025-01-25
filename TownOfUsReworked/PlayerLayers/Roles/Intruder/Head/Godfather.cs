@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Godfather : Intruder
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0.25f, 0.9f, 0.05f, Format.Multiplier)]
-    public static Number GFPromotionCdDecrease { get; set; } = new(0.75f);
+    [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
+    public static Number GFPromotionCdDecrease = 0.75f;
 
     public bool HasDeclared { get; set; }
     public CustomButton DeclareButton { get; set; }
@@ -19,7 +19,7 @@ public class Godfather : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderHead;
+        Alignment = Alignment.Head;
         DeclareButton ??= new(this, new SpriteName("Promote"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 

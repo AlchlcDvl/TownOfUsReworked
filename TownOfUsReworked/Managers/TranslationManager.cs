@@ -45,6 +45,15 @@ public static class TranslationManager
 
     public static bool IdExists(string id) => AllTranslations.ContainsKey(id);
 
+    public static void DebugId(string id)
+    {
+        if (!IdExists(id) && !MissingIds.Contains(id))
+        {
+            Fatal(id);
+            MissingIds.Add(id);
+        }
+    }
+
     private static StringNames GetNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string>
         Value)[] replacements = null)
     {

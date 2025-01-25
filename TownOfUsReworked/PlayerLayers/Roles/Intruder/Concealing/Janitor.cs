@@ -3,23 +3,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Janitor : Intruder, IDragger
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number CleanCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number CleanCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool JaniCooldownsLinked { get; set; } = true;
+    [ToggleOption]
+    public static bool JaniCooldownsLinked = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SoloBoost { get; set; } = false;
+    [ToggleOption]
+    public static bool SoloBoost = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number DragCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number DragCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.25f, 3f, 0.25f, Format.Multiplier)]
-    public static Number DragModifier { get; set; } = new(0.5f);
+    [NumberOption(0.25f, 3f, 0.25f, Format.Multiplier)]
+    public static Number DragModifier = 0.5f;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static JanitorOptions JanitorVentOptions { get; set; } = JanitorOptions.Never;
+    [StringOption<JanitorOptions>]
+    public static JanitorOptions JanitorVentOptions = JanitorOptions.Never;
 
     public CustomButton CleanButton { get; set; }
     public CustomButton DragButton { get; set; }
@@ -35,7 +35,7 @@ public class Janitor : Intruder, IDragger
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderConceal;
+        Alignment = Alignment.Concealing;
         CurrentlyDragging = null;
         DragButton ??= new(this, new SpriteName("Drag"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
         DropButton ??= new(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Drop, "DROP BODY", (UsableFunc)Usable2);

@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Transporter : Crew, ITransporter
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxTransports { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxTransports = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number TransportCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number TransportCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
-    public static Number TransportDur { get; set; } = new(5);
+    [NumberOption(1f, 20f, 1f, Format.Time)]
+    public static Number TransportDur = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TransSelf { get; set; } = true;
+    [ToggleOption]
+    public static bool TransSelf = true;
 
     public CustomButton TransportButton { get; set; }
     public CustomPlayerMenu TransportMenu { get; set; }
@@ -27,7 +27,7 @@ public class Transporter : Crew, ITransporter
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewSupport;
+        Alignment = Alignment.Support;
         TransportButton ??= new(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Transport, MaxTransports, new Cooldown(TransportCd),
             (LabelFunc)Label);
         TransportMenu = new(Player, Click, Exception);
@@ -88,24 +88,6 @@ public class Transporter : Crew, ITransporter
         }
 
         transporter.Transporting = true;
-
-        if (!transport1.HasDied())
-        {
-            transport1.moveable = false;
-            transport1.NetTransform.Halt();
-            transport1.MyPhysics.ResetMoveState();
-            transport1.MyPhysics.ResetAnimState();
-            transport1.MyPhysics.StopAllCoroutines();
-        }
-
-        if (!transport2.HasDied())
-        {
-            transport2.moveable = false;
-            transport2.NetTransform.Halt();
-            transport2.MyPhysics.ResetMoveState();
-            transport2.MyPhysics.ResetAnimState();
-            transport2.MyPhysics.StopAllCoroutines();
-        }
 
         if (transport1.AmOwner || transport2.AmOwner)
             Flash(transporter.Color, TransportDur);
@@ -205,8 +187,12 @@ public class Transporter : Crew, ITransporter
 
     public bool Click(PlayerControl player, out bool shouldClose)
     {
-        var cooldown = Interact(Player, player);
         shouldClose = false;
+
+        if (player.IsMoving())
+            return false;
+
+        var cooldown = Interact(Player, player);
 
         if (cooldown != CooldownType.Fail)
             return true;

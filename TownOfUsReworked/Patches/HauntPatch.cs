@@ -66,10 +66,9 @@ public static class HauntPatches
     {
         __result = __instance.filterMode switch
         {
-            HauntMenuMinigame.HauntFilters.Impostor => pc.GetFaction() is Faction.Intruder or Faction.Syndicate || pc.GetAlignment() is Alignment.NeutralApoc or Alignment.NeutralKill or
-                Alignment.NeutralNeo || pc.Is<Hunter>(),
-            HauntMenuMinigame.HauntFilters.Crewmate => pc.GetFaction() is Faction.Crew || pc.GetAlignment() is Alignment.NeutralBen or Alignment.NeutralEvil or
-                Alignment.NeutralPros || pc.Is<Hunted>(),
+            HauntMenuMinigame.HauntFilters.Impostor => pc.GetFaction() is Faction.Intruder or Faction.Syndicate || pc.GetAlignment() is Alignment.Apocalypse or Alignment.Harbinger or
+                Alignment.Neophyte || pc.Is<Hunter>() || pc.Is<NKilling>(),
+            HauntMenuMinigame.HauntFilters.Crewmate => pc.GetFaction() is Faction.Crew || pc.GetAlignment() is Alignment.Benign or Alignment.Evil or Alignment.Proselyte || pc.Is<Hunted>(),
             HauntMenuMinigame.HauntFilters.Ghost => pc.HasDied(),
             _ => true
         };

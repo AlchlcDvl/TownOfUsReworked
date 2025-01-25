@@ -26,6 +26,7 @@ indent_size = 4
 
 dotnet_diagnostic.IDE0051.severity = silent
 dotnet_diagnostic.IDE0052.severity = silent
+dotnet_diagnostic.CS8632.severity = none
 
 dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = true
@@ -91,6 +92,7 @@ csharp_style_throw_expression = true:suggestion
 
 dotnet_diagnostic.CA1822.severity = none
 dotnet_diagnostic.CA2211.severity = none
+dotnet_diagnostic.CS0649.severity = none
 dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.IDE0130.severity = none
 

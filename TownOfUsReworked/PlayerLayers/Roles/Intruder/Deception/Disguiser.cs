@@ -3,23 +3,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Disguiser : Intruder
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number DisguiseCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number DisguiseCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 15f, 2.5f, Format.Time)]
-    public static Number DisguiseDelay { get; set; } = new(5);
+    [NumberOption(2.5f, 15f, 2.5f, Format.Time)]
+    public static Number DisguiseDelay = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 2.5f, Format.Time)]
-    public static Number DisguiseDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 2.5f, Format.Time)]
+    public static Number DisguiseDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number MeasureCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number MeasureCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool DisgCooldownsLinked { get; set; } = false;
+    [ToggleOption]
+    public static bool DisgCooldownsLinked = false;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static DisguiserTargets DisguiseTarget { get; set; } = DisguiserTargets.Everyone;
+    [StringOption<DisguiserTargets>]
+    public static DisguiserTargets DisguiseTarget = DisguiserTargets.Everyone;
 
     public CustomButton DisguiseButton { get; set; }
     public CustomButton MeasureButton { get; set; }
@@ -36,7 +36,7 @@ public class Disguiser : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderDecep;
+        Alignment = Alignment.Deception;
         MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(MeasureCd), "MEASURE",
             (PlayerBodyExclusion)Exception2);
         DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,

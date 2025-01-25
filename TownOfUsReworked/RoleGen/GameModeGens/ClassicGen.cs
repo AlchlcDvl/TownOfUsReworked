@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public class ClassicCustomGen : BaseClassicCustomAllAnyGen
+public class ClassicGen : BaseClassicAllAnyGen
 {
     public override void InitCrewList()
     {

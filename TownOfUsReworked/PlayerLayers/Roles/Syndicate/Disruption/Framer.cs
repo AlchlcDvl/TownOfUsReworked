@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Framer : Syndicate, IFramer
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number FrameCd { get; set; } = new(25f);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number FrameCd = 25f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number ChaosDriveFrameRadius { get; set; } = new(1.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number ChaosDriveFrameRadius = 1.5f;
 
     public CustomButton FrameButton { get; set; }
     public CustomButton RadialFrameButton { get; set; }
@@ -22,7 +22,7 @@ public class Framer : Syndicate, IFramer
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateDisrup;
+        Alignment = Alignment.Disruption;
         Framed.Clear();
         FrameButton ??= new(this, new SpriteName("Frame"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
             (PlayerBodyExclusion)Exception1);

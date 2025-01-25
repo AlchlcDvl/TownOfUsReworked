@@ -317,7 +317,7 @@ public static class RPCHandling
                     }
                     case ActionsRPC.Convert:
                     {
-                        Convert(reader.ReadByte(), reader.ReadByte(), reader.ReadEnum<SubFaction>(), reader.ReadBoolean());
+                        ConvertPlayer(reader.ReadByte(), reader.ReadByte(), reader.ReadEnum<SubFaction>(), reader.ReadBoolean());
                         break;
                     }
                     case ActionsRPC.BypassKill:

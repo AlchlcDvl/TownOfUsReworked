@@ -1,35 +1,34 @@
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Bomber : Syndicate
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number BombCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number BombCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number DetonateCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number DetonateCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BombCooldownsLinked { get; set; } = false;
+    [ToggleOption]
+    public static bool BombCooldownsLinked = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BombsRemoveOnNewRound { get; set; } = false;
+    [ToggleOption]
+    public static bool BombsRemoveOnNewRound = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BombsDetonateOnMeetingStart { get; set; } = false;
+    [ToggleOption]
+    public static bool BombsDetonateOnMeetingStart = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ShowBomb { get; set; } = true;
+    [ToggleOption]
+    public static bool ShowBomb = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BombAlert { get; set; } = true;
+    [ToggleOption]
+    public static bool BombAlert = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number BombRange { get; set; } = new(1.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number BombRange = 1.5f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number ChaosDriveBombRange { get; set; } = new(0.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number ChaosDriveBombRange = 0.5f;
 
     public CustomButton BombButton { get; set; }
     public CustomButton DetonateButton { get; set; }
@@ -43,7 +42,7 @@ public class Bomber : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateKill;
+        Alignment = Alignment.Killing;
         Bombs.Clear();
         BombButton ??= new(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Place, new Cooldown(BombCd), "PLACE BOMB",
             (ConditionFunc)Condition);

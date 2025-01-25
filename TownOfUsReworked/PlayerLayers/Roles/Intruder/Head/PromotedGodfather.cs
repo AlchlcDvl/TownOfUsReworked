@@ -5,7 +5,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderHead;
+        Alignment = Alignment.Head;
         TeleportPoint = Vector3.zero;
         Investigated.Clear();
         FlashedPlayers = [];
@@ -33,10 +33,10 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     {
         get
         {
-            if (!ClientOptions.CustomIntColors)
-                return CustomColorManager.Intruder;
-            else
+            if (ClientOptions.CustomIntColors)
                 return FormerRole?.Color ?? CustomColorManager.Godfather;
+            else
+                return CustomColorManager.Intruder;
         }
     }
 

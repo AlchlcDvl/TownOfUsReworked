@@ -29,7 +29,7 @@ public static class RecomputeTaskCounts
                     most = pc;
             }
 
-            if (most.TryGetLayer<Role>(out var mostRole2))
+            if (most.TryGetLayer<Runner>(out var mostRole2))
                 __instance.CompletedTasks = mostRole2.TasksCompleted;
 
             __instance.TotalTasks = TaskSettings.ShortTasks + TaskSettings.CommonTasks + TaskSettings.LongTasks;

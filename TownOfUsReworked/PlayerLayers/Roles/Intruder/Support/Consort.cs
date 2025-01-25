@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Consort : Intruder
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ConsortCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ConsortCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number ConsortDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number ConsortDur = 10;
 
     public CustomButton BlockButton { get; set; }
     public PlayerControl BlockTarget { get; set; }
@@ -23,7 +23,7 @@ public class Consort : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderSupport;
+        Alignment = Alignment.Support;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
         BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,

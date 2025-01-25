@@ -57,7 +57,7 @@ public static class OnGameEndPatches
             }
             else if (WinState == WinLose.AllNKsWin)
             {
-                foreach (var role2 in Role.GetRoles(Alignment.NeutralKill))
+                foreach (var role2 in PlayerLayer.GetLayers<Role>().Where(x => x.Faction == Faction.Neutral && x.Alignment == Alignment.Killing))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         Winners[role2.PlayerName] = role2.Player.GetLayers();
@@ -169,9 +169,9 @@ public static class OnGameEndPatches
                         Winners[role2.PlayerName] = role2.Player.GetLayers();
                 }
             }
-            else if (WinState == WinLose.SectWins)
+            else if (WinState == WinLose.CultWins)
             {
-                foreach (var role2 in Role.GetRoles(SubFaction.Sect))
+                foreach (var role2 in Role.GetRoles(SubFaction.Cult))
                 {
                     if (!role2.Disconnected)
                         Winners[role2.PlayerName] = role2.Player.GetLayers();
@@ -187,13 +187,13 @@ public static class OnGameEndPatches
             }
             else if (WinState == WinLose.ApocalypseWins)
             {
-                foreach (var role2 in Role.GetRoles(Alignment.NeutralApoc))
+                foreach (var role2 in Role.GetRoles(Alignment.Apocalypse))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         Winners[role2.PlayerName] = role2.Player.GetLayers();
                 }
 
-                foreach (var role2 in Role.GetRoles(Alignment.NeutralHarb))
+                foreach (var role2 in Role.GetRoles(Alignment.Harbinger))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         Winners[role2.PlayerName] = role2.Player.GetLayers();
@@ -530,7 +530,7 @@ public static class OnGameEndPatches
                     WinLose.UndeadWins => ("The Undead Win", "IntruderWin", CustomColorManager.Undead),
                     WinLose.CabalWins => ("The Cabal Wins", "IntruderWin", CustomColorManager.Cabal),
                     WinLose.ReanimatedWins => ("The Reanimated Win", "IntruderWin", CustomColorManager.Reanimated),
-                    WinLose.SectWins => ("The Sect Wins", "IntruderWin", CustomColorManager.Sect),
+                    WinLose.CultWins => ("The Cult Wins", "IntruderWin", CustomColorManager.Cult),
                     WinLose.AllNKsWin => ("Neutral Killers Win", "IntruderWin", CustomColorManager.Intruder),
                     WinLose.ApocalypseWins => ("The Apocalypse Is Neigh", "IntruderWin", CustomColorManager.Apocalypse),
                     WinLose.ArsonistWins => ("Arsonist Wins", "IntruderWin", CustomColorManager.Arsonist),
@@ -702,7 +702,7 @@ public static class OnGameEndPatches
             summary += $"{role.ColorString}{role.Name}</color>";
             cache += role.Name;
 
-            if (role.SubFaction != SubFaction.None && !player.Is(Alignment.NeutralNeo))
+            if (role.SubFaction != SubFaction.None && !player.Is(Alignment.Neophyte))
             {
                 summary += $" {role.SubFactionColorString}{role.SubFactionSymbol}</color>";
                 cache += $" {role.SubFactionSymbol}";

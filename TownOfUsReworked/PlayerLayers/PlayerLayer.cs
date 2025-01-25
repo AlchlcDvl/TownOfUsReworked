@@ -122,6 +122,10 @@ public abstract class PlayerLayer : IPlayerLayer
 
     public virtual void CheckWin() {}
 
+    // public virtual void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
+
+    // public virtual void UpdatePlayerName(LayerHandler playerHandler, bool deadSeeEverything, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
+
     public void GameEnd()
     {
         if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Ignore || WinState != WinLose.None)

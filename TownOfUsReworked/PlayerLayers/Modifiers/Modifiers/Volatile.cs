@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Volatile : Modifier
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 30f, 1f, Format.Time)]
-    public static Number VolatileInterval { get; set; } = new(15);
+    [NumberOption(10f, 30f, 1f, Format.Time)]
+    public static Number VolatileInterval = 15;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool VolatileKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool VolatileKnows = true;
 
     private float _time;
     private bool Exposed { get; set; }

@@ -3,26 +3,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Vigilante : Crew
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool MisfireKillsInno { get; set; } = true;
+    [ToggleOption]
+    public static bool MisfireKillsInno = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool VigiKillAgain { get; set; } = true;
+    [ToggleOption]
+    public static bool VigiKillAgain = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RoundOneNoShot { get; set; } = true;
+    [ToggleOption]
+    public static bool RoundOneNoShot = true;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static VigiOptions HowDoesVigilanteDie { get; set; } = VigiOptions.Immediate;
+    [StringOption<VigiOptions>]
+    public static VigiOptions HowDoesVigilanteDie = VigiOptions.Immediate;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static VigiNotif HowIsVigilanteNotified { get; set; } = VigiNotif.Never;
+    [StringOption<VigiNotif>]
+    public static VigiNotif HowIsVigilanteNotified = VigiNotif.Never;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxBullets { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxBullets = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ShootCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ShootCd = 25;
 
     public bool KilledInno { get; set; }
     public bool PreMeetingDie { get; set; }
@@ -40,7 +40,7 @@ public class Vigilante : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewKill;
+        Alignment = Alignment.Killing;
         ShootButton ??= new(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Shoot, new Cooldown(ShootCd), (PlayerBodyExclusion)Exception,
             MaxBullets, (UsableFunc)Usable);
         RoundOne = RoundOneNoShot;
@@ -69,10 +69,9 @@ public class Vigilante : Crew
 
     public void Shoot(PlayerControl target)
     {
-        var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or Alignment.NeutralPros or Alignment.NeutralHarb or
-            Alignment.NeutralApoc || target.Is(Faction.Syndicate) || target.Is<Troll>() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.IsFramed() ||
-            (target.Is(Alignment.NeutralEvil) && NeutralEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.IsFramed() || (target.Is(Alignment.NeutralBen) &&
-            NeutralBenignSettings.VigilanteKillsBenigns);
+        var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte or Alignment.Harbinger or Alignment.Apocalypse ||
+            target.Is(Faction.Syndicate) || target.Is<Troll>() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.IsFramed() || (target.Is(Alignment.Evil) &&
+            NeutralEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.IsFramed() || (target.Is(Alignment.Benign) && NeutralBenignSettings.VigilanteKillsBenigns);
         var cooldown = Interact(Player, target, flag4);
 
         if (cooldown != CooldownType.Fail)

@@ -5,7 +5,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewSupport;
+        Alignment = Alignment.Support;
         BodyArrows.Clear();
         MediatedPlayers.Clear();
         Bugs.Clear();
@@ -524,35 +524,32 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
 
         var bodies = AllBodies();
 
-        if (Medium.DeadRevealed != DeadRevealed.Random)
+        if (Medium.DeadRevealed == DeadRevealed.Random)
+            MediatePlayer(playersDead.Random(), bodies);
+        else
         {
             if (Medium.DeadRevealed == DeadRevealed.Newest)
                 playersDead.Reverse();
 
             foreach (var dead in playersDead)
             {
-                if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
-                {
-                    MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
-                    MediatedPlayers.Add(dead.PlayerId);
-                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
-
-                    if (Medium.DeadRevealed != DeadRevealed.Everyone)
-                        break;
-                }
+                if (MediatePlayer(playersDead.Random(), bodies) && Medium.DeadRevealed != DeadRevealed.Everyone)
+                    break;
             }
         }
-        else
+    }
+
+    private bool MediatePlayer(DeadPlayer dead, IEnumerable<DeadBody> bodies)
+    {
+        if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
         {
-            var dead = playersDead.Random();
-
-            if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
-            {
-                MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
-                MediatedPlayers.Add(dead.PlayerId);
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
-            }
+            MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
+            MediatedPlayers.Add(dead.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
+            return true;
         }
+
+        return false;
     }
 
     public bool MedUsable() => IsMed;
@@ -771,7 +768,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash((!target.Is(SubFaction) && SubFaction != SubFaction.None && !target.Is(Alignment.NeutralNeo)) || target.IsFramed() ? UColor.red : UColor.green);
+            Flash((!target.Is(SubFaction) && SubFaction != SubFaction.None && !target.Is(Alignment.Neophyte)) || target.IsFramed() ? UColor.red : UColor.green);
 
         RevealButton.StartCooldown(cooldown);
     }
@@ -858,8 +855,12 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
 
     public bool Click(PlayerControl player, out bool shouldClose)
     {
-        var cooldown = Interact(Player, player);
         shouldClose = false;
+
+        if (player.IsMoving())
+            return false;
+
+        var cooldown = Interact(Player, player);
 
         if (cooldown != CooldownType.Fail)
             return true;

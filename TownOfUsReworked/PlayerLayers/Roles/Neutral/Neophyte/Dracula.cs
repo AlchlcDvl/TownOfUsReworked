@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Dracula : Neophyte
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number BiteCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number BiteCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool DracVent { get; set; } = false;
+    [ToggleOption]
+    public static bool DracVent = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 14, 1)]
-    public static Number AliveVampCount { get; set; } = new(3);
+    [NumberOption(1, 14, 1)]
+    public static Number AliveVampCount = 3;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool UndeadVent { get; set; } = false;
+    [ToggleOption]
+    public static bool UndeadVent = false;
 
     public CustomButton BiteButton { get; set; }
     public bool HasConverted { get; set; }

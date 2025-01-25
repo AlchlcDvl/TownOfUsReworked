@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Bastion : Crew, IVentBomber
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxBombs { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxBombs = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number BastionCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number BastionCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BombRemovedOnKill { get; set; } = true;
+    [ToggleOption]
+    public static bool BombRemovedOnKill = true;
 
     public CustomButton BombButton { get; set; }
     public List<int> BombedIDs { get; } = [];
@@ -24,7 +24,7 @@ public class Bastion : Crew, IVentBomber
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewKill;
+        Alignment = Alignment.Killing;
         BombedIDs.Clear();
         BombButton ??= new(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClickVent)Bomb, new Cooldown(BastionCd), MaxBombs,
             (VentExclusion)Exception);

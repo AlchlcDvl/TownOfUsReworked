@@ -3,23 +3,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Coroner : Crew, IExaminer
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0f, 2f, 0.05f, Format.Time)]
-    public static Number CoronerArrowDur { get; set; } = new(0.1f);
+    [NumberOption(0f, 2f, 0.05f, Format.Time)]
+    public static Number CoronerArrowDur = 0.1f;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CoronerReportRole { get; set; } = false;
+    [ToggleOption]
+    public static bool CoronerReportRole = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CoronerReportName { get; set; } = false;
+    [ToggleOption]
+    public static bool CoronerReportName = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 15f, 0.5f, Format.Time)]
-    public static Number CoronerKillerNameTime { get; set; } = new(1);
+    [NumberOption(0.5f, 15f, 0.5f, Format.Time)]
+    public static Number CoronerKillerNameTime = 1;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number CompareCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number CompareCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number AutopsyCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number AutopsyCd = 25;
 
     public CustomButton CompareButton { get; set; }
     public CustomButton AutopsyButton { get; set; }
@@ -37,7 +37,7 @@ public class Coroner : Crew, IExaminer
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewInvest;
+        Alignment = Alignment.Investigative;
         BodyArrows.Clear();
         Reported.Clear();
         ReferenceBodies.Clear();

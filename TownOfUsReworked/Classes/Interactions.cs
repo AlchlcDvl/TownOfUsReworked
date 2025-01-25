@@ -31,7 +31,7 @@ public static class Interactions
         if (!PlayerLayer.GetLayers<Pestilence>().Any())
             return;
 
-        var targetId = target.Is(Alignment.NeutralApoc) || target.Is(Alignment.NeutralHarb) ? interacter.PlayerId : target.PlayerId;
+        var targetId = target.Is(Alignment.Apocalypse) || target.Is(Alignment.Harbinger) ? interacter.PlayerId : target.PlayerId;
 
         if (!Pestilence.Infected.ContainsKey(targetId))
             return;

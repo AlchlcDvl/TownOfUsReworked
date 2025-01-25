@@ -12,6 +12,7 @@ public class CustomMeeting
     public Vector3 Position { get; set; }
     public Dictionary<byte, bool> Actives { get; }
     public Dictionary<byte, GameObject> Buttons { get; }
+    public Dictionary<byte, SpriteRenderer> ButtonSprites { get; }
 
     public delegate void OnClick(PlayerVoteArea voteArea, MeetingHud __instance);
     public delegate bool Exemption(PlayerVoteArea voteArea);
@@ -41,6 +42,7 @@ public class CustomMeeting
         Position = position ?? BasePosition;
         Actives = [];
         Buttons = [];
+        ButtonSprites = [];
         AllCustomMeetings.Add(this);
     }
 
@@ -49,6 +51,7 @@ public class CustomMeeting
         Buttons.Keys.ForEach(HideSingle);
         Buttons.Clear();
         Actives.Clear();
+        ButtonSprites.Clear();
     }
 
     public void HideSingle(byte targetId)
@@ -61,6 +64,7 @@ public class CustomMeeting
         button.SetActive(false);
         button.Destroy();
         Buttons[targetId] = null;
+        ButtonSprites[targetId] = null;
     }
 
     private void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -70,6 +74,7 @@ public class CustomMeeting
         if (IsExempt(voteArea))
         {
             Buttons.Add(voteArea.TargetPlayerId, null);
+            ButtonSprites.Add(voteArea.TargetPlayerId, null);
             return;
         }
 
@@ -89,6 +94,7 @@ public class CustomMeeting
         collider.offset = Vector2.zero;
         targetBox.transform.GetChild(0).gameObject.Destroy();
         Buttons.Add(voteArea.TargetPlayerId, targetBox);
+        ButtonSprites.Add(voteArea.TargetPlayerId, renderer);
     }
 
     public void GenButtons(MeetingHud __instance, bool usable = true)
@@ -101,22 +107,22 @@ public class CustomMeeting
         Parallel();
         Actives.Clear();
         Buttons.Clear();
+        ButtonSprites.Clear();
         AllVoteAreas().ForEach(x => GenButton(x, __instance));
     }
 
     public void Update(MeetingHud __instance)
     {
-        if (Type == MeetingTypes.Toggle)
-        {
-            foreach (var pair in Buttons)
-            {
-                if (!pair.Value)
-                    continue;
+        if (Type != MeetingTypes.Toggle)
+            return;
 
-                var sprite = pair.Value.GetComponent<SpriteRenderer>();
-                sprite.sprite = GetSprite(Actives[pair.Key] ? ActiveSprite : DisabledSprite);
-                sprite.color = Actives[pair.Key] ? UColor.green : UColor.white;
-            }
+        foreach (var pair in ButtonSprites)
+        {
+            if (!pair.Value)
+                continue;
+
+            pair.Value.sprite = GetSprite(Actives[pair.Key] ? ActiveSprite : DisabledSprite);
+            pair.Value.color = Actives[pair.Key] ? UColor.green : UColor.white;
         }
     }
 

@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Shapeshifter : Syndicate
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ShapeshiftCd { get; set; } = new(25f);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ShapeshiftCd = 25f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number ShapeshiftDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number ShapeshiftDur = 10;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ShapeshiftMates { get; set; } = false;
+    [ToggleOption]
+    public static bool ShapeshiftMates = false;
 
     public CustomButton ShapeshiftButton { get; set; }
     public PlayerControl ShapeshiftPlayer1 { get; set; }
@@ -26,7 +26,7 @@ public class Shapeshifter : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicateDisrup;
+        Alignment = Alignment.Disruption;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Exception1);

@@ -11,7 +11,7 @@ public class Runner : GameModeRole
     {
         base.Init();
         Objectives = () => "- Finish your tasks before the others";
-        Alignment = Alignment.GameModeTaskRace;
+        Alignment = Alignment.TaskRace;
     }
 
     public override void UpdateHud(HudManager __instance)

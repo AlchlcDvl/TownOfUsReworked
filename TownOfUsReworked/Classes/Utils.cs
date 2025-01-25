@@ -306,7 +306,11 @@ public static class Utils
 
     public static Vent VentById(int id) => AllVents().Find(x => x.Id == id);
 
-    public static Vector2 GetSize() => Vector2.Scale(AllVents()[0].GetComponent<BoxCollider2D>().size, AllVents()[0].transform.localScale) * 0.75f;
+    public static Vector2 GetSize()
+    {
+        var first = AllVents().First();
+        return Vector2.Scale(first.GetComponent<BoxCollider2D>().size, first.transform.localScale) * 0.75f;
+    }
 
     public static double GetDistance(PlayerControl player, PlayerControl refplayer)
     {
@@ -662,8 +666,8 @@ public static class Utils
         var targets = AllPlayers().Where(player => !player.HasDied() && !UninteractiblePlayers.ContainsKey(player.PlayerId) && !player.inVent);
         var coordinates = new Dictionary<byte, Vector2>();
         var allLocations = new List<Vector2>();
-        allLocations.AddRanges(targets.Select(x => (Vector2)x.transform.position), AllVents().Select(x => (Vector2)x.transform.position), AllBodies().Select(x =>
-            (Vector2)x.transform.position));
+        allLocations.AddRanges(targets.Select(x => new Vector2(x.GetTruePosition().x, x.GetTruePosition().y + 0.3636f)), AllVents().Select(x => (Vector2)x.transform.position),
+            AllBodies().Select(x => x.TruePosition));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
@@ -776,7 +780,7 @@ public static class Utils
         allVents ??= AllMapVents();
 
         if (float.IsNaN(maxDistance))
-            maxDistance = AllMapVents()[0].UsableDistance;
+            maxDistance = AllMapVents().First().UsableDistance;
 
         if (predicate != null)
             allVents = allVents.Where(predicate);
@@ -1434,6 +1438,15 @@ public static class Utils
 
     public static void AnimatePortal(PlayerControl player, float duration)
     {
+        if (!player.HasDied())
+        {
+            player.moveable = false;
+            player.NetTransform.Halt();
+            player.MyPhysics.ResetMoveState();
+            player.MyPhysics.ResetAnimState();
+            player.MyPhysics.StopAllCoroutines();
+        }
+
         var go = new GameObject($"PortalAnim{player.name}") { layer = LayerMask.NameToLayer("Players") };
         var anim = go.AddComponent<SpriteRenderer>();
         anim.sprite = PortalAnimation[0];

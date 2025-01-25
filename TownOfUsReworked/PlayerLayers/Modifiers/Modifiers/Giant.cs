@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Giant : Modifier
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 1f, 0.05f, Format.Multiplier)]
-    public static Number GiantSpeed { get; set; } = new(0.75f);
+    [NumberOption(0.5f, 1f, 0.05f, Format.Multiplier)]
+    public static Number GiantSpeed = 0.75f;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 3f, 0.025f, Format.Multiplier)]
-    public static Number GiantScale { get; set; } = new(1.5f);
+    [NumberOption(1f, 3f, 0.025f, Format.Multiplier)]
+    public static Number GiantScale = 1.5f;
 
-    private static bool Chonk => GiantScale.Value > 1;
-    private static bool Snail => GiantSpeed.Value < 1;
+    private static bool Chonk => GiantScale > 1;
+    private static bool Snail => GiantSpeed < 1;
     private static bool Useless => !Chonk && !Snail;
     private static string Text => Chonk && Snail ? "big and slow" : (Chonk ? "big" : (Snail ? "slow" : ""));
 

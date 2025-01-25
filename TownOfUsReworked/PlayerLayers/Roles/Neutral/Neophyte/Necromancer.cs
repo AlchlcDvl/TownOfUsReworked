@@ -3,50 +3,50 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Necromancer : Neophyte
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number NecroManaCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number NecroManaCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number MaxNecroMana { get; set; } = new(5);
+    [NumberOption(0, 15, 1)]
+    public static Number MaxNecroMana = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number NecroManaGainedPerBody { get; set; } = new(1);
+    [NumberOption(0, 15, 1)]
+    public static Number NecroManaGainedPerBody = 1;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number PassiveNecroManaGain { get; set; } = new(0);
+    [NumberOption(0, 15, 1)]
+    public static Number PassiveNecroManaGain = 0;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1)]
-    public static Number NecroManaCost { get; set; } = new(2);
+    [NumberOption(0, 15, 1)]
+    public static Number NecroManaCost = 2;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ResurrectCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ResurrectCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number SacrificeCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number SacrificeCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SacrificeCdIncreases { get; set; } = true;
+    [ToggleOption]
+    public static bool SacrificeCdIncreases = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 2.5f, 30f, 2.5f, Format.Time)]
-    public static Number SacrificeCdIncrease { get; set; } = new(5);
+    [NumberOption(2.5f, 30f, 2.5f, Format.Time)]
+    public static Number SacrificeCdIncrease = 5;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxSacrifices { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxSacrifices = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool NecroCooldownsLinked { get; set; } = false;
+    [ToggleOption]
+    public static bool NecroCooldownsLinked = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool NecromancerTargetBody { get; set; } = false;
+    [ToggleOption]
+    public static bool NecromancerTargetBody = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 15f, 1f, Format.Time)]
-    public static Number ResurrectDur { get; set; } = new(10);
+    [NumberOption(1f, 15f, 1f, Format.Time)]
+    public static Number ResurrectDur = 10;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool NecroVent { get; set; } = false;
+    [ToggleOption]
+    public static bool NecroVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ResurrectVent { get; set; } = false;
+    [ToggleOption]
+    public static bool ResurrectVent = false;
 
     public byte ParentId { get; set; }
     public CustomButton ResurrectButton { get; set; }
@@ -88,7 +88,7 @@ public class Necromancer : Neophyte
         var targetRole = player.GetRole();
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
-        Convert(player.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
+        ConvertPlayer(player.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
         player.Revive();
 
         if (Lovers.BothLoversDie && player.TryGetLayer<Lovers>(out var lovers))
@@ -97,7 +97,7 @@ public class Necromancer : Neophyte
             var loverRole = lover.GetRole();
             loverRole.DeathReason = DeathReasonEnum.Revived;
             loverRole.KilledBy = " By " + PlayerName;
-            Convert(lover.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
+            ConvertPlayer(lover.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
             lover.Revive();
         }
     }

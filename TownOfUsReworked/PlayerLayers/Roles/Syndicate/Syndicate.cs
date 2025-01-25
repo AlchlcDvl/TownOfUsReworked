@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Syndicate : Role
 {
     public CustomButton KillButton { get; set; }
-    public string CommonAbilities => "<#008000FF>" + (Type is not LayerEnum.Anarchist and not LayerEnum.Sidekick && Alignment != Alignment.SyndicateKill && HoldsDrive ? ("- You can "
+    public string CommonAbilities => "<#008000FF>" + (Type is not LayerEnum.Anarchist and not LayerEnum.Sidekick && Alignment != Alignment.Killing && HoldsDrive ? ("- You can "
         + "kill players directly") : "- You can kill") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
     public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive) || GetLayers<PromotedRebel>().Any(x => x.HoldsDrive && IsPromoted);
     public bool IsPromoted;
@@ -19,14 +19,17 @@ public abstract class Syndicate : Role
         get => _driveHolder;
         set
         {
+            if (_driveHolder && _driveHolder.TryGetLayer<Syndicate>(out var syndicate1))
+            {
+                syndicate1.OnDriveLost();
+
+                if (_driveHolder.AmOwner)
+                    syndicate1.OnDriveLostLocal();
+            }
+
             _driveHolder = value;
 
-            if (!value)
-                return;
-
-            var syndicateRole = value.GetLayer<Syndicate>();
-
-            if (!syndicateRole)
+            if (!value || !value.TryGetComponent<Syndicate>(out var syndicateRole))
                 return;
 
             syndicateRole.OnDriveReceived();
@@ -65,10 +68,14 @@ public abstract class Syndicate : Role
 
     public virtual void OnDriveReceived() {}
 
+    public virtual void OnDriveLostLocal() {}
+
+    public virtual void OnDriveLost() {}
+
     public void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
     public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
-    public bool KillUsable() => (HoldsDrive && Alignment != Alignment.SyndicateKill) || Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel;
+    public bool KillUsable() => (HoldsDrive && Alignment != Alignment.Killing) || Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel;
 }

@@ -1,23 +1,22 @@
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Teleporter : Intruder, ITeleporter
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number TeleportCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number TeleportCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number TeleMarkCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number TeleMarkCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TeleCooldownsLinked { get; set; } = false;
+    [NumberOption(1f, 20f, 1f, Format.Time)]
+    public static Number TeleportDur = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TeleVent { get; set; } = false;
+    [ToggleOption]
+    public static bool TeleCooldownsLinked = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 1f, 20f, 1f, Format.Time)]
-    public static Number TeleportDur { get; set; } = new(5);
+    [ToggleOption]
+    public static bool TeleVent = false;
 
     public CustomButton TeleportButton { get; set; }
     public CustomButton MarkButton { get; set; }
@@ -32,7 +31,7 @@ public class Teleporter : Intruder, ITeleporter
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderSupport;
+        Alignment = Alignment.Support;
         TeleportPoint = Vector2.zero;
         MarkButton ??= new(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mark, new Cooldown(TeleMarkCd), "MARK POSITION",
             (ConditionFunc)Condition1);
@@ -92,15 +91,6 @@ public class Teleporter : Intruder, ITeleporter
         }
 
         teleporter.Teleporting = true;
-
-        if (!player.HasDied())
-        {
-            player.moveable = false;
-            player.NetTransform.Halt();
-            player.MyPhysics.ResetMoveState();
-            player.MyPhysics.ResetAnimState();
-            player.MyPhysics.StopAllCoroutines();
-        }
 
         if (player.AmOwner)
             Flash(teleporter.Color, TeleportDur);

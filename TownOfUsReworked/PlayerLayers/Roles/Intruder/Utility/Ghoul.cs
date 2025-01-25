@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Ghoul : Intruder, IGhosty
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number GhoulMarkCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number GhoulMarkCd = 25;
 
     public CustomButton MarkButton { get; set; }
     public bool Caught { get; set; }
@@ -20,7 +20,7 @@ public class Ghoul : Intruder, IGhosty
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderUtil;
+        Alignment = Alignment.Utility;
         MarkedPlayer = null;
         MarkButton ??= new(this, new SpriteName("GhoulMark"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Mark, new Cooldown(GhoulMarkCd), "MARK", new PostDeath(true),
             (PlayerBodyExclusion)Exception1, (UsableFunc)Usable);

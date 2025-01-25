@@ -46,7 +46,7 @@ public static class ShowRolePatch
         if (!ability.Hidden)
             status += $" {ability.ColorString}{ability.Name}</color>";
 
-        if (role.IsRecruit && role.Alignment != Alignment.NeutralNeo)
+        if (role.IsRecruit && role.Alignment != Alignment.Neophyte)
             status += " <#575657FF>Recruited</color>";
 
         if (status.Length != 0)

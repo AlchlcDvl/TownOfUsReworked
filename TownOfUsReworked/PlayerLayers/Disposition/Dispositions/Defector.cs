@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Defector : Disposition
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool DefectorKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool DefectorKnows = true;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static DefectorFaction DefectorFaction { get; set; } = DefectorFaction.Random;
+    [StringOption<DefectorFaction>]
+    public static DefectorFaction DefectorFaction = DefectorFaction.Random;
 
     public bool Turned { get; set; }
     public Faction Side { get; set; }

@@ -9,6 +9,6 @@ public class Impostor : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderUtil;
+        Alignment = Alignment.Utility;
     }
 }

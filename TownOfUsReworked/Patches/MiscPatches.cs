@@ -425,26 +425,27 @@ public static class ShowCustomAnim
             // SIR YES SIR o7
             // - AD
 
-            if (_selfDeath)
-                return _selfDeath;
+            if (!_selfDeath)
+            {
+                var parent = new GameObject("SelfKillObject").DontUnload().DontDestroy().transform;
+                parent.gameObject.SetActive(false);
 
-            var parent = new GameObject("SelfKillObject").DontUnload().DontDestroy().transform;
-            parent.gameObject.SetActive(false);
-            _selfDeath = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
+                _selfDeath = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
 
-            _selfDeath.killerParts.gameObject.SetActive(false);
-            _selfDeath.killerParts = null;
-            _selfDeath.transform.Find("killstabknife").gameObject.SetActive(false);
-            _selfDeath.transform.Find("killstabknifehand").gameObject.SetActive(false);
+                _selfDeath.killerParts.gameObject.SetActive(false);
+                _selfDeath.killerParts = null;
+                _selfDeath.transform.Find("killstabknife").gameObject.SetActive(false);
+                _selfDeath.transform.Find("killstabknifehand").gameObject.SetActive(false);
 
-            _selfDeath.victimParts.transform.localPosition = new(-1.5f, 0, 0);
-            _selfDeath.KillType = (KillAnimType)10;
+                _selfDeath.victimParts.transform.localPosition = new(-1.5f, 0, 0);
+                _selfDeath.KillType = (KillAnimType)10;
 
-            _selfDeath.AddComponent<CustomKillAnimationPlayer>();
+                _selfDeath.AddComponent<CustomKillAnimationPlayer>();
 
-            var array = HUD().KillOverlay.KillAnims.ToList();
-            array.Add(_selfDeath);
-            HUD().KillOverlay.KillAnims = array.ToArray();
+                var array = HUD().KillOverlay.KillAnims.ToList();
+                array.Add(_selfDeath);
+                HUD().KillOverlay.KillAnims = array.ToArray();
+            }
 
             return _selfDeath;
         }
@@ -452,12 +453,12 @@ public static class ShowCustomAnim
 
     public static bool Prefix(KillOverlay __instance, NetworkedPlayerInfo killer, NetworkedPlayerInfo victim)
     {
-        var rend = __instance.flameParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
-
-        if (victim == killer || !GameModifiers.ShowKillerRoleColor)
-            rend.color = CustomPlayer.Local.GetRole().Color;
-        else
-            rend.color = killer.Object.GetRole().Color;
+        __instance.flameParent.transform.GetChild(0).GetComponent<SpriteRenderer>().color =
+        (
+            victim == killer || !GameModifiers.ShowKillerRoleColor
+                ? CustomPlayer.Local
+                : killer.Object
+        ).GetRole().Color;
 
         if (killer.PlayerId != victim.PlayerId || AprilFoolsMode.ShouldHorseAround() || AprilFoolsMode.ShouldLongAround() || IsSubmerged())
             return true;

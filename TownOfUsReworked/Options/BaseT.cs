@@ -1,11 +1,12 @@
 namespace TownOfUsReworked.Options;
 
-public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type, int priority = -1) : OptionAttribute(menu, type, priority)
+public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribute(type)
 {
     private static string LastChangedSetting = "";
 
     public T Value { get; set; }
     public T DefaultValue { get; set; }
+    public Type TargetType { get; } = typeof(T);
 
     public T Get() => Value;
 
@@ -15,20 +16,38 @@ public abstract class OptionAttribute<T>(MultiMenu menu, CustomOptionType type, 
         Value = DefaultValue = property.GetValue<T>(null);
     }
 
-    public override string ToString() => $"{ID}:{(Value is Number num ? $"{num:0.###}" : $"{Value}")}";
+    public override void SetField(FieldInfo field)
+    {
+        base.SetField(field);
+        Value = DefaultValue = field.GetValue<T>(null);
+    }
+
+    public override string ToString() => $"{ID}:{ValueString()}";
+
+    public virtual string ValueString() => $"{Value}";
+
+    public override void PostLoadSetup() {}
 
     public void Set(T value, bool rpc = true, bool notify = true)
     {
-        if (IsInGame() && !ClientOnly)
+        if (IsInGame() && !(ClientOnly || TownOfUsReworked.MCIActive))
             return;
 
-        Property?.SetValue(null, value);
-        Value = Property.GetValue<T>(null);
+        if (IsProperty)
+        {
+            Property.SetValue(null, value);
+            Value = Property.GetValue<T>(null);
+        }
+        else if (IsField)
+        {
+            Field.SetValue(null, value);
+            Value = Field.GetValue<T>(null);
+        }
+        else
+            Value = value;
 
         if (!CustomPlayer.Local)
             return;
-
-        // OnChanged(value);
 
         if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type is CustomOptionType.Header or CustomOptionType.Alignment))
             SendOptionRPC(this);

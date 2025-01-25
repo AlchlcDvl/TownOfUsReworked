@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Troll : Evil
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CanInteract { get; set; } = true;
+    [ToggleOption]
+    public static bool CanInteract = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number InteractCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number InteractCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TrollVent { get; set; } = false;
+    [ToggleOption]
+    public static bool TrollVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool TrollSwitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool TrollSwitchVent = false;
 
     public bool Killed => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public CustomButton InteractButton { get; set; }

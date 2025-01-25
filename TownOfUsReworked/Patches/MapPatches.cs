@@ -8,6 +8,9 @@ public static class MapPatches
 
     public static bool Prefix(AmongUsClient __instance, ref Il2CppSystem.Collections.IEnumerator __result)
     {
+        if (IsHnS())
+            return true;
+
         __result = CoStartGameFix(__instance).WrapToIl2Cpp();
         return false;
     }

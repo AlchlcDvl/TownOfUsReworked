@@ -3,20 +3,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Morphling : Intruder
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number MorphCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number MorphCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number MorphDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number MorphDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number SampleCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number SampleCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool MorphCooldownsLinked { get; set; } = false;
+    [ToggleOption]
+    public static bool MorphCooldownsLinked = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool MorphlingVent { get; set; } = false;
+    [ToggleOption]
+    public static bool MorphlingVent = false;
 
     public CustomButton MorphButton { get; set; }
     public CustomButton SampleButton { get; set; }
@@ -32,7 +32,7 @@ public class Morphling : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.IntruderDecep;
+        Alignment = Alignment.Deception;
         SampledPlayer = null;
         MorphedPlayer = null;
         SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE", (PlayerBodyExclusion)Exception1);

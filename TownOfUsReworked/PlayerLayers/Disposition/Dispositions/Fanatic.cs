@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Fanatic : Disposition
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool FanaticKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool FanaticKnows = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool FanaticColourSwap { get; set; } = false;
+    [ToggleOption]
+    public static bool FanaticColourSwap = false;
 
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }

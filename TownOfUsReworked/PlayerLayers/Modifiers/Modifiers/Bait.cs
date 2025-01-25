@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Bait : Modifier
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool BaitKnows { get; set; } = true;
+    [ToggleOption]
+    public static bool BaitKnows = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
-    public static Number BaitMinDelay { get; set; } = new(0);
+    [NumberOption(0f, 15f, 0.5f, Format.Time)]
+    public static Number BaitMinDelay = 0;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 0.5f, Format.Time)]
-    public static Number BaitMaxDelay { get; set; } = new(1);
+    [NumberOption(0f, 15f, 0.5f, Format.Time)]
+    public static Number BaitMaxDelay = 1;
 
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Bait : CustomColorManager.Modifier;
     public override LayerEnum Type => LayerEnum.Bait;

@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Dictator : Crew, IRevealer
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RoundOneNoDictReveal { get; set; } = false;
+    [ToggleOption]
+    public static bool RoundOneNoDictReveal = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool DictatorButton { get; set; } = true;
+    [ToggleOption]
+    public static bool DictatorButton = true;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 10, 1, zeroIsInf: true)]
-    public static Number MaxTribunals { get; set; } = new(2);
+    [NumberOption(0, 10, 1, zeroIsInf: true)]
+    public static Number MaxTribunals = 2;
 
     public bool RoundOne { get; set; }
     public bool Revealed { get; set; }
@@ -27,7 +27,7 @@ public class Dictator : Crew, IRevealer
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewSov;
+        Alignment = Alignment.Sovereign;
         RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable);
         DictMenu = new(Player, "DictActive", "DictDisabled", SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
@@ -111,4 +111,15 @@ public class Dictator : Crew, IRevealer
             }
         }
     }
+
+    // public override void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    // {
+    //     if (Revealed)
+    //     {
+    //         revealed = true;
+    //         name += $"\n{Name}";
+    //         color = Color;
+    //         removeFromConsig = true;
+    //     }
+    // }
 }

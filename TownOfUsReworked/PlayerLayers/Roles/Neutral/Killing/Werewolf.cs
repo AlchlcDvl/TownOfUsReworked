@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Werewolf : NKilling
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number MaulCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number MaulCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number MaulRadius { get; set; } = new(1.5f);
+    [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
+    public static Number MaulRadius = 1.5f;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool CanStillAttack { get; set; } = false;
+    [ToggleOption]
+    public static bool CanStillAttack = false;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static WerewolfVentOptions WerewolfVent { get; set; } = WerewolfVentOptions.Always;
+    [StringOption<WerewolfVentOptions>]
+    public static WerewolfVentOptions WerewolfVent = WerewolfVentOptions.Always;
 
     public bool CanMaul => Rounds is not (0 or 2) || CanStillAttack;
     public CustomButton MaulButton { get; set; }

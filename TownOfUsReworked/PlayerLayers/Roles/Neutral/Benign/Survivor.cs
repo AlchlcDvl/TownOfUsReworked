@@ -3,20 +3,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Survivor : Neutral
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number VestCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number VestCd = 25;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 5f, 30f, 1f, Format.Time)]
-    public static Number VestDur { get; set; } = new(10);
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number VestDur = 10;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0, 15, 1, zeroIsInf: true)]
-    public static Number MaxVests { get; set; } = new(5);
+    [NumberOption(0, 15, 1, zeroIsInf: true)]
+    public static Number MaxVests = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SurvVent { get; set; } = false;
+    [ToggleOption]
+    public static bool SurvVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool SurvSwitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool SurvSwitchVent = false;
 
     public CustomButton VestButton { get; set; }
 
@@ -29,7 +29,7 @@ public class Survivor : Neutral
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralBen;
+        Alignment = Alignment.Benign;
         Objectives = () => "- Live to the end of the game";
         VestButton ??= new(this, new SpriteName("Vest"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitVest, new Cooldown(VestCd), "VEST", new Duration(VestDur),
             MaxVests);

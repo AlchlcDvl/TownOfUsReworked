@@ -3,32 +3,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Executioner : Evil
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExecutionerCanPickTargets { get; set; } = false;
+    [ToggleOption]
+    public static bool ExecutionerCanPickTargets = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExecutionerButton { get; set; } = true;
+    [ToggleOption]
+    public static bool ExecutionerButton = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExeVent { get; set; } = false;
+    [ToggleOption]
+    public static bool ExeVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExeSwitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool ExeSwitchVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExeTargetKnows { get; set; } = false;
+    [ToggleOption]
+    public static bool ExeTargetKnows = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExeKnowsTargetRole { get; set; } = false;
+    [ToggleOption]
+    public static bool ExeKnowsTargetRole = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExeEjectScreen { get; set; } = false;
+    [ToggleOption]
+    public static bool ExeEjectScreen = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExeCanWinBeyondDeath { get; set; } = false;
+    [ToggleOption]
+    public static bool ExeCanWinBeyondDeath = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ExeToJest { get; set; } = true;
+    [ToggleOption]
+    public static bool ExeToJest = true;
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetVotedOut { get; set; }
@@ -111,9 +111,9 @@ public class Executioner : Evil
     }
 
     public bool Exception1(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player.IsLinkedTo(Player) ||
-        player.Is(Alignment.NeutralApoc);
+        player.Is(Alignment.Apocalypse);
 
-    public bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewSov) || (player.Is(SubFaction) && SubFaction !=
+    public bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.Sovereign) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
     public bool Usable1() => CanDoom;

@@ -5,7 +5,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.SyndicatePower;
+        Alignment = Alignment.Power;
         SpellCount = 0;
         Framed.Clear();
         StalkerArrows.Clear();
@@ -28,10 +28,10 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
     {
         get
         {
-            if (!ClientOptions.CustomSynColors)
-                return CustomColorManager.Syndicate;
-            else
+            if (ClientOptions.CustomSynColors)
                 return FormerRole?.Color ?? CustomColorManager.Rebel;
+            else
+                return CustomColorManager.Syndicate;
         }
     }
     public override LayerEnum Type => LayerEnum.PromotedRebel;
@@ -276,7 +276,18 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
 
                 break;
             }
-            case RebActionsRPC.Warp:
+            case RebActionsRPC.WarpAll:
+            {
+                var coords = new Dictionary<byte, Vector2>();
+                var num = reader.ReadByte();
+
+                while (num-- > 0)
+                    coords[reader.ReadByte()] = reader.ReadVector2();
+
+                Coroutines.Start(Warper.WarpAll(coords, this));
+                break;
+            }
+            case RebActionsRPC.WarpSingle:
             {
                 Coroutines.Start(Warper.WarpPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
                 break;
@@ -639,8 +650,12 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
 
     public bool WarpClick(PlayerControl player, out bool shouldClose)
     {
-        var cooldown = Interact(Player, player);
         shouldClose = false;
+
+        if (player.IsMoving())
+            return false;
+
+        var cooldown = Interact(Player, player);
 
         if (cooldown != CooldownType.Fail)
             return true;
@@ -655,14 +670,30 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
     {
         if (HoldsDrive)
         {
-            Warper.WarpAll();
+            var coords = GenerateWarpCoordinates();
+            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.WarpAll);
+
+            if (writer != null)
+            {
+                writer.Write((byte)coords.Count);
+
+                foreach (var (id, pos) in coords)
+                {
+                    writer.Write(id);
+                    writer.Write(pos);
+                }
+
+                writer.CloseRpc();
+            }
+
+            Coroutines.Start(Warper.WarpAll(coords, this));
             WarpButton.StartCooldown();
         }
         else if (WarpMenu.Selected.Count < 2)
             WarpMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.Warp, WarpMenu.Selected[0], WarpMenu.Selected[1]);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.WarpSingle, WarpMenu.Selected[0], WarpMenu.Selected[1]);
             Coroutines.Start(Warper.WarpPlayers(PlayerById(WarpMenu.Selected[0]), PlayerById(WarpMenu.Selected[1]), this));
             WarpMenu.Selected.Clear();
             WarpButton.StartCooldown();

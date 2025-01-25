@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Phantom : Neutral, IGhosty
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 1, 10, 1)]
-    public static Number PhantomTasksRemaining { get; set; } = new(5);
+    [NumberOption(1, 10, 1)]
+    public static Number PhantomTasksRemaining = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool PhantomPlayersAlerted { get; set; } = false;
+    [ToggleOption]
+    public static bool PhantomPlayersAlerted = false;
 
     public bool Caught { get; set; }
     public bool Faded { get; set; }
@@ -21,7 +21,7 @@ public class Phantom : Neutral, IGhosty
     {
         base.Init();
         Objectives = () => "- Finish your tasks without getting clicked";
-        Alignment = Alignment.NeutralPros;
+        Alignment = Alignment.Proselyte;
     }
 
     public override void UponTaskComplete(uint taskId)

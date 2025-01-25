@@ -8,7 +8,7 @@ public abstract class Evil : Neutral
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralEvil;
+        Alignment = Alignment.Evil;
     }
 
     public override void CheckWin()

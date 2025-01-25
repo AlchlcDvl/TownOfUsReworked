@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false, int min = 1, int max = 15) : OptionAttribute<RoleOptionData>(MultiMenu.Layer, CustomOptionType.Layer)
+public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false, int min = 1, int max = 15) : OptionAttribute<RoleOptionData>(CustomOptionType.Layer)
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
@@ -63,11 +63,6 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         if (Diff == default)
             Diff = (Left - Right) / 2;
 
-        var unique = Unique.GetComponent<PassiveButton>();
-        unique.OverrideOnClickListeners(ToggleUnique);
-
-        var active = Active1.GetComponent<PassiveButton>();
-        active.OverrideOnClickListeners(ToggleActive);
 
         Cog = role.transform.GetChild(5).gameObject;
         Cog.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);
@@ -84,6 +79,9 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
             Active1.SetActive(false);
         }
 
+        var unique = Unique.GetComponent<PassiveButton>();
+        var active = Active1.GetComponent<PassiveButton>();
+
         if (!AmongUsClient.Instance.AmHost || (IsInGame() && !TownOfUsReworked.MCIActive))
         {
             role.CountMinusBtn.gameObject.SetActive(false);
@@ -93,6 +91,16 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
             unique.enabled = false;
             active.enabled = false;
+        }
+        else
+        {
+            role.CountPlusBtn.OverrideOnClickListeners(IncreaseCount);
+            role.CountMinusBtn.OverrideOnClickListeners(DecreaseCount);
+            role.ChancePlusBtn.OverrideOnClickListeners(IncreaseChance);
+            role.ChanceMinusBtn.OverrideOnClickListeners(DecreaseChance);
+
+            unique.OverrideOnClickListeners(ToggleUnique);
+            active.OverrideOnClickListeners(ToggleActive);
         }
 
         SavedMode = GameMode.None;
@@ -134,15 +142,15 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         SavedMode = GameMode.None;
     }
 
-    public int GetChance() => IsClassic() || IsCustom() || IsKilling() ? Get().Chance : 0;
+    public int GetChance() => IsClassic() ? Get().Chance : 0;
 
-    public int GetCount() => IsCustom() ? Get().Count : (IsRoleList() ? GetOptions<RoleListEntryAttribute>().Count(x => x.Get() == Layer && !x.IsBan) : 1);
+    public int GetCount() => IsClassic() ? Get().Count : (IsRoleList() ? GetOptions<ListEntryAttribute>().Count(x => x.Get().Equals(Layer) && !x.IsBan) : 1);
 
     public void IncreaseCount()
     {
         var val = Get();
         var chance = GetChance();
-        var max = IsCustom() ? Max : Min;
+        var max = IsClassic() ? Max : Min;
         var count = CycleInt(max, 0, GetCount(), true);
 
         if (chance == 0 && count > 0)
@@ -165,7 +173,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     {
         var val = Get();
         var chance = GetChance();
-        var max = IsCustom() ? Max : Min;
+        var max = IsClassic() ? Max : Min;
         var count = CycleInt(max, 0, GetCount(), false);
 
         if (chance == 0 && count > 0)
@@ -196,7 +204,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
             count = 0;
         }
         else if (count == 0 && chance > 0)
-            count = CachedCount == 0 || !IsCustom() ? Min : CachedCount;
+            count = CachedCount == 0 || !IsClassic() ? Min : CachedCount;
 
         val.Count = count;
         val.Chance = chance;
@@ -215,7 +223,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
             count = 0;
         }
         else if (count == 0 && chance > 0)
-            count = CachedCount == 0 || !IsCustom() ? Min : CachedCount;
+            count = CachedCount == 0 || !IsClassic() ? Min : CachedCount;
 
         val.Count = count;
         val.Chance = chance;
@@ -237,22 +245,18 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
             return;
 
         SavedMode = GameModeSettings.GameMode;
-        Divider.SetActive(SavedMode is GameMode.Custom or GameMode.AllAny);
+        Divider.SetActive(SavedMode is GameMode.Classic or GameMode.AllAny);
 
         if (!NoParts)
         {
-            Chance.SetActive(SavedMode is GameMode.Classic or GameMode.Custom or GameMode.KillingOnly);
-            Count.SetActive(SavedMode == GameMode.Custom);
+            Chance.SetActive(SavedMode is GameMode.Classic);
+            Count.SetActive(SavedMode == GameMode.Classic);
             Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
             Active1.SetActive(SavedMode == GameMode.AllAny);
 
             switch (SavedMode)
             {
                 case GameMode.Classic:
-                    Chance.transform.localPosition = Right + Diff;
-                    break;
-
-                case GameMode.Custom:
                     Chance.transform.localPosition = Right;
                     Count.transform.localPosition = Left;
                     break;
@@ -264,10 +268,6 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
                 case GameMode.RoleList:
                     Unique.transform.localPosition = Right + Diff + new Vector3(0.91f, 0f, 0f);
-                    break;
-
-                case GameMode.KillingOnly:
-                    Chance.transform.localPosition = Right + Diff;
                     break;
             }
         }
@@ -296,9 +296,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         var val = Get();
         return GameModeSettings.GameMode switch
         {
-            GameMode.Classic => $"{val.Chance}%",
-            GameMode.Custom => $"{val.Chance}% x{val.Count}",
-            GameMode.KillingOnly => $"{(val.Active ? "A" : "Ina")}ctive",
+            GameMode.Classic => $"{val.Chance}% x{val.Count}",
             GameMode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
             GameMode.RoleList => $"{(val.Unique ? "" : "Non-")}Unique",
             _ => "Invalid"
@@ -307,19 +305,21 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
     public override void PostLoadSetup()
     {
+        base.PostLoadSetup();
         Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
-        Property.SetValue(null, Value);
+        Property?.SetValue(null, Value);
+        Field?.SetValue(null, Value);
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name.Contains($"{Layer}"));
-        GroupHeader?.AddMenuIndex(6 + (int)Layer);
     }
 
     public void SetUpOptionsMenu()
     {
-        SettingsPatches.SettingsPage = 6 + (int)Layer;
+        SettingsPatches.SettingsPage = 4;
         SettingsPatches.CachedPage = 1;
         var scrollbar = GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
         SettingsPatches.ScrollerLocation = scrollbar.Inner.transform.localPosition;
         scrollbar.ScrollToTop();
+        SettingsPatches.SelectedSubOptions = GroupHeader;
         SettingsPatches.OnValueChanged();
     }
 
@@ -339,9 +339,9 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
         Button.gameObject.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);
 
-        view.chanceText.text = SavedMode == GameMode.Custom ? $"{data.Chance}%" : "";
-        view.settingText.text = SavedMode == GameMode.Custom ? $"x{data.Count}" : "";
-        CenterValue.text = SavedMode is GameMode.Classic or GameMode.KillingOnly ? $"{data.Chance}%" : "";
+        view.chanceText.text = SavedMode == GameMode.Classic ? $"{data.Chance}%" : "";
+        view.settingText.text = SavedMode == GameMode.Classic ? $"x{data.Count}" : "";
+        CenterValue.text = SavedMode == GameMode.Classic ? $"{data.Chance}%" : "";
 
         CenterCheck.SetActive(SavedMode == GameMode.RoleList && data.Unique);
         CenterCross.SetActive(SavedMode == GameMode.RoleList && !data.Unique);
@@ -363,25 +363,24 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
         if (!NoParts)
         {
-            LeftBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
-            RightBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Custom);
-            CenterBox.gameObject.SetActive(SavedMode is GameMode.Classic or GameMode.RoleList or GameMode.KillingOnly);
+            LeftBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
+            RightBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
+            CenterBox.gameObject.SetActive(SavedMode == GameMode.RoleList);
 
             CenterTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
-                GameMode.Classic or GameMode.KillingOnly => "Chance",
                 GameMode.RoleList => "Unique",
                 _ => ""
             }));
             view.chanceTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
-                GameMode.Custom => "Chance",
+                GameMode.Classic => "Chance",
                 GameMode.AllAny => "Unique",
                 _ => ""
             }));
             LeftTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
             {
-                GameMode.Custom => "Count",
+                GameMode.Classic => "Count",
                 GameMode.AllAny => "Active",
                 _ => ""
             }));
@@ -389,4 +388,10 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     }
 
     public override string SettingNotif() => $"<{HexCode}>{base.SettingNotif()}</color>";
+
+    public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadRoleOptionData(), false);
+
+    public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
+
+    public override void ReadValueString(string value) => Set(RoleOptionData.Parse(value), false);
 }

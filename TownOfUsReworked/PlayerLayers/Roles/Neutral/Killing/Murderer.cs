@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Murderer : NKilling
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number MurderCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number MurderCd = 25;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool MurdVent { get; set; } = false;
+    [ToggleOption]
+    public static bool MurdVent = false;
 
     public CustomButton MurderButton { get; set; }
 

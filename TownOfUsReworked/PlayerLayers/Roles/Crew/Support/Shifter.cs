@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Shifter : Crew
 {
-    [NumberOption(MultiMenu.LayerSubOptions, 10f, 60f, 2.5f, Format.Time)]
-    public static Number ShiftCd { get; set; } = new(25);
+    [NumberOption(10f, 60f, 2.5f, Format.Time)]
+    public static Number ShiftCd = 25;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static BecomeEnum ShiftedBecomes { get; set; } = BecomeEnum.Shifter;
+    [StringOption<BecomeEnum>]
+    public static BecomeEnum ShiftedBecomes = BecomeEnum.Shifter;
 
     public CustomButton ShiftButton { get; set; }
     public CustomPlayerMenu ShifterMenu { get; set; }
@@ -20,7 +20,7 @@ public class Shifter : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.CrewSupport;
+        Alignment = Alignment.Support;
         ShifterMenu = new(Player, ClickShift, Exception);
         ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)ShifterMenu.Open, new Cooldown(ShiftCd));
     }

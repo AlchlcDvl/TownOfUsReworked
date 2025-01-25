@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Linked : Disposition
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool LinkedChat { get; set; } = true;
+    [ToggleOption]
+    public static bool LinkedChat = true;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool LinkedRoles { get; set; } = true;
+    [ToggleOption]
+    public static bool LinkedRoles = true;
 
     public PlayerControl OtherLink { get; set; }
 

@@ -3,20 +3,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Amnesiac : Neutral
 {
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool RememberArrows { get; set; } = false;
+    [ToggleOption]
+    public static bool RememberArrows = false;
 
-    [NumberOption(MultiMenu.LayerSubOptions, 0f, 15f, 1f, Format.Time)]
-    public static Number RememberArrowDelay { get; set; } = new(5);
+    [NumberOption(0f, 15f, 1f, Format.Time)]
+    public static Number RememberArrowDelay = 5;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AmneVent { get; set; } = false;
+    [ToggleOption]
+    public static bool AmneVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AmneSwitchVent { get; set; } = false;
+    [ToggleOption]
+    public static bool AmneSwitchVent = false;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool AmneToThief { get; set; } = true;
+    [ToggleOption]
+    public static bool AmneToThief = true;
 
     public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
     public CustomButton RememberButton { get; set; }
@@ -30,7 +30,7 @@ public class Amnesiac : Neutral
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.NeutralBen;
+        Alignment = Alignment.Benign;
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows.Clear();
         RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");

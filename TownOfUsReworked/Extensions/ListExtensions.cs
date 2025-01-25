@@ -215,6 +215,8 @@ public static class ListExtensions
 
     public static bool ContainsAny(this string source, params string[] values) => values.Any(source.Contains);
 
+    public static bool IsAny(this string source, params string[] values) => values.Any(source.Equals);
+
     public static IEnumerable<T> GetRange<T>(this IEnumerable<T> source, int start, int count)
     {
         for (var i = start; i < start + count && i < source.Count(); i++)

@@ -3,14 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Medic : Crew, IShielder
 {
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static ShieldOptions ShowShielded { get; set; } = ShieldOptions.Medic;
+    [StringOption<ShieldOptions>]
+    public static ShieldOptions ShowShielded = ShieldOptions.Medic;
 
-    [StringOption(MultiMenu.LayerSubOptions)]
-    public static ShieldOptions WhoGetsNotification { get; set; } = ShieldOptions.Medic;
+    [StringOption<ShieldOptions>]
+    public static ShieldOptions WhoGetsNotification = ShieldOptions.Medic;
 
-    [ToggleOption(MultiMenu.LayerSubOptions)]
-    public static bool ShieldBreaks { get; set; } = true;
+    [ToggleOption]
+    public static bool ShieldBreaks = true;
 
     public PlayerControl ShieldedPlayer { get; set; }
     public bool ShieldBroken { get; set; }
@@ -26,7 +26,7 @@ public class Medic : Crew, IShielder
     {
         base.Init();
         ShieldedPlayer = null;
-        Alignment = Alignment.CrewProt;
+        Alignment = Alignment.Protective;
         ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);
     }
