@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Glitch : NKilling
+public class Glitch : NKilling, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MimicCd = 25;
@@ -27,6 +27,7 @@ public class Glitch : NKilling
     public PlayerControl HackTarget { get; set; }
     public PlayerControl MimicTarget { get; set; }
     public CustomPlayerMenu MimicMenu { get; set; }
+    public PlayerControl BlockTarget => HackTarget;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Glitch : FactionColor;
     public override LayerEnum Type => LayerEnum.Glitch;
@@ -44,27 +45,22 @@ public class Glitch : NKilling
         MimicMenu = new(Player, Click, Exception3);
         NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
             new Cooldown(NeutraliseCd));
-        HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EffectVoid)Hack, (EndFunc)EndHack,
-            new Duration(HackDur), (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK", (EffectStartVoid)HackStart);
+        HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EndFunc)EndHack, new Duration(HackDur),
+            (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK", (EffectStartVoid)HackStart);
         MimicButton ??= new(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
             new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic);
     }
 
     public void UnHack()
     {
-        HackTarget.GetLayers().ForEach(x => x.IsBlocked = false);
-        HackTarget.GetButtons().ForEach(x => x.BlockExposed = false);
-
         if (HackTarget.AmOwner)
-            Blocked.BlockExposed = false;
+            BlockExposed = false;
 
         HackTarget = null;
 
         if (Local)
             Play("UnHack");
     }
-
-    public void Hack() => HackTarget.GetLayers().ForEach(x => x.IsBlocked = !HackTarget.GetRole().RoleBlockImmune);
 
     public void HackStart()
     {

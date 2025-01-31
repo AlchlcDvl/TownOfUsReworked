@@ -15,8 +15,8 @@ public class GuardianAngel : Neutral
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxProtects = 5;
 
-    [StringOption<ProtectOptions>]
-    public static ProtectOptions ShowProtect = ProtectOptions.Protected;
+    [MultiSelectOption<ProtectOptions>(ProtectOptions.Nobody, ProtectOptions.Everyone)]
+    public static List<ProtectOptions> ShowProtect = [ ProtectOptions.Protected ];
 
     [ToggleOption]
     public static bool GATargetKnows = false;
@@ -78,7 +78,10 @@ public class GuardianAngel : Neutral
     public override List<PlayerControl> Team()
     {
         var team = base.Team();
-        team.Add(TargetPlayer);
+
+        if (TargetPlayer)
+            team.Add(TargetPlayer);
+
         return team;
     }
 
@@ -127,7 +130,7 @@ public class GuardianAngel : Neutral
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
             }
             else
-                RpcMurderPlayer(Player);
+                Player.RpcSuicide();
         }
     }
 

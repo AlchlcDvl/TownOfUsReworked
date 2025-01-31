@@ -12,7 +12,7 @@ public class Traitor : Disposition
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }
     public Faction Side { get; set; }
-    private bool Betray => ((Side == Faction.Intruder && LastImp()) || (Side == Faction.Syndicate && LastSyn())) && !Dead && Turned && !Betrayed;
+    private bool Betray => !Dead && !Turned && !Betrayed && Last(Side);
 
     public override UColor Color
     {
@@ -44,7 +44,7 @@ public class Traitor : Disposition
 
     public override void UpdatePlayer()
     {
-        if (Betray && Turned)
+        if (Betray)
             TurnBetrayer();
     }
 

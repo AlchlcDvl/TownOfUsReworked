@@ -410,7 +410,6 @@ public static class SettingsPatches
                 var center = UObject.Instantiate(text, quota);
                 center.name = "Center";
                 center.GetComponent<TextTranslatorTMP>().Destroy();
-                center.transform.localPosition = quota.GetChild(4).localPosition + ((quota.GetChild(1).localPosition - quota.GetChild(4).localPosition) / 2);
 
                 var newButton = UObject.Instantiate(LayersPrefab.CountMinusBtn, AlignmentPrefab.transform);
                 newButton.name = "Collapse";
@@ -858,7 +857,7 @@ public static class SettingsPatches
             if (SubLoaded)
             {
                 while (__instance.AllMapIcons.Count(x => x.Name == (MapNames)6) > 1)
-                    __instance.AllMapIcons.Remove(__instance.AllMapIcons.ToArray().Find(x => x.Name == (MapNames)6));
+                    __instance.AllMapIcons.Remove(__instance.AllMapIcons.Find(x => x.Name == (MapNames)6));
             }
 
             __instance.mapButtons.ForEach(x => x.gameObject.Destroy());
@@ -1300,6 +1299,7 @@ public static class SettingsPatches
                 centerBox.name = "Centre";
                 centerBox.localPosition = rightBox.localPosition + ((leftBox.localPosition - rightBox.localPosition) / 2);
                 centerBox.SetSiblingIndex(2);
+                centerBox.FindChild("Text_TMP").gameObject.Destroy();
 
                 prefabs.Add(LayerViewPrefab);
             }

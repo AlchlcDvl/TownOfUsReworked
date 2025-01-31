@@ -15,7 +15,7 @@ public static class BlockPatches
         var blocked = LocalNotBlocked();
 
         if (!blocked)
-            Blocked.BlockExposed = true;
+            BlockExposed = true;
 
         return blocked;
     }
@@ -35,7 +35,7 @@ public static class PerformVent
         var blocked = LocalNotBlocked();
 
         if (!blocked)
-            Blocked.BlockExposed = true;
+            BlockExposed = true;
 
         return blocked;
     }
@@ -66,7 +66,7 @@ public static class PerformSabotage
         var blocked = LocalNotBlocked();
 
         if (!blocked)
-            Blocked.BlockExposed = true;
+            BlockExposed = true;
 
         if (blocked && !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled())
             HUD().ToggleMapVisible(new() { Mode = MapOptions.Modes.Sabotage });
@@ -89,8 +89,6 @@ public static class Blocked
     private static GameObject SaboBlock;
     private static GameObject VentBlock;
     private static GameObject ReportBlock;
-
-    public static bool BlockExposed;
 
     public static void Postfix(HudManager __instance)
     {
@@ -117,7 +115,7 @@ public static class Blocked
             var pos = __instance.UseButton.transform.position;
             pos.z = 50f;
             UseBlock.transform.position = pos;
-            UseBlock.SetActive(BlockIsExposed() && __instance.UseButton.isActiveAndEnabled && BlockIsExposed());
+            UseBlock.SetActive(BlockExposed && __instance.UseButton.isActiveAndEnabled);
         }
 
         if (!PetBlock && __instance.PetButton.isActiveAndEnabled)
@@ -137,7 +135,7 @@ public static class Blocked
             var pos = __instance.PetButton.transform.position;
             pos.z = 50f;
             PetBlock.transform.position = pos;
-            PetBlock.SetActive(BlockIsExposed() && __instance.PetButton.isActiveAndEnabled);
+            PetBlock.SetActive(BlockExposed && __instance.PetButton.isActiveAndEnabled);
         }
 
         if (!SaboBlock && __instance.SabotageButton.isActiveAndEnabled)
@@ -157,7 +155,7 @@ public static class Blocked
             var pos = __instance.SabotageButton.transform.position;
             pos.z = 50f;
             SaboBlock.transform.position = pos;
-            SaboBlock.SetActive(BlockIsExposed() && __instance.SabotageButton.isActiveAndEnabled);
+            SaboBlock.SetActive(BlockExposed && __instance.SabotageButton.isActiveAndEnabled);
         }
 
         if (!VentBlock && __instance.ImpostorVentButton.isActiveAndEnabled)
@@ -177,7 +175,7 @@ public static class Blocked
             var pos = __instance.ImpostorVentButton.transform.position;
             pos.z = 50f;
             VentBlock.transform.position = pos;
-            VentBlock.SetActive(BlockIsExposed() && __instance.ImpostorVentButton.isActiveAndEnabled);
+            VentBlock.SetActive(BlockExposed && __instance.ImpostorVentButton.isActiveAndEnabled);
         }
 
         if (!ReportBlock && __instance.ReportButton.isActiveAndEnabled)
@@ -197,18 +195,18 @@ public static class Blocked
             var pos = __instance.ReportButton.transform.position;
             pos.z = 50f;
             ReportBlock.transform.position = pos;
-            ReportBlock.SetActive(BlockIsExposed() && __instance.ReportButton.isActiveAndEnabled);
+            ReportBlock.SetActive(BlockExposed && __instance.ReportButton.isActiveAndEnabled);
         }
 
         if (!IsHnS())
             __instance.KillButton.ToggleVisible(false);
 
-        if (!__instance.ImpostorVentButton.currentTarget || BlockIsExposed())
+        if (!__instance.ImpostorVentButton.currentTarget || BlockExposed)
             __instance.ImpostorVentButton.SetDisabled();
         else
             __instance.ImpostorVentButton.SetEnabled();
 
-        __instance.ImpostorVentButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "VENT";
+        __instance.ImpostorVentButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.ToggleVisible((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
         var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: Mathf.Min(GameSettings.ReportDistance, Ship().CalculateLightRadius(CustomPlayer.Local.Data)));
 
@@ -217,28 +215,28 @@ public static class Blocked
         else
             __instance.ReportButton.SetEnabled();
 
-        __instance.ReportButton.buttonLabelText.SetText(BlockIsExposed() ? "BLOCKED" : "REPORT");
+        __instance.ReportButton.buttonLabelText.SetText(BlockExposed ? "BLOCKED" : "REPORT");
 
-        if (CustomPlayer.Local.closest == null || BlockIsExposed())
+        if (CustomPlayer.Local.closest == null || BlockExposed)
             __instance.UseButton.SetDisabled();
         else
             __instance.UseButton.SetEnabled();
 
-        __instance.UseButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "USE";
+        __instance.UseButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "USE";
 
-        if (BlockIsExposed() || CustomPlayer.Local.CannotUse())
+        if (BlockExposed || CustomPlayer.Local.CannotUse())
             __instance.PetButton.SetDisabled();
         else
             __instance.PetButton.SetEnabled();
 
-        __instance.PetButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "PET";
+        __instance.PetButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "PET";
 
         if (CustomPlayer.Local.CannotUse() || !CustomPlayer.Local.CanSabotage())
             __instance.SabotageButton.SetDisabled();
         else
             __instance.SabotageButton.SetEnabled();
 
-        __instance.SabotageButton.buttonLabelText.text = BlockIsExposed() ? "BLOCKED" : "SABOTAGE";
+        __instance.SabotageButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "SABOTAGE";
         __instance.SabotageButton.ToggleVisible(CustomPlayer.Local.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
 
         if (!IsInGame() || IsLobby())
@@ -247,5 +245,8 @@ public static class Blocked
             __instance.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor());
         else
             __instance.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.Dead);
+
+        __instance.FullScreen.enabled = true;
+        __instance.FullScreen.gameObject.SetActive(true);
     }
 }

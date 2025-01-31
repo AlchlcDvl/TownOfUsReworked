@@ -79,7 +79,7 @@ public class Cryomaniac : NKilling
                         continue;
 
                     if (CanAttack(AttackVal, player2.GetDefenseValue()))
-                        RpcMurderPlayer(Player, player2, DeathReasonEnum.Frozen, false);
+                        Player.RpcMurderPlayer(player2, DeathReasonEnum.Frozen, false);
                 }
 
                 cryo.Doused.Clear();

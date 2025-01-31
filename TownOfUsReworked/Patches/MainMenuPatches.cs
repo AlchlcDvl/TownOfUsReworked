@@ -1,23 +1,8 @@
-using Assets.InnerNet;
-
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(MainMenuManager))]
 public static class MainMenuPatches
 {
-    private static AnnouncementPopUp PopUp;
-    private static readonly Announcement ModInfo = new()
-    {
-        Id = "tourewInfo",
-        Language = 0,
-        Number = 500,
-        Title = "Town Of Us Reworked Info",
-        ShortTitle = "Mod Info",
-        SubTitle = "",
-        PinState = true,
-        Date = "29.10.2024",
-        Text = $"<size=75%>{GetString("ModInfo")}</size>"
-    };
     public static GameObject Logo;
 
     [HarmonyPatch(nameof(MainMenuManager.Start))]
@@ -34,9 +19,7 @@ public static class MainMenuPatches
             Logo.transform.position = new(2f, 0f, 100f);
             var rend = Logo.AddComponent<SpriteRenderer>();
             rend.sprite = GetSprite("Banner");
-            var former = rend.materials.ToArray().ToList();
-            former.Add(UnityGet<Material>("GlitchedPlayer"));
-            rend.SetMaterialArray(former.ToArray());
+            rend.material = GetMaterial("GlitchedMaterial");
             Logo.transform.SetParent(rightPanel.transform);
         }
 
@@ -167,50 +150,20 @@ public static class MainMenuPatches
         ghObj.ControllerNav.selectOnDown = discObj;
         pos.y = __instance.myAccountButton.transform.localPosition.y;
 
-        var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
-        credObj.name = "ReworkedModInfo";
-        credObj.OverrideOnClickListeners(() =>
-        {
-            PopUp?.Destroy();
-            var template = UObject.FindObjectOfType<AnnouncementPopUp>(true);
-
-            if (!template)
-            {
-                Failure("Pop up was null");
-                return;
-            }
-
-            PopUp = UObject.Instantiate(template);
-            PopUp.gameObject.SetActive(true);
-
-            Coroutines.Start(PerformTimedAction(0.1f, p =>
-            {
-                if (p == 1)
-                {
-                    var backup = DataManager.Player.Announcements.allAnnouncements;
-                    DataManager.Player.Announcements.allAnnouncements = new();
-                    PopUp.Init(false);
-                    DataManager.Player.Announcements.SetAnnouncements(new[] { ModInfo });
-                    var copy = DataManager.Player.Announcements.allAnnouncements;
-                    PopUp.CreateAnnouncementList();
-                    PopUp.UpdateAnnouncementText(ModInfo.Number);
-                    PopUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
-                    DataManager.Player.Announcements.allAnnouncements = backup;
-                }
-            }));
-        });
-        credObj.transform.localPosition = pos;
-        credObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = credObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Info");
-        credObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-        __instance.mainButtons.Add(credObj);
-        __instance.myAccountButton.ControllerNav.selectOnRight = credObj;
-        credObj.ControllerNav.selectOnLeft = __instance.myAccountButton;
-        credObj.ControllerNav.selectOnUp = discObj;
-        discObj.ControllerNav.selectOnDown = credObj;
-        credObj.ControllerNav.selectOnDown = __instance.quitButton;
-        credObj.buttonText.text = "Reworked Info";
-
-        __instance.quitButton.ControllerNav.selectOnUp = credObj;
+        var blankObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
+        blankObj.name = "Blank";
+        blankObj.OverrideOnClickListeners(BlankVoid);
+        blankObj.transform.localPosition = pos;
+        blankObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().enabled = blankObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        blankObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+        blankObj.buttonText.text = "";
+        blankObj.activeSprites.Destroy();
+        blankObj.inactiveSprites = null;
+        __instance.myAccountButton.ControllerNav.selectOnRight = null;
+        blankObj.ControllerNav.selectOnLeft = __instance.myAccountButton;
+        blankObj.ControllerNav.selectOnUp = discObj;
+        discObj.ControllerNav.selectOnDown = __instance.quitButton;
+        __instance.quitButton.ControllerNav.selectOnUp = discObj;
 
         var prefab = __instance.transform.GetAllComponents<StatsPopup>().First();
         var popup = UObject.Instantiate(prefab, prefab.transform.parent);

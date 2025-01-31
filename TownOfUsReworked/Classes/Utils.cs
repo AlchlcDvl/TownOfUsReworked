@@ -312,27 +312,35 @@ public static class Utils
         return Vector2.Scale(first.GetComponent<BoxCollider2D>().size, first.transform.localScale) * 0.75f;
     }
 
-    public static double GetDistance(PlayerControl player, PlayerControl refplayer)
+    public static float GetDistance(PlayerControl player, PlayerControl refplayer)
     {
         if (!player || !refplayer)
-            return double.MaxValue;
+            return float.MaxValue;
 
-        return Vector2.Distance(refplayer.transform.position, player.transform.position);
+        return Vector2.Distance(refplayer.GetTruePosition(), player.GetTruePosition());
     }
 
-    public static void RpcMurderPlayer(PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Killed) => RpcMurderPlayer(self, self, reason, false);
-
-    public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target, bool lunge) => RpcMurderPlayer(killer, target, DeathReasonEnum.Killed, lunge);
-
-    public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
+    public static float GetDistance(PlayerControl player, DeadBody refBody)
     {
-        MurderPlayer(killer, target, reason, lunge);
+        if (!player || !refBody)
+            return float.MaxValue;
+
+        return Vector2.Distance(refBody.TruePosition, player.GetTruePosition());
+    }
+
+    public static void RpcSuicide(this PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Suicide) => self.RpcMurderPlayer(self, reason, false);
+
+    public static void RpcMurderPlayer(this PlayerControl killer, PlayerControl target, bool lunge) => killer.RpcMurderPlayer(target, DeathReasonEnum.Killed, lunge);
+
+    public static void RpcMurderPlayer(this PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
+    {
+        killer.MurderPlayer(target, reason, lunge);
         CallRpc(CustomRPC.Action, ActionsRPC.BypassKill, killer, target, reason, lunge);
     }
 
-    public static void MurderPlayer(PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true) => MurderPlayer(self, self, reason, lunge);
+    public static void Suicide(this PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Suicide) => self.MurderPlayer(self, reason, false);
 
-    public static void MurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
+    public static void MurderPlayer(this PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
         if (!killer || !target || !target.Data || target.Data.IsDead || !killer.Data)
             return;
@@ -616,21 +624,39 @@ public static class Utils
         }
     }
 
-    public static void Flash(Color32 color, float duration = 0.5f) => Coroutines.Start(FlashCoro(color, duration));
+    public static void Flash(Color32 color, float duration = 0.5f, float a = 0.3f) => Coroutines.Start(CoFlash(color, duration, a));
 
-    public static void Flash(UColor color, float duration = 0.5f) => Coroutines.Start(FlashCoro(color, duration));
+    public static void Flash(UColor color, float duration = 0.5f, float a = 0.3f) => Coroutines.Start(CoFlash(color, duration, a));
 
-    private static IEnumerator FlashCoro(UColor color, float duration)
+    private static IEnumerator CoFlash(UColor color, float duration, float a)
     {
         if (IntroCutscene.Instance || ShowRolePatch.Starting || !HudManager.InstanceExists)
             yield break;
 
-        color.a = 0.3f;
-        var fullscreen = HUD().FullScreen;
-        fullscreen.enabled = true;
-        fullscreen.gameObject.active = true;
-        fullscreen.color = color;
+        color.a = a;
+        HUD().FullScreen.color = color;
         yield return Wait(duration);
+        SetFullScreenHUD();
+    }
+
+    public static void TransitionFlash(Color32 color, float duration = 2f, float a = 1f, float transitionDur = 0.5f) => Coroutines.Start(CoTransitionFlash(color, duration, a, transitionDur));
+
+    public static void TransitionFlash(UColor color, float duration = 2f, float a = 1f, float transitionDur = 0.5f) => Coroutines.Start(CoTransitionFlash(color, duration, a, transitionDur));
+
+    private static IEnumerator CoTransitionFlash(UColor color, float duration, float a, float transitionDur)
+    {
+        if (IntroCutscene.Instance || ShowRolePatch.Starting || !HudManager.InstanceExists)
+            yield break;
+
+        if (2 * transitionDur > duration)
+            transitionDur = duration / 2f;
+
+        color.a = a;
+        var fullscreen = HUD().FullScreen;
+        yield return PerformTimedAction(transitionDur, t => fullscreen.color = color.SetAlpha(Mathf.Lerp(0f, a, t)));
+        fullscreen.color = color;
+        yield return Wait(duration - (2 * transitionDur));
+        yield return PerformTimedAction(transitionDur, t => fullscreen.color = color.SetAlpha(Mathf.Lerp(a, 0f, t)));
         SetFullScreenHUD();
     }
 
@@ -641,8 +667,6 @@ public static class Utils
 
         var fullscreen = HUD().FullScreen;
         fullscreen.color = new(0.6f, 0.6f, 0.6f, 0f);
-        fullscreen.enabled = true;
-        fullscreen.gameObject.active = true;
         var ship = Ship();
         var fs = MapPatches.CurrentMap switch
         {
@@ -684,43 +708,6 @@ public static class Utils
         targets.ForEach(x => coordinates.Add(x.PlayerId, allLocations.Random()));
         AllBodies().ForEach(x => coordinates.Add(x.ParentId, allLocations.Random()));
         return coordinates;
-    }
-
-    public static IEnumerator Fade(bool fadeAway)
-    {
-        if (!HudManager.InstanceExists)
-            yield break;
-
-        var hud = HUD();
-        hud.FullScreen.enabled = true;
-
-        if (fadeAway)
-        {
-            for (var i = 1f; i >= 0; i -= Time.deltaTime)
-            {
-                hud.FullScreen.color = new(0, 0, 0, i);
-                yield return EndFrame();
-            }
-        }
-        else
-        {
-            for (var i = 0f; i <= 1; i += Time.deltaTime)
-            {
-                hud.FullScreen.color = new(0, 0, 0, i);
-                yield return EndFrame();
-            }
-        }
-
-        SetFullScreenHUD();
-    }
-
-    public static IEnumerator CoTeleportPlayer(PlayerControl __instance, Vector2 position)
-    {
-        yield return Fade(false);
-        yield return Wait(0.25f);
-        __instance.RpcCustomSnapTo(position);
-        yield return Wait(0.25f);
-        yield return Fade(true);
     }
 
     public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false,
@@ -1369,20 +1356,20 @@ public static class Utils
         killer.GetLayers().ForEach(x => x.OnKill(player));
 
         if (AmongUsClient.Instance.AmHost)
-            CheckEndGame.CheckEnd();
+            CheckEndGame.CheckPlayerWins();
     }
 
-    public static IEnumerator CoPerformKill(KillAnimation __instance, PlayerControl source, PlayerControl target, DeathReasonEnum reason, bool lunge)
+    public static IEnumerator CoPerformKill(KillAnimation __instance, PlayerControl killer, PlayerControl target, DeathReasonEnum reason, bool lunge)
     {
         var cam = HUD().PlayerCam;
-        var isParticipant = source.AmOwner || target.AmOwner;
-        KillAnimation.SetMovement(source, false);
+        var isParticipant = killer.AmOwner || target.AmOwner;
+        KillAnimation.SetMovement(killer, false);
         KillAnimation.SetMovement(target, false);
 
         if (isParticipant)
         {
             CustomPlayer.Local.isKilling = true;
-            source.isKilling = true;
+            killer.isKilling = true;
         }
 
         var deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
@@ -1401,16 +1388,16 @@ public static class Utils
             CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
         }
 
-        target.CustomDie(reason, source);
+        target.CustomDie(reason, killer);
 
-        if (lunge)
+        if (lunge && killer != target)
         {
-            yield return source.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
-            source.NetTransform.SnapTo(target.transform.position);
+            yield return killer.MyPhysics.Animations.CoPlayCustomAnimation(__instance.BlurAnim);
+            killer.CustomSnapTo(target.transform.position);
         }
 
-        source.MyPhysics.Animations.PlayIdleAnimation();
-        KillAnimation.SetMovement(source, true);
+        killer.MyPhysics.Animations.PlayIdleAnimation();
+        KillAnimation.SetMovement(killer, true);
         KillAnimation.SetMovement(target, true);
         deadBody.enabled = true;
 
@@ -1418,7 +1405,7 @@ public static class Utils
         {
             cam.Locked = false;
             CustomPlayer.Local.isKilling = false;
-            source.isKilling = false;
+            killer.isKilling = false;
         }
     }
 

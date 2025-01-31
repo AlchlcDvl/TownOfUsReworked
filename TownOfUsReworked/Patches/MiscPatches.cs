@@ -26,7 +26,7 @@ public static class MapBehaviourPatches
 
         ClientHandler.Instance.CloseMenus(SkipEnum.Map);
 
-        if (PlayerLayer.LocalLayers().All(x => x.IsBlocked))
+        if (CustomPlayer.Local.IsBlocked())
             return false;
 
         var notmodified = true;
@@ -202,9 +202,7 @@ public static class AirshipSpawnInPatch
         if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
             ast.SetPosition();
 
-        var hud = HUD();
-        hud.FullScreen.enabled = true;
-        hud.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
+        HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
 
         if (TownOfUsReworked.MCIActive)
         {
@@ -343,18 +341,16 @@ public static class LobbyBehaviourPatch
         RoleGenManager.ResetEverything();
         StopAll();
         DefaultOutfitAll();
-        var count = MCIUtils.Clients.Count;
-        MCIUtils.Clients.Clear();
-        MCIUtils.PlayerClientIDs.Clear();
-        DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame();
         ClientHandler.Instance.OnLobbyStart();
         ClientHandler.Instance.Page = 0;
         ClientHandler.Instance.Buttons.Clear();
         ClientHandler.Instance.CloseMenus();
         FreeplayPatches.PreviouslySelected.Clear();
-        var hud = HUD();
-        hud.enabled = false;
-        hud.enabled = true;
+        var count = MCIUtils.Clients.Count;
+        DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame();
+        MCIUtils.Clients.Clear();
+        MCIUtils.PlayerClientIDs.Clear();
+        DebuggerBehaviour.Instance.SelectedTab = DebuggerBehaviour.Instance.Tabs[0];
 
         if (count > 0 && TownOfUsReworked.Persistence.Value && !IsOnlineGame())
             MCIUtils.CreatePlayerInstances(count);

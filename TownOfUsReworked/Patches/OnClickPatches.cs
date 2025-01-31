@@ -5,7 +5,7 @@ public static class PlayerControlOnClick
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        if (!CustomPlayer.Local || !CustomPlayer.Local.Data || !__instance.Data || Meeting() || Lobby())
+        if (!CustomPlayer.Local || !CustomPlayer.Local.Data || !__instance.Data || Meeting() || Lobby() || CustomPlayer.Local.IsBlocked())
             return false;
 
         if (IsHnS())
@@ -75,11 +75,15 @@ public static class DeadBodyOnClick
 {
     public static bool Prefix(DeadBody __instance)
     {
-        if (Meeting() || Lobby() || IsHnS() || PerformReport.ReportPressed)
+        if (Meeting() || Lobby() || IsHnS() || PerformReport.ReportPressed || CustomPlayer.Local.IsBlocked())
             return true;
 
-        var result = CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Target == __instance && x.Clickable() && !x.Owner.IsBlocked, out var button);
-        button?.Clicked();
-        return !result && !IsTaskRace() && !IsCustomHnS();
+        if (CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Target == __instance && x.Clickable(), out var button))
+        {
+            button.Clicked();
+            return false;
+        }
+
+        return GameModeSettings.GameMode is not (GameMode.HideAndSeek or GameMode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < Ship().CalculateLightRadius(CustomPlayer.Local.Data);
     }
 }

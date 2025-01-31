@@ -22,7 +22,6 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     private GameMode SavedMode { get; set; }
     private PassiveButton Button { get; set; }
     private TextMeshPro CenterTitle { get; set; }
-    private TextMeshPro CenterValue { get; set; }
     private TextMeshPro LeftTitle { get; set; }
     private SpriteRenderer CenterBackground { get; set; }
     private GameObject LeftBox { get; set; }
@@ -121,7 +120,6 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         CenterBox = view.transform.Find("Centre").gameObject;
         CenterCheck = RightBox.transform.Find("UniqueOn").gameObject;
         CenterCross = RightBox.transform.Find("UniqueOff").gameObject;
-        CenterValue = CenterBox.transform.Find("Text_TMP").GetComponent<TextMeshPro>();
         CenterTitle = CenterBox.transform.Find("Title").GetComponent<TextMeshPro>();
         CenterBackground = CenterBox.transform.Find("Sprite").GetComponent<SpriteRenderer>();
 
@@ -267,7 +265,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
                     break;
 
                 case GameMode.RoleList:
-                    Unique.transform.localPosition = Right + Diff + new Vector3(0.91f, 0f, 0f);
+                    Unique.transform.localPosition = Right + Diff + new Vector3(0.76f, 0f, 0f);
                     break;
             }
         }
@@ -306,7 +304,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        Value = DefaultValue = new RoleOptionData(0, 0, false, false, Layer);
+        Value = new RoleOptionData(0, 0, false, false, Layer);
         Property?.SetValue(null, Value);
         Field?.SetValue(null, Value);
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name.Contains($"{Layer}"));
@@ -341,7 +339,6 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
         view.chanceText.text = SavedMode == GameMode.Classic ? $"{data.Chance}%" : "";
         view.settingText.text = SavedMode == GameMode.Classic ? $"x{data.Count}" : "";
-        CenterValue.text = SavedMode == GameMode.Classic ? $"{data.Chance}%" : "";
 
         CenterCheck.SetActive(SavedMode == GameMode.RoleList && data.Unique);
         CenterCross.SetActive(SavedMode == GameMode.RoleList && !data.Unique);
@@ -353,7 +350,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         var isActive = RoleGenManager.GetSpawnItem(Layer).IsActive();
         var color = isActive ? LayerColor : Palette.DisabledGrey.Shadow();
         view.labelBackground.color = color;
-        view.titleText.color = view.chanceText.color = view.chanceTitle.color = view.settingText.color = LeftTitle.color = CenterValue.color = CenterTitle.color = color.Alternate(0.45f);
+        view.titleText.color = view.chanceText.color = view.chanceTitle.color = view.settingText.color = LeftTitle.color = CenterTitle.color = color.Alternate(0.45f);
         view.background.color = view.chanceBackground.color = CenterBackground.color = color.Alternate(0.3f);
 
         if (SavedMode == GameModeSettings.GameMode)

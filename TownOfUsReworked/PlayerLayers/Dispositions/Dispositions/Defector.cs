@@ -11,7 +11,7 @@ public class Defector : Disposition
 
     public bool Turned { get; set; }
     public Faction Side { get; set; }
-    private bool Defect => ((Side == Faction.Intruder && LastImp()) || (Side == Faction.Syndicate && LastSyn())) && !Dead && !Turned;
+    private bool Defect => !Dead && !Turned && Last(Side);
 
     public override UColor Color
     {

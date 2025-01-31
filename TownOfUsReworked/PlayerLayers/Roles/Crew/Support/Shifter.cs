@@ -29,7 +29,7 @@ public class Shifter : Crew
     {
         if (!other.Is<Crew>() || other.IsFramed())
         {
-            MurderPlayer(Player);
+            Player.Suicide();
             return;
         }
 

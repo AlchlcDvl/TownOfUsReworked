@@ -28,6 +28,8 @@ public static class LayerExtentions
 
     public static bool Is(this PlayerControl player, Faction faction) => player.GetFaction() == faction;
 
+    public static bool Is(this PlayerControl player, params Faction[] factions) => factions.Contains(player.GetFaction());
+
     public static bool Is(this PlayerControl player, Alignment alignment) => player.GetRole()?.Alignment == alignment;
 
     public static bool Is(this PlayerControl player, Faction faction, Alignment alignment)
@@ -75,15 +77,7 @@ public static class LayerExtentions
         return role.Alignment;
     }
 
-    public static bool IsRecruit(this PlayerControl player) => player.GetRole().IsRecruit;
-
-    public static bool IsBitten(this PlayerControl player) => player.GetRole().IsBitten;
-
-    public static bool IsPersuaded(this PlayerControl player) => player.GetRole().IsPersuaded;
-
-    public static bool IsResurrected(this PlayerControl player) => player.GetRole().IsResurrected;
-
-    public static bool IsConverted(this Role role) => (role.IsRecruit || role.IsBitten || role.IsPersuaded || role.IsResurrected) && role is not Neophyte;
+    public static bool IsConverted(this Role role) => role.SubFaction != SubFaction.None && role is not Neophyte;
 
     public static bool Diseased(this PlayerControl player) => player.GetRole().Diseased;
 
@@ -104,7 +98,7 @@ public static class LayerExtentions
         if (IsHnS() || Meeting() || IsCustomHnS() || IsTaskRace() || !IntruderSettings.IntrudersCanSabotage)
             return false;
 
-        var result = player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps);
+        var result = player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps);
 
         if (!player.Data.IsDead)
             return result;
@@ -124,8 +118,7 @@ public static class LayerExtentions
 
         var crewflag = player.Is(Faction.Crew);
         var neutralflag = player.Is(Faction.Neutral);
-        var intruderflag = player.Is(Faction.Intruder);
-        var syndicateflag = player.Is(Faction.Syndicate);
+        var factionflag = player.Is(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati);
 
         var phantomflag = player.Is<Phantom>();
 
@@ -137,9 +130,8 @@ public static class LayerExtentions
 
         var flag1 = crewflag && !sideflag;
         var flag2 = neutralflag && (taskmasterflag || phantomflag);
-        var flag3 = intruderflag && (taskmasterflag || defectflag);
-        var flag4 = syndicateflag && (taskmasterflag || defectflag);
-        return flag1 || flag2 || flag3 || flag4 || gmflag;
+        var flag3 = factionflag && (taskmasterflag || defectflag);
+        return flag1 || flag2 || flag3 || gmflag;
     }
 
     public static bool IsMoving(this PlayerControl player) => Moving.Contains(player.PlayerId);
@@ -265,15 +257,13 @@ public static class LayerExtentions
 
     public static bool IsFlashed(this PlayerControl player) => !player.HasDied() && PlayerLayer.GetILayers<IFlasher>().Any(x => x.FlashedPlayers.Contains(player.PlayerId));
 
-    public static bool SyndicateSided(this PlayerControl player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly() || (player.Is(Faction.Syndicate) &&
-        player.Is<Betrayer>()) || player.IsSynDefect() || (player.Is(Faction.Syndicate) && !player.Is<Syndicate>());
+    public static bool SyndicateSided(this PlayerControl player) => player.Is(Faction.Syndicate) && !player.Is<Syndicate>();
 
-    public static bool IntruderSided(this PlayerControl player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic() || (player.Is(Faction.Intruder) &&
-        player.Is<Betrayer>()) || player.IsIntDefect() || (player.Is(Faction.Intruder) && !player.Is<Intruder>());
+    public static bool IntruderSided(this PlayerControl player) => player.Is(Faction.Intruder) && !player.Is<Intruder>();
 
-    public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly() || player.IsCrewDefect() || (player.Is(Faction.Crew) && !player.Is<Crew>());
+    public static bool CrewSided(this PlayerControl player) => player.Is(Faction.Crew) && !player.Is<Crew>();
 
-    public static bool Last(PlayerControl player) => (LastImp() && player.Is(Faction.Intruder)) || (LastSyn() && player.Is(Faction.Syndicate));
+    public static bool Last(PlayerControl player) => Classes.GameStates.Last(player.GetFaction());
 
     public static bool CanKill(this PlayerControl player)
     {
@@ -461,14 +451,17 @@ public static class LayerExtentions
             mainflag = Mafia.MafVent;
         else if (player.Is<Corrupted>())
             mainflag = Corrupted.CorruptedVent;
-        else if (playerRole.IsRecruit && playerRole.Alignment != Alignment.Neophyte)
-            mainflag = Jackal.RecruitVent;
-        else if (playerRole.IsResurrected && playerRole.Alignment != Alignment.Neophyte)
-            mainflag = Necromancer.ResurrectVent;
-        else if (playerRole.IsPersuaded && playerRole.Alignment != Alignment.Neophyte)
-            mainflag = Whisperer.PersuadedVent;
-        else if (playerRole.IsBitten && playerRole.Alignment != Alignment.Neophyte)
-            mainflag = Dracula.UndeadVent;
+        else if (playerRole.SubFaction != SubFaction.None && playerRole.Alignment != Alignment.Neophyte)
+        {
+            mainflag = playerRole.SubFaction switch
+            {
+                SubFaction.Undead => Dracula.UndeadVent,
+                SubFaction.Cabal => Jackal.RecruitVent,
+                SubFaction.Reanimated => Necromancer.ResurrectVent,
+                SubFaction.Cult => Whisperer.PersuadedVent,
+                _ => false
+            };
+        }
         else if (playerRole is Syndicate syn)
             mainflag = (syn.HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
         else if (playerRole is Intruder)
@@ -566,7 +559,8 @@ public static class LayerExtentions
         return false;
     }
 
-    public static bool IsBlocked(this PlayerControl player) => player.GetLayers().Any(x => x.IsBlocked);
+    public static bool IsBlocked(this PlayerControl player) => PlayerLayer.GetILayers<IBlocker>().Any(x => x.BlockTarget == player) || PlayerLayer.GetLayers<Banshee>().Any(x =>
+        x.Blocked.Contains(player.PlayerId));
 
     public static bool SeemsEvil(this PlayerControl player)
     {
@@ -668,16 +662,11 @@ public static class LayerExtentions
 
         modifierName += "</b></color>";
         var neo = player.GetNeophyte();
-
-        if (player.IsRecruit())
-            objectives += $"\n<#{CustomColorManager.Cabal.ToHtmlStringRGBA()}>- You are a member of the Cabal. Help {neo.PlayerName} in taking over the mission $</color>";
-        else if (player.IsResurrected())
-            objectives += $"\n<#{CustomColorManager.Reanimated.ToHtmlStringRGBA()}>- You are a member of the Reanimated. Help {neo.PlayerName} in taking over the mission Σ</color>";
-        else if (player.IsPersuaded())
-            objectives += $"\n<#{CustomColorManager.Cult.ToHtmlStringRGBA()}>- You are a member of the Cult. Help {neo.PlayerName} in taking over the mission Λ</color>";
-        else if (player.IsBitten())
-            objectives += $"\n<#{CustomColorManager.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {neo.PlayerName} in taking over the mission γ</color>";
-
+        objectives += role.SubFaction switch
+        {
+            SubFaction.None => "",
+            _ => $"\n{role.SubFactionColorString}- You are a member of the {role.SubFaction}. Help {neo.PlayerName} in taking over the mission {role.SubFactionSymbol}</color>"
+        };
         objectives += "</color>";
 
         if (info[0] && role.Description() is not ("" or "- None"))
@@ -750,7 +739,6 @@ public static class LayerExtentions
         newRole.SubFaction = former.SubFaction;
         newRole.DeathReason = former.DeathReason;
         newRole.KilledBy = former.KilledBy;
-        newRole.IsBlocked = former.IsBlocked;
         newRole.Diseased = former.Diseased;
         newRole.AllArrows.AddRange(allArrows);
         newRole.RoleHistory.AddRange(history);

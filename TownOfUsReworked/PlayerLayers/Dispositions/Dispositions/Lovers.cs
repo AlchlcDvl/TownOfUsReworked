@@ -26,7 +26,7 @@ public class Lovers : Disposition
     public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
     {
         if (BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.Apocalypse))
-            MurderPlayer(OtherLover);
+            OtherLover.Suicide();
     }
 
     public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Lovers;

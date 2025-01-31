@@ -160,8 +160,6 @@ public static class SetPostmortals
             {
                 var former = rev.GetRole();
                 new Revealer() { FormerRole = former }.RoleUpdate(former);
-                RemoveTasks(rev);
-                rev.gameObject.layer = LayerMask.NameToLayer("Players");
             }
 
             rev.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
@@ -207,12 +205,7 @@ public static class SetPostmortals
                 continue;
 
             if (!phan.Is<Phantom>())
-            {
-                var former = phan.GetRole();
-                new Phantom().RoleUpdate(former);
-                RemoveTasks(phan);
-                phan.gameObject.layer = LayerMask.NameToLayer("Players");
-            }
+                new Phantom().RoleUpdate(phan.GetRole());
 
             phan.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
 
@@ -257,11 +250,7 @@ public static class SetPostmortals
                 continue;
 
             if (!ban.Is<Banshee>())
-            {
-                var former = ban.GetRole();
-                new Banshee().RoleUpdate(former);
-                ban.gameObject.layer = LayerMask.NameToLayer("Players");
-            }
+                new Banshee().RoleUpdate(ban.GetRole());
 
             ban.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
 
@@ -306,11 +295,7 @@ public static class SetPostmortals
                 continue;
 
             if (!ghoul.Is<Ghoul>())
-            {
-                var former = ghoul.GetRole();
-                new Ghoul().RoleUpdate(former);
-                ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
-            }
+                new Ghoul().RoleUpdate(ghoul.GetRole());
 
             ghoul.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
 

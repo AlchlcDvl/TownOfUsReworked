@@ -38,11 +38,11 @@ public static class CustomColorManager
 
     public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
 
-    public static Color32 Shadow(this Color32 color) => new(ClampByte(color.r - 51, 0, 255), ClampByte(color.g - 51, 0, 255), ClampByte(color.b - 51, 0, 255), color.a);
+    // public static Color32 Shadow(this Color32 color, byte val = 51) => new(ClampByte(color.r - val, 0, 255), ClampByte(color.g - val, 0, 255), ClampByte(color.b - val, 0, 255), color.a);
 
-    public static Color32 Light(this Color32 color) => new(ClampByte(color.r + 51, 0, 255), ClampByte(color.g + 51, 0, 255), ClampByte(color.b + 51, 0, 255), color.a);
+    // public static Color32 Light(this Color32 color, byte val = 51) => new(ClampByte(color.r + val, 0, 255), ClampByte(color.g + val, 0, 255), ClampByte(color.b + val, 0, 255), color.a);
 
-    public static Color32 Alternate(this Color32 color, byte val = 51) => ((UColor)color).Alternate((float)val / 255);
+    public static Color32 Alternate(this Color32 color, byte val = 51) => ((UColor)color).Alternate(val / 255f);
 
     public static bool IsColorDark(this Color32 color) => color is { r: < 128, g: < 128, b: 128 };
 
@@ -89,7 +89,7 @@ public static class CustomColorManager
     public static readonly UColor HideAndSeek = FromHex("#7500AFFF");
     public static readonly UColor Classic = FromHex("#C02A2CFF");
     public static readonly UColor RoleList = FromHex("#FA1C79FF");
-    public static readonly UColor HotPotato = FromHex("#06E00CFF");
+    public static readonly UColor AllAny = FromHex("#CBD542FF");
 
     // Task Race Colors
     public static readonly UColor Runner = FromHex("#ECC23EFF");
@@ -255,11 +255,7 @@ public static class CustomColorManager
     public static readonly UColor What = FromHex("#6697FFFF");
     public static readonly UColor FirstShield = FromHex("#C2185BFF");
     public static readonly UColor AcceptedTeal = FromHex("#2CEAC6FF");
-
-    // Stuff
-    public static readonly Color32 NormalVision = new(212, 212, 212, 0);
-    public static readonly Color32 DimVision = new(212, 212, 212, 51);
-    public static readonly Color32 BlindVision = new(212, 212, 212, 255);
+    public static readonly UColor BlindVision = FromHex("#D4D4D4FF");
 
     // Color Storage
     // #b1c548 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce
@@ -268,7 +264,7 @@ public static class CustomColorManager
     // #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C #1E300B #F3A6D3 #F9BFA7
     // #E1E4E4 #869919 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14
     // #20a1b7 #606168 #99007F #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #C0C0C0 #E6956A
-    // #B34D99 #FFC34F #A9A9A9 #8BFDFD #CBD542
+    // #B34D99 #FFC34F #A9A9A9 #8BFDFD #06E00C
 
     // Symbol Storage
     // ⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 王 ī l · ° ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +

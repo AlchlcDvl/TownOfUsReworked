@@ -70,13 +70,13 @@ public class GameTab : BaseTab
         }
 
         if (GUILayout.Button("Kill Self"))
-            MurderPlayer(CustomPlayer.Local);
+            CustomPlayer.Local.Suicide();
 
         if (GUILayout.Button("Kill All"))
-            AllPlayers().ForEach(x => MurderPlayer(x));
+            AllPlayers().ForEach(x => x.Suicide());
 
         if (GUILayout.Button("Kill All But Me"))
-            AllPlayers().Where(x => !x.AmOwner).ForEach(x => MurderPlayer(x));
+            AllPlayers().Where(x => !x.AmOwner).ForEach(x => x.Suicide());
 
         if (GUILayout.Button("Revive Self"))
             CustomPlayer.Local.Revive();

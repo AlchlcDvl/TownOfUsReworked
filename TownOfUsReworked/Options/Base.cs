@@ -76,7 +76,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         ( [ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ] ),
         ( [ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ] ),
         ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
-        ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.Vanilla, GameMode.RoleList ] ),
+        ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Vanilla, GameMode.RoleList ] ),
         ( [ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny ] ),
         ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
         ( [ "RoleListEntries", "RoleListBans" ], [ GameMode.RoleList ] ),

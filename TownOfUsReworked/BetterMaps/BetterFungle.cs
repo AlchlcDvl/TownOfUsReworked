@@ -5,13 +5,13 @@ namespace TownOfUsReworked.BetterMaps;
 public static class BetterFungle
 {
     [ToggleOption]
-    public static bool EnableBetterFungle { get; set; } = true;
+    public static bool EnableBetterFungle = true;
 
     [NumberOption(30f, 90f, 5f, Format.Time)]
-    public static Number FungleReactorTimer { get; set; } = 60;
+    public static Number FungleReactorTimer = 60;
 
     [NumberOption(4f, 20f, 1f, Format.Time)]
-    public static Number FungleMixupTimer { get; set; } = 8;
+    public static Number FungleMixupTimer = 8;
 
     [HarmonyPatch(nameof(MushroomMixupSabotageSystem.UpdateSystem))]
     public static bool Prefix(MushroomMixupSabotageSystem __instance, MessageReader msgReader)

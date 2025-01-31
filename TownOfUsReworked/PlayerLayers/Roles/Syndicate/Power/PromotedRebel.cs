@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, IFramer
+public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer
 {
     public override void Init()
     {
@@ -56,7 +56,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
                     ConcealedPlayer = null;
                 else if (ConfusedPlayer && !ConfuseButton.EffectActive)
                     ConfusedPlayer = null;
-                else if (IsWarp && !Warping && WarpMenu.Selected.Count > 0)
+                else if (IsWarp && !Moving && WarpMenu.Selected.Count > 0)
                     WarpMenu.Selected.TakeLast();
             }
             else if (PoisonedPlayer && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
@@ -75,10 +75,10 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
             if (GetDistance(Positive, Negative) <= Range)
             {
                 if (CanAttack(AttackEnum.Powerful, Negative.GetDefenseValue(Player)))
-                    RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
+                    Player.RpcMurderPlayer(Negative, DeathReasonEnum.Collided, false);
 
                 if (CanAttack(AttackEnum.Powerful, Positive.GetDefenseValue(Player)))
-                    RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
+                    Player.RpcMurderPlayer(Positive, DeathReasonEnum.Collided, false);
 
                 Positive = null;
                 Negative = null;
@@ -87,7 +87,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
             else if (GetDistance(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
             {
                 if (CanAttack(AttackEnum.Powerful, Negative.GetDefenseValue(Player)))
-                    RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
+                    Player.RpcMurderPlayer(Negative, DeathReasonEnum.Collided, false);
 
                 Negative = null;
                 shouldReset = true;
@@ -95,7 +95,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
             else if (GetDistance(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
             {
                 if (CanAttack(AttackEnum.Powerful, Positive.GetDefenseValue(Player)))
-                    RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
+                    Player.RpcMurderPlayer(Positive, DeathReasonEnum.Collided, false);
 
                 Positive = null;
                 shouldReset = true;
@@ -302,7 +302,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
                 Spelled.Add(reader.ReadByte());
 
                 if (AmongUsClient.Instance.AmHost)
-                    CheckEndGame.CheckEnd();
+                    CheckEndGame.CheckSpellWin(this);
 
                 break;
             }
@@ -472,7 +472,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
     public void UnPoison()
     {
         if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is<Pestilence>()))
-            RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
+            Player.RpcMurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
     }
@@ -642,7 +642,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
     // Warper Stuff
     public CustomButton WarpButton { get; set; }
     public CustomPlayerMenu WarpMenu { get; set; }
-    public bool Warping { get; set; }
+    public bool Moving { get; set; }
     public bool IsWarp => FormerRole is Warper;
 
     public bool WarpException(PlayerControl player) => (player == Player && !Warper.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || (!BodyById(player.PlayerId) &&
@@ -823,7 +823,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IWarper, ICrusader, I
                 SpellCount++;
 
             if (AmongUsClient.Instance.AmHost)
-                CheckEndGame.CheckEnd();
+                CheckEndGame.CheckSpellWin(this);
         }
 
         SpellButton.StartCooldown(cooldown);

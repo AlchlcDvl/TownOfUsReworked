@@ -35,15 +35,9 @@ public static class References
     public static bool Shapeshifted { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
     public static StringNames ReworkedStart { get; set; }
+    public static bool BlockExposed { get; set; }
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +
         "乂⁂¤∮彡个「」人요〖〗ロ米卄王īl【】·ㅇ°◈◆◇◥◤◢◣《》︵︶☆☀☂☹☺♡♩♪♫♬✓☜☞☟☯☃✿❀÷º¿※⁑∞≠";
-    public static readonly Dictionary<string, string> KeyWords = new()
-    {
-        { "%modversion%", TownOfUsReworked.VersionFinal },
-        { "%discord%", $"[{TownOfUsReworked.DiscordInvite}]Discord[]" },
-        { "%github%", $"[{TownOfUsReworked.GitHubLink}]GitHub[]" },
-        { "%assets%", $"[{TownOfUsReworked.AssetsLink}]Assets[]" }
-    };
     // As much as I hate to do this, people will take advantage so we're better off doing this early
     public static readonly string[] Profanities = [ "nigg", "whore", "negro", "yiff", "rape", "rapist" ];
     public const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";

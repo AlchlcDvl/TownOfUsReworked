@@ -26,21 +26,16 @@ public class Banshee : Syndicate, IGhosty
         Alignment = Alignment.Utility;
         Blocked.Clear();
         ScreamButton ??= new(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
-            new Duration(ScreamDur), (EffectVoid)Scream, (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
+            new Duration(ScreamDur), (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
+        Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
-
-    public void Scream() => Blocked.ForEach(y => PlayerById(y).GetLayers().ForEach(x => x.IsBlocked = !PlayerById(y).GetRole().RoleBlockImmune));
 
     public void UnScream()
     {
         foreach (var id in Blocked)
         {
-            var blocked = PlayerById(id);
-            blocked.GetLayers().ForEach(x => x.IsBlocked = false);
-            blocked.GetButtons().ForEach(x => x.BlockExposed = false);
-
-            if (blocked.AmOwner)
-                Patches.Blocked.BlockExposed = false;
+            if (PlayerById(id).AmOwner)
+                BlockExposed = false;
         }
 
         Blocked.Clear();

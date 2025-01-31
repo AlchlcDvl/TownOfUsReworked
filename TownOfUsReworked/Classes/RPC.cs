@@ -20,7 +20,7 @@ public static class RPC
             options = [ .. OptionAttribute.AllOptions ];
 
         options.RemoveAll(x => x is BaseHeaderOptionAttribute || x.ClientOnly);
-        var split = options.Split(60);
+        var split = options.Split(70);
         Info($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
 
         foreach (var list in split)
@@ -106,8 +106,6 @@ public static class RPC
 
     public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Parse(reader.ReadString());
 
-    public static Enum ReadEnum(this MessageReader reader, Type type) => (Enum)Enum.Parse(type, $"{reader.ReadByte()}");
-
     public static T ReadEnum<T>(this MessageReader reader) where T : struct, Enum
     {
         if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
@@ -118,48 +116,48 @@ public static class RPC
 
     public static Number ReadNumber(this MessageReader reader) => new(reader.ReadSingle());
 
-    public static PlayerRecord ReadRecord(this MessageReader reader)
-    {
-        var record = new PlayerRecord
-        {
-            PlayerName = reader.ReadString(),
-            ColorId = reader.ReadUInt32(),
-            SkinId = reader.ReadString(),
-            HatId = reader.ReadString(),
-            VisorId = reader.ReadString(),
-            IsExeTarget = reader.ReadBoolean(),
-            IsGATarget = reader.ReadBoolean(),
-            IsBHTarget = reader.ReadBoolean(),
-            IsGuessTarget = reader.ReadBoolean(),
-            DriveHolder = reader.ReadBoolean(),
-            DeathReason = reader.ReadEnum<DeathReasonEnum>(),
-            SubFaction = reader.ReadEnum<SubFaction>(),
-            CanDoTasks = reader.ReadBoolean()
-        };
+    // public static PlayerRecord ReadRecord(this MessageReader reader)
+    // {
+    //     var record = new PlayerRecord
+    //     {
+    //         PlayerName = reader.ReadString(),
+    //         ColorId = reader.ReadUInt32(),
+    //         SkinId = reader.ReadString(),
+    //         HatId = reader.ReadString(),
+    //         VisorId = reader.ReadString(),
+    //         IsExeTarget = reader.ReadBoolean(),
+    //         IsGATarget = reader.ReadBoolean(),
+    //         IsBHTarget = reader.ReadBoolean(),
+    //         IsGuessTarget = reader.ReadBoolean(),
+    //         DriveHolder = reader.ReadBoolean(),
+    //         DeathReason = reader.ReadEnum<DeathReasonEnum>(),
+    //         SubFaction = reader.ReadEnum<SubFaction>(),
+    //         CanDoTasks = reader.ReadBoolean()
+    //     };
 
-        if (record.CanDoTasks)
-        {
-            record.TasksLeft = reader.ReadUInt32();
-            record.TasksDone = reader.ReadUInt32();
-        }
+    //     if (record.CanDoTasks)
+    //     {
+    //         record.TasksLeft = reader.ReadUInt32();
+    //         record.TasksDone = reader.ReadUInt32();
+    //     }
 
-        var count = reader.ReadUInt32();
+    //     var count = reader.ReadUInt32();
 
-        while (count-- > 0)
-            record.Layers.Add(reader.ReadEnum<LayerEnum>());
+    //     while (count-- > 0)
+    //         record.Layers.Add(reader.ReadEnum<LayerEnum>());
 
-        count = reader.ReadUInt32();
+    //     count = reader.ReadUInt32();
 
-        while (count-- > 0)
-            record.History.Add(reader.ReadEnum<LayerEnum>());
+    //     while (count-- > 0)
+    //         record.History.Add(reader.ReadEnum<LayerEnum>());
 
-        count = reader.ReadUInt32();
+    //     count = reader.ReadUInt32();
 
-        while (count-- > 0)
-            record.Titles.Add(reader.ReadString());
+    //     while (count-- > 0)
+    //         record.Titles.Add(reader.ReadString());
 
-        return record;
-    }
+    //     return record;
+    // }
 
     public static List<T> ReadEnumList<T>(this MessageReader reader) where T : struct, Enum
     {
@@ -190,40 +188,42 @@ public static class RPC
             writer.Write(Convert.ToInt32(enumVal));
     }
 
-    public static void Write(this MessageWriter writer, PlayerRecord record)
-    {
-        writer.Write(record.PlayerName);
-        writer.Write(record.ColorId);
-        writer.Write(record.SkinId);
-        writer.Write(record.HatId);
-        writer.Write(record.VisorId);
+    public static void Write<T>(this MessageWriter writer, T value) where T : struct, Enum => writer.Write((Enum)value);
 
-        writer.Write(record.IsExeTarget);
-        writer.Write(record.IsGATarget);
-        writer.Write(record.IsBHTarget);
-        writer.Write(record.IsGuessTarget);
-        writer.Write(record.DriveHolder);
+    // public static void Write(this MessageWriter writer, PlayerRecord record)
+    // {
+    //     writer.Write(record.PlayerName);
+    //     writer.Write(record.ColorId);
+    //     writer.Write(record.SkinId);
+    //     writer.Write(record.HatId);
+    //     writer.Write(record.VisorId);
 
-        writer.Write(record.DeathReason);
-        writer.Write(record.SubFaction);
+    //     writer.Write(record.IsExeTarget);
+    //     writer.Write(record.IsGATarget);
+    //     writer.Write(record.IsBHTarget);
+    //     writer.Write(record.IsGuessTarget);
+    //     writer.Write(record.DriveHolder);
 
-        writer.Write(record.CanDoTasks);
+    //     writer.Write(record.DeathReason);
+    //     writer.Write(record.SubFaction);
 
-        if (record.CanDoTasks)
-        {
-            writer.Write(record.TasksLeft);
-            writer.Write(record.TasksDone);
-        }
+    //     writer.Write(record.CanDoTasks);
 
-        writer.Write((uint)record.Layers.Count);
-        record.Layers.ForEach(x => writer.Write(x));
+    //     if (record.CanDoTasks)
+    //     {
+    //         writer.Write(record.TasksLeft);
+    //         writer.Write(record.TasksDone);
+    //     }
 
-        writer.Write((uint)record.History.Count);
-        record.History.ForEach(x => writer.Write(x));
+    //     writer.Write((uint)record.Layers.Count);
+    //     record.Layers.ForEach(x => writer.Write(x));
 
-        writer.Write((uint)record.Titles.Count);
-        record.Titles.ForEach(writer.Write);
-    }
+    //     writer.Write((uint)record.History.Count);
+    //     record.History.ForEach(x => writer.Write(x));
+
+    //     writer.Write((uint)record.Titles.Count);
+    //     record.Titles.ForEach(writer.Write);
+    // }
 
     public static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index, Enum subRpc = null)
     {

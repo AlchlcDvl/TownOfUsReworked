@@ -11,13 +11,4 @@ public class Hunted : HideAndSeek
         base.Init();
         Objectives = () => "- Finish your tasks without being hunted";
     }
-
-    public override void CheckWin()
-    {
-        if (HuntedWin())
-        {
-            WinState = WinLose.HuntedWin;
-            CallRpc(CustomRPC.WinLose, WinLose.HuntedWin);
-        }
-    }
 }

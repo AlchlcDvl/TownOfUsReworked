@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Escort : Crew
+public class Escort : Crew, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number EscortCd = 25;
@@ -24,22 +24,17 @@ public class Escort : Crew
         base.Init();
         Alignment = Alignment.Support;
         BlockTarget = null;
-        BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, (EffectVoid)Block,
-            (EffectEndVoid)UnBlock,  new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect, (EffectStartVoid)BlockStart);
+        BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, (EffectEndVoid)UnBlock,
+            new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect, (EffectStartVoid)BlockStart);
     }
 
     public void UnBlock()
     {
-        BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
-        BlockTarget.GetButtons().ForEach(x => x.BlockExposed = false);
-
         if (BlockTarget.AmOwner)
-            Blocked.BlockExposed = false;
+            BlockExposed = false;
 
         BlockTarget = null;
     }
-
-    public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
 
     public void BlockStart()
     {

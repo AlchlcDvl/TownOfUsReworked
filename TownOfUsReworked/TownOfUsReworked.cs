@@ -2,23 +2,20 @@ using BepInEx.Logging;
 
 namespace TownOfUsReworked;
 
-[BepInPlugin(Id, Name, VersionString)]
+[BepInAutoPlugin("me.alchlcdvl.reworked", "Reworked")]
 [BepInDependency(ReactorPlugin.Id)]
 [BepInIncompatibility("MalumMenu")]
 [ReactorModFlags(ModFlags.RequireOnAllClients | ModFlags.DisableServerAuthority)]
 [BepInProcess("Among Us.exe")]
 public partial class TownOfUsReworked : BasePlugin
 {
-    public const string Id = "me.alchlcdvl.reworked";
-    public const string Name = "Reworked";
-    public const string VersionString = "0.7.1.0";
-    public static readonly Version Version = new(VersionString);
+    public static readonly Version ModVer = new(VersionS);
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
-    public const int DevBuild = 30;
+    public const int DevBuild = 31;
 
-    private static readonly string VersionS = VersionString[..^2];
+    private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
     private static string StreamString => IsStream ? "s" : "";
     public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}";
@@ -52,8 +49,6 @@ public partial class TownOfUsReworked : BasePlugin
     public static bool MCIActive => MCIUtils.Clients.Count > 0;
 
     public readonly Harmony Harmony = new(Id);
-
-    public override string ToString() => $"{Id} {Name} {VersionFinal} {Version}";
 
     public static ConfigEntry<string> Ip { get; set; }
     public static ConfigEntry<ushort> Port { get; set; }
@@ -117,4 +112,6 @@ public partial class TownOfUsReworked : BasePlugin
         Fatal($"Mod Unloaded - {this}");
         return true;
     }
+
+    public override string ToString() => $"{Id} {Name} {VersionFinal} {Version}";
 }

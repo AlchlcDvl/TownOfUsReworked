@@ -6,8 +6,6 @@ public class Taskmaster : Disposition
     [NumberOption(1, 5, 1)]
     public static Number TMTasksRemaining = 1;
 
-    public bool WinTasksDone { get; set; }
-
     public override UColor Color => ClientOptions.CustomDispColors ? CustomColorManager.Taskmaster : CustomColorManager.Disposition;
     public override string Symbol => "µ";
     public override LayerEnum Type => LayerEnum.Taskmaster;
@@ -17,27 +15,21 @@ public class Taskmaster : Disposition
     {
         if (TasksLeft == TMTasksRemaining)
         {
-            if (Local || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is Alignment.Benign or Alignment.Evil)
+            var role = CustomPlayer.Local.GetRole();
+
+            if (Local || role.Faction == Faction.Crew || role.Alignment is Alignment.Benign or Alignment.Evil)
                 Flash(Color);
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || CustomPlayer.Local.GetAlignment() is Alignment.Killing or Alignment.Neophyte or
-                Alignment.Proselyte or Alignment.Harbinger or Alignment.Apocalypse)
+            else if (role.Faction is Faction.Intruder or Faction.Syndicate || role.Alignment is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte or Alignment.Harbinger or
+                Alignment.Apocalypse)
             {
                 Flash(Color);
-                CustomPlayer.Local.GetRole().AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
+                role.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
             }
         }
-        else if (TasksDone)
-        {
-            if (Local)
-                Flash(Color);
+        else if (TasksDone && Local)
+            Flash(Color);
 
-            WinTasksDone = true;
-        }
-    }
-
-    public override void CheckWin()
-    {
-        if (TasksDone)
+        if (AmongUsClient.Instance && TasksDone)
         {
             WinState = WinLose.TaskmasterWins;
             Winner = true;

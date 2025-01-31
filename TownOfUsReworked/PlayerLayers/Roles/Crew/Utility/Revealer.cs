@@ -41,6 +41,8 @@ public class Revealer : Crew, IGhosty
     {
         base.Init();
         Alignment = Alignment.Utility;
+        RemoveTasks(Player);
+        Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
     public override void UponTaskComplete(uint taskId)

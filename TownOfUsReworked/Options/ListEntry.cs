@@ -17,24 +17,22 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
     public override void Debug()
     {
         base.Debug();
-        Enum.GetValues<LayerEnum>().ForEach(x => TranslationManager.DebugId($"List.{x}"));
+        Enum.GetValues<LayerEnum>().Where(x => x is not (LayerEnum.Revealer or LayerEnum.Phantom or LayerEnum.Banshee or LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel
+            or LayerEnum.Mafioso or LayerEnum.Sidekick or LayerEnum.Betrayer or LayerEnum.None or LayerEnum.NoneAbility or LayerEnum.NoneDisposition or LayerEnum.NoneModifier or
+            (>= LayerEnum.Hunted and <= LayerEnum.NoneRole) or (>= LayerEnum.Undead and <= LayerEnum.Reanimated))).ForEach(x => TranslationManager.DebugId($"List.{x}"));
         Enum.GetValues<RoleListSlot>().ForEach(x => TranslationManager.DebugId($"List.{x}"));
     }
 
     public override void ViewUpdate()
     {
         base.ViewUpdate();
-
-        if (Value[0] is LayerEnum layer && LayerDictionary.TryGetValue(layer, out var entry))
-            ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.color = entry.Color;
+        ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.color = Value[0] is LayerEnum layer && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
     }
 
     public override void Update()
     {
         base.Update();
-
-        if (Value[0] is LayerEnum layer && LayerDictionary.TryGetValue(layer, out var entry))
-            Setting.Cast<StringOption>().ValueText.color = entry.Color;
+        Setting.Cast<StringOption>().ValueText.color = Value[0] is LayerEnum layer && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
     }
 
     public override string Format()
@@ -75,7 +73,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         if (self.EntryType == PlayerLayerEnum.Role)
         {
             foreach (var role in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not (LayerEnum.Revealer or LayerEnum.Phantom or LayerEnum.Banshee or LayerEnum.Ghoul or
-                LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Mafioso or LayerEnum.Sidekick)))
+                LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Mafioso or LayerEnum.Sidekick or LayerEnum.Betrayer)))
             {
                 if (!bans.Any(x => x.Get().Contains(role)))
                     yield return role;
@@ -94,7 +92,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
             }
             else
             {
-                if (GameModifiers.PandorasBox)
+                if (GameModifiers.PandoricaOpens)
                 {
                     foreach (var bucket in GetValuesFromTo(RoleListSlot.PandoraKill, RoleListSlot.NonPandora))
                         yield return bucket;

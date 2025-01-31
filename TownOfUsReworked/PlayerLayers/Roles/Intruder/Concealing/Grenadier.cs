@@ -16,9 +16,6 @@ public class Grenadier : Intruder, IFlasher
     public static bool GrenadierIndicators = false;
 
     [ToggleOption]
-    public static bool SaboFlash = false;
-
-    [ToggleOption]
     public static bool GrenadierVent = false;
 
     public CustomButton FlashButton { get; set; }
@@ -35,7 +32,7 @@ public class Grenadier : Intruder, IFlasher
         Alignment = Alignment.Concealing;
         FlashedPlayers = [];
         FlashButton ??= new(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
-            "FLASH", new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition);
+            "FLASH", new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, new CanClickAgain(false));
     }
 
     public void Flash()
@@ -46,59 +43,21 @@ public class Grenadier : Intruder, IFlasher
         {
             var player = PlayerById(id);
 
-            if (player.AmOwner)
-            {
-                if (FlashButton.EffectTime > FlashDur - 0.5f)
-                {
-                    var fade = (FlashButton.EffectTime - FlashDur) * -2f;
+            if (!player.AmOwner)
+                continue;
 
-                    if (ShouldPlayerBeBlinded(player))
-                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.BlindVision, fade);
-                    else if (ShouldPlayerBeDimmed(player))
-                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.DimVision, fade);
-                    else
-                        hud.FullScreen.color = CustomColorManager.NormalVision;
-                }
-                else if (FlashButton.EffectTime.IsInRange(0.5f, FlashDur - 0.5f, true, true))
-                {
-                    if (ShouldPlayerBeBlinded(player))
-                        hud.FullScreen.color = CustomColorManager.BlindVision;
-                    else if (ShouldPlayerBeDimmed(player))
-                        hud.FullScreen.color = CustomColorManager.DimVision;
-                    else
-                        hud.FullScreen.color = CustomColorManager.NormalVision;
-                }
-                else if (FlashButton.EffectTime < 0.5f)
-                {
-                    var fade2 = (FlashButton.EffectTime * -2) + 1;
+            if (MapBehaviourPatches.MapActive)
+                Map().Close();
 
-                    if (ShouldPlayerBeBlinded(player))
-                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.BlindVision, CustomColorManager.NormalVision, fade2);
-                    else if (ShouldPlayerBeDimmed(player))
-                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.DimVision, CustomColorManager.NormalVision, fade2);
-                    else
-                        hud.FullScreen.color = CustomColorManager.NormalVision;
-                }
-
-                if (MapBehaviourPatches.MapActive)
-                    Map().Close();
-
-                if (ActiveTask())
-                    ActiveTask().Close();
-            }
+            if (ActiveTask())
+                ActiveTask().Close();
         }
     }
 
     private bool ShouldPlayerBeDimmed(PlayerControl player) => player.HasDied() || (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None)) && !Meeting()) || player == Player || Meeting();
 
-    private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player);
-
-    public void UnFlash()
-    {
-        FlashedPlayers = [];
-        SetFullScreenHUD();
-    }
+    public void UnFlash() => FlashedPlayers = [];
 
     public void HitFlash()
     {
@@ -106,7 +65,13 @@ public class Grenadier : Intruder, IFlasher
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player, FlashRadius, includeDead: true).Select(x => x.PlayerId);
+    public void StartFlash()
+    {
+        FlashedPlayers = [ .. GetClosestPlayers(Player, FlashRadius, includeDead: true).Select(x => x.PlayerId), PlayerId];
 
-    public bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !SaboFlash;
+        if (FlashedPlayers.Contains(CustomPlayer.Local.PlayerId))
+            TransitionFlash(CustomColorManager.BlindVision, FlashDur, ShouldPlayerBeDimmed(CustomPlayer.Local) ? 0.4f : 1f);
+    }
+
+    public bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
 }

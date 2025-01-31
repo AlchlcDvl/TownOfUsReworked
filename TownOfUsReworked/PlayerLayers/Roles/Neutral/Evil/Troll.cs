@@ -40,7 +40,7 @@ public class Troll : Evil
         base.OnDeath(reason, reason2, killer);
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
-            MurderPlayer(Player, killer, DeathReasonEnum.Trolled, false);
+            Player.MurderPlayer(killer, DeathReasonEnum.Trolled, false);
     }
 
     public void Interact(PlayerControl target) => InteractButton.StartCooldown(Interactions.Interact(Player, target));

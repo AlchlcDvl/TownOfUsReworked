@@ -22,7 +22,7 @@ public static class RPCHandling
                     case TestRPC.Argless:
                     {
                         Run("<#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
-                        break;
+                        return;
                     }
                     case TestRPC.Args:
                     {
@@ -32,16 +32,14 @@ public static class RPCHandling
                             message += $"{reader.ReadString()} ";
 
                         Run("<#FF00FFFF>⚠ TEST ⚠</color>", $"Received RPC!\nWith the following message: {message.Trim()}");
-                        break;
+                        return;
                     }
                     default:
                     {
                         Failure($"Received unknown test RPC - {test}");
-                        break;
+                        return;
                     }
                 }
-
-                break;
             }
             case CustomRPC.Misc:
             {
@@ -52,23 +50,20 @@ public static class RPCHandling
                     case MiscRPC.SyncMaxUses:
                     {
                         reader.ReadButton().MaxUses = reader.ReadInt32();
-                        break;
+                        return;
                     }
                     case MiscRPC.SyncUses:
                     {
                         reader.ReadButton().Uses = reader.ReadInt32();
-                        break;
+                        return;
                     }
                     case MiscRPC.SetLayer:
                     {
                         RoleGenManager.GetLayer(reader.ReadEnum<LayerEnum>(), reader.ReadEnum<PlayerLayerEnum>()).Start(reader.ReadPlayer());
-                        break;
+                        return;
                     }
                     case MiscRPC.Whisper:
                     {
-                        if (!Chat())
-                            break;
-
                         var whisperer = reader.ReadPlayer();
                         var whispered = reader.ReadPlayer();
                         var message = reader.ReadString().Trim();
@@ -83,105 +78,105 @@ public static class RPCHandling
                         else if (GameModifiers.WhispersAnnouncement)
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) is whispering to #({whispered.name}).");
 
-                        break;
+                        return;
                     }
                     case MiscRPC.Start:
                     {
                         RoleGenManager.ResetEverything();
-                        break;
+                        return;
                     }
                     case MiscRPC.BreakShield:
                     {
                         Role.BreakShield(reader.ReadPlayer(), Medic.ShieldBreaks);
-                        break;
+                        return;
                     }
                     case MiscRPC.BastionBomb:
                     {
                         Role.BastionBomb(reader.ReadVent(), Bastion.BombRemovedOnKill);
-                        break;
+                        return;
                     }
                     case MiscRPC.Catch:
                     {
                         PlayerControlOnClick.CatchPostmortal(reader.ReadPlayer(), reader.ReadPlayer());
-                        break;
+                        return;
                     }
                     case MiscRPC.DoorSyncToilet:
                     {
                         var id2 = reader.ReadInt32();
                         UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == id2)?.SetDoorway(true);
-                        break;
+                        return;
                     }
                     case MiscRPC.SyncSummary:
                     {
                         SaveText("Summary", reader.ReadString(), TownOfUsReworked.Other);
-                        break;
+                        return;
                     }
                     case MiscRPC.SubmergedFixOxygen:
                     {
                         RepairOxygen();
-                        break;
+                        return;
                     }
                     case MiscRPC.FixLights:
                     {
                         var lights = Ship().Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
                         lights.ActualSwitches = lights.ExpectedSwitches;
-                        break;
+                        return;
                     }
                     case MiscRPC.FixMixup:
                     {
                         var mixup = Ship().Systems[SystemTypes.MushroomMixupSabotage].Cast<MushroomMixupSabotageSystem>();
                         mixup.secondsForAutoHeal = 0.1f;
-                        break;
+                        return;
                     }
                     case MiscRPC.ChaosDrive:
                     {
                         Syndicate.DriveHolder = reader.ReadPlayer();
                         Syndicate.SyndicateHasChaosDrive = Syndicate.DriveHolder;
-                        break;
+                        return;
                     }
                     case MiscRPC.SyncCustomSettings:
                     {
                         ReceiveOptionRPC(reader);
-                        break;
+                        return;
                     }
                     case MiscRPC.SyncMap:
                     {
                         SettingsPatches.SetMap(reader.ReadEnum<MapEnum>());
-                        break;
+                        return;
                     }
                     case MiscRPC.Notify:
                     {
                         ChatPatches.Notify(reader.ReadByte());
-                        break;
+                        return;
                     }
                     case MiscRPC.SetSettings:
                     {
                         TownOfUsReworked.NormalOptions.MapId = MapPatches.CurrentMap = reader.ReadByte();
                         MapPatches.SetDefaults();
                         MapPatches.AdjustSettings();
-                        break;
+                        return;
                     }
                     case MiscRPC.SetFirstKilled:
                     {
                         CachedFirstDead = FirstDead = reader.ReadString();
-                        break;
+                        return;
                     }
                     case MiscRPC.BodyLocation:
                     {
                         BodyLocations[reader.ReadByte()] = reader.ReadString();
-                        break;
+                        return;
                     }
                     case MiscRPC.MoveBody:
                     {
                         reader.ReadBody().transform.position = reader.ReadVector2();
-                        break;
+                        return;
                     }
                     case MiscRPC.LoadPreset:
                     {
                         var preset = reader.ReadString();
                         Run("<#00CC99FF>【 Loading Preset 】</color>", $"Loading the {preset} preset!");
                         SettingsPatches.CurrentPreset = preset;
-                        break;
+                        return;
                     }
                     case MiscRPC.EndRoleGen:
                     {
@@ -194,7 +189,7 @@ public static class RPCHandling
                         RoleGenManager.Convertible = reader.ReadByte();
                         BetterAirship.SpawnPoints.AddRange(reader.ReadByteList());
                         AmongUsClient.Instance.StartCoroutine(HUD().CoShowIntro());
-                        break;
+                        return;
                     }
                     case MiscRPC.SetTarget:
                     {
@@ -238,7 +233,7 @@ public static class RPCHandling
                             link2.OtherLink = link1.Player;
                         }
 
-                        break;
+                        return;
                     }
                     case MiscRPC.ChangeRoles:
                     {
@@ -263,21 +258,19 @@ public static class RPCHandling
                         else if (layer2 is Actor act)
                             act.TurnRole(reader.ReadEnum<LayerEnum>());
 
-                        break;
+                        return;
                     }
                     case MiscRPC.Achievement:
                     {
                         CustomAchievementManager.UnlockAchievement(reader.ReadString());
-                        break;
+                        return;
                     }
                     default:
                     {
                         Failure($"Received unknown misc RPC - {misc}");
-                        break;
+                        return;
                     }
                 }
-
-                break;
             }
             case CustomRPC.Vanilla:
             {
@@ -288,21 +281,19 @@ public static class RPCHandling
                     case VanillaRPC.SnapTo:
                     {
                         reader.ReadPlayer().CustomSnapTo(reader.ReadVector2());
-                        break;
+                        return;
                     }
                     case VanillaRPC.SetColor:
                     {
                         reader.ReadPlayer().SetColor(reader.ReadByte());
-                        break;
+                        return;
                     }
                     default:
                     {
                         Failure($"Received unknown vanilla RPC - {vanilla}");
-                        break;
+                        return;
                     }
                 }
-
-                break;
             }
             case CustomRPC.Action:
             {
@@ -313,17 +304,17 @@ public static class RPCHandling
                     case ActionsRPC.FadeBody:
                     {
                         FadeBody(reader.ReadBody());
-                        break;
+                        return;
                     }
                     case ActionsRPC.Convert:
                     {
                         ConvertPlayer(reader.ReadByte(), reader.ReadByte(), reader.ReadEnum<SubFaction>(), reader.ReadBoolean());
-                        break;
+                        return;
                     }
                     case ActionsRPC.BypassKill:
                     {
-                        MurderPlayer(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadEnum<DeathReasonEnum>(), reader.ReadBoolean());
-                        break;
+                        reader.ReadPlayer().MurderPlayer(reader.ReadPlayer(), reader.ReadEnum<DeathReasonEnum>(), reader.ReadBoolean());
+                        return;
                     }
                     case ActionsRPC.ForceKill:
                     {
@@ -331,17 +322,17 @@ public static class RPCHandling
                         var success = reader.ReadBoolean();
                         PlayerLayer.GetLayers<Enforcer>().Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
                         PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
-                        break;
+                        return;
                     }
                     case ActionsRPC.Mine:
                     {
                         AddVent(reader.ReadLayer<Role>() as IDigger, reader.ReadVector2());
-                        break;
+                        return;
                     }
                     case ActionsRPC.Infect:
                     {
                         Pestilence.Infected[reader.ReadByte()] = reader.ReadInt32();
-                        break;
+                        return;
                     }
                     case ActionsRPC.SetUninteractable:
                     {
@@ -374,17 +365,17 @@ public static class RPCHandling
                             Error(e);
                         }
 
-                        break;
+                        return;
                     }
                     case ActionsRPC.CallMeeting:
                     {
                         CallMeeting(reader.ReadPlayer());
-                        break;
+                        return;
                     }
                     case ActionsRPC.BaitReport:
                     {
                         reader.ReadPlayer().ReportDeadBody(reader.ReadPlayer().Data);
-                        break;
+                        return;
                     }
                     case ActionsRPC.Drop:
                     {
@@ -392,7 +383,7 @@ public static class RPCHandling
                         var dragged1 = BodyById(DragHandler.Instance.Dragging[dragger.PlayerId]);
                         DragHandler.Instance.StopDrag(dragger);
                         PlayerLayer.GetILayers<IDragger>().Where(x => x.CurrentlyDragging == dragged1).ForEach(x => x.CurrentlyDragging = null);
-                        break;
+                        return;
                     }
                     case ActionsRPC.Burn:
                     {
@@ -404,7 +395,7 @@ public static class RPCHandling
                                 Ash.CreateAsh(body);
                         }
 
-                        break;
+                        return;
                     }
                     case ActionsRPC.PlaceHit:
                     {
@@ -412,36 +403,34 @@ public static class RPCHandling
                         requestor.Requestor.GetLayer<BountyHunter>().TentativeTarget = reader.ReadPlayer();
                         requestor.Requesting = false;
                         requestor.Requestor = null;
-                        break;
+                        return;
                     }
                     case ActionsRPC.ButtonAction:
                     {
                         reader.ReadButton().StartEffectRPC(reader);
-                        break;
+                        return;
                     }
                     case ActionsRPC.LayerAction:
                     {
                         reader.ReadLayer().ReadRPC(reader);
-                        break;
+                        return;
                     }
                     case ActionsRPC.Cancel:
                     {
                         reader.ReadButton().ClickedAgain = true;
-                        break;
+                        return;
                     }
                     case ActionsRPC.PublicReveal:
                     {
                         Role.PublicReveal(reader.ReadPlayer());
-                        break;
+                        return;
                     }
                     default:
                     {
                         Failure($"Received unknown action RPC - {action}");
-                        break;
+                        return;
                     }
                 }
-
-                break;
             }
             case CustomRPC.WinLose:
             {
@@ -464,37 +453,37 @@ public static class RPCHandling
                         else
                             nkRole.Winner = true;
 
-                        break;
+                        return;
                     }
                     case WinLose.JesterWins:
                     {
                         reader.ReadLayer<Jester>().VotedOut = true;
-                        break;
+                        return;
                     }
                     case WinLose.CannibalWins:
                     {
                         reader.ReadLayer<Cannibal>().Eaten = true;
-                        break;
+                        return;
                     }
                     case WinLose.ExecutionerWins:
                     {
                         reader.ReadLayer<Executioner>().TargetVotedOut = true;
-                        break;
+                        return;
                     }
                     case WinLose.BountyHunterWins:
                     {
                         reader.ReadLayer<BountyHunter>().TargetKilled = true;
-                        break;
+                        return;
                     }
                     case WinLose.ActorWins:
                     {
                         reader.ReadLayer<Actor>().Guessed = true;
-                        break;
+                        return;
                     }
                     case WinLose.GuesserWins:
                     {
                         reader.ReadLayer<Guesser>().TargetGuessed = true;
-                        break;
+                        return;
                     }
                     case WinLose.CorruptedWins:
                     {
@@ -502,43 +491,43 @@ public static class RPCHandling
                             PlayerLayer.GetLayers<Corrupted>().ForEach(x => x.Winner = true);
 
                         reader.ReadLayer().Winner = true;
-                        break;
+                        return;
                     }
                     case WinLose.LoveWins:
                     {
                         var lover = reader.ReadLayer<Lovers>();
                         lover.Winner = true;
                         lover.OtherLover.GetDisposition().Winner = true;
-                        break;
+                        return;
                     }
                     case WinLose.OverlordWins:
                     {
                         PlayerLayer.GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
-                        break;
+                        return;
                     }
                     case WinLose.TaskmasterWins:
                     {
                         reader.ReadLayer().Winner = true;
-                        break;
+                        return;
                     }
                     case WinLose.RivalWins:
                     {
                         reader.ReadLayer().Winner = true;
-                        break;
+                        return;
                     }
                     case WinLose.TaskRunnerWins:
                     {
                         reader.ReadLayer<Runner>().Winner = true;
-                        break;
+                        return;
                     }
                 }
 
-                break;
+                return;
             }
             default:
             {
                 Failure($"Received unknown custom RPC - {rpc}");
-                break;
+                return;
             }
         }
     }

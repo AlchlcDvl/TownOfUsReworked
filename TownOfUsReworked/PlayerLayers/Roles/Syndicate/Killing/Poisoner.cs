@@ -37,7 +37,7 @@ public class Poisoner : Syndicate
     public void UnPoison()
     {
         if (CanAttack(AttackEnum.Basic, PoisonedPlayer.GetDefenseValue(Player)))
-            RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
+            Player.RpcMurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
     }

@@ -288,6 +288,21 @@ public static class ListExtensions
             action(key, value);
     }
 
+    public static bool ContainsAny<T>(this IEnumerable<T> source, params T[] values) => values.Any(source.Contains);
+
+    public static IEnumerable<T> GetAll<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(x => x);
+
+    public static T Find<T>(this ISystem.List<T> source, Func<T, bool> predicate)
+    {
+        foreach (var item in source)
+        {
+            if (predicate(item))
+                return item;
+        }
+
+        return default;
+    }
+
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)
@@ -347,8 +362,6 @@ public static class ListExtensions
 
         return true;
     }
-
-    public static bool ContainsAny<T>(this IEnumerable<T> source, T[] values) => values.Any(source.Contains);
 
     public static bool ContainsAnyKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey[] keys) => keys.Any(dict.ContainsKey);
 

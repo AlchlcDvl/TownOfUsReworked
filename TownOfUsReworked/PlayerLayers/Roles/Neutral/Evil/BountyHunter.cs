@@ -194,7 +194,7 @@ public class BountyHunter : Evil
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
             }
             else
-                RpcMurderPlayer(Player);
+                Player.RpcSuicide();
         }
     }
 

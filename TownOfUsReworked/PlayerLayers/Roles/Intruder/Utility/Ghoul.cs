@@ -24,6 +24,7 @@ public class Ghoul : Intruder, IGhosty
         MarkedPlayer = null;
         MarkButton ??= new(this, new SpriteName("GhoulMark"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Mark, new Cooldown(GhoulMarkCd), "MARK", new PostDeath(true),
             (PlayerBodyExclusion)Exception1, (UsableFunc)Usable);
+        Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
     public void Mark(PlayerControl target)

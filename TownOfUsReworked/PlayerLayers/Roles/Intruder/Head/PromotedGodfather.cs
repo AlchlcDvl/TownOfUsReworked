@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher, ITeleporter
+public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher, IMover, IBlocker
 {
     public override void Init()
     {
@@ -68,7 +68,8 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         else if (IsGren)
         {
             FlashButton ??= new(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitFlash, new Cooldown(Grenadier.FlashCd), "FLASH",
-                (EffectVoid)Flash, new Duration(Grenadier.FlashDur), (EffectStartVoid)StartFlash, (EffectEndVoid)UnFlash, (ConditionFunc)GrenCondition, (UsableFunc)GrenUsable);
+                (EffectVoid)Flash, new Duration(Grenadier.FlashDur), (EffectStartVoid)StartFlash, (EffectEndVoid)UnFlash, (ConditionFunc)GrenCondition, (UsableFunc)GrenUsable,
+                new CanClickAgain(false));
         }
         else if (IsJani)
         {
@@ -117,7 +118,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         {
             var wasnull = BlockButton == null;
             BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, (UsableFunc)ConsUsable, (EndFunc)BlockEnd,
-                (EffectEndVoid)UnBlock, new Cooldown(Consort.ConsortCd), new Duration(Consort.ConsortDur), (EffectVoid)Block, (LabelFunc)ConsLabel, (EffectStartVoid)BlockStart);
+                (EffectEndVoid)UnBlock, new Cooldown(Consort.ConsortCd), new Duration(Consort.ConsortDur), (LabelFunc)ConsLabel, (EffectStartVoid)BlockStart);
 
             if (wasnull && BlockMenu == null)
                 BlockMenu = new(Player, ConsClick, ConsException);
@@ -203,12 +204,8 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     // Blackmailer Stuff
     public CustomButton BlackmailButton { get; set; }
     public bool ShookAlready { get; set; }
-    public PlayerControl Target { get; set; }
-    public PlayerControl BlackmailedPlayer
-    {
-        get => Target;
-        set => Target = value;
-    }
+    public PlayerControl Target => BlackmailedPlayer;
+    public PlayerControl BlackmailedPlayer { get; set; }
     public bool IsBM => FormerRole is Blackmailer;
 
     public void Blackmail(PlayerControl target)
@@ -271,59 +268,21 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         {
             var player = PlayerById(id);
 
-            if (player.AmOwner)
-            {
-                if (FlashButton.EffectTime > Grenadier.FlashDur - 0.5f)
-                {
-                    var fade = (FlashButton.EffectTime - Grenadier.FlashDur) * -2f;
+            if (!player.AmOwner)
+                continue;
 
-                    if (ShouldPlayerBeBlinded(player))
-                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.BlindVision, fade);
-                    else if (ShouldPlayerBeDimmed(player))
-                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.NormalVision, CustomColorManager.DimVision, fade);
-                    else
-                        hud.FullScreen.color = CustomColorManager.NormalVision;
-                }
-                else if (FlashButton.EffectTime.IsInRange(0.5f, Grenadier.FlashDur - 0.5f, true, true))
-                {
-                    if (ShouldPlayerBeBlinded(player))
-                        hud.FullScreen.color = CustomColorManager.BlindVision;
-                    else if (ShouldPlayerBeDimmed(player))
-                        hud.FullScreen.color = CustomColorManager.DimVision;
-                    else
-                        hud.FullScreen.color = CustomColorManager.NormalVision;
-                }
-                else if (FlashButton.EffectTime < 0.5f)
-                {
-                    var fade2 = (FlashButton.EffectTime * -2) + 1;
+            if (MapBehaviourPatches.MapActive)
+                Map().Close();
 
-                    if (ShouldPlayerBeBlinded(player))
-                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.BlindVision, CustomColorManager.NormalVision, fade2);
-                    else if (ShouldPlayerBeDimmed(player))
-                        hud.FullScreen.color = Color32.Lerp(CustomColorManager.DimVision, CustomColorManager.NormalVision, fade2);
-                    else
-                        hud.FullScreen.color = CustomColorManager.NormalVision;
-                }
-
-                if (MapBehaviourPatches.MapActive)
-                    Map().Close();
-
-                if (ActiveTask())
-                    ActiveTask().Close();
-            }
+            if (ActiveTask())
+                ActiveTask().Close();
         }
     }
 
     private bool ShouldPlayerBeDimmed(PlayerControl player) => player.HasDied() || (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None)) && !Meeting()) || player == Player || Meeting();
 
-    private bool ShouldPlayerBeBlinded(PlayerControl player) => !ShouldPlayerBeDimmed(player);
-
-    public void UnFlash()
-    {
-        FlashedPlayers = [];
-        SetFullScreenHUD();
-    }
+    public void UnFlash() => FlashedPlayers = [];
 
     public void HitFlash()
     {
@@ -331,9 +290,15 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         FlashButton.Begin();
     }
 
-    public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player, Grenadier.FlashRadius, includeDead: true).Select(x => x.PlayerId);
+    public void StartFlash()
+    {
+        FlashedPlayers = [ .. GetClosestPlayers(Player, Grenadier.FlashRadius, includeDead: true).Select(x => x.PlayerId), PlayerId];
 
-    public bool GrenCondition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive && !Grenadier.SaboFlash;
+        if (FlashedPlayers.Contains(CustomPlayer.Local.PlayerId))
+            TransitionFlash(CustomColorManager.BlindVision, Grenadier.FlashDur, ShouldPlayerBeDimmed(CustomPlayer.Local) ? 0.4f : 1f);
+    }
+
+    public bool GrenCondition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
 
     public bool GrenUsable() => IsGren;
 
@@ -378,7 +343,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
 
     public bool JaniUsable2() => CurrentlyDragging && IsJani;
 
-    public float JaniDifference() => LastImp() && Janitor.SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
+    public float JaniDifference() => Last(Faction) && Janitor.SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
     // Disguiser Stuff
     public CustomButton DisguiseButton { get; set; }
@@ -544,7 +509,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     public CustomButton TeleportButton { get; set; }
     public Vector2 TeleportPoint { get; set; }
     public CustomButton MarkButton { get; set; }
-    public bool Teleporting { get; set; }
+    public bool Moving { get; set; }
     public bool IsTele => FormerRole is Teleporter;
 
     public void Mark()
@@ -573,7 +538,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
 
     public bool TeleUsable2() => IsTele && TeleportPoint != Vector2.zero;
 
-    public bool TeleCondition() => (Vector2)Player.transform.position != TeleportPoint && !Teleporting;
+    public bool TeleCondition() => (Vector2)Player.transform.position != TeleportPoint && !Moving;
 
     // Ambusher Stuff
     public PlayerControl AmbushedPlayer { get; set; }
@@ -614,16 +579,11 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
 
     public void UnBlock()
     {
-        BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
-        BlockTarget.GetButtons().ForEach(x => x.BlockExposed = false);
-
         if (BlockTarget.AmOwner)
-            Blocked.BlockExposed = false;
+            BlockExposed = false;
 
         BlockTarget = null;
     }
-
-    public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
 
     public void BlockStart()
     {

@@ -13,7 +13,6 @@ public abstract class PlayerLayer : IPlayerLayer
 
     public string Name { get; set; }
     public PlayerControl Player { get; set; }
-    public bool IsBlocked { get; set; }
     public bool Winner { get; set; }
     public bool Ignore { get; set; }
 
@@ -128,7 +127,7 @@ public abstract class PlayerLayer : IPlayerLayer
 
     public void GameEnd()
     {
-        if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Ignore || WinState != WinLose.None)
+        if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Ignore)
             return;
 
         CheckWin();

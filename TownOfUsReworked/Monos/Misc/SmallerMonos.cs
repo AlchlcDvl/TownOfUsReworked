@@ -8,7 +8,7 @@ public class CameraEffect : MonoBehaviour
 
     public static CameraEffect Instance { get; private set; }
 
-    public static void Initialize() => Instance = Camera.main.gameObject.EnsureComponent<CameraEffect>();
+    public static void Initialize() => Instance = Camera.main.EnsureComponent<CameraEffect>();
 
     public void OnRenderImage(RenderTexture source, RenderTexture destination)
     {

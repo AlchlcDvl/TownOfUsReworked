@@ -106,7 +106,7 @@ public class Executioner : Evil
 
     public void Doom(PlayerControl target)
     {
-        RpcMurderPlayer(Player, target, DeathReasonEnum.Doomed, false);
+        Player.RpcMurderPlayer(target, DeathReasonEnum.Doomed, false);
         HasDoomed = true;
     }
 
@@ -138,7 +138,7 @@ public class Executioner : Evil
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
             }
             else
-                RpcMurderPlayer(Player);
+                Player.RpcSuicide();
         }
     }
 }

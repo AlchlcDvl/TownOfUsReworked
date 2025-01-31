@@ -20,7 +20,7 @@ public class BundleLoader : AssetLoader<Asset>
             var asset = response[i];
             var bundle = LoadBundle(File.ReadAllBytes(Path.Combine(DirectoryInfo, asset.ID)));
             Bundles[asset.ID] = bundle;
-            bundle.AllAssetNames().ForEach(x => ObjectToBundle[ConvertToBaseName(x)] = asset.ID);
+            bundle.AllAssetNames().ForEach(x => AssetToBundle[ConvertToBaseName(x)] = asset.ID);
             time += Time.deltaTime;
 
             if (time > 1f)

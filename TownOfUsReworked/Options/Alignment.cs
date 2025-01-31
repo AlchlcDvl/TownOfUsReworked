@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Options;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None, bool noParts = false, string colorHex = null, int priority = -1, MultiMenu menu = MultiMenu.Layer) :
-    BaseHeaderOptionAttribute (menu, CustomOptionType.Alignment, priority)
+    BaseHeaderOptionAttribute(menu, CustomOptionType.Alignment, priority)
 {
     public RoleListSlot Alignment { get; } = alignment;
     private bool NoParts { get; } = noParts;
@@ -31,6 +31,8 @@ public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None
         Left = quota.GetChild(1).GetComponent<TextMeshPro>();
         Right = quota.GetChild(4).GetComponent<TextMeshPro>();
         Center = quota.GetChild(6).GetComponent<TextMeshPro>();
+
+        Center.transform.localPosition = Right.transform.localPosition + ((Left.transform.localPosition - Right.transform.localPosition) / 2);
 
         Single = quota.GetChild(5).gameObject;
 

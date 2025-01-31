@@ -68,7 +68,7 @@ public class Arsonist : NKilling
 
                 if (CanAttack(AttackVal, player.GetDefenseValue()))
                 {
-                    RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
+                    Player.RpcMurderPlayer(player, DeathReasonEnum.Ignited, false);
                     disappear.Add(playerId);
                 }
             }

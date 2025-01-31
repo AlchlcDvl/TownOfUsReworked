@@ -168,7 +168,7 @@ public class Thief : Neutral, IGuesser
     {
         var allowed = true;
 
-        if (Local)
+        if (Local && !Meeting())
         {
             var cooldown = Interact(Player, target, true, delayed: true);
 
@@ -176,12 +176,12 @@ public class Thief : Neutral, IGuesser
             {
                 if (target.GetFaction() is Faction.Intruder or Faction.Syndicate || target.GetAlignment() is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
                 {
-                    Utils.RpcMurderPlayer(Player, target);
+                    Player.RpcMurderPlayer(target);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
                 }
                 else
                 {
-                    Utils.RpcMurderPlayer(Player);
+                    Player.RpcSuicide();
                     allowed = false;
                 }
             }

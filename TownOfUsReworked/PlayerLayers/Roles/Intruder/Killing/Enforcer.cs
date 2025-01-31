@@ -58,10 +58,10 @@ public class Enforcer : Intruder
         foreach (var player in GetClosestPlayers(centre, EnforceRadius))
         {
             if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
-                RpcMurderPlayer(enf, player, DeathReasonEnum.Bombed, false);
+                enf.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
         }
 
-        RpcMurderPlayer(enf, centre, DeathReasonEnum.Bombed, false);
+        enf.RpcMurderPlayer(centre, DeathReasonEnum.Bombed, false);
     }
 
     public void Bomb(PlayerControl target)

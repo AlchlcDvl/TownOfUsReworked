@@ -4,37 +4,37 @@ namespace TownOfUsReworked.BetterMaps;
 public static class BetterAirship
 {
     [ToggleOption]
-    public static bool EnableBetterAirship { get; set; } = true;
+    public static bool EnableBetterAirship = true;
 
     [StringOption<AirshipSpawnType>]
-    public static AirshipSpawnType SpawnType { get; set; } = AirshipSpawnType.Normal;
+    public static AirshipSpawnType SpawnType = AirshipSpawnType.Normal;
 
     [ToggleOption]
-    public static bool MoveVitals { get; set; } = false;
+    public static bool MoveVitals = false;
 
     [ToggleOption]
-    public static bool MoveFuel { get; set; } = false;
+    public static bool MoveFuel = false;
 
     [ToggleOption]
-    public static bool MoveDivert { get; set; } = false;
+    public static bool MoveDivert = false;
 
     [StringOption<MoveAdmin>]
-    public static MoveAdmin MoveAdmin { get; set; } = MoveAdmin.DontMove;
+    public static MoveAdmin MoveAdmin = MoveAdmin.DontMove;
 
     [StringOption<MoveElectrical>]
-    public static MoveElectrical MoveElectrical { get; set; } = MoveElectrical.DontMove;
+    public static MoveElectrical MoveElectrical = MoveElectrical.DontMove;
 
     [NumberOption(0f, 10f, 0.1f)]
-    public static Number MinDoorSwipeTime { get; set; } = 0.4f;
+    public static Number MinDoorSwipeTime = 0.4f;
 
     [NumberOption(30f, 100f, 5f, Format.Time)]
-    public static Number CrashTimer { get; set; } = 90;
+    public static Number CrashTimer = 90;
 
     [NumberOption(1f, 20f, 1f, Format.Time)]
-    public static Number CrashCodeResetTimer { get; set; } = 10;
+    public static Number CrashCodeResetTimer = 10;
 
     [ToggleOption]
-    public static bool EnableCustomSpawns { get; set; } = true;
+    public static bool EnableCustomSpawns = true;
 
     public static readonly List<byte> SpawnPoints = [];
 
@@ -141,7 +141,7 @@ public static class BetterAirship
             if (EnableCustomSpawns)
             {
                 AddSpawn(new Vector3(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault"), GetAudio("RolloverDefault"), ref spawn);
-                AddSpawn(new Vector3(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cokpit"), GetAnim("Cokpit"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new Vector3(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cockpit"), GetAnim("Cockpit"), GetAudio("RolloverDefault"), ref spawn);
                 AddSpawn(new Vector3(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical"), GetAudio("RolloverDefault"), ref spawn);
             }
 

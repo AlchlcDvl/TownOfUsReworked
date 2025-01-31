@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Transporter : Crew, ITransporter
+public class Transporter : Crew, IMover
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxTransports = 5;
@@ -17,7 +17,7 @@ public class Transporter : Crew, ITransporter
 
     public CustomButton TransportButton { get; set; }
     public CustomPlayerMenu TransportMenu { get; set; }
-    public bool Transporting { get; set; }
+    public bool Moving { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Transporter : FactionColor;
     public override LayerEnum Type => LayerEnum.Transporter;
@@ -40,7 +40,7 @@ public class Transporter : Crew, ITransporter
         _ =>  "TRANSPORT"
     };
 
-    public static IEnumerator TransportPlayers(PlayerControl transport1, PlayerControl transport2, ITransporter transporter)
+    public static IEnumerator TransportPlayers(PlayerControl transport1, PlayerControl transport2, IMover transporter)
     {
         var player1Body = (DeadBody)null;
         var player2Body = (DeadBody)null;
@@ -65,7 +65,7 @@ public class Transporter : Crew, ITransporter
                 yield break;
         }
 
-        Moving.Add(transport1.PlayerId, transport2.PlayerId);
+        References.Moving.Add(transport1.PlayerId, transport2.PlayerId);
 
         if (transport1.inVent)
         {
@@ -87,7 +87,7 @@ public class Transporter : Crew, ITransporter
             wasInVent2 = true;
         }
 
-        transporter.Transporting = true;
+        transporter.Moving = true;
 
         if (transport1.AmOwner || transport2.AmOwner)
             Flash(transporter.Color, TransportDur);
@@ -109,8 +109,8 @@ public class Transporter : Crew, ITransporter
 
             if (Meeting())
             {
-                Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
-                transporter.Transporting = false;
+                References.Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
+                transporter.Moving = false;
                 yield break;
             }
         }
@@ -121,8 +121,8 @@ public class Transporter : Crew, ITransporter
 
             if (!player1Body)
             {
-                Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
-                transporter.Transporting = false;
+                References.Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
+                transporter.Moving = false;
                 yield break;
             }
         }
@@ -133,8 +133,8 @@ public class Transporter : Crew, ITransporter
 
             if (!player2Body)
             {
-                Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
-                transporter.Transporting = false;
+                References.Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
+                transporter.Moving = false;
                 yield break;
             }
         }
@@ -181,8 +181,8 @@ public class Transporter : Crew, ITransporter
                 Map().Close();
         }
 
-        Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
-        transporter.Transporting = false;
+        References.Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
+        transporter.Moving = false;
     }
 
     public bool Click(PlayerControl player, out bool shouldClose)
@@ -230,7 +230,7 @@ public class Transporter : Crew, ITransporter
 
         if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
-            if (!Transporting && TransportMenu.Selected.Count > 0)
+            if (!Moving && TransportMenu.Selected.Count > 0)
                 TransportMenu.Selected.TakeLast();
 
             Message("Removed a target");

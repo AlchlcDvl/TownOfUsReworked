@@ -45,7 +45,7 @@ public class Werewolf : NKilling
                 Spread(Player, player);
 
                 if (CanAttack(AttackVal, player.GetDefenseValue()))
-                    RpcMurderPlayer(Player, player, DeathReasonEnum.Mauled, false);
+                    Player.RpcMurderPlayer(player, DeathReasonEnum.Mauled, false);
             }
         }
 

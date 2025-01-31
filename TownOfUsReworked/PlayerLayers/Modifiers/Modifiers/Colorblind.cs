@@ -17,17 +17,13 @@ public class Colorblind : Modifier
     public override void ExitingLayer()
     {
         AllToNormal();
-
-        if (CameraEffect.Instance)
-            CameraEffect.Instance.Materials.Clear();
+        CameraEffect.Instance.Materials.Remove(GetMaterial("SoundV"));
     }
 
     public override void EnteringLayer()
     {
         ColorAll();
-        CameraEffect.Initialize();
-        CameraEffect.Instance.Materials.Clear();
-        CameraEffect.Instance.Materials.Add(UnityGet<Material>("SoundV"));
+        CameraEffect.Instance.Materials.Add(GetMaterial("SoundV"));
     }
 
     public override void UpdateHud(HudManager __instance)

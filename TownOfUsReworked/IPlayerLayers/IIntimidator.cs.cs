@@ -2,6 +2,6 @@ namespace TownOfUsReworked.IPlayerLayers;
 
 public interface IIntimidator : IRole
 {
-    PlayerControl Target { get; set; }
+    PlayerControl Target { get; }
     bool ShookAlready { get; set; }
 }

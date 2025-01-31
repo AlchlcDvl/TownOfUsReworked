@@ -12,7 +12,7 @@ public abstract class BaseHeaderOptionAttribute(MultiMenu menu, CustomOptionType
     {
         ClassType = type;
         Name = type.Name;
-        Value = DefaultValue = false;
+        Value = false;
         ID = $"CustomOption.{Name}";
         AllOptions.Add(this);
 

@@ -44,7 +44,7 @@ public class Spellslinger : Syndicate, IHexer
                 SpellCount++;
 
             if (AmongUsClient.Instance.AmHost)
-                CheckEndGame.CheckEnd();
+                CheckEndGame.CheckSpellWin(this);
         }
 
         SpellButton.StartCooldown(cooldown);
@@ -57,7 +57,7 @@ public class Spellslinger : Syndicate, IHexer
         Spelled.Add(reader.ReadByte());
 
         if (AmongUsClient.Instance.AmHost)
-            CheckEndGame.CheckEnd();
+            CheckEndGame.CheckSpellWin(this);
     }
 
     public float Difference() => SpellCount * SpellCdIncrease;

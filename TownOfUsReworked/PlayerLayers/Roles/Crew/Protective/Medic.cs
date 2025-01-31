@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [HeaderOption(MultiMenu.LayerSubOptions)]
 public class Medic : Crew, IShielder
 {
-    [StringOption<ShieldOptions>]
-    public static ShieldOptions ShowShielded = ShieldOptions.Medic;
+    [MultiSelectOption<ShieldOptions>(ShieldOptions.Nobody, ShieldOptions.Everyone)]
+    public static List<ShieldOptions> ShowShielded = [ ShieldOptions.Medic ];
 
-    [StringOption<ShieldOptions>]
-    public static ShieldOptions WhoGetsNotification = ShieldOptions.Medic;
+    [MultiSelectOption<ShieldOptions>(ShieldOptions.Nobody, ShieldOptions.Everyone)]
+    public static List<ShieldOptions> WhoGetsNotification = [ ShieldOptions.Medic ];
 
     [ToggleOption]
     public static bool ShieldBreaks = true;
@@ -19,8 +19,8 @@ public class Medic : Crew, IShielder
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medic : FactionColor;
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
-    public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification is ShieldOptions.Everyone or ShieldOptions.Medic or
-        ShieldOptions.ShieldedAndMedic ? "\n- If your target is attacked, you will be notified of it" : "");
+    public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification.ContainsAny(ShieldOptions.Medic, ShieldOptions.Everyone) ?
+        "\n- If your target is attacked, you will be notified of it" : "");
 
     public override void Init()
     {

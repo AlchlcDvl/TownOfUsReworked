@@ -253,14 +253,17 @@ public class ClientHandler : MonoBehaviour
 
         SettingsPatches.SettingsPage = 3;
         CustomPlayer.Local.NetTransform.Halt();
-        var currentMenu = Instantiate(Prefab);
-        currentMenu.transform.SetParent(Camera.main.transform, false);
+        var currentMenu = Instantiate(Prefab, Camera.main.transform, false);
         currentMenu.transform.localPosition = Pos;
         currentMenu.name = "ReworkedOptionsMenu";
         TransitionFade.Instance.DoTransitionFade(null, currentMenu.gameObject, null);
-        GameStartManager.Instance.RulesViewPanel?.SetActive(false);
-        GameStartManager.Instance.SelectViewButton(false);
-        GameStartManager.Instance.LobbyInfoPane?.DeactivatePane();
+
+        if (IsLobby())
+        {
+            GameStartManager.Instance?.RulesViewPanel?.SetActive(false);
+            GameStartManager.Instance?.SelectViewButton(false);
+            GameStartManager.Instance?.LobbyInfoPane?.DeactivatePane();
+        }
     }
 
     public static void OpenWiki()

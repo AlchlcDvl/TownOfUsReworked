@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Teleporter : Intruder, ITeleporter
+public class Teleporter : Intruder, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number TeleportCd = 25;
@@ -21,7 +21,7 @@ public class Teleporter : Intruder, ITeleporter
     public CustomButton TeleportButton { get; set; }
     public CustomButton MarkButton { get; set; }
     public Vector2 TeleportPoint { get; set; }
-    public bool Teleporting { get; set; }
+    public bool Moving { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Teleporter : FactionColor;
     public override LayerEnum Type => LayerEnum.Teleporter;
@@ -65,9 +65,9 @@ public class Teleporter : Intruder, ITeleporter
 
     public bool Usable() => TeleportPoint != Vector2.zero;
 
-    public bool Condition2() => (Vector2)Player.transform.position != TeleportPoint && !Teleporting;
+    public bool Condition2() => (Vector2)Player.transform.position != TeleportPoint && !Moving;
 
-    public static IEnumerator TeleportPlayer(Vector2 point, ITeleporter teleporter)
+    public static IEnumerator TeleportPlayer(Vector2 point, IMover teleporter)
     {
         var player = teleporter.Player;
         var playerBody = (DeadBody)null;
@@ -80,7 +80,7 @@ public class Teleporter : Intruder, ITeleporter
                 yield break;
         }
 
-        Moving.Add(player.PlayerId);
+        References.Moving.Add(player.PlayerId);
 
         if (player.inVent)
         {
@@ -90,7 +90,7 @@ public class Teleporter : Intruder, ITeleporter
             player.MyPhysics.ExitAllVents();
         }
 
-        teleporter.Teleporting = true;
+        teleporter.Moving = true;
 
         if (player.AmOwner)
             Flash(teleporter.Color, TeleportDur);
@@ -107,8 +107,8 @@ public class Teleporter : Intruder, ITeleporter
 
             if (Meeting())
             {
-                Moving.RemoveAll(x => x == player.PlayerId);
-                teleporter.Teleporting = false;
+                References.Moving.RemoveAll(x => x == player.PlayerId);
+                teleporter.Moving = false;
                 yield break;
             }
         }
@@ -119,15 +119,15 @@ public class Teleporter : Intruder, ITeleporter
 
             if (!playerBody)
             {
-                Moving.RemoveAll(x => x == player.PlayerId);
-                teleporter.Teleporting = false;
+                References.Moving.RemoveAll(x => x == player.PlayerId);
+                teleporter.Moving = false;
                 yield break;
             }
         }
 
         player.CustomSnapTo(new(point.x, point.y + 0.3636f));
 
-        Moving.RemoveAll(x => x == player.PlayerId);
-        teleporter.Teleporting = false;
+        References.Moving.RemoveAll(x => x == player.PlayerId);
+        teleporter.Moving = false;
     }
 }

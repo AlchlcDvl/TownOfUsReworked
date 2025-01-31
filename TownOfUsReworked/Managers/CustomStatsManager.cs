@@ -358,9 +358,23 @@ public static class CustomStatsManager
             dict[reader.ReadEnum<T>()] = reader.ReadUInt32();
     }
 
-    public static T ReadEnum<T>(this BinaryReader reader) where T : struct, Enum => Enum.Parse<T>(reader.ReadString());
+    public static T ReadEnum<T>(this BinaryReader reader) where T : struct, Enum
+    {
+        if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
+            return (T)(object)reader.ReadByte();
+        else
+            return (T)(object)reader.ReadInt32();
+    }
 
-    public static void Write(this BinaryWriter writer, Enum @enum) => writer.Write($"{@enum}");
+    public static void Write(this BinaryWriter writer, Enum enumVal)
+    {
+        var enumType = enumVal.GetType();
+
+        if (enumType.GetEnumUnderlyingType() == typeof(byte))
+            writer.Write(Convert.ToByte(enumVal));
+        else
+            writer.Write(Convert.ToInt32(enumVal));
+    }
 
     public static void Write<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
     {

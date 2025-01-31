@@ -51,17 +51,26 @@ public class Hunter : HideAndSeek
     public void Hunt(PlayerControl target)
     {
         if (GameModeSettings.HnSMode == HnSMode.Classic)
-            RpcMurderPlayer(Player, target);
+            Player.RpcMurderPlayer(target);
         else if (GameModeSettings.HnSMode == HnSMode.Infection)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
             TurnHunter(target);
+
+            if (AmongUsClient.Instance.AmHost)
+                CheckWin();
         }
 
         HuntButton.StartCooldown();
     }
 
-    public override void ReadRPC(MessageReader reader) => TurnHunter(reader.ReadPlayer());
+    public override void ReadRPC(MessageReader reader)
+    {
+        TurnHunter(reader.ReadPlayer());
+
+        if (AmongUsClient.Instance.AmHost)
+            CheckWin();
+    }
 
     public override void CheckWin()
     {

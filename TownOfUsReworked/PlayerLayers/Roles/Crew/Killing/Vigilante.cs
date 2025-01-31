@@ -51,7 +51,7 @@ public class Vigilante : Crew
         RoundOne = false;
 
         if (PreMeetingDie)
-            RpcMurderPlayer(Player);
+            Player.RpcSuicide();
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -81,7 +81,7 @@ public class Vigilante : Crew
             else
             {
                 if (MisfireKillsInno)
-                    RpcMurderPlayer(Player, target);
+                    Player.RpcMurderPlayer(target);
 
                 if (Local && HowIsVigilanteNotified == VigiNotif.Flash && HowDoesVigilanteDie != VigiOptions.Immediate)
                     Flash(Color);
@@ -92,7 +92,7 @@ public class Vigilante : Crew
                 PostMeetingDie = HowDoesVigilanteDie == VigiOptions.PostMeeting;
 
                 if (HowDoesVigilanteDie == VigiOptions.Immediate)
-                    RpcMurderPlayer(Player);
+                    Player.RpcSuicide();
             }
         }
 

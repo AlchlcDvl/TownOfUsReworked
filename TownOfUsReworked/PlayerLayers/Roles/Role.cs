@@ -20,7 +20,7 @@ public abstract class Role : PlayerLayer
         else if (Player.Is<Mafia>())
             team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
 
-        if (IsRecruit)
+        if (SubFaction == SubFaction.Cabal && Alignment != Alignment.Neophyte)
         {
             var jackal = Player.GetJackal();
             team.Add(jackal.Player);
@@ -73,7 +73,6 @@ public abstract class Role : PlayerLayer
                 {
                     Alignment.HideAndSeek => CustomColorManager.HideAndSeek,
                     Alignment.TaskRace => CustomColorManager.TaskRace,
-                    Alignment.HotPotato => CustomColorManager.HotPotato,
                     _ => CustomColorManager.Faction
                 },
                 _ => CustomColorManager.Faction
@@ -88,6 +87,10 @@ public abstract class Role : PlayerLayer
             _faction = value;
         }
     }
+    public UColor FactionColor { get; set; }
+    public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
+    public virtual string FactionName => $"{Faction}";
+
     private SubFaction _subFaction;
     public SubFaction SubFaction
     {
@@ -105,17 +108,12 @@ public abstract class Role : PlayerLayer
             };
         }
     }
-
-    public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
+    public string SubFactionSymbol { get; set; }
+    public UColor SubFactionColor { get; set; }
     public string SubFactionColorString => $"<#{SubFactionColor.ToHtmlStringRGBA()}>";
+    public virtual string SubFactionName => $"{SubFaction}";
 
     public Func<string> Objectives { get; set; } = () => "- None";
-
-    public UColor FactionColor { get; set; }
-    public UColor SubFactionColor { get; set; }
-    public string SubFactionSymbol { get; set; }
-    public virtual string FactionName => $"{Faction}";
-    public virtual string SubFactionName => $"{SubFaction}";
 
     public string KilledBy { get; set; } = "";
     public DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
@@ -145,12 +143,12 @@ public abstract class Role : PlayerLayer
     public bool IsSynAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Syndicate;
     public bool IsSynFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Syndicate;
     public bool IsCrewAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Crew;
-    public bool IsCrewDefect => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Crew && this is not Crew;
+    public bool IsCrewDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Crew && this is not Crew;
     public bool IsIntDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Intruder && this is not Intruder;
     public bool IsSynDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Syndicate && this is not Syndicate;
     public bool IsNeutDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Neutral && this is not Neutral;
-    public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && LinkedDisposition is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) &&
-        !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor() && !Ignore;
+    public bool Faithful => SubFaction == SubFaction.None && LinkedDisposition is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) && !IsCrewDefect && !IsIntDefect && !IsSynDefect
+        && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor() && !Ignore;
 
     public override void Init()
     {
@@ -263,57 +261,7 @@ public abstract class Role : PlayerLayer
 
     public override void CheckWin()
     {
-        if ((IsRecruit || Type == LayerEnum.Jackal) && CabalWin())
-        {
-            WinState = WinLose.CabalWins;
-            CallRpc(CustomRPC.WinLose, WinLose.CabalWins, this);
-        }
-        else if ((IsPersuaded || Type == LayerEnum.Whisperer) && CultWin())
-        {
-            WinState = WinLose.CultWins;
-            CallRpc(CustomRPC.WinLose, WinLose.CultWins);
-        }
-        else if ((IsBitten || Type == LayerEnum.Dracula) && UndeadWin())
-        {
-            WinState = WinLose.UndeadWins;
-            CallRpc(CustomRPC.WinLose, WinLose.UndeadWins);
-        }
-        else if ((IsResurrected || Type == LayerEnum.Necromancer) && ReanimatedWin())
-        {
-            WinState = WinLose.ReanimatedWins;
-            CallRpc(CustomRPC.WinLose, WinLose.ReanimatedWins);
-        }
-        else if (Faction == Faction.Syndicate && (Faithful || Type == LayerEnum.Betrayer || IsSynAlly || IsSynDefect || IsSynFanatic || IsSynTraitor) && SyndicateWins())
-        {
-            WinState = WinLose.SyndicateWins;
-            CallRpc(CustomRPC.WinLose, WinLose.SyndicateWins);
-        }
-        else if (Faction == Faction.Intruder && (Faithful || Type == LayerEnum.Betrayer || IsIntDefect || IsIntAlly || IsIntFanatic || IsIntTraitor) && IntrudersWin())
-        {
-            WinState = WinLose.IntrudersWin;
-            CallRpc(CustomRPC.WinLose, WinLose.IntrudersWin);
-        }
-        else if (Faction == Faction.Crew && (Faithful || IsCrewAlly || IsCrewDefect) && CrewWins())
-        {
-            WinState = WinLose.CrewWins;
-            CallRpc(CustomRPC.WinLose, WinLose.CrewWins);
-        }
-        else if (Faithful && ApocWins() && Alignment is Alignment.Apocalypse or Alignment.Harbinger)
-        {
-            WinState = WinLose.ApocalypseWins;
-            CallRpc(CustomRPC.WinLose, WinLose.ApocalypseWins);
-        }
-        else if (Faithful && Faction == Faction.Neutral && AllNeutralsWin())
-        {
-            WinState = WinLose.AllNeutralsWin;
-            CallRpc(CustomRPC.WinLose, WinLose.AllNeutralsWin);
-        }
-        else if (Faithful && Faction == Faction.Neutral && Alignment == Alignment.Killing && AllNKsWin())
-        {
-            WinState = WinLose.AllNKsWin;
-            CallRpc(CustomRPC.WinLose, WinLose.AllNKsWin);
-        }
-        else if (Faithful && Faction == Faction.Neutral && Alignment == Alignment.Killing && (SameNKWins(Type) || SoloNKWins(Player)))
+        if (Faithful && Faction == Faction.Neutral && Alignment == Alignment.Killing && (SameNKWins(Type) || SoloNKWins(Player)))
         {
             WinState = Type switch
             {
@@ -339,7 +287,7 @@ public abstract class Role : PlayerLayer
             Winner = true;
             CallRpc(CustomRPC.WinLose, WinState, this);
         }
-        else if (Type == LayerEnum.Betrayer && Faction == Faction.Neutral)
+        else if (Type == LayerEnum.Betrayer && Faction == Faction.Neutral && BetrayerWins())
         {
             WinState = WinLose.BetrayerWins;
             CallRpc(CustomRPC.WinLose, WinLose.BetrayerWins);
@@ -524,7 +472,8 @@ public abstract class Role : PlayerLayer
             if (role2.ShieldedPlayer != player)
                 continue;
 
-            if ((role2.Local && (int)Medic.WhoGetsNotification is 0 or 2) || (int)Medic.WhoGetsNotification == 3 || (player.AmOwner && (int)Medic.WhoGetsNotification is 1 or 2))
+            if ((role2.Local && Medic.WhoGetsNotification.ContainsAny(ShieldOptions.Medic)) || Medic.WhoGetsNotification.Contains(ShieldOptions.Everyone) || (player.AmOwner &&
+                Medic.WhoGetsNotification.Contains(ShieldOptions.Shielded)))
             {
                 var roleEffectAnimation = UObject.Instantiate(GetRoleAnim("ProtectAnim"), player.gameObject.transform);
                 roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);

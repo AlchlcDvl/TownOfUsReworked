@@ -129,7 +129,7 @@ public static class VentPatches
 
         if (vent.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
         {
-            RpcMurderPlayer(CustomPlayer.Local);
+            CustomPlayer.Local.RpcSuicide();
             Role.BastionBomb(vent, Bastion.BombRemovedOnKill);
             CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
             return false;

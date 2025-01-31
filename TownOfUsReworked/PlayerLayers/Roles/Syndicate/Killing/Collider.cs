@@ -111,10 +111,10 @@ public class Collider : Syndicate
         if (GetDistance(Positive, Negative) <= Range)
         {
             if (CanAttack(AttackEnum.Powerful, Negative.GetDefenseValue(Player)))
-                RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
+                Player.RpcMurderPlayer(Negative, DeathReasonEnum.Collided, false);
 
             if (CanAttack(AttackEnum.Powerful, Positive.GetDefenseValue(Player)))
-                RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
+                Player.RpcMurderPlayer(Positive, DeathReasonEnum.Collided, false);
 
             Positive = null;
             Negative = null;
@@ -123,7 +123,7 @@ public class Collider : Syndicate
         else if (GetDistance(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
         {
             if (CanAttack(AttackEnum.Powerful, Negative.GetDefenseValue(Player)))
-                RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
+                Player.RpcMurderPlayer(Negative, DeathReasonEnum.Collided, false);
 
             Negative = null;
             shouldReset = true;
@@ -131,7 +131,7 @@ public class Collider : Syndicate
         else if (GetDistance(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
         {
             if (CanAttack(AttackEnum.Powerful, Positive.GetDefenseValue(Player)))
-                RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
+                Player.RpcMurderPlayer(Positive, DeathReasonEnum.Collided, false);
 
             Positive = null;
             shouldReset = true;

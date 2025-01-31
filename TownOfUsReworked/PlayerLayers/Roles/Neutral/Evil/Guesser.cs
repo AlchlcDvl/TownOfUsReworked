@@ -215,7 +215,7 @@ public class Guesser : Evil, IGuesser
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
             }
             else
-                Utils.RpcMurderPlayer(Player);
+                Player.RpcSuicide();
         }
     }
 

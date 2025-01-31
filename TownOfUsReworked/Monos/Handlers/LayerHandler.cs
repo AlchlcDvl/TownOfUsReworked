@@ -95,8 +95,11 @@ public class LayerHandler : RoleBehaviour
         CustomModifier.UponTaskComplete(idx);
         CustomDisposition.UponTaskComplete(idx);
 
-        if (AmongUsClient.Instance.AmHost)
-            CheckEndGame.CheckEnd();
+        if (AmongUsClient.Instance.AmHost && CheckEndGame.TasksDone())
+        {
+            WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
+            CallRpc(CustomRPC.WinLose, WinState);
+        }
 
         if (!CustomRole.TasksDone)
             return;

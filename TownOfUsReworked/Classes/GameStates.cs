@@ -32,23 +32,17 @@ public static class GameStates
 
     public static bool IsTaskRace() => GameModeSettings.GameMode == GameMode.TaskRace;
 
-    public static bool IsHotPotato() => GameModeSettings.GameMode == GameMode.HotPotato;
-
     public static bool IsCustomHnS() => GameModeSettings.GameMode == GameMode.HideAndSeek;
 
     public static bool NoLobby() => !(IsInGame() || IsLobby() || IsEnded() || IsMeeting());
 
-    public static bool LastImp() => AllPlayers().Count(x => x.Is(Faction.Intruder) && !x.HasDied()) == 1;
-
-    public static bool LastSyn() => AllPlayers().Count(x => x.Is(Faction.Syndicate) && !x.HasDied()) == 1;
+    public static bool Last(Faction faction) => AllPlayers().Count(x => x.Is(faction) && !x.HasDied()) == 1;
 
     public static bool NoPlayers() => !AllPlayers().Any() || !CustomPlayer.Local || !CustomPlayer.LocalCustom.Data || NoLobby();
 
-    public static bool LocalBlocked() => PlayerLayer.LocalLayers().Any(x => x.IsBlocked);
+    public static bool LocalBlocked() => CustomPlayer.Local.IsBlocked();
 
     public static bool LocalNotBlocked() => !LocalBlocked();
-
-    public static bool BlockIsExposed() => CustomPlayer.Local.GetButtons().Any(x => x.BlockExposed) || Blocked.BlockExposed;
 
     public static bool DeadSeeEverything()
     {
@@ -65,18 +59,18 @@ public static class GameStates
         return !otherFlag;
     }
 
-    public static bool CrewWins() => !AllPlayers().Any(x => !x.HasDied() && !x.CrewSided() && x.NotCrew());
+    public static bool CrewWins() => !AllPlayers().Any(x => !x.HasDied() && !x.CrewSided() && x.NotCrew()) && AllPlayers().Any(x => x.Is(Faction.Crew) && x.Is(SubFaction.None));
 
     private static bool NotCrew(this PlayerControl player)
     {
         var role = player.GetRole();
         var faction = role.Faction;
         var alignment = role.Alignment;
-        return faction is Faction.Intruder or Faction.Syndicate || alignment is Alignment.Neophyte or Alignment.Harbinger or Alignment.Proselyte or Alignment.Apocalypse || role is NKilling ||
-            player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals);
+        return faction is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Compliance or Faction.Pandorica || alignment is Alignment.Neophyte or Alignment.Harbinger or
+            Alignment.Proselyte or Alignment.Apocalypse || role is NKilling || player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals);
     }
 
-    public static bool IntrudersWin() => !AllPlayers().Any(x => !x.HasDied() && !x.IntruderSided() && x.NotIntruder());
+    public static bool IntrudersWin() => !AllPlayers().Any(x => !x.HasDied() && !x.IntruderSided() && x.NotIntruder()) && AllPlayers().Any(x => x.Is(Faction.Intruder) && x.Is(SubFaction.None));
 
     private static bool NotIntruder(this PlayerControl player)
     {
@@ -87,40 +81,43 @@ public static class GameStates
             player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals);
     }
 
-    public static bool SyndicateWins() => !AllPlayers().Any(x => !x.HasDied() && !x.SyndicateSided() && x.NotSyndicate());
+    public static bool SyndicateWins() => !AllPlayers().Any(x => !x.HasDied() && !x.SyndicateSided() && x.NotSyndicate()) && AllPlayers().Any(x => x.Is(Faction.Syndicate) &&
+        x.Is(SubFaction.None));
 
     private static bool NotSyndicate(this PlayerControl player)
     {
         var role = player.GetRole();
         var faction = role.Faction;
         var alignment = role.Alignment;
-        return faction is Faction.Crew or Faction.Intruder || alignment is Alignment.Neophyte or Alignment.Harbinger or Alignment.Proselyte or Alignment.Apocalypse || role is NKilling ||
-            player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals);
+        return faction is Faction.Crew or Faction.Intruder or Faction.Compliance || alignment is Alignment.Neophyte or Alignment.Harbinger or Alignment.Proselyte or Alignment.Apocalypse || role
+            is NKilling || player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals);
     }
 
     public static bool AllNeutralsWin() => !AllPlayers().Any(x => !x.HasDied() && (x.NotOnTheSameSide() || x.GetFaction() is Faction.Crew or Faction.Syndicate or Faction.Intruder)) &&
-        NeutralSettings.NoSolo == NoSolo.AllNeutrals;
+        AllPlayers().Any(x => x.Is(Faction.Neutral)) && NeutralSettings.NoSolo == NoSolo.AllNeutrals;
 
-    public static bool AllNKsWin() => NeutralSettings.NoSolo == NoSolo.AllNKs && !AllPlayers().Any(x => !x.HasDied() && x.NotNK());
+    public static bool AllNKsWin() => NeutralSettings.NoSolo == NoSolo.AllNKs && !AllPlayers().Any(x => !x.HasDied() && x.NotNK()) && AllPlayers().Any(x => x.Is(Faction.Neutral) &&
+        x.Is(SubFaction.None) && x.Is(Alignment.Killing));
 
     private static bool NotNK(this PlayerControl player)
     {
         var role = player.GetRole();
         var faction = role.Faction;
         var alignment = role.Alignment;
-        return faction is Faction.Crew or Faction.Intruder or Faction.Syndicate || alignment is Alignment.Neophyte or Alignment.Harbinger or Alignment.Proselyte or Alignment.Apocalypse || role
-            is NKilling || player.NotOnTheSameSide();
+        return faction is Faction.Crew or Faction.Intruder or Faction.Syndicate or Faction.Pandorica || alignment is Alignment.Neophyte or Alignment.Harbinger or Alignment.Proselyte or
+            Alignment.Apocalypse || role is NKilling || player.NotOnTheSameSide();
     }
 
     public static bool NoOneWins() => !AllPlayers().Any(x => !x.HasDied());
 
-    public static bool CabalWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Cabal, LayerEnum.Jackal));
+    public static bool CabalWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Cabal, LayerEnum.Jackal)) && AllPlayers().Any(x => x.Is(SubFaction.Cabal));
 
-    public static bool UndeadWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Undead, LayerEnum.Dracula));
+    public static bool UndeadWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Undead, LayerEnum.Dracula)) && AllPlayers().Any(x => x.Is(SubFaction.Undead));
 
-    public static bool CultWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Cult, LayerEnum.Whisperer));
+    public static bool CultWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Cult, LayerEnum.Whisperer)) && AllPlayers().Any(x => x.Is(SubFaction.Cult));
 
-    public static bool ReanimatedWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Reanimated, LayerEnum.Necromancer));
+    public static bool ReanimatedWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Reanimated, LayerEnum.Necromancer)) && AllPlayers().Any(x =>
+        x.Is(SubFaction.Reanimated));
 
     private static bool NotSubFaction(this PlayerControl player, SubFaction sub, LayerEnum neo)
     {

@@ -146,7 +146,7 @@ public static class RoleGenManager
         LayerEnum.Linked => Options.Dispositions.Linked,
         LayerEnum.Lovers => Options.Dispositions.Lovers,
         LayerEnum.Rivals => Options.Dispositions.Rivals,
-        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted or LayerEnum.CoolPotato or LayerEnum.BurningPotato or LayerEnum.CharredPotato => new(100, 15, false, false, id),
+        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 15, false, false, id),
         _ => OptionAttribute.GetOptions<LayerOptionAttribute>().TryFinding(x => x.Layer == id, out var result) ? result.Get() : new(0, 0, false, false, id)
     };
 
@@ -340,6 +340,9 @@ public static class RoleGenManager
     {
         WinState = WinLose.None;
 
+        CameraEffect.Initialize();
+        CameraEffect.Instance.Materials.Clear();
+
         MeetingPatches.MeetingCount = 0;
 
         PlayerLayers.Roles.Syndicate.SyndicateHasChaosDrive = false;
@@ -391,7 +394,7 @@ public static class RoleGenManager
         CachedFirstDead = FirstDead;
         FirstDead = null;
 
-        Blocked.BlockExposed = false;
+        BlockExposed = false;
 
         // Role.IsLeft = false;
 

@@ -22,6 +22,7 @@ public static class SpawnPatches
 
             KillCounts.Clear();
             MostRecentKiller = null;
+            DebuggerBehaviour.Instance.SelectedTab = DebuggerBehaviour.Instance.Tabs[1];
         }
 
         Chat()?.SetVisible(CustomPlayer.Local.CanChat());
@@ -35,11 +36,10 @@ public static class SpawnPatches
         AllBodies().ForEach(x => x.gameObject.Destroy());
         ButtonUtils.Reset(CooldownType.Start);
         RandomSpawn(intro, meeting);
-        var hud = HUD();
-        hud.FullScreen.enabled = true;
         var role = CustomPlayer.Local.GetRole();
         role.UpdateButtons();
         CustomPlayer.Local.RegenTask();
+        var hud = HUD();
 
         if (MapPatches.CurrentMap is not (4 or 6))
             hud.FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);

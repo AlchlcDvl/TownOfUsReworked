@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Warper : Syndicate, IWarper
+public class Warper : Syndicate, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number WarpCd = 25;
@@ -14,7 +14,7 @@ public class Warper : Syndicate, IWarper
 
     public CustomButton WarpButton { get; set; }
     public CustomPlayerMenu WarpMenu { get; set; }
-    public bool Warping { get; set; }
+    public bool Moving { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Warper : FactionColor;
     public override LayerEnum Type => LayerEnum.Warper;
@@ -30,7 +30,7 @@ public class Warper : Syndicate, IWarper
         WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
     }
 
-    public static IEnumerator WarpPlayers(PlayerControl player1, PlayerControl player2, IWarper warper)
+    public static IEnumerator WarpPlayers(PlayerControl player1, PlayerControl player2, IMover warper)
     {
         var player1Body = (DeadBody)null;
         var player2Body = (DeadBody)null;
@@ -53,7 +53,7 @@ public class Warper : Syndicate, IWarper
                 yield break;
         }
 
-        Moving.Add(player1.PlayerId);
+        References.Moving.Add(player1.PlayerId);
 
         if (player1.inVent)
         {
@@ -72,7 +72,7 @@ public class Warper : Syndicate, IWarper
             wasInVent = true;
         }
 
-        warper.Warping = true;
+        warper.Moving = true;
 
         if (player1.AmOwner)
             Flash(warper.Color, WarpDur);
@@ -91,8 +91,8 @@ public class Warper : Syndicate, IWarper
 
             if (Meeting())
             {
-                Moving.RemoveAll(x => x == player1.PlayerId);
-                warper.Warping = false;
+                References.Moving.RemoveAll(x => x == player1.PlayerId);
+                warper.Moving = false;
                 yield break;
             }
         }
@@ -103,8 +103,8 @@ public class Warper : Syndicate, IWarper
 
             if (!player1Body)
             {
-                Moving.RemoveAll(x => x == player1.PlayerId);
-                warper.Warping = false;
+                References.Moving.RemoveAll(x => x == player1.PlayerId);
+                warper.Moving = false;
                 yield break;
             }
         }
@@ -115,8 +115,8 @@ public class Warper : Syndicate, IWarper
 
             if (!player2Body)
             {
-                Moving.RemoveAll(x => x == player1.PlayerId);
-                warper.Warping = false;
+                References.Moving.RemoveAll(x => x == player1.PlayerId);
+                warper.Moving = false;
                 yield break;
             }
         }
@@ -146,8 +146,8 @@ public class Warper : Syndicate, IWarper
             player1Body.transform.position = player2Body.TruePosition;
         }
 
-        Moving.RemoveAll(x => x == player1.PlayerId);
-        warper.Warping = false;
+        References.Moving.RemoveAll(x => x == player1.PlayerId);
+        warper.Moving = false;
     }
 
     public bool Click(PlayerControl player, out bool shouldClose)
@@ -171,7 +171,7 @@ public class Warper : Syndicate, IWarper
     public bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId) &&
         player.Data.IsDead);
 
-    public static IEnumerator WarpAll(Dictionary<byte, Vector2> coords, IWarper warper)
+    public static IEnumerator WarpAll(Dictionary<byte, Vector2> coords, IMover warper)
     {
         Flash(warper.Color, WarpDur);
         AllPlayers().ForEach(x => AnimatePortal(x, WarpDur));
@@ -274,7 +274,7 @@ public class Warper : Syndicate, IWarper
 
         if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
-            if (!HoldsDrive && !Warping && WarpMenu.Selected.Count > 0)
+            if (!HoldsDrive && !Moving && WarpMenu.Selected.Count > 0)
                 WarpMenu.Selected.TakeLast();
 
             Message("Removed a target");

@@ -5,21 +5,22 @@ public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribut
     private static string LastChangedSetting = "";
 
     public T Value { get; set; }
-    public T DefaultValue { get; set; }
     public Type TargetType { get; } = typeof(T);
+
+    public static implicit operator T(OptionAttribute<T> opt) => opt.Value;
 
     public T Get() => Value;
 
     public override void SetProperty(PropertyInfo property)
     {
         base.SetProperty(property);
-        Value = DefaultValue = property.GetValue<T>(null);
+        Value = property.GetValue<T>(null);
     }
 
     public override void SetField(FieldInfo field)
     {
         base.SetField(field);
-        Value = DefaultValue = field.GetValue<T>(null);
+        Value = field.GetValue<T>(null);
     }
 
     public override string ToString() => $"{ID}:{ValueString()}";

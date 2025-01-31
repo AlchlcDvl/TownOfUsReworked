@@ -6,17 +6,23 @@ public static class CheckEndGame
     [HarmonyPatch(nameof(LogicGameFlowNormal.CheckEndCriteria))]
     public static bool Prefix(LogicGameFlowNormal __instance)
     {
-        if (!AmongUsClient.Instance.AmHost)
-            return false;
+        CheckEnd(__instance);
+        return false;
+    }
 
-        if (Sabotaged() && IntruderSettings.IntrudersCanSabotage)
+    private static void CheckEnd(LogicGameFlowNormal __instance)
+    {
+        if (!AmongUsClient.Instance.AmHost)
+            return;
+
+        if (Sabotaged())
         {
             WinState = SyndicateSettings.AltImps ? WinLose.SyndicateWins : WinLose.IntrudersWin;
             CallRpc(CustomRPC.WinLose, WinState);
         }
 
         if (WinState == WinLose.None)
-            return false;
+            return;
 
         if (IsFreePlay())
         {
@@ -27,47 +33,59 @@ public static class CheckEndGame
         }
         else
             EndGame();
-
-        return false;
     }
 
-    public static void CheckEnd()
+    public static void CheckPlayerWins()
     {
-        var players = AllPlayers();
-        var hex = PlayerLayer.GetILayers<IHexer>().Find(hexer =>
-        {
-            var faction = hexer.Faction;
-            Func<PlayerControl, bool> factionCheck = faction switch
-            {
-                Faction.Syndicate or Faction.Crew or Faction.Intruder => x => x.Is(faction),
-                _ => NeutralSettings.NoSolo switch
-                {
-                    NoSolo.AllNeutrals => x => x.Is(faction),
-                    NoSolo.AllNKs => x => x.Is(Alignment.Killing),
-                    _ => hexer.LinkedDisposition switch
-                    {
-                        LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
-                        LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
-                        _ => x => x == hexer.Player
-                    }
-                }
-            };
-            return !hexer.Player.HasDied() && hexer.Spelled.Count == players.Count(plr => !plr.HasDied() && !factionCheck(plr));
-        });
+        DetectStalemate();
 
-        if (TasksDone())
+        if (WinState != WinLose.None) // Skipping subsequent checks because a condition was already fulfilled
+            return;
+
+        CheckFactionWin();
+
+        if (WinState != WinLose.None)
+            return;
+
+        CheckSubFactionWin();
+
+        if (WinState != WinLose.None)
+            return;
+
+        PlayerLayer.GetLayers<Role>().ForEach(x => x.GameEnd());
+
+        if (WinState != WinLose.None)
+            return;
+
+        PlayerLayer.GetLayers<Disposition>().ForEach(x => x.GameEnd());
+    }
+
+    public static void CheckSpellWin(IHexer hexer)
+    {
+        if (hexer.Player.HasDied())
+            return;
+
+        var players = AllPlayers();
+        var faction = hexer.Faction;
+        Func<PlayerControl, bool> factionCheck = faction switch
         {
-            WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
-            CallRpc(CustomRPC.WinLose, WinState);
-        }
-        else if (Sabotaged() && IntruderSettings.IntrudersCanSabotage)
+            Faction.Syndicate or Faction.Crew or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica => x => x.Is(faction),
+            _ => NeutralSettings.NoSolo switch
+            {
+                NoSolo.AllNeutrals => x => x.Is(faction),
+                NoSolo.AllNKs => x => x.Is(Alignment.Killing),
+                _ => hexer.LinkedDisposition switch
+                {
+                    LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
+                    LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
+                    _ => x => x == hexer.Player
+                }
+            }
+        };
+
+        if (hexer.Spelled.Count == players.Count(plr => !plr.HasDied() && !factionCheck(plr)))
         {
-            WinState = SyndicateSettings.AltImps ? WinLose.SyndicateWins : WinLose.IntrudersWin;
-            CallRpc(CustomRPC.WinLose, WinState);
-        }
-        else if (hex != null)
-        {
-            WinState = hex.Faction switch
+            WinState = hexer.Faction switch
             {
                 Faction.Crew => WinLose.CrewWins,
                 Faction.Intruder => WinLose.IntrudersWin,
@@ -75,7 +93,7 @@ public static class CheckEndGame
                 {
                     NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
                     NoSolo.AllNKs => WinLose.AllNKsWin,
-                    _ => hex.LinkedDisposition switch
+                    _ => hexer.LinkedDisposition switch
                     {
                         LayerEnum.Mafia => WinLose.MafiaWins,
                         LayerEnum.Lovers => WinLose.LoveWins,
@@ -88,12 +106,42 @@ public static class CheckEndGame
 
             CallRpc(CustomRPC.WinLose, WinState);
         }
+    }
+
+    private static void CheckFactionWin()
+    {
+        if (SyndicateWins())
+            WinState = WinLose.SyndicateWins;
+        else if (IntrudersWin())
+            WinState = WinLose.IntrudersWin;
+        else if (CrewWins())
+            WinState = WinLose.CrewWins;
+        else if (ApocWins())
+            WinState = WinLose.ApocalypseWins;
+        else if (AllNeutralsWin())
+            WinState = WinLose.AllNeutralsWin;
+        else if (AllNKsWin())
+            WinState = WinLose.AllNKsWin;
         else
-        {
-            DetectStalemate();
-            PlayerLayer.GetLayers<Role>().ForEach(x => x.GameEnd());
-            PlayerLayer.GetLayers<Disposition>().ForEach(x => x.GameEnd());
-        }
+            return;
+
+        CallRpc(CustomRPC.WinLose, WinState);
+    }
+
+    private static void CheckSubFactionWin()
+    {
+        if (CabalWin())
+            WinState = WinLose.CabalWins;
+        else if (CultWin())
+            WinState = WinLose.CultWins;
+        else if (UndeadWin())
+            WinState = WinLose.UndeadWins;
+        else if (ReanimatedWin())
+            WinState = WinLose.ReanimatedWins;
+        else
+            return;
+
+        CallRpc(CustomRPC.WinLose, WinState);
     }
 
     // Stalemate detector for unwinnable situations
@@ -138,10 +186,13 @@ public static class CheckEndGame
         WinState = WinLose.NobodyWins;
     }
 
-    private static bool TasksDone()
+    public static bool TasksDone()
     {
         if ((int)TaskSettings.LongTasks + (int)TaskSettings.CommonTasks + (int)TaskSettings.ShortTasks == 0)
-            return IsCustomHnS();
+            return IsCustomHnS() || IsTaskRace();
+
+        if (IsTaskRace())
+            return PlayerLayer.GetLayers<Runner>().First(x => x.TasksDone);
 
         var allCrew = new List<PlayerControl>();
         var crewWithNoTasks = new List<PlayerControl>();
@@ -163,6 +214,9 @@ public static class CheckEndGame
 
     private static bool Sabotaged()
     {
+        if (!IntruderSettings.IntrudersCanSabotage)
+            return false;
+
         foreach (var sab in Ship().Systems?.Values)
         {
             if (sab.TryCast<LifeSuppSystemType>(out var life) && life.Countdown <= 0f)

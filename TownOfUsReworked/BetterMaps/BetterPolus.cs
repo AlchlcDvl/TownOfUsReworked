@@ -4,19 +4,19 @@ namespace TownOfUsReworked.BetterMaps;
 public static class BetterPolus
 {
     [ToggleOption]
-    public static bool EnableBetterPolus { get; set; } = true;
+    public static bool EnableBetterPolus = true;
 
     [ToggleOption]
-    public static bool PolusVentImprovements { get; set; } = false;
+    public static bool PolusVentImprovements = false;
 
     [StringOption<TempLocation>]
-    public static TempLocation TempLocation { get; set; } = TempLocation.DontMove;
+    public static TempLocation TempLocation = TempLocation.DontMove;
 
     [ToggleOption]
-    public static bool WifiChartCourseSwap { get; set; } = false;
+    public static bool WifiChartCourseSwap = false;
 
     [NumberOption(30f, 90f, 5f, Format.Time)]
-    public static Number SeismicTimer { get; set; } = 60;
+    public static Number SeismicTimer = 60;
 
     private static readonly Vector3 DvdScreenNewPos = new(26.635f, -15.92f, 1f);
     private static readonly Vector3 VitalsNewPos = new(31.275f, -6.45f, 1f);

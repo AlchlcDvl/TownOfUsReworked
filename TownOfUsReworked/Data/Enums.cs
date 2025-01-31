@@ -115,7 +115,6 @@ public enum Alignment : byte
 
     TaskRace,
     HideAndSeek,
-    HotPotato,
 
     None
 }
@@ -204,7 +203,6 @@ public enum GameMode : byte
     RoleList,
     HideAndSeek,
     TaskRace,
-    HotPotato,
     Vanilla,
     None
 }
@@ -419,10 +417,6 @@ public enum LayerEnum : byte
     Hunter,
 
     Runner,
-
-    BurningPotato,
-    CharredPotato,
-    CoolPotato,
 
     NoneRole,
 
@@ -668,8 +662,6 @@ public enum WinLose : byte
     HunterWins,
     HuntedWin,
 
-    PotatoWin,
-
     EveryoneWins,
 
     None
@@ -707,11 +699,10 @@ public enum AdminDeadPlayers : byte
 
 public enum ShieldOptions : byte
 {
+    Nobody,
     Shielded,
     Medic,
-    ShieldedAndMedic,
-    Everyone,
-    Nobody
+    Everyone
 }
 
 public enum BecomeEnum : byte
@@ -805,11 +796,10 @@ public enum RebActionsRPC : byte
 
 public enum ProtectOptions : byte
 {
+    Nobody,
     Protected,
     GA,
-    ProtectedAndGA,
-    Everyone,
-    Nobody
+    Everyone
 }
 
 public enum NoSolo : byte
@@ -833,16 +823,6 @@ public enum ChatChannel : byte
     Lovers,
     Rivals,
     Linked,
-
-    Intruders,
-    Syndicate,
-
-    Undead,
-    Cult,
-    Cabal,
-    Reanimated,
-
-    Dead,
 
     All
 }

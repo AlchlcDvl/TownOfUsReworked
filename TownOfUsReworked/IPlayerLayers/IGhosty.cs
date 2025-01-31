@@ -2,7 +2,7 @@ namespace TownOfUsReworked.IPlayerLayers;
 
 public interface IGhosty : IPlayerLayer
 {
-    bool Caught { get; set; }
+    bool Caught { get; }
     bool Faded { get; set; }
 
     public void Fade()

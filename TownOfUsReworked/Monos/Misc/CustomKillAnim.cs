@@ -73,7 +73,7 @@ public class CustomKillAnimationPlayer : MonoBehaviour
             return;
         }
 
-        var currentFrame = Frames[Mathf.FloorToInt(PlayHead / (2.5f / Frames.Count))];
+        var currentFrame = Frames[Mathf.FloorToInt(PlayHead * Frames.Count / 2.5f)];
         UpdateVisuals(currentFrame.Time, currentFrame.Offset, currentFrame.Animation);
     }
 

@@ -200,7 +200,6 @@ public class GameModeInfo(GameMode mode, bool footer = false) : Info($"{mode}", 
     GameMode.Vanilla => UColor.white,
     GameMode.Classic => CustomColorManager.Classic,
     GameMode.RoleList => CustomColorManager.RoleList,
-    GameMode.HotPotato => CustomColorManager.HotPotato,
     GameMode.HideAndSeek => CustomColorManager.HideAndSeek,
     GameMode.TaskRace => CustomColorManager.TaskRace,
     _ => CustomColorManager.GameMode

@@ -50,16 +50,7 @@ public class Jackal : Neophyte
     public override List<PlayerControl> Team()
     {
         var team = base.Team();
-
-        if (Recruit1)
-            team.Add(Recruit1);
-
-        if (Recruit2)
-            team.Add(Recruit2);
-
-        if (Recruit3)
-            team.Add(Recruit3);
-
+        team.AddRange(Members.Where(x => x != PlayerId).Select(x => PlayerById(x)));
         return team;
     }
 

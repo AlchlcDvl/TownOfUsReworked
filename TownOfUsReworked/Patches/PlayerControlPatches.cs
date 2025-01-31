@@ -69,7 +69,7 @@ public static class PlayerControlPatches
             layerHandler.OnRevive();
 
         if (AmongUsClient.Instance.AmHost)
-            CheckEndGame.CheckEnd();
+            CheckEndGame.CheckPlayerWins();
 
         if (!__instance.AmOwner)
             return false;
@@ -103,7 +103,7 @@ public static class PlayerControlPatches
         var blocked = LocalNotBlocked();
 
         if (!blocked)
-            Blocked.BlockExposed = true;
+            BlockExposed = true;
 
         return blocked;
     }

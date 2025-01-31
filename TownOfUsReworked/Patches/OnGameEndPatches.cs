@@ -17,7 +17,6 @@ public static class OnGameEndPatches
             // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             // AD says "Done".
             AllPlayers().ForEach(x => AddSummaryInfo(x));
-            CameraEffect.Instance?.Materials?.Clear();
             EndGameResult.CachedGameOverReason = (GameOverReason)9;
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();

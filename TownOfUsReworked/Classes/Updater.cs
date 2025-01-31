@@ -101,7 +101,7 @@ public static class ModUpdater
         if (updateType == "Reworked")
         {
             var version = Version.Parse(data.Tag.Replace("v", ""));
-            var diff = TownOfUsReworked.Version.CompareTo(version);
+            var diff = TownOfUsReworked.ModVer.CompareTo(version);
             ReworkedUpdate = diff < 0 || (diff == 0 && TownOfUsReworked.IsDev);
         }
         // Accounts for broken version + checks Submerged version

@@ -6,11 +6,11 @@ public static class Interactions
     {
         if (target.IsOnAlert())
             return true;
-        else if (target.IsAmbushed() && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && Ambusher.AmbushMates)))
+        else if (target.IsAmbushed() && (!player.Is(Faction.Intruder, Faction.Pandorica) || Ambusher.AmbushMates))
             return true;
         else if (target.GetRole() is SerialKiller sk && sk.BloodlustButton.EffectActive && player.GetRole() is Escort or Consort or Glitch && !harmful)
             return true;
-        else if (target.IsCrusaded() && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && Crusader.CrusadeMates)))
+        else if (target.IsCrusaded() && (!player.Is(Faction.Syndicate, Faction.Pandorica) || Crusader.CrusadeMates))
             return true;
         else
             return false;
@@ -44,9 +44,9 @@ public static class Interactions
             Pestilence.Infected[targetId]++;
 
         if (Pestilence.Infected.TryGetValue(target.PlayerId, out var count) && count >= Pestilence.MaxStacks)
-            RpcMurderPlayer(interacter, target, DeathReasonEnum.Infected, false);
+            interacter.RpcMurderPlayer(target, DeathReasonEnum.Infected, false);
         else if (Pestilence.Infected.TryGetValue(interacter.PlayerId, out count) && count >= Pestilence.MaxStacks)
-            RpcMurderPlayer(target, interacter, DeathReasonEnum.Infected, false);
+            target.RpcMurderPlayer(interacter, DeathReasonEnum.Infected, false);
         else
             CallRpc(CustomRPC.Action, ActionsRPC.Infect, targetId, Pestilence.Infected[targetId]);
     }
@@ -75,7 +75,7 @@ public static class Interactions
             if (CanAttack(attack, defense))
             {
                 if (bypass)
-                    RpcMurderPlayer(source, target, reason);
+                    source.RpcMurderPlayer(target, reason);
                 else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
@@ -92,7 +92,7 @@ public static class Interactions
                         if (source.IsShielded() || source.IsProtected())
                             abilityUsed = false;
                         else
-                            RpcMurderPlayer(trapper, source, false);
+                            trapper.RpcMurderPlayer(source, false);
                     }
                     else if (source.IsShielded() || source.IsProtected())
                     {
@@ -100,7 +100,7 @@ public static class Interactions
                         RpcBreakShield(source);
                     }
                     else if (!delayed)
-                        RpcMurderPlayer(source, target, reason);
+                        source.RpcMurderPlayer(target, reason);
                 }
             }
             else
@@ -136,7 +136,7 @@ public static class Interactions
                 {
                     if (bypass)
                     {
-                        RpcMurderPlayer(source, target);
+                        source.RpcMurderPlayer(target);
                         abilityUsed = true;
                     }
                     else
@@ -148,7 +148,7 @@ public static class Interactions
                             if (target.IsShielded() || target.IsProtected())
                                 abilityUsed = false;
                             else
-                                RpcMurderPlayer(trapper, target, false);
+                                trapper.RpcMurderPlayer(target, false);
                         }
                         else if (target.IsShielded() || target.IsProtected())
                         {
@@ -156,7 +156,7 @@ public static class Interactions
                             RpcBreakShield(target);
                         }
                         else if (!delayed)
-                            RpcMurderPlayer(target, source);
+                            target.RpcMurderPlayer(source);
                     }
                 }
                 else if (source.IsShielded())
@@ -187,7 +187,7 @@ public static class Interactions
                 RpcBreakShield(player);
             }
             else if (PlayerLayer.GetILayers<IVentBomber>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
-                RpcMurderPlayer(bastion.Player, player, DeathReasonEnum.Bombed, false);
+                bastion.Player.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
 
             Role.BastionBomb(target, Bastion.BombRemovedOnKill);
             CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);

@@ -14,7 +14,7 @@ public abstract class Range : MonoBehaviour
 
     public static GameObject CreateRange(UColor color, float scale, string name)
     {
-        var item = new GameObject(name) { layer = 11 };
+        var item = new GameObject(name) { layer = LayerMask.NameToLayer("Players") };
         var transform = item.transform;
         var rend = item.AddComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Range");

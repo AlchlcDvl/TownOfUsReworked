@@ -59,14 +59,14 @@ public class Crusader : Syndicate, ICrusader
                 continue;
 
             if (!player.Is(Alignment.Apocalypse))
-                RpcMurderPlayer(player2, player, DeathReasonEnum.Crusaded, false);
+                player2.RpcMurderPlayer(player, DeathReasonEnum.Crusaded, false);
 
             if (player.IsOnAlert() || player.Is<Pestilence>())
-                RpcMurderPlayer(player, player2);
+                player.RpcMurderPlayer(player2);
             else if (player.IsAmbushed())
-                RpcMurderPlayer(player, player2, DeathReasonEnum.Ambushed);
+                player.RpcMurderPlayer(player2, DeathReasonEnum.Ambushed);
             else if (player.IsCrusaded())
-                RpcMurderPlayer(player, player2, DeathReasonEnum.Crusaded);
+                player.RpcMurderPlayer(player2, DeathReasonEnum.Crusaded);
         }
     }
 

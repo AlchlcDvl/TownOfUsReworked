@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, ITransporter
+public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker
 {
     public override void Init()
     {
@@ -151,7 +151,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         {
             if (KeyboardJoystick.player.GetButtonDown("Delete"))
             {
-                if (!Transporting && TransportMenu.Selected.Count > 0)
+                if (!Moving && TransportMenu.Selected.Count > 0)
                     TransportMenu.Selected.TakeLast();
 
                 Message("Removed a target");
@@ -442,8 +442,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         }
         else if (IsEsc)
         {
-            BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, (EffectVoid)Block,
-                (EffectEndVoid)UnBlock, new Cooldown(Escort.EscortCd), new Duration(Escort.EscortDur), (EndFunc)BlockEnd, (EffectStartVoid)BlockStart, (UsableFunc)EscUsable);
+            BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, new Cooldown(Escort.EscortCd),
+                (EffectEndVoid)UnBlock, new Duration(Escort.EscortDur), (EndFunc)BlockEnd, (EffectStartVoid)BlockStart, (UsableFunc)EscUsable);
         }
         else if (IsTrans)
         {
@@ -490,8 +490,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     // Detective Stuff
     public CustomButton ExamineButton { get; set; }
     public bool IsDet => RevivedRole is Detective;
-
-    private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
 
     public void Examine(PlayerControl target)
     {
@@ -800,16 +798,11 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
 
     public void UnBlock()
     {
-        BlockTarget.GetLayers().ForEach(x => x.IsBlocked = false);
-        BlockTarget.GetButtons().ForEach(x => x.BlockExposed = false);
-
         if (BlockTarget.AmOwner)
-            Blocked.BlockExposed = false;
+            BlockExposed = false;
 
         BlockTarget = null;
     }
-
-    public void Block() => BlockTarget.GetLayers().ForEach(x => x.IsBlocked = !BlockTarget.GetRole().RoleBlockImmune);
 
     public void BlockStart()
     {
@@ -838,7 +831,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     // Transporter Stuff
     public CustomButton TransportButton { get; set; }
     public CustomPlayerMenu TransportMenu { get; set; }
-    public bool Transporting { get; set; }
+    public bool Moving { get; set; }
     public bool IsTrans => RevivedRole is Transporter;
 
     public bool TransException(PlayerControl player) => (player == Player && !Transporter.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||

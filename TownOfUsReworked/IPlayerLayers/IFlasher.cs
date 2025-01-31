@@ -2,5 +2,5 @@ namespace TownOfUsReworked.IPlayerLayers;
 
 public interface IFlasher : IPlayerLayer
 {
-    IEnumerable<byte> FlashedPlayers { get; set; }
+    IEnumerable<byte> FlashedPlayers { get; }
 }

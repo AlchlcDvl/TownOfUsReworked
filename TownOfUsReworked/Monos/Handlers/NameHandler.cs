@@ -248,7 +248,7 @@ public class NameHandler : MonoBehaviour
                 }
                 case Medic medic:
                 {
-                    if (medic.ShieldedPlayer && medic.ShieldedPlayer == player && (int)Medic.ShowShielded is 1 or 2)
+                    if (medic.ShieldedPlayer && medic.ShieldedPlayer == player && Medic.ShowShielded.Contains(ShieldOptions.Medic))
                         name += " <#006600FF>✚</color>";
 
                     break;
@@ -262,7 +262,7 @@ public class NameHandler : MonoBehaviour
                 }
                 case Retributionist ret:
                 {
-                    if (ret.ShieldedPlayer && ret.ShieldedPlayer == player && (int)Medic.ShowShielded is 1 or 2)
+                    if (ret.ShieldedPlayer && ret.ShieldedPlayer == player && Medic.ShowShielded.Contains(ShieldOptions.Medic))
                     {
                         name += " <#006600FF>✚</color>";
                         color = ret.Color;
@@ -352,7 +352,7 @@ public class NameHandler : MonoBehaviour
                     {
                         name += " <#FFFFFFFF>★</color>";
 
-                        if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 1 or 2)
+                        if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.GA))
                             name += " <#FFFFFFFF>η</color>";
 
                         if (GuardianAngel.GAKnowsTargetRole && !revealed)
@@ -608,10 +608,10 @@ public class NameHandler : MonoBehaviour
 
         if (amOwner && !deadSeeEverything)
         {
-            if (player.IsShielded() && (int)Medic.ShowShielded is 0 or 2)
+            if (player.IsShielded() && Medic.ShowShielded.Contains(ShieldOptions.Shielded))
                 name += " <#006600FF>✚</color>";
 
-            if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 0 or 2)
+            if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.Protected))
                 name += " <#FFFFFFFF>η</color>";
 
             if (player.IsBHTarget())
@@ -638,10 +638,10 @@ public class NameHandler : MonoBehaviour
 
         if (deadSeeEverything)
         {
-            if (player.IsShielded() && Medic.ShowShielded != ShieldOptions.Everyone)
+            if (player.IsShielded() && !Medic.ShowShielded.Contains(ShieldOptions.Everyone))
                 name += " <#006600FF>✚</color>";
 
-            if (player.IsProtected() && GuardianAngel.ShowProtect != ProtectOptions.Everyone)
+            if (player.IsProtected() && !GuardianAngel.ShowProtect.Contains(ProtectOptions.Everyone))
                 name += " <#FFFFFFFF>η</color>";
 
             if (player.IsTrapped())
@@ -684,10 +684,10 @@ public class NameHandler : MonoBehaviour
                 name += $" <#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
         }
 
-        if (player.IsShielded() && (int)Medic.ShowShielded is 3 && !deadSeeEverything)
+        if (player.IsShielded() && Medic.ShowShielded.Contains(ShieldOptions.Everyone) && !deadSeeEverything)
             name += " <#006600FF>✚</color>";
 
-        if (player.IsProtected() && (int)GuardianAngel.ShowProtect is 3 && !deadSeeEverything)
+        if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.Everyone) && !deadSeeEverything)
             name += " <#FFFFFFFF>η</color>";
 
         if ((local.Is(Faction.Syndicate) || deadSeeEverything) && (player == Syndicate.DriveHolder || (SyndicateSettings.GlobalDrive && Syndicate.SyndicateHasChaosDrive && role.Faction ==

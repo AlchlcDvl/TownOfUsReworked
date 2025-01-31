@@ -208,7 +208,6 @@ public static class AllInfo
         new(Alignment.Power),
 
         new(Alignment.HideAndSeek),
-        new(Alignment.HotPotato),
         new(Alignment.TaskRace, true)
     ];
 
@@ -220,8 +219,7 @@ public static class AllInfo
         new(GameMode.Classic),
         new(GameMode.TaskRace),
         new(GameMode.RoleList),
-        new(GameMode.HideAndSeek),
-        new(GameMode.HotPotato, true)
+        new(GameMode.HideAndSeek, true)
     ];
 
     public static readonly IEnumerable<OtherInfo> AllOthers =

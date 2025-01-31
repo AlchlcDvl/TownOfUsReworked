@@ -59,7 +59,6 @@ public class CustomButton
     public float DelayTime { get; set; }
     public float OtherDelayTime { get; set; }
     public float CooldownTime { get; set; }
-    public bool BlockExposed { get; set; }
 
     // Read-onlys (onlies?)
     public bool HasEffect => Duration > 0f;
@@ -273,32 +272,35 @@ public class CustomButton
     {
         Play("Click");
 
-        if (Owner.IsBlocked)
+        if (Owner.Player.IsBlocked())
             BlockExposed = true;
 
         Base.graphic.sprite = GetSprite(Sprite());
         Base.graphic.SetCooldownNormalizedUvs();
 
-        if (Clickable())
+        if (!BlockExposed)
         {
-            if (HasUses)
-                Uses -= UseDecrement;
+            if (Clickable())
+            {
+                if (HasUses)
+                    Uses -= UseDecrement;
 
-            if (Type.HasFlag(AbilityTypes.Targetless))
-                DoClickTargetless();
-            else if (Target is PlayerControl player)
-                DoClickPlayer(player);
-            else if (Target is Vent vent)
-                DoClickVent(vent);
-            else if (Target is DeadBody body)
-                DoClickBody(body);
-            else if (Target is Console console)
-                DoClickConsole(console);
-        }
-        else if (EffectActive && CanClickAgain)
-        {
-            ClickedAgain = true;
-            CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
+                if (Type.HasFlag(AbilityTypes.Targetless))
+                    DoClickTargetless();
+                else if (Target is PlayerControl player)
+                    DoClickPlayer(player);
+                else if (Target is Vent vent)
+                    DoClickVent(vent);
+                else if (Target is DeadBody body)
+                    DoClickBody(body);
+                else if (Target is Console console)
+                    DoClickConsole(console);
+            }
+            else if (EffectActive && CanClickAgain)
+            {
+                ClickedAgain = true;
+                CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
+            }
         }
 
         DisableTarget();
@@ -438,7 +440,7 @@ public class CustomButton
         if (result == "ABILITY")
             result = ButtonLabel;
 
-        if (BlockIsExposed())
+        if (BlockExposed)
             result = "BLOCKED";
 
         return result;
@@ -457,8 +459,8 @@ public class CustomButton
     public bool Usable() => IsUsable() && (!HasUses || uses > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() && !IsLobby() &&
         !NoPlayers() && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
 
-    public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !Owner.IsBlocked && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled &&
-        Base.isActiveAndEnabled && (!HasUses || Uses - UseDecrement >= 0);
+    public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled && (!HasUses || Uses -
+        UseDecrement >= 0) && Base.isActiveAndEnabled && !Owner.Player.IsBlocked();
 
     private void SetTarget()
     {
@@ -519,7 +521,7 @@ public class CustomButton
 
         Base.buttonLabelText.text = Label();
         Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
-        Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && BlockIsExposed());
+        Block.SetActive(Base.isActiveAndEnabled && BlockExposed && Owner.Player.IsBlocked());
 
         if (!Base.isCoolingDown && !Disabled && PostDeath == Owner.Dead)
             SetTarget();

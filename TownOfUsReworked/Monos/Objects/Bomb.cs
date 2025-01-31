@@ -11,7 +11,7 @@ public class Bomb : Range
         foreach (var player in players)
         {
             if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
-                RpcMurderPlayer(Owner, player, DeathReasonEnum.Bombed, false);
+                Owner.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
         }
 
         gameObject.Destroy();

@@ -17,12 +17,8 @@ public class Blackmailer : Intruder, IBlackmailer
 
     public CustomButton BlackmailButton { get; set; }
     public bool ShookAlready { get; set; }
-    public PlayerControl Target { get; set; }
-    public PlayerControl BlackmailedPlayer
-    {
-        get => Target;
-        set => Target = value;
-    }
+    public PlayerControl Target => BlackmailedPlayer;
+    public PlayerControl BlackmailedPlayer { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Blackmailer : FactionColor;
     public override LayerEnum Type => LayerEnum.Blackmailer;

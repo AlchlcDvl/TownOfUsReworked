@@ -22,22 +22,21 @@ public class Phantom : Neutral, IGhosty
         base.Init();
         Objectives = () => "- Finish your tasks without getting clicked";
         Alignment = Alignment.Proselyte;
+        RemoveTasks(Player);
+        Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
     public override void UponTaskComplete(uint taskId)
     {
         if (TasksLeft == PhantomTasksRemaining && PhantomPlayersAlerted && !Caught)
             Flash(Color);
-    }
 
-    public override void UpdatePlayer() => (this as IGhosty).UpdateGhost();
-
-    public override void CheckWin()
-    {
-        if (TasksDone && Faithful)
+        if (AmongUsClient.Instance.AmHost && TasksDone && Faithful)
         {
             WinState = WinLose.PhantomWins;
             CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
         }
     }
+
+    public override void UpdatePlayer() => (this as IGhosty).UpdateGhost();
 }
