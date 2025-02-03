@@ -13,7 +13,7 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
 
     public override IEnumerator BeginDownload(CustomNameplate[] response) => CoDownloadAssets(GenerateDownloadList(response));
 
-    public override IEnumerator AfterLoading(CustomNameplate[] response)
+    public override IEnumerator LoadAssets(CustomNameplate[] response)
     {
         var unregistered = new List<CustomNameplate>(response);
 
@@ -48,5 +48,25 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
         }
 
         unregistered.Clear();
+    }
+
+    public override IEnumerator GenerateHashes(CustomNameplate[] response)
+    {
+        var time = 0f;
+
+        for (var i = 0; i < response.Length; i++)
+        {
+            var nameplate = response[i];
+            nameplate.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{nameplate.ID}.png"));
+
+            time += Time.deltaTime;
+
+            if (time > 1f)
+            {
+                time = 0f;
+                UpdateSplashPatch.SetText($"Generating Nameplate Hashes ({i + 1}/{response.Length})");
+                yield return EndFrame();
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ public class VisorLoader : AssetLoader<CustomVisor>
 
     public override IEnumerator BeginDownload(CustomVisor[] response) => CoDownloadAssets(GenerateDownloadList(response));
 
-    public override IEnumerator AfterLoading(CustomVisor[] response)
+    public override IEnumerator LoadAssets(CustomVisor[] response)
     {
         var unregistered = new List<CustomVisor>(response);
 
@@ -48,5 +48,34 @@ public class VisorLoader : AssetLoader<CustomVisor>
         }
 
         unregistered.Clear();
+    }
+
+    public override IEnumerator GenerateHashes(CustomVisor[] response)
+    {
+        var time = 0f;
+
+        for (var i = 0; i < response.Length; i++)
+        {
+            var visor = response[i];
+            visor.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.ID}.png"));
+
+            if (visor.ClimbID != null)
+                visor.ClimbHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.ClimbID}.png"));
+
+            if (visor.FlipID != null)
+                visor.FlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.FlipID}.png"));
+
+            if (visor.FloorID != null)
+                visor.FloorHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.FloorID}.png"));
+
+            time += Time.deltaTime;
+
+            if (time > 1f)
+            {
+                time = 0f;
+                UpdateSplashPatch.SetText($"Generating Visor Hashes ({i + 1}/{response.Length})");
+                yield return EndFrame();
+            }
+        }
     }
 }

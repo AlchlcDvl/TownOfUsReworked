@@ -22,6 +22,9 @@ public abstract class CustomCosmetic<View, Data> : CustomCosmetic where View : S
 
     [JsonIgnore]
     public Data CosmeticData { get; set; }
+
+    [JsonPropertyName("mainhash")]
+    public string MainHash { get; set; }
 }
 
 public class CustomHat : CustomCosmetic<HatViewData, HatData>
@@ -47,14 +50,32 @@ public class CustomHat : CustomCosmetic<HatViewData, HatData>
     [JsonPropertyName("floorflipid")]
     public string FloorFlipID { get; set; }
 
+    [JsonPropertyName("fliphash")]
+    public string FlipHash { get; set; }
+
+    [JsonPropertyName("backhash")]
+    public string BackHash { get; set; }
+
+    [JsonPropertyName("backfliphash")]
+    public string BackFlipHash { get; set; }
+
+    [JsonPropertyName("climbhash")]
+    public string ClimbHash { get; set; }
+
+    [JsonPropertyName("climbfliphash")]
+    public string ClimbFlipHash { get; set; }
+
+    [JsonPropertyName("floorhash")]
+    public string FloorHash { get; set; }
+
+    [JsonPropertyName("floorfliphash")]
+    public string FloorFlipHash { get; set; }
+
     [JsonPropertyName("nobounce")]
     public bool NoBounce { get; set; }
 
     [JsonPropertyName("adaptive")]
     public bool Adaptive { get; set; }
-
-    [JsonIgnore]
-    public bool Behind => BackID != null || BackFlipID != null;
 }
 
 public class CustomVisor : CustomCosmetic<VisorViewData, VisorData>
@@ -67,6 +88,15 @@ public class CustomVisor : CustomCosmetic<VisorViewData, VisorData>
 
     [JsonPropertyName("climbid")]
     public string ClimbID { get; set; }
+
+    [JsonPropertyName("fliphash")]
+    public string FlipHash { get; set; }
+
+    [JsonPropertyName("climbhash")]
+    public string ClimbHash { get; set; }
+
+    [JsonPropertyName("floorhash")]
+    public string FloorHash { get; set; }
 
     [JsonPropertyName("adaptive")]
     public bool Adaptive { get; set; }

@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace TownOfUsReworked.Loaders;
 
 public abstract class AssetLoader
@@ -9,6 +11,8 @@ public abstract class AssetLoader
     public virtual string DirectoryInfo => "";
     public virtual string FileExtension => "";
     public virtual bool Downloading => false;
+
+    public static HashAlgorithm Hasher { get; set; }
 
     public IEnumerator CoDownloadAssets(IEnumerable<string> files)
     {
@@ -61,6 +65,7 @@ public abstract class AssetLoader
     public static void InitLoaders()
     {
         UpdateSplashPatch.SetText("Initialising Loaders");
+        Hasher = MD5.Create();
         ColorLoader.Instance = new();
         HatLoader.Instance = new();
         ImageLoader.Instance = new();
@@ -72,4 +77,8 @@ public abstract class AssetLoader
         VisorLoader.Instance = new();
         BundleLoader.Instance = new();
     }
+
+    public static bool ShouldDownload(string file, string hash) => IsNullEmptyOrWhiteSpace(hash) || !File.Exists(file) || GenerateHash(file) != hash;
+
+    public static string GenerateHash(string file) => File.Exists(file) ? BitConverter.ToString(Hasher.ComputeHash(File.OpenRead(file))).Replace("-", "").ToLowerInvariant() : null;
 }

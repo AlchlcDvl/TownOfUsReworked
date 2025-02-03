@@ -9,7 +9,7 @@ public class ColorLoader : AssetLoader<CustomColor>
 
     public static ColorLoader Instance { get; set; }
 
-    public override IEnumerator AfterLoading(CustomColor[] response)
+    public override IEnumerator LoadAssets(CustomColor[] response)
     {
         var colors = new List<CustomColor>(response);
 

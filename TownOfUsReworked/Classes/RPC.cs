@@ -56,7 +56,7 @@ public static class RPC
             if (customOption != null)
                 customOption.ReadValueRpc(reader);
             else
-                Failure($"No option found for id: {id}");
+                Failure($"No option found for id pair: {superId}:{id}");
         }
 
         OptionAttribute.SaveSettings("LastUsed");

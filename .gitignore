@@ -380,8 +380,4 @@ Among Us/output_log.txt
 TODO.txt
 .vscode/
 packages.lock.json
-TownOfUsReworkedDev/
-TownOfUsReworkedDev1/
-TownOfUsReworkedDev2/
-TownOfUsReworkedDev3/
-TownOfUsReworkedDev4/
+TownOfUsReworkedDev*/

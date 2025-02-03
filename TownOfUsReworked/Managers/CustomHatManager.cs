@@ -28,7 +28,7 @@ public static class CustomHatManager
         hat.name = ch.Name;
         hat.displayOrder = 99;
         hat.ProductId = "customHat_" + ch.Name.Replace(' ', '_');
-        hat.InFront = !ch.Behind;
+        hat.InFront = ch.BackID == null && ch.BackFlipID == null;
         hat.NoBounce = ch.NoBounce;
         hat.ChipOffset = new(0f, 0.2f);
         hat.Free = true;
@@ -49,28 +49,28 @@ public static class CustomHatManager
             if (hat.StreamOnly && !TownOfUsReworked.IsStream)
                 continue;
 
-            if (!File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.ID}.png")))
+            if (AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ID}.png"), hat.MainHash))
                 yield return hat.ID;
 
-            if (hat.BackID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackID}.png")))
-                yield return hat.BackID;
-
-            if (hat.ClimbID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbID}.png")))
-                yield return hat.ClimbID;
-
-            if (hat.FlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.FlipID}.png")))
+            if (hat.FlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FlipID}.png"), hat.FlipHash))
                 yield return hat.FlipID;
 
-            if (hat.BackFlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackFlipID}.png")))
-                yield return hat.BackFlipID;
+            if (hat.ClimbID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbID}.png"), hat.ClimbHash))
+                yield return hat.ClimbID;
 
-            if (hat.FloorID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorID}.png")))
+            if (hat.FloorID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorID}.png"), hat.FloorHash))
                 yield return hat.FloorID;
 
-            if (hat.FloorFlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorFlipID}.png")))
+            if (hat.BackFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackFlipID}.png"), hat.BackFlipHash))
+                yield return hat.BackFlipID;
+
+            if (hat.BackID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackID}.png"), hat.BackHash))
+                yield return hat.BackID;
+
+            if (hat.FloorFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorFlipID}.png"), hat.FloorFlipHash))
                 yield return hat.FloorFlipID;
 
-            if (hat.ClimbFlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbFlipID}.png")))
+            if (hat.ClimbFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbFlipID}.png"), hat.ClimbFlipHash))
                 yield return hat.ClimbFlipID;
         }
     }

@@ -9,7 +9,7 @@ public class TranslationLoader : AssetLoader<Language>
 
     public static TranslationLoader Instance { get; set; }
 
-    public override IEnumerator AfterLoading(Language[] response)
+    public override IEnumerator LoadAssets(Language[] response)
     {
         foreach (var language in response)
         {

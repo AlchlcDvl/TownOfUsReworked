@@ -44,16 +44,16 @@ public static class CustomVisorManager
             if (visor.StreamOnly && !TownOfUsReworked.IsStream)
                 continue;
 
-            if (!File.Exists(Path.Combine(TownOfUsReworked.Visors, $"{visor.ID}.png")))
+            if (AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.ID}.png"), visor.MainHash))
                 yield return visor.ID;
 
-            if (visor.FlipID != null && !File.Exists(Path.Combine(TownOfUsReworked.Visors, $"{visor.FlipID}.png")))
+            if (visor.FlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.FlipID}.png"), visor.FlipHash))
                 yield return visor.FlipID;
 
-            if (visor.ClimbID != null && !File.Exists(Path.Combine(TownOfUsReworked.Visors, $"{visor.ClimbID}.png")))
+            if (visor.ClimbID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.ClimbID}.png"), visor.ClimbHash))
                 yield return visor.ClimbID;
 
-            if (visor.FloorID != null && !File.Exists(Path.Combine(TownOfUsReworked.Visors, $"{visor.FloorID}.png")))
+            if (visor.FloorID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.FloorID}.png"), visor.FloorHash))
                 yield return visor.FloorID;
         }
     }

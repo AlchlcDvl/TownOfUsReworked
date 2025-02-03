@@ -35,6 +35,11 @@ public partial class TownOfUsReworked
 
     public void LoadComponents()
     {
+        var text = Path.Combine(DataPath, "steam_appid.txt");
+
+        if (!File.Exists(text))
+            File.WriteAllText(text, "945360");
+
         SetUpConfigs();
         Harmony.PatchAll();
         IL2CPPChainloader.Instance.Finished += Initialise;

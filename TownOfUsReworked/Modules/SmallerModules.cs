@@ -31,6 +31,12 @@ public class Asset
     public string ID { get; set; }
 }
 
+public class DownloadableAsset : Asset
+{
+    [JsonPropertyName("hash")]
+    public string Hash { get; set; }
+}
+
 public struct RoleOptionData(int chance, int count, bool unique, bool active, LayerEnum layer)
 {
     public int Chance { get; set; } = chance;

@@ -13,7 +13,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
-    public const int DevBuild = 31;
+    public const int DevBuild = 32;
 
     private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
@@ -24,17 +24,18 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static readonly string DataPath = Path.GetDirectoryName(Application.dataPath);
     public static readonly string Assets = Path.Combine(DataPath, "ReworkedAssets");
-    public static readonly string Hats = Path.Combine(Assets, "CustomHats");
-    public static readonly string Visors = Path.Combine(Assets, "CustomVisors");
-    public static readonly string Nameplates = Path.Combine(Assets, "CustomNameplates");
-    public static readonly string Colors = Path.Combine(Assets, "CustomColors");
-    public static readonly string Options = Path.Combine(Assets, "CustomOptions");
-    public static readonly string Images = Path.Combine(Assets, "CustomImages");
-    public static readonly string Sounds = Path.Combine(Assets, "CustomSounds");
-    public static readonly string Misc = Path.Combine(Assets, "MiscAssets");
+    public static readonly string Hats = Path.Combine(Assets, "Hats");
+    public static readonly string Visors = Path.Combine(Assets, "Visors");
+    public static readonly string Nameplates = Path.Combine(Assets, "Nameplates");
+    public static readonly string Colors = Path.Combine(Assets, "Colors");
+    public static readonly string Options = Path.Combine(Assets, "Options");
+    public static readonly string Images = Path.Combine(Assets, "Images");
+    public static readonly string Sounds = Path.Combine(Assets, "Sounds");
+    public static readonly string Bundles = Path.Combine(Assets, "Bundles");
     public static readonly string Portal = Path.Combine(Assets, "PortalAnim");
-    public static readonly string Logs = Path.Combine(Assets, "ModLogs");
+    public static readonly string Logs = Path.Combine(Assets, "Logs");
     public static readonly string Other = Path.Combine(Assets, "Other");
+    public static readonly string Hashes = Path.Combine(Assets, "Hashes");
     public static readonly string ModsFolder = Path.Combine(DataPath, "BepInEx", "plugins");
 
     public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";

@@ -39,7 +39,7 @@ public static class CustomNameplateManager
             if (nameplate.StreamOnly && !TownOfUsReworked.IsStream)
                 continue;
 
-            if (!File.Exists(Path.Combine(TownOfUsReworked.Nameplates, $"{nameplate.ID}.png")))
+            if (AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Nameplates, $"{nameplate.ID}.png"), nameplate.MainHash))
                 yield return nameplate.ID;
         }
     }

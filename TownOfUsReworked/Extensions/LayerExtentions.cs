@@ -369,58 +369,28 @@ public static class LayerExtentions
             return 1f;
     }
 
+    private static bool TryGetShaper(this PlayerControl player, out IShaper shaper) => PlayerLayer.GetILayers<IShaper>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
+        out shaper);
+
     public static bool IsMimicking(this PlayerControl player, out PlayerControl mimicked)
     {
         mimicked = player;
 
         if (player.HasDied())
             return false;
-
-        var flag = CachedMorphs.TryGetValue(player.PlayerId, out var mimickedId);
-
-        if (flag)
-            mimicked = PlayerById(mimickedId);
-
-        if (!flag || mimicked == player)
+        else if (CachedMorphs.TryGetValue(player.PlayerId, out var mimickedId))
+            return mimicked = PlayerById(mimickedId);
+        else if (mimicked == player)
         {
-            foreach (var morph in PlayerLayer.GetLayers<Morphling>())
-            {
-                if (morph.Player == player && morph.MorphedPlayer && morph.MorphButton.EffectActive)
-                {
-                    mimicked = morph.MorphedPlayer;
-                    return true;
-                }
-            }
+            if (player.TryGetILayer<IMorpher>(out var morph) && morph.MorphedPlayer)
+                mimicked = morph.MorphedPlayer;
+            else if (player.TryGetShaper(out var ss))
+                mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer2 : ss.ShapeshiftPlayer1;
 
-            foreach (var gf in PlayerLayer.GetLayers<PromotedGodfather>())
-            {
-                if (gf.IsMorph && gf.Player == player && gf.MorphedPlayer && gf.MorphButton.EffectActive)
-                {
-                    mimicked = gf.MorphedPlayer;
-                    return true;
-                }
-            }
-
-            foreach (var ss in PlayerLayer.GetLayers<Shapeshifter>())
-            {
-                if ((ss.ShapeshiftPlayer1 == player || ss.ShapeshiftPlayer2 == player) && ss.ShapeshiftButton.EffectActive)
-                {
-                    mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer1 : ss.ShapeshiftPlayer2;
-                    return true;
-                }
-            }
-
-            foreach (var reb in PlayerLayer.GetLayers<PromotedRebel>())
-            {
-                if (reb.IsSS && (reb.ShapeshiftPlayer1 == player || reb.ShapeshiftPlayer2 == player) && reb.ShapeshiftButton.EffectActive)
-                {
-                    mimicked = reb.ShapeshiftPlayer1 == player ? reb.ShapeshiftPlayer1 : reb.ShapeshiftPlayer2;
-                    return true;
-                }
-            }
+            return mimicked && mimicked != player;
         }
 
-        return flag;
+        return false;
     }
 
     public static bool CanVent(this PlayerControl player)

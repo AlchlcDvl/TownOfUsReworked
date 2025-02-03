@@ -546,6 +546,9 @@ public static class CrewProtectiveRoles
 
     [LayerOption("#BE1C8CFF", LayerEnum.Trapper)]
     public static RoleOptionData Trapper;
+
+    [LayerOption("#1A3270FF", LayerEnum.Trickster)]
+    public static RoleOptionData Trickster;
 }
 
 [AlignmentOption(RoleListSlot.CrewSov)]

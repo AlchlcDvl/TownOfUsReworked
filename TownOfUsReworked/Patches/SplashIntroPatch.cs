@@ -1,5 +1,3 @@
-using TownOfUsReworked.Loaders;
-
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(SplashManager), nameof(SplashManager.Update))]
@@ -49,11 +47,6 @@ public static class UpdateSplashPatch
         yield return PerformTimedAction(0.5f, p => TMP.color = UColor.white.SetAlpha(p));
 
         ReactorCredits.Register<TownOfUsReworked>(x => x is ReactorCredits.Location.MainMenu);
-        var text = Path.Combine(TownOfUsReworked.DataPath, "steam_appid.txt");
-
-        if (!File.Exists(text))
-            File.WriteAllText(text, "945360");
-
         NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
         ReworkedStart = TranslationManager.GetOrAddName("Translation.ReworkedStart");
         AllMonos.RegisterMonos();
@@ -66,10 +59,14 @@ public static class UpdateSplashPatch
         if (!Directory.Exists(TownOfUsReworked.Other))
             Directory.CreateDirectory(TownOfUsReworked.Other);
 
+        if (TownOfUsReworked.IsDev && !Directory.Exists(TownOfUsReworked.Hashes))
+            Directory.CreateDirectory(TownOfUsReworked.Hashes);
+
         if (!Directory.Exists(TownOfUsReworked.Logs))
             Directory.CreateDirectory(TownOfUsReworked.Logs);
 
         Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
+        RenameAssetFolders();
 
         AssetLoader.InitLoaders();
 
@@ -85,6 +82,9 @@ public static class UpdateSplashPatch
         yield return PortalLoader.Instance.CoFetch();
         yield return SoundLoader.Instance.CoFetch();
         yield return BundleLoader.Instance.CoFetch();
+
+        AssetLoader.Hasher.Dispose();
+        AssetLoader.Hasher = null;
 
         yield return ModUpdater.CheckForUpdate("Reworked");
         yield return ModUpdater.CheckForUpdate("Submerged");

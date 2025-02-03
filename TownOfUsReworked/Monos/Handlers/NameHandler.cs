@@ -40,8 +40,8 @@ public class NameHandler : MonoBehaviour
             }
         }
 
-        if (!TransitioningSize.ContainsKey(player.PlayerId))
-            player.IsMimicking(out player);
+        if (!TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked))
+            player = mimicked;
 
         var name = "";
 
@@ -98,11 +98,11 @@ public class NameHandler : MonoBehaviour
             }
         }
 
-        if (!amOwner && !deadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked) && mimicked.Data.Role is LayerHandler handler)
-        {
-            player = mimicked;
-            playerHandler = handler;
-        }
+        // if (!amOwner && !deadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked) && mimicked.Data.Role is LayerHandler handler)
+        // {
+        //     player = mimicked;
+        //     playerHandler = handler;
+        // }
 
         var name = "";
         var color = UColor.white;

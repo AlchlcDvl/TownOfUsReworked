@@ -68,14 +68,27 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
 
         var response = JsonSerializer.Deserialize<T[]>(jsonText);
 
-        if (Downloading && !ClientOptions.ForceUseLocal)
+        if (Downloading)
         {
-            UpdateSplashPatch.SetText($"Downloading {Manifest}");
-            yield return BeginDownload(response);
+            if (!ClientOptions.ForceUseLocal)
+            {
+                UpdateSplashPatch.SetText($"Downloading {Manifest}");
+                yield return BeginDownload(response);
+            }
+
+            if (TownOfUsReworked.IsDev)
+            {
+                yield return GenerateHashes(response);
+                JsonSerializer.Serialize(File.OpenWrite(Path.Combine(TownOfUsReworked.Hashes, $"{Manifest}.json")), response, new JsonSerializerOptions()
+                {
+                    WriteIndented = true,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+                });
+            }
         }
 
         UpdateSplashPatch.SetText($"Loading {Manifest}");
-        yield return AfterLoading(response);
+        yield return LoadAssets(response);
 
         Array.Clear(response);
         yield return EndFrame();
@@ -83,5 +96,7 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
 
     public virtual IEnumerator BeginDownload(T[] response) => EndFrame();
 
-    public virtual IEnumerator AfterLoading(T[] response) => EndFrame();
+    public virtual IEnumerator LoadAssets(T[] response) => EndFrame();
+
+    public virtual IEnumerator GenerateHashes(T[] response) => EndFrame();
 }

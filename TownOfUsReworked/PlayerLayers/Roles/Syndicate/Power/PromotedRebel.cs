@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer
+public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer, IShaper
 {
     public override void Init()
     {

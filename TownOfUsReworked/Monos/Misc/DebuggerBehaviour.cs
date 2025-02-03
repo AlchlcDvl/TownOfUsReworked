@@ -45,17 +45,20 @@ public class DebuggerBehaviour : MonoBehaviour
             if (!IsLocalGame())
                 return;
 
-            GUILayout.BeginHorizontal();
-
-            foreach (var tab in Tabs)
+            if (!Lobby())
             {
-                if (GUILayout.Toggle(tab == SelectedTab, tab.Name, new GUIStyle(GUI.skin.button)))
-                    SelectedTab = tab;
+                GUILayout.BeginHorizontal();
+
+                foreach (var tab in Tabs)
+                {
+                    if (GUILayout.Toggle(tab == SelectedTab, tab.Name, GUI.skin.button))
+                        SelectedTab = tab;
+                }
+
+                GUILayout.EndHorizontal();
+
+                GUILayout.Space(5f);
             }
-
-            GUILayout.EndHorizontal();
-
-            GUILayout.Space(5f);
 
             SelectedTab.OnGUI();
         })

@@ -1,4 +1,6 @@
-﻿namespace TownOfUsReworked.Classes;
+﻿using Microsoft.VisualBasic.FileIO;
+
+namespace TownOfUsReworked.Classes;
 
 public static class Utils
 {
@@ -1461,6 +1463,27 @@ public static class Utils
                 go.Destroy();
             }
         }));
+    }
+
+    public static void RenameFolder(string og, string @new)
+    {
+        if (!Directory.Exists(og))
+            Warning("Original folder DNE");
+        else
+            FileSystem.RenameDirectory(og, @new.SanitisePath());
+    }
+
+    public static void RenameAssetFolders()
+    {
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomHats"), TownOfUsReworked.Hats);
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomVisors"), TownOfUsReworked.Visors);
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomNameplates"), TownOfUsReworked.Nameplates);
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomColors"), TownOfUsReworked.Colors);
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomOptions"), TownOfUsReworked.Options);
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomImages"), TownOfUsReworked.Images);
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomSounds"), TownOfUsReworked.Sounds);
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "MiscAssets"), TownOfUsReworked.Bundles);
+        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "ModLogs"), TownOfUsReworked.Logs);
     }
 
     // public static object TryCast(this Il2CppObjectBase self, Type type) => TryCastMethod.MakeGenericMethod(type).Invoke(self, null);
