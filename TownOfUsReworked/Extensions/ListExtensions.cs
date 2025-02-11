@@ -63,13 +63,7 @@ public static class ListExtensions
         return newList;
     }
 
-    public static T Random<T>(this IEnumerable<T> enumerable, T defaultVal)
-    {
-        if (!enumerable.Any())
-            return defaultVal;
-        else
-            return enumerable.Random();
-    }
+    public static T Random<T>(this IEnumerable<T> enumerable, T defaultVal) => enumerable.Any() ? enumerable.Random() : defaultVal;
 
     public static T Random<T>(this IEnumerable<T> list, Func<T, bool> predicate, T defaultVal = default) => list.Where(predicate).Random(defaultVal);
 
@@ -126,11 +120,11 @@ public static class ListExtensions
         {
             temp.Add(item);
 
-            if (temp.Count == splitCount)
-            {
-                result.Add(temp);
-                temp = [];
-            }
+            if (temp.Count != splitCount)
+                continue;
+
+            result.Add(temp);
+            temp = [];
         }
 
         if (temp.Any())

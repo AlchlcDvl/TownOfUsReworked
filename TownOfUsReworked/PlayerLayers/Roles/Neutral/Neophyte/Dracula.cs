@@ -26,7 +26,7 @@ public class Dracula : Neophyte
         $" <#7B8968FF>Undead</color> exceeds {AliveVampCount}, you will kill them instead";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <#7B8968FF>Undead</color>";

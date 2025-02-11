@@ -7,7 +7,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(Logger))]
 public static class RedirectLoggerPatch
 {
-    private static readonly ManualLogSource _log = BepInEx.Logging.Logger.CreateLogSource("Among Us");
+    private static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("Among Us");
 
     private static bool Patch(Logger __instance, LogLevel level, IObject message, UObject context)
     {
@@ -29,7 +29,7 @@ public static class RedirectLoggerPatch
             finalMessage += $"[{context.name} ({context.GetIl2CppType().FullName})]";
 
         finalMessage += $" {message.ToString()}";
-        _log.Log(level, finalMessage);
+        Log.Log(level, finalMessage);
         return false;
     }
 

@@ -17,7 +17,7 @@ public class Betrayer : Neutral
     public override Func<string> Description => () => "- You can kill";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";

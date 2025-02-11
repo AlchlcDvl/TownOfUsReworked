@@ -21,13 +21,13 @@ public class VoteAreaHandler : NameHandler
 
         (VoteArea.ColorBlindName.text, VoteArea.ColorBlindName.color) = UpdateColorblind(Player);
 
-        if (Player.Data.Role is LayerHandler handler && CustomPlayer.Local.Data.Role is LayerHandler localHandler)
-        {
-            handler.UpdateVoteArea();
-            localHandler.UpdateVoteArea(VoteArea);
-            (VoteArea.NameText.text, VoteArea.NameText.color) = UpdateGameName(handler, localHandler, out var revealed);
-            VoteArea.NameText.fontSize = revealed ? 1.5f : 2f;
-            VoteArea.NameText.transform.localPosition = new(0.3384f, revealed ? 0.0611f : 0.0311f, -0.1f);
-        }
+        if (Player.Data.Role is not LayerHandler handler || CustomPlayer.Local.Data.Role is not LayerHandler localHandler)
+            return;
+
+        handler.UpdateVoteArea();
+        localHandler.UpdateVoteArea(VoteArea);
+        (VoteArea.NameText.text, VoteArea.NameText.color) = UpdateGameName(handler, localHandler, out var revealed);
+        VoteArea.NameText.fontSize = revealed ? 1.5f : 2f;
+        VoteArea.NameText.transform.localPosition = new(0.3384f, revealed ? 0.0611f : 0.0311f, -0.1f);
     }
 }

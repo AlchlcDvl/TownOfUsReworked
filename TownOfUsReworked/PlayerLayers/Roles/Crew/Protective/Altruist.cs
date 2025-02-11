@@ -16,7 +16,7 @@ public class Altruist : Crew
     public static Number PassiveAltManaGain = 0;
 
     [NumberOption(0, 15, 1)]
-    public static Number AltManaCost = 2;
+    private static Number AltManaCost = 2;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ReviveCd = 25;
@@ -27,9 +27,9 @@ public class Altruist : Crew
     [ToggleOption]
     public static bool AltruistTargetBody = false;
 
-    public CustomButton ReviveButton { get; set; }
-    public CustomButton ManaButton { get; set; }
-    public byte ParentId { get; set; }
+    private CustomButton ReviveButton { get; set; }
+    private CustomButton ManaButton { get; set; }
+    private byte ParentId { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Altruist : FactionColor;
     public override LayerEnum Type => LayerEnum.Altruist;
@@ -37,19 +37,19 @@ public class Altruist : Crew
     public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {ReviveDur}s\n- If a meeting is called or you are killed during your revive, " +
         "the revive fails";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Protective;
         ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(AltManaCd), (UsableFunc)Usable);
         ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
             MaxAltMana, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(AltManaCost));
-        ReviveButton.uses = 0;
+        ReviveButton.UseCount = 0;
     }
 
-    public bool EndEffect() => Dead;
+    private bool EndEffect() => Dead;
 
-    public void UponEnd()
+    private void UponEnd()
     {
         if (!(Meeting() || Dead))
             FinishRevive();
@@ -81,7 +81,7 @@ public class Altruist : Crew
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
-    public void Revive(DeadBody target)
+    private void Revive(DeadBody target)
     {
         ParentId = target.ParentId;
         Spread(Player, PlayerByBody(target));
@@ -93,7 +93,7 @@ public class Altruist : Crew
             target.gameObject.Destroy();
     }
 
-    public void GainMana(DeadBody target)
+    private void GainMana(DeadBody target)
     {
         ReviveButton.Uses += AltManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
@@ -102,7 +102,7 @@ public class Altruist : Crew
         ManaButton.StartCooldown();
     }
 
-    public bool Usable() => ReviveButton.uses != ReviveButton.maxUses;
+    private bool Usable() => ReviveButton.UseCount != ReviveButton.Max;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

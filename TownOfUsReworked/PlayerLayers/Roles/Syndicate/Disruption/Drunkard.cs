@@ -22,7 +22,7 @@ public class Drunkard : Syndicate
     public override Func<string> StartText => () => "<i>Burp</i>";
     public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Disruption;

@@ -38,15 +38,8 @@ public class AbilityGen : BaseGen
         AllAbilities.Shuffle();
         var invalid = new List<LayerEnum>();
 
-        if (TownOfUsReworked.MCIActive && AllAbilities.Any())
-        {
-            var ids = "";
-
-            foreach (var spawn in AllAbilities)
-                ids += $" {spawn.ID}";
-
-            Message("Abilities in the game: " + ids.Trim());
-        }
+        if (TownOfUsReworked.MciActive && AllAbilities.Any())
+            Message("Abilities in the game: " + string.Join(" ", AllAbilities.Select(ab => ab.ID)));
 
         while (playerList.Any() && AllAbilities.Any())
         {
@@ -68,8 +61,8 @@ public class AbilityGen : BaseGen
             else if (id == LayerEnum.Torch)
             {
                 assigned = playerList.FirstOrDefault(x => !(x.GetFaction() is Faction.Syndicate or Faction.Intruder || (x.Is(Faction.Neutral) && (!NeutralSettings.LightsAffectNeutrals ||
-                    (x.Is(Alignment.Killing) && !NeutralKillingSettings.NKHasImpVision) || (x.Is(Alignment.Neophyte) && !NeutralNeophyteSettings.NNHasImpVision) || (x.Is(Alignment.Evil) &&
-                    !NeutralEvilSettings.NEHasImpVision) || (x.Is(Alignment.Harbinger) && !NeutralHarbingerSettings.NHHasImpVision)))));
+                    (x.Is(Alignment.Killing) && !NeutralKillingSettings.NkHaveImpVision) || (x.Is(Alignment.Neophyte) && !NeutralNeophyteSettings.NnHaveImpVision) || (x.Is(Alignment.Evil) &&
+                    !NeutralEvilSettings.NeHaveImpVision) || (x.Is(Alignment.Harbinger) && !NeutralHarbingerSettings.NhHaveImpVision)))));
             }
             else if (id == LayerEnum.Underdog)
                 assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate));
@@ -106,15 +99,8 @@ public class AbilityGen : BaseGen
             }
         }
 
-        if (TownOfUsReworked.MCIActive && invalid.Any())
-        {
-            var ids = "";
-
-            foreach (var spawn in invalid)
-                ids += $" {spawn}";
-
-            Message("Invalid Abilities in the game: " + ids.Trim());
-        }
+        if (TownOfUsReworked.MciActive && invalid.Any())
+            Message("Invalid Abilities in the game: " + string.Join(" ", invalid));
 
         AllAbilities.Clear();
     }

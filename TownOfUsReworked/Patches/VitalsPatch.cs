@@ -11,7 +11,7 @@ public static class VitalsPatch
         var isOp = role is Operative || DeadSeeEverything();
 
         if (!isOp)
-            isOp = role is Retributionist ret && ret.IsOp;
+            isOp = role is Retributionist { IsOp: true };
 
         if (!isOp)
             return;

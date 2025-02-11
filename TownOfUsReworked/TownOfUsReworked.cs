@@ -13,7 +13,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
-    public const int DevBuild = 32;
+    private const int DevBuild = 33;
 
     private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
@@ -22,7 +22,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
-    public static readonly string DataPath = Path.GetDirectoryName(Application.dataPath);
+    private static readonly string DataPath = Path.GetDirectoryName(Application.dataPath);
     public static readonly string Assets = Path.Combine(DataPath, "ReworkedAssets");
     public static readonly string Hats = Path.Combine(Assets, "Hats");
     public static readonly string Visors = Path.Combine(Assets, "Visors");
@@ -45,39 +45,39 @@ public partial class TownOfUsReworked : BasePlugin
     public static readonly Assembly Core = typeof(TownOfUsReworked).Assembly;
 
     public static NormalGameOptionsV08 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
-    public static HideNSeekGameOptionsV08 HNSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
+    public static HideNSeekGameOptionsV08 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
 
-    public static bool MCIActive => MCIUtils.Clients.Count > 0;
+    public static bool MciActive => MciUtils.Clients.Count > 0;
 
     public readonly Harmony Harmony = new(Id);
 
-    public static ConfigEntry<string> Ip { get; set; }
-    public static ConfigEntry<ushort> Port { get; set; }
+    public static ConfigEntry<string> Ip { get; private set; }
+    public static ConfigEntry<ushort> Port { get; private set; }
 
-    public static ConfigEntry<bool> LighterDarker { get; set; }
-    public static ConfigEntry<bool> WhiteNameplates { get; set; }
-    public static ConfigEntry<bool> NoLevels { get; set; }
-    public static ConfigEntry<bool> CustomCrewColors { get; set; }
-    public static ConfigEntry<bool> CustomNeutColors { get; set; }
-    public static ConfigEntry<bool> CustomIntColors { get; set; }
-    public static ConfigEntry<bool> CustomSynColors { get; set; }
-    public static ConfigEntry<bool> CustomModColors { get; set; }
-    public static ConfigEntry<bool> CustomDispColors { get; set; }
-    public static ConfigEntry<bool> CustomAbColors { get; set; }
-    public static ConfigEntry<bool> CustomEjects { get; set; }
-    public static ConfigEntry<bool> OptimisationMode { get; set; }
-    public static ConfigEntry<bool> HideOtherGhosts { get; set; }
-    public static ConfigEntry<bool> LockCameraSway { get; set; }
-    public static ConfigEntry<bool> ForceUseLocal { get; set; }
-    public static ConfigEntry<bool> UseDarkTheme { get; set; }
-    public static ConfigEntry<bool> NoWelcome { get; set; }
-    public static ConfigEntry<bool> AutoPlayAgain { get; set; }
+    public static ConfigEntry<bool> LighterDarker { get; private set; }
+    public static ConfigEntry<bool> WhiteNameplates { get; private set; }
+    public static ConfigEntry<bool> NoLevels { get; private set; }
+    public static ConfigEntry<bool> CustomCrewColors { get; private set; }
+    public static ConfigEntry<bool> CustomNeutColors { get; private set; }
+    public static ConfigEntry<bool> CustomIntColors { get; private set; }
+    public static ConfigEntry<bool> CustomSynColors { get; private set; }
+    public static ConfigEntry<bool> CustomModColors { get; private set; }
+    public static ConfigEntry<bool> CustomDispColors { get; private set; }
+    public static ConfigEntry<bool> CustomAbColors { get; private set; }
+    public static ConfigEntry<bool> CustomEjects { get; private set; }
+    public static ConfigEntry<bool> OptimisationMode { get; private set; }
+    public static ConfigEntry<bool> HideOtherGhosts { get; private set; }
+    public static ConfigEntry<bool> LockCameraSway { get; private set; }
+    public static ConfigEntry<bool> ForceUseLocal { get; private set; }
+    public static ConfigEntry<bool> UseDarkTheme { get; private set; }
+    public static ConfigEntry<bool> NoWelcome { get; private set; }
+    public static ConfigEntry<bool> AutoPlayAgain { get; private set; }
 
-    public static ConfigEntry<bool> BlockBaseGameLogger { get; set; }
-    public static ConfigEntry<bool> RedirectLogger { get; set; }
-    public static ConfigEntry<bool> DisableTimeout { get; set; }
-    public static ConfigEntry<bool> Persistence { get; set; }
-    public static ConfigEntry<bool> SameVote { get; set; }
+    public static ConfigEntry<bool> BlockBaseGameLogger { get; private set; }
+    public static ConfigEntry<bool> RedirectLogger { get; private set; }
+    public static ConfigEntry<bool> DisableTimeout { get; private set; }
+    public static ConfigEntry<bool> Persistence { get; private set; }
+    public static ConfigEntry<bool> SameVote { get; private set; }
 
     public static TownOfUsReworked ModInstance { get; private set; }
 

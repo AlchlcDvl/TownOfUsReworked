@@ -7,7 +7,7 @@ public class Runner : GameModeRole
     public override UColor Color => CustomColorManager.Runner;
     public override string FactionName => "Task Race";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Finish your tasks before the others";

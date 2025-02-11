@@ -4,12 +4,10 @@ namespace TownOfUsReworked.Loaders;
 
 public class TranslationLoader : AssetLoader<Language>
 {
-    public override string Manifest => "Languages";
-    public override string DirectoryInfo => TownOfUsReworked.Other;
+    protected override string Manifest => "Languages";
+    protected override string DirectoryInfo => TownOfUsReworked.Other;
 
-    public static TranslationLoader Instance { get; set; }
-
-    public override IEnumerator LoadAssets(Language[] response)
+    protected override IEnumerator LoadAssets(Language[] response)
     {
         foreach (var language in response)
         {
@@ -17,6 +15,7 @@ public class TranslationLoader : AssetLoader<Language>
                 AllTranslations[language.ID] = language;
 
             language.IDs?.ForEach(id => AllTranslations[id] = language);
+            language.Values?.ForEach(lang => language.Modules[lang.Name] = lang.Value);
         }
 
         Message($"Found {AllTranslations.Count} translations");

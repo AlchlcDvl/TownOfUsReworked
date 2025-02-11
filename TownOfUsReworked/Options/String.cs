@@ -7,7 +7,7 @@ public class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(Cu
     private IEnumerable<T> Values { get; set; }
     private int Count { get; set; }
 
-    public void Change(bool incrementing)
+    private void Change(bool incrementing)
     {
         Index = CycleInt(Count, 0, Index, incrementing);
         Set(Values.ElementAt(Index));
@@ -25,7 +25,7 @@ public class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(Cu
         str.Values = new(0);
         str.ValueText.transform.localPosition += new Vector3(1.05f, 0f, 0f);
 
-        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MCIActive))
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MciActive))
         {
             str.PlusBtn.gameObject.SetActive(false);
             str.MinusBtn.gameObject.SetActive(false);
@@ -37,7 +37,7 @@ public class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(Cu
         }
     }
 
-    public override string Format() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{ValueString()}");
+    protected override string Format() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{ValueString()}");
 
     public override void PostLoadSetup()
     {
@@ -71,5 +71,5 @@ public class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(Cu
 
     public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
 
-    public override void ReadValueString(string value) => Set(Enum.Parse<T>(value), false);
+    protected override void ReadValueString(string value) => Set(Enum.Parse<T>(value), false);
 }

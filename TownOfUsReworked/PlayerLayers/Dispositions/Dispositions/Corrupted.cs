@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 public class Corrupted : Disposition
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number CorruptCd = 25;
+    private static Number CorruptCd = 25;
 
     [ToggleOption]
     public static bool AllCorruptedWin = false;
@@ -20,7 +20,7 @@ public class Corrupted : Disposition
     public override Func<string> Description => () => "- Corrupt everyone";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         CorruptButton ??= new(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)Corrupt, new Cooldown(CorruptCd));
@@ -29,18 +29,18 @@ public class Corrupted : Disposition
 
     private void Corrupt(PlayerControl target) => CorruptButton.StartCooldown(Interact(Player, target, true));
 
-    public override void CheckWin()
+    protected override void CheckWin()
     {
-        if (CorruptedWin(Player))
-        {
-            WinState = WinLose.CorruptedWins;
+        if (!CorruptedWin(Player))
+            return;
 
-            if (AllCorruptedWin)
-                GetLayers<Corrupted>().ForEach(x => x.Winner = true);
-            else
-                Winner = true;
+        WinState = WinLose.CorruptedWins;
 
-            CallRpc(CustomRPC.WinLose, WinLose.CorruptedWins, this);
-        }
+        if (AllCorruptedWin)
+            GetLayers<Corrupted>().ForEach(x => x.Winner = true);
+        else
+            Winner = true;
+
+        CallRpc(CustomRPC.WinLose, WinLose.CorruptedWins, this);
     }
 }

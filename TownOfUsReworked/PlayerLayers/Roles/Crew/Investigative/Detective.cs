@@ -18,7 +18,7 @@ public class Detective : Crew
     [StringOption<FootprintVisibility>]
     public static FootprintVisibility AnonymousFootPrint = FootprintVisibility.OnlyWhenCamouflaged;
 
-    public CustomButton ExamineButton { get; set; }
+    private CustomButton ExamineButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Detective : FactionColor;
     public override LayerEnum Type => LayerEnum.Detective;
@@ -26,14 +26,14 @@ public class Detective : Crew
     public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
         $"{RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Investigative;
         ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Examine, new Cooldown(ExamineCd));
     }
 
-    public void Examine(PlayerControl target)
+    private void Examine(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 

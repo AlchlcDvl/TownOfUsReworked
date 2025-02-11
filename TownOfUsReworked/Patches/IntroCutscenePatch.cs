@@ -80,30 +80,29 @@ public static class IntroCutscenePatches
     public static void Postfix(ref ISystem.List<PlayerControl> __result)
     {
         if (!IsHnS())
-        {
-            var result = CustomPlayer.Local.GetRole().Team();
-            var copy = new List<PlayerControl>();
-
-            foreach (var player in result)
-            {
-                if (result.Count(x => x == player) > 1 && !copy.Contains(player))
-                    copy.Add(player);
-            }
-
-            result.RemoveRange(copy); // Removes all copies of players that appeared more than once
-            result.AddRange(copy); // Adds only one instance of each copied player back
-            __result = result.ToIl2Cpp();
-        }
+            __result = CustomPlayer.Local.GetRole().Team().DistinctBy(x => x.PlayerId).ToIl2Cpp();
     }
 
     [HarmonyPatch(nameof(IntroCutscene.CoBegin))]
     public static void Prefix()
     {
-        if (MapPatches.CurrentMap == 0)
-            BetterSkeld.ApplyChanges();
-        else if (MapPatches.CurrentMap == 1)
-            BetterMiraHQ.ApplyChanges();
-        else if (MapPatches.CurrentMap == 2)
-            BetterPolus.ApplyChanges();
+        switch (MapPatches.CurrentMap)
+        {
+            case 0:
+            {
+                BetterSkeld.ApplyChanges();
+                break;
+            }
+            case 1:
+            {
+                BetterMiraHq.ApplyChanges();
+                break;
+            }
+            case 2:
+            {
+                BetterPolus.ApplyChanges();
+                break;
+            }
+        }
     }
 }

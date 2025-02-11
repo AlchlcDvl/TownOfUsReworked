@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public class Tiebreaker : Ability
 {
     [ToggleOption]
-    public static bool TiebreakerKnows = true;
+    private static bool TiebreakerKnows = true;
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Tiebreaker : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Tiebreaker;

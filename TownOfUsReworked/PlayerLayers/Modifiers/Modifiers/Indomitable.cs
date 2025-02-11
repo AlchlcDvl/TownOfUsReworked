@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public class Indomitable : Modifier
 {
     [ToggleOption]
-    public static bool IndomitableKnows = true;
+    private static bool IndomitableKnows = true;
 
     public bool AttemptedGuess { get; set; }
 

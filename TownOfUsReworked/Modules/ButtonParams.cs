@@ -35,7 +35,7 @@ public record PostDeath(bool Value);
 
 public record CanClickAgain(bool Value);
 
-public record Manual(bool Value);
+// public record Manual(bool Value);
 
 public record SpriteName(string Value);
 

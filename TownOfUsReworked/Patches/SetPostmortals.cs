@@ -41,15 +41,15 @@ public static class SetPostmortals
 
         foreach (var dict in PlayerLayer.GetLayers<Dictator>())
         {
-            if (dict.Revealed && dict.ToBeEjected)
-            {
-                dict.ToBeEjected.CustomDie(DeathReasonEnum.Dictated, dict.Player);
+            if (!dict.Revealed || !dict.ToBeEjected)
+                continue;
 
-                if (dict.ToBeEjected.Is(Faction.Crew) && dict.ToBeEjected.Is(SubFaction.None))
-                    dict.Player.CustomDie(DeathReasonEnum.Suicide);
+            dict.ToBeEjected.CustomDie(DeathReasonEnum.Dictated, dict.Player);
 
-                dict.ToBeEjected = null;
-            }
+            if (dict.ToBeEjected.Is(Faction.Crew) && dict.ToBeEjected.Is(SubFaction.None))
+                dict.Player.CustomDie(DeathReasonEnum.Suicide);
+
+            dict.ToBeEjected = null;
         }
 
         foreach (var vigi in PlayerLayer.GetLayers<Vigilante>())
@@ -89,11 +89,11 @@ public static class SetPostmortals
     {
         foreach (var jest in PlayerLayer.GetLayers<Jester>())
         {
-            if (jest.Player == player)
-            {
-                jest.VotedOut = true;
-                CallRpc(CustomRPC.WinLose, WinLose.JesterWins, jest);
-            }
+            if (jest.Player != player)
+                continue;
+
+            jest.VotedOut = true;
+            CallRpc(CustomRPC.WinLose, WinLose.JesterWins, jest);
         }
     }
 
@@ -101,14 +101,11 @@ public static class SetPostmortals
     {
         foreach (var exe in PlayerLayer.GetLayers<Executioner>())
         {
-            if (!exe.TargetPlayer || (!Executioner.ExeCanWinBeyondDeath && exe.Dead))
+            if (!exe.TargetPlayer || (!Executioner.ExeCanWinBeyondDeath && exe.Dead) || player != exe.TargetPlayer)
                 continue;
 
-            if (player == exe.TargetPlayer)
-            {
-                exe.TargetVotedOut = true;
-                CallRpc(CustomRPC.WinLose, WinLose.ExecutionerWins, exe);
-            }
+            exe.TargetVotedOut = true;
+            CallRpc(CustomRPC.WinLose, WinLose.ExecutionerWins, exe);
         }
     }
 
@@ -164,11 +161,8 @@ public static class SetPostmortals
 
             rev.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
 
-            if (rev.AmOwner)
-            {
-                if (!rev.GetLayer<Revealer>().Caught)
-                    SetStartingVent(rev);
-            }
+            if (rev.AmOwner && !rev.GetLayer<Revealer>().Caught)
+                SetStartingVent(rev);
         }
 
         WillBeRevealers.RemoveAll(remove.Contains);
@@ -209,11 +203,8 @@ public static class SetPostmortals
 
             phan.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
 
-            if (phan.AmOwner)
-            {
-                if (!phan.GetLayer<Phantom>().Caught)
-                    SetStartingVent(phan);
-            }
+            if (phan.AmOwner && !phan.GetLayer<Phantom>().Caught)
+                SetStartingVent(phan);
         }
 
         WillBePhantoms.RemoveAll(remove.Contains);
@@ -254,11 +245,8 @@ public static class SetPostmortals
 
             ban.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
 
-            if (ban.AmOwner)
-            {
-                if (!ban.GetLayer<Banshee>().Caught)
-                    SetStartingVent(ban);
-            }
+            if (ban.AmOwner && !ban.GetLayer<Banshee>().Caught)
+                SetStartingVent(ban);
         }
 
         WillBeBanshees.RemoveAll(remove.Contains);
@@ -299,11 +287,8 @@ public static class SetPostmortals
 
             ghoul.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
 
-            if (ghoul.AmOwner)
-            {
-                if (ghoul.GetLayer<Ghoul>().Caught)
-                    SetStartingVent(ghoul);
-            }
+            if (ghoul.AmOwner && !ghoul.GetLayer<Ghoul>().Caught)
+                SetStartingVent(ghoul);
         }
 
         WillBeGhouls.RemoveAll(remove.Contains);

@@ -18,7 +18,7 @@ public class Miner : Intruder, IDigger
         "From The Top, Make It Drop, Boom, That's A Vent";
     public override Func<string> Description => () => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Name = TranslationManager.Translate($"Layer.{(MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner")}");

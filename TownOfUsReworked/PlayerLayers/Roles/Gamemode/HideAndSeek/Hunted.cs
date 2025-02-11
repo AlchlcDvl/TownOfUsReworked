@@ -6,7 +6,7 @@ public class Hunted : HideAndSeek
     public override Func<string> StartText => () => "Run, Hide And Do Tasks";
     public override UColor Color => CustomColorManager.Hunted;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Finish your tasks without being hunted";

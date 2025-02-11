@@ -15,8 +15,6 @@ public class RoleListGen : BaseRoleGen
 
         foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role))
         {
-            var entries = new List<LayerEnum>();
-
             foreach (var id in entry.Get())
             {
                 var rateLimit = 0;
@@ -110,7 +108,7 @@ public class RoleListGen : BaseRoleGen
         while (AllRoles.Count > GameData.Instance.PlayerCount)
             AllRoles.TakeLast();
 
-        // In case if the ratelimits and bans disallow the spawning of roles from the role list, vanilla Crewmate should spawn
+        // In case if the rate limits and bans disallow the spawning of roles from the role list, vanilla Crewmate should spawn
         while (AllRoles.Count < GameData.Instance.PlayerCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }

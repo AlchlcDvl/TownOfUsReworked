@@ -10,7 +10,7 @@ public static class VisorsTabOnEnablePatch
 
     private static void CreateVisorPackage(List<VisorData> visors, string packageName, ref float yStart, VisorsTab __instance)
     {
-        var isDefaultPackage = "Innersloth" == packageName;
+        var isDefaultPackage = packageName == "Innersloth";
 
         if (!isDefaultPackage)
             visors = [ .. visors.OrderBy(x => x.name) ];
@@ -21,8 +21,8 @@ public static class VisorsTabOnEnablePatch
         {
             var title = UObject.Instantiate(Template, __instance.scroller.Inner);
             var material = title.GetComponent<MeshRenderer>().material;
-            material.SetFloat("_StencilComp", 4f);
-            material.SetFloat("_Stencil", 1f);
+            material.SetFloat(StencilComp, 4f);
+            material.SetFloat(Stencil, 1f);
             title.transform.localPosition = new(2.25f, offset, -1f);
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;

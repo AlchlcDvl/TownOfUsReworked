@@ -4,16 +4,14 @@ namespace TownOfUsReworked.Loaders;
 
 public class HatLoader : AssetLoader<CustomHat>
 {
-    public override string DirectoryInfo => TownOfUsReworked.Hats;
-    public override bool Downloading => true;
-    public override string Manifest => "Hats";
-    public override string FileExtension => "png";
+    protected override string DirectoryInfo => TownOfUsReworked.Hats;
+    protected override bool Downloading => true;
+    protected override string Manifest => "Hats";
+    protected override string FileExtension => "png";
 
-    public static HatLoader Instance { get; set; }
+    protected override IEnumerator BeginDownload(CustomHat[] response, HashAlgorithm hasher) => CoDownloadAssets(GenerateDownloadList(response, hasher));
 
-    public override IEnumerator BeginDownload(CustomHat[] response) => CoDownloadAssets(GenerateDownloadList(response));
-
-    public override IEnumerator LoadAssets(CustomHat[] response)
+    protected override IEnumerator LoadAssets(CustomHat[] response)
     {
         var unregistered = new List<CustomHat>(response);
 
@@ -50,44 +48,44 @@ public class HatLoader : AssetLoader<CustomHat>
         unregistered.Clear();
     }
 
-    public override IEnumerator GenerateHashes(CustomHat[] response)
+    protected override IEnumerator GenerateHashes(CustomHat[] response, HashAlgorithm hasher)
     {
         var time = 0f;
 
         for (var i = 0; i < response.Length; i++)
         {
             var hat = response[i];
-            hat.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.ID}.png"));
+            hat.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.ID}.png"), hasher);
 
             if (hat.BackID != null)
-                hat.BackHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.BackID}.png"));
+                hat.BackHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.BackID}.png"), hasher);
 
             if (hat.ClimbID != null)
-                hat.ClimbHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.ClimbID}.png"));
+                hat.ClimbHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.ClimbID}.png"), hasher);
 
             if (hat.FlipID != null)
-                hat.FlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.FlipID}.png"));
+                hat.FlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.FlipID}.png"), hasher);
 
             if (hat.BackFlipID != null)
-                hat.BackFlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.BackFlipID}.png"));
+                hat.BackFlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.BackFlipID}.png"), hasher);
 
             if (hat.FloorID != null)
-                hat.FloorHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.FloorID}.png"));
+                hat.FloorHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.FloorID}.png"), hasher);
 
             if (hat.FloorFlipID != null)
-                hat.FloorFlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.FloorFlipID}.png"));
+                hat.FloorFlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.FloorFlipID}.png"), hasher);
 
             if (hat.ClimbFlipID != null)
-                hat.ClimbFlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.ClimbFlipID}.png"));
+                hat.ClimbFlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{hat.ClimbFlipID}.png"), hasher);
 
             time += Time.deltaTime;
 
-            if (time > 1f)
-            {
-                time = 0f;
-                UpdateSplashPatch.SetText($"Generating Hat Hashes ({i + 1}/{response.Length})");
-                yield return EndFrame();
-            }
+            if (time < 1f)
+                continue;
+
+            time = 0f;
+            UpdateSplashPatch.SetText($"Generating Hat Hashes ({i + 1}/{response.Length})");
+            yield return EndFrame();
         }
     }
 }

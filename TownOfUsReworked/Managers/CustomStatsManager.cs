@@ -4,9 +4,9 @@ public static class CustomStatsManager
 {
     public static bool MigratedFromVanillaStats;
 
-    public static StringNames StatsGamesWon;
-    public static StringNames StatsGamesLost;
-    public static StringNames StatsGamesDrawn;
+    private static StringNames StatsGamesWon;
+    private static StringNames StatsGamesLost;
+    private static StringNames StatsGamesDrawn;
     public static StringNames StatsRoleblocked;
     public static StringNames StatsKilled;
     public static StringNames StatsHitImmune;
@@ -14,8 +14,8 @@ public static class CustomStatsManager
     public static StringNames StatsGamesIntruder;
     public static StringNames StatsGamesSyndicate;
     public static StringNames StatsGamesNeutral;
-    public static StringNames StatsLayerWins;
-    public static StringNames StatsMapWins;
+    private static StringNames StatsLayerWins;
+    private static StringNames StatsMapWins;
 
     public static List<StringNames> OrderedStats;
     private static readonly List<StringNames> SupportVanillaStats =
@@ -42,12 +42,12 @@ public static class CustomStatsManager
         StringNames.StatsImpostorKills
     ];
 
-    public static readonly Dictionary<MapEnum, uint> MapWins = [];
-    public static readonly Dictionary<LayerEnum, uint> LayerWins = [];
-    public static readonly Dictionary<StringNames, uint> CustomStats = [];
+    private static readonly Dictionary<MapEnum, uint> MapWins = [];
+    private static readonly Dictionary<LayerEnum, uint> LayerWins = [];
+    private static readonly Dictionary<StringNames, uint> CustomStats = [];
 
-    public static readonly ValueMap<StringNames, MapEnum> MapMap = [];
-    public static readonly ValueMap<StringNames, LayerEnum> LayerMap = [];
+    private static readonly ValueMap<StringNames, MapEnum> MapMap = [];
+    private static readonly ValueMap<StringNames, LayerEnum> LayerMap = [];
 
     public static void Setup()
     {
@@ -94,21 +94,7 @@ public static class CustomStatsManager
             StringNames.StatsHideAndSeekImpostorVictory
         ];
 
-        foreach (var map in MapWins.Keys)
-        {
-            var val = TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [ ("%map%", () => TranslationManager.Translate($"Map.{map}")) ]);
-            OrderedStats.Add(val);
-            MapMap[val] = map;
-        }
-
-        foreach (var layer in LayerWins.Keys)
-        {
-            var val = TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [ ("%layer%", () => TranslationManager.Translate($"Layer.{layer}")) ]);
-            OrderedStats.Add(val);
-            LayerMap[val] = layer;
-        }
-
-        var path = Path.Combine(PlatformPaths.persistentDataPath, "reworkedStats");
+        var path = Path.Combine(Application.persistentDataPath, "reworkedStats");
 
         if (File.Exists(path))
         {
@@ -123,6 +109,20 @@ public static class CustomStatsManager
         Enum.GetValues<MapEnum>().ForEach(x => GetMapWins(x));
         LayerDictionary.Keys.ForEach(x => GetLayerWins(x));
         Enum.GetValues<StringNames>().ForEach(x => GetStat(x));
+
+        foreach (var map in MapWins.Keys)
+        {
+            var val = TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [ ("%map%", () => TranslationManager.Translate($"Map.{map}")) ]);
+            OrderedStats.Add(val);
+            MapMap[val] = map;
+        }
+
+        foreach (var layer in LayerWins.Keys)
+        {
+            var val = TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [ ("%layer%", () => TranslationManager.Translate($"Layer.{layer}")) ]);
+            OrderedStats.Add(val);
+            LayerMap[val] = layer;
+        }
     }
 
     public static void Reset()
@@ -145,42 +145,36 @@ public static class CustomStatsManager
 
         foreach (var stat in SupportVanillaStats)
         {
-            if (stats.gameplayStats.TryGetValue(stat, out var value))
-            {
-                if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
-                    CustomStats[customStat] = value;
-                else
-                    CustomStats[stat] = value;
-            }
+            if (!stats.gameplayStats.TryGetValue(stat, out var value))
+                continue;
+
+            if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
+                CustomStats[customStat] = value;
+            else
+                CustomStats[stat] = value;
         }
 
         MigratedFromVanillaStats = true;
     }
 
-    public static void IncrementStat(LayerEnum layer)
+    private static void IncrementStat(LayerEnum layer)
     {
         if (!LayerDictionary.ContainsKey(layer))
             return;
 
-        if (!LayerWins.ContainsKey(layer))
-            LayerWins[layer] = 0;
-
-        LayerWins[layer]++;
+        LayerWins[layer] = LayerWins.GetValueOrDefault(layer) + 1;
         StatsManager.Instance.SaveStats();
     }
 
-    public static void IncrementStat(MapEnum map)
+    private static void IncrementStat(MapEnum map)
     {
-        if (!MapWins.ContainsKey(map))
-            MapWins[map] = 0;
-
-        MapWins[map]++;
+        MapWins[map] = MapWins.GetValueOrDefault(map) + 1;
         StatsManager.Instance.SaveStats();
     }
 
     public static void IncrementStat(StringNames stat, out bool success)
     {
-        success = !(IsFreePlay() || TownOfUsReworked.MCIActive) && (SupportVanillaStats.Contains(stat) || stat > ReworkedStart);
+        success = !(IsFreePlay() || TownOfUsReworked.MciActive) && (SupportVanillaStats.Contains(stat) || stat > ReworkedStart);
 
         if (!success)
             return;
@@ -200,10 +194,7 @@ public static class CustomStatsManager
         if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
             stat = customStat;
 
-        if (!CustomStats.ContainsKey(stat))
-            CustomStats[stat] = 0;
-
-        CustomStats[stat]++;
+        CustomStats[stat] = CustomStats.GetValueOrDefault(stat) + 1;
         StatsManager.Instance.SaveStats();
     }
 
@@ -220,17 +211,18 @@ public static class CustomStatsManager
         if (MapMap.TryGetValue(stat, out var map))
             return GetMapWins(map);
 
-        if (stat == StringNames.StatsFastestCrewmateWin_HideAndSeek)
-            return StatsPopup.GetFloatStatStr(StatsManager.Instance.GetFastestHideAndSeekCrewmateWin());
-
-        if (stat == StringNames.StatsFastestImpostorWin_HideAndSeek)
-            return StatsPopup.GetFloatStatStr(StatsManager.Instance.GetFastestHideAndSeekImpostorWin());
-
-        if (stat == StringNames.StatsHideAndSeekCrewmateVictory)
-            return StatsManager.Instance.GetWinReason(GameOverReason.HideAndSeek_ByTimer);
-
-        if (stat == StringNames.StatsHideAndSeekImpostorVictory)
-            return StatsManager.Instance.GetWinReason(GameOverReason.HideAndSeek_ByKills);
+        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+        switch (stat)
+        {
+            case StringNames.StatsFastestCrewmateWin_HideAndSeek:
+                return StatsPopup.GetFloatStatStr(StatsManager.Instance.GetFastestHideAndSeekCrewmateWin());
+            case StringNames.StatsFastestImpostorWin_HideAndSeek:
+                return StatsPopup.GetFloatStatStr(StatsManager.Instance.GetFastestHideAndSeekImpostorWin());
+            case StringNames.StatsHideAndSeekCrewmateVictory:
+                return StatsManager.Instance.GetWinReason(GameOverReason.HideAndSeek_ByTimer);
+            case StringNames.StatsHideAndSeekImpostorVictory:
+                return StatsManager.Instance.GetWinReason(GameOverReason.HideAndSeek_ByKills);
+        }
 
         if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
             stat = customStat;
@@ -241,7 +233,7 @@ public static class CustomStatsManager
         return val;
     }
 
-    public static uint GetMapWins(MapEnum map)
+    private static uint GetMapWins(MapEnum map)
     {
         if (map == MapEnum.Random)
             return 0;
@@ -252,7 +244,7 @@ public static class CustomStatsManager
         return val;
     }
 
-    public static uint GetLayerWins(LayerEnum layer)
+    private static uint GetLayerWins(LayerEnum layer)
     {
         if (!LayerDictionary.ContainsKey(layer))
             return 0;
@@ -276,28 +268,28 @@ public static class CustomStatsManager
             if (GetLayerWins(layer.Type) == 5)
                 CustomAchievementManager.UnlockAchievement($"LayerWins.{layer.Type}");
 
-            if (layer is Role role)
+            if (layer is not Role role)
+                continue;
+
+            var type = role.SubFaction switch
             {
-                var type = role.SubFaction switch
-                {
-                    SubFaction.Undead => LayerEnum.Undead,
-                    SubFaction.Cabal => LayerEnum.Cabal,
-                    SubFaction.Cult => LayerEnum.Cult,
-                    SubFaction.Reanimated => LayerEnum.Reanimated,
-                    _ => LayerEnum.None
-                };
-                IncrementStat(type);
+                SubFaction.Undead => LayerEnum.Undead,
+                SubFaction.Cabal => LayerEnum.Cabal,
+                SubFaction.Cult => LayerEnum.Cult,
+                SubFaction.Reanimated => LayerEnum.Reanimated,
+                _ => LayerEnum.None
+            };
+            IncrementStat(type);
 
-                if (GetLayerWins(type) == 5)
-                    CustomAchievementManager.UnlockAchievement($"LayerWins.{type}");
+            if (GetLayerWins(type) == 5)
+                CustomAchievementManager.UnlockAchievement($"LayerWins.{type}");
 
-                foreach (var role2 in role.RoleHistory)
-                {
-                    IncrementStat(role2);
+            foreach (var role2 in role.RoleHistory)
+            {
+                IncrementStat(role2);
 
-                    if (GetLayerWins(role2) == 5)
-                        CustomAchievementManager.UnlockAchievement($"LayerWins.{role2}");
-                }
+                if (GetLayerWins(role2) == 5)
+                    CustomAchievementManager.UnlockAchievement($"LayerWins.{role2}");
             }
         }
     }
@@ -322,7 +314,7 @@ public static class CustomStatsManager
         writer.Write(MapWins);
     }
 
-    public static void DeserializeCustomStats(this BinaryReader reader)
+    private static void DeserializeCustomStats(this BinaryReader reader)
     {
         MigratedFromVanillaStats = reader.ReadBoolean();
         reader.ReadEnumDict(CustomStats);
@@ -350,7 +342,7 @@ public static class CustomStatsManager
         }
     }
 
-    public static void ReadEnumDict<T>(this BinaryReader reader, Dictionary<T, uint> dict) where T : struct, Enum
+    private static void ReadEnumDict<T>(this BinaryReader reader, Dictionary<T, uint> dict) where T : struct, Enum
     {
         var num = reader.ReadUInt32();
 
@@ -358,15 +350,15 @@ public static class CustomStatsManager
             dict[reader.ReadEnum<T>()] = reader.ReadUInt32();
     }
 
-    public static T ReadEnum<T>(this BinaryReader reader) where T : struct, Enum
+    private static T ReadEnum<T>(this BinaryReader reader) where T : struct, Enum
     {
         if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
             return (T)(object)reader.ReadByte();
-        else
-            return (T)(object)reader.ReadInt32();
+
+        return (T)(object)reader.ReadInt32();
     }
 
-    public static void Write(this BinaryWriter writer, Enum enumVal)
+    private static void Write(this BinaryWriter writer, Enum enumVal)
     {
         var enumType = enumVal.GetType();
 
@@ -376,7 +368,7 @@ public static class CustomStatsManager
             writer.Write(Convert.ToInt32(enumVal));
     }
 
-    public static void Write<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
+    private static void Write<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
     {
         writer.Write((uint)dict.Count);
 

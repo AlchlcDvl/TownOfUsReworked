@@ -1,20 +1,16 @@
-using System.Security.Cryptography;
-
 namespace TownOfUsReworked.Loaders;
 
 public abstract class AssetLoader
 {
-    public static readonly string RepositoryUrl = $"https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/{(TownOfUsReworked.IsDev ? "dev" : "main")}";
+    protected static readonly string RepositoryUrl = $"https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/{(TownOfUsReworked.IsDev ? "dev" : "main")}";
 
-    public abstract string Manifest { get; }
+    protected abstract string Manifest { get; }
 
-    public virtual string DirectoryInfo => "";
-    public virtual string FileExtension => "";
-    public virtual bool Downloading => false;
+    protected virtual string DirectoryInfo => "";
+    protected virtual string FileExtension => "";
+    protected virtual bool Downloading => false;
 
-    public static HashAlgorithm Hasher { get; set; }
-
-    public IEnumerator CoDownloadAssets(IEnumerable<string> files)
+    protected IEnumerator CoDownloadAssets(IEnumerable<string> files)
     {
         var count = files.Count();
 
@@ -28,12 +24,12 @@ public abstract class AssetLoader
         {
             i++;
             UpdateSplashPatch.SetText($"Downloading {Manifest} ({i}/{count})");
-            var trueName = $"{fileName.Replace(" ", "%20")}{(IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}")}";
+            var trueName = fileName.Replace(" ", "%20") + (IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}");
             Message($"Downloading: {Manifest}/{fileName}");
             var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}/{trueName}");
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
+            if (www.result != UnityWebRequest.Result.Success)
             {
                 Error(www.error);
                 www.downloadHandler.Dispose();
@@ -62,23 +58,22 @@ public abstract class AssetLoader
         }
     }
 
-    public static void InitLoaders()
+    public static IEnumerator RunLoaders()
     {
-        UpdateSplashPatch.SetText("Initialising Loaders");
-        Hasher = MD5.Create();
-        ColorLoader.Instance = new();
-        HatLoader.Instance = new();
-        ImageLoader.Instance = new();
-        NameplateLoader.Instance = new();
-        PortalLoader.Instance = new();
-        PresetLoader.Instance = new();
-        SoundLoader.Instance = new();
-        TranslationLoader.Instance = new();
-        VisorLoader.Instance = new();
-        BundleLoader.Instance = new();
+        using var hasher = MD5.Create();
+        yield return new TranslationLoader().CoFetch(hasher);
+        yield return new HatLoader().CoFetch(hasher);
+        yield return new VisorLoader().CoFetch(hasher);
+        yield return new NameplateLoader().CoFetch(hasher);
+        yield return new ColorLoader().CoFetch(hasher);
+        yield return new PresetLoader().CoFetch(hasher);
+        yield return new ImageLoader().CoFetch(hasher);
+        yield return new PortalLoader().CoFetch(hasher);
+        yield return new SoundLoader().CoFetch(hasher);
+        yield return new BundleLoader().CoFetch(hasher);
     }
 
-    public static bool ShouldDownload(string file, string hash) => IsNullEmptyOrWhiteSpace(hash) || !File.Exists(file) || GenerateHash(file) != hash;
+    public static bool ShouldDownload(string file, string hash, HashAlgorithm hasher) => IsNullEmptyOrWhiteSpace(hash) || !File.Exists(file) || GenerateHash(file, hasher) != hash;
 
-    public static string GenerateHash(string file) => File.Exists(file) ? BitConverter.ToString(Hasher.ComputeHash(File.OpenRead(file))).Replace("-", "").ToLowerInvariant() : null;
+    protected static string GenerateHash(string file, HashAlgorithm hasher) => File.Exists(file) ? BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(file))).Replace("-", "") : null;
 }

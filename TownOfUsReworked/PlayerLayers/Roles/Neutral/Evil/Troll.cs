@@ -27,7 +27,7 @@ public class Troll : Evil
     public override bool HasWon => Killed;
     public override WinLose EndState => WinLose.TrollWins;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";

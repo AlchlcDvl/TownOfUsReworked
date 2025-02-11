@@ -6,7 +6,7 @@ public class Anarchist : Syndicate
     public override Func<string> StartText => () => "Wreck Everyone With A Passion";
     public override Func<string> Description => () => CommonAbilities;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Utility;

@@ -4,15 +4,15 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public class Volatile : Modifier
 {
     [NumberOption(10f, 30f, 1f, Format.Time)]
-    public static Number VolatileInterval = 15;
+    private static Number VolatileInterval = 15;
 
     [ToggleOption]
-    public static bool VolatileKnows = true;
+    private static bool VolatileKnows = true;
 
-    private float _time;
+    private float Time;
     private bool Exposed { get; set; }
 
-    private static bool LMAO;
+    private static bool Lmao;
 
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Volatile : CustomColorManager.Modifier;
     public override LayerEnum Type => LayerEnum.Volatile;
@@ -21,44 +21,53 @@ public class Volatile : Modifier
 
     private static readonly string[] Links = [ "https://www.youtube.com/watch?v=79-AwFZCKpA", "https://www.youtube.com/watch?v=xm3YgoEiEDc" ];
 
-    public override void Init() => Exposed = VolatileKnows;
+    protected override void Init() => Exposed = VolatileKnows;
 
     public override void UpdateHud(HudManager __instance)
     {
         if (ActiveTask() || IntroCutscene.Instance || ShowRolePatch.Starting || Dead)
             return;
 
-        _time += Time.deltaTime;
+        Time += UnityEngine.Time.deltaTime;
 
-        if (_time >= VolatileInterval)
+        if (Time >= VolatileInterval)
         {
             var randomNumber = URandom.RandomRangeInt(0, 5);
-            _time -= VolatileInterval;
+            Time -= VolatileInterval;
             Exposed = true;
 
-            // Flashes
-            if (randomNumber == 0)
+            switch (randomNumber)
             {
-                var otherNumber = (byte)URandom.RandomRangeInt(0, 256);
-                var otherNumber2 = (byte)URandom.RandomRangeInt(0, 256);
-                var otherNumber3 = (byte)URandom.RandomRangeInt(0, 256);
-                Flash(new Color32(otherNumber, otherNumber2, otherNumber3, 255));
+                // Flashes
+                case 0:
+                {
+                    var otherNumber = (byte)URandom.RandomRangeInt(0, 256);
+                    var otherNumber2 = (byte)URandom.RandomRangeInt(0, 256);
+                    var otherNumber3 = (byte)URandom.RandomRangeInt(0, 256);
+                    Flash(new Color32(otherNumber, otherNumber2, otherNumber3, 255));
+                    break;
+                }
+                // Fake someone killing you
+                case 1:
+                {
+                    Player.NetTransform.Halt();
+                    __instance.KillOverlay.ShowKillAnimation(AllPlayers().Random().Data, Data);
+                    break;
+                }
+                // Get rick rolled lmao
+                case 2 when !Lmao && !TownOfUsReworked.IsStream:
+                {
+                    Lmao = true;
+                    Application.OpenURL(Links.Random());
+                    break;
+                }
+                // Hear random things
+                case 3:
+                {
+                    Play(UnityGetAll<AudioClip>().Random());
+                    break;
+                }
             }
-            // Fake someone killing you
-            else if (randomNumber == 1)
-            {
-                Player.NetTransform.Halt();
-                __instance.KillOverlay.ShowKillAnimation(AllPlayers().Random().Data, Data);
-            }
-            // Get rick rolled lmao
-            else if (randomNumber == 2 && !LMAO && !TownOfUsReworked.IsStream)
-            {
-                LMAO = true;
-                Application.OpenURL(Links.Random());
-            }
-            // Hear random things
-            else if (randomNumber == 3)
-                Play(UnityGetAll<AudioClip>().Random());
         }
     }
 }

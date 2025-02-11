@@ -38,316 +38,380 @@ public static class OnGameEndPatches
                 }
             }
 
-            if (WinState == WinLose.EveryoneWins)
-                AllPlayers().ForEach(x => Winners[x.name] = x.GetLayers());
-            if (WinState == WinLose.AllNeutralsWin)
+            switch (WinState)
             {
-                foreach (var role2 in Role.GetRoles(Faction.Neutral))
+                case WinLose.EveryoneWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    AllPlayers().ForEach(x => Winners[x.name] = x.GetLayers());
+                    break;
                 }
+                case WinLose.AllNeutralsWin:
+                {
+                    foreach (var role2 in Role.GetRoles(Faction.Neutral))
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
 
-                foreach (var defect in PlayerLayer.GetLayers<Defector>())
-                {
-                    if (!defect.Disconnected && defect.Side == Faction.Neutral)
-                        Winners[defect.PlayerName] = defect.Player.GetLayers();
-                }
-            }
-            else if (WinState == WinLose.AllNKsWin)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Role>().Where(x => x.Faction == Faction.Neutral && x.Alignment == Alignment.Killing))
-                {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
+                    foreach (var defect in PlayerLayer.GetLayers<Defector>())
+                    {
+                        if (!defect.Disconnected && defect.Side == Faction.Neutral)
+                            Winners[defect.PlayerName] = defect.Player.GetLayers();
+                    }
 
-                foreach (var defect in PlayerLayer.GetLayers<Defector>())
-                {
-                    if (!defect.Disconnected && defect.Side == Faction.Neutral)
-                        Winners[defect.PlayerName] = defect.Player.GetLayers();
+                    break;
                 }
-            }
-            else if (WinState == WinLose.CrewWins)
-            {
-                foreach (var role2 in Role.GetRoles(Faction.Crew))
+                case WinLose.AllNKsWin:
                 {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
+                    foreach (var role2 in PlayerLayer.GetLayers<Role>().Where(x => x.Faction == Faction.Neutral && x.Alignment == Alignment.Killing))
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
 
-                foreach (var ally in PlayerLayer.GetLayers<Allied>())
-                {
-                    if (!ally.Disconnected && ally.Side == Faction.Crew)
-                        Winners[ally.PlayerName] = ally.Player.GetLayers();
-                }
+                    foreach (var defect in PlayerLayer.GetLayers<Defector>())
+                    {
+                        if (!defect.Disconnected && defect.Side == Faction.Neutral)
+                            Winners[defect.PlayerName] = defect.Player.GetLayers();
+                    }
 
-                foreach (var defect in PlayerLayer.GetLayers<Defector>())
-                {
-                    if (!defect.Disconnected && defect.Side == Faction.Crew && defect.Turned)
-                        Winners[defect.PlayerName] = defect.Player.GetLayers();
+                    break;
                 }
-            }
-            else if (WinState == WinLose.IntrudersWin)
-            {
-                foreach (var role2 in Role.GetRoles(Faction.Intruder))
+                case WinLose.CrewWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
+                    foreach (var role2 in Role.GetRoles(Faction.Crew))
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
 
-                foreach (var ally in PlayerLayer.GetLayers<Allied>())
-                {
-                    if (!ally.Disconnected && ally.Side == Faction.Intruder)
-                        Winners[ally.PlayerName] = ally.Player.GetLayers();
-                }
+                    foreach (var ally in PlayerLayer.GetLayers<Allied>())
+                    {
+                        if (!ally.Disconnected && ally.Side == Faction.Crew)
+                            Winners[ally.PlayerName] = ally.Player.GetLayers();
+                    }
 
-                foreach (var traitor in PlayerLayer.GetLayers<Traitor>())
-                {
-                    if (!traitor.Disconnected && traitor.Side == Faction.Intruder)
-                        Winners[traitor.PlayerName] = traitor.Player.GetLayers();
-                }
+                    foreach (var defect in PlayerLayer.GetLayers<Defector>())
+                    {
+                        if (!defect.Disconnected && defect.Side == Faction.Crew && defect.Turned)
+                            Winners[defect.PlayerName] = defect.Player.GetLayers();
+                    }
 
-                foreach (var fanatic in PlayerLayer.GetLayers<Fanatic>())
-                {
-                    if (!fanatic.Disconnected && fanatic.Side == Faction.Intruder)
-                        Winners[fanatic.PlayerName] = fanatic.Player.GetLayers();
+                    break;
                 }
+                case WinLose.IntrudersWin:
+                {
+                    foreach (var role2 in Role.GetRoles(Faction.Intruder))
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
 
-                foreach (var defect in PlayerLayer.GetLayers<Defector>())
-                {
-                    if (!defect.Disconnected && defect.Side == Faction.Intruder && defect.Turned)
-                        Winners[defect.PlayerName] = defect.Player.GetLayers();
-                }
-            }
-            else if (WinState == WinLose.SyndicateWins)
-            {
-                foreach (var role2 in Role.GetRoles(Faction.Syndicate))
-                {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
+                    foreach (var ally in PlayerLayer.GetLayers<Allied>())
+                    {
+                        if (!ally.Disconnected && ally.Side == Faction.Intruder)
+                            Winners[ally.PlayerName] = ally.Player.GetLayers();
+                    }
 
-                foreach (var ally in PlayerLayer.GetLayers<Allied>())
-                {
-                    if (!ally.Disconnected && ally.Side == Faction.Syndicate)
-                        Winners[ally.PlayerName] = ally.Player.GetLayers();
-                }
+                    foreach (var traitor in PlayerLayer.GetLayers<Traitor>())
+                    {
+                        if (!traitor.Disconnected && traitor.Side == Faction.Intruder)
+                            Winners[traitor.PlayerName] = traitor.Player.GetLayers();
+                    }
 
-                foreach (var traitor in PlayerLayer.GetLayers<Traitor>())
-                {
-                    if (!traitor.Disconnected && traitor.Side == Faction.Syndicate)
-                        Winners[traitor.PlayerName] = traitor.Player.GetLayers();
-                }
+                    foreach (var fanatic in PlayerLayer.GetLayers<Fanatic>())
+                    {
+                        if (!fanatic.Disconnected && fanatic.Side == Faction.Intruder)
+                            Winners[fanatic.PlayerName] = fanatic.Player.GetLayers();
+                    }
 
-                foreach (var fanatic in PlayerLayer.GetLayers<Fanatic>())
-                {
-                    if (!fanatic.Disconnected && fanatic.Side == Faction.Syndicate)
-                        Winners[fanatic.PlayerName] = fanatic.Player.GetLayers();
-                }
+                    foreach (var defect in PlayerLayer.GetLayers<Defector>())
+                    {
+                        if (!defect.Disconnected && defect.Side == Faction.Intruder && defect.Turned)
+                            Winners[defect.PlayerName] = defect.Player.GetLayers();
+                    }
 
-                foreach (var defect in PlayerLayer.GetLayers<Defector>())
-                {
-                    if (!defect.Disconnected && defect.Side == Faction.Syndicate && defect.Turned)
-                        Winners[defect.PlayerName] = defect.Player.GetLayers();
+                    break;
                 }
-            }
-            else if (WinState == WinLose.UndeadWins)
-            {
-                foreach (var role2 in Role.GetRoles(SubFaction.Undead))
+                case WinLose.SyndicateWins:
                 {
-                    if (!role2.Disconnected)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
-            }
-            else if (WinState == WinLose.CabalWins)
-            {
-                foreach (var role2 in Role.GetRoles(SubFaction.Cabal))
-                {
-                    if (!role2.Disconnected)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
-            }
-            else if (WinState == WinLose.CultWins)
-            {
-                foreach (var role2 in Role.GetRoles(SubFaction.Cult))
-                {
-                    if (!role2.Disconnected)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
-            }
-            else if (WinState == WinLose.ReanimatedWins)
-            {
-                foreach (var role2 in Role.GetRoles(SubFaction.Reanimated))
-                {
-                    if (!role2.Disconnected)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
-            }
-            else if (WinState == WinLose.ApocalypseWins)
-            {
-                foreach (var role2 in Role.GetRoles(Alignment.Apocalypse))
-                {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
-                }
+                    foreach (var role2 in Role.GetRoles(Faction.Syndicate))
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
 
-                foreach (var role2 in Role.GetRoles(Alignment.Harbinger))
-                {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var ally in PlayerLayer.GetLayers<Allied>())
+                    {
+                        if (!ally.Disconnected && ally.Side == Faction.Syndicate)
+                            Winners[ally.PlayerName] = ally.Player.GetLayers();
+                    }
+
+                    foreach (var traitor in PlayerLayer.GetLayers<Traitor>())
+                    {
+                        if (!traitor.Disconnected && traitor.Side == Faction.Syndicate)
+                            Winners[traitor.PlayerName] = traitor.Player.GetLayers();
+                    }
+
+                    foreach (var fanatic in PlayerLayer.GetLayers<Fanatic>())
+                    {
+                        if (!fanatic.Disconnected && fanatic.Side == Faction.Syndicate)
+                            Winners[fanatic.PlayerName] = fanatic.Player.GetLayers();
+                    }
+
+                    foreach (var defect in PlayerLayer.GetLayers<Defector>())
+                    {
+                        if (!defect.Disconnected && defect.Side == Faction.Syndicate && defect.Turned)
+                            Winners[defect.PlayerName] = defect.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.GlitchWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Glitch>())
+                case WinLose.UndeadWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in Role.GetRoles(SubFaction.Undead))
+                    {
+                        if (!role2.Disconnected)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.JuggernautWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Juggernaut>())
+                case WinLose.CabalWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in Role.GetRoles(SubFaction.Cabal))
+                    {
+                        if (!role2.Disconnected)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.ArsonistWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Arsonist>())
+                case WinLose.CultWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in Role.GetRoles(SubFaction.Cult))
+                    {
+                        if (!role2.Disconnected)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.SerialKillerWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<SerialKiller>())
+                case WinLose.ReanimatedWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in Role.GetRoles(SubFaction.Reanimated))
+                    {
+                        if (!role2.Disconnected)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.MurdererWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Murderer>())
+                case WinLose.ApocalypseWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in Role.GetRoles(Alignment.Apocalypse))
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    foreach (var role2 in Role.GetRoles(Alignment.Harbinger))
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.WerewolfWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Werewolf>())
+                case WinLose.GlitchWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Glitch>())
+                    {
+                        if (!role2.Disconnected && role2.Faithful && role2.Winner)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.CryomaniacWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Cryomaniac>())
+                case WinLose.JuggernautWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful && role2.Winner)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Juggernaut>())
+                    {
+                        if (!role2.Disconnected && role2.Faithful && role2.Winner)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.PhantomWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Phantom>())
+                case WinLose.ArsonistWins:
                 {
-                    if (!role2.Disconnected && role2.Faithful && role2.TasksDone && !role2.Caught)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Arsonist>())
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.TaskRunnerWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Runner>())
+                case WinLose.SerialKillerWins:
                 {
-                    if (!role2.Disconnected && role2.Winner)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<SerialKiller>())
+                    {
+                        if (!role2.Disconnected && role2.Faithful && role2.Winner)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.HunterWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Hunter>())
+                case WinLose.MurdererWins:
                 {
-                    if (!role2.Disconnected)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Murderer>())
+                    {
+                        if (!role2.Disconnected && role2.Faithful)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.HuntedWin)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Hunted>())
+                case WinLose.WerewolfWins:
                 {
-                    if (!role2.Disconnected)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Werewolf>())
+                    {
+                        if (!role2.Disconnected && role2.Faithful && role2.Winner)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.BetrayerWins)
-            {
-                foreach (var role2 in PlayerLayer.GetLayers<Betrayer>())
+                case WinLose.CryomaniacWins:
                 {
-                    if (!role2.Disconnected && role2.Faction == Faction.Neutral)
-                        Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Cryomaniac>())
+                    {
+                        if (!role2.Disconnected && role2.Faithful && role2.Winner)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.LoveWins)
-            {
-                foreach (var lover in PlayerLayer.GetLayers<Lovers>())
+                case WinLose.PhantomWins:
                 {
-                    if (!lover.Disconnected && lover.Winner)
-                        Winners[lover.PlayerName] = lover.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Phantom>())
+                    {
+                        if (!role2.Disconnected && role2.Faithful && role2.TasksDone && !role2.Caught)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.RivalWins)
-            {
-                foreach (var rival in PlayerLayer.GetLayers<Rivals>())
+                case WinLose.TaskRunnerWins:
                 {
-                    if (!rival.Disconnected && rival.Winner)
-                        Winners[rival.PlayerName] = rival.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Runner>())
+                    {
+                        if (!role2.Disconnected && role2.Winner)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.TaskmasterWins)
-            {
-                foreach (var tm in PlayerLayer.GetLayers<Taskmaster>())
+                case WinLose.HunterWins:
                 {
-                    if (!tm.Disconnected && tm.Winner)
-                        Winners[tm.PlayerName] = tm.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Hunter>())
+                    {
+                        if (!role2.Disconnected)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.OverlordWins)
-            {
-                foreach (var ov in PlayerLayer.GetLayers<Overlord>())
+                case WinLose.HuntedWin:
                 {
-                    if (ov.Winner)
-                        Winners[ov.PlayerName] = ov.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Hunted>())
+                    {
+                        if (!role2.Disconnected)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.CorruptedWins)
-            {
-                foreach (var corr in PlayerLayer.GetLayers<Corrupted>())
+                case WinLose.BetrayerWins:
                 {
-                    if (!corr.Disconnected && corr.Winner)
-                        Winners[corr.PlayerName] = corr.Player.GetLayers();
+                    foreach (var role2 in PlayerLayer.GetLayers<Betrayer>())
+                    {
+                        if (!role2.Disconnected && role2.Faction == Faction.Neutral)
+                            Winners[role2.PlayerName] = role2.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.MafiaWins)
-            {
-                foreach (var maf in PlayerLayer.GetLayers<Mafia>())
+                case WinLose.LoveWins:
                 {
-                    if (!maf.Disconnected)
-                        Winners[maf.PlayerName] = maf.Player.GetLayers();
+                    foreach (var lover in PlayerLayer.GetLayers<Lovers>())
+                    {
+                        if (!lover.Disconnected && lover.Winner)
+                            Winners[lover.PlayerName] = lover.Player.GetLayers();
+                    }
+
+                    break;
                 }
-            }
-            else if (WinState == WinLose.DefectorWins)
-            {
-                foreach (var def in PlayerLayer.GetLayers<Defector>())
+                case WinLose.RivalWins:
                 {
-                    if (!def.Disconnected && def.Side == Faction.Neutral)
-                        Winners[def.PlayerName] = def.Player.GetLayers();
+                    foreach (var rival in PlayerLayer.GetLayers<Rivals>())
+                    {
+                        if (!rival.Disconnected && rival.Winner)
+                            Winners[rival.PlayerName] = rival.Player.GetLayers();
+                    }
+
+                    break;
+                }
+                case WinLose.TaskmasterWins:
+                {
+                    foreach (var tm in PlayerLayer.GetLayers<Taskmaster>())
+                    {
+                        if (!tm.Disconnected && tm.Winner)
+                            Winners[tm.PlayerName] = tm.Player.GetLayers();
+                    }
+
+                    break;
+                }
+                case WinLose.OverlordWins:
+                {
+                    foreach (var ov in PlayerLayer.GetLayers<Overlord>())
+                    {
+                        if (ov.Winner)
+                            Winners[ov.PlayerName] = ov.Player.GetLayers();
+                    }
+
+                    break;
+                }
+                case WinLose.CorruptedWins:
+                {
+                    foreach (var corr in PlayerLayer.GetLayers<Corrupted>())
+                    {
+                        if (!corr.Disconnected && corr.Winner)
+                            Winners[corr.PlayerName] = corr.Player.GetLayers();
+                    }
+
+                    break;
+                }
+                case WinLose.MafiaWins:
+                {
+                    foreach (var maf in PlayerLayer.GetLayers<Mafia>())
+                    {
+                        if (!maf.Disconnected)
+                            Winners[maf.PlayerName] = maf.Player.GetLayers();
+                    }
+
+                    break;
+                }
+                case WinLose.DefectorWins:
+                {
+                    foreach (var def in PlayerLayer.GetLayers<Defector>())
+                    {
+                        if (!def.Disconnected && def.Side == Faction.Neutral)
+                            Winners[def.PlayerName] = def.Player.GetLayers();
+                    }
+
+                    break;
                 }
             }
 
@@ -558,7 +622,7 @@ public static class OnGameEndPatches
                 Play(winsound);
             }
 
-            var position = Camera.main.ViewportToWorldPoint(new(0f, 1f, Camera.main.nearClipPlane));
+            var position = Camera.main!.ViewportToWorldPoint(new(0f, 1f, Camera.main.nearClipPlane));
             var roleSummary = UObject.Instantiate(__instance.WinText.gameObject);
             roleSummary.transform.position = new(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f);
             roleSummary.transform.localScale = new(1f, 1f, 1f);
@@ -683,7 +747,7 @@ public static class OnGameEndPatches
         var ability = info[2] as Ability;
         var disposition = info[3] as Disposition;
 
-        if (role.Type != LayerEnum.NoneRole)
+        if (role!.Type != LayerEnum.NoneRole)
         {
             if (role.RoleHistory.Any())
             {
@@ -708,25 +772,25 @@ public static class OnGameEndPatches
             }
         }
 
-        if (disposition.Type != LayerEnum.NoneDisposition)
+        if (disposition!.Type != LayerEnum.NoneDisposition)
         {
             summary += $" {disposition.ColoredSymbol}";
             cache += $" {disposition.Symbol}";
         }
 
-        if (modifier.Type != LayerEnum.NoneModifier)
+        if (modifier!.Type != LayerEnum.NoneModifier)
         {
             summary += $" ({modifier.ColorString}{modifier.Name}</color>)";
             cache += $" ({modifier.Name})";
         }
 
-        if (ability.Type != LayerEnum.NoneAbility)
+        if (ability!.Type != LayerEnum.NoneAbility)
         {
             summary += $" [{ability.ColorString}{ability.Name}</color>]";
             cache += $" [{ability.Name}]";
         }
 
-        if (player.IsGATarget())
+        if (player.IsGaTarget())
         {
             summary += " <#FFFFFFFF>★</color>";
             cache += " ★";
@@ -738,7 +802,7 @@ public static class OnGameEndPatches
             cache += " §";
         }
 
-        if (player.IsBHTarget())
+        if (player.IsBhTarget())
         {
             summary += " <#B51E39FF>Θ</color>";
             cache += " Θ";

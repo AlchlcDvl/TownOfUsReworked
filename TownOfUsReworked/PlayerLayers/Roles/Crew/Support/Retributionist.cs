@@ -1,8 +1,8 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker
+public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker, IExaminer, IBugger
 {
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
@@ -23,10 +23,10 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     }
 
     // Retributionist Stuff
-    public PlayerVoteArea Selected { get; set; }
-    public PlayerControl Revived { get; set; }
-    public Role RevivedRole => Revived ? (Revived.TryGetLayer<Revealer>(out var rev) ? rev.FormerRole : Revived.GetRole()) : null;
-    public CustomMeeting RetMenu { get; set; }
+    private PlayerVoteArea Selected { get; set; }
+    private PlayerControl Revived { get; set; }
+    private Role RevivedRole => Revived ? (Revived.TryGetLayer<Revealer>(out var rev) ? rev.FormerRole : Revived.GetRole()) : null;
+    public CustomMeeting RetMenu { get; private set; }
 
     public override UColor Color
     {
@@ -34,8 +34,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         {
             if (ClientOptions.CustomCrewColors)
                 return RevivedRole?.Color ?? CustomColorManager.Retributionist;
-            else
-                return CustomColorManager.Crew;
+
+            return FactionColor;
         }
     }
     public override LayerEnum Type => LayerEnum.Retributionist;
@@ -47,10 +47,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         {
             if (IsBast || (IsVet && AlertButton.EffectActive))
                 return AttackEnum.Powerful;
-            else if (IsVig)
-                return AttackEnum.Basic;
-            else
-                return AttackEnum.None;
+
+            return IsVig ? AttackEnum.Basic : AttackEnum.None;
         }
     }
     public override DefenseEnum DefenseVal
@@ -59,21 +57,21 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         {
             if (IsVet && AlertButton.EffectActive)
                 return DefenseEnum.Basic;
-            else
-                return DefenseEnum.None;
+
+            return DefenseEnum.None;
         }
     }
     public override bool RoleBlockImmune => RevivedRole?.RoleBlockImmune ?? false;
 
-    public override void Deinit()
+    protected override void Deinit()
     {
         base.Deinit();
 
-        if (Bugs.Count > 0)
-        {
-            Bugs.ForEach(x => x?.gameObject?.Destroy());
-            Bugs.Clear();
-        }
+        if (!Bugs.Any())
+            return;
+
+        Bugs.ForEach(x => x?.gameObject?.Destroy());
+        Bugs.Clear();
     }
 
     public override void ClearArrows()
@@ -97,7 +95,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         ClearArrows();
     }
 
-    public void DestroyArrow(byte targetPlayerId)
+    private void DestroyArrow(byte targetPlayerId)
     {
         if (IsCor)
         {
@@ -134,12 +132,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         if (IsCor)
         {
             var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= Coroner.CoronerArrowDur));
-
-            foreach (var bodyArrow in BodyArrows.Keys)
-            {
-                if (!validBodies.Any(x => x.ParentId == bodyArrow))
-                    DestroyArrow(bodyArrow);
-            }
+            BodyArrows.Keys.Where(bodyArrow => validBodies.All(x => x.ParentId != bodyArrow)).ForEach(DestroyArrow);
 
             foreach (var body in validBodies)
             {
@@ -171,11 +164,11 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
 
             arrow?.Update(__instance.GetPlayerColor(false, !Medium.ShowMediatePlayer));
 
-            if (!Medium.ShowMediatePlayer)
-            {
-                __instance.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
-                PlayerMaterial.SetColors(UColor.grey, __instance.MyRend());
-            }
+            if (Medium.ShowMediatePlayer)
+                return;
+
+            __instance.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
+            PlayerMaterial.SetColors(UColor.grey, __instance.MyRend());
         }
     }
 
@@ -256,11 +249,11 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     {
         RetMenu.HideButtons();
 
-        if (Selected && !Dead)
-        {
-            Revived = PlayerByVoteArea(Selected);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Revive, Selected);
-        }
+        if (!Selected || Dead)
+            return;
+
+        Revived = PlayerByVoteArea(Selected);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Revive, Selected);
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -271,7 +264,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
 
         if (IsOp)
         {
-            var message = "";
+            string message;
 
             if (BuggedPlayers.Count == 0)
                 message = "No one triggered your bugs.";
@@ -280,9 +273,9 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             else if (BuggedPlayers.Count == 1)
             {
                 var result = BuggedPlayers[0];
-                var a_an = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Operative or LayerEnum.Amnesiac or LayerEnum.Actor or LayerEnum.Arsonist or
+                var aAn = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Operative or LayerEnum.Amnesiac or LayerEnum.Actor or LayerEnum.Arsonist or
                     LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
-                message = $"A{a_an} {result} triggered your bug.";
+                message = $"A{aAn} {result} triggered your bug.";
             }
             else if (Operative.PreciseOperativeInfo)
             {
@@ -293,8 +286,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             {
                 message = "The following roles triggered your bugs: ";
                 BuggedPlayers.Shuffle();
-                BuggedPlayers.ForEach(role => message += $"{LayerDictionary[role].Name}, ");
-                message = message[..^2];
+                message += string.Join(", ", BuggedPlayers.Select(role => LayerDictionary[role].Name));
             }
 
             if (!IsNullEmptyOrWhiteSpace(message))
@@ -310,8 +302,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             {
                 message = "Your trap detected the following roles: ";
                 TriggeredRoles.Shuffle();
-                TriggeredRoles.ForEach(x => message += $"{x}, ");
-                message = message[..^2];
+                message += string.Join(", ", TriggeredRoles.Select(x => LayerDictionary[x.Type].Name));
             }
 
             if (!IsNullEmptyOrWhiteSpace(message))
@@ -412,7 +403,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
                 (UsableFunc)AltUsable1);
 
             if (wasnull)
-                ReviveButton.uses = 0;
+                ReviveButton.UseCount = 0;
         }
         else if (IsMedic)
         {
@@ -428,7 +419,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
                 new Cooldown(Trapper.TrapCd), (PlayerBodyExclusion)TrapException);
 
             if (wasnull)
-                TrapsMade = TrapButton.uses = 0;
+                TrapsMade = TrapButton.UseCount = 0;
         }
         else if (IsCham)
         {
@@ -438,7 +429,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         else if (IsEngi)
         {
             FixButton ??= new(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Fix, Engineer.MaxFixes,
-                (ConditionFunc)EngiCondition, new Cooldown(Engineer.FixCd), (UsableFunc)EngiUsable);
+                (ConditionFunc)Engineer.Condition, new Cooldown(Engineer.FixCd), (UsableFunc)EngiUsable);
         }
         else if (IsEsc)
         {
@@ -459,21 +450,21 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     }
 
     // Coroner Stuff
-    public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
-    public CustomButton AutopsyButton { get; set; }
-    public CustomButton CompareButton { get; set; }
-    public List<DeadPlayer> ReferenceBodies { get; } = [];
+    private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
+    private CustomButton AutopsyButton { get; set; }
+    private CustomButton CompareButton { get; set; }
+    private List<DeadPlayer> ReferenceBodies { get; } = [];
     public List<byte> Reported { get; } = [];
-    public bool IsCor => RevivedRole is Coroner;
+    private bool IsCor => RevivedRole is Coroner;
 
-    public void Autopsy(DeadBody target)
+    private void Autopsy(DeadBody target)
     {
         Spread(Player, PlayerByBody(target));
         ReferenceBodies.AddRange(KilledPlayers.Where(x => x.PlayerId == target.ParentId));
         AutopsyButton.StartCooldown();
     }
 
-    public void Compare(PlayerControl target)
+    private void Compare(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -483,15 +474,15 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         CompareButton.StartCooldown(cooldown);
     }
 
-    public bool CorUsable1() => IsCor;
+    private bool CorUsable1() => IsCor;
 
-    public bool CorUsable2() => ReferenceBodies.Any() && IsCor;
+    private bool CorUsable2() => ReferenceBodies.Any() && IsCor;
 
     // Detective Stuff
-    public CustomButton ExamineButton { get; set; }
-    public bool IsDet => RevivedRole is Detective;
+    private CustomButton ExamineButton { get; set; }
+    private bool IsDet => RevivedRole is Detective;
 
-    public void Examine(PlayerControl target)
+    private void Examine(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -504,15 +495,15 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         ExamineButton.StartCooldown(cooldown);
     }
 
-    public bool DetUsable() => IsDet;
+    private bool DetUsable() => IsDet;
 
     // Medium Stuff
     public Dictionary<byte, PlayerArrow> MediateArrows { get; } = [];
-    public CustomButton MediateButton { get; set; }
+    private CustomButton MediateButton { get; set; }
     public List<byte> MediatedPlayers { get; } = [];
-    public bool IsMed => RevivedRole is Medium;
+    private bool IsMed => RevivedRole is Medium;
 
-    public void Mediate()
+    private void Mediate()
     {
         MediateButton.StartCooldown();
         var playersDead = KilledPlayers.GetRange(0, KilledPlayers.Count);
@@ -522,57 +513,62 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
 
         var bodies = AllBodies();
 
-        if (Medium.DeadRevealed == DeadRevealed.Random)
-            MediatePlayer(playersDead.Random(), bodies);
-        else
+        switch (Medium.DeadRevealed)
         {
-            if (Medium.DeadRevealed == DeadRevealed.Newest)
-                playersDead.Reverse();
-
-            foreach (var dead in playersDead)
+            case DeadRevealed.Random:
             {
-                if (MediatePlayer(playersDead.Random(), bodies) && Medium.DeadRevealed != DeadRevealed.Everyone)
-                    break;
+                MediatePlayer(playersDead.Random(), bodies);
+                break;
+            }
+            case DeadRevealed.Everyone:
+            {
+                playersDead.ForEach(x => MediatePlayer(x, bodies));
+                break;
+            }
+            default:
+            {
+                if (Medium.DeadRevealed == DeadRevealed.Newest)
+                    playersDead.Reverse();
+
+                MediatePlayer(playersDead[0], bodies);
+                break;
             }
         }
     }
 
-    private bool MediatePlayer(DeadPlayer dead, IEnumerable<DeadBody> bodies)
+    private void MediatePlayer(DeadPlayer dead, IEnumerable<DeadBody> bodies)
     {
-        if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
-        {
-            MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
-            MediatedPlayers.Add(dead.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
-            return true;
-        }
+        if (!bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+            return;
 
-        return false;
+        MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
+        MediatedPlayers.Add(dead.PlayerId);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Mediate, dead.PlayerId);
     }
 
-    public bool MedUsable() => IsMed;
+    private bool MedUsable() => IsMed;
 
     // Operative Stuff
     public List<Bug> Bugs { get; } = [];
     public List<LayerEnum> BuggedPlayers { get; } = [];
-    public CustomButton BugButton { get; set; }
+    private CustomButton BugButton { get; set; }
     public bool IsOp => RevivedRole is Operative;
 
-    public void PlaceBug()
+    private void PlaceBug()
     {
         Bugs.Add(Bug.CreateBug(Player));
         BugButton.StartCooldown();
     }
 
-    public bool OpUsable() => IsOp;
+    private bool OpUsable() => IsOp;
 
-    public bool OpCondition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
+    private bool OpCondition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 
     // Sheriff Stuff
-    public CustomButton InterrogateButton { get; set; }
-    public bool IsSher => RevivedRole is Sheriff;
+    private CustomButton InterrogateButton { get; set; }
+    private bool IsSher => RevivedRole is Sheriff;
 
-    public void Interrogate(PlayerControl target)
+    private void Interrogate(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -582,18 +578,18 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    public bool SherException(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None))
+    private bool SherException(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None))
         && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() &&
         Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 
-    public bool SherUsable() => IsSher;
+    private bool SherUsable() => IsSher;
 
     // Tracker Stuff
     public Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
-    public CustomButton TrackButton { get; set; }
-    public bool IsTrack => RevivedRole is Tracker;
+    public CustomButton TrackButton { get; private set; }
+    private bool IsTrack => RevivedRole is Tracker;
 
-    public void Track(PlayerControl target)
+    private void Track(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -603,52 +599,52 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         TrackButton.StartCooldown(cooldown);
     }
 
-    public bool TrackException(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
+    private bool TrackException(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
 
-    public bool TrackUsable() => IsTrack;
+    private bool TrackUsable() => IsTrack;
 
     // Vigilante Stuff
-    public CustomButton ShootButton { get; set; }
-    public bool IsVig => RevivedRole is Vigilante;
+    private CustomButton ShootButton { get; set; }
+    private bool IsVig => RevivedRole is Vigilante;
 
-    public void Shoot(PlayerControl target) => ShootButton.StartCooldown(Interact(Player, target, true));
+    private void Shoot(PlayerControl target) => ShootButton.StartCooldown(Interact(Player, target, true));
 
-    public bool VigiException(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+    private bool VigiException(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
-    public bool VigUsable() => IsVig;
+    private bool VigUsable() => IsVig;
 
     // Veteran Stuff
-    public CustomButton AlertButton { get; set; }
-    public bool IsVet => RevivedRole is Veteran;
+    public CustomButton AlertButton { get; private set; }
+    private bool IsVet => RevivedRole is Veteran;
 
-    public void Alert()
+    private void Alert()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AlertButton);
         AlertButton.Begin();
     }
 
-    public bool VetUsable() => IsVet;
+    private bool VetUsable() => IsVet;
 
-    public bool AlertEnd() => Dead;
+    private bool AlertEnd() => Dead;
 
     // Altruist Stuff
-    public CustomButton ReviveButton { get; set; }
-    public CustomButton ManaButton { get; set; }
-    public byte ParentId { get; set; }
-    public bool IsAlt => RevivedRole is Altruist;
+    private CustomButton ReviveButton { get; set; }
+    private CustomButton ManaButton { get; set; }
+    private byte ParentId { get; set; }
+    private bool IsAlt => RevivedRole is Altruist;
 
-    public bool AltUsable() => IsAlt;
+    private bool AltUsable() => IsAlt;
 
-    public bool AltUsable1() => AltUsable() && ReviveButton.uses != ReviveButton.maxUses;
+    private bool AltUsable1() => AltUsable() && ReviveButton.UseCount != ReviveButton.Max;
 
-    public void UponEnd()
+    private void UponEnd()
     {
         if (!(Meeting() || Dead))
             FinishRevive();
     }
 
-    public bool ReviveEnd() => Dead;
+    private bool ReviveEnd() => Dead;
 
     private void FinishRevive()
     {
@@ -658,7 +654,6 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             return;
 
         var targetRole = player.GetRole();
-        var formerKiller = targetRole.KilledBy;
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
@@ -676,7 +671,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
-    public void Revive(DeadBody target)
+    private void Revive(DeadBody target)
     {
         ParentId = target.ParentId;
         Spread(Player, PlayerByBody(target));
@@ -688,7 +683,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             target?.gameObject.Destroy();
     }
 
-    public void GainMana(DeadBody target)
+    private void GainMana(DeadBody target)
     {
         ReviveButton.Uses += Altruist.AltManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
@@ -699,10 +694,10 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     // Medic Stuff
     public PlayerControl ShieldedPlayer { get; set; }
     public bool ShieldBroken { get; set; }
-    public CustomButton ShieldButton { get; set; }
-    public bool IsMedic => RevivedRole is Medic;
+    private CustomButton ShieldButton { get; set; }
+    private bool IsMedic => RevivedRole is Medic;
 
-    public void Protect(PlayerControl target)
+    private void Protect(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -715,53 +710,51 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         ShieldButton.StartCooldown(cooldown);
     }
 
-    public bool MedicException(PlayerControl player)
+    private bool MedicException(PlayerControl player)
     {
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
-        else
-            return player.TryGetILayer<IRevealer>(out var irev) && irev.Revealed;
+
+        return player.TryGetILayer<IRevealer>(out var irev) && irev.Revealed;
     }
 
-    public bool MedicUsable() => !ShieldBroken && IsMedic;
+    private bool MedicUsable() => !ShieldBroken && IsMedic;
 
     // Chameleon Stuff
-    public CustomButton SwoopButton { get; set; }
-    public bool IsCham => RevivedRole is Chameleon;
+    private CustomButton SwoopButton { get; set; }
+    private bool IsCham => RevivedRole is Chameleon;
 
-    public void Invis() => Utils.Invis(Player);
+    private void Invis() => Utils.Invis(Player);
 
-    public bool SwoopEnd() => Dead;
+    private bool SwoopEnd() => Dead;
 
-    public void UnInvis() => DefaultOutfit(Player);
+    private void UnInvis() => DefaultOutfit(Player);
 
-    public void Swoop()
+    private void Swoop()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, SwoopButton);
         SwoopButton.Begin();
     }
 
-    public bool ChamUsable() => IsCham;
+    private bool ChamUsable() => IsCham;
 
     // Engineer Stuff
-    public CustomButton FixButton { get; set; }
-    public bool IsEngi => RevivedRole is Engineer;
+    private CustomButton FixButton { get; set; }
+    private bool IsEngi => RevivedRole is Engineer;
 
-    public void Fix()
+    private void Fix()
     {
-        FixExtentions.Fix();
+        Fixes.Fix();
         FixButton.StartCooldown(CooldownType.Start);
     }
 
-    public bool EngiUsable() => IsEngi && Engineer.MaxFixes > 0;
-
-    public bool EngiCondition() => Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
+    private bool EngiUsable() => IsEngi && Engineer.MaxFixes > 0;
 
     // Mystic Stuff
-    public CustomButton RevealButton { get; set; }
-    public bool IsMys => RevivedRole is Mystic;
+    private CustomButton RevealButton { get; set; }
+    private bool IsMys => RevivedRole is Mystic;
 
-    public void Reveal(PlayerControl target)
+    private void Reveal(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -771,15 +764,15 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         RevealButton.StartCooldown(cooldown);
     }
 
-    public bool MysticException(PlayerControl player) => player.Is(SubFaction) && SubFaction != SubFaction.None;
+    private bool MysticException(PlayerControl player) => player.Is(SubFaction) && SubFaction != SubFaction.None;
 
-    public bool MysUsable() => IsMys;
+    private bool MysUsable() => IsMys;
 
     // Seer Stuff
-    public CustomButton SeerButton { get; set; }
-    public bool IsSeer => RevivedRole is Seer;
+    private CustomButton SeerButton { get; set; }
+    private bool IsSeer => RevivedRole is Seer;
 
-    public void See(PlayerControl target)
+    private void See(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -789,14 +782,14 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         SeerButton.StartCooldown(cooldown);
     }
 
-    public bool SeerUsable() => IsSeer;
+    private bool SeerUsable() => IsSeer;
 
     // Escort Stuff
     public PlayerControl BlockTarget { get; set; }
-    public CustomButton BlockButton { get; set; }
-    public bool IsEsc => RevivedRole is Escort;
+    private CustomButton BlockButton { get; set; }
+    private bool IsEsc => RevivedRole is Escort;
 
-    public void UnBlock()
+    private void UnBlock()
     {
         if (BlockTarget.AmOwner)
             BlockExposed = false;
@@ -804,13 +797,13 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         BlockTarget = null;
     }
 
-    public void BlockStart()
+    private void BlockStart()
     {
         if (BlockTarget.AmOwner)
             CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
     }
 
-    public void Roleblock(PlayerControl target)
+    private void Roleblock(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -824,29 +817,29 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             BlockButton.StartCooldown(cooldown);
     }
 
-    public bool BlockEnd() => Dead || BlockTarget.HasDied();
+    private bool BlockEnd() => Dead || BlockTarget.HasDied();
 
-    public bool EscUsable() => IsEsc;
+    private bool EscUsable() => IsEsc;
 
     // Transporter Stuff
-    public CustomButton TransportButton { get; set; }
-    public CustomPlayerMenu TransportMenu { get; set; }
+    private CustomButton TransportButton { get; set; }
+    private CustomPlayerMenu TransportMenu { get; set; }
     public bool Moving { get; set; }
-    public bool IsTrans => RevivedRole is Transporter;
+    private bool IsTrans => RevivedRole is Transporter;
 
-    public bool TransException(PlayerControl player) => (player == Player && !Transporter.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
+    private bool TransException(PlayerControl player) => (player == Player && !Transporter.TransSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || player.IsMoving() ||
         (!BodyById(player.PlayerId) && player.Data.IsDead);
 
-    public bool TransUsable() => IsTrans;
+    private bool TransUsable() => IsTrans;
 
-    public string TransLabel() => TransportMenu.Selected.Count switch
+    private string TransLabel() => TransportMenu.Selected.Count switch
     {
         0 => "FIRST TARGET",
         1 => "SECOND TARGET",
         _ =>  "TRANSPORT"
     };
 
-    public bool Click(PlayerControl player, out bool shouldClose)
+    private bool Click(PlayerControl player, out bool shouldClose)
     {
         shouldClose = false;
 
@@ -857,14 +850,13 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
 
         if (cooldown != CooldownType.Fail)
             return true;
-        else
-            TransportButton.StartCooldown(cooldown);
 
+        TransportButton.StartCooldown(cooldown);
         shouldClose = true;
         return false;
     }
 
-    public void Transport()
+    private void Transport()
     {
         if (TransportMenu.Selected.Count < 2)
         {
@@ -881,13 +873,13 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     }
 
     // Bastion Stuff
-    public CustomButton BombButton { get; set; }
+    private CustomButton BombButton { get; set; }
     public List<int> BombedIDs { get; } = [];
-    public bool IsBast => RevivedRole is Bastion;
+    private bool IsBast => RevivedRole is Bastion;
 
-    public bool BastException(Vent vent) => BombedIDs.Contains(vent.Id);
+    private bool BastException(Vent vent) => BombedIDs.Contains(vent.Id);
 
-    public void Bomb(Vent target)
+    private void Bomb(Vent target)
     {
         var cooldown = Interact(Player, target);
 
@@ -900,17 +892,17 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         BombButton.StartCooldown(cooldown);
     }
 
-    public bool BastUsable() => IsBast;
+    private bool BastUsable() => IsBast;
 
     // Trapper Stuff
     private CustomButton BuildButton { get; set; }
     private CustomButton TrapButton { get; set; }
-    public bool Building { get ; set; }
+    public bool Building { get; private set; }
     public List<byte> Trapped { get; } = [];
     private List<Role> TriggeredRoles { get; } = [];
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }
-    public bool IsTrap => RevivedRole is Trapper;
+    private bool IsTrap => RevivedRole is Trapper;
 
     private void StartBuildling()
     {
@@ -953,7 +945,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         Trapped.Remove(trapped.PlayerId);
     }
 
-    public bool TrapUsable() => IsTrap;
+    private bool TrapUsable() => IsTrap;
 
-    public bool BuildUsable() => TrapUsable() && TrapsMade <= Trapper.MaxTraps;
+    private bool BuildUsable() => TrapUsable() && TrapsMade <= Trapper.MaxTraps;
 }

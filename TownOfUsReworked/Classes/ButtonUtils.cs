@@ -86,7 +86,7 @@ public static class ButtonUtils
         return result;
     }
 
-    public static float GetUnderdogChange(this PlayerControl player)
+    private static float GetUnderdogChange(this PlayerControl player)
     {
         if (!player.Is<Underdog>())
             return 0f;
@@ -99,14 +99,14 @@ public static class ButtonUtils
             return 0f;
     }
 
-    public static float GetDifference(this PlayerControl player)
+    private static float GetDifference(this PlayerControl player)
     {
         var result = 0f;
         result += player.GetUnderdogChange();
         return result;
     }
 
-    public static float GetMultiplier(this PlayerControl player)
+    private static float GetMultiplier(this PlayerControl player)
     {
         var num = 1f;
 
@@ -140,154 +140,220 @@ public static class ButtonUtils
         if (role.Requesting && !start)
             role.BountyTimer++;
 
-        if (role is Escort esc)
-            esc.BlockTarget = null;
-        else if (role is Operative op)
+        switch (role)
         {
-            op.BuggedPlayers.Clear();
-
-            if (Operative.BugsRemoveOnNewRound && meeting)
+            case Escort esc:
             {
-                op.Bugs.ForEach(x => x.gameObject.Destroy());
-                op.Bugs.Clear();
+                esc.BlockTarget = null;
+                break;
+            }
+            case Operative op:
+            {
+                op.BuggedPlayers.Clear();
+
+                if (Operative.BugsRemoveOnNewRound && meeting)
+                {
+                    op.Bugs.ForEach(x => x.gameObject.Destroy());
+                    op.Bugs.Clear();
+                }
+
+                break;
+            }
+            case Tracker track:
+            {
+                if (Tracker.ResetOnNewRound)
+                {
+                    track.TrackButton.Uses = track.TrackButton.MaxUses;
+                    track.ClearArrows();
+                }
+
+                break;
+            }
+            case Mayor mayor:
+            {
+                mayor.RoundOne = start && Mayor.RoundOneNoMayorReveal;
+                break;
+            }
+            case Monarch mon:
+            {
+                mon.RoundOne = start && Monarch.RoundOneNoKnighting;
+                break;
+            }
+            case Dictator dict:
+            {
+                dict.RoundOne = start && Dictator.RoundOneNoDictReveal;
+                break;
+            }
+            case Medium:
+            {
+                role.ClearArrows();
+                break;
+            }
+            case Retributionist ret:
+            {
+                ret.BuggedPlayers.Clear();
+                ret.BlockTarget = null;
+                ret.MediateArrows.Values.DestroyAll();
+                ret.MediateArrows.Clear();
+                ret.MediatedPlayers.Clear();
+
+                if (Operative.BugsRemoveOnNewRound && meeting)
+                {
+                    ret.Bugs.ForEach(x => x?.gameObject?.Destroy());
+                    ret.Bugs.Clear();
+                }
+
+                if (Tracker.ResetOnNewRound)
+                {
+                    ret.TrackerArrows.Values.DestroyAll();
+                    ret.TrackerArrows.Clear();
+                    ret.TrackButton.Uses = ret.TrackButton.MaxUses;
+                }
+
+                break;
+            }
+            case Blackmailer bm:
+            {
+                bm.BlackmailedPlayer = null;
+                break;
+            }
+            case Enforcer enf:
+            {
+                enf.BombedPlayer = null;
+                break;
+            }
+            case Consigliere consig when player.HasDied() && dead:
+            {
+                consig.Investigated.Clear();
+                break;
+            }
+            case Consort cons:
+            {
+                cons.BlockTarget = null;
+                break;
+            }
+            case Disguiser disg:
+            {
+                disg.MeasuredPlayer = disg.DisguisedPlayer = disg.CopiedPlayer = null;
+                break;
+            }
+            case PromotedGodfather gf:
+            {
+                gf.BlackmailedPlayer = gf.BlockTarget = gf.MeasuredPlayer = gf.DisguisedPlayer = gf.CopiedPlayer = gf.SampledPlayer = gf.MorphedPlayer = gf.AmbushedPlayer = gf.BombedPlayer = null;
+                gf.CurrentlyDragging = null;
+                gf.TeleportPoint = Vector2.zero;
+
+                if (player.HasDied() && dead)
+                    gf.Investigated.Clear();
+
+                break;
+            }
+            case Janitor jani:
+            {
+                jani.CurrentlyDragging = null;
+                break;
+            }
+            case Morphling morph:
+            {
+                morph.SampledPlayer = morph.MorphedPlayer = null;
+                break;
+            }
+            case Teleporter tele:
+            {
+                tele.TeleportPoint = Vector2.zero;
+                break;
+            }
+            case Ambusher amb:
+            {
+                amb.AmbushedPlayer = null;
+                break;
+            }
+            case Concealer conc:
+            {
+                conc.ConcealedPlayer = null;
+                break;
+            }
+            case Silencer sil:
+            {
+                sil.SilencedPlayer = null;
+                break;
+            }
+            case Bomber bomb when Bomber.BombsRemoveOnNewRound && meeting:
+            {
+                bomb.Bombs.ForEach(x => x?.gameObject?.Destroy());
+                bomb.Bombs.Clear();
+                break;
+            }
+            case Framer framer when player.HasDied():
+            {
+                framer.Framed.Clear();
+                break;
+            }
+            case Crusader crus:
+            {
+                crus.CrusadedPlayer = null;
+                break;
+            }
+            case Poisoner pois:
+            {
+                pois.PoisonedPlayer = null;
+                break;
+            }
+            case PromotedRebel reb:
+            {
+                reb.ShapeshiftPlayer1 = reb.ShapeshiftPlayer2 = reb.PoisonedPlayer = reb.ConcealedPlayer = reb.Positive = reb.Negative = reb.SilencedPlayer = reb.CrusadedPlayer = null;
+
+                if (Bomber.BombsRemoveOnNewRound && meeting)
+                {
+                    reb.Bombs.ForEach(x => x?.gameObject?.Destroy());
+                    reb.Bombs.Clear();
+                }
+
+                if (player.HasDied())
+                    reb.Framed.Clear();
+
+                break;
+            }
+            case Shapeshifter ss:
+            {
+                ss.ShapeshiftPlayer1 = ss.ShapeshiftPlayer2 = null;
+                break;
+            }
+            case PlayerLayers.Roles.Collider col:
+            {
+                col.Positive = col.Negative = null;
+                break;
+            }
+            case Glitch glitch:
+            {
+                glitch.MimicTarget = glitch.HackTarget = null;
+                break;
+            }
+            case GuardianAngel ga when meeting && !ga.TargetPlayer:
+            {
+                ga.Rounds++;
+                break;
+            }
+            case Actor act when meeting && !act.Targeted:
+            {
+                act.Rounds++;
+                break;
+            }
+            case BountyHunter bh when meeting && !bh.TargetPlayer:
+            {
+                bh.Rounds++;
+                break;
+            }
+            case Executioner exe when meeting && !exe.TargetPlayer:
+            {
+                exe.Rounds++;
+                break;
+            }
+            case Guesser guess when meeting && !guess.TargetPlayer:
+            {
+                guess.Rounds++;
+                break;
             }
         }
-        else if (role is Tracker track)
-        {
-            if (Tracker.ResetOnNewRound)
-            {
-                track.TrackButton.Uses = track.TrackButton.MaxUses;
-                track.ClearArrows();
-            }
-        }
-        else if (role is Mayor mayor)
-            mayor.RoundOne = start && Mayor.RoundOneNoMayorReveal;
-        else if (role is Monarch mon)
-            mon.RoundOne = start && Monarch.RoundOneNoKnighting;
-        else if (role is Medium)
-            role.ClearArrows();
-        else if (role is Retributionist ret)
-        {
-            ret.BuggedPlayers.Clear();
-            ret.BlockTarget = null;
-            ret.MediateArrows.Values.DestroyAll();
-            ret.MediateArrows.Clear();
-            ret.MediatedPlayers.Clear();
-
-            if (Operative.BugsRemoveOnNewRound && meeting)
-            {
-                ret.Bugs.ForEach(x => x?.gameObject?.Destroy());
-                ret.Bugs.Clear();
-            }
-
-            if (Tracker.ResetOnNewRound)
-            {
-                ret.TrackerArrows.Values.DestroyAll();
-                ret.TrackerArrows.Clear();
-                ret.TrackButton.Uses = ret.TrackButton.MaxUses;
-            }
-        }
-        else if (role is Blackmailer bm)
-            bm.BlackmailedPlayer = null;
-        else if (role is Enforcer enf)
-            enf.BombedPlayer = null;
-        else if (role is Consigliere consig && player.HasDied() && dead)
-            consig.Investigated.Clear();
-        else if (role is Consort cons)
-            cons.BlockTarget = null;
-        else if (role is Disguiser disg)
-        {
-            disg.MeasuredPlayer = null;
-            disg.DisguisedPlayer = null;
-            disg.CopiedPlayer = null;
-        }
-        else if (role is PromotedGodfather gf)
-        {
-            gf.BlackmailedPlayer = null;
-            gf.BlockTarget = null;
-            gf.MeasuredPlayer = null;
-            gf.DisguisedPlayer = null;
-            gf.CopiedPlayer = null;
-            gf.SampledPlayer = null;
-            gf.MorphedPlayer = null;
-            gf.AmbushedPlayer = null;
-            gf.BombedPlayer = null;
-            gf.CurrentlyDragging = null;
-            gf.TeleportPoint = Vector2.zero;
-
-            if (player.HasDied() && dead)
-                gf.Investigated.Clear();
-        }
-        else if (role is Janitor jani)
-            jani.CurrentlyDragging = null;
-        else if (role is Morphling morph)
-        {
-            morph.SampledPlayer = null;
-            morph.MorphedPlayer = null;
-        }
-        else if (role is Teleporter tele)
-            tele.TeleportPoint = Vector2.zero;
-        else if (role is Ambusher amb)
-            amb.AmbushedPlayer = null;
-        else if (role is Concealer conc)
-            conc.ConcealedPlayer = null;
-        else if (role is Silencer sil)
-            sil.SilencedPlayer = null;
-        else if (role is Bomber bomb && Bomber.BombsRemoveOnNewRound && meeting)
-        {
-            bomb.Bombs.ForEach(x => x?.gameObject?.Destroy());
-            bomb.Bombs.Clear();
-        }
-        else if (role is Framer framer && player.HasDied())
-            framer.Framed.Clear();
-        else if (role is Crusader crus)
-            crus.CrusadedPlayer = null;
-        else if (role is Poisoner pois)
-            pois.PoisonedPlayer = null;
-        else if (role is PromotedRebel reb)
-        {
-            reb.ShapeshiftPlayer1 = null;
-            reb.ShapeshiftPlayer2 = null;
-            reb.PoisonedPlayer = null;
-            reb.ConcealedPlayer = null;
-            reb.Positive = null;
-            reb.Negative = null;
-            reb.SilencedPlayer = null;
-            reb.CrusadedPlayer = null;
-
-            if (Bomber.BombsRemoveOnNewRound && meeting)
-            {
-                reb.Bombs.ForEach(x => x?.gameObject?.Destroy());
-                reb.Bombs.Clear();
-            }
-
-            if (player.HasDied())
-                reb.Framed.Clear();
-        }
-        else if (role is Shapeshifter ss)
-        {
-            ss.ShapeshiftPlayer1 = null;
-            ss.ShapeshiftPlayer2 = null;
-        }
-        else if (role is PlayerLayers.Roles.Collider col)
-        {
-            col.Positive = null;
-            col.Negative = null;
-        }
-        else if (role is Glitch glitch)
-        {
-            glitch.MimicTarget = null;
-            glitch.HackTarget = null;
-        }
-        else if (role is GuardianAngel ga && meeting && !ga.TargetPlayer)
-            ga.Rounds++;
-        else if (role is Actor act && meeting && !act.Targeted)
-            act.Rounds++;
-        else if (role is BountyHunter bh && meeting && !bh.TargetPlayer)
-            bh.Rounds++;
-        else if (role is Executioner exe && meeting && !exe.TargetPlayer)
-            exe.Rounds++;
-        else if (role is Guesser guess && meeting && !guess.TargetPlayer)
-            guess.Rounds++;
     }
 }

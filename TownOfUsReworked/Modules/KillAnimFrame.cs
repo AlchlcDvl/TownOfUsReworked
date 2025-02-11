@@ -3,16 +3,16 @@ namespace TownOfUsReworked.Modules;
 // Taken from Submerged going open source recently
 public struct KillAnimFrame
 {
-    public int Animation { get; set; }
-    public float Time { get; set; }
-    public int Length { get; set; }
-    public Vector2 Offset { get; set; }
+    public int Animation { get; private init; }
+    public float Time { get; private init; }
+    public int Length { get; private init; }
+    public Vector2 Offset { get; private init; }
 
-    public static string Serialize(KillAnimFrame frame) => $"{frame.Animation},{frame.Time},{frame.Length},{frame.Offset.x},{frame.Offset.y}";
+    // public static string Serialize(KillAnimFrame frame) => $"{frame.Animation},{frame.Time},{frame.Length},{frame.Offset.x},{frame.Offset.y}";
 
     public static KillAnimFrame Deserialize(string dataString)
     {
-        var data = dataString.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var data = dataString.TrueSplit(',');
         return new()
         {
             Animation = int.Parse(data[0]),

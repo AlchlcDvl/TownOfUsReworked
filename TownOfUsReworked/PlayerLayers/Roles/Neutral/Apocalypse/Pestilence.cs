@@ -20,7 +20,7 @@ public class Pestilence : Apocalypse
 
     public static readonly Dictionary<byte, int> Infected = [];
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Obliterate anyone who can oppose you";

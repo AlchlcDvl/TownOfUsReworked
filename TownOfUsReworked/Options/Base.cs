@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 public abstract class OptionAttribute(CustomOptionType type) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];
@@ -11,77 +11,80 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     public CustomOptionType Type { get; } = type;
     public bool All { get; set; }
     public bool ClientOnly { get; set; }
-    public PropertyInfo Property { get; set; }
-    public FieldInfo Field { get; set; }
-    public bool IsProperty => Property != null;
-    public bool IsField => Field != null;
+    protected PropertyInfo Property { get; private set; }
+    protected FieldInfo Field { get; private set; }
+    protected bool IsProperty => Property != null;
+    protected bool IsField => Field != null;
     public string Name { get; set; } // Not actually the setting text, just the property/class name :]
-    public KeyValuePair<byte, byte> RpcId { get; set; }
+    public KeyValuePair<byte, byte> RpcId { get; private set; }
 
-    // Apparently, setting the parents in the attibutes doesn't seem to work
+    protected static string LastChangedSetting = "";
+    protected static LobbyNotificationMessage LastSettingNotif;
+
+    // Apparently, setting the parents in the attributes doesn't seem to work
     // This one is for those depending on other options
-    public static readonly List<(string[], object[])> OptionParents1 =
+    private static readonly List<(string[], object[])> OptionParents1 =
     [
-        ( [ "EjectionRevealsRoles" ], [ "ConfirmEjects" ] ),
-        ( [ "InitialCooldowns" ], [ "EnableInitialCds" ] ),
-        ( [ "MeetingCooldowns" ], [ "EnableMeetingCds" ] ),
-        ( [ "FailCooldowns" ], [ "EnableFailCds" ] ),
-        ( [ "WhoSeesFirstKillShield" ], [ "FirstKillShield" ] ),
-        ( [ "WhispersAnnouncement" ], [ "Whispers" ] ),
-        ( [ "KillerReports", "RoleFactionReports", "LocationReports" ], [ "GameAnnouncements" ] ),
-        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "LargeMapDecreasedShortTasks",
-            "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ] ),
-        ( [ "EvilsIgnoreNV" ], [ "NightVision" ] ),
-        ( [ "SkeldVentImprovements" , "SkeldReactorTimer", "SkeldO2Timer" ], [ "EnableBetterSkeld" ] ),
-        ( [ "MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer" ], [ "EnableBetterMiraHQ" ] ),
-        ( [ "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ], [ "EnableBetterPolus" ] ),
-        ( [ "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer" ], [ "EnableBetterAirship" ] ),
-        ( [ "FungleReactorTimer", "FungleMixupTimer" ], [ "EnableBetterFungle" ] ),
-        ( [ "CoronerKillerNameTime" ], [ "CoronerReportName" ] ),
-        ( [ "DrunkInterval" ], [ "DrunkControlsSwap" ] ),
-        ( [ "WhisperRateDecrease" ], [ "WhisperRateDecreases" ] ),
-        ( [ "WhisperCdIncrease" ], [ "WhisperCdIncreases" ] ),
-        ( [ "NecroKillCdIncrease" ], [ "NecroKillCdIncreases" ] ),
-        ( [ "JestSwitchVent" ], [ "JesterVent" ] ),
-        ( [ "ExeSwitchVent" ], [ "ExeVent" ] ),
-        ( [ "SurvSwitchVent" ], [ "SurvVent" ] ),
-        ( [ "AmneSwitchVent" ], [ "AmneVent" ] ),
-        ( [ "GASwitchVent" ], [ "GAVent" ] ),
-        ( [ "GuessSwitchVent" ], [ "GuessVent" ] ),
-        ( [ "TrollSwitchVent" ], [ "TrollVent" ] ),
-        ( [ "InteractCd" ], [ "CanInteract" ] ),
-        ( [ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ "not+IgnoreFactionCaps" ] ),
-        ( [ "MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers" ], [ "not+IgnoreLayerCaps" ] ),
-        ( [ "MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu" ], [
-            "not+IgnoreAlignmentCaps" ] ),
-        ( [ "ActSwitchVent" ], [ "ActorVent" ] )
+        ([ "EjectionRevealsRoles" ], [ "ConfirmEjects" ]),
+        ([ "InitialCooldowns" ], [ "EnableInitialCds" ]),
+        ([ "MeetingCooldowns" ], [ "EnableMeetingCds" ]),
+        ([ "FailCooldowns" ], [ "EnableFailCds" ]),
+        ([ "WhoSeesFirstKillShield" ], [ "FirstKillShield" ]),
+        ([ "WhispersAnnouncement" ], [ "Whispers" ]),
+        ([ "KillerReports", "RoleFactionReports", "LocationReports" ], [ "GameAnnouncements" ]),
+        ([ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "LargeMapDecreasedShortTasks",
+            "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ]),
+        ([ "EvilsIgnoreNv" ], [ "NightVision" ]),
+        ([ "SkeldVentImprovements" , "SkeldReactorTimer", "SkeldO2Timer" ], [ "EnableBetterSkeld" ]),
+        ([ "MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer" ], [ "EnableBetterMiraHQ" ]),
+        ([ "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ], [ "EnableBetterPolus" ]),
+        ([ "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer" ], [ "EnableBetterAirship" ]),
+        ([ "FungleReactorTimer", "FungleMixupTimer" ], [ "EnableBetterFungle" ]),
+        ([ "CoronerKillerNameTime" ], [ "CoronerReportName" ]),
+        ([ "DrunkInterval" ], [ "DrunkControlsSwap" ]),
+        ([ "WhisperRateDecrease" ], [ "WhisperRateDecreases" ]),
+        ([ "WhisperCdIncrease" ], [ "WhisperCdIncreases" ]),
+        ([ "NecroKillCdIncrease" ], [ "NecroKillCdIncreases" ]),
+        ([ "JestSwitchVent" ], [ "JesterVent" ]),
+        ([ "ExeSwitchVent" ], [ "ExeVent" ]),
+        ([ "SurvSwitchVent" ], [ "SurvVent" ]),
+        ([ "AmneSwitchVent" ], [ "AmneVent" ]),
+        ([ "GASwitchVent" ], [ "GAVent" ]),
+        ([ "GuessSwitchVent" ], [ "GuessVent" ]),
+        ([ "TrollSwitchVent" ], [ "TrollVent" ]),
+        ([ "InteractCd" ], [ "CanInteract" ]),
+        ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ "not+IgnoreFactionCaps" ]),
+        ([ "MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers" ], [ "not+IgnoreLayerCaps" ]),
+        ([ "MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu" ], [
+            "not+IgnoreAlignmentCaps" ]),
+        ([ "ActSwitchVent" ], [ "ActorVent" ])
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
-    public static readonly List<(string[], object[])> OptionParents2 =
+    protected static readonly List<(string[], object[])> OptionParents2 =
     [
-        ( [ "TaskBar" ], [ GameMode.Classic, GameMode.AllAny, GameMode.RoleList, GameMode.Vanilla ] ),
-        ( [ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic ] ),
-        ( [ "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [
-            GameMode.HideAndSeek ] ),
-        ( [ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ] ),
-        ( [ "RandomMapSubmerged" ], [ MapEnum.Random, "SubLoaded" ] ),
-        ( [ "RandomMapLevelImpostor" ], [ MapEnum.Random, "LILoaded" ] ),
-        ( [ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
-            MapEnum.MiraHQ, MapEnum.LevelImpostor ] ),
-        ( [ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
-            MapEnum.LevelImpostor ] ),
-        ( [ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ] ),
-        ( [ "BetterMiraHQ" ], [ MapEnum.MiraHQ, MapEnum.Random ] ),
-        ( [ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ] ),
-        ( [ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ] ),
-        ( [ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ] ),
-        ( [ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Vanilla, GameMode.RoleList ] ),
-        ( [ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny ] ),
-        ( [ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ] ),
-        ( [ "RoleListEntries", "RoleListBans" ], [ GameMode.RoleList ] ),
-        ( [ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.RoleList, GameMode.AllAny ] ),
-        ( [ "NoSolo" ], [ NoSolo.SameNKs ] )
+        ([ "TaskBar" ], [ GameMode.Classic, GameMode.AllAny, GameMode.RoleList, GameMode.Vanilla ]),
+        ([ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic ]),
+        ([ "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [
+            GameMode.HideAndSeek ]),
+        ([ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ]),
+        ([ "RandomMapSubmerged" ], [ MapEnum.Random, "SubLoaded" ]),
+        ([ "RandomMapLevelImpostor" ], [ MapEnum.Random, "LILoaded" ]),
+        ([ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
+            MapEnum.MiraHq, MapEnum.LevelImpostor ]),
+        ([ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
+            MapEnum.LevelImpostor ]),
+        ([ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ]),
+        ([ "BetterMiraHQ" ], [ MapEnum.MiraHq, MapEnum.Random ]),
+        ([ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ]),
+        ([ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ]),
+        ([ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ]),
+        ([ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Vanilla, GameMode.RoleList ]),
+        ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny ]),
+        ([ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ]),
+        ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist" ], [ GameMode.RoleList ]),
+        ([ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.RoleList, GameMode.AllAny ]),
+        ([ "NoSolo" ], [ NoSolo.SameNKs ])
     ];
     public BaseHeaderOptionAttribute Header { get; set; }
     private static readonly Dictionary<string, bool> MapToLoaded = [];
@@ -107,7 +110,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         AllOptions.Add(this);
     }
 
-    public virtual string Format() => "";
+    protected virtual string Format() => "";
 
     public virtual void Update() {}
 
@@ -130,38 +133,60 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
 
     private bool IsActive(object option)
     {
-        var result = false;
+        bool result;
 
-        if (option is MapEnum map)
-            result = MapSettings.Map == map;
-        else if (option is GameMode mode)
-            result = GameModeSettings.GameMode == mode;
-        else if (option is int num)
-            result = SettingsPatches.SettingsPage == num;
-        else if (option is VigiOptions vigiop)
-            result = Vigilante.HowDoesVigilanteDie == vigiop;
-        else if (option is NoSolo noSolo)
-            result = NeutralSettings.NoSolo == noSolo;
-        else if (option is string id)
+        switch (option)
         {
-            if (id == Name)
-                return true; // To prevent accidental stack overflows, very rudementary because I've already managed to cause several of them even with this line active
-
-            var invertVal = id.StartsWith("not+");
-            id = id.Replace("not+", "");
-
-            if (AllOptions.TryFinding(x => x.Name == id, out var optionatt))
+            case MapEnum map:
             {
-                result = optionatt.PartiallyActive();
-
-                if (optionatt is OptionAttribute<bool> boolOpt)
-                    result &= invertVal ? !boolOpt.Get() : boolOpt.Get();
+                result = MapSettings.Map == map;
+                break;
             }
-            else if (!MapToLoaded.TryGetValue(id, out result))
-                MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
+            case GameMode mode:
+            {
+                result = GameModeSettings.GameMode == mode;
+                break;
+            }
+            case int num:
+            {
+                result = SettingsPatches.SettingsPage == num;
+                break;
+            }
+            case VigiOptions vigiOptions:
+            {
+                result = Vigilante.HowDoesVigilanteDie == vigiOptions;
+                break;
+            }
+            case NoSolo noSolo:
+            {
+                result = NeutralSettings.NoSolo == noSolo;
+                break;
+            }
+            case string id when id == Name:
+                return true; // To prevent accidental stack overflows, very rudimentary because I've already managed to cause several of them even with this line active
+            case string id:
+            {
+                var invertVal = id.StartsWith("not+");
+                id = id.Replace("not+", "");
+
+                if (AllOptions.TryFinding(x => x.Name == id, out var optionatt))
+                {
+                    result = optionatt.PartiallyActive();
+
+                    if (optionatt is OptionAttribute<bool> boolOpt)
+                        result &= invertVal ? !boolOpt.Get() : boolOpt.Get();
+                }
+                else if (!MapToLoaded.TryGetValue(id, out result))
+                    MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
+
+                break;
+            }
+            default:
+            {
+                result = true;
+                break;
+            }
         }
-        else
-            result = true;
 
         return result;
     }
@@ -170,27 +195,27 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     {
         Setting.name = ID;
 
-        if (Setting is OptionBehaviour option)
-        {
-            option.Title = TranslationManager.GetOrAddName("Option.Option");
-            option.OnValueChanged = (Action<OptionBehaviour>)BlankVoid;
-        }
+        if (Setting is not OptionBehaviour option)
+            return;
+
+        option.Title = TranslationManager.GetOrAddName("Option.Option");
+        option.OnValueChanged = (Action<OptionBehaviour>)BlankVoid;
     }
 
     public virtual void ViewOptionCreated()
     {
         ViewSetting.name = $"{ID}.View";
 
-        if (ViewSetting is ViewSettingsInfoPanel viewSettingsInfoPanel)
-        {
-            viewSettingsInfoPanel.titleText.text = TranslationManager.Translate(ID);
-            viewSettingsInfoPanel.background.gameObject.SetActive(true);
-        }
+        if (ViewSetting is not ViewSettingsInfoPanel viewSettingsInfoPanel)
+            return;
+
+        viewSettingsInfoPanel.titleText.text = TranslationManager.Translate(ID);
+        viewSettingsInfoPanel.background.gameObject.SetActive(true);
     }
 
     public virtual void PostLoadSetup() {}
 
-    public virtual string SettingNotif() => TranslationManager.Translate(ID);
+    protected virtual string SettingNotif() => TranslationManager.Translate(ID);
 
     public virtual void Debug() => TranslationManager.DebugId(ID);
 
@@ -198,20 +223,12 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
 
     public virtual void WriteValueRpc(MessageWriter writer) {}
 
-    public virtual void ReadValueString(string value) {}
+    protected virtual void ReadValueString(string value) {}
 
-    public static string SettingsToString()
+    private static string SettingsToString()
     {
         var builder = new StringBuilder();
-
-        foreach (var option in AllOptions)
-        {
-            if (option.Type is CustomOptionType.Header or CustomOptionType.Alignment || option.ClientOnly || !option.ID.Contains("CustomOption"))
-                continue;
-
-            builder.AppendLine($"{option}");
-        }
-
+        AllOptions.Where(option => option is not BaseHeaderOptionAttribute && !option.ClientOnly && option.ID.Contains("CustomOption")).ForEach(x => builder.AppendLine($"{x}"));
         builder.AppendLine($"Map:{MapSettings.Map}");
         return $"{builder}";
     }
@@ -271,7 +288,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         }
     }
 
-    public static void FlashText(TextMeshPro text, UColor color) => Coroutines.Start(CoFlashText(text, color));
+    private static void FlashText(TextMeshPro text, UColor color) => Coroutines.Start(CoFlashText(text, color));
 
     private static IEnumerator CoFlashText(TextMeshPro text, UColor color)
     {
@@ -284,11 +301,11 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         text.color = cache;
     }
 
-    public static void LoadSettings(string settingsData) => Coroutines.Start(CoLoadSettings(settingsData));
+    private static void LoadSettings(string settingsData) => Coroutines.Start(CoLoadSettings(settingsData));
 
-    public static IEnumerator CoLoadSettings(string settingsData)
+    private static IEnumerator CoLoadSettings(string settingsData)
     {
-        var splitText = settingsData.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+        var splitText = settingsData.TrueSplit('\n').ToList();
         var pos = 0;
 
         while (splitText.Any())
@@ -296,7 +313,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
             pos++;
             var opt = splitText[0];
             splitText.RemoveAt(0);
-            var parts = opt.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var parts = opt.TrueSplit(':');
             var name = parts[0];
             var value = parts[1];
 
@@ -323,11 +340,11 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
                 Failure($"Unable to set - {name}:{value}\n{e}");
             }
 
-            if (pos >= 50)
-            {
-                pos = 0;
-                yield return EndFrame();
-            }
+            if (pos < 50)
+                continue;
+
+            pos = 0;
+            yield return EndFrame();
         }
 
         SendOptionRPC(save: false);
@@ -336,7 +353,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
 
     public static IEnumerable<T> GetOptions<T>() where T : OptionAttribute => AllOptions.OfType<T>();
 
-    public static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
+    private static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
 
     public static OptionAttribute GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.Key == superId && x.RpcId.Value == id);
 

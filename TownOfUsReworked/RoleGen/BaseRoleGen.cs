@@ -4,10 +4,10 @@ namespace TownOfUsReworked.RoleGen;
 
 public abstract class BaseRoleGen : BaseGen
 {
-    public int Intruders { get; set; }
-    public int Crew { get; set; }
-    public int Syndicate { get; set; }
-    public int Neutrals { get; set; }
+    protected int Intruders { get; set; }
+    protected int Crew { get; set; }
+    protected int Syndicate { get; set; }
+    protected int Neutrals { get; set; }
 
     public virtual bool AllowNonRoles => true;
     public virtual bool HasTargets => true;
@@ -28,15 +28,8 @@ public abstract class BaseRoleGen : BaseGen
         AllRoles.Shuffle();
         players.Shuffle();
 
-        if (TownOfUsReworked.MCIActive && AllRoles.Any())
-        {
-            var ids = "";
-
-            foreach (var spawn in AllRoles)
-                ids += $" {spawn.ID}";
-
-            Message("Roles in the game: " + ids.Trim());
-        }
+        if (TownOfUsReworked.MciActive && AllRoles.Any())
+            Message("Roles in the game: " + string.Join(" ", AllRoles.Select(ab => ab.ID)));
 
         while (players.Any() && AllRoles.Any())
             Gen(players.TakeFirst(), AllRoles.TakeFirst().ID, PlayerLayerEnum.Role);
@@ -52,7 +45,7 @@ public abstract class BaseRoleGen : BaseGen
 
     public virtual void InitSynList() {}
 
-    public virtual void GetAdjustedFactions()
+    protected virtual void GetAdjustedFactions()
     {
         var players = GameData.Instance.PlayerCount;
         Intruders = IntruderSettings.IntruderCount;

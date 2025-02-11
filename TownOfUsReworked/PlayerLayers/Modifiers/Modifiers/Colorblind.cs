@@ -6,24 +6,24 @@ public class Colorblind : Modifier
     public override LayerEnum Type => LayerEnum.Colorblind;
     public override Func<string> Description => () => "- You can't tell the difference between players";
 
-    public override void Init()
+    protected override void Init()
     {
         if (Local)
             ColorAll();
     }
 
-    public override void Deinit() => AllToNormal();
+    protected override void Deinit() => AllToNormal();
 
     public override void ExitingLayer()
     {
         AllToNormal();
-        CameraEffect.Instance.Materials.Remove(GetMaterial("SoundV"));
+        CameraEffect.RemoveEffect(GetMaterial("SoundV"));
     }
 
     public override void EnteringLayer()
     {
         ColorAll();
-        CameraEffect.Instance.Materials.Add(GetMaterial("SoundV"));
+        CameraEffect.AddEffect(GetMaterial("SoundV"));
     }
 
     public override void UpdateHud(HudManager __instance)

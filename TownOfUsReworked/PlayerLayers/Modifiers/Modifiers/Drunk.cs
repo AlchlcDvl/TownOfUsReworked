@@ -4,16 +4,16 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public class Drunk : Modifier
 {
     [ToggleOption]
-    public static bool DrunkControlsSwap = false;
+    private static bool DrunkControlsSwap = false;
 
     [ToggleOption]
-    public static bool DrunkKnows = true;
+    private static bool DrunkKnows = true;
 
     [NumberOption(1f, 20f, 1f, Format.Time)]
-    public static Number DrunkInterval = 10;
+    private static Number DrunkInterval = 10;
 
-    private static float _time;
-    public int Modify { get; set; }
+    private static float Time;
+    public int Modify { get; private set; }
     private bool Exposed { get; set; }
 
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Drunk : CustomColorManager.Modifier;
@@ -21,7 +21,7 @@ public class Drunk : Modifier
     public override Func<string> Description => () => DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
     public override bool Hidden => !DrunkKnows && !Exposed && !Dead;
 
-    public override void Init()
+    protected override void Init()
     {
         Modify = Hidden ? 1 : -1;
         Exposed = DrunkKnows;
@@ -29,16 +29,16 @@ public class Drunk : Modifier
 
     public override void UpdateHud(HudManager __instance)
     {
-        if (DrunkControlsSwap)
-        {
-            _time += Time.deltaTime;
+        if (!DrunkControlsSwap)
+            return;
 
-            if (_time >= DrunkInterval)
-            {
-                _time -= DrunkInterval;
-                Modify *= -1;
-                Exposed = true;
-            }
-        }
+        Time += UnityEngine.Time.deltaTime;
+
+        if (Time < DrunkInterval)
+            return;
+
+        Time -= DrunkInterval;
+        Modify *= -1;
+        Exposed = true;
     }
 }

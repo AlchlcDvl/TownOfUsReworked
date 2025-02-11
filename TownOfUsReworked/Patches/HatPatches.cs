@@ -3,30 +3,6 @@ using static TownOfUsReworked.Managers.CustomHatManager;
 
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
-public static class PlayerPhysicsHandleAnimationPatch
-{
-    public static void Postfix(PlayerPhysics __instance)
-    {
-        if (!__instance.myPlayer)
-            return;
-
-        var currentAnimation = __instance.Animations.Animator.GetCurrentAnimation();
-
-        if (currentAnimation.IsAny(__instance.Animations.group.ClimbUpAnim, __instance.Animations.group.ClimbDownAnim))
-            return;
-
-        var hp = __instance.myPlayer.cosmetics.hat;
-
-        if (!hp || !hp.Hat || !CustomHatRegistry.TryGetValue(hp.Hat.ProductId, out var ch))
-            return;
-
-        var viewData = ch.ViewData;
-        hp.FrontLayer.sprite = __instance.FlipX && viewData.LeftMainImage ? viewData.LeftMainImage : viewData.MainImage;
-        hp.BackLayer.sprite = __instance.FlipX && viewData.LeftBackImage ? viewData.LeftMainImage : viewData.BackImage;
-    }
-}
-
 [HarmonyPatch(typeof(HatParent))]
 public static class HatPatches
 {
@@ -87,6 +63,7 @@ public static class HatPatches
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.FrontLayer);
         }
 
+        // ReSharper disable once InvertIf
         if (__instance.matProperties.MaskLayer <= 0)
         {
             PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.BackLayer, __instance.matProperties.IsLocalPlayer);
@@ -145,6 +122,7 @@ public static class HatPatches
             __instance.BackLayer.sprite = asset.MainImage;
         }
 
+        // ReSharper disable once InvertIf
         if (__instance.HideHat())
         {
             __instance.FrontLayer.enabled = false;
@@ -200,7 +178,7 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.SetHat), typeof(int)), HarmonyPrefix]
     public static bool SetHatPrefix(HatParent __instance, int color)
     {
-        if (!__instance.Hat || !CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
+        if (!__instance.Hat || !CustomHatRegistry.ContainsKey(__instance.Hat.ProductId))
             return true;
 
         __instance.UnloadAsset();
@@ -264,7 +242,7 @@ public static class HatsTabOnEnablePatch
 
     private static void CreateHatPackage(List<HatData> hats, string packageName, ref float yStart, HatsTab __instance)
     {
-        var isDefaultPackage = "Innersloth" == packageName;
+        var isDefaultPackage = packageName == "Innersloth";
 
         if (!isDefaultPackage)
             hats = [ .. hats.OrderBy(x => x.name) ];
@@ -275,8 +253,8 @@ public static class HatsTabOnEnablePatch
         {
             var title = UObject.Instantiate(Template, __instance.scroller.Inner);
             var material = title.GetComponent<MeshRenderer>().material;
-            material.SetFloat("_StencilComp", 4f);
-            material.SetFloat("_Stencil", 1f);
+            material.SetFloat(StencilComp, 4f);
+            material.SetFloat(Stencil, 1f);
             title.transform.localPosition = new(2.25f, yStart, -1f);
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;

@@ -9,7 +9,7 @@ public static class RPC
         if (save)
             OptionAttribute.SaveSettings("LastUsed");
 
-        if (TownOfUsReworked.MCIActive || !CustomPlayer.Local || AllPlayers().Count() == 1)
+        if (TownOfUsReworked.MciActive || !CustomPlayer.Local || AllPlayers().Count() == 1)
             return;
 
         List<OptionAttribute> options;
@@ -41,7 +41,7 @@ public static class RPC
 
     public static void ReceiveOptionRPC(MessageReader reader)
     {
-        if (TownOfUsReworked.MCIActive)
+        if (TownOfUsReworked.MciActive)
             return;
 
         var count = reader.ReadByte();
@@ -77,7 +77,7 @@ public static class RPC
         return PlayerLayer.AllLayers.Find(x => x.PlayerId == player && x.Type == type);
     }
 
-    public static IPlayerLayer ReadILayer(this MessageReader reader) => reader.ReadLayer();
+    // public static IPlayerLayer ReadILayer(this MessageReader reader) => reader.ReadLayer();
 
     public static CustomButton ReadButton(this MessageReader reader)
     {
@@ -87,11 +87,11 @@ public static class RPC
 
     public static T ReadLayer<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayer() as T;
 
-    public static T ReadILayer<T>(this MessageReader reader) where T : IPlayerLayer => (T)reader.ReadILayer();
+    // public static T ReadILayer<T>(this MessageReader reader) where T : IPlayerLayer => (T)reader.ReadILayer();
 
     public static IEnumerable<byte> ReadByteList(this MessageReader reader) => reader.ReadBytesAndSize();
 
-    public static List<PlayerLayer> ReadLayerList(this MessageReader reader)
+    private static List<PlayerLayer> ReadLayerList(this MessageReader reader)
     {
         var count = reader.ReadUInt32();
         var list = new List<PlayerLayer>();
@@ -104,14 +104,14 @@ public static class RPC
 
     public static List<T> ReadLayerList<T>(this MessageReader reader) where T : PlayerLayer => [ .. reader.ReadLayerList().Cast<T>() ];
 
-    public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Parse(reader.ReadString());
+    public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Deserialize(reader.ReadBytesAndSize());
 
     public static T ReadEnum<T>(this MessageReader reader) where T : struct, Enum
     {
         if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
             return (T)(object)reader.ReadByte();
-        else
-            return (T)(object)reader.ReadInt32();
+
+        return (T)(object)reader.ReadInt32();
     }
 
     public static Number ReadNumber(this MessageReader reader) => new(reader.ReadSingle());
@@ -134,28 +134,28 @@ public static class RPC
     //         SubFaction = reader.ReadEnum<SubFaction>(),
     //         CanDoTasks = reader.ReadBoolean()
     //     };
-
+    //
     //     if (record.CanDoTasks)
     //     {
     //         record.TasksLeft = reader.ReadUInt32();
     //         record.TasksDone = reader.ReadUInt32();
     //     }
-
+    //
     //     var count = reader.ReadUInt32();
-
+    //
     //     while (count-- > 0)
     //         record.Layers.Add(reader.ReadEnum<LayerEnum>());
-
+    //
     //     count = reader.ReadUInt32();
-
+    //
     //     while (count-- > 0)
     //         record.History.Add(reader.ReadEnum<LayerEnum>());
-
+    //
     //     count = reader.ReadUInt32();
-
+    //
     //     while (count-- > 0)
     //         record.Titles.Add(reader.ReadString());
-
+    //
     //     return record;
     // }
 
@@ -170,15 +170,15 @@ public static class RPC
         return enums;
     }
 
-    public static void Write(this MessageWriter writer, PlayerLayer layer)
+    private static void Write(this MessageWriter writer, PlayerLayer layer)
     {
         writer.Write(layer.PlayerId);
         writer.Write(layer.Type);
     }
 
-    public static void Write(this MessageWriter writer, RoleOptionData data) => writer.Write($"{data}");
+    public static void Write(this MessageWriter writer, RoleOptionData data) => writer.WriteBytesAndSize(data.Serialize());
 
-    public static void Write(this MessageWriter writer, Enum enumVal)
+    private static void Write(this MessageWriter writer, Enum enumVal)
     {
         var enumType = enumVal.GetType();
 
@@ -197,35 +197,35 @@ public static class RPC
     //     writer.Write(record.SkinId);
     //     writer.Write(record.HatId);
     //     writer.Write(record.VisorId);
-
+    //
     //     writer.Write(record.IsExeTarget);
     //     writer.Write(record.IsGATarget);
     //     writer.Write(record.IsBHTarget);
     //     writer.Write(record.IsGuessTarget);
     //     writer.Write(record.DriveHolder);
-
+    //
     //     writer.Write(record.DeathReason);
     //     writer.Write(record.SubFaction);
-
+    //
     //     writer.Write(record.CanDoTasks);
-
+    //
     //     if (record.CanDoTasks)
     //     {
     //         writer.Write(record.TasksLeft);
     //         writer.Write(record.TasksDone);
     //     }
-
+    //
     //     writer.Write((uint)record.Layers.Count);
     //     record.Layers.ForEach(x => writer.Write(x));
-
+    //
     //     writer.Write((uint)record.History.Count);
     //     record.History.ForEach(x => writer.Write(x));
-
+    //
     //     writer.Write((uint)record.Titles.Count);
     //     record.Titles.ForEach(writer.Write);
     // }
 
-    public static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index, Enum subRpc = null)
+    private static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index, Enum subRpc = null)
     {
         if (item is Enum enumVal)
             writer.Write(enumVal);
@@ -245,18 +245,16 @@ public static class RPC
             writer.Write(num.Value);
         else if (item is int integer)
             writer.Write(integer);
-        else if (item is float Float)
-            writer.Write(Float);
+        else if (item is float @float)
+            writer.Write(@float);
         else if (item is string text)
             writer.Write(text);
         else if (item is byte byt)
             writer.Write(byt);
         else if (item is Vector2 vector2)
             writer.Write(vector2);
-        else if (item is byte[] array)
-            writer.WriteBytesAndSize(array);
-        else if (item is IEnumerable<byte> list)
-            writer.WriteBytesAndSize(list.ToArray());
+        else if (item is IEnumerable<byte> enumerable)
+            writer.WriteBytesAndSize(enumerable.ToArray());
         else if (item is CustomButton button)
             writer.Write(button.ID);
         else if (item is IEnumerable<PlayerLayer> layers)
@@ -267,7 +265,8 @@ public static class RPC
         else if (item is null)
             Failure($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");
         else
-            Failure($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type - {item.GetType().Name}");
+            Failure($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type -" +
+                $" {item.GetType().Name}");
     }
 
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallOpenRpc(rpc, data)?.CloseRpc();
@@ -276,9 +275,9 @@ public static class RPC
 
     public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data) => CallTargetedOpenRpc(targetClientId, rpc, data)?.CloseRpc();
 
-    public static MessageWriter CallTargetedOpenRpc(int targetClientId, CustomRPC rpc, params object[] data)
+    private static MessageWriter CallTargetedOpenRpc(int targetClientId, CustomRPC rpc, params object[] data)
     {
-        if (TownOfUsReworked.MCIActive || !CustomPlayer.Local)
+        if (TownOfUsReworked.MciActive || !CustomPlayer.Local)
             return null;
 
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
@@ -290,10 +289,12 @@ public static class RPC
             if (data[0] is object[] array)
                 data = array;
 
-            if (data[0] is Enum @enum)
-                data.ForEach((x, y) => writer.Write(x, rpc, y, @enum));
-            else
-                data.ForEach((x, y) => writer.Write(x, rpc, y));
+            Enum @enum = null;
+
+            if (data[0] is Enum)
+                @enum = data[0] as Enum;
+
+            data.ForEach((x, y) => writer.Write(x, rpc, y, @enum));
         }
 
         return writer;

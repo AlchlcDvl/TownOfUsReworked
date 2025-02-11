@@ -4,19 +4,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Vigilante : Crew
 {
     [ToggleOption]
-    public static bool MisfireKillsInno = true;
+    private static bool MisfireKillsInno = true;
 
     [ToggleOption]
-    public static bool VigiKillAgain = true;
+    private static bool VigiKillAgain = true;
 
     [ToggleOption]
-    public static bool RoundOneNoShot = true;
+    private static bool RoundOneNoShot = true;
 
     [StringOption<VigiOptions>]
     public static VigiOptions HowDoesVigilanteDie = VigiOptions.Immediate;
 
     [StringOption<VigiNotif>]
-    public static VigiNotif HowIsVigilanteNotified = VigiNotif.Never;
+    private static VigiNotif HowIsVigilanteNotified = VigiNotif.Never;
 
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxBullets = 5;
@@ -24,12 +24,12 @@ public class Vigilante : Crew
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ShootCd = 25;
 
-    public bool KilledInno { get; set; }
-    public bool PreMeetingDie { get; set; }
-    public bool PostMeetingDie { get; set; }
-    public bool InnoMessage { get; set; }
-    public CustomButton ShootButton { get; set; }
-    public bool RoundOne { get; set; }
+    private bool KilledInno { get; set; }
+    private bool PreMeetingDie { get; set; }
+    public bool PostMeetingDie { get; private set; }
+    private bool InnoMessage { get; set; }
+    private CustomButton ShootButton { get; set; }
+    private bool RoundOne { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Vigilante : FactionColor;
     public override LayerEnum Type => LayerEnum.Vigilante;
@@ -37,7 +37,7 @@ public class Vigilante : Crew
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;
@@ -62,12 +62,12 @@ public class Vigilante : Crew
             Run("<#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
 
-    public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
-    public bool Usable() => !KilledInno && !RoundOne;
+    private bool Usable() => !KilledInno && !RoundOne;
 
-    public void Shoot(PlayerControl target)
+    private void Shoot(PlayerControl target)
     {
         var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte or Alignment.Harbinger or Alignment.Apocalypse ||
             target.Is(Faction.Syndicate) || target.Is<Troll>() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.IsFramed() || (target.Is(Alignment.Evil) &&

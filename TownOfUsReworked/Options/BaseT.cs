@@ -2,10 +2,8 @@ namespace TownOfUsReworked.Options;
 
 public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribute(type)
 {
-    private static string LastChangedSetting = "";
-
-    public T Value { get; set; }
-    public Type TargetType { get; } = typeof(T);
+    public T Value { get; protected set; }
+    protected Type TargetType { get; } = typeof(T);
 
     public static implicit operator T(OptionAttribute<T> opt) => opt.Value;
 
@@ -25,13 +23,11 @@ public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribut
 
     public override string ToString() => $"{ID}:{ValueString()}";
 
-    public virtual string ValueString() => $"{Value}";
-
-    public override void PostLoadSetup() {}
+    protected virtual string ValueString() => $"{Value}";
 
     public void Set(T value, bool rpc = true, bool notify = true)
     {
-        if (IsInGame() && !(ClientOnly || TownOfUsReworked.MCIActive))
+        if (IsInGame() && !(ClientOnly || TownOfUsReworked.MciActive))
             return;
 
         if (IsProperty)
@@ -50,7 +46,7 @@ public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribut
         if (!CustomPlayer.Local)
             return;
 
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || Type is CustomOptionType.Header or CustomOptionType.Alignment))
+        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || this is BaseHeaderOptionAttribute))
             SendOptionRPC(this);
 
         if (Setting)
@@ -68,15 +64,15 @@ public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribut
         var hud = HUD();
 
         if (LastChangedSetting == ID && hud.Notifier.activeMessages.Count > 0)
-            hud.Notifier.activeMessages[^1].UpdateMessage(changed);
+            LastSettingNotif.UpdateMessage(changed);
         else
         {
             LastChangedSetting = ID;
-            var newMessage = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, hud.Notifier.transform);
-            newMessage.transform.localPosition = new(0f, 0f, -2f);
-            newMessage.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(newMessage)));
+            LastSettingNotif = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, hud.Notifier.transform);
+            LastSettingNotif.transform.localPosition = new(0f, 0f, -2f);
+            LastSettingNotif.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(LastSettingNotif)));
             hud.Notifier.ShiftMessages();
-            hud.Notifier.AddMessageToQueue(newMessage);
+            hud.Notifier.AddMessageToQueue(LastSettingNotif);
         }
     }
 }

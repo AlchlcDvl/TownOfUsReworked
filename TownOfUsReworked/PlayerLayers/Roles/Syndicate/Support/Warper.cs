@@ -22,7 +22,7 @@ public class Warper : Syndicate, IMover
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
         " player to another player of your choice") + $"\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
@@ -168,7 +168,7 @@ public class Warper : Syndicate, IMover
         return false;
     }
 
-    public bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId) &&
+    public bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId) &&
         player.Data.IsDead);
 
     public static IEnumerator WarpAll(Dictionary<byte, Vector2> coords, IMover warper)

@@ -26,7 +26,7 @@ public class Grenadier : Intruder, IFlasher
     public override Func<string> StartText => () => "Blind The <#8CFFFFFF>Crew</color> With Your Magnificent Figure";
     public override Func<string> Description => () => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Concealing;

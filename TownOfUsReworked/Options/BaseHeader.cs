@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public abstract class BaseHeaderOptionAttribute(MultiMenu menu, CustomOptionType type, int priority = -1) : OptionAttribute<bool>(type)
 {
     public int Priority { get; } = priority;
@@ -20,22 +20,22 @@ public abstract class BaseHeaderOptionAttribute(MultiMenu menu, CustomOptionType
         {
             var att = prop.GetCustomAttribute<OptionAttribute>();
 
-            if (att != null)
-            {
-                att.SetProperty(prop);
-                GroupMembers.Add(att);
-            }
+            if (att == null)
+                continue;
+
+            att.SetProperty(prop);
+            GroupMembers.Add(att);
         }
 
         foreach (var field in AccessTools.GetDeclaredFields(type))
         {
             var att = field.GetCustomAttribute<OptionAttribute>();
 
-            if (att != null)
-            {
-                att.SetField(field);
-                GroupMembers.Add(att);
-            }
+            if (att == null)
+                continue;
+
+            att.SetField(field);
+            GroupMembers.Add(att);
         }
 
         GroupMembers.ForEach(x => x.Header = this);

@@ -1,13 +1,13 @@
 namespace TownOfUsReworked.BetterMaps;
 
 [HeaderOption(MultiMenu.Main)]
-public static class BetterMiraHQ
+public static class BetterMiraHq
 {
     [ToggleOption]
-    public static bool EnableBetterMiraHQ = true;
+    public static bool EnableBetterMiraHq = true;
 
     [ToggleOption]
-    public static bool MiraHQVentImprovements = false;
+    private static bool MiraHqVentImprovements = false;
 
     [NumberOption(30f, 90f, 5f, Format.Time)]
     public static Number MiraReactorTimer = 60;
@@ -34,11 +34,11 @@ public static class BetterMiraHQ
 
     public static void ApplyChanges()
     {
-        if (EnableBetterMiraHQ)
-        {
-            FindMiraObjects();
-            AdjustMiraHQ();
-        }
+        if (!EnableBetterMiraHq)
+            return;
+
+        FindMiraObjects();
+        AdjustMiraHq();
     }
 
     private static void FindMiraObjects()
@@ -84,14 +84,14 @@ public static class BetterMiraHQ
         if (!YRightVent)
             YRightVent = vents.Find(vent => vent.name == "YHallRightVent");
 
-        if (!CommsVent)
-        {
-            CommsVent = UObject.Instantiate(YRightVent, Comms.transform);
-            CommsVent.Right = null;
-            CommsVent.Left = null;
-            CommsVent.Center = null;
-            CommsVent.name = "CommsVent";
-        }
+        if (CommsVent)
+            return;
+
+        CommsVent = UObject.Instantiate(YRightVent, Comms.transform);
+        CommsVent.Right = null;
+        CommsVent.Left = null;
+        CommsVent.Center = null;
+        CommsVent.name = "CommsVent";
     }
 
     private static void FindRooms()
@@ -100,21 +100,21 @@ public static class BetterMiraHQ
             Comms = AllGameObjects().Find(o => o.name == "Comms");
     }
 
-    private static void AdjustMiraHQ()
+    private static void AdjustMiraHq()
     {
-        if (MiraHQVentImprovements)
-        {
-            MoveCommsVent();
-            ReconnectVents();
+        if (!MiraHqVentImprovements)
+            return;
 
-            if (CommsVent)
-            {
-                CommsVent.Id = GetAvailableId();
-                var vents = Ship().AllVents.ToList();
-                vents.Add(CommsVent);
-                Ship().AllVents = vents.ToArray();
-            }
-        }
+        MoveCommsVent();
+        ReconnectVents();
+
+        if (!CommsVent)
+            return;
+
+        CommsVent.Id = GetAvailableId();
+        var vents = Ship().AllVents.ToList();
+        vents.Add(CommsVent);
+        Ship().AllVents = vents.ToArray();
     }
 
     private static void ReconnectVents()

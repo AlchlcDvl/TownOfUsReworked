@@ -4,34 +4,34 @@ namespace TownOfUsReworked.BetterMaps;
 public static class BetterAirship
 {
     [ToggleOption]
-    public static bool EnableBetterAirship = true;
+    private static bool EnableBetterAirship = true;
 
     [StringOption<AirshipSpawnType>]
-    public static AirshipSpawnType SpawnType = AirshipSpawnType.Normal;
+    private static AirshipSpawnType SpawnType = AirshipSpawnType.Normal;
 
     [ToggleOption]
-    public static bool MoveVitals = false;
+    private static bool MoveVitals = false;
 
     [ToggleOption]
-    public static bool MoveFuel = false;
+    private static bool MoveFuel = false;
 
     [ToggleOption]
-    public static bool MoveDivert = false;
+    private static bool MoveDivert = false;
 
     [StringOption<MoveAdmin>]
-    public static MoveAdmin MoveAdmin = MoveAdmin.DontMove;
+    private static MoveAdmin MoveAdmin = MoveAdmin.DontMove;
 
     [StringOption<MoveElectrical>]
-    public static MoveElectrical MoveElectrical = MoveElectrical.DontMove;
+    private static MoveElectrical MoveElectrical = MoveElectrical.DontMove;
 
     [NumberOption(0f, 10f, 0.1f)]
     public static Number MinDoorSwipeTime = 0.4f;
 
     [NumberOption(30f, 100f, 5f, Format.Time)]
-    public static Number CrashTimer = 90;
+    private static Number CrashTimer = 90;
 
     [NumberOption(1f, 20f, 1f, Format.Time)]
-    public static Number CrashCodeResetTimer = 10;
+    private static Number CrashCodeResetTimer = 10;
 
     [ToggleOption]
     public static bool EnableCustomSpawns = true;
@@ -52,23 +52,27 @@ public static class BetterAirship
                 var adminTable = UObject.FindObjectOfType<MapConsole>();
                 var mapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
 
-                if ((int)MoveAdmin == 1)
+                switch (MoveAdmin)
                 {
-                    adminTable.transform.position = new(-17.269f, 1.375f, 0f);
-                    adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 350.316f));
-                    adminTable.transform.localScale = new(1, 1, 1);
+                    case MoveAdmin.Cockpit:
+                    {
+                        adminTable.transform.position = new(-17.269f, 1.375f, 0f);
+                        adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 350.316f));
+                        adminTable.transform.localScale = new(1, 1, 1);
 
-                    mapFloating.transform.position = new(-17.736f, 2.36f, 0f);
-                    mapFloating.transform.rotation = Quaternion.Euler(new(0, 0, 350));
-                    mapFloating.transform.localScale = new(1, 1, 1);
-                }
-                else if ((int)MoveAdmin == 2)
-                {
-                    // New Admin
-                    adminTable.transform.position = new(5.078f, 3.4f, 1);
-                    adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 76.1f));
-                    adminTable.transform.localScale = new(1.200f, 1.700f, 1);
-                    mapFloating.transform.localScale = new(0, 0, 0);
+                        mapFloating.transform.position = new(-17.736f, 2.36f, 0f);
+                        mapFloating.transform.rotation = Quaternion.Euler(new(0, 0, 350));
+                        mapFloating.transform.localScale = new(1, 1, 1);
+                        break;
+                    }
+                    case MoveAdmin.MainHall: // New Admin
+                    {
+                        adminTable.transform.position = new(5.078f, 3.4f, 1);
+                        adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 76.1f));
+                        adminTable.transform.localScale = new(1.200f, 1.700f, 1);
+                        mapFloating.transform.localScale = new(0, 0, 0);
+                        break;
+                    }
                 }
             }
 
@@ -77,19 +81,26 @@ public static class BetterAirship
             {
                 var electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
 
-                if ((int)MoveElectrical == 1)
+                switch ((int)MoveElectrical)
                 {
-                    electrical.transform.position = new(-8.818f, 13.184f, 0f);
-                    electrical.transform.localScale = new(0.909f, 0.818f, 1);
+                    case 1:
+                    {
+                        electrical.transform.position = new(-8.818f, 13.184f, 0f);
+                        electrical.transform.localScale = new(0.909f, 0.818f, 1);
 
-                    var originalSupport = GameObject.Find("Vault/cockpit_comms");
-                    var supportElectrical = UObject.Instantiate(originalSupport, originalSupport.transform);
+                        var originalSupport = GameObject.Find("Vault/cockpit_comms");
+                        var supportElectrical = UObject.Instantiate(originalSupport, originalSupport.transform);
 
-                    supportElectrical.transform.position = new(-8.792f, 13.242f);
-                    supportElectrical.transform.localScale = new(1, 1, 1);
+                        supportElectrical.transform.position = new(-8.792f, 13.242f);
+                        supportElectrical.transform.localScale = new(1, 1, 1);
+                        break;
+                    }
+                    case 2:
+                    {
+                        electrical.transform.position = new(19.339f, -3.665f, 0f);
+                        break;
+                    }
                 }
-                else if ((int)MoveElectrical == 2)
-                    electrical.transform.position = new(19.339f, -3.665f, 0f);
             }
 
             // Moving the vitals panel
@@ -114,7 +125,7 @@ public static class BetterAirship
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
-            // Skip this if the local player has the Astral modifier or is a postmortal role
+            // Skip this if the local player has the Astral modifier or is a post mortal role
             if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
             {
                 __instance.Close();
@@ -129,7 +140,6 @@ public static class BetterAirship
             if (SpawnType == AirshipSpawnType.Meeting)
             {
                 __instance.Close();
-                CustomPlayer.Local.moveable = true;
                 CustomPlayer.Local.RpcCustomSnapTo(GetMeetingPosition(CustomPlayer.Local.PlayerId));
                 return false;
             }
@@ -140,26 +150,39 @@ public static class BetterAirship
             // Adding custom spawn locations
             if (EnableCustomSpawns)
             {
-                AddSpawn(new Vector3(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault"), GetAudio("RolloverDefault"), ref spawn);
-                AddSpawn(new Vector3(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cockpit"), GetAnim("Cockpit"), GetAudio("RolloverDefault"), ref spawn);
-                AddSpawn(new Vector3(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new(-8.808f, 12.710f, 0.013f), StringNames.VaultRoom, GetSprite("Vault"), GetAnim("Vault"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new(-19.278f, -1.033f, 0f), StringNames.Cockpit, GetSprite("Cockpit"), GetAnim("Cockpit"), GetAudio("RolloverDefault"), ref spawn);
+                AddSpawn(new(29.041f, -6.336f, 0f), StringNames.Medical, GetSprite("Medical"), GetAnim("Medical"), GetAudio("RolloverDefault"), ref spawn);
             }
 
-            if (SpawnType == AirshipSpawnType.Fixed) // If the spawn type is fixed, set the spawn locations specific locations | TODO: Allow users to change fixed spawn locations
-                __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
-            else if (SpawnType == AirshipSpawnType.RandomSynchronized) // Use the randomised locations set by the host
+            switch (SpawnType)
             {
-                try
-                {
-                    __instance.Locations = new[] { spawn[SpawnPoints[0]], spawn[SpawnPoints[1]], spawn[SpawnPoints[2]] };
-                }
-                catch
+                // If the spawn type is fixed, set the spawn locations specific locations | TODO: Allow users to change fixed spawn locations
+                case AirshipSpawnType.Fixed:
                 {
                     __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
+                    break;
+                }
+                // Use the randomised locations set by the host
+                case AirshipSpawnType.RandomSynchronized:
+                {
+                    try
+                    {
+                        __instance.Locations = new[] { spawn[SpawnPoints[0]], spawn[SpawnPoints[1]], spawn[SpawnPoints[2]] };
+                    }
+                    catch
+                    {
+                        __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
+                    }
+                    break;
+                }
+                // Use the randomised locations chosen by the client
+                case AirshipSpawnType.Random:
+                {
+                    __instance.Locations = spawn.GetRandomRange(3).ToArray();
+                    break;
                 }
             }
-            else if (SpawnType == AirshipSpawnType.Random) // Use the randomised locations chosen by the client
-                __instance.Locations = spawn.GetRandomRange(3).ToArray();
 
             return true;
         }
@@ -208,21 +231,32 @@ public static class BetterAirship
             var b2 = (byte)(b & 15);
             var tags = (HeliSabotageSystem.Tags)(b & 240);
 
-            if (tags == HeliSabotageSystem.Tags.FixBit)
+            switch (tags)
             {
-                __instance.codeResetTimer = CrashCodeResetTimer;
-                __instance.CompletedConsoles.Add(b2);
-            }
-            else if (tags == HeliSabotageSystem.Tags.DeactiveBit)
-                __instance.ActiveConsoles.Remove(new(player.PlayerId, b2));
-            else if (tags == HeliSabotageSystem.Tags.ActiveBit)
-                __instance.ActiveConsoles.Add(new(player.PlayerId, b2));
-            else if (tags == HeliSabotageSystem.Tags.DamageBit)
-            {
-                __instance.codeResetTimer = -1f;
-                __instance.Countdown = CrashTimer;
-                __instance.CompletedConsoles.Clear();
-                __instance.ActiveConsoles.Clear();
+                case HeliSabotageSystem.Tags.FixBit:
+                {
+                    __instance.codeResetTimer = CrashCodeResetTimer;
+                    __instance.CompletedConsoles.Add(b2);
+                    break;
+                }
+                case HeliSabotageSystem.Tags.DeactiveBit:
+                {
+                    __instance.ActiveConsoles.Remove(new(player.PlayerId, b2));
+                    break;
+                }
+                case HeliSabotageSystem.Tags.ActiveBit:
+                {
+                    __instance.ActiveConsoles.Add(new(player.PlayerId, b2));
+                    break;
+                }
+                case HeliSabotageSystem.Tags.DamageBit:
+                {
+                    __instance.codeResetTimer = -1f;
+                    __instance.Countdown = CrashTimer;
+                    __instance.CompletedConsoles.Clear();
+                    __instance.ActiveConsoles.Clear();
+                    break;
+                }
             }
 
             __instance.IsDirty = true;

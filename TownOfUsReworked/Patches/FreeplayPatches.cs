@@ -127,13 +127,13 @@ public static class FreeplayPatches
 
             __instance.ActiveItems.Add(taskFolder2.transform);
 
-            if (taskFolder2 && taskFolder2.Button)
-            {
-                ControllerManager.Instance.AddSelectableUiElement(taskFolder2.Button, false);
+            if (!taskFolder2 || !taskFolder2.Button)
+                continue;
 
-                if (!IsNullEmptyOrWhiteSpace(__instance.restorePreviousSelectionByFolderName) && taskFolder2.FolderName.Equals(__instance.restorePreviousSelectionByFolderName))
-                    __instance.restorePreviousSelectionFound = taskFolder2.Button;
-            }
+            ControllerManager.Instance.AddSelectableUiElement(taskFolder2.Button);
+
+            if (!IsNullEmptyOrWhiteSpace(__instance.restorePreviousSelectionByFolderName) && taskFolder2.FolderName.Equals(__instance.restorePreviousSelectionByFolderName))
+                __instance.restorePreviousSelectionFound = taskFolder2.Button;
         }
 
         if (FolderNames.Contains(taskFolder.FolderName))
@@ -194,19 +194,19 @@ public static class FreeplayPatches
                 };
                 __instance.AddFileAsChild(taskFolder, taskAddButton, ref num, ref num2, ref num3);
 
-                if (taskAddButton.Button)
-                {
-                    ControllerManager.Instance.AddSelectableUiElement(taskAddButton.Button, false);
+                if (!taskAddButton.Button)
+                    continue;
 
-                    if (__instance.Hierarchy.Count != 1 && !flag)
-                    {
-                        if (ControllerManager.Instance.CurrentUiState.CurrentSelection.TryGetComponent<TaskFolder>(out var component) && component)
-                            __instance.restorePreviousSelectionByFolderName = component.FolderName;
+                ControllerManager.Instance.AddSelectableUiElement(taskAddButton.Button);
 
-                        ControllerManager.Instance.SetDefaultSelection(taskAddButton.Button, null);
-                        flag = true;
-                    }
-                }
+                if (__instance.Hierarchy.Count == 1 || flag)
+                    continue;
+
+                if (ControllerManager.Instance.CurrentUiState.CurrentSelection.TryGetComponent<TaskFolder>(out var component) && component)
+                    __instance.restorePreviousSelectionByFolderName = component.FolderName;
+
+                ControllerManager.Instance.SetDefaultSelection(taskAddButton.Button);
+                flag = true;
             }
         }
 
@@ -220,12 +220,10 @@ public static class UpdateRoleButtons
 {
     public static bool Prefix(TaskAddButton __instance)
     {
-        if (FreeplayPatches.RoleButtons.TryGetValue(__instance.name, out var layer))
-        {
-            __instance.Overlay.enabled = CustomPlayer.Local.Is(layer);
-            return false;
-        }
+        if (!FreeplayPatches.RoleButtons.TryGetValue(__instance.name, out var layer))
+            return true;
 
-        return true;
+        __instance.Overlay.enabled = CustomPlayer.Local.Is(layer);
+        return false;
     }
 }

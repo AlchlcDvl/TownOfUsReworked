@@ -34,7 +34,7 @@ public static class CustomColorManager
 
     public static UColor Alternate(this UColor color, float val = 0.2f) => color.IsColorDark() ? color.Light(val) : color.Shadow(val);
 
-    public static bool IsColorDark(this UColor color) => color is { r: <= 0.5f, g: <= 0.5f, b: <= 0.5f };
+    private static bool IsColorDark(this UColor color) => color is { r: <= 0.5f, g: <= 0.5f, b: <= 0.5f };
 
     public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
 
@@ -44,26 +44,27 @@ public static class CustomColorManager
 
     public static Color32 Alternate(this Color32 color, byte val = 51) => ((UColor)color).Alternate(val / 255f);
 
-    public static bool IsColorDark(this Color32 color) => color is { r: < 128, g: < 128, b: 128 };
-
-    public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
-    {
-        if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
-            return UColor.grey.Shadow();
-        else if (player.IsMimicking(out var mimicked) && morphCondition)
-            return mimicked.Data.DefaultOutfit.ColorId.GetColor(true);
-        else
-            return player.Data.DefaultOutfit.ColorId.GetColor(true);
-    }
+    // public static bool IsColorDark(this Color32 color) => color is { r: < 128, g: < 128, b: 128 };
+    //
+    // public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
+    // {
+    //     if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
+    //         return UColor.grey.Shadow();
+    //     else if (player.IsMimicking(out var mimicked) && morphCondition)
+    //         return mimicked.Data.DefaultOutfit.ColorId.GetColor(true);
+    //     else
+    //         return player.Data.DefaultOutfit.ColorId.GetColor(true);
+    // }
 
     public static UColor GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
     {
         if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey;
-        else if (player.IsMimicking(out var mimicked) && morphCondition)
+
+        if (player.IsMimicking(out var mimicked) && morphCondition)
             return mimicked.Data.DefaultOutfit.ColorId.GetColor(false);
-        else
-            return player.Data.DefaultOutfit.ColorId.GetColor(false);
+
+        return player.Data.DefaultOutfit.ColorId.GetColor(false);
     }
 
     // Layer Colors
@@ -207,7 +208,7 @@ public static class CustomColorManager
     public static readonly UColor Dwarf = FromHex("#FF8080FF");
     public static readonly UColor Giant = FromHex("#FFB34DFF");
     public static readonly UColor Volatile = FromHex("#FFA60AFF");
-    public static readonly UColor VIP = FromHex("#DCEE85FF");
+    public static readonly UColor Vip = FromHex("#DCEE85FF");
     public static readonly UColor Shy = FromHex("#1002C5FF");
     public static readonly UColor Professional = FromHex("#860B7AFF");
     public static readonly UColor Indomitable = FromHex("#2DE5BEFF");
@@ -248,7 +249,6 @@ public static class CustomColorManager
     public static readonly UColor Stalemate = FromHex("#E6E6E6FF");
     public static readonly UColor Alignment = FromHex("#1D7CF2FF");
     public static readonly UColor Status = FromHex("#9B59B6FF");
-    public static readonly UColor Clear = FromHex("#00000000");
     public static readonly UColor Objectives = FromHex("#B148E2FF");
     public static readonly UColor Attributes = FromHex("#EC1C45FF");
     public static readonly UColor Abilities =FromHex("#206694FF");

@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public class Ruthless : Ability
 {
     [ToggleOption]
-    public static bool RuthlessKnows = true;
+    private static bool RuthlessKnows = true;
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Ruthless : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Ruthless;

@@ -10,11 +10,11 @@ public class DebuggerBehaviour : MonoBehaviour
 
     [HideFromIl2Cpp]
     public BaseTab[] Tabs { get; } =
-    {
+    [
         new TestingTab(),
         new GameTab(),
-        new CooldownsTab(),
-    };
+        new CooldownsTab()
+    ];
 
     [HideFromIl2Cpp]
     public BaseTab SelectedTab { get; set; }
@@ -74,7 +74,7 @@ public class DebuggerBehaviour : MonoBehaviour
             TestWindow.Enabled = !TestWindow.Enabled;
 
             if (!TestWindow.Enabled && IsLobby() && IsLocalGame())
-                MCIUtils.RemoveAllPlayers();
+                MciUtils.RemoveAllPlayers();
         }
     }
 

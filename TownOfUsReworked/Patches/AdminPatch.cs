@@ -84,11 +84,10 @@ public static class AdminPatch
                     var component = collider.GetComponent<PlayerControl>();
                     var data = component?.Data;
 
-                    if (!component.HasDied() && (__instance.showLivePlayerPosition || !component.AmOwner) && !colorMapDuplicate.Contains(data.PlayerId))
-                    {
-                        colorMap.Add(data.PlayerId);
-                        colorMapDuplicate.Add(data.PlayerId);
-                    }
+                    if (component.HasDied() || (!__instance.showLivePlayerPosition && component!.AmOwner) || colorMapDuplicate.Contains(data!.PlayerId))
+                        continue;
+                    colorMap.Add(data.PlayerId);
+                    colorMapDuplicate.Add(data.PlayerId);
                 }
             }
 
@@ -103,7 +102,7 @@ public static class AdminPatch
         var isOp = role is Operative || DeadSeeEverything();
 
         if (!isOp)
-            isOp = role is Retributionist ret && ret.IsOp;
+            isOp = role is Retributionist { IsOp: true };
 
         __instance.timer += Time.deltaTime;
 

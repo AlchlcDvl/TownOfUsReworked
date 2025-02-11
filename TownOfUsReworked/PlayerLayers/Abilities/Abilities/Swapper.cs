@@ -7,17 +7,17 @@ public class Swapper : Ability
     public static bool SwapperButton = true;
 
     [ToggleOption]
-    public static bool SwapSelf = true;
+    private static bool SwapSelf = true;
 
     public PlayerVoteArea Swap1 { get; set; }
     public PlayerVoteArea Swap2 { get; set; }
-    public CustomMeeting SwapMenu { get; set; }
+    public CustomMeeting SwapMenu { get; private set; }
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Swapper : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Swapper;
     public override Func<string> Description => () => "- You can swap the votes against 2 players in meetings";
 
-    public override void Init()
+    protected override void Init()
     {
         Swap1 = null;
         Swap2 = null;
@@ -70,12 +70,12 @@ public class Swapper : Ability
         else if (Swap1 == voteArea)
         {
             Swap1 = null;
-            SwapMenu.Actives[Swap1.TargetPlayerId] = false;
+            SwapMenu.Actives[Swap1!.TargetPlayerId] = false;
         }
         else if (Swap2 == voteArea)
         {
             Swap2 = null;
-            SwapMenu.Actives[Swap2.TargetPlayerId] = false;
+            SwapMenu.Actives[Swap2!.TargetPlayerId] = false;
         }
         else
         {

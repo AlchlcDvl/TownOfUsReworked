@@ -24,16 +24,21 @@ public static class CustomHatManager
         viewData.LeftFloorImage = ch.FloorFlipID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Hat) : viewData.FloorImage;
         viewData.MatchPlayerColor = ch.Adaptive;
 
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
+        preview.PreviewSprite = viewData.MainImage;
+
         var hat = ScriptableObject.CreateInstance<HatData>().DontDestroy();
         hat.name = ch.Name;
         hat.displayOrder = 99;
         hat.ProductId = "customHat_" + ch.Name.Replace(' ', '_');
-        hat.InFront = ch.BackID == null && ch.BackFlipID == null;
+        hat.InFront = IsNullEmptyOrWhiteSpace(ch.BackID) && IsNullEmptyOrWhiteSpace(ch.BackFlipID);
         hat.NoBounce = ch.NoBounce;
         hat.ChipOffset = new(0f, 0.2f);
         hat.Free = true;
         hat.NotInStore = true;
         hat.PreviewCrewmateColor = ch.Adaptive;
+        hat.ViewDataRef = new CustomAddressable<HatViewData>(viewData, hat.ProductId).Ref;
+        hat.PreviewData = new CustomAddressable<PreviewViewData>(preview, $"{hat.ProductId}_preview").Ref;
 
         ch.Artist ??= "Unknown";
         ch.ViewData = viewData;
@@ -42,35 +47,35 @@ public static class CustomHatManager
         CustomHatRegistry[hat.ProductId] = ch;
     }
 
-    public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomHat> hats)
+    public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomHat> hats, HashAlgorithm hasher)
     {
         foreach (var hat in hats)
         {
             if (hat.StreamOnly && !TownOfUsReworked.IsStream)
                 continue;
 
-            if (AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ID}.png"), hat.MainHash))
+            if (AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ID}.png"), hat.MainHash, hasher))
                 yield return hat.ID;
 
-            if (hat.FlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FlipID}.png"), hat.FlipHash))
+            if (hat.FlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FlipID}.png"), hat.FlipHash, hasher))
                 yield return hat.FlipID;
 
-            if (hat.ClimbID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbID}.png"), hat.ClimbHash))
+            if (hat.ClimbID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbID}.png"), hat.ClimbHash, hasher))
                 yield return hat.ClimbID;
 
-            if (hat.FloorID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorID}.png"), hat.FloorHash))
+            if (hat.FloorID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorID}.png"), hat.FloorHash, hasher))
                 yield return hat.FloorID;
 
-            if (hat.BackFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackFlipID}.png"), hat.BackFlipHash))
+            if (hat.BackFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackFlipID}.png"), hat.BackFlipHash, hasher))
                 yield return hat.BackFlipID;
 
-            if (hat.BackID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackID}.png"), hat.BackHash))
+            if (hat.BackID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.BackID}.png"), hat.BackHash, hasher))
                 yield return hat.BackID;
 
-            if (hat.FloorFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorFlipID}.png"), hat.FloorFlipHash))
+            if (hat.FloorFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.FloorFlipID}.png"), hat.FloorFlipHash, hasher))
                 yield return hat.FloorFlipID;
 
-            if (hat.ClimbFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbFlipID}.png"), hat.ClimbFlipHash))
+            if (hat.ClimbFlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Hats, $"{hat.ClimbFlipID}.png"), hat.ClimbFlipHash, hasher))
                 yield return hat.ClimbFlipID;
         }
     }

@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Custom;
 
 public class PlayerArrow : CustomArrow
 {
-    public PlayerControl TargetPlayer { get; set; }
-    private bool SkipBody { get; set; }
+    private PlayerControl TargetPlayer { get; }
+    private bool SkipBody { get; }
 
     public PlayerArrow(PlayerControl owner, PlayerControl target, UColor color, float interval = 0f, bool skipBody = false) : base(owner, color, null, interval)
     {
@@ -16,19 +16,20 @@ public class PlayerArrow : CustomArrow
     {
         var pos = TargetPlayer.transform.position;
 
-        if (!SkipBody)
-        {
-            var body = BodyByPlayer(TargetPlayer);
+        if (SkipBody)
+            return pos;
 
-            if (!body && TargetPlayer.Data.IsDead)
-            {
-                Arrow.target = Owner.transform.position;
-                Disable();
-                return Vector3.zero;
-            }
-            else if (body)
-                pos = body.transform.position;
+        var body = BodyByPlayer(TargetPlayer);
+
+        if (!body && TargetPlayer.Data.IsDead)
+        {
+            Arrow.target = Owner.transform.position;
+            Disable();
+            return Vector3.zero;
         }
+
+        if (body)
+            pos = body.transform.position;
 
         return pos;
     }

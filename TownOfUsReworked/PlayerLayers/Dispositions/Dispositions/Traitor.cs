@@ -4,15 +4,14 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 public class Traitor : Disposition
 {
     [ToggleOption]
-    public static bool TraitorKnows = true;
+    private static bool TraitorKnows = true;
 
     [ToggleOption]
     public static bool TraitorColourSwap = false;
 
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }
-    public Faction Side { get; set; }
-    private bool Betray => !Dead && !Turned && !Betrayed && Last(Side);
+    public Faction Side { get; private set; }
 
     public override UColor Color
     {
@@ -27,8 +26,8 @@ public class Traitor : Disposition
                     _ => ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
                 };
             }
-            else
-                return ClientOptions.CustomDispColors ? CustomColorManager.Traitor : CustomColorManager.Disposition;
+
+            return ClientOptions.CustomDispColors ? CustomColorManager.Traitor : CustomColorManager.Disposition;
         }
     }
     public override string Symbol => "♣";
@@ -36,7 +35,7 @@ public class Traitor : Disposition
     public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : "";
     public override bool Hidden => !TraitorKnows && !Turned && !Dead;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Side = Faction.Crew;
@@ -44,18 +43,18 @@ public class Traitor : Disposition
 
     public override void UpdatePlayer()
     {
-        if (Betray)
+        if (!Dead && Turned && !Betrayed && Last(Side))
             TurnBetrayer();
     }
 
     public override void UponTaskComplete(uint taskId)
     {
-        if (TasksDone && Local)
-        {
-            GetFactionChoice(out var syndicate, out var intruder);
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, false, syndicate, intruder);
-            TurnTraitor(syndicate, intruder);
-        }
+        if (!TasksDone || !Local)
+            return;
+
+        GetFactionChoice(out var syndicate, out var intruder);
+        CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, false, syndicate, intruder);
+        TurnTraitor(syndicate, intruder);
     }
 
     public void TurnBetrayer()
@@ -67,7 +66,7 @@ public class Traitor : Disposition
             new Betrayer() { Objectives = role.Objectives }.RoleUpdate(role);
     }
 
-    public static void GetFactionChoice(out bool turnSyndicate, out bool turnIntruder)
+    private static void GetFactionChoice(out bool turnSyndicate, out bool turnIntruder)
     {
         turnIntruder = false;
         turnSyndicate = false;
@@ -75,30 +74,43 @@ public class Traitor : Disposition
         var intAlive = AllPlayers().Count(x => x.Is(Faction.Intruder) && !x.HasDied());
         var synAlive = AllPlayers().Count(x => x.Is(Faction.Syndicate) && !x.HasDied());
 
-        if (intAlive > 0 && synAlive > 0)
+        switch (intAlive)
         {
-            var random = URandom.RandomRangeInt(0, 100);
+            case > 0 when synAlive > 0:
+            {
+                var random = URandom.RandomRangeInt(0, 100);
 
-            if (intAlive == synAlive)
-            {
-                turnIntruder = random >= 50;
-                turnSyndicate = random > 50;
+                if (intAlive == synAlive)
+                {
+                    turnIntruder = random >= 50;
+                    turnSyndicate = random > 50;
+                }
+                else if (intAlive > synAlive)
+                {
+                    turnIntruder = random >= 75;
+                    turnSyndicate = random < 75;
+                }
+                else if (intAlive < synAlive)
+                {
+                    turnIntruder = random >= 25;
+                    turnSyndicate = random < 25;
+                }
+
+                break;
             }
-            else if (intAlive > synAlive)
+            case > 0 when synAlive == 0:
             {
-                turnIntruder = random >= 75;
-                turnSyndicate = random < 75;
+                turnIntruder = true;
+                break;
             }
-            else if (intAlive < synAlive)
+            default:
             {
-                turnIntruder = random >= 25;
-                turnSyndicate = random < 25;
+                if (synAlive > 0 && intAlive == 0)
+                    turnSyndicate = true;
+
+                break;
             }
         }
-        else if (intAlive > 0 && synAlive == 0)
-            turnIntruder = true;
-        else if (synAlive > 0 && intAlive == 0)
-            turnSyndicate = true;
     }
 
     public void TurnTraitor(bool turnSyndicate, bool turnIntruder)
@@ -120,9 +132,9 @@ public class Traitor : Disposition
         Turned = true;
         var local = CustomPlayer.Local.GetRole();
 
-        foreach (var snitch in GetLayers<Snitch>())
+        if (Snitch.SnitchSeesTraitor)
         {
-            if (Snitch.SnitchSeesTraitor)
+            foreach (var snitch in GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
                     local.AllArrows.Add(snitch.PlayerId, new(Player, snitch.Player, snitch.Color));
@@ -131,10 +143,13 @@ public class Traitor : Disposition
             }
         }
 
-        foreach (var revealer in GetLayers<Revealer>())
+        if (Revealer.RevealerRevealsTraitor && Local)
         {
-            if (revealer.Revealed && Revealer.RevealerRevealsTraitor && Local)
-                local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Player, revealer.Color));
+            foreach (var revealer in GetLayers<Revealer>())
+            {
+                if (revealer.Revealed)
+                    local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Player, revealer.Color));
+            }
         }
 
         if (CustomPlayer.Local.Is<Mystic>() && !Local)

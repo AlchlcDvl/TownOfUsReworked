@@ -67,9 +67,9 @@ public static class CrowdedPatches
     public static void Prefix(ref int mapId)
     {
         if (mapId == 6 && !SubLoaded)
-            mapId = LILoaded ? 7 : 5;
+            mapId = LiLoaded ? 7 : 5;
 
-        if (mapId == 7 && !LILoaded)
+        if (mapId == 7 && !LiLoaded)
             mapId = SubLoaded ? 6 : 5;
 
         MapSettings.Map = (MapEnum)mapId;

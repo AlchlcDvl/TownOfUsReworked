@@ -28,7 +28,7 @@ public class Jackal : Neophyte
         " member into the <#575657FF>Cabal</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Recruit or kill anyone who can oppose the <#575657FF>Cabal</color>";
@@ -39,7 +39,7 @@ public class Jackal : Neophyte
             new Cooldown(RecruitCd));
     }
 
-    public override void Deinit()
+    protected override void Deinit()
     {
         base.Deinit();
         Recruit1 = null;

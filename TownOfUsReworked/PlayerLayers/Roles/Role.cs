@@ -150,7 +150,7 @@ public abstract class Role : PlayerLayer
     public bool Faithful => SubFaction == SubFaction.None && LinkedDisposition is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) && !IsCrewDefect && !IsIntDefect && !IsSynDefect
         && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor() && !Ignore;
 
-    public override void Init()
+    protected override void Init()
     {
         Faction = Faction.None;
         SubFaction = SubFaction.None;
@@ -259,9 +259,9 @@ public abstract class Role : PlayerLayer
             TrulyDead |= Type != LayerEnum.GuardianAngel;
     }
 
-    public override void CheckWin()
+    protected override void CheckWin()
     {
-        if (Faithful && Faction == Faction.Neutral && Alignment == Alignment.Killing && (SameNKWins(Type) || SoloNKWins(Player)))
+        if (Faithful && Faction == Faction.Neutral && Alignment == Alignment.Killing && (SameNkWins(Type) || SoloNkWins(Player)))
         {
             WinState = Type switch
             {
@@ -377,7 +377,7 @@ public abstract class Role : PlayerLayer
 
     public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().ForEach(x => x.Rounds++);
 
-    public override void Deinit() => RoleHistory.Clear();
+    protected override void Deinit() => RoleHistory.Clear();
 
     public override void UpdateMap(MapBehaviour __instance)
     {
@@ -487,7 +487,7 @@ public abstract class Role : PlayerLayer
             role2.ShieldedPlayer = null;
             role2.ShieldBroken = true;
 
-            if (TownOfUsReworked.MCIActive)
+            if (TownOfUsReworked.MciActive)
                 Message(player.name + " Is Now Ex-Shielded");
         }
     }

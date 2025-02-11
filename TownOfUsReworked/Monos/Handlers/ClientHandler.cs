@@ -8,7 +8,7 @@ public class ClientHandler : MonoBehaviour
     public SpriteRenderer Phone;
     public TextMeshPro PhoneText;
 
-    public PassiveButton WikiRCButton;
+    public PassiveButton WikiRcButton;
     public bool WikiActive;
     public bool RoleCardActive;
     public PassiveButton ToTheWiki;
@@ -16,15 +16,15 @@ public class ClientHandler : MonoBehaviour
     public PassiveButton BackButton;
     public PassiveButton YourStatus;
     public readonly Dictionary<int, List<(Info, PassiveButton)>> Buttons = [];
-    public readonly Dictionary<int, KeyValuePair<string, Info>> Sorted = [];
+    private readonly Dictionary<int, KeyValuePair<string, Info>> Sorted = [];
     public int Page;
     public int ResultPage;
     public int MaxPage;
     public bool PagesSet;
-    public Info Selected;
+    private Info Selected;
     public bool LoreActive;
     public bool SelectionActive;
-    public readonly List<string> Entry = [];
+    private readonly List<string> Entry = [];
     // Max page line limit is 20
 
     public PassiveButton ClientOptionsButton;
@@ -32,20 +32,20 @@ public class ClientHandler : MonoBehaviour
 
     private Transform ButtonsParent;
 
-    private ProgressTracker _taskBar;
+    private ProgressTracker ProgBar;
     private ProgressTracker TaskBar
     {
         get
         {
-            if (!_taskBar)
-                _taskBar = FindObjectOfType<ProgressTracker>(true);
+            if (!ProgBar)
+                ProgBar = FindObjectOfType<ProgressTracker>(true);
 
-            return _taskBar;
+            return ProgBar;
         }
     }
 
-    public static GameObject Prefab;
-    public static Vector3 Pos;
+    private static GameObject Prefab;
+    private static Vector3 Pos;
 
     private static Vector3 MaxSize = Vector3.zero;
     private static Vector3 MinSize = Vector3.zero;
@@ -78,14 +78,14 @@ public class ClientHandler : MonoBehaviour
         if (!ButtonsParent)
             return;
 
-        if (!WikiRCButton)
+        if (!WikiRcButton)
         {
-            WikiRCButton = Instantiate(__instance.MapButton, ButtonsParent);
-            WikiRCButton.OverrideOnClickListeners(Open);
-            WikiRCButton.name = "WikiAndRCButton";
-            WikiRCButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("WikiInactive");
-            WikiRCButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("WikiActive");
-            WikiRCButton.transform.Find("Background").localPosition = Vector3.zero;
+            WikiRcButton = Instantiate(__instance.MapButton, ButtonsParent);
+            WikiRcButton.OverrideOnClickListeners(Open);
+            WikiRcButton.name = "WikiAndRCButton";
+            WikiRcButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("WikiInactive");
+            WikiRcButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("WikiActive");
+            WikiRcButton.transform.Find("Background").localPosition = Vector3.zero;
         }
 
         if (!ClientOptionsButton)
@@ -109,15 +109,15 @@ public class ClientHandler : MonoBehaviour
         }
     }
 
-    public void OnLobbyStart()
+    public static void OnLobbyStart()
     {
-        if (!Prefab)
-        {
-            Prefab = Instantiate(GameStartManager.Instance.PlayerOptionsMenu, null).DontUnload().DontDestroy();
-            Prefab.SetActive(false);
-            Prefab.name = "ReworkedOptionsMenuPrefab";
-            Pos = GameStartManager.Instance.GameOptionsPosition;
-        }
+        if (Prefab)
+            return;
+
+        Prefab = Instantiate(GameStartManager.Instance.PlayerOptionsMenu, null).DontUnload().DontDestroy();
+        Prefab.SetActive(false);
+        Prefab.name = "ReworkedOptionsMenuPrefab";
+        Pos = GameStartManager.Instance.GameOptionsPosition;
     }
 
     public void Update()
@@ -133,7 +133,7 @@ public class ClientHandler : MonoBehaviour
         ResetButtonPos();
         var part2 = hud.MapButton.isActiveAndEnabled && !IntroCutscene.Instance && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance && !PlayerCustomizationMenu.Instance &&
             !Meeting();
-        WikiRCButton.gameObject.SetActive(part2);
+        WikiRcButton.gameObject.SetActive(part2);
         ClientOptionsButton.gameObject.SetActive(part2 && !RoleCardActive);
         ZoomButton.gameObject.SetActive(CustomPlayer.Local.HasDied() && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && !RoleCardActive);
         hud.MapButton.gameObject.SetActive(IsInGame());
@@ -174,6 +174,9 @@ public class ClientHandler : MonoBehaviour
         ZoomButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Inactive");
         ZoomButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite($"{(inOut ? "Plus" : "Minus")}Active");
 
+        if (!Camera.main)
+            yield break;
+
         var limit = inOut ? 12f : 3f;
         var original = Camera.main.orthographicSize;
 
@@ -184,7 +187,7 @@ public class ClientHandler : MonoBehaviour
         yield return PerformTimedAction(1f, p =>
         {
             var size = Meeting() ? 3f : Mathf.Lerp(original, limit, p);
-            Camera.main.orthographicSize = size;
+            Camera.main!.orthographicSize = size;
             hud.UICamera.orthographicSize = size;
             hud.transform.localScale = Vector3.Lerp(originalSize, sizeLimit, p);
         });
@@ -241,7 +244,7 @@ public class ClientHandler : MonoBehaviour
             OpenWiki();
     }
 
-    public static void CreateMenu()
+    private static void CreateMenu()
     {
         Instance.CloseMenus(SkipEnum.Settings);
 
@@ -251,9 +254,9 @@ public class ClientHandler : MonoBehaviour
             return;
         }
 
-        SettingsPatches.SettingsPage = 3;
+        SettingsPatches.SettingsPage = 5;
         CustomPlayer.Local.NetTransform.Halt();
-        var currentMenu = Instantiate(Prefab, Camera.main.transform, false);
+        var currentMenu = Instantiate(Prefab, Camera.main!.transform, false);
         currentMenu.transform.localPosition = Pos;
         currentMenu.name = "ReworkedOptionsMenu";
         TransitionFade.Instance.DoTransitionFade(null, currentMenu.gameObject, null);
@@ -266,7 +269,7 @@ public class ClientHandler : MonoBehaviour
         }
     }
 
-    public static void OpenWiki()
+    private static void OpenWiki()
     {
         Instance.CloseMenus(SkipEnum.Wiki);
 
@@ -356,25 +359,19 @@ public class ClientHandler : MonoBehaviour
                 var cache2 = Instance.Sorted[k].Key;
                 var button = Instance.CreateButton($"{cache2}Info", cache2, () =>
                 {
-                    foreach (var buttons in Instance.Buttons.Values)
-                    {
-                        if (buttons.Any())
-                            buttons.Select(x => x.Item2).ForEach(x => x?.gameObject?.SetActive(false));
-                    }
-
+                    Instance.Buttons.Values.Where(tuples => tuples.Any()).ForEach(list => list.Select(x => x.Item2).ForEach(x => x?.gameObject?.SetActive(false)));
                     Instance.Selected = cache;
                     Instance.NextButton.gameObject.SetActive(false);
                     Instance.AddInfo();
                 }, cache.Color);
-
                 buttons.Add((cache, button));
                 j++;
 
-                if (j >= 28 || cache.Footer)
-                {
-                    i++;
-                    j = 0;
-                }
+                if (j < 28 && !cache.Footer)
+                    continue;
+
+                i++;
+                j = 0;
             }
 
             Instance.Buttons.ForEach(x =>
@@ -396,7 +393,7 @@ public class ClientHandler : MonoBehaviour
             Instance.PhoneText.gameObject.SetActive(false);
     }
 
-    public static void ResetButtonPos()
+    private static void ResetButtonPos()
     {
         if (Instance.BackButton)
             Instance.BackButton.transform.localPosition = new(-2.6f, 1.6f, 0f);
@@ -456,10 +453,10 @@ public class ClientHandler : MonoBehaviour
     }
 
     [HideFromIl2Cpp]
-    private PassiveButton CreateButton(string name, string labelText, Action onClick, UColor? textColor = null)
+    private PassiveButton CreateButton(string buttonName, string labelText, Action onClick, UColor? textColor = null)
     {
         var button = Instantiate(HUD().MapButton, Phone.transform);
-        button.name = $"{name}Button";
+        button.name = $"{buttonName}Button";
         button.transform.localScale = new(0.5f, 0.5f, 1f);
         button.GetComponent<BoxCollider2D>().size = new(2.5f, 0.55f);
         var label = Instantiate(HUD().TaskPanel.taskText, button.transform);
@@ -470,7 +467,7 @@ public class ClientHandler : MonoBehaviour
         label.transform.localScale *= 1.55f;
         label.alignment = TextAlignmentOptions.Center;
         label.fontStyle = FontStyles.Bold;
-        label.name = $"{name}Text";
+        label.name = $"{buttonName}Text";
         var rend = button.transform.Find("Background").GetComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Plate");
         rend.color = UColor.white;
@@ -508,7 +505,7 @@ public class ClientHandler : MonoBehaviour
     {
         Entry.Clear();
         ResultPage = 0;
-        var texts = result.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var texts = result.TrueSplit('\n');
         var pos = 0;
         var result2 = "";
 

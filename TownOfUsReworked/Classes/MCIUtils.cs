@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Classes;
 
-public static class MCIUtils
+public static class MciUtils
 {
     public static readonly Dictionary<int, ClientData> Clients = [];
     public static readonly Dictionary<byte, int> PlayerClientIDs = [];
@@ -18,11 +18,11 @@ public static class MCIUtils
 
     public static void CleanUpLoad()
     {
-        if (GameData.Instance.AllPlayers.Count == 1)
-        {
-            Clients.Clear();
-            PlayerClientIDs.Clear();
-        }
+        if (GameData.Instance.AllPlayers.Count != 1)
+            return;
+
+        Clients.Clear();
+        PlayerClientIDs.Clear();
     }
 
     public static void CreatePlayerInstances(int count)
@@ -33,12 +33,16 @@ public static class MCIUtils
 
     public static void CreatePlayerInstance() => Coroutines.Start(CoCreatePlayerInstance());
 
-    public static IEnumerator CoCreatePlayerInstance()
+    private static IEnumerator CoCreatePlayerInstance()
     {
         var sampleId = AvailableId();
         var sampleC = new ClientData(sampleId, $"Bot-{sampleId}", new()
         {
-            Platform = Platforms.StandaloneWin10,
+            #if ANDROID
+                Platform = Platforms.Android,
+            #else
+                Platform = Platforms.StandaloneWin10,
+            #endif
             PlatformName = "Bot"
         }, 1, "", "robotmodeactivate");
 
@@ -83,7 +87,7 @@ public static class MCIUtils
 
     public static void SwitchTo(byte playerId)
     {
-        if (!TownOfUsReworked.MCIActive)
+        if (!TownOfUsReworked.MciActive)
             return;
 
         DebuggerBehaviour.Instance.ControllingFigure = playerId;
@@ -164,13 +168,13 @@ public static class MCIUtils
         savedPlayer.CustomSnapTo(pos);
     }
 
-    public static void SetForegroundForAlive(this MeetingHud __instance)
+    private static void SetForegroundForAlive(this MeetingHud meeting)
     {
-        __instance.amDead = false;
-        __instance.SkipVoteButton.gameObject.SetActive(true);
-        __instance.SkipVoteButton.AmDead = false;
+        meeting.amDead = false;
+        meeting.SkipVoteButton.gameObject.SetActive(true);
+        meeting.SkipVoteButton.AmDead = false;
 
         if (MeetingPatches.Cache)
-            __instance.Glass.sprite = MeetingPatches.Cache;
+            meeting.Glass.sprite = MeetingPatches.Cache;
     }
 }

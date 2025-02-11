@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-[HeaderOption(MultiMenu.Main, priority: 0)]
+[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update)), HeaderOption(MultiMenu.Main, priority: 0)]
 public static class BetterSabotages
 {
     [ToggleOption]
@@ -14,7 +13,7 @@ public static class BetterSabotages
     public static bool NightVision = false;
 
     [ToggleOption]
-    public static bool EvilsIgnoreNV = false;
+    public static bool EvilsIgnoreNv = false;
 
     [ToggleOption]
     public static bool OxySlow = true;

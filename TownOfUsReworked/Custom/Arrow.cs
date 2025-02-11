@@ -3,16 +3,16 @@ namespace TownOfUsReworked.Custom;
 public class CustomArrow
 {
     public ArrowBehaviour Arrow { get; set; }
-    public SpriteRenderer Render { get; set; }
-    public GameObject ArrowObj { get; set; }
+    private SpriteRenderer Render { get; set; }
+    private GameObject ArrowObj { get; set; }
     public PlayerControl Owner { get; }
-    public float Interval { get; }
-    public SpriteRenderer Point { get; set; }
-    public UColor ArrowColor { get; set; }
-    public bool Disabled { get; set; }
+    private float Interval { get; }
+    private SpriteRenderer Point { get; set; }
+    private UColor ArrowColor { get; set; }
+    private bool Disabled { get; set; }
     public Func<Vector3> Target { get; set; }
 
-    private float _time;
+    private float Time;
 
     public static readonly List<CustomArrow> AllArrows = [];
 
@@ -21,14 +21,14 @@ public class CustomArrow
         Owner = owner;
         Interval = interval;
         ArrowColor = color;
-        _time = Time.time;
+        Time = UnityEngine.Time.time;
         Instantiate();
         Disabled = !Owner.AmOwner;
         Target = target;
         AllArrows.Add(this);
     }
 
-    public void Instantiate()
+    private void Instantiate()
     {
         if (!Owner.AmOwner)
             return;
@@ -64,11 +64,11 @@ public class CustomArrow
         else if (Disabled)
             Enable();
 
-        if (Time.time - _time < Interval)
+        if (UnityEngine.Time.time - Time < Interval)
             return;
 
         Arrow.target = Target();
-        _time = Time.time;
+        Time = UnityEngine.Time.time;
     }
 
     public void Disable()
@@ -90,7 +90,7 @@ public class CustomArrow
         Point = null;
     }
 
-    public void Enable()
+    private void Enable()
     {
         if (!Disabled || !Owner.AmOwner)
             return;

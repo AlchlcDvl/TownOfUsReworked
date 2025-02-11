@@ -96,10 +96,10 @@ public static class GameStates
     public static bool AllNeutralsWin() => !AllPlayers().Any(x => !x.HasDied() && (x.NotOnTheSameSide() || x.GetFaction() is Faction.Crew or Faction.Syndicate or Faction.Intruder)) &&
         AllPlayers().Any(x => x.Is(Faction.Neutral)) && NeutralSettings.NoSolo == NoSolo.AllNeutrals;
 
-    public static bool AllNKsWin() => NeutralSettings.NoSolo == NoSolo.AllNKs && !AllPlayers().Any(x => !x.HasDied() && x.NotNK()) && AllPlayers().Any(x => x.Is(Faction.Neutral) &&
+    public static bool AllNKsWin() => NeutralSettings.NoSolo == NoSolo.AllNKs && !AllPlayers().Any(x => !x.HasDied() && x.NotNk()) && AllPlayers().Any(x => x.Is(Faction.Neutral) &&
         x.Is(SubFaction.None) && x.Is(Alignment.Killing));
 
-    private static bool NotNK(this PlayerControl player)
+    private static bool NotNk(this PlayerControl player)
     {
         var role = player.GetRole();
         var faction = role.Faction;
@@ -107,8 +107,6 @@ public static class GameStates
         return faction is Faction.Crew or Faction.Intruder or Faction.Syndicate or Faction.Pandorica || alignment is Alignment.Neophyte or Alignment.Harbinger or Alignment.Proselyte or
             Alignment.Apocalypse || role is NKilling || player.NotOnTheSameSide();
     }
-
-    public static bool NoOneWins() => !AllPlayers().Any(x => !x.HasDied());
 
     public static bool CabalWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Cabal, LayerEnum.Jackal)) && AllPlayers().Any(x => x.Is(SubFaction.Cabal));
 
@@ -128,9 +126,9 @@ public static class GameStates
             Alignment.Proselyte or Alignment.Apocalypse || player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals)) && role.SubFaction != sub;
     }
 
-    public static bool SameNKWins(LayerEnum nk) => !AllPlayers().Any(x => !x.HasDied() && x.IsOtherNK(nk)) && NeutralSettings.NoSolo == NoSolo.SameNKs;
+    public static bool SameNkWins(LayerEnum nk) => !AllPlayers().Any(x => !x.HasDied() && x.IsOtherNk(nk)) && NeutralSettings.NoSolo == NoSolo.SameNKs;
 
-    private static bool IsOtherNK(this PlayerControl player, LayerEnum nk)
+    private static bool IsOtherNk(this PlayerControl player, LayerEnum nk)
     {
         var role = player.GetRole();
         var faction = role.Faction;
@@ -139,9 +137,9 @@ public static class GameStates
             player.NotOnTheSameSide() || (faction == Faction.Neutral && NeutralSettings.NoSolo == NoSolo.AllNeutrals) || (role.Type != nk && role is NKilling);
     }
 
-    public static bool SoloNKWins(PlayerControl player) => !AllPlayers().Any(x => !x.HasDied() && x.NotSoloNK(player)) && NeutralSettings.NoSolo == NoSolo.Never;
+    public static bool SoloNkWins(PlayerControl player) => !AllPlayers().Any(x => !x.HasDied() && x.NotSoloNk(player)) && NeutralSettings.NoSolo == NoSolo.Never;
 
-    private static bool NotSoloNK(this PlayerControl player, PlayerControl refPlayer)
+    private static bool NotSoloNk(this PlayerControl player, PlayerControl refPlayer)
     {
         var role = player.GetRole();
         var faction = role.Faction;
@@ -171,8 +169,6 @@ public static class GameStates
     }
 
     public static bool HunterWins() => !AllPlayers().Any(x => !x.HasDied() && x.Is<Hunted>());
-
-    public static bool HuntedWin() => !AllPlayers().Any(x => !x.HasDied() && x.Is<Hunter>());
 
     public static bool DefectorWins() => !AllPlayers().Any(x => !x.HasDied() && !x.Is<Defector>() && !x.Is(Faction.Neutral));
 

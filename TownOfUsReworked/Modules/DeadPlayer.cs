@@ -4,9 +4,9 @@ public class DeadPlayer(byte killer, byte player)
 {
     public byte KillerId { get; } = killer;
     public byte PlayerId { get; } = player;
-    public float KillTime { get; } = Time.time;
-    public PlayerControl Killer { get; } = PlayerById(killer);
-    public PlayerControl Body { get; } = PlayerById(player);
+    private float KillTime { get; } = Time.time;
+    private PlayerControl Killer { get; } = PlayerById(killer);
+    private PlayerControl Body { get; } = PlayerById(player);
 
     public float KillAge => Time.time - KillTime;
 
@@ -24,7 +24,6 @@ public class DeadPlayer(byte killer, byte player)
         else
         {
             var killerRole = Killer.GetRole();
-            var bodyRole = Body.GetRole();
             report += $"\nThey died approximately {Mathf.RoundToInt(KillAge)}s ago!";
 
             if (Body == Killer)

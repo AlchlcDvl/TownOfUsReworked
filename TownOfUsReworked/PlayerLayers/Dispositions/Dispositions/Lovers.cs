@@ -31,14 +31,14 @@ public class Lovers : Disposition
 
     public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Lovers;
 
-    public override void CheckWin()
+    protected override void CheckWin()
     {
-        if (LoversWin(Player))
-        {
-            WinState = WinLose.LoveWins;
-            Winner = true;
-            OtherLover.GetDisposition().Winner = true;
-            CallRpc(CustomRPC.WinLose, WinLose.LoveWins, this);
-        }
+        if (!LoversWin(Player))
+            return;
+
+        WinState = WinLose.LoveWins;
+        Winner = true;
+        OtherLover.GetDisposition().Winner = true;
+        CallRpc(CustomRPC.WinLose, WinLose.LoveWins, this);
     }
 }

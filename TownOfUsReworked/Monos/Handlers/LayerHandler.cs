@@ -108,8 +108,8 @@ public class LayerHandler : RoleBehaviour
         {
             if (button.HasUses)
             {
-                button.uses++;
-                button.maxUses++;
+                button.UseCount++;
+                button.Max++;
             }
         }
     }
@@ -227,7 +227,7 @@ public class LayerHandler : RoleBehaviour
 
         InitializeAbilityButton();
 
-        if (player.AmOwner && !TutorialManager.InstanceExists && !TownOfUsReworked.MCIActive)
+        if (player.AmOwner && !TutorialManager.InstanceExists && !TownOfUsReworked.MciActive)
         {
             CustomStatsManager.IncrementStat(CustomRole.Faction switch
             {
@@ -288,9 +288,7 @@ public class LayerHandler : RoleBehaviour
 
         if (ActiveTask() is HauntMenuMinigame)
             ActiveTask().Close();
-        else if (ActiveTask())
-            return;
-        else
+        else if (!ActiveTask())
         {
             var hud = HUD();
             var minigame = Instantiate(HauntMenu, hud.AbilityButton.transform, false);

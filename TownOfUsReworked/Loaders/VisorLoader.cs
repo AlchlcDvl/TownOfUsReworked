@@ -4,16 +4,14 @@ namespace TownOfUsReworked.Loaders;
 
 public class VisorLoader : AssetLoader<CustomVisor>
 {
-    public override string DirectoryInfo => TownOfUsReworked.Visors;
-    public override bool Downloading => true;
-    public override string Manifest => "Visors";
-    public override string FileExtension => "png";
+    protected override string DirectoryInfo => TownOfUsReworked.Visors;
+    protected override bool Downloading => true;
+    protected override string Manifest => "Visors";
+    protected override string FileExtension => "png";
 
-    public static VisorLoader Instance { get; set; }
+    protected override IEnumerator BeginDownload(CustomVisor[] response, HashAlgorithm hasher) => CoDownloadAssets(GenerateDownloadList(response, hasher));
 
-    public override IEnumerator BeginDownload(CustomVisor[] response) => CoDownloadAssets(GenerateDownloadList(response));
-
-    public override IEnumerator LoadAssets(CustomVisor[] response)
+    protected override IEnumerator LoadAssets(CustomVisor[] response)
     {
         var unregistered = new List<CustomVisor>(response);
 
@@ -39,43 +37,43 @@ public class VisorLoader : AssetLoader<CustomVisor>
             CreateVisorBehaviour(file);
             time += Time.deltaTime;
 
-            if (time > 1f)
-            {
-                time = 0f;
-                UpdateSplashPatch.SetText($"Loading Visors ({i + 1}/{unregistered.Count})");
-                yield return EndFrame();
-            }
+            if (time < 1f)
+                continue;
+
+            time = 0f;
+            UpdateSplashPatch.SetText($"Loading Visors ({i + 1}/{unregistered.Count})");
+            yield return EndFrame();
         }
 
         unregistered.Clear();
     }
 
-    public override IEnumerator GenerateHashes(CustomVisor[] response)
+    protected override IEnumerator GenerateHashes(CustomVisor[] response, HashAlgorithm hasher)
     {
         var time = 0f;
 
         for (var i = 0; i < response.Length; i++)
         {
             var visor = response[i];
-            visor.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.ID}.png"));
+            visor.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.ID}.png"), hasher);
 
             if (visor.ClimbID != null)
-                visor.ClimbHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.ClimbID}.png"));
+                visor.ClimbHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.ClimbID}.png"), hasher);
 
             if (visor.FlipID != null)
-                visor.FlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.FlipID}.png"));
+                visor.FlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.FlipID}.png"), hasher);
 
             if (visor.FloorID != null)
-                visor.FloorHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.FloorID}.png"));
+                visor.FloorHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.FloorID}.png"), hasher);
 
             time += Time.deltaTime;
 
-            if (time > 1f)
-            {
-                time = 0f;
-                UpdateSplashPatch.SetText($"Generating Visor Hashes ({i + 1}/{response.Length})");
-                yield return EndFrame();
-            }
+            if (time < 1f)
+                continue;
+
+            time = 0f;
+            UpdateSplashPatch.SetText($"Generating Visor Hashes ({i + 1}/{response.Length})");
+            yield return EndFrame();
         }
     }
 }

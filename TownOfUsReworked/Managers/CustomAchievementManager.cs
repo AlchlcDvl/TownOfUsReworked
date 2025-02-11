@@ -37,8 +37,8 @@ public static class CustomAchievementManager
 
     public static void Setup()
     {
-        // Loading the unlock status of the achievements
-        var path = Path.Combine(PlatformPaths.persistentDataPath, "reworkedAchievements");
+        // Loading the unlocked status of the achievements
+        var path = Path.Combine(Application.persistentDataPath, "reworkedAchievements");
 
         if (File.Exists(path))
         {
@@ -49,7 +49,7 @@ public static class CustomAchievementManager
             } catch {}
         }
 
-        // Adding in achievements for each type of win (an achievement for 5 wins for each), I was just to lazy to add them all manually to the list
+        // Adding in achievements for each type of win (an achievement for 5 wins for each), I was just too lazy to add them all manually to the list
         LayerDictionary.Keys.ForEach(layer => AllAchievements.Add(new($"LayerWins.{layer}")));
 
         foreach (var map in Enum.GetValues<MapEnum>())
@@ -59,7 +59,7 @@ public static class CustomAchievementManager
         }
     }
 
-    public static void DeserializeCustomAchievements(this BinaryReader reader)
+    private static void DeserializeCustomAchievements(this BinaryReader reader)
     {
         var count = reader.ReadUInt32();
 
@@ -93,7 +93,7 @@ public static class CustomAchievementManager
             UnlockAchievement(achievement);
     }
 
-    public static void UnlockAchievement(Achievement achievement)
+    private static void UnlockAchievement(Achievement achievement)
     {
         // if (TownOfUsReworked.MCIActive || IsFreePlay() || !IsInGame())
         //     return;

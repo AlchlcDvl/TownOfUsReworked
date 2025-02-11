@@ -117,7 +117,7 @@ public static class AllInfo
         new(LayerEnum.Indomitable),
         new(LayerEnum.Professional),
         new(LayerEnum.Shy),
-        new(LayerEnum.VIP),
+        new(LayerEnum.Vip),
         new(LayerEnum.Volatile),
         new(LayerEnum.Yeller, true)
     ];
@@ -237,7 +237,7 @@ public static class AllInfo
         new("ArsoDoused", "Ξ", CustomColorManager.Arsonist),
         new("Bounty", "Θ", CustomColorManager.BountyHunter),
         new("CryoDoused", "λ", CustomColorManager.Cryomaniac),
-        new("Bitton", "γ", CustomColorManager.Undead),
+        new("Bitten", "γ", CustomColorManager.Undead),
         new("Tormented", "§", CustomColorManager.Executioner),
         new("Watched", "★", UColor.white),
         new("Protected", "η", UColor.white),
@@ -253,7 +253,7 @@ public static class AllInfo
         new("Blackmailed", "Φ", CustomColorManager.Blackmailer),
         new("Silenced", "乂", CustomColorManager.Silencer),
         new("Flashed", "ㅇ", CustomColorManager.Grenadier),
-        new("Drived", "Δ", CustomColorManager.Syndicate),
+        new("Driven", "Δ", CustomColorManager.Syndicate),
         new("Friend", "ξ", CustomColorManager.Faction),
         new("Marked", "χ", CustomColorManager.Ghoul),
         new("First Dead", "Γ", CustomColorManager.FirstShield),

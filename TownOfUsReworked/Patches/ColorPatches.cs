@@ -29,7 +29,7 @@ public static class PlayerTabPatches
         {
             var colorChip = __instance.ColorChips[i];
             var xpos = __instance.XRange.min + (i % 5);
-            var ypos = __instance.YStart - (i / 5 * __instance.YOffset);
+            var ypos = __instance.YStart - (i  / 5* __instance.YOffset);
             colorChip.transform.localPosition = new(xpos, ypos, -1f);
             colorChip.transform.SetParent(__instance.scroller.Inner);
             colorChip.Button.ClickMask = __instance.scroller.Hitbox;

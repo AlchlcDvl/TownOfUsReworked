@@ -1,3 +1,4 @@
+// ReSharper disable UnusedMember.Global
 namespace TownOfUsReworked.Options;
 
 [HeaderOption(MultiMenu.Client, ClientOnly = true)]

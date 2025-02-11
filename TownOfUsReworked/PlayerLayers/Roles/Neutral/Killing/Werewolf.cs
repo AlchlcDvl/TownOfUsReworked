@@ -26,7 +26,7 @@ public class Werewolf : NKilling
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Maul anyone who can oppose you";

@@ -13,7 +13,7 @@ public static class Keybinds
         __instance.userData.GetAction("UseVent").descriptiveName = "Vent";
         __instance.userData.RegisterBind("Secondary", "Secondary Ability", KeyboardKeyCode.G);
         __instance.userData.RegisterBind("Tertiary", "Tertiary Ability", KeyboardKeyCode.X);
-        __instance.userData.RegisterBind("Quarternary", "Quartnary Ability", KeyboardKeyCode.Z);
+        __instance.userData.RegisterBind("Quarternary", "Quarternary Ability", KeyboardKeyCode.Z);
         __instance.userData.RegisterBind("Delete", "Remove A Chosen Target (eg for Transporter or Consort)", KeyboardKeyCode.Backspace);
     }
 

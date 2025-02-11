@@ -15,7 +15,7 @@ public static class AbilityButtonPatch
     }
 
     [HarmonyPatch(nameof(AbilityButton.DoClick)), HarmonyPrefix]
-    public static bool DoClickPrefix(AbilityButton __instance) => !CustomButton.AllButtons.Any(x => x.Base == __instance);
+    public static bool DoClickPrefix(AbilityButton __instance) => CustomButton.AllButtons.All(x => x.Base != __instance);
 }
 
 [HarmonyPatch(typeof(ActionButton))]

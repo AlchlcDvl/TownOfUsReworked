@@ -22,20 +22,20 @@ public class TestingTab : BaseTab
                 {
                     if (GameData.Instance.PlayerCount < GameSettings.LobbySize)
                     {
-                        MCIUtils.CleanUpLoad();
-                        MCIUtils.CreatePlayerInstance();
+                        MciUtils.CleanUpLoad();
+                        MciUtils.CreatePlayerInstance();
                     }
                 }
 
                 if (GUILayout.Button("Remove Last Bot"))
                 {
-                    MCIUtils.RemovePlayer((byte)MCIUtils.Clients.Count);
+                    MciUtils.RemovePlayer((byte)MciUtils.Clients.Count);
                     DebuggerBehaviour.Instance.ControllingFigure = 0;
                 }
 
                 if (GUILayout.Button("Remove All Bots"))
                 {
-                    MCIUtils.RemoveAllPlayers();
+                    MciUtils.RemoveAllPlayers();
                     DebuggerBehaviour.Instance.ControllingFigure = 0;
                 }
             }

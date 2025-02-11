@@ -11,11 +11,11 @@ public static class ShowHostPatches
 
         var host = GameData.Instance.GetHost();
 
-        if (host != null)
-        {
-            PlayerMaterial.SetColors(host.DefaultOutfit.ColorId, __instance.HostIcon);
-            __instance.ProceedButton.gameObject.GetComponentInChildren<TextMeshPro>().text = $"HOST: {host.PlayerName}";
-        }
+        if (!host)
+            return;
+
+        PlayerMaterial.SetColors(host.DefaultOutfit.ColorId, __instance.HostIcon);
+        __instance.ProceedButton.gameObject.GetComponentInChildren<TextMeshPro>().text = $"HOST: {host.PlayerName}";
     }
 
     [HarmonyPatch(nameof(MeetingHud.Start)), HarmonyPostfix]

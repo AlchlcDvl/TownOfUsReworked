@@ -49,9 +49,9 @@ public static class PlayerControlPatches
         __instance.Collider.enabled = true;
         __instance.cosmetics.SetPetSource(__instance);
         __instance.cosmetics.SetNameMask(true);
-        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || !AllPlayers().Any(y => y.PlayerId == x.PlayerId));
-        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || !AllPlayers().Any(y => y.PlayerId == x));
-        Cleaned.RemoveAll(x => x == __instance.PlayerId || !AllPlayers().Any(y => y.PlayerId == x) || !PlayerById(x));
+        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || AllPlayers().All(y => y.PlayerId != x.PlayerId));
+        RecentlyKilled.RemoveAll(x => x == __instance.PlayerId || !PlayerById(x) || AllPlayers().All(y => y.PlayerId != x));
+        Cleaned.RemoveAll(x => x == __instance.PlayerId || AllPlayers().All(y => y.PlayerId != x) || !PlayerById(x));
         BodyLocations.Remove(__instance.PlayerId);
         SetPostmortals.RemoveFromPostmortals(__instance);
         var body = BodyByPlayer(__instance);
@@ -172,27 +172,27 @@ public static class PlayerControlPatches
 
         var hud = HUD();
 
-        if (hud.TaskPanel)
+        if (!hud.TaskPanel)
+            return;
+
+        string text;
+
+        if (__instance.CanDoTasks())
         {
-            var text = "";
+            var color = "FF00";
+            var role = __instance.GetRole();
 
-            if (__instance.CanDoTasks())
-            {
-                var color = "FF00";
-                var role = __instance.GetRole();
+            if (role.TasksDone)
+                color = "00FF";
+            else if (role.TasksCompleted > 0)
+                color = "FFFF";
 
-                if (role.TasksDone)
-                    color = "00FF";
-                else if (role.TasksCompleted > 0)
-                    color = "FFFF";
-
-                text = $"Tasks <#{color}00FF>({role.TasksCompleted}/{role.TotalTasks})</color>";
-            }
-            else
-                text = "<#FF0000FF>Fake Tasks</color>";
-
-            hud.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().text = text;
+            text = $"Tasks <#{color}00FF>({role.TasksCompleted}/{role.TotalTasks})</color>";
         }
+        else
+            text = "<#FF0000FF>Fake Tasks</color>";
+
+        hud.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().text = text;
     }
 
     [HarmonyPatch(nameof(PlayerControl.Awake)), HarmonyPostfix]

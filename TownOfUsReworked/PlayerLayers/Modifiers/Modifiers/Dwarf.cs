@@ -18,5 +18,5 @@ public class Dwarf : Modifier
     public override LayerEnum Type => LayerEnum.Dwarf;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
 
-    public override void Init() => Name = TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Smol ? (Sped ? "Gremlin" : "Dwarf") : "Flash"))}");
+    protected override void Init() => Name = TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Smol ? (Sped ? "Gremlin" : "Dwarf") : "Flash"))}");
 }

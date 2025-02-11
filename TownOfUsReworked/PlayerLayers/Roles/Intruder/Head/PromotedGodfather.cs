@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher, IMover, IBlocker, IMorpher
 {
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Head;
@@ -141,43 +141,43 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
 
     public override void ReadRPC(MessageReader reader)
     {
-        var gfAction = reader.ReadEnum<GFActionsRPC>();
+        var gfAction = reader.ReadEnum<GfActionsRPC>();
 
         switch (gfAction)
         {
-            case GFActionsRPC.Morph:
+            case GfActionsRPC.Morph:
             {
                 MorphedPlayer = reader.ReadPlayer();
                 break;
             }
-            case GFActionsRPC.Disguise:
+            case GfActionsRPC.Disguise:
             {
                 DisguisedPlayer = reader.ReadPlayer();
                 CopiedPlayer = reader.ReadPlayer();
                 break;
             }
-            case GFActionsRPC.Roleblock:
+            case GfActionsRPC.Roleblock:
             {
                 BlockTarget = reader.ReadPlayer();
                 break;
             }
-            case GFActionsRPC.Blackmail:
+            case GfActionsRPC.Blackmail:
             {
                 BlackmailedPlayer = reader.ReadPlayer();
                 break;
             }
-            case GFActionsRPC.Drag:
+            case GfActionsRPC.Drag:
             {
                 CurrentlyDragging = reader.ReadBody();
                 DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
                 break;
             }
-            case GFActionsRPC.Ambush:
+            case GfActionsRPC.Ambush:
             {
                 AmbushedPlayer = reader.ReadPlayer();
                 break;
             }
-            case GFActionsRPC.Teleport:
+            case GfActionsRPC.Teleport:
             {
                 Coroutines.Start(Teleporter.TeleportPlayer(reader.ReadVector2(), this));
                 break;
@@ -215,7 +215,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         if (cooldown != CooldownType.Fail)
         {
             BlackmailedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GFActionsRPC.Blackmail, BlackmailedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GfActionsRPC.Blackmail, BlackmailedPlayer);
 
             if (target.IsSilenced())
                 CustomAchievementManager.UnlockAchievement("EerieSilence");
@@ -324,7 +324,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     {
         CurrentlyDragging = target;
         Spread(Player, PlayerByBody(CurrentlyDragging));
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GFActionsRPC.Drag, CurrentlyDragging);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GfActionsRPC.Drag, CurrentlyDragging);
         DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
     }
 
@@ -523,7 +523,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
 
     public void Teleport()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GFActionsRPC.Teleport, TeleportPoint);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GfActionsRPC.Teleport, TeleportPoint);
         Coroutines.Start(Teleporter.TeleportPlayer(TeleportPoint, this));
         TeleportButton.StartCooldown();
 

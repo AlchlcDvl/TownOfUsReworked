@@ -4,15 +4,14 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 public class Fanatic : Disposition
 {
     [ToggleOption]
-    public static bool FanaticKnows = true;
+    private static bool FanaticKnows = true;
 
     [ToggleOption]
     public static bool FanaticColourSwap = false;
 
     private bool Turned { get; set; }
     private bool Betrayed { get; set; }
-    public Faction Side { get; set; }
-    private bool Betray => !Dead && !Turned && !Betrayed && Last(Side);
+    public Faction Side { get; private set; }
 
     public override UColor Color
     {
@@ -27,8 +26,8 @@ public class Fanatic : Disposition
                     _ => ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
                 };
             }
-            else
-                return ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition;
+
+            return ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition;
         }
     }
     public override string Symbol => "♠";
@@ -36,7 +35,7 @@ public class Fanatic : Disposition
     public override Func<string> Description => () => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : "";
     public override bool Hidden => !FanaticKnows && !Turned && !Dead;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Side = Faction.Crew;
@@ -44,7 +43,7 @@ public class Fanatic : Disposition
 
     public override void UpdatePlayer()
     {
-        if (Betray)
+        if (!Dead && Turned && !Betrayed && Last(Side))
             TurnBetrayer();
     }
 
@@ -67,9 +66,9 @@ public class Fanatic : Disposition
 
         var local = CustomPlayer.Local.GetRole();
 
-        foreach (var snitch in GetLayers<Snitch>())
+        if (Snitch.SnitchSeesFanatic)
         {
-            if (Snitch.SnitchSeesFanatic)
+            foreach (var snitch in GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
                     local.AllArrows.Add(snitch.PlayerId, new(Player, snitch.Player, snitch.Color));
@@ -78,10 +77,13 @@ public class Fanatic : Disposition
             }
         }
 
-        foreach (var revealer in GetLayers<Revealer>())
+        if (Revealer.RevealerRevealsTraitor && Local)
         {
-            if (revealer.Revealed && Revealer.RevealerRevealsTraitor && Local)
-                local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Player, revealer.Color));
+            foreach (var revealer in GetLayers<Revealer>())
+            {
+                if (revealer.Revealed)
+                    local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Player, revealer.Color));
+            }
         }
 
         if (CustomPlayer.Local.Is<Mystic>() && !Local)
@@ -100,6 +102,6 @@ public class Fanatic : Disposition
         Betrayed = true;
 
         if (role.Type != LayerEnum.Betrayer)
-            new Betrayer() { Objectives = role.Objectives }.RoleUpdate(role);
+            new Betrayer { Objectives = role.Objectives }.RoleUpdate(role);
     }
 }

@@ -16,9 +16,9 @@ public static class VotePatches
             }
         }
 
-        if (pc.AmOwner && TownOfUsReworked.MCIActive)
+        if (pc.AmOwner && TownOfUsReworked.MciActive)
         {
-            MCIUtils.RemoveAllPlayers();
+            MciUtils.RemoveAllPlayers();
             DebuggerBehaviour.Instance.ControllingFigure = 0;
         }
 
@@ -74,9 +74,8 @@ public static class VotePatches
             playerVoteArea.ClearForResults();
             allNums.Add(i, 0);
 
-            for (var stateIdx = 0; stateIdx < states.Length; stateIdx++)
+            foreach (var voteState in states)
             {
-                var voteState = states[stateIdx];
                 var playerInfo = GameData.Instance.GetPlayerById(voteState.VoterId);
 
                 if (!playerInfo)
@@ -94,16 +93,15 @@ public static class VotePatches
             }
         }
 
+        var ogValue = TownOfUsReworked.NormalOptions.AnonymousVotes;
+        TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting is AnonVotes.PoliticianOnly or AnonVotes.Enabled;
+
         foreach (var politician in PlayerLayer.GetLayers<Politician>())
         {
             var playerInfo = politician.Data;
-            TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting is AnonVotes.PoliticianOnly or AnonVotes.Enabled;
 
-            foreach (var extraVote in politician.ExtraVotes)
+            foreach (var extraVote in politician.ExtraVotes.Where(extraVote => extraVote != PlayerVoteArea.HasNotVoted && extraVote != PlayerVoteArea.MissedVote && extraVote != PlayerVoteArea.DeadVote))
             {
-                if (extraVote == PlayerVoteArea.HasNotVoted || extraVote == PlayerVoteArea.MissedVote || extraVote == PlayerVoteArea.DeadVote)
-                    continue;
-
                 if (extraVote == PlayerVoteArea.SkippedVote)
                 {
                     __instance.BloopAVoteIcon(playerInfo, amountOfSkippedVoters, __instance.SkippedVoting.transform);
@@ -123,9 +121,9 @@ public static class VotePatches
                     }
                 }
             }
-
-            TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
         }
+
+        TownOfUsReworked.NormalOptions.AnonymousVotes = ogValue;
 
         foreach (var mayor in PlayerLayer.GetLayers<Mayor>())
         {
@@ -162,11 +160,8 @@ public static class VotePatches
 
         foreach (var mon in PlayerLayer.GetLayers<Monarch>())
         {
-            foreach (var id in mon.Knighted)
+            foreach (var id in mon.Knighted.Where(id => !alreadyKnighted.Contains(id)))
             {
-                if (alreadyKnighted.Contains(id))
-                    continue;
-
                 alreadyKnighted.Add(id);
                 var playerInfo = PlayerById(id).Data;
                 var voterArea = VoteAreaById(id);

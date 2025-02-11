@@ -7,20 +7,29 @@ public static class Logging
 {
     public static ManualLogSource Log { get; set; }
     public static DiskLogListener DiskLog { get; set; }
-    public static string SavedLogs { get; set; } = "";
+    public static string SavedLogs { get; private set; } = "";
 
     private static void LogSomething(object message, Enum type)
     {
         message ??= "message is null";
         SavedLogs += $"[{type, -7}] {message}\n";
 
-        if (type is LogLevel bll)
-            BIELog(message, bll);
-        else if (type is ReworkedLogLevel rll)
-            RewLog(message, rll);
+        switch (type)
+        {
+            case LogLevel bll:
+            {
+                BieLog(message, bll);
+                break;
+            }
+            case ReworkedLogLevel rll:
+            {
+                RewLog(message, rll);
+                break;
+            }
+        }
     }
 
-    private static void BIELog(object message, LogLevel type) => Log?.Log(type, message);
+    private static void BieLog(object message, LogLevel type) => Log?.Log(type, message);
 
     private static void RewLog(object message, ReworkedLogLevel type)
     {

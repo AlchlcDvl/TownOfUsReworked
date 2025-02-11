@@ -16,7 +16,7 @@ public class GuardianAngel : Neutral
     public static Number MaxProtects = 5;
 
     [MultiSelectOption<ProtectOptions>(ProtectOptions.Nobody, ProtectOptions.Everyone)]
-    public static List<ProtectOptions> ShowProtect = [ ProtectOptions.Protected ];
+    public static MultiSelectValue<ProtectOptions> ShowProtect = ProtectOptions.Protected;
 
     [ToggleOption]
     public static bool GATargetKnows = false;
@@ -51,7 +51,7 @@ public class GuardianAngel : Neutral
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +
         $"\n- If {TargetPlayer?.name} dies, you will become a <#DDDD00FF>Survivor</color>");
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";

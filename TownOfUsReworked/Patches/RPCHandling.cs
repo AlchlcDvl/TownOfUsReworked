@@ -195,42 +195,62 @@ public static class RPCHandling
                     {
                         var layer = reader.ReadLayer();
 
-                        if (layer is Executioner exe)
-                            exe.TargetPlayer = reader.ReadPlayer();
-                        else if (layer is Guesser guesser)
-                            guesser.TargetPlayer = reader.ReadPlayer();
-                        else if (layer is GuardianAngel angel)
-                            angel.TargetPlayer = reader.ReadPlayer();
-                        else if (layer is BountyHunter hunter)
-                            hunter.TargetPlayer = reader.ReadPlayer();
-                        else if (layer is Actor actor)
+                        switch (layer)
                         {
-                            actor.PretendRoles.Clear();
-                            actor.PretendRoles.AddRange(reader.ReadLayerList<Role>());
-                        }
-                        else if (layer is Allied ally)
-                        {
-                            var alliedRole = ally.Player.GetRole();
-                            var faction = reader.ReadEnum<Faction>();
-                            alliedRole.Faction = ally.Side = faction;
-                        }
-                        else if (layer is Lovers lover1)
-                        {
-                            var lover2 = reader.ReadLayer<Lovers>();
-                            lover1.OtherLover = lover2.Player;
-                            lover2.OtherLover = lover1.Player;
-                        }
-                        else if (layer is Rivals rival1)
-                        {
-                            var rival2 = reader.ReadLayer<Rivals>();
-                            rival1.OtherRival = rival2.Player;
-                            rival2.OtherRival = rival1.Player;
-                        }
-                        else if (layer is Linked link1)
-                        {
-                            var link2 = reader.ReadLayer<Linked>();
-                            link1.OtherLink = link2.Player;
-                            link2.OtherLink = link1.Player;
+                            case Executioner exe:
+                            {
+                                exe.TargetPlayer = reader.ReadPlayer();
+                                break;
+                            }
+                            case Guesser guesser:
+                            {
+                                guesser.TargetPlayer = reader.ReadPlayer();
+                                break;
+                            }
+                            case GuardianAngel angel:
+                            {
+                                angel.TargetPlayer = reader.ReadPlayer();
+                                break;
+                            }
+                            case BountyHunter hunter:
+                            {
+                                hunter.TargetPlayer = reader.ReadPlayer();
+                                break;
+                            }
+                            case Actor actor:
+                            {
+                                actor.PretendRoles.Clear();
+                                actor.PretendRoles.AddRange(reader.ReadLayerList<Role>());
+                                break;
+                            }
+                            case Allied ally:
+                            {
+                                var alliedRole = ally.Player.GetRole();
+                                var faction = reader.ReadEnum<Faction>();
+                                alliedRole.Faction = ally.Side = faction;
+                                break;
+                            }
+                            case Lovers lover1:
+                            {
+                                var lover2 = reader.ReadLayer<Lovers>();
+                                lover1.OtherLover = lover2.Player;
+                                lover2.OtherLover = lover1.Player;
+                                break;
+                            }
+                            case Rivals rival1:
+                            {
+                                var rival2 = reader.ReadLayer<Rivals>();
+                                rival1.OtherRival = rival2.Player;
+                                rival2.OtherRival = rival1.Player;
+                                break;
+                            }
+                            case Linked link1:
+                            {
+                                var link2 = reader.ReadLayer<Linked>();
+                                link1.OtherLink = link2.Player;
+                                link2.OtherLink = link1.Player;
+                                break;
+                            }
                         }
 
                         return;
@@ -239,24 +259,37 @@ public static class RPCHandling
                     {
                         var layer2 = reader.ReadLayer();
 
-                        if (layer2 is Traitor traitor)
+                        switch (layer2)
                         {
-                            if (reader.ReadBoolean())
-                                traitor.TurnBetrayer();
-                            else
-                                traitor.TurnTraitor(reader.ReadBoolean(), reader.ReadBoolean());
+                            case Traitor traitor:
+                            {
+                                if (reader.ReadBoolean())
+                                    traitor.TurnBetrayer();
+                                else
+                                    traitor.TurnTraitor(reader.ReadBoolean(), reader.ReadBoolean());
+
+                                break;
+                            }
+                            case Defector defector:
+                            {
+                                defector.TurnSides(reader.ReadBoolean(), reader.ReadBoolean(), reader.ReadBoolean());
+                                break;
+                            }
+                            case Fanatic fanatic:
+                            {
+                                if (reader.ReadBoolean())
+                                    fanatic.TurnBetrayer();
+                                else
+                                    fanatic.TurnFanatic(reader.ReadEnum<Faction>());
+
+                                break;
+                            }
+                            case Actor act:
+                            {
+                                act.TurnRole(reader.ReadEnum<LayerEnum>());
+                                break;
+                            }
                         }
-                        else if (layer2 is Defector defector)
-                            defector.TurnSides(reader.ReadBoolean(), reader.ReadBoolean(), reader.ReadBoolean());
-                        else if (layer2 is Fanatic fanatic)
-                        {
-                            if (reader.ReadBoolean())
-                                fanatic.TurnBetrayer();
-                            else
-                                fanatic.TurnFanatic(reader.ReadEnum<Faction>());
-                        }
-                        else if (layer2 is Actor act)
-                            act.TurnRole(reader.ReadEnum<LayerEnum>());
 
                         return;
                     }
@@ -339,8 +372,8 @@ public static class RPCHandling
                         try
                         {
                             var playerid = reader.ReadByte();
-                            UninteractiblePlayers.TryAdd(playerid, Time.time);
-                            UninteractiblePlayers2.TryAdd(playerid, reader.ReadSingle());
+                            UninteractablePlayers.TryAdd(playerid, Time.time);
+                            UninteractablePlayers2.TryAdd(playerid, reader.ReadSingle());
 
                             if (reader.ReadBoolean())
                             {
@@ -359,11 +392,7 @@ public static class RPCHandling
                                 else
                                     hand.SetPlayerColor(playerfromid.GetCurrentOutfit(), PlayerMaterial.MaskType.None, playerfromid.cosmetics.GetPhantomRoleAlpha());
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            Error(e);
-                        }
+                        } catch {}
 
                         return;
                     }

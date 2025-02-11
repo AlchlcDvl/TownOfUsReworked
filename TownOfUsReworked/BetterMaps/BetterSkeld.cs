@@ -7,7 +7,7 @@ public static class BetterSkeld
     public static bool EnableBetterSkeld = true;
 
     [ToggleOption]
-    public static bool SkeldVentImprovements = false;
+    private static bool SkeldVentImprovements = false;
 
     [NumberOption(30f, 90f, 5f, Format.Time)]
     public static Number SkeldReactorTimer = 60;
@@ -34,11 +34,11 @@ public static class BetterSkeld
 
     public static void ApplyChanges()
     {
-        if (EnableBetterSkeld)
-        {
-            FindVents();
-            AdjustSkeld();
-        }
+        if (!EnableBetterSkeld)
+            return;
+
+        FindVents();
+        AdjustSkeld();
     }
 
     private static void AdjustSkeld() => AdjustVents();
@@ -80,11 +80,11 @@ public static class BetterSkeld
 
     private static void AdjustVents()
     {
-        if (SkeldVentImprovements)
-        {
-            MoveVents();
-            ReconnectVents();
-        }
+        if (!SkeldVentImprovements)
+            return;
+
+        MoveVents();
+        ReconnectVents();
     }
 
     private static void MoveVents()

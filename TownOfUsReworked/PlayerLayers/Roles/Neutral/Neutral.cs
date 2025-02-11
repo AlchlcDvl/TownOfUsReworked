@@ -4,7 +4,7 @@ public abstract class Neutral : Role
 {
     public override UColor Color => CustomColorManager.Neutral;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Faction = Faction.Neutral;

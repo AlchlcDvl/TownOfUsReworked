@@ -23,9 +23,14 @@ public static class UpdateSplashPatch
         Loading = true;
         LoadAssets();
 
-        var loading = new GameObject("Loading");
-        loading.transform.localPosition = new(0f, 1.4f, -5f);
-        loading.transform.localScale = new(1f, 1f, 1f);
+        var loading = new GameObject("Loading")
+        {
+            transform =
+            {
+                localPosition = new(0f, 1.4f, -5f),
+                localScale = new(1f, 1f, 1f)
+            }
+        };
 
         var rend = loading.AddComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Banner");
@@ -46,65 +51,14 @@ public static class UpdateSplashPatch
 
         yield return PerformTimedAction(0.5f, p => TMP.color = UColor.white.SetAlpha(p));
 
-        ReactorCredits.Register<TownOfUsReworked>(x => x is ReactorCredits.Location.MainMenu);
-        NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
-        ReworkedStart = TranslationManager.GetOrAddName("Translation.ReworkedStart");
-        AllMonos.RegisterMonos();
-
-        yield return Wait(0.2f);
-
-        if (!Directory.Exists(TownOfUsReworked.Assets))
-            Directory.CreateDirectory(TownOfUsReworked.Assets);
-
-        if (!Directory.Exists(TownOfUsReworked.Other))
-            Directory.CreateDirectory(TownOfUsReworked.Other);
-
-        if (TownOfUsReworked.IsDev && !Directory.Exists(TownOfUsReworked.Hashes))
-            Directory.CreateDirectory(TownOfUsReworked.Hashes);
-
-        if (!Directory.Exists(TownOfUsReworked.Logs))
-            Directory.CreateDirectory(TownOfUsReworked.Logs);
-
-        Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
-        RenameAssetFolders();
-
-        AssetLoader.InitLoaders();
-
-        yield return Wait(0.1f);
-
-        yield return TranslationLoader.Instance.CoFetch();
-        yield return HatLoader.Instance.CoFetch();
-        yield return VisorLoader.Instance.CoFetch();
-        yield return NameplateLoader.Instance.CoFetch();
-        yield return ColorLoader.Instance.CoFetch();
-        yield return PresetLoader.Instance.CoFetch();
-        yield return ImageLoader.Instance.CoFetch();
-        yield return PortalLoader.Instance.CoFetch();
-        yield return SoundLoader.Instance.CoFetch();
-        yield return BundleLoader.Instance.CoFetch();
-
-        AssetLoader.Hasher.Dispose();
-        AssetLoader.Hasher = null;
-
-        yield return ModUpdater.CheckForUpdate("Reworked");
-        yield return ModUpdater.CheckForUpdate("Submerged");
-        yield return ModUpdater.CheckForUpdate("LevelImpostor");
-
+        yield return PreLoadModData();
+        yield return AssetLoader.RunLoaders();
+        yield return ModUpdater.CheckForUpdates();
         yield return LoadModData();
 
         SetText("Loaded!");
 
-        foreach (var customColor in CustomColorManager.AllColors.Values)
-        {
-            if (customColor.MainColors != null)
-            {
-                foreach (var color in customColor.MainColors)
-                {
-                    TMP.color = color;
-                    yield return EndFrame();
-                }
-            }
-        }
+        yield return Wait(0.5f);
 
         yield return PerformTimedAction(0.5f, p => TMP.color = UColor.white.SetAlpha(1 - p));
 
@@ -130,15 +84,47 @@ public static class UpdateSplashPatch
         SetText("Setting Mod Data");
         Message("Setting mod data");
 
-        ModUpdater.CanDownloadSubmerged = !SubLoaded && ModUpdater.URLs.ContainsKey("Submerged");
-        ModUpdater.CanDownloadLevelImpostor = !LILoaded && ModUpdater.URLs.ContainsKey("LevelImpostor");
-
         ReworkedDataManager.Setup();
         Generate.GenerateAll();
         Modules.Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();
 
         DataSet = true;
+
+        yield return EndFrame();
+    }
+
+    private static bool PreDataSet;
+
+    private static IEnumerator PreLoadModData()
+    {
+        if (PreDataSet)
+            yield break;
+
+        SetText("Pre-Setting Mod Data");
+        Message("Pre-setting mod data");
+
+        ReactorCredits.Register<TownOfUsReworked>(x => x is ReactorCredits.Location.MainMenu);
+        NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
+        ReworkedStart = TranslationManager.GetOrAddName("Translation.ReworkedStart");
+        AllMonos.RegisterMonos();
+
+        if (!Directory.Exists(TownOfUsReworked.Assets))
+            Directory.CreateDirectory(TownOfUsReworked.Assets);
+
+        if (!Directory.Exists(TownOfUsReworked.Other))
+            Directory.CreateDirectory(TownOfUsReworked.Other);
+
+        if (TownOfUsReworked.IsDev && !Directory.Exists(TownOfUsReworked.Hashes))
+            Directory.CreateDirectory(TownOfUsReworked.Hashes);
+
+        if (!Directory.Exists(TownOfUsReworked.Logs))
+            Directory.CreateDirectory(TownOfUsReworked.Logs);
+
+        Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
+        RenameAssetFolders();
+
+        PreDataSet = true;
 
         yield return EndFrame();
     }

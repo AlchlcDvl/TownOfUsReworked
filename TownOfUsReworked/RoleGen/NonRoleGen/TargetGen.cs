@@ -41,7 +41,7 @@ public class TargetGen : BaseGen
                 other.OtherLover = lover.Player;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, lover, other);
 
-                if (TownOfUsReworked.MCIActive)
+                if (TownOfUsReworked.MciActive)
                     Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
             }
 
@@ -75,7 +75,7 @@ public class TargetGen : BaseGen
                 other.OtherRival = rival.Player;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, rival, other);
 
-                if (TownOfUsReworked.MCIActive)
+                if (TownOfUsReworked.MciActive)
                     Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
             }
 
@@ -109,7 +109,7 @@ public class TargetGen : BaseGen
                 other.OtherLink = link.Player;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, link, other);
 
-                if (TownOfUsReworked.MCIActive)
+                if (TownOfUsReworked.MciActive)
                     Message($"Linked = {link.PlayerName} & {other.PlayerName}");
             }
 
@@ -142,7 +142,7 @@ public class TargetGen : BaseGen
                 {
                     CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, exe, exe.TargetPlayer);
 
-                    if (TownOfUsReworked.MCIActive)
+                    if (TownOfUsReworked.MciActive)
                         Message($"Exe Target = {exe.TargetPlayer.name}");
                 }
             }
@@ -161,7 +161,7 @@ public class TargetGen : BaseGen
                 {
                     CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, guess, guess.TargetPlayer);
 
-                    if (TownOfUsReworked.MCIActive)
+                    if (TownOfUsReworked.MciActive)
                         Message($"Guess Target = {guess.TargetPlayer.name}");
                 }
             }
@@ -179,7 +179,7 @@ public class TargetGen : BaseGen
                 {
                     CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ga, ga.TargetPlayer);
 
-                    if (TownOfUsReworked.MCIActive)
+                    if (TownOfUsReworked.MciActive)
                         Message($"GA Target = {ga.TargetPlayer.name}");
                 }
             }
@@ -197,7 +197,7 @@ public class TargetGen : BaseGen
                 {
                     CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, bh, bh.TargetPlayer);
 
-                    if (TownOfUsReworked.MCIActive)
+                    if (TownOfUsReworked.MciActive)
                         Message($"BH Target = {bh.TargetPlayer.name}");
                 }
             }
@@ -212,7 +212,7 @@ public class TargetGen : BaseGen
                 act.FillRoles(AllPlayers().Random(x => x != act.Player));
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, act, act.PretendRoles);
 
-                if (TownOfUsReworked.MCIActive && act.PretendRoles.Count > 0)
+                if (TownOfUsReworked.MciActive && act.PretendRoles.Count > 0)
                     Message($"Act Targets = {act.PretendListString()}");
             }
 
@@ -238,7 +238,7 @@ public class TargetGen : BaseGen
                 if (jackal.Recruit2)
                     RpcConvert(jackal.Recruit2.PlayerId, jackal.PlayerId, SubFaction.Cabal);
 
-                if (TownOfUsReworked.MCIActive && jackal.Recruit1 && jackal.Recruit2)
+                if (TownOfUsReworked.MciActive && jackal.Recruit1 && jackal.Recruit2)
                     Message($"Recruits = {jackal.Recruit1.name} & {jackal.Recruit2.name}");
             }
 

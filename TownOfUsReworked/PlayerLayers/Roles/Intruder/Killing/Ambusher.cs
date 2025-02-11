@@ -20,7 +20,7 @@ public class Ambusher : Intruder, IAmbusher
     public override Func<string> StartText => () => "Spook The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;

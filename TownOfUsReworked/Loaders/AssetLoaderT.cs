@@ -4,7 +4,7 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
 {
     private bool Running;
 
-    public IEnumerator CoFetch()
+    public IEnumerator CoFetch(HashAlgorithm hasher)
     {
         if (Running)
             yield break;
@@ -16,7 +16,7 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
         if (!Directory.Exists(DirectoryInfo))
             Directory.CreateDirectory(DirectoryInfo);
 
-        var jsonText = "";
+        string jsonText;
 
         if (ClientOptions.ForceUseLocal)
             jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
@@ -73,12 +73,12 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
             if (!ClientOptions.ForceUseLocal)
             {
                 UpdateSplashPatch.SetText($"Downloading {Manifest}");
-                yield return BeginDownload(response);
+                yield return BeginDownload(response, hasher);
             }
 
             if (TownOfUsReworked.IsDev)
             {
-                yield return GenerateHashes(response);
+                yield return GenerateHashes(response, hasher);
                 JsonSerializer.Serialize(File.OpenWrite(Path.Combine(TownOfUsReworked.Hashes, $"{Manifest}.json")), response, new JsonSerializerOptions()
                 {
                     WriteIndented = true,
@@ -94,9 +94,9 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
         yield return EndFrame();
     }
 
-    public virtual IEnumerator BeginDownload(T[] response) => EndFrame();
+    protected virtual IEnumerator BeginDownload(T[] response, HashAlgorithm hasher) => EndFrame();
 
-    public virtual IEnumerator LoadAssets(T[] response) => EndFrame();
+    protected virtual IEnumerator LoadAssets(T[] response) => EndFrame();
 
-    public virtual IEnumerator GenerateHashes(T[] response) => EndFrame();
+    protected virtual IEnumerator GenerateHashes(T[] response, HashAlgorithm hasher) => EndFrame();
 }

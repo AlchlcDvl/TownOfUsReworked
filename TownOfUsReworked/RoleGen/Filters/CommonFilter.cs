@@ -14,29 +14,17 @@ public class CommonFilter : BaseFilter
             count = spawnList.Count;
 
         var newList = new List<RoleOptionData>();
+
         var guaranteed = spawnList.Where(x => x.Chance == 100).ToList();
         guaranteed.Shuffle();
-
-        foreach (var spawn in guaranteed)
-        {
-            if (newList.Count < count)
-                newList.Add(spawn);
-        }
+        newList.AddRange(guaranteed);
 
         var optionals = spawnList.Where(x => x.Chance < 100).ToList();
         optionals.Shuffle();
-
-        foreach (var spawn in optionals)
-        {
-            if (newList.Count >= count)
-                break;
-
-            if (RoleGenManager.Check(spawn.Chance))
-                newList.Add(spawn);
-        }
+        newList.AddRange(optionals);
 
         spawnList.Clear();
-        spawnList.AddRange(newList);
+        spawnList.AddRange(newList.GetRange(0, count));
         spawnList.Shuffle();
     }
 }

@@ -17,7 +17,7 @@ public static class MapPatches
 
     private static IEnumerator CoStartGameFix(AmongUsClient __instance)
     {
-        if (TownOfUsReworked.MCIActive)
+        if (TownOfUsReworked.MciActive)
         {
             foreach (var client in __instance.allClients)
             {
@@ -56,16 +56,16 @@ public static class MapPatches
             {
                 foreach (var clientData in __instance.allClients)
                 {
-                    if (clientData.Id != __instance.ClientId && !clientData.IsReady)
+                    if (clientData.Id == __instance.ClientId || clientData.IsReady)
+                        continue;
+
+                    if (timer < num2)
+                        stopWaiting = false;
+                    else
                     {
-                        if (timer < num2)
-                            stopWaiting = false;
-                        else
-                        {
-                            __instance.SendLateRejection(clientData.Id, DisconnectReasons.ClientTimeout);
-                            clientData.IsReady = true;
-                            __instance.OnPlayerLeft(clientData, DisconnectReasons.ClientTimeout);
-                        }
+                        __instance.SendLateRejection(clientData.Id, DisconnectReasons.ClientTimeout);
+                        clientData.IsReady = true;
+                        __instance.OnPlayerLeft(clientData, DisconnectReasons.ClientTimeout);
                     }
                 }
             }
@@ -102,7 +102,7 @@ public static class MapPatches
         if (SubLoaded)
             totalWeight += MapSettings.RandomMapSubmerged;
 
-        if (LILoaded)
+        if (LiLoaded)
             totalWeight += MapSettings.RandomMapLevelImpostor;
 
         var maps = new List<int>() { 0, 1, 2, 3, 4, 5 };
@@ -110,7 +110,7 @@ public static class MapPatches
         if (SubLoaded)
             maps.Add(6);
 
-        if (LILoaded)
+        if (LiLoaded)
             maps.Add(7);
 
         maps.Shuffle();
@@ -129,7 +129,7 @@ public static class MapPatches
         if (SubLoaded)
             randoms.AddMany(6, MapSettings.RandomMapSubmerged / 5);
 
-        if (LILoaded)
+        if (LiLoaded)
             randoms.AddMany(7, MapSettings.RandomMapLevelImpostor / 5);
 
         randoms.Shuffle();
@@ -148,12 +148,12 @@ public static class MapPatches
             AdjustCooldowns(-MapSettings.SmallMapDecreasedCooldown);
         }
 
-        if (CurrentMap is 4 or 5 or 6)
-        {
-            TownOfUsReworked.NormalOptions.NumShortTasks -= MapSettings.LargeMapDecreasedShortTasks;
-            TownOfUsReworked.NormalOptions.NumLongTasks -= MapSettings.LargeMapDecreasedLongTasks;
-            AdjustCooldowns(MapSettings.LargeMapIncreasedCooldown);
-        }
+        if (CurrentMap is not (4 or 5 or 6))
+            return;
+
+        TownOfUsReworked.NormalOptions.NumShortTasks -= MapSettings.LargeMapDecreasedShortTasks;
+        TownOfUsReworked.NormalOptions.NumLongTasks -= MapSettings.LargeMapDecreasedLongTasks;
+        AdjustCooldowns(MapSettings.LargeMapIncreasedCooldown);
     }
 
     public static void AdjustCooldowns(float change)

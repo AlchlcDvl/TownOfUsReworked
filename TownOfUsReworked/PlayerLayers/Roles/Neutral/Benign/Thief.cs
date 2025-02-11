@@ -25,7 +25,7 @@ public class Thief : Neutral, IGuesser
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Benign;

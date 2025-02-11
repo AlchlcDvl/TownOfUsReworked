@@ -19,7 +19,7 @@ public class Allied : Disposition
     public override LayerEnum Type => LayerEnum.Allied;
     public override Func<string> Description => () => Side == Faction.Neutral ? "- You are conflicted" : "";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Side = Faction.Neutral;

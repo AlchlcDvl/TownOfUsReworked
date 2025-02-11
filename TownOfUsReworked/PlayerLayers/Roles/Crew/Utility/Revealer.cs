@@ -7,7 +7,7 @@ public class Revealer : Crew, IGhosty
     public static Number RevealerTasksRemainingClicked = 5;
 
     [NumberOption(1, 5, 1)]
-    public static Number RevealerTasksRemainingAlert = 1;
+    private static Number RevealerTasksRemainingAlert = 1;
 
     [ToggleOption]
     public static bool RevealerRevealsNeutrals = false;
@@ -28,16 +28,16 @@ public class Revealer : Crew, IGhosty
     public static RevealerCanBeClickedBy RevealerCanBeClickedBy = RevealerCanBeClickedBy.Everyone;
 
     public bool Caught { get; set; }
-    public bool Revealed { get; set; }
+    public bool Revealed { get; private set; }
     public bool Faded { get; set; }
-    public Role FormerRole { get; set; }
+    public Role FormerRole { get; init; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Revealer : FactionColor;
     public override LayerEnum Type => LayerEnum.Revealer;
     public override Func<string> StartText => () => "OOOOOOO";
     public override Func<string> Description => () => "- You can reveal evils players to the <#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Utility;

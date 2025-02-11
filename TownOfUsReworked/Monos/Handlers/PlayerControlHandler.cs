@@ -29,14 +29,14 @@ public class PlayerControlHandler : NameHandler
 
         (Color.text, Color.color) = UpdateColorblind(Player);
 
-        if (IsInGame() && Player.Data.Role is LayerHandler handler && CustomPlayer.Local.Data.Role is LayerHandler localHandler)
-        {
-            handler.UpdatePlayer();
-            localHandler.UpdatePlayer(Player);
-            (Name.text, Name.color) = UpdateGameName(handler, localHandler, out var revealed);
-            Name.transform.localPosition = new(0f, revealed ? -0.05f : -0.2f, -0.5f);
-            Player.transform.localScale = Size * Custom.Size;
-        }
+        if (!IsInGame() || Player.Data.Role is not LayerHandler handler || CustomPlayer.Local.Data.Role is not LayerHandler localHandler)
+            return;
+
+        handler.UpdatePlayer();
+        localHandler.UpdatePlayer(Player);
+        (Name.text, Name.color) = UpdateGameName(handler, localHandler, out var revealed);
+        Name.transform.localPosition = new(0f, revealed ? -0.05f : -0.2f, -0.5f);
+        Player.transform.localScale = Size * Custom.Size;
     }
 
     public void OnDestroy() => CustomPlayer.AllCustomPlayers.RemoveAll([HideFromIl2Cpp] (x) => x.Player == Player || !x.Player);

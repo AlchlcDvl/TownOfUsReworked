@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Patches;
 public static class ChatPatches
 {
     private static int CurrentHistorySelection = -1;
-    public static TextMeshPro SuggestionText;
+    private static TextMeshPro SuggestionText;
     public static readonly List<string> ChatHistory = [];
 
     [HarmonyPatch(nameof(ChatController.Update)), HarmonyPrefix]
@@ -26,27 +26,18 @@ public static class ChatPatches
         if (__instance.freeChatField.textArea.hasFocus && text.StartsWith("/") && text != "/")
         {
             var lower = text.ToLower();
-            var split = lower.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var split = lower.TrueSplit(' ');
             var first = split[0][1..];
             var closestCommand = Find(first);
 
             if (closestCommand != null)
             {
-                var parts = split[1..];
-                var result = "";
-
-                for (var i = 0; i < parts.Length; i++)
-                    result += $"{parts[i]} ";
-
-                if (result.Length > 0)
-                    result = $"/{first} {result.Trim()} {closestCommand.ConstructParameters(split)}";
-                else
-                    result = $"/{closestCommand.FindAlias(first)} {closestCommand.ConstructParameters(split)}";
-
+                var result = string.Join(" ", split[1..]);
+                result = result.Length > 0 ? $"/{first} {result.Trim()} {closestCommand.ConstructParameters(split)}" : $"/{closestCommand.FindAlias(first)} {closestCommand.ConstructParameters(split)}";
                 SuggestionText.text = result;
 
                 if (Input.GetKeyDown(KeyCode.Tab))
-                    __instance.freeChatField.textArea.SetText(result.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0]);
+                    __instance.freeChatField.textArea.SetText(result.TrueSplit(' ')[0]);
             }
             else
                 SuggestionText.text = $"{text} UNKNOWN COMMAND";
@@ -198,7 +189,7 @@ public static class ChatPatches
         if (text.StartsWith("/"))
         {
             chatHandled = true;
-            var args = __instance.freeChatField.Text.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var args = __instance.freeChatField.Text.TrueSplit(' ');
             Execute(args, __instance.freeChatField.Text);
         }
         else if (CustomPlayer.Local.IsBlackmailed() && text != "i am blackmailed.")

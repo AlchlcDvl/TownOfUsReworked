@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public class Multitasker : Ability
 {
     [NumberOption(10f, 80f, 5f, Format.Percent)]
-    public static Number Transparancy = 50;
+    public static Number Transparency = 50;
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Multitasker : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Multitasker;

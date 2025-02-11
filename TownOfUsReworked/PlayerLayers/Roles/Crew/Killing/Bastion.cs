@@ -12,7 +12,7 @@ public class Bastion : Crew, IVentBomber
     [ToggleOption]
     public static bool BombRemovedOnKill = true;
 
-    public CustomButton BombButton { get; set; }
+    private CustomButton BombButton { get; set; }
     public List<int> BombedIDs { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Bastion : FactionColor;
@@ -21,7 +21,7 @@ public class Bastion : Crew, IVentBomber
     public override Func<string> Description => () => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;
@@ -39,7 +39,7 @@ public class Bastion : Crew, IVentBomber
 
     public bool Exception(Vent vent) => BombedIDs.Contains(vent.Id);
 
-    public void Bomb(Vent target)
+    private void Bomb(Vent target)
     {
         var cooldown = Interact(Player, target);
 

@@ -4,7 +4,7 @@ public abstract class Neophyte : Neutral
 {
     public List<byte> Members { get; } = [];
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Neophyte;
@@ -12,7 +12,7 @@ public abstract class Neophyte : Neutral
         Members.Add(PlayerId);
     }
 
-    public override void Deinit()
+    protected override void Deinit()
     {
         base.Deinit();
         Members.Clear();

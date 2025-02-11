@@ -2,8 +2,6 @@
 
 public class Bomb : Range
 {
-    public bool Drived { get; set; }
-
     public void Detonate()
     {
         var players = GetClosestPlayers(transform.position, Size);
@@ -23,7 +21,6 @@ public class Bomb : Range
         var gameObject = CreateRange(CustomColorManager.Bomber, range, "Bomb");
         var bomb = gameObject.AddComponent<Bomb>();
         bomb.Owner = owner;
-        bomb.Drived = drived;
         bomb.Size = range;
         var position = owner.GetTruePosition();
         gameObject.transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);

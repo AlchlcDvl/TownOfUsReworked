@@ -15,7 +15,7 @@ public class Mystic : Crew
     public override Func<string> Description => () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n-" +
         " When all converted and converters die, you will become a <#71368AFF>Seer</color>";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Investigative;
@@ -23,7 +23,7 @@ public class Mystic : Crew
             new Cooldown(RevealCd));
     }
 
-    public void TurnSeer() => new Seer().RoleUpdate(this);
+    private void TurnSeer() => new Seer().RoleUpdate(this);
 
     public override void UpdatePlayer()
     {

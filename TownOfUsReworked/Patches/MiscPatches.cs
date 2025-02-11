@@ -48,7 +48,6 @@ public static class MapBehaviourPatches
         return notmodified;
     }
 
-
     [HarmonyPatch(nameof(MapBehaviour.Show)), HarmonyPostfix]
     public static void ShowPostfix() => MapActive = true;
 
@@ -93,8 +92,8 @@ public static class PooledMapIconPatch
             text.alignment = TextAlignmentOptions.Center;
             text.horizontalAlignment = HorizontalAlignmentOptions.Center;
             text.fontMaterial.EnableKeyword("OUTLINE_ON");
-            text.fontMaterial.SetFloat("_OutlineWidth", 0.1745f);
-            text.fontMaterial.SetFloat("_FaceDilate", 0.151f);
+            text.fontMaterial.SetFloat(OutlineWidth, 0.1745f);
+            text.fontMaterial.SetFloat(FaceDilate, 0.151f);
         }
 
         text.transform.localPosition = new(0, 0, -20);
@@ -127,7 +126,7 @@ public static class DisconnectHandler
 
         if (player.AmOwner)
         {
-            MCIUtils.RemoveAllPlayers();
+            MciUtils.RemoveAllPlayers();
             DebuggerBehaviour.Instance.ControllingFigure = 0;
         }
 
@@ -175,7 +174,7 @@ public static class MinigameBeginPatch
             return;
         }
 
-        __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, Multitasker.Transparancy / 100f));
+        __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, Multitasker.Transparency / 100f));
     }
 }
 
@@ -204,13 +203,13 @@ public static class AirshipSpawnInPatch
 
         HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
 
-        if (TownOfUsReworked.MCIActive)
+        if (!TownOfUsReworked.MciActive)
+            return;
+
+        foreach (var player in AllPlayers())
         {
-            foreach (var player in AllPlayers())
-            {
-                if (player.name.StartsWith("Bot"))
-                    player.RpcCustomSnapTo(__instance.Locations.Random().Location);
-            }
+            if (player.name.StartsWith("Bot"))
+                player.RpcCustomSnapTo(__instance.Locations.Random().Location);
         }
     }
 }
@@ -221,13 +220,9 @@ public static class ExitGamePatch
     public static void Prefix()
     {
         var filePath = Path.Combine(TownOfUsReworked.Logs, "ReworkedLogs.log");
-        var i = 1;
 
-        while (File.Exists(filePath))
-        {
+        for (var i = 1; File.Exists(filePath); i++)
             filePath = Path.Combine(TownOfUsReworked.Logs, $"ReworkedLogs{i}.log");
-            i++;
-        }
 
         SaveText($"{filePath.SanitisePath()}.log", SavedLogs, TownOfUsReworked.Logs);
         OptionAttribute.SaveSettings("LastUsed");
@@ -267,13 +262,13 @@ public static class HudPatches
     [HarmonyPatch(nameof(HudManager.Update))]
     public static void Postfix()
     {
-        if (IsLobby() && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
-        {
-            var players = AllPlayers();
+        if (!IsLobby() || !AmongUsClient.Instance.AmHost || !AmongUsClient.Instance.CanBan() || IsInGame())
+            return;
 
-            while (players.Count() > GameSettings.LobbySize)
-                AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.Last().OwnerId).Id, DisconnectReasons.GameFull);
-        }
+        var players = AllPlayers();
+
+        while (players.Count() > GameSettings.LobbySize)
+            AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.Last().OwnerId).Id, DisconnectReasons.GameFull);
     }
 
     [HarmonyPatch(nameof(HudManager.Update))]
@@ -316,19 +311,18 @@ public static class EmergencyMinigameUpdatePatch
 {
     public static void Postfix(EmergencyMinigame __instance)
     {
-        if ((!CustomPlayer.Local.CanButton(out var name) || CustomPlayer.Local.RemainingEmergencies == 0) && !CustomPlayer.Local.myTasks.Any(PlayerTask.TaskIsEmergency))
+        if ((CustomPlayer.Local.CanButton(out var name) && CustomPlayer.Local.RemainingEmergencies != 0) || CustomPlayer.Local.myTasks.Any(PlayerTask.TaskIsEmergency))
+            return;
+        __instance.StatusText.text = name switch
         {
-            __instance.StatusText.text = name switch
-            {
-                "Shy" => "You are too shy to call a meeting",
-                "GameMode" => "Don't call meetings",
-                _ => $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
-            };
-            __instance.NumberText.text = "";
-            __instance.ClosedLid.gameObject.SetActive(true);
-            __instance.OpenLid.gameObject.SetActive(false);
-            __instance.ButtonActive = false;
-        }
+            "Shy" => "You are too shy to call a meeting",
+            "GameMode" => "Don't call meetings",
+            _ => $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
+        };
+        __instance.NumberText.text = "";
+        __instance.ClosedLid.gameObject.SetActive(true);
+        __instance.OpenLid.gameObject.SetActive(false);
+        __instance.ButtonActive = false;
     }
 }
 
@@ -341,19 +335,19 @@ public static class LobbyBehaviourPatch
         RoleGenManager.ResetEverything();
         StopAll();
         DefaultOutfitAll();
-        ClientHandler.Instance.OnLobbyStart();
+        ClientHandler.OnLobbyStart();
         ClientHandler.Instance.Page = 0;
         ClientHandler.Instance.Buttons.Clear();
         ClientHandler.Instance.CloseMenus();
         FreeplayPatches.PreviouslySelected.Clear();
-        var count = MCIUtils.Clients.Count;
-        DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame();
-        MCIUtils.Clients.Clear();
-        MCIUtils.PlayerClientIDs.Clear();
+        var count = MciUtils.Clients.Count;
+        DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MciActive && IsLocalGame();
+        MciUtils.Clients.Clear();
+        MciUtils.PlayerClientIDs.Clear();
         DebuggerBehaviour.Instance.SelectedTab = DebuggerBehaviour.Instance.Tabs[0];
 
         if (count > 0 && TownOfUsReworked.Persistence.Value && !IsOnlineGame())
-            MCIUtils.CreatePlayerInstances(count);
+            MciUtils.CreatePlayerInstances(count);
 
         CustomAchievementManager.QueuedAchievements.ForEach(x => x.ShowAchievement());
     }
@@ -364,11 +358,11 @@ public static class DeathPopUpPatch
 {
     public static void Prefix(HideAndSeekDeathPopup __instance)
     {
-        if (IsCustomHnS() && !__instance.name.StartsWith("Achievement"))
-        {
-            __instance.text.GetComponent<TextTranslatorTMP>().Destroy();
-            __instance.text.text = $"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}";
-        }
+        if (!IsCustomHnS() || __instance.name.StartsWith("Achievement"))
+            return;
+
+        __instance.text.GetComponent<TextTranslatorTMP>().Destroy();
+        __instance.text.text = $"Was {(GameModeSettings.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}";
     }
 }
 
@@ -378,6 +372,11 @@ public static class RefreshPatch
     [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
     [HarmonyPatch(typeof(GameData), nameof(GameData.DirtyAllData))]
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.SetTarget))]
+    [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.Initialize))]
+    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Initialize))]
+    [HarmonyPatch(typeof(StringOption), nameof(StringOption.Initialize))]
+    [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.UpdateValuesAndText))]
+    [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.AddSettingsChangeMessage))]
     public static bool Prefix() => false;
 }
 
@@ -403,7 +402,7 @@ public static class MeetingCooldowns
 [HarmonyPatch(typeof(KillOverlay), nameof(KillOverlay.ShowKillAnimation), typeof(NetworkedPlayerInfo), typeof(NetworkedPlayerInfo))]
 public static class ShowCustomAnim
 {
-    private static OverlayKillAnimation _selfDeath;
+    private static OverlayKillAnimation SelfDeathPriv;
     private static OverlayKillAnimation SelfDeath
     {
         get
@@ -421,29 +420,29 @@ public static class ShowCustomAnim
             // SIR YES SIR o7
             // - AD
 
-            if (!_selfDeath)
+            if (!SelfDeathPriv)
             {
                 var parent = new GameObject("SelfKillObject").DontUnload().DontDestroy().transform;
                 parent.gameObject.SetActive(false);
 
-                _selfDeath = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
+                SelfDeathPriv = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
 
-                _selfDeath.killerParts.gameObject.SetActive(false);
-                _selfDeath.killerParts = null;
-                _selfDeath.transform.Find("killstabknife").gameObject.SetActive(false);
-                _selfDeath.transform.Find("killstabknifehand").gameObject.SetActive(false);
+                SelfDeathPriv.killerParts.gameObject.SetActive(false);
+                SelfDeathPriv.killerParts = null;
+                SelfDeathPriv.transform.Find("killstabknife").gameObject.SetActive(false);
+                SelfDeathPriv.transform.Find("killstabknifehand").gameObject.SetActive(false);
 
-                _selfDeath.victimParts.transform.localPosition = new(-1.5f, 0, 0);
-                _selfDeath.KillType = (KillAnimType)10;
+                SelfDeathPriv.victimParts.transform.localPosition = new(-1.5f, 0, 0);
+                SelfDeathPriv.KillType = (KillAnimType)10;
 
-                _selfDeath.AddComponent<CustomKillAnimationPlayer>();
+                SelfDeathPriv.AddComponent<CustomKillAnimationPlayer>();
 
                 var array = HUD().KillOverlay.KillAnims.ToList();
-                array.Add(_selfDeath);
+                array.Add(SelfDeathPriv);
                 HUD().KillOverlay.KillAnims = array.ToArray();
             }
 
-            return _selfDeath;
+            return SelfDeathPriv;
         }
     }
 
@@ -552,7 +551,7 @@ public static class PlayerDataPatches
     [HarmonyPatch(nameof(NetworkedPlayerInfo.ColorName), MethodType.Getter)]
     public static bool Prefix(NetworkedPlayerInfo __instance, ref string __result)
     {
-        __result = __instance.GetPlayerColorString(PlayerOutfitType.Default);
+        __result = __instance.GetPlayerColorString();
         return false;
     }
 
@@ -598,7 +597,7 @@ public static class PlayerDataPatches
 
         try
         {
-            roleWhenAlive = __instance.RoleWhenAlive != null && __instance.RoleWhenAlive.HasValue;
+            roleWhenAlive = __instance.RoleWhenAlive is { HasValue: true };
         } catch {}
 
         writer.Write(roleWhenAlive);
@@ -667,11 +666,30 @@ public static class MedScanMinigamePatch
     [HarmonyPatch(nameof(MedScanMinigame.FixedUpdate))]
     public static void Prefix(MedScanMinigame __instance)
     {
-        if (GameModifiers.ParallelMedScans)
+        if (!GameModifiers.ParallelMedScans)
+            return;
+
+        // Allows multiple medbay scans at once
+        __instance.medscan.CurrentUser = CustomPlayer.Local.PlayerId;
+        __instance.medscan.UsersList.Clear();
+    }
+}
+
+// Brought this back because the logs are being spammed...again
+// I have a hate-only relationship with this fucked up class
+[HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
+public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
+{
+    public static bool Prefix(ModManager __instance)
+    {
+        try
         {
-            // Allows multiple medbay scans at once
-            __instance.medscan.CurrentUser = CustomPlayer.Local.PlayerId;
-            __instance.medscan.UsersList.Clear();
-        }
+            // Try-catch my beloved <3
+            __instance.localCamera ??= HudManager.InstanceExists ? HUD().GetComponentInChildren<Camera>() : Camera.main;
+            __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
+                __instance.localCamera!.nearClipPlane));
+        } catch {}
+
+        return false;
     }
 }

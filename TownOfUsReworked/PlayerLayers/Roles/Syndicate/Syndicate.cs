@@ -39,12 +39,12 @@ public abstract class Syndicate : Role
         }
     }
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Faction = Faction.Syndicate;
         Objectives = () => SyndicateWinCon;
-        KillButton ??= new(this, new SpriteName("SyndicateKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CDKillCd), "KILL",
+        KillButton ??= new(this, new SpriteName("SyndicateKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
         IsPromoted = false;
     }

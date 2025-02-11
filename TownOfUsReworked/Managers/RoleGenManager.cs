@@ -1,3 +1,4 @@
+// ReSharper disable InconsistentNaming
 namespace TownOfUsReworked.Managers;
 
 public static class RoleGenManager
@@ -46,7 +47,6 @@ public static class RoleGenManager
     public static readonly Enum[][] Crew = [ CI, CSv, CrP, CK, CS, CU ];
     public static readonly Enum[][] RegCrew = [ CI, CrP, CS, CU ];
     public static readonly Enum[][] PowerCrew = [ CK, CSv ];
-    public static readonly Enum[][][] NonCrew = [ Neutral, Intruders, Syndicate ];
 
     public static readonly Enum[] NB = [ LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief ];
     public static readonly Enum[] NE = [ LayerEnum.Jester, LayerEnum.Actor, LayerEnum.BountyHunter, LayerEnum.Cannibal, LayerEnum.Executioner, LayerEnum.Guesser, LayerEnum.Troll ];
@@ -57,7 +57,6 @@ public static class RoleGenManager
     public static readonly Enum[][] Neutral = [ NB, NE, NN, NH, NK ];
     public static readonly Enum[][] RegNeutral = [ NB, NE ];
     public static readonly Enum[][] HarmNeutral = [ NN, NH, NK ];
-    public static readonly Enum[][][] NonNeutral = [ Crew, Intruders, Syndicate ];
 
     public static readonly Enum[] IC = [ LayerEnum.Blackmailer, LayerEnum.Camouflager, LayerEnum.Grenadier, LayerEnum.Janitor ];
     public static readonly Enum[] ID = [ LayerEnum.Morphling, LayerEnum.Disguiser, LayerEnum.Wraith ];
@@ -68,7 +67,6 @@ public static class RoleGenManager
     public static readonly Enum[][] Intruders = [ IC, ID, IK, IS, IU, IH ];
     public static readonly Enum[][] RegIntruders = [ IC, ID, IS, IU ];
     public static readonly Enum[][] PowerIntruders = [ IK, IH ];
-    public static readonly Enum[][][] NonIntruders = [ Neutral, Crew, Syndicate ];
 
     public static readonly Enum[] SSu = [ LayerEnum.Warper, LayerEnum.Stalker ];
     public static readonly Enum[] SD = [ LayerEnum.Timekeeper, LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.Silencer] ;
@@ -78,6 +76,10 @@ public static class RoleGenManager
     public static readonly Enum[][] Syndicate = [ SSu, SyK, SD, SP, SU ];
     public static readonly Enum[][] RegSyndicate = [ SSu, SD, SU ];
     public static readonly Enum[][] PowerSyndicate = [ SyK, SP ];
+
+    public static readonly Enum[][][] NonCrew = [ Neutral, Intruders, Syndicate ];
+    public static readonly Enum[][][] NonNeutral = [ Crew, Intruders, Syndicate ];
+    public static readonly Enum[][][] NonIntruders = [ Neutral, Crew, Syndicate ];
     public static readonly Enum[][][] NonSyndicate = [ Neutral, Intruders, Crew ];
 
     public static readonly Enum[] PS = [ LayerEnum.Warper, LayerEnum.Stalker, LayerEnum.Consigliere, LayerEnum.Miner, LayerEnum.Teleporter, LayerEnum.Consort ];
@@ -113,14 +115,14 @@ public static class RoleGenManager
 
     public static readonly Enum[][] Alignments = [ CI, CSv, CrP, CU, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, IH, IU, SU ];
 
-    public static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6 ];
-    public static readonly List<byte> CustomSpawns = [ .. Spawns, 7, 8, 9 ];
+    private static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6 ];
+    private static readonly List<byte> CustomSpawns = [ .. Spawns, 7, 8, 9 ];
 
     private static readonly TargetGen Targets = new();
     private static readonly ModifierGen Modifiers = new();
     private static readonly AbilityGen Abilities = new();
     private static readonly DispositionGen Dispositions = new();
-    public static readonly Dictionary<GameMode, BaseRoleGen> RoleGen = new()
+    private static readonly Dictionary<GameMode, BaseRoleGen> RoleGen = new()
     {
         { GameMode.HideAndSeek, new HideAndSeekGen() },
         { GameMode.Classic, new ClassicGen() },
@@ -153,14 +155,14 @@ public static class RoleGenManager
     public static bool IsValid(this LayerEnum layer, int? relatedCount = null) => layer switch
     {
         LayerEnum.Bastion => GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne,
-        LayerEnum.Mystic => new LayerEnum[] { LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Whisperer }.Any(x => GetSpawnItem(x).IsActive()),
-        LayerEnum.Seer => new LayerEnum[] { LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor, LayerEnum.Amnesiac,
+        LayerEnum.Mystic => new[] { LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Whisperer }.Any(x => GetSpawnItem(x).IsActive()),
+        LayerEnum.Seer => new[] { LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor, LayerEnum.Amnesiac,
             LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter, LayerEnum.Fanatic }.Any(x => GetSpawnItem(x).IsActive()),
         LayerEnum.Plaguebearer => !NeutralApocalypseSettings.DirectSpawn,
         LayerEnum.Pestilence => NeutralApocalypseSettings.DirectSpawn,
         LayerEnum.Amnesiac or LayerEnum.GuardianAngel or LayerEnum.Survivor or LayerEnum.Thief => !NeutralSettings.AvoidNeutralKingmakers,
         LayerEnum.Jackal => GameData.Instance.PlayerCount > 6,
-        LayerEnum.Actor => new LayerEnum[] { LayerEnum.Bullseye, LayerEnum.Slayer, LayerEnum.Sniper, LayerEnum.Hitman }.Any(x => GetSpawnItem(x).IsActive()),
+        LayerEnum.Actor => new[] { LayerEnum.Bullseye, LayerEnum.Slayer, LayerEnum.Sniper, LayerEnum.Hitman }.Any(x => GetSpawnItem(x).IsActive()),
         LayerEnum.Miner => GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne && (Miner.MinerSpawnOnMira || MapPatches.CurrentMap != 2),
         LayerEnum.Godfather or LayerEnum.Rebel => relatedCount >= 3,
         LayerEnum.Insider => GameModifiers.AnonymousVoting != AnonVotes.Disabled,
@@ -176,7 +178,7 @@ public static class RoleGenManager
         player.GetLayers().Find(x => x.LayerType == rpc)?.End();
         GetLayer(id, rpc).Start(player);
 
-        if (!TownOfUsReworked.MCIActive)
+        if (!TownOfUsReworked.MciActive)
             CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, rpc, player);
     }
 
@@ -186,17 +188,16 @@ public static class RoleGenManager
     {
         if (LayerDictionary.TryGetValue(id, out var dictEntry))
             return (PlayerLayer)Activator.CreateInstance(dictEntry.LayerType);
-        else
+
+        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+        return rpc switch
         {
-            return rpc switch
-            {
-                PlayerLayerEnum.Role => new Roleless(),
-                PlayerLayerEnum.Modifier => new Modifierless(),
-                PlayerLayerEnum.Disposition => new Dispositionless(),
-                PlayerLayerEnum.Ability => new Abilityless(),
-                _ => throw new NotImplementedException($"{id}:{rpc}")
-            };
-        }
+            PlayerLayerEnum.Role => new Roleless(),
+            PlayerLayerEnum.Modifier => new Modifierless(),
+            PlayerLayerEnum.Disposition => new Dispositionless(),
+            PlayerLayerEnum.Ability => new Abilityless(),
+            _ => throw new NotImplementedException($"{id}:{rpc}")
+        };
     }
 
     public static void BeginRoleGen()
@@ -255,7 +256,7 @@ public static class RoleGenManager
         if (MapPatches.CurrentMap == 4)
             BetterAirship.SpawnPoints.AddRange((BetterAirship.EnableCustomSpawns ? CustomSpawns : Spawns).GetRandomRange(3));
 
-        if (TownOfUsReworked.MCIActive)
+        if (TownOfUsReworked.MciActive)
         {
             var maxName = 1;
             var maxRole = 4;
@@ -325,23 +326,19 @@ public static class RoleGenManager
         Success("Gen Ended");
     }
 
-    public static bool Check(int chance)
+    public static bool Check(int chance) => chance switch
     {
-        if (chance == 0)
-            return false;
+        0 => false,
+        100 => true,
+        _ => URandom.RandomRangeInt(1, 100) <= chance
+    };
 
-        if (chance == 100)
-            return true;
-
-        return URandom.RandomRangeInt(1, 100) <= chance;
-    }
-
-    public static void Clear()
+    private static void Clear()
     {
         WinState = WinLose.None;
 
         CameraEffect.Initialize();
-        CameraEffect.Instance.Materials.Clear();
+        CameraEffect.ClearEffects();
 
         MeetingPatches.MeetingCount = 0;
 
@@ -415,7 +412,7 @@ public static class RoleGenManager
 
         TransitioningSpeed.Clear();
 
-        UninteractiblePlayers.Clear();
+        UninteractablePlayers.Clear();
 
         BetterAirship.SpawnPoints.Clear();
     }

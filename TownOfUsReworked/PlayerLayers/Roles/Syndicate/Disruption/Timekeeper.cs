@@ -25,7 +25,7 @@ public class Timekeeper : Syndicate
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +
         CommonAbilities;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Disruption;
@@ -34,7 +34,7 @@ public class Timekeeper : Syndicate
         TKExists = true;
     }
 
-    public override void Deinit()
+    protected override void Deinit()
     {
         base.Deinit();
         TKExists = false;

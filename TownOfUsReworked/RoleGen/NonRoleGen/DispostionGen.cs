@@ -38,15 +38,8 @@ public class DispositionGen : BaseGen
         AllDispositions.Shuffle();
         var invalid = new List<LayerEnum>();
 
-        if (TownOfUsReworked.MCIActive && AllDispositions.Any())
-        {
-            var ids = "";
-
-            foreach (var spawn in AllDispositions)
-                ids += $" {spawn.ID}";
-
-            Message("Dispositions in the game: " + ids.Trim());
-        }
+        if (TownOfUsReworked.MciActive && AllDispositions.Any())
+            Message("Dispositions in the game: " + string.Join(" ", AllDispositions.Select(ab => ab.ID)));
 
         while (playerList.Any() && AllDispositions.Any())
         {
@@ -79,15 +72,8 @@ public class DispositionGen : BaseGen
             }
         }
 
-        if (TownOfUsReworked.MCIActive && invalid.Any())
-        {
-            var ids = "";
-
-            foreach (var spawn in invalid)
-                ids += $" {spawn}";
-
-            Message("Invalid Dispositions in the game: " + ids.Trim());
-        }
+        if (TownOfUsReworked.MciActive && invalid.Any())
+            Message("Invalid Dispositions in the game: " + string.Join(" ", invalid));
 
         AllDispositions.Clear();
     }

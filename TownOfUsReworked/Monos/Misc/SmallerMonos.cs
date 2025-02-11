@@ -4,7 +4,7 @@ public class MissingBehaviour : MonoBehaviour;
 
 public class CameraEffect : MonoBehaviour
 {
-    public readonly List<Material> Materials = [];
+    private readonly List<Material> Materials = [];
 
     public static CameraEffect Instance { get; private set; }
 
@@ -17,4 +17,10 @@ public class CameraEffect : MonoBehaviour
         else
             Materials.ForEach(x => Graphics.Blit(source, destination, x));
     }
+
+    public static void AddEffect(Material material) => Instance.Materials.Add(material);
+
+    public static void RemoveEffect(Material material) => Instance.Materials.Remove(material);
+
+    public static void ClearEffects() => Instance.Materials.Clear();
 }

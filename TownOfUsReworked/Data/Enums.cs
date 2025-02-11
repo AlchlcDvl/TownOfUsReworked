@@ -17,9 +17,7 @@ public enum ActionsRPC : byte
     LayerAction,
     Cancel,
     PublicReveal,
-    Infect,
-
-    None
+    Infect
 }
 
 public enum WarpActionsRPC : byte
@@ -67,6 +65,7 @@ public enum ThiefActionsRPC : byte
 [Flags]
 public enum AbilityTypes : byte
 {
+    None = 0,
     Targetless = 1 << 0,
     Player = 1 << 1,
     Body = 1 << 2,
@@ -145,7 +144,6 @@ public enum MultiMenu : byte
 {
     Main,
     Layer,
-    Presets,
     Client,
     LayerSubOptions,
     AlignmentSubOptions
@@ -216,8 +214,9 @@ public enum HnSMode : byte
 public enum MapEnum : byte
 {
     Skeld,
-    MiraHQ,
+    MiraHq,
     Polus,
+    // ReSharper disable once InconsistentNaming
     dlekS,
     Airship,
     Fungle,
@@ -281,9 +280,7 @@ public enum MiscRPC : byte
     Achievement,
     SyncUses,
     SyncMaxUses,
-    SyncMap,
-
-    None
+    SyncMap
 }
 
 public enum CustomRPC : byte
@@ -292,9 +289,7 @@ public enum CustomRPC : byte
     WinLose,
     Misc,
     Test,
-    Vanilla,
-
-    None
+    Vanilla
 }
 
 public enum TestRPC : byte
@@ -431,7 +426,7 @@ public enum LayerEnum : byte
     Indomitable,
     Professional,
     Shy,
-    VIP,
+    Vip,
     Volatile,
     Yeller,
     NoneModifier,
@@ -592,7 +587,6 @@ public enum DeathReasonEnum : byte
     Crusaded,
     Mauled,
     Ambushed,
-    Failed,
     Trolled,
     Misfire,
     Frozen,
@@ -605,9 +599,7 @@ public enum DeathReasonEnum : byte
     Converted,
     Infected,
     Caught,
-    Marked,
-
-    None
+    Marked
 }
 
 public enum WinLose : byte
@@ -760,7 +752,7 @@ public enum AlliedFaction : byte
     Syndicate
 }
 
-public enum GFActionsRPC : byte
+public enum GfActionsRPC : byte
 {
     Morph,
     Disguise,
@@ -798,7 +790,7 @@ public enum ProtectOptions : byte
 {
     Nobody,
     Protected,
-    GA,
+    Ga,
     Everyone
 }
 
@@ -810,10 +802,10 @@ public enum NoSolo : byte
     AllNeutrals
 }
 
-public enum SKVentOptions : byte
+public enum SkVentOptions : byte
 {
     Always,
-    Bloodlust,
+    BloodLust,
     NoLust,
     Never
 }

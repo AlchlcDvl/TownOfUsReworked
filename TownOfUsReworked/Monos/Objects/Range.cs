@@ -3,16 +3,16 @@ namespace TownOfUsReworked.Monos;
 public abstract class Range : MonoBehaviour
 {
     public static readonly List<GameObject> AllItems = [];
-    public static int Number { get; set; }
+    protected static int Number { get; private set; }
 
     public PlayerControl Owner { get; set; }
     public float Size { get; set; }
 
-    public virtual void Update() => transform.Rotate(Vector3.forward * 10 * Time.fixedDeltaTime);
+    public virtual void Update() => transform.Rotate(Vector3.forward * (10 * Time.deltaTime));
 
     public void OnDestroy() => AllItems.Remove(gameObject);
 
-    public static GameObject CreateRange(UColor color, float scale, string name)
+    protected static GameObject CreateRange(UColor color, float scale, string name)
     {
         var item = new GameObject(name) { layer = LayerMask.NameToLayer("Players") };
         var transform = item.transform;

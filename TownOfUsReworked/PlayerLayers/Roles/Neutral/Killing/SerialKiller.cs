@@ -12,8 +12,8 @@ public class SerialKiller : NKilling
     [NumberOption(0.5f, 15f, 0.5f, Format.Time)]
     public static Number StabCd = 5;
 
-    [StringOption<SKVentOptions>]
-    public static SKVentOptions SKVentOptions = SKVentOptions.Always;
+    [StringOption<SkVentOptions>]
+    public static SkVentOptions SKVentOptions = SkVentOptions.Always;
 
     public CustomButton BloodlustButton { get; set; }
     public CustomButton StabButton { get; set; }
@@ -27,7 +27,7 @@ public class SerialKiller : NKilling
     public override DefenseEnum DefenseVal => BloodlustButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool RoleBlockImmune => true;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Stab anyone who can oppose you";

@@ -7,7 +7,7 @@ public class Trickster : Role
     public override Func<string> StartText => () => "";
     public override Func<string> Description => () => "";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Protective;

@@ -51,7 +51,7 @@ public class Guesser : Evil, IGuesser
     public override bool HasWon => TargetGuessed;
     public override WinLose EndState => WinLose.GuesserWins;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         RemainingGuesses = MaxGuesses == 0 ? 10000 : MaxGuesses;

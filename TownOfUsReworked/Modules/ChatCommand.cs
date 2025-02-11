@@ -16,7 +16,7 @@ public class ChatCommand
 
     private static readonly IEnumerable<ChatCommand> AllCommands =
     [
-        new([ "controls", "ctrl", "mci" ], Controls, "Shows keybinds to use"),
+        new([ "controls", "ctrl", "mci" ], Controls, "Shows key binds to use"),
         new([ "kick", "ban" ], KickBan, [ "player id | (player name)" ], "Kicks or bans the specified player using their player id or name"),
         new([ "summary" ], Summary, "Fetches the summary of the previous game"),
         new([ "clearlobby", "cl" ], Clear, "Kicks every non-host player out of the lobby (but does not ban them so they can still rejoin)"),
@@ -27,7 +27,7 @@ public class ChatCommand
         new([ "help" ], Help, [ "command name (optional)" ], "Gets a help menu showing the usable commands, or provides a description of a command if the command name is specified"),
         // new([ "testargs", "targ" ], TestArgs, ""),
         // new([ "testargless", "targless" ], TestArgless, ""),
-        // new([ "testargmessage", "targmess", "tam" ], TestArgsMessage, ""),
+        // new([ "testargsmessage", "targmess", "tam" ], TestArgsMessage, ""),
         // new([ "translate" ], Translate, ""),
         // new([ "rpc" ], SendRPCArgless, ""),
         // new([ "rpca" ], SendRPCArgs, "")
@@ -78,20 +78,9 @@ public class ChatCommand
     public string FindAlias(string first)
     {
         var dict = Aliases.Where(x => x.StartsWith(first) || first.StartsWith(x)).ToDictionary(x => first.Length - x.Length, y => y);
-        var closestInt = int.MaxValue;
-
-        foreach (var count in dict.Keys)
-        {
-            if (count < closestInt)
-                closestInt = count;
-        }
-
+        var closestInt = dict.Keys.Prepend(int.MaxValue).Min();
         var result = dict[closestInt];
-
-        if (result.Length < first.Length)
-            return first;
-
-        return result;
+        return result.Length < first.Length ? first : result;
     }
 
     public static void Execute(string[] args, string message)
@@ -110,7 +99,7 @@ public class ChatCommand
             Run("<#FFFF00FF>⚠ Huh? ⚠</color>", "Weird...");
     }
 
-    public static ChatCommand Find(string arg) => AllCommands.Find(x => x.Aliases.Any(x => x.StartsWith(arg) || arg.StartsWith(x)));
+    public static ChatCommand Find(string arg) => AllCommands.Find(x => x.Aliases.Any(y => y.StartsWith(arg) || arg.StartsWith(y)));
 
     public static void Run(string title, string text, bool withColor = true, bool hasColor = false, UColor? nameColor = null)
     {
@@ -157,11 +146,11 @@ public class ChatCommand
             return;
         }
 
-        var args2 = arg.Split([ "(", ")" ], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var args2 = arg.TrueSplit('(', ')');
 
         if (args.Length < 3 || IsNullEmptyOrWhiteSpace(args[1]) || IsNullEmptyOrWhiteSpace(args[2]))
         {
-            Run("<#00FF00FF>★ Help ★</color>", $"Usage: /whisper <player id | (player name)> <message>");
+            Run("<#00FF00FF>★ Help ★</color>", "Usage: /whisper <player id | (player name)> <message>");
             return;
         }
 
@@ -177,14 +166,10 @@ public class ChatCommand
         else if (byte.TryParse(args[1], out var id))
         {
             whispered = PlayerById(id);
-            args[2..].ForEach(arg2 => message += $"{arg2} ");
-            message = message.Trim();
+            message = string.Join(" ", args[2..]).Trim();
         }
         else if (AllPlayers().TryFinding(x => x.name == args[1], out whispered))
-        {
-            args[2..].ForEach(arg2 => message += $"{arg2} ");
-            message = message.Trim();
-        }
+            message = string.Join(" ", args[2..]).Trim();
         else if (AllPlayers().TryFinding(x => x.name == args2[1], out whispered))
             message = args2[^1];
 
@@ -217,7 +202,7 @@ public class ChatCommand
             return;
         }
 
-        var args2 = arg.Split([ "(", ")" ], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var args2 = arg.TrueSplit('(', ')');
 
         if (byte.TryParse(args[1], out var id))
         {
@@ -332,7 +317,7 @@ public class ChatCommand
 
         var allPlayers = AllPlayers();
         PlayerControl target = null;
-        var split = message.Split([ "(", ")" ], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var split = message.TrueSplit('(', ')');
 
         if (byte.TryParse(args[1], out var id))
             allPlayers.TryFinding(x => x.PlayerId == id, out target);
@@ -342,7 +327,7 @@ public class ChatCommand
 
         if (!target)
         {
-            Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find the target.");
+            Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", "Could not find the target.");
             return;
         }
         else if (target.AmOwner)
@@ -379,7 +364,7 @@ public class ChatCommand
             if (command != null)
                 Run("<#0000FFFF>✿ Help Menu ✿</color>", $"Command Name: {command.Aliases[0]}\nParameters: {command.ConstructParameters()}\nDescription: {command.Description}");
             else
-                Run($"<#FF0000FF>⚠ Help Error ⚠</color>", "Could not find the requested command.");
+                Run("<#FF0000FF>⚠ Help Error ⚠</color>", "Could not find the requested command.");
         }
     }
 

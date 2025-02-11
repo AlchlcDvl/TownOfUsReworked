@@ -10,13 +10,13 @@ public class Transporter : Crew, IMover
     public static Number TransportCd = 25;
 
     [NumberOption(1f, 20f, 1f, Format.Time)]
-    public static Number TransportDur = 5;
+    private static Number TransportDur = 5;
 
     [ToggleOption]
     public static bool TransSelf = true;
 
-    public CustomButton TransportButton { get; set; }
-    public CustomPlayerMenu TransportMenu { get; set; }
+    private CustomButton TransportButton { get; set; }
+    private CustomPlayerMenu TransportMenu { get; set; }
     public bool Moving { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Transporter : FactionColor;
@@ -24,7 +24,7 @@ public class Transporter : Crew, IMover
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
@@ -33,7 +33,7 @@ public class Transporter : Crew, IMover
         TransportMenu = new(Player, Click, Exception);
     }
 
-    public string Label() => TransportMenu.Selected.Count switch
+    private string Label() => TransportMenu.Selected.Count switch
     {
         0 => "FIRST TARGET",
         1 => "SECOND TARGET",
@@ -44,8 +44,6 @@ public class Transporter : Crew, IMover
     {
         var player1Body = (DeadBody)null;
         var player2Body = (DeadBody)null;
-        var wasInVent1 = false;
-        var wasInVent2 = false;
         var vent1 = (Vent)null;
         var vent2 = (Vent)null;
 
@@ -74,7 +72,6 @@ public class Transporter : Crew, IMover
 
             transport1.MyPhysics.ExitAllVents();
             vent1 = transport1.GetClosestVent();
-            wasInVent1 = true;
         }
 
         if (transport2.inVent)
@@ -84,7 +81,6 @@ public class Transporter : Crew, IMover
 
             transport2.MyPhysics.ExitAllVents();
             vent2 = transport2.GetClosestVent();
-            wasInVent2 = true;
         }
 
         transporter.Moving = true;
@@ -92,27 +88,24 @@ public class Transporter : Crew, IMover
         if (transport1.AmOwner || transport2.AmOwner)
             Flash(transporter.Color, TransportDur);
 
-        if (!player1Body && !wasInVent1)
+        if (!player1Body)
             AnimatePortal(transport1, TransportDur);
 
-        if (!player2Body && !wasInVent2)
+        if (!player2Body)
             AnimatePortal(transport2, TransportDur);
 
         var startTime = Time.time;
 
-        while (true)
+        while (Time.time - startTime < TransportDur)
         {
-            if (Time.time - startTime < TransportDur)
-                yield return EndFrame();
-            else
-                break;
+            yield return EndFrame();
 
-            if (Meeting())
-            {
-                References.Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
-                transporter.Moving = false;
-                yield break;
-            }
+            if (!Meeting())
+                continue;
+
+            References.Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);
+            transporter.Moving = false;
+            yield break;
         }
 
         if (transport1.Data.IsDead)
@@ -145,10 +138,10 @@ public class Transporter : Crew, IMover
             transport1.CustomSnapTo(new(transport2.GetTruePosition().x, transport2.GetTruePosition().y + 0.3636f));
             transport2.CustomSnapTo(new(tempPos.x, tempPos.y + 0.3636f));
 
-            if (transport1.CanVent() && vent2 && wasInVent2)
+            if (transport1.CanVent() && vent2)
                 transport1.MyPhysics.RpcEnterVent(vent2.Id);
 
-            if (transport2.CanVent() && vent1 && wasInVent1)
+            if (transport2.CanVent() && vent1)
                 transport2.MyPhysics.RpcEnterVent(vent1.Id);
         }
         else if (player1Body && !player2Body)
@@ -185,7 +178,7 @@ public class Transporter : Crew, IMover
         transporter.Moving = false;
     }
 
-    public bool Click(PlayerControl player, out bool shouldClose)
+    private bool Click(PlayerControl player, out bool shouldClose)
     {
         shouldClose = false;
 
@@ -196,17 +189,16 @@ public class Transporter : Crew, IMover
 
         if (cooldown != CooldownType.Fail)
             return true;
-        else
-            TransportButton.StartCooldown(cooldown);
 
+        TransportButton.StartCooldown(cooldown);
         shouldClose = true;
         return false;
     }
 
-    public bool Exception(PlayerControl player) => (player == Player && !TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId)
+    private bool Exception(PlayerControl player) => (player == Player && !TransSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId)
         && player.Data.IsDead);
 
-    public void Transport()
+    private void Transport()
     {
         if (TransportMenu.Selected.Count < 2)
         {

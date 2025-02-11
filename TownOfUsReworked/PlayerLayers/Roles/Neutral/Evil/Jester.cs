@@ -29,7 +29,7 @@ public class Jester : Evil
     public override bool HasWon => VotedOut;
     public override WinLose EndState => WinLose.JesterWins;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";

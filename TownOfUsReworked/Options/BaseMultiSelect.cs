@@ -1,10 +1,10 @@
 namespace TownOfUsReworked.Options;
 
-public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T allValue, T noneValue) : OptionAttribute<List<T>>(type), IMultiSelectOption
+public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T allValue, T noneValue) : OptionAttribute<MultiSelectValue<T>>(type), IMultiSelectOption where T : Enum
 {
-    public ValueMap<ToggleOption, T> Buttons { get; } = [];
-    public T NoneValue { get; } = noneValue;
-    public T AllValue { get; } = allValue;
+    protected ValueMap<ToggleOption, T> Buttons { get; } = [];
+    private T NoneValue { get; } = noneValue;
+    private T AllValue { get; } = allValue;
     public IEnumerable<ToggleOption> Options => Buttons.Keys;
 
     public override void OptionCreated()
@@ -33,14 +33,14 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
     public override void Update() => Setting.Cast<StringOption>().ValueText.text = Format();
 
-    public ToggleOption CreateButton(T value, string name)
+    protected ToggleOption CreateButton(T value, string name)
     {
         var behaviour = UObject.Instantiate(SettingsPatches.MultiOptionPrefab, Setting.transform.parent);
         behaviour.TitleText.text = TranslationManager.Translate(name);
         behaviour.name = name;
         var button = behaviour.GetComponentInChildren<PassiveButton>();
 
-        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MCIActive))
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MciActive))
             button.enabled = false;
         else
             button.OverrideOnClickListeners(() => SetValue(value));
@@ -50,7 +50,7 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
         return behaviour;
     }
 
-    public void SetValue(T value)
+    protected virtual void TrySetValue(T value)
     {
         if (value.Equals(AllValue))
         {
@@ -77,22 +77,24 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
             Value.Remove(AllValue);
         }
+    }
 
+    private void SetValue(T value)
+    {
+        TrySetValue(value);
         Set(Value);
         Buttons.ForEach((x, y) => x.CheckMark.enabled = Value.Contains(y));
     }
 
-    public override string ValueString() => string.Join(",", Value);
-
     public override void ReadValueRpc(MessageReader reader) => Set(Parse(reader.ReadString()), false);
 
-    public override void ReadValueString(string value) => Set(Parse(value), false);
+    protected override void ReadValueString(string value) => Set(Parse(value), false);
 
     public override void WriteValueRpc(MessageWriter writer) => writer.Write(ValueString());
 
-    public abstract List<T> Parse(string value);
+    protected abstract T[] Parse(string value);
 
-    public abstract void CreateButtons();
+    protected abstract void CreateButtons();
 }
 
 public interface IMultiSelectOption

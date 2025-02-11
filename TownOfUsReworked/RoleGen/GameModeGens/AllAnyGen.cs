@@ -40,7 +40,7 @@ public class AllAnyGen : BaseClassicAllAnyGen
         base.Filter();
     }
 
-    public override void GetAdjustedFactions()
+    protected override void GetAdjustedFactions()
     {
         var players = GameData.Instance.PlayerCount;
         Intruders = GetRandomCount();
@@ -62,24 +62,30 @@ public class AllAnyGen : BaseClassicAllAnyGen
         {
             var random2 = URandom.RandomRangeInt(0, 3);
 
-            if (random2 == 0 && Intruders > 0)
+            switch (random2)
             {
-                Intruders--;
-                Crew++;
-            }
-            else if (random2 == 1 && Syndicate > 0)
-            {
-                Syndicate--;
-                Crew++;
-            }
-            else if (random2 == 2 && Neutrals > 0)
-            {
-                Neutrals--;
-                Crew++;
+                case 0 when Intruders > 0:
+                {
+                    Intruders--;
+                    Crew++;
+                    break;
+                }
+                case 1 when Syndicate > 0:
+                {
+                    Syndicate--;
+                    Crew++;
+                    break;
+                }
+                case 2 when Neutrals > 0:
+                {
+                    Neutrals--;
+                    Crew++;
+                    break;
+                }
             }
         }
 
-        if (TownOfUsReworked.MCIActive)
+        if (TownOfUsReworked.MciActive)
             Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Neutrals}");
     }
 

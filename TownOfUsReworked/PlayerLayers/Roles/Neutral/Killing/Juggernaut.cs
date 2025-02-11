@@ -22,7 +22,7 @@ public class Juggernaut : NKilling
     public override AttackEnum AttackVal => (AttackEnum)Mathf.Clamp(JuggKills, 1, 3);
     public override DefenseEnum DefenseVal => JuggKills >= 3 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Assault anyone who can oppose you";

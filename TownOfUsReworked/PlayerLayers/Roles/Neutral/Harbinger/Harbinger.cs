@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Harbinger : Neutral
 {
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Harbinger;

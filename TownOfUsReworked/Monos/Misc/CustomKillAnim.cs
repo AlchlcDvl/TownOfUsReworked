@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Monos;
 // Taken from Submerged going open source recently
 public class CustomKillAnimationPlayer : MonoBehaviour
 {
-    private const string DEATH_ANIM =
+    private const string DeathAnim =
         "0,0,4,0,0;" +
         "0,1.08,2,0,0;" +
         "0,1.15,2,0,0;" +
@@ -48,7 +48,7 @@ public class CustomKillAnimationPlayer : MonoBehaviour
         BodyAnim = Overlay.victimParts.cosmetics.bodySprites[0].BodySprite.GetComponent<SpriteAnim>();
         SkinAnim = Overlay.victimParts.GetSkinSpriteAnim();
 
-        LoadFrom(DEATH_ANIM);
+        LoadFrom(DeathAnim);
     }
 
     public void Start()
@@ -107,7 +107,7 @@ public class CustomKillAnimationPlayer : MonoBehaviour
         var frameCount = 0;
         Frames.Clear();
 
-        foreach (var dataString in toLoad.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        foreach (var dataString in toLoad.TrueSplit(';'))
         {
             var frame = KillAnimFrame.Deserialize(dataString);
 

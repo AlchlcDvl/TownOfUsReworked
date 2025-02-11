@@ -38,7 +38,7 @@ public class Glitch : NKilling, IBlocker
     public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
     public override bool RoleBlockImmune => true;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Neutralise anyone who can oppose you";

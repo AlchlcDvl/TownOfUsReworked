@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Operative : Crew
+public class Operative : Crew, IBugger
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number BugCd = 25;
@@ -29,7 +29,7 @@ public class Operative : Crew
 
     public List<Bug> Bugs { get; } = [];
     public List<LayerEnum> BuggedPlayers { get; } = [];
-    public CustomButton BugButton { get; set; }
+    private CustomButton BugButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Operative : FactionColor;
     public override LayerEnum Type => LayerEnum.Operative;
@@ -37,7 +37,7 @@ public class Operative : Crew
     public override Func<string> Description => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +
         " meeting\n- You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Investigative;
@@ -47,7 +47,7 @@ public class Operative : Crew
             (ConditionFunc)Condition);
     }
 
-    public override void Deinit()
+    protected override void Deinit()
     {
         base.Deinit();
         Bugs.ForEach(x => x?.gameObject?.Destroy());
@@ -61,7 +61,7 @@ public class Operative : Crew
         if (Dead)
             return;
 
-        var message = "";
+        string message;
 
         if (BuggedPlayers.Count == 0)
             message = "No one triggered your bugs.";
@@ -70,9 +70,9 @@ public class Operative : Crew
         else if (BuggedPlayers.Count == 1)
         {
             var result = BuggedPlayers[0];
-            var a_an = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Operative or LayerEnum.Amnesiac or LayerEnum.Actor or LayerEnum.Arsonist or
+            var aAn = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Operative or LayerEnum.Amnesiac or LayerEnum.Actor or LayerEnum.Arsonist or
                 LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
-            message = $"A{a_an} {result} triggered your bug.";
+            message = $"A{aAn} {result} triggered your bug.";
         }
         else if (PreciseOperativeInfo)
         {
@@ -83,17 +83,16 @@ public class Operative : Crew
         {
             message = "The following roles triggered your bugs: ";
             BuggedPlayers.Shuffle();
-            BuggedPlayers.ForEach(role => message += $"{LayerDictionary[role].Name}, ");
-            message = message[..^2];
+            message += string.Join(", ", BuggedPlayers.Select(x => LayerDictionary[x].Name));
         }
 
         if (!IsNullEmptyOrWhiteSpace(message))
             Run("<#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
-    public bool Condition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
+    private bool Condition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 
-    public void PlaceBug()
+    private void PlaceBug()
     {
         Bugs.Add(Bug.CreateBug(Player));
         BugButton.StartCooldown();

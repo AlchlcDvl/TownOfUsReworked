@@ -4,20 +4,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Shifter : Crew
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ShiftCd = 25;
+    private static Number ShiftCd = 25;
 
     [StringOption<BecomeEnum>]
-    public static BecomeEnum ShiftedBecomes = BecomeEnum.Shifter;
+    private static BecomeEnum ShiftedBecomes = BecomeEnum.Shifter;
 
-    public CustomButton ShiftButton { get; set; }
-    public CustomPlayerMenu ShifterMenu { get; set; }
+    private CustomButton ShiftButton { get; set; }
+    private CustomPlayerMenu ShifterMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Shifter : FactionColor;
     public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText => () => "Shift Around Roles";
-    public override Func<string> Description => () => "- You can steal another player's role\n- Shifting withn on-<#8CFFFFFF>Crew</color> will cause you to kill yourself";
+    public override Func<string> Description => () => "- You can steal another player's role\n- Shifting with a non-<#8CFFFFFF>Crew</color> or a framed player will cause you to kill yourself";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
@@ -25,7 +25,7 @@ public class Shifter : Crew
         ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)ShifterMenu.Open, new Cooldown(ShiftCd));
     }
 
-    public void ClickShift(PlayerControl other)
+    private void ClickShift(PlayerControl other)
     {
         if (!other.Is<Crew>() || other.IsFramed())
         {
@@ -39,17 +39,16 @@ public class Shifter : Crew
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, other);
             Shift(other);
-            Flash(Color);
         }
         else
             ShiftButton.StartCooldown(cooldown);
     }
 
-    public void Shift(PlayerControl other)
+    private void Shift(PlayerControl other)
     {
         var role = other.GetRole();
 
-        if (other.AmOwner)
+        if (other.AmOwner || Local)
             Flash(Color);
 
         var player = Player;
@@ -87,7 +86,7 @@ public class Shifter : Crew
             handler1.SetUpLayers();
     }
 
-    public bool Exception(PlayerControl player) => player.HasDied() || (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None &&
+    private bool Exception(PlayerControl player) => player.HasDied() || (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None &&
         player.Is(SubFaction)) || player == Player;
 
     public override void ReadRPC(MessageReader reader) => Shift(reader.ReadPlayer());

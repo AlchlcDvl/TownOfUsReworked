@@ -9,7 +9,7 @@ public abstract class Intruder : Role
     public override UColor Color => CustomColorManager.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Faction = Faction.Intruder;

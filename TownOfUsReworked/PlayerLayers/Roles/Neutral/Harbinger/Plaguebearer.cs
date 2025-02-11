@@ -19,7 +19,7 @@ public class Plaguebearer : Harbinger<Pestilence>
         + "spread via interaction between players";
     public override DefenseEnum DefenseVal => Infected.Count < GameData.Instance.PlayerCount / 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Infect everyone to become <#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";

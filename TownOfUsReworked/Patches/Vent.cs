@@ -16,8 +16,8 @@ public static class VentPatches
         var usable = __instance.TryCast<IUsable>();
         couldUse = GameManager.Instance.LogicUsables.CanUse(usable, playerControl) && pc.Role.CanUse(usable) && playerControl.CanVent();
 
-        if (couldUse && GameModifiers.NoVentingUncleanedVents && Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>(out var ventitaltionSystem) &&
-            ventitaltionSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
+        if (couldUse && GameModifiers.NoVentingUncleanedVents && Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>(out var ventilationSystem) &&
+            ventilationSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
         {
             couldUse = false;
         }
@@ -54,7 +54,7 @@ public static class VentPatches
             Guesser => Guesser.GuessVent && Guesser.GuessSwitchVent,
             Troll => Troll.TrollVent && Troll.TrollSwitchVent,
             Actor => Actor.ActorVent && Actor.ActSwitchVent,
-            _ => role ? !player.IsPostmortal() : true
+            _ => !role || !player.IsPostmortal()
         };
 
         // Fix for dlekS
@@ -105,15 +105,15 @@ public static class VentPatches
     }
 
     // Vent and kill shit
-    // Yes thank you Discussions - AD
+    // Yes, thank you Discussions - AD
     [HarmonyPatch(nameof(Vent.SetOutline))]
     public static void Postfix(Vent __instance, bool mainTarget)
     {
         if (!CustomPlayer.Local.TryGetLayer<Role>(out var role) || Meeting() || !CustomPlayer.Local.CanVent())
             return;
 
-        __instance.myRend.material.SetColor("_OutlineColor", role.Color);
-        __instance.myRend.material.SetColor("_AddColor", mainTarget ? role.Color : UColor.clear);
+        __instance.myRend.material.SetColor(OutlineColor, role.Color);
+        __instance.myRend.material.SetColor(AddColor, mainTarget ? role.Color : UColor.clear);
     }
 
     [HarmonyPatch(nameof(Vent.Use)), HarmonyPrefix]
@@ -127,15 +127,13 @@ public static class VentPatches
         if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
             return false;
 
-        if (vent.IsBombed() && !CustomPlayer.Local.IsPostmortal() && CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
-        {
-            CustomPlayer.Local.RpcSuicide();
-            Role.BastionBomb(vent, Bastion.BombRemovedOnKill);
-            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
-            return false;
-        }
+        if (!vent.IsBombed() || CustomPlayer.Local.IsPostmortal() || !CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
+            return true;
 
-        return true;
+        CustomPlayer.Local.RpcSuicide();
+        Role.BastionBomb(vent, Bastion.BombRemovedOnKill);
+        CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
+        return false;
     }
 
     [HarmonyPatch(nameof(Vent.UpdateArrows))]

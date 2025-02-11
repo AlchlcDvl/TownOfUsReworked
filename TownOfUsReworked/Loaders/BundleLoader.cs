@@ -2,15 +2,19 @@ namespace TownOfUsReworked.Loaders;
 
 public class BundleLoader : AssetLoader<DownloadableAsset>
 {
-    public override string DirectoryInfo => TownOfUsReworked.Bundles;
-    public override bool Downloading => true;
-    public override string Manifest => "Bundles";
+    protected override string DirectoryInfo => TownOfUsReworked.Bundles;
+    protected override bool Downloading => true;
+    protected override string Manifest => "Bundles";
 
-    public static BundleLoader Instance { get; set; }
+#if ANDROID
+    protected override IEnumerator BeginDownload(DownloadableAsset[] response, HashAlgorithm hasher) => CoDownloadAssets(response.Where(x => ShouldDownload(Path.Combine(DirectoryInfo, x.ID),
+        x.Hash, hasher)).Select(x => $"{x.ID}_android"));
+#else
+    protected override IEnumerator BeginDownload(DownloadableAsset[] response, HashAlgorithm hasher) => CoDownloadAssets(response.Where(x => ShouldDownload(Path.Combine(DirectoryInfo, x.ID),
+        x.Hash, hasher)).Select(x => x.ID));
+#endif
 
-    public override IEnumerator BeginDownload(DownloadableAsset[] response) => CoDownloadAssets(response.Where(x => ShouldDownload(Path.Combine(DirectoryInfo, x.ID), x.Hash)).Select(x => x.ID));
-
-    public override IEnumerator LoadAssets(DownloadableAsset[] response)
+    protected override IEnumerator LoadAssets(DownloadableAsset[] response)
     {
         Message($"Found {response.Length} bundles");
         var time = 0f;
@@ -20,37 +24,34 @@ public class BundleLoader : AssetLoader<DownloadableAsset>
             var asset = response[i];
             var bundle = LoadBundle(File.ReadAllBytes(Path.Combine(DirectoryInfo, asset.ID)));
             Bundles[asset.ID] = bundle;
-            bundle.AllAssetNames().ForEach(x => AssetToBundle[ConvertToBaseName(x)] = asset.ID);
+            bundle.GetAllAssetNames().ForEach(x => AssetToBundle[x.SanitisePath()] = asset.ID);
             time += Time.deltaTime;
 
-            if (time > 1f)
-            {
-                time = 0f;
-                UpdateSplashPatch.SetText($"Loading Assets ({i + 1}/{response.Length})");
-                yield return EndFrame();
-            }
+            if (time < 1f)
+                continue;
+
+            time = 0f;
+            UpdateSplashPatch.SetText($"Loading Assets ({i + 1}/{response.Length})");
+            yield return EndFrame();
         }
     }
 
-    public override IEnumerator GenerateHashes(DownloadableAsset[] response)
+    protected override IEnumerator GenerateHashes(DownloadableAsset[] response, HashAlgorithm hasher)
     {
         var time = 0f;
 
         for (var i = 0; i < response.Length; i++)
         {
             var bundle = response[i];
-            bundle.Hash = GenerateHash(Path.Combine(DirectoryInfo, bundle.ID));
+            bundle.Hash = GenerateHash(Path.Combine(DirectoryInfo, bundle.ID), hasher);
             time += Time.deltaTime;
 
-            if (time > 1f)
-            {
-                time = 0f;
-                UpdateSplashPatch.SetText($"Generating Bundle Hashes ({i + 1}/{response.Length})");
-                yield return EndFrame();
-            }
+            if (time < 1f)
+                continue;
+
+            time = 0f;
+            UpdateSplashPatch.SetText($"Generating Bundle Hashes ({i + 1}/{response.Length})");
+            yield return EndFrame();
         }
     }
-
-    private static string ConvertToBaseName(string name) => name.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Last().Split('.',
-        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).First();
 }

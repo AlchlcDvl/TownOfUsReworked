@@ -43,7 +43,7 @@ public class Whisperer : Neophyte
         "defect and join the <#F995FCFF>Cult</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Persuade or kill anyone who can oppose the <#F995FCFF>Cult</color>";

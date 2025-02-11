@@ -4,7 +4,7 @@ namespace TownOfUsReworked.RoleGen;
 
 public class ModifierGen : BaseGen
 {
-    private static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.VIP, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
+    private static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.Vip, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
         LayerEnum.Indomitable, LayerEnum.Yeller, LayerEnum.Colorblind ];
 
     public override void Clear() => AllModifiers.Clear();
@@ -37,15 +37,8 @@ public class ModifierGen : BaseGen
         AllModifiers.Shuffle();
         var invalid = new List<LayerEnum>();
 
-        if (TownOfUsReworked.MCIActive && AllModifiers.Any())
-        {
-            var ids = "";
-
-            foreach (var spawn in AllModifiers)
-                ids += $" {spawn.ID}";
-
-            Message("Modifiers in the game: " + ids.Trim());
-        }
+        if (TownOfUsReworked.MciActive && AllModifiers.Any())
+            Message("Modifiers in the game: " + string.Join(" ", AllModifiers.Select(ab => ab.ID)));
 
         while (playerList.Any() && AllModifiers.Any())
         {
@@ -80,15 +73,8 @@ public class ModifierGen : BaseGen
             }
         }
 
-        if (TownOfUsReworked.MCIActive && invalid.Any())
-        {
-            var ids = "";
-
-            foreach (var spawn in invalid)
-                ids += $" {spawn}";
-
-            Message("Invalid Modifiers in the game: " + ids.Trim());
-        }
+        if (TownOfUsReworked.MciActive && invalid.Any())
+            Message("Invalid Modifiers in the game: " + string.Join(" ", invalid));
 
         AllModifiers.Clear();
     }

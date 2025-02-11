@@ -7,13 +7,13 @@ public static class BetterPolus
     public static bool EnableBetterPolus = true;
 
     [ToggleOption]
-    public static bool PolusVentImprovements = false;
+    private static bool PolusVentImprovements = false;
 
     [StringOption<TempLocation>]
-    public static TempLocation TempLocation = TempLocation.DontMove;
+    private static TempLocation TempLocation = TempLocation.DontMove;
 
     [ToggleOption]
-    public static bool WifiChartCourseSwap = false;
+    private static bool WifiChartCourseSwap = false;
 
     [NumberOption(30f, 90f, 5f, Format.Time)]
     public static Number SeismicTimer = 60;
@@ -23,7 +23,7 @@ public static class BetterPolus
     private static readonly Vector3 WifiNewPos = new(15.975f, 0.084f, 1f);
     private static readonly Vector3 NavNewPos = new(11.07f, -15.298f, -0.015f);
     private static readonly Vector3 TempColdNewPos = new(25.4f, -6.4f, 1f);
-    private static readonly Vector3 TempColdNewPosDV = new(7.772f, -17.103f, -0.017f);
+    private static readonly Vector3 TempColdNewPosDv = new(7.772f, -17.103f, -0.017f);
     private static readonly Vector3 SpeciVentPos = new(36.5f, -22f, 0f);
 
     private static Console WifiConsole;
@@ -52,22 +52,29 @@ public static class BetterPolus
 
     public static void ApplyChanges()
     {
-        if (EnableBetterPolus)
-        {
-            FindPolusObjects();
-            AdjustPolus();
-        }
+        if (!EnableBetterPolus)
+            return;
+
+        FindPolusObjects();
+        AdjustPolus();
     }
 
     private static void AdjustPolus()
     {
-        if (TempLocation == TempLocation.SwappedWithVitals)
+        switch (TempLocation)
         {
-            MoveVitals();
-            MoveTempCold();
+            case TempLocation.SwappedWithVitals:
+            {
+                MoveVitals();
+                MoveTempCold();
+                break;
+            }
+            case TempLocation.DeathValley:
+            {
+                MoveTempColdDv();
+                break;
+            }
         }
-        else if (TempLocation == TempLocation.DeathValley)
-            MoveTempColdDV();
 
         if (WifiChartCourseSwap)
             SwitchNavWifi();
@@ -107,14 +114,14 @@ public static class BetterPolus
         if (!BathroomVent)
             BathroomVent = vents.Find(vent => vent.name == "BathroomVent");
 
-        if (!SpeciVent)
-        {
-            SpeciVent = UObject.Instantiate(AdminVent, Specimen.transform);
-            SpeciVent.Right = null;
-            SpeciVent.Left = null;
-            SpeciVent.Center = null;
-            SpeciVent.name = "SpeciVent";
-        }
+        if (SpeciVent)
+            return;
+
+        SpeciVent = UObject.Instantiate(AdminVent, Specimen.transform);
+        SpeciVent.Right = null;
+        SpeciVent.Left = null;
+        SpeciVent.Center = null;
+        SpeciVent.name = "SpeciVent";
     }
 
     private static void FindRooms()
@@ -156,34 +163,34 @@ public static class BetterPolus
         if (!Vitals)
             Vitals = AllSystemConsoles().Find(console => console.name == "panel_vitals");
 
-        if (!DvdScreenOffice)
-        {
-            var dvdScreenAdmin = AllGameObjects().Find(o => o.name == "dvdscreen");
+        if (DvdScreenOffice)
+            return;
 
-            if (dvdScreenAdmin)
-            {
-                DvdScreenOffice = UObject.Instantiate(dvdScreenAdmin, Office.transform);
-                DvdScreenOffice.name = "dvdscreen_office";
-                DvdScreenOffice.SetActive(false);
-            }
-        }
+        var dvdScreenAdmin = AllGameObjects().Find(o => o.name == "dvdscreen");
+
+        if (!dvdScreenAdmin)
+            return;
+
+        DvdScreenOffice = UObject.Instantiate(dvdScreenAdmin, Office.transform);
+        DvdScreenOffice.name = "dvdscreen_office";
+        DvdScreenOffice.SetActive(false);
     }
 
     private static void AdjustVents()
     {
-        if (PolusVentImprovements)
-        {
-            MoveSpeciVent();
-            ReconnectVents();
+        if (!PolusVentImprovements)
+            return;
 
-            if (SpeciVent)
-            {
-                SpeciVent.Id = GetAvailableId();
-                var vents = Ship().AllVents.ToList();
-                vents.Add(SpeciVent);
-                Ship().AllVents = vents.ToArray();
-            }
-        }
+        MoveSpeciVent();
+        ReconnectVents();
+
+        if (!SpeciVent)
+            return;
+
+        SpeciVent.Id = GetAvailableId();
+        var vents = Ship().AllVents.ToList();
+        vents.Add(SpeciVent);
+        Ship().AllVents = vents.ToArray();
     }
 
     private static void ReconnectVents()
@@ -208,28 +215,28 @@ public static class BetterPolus
 
     private static void MoveTempCold()
     {
-        if (TempCold.transform.position != TempColdNewPos)
-        {
-            var tempColdTransform = TempCold.transform;
-            tempColdTransform.SetParent(Outside.transform);
-            tempColdTransform.position = TempColdNewPos;
-            var collider = TempCold.GetComponent<BoxCollider2D>();
-            collider.isTrigger = false;
-            collider.size += new Vector2(0f, -0.3f);
-        }
+        if (TempCold.transform.position == TempColdNewPos)
+            return;
+
+        var tempColdTransform = TempCold.transform;
+        tempColdTransform.SetParent(Outside.transform);
+        tempColdTransform.position = TempColdNewPos;
+        var collider = TempCold.GetComponent<BoxCollider2D>();
+        collider.isTrigger = false;
+        collider.size += new Vector2(0f, -0.3f);
     }
 
-    private static void MoveTempColdDV()
+    private static void MoveTempColdDv()
     {
-        if (TempCold.transform.position != TempColdNewPosDV)
-        {
-            var tempColdTransform = TempCold.transform;
-            tempColdTransform.SetParent(Outside.transform);
-            tempColdTransform.position = TempColdNewPosDV;
-            var collider = TempCold.GetComponent<BoxCollider2D>();
-            collider.isTrigger = false;
-            collider.size += new Vector2(0f, -0.3f);
-        }
+        if (TempCold.transform.position == TempColdNewPosDv)
+            return;
+
+        var tempColdTransform = TempCold.transform;
+        tempColdTransform.SetParent(Outside.transform);
+        tempColdTransform.position = TempColdNewPosDv;
+        var collider = TempCold.GetComponent<BoxCollider2D>();
+        collider.isTrigger = false;
+        collider.size += new Vector2(0f, -0.3f);
     }
 
     private static void SwitchNavWifi()
@@ -241,13 +248,13 @@ public static class BetterPolus
             wifiTransform.position = WifiNewPos;
         }
 
-        if (NavConsole.transform.position != NavNewPos)
-        {
-            var navTransform = NavConsole.transform;
-            navTransform.SetParent(NavConsole.transform);
-            navTransform.position = NavNewPos;
-            NavConsole.checkWalls = true;
-        }
+        if (NavConsole.transform.position == NavNewPos)
+            return;
+
+        var navTransform = NavConsole.transform;
+        navTransform.SetParent(NavConsole.transform);
+        navTransform.position = NavNewPos;
+        NavConsole.checkWalls = true;
     }
 
     private static void MoveVitals()
@@ -259,15 +266,15 @@ public static class BetterPolus
             vitalsTransform.position = VitalsNewPos;
         }
 
-        if (DvdScreenOffice.transform.position != DvdScreenNewPos)
-        {
-            var dvdScreenTransform = DvdScreenOffice.transform;
-            dvdScreenTransform.position = DvdScreenNewPos;
-            var localScale = dvdScreenTransform.localScale;
-            localScale = new(0.75f, localScale.y, localScale.z);
-            dvdScreenTransform.localScale = localScale;
-            DvdScreenOffice.SetActive(true);
-        }
+        if (DvdScreenOffice.transform.position == DvdScreenNewPos)
+            return;
+
+        var dvdScreenTransform = DvdScreenOffice.transform;
+        dvdScreenTransform.position = DvdScreenNewPos;
+        var localScale = dvdScreenTransform.localScale;
+        localScale = new(0.75f, localScale.y, localScale.z);
+        dvdScreenTransform.localScale = localScale;
+        DvdScreenOffice.SetActive(true);
     }
 
     [HarmonyPatch(typeof(NormalPlayerTask), nameof(NormalPlayerTask.AppendTaskText))]
@@ -283,7 +290,7 @@ public static class BetterPolus
             if (flag)
                 sb.Append(__instance.IsComplete ? "<#00DD00FF>" : "<#FFFF00FF>");
 
-            var room = SystemTypes.Hallway;
+            SystemTypes room;
 
             if (__instance.TaskType == TaskTypes.RecordTemperature && __instance.StartAt != SystemTypes.Outside)
             {

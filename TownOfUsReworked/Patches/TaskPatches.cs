@@ -40,15 +40,15 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.Is<Hunted>() && (!playerInfo.IsDead || TaskSettings.GhostTasksCountToWin))
-                {
-                    foreach (var task in playerInfo.Tasks)
-                    {
-                        __instance.TotalTasks++;
+                if (playerInfo.Disconnected || playerInfo.Tasks == null || !pc.Is<Hunted>() || (playerInfo.IsDead && !TaskSettings.GhostTasksCountToWin))
+                    continue;
 
-                        if (task.Complete)
-                            __instance.CompletedTasks++;
-                    }
+                foreach (var task in playerInfo.Tasks)
+                {
+                    __instance.TotalTasks++;
+
+                    if (task.Complete)
+                        __instance.CompletedTasks++;
                 }
             }
         }
@@ -58,16 +58,18 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.CanDoTasks() && pc.Is(Faction.Crew) && !pc.Is<Revealer>() && (!playerInfo.IsDead ||
-                    TaskSettings.GhostTasksCountToWin))
+                if (playerInfo.Disconnected || playerInfo.Tasks == null || !pc.CanDoTasks() || !pc.Is(Faction.Crew) || pc.Is<Revealer>() || (playerInfo.IsDead &&
+                    !TaskSettings.GhostTasksCountToWin ))
                 {
-                    foreach (var task in playerInfo.Tasks)
-                    {
-                        __instance.TotalTasks++;
+                    continue;
+                }
 
-                        if (task.Complete)
-                            __instance.CompletedTasks++;
-                    }
+                foreach (var task in playerInfo.Tasks)
+                {
+                    __instance.TotalTasks++;
+
+                    if (task.Complete)
+                        __instance.CompletedTasks++;
                 }
             }
         }

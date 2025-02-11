@@ -12,7 +12,7 @@ public class Mafioso : Intruder
     public override Func<string> Description => () => "- When the <#404C08FF>Godfather</color> dies, you will become the new <#404C08FF>Godfather</color> with boosted abilities" +
         $" of your former role\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Utility;

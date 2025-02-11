@@ -41,7 +41,7 @@ public static class RegionInfoOpenPatch
                 IPField.ForceUppercase = false;
                 Coroutines.Start(PerformTimedAction(0.1f, _ =>
                 {
-                    IPField.outputText.SetText(TownOfUsReworked.Ip.Value, true);
+                    IPField.outputText.SetText(TownOfUsReworked.Ip.Value);
                     IPField.SetText(TownOfUsReworked.Ip.Value);
                 }));
                 IPField.ClearOnFocus = false;
@@ -65,7 +65,7 @@ public static class RegionInfoOpenPatch
                 PortField.characterLimit = 5;
                 Coroutines.Start(PerformTimedAction(0.1f, _ =>
                 {
-                    PortField.outputText.SetText($"{TownOfUsReworked.Port.Value}", true);
+                    PortField.outputText.SetText($"{TownOfUsReworked.Port.Value}");
                     PortField.SetText($"{TownOfUsReworked.Port.Value}");
                 }));
                 PortField.ClearOnFocus = false;
@@ -101,7 +101,7 @@ public static class RegionInfoOpenPatch
         var custom = new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, TownOfUsReworked.Ip.Value, new([new("Custom", TownOfUsReworked.Ip.Value, TownOfUsReworked.Port.Value,
             false)])).Cast<IRegionInfo>();
 
-        var iregionInfoArray = new IRegionInfo[] { mna, meu, mas, custom };
+        var iregionInfoArray = new[] { mna, meu, mas, custom };
         var iregionInfo1 = ServerManager.Instance.CurrentRegion;
 
         foreach (var iregionInfo2 in iregionInfoArray)

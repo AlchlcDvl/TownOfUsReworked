@@ -1,3 +1,4 @@
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace TownOfUsReworked.Modules;
 
 public abstract class CustomCosmetic : Asset
@@ -12,16 +13,16 @@ public abstract class CustomCosmetic : Asset
     public bool TestOnly { get; set; }
 }
 
-public abstract class CustomCosmetic<View, Data> : CustomCosmetic where View : ScriptableObject where Data : CosmeticData
+public abstract class CustomCosmetic<TView, TData> : CustomCosmetic where TView : ScriptableObject where TData : CosmeticData
 {
     [JsonPropertyName("artist")]
     public string Artist { get; set; }
 
     [JsonIgnore]
-    public View ViewData { get; set; }
+    public TView ViewData { get; set; }
 
     [JsonIgnore]
-    public Data CosmeticData { get; set; }
+    public TData CosmeticData { get; set; }
 
     [JsonPropertyName("mainhash")]
     public string MainHash { get; set; }
@@ -115,8 +116,8 @@ public class CustomColor : CustomCosmetic
     [JsonPropertyName("default")]
     public bool Default { get; set; }
 
-    [JsonPropertyName("contrasting")]
-    public bool Contrasting { get; set; }
+    // [JsonPropertyName("contrasting")]
+    // public bool Contrasting { get; set; }
 
     [JsonPropertyName("lighter")]
     public bool Lighter { get; set; }
@@ -143,10 +144,10 @@ public class CustomColor : CustomCosmetic
     public UColor[] ShadowColors { get; set; }
 
     [JsonIgnore]
-    public UColor MainColor { get; set; }
+    private UColor MainColor { get; set; }
 
     [JsonIgnore]
-    public UColor ShadowColor { get; set; }
+    private UColor ShadowColor { get; set; }
 
     public UColor GetColor()
     {
@@ -164,15 +165,15 @@ public class CustomColor : CustomCosmetic
         return ShadowColor = LerpColors(TimeSpeed, ShadowColors, ShadowColor);
     }
 
-    public static UColor LerpColors(float mul, UColor[] colors, UColor prevColor)
+    private static UColor LerpColors(float mul, UColor[] colors, UColor prevColor)
     {
         if (colors.Length == 1)
-            return colors.First();
+            return colors[0];
 
         try
         {
             // Math nerd rambling
-            // Mapping these next 4 lines onto desmos gives a nice little zig zag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
+            // Mapping these next 4 lines onto desmos gives a nice little zigzag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
             var dx = mul * Time.time;
             var f = Mathf.FloorToInt(dx);
             var m = f % 2;

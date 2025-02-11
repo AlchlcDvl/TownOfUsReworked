@@ -10,7 +10,7 @@ public static class ConfirmEjects
         if (!exiled)
         {
             if (ClientOptions.CustomEjects)
-                __instance.completeString = $"Everyone's safe...for now. ({(init.voteTie ? "Tie" : "Skipped")})";
+                __instance.completeString = $"Everyone's safe...for now. ({(init is { voteTie: true } ? "Tie" : "Skipped")})";
 
             return;
         }
@@ -20,7 +20,7 @@ public static class ConfirmEjects
         if (!player.TryGetLayer<Role>(out var role))
             return;
 
-        var ejectString = "";
+        string ejectString;
 
         if (GameSettings.ConfirmEjects)
         {

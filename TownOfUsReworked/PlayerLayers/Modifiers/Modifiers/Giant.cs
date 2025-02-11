@@ -18,5 +18,5 @@ public class Giant : Modifier
     public override LayerEnum Type => LayerEnum.Giant;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
 
-    public override void Init() => Name = TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Chonk ? (Snail ? "Chonker" : "Giant") : "Sloth"))}");
+    protected override void Init() => Name = TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Chonk ? (Snail ? "Chonker" : "Giant") : "Sloth"))}");
 }

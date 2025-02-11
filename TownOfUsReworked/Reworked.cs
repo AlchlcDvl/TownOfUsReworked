@@ -33,7 +33,7 @@ public partial class TownOfUsReworked
         SameVote = Config.Bind("Debugging", "Same Vote", false, "Disables whether or not each vote votes for the same player you do");
     }
 
-    public void LoadComponents()
+    private void LoadComponents()
     {
         var text = Path.Combine(DataPath, "steam_appid.txt");
 
@@ -42,6 +42,7 @@ public partial class TownOfUsReworked
 
         SetUpConfigs();
         Harmony.PatchAll();
+        AddressablesPatch.Initialize();
         IL2CPPChainloader.Instance.Finished += Initialise;
     }
 }

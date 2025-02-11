@@ -51,11 +51,11 @@ public static class HauntPatches
 
         foreach (var button in __instance.FilterButtons)
         {
-            if (button.isActiveAndEnabled)
-            {
-                button.transform.SetLocalX(FloatRange.SpreadToEdges(-edgeDist, edgeDist, numActive, numButtons));
-                numActive++;
-            }
+            if (!button.isActiveAndEnabled)
+                continue;
+
+            button.transform.SetLocalX(FloatRange.SpreadToEdges(-edgeDist, edgeDist, numActive, numButtons));
+            numActive++;
         }
 
         return false;

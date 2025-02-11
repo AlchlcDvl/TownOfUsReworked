@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.BetterMaps;
 
-[HeaderOption(MultiMenu.Main)]
-[HarmonyPatch(typeof(MushroomMixupSabotageSystem))]
+[HeaderOption(MultiMenu.Main), HarmonyPatch(typeof(MushroomMixupSabotageSystem))]
 public static class BetterFungle
 {
     [ToggleOption]
@@ -11,7 +10,7 @@ public static class BetterFungle
     public static Number FungleReactorTimer = 60;
 
     [NumberOption(4f, 20f, 1f, Format.Time)]
-    public static Number FungleMixupTimer = 8;
+    private static Number FungleMixupTimer = 8;
 
     [HarmonyPatch(nameof(MushroomMixupSabotageSystem.UpdateSystem))]
     public static bool Prefix(MushroomMixupSabotageSystem __instance, MessageReader msgReader)

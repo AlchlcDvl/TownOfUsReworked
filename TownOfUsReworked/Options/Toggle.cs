@@ -4,7 +4,7 @@ public class ToggleOptionAttribute() : OptionAttribute<bool>(CustomOptionType.To
 {
     private void Toggle() => Set(!Get());
 
-    public override string Format() => Get() ? "On" : "Off";
+    protected override string Format() => Get() ? "On" : "Off";
 
     public override void OptionCreated()
     {
@@ -13,7 +13,7 @@ public class ToggleOptionAttribute() : OptionAttribute<bool>(CustomOptionType.To
         toggle.TitleText.text = TranslationManager.Translate(ID);
         var button = toggle.GetComponentInChildren<PassiveButton>();
 
-        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MCIActive))
+        if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MciActive))
             button.enabled = false;
         else
             button.OverrideOnClickListeners(Toggle);
@@ -41,5 +41,5 @@ public class ToggleOptionAttribute() : OptionAttribute<bool>(CustomOptionType.To
 
     public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
 
-    public override void ReadValueString(string value) => Set(bool.Parse(value), false);
+    protected override void ReadValueString(string value) => Set(bool.Parse(value), false);
 }

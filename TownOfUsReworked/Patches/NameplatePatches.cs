@@ -10,7 +10,7 @@ public static class NameplatesTabOnEnablePatch
 
     private static void CreateNameplatePackage(List<NamePlateData> nameplates, string packageName, ref float yStart, NameplatesTab __instance)
     {
-        var isDefaultPackage = "Innersloth" == packageName;
+        var isDefaultPackage = packageName == "Innersloth";
 
         if (!isDefaultPackage)
             nameplates = [ .. nameplates.OrderBy(x => x.name) ];
@@ -21,8 +21,8 @@ public static class NameplatesTabOnEnablePatch
         {
             var title = UObject.Instantiate(Template, __instance.scroller.Inner);
             var material = title.GetComponent<MeshRenderer>().material;
-            material.SetFloat("_StencilComp", 4f);
-            material.SetFloat("_Stencil", 1f);
+            material.SetFloat(StencilComp, 4f);
+            material.SetFloat(Stencil, 1f);
             title.transform.localPosition = new(2.25f, offset, -1f);
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
@@ -55,9 +55,9 @@ public static class NameplatesTabOnEnablePatch
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             var chip = colorChip.GetComponent<NameplateChip>();
 
-            if (CustomNameplateRegistry.TryGetValue(colorChip.ProductId, out var cn))
-                chip.image.sprite = cn.ViewData.Image;
-            else
+            // if (CustomNameplateRegistry.TryGetValue(colorChip.ProductId, out var cn))
+            //     chip.image.sprite = cn.ViewData.Image;
+            // else
                 __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(nameplate.ViewDataRef, (Action<NamePlateViewData>)(viewData => chip.image.sprite = viewData?.Image)));
 
             __instance.ColorChips.Add(colorChip);

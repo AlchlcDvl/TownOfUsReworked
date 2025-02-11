@@ -49,7 +49,7 @@ global using static TownOfUsReworked.Modules.ChatCommand;
 global using static TownOfUsReworked.Classes.Interactions;
 global using static TownOfUsReworked.Managers.AssetManager;
 global using static TownOfUsReworked.Classes.ModCompatibility;
-global using static TownOfUsReworked.Extensions.LayerExtentions;
+global using static TownOfUsReworked.Extensions.LayerExtensions;
 
 global using System;
 global using System.IO;
@@ -59,6 +59,7 @@ global using System.Text.Json;
 global using System.Reflection;
 global using System.Collections;
 global using System.Collections.Generic;
+global using System.Security.Cryptography;
 global using System.Text.Json.Serialization;
 
 global using UnityEngine;

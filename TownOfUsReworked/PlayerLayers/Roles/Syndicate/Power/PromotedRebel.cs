@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer, IShaper
 {
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Power;
@@ -213,7 +213,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         Player.ResetButtons();
     }
 
-    public override void Deinit()
+    protected override void Deinit()
     {
         base.Deinit();
 
@@ -645,7 +645,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
     public bool Moving { get; set; }
     public bool IsWarp => FormerRole is Warper;
 
-    public bool WarpException(PlayerControl player) => (player == Player && !Warper.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || (!BodyById(player.PlayerId) &&
+    public bool WarpException(PlayerControl player) => (player == Player && !Warper.WarpSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || (!BodyById(player.PlayerId) &&
         player.Data.IsDead) || player.IsMoving();
 
     public bool WarpClick(PlayerControl player, out bool shouldClose)

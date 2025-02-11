@@ -14,19 +14,19 @@ public class Mafia : Disposition
     public override LayerEnum Type => LayerEnum.Mafia;
     public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Player.GetRole().Faction = Faction.Neutral;
     }
 
-    public override void CheckWin()
+    protected override void CheckWin()
     {
-        if (MafiaWin())
-        {
-            WinState = WinLose.MafiaWins;
-            Winner = true;
-            CallRpc(CustomRPC.WinLose, WinLose.MafiaWins);
-        }
+        if (!MafiaWin())
+            return;
+
+        WinState = WinLose.MafiaWins;
+        Winner = true;
+        CallRpc(CustomRPC.WinLose, WinLose.MafiaWins);
     }
 }

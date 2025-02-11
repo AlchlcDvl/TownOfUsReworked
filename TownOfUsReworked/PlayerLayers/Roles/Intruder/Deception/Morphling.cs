@@ -29,7 +29,7 @@ public class Morphling : Intruder, IMorpher
     public override Func<string> StartText => () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Deception;

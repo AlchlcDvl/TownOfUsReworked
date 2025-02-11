@@ -4,16 +4,14 @@ namespace TownOfUsReworked.Loaders;
 
 public class NameplateLoader : AssetLoader<CustomNameplate>
 {
-    public override string DirectoryInfo => TownOfUsReworked.Nameplates;
-    public override bool Downloading => true;
-    public override string Manifest => "Nameplates";
-    public override string FileExtension => "png";
+    protected override string DirectoryInfo => TownOfUsReworked.Nameplates;
+    protected override bool Downloading => true;
+    protected override string Manifest => "Nameplates";
+    protected override string FileExtension => "png";
 
-    public static NameplateLoader Instance { get; set; }
+    protected override IEnumerator BeginDownload(CustomNameplate[] response, HashAlgorithm hasher) => CoDownloadAssets(GenerateDownloadList(response, hasher));
 
-    public override IEnumerator BeginDownload(CustomNameplate[] response) => CoDownloadAssets(GenerateDownloadList(response));
-
-    public override IEnumerator LoadAssets(CustomNameplate[] response)
+    protected override IEnumerator LoadAssets(CustomNameplate[] response)
     {
         var unregistered = new List<CustomNameplate>(response);
 
@@ -39,34 +37,34 @@ public class NameplateLoader : AssetLoader<CustomNameplate>
             CreateNameplateBehaviour(file);
             time += Time.deltaTime;
 
-            if (time > 1f)
-            {
-                time = 0f;
-                UpdateSplashPatch.SetText($"Loading Nameplates ({i + 1}/{unregistered.Count})");
-                yield return EndFrame();
-            }
+            if (time < 1f)
+                continue;
+
+            time = 0f;
+            UpdateSplashPatch.SetText($"Loading Nameplates ({i + 1}/{unregistered.Count})");
+            yield return EndFrame();
         }
 
         unregistered.Clear();
     }
 
-    public override IEnumerator GenerateHashes(CustomNameplate[] response)
+    protected override IEnumerator GenerateHashes(CustomNameplate[] response, HashAlgorithm hasher)
     {
         var time = 0f;
 
         for (var i = 0; i < response.Length; i++)
         {
             var nameplate = response[i];
-            nameplate.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{nameplate.ID}.png"));
+            nameplate.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{nameplate.ID}.png"), hasher);
 
             time += Time.deltaTime;
 
-            if (time > 1f)
-            {
-                time = 0f;
-                UpdateSplashPatch.SetText($"Generating Nameplate Hashes ({i + 1}/{response.Length})");
-                yield return EndFrame();
-            }
+            if (time < 1f)
+                continue;
+
+            time = 0f;
+            UpdateSplashPatch.SetText($"Generating Nameplate Hashes ({i + 1}/{response.Length})");
+            yield return EndFrame();
         }
     }
 }

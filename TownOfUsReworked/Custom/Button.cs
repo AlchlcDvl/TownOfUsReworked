@@ -7,105 +7,104 @@ public class CustomButton
     // Params, required
     public PlayerLayer Owner { get; }
     public AbilityTypes Type { get; }
-    public string Keybind { get; }
+    private string Keybind { get; }
 
     // Params, optional (but still mostly required)
-    public string ButtonSprite { get; } = "Placeholder";
-    public SpriteFunc SpriteFunc { get; } = BlankButtonSprite;
-    public OnClickTargetless DoClickTargetless { get; } = BlankVoid;
-    public OnClickBody DoClickBody { get; } = BlankVoid;
-    public OnClickPlayer DoClickPlayer { get; } = BlankVoid;
-    public OnClickVent DoClickVent { get; } = BlankVoid;
-    public OnClickConsole DoClickConsole { get; } = BlankVoid;
-    public EffectVoid Effect { get; } = BlankVoid;
-    public EffectStartVoid OnEffectStart { get; } = BlankVoid;
-    public EffectEndVoid OnEffectEnd { get; } = BlankVoid;
-    public DelayStartVoid OnDelayStart { get; } = BlankVoid;
-    public DelayEndVoid OnDelayEnd { get; } = BlankVoid;
-    public DelayVoid ActionDelay { get; } = BlankVoid;
-    public OtherDelayStartVoid OnOtherDelayStart { get; } = BlankVoid;
-    public OtherDelayEndVoid OnOtherDelayEnd { get; } = BlankVoid;
-    public OtherDelayVoid ActionOtherDelay { get; } = BlankVoid;
-    public EndFunc End { get; } = BlankFalse;
-    public DifferenceFunc Difference { get; } = BlankZero;
-    public MultiplierFunc Multiplier { get; } = BlankOne;
-    public UsableFunc IsUsable { get; } = BlankTrue;
-    public ConditionFunc Condition { get; } = BlankTrue;
-    public PlayerBodyExclusion PlayerBodyException { get; } = BlankFalse;
-    public VentExclusion VentException { get; } = BlankFalse;
-    public ConsoleExclusion ConsoleException { get; } = BlankFalse;
-    public LabelFunc ButtonLabelFunc { get; } = BlankButtonLabel;
-    public string ButtonLabel { get; } = "ABILITY";
-    public float Cooldown { get; } = 1f;
-    public bool CanClickAgain { get; } = true;
-    public UColor TextColor { get; }
-    public bool PostDeath { get; }
-    public float Duration { get; }
-    public float Delay { get; }
-    public float OtherDelay { get; }
-    public int UseDecrement { get; } = 1;
+    private string ButtonSprite { get; } = "Placeholder";
+    private SpriteFunc SpriteFunc { get; } = BlankButtonSprite;
+    private OnClickTargetless DoClickTargetless { get; } = BlankVoid;
+    private OnClickBody DoClickBody { get; } = BlankVoid;
+    private OnClickPlayer DoClickPlayer { get; } = BlankVoid;
+    private OnClickVent DoClickVent { get; } = BlankVoid;
+    private OnClickConsole DoClickConsole { get; } = BlankVoid;
+    private EffectVoid Effect { get; } = BlankVoid;
+    private EffectStartVoid OnEffectStart { get; } = BlankVoid;
+    private EffectEndVoid OnEffectEnd { get; } = BlankVoid;
+    private DelayStartVoid OnDelayStart { get; } = BlankVoid;
+    private DelayEndVoid OnDelayEnd { get; } = BlankVoid;
+    private DelayVoid ActionDelay { get; } = BlankVoid;
+    private OtherDelayStartVoid OnOtherDelayStart { get; } = BlankVoid;
+    private OtherDelayEndVoid OnOtherDelayEnd { get; } = BlankVoid;
+    private OtherDelayVoid ActionOtherDelay { get; } = BlankVoid;
+    private EndFunc End { get; } = BlankFalse;
+    private DifferenceFunc Difference { get; } = BlankZero;
+    private MultiplierFunc Multiplier { get; } = BlankOne;
+    private UsableFunc IsUsable { get; } = BlankTrue;
+    private ConditionFunc Condition { get; } = BlankTrue;
+    private PlayerBodyExclusion PlayerBodyException { get; } = BlankFalse;
+    private VentExclusion VentException { get; } = BlankFalse;
+    private ConsoleExclusion ConsoleException { get; } = BlankFalse;
+    private LabelFunc ButtonLabelFunc { get; } = BlankButtonLabel;
+    private string ButtonLabel { get; } = "ABILITY";
+    private float Cooldown { get; } = 1f;
+    private bool CanClickAgain { get; } = true;
+    private UColor TextColor { get; }
+    private bool PostDeath { get; }
+    private float Duration { get; }
+    private float Delay { get; }
+    private float OtherDelay { get; }
+    private int UseDecrement { get; } = 1;
 
     // Other things
-    public ActionButton Base { get; set; }
-    public bool EffectEnabled { get; set; }
-    public bool DelayEnabled { get; set; }
-    public bool OtherDelayEnabled { get; set; }
-    public MonoBehaviour Target { get; set; }
+    public ActionButton Base { get; private set; }
+    private bool EffectEnabled { get; set; }
+    private bool DelayEnabled { get; set; }
+    private bool OtherDelayEnabled { get; set; }
+    public MonoBehaviour Target { get; private set; }
     public bool ClickedAgain { get; set; }
     private GameObject Block { get; set; }
     public string ID { get; set; }
-    public bool Disabled { get; set; }
-    public float EffectTime { get; set; }
+    public bool Disabled { get; private set; }
+    private float EffectTime { get; set; }
     public float DelayTime { get; set; }
-    public float OtherDelayTime { get; set; }
+    private float OtherDelayTime { get; set; }
     public float CooldownTime { get; set; }
 
     // Read-onlys (onlies?)
-    public bool HasEffect => Duration > 0f;
-    public bool HasDelay => Delay > 0f;
-    public bool HasOtherDelay => OtherDelay > 0f;
-    public bool HasUses => maxUses > -1;
+    private bool HasEffect => Duration > 0f;
+    private bool HasDelay => Delay > 0f;
+    private bool HasOtherDelay => OtherDelay > 0f;
+    public bool HasUses => Max > -1;
     public bool EffectActive => EffectTime > 0f;
-    public bool DelayActive => DelayTime > 0f;
-    public bool OtherDelayActive => OtherDelayTime > 0f;
-    public bool CooldownActive => CooldownTime > 0f;
-    public bool Targeting => Target || Type.HasFlag(AbilityTypes.Targetless);
-    private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
+    private bool DelayActive => DelayTime > 0f;
+    private bool OtherDelayActive => OtherDelayTime > 0f;
+    private bool CooldownActive => CooldownTime > 0f;
+    private bool Targeting => Target || Type.HasFlag(AbilityTypes.Targetless);
+    private bool Local => Owner.Local || TownOfUsReworked.MciActive;
 
     // Special
-    public int maxUses = -1;
+    public int Max = -1;
     public int MaxUses
     {
-        get => maxUses;
+        get => Max;
         set
         {
-            if (value == maxUses)
+            if (!HasUses || value == Max)
                 return;
 
-            maxUses = value;
+            Max = value;
+            Uses = Mathf.Clamp(Uses, 0, Max);
 
             if (Owner.Local)
                 CallRpc(CustomRPC.Misc, MiscRPC.SyncMaxUses, this, value);
-
-            Uses = Mathf.Clamp(Uses, 0, maxUses);
         }
     }
-    public int uses = -1;
+    public int UseCount = -1;
     public int Uses
     {
-        get => uses;
+        get => UseCount;
         set
         {
-            if (!HasUses || value == uses)
+            if (!HasUses || value == UseCount)
                 return;
 
-            uses = Mathf.Clamp(value, 0, maxUses);
+            UseCount = Mathf.Clamp(value, 0, Max);
 
-            if (Owner.Local)
-            {
-                CallRpc(CustomRPC.Misc, MiscRPC.SyncUses, this, value);
-                Base.SetUsesRemaining(uses);
-            }
+            if (!Owner.Local)
+                return;
+
+            CallRpc(CustomRPC.Misc, MiscRPC.SyncUses, this, value);
+            Base.SetUsesRemaining(UseCount);
         }
     }
 
@@ -113,91 +112,215 @@ public class CustomButton
     {
         foreach (var prop in properties)
         {
-            if (prop is PlayerLayer layer)
+            switch (prop)
             {
-                Owner = layer;
-                TextColor = layer.Color;
+                case PlayerLayer layer:
+                {
+                    Owner = layer;
+                    TextColor = layer.Color;
+                    break;
+                }
+                case LabelFunc labelFunc:
+                {
+                    ButtonLabelFunc = labelFunc;
+                    break;
+                }
+                case SpriteName sprite:
+                {
+                    ButtonSprite = sprite.Value;
+                    break;
+                }
+                case SpriteFunc spriteFunc:
+                {
+                    SpriteFunc = spriteFunc;
+                    break;
+                }
+                case AbilityTypes type:
+                {
+                    Type = type;
+                    break;
+                }
+                case KeybindType keybind:
+                {
+                    Keybind = $"{keybind}";
+                    break;
+                }
+                case PostDeath postDeath:
+                {
+                    PostDeath = postDeath.Value;
+                    break;
+                }
+                case OnClickTargetless onClickTargetless:
+                {
+                    DoClickTargetless = onClickTargetless;
+                    break;
+                }
+                case OnClickBody onClickBody:
+                {
+                    DoClickBody = onClickBody;
+                    break;
+                }
+                case OnClickPlayer onClickPlayer:
+                {
+                    DoClickPlayer = onClickPlayer;
+                    break;
+                }
+                case OnClickVent onClickVent:
+                {
+                    DoClickVent = onClickVent;
+                    break;
+                }
+                case OnClickConsole onClickConsole:
+                {
+                    DoClickConsole = onClickConsole;
+                    break;
+                }
+                case EffectVoid effect:
+                {
+                    Effect = effect;
+                    break;
+                }
+                case EffectStartVoid onEffect:
+                {
+                    OnEffectStart = onEffect;
+                    break;
+                }
+                case EffectEndVoid offEffect:
+                {
+                    OnEffectEnd = offEffect;
+                    break;
+                }
+                case DelayStartVoid onDelay:
+                {
+                    OnDelayStart = onDelay;
+                    break;
+                }
+                case DelayEndVoid offDelay:
+                {
+                    OnDelayEnd = offDelay;
+                    break;
+                }
+                case DelayVoid delay:
+                {
+                    ActionDelay = delay;
+                    break;
+                }
+                case OtherDelayStartVoid onOtherDelay:
+                {
+                    OnOtherDelayStart = onOtherDelay;
+                    break;
+                }
+                case OtherDelayEndVoid offOtherDelay:
+                {
+                    OnOtherDelayEnd = offOtherDelay;
+                    break;
+                }
+                case OtherDelayVoid otherDelay:
+                {
+                    ActionOtherDelay = otherDelay;
+                    break;
+                }
+                case EndFunc end:
+                {
+                    End = end;
+                    break;
+                }
+                case Cooldown cooldown:
+                {
+                    Cooldown = cooldown.Value;
+                    break;
+                }
+                case DifferenceFunc difference:
+                {
+                    Difference = difference;
+                    break;
+                }
+                case MultiplierFunc multiplier:
+                {
+                    Multiplier = multiplier;
+                    break;
+                }
+                case Duration duration:
+                {
+                    Duration = duration.Value;
+                    break;
+                }
+                case Delay delay1:
+                {
+                    Delay = delay1.Value;
+                    break;
+                }
+                case Number usesNum:
+                {
+                    UseCount = Max = usesNum;
+                    break;
+                }
+                case int number:
+                {
+                    UseCount = Max = number;
+                    break;
+                }
+                case UsableFunc usable:
+                {
+                    IsUsable = usable;
+                    break;
+                }
+                case ConditionFunc condition:
+                {
+                    Condition = condition;
+                    break;
+                }
+                case CanClickAgain canClickAgain:
+                {
+                    CanClickAgain = canClickAgain.Value;
+                    break;
+                }
+                case PlayerBodyExclusion playerBody:
+                {
+                    PlayerBodyException = playerBody;
+                    break;
+                }
+                case VentExclusion vent:
+                {
+                    VentException = vent;
+                    break;
+                }
+                case ConsoleExclusion console:
+                {
+                    ConsoleException = console;
+                    break;
+                }
+                case string label:
+                {
+                    ButtonLabel = label;
+                    break;
+                }
+                case UColor color:
+                {
+                    TextColor = color;
+                    break;
+                }
+                case OtherDelay oDelay:
+                {
+                    OtherDelay = oDelay.Value;
+                    break;
+                }
+                case UsesDecrement usesDecrement:
+                {
+                    UseDecrement = usesDecrement.Value;
+                    break;
+                }
+                case null:
+                {
+                    Warning("Entered a null prop value");
+                    break;
+                }
+                default:
+                {
+                    Warning($"Unassigned property of type {prop.GetType().Name}");
+                    break;
+                }
             }
-            else if (prop is LabelFunc labelFunc)
-                ButtonLabelFunc = labelFunc;
-            else if (prop is SpriteName sprite)
-                ButtonSprite = sprite.Value;
-            else if (prop is SpriteFunc spriteFunc)
-                SpriteFunc = spriteFunc;
-            else if (prop is AbilityTypes type)
-                Type = type;
-            else if (prop is KeybindType keybind)
-                Keybind = $"{keybind}";
-            else if (prop is PostDeath postDeath)
-                PostDeath = postDeath.Value;
-            else if (prop is OnClickTargetless onClickTargetless)
-                DoClickTargetless = onClickTargetless;
-            else if (prop is OnClickBody onClickBody)
-                DoClickBody = onClickBody;
-            else if (prop is OnClickPlayer onClickPlayer)
-                DoClickPlayer = onClickPlayer;
-            else if (prop is OnClickVent onClickVent)
-                DoClickVent = onClickVent;
-            else if (prop is OnClickConsole onClickConsole)
-                DoClickConsole = onClickConsole;
-            else if (prop is EffectVoid effect)
-                Effect = effect;
-            else if (prop is EffectStartVoid onEffect)
-                OnEffectStart = onEffect;
-            else if (prop is EffectEndVoid offEffect)
-                OnEffectEnd = offEffect;
-            else if (prop is DelayStartVoid onDelay)
-                OnDelayStart = onDelay;
-            else if (prop is DelayEndVoid offDelay)
-                OnDelayEnd = offDelay;
-            else if (prop is DelayVoid delay)
-                ActionDelay = delay;
-            else if (prop is OtherDelayStartVoid onOtherDelay)
-                OnOtherDelayStart = onOtherDelay;
-            else if (prop is OtherDelayEndVoid offOtherDelay)
-                OnOtherDelayEnd = offOtherDelay;
-            else if (prop is OtherDelayVoid otherDelay)
-                ActionOtherDelay = otherDelay;
-            else if (prop is EndFunc end)
-                End = end;
-            else if (prop is Cooldown cooldown)
-                Cooldown = cooldown.Value;
-            else if (prop is DifferenceFunc difference)
-                Difference = difference;
-            else if (prop is MultiplierFunc multiplier)
-                Multiplier = multiplier;
-            else if (prop is Duration duration)
-                Duration = duration.Value;
-            else if (prop is Delay delay1)
-                Delay = delay1.Value;
-            else if (prop is Number usesNum)
-                uses = maxUses = usesNum;
-            else if (prop is int number)
-                uses = maxUses = number;
-            else if (prop is UsableFunc usable)
-                IsUsable = usable;
-            else if (prop is ConditionFunc condition)
-                Condition = condition;
-            else if (prop is CanClickAgain canClickAgain)
-                CanClickAgain = canClickAgain.Value;
-            else if (prop is PlayerBodyExclusion playerBody)
-                PlayerBodyException = playerBody;
-            else if (prop is VentExclusion vent)
-                VentException = vent;
-            else if (prop is ConsoleExclusion console)
-                ConsoleException = console;
-            else if (prop is string label)
-                ButtonLabel = label;
-            else if (prop is UColor color)
-                TextColor = color;
-            else if (prop is OtherDelay oDelay)
-                OtherDelay = oDelay.Value;
-            else if (prop is UsesDecrement usesDecrement)
-                UseDecrement = usesDecrement.Value;
-            else if (prop is null)
-                Warning("Entered a null prop value");
-            else
-                Warning($"Unassignable proprty of type {prop.GetType().Name}");
         }
 
         CooldownTime = EffectTime = DelayTime = 0f;
@@ -228,7 +351,7 @@ public class CustomButton
         Block.transform.localPosition = new(0f, 0f, -5f);
 
         if (HasUses)
-            Base.SetUsesRemaining(uses);
+            Base.SetUsesRemaining(UseCount);
         else
             Base.SetInfiniteUses();
     }
@@ -287,14 +410,29 @@ public class CustomButton
 
                 if (Type.HasFlag(AbilityTypes.Targetless))
                     DoClickTargetless();
-                else if (Target is PlayerControl player)
-                    DoClickPlayer(player);
-                else if (Target is Vent vent)
-                    DoClickVent(vent);
-                else if (Target is DeadBody body)
-                    DoClickBody(body);
-                else if (Target is Console console)
-                    DoClickConsole(console);
+                else switch (Target)
+                {
+                    case PlayerControl player:
+                    {
+                        DoClickPlayer(player);
+                        break;
+                    }
+                    case Vent vent:
+                    {
+                        DoClickVent(vent);
+                        break;
+                    }
+                    case DeadBody body:
+                    {
+                        DoClickBody(body);
+                        break;
+                    }
+                    case Console console:
+                    {
+                        DoClickConsole(console);
+                        break;
+                    }
+                }
             }
             else if (EffectActive && CanClickAgain)
             {
@@ -383,7 +521,7 @@ public class CustomButton
         }
 
         OtherDelayTime -= Time.deltaTime;
-        ActionDelay();
+        ActionOtherDelay();
 
         if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner?.Player)
             OtherDelayTime = 0f;
@@ -421,19 +559,35 @@ public class CustomButton
     {
         if (!mono)
             return;
-        else if (mono is PlayerControl player)
-            player.cosmetics.SetOutline(color.HasValue, new(color.GetValueOrDefault()));
-        else if (mono is DeadBody body)
-            body.bodyRenderers.ForEach(x => x.SetOutlineColor(color));
-        else if (mono is Vent vent)
-            vent.MyRend().SetOutlineColor(color);
-        else if (mono is Console console)
-            console.MyRend().SetOutlineColor(color);
+
+        switch (mono)
+        {
+            case PlayerControl player:
+            {
+                player.cosmetics.SetOutline(color.HasValue, new(color.GetValueOrDefault()));
+                break;
+            }
+            case DeadBody body:
+            {
+                body.bodyRenderers.ForEach(x => x.SetOutlineColor(color));
+                break;
+            }
+            case Vent vent:
+            {
+                vent.MyRend().SetOutlineColor(color);
+                break;
+            }
+            case Console console:
+            {
+                console.MyRend().SetOutlineColor(color);
+                break;
+            }
+        }
     }
 
-    public float MaxCooldown() => PostDeath ? Cooldown : Owner.Player.GetModifiedCooldown(Cooldown, Difference(), Multiplier());
+    private float MaxCooldown() => PostDeath ? Cooldown : Owner.Player.GetModifiedCooldown(Cooldown, Difference(), Multiplier());
 
-    public string Label()
+    private string Label()
     {
         var result = ButtonLabelFunc();
 
@@ -446,7 +600,7 @@ public class CustomButton
         return result;
     }
 
-    public string Sprite()
+    private string Sprite()
     {
         var result = ButtonSprite;
 
@@ -456,7 +610,7 @@ public class CustomButton
         return result;
     }
 
-    public bool Usable() => IsUsable() && (!HasUses || uses > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() && !IsLobby() &&
+    public bool Usable() => IsUsable() && (!HasUses || UseCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() && !IsLobby() &&
         !NoPlayers() && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled && (!HasUses || Uses -
@@ -464,28 +618,28 @@ public class CustomButton
 
     private void SetTarget()
     {
-        if (!Type.HasFlag(AbilityTypes.Targetless))
-        {
-            var monos = new List<MonoBehaviour>();
+        if (Type.HasFlag(AbilityTypes.Targetless))
+            return;
 
-            if (Type.HasFlag(AbilityTypes.Console))
-                monos.Add(Owner.Player.GetClosestConsole());
+        var monos = new List<MonoBehaviour>();
 
-            if (Type.HasFlag(AbilityTypes.Player))
-                monos.Add(Owner.Player.GetClosestPlayer());
+        if (Type.HasFlag(AbilityTypes.Console))
+            monos.Add(Owner.Player.GetClosestConsole());
 
-            if (Type.HasFlag(AbilityTypes.Body))
-                monos.Add(Owner.Player.GetClosestBody());
+        if (Type.HasFlag(AbilityTypes.Player))
+            monos.Add(Owner.Player.GetClosestPlayer());
 
-            if (Type.HasFlag(AbilityTypes.Vent))
-                monos.Add(Owner.Player.GetClosestVent());
+        if (Type.HasFlag(AbilityTypes.Body))
+            monos.Add(Owner.Player.GetClosestBody());
 
-            monos.RemoveAll(Exception);
+        if (Type.HasFlag(AbilityTypes.Vent))
+            monos.Add(Owner.Player.GetClosestVent());
 
-            var previous = Target;
-            Target = Owner.Player.GetClosestMono(monos);
-            SetOutline(previous, Target);
-        }
+        monos.RemoveAll(Exception);
+
+        var previous = Target;
+        Target = Owner.Player.GetClosestMono(monos);
+        SetOutline(previous, Target);
     }
 
     private void EnableDisable()
@@ -546,22 +700,34 @@ public class CustomButton
         if (Base)
             Base.SetDisabled();
 
-        if (!Targeting)
+        if (!Targeting || !Target)
             return;
 
-        if (Target)
+        switch (Target)
         {
-            if (Target is PlayerControl player)
+            case PlayerControl player:
+            {
                 player.cosmetics.SetOutline(false, new(UColor.clear));
-            else if (Target is DeadBody body)
+                break;
+            }
+            case DeadBody body:
+            {
                 body.bodyRenderers.ForEach(x => x.SetOutlineColor(UColor.clear));
-            else if (Target is Vent vent)
+                break;
+            }
+            case Vent vent:
+            {
                 vent.MyRend().SetOutlineColor(UColor.clear);
-            else if (Target is Console console)
+                break;
+            }
+            case Console console:
+            {
                 console.MyRend().SetOutlineColor(UColor.clear);
-
-            Target = null;
+                break;
+            }
         }
+
+        Target = null;
     }
 
     public void Disable()
@@ -579,7 +745,7 @@ public class CustomButton
         Base.ToggleVisible(false);
     }
 
-    public void Enable()
+    private void Enable()
     {
         if (!Base || (!Disabled && Base.isActiveAndEnabled))
             return;

@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public class Professional : Modifier
 {
     [ToggleOption]
-    public static bool ProfessionalKnows = true;
+    private static bool ProfessionalKnows = true;
 
     public bool LifeUsed { get; set; }
 

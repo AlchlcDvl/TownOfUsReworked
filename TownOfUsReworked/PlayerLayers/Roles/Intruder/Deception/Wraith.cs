@@ -19,7 +19,7 @@ public class Wraith : Intruder
     public override Func<string> StartText => () => "Sneaky Sneaky";
     public override Func<string> Description => () => $"- You can turn invisible\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Deception;

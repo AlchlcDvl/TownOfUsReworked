@@ -4,7 +4,7 @@ public abstract class HideAndSeek : GameModeRole
 {
     public override string FactionName => "Hide And Seek";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.HideAndSeek;

@@ -15,8 +15,7 @@ public static class MainMenuPatches
 
         if (!Logo && rightPanel)
         {
-            Logo = new GameObject("ReworkedLogo");
-            Logo.transform.position = new(2f, 0f, 100f);
+            Logo = new("ReworkedLogo") { transform = { position = new(2f, 0f, 100f) } };
             var rend = Logo.AddComponent<SpriteRenderer>();
             rend.sprite = GetSprite("Banner");
             rend.material = GetMaterial("GlitchedMaterial");
@@ -150,20 +149,20 @@ public static class MainMenuPatches
         ghObj.ControllerNav.selectOnDown = discObj;
         pos.y = __instance.myAccountButton.transform.localPosition.y;
 
-        var blankObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
-        blankObj.name = "Blank";
-        blankObj.OverrideOnClickListeners(BlankVoid);
-        blankObj.transform.localPosition = pos;
-        blankObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().enabled = blankObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        blankObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-        blankObj.buttonText.text = "";
-        blankObj.activeSprites.Destroy();
-        blankObj.inactiveSprites = null;
-        __instance.myAccountButton.ControllerNav.selectOnRight = null;
-        blankObj.ControllerNav.selectOnLeft = __instance.myAccountButton;
-        blankObj.ControllerNav.selectOnUp = discObj;
-        discObj.ControllerNav.selectOnDown = __instance.quitButton;
-        __instance.quitButton.ControllerNav.selectOnUp = discObj;
+        var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
+        credObj.name = "ReworkedAssets";
+        ghObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.AssetsLink));
+        credObj.transform.localPosition = pos;
+        credObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = credObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Assets");
+        credObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+        __instance.mainButtons.Add(credObj);
+        __instance.myAccountButton.ControllerNav.selectOnRight = credObj;
+        credObj.ControllerNav.selectOnLeft = __instance.myAccountButton;
+        credObj.ControllerNav.selectOnUp = discObj;
+        discObj.ControllerNav.selectOnDown = credObj;
+        credObj.ControllerNav.selectOnDown = __instance.quitButton;
+        credObj.buttonText.text = "Mod Assets";
+        __instance.quitButton.ControllerNav.selectOnUp = credObj;
 
         var prefab = __instance.transform.GetAllComponents<StatsPopup>().First();
         var popup = UObject.Instantiate(prefab, prefab.transform.parent);
@@ -209,15 +208,15 @@ public static class MainMenuPatches
     {
         foreach (var button in __instance.mainButtons)
         {
-            if (!button.IsAny(__instance.myAccountButton, __instance.settingsButton, __instance.newsButton))
-            {
-                if (__instance.playLocalButton.gameObject.activeSelf)
-                    button.ControllerNav.selectOnRight = __instance.playLocalButton;
-                else if (__instance.PlayOnlineButton.enabled)
-                    button.ControllerNav.selectOnRight = __instance.PlayOnlineButton;
-                else
-                    button.ControllerNav.selectOnRight = __instance.howToPlayButton;
-            }
+            if (button.IsAny(__instance.myAccountButton, __instance.settingsButton, __instance.newsButton))
+                continue;
+
+            if (__instance.playLocalButton.gameObject.activeSelf)
+                button.ControllerNav.selectOnRight = __instance.playLocalButton;
+            else if (__instance.PlayOnlineButton.enabled)
+                button.ControllerNav.selectOnRight = __instance.PlayOnlineButton;
+            else
+                button.ControllerNav.selectOnRight = __instance.howToPlayButton;
         }
     }
 

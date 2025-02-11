@@ -39,7 +39,7 @@ public static class CheckEndGame
     {
         DetectStalemate();
 
-        if (WinState != WinLose.None) // Skipping subsequent checks because a condition was already fulfilled
+        if (WinState != WinLose.None) // Skipping further checks because a condition was already fulfilled
             return;
 
         CheckFactionWin();
@@ -157,22 +157,18 @@ public static class CheckEndGame
             var nobuttons1 = player1.RemainingEmergencies == 0;
             var nobuttons2 = player2.RemainingEmergencies == 0;
             var nobuttons = nobuttons1 && nobuttons2;
-            var onehasbutton = !nobuttons1 || !nobuttons2;
             var knighted1 = player1.IsKnighted() || player1.Is<Tiebreaker>();
             var knighted2 = player2.IsKnighted() || player2.Is<Tiebreaker>();
             var neitherknighted = (knighted1 && knighted2) || (!knighted1 && !knighted2);
-            var onisknighted = !knighted1 || !knighted2;
-            var pol1 = player1.Is<Politician>();
-            var pol2 = player2.Is<Politician>();
             var cankill1 = player1.CanKill();
             var cankill2 = player2.CanKill();
-            var cantkill = !cankill1 && !cankill2;
+            var cantkill = !(cankill1 || cankill2);
             var rival1 = player1.Is<Rivals>();
             var rival2 = player2.Is<Rivals>();
             var rivals = rival1 && rival2;
             var cryo = player1.Is<Cryomaniac>() && player2.Is<Cryomaniac>();
 
-            // NK vs NK when neither can kill each other and Neutrals don't win together
+            // NK vs. NK when neither can kill each other and Neutrals don't win together
             if ((cryo && nosolo && nobuttons && neitherknighted) || rivals || (cantkill && nobuttons))
                 PerformStalemate();
         }
@@ -188,7 +184,7 @@ public static class CheckEndGame
 
     public static bool TasksDone()
     {
-        if ((int)TaskSettings.LongTasks + (int)TaskSettings.CommonTasks + (int)TaskSettings.ShortTasks == 0)
+        if (TaskSettings.LongTasks + TaskSettings.CommonTasks + TaskSettings.ShortTasks == 0)
             return IsCustomHnS() || IsTaskRace();
 
         if (IsTaskRace())
@@ -217,11 +213,12 @@ public static class CheckEndGame
         if (!IntruderSettings.IntrudersCanSabotage)
             return false;
 
-        foreach (var sab in Ship().Systems?.Values)
+        foreach (var sab in Ship().Systems.values)
         {
             if (sab.TryCast<LifeSuppSystemType>(out var life) && life.Countdown <= 0f)
                 return true;
-            else if (sab.TryCast<ICriticalSabotage>(out var crit) && crit.Countdown <= 0f)
+
+            if (sab.TryCast<ICriticalSabotage>(out var crit) && crit.Countdown <= 0f)
                 return true;
         }
 

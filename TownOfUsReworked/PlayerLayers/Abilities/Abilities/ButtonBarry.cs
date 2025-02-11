@@ -4,24 +4,24 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public class ButtonBarry : Ability
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ButtonCd = 25;
+    private static Number ButtonCd = 25;
 
     private bool ButtonUsed { get; set; }
-    public CustomButton ButtonButton { get; set; }
+    private CustomButton ButtonButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.ButtonBarry : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.ButtonBarry;
     public override Func<string> Description => () => "- You can call a button from anywhere";
 
-    public override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)Call, (UsableFunc)Usable,
+    protected override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)Call, (UsableFunc)Usable,
         new Cooldown(ButtonCd));
 
     private void Call()
     {
         ButtonUsed = true;
-        FixExtentions.Fix();
+        Fixes.FixCritSabotages();
         CallMeeting(Player);
     }
 
-    public bool Usable() => !ButtonUsed;
+    private bool Usable() => !ButtonUsed;
 }

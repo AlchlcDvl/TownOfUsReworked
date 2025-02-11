@@ -60,7 +60,7 @@ public class Necromancer : Neophyte
         "up the process";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Resurrect or kill anyone who can oppose the <#E6108AFF>Reanimated</color>";
@@ -151,7 +151,7 @@ public class Necromancer : Neophyte
         ManaButton.StartCooldown();
     }
 
-    public bool Usable() => ResurrectButton.uses != ResurrectButton.maxUses;
+    public bool Usable() => ResurrectButton.UseCount != ResurrectButton.Max;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

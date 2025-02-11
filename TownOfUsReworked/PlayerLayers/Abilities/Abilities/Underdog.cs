@@ -4,7 +4,7 @@
 public class Underdog : Ability
 {
     [ToggleOption]
-    public static bool UnderdogKnows = true;
+    private static bool UnderdogKnows = true;
 
     [NumberOption(2.5f, 30f, 2.5f, Format.Time)]
     public static Number UnderdogCdBonus = 5;

@@ -2,14 +2,20 @@ namespace TownOfUsReworked.Modules;
 
 public class Ash
 {
-    public static readonly List<Ash> AllPiles = [];
-    public GameObject Pile { get; set; }
+    private static readonly List<Ash> AllPiles = [];
+    private GameObject Pile { get; set; }
 
-    public Ash(Vector2 position)
+    private Ash(Vector2 position)
     {
-        Pile = new("AshPile") { layer = LayerMask.NameToLayer("Players") };
-        Pile.transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);
-        Pile.transform.localScale = Vector3.one * 0.35f;
+        Pile = new("AshPile")
+        {
+            layer = LayerMask.NameToLayer("Players"),
+            transform =
+            {
+                position = new(position.x, position.y, (position.y / 1000f) + 0.001f),
+                localScale = Vector3.one * 0.35f
+            }
+        };
         Pile.AddComponent<SpriteRenderer>().sprite = GetSprite("AshPile");
 
         if (IsSubmerged())
@@ -19,7 +25,7 @@ public class Ash
         AllPiles.Add(this);
     }
 
-    public void Destroy()
+    private void Destroy()
     {
         if (!Pile)
             return;

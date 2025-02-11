@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch]
 public static class SurveillancePatches
 {
-    public static bool NVActive;
+    public static bool NvActive;
     private static readonly List<GameObject> Overlays = [];
     private static bool LightsOut => CustomPlayer.Local.myTasks.Any(x => x.name.Contains("FixLightsTask"));
 
@@ -59,8 +59,8 @@ public static class SurveillancePatches
         if (Overlays.Count == 0)
         {
             Overlays.Clear();
-            GameObject closeButton = null;
-            Transform viewablesTransform = null;
+            GameObject closeButton;
+            Transform viewablesTransform;
             var viewPorts = new List<MeshRenderer>();
 
             if (__instance1)
@@ -91,19 +91,26 @@ public static class SurveillancePatches
             }
         }
 
-        var ignoreNightVision = BetterSabotages.EvilsIgnoreNV && (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Faction.Neutral) &&
-            !NeutralSettings.LightsAffectNeutrals) || (CustomPlayer.Local.Is(Faction.Neutral, Alignment.Killing) && NeutralKillingSettings.NKHasImpVision) ||
-            (CustomPlayer.Local.Is(Faction.Neutral, Alignment.Neophyte) && NeutralNeophyteSettings.NNHasImpVision) || (CustomPlayer.Local.Is(Faction.Neutral, Alignment.Evil) &&
-            NeutralEvilSettings.NEHasImpVision) || (CustomPlayer.Local.Is(Faction.Neutral, Alignment.Harbinger) && NeutralHarbingerSettings.NHHasImpVision));
+        var ignoreNightVision = BetterSabotages.EvilsIgnoreNv && (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Faction.Neutral) &&
+            !NeutralSettings.LightsAffectNeutrals) || (CustomPlayer.Local.Is(Faction.Neutral, Alignment.Killing) && NeutralKillingSettings.NkHaveImpVision) ||
+            (CustomPlayer.Local.Is(Faction.Neutral, Alignment.Neophyte) && NeutralNeophyteSettings.NnHaveImpVision) || (CustomPlayer.Local.Is(Faction.Neutral, Alignment.Evil) &&
+            NeutralEvilSettings.NeHaveImpVision) || (CustomPlayer.Local.Is(Faction.Neutral, Alignment.Harbinger) && NeutralHarbingerSettings.NhHaveImpVision));
 
-        if (LightsOut && !NVActive && !ignoreNightVision)
+        switch (LightsOut)
         {
-            NVActive = true;
-            Overlays.ForEach(x => x.SetActive(true));
-            EnforceNightVision();
+            case true when !NvActive && !ignoreNightVision:
+            {
+                NvActive = true;
+                Overlays.ForEach(x => x.SetActive(true));
+                EnforceNightVision();
+                break;
+            }
+            case false when NvActive:
+            {
+                ResetNightVision();
+                break;
+            }
         }
-        else if (!LightsOut && NVActive)
-            ResetNightVision();
     }
 
     private static void ResetNightVision()
@@ -111,15 +118,15 @@ public static class SurveillancePatches
         Overlays.ForEach(x => x.Destroy());
         Overlays.Clear();
 
-        if (NVActive)
-        {
-            NVActive = false;
+        if (!NvActive)
+            return;
 
-            if (HudHandler.Instance.IsCamoed)
-                Camouflage();
-            else
-                DefaultOutfitAll();
-        }
+        NvActive = false;
+
+        if (HudHandler.Instance.IsCamoed)
+            Camouflage();
+        else
+            DefaultOutfitAll();
     }
 
     private static void EnforceNightVision()
@@ -129,8 +136,8 @@ public static class SurveillancePatches
             if (player.AmOwner)
                 continue;
 
-            if (LightsOut && Overlays.Any() && NVActive && (int)player.GetCustomOutfitType() is not (9 or 6 or 7))
-                player.SetOutfit(CustomPlayerOutfitType.NightVision, NightVisonOutfit());
+            if (LightsOut && Overlays.Any() && NvActive && (int)player.GetCustomOutfitType() is not (9 or 6 or 7))
+                player.SetOutfit(CustomPlayerOutfitType.NightVision, NightVisionOutfit());
         }
     }
 }

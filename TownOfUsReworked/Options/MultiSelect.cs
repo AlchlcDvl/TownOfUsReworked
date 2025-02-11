@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Options;
 
 public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : BaseMultiSelectOptionAttribute<T>(CustomOptionType.MultiSelect, none, all) where T : struct, Enum
 {
-    public IEnumerable<T> Values { get; set; }
+    private IEnumerable<T> Values { get; set; }
     private Type InnerType { get; } = typeof(T);
     private IEnumerable<T> Ignore { get; } = ignore;
 
@@ -18,7 +18,7 @@ public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : B
         Values.ForEach(x => TranslationManager.DebugId($"CustomOption.{InnerType.Name}.{x}"));
     }
 
-    public override string Format()
+    protected override string Format()
     {
         var result = TranslationManager.Translate($"CustomOption.{InnerType.Name}.{Value[0]}");
 
@@ -28,7 +28,7 @@ public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : B
         return result;
     }
 
-    public override void CreateButtons()
+    protected override void CreateButtons()
     {
         if (Buttons.Any())
         {
@@ -41,5 +41,5 @@ public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : B
         SettingsPatches.OnValueChanged();
     }
 
-    public override List<T> Parse(string value) => [ .. value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(Enum.Parse<T>) ];
+    protected override T[] Parse(string value) => [ .. value.TrueSplit(',').Select(Enum.Parse<T>) ];
 }

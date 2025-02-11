@@ -29,42 +29,52 @@ public static class PlayerControlOnClick
     {
         var role = player.GetRole();
 
-        if (role is Phantom phantom)
+        switch (role)
         {
-            if (role.TasksLeft <= Phantom.PhantomTasksRemaining)
-                phantom.Caught = true;
-            else
-                return;
-        }
-        else if (role is Revealer revealer)
-        {
-            if ((Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
-                (Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && CustomPlayer.Local.Is(Faction.Crew)))
+            case Phantom phantom:
             {
-                return;
-            }
+                if (role.TasksLeft <= Phantom.PhantomTasksRemaining)
+                    phantom.Caught = true;
+                else
+                    return;
 
-            if (role.TasksLeft <= Revealer.RevealerTasksRemainingClicked)
-                revealer.Caught = true;
-            else
-                return;
+                break;
+            }
+            case Revealer revealer:
+            {
+                if ((Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
+                    (Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && CustomPlayer.Local.Is(Faction.Crew)))
+                {
+                    return;
+                }
+
+                if (role.TasksLeft <= Revealer.RevealerTasksRemainingClicked)
+                    revealer.Caught = true;
+                else
+                    return;
+
+                break;
+            }
+            case Banshee banshee:
+            {
+                if (!CustomPlayer.Local.Is(Faction.Syndicate))
+                    banshee.Caught = true;
+                else
+                    return;
+
+                break;
+            }
+            case Ghoul ghoul:
+            {
+                if (!CustomPlayer.Local.Is(Faction.Intruder))
+                    ghoul.Caught = true;
+                else
+                    return;
+
+                break;
+            }
+            default: return;
         }
-        else if (role is Banshee banshee)
-        {
-            if (!CustomPlayer.Local.Is(Faction.Syndicate))
-                banshee.Caught = true;
-            else
-                return;
-        }
-        else if (role is Ghoul ghoul)
-        {
-            if (!CustomPlayer.Local.Is(Faction.Intruder))
-                ghoul.Caught = true;
-            else
-                return;
-        }
-        else
-            return;
 
         player.CustomDie(DeathReasonEnum.Caught, clicker);
     }
@@ -78,12 +88,10 @@ public static class DeadBodyOnClick
         if (Meeting() || Lobby() || IsHnS() || PerformReport.ReportPressed || CustomPlayer.Local.IsBlocked())
             return true;
 
-        if (CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Target == __instance && x.Clickable(), out var button))
-        {
-            button.Clicked();
-            return false;
-        }
+        if (!CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Target == __instance && x.Clickable(), out var button))
+            return GameModeSettings.GameMode is not (GameMode.HideAndSeek or GameMode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < Ship().CalculateLightRadius(CustomPlayer.Local.Data);
 
-        return GameModeSettings.GameMode is not (GameMode.HideAndSeek or GameMode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < Ship().CalculateLightRadius(CustomPlayer.Local.Data);
+        button?.Clicked();
+        return false;
     }
 }

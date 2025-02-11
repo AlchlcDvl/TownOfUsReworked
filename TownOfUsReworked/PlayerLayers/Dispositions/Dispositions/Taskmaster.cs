@@ -29,11 +29,11 @@ public class Taskmaster : Disposition
         else if (TasksDone && Local)
             Flash(Color);
 
-        if (AmongUsClient.Instance && TasksDone)
-        {
-            WinState = WinLose.TaskmasterWins;
-            Winner = true;
-            CallRpc(CustomRPC.WinLose, WinLose.TaskmasterWins, this);
-        }
+        if (!AmongUsClient.Instance || !TasksDone)
+            return;
+
+        WinState = WinLose.TaskmasterWins;
+        Winner = true;
+        CallRpc(CustomRPC.WinLose, WinLose.TaskmasterWins, this);
     }
 }

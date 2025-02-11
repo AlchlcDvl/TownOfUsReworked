@@ -20,7 +20,7 @@ public class Consort : Intruder, IBlocker
         $"immune to blocks\n- If you block a <#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
     public override bool RoleBlockImmune => true;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;

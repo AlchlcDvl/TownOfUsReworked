@@ -50,7 +50,7 @@ public class BountyHunter : Evil
     public override bool HasWon => TargetKilled;
     public override WinLose EndState => WinLose.BountyHunterWins;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");

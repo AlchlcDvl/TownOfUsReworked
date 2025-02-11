@@ -12,14 +12,14 @@ public class Chameleon : Crew
     [NumberOption(5f, 30f, 1f, Format.Time)]
     public static Number SwoopDur = 10;
 
-    public CustomButton SwoopButton { get; set; }
+    private CustomButton SwoopButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Chameleon : FactionColor;
     public override LayerEnum Type => LayerEnum.Chameleon;
     public override Func<string> StartText => () => "Go Invisible To Stalk Players";
     public override Func<string> Description => () => "- You can turn invisible";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
@@ -27,15 +27,15 @@ public class Chameleon : Crew
             MaxSwoops, new Duration(SwoopDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
-    public void Invis() => Utils.Invis(Player);
+    private void Invis() => Utils.Invis(Player);
 
-    public void UnInvis() => DefaultOutfit(Player);
+    private void UnInvis() => DefaultOutfit(Player);
 
-    public void Swoop()
+    private void Swoop()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, SwoopButton);
         SwoopButton.Begin();
     }
 
-    public bool EndEffect() => Dead;
+    private bool EndEffect() => Dead;
 }

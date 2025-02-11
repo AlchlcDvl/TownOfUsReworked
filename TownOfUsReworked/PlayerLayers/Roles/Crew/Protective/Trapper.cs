@@ -17,7 +17,7 @@ public class Trapper : Crew, ITrapper
 
     private CustomButton BuildButton { get; set; }
     private CustomButton TrapButton { get; set; }
-    public bool Building { get ; set; }
+    public bool Building { get ; private set; }
     public List<byte> Trapped { get; } = [];
     private List<Role> TriggeredRoles { get; } = [];
     private int TrapsMade { get; set; }
@@ -29,26 +29,26 @@ public class Trapper : Crew, ITrapper
     public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
         "them\nor protect from an attack once and attack the attacker in return";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
         Trapped.Clear();
         TriggeredRoles.Clear();
-        BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuildling, new Cooldown(BuildCd), MaxTraps,
-            (UsableFunc)Usable, new Duration(BuildDur), (EffectEndVoid)EndBuildling, new CanClickAgain(false));
+        BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuilding, new Cooldown(BuildCd), MaxTraps,
+            (UsableFunc)Usable, new Duration(BuildDur), (EffectEndVoid)EndBuilding, new CanClickAgain(false));
         TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, new Cooldown(TrapCd), MaxTraps,
             (PlayerBodyExclusion)Exception);
-        TrapsMade = TrapButton.uses = 0;
+        TrapsMade = TrapButton.UseCount = 0;
     }
 
-    private void StartBuildling()
+    private void StartBuilding()
     {
         BuildButton.Begin();
         Building = true;
     }
 
-    private void EndBuildling()
+    private void EndBuilding()
     {
         TrapButton.Uses++;
         TrapsMade++;
@@ -70,7 +70,7 @@ public class Trapper : Crew, ITrapper
 
     private bool Exception(PlayerControl player) => Trapped.Contains(player.PlayerId);
 
-    public bool Usable() => TrapsMade <= MaxTraps;
+    private bool Usable() => TrapsMade <= MaxTraps;
 
     public void TriggerTrap(PlayerControl trapped, PlayerControl trigger, bool isAttack)
     {
@@ -120,8 +120,7 @@ public class Trapper : Crew, ITrapper
         {
             message = "Your trap detected the following roles: ";
             TriggeredRoles.Shuffle();
-            TriggeredRoles.ForEach(x => message += $"{x}, ");
-            message = message[..^2];
+            message += string.Join(", ", TriggeredRoles.Select(x => LayerDictionary[x.Type].Name));
         }
 
         if (!IsNullEmptyOrWhiteSpace(message))

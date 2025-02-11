@@ -12,7 +12,7 @@ public class Veteran : Crew, IAlerter
     [NumberOption(5f, 30f, 1f, Format.Time)]
     public static Number AlertDur = 10;
 
-    public CustomButton AlertButton { get; set; }
+    public CustomButton AlertButton { get; private set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Veteran : FactionColor;
     public override LayerEnum Type => LayerEnum.Veteran;
@@ -21,7 +21,7 @@ public class Veteran : Crew, IAlerter
     public override DefenseEnum DefenseVal => AlertButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
     public override AttackEnum AttackVal => AlertButton.EffectActive ? AttackEnum.Powerful : AttackEnum.None;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;
@@ -29,12 +29,12 @@ public class Veteran : Crew, IAlerter
             (EndFunc)EndEffect, new Duration(AlertDur));
     }
 
-    public void Alert()
+    private void Alert()
     {
         Play("Alert");
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AlertButton);
         AlertButton.Begin();
     }
 
-    public bool EndEffect() => Dead;
+    private bool EndEffect() => Dead;
 }

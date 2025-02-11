@@ -18,9 +18,9 @@ public class Medium : Crew
     [StringOption<DeadRevealed>]
     public static DeadRevealed DeadRevealed = DeadRevealed.Oldest;
 
-    public Dictionary<byte, PlayerArrow> MediateArrows { get; set; }
-    public CustomButton MediateButton { get; set; }
-    // public CustomButton SeanceButton { get; set; }
+    private Dictionary<byte, PlayerArrow> MediateArrows { get; set; }
+    private CustomButton MediateButton { get; set; }
+    // private CustomButton SeanceButton { get; set; }
     // public bool HasSeanced { get; set; }
 
     public List<byte> MediatedPlayers { get; } = [];
@@ -31,7 +31,7 @@ public class Medium : Crew
     public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? "" : ("\n- When mediating, dead " +
         "players will be able to see you"));
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         MediatedPlayers.Clear();
@@ -60,14 +60,14 @@ public class Medium : Crew
 
         arrow?.Update(__instance.GetPlayerColor(false, !ShowMediatePlayer));
 
-        if (!ShowMediatePlayer)
-        {
-            __instance.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
-            PlayerMaterial.SetColors(UColor.grey, __instance.MyRend());
-        }
+        if (ShowMediatePlayer)
+            return;
+
+        __instance.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
+        PlayerMaterial.SetColors(UColor.grey, __instance.MyRend());
     }
 
-    public void Mediate()
+    private void Mediate()
     {
         MediateButton.StartCooldown();
         var playersDead = KilledPlayers.GetRange(0, KilledPlayers.Count);
@@ -77,32 +77,37 @@ public class Medium : Crew
 
         var bodies = AllBodies();
 
-        if (DeadRevealed == DeadRevealed.Random)
-            MediatePlayer(playersDead.Random(), bodies);
-        else
+        switch (DeadRevealed)
         {
-            if (DeadRevealed == DeadRevealed.Newest)
-                playersDead.Reverse();
-
-            foreach (var dead in playersDead)
+            case DeadRevealed.Random:
             {
-                if (MediatePlayer(playersDead.Random(), bodies) && DeadRevealed != DeadRevealed.Everyone)
-                    break;
+                MediatePlayer(playersDead.Random(), bodies);
+                break;
+            }
+            case DeadRevealed.Everyone:
+            {
+                playersDead.ForEach(x => MediatePlayer(x, bodies));
+                break;
+            }
+            default:
+            {
+                if (DeadRevealed == DeadRevealed.Newest)
+                    playersDead.Reverse();
+
+                MediatePlayer(playersDead[0], bodies);
+                break;
             }
         }
     }
 
-    private bool MediatePlayer(DeadPlayer dead, IEnumerable<DeadBody> bodies)
+    private void MediatePlayer(DeadPlayer dead, IEnumerable<DeadBody> bodies)
     {
-        if (bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
-        {
-            MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
-            MediatedPlayers.Add(dead.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
-            return true;
-        }
+        if (!bodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
+            return;
 
-        return false;
+        MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
+        MediatedPlayers.Add(dead.PlayerId);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
     }
 
     public override void ReadRPC(MessageReader reader)

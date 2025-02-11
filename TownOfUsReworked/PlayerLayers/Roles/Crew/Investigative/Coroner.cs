@@ -21,12 +21,12 @@ public class Coroner : Crew, IExaminer
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number AutopsyCd = 25;
 
-    public CustomButton CompareButton { get; set; }
-    public CustomButton AutopsyButton { get; set; }
+    private CustomButton CompareButton { get; set; }
+    private CustomButton AutopsyButton { get; set; }
 
     public List<byte> Reported { get; } = [];
-    public List<DeadPlayer> ReferenceBodies { get; } = [];
-    public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
+    private List<DeadPlayer> ReferenceBodies { get; } = [];
+    private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Coroner : FactionColor;
     public override LayerEnum Type => LayerEnum.Coroner;
@@ -34,7 +34,7 @@ public class Coroner : Crew, IExaminer
     public override Func<string> Description => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +
         "when you report a body\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Investigative;
@@ -46,13 +46,13 @@ public class Coroner : Crew, IExaminer
             (UsableFunc)ReferenceBodies.Any);
     }
 
-    public void DestroyArrow(byte targetPlayerId)
+    private void DestroyArrow(byte targetPlayerId)
     {
-        if (BodyArrows.TryGetValue(targetPlayerId, out var arrow))
-        {
-            arrow.Destroy();
-            BodyArrows.Remove(targetPlayerId);
-        }
+        if (!BodyArrows.TryGetValue(targetPlayerId, out var arrow))
+            return;
+
+        arrow.Destroy();
+        BodyArrows.Remove(targetPlayerId);
     }
 
     public override void ClearArrows()
@@ -70,12 +70,7 @@ public class Coroner : Crew, IExaminer
             return;
 
         var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= CoronerArrowDur));
-
-        foreach (var bodyArrow in BodyArrows.Keys)
-        {
-            if (!validBodies.Any(x => x.ParentId == bodyArrow))
-                DestroyArrow(bodyArrow);
-        }
+        BodyArrows.Keys.Where(bodyArrow => validBodies.All(x => x.ParentId != bodyArrow)).ForEach(DestroyArrow);
 
         foreach (var body in validBodies)
         {
@@ -84,14 +79,14 @@ public class Coroner : Crew, IExaminer
         }
     }
 
-    public void Autopsy(DeadBody target)
+    private void Autopsy(DeadBody target)
     {
         Spread(Player, PlayerByBody(target));
         ReferenceBodies.AddRange(KilledPlayers.Where(x => x.PlayerId == target.ParentId));
         AutopsyButton.StartCooldown();
     }
 
-    public void Compare(PlayerControl target)
+    private void Compare(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 

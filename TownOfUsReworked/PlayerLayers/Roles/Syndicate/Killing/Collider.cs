@@ -37,7 +37,7 @@ public class Collider : Syndicate
     public override Func<string> Description => () => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die together" +
         $"{(HoldsDrive ? "\n- You can charge yourself to kill those you marked" : "")}\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;
@@ -59,7 +59,7 @@ public class Collider : Syndicate
         Negative = null;
     }
 
-    public override void Deinit()
+    protected override void Deinit()
     {
         base.Deinit();
         ResetCharges();

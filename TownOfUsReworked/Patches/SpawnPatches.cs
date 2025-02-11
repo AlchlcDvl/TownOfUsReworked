@@ -47,26 +47,26 @@ public static class SpawnPatches
         hud.ImpostorVentButton.buttonLabelText.fontSharedMaterial = hud.ReportButton.buttonLabelText.fontSharedMaterial = hud.UseButton.buttonLabelText.fontSharedMaterial =
             hud.PetButton.buttonLabelText.fontSharedMaterial = hud.SabotageButton.buttonLabelText.fontSharedMaterial;
 
-        if (hud.TaskPanel)
+        if (!hud.TaskPanel)
+            return;
+
+        string text;
+
+        if (CustomPlayer.Local.CanDoTasks())
         {
-            var text = "";
+            var color = "FF00";
 
-            if (CustomPlayer.Local.CanDoTasks())
-            {
-                var color = "FF00";
+            if (role.TasksDone)
+                color = "00FF";
+            else if (role.TasksCompleted > 0)
+                color = "FFFF";
 
-                if (role.TasksDone)
-                    color = "00FF";
-                else if (role.TasksCompleted > 0)
-                    color = "FFFF";
-
-                text = $"Tasks <#{color}00FF>({role.TasksCompleted}/{role.TotalTasks})</color>";
-            }
-            else
-                text = "<#FF0000FF>Fake Tasks</color>";
-
-            hud.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().text = text;
+            text = $"Tasks <#{color}00FF>({role.TasksCompleted}/{role.TotalTasks})</color>";
         }
+        else
+            text = "<#FF0000FF>Fake Tasks</color>";
+
+        hud.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().text = text;
     }
 
     private static void RandomSpawn(bool intro, bool meeting)
@@ -79,7 +79,7 @@ public static class SpawnPatches
 
         var allLocations = new List<Vector2>();
         allLocations.AddRange(AllVents().Select(x => (Vector2)x.transform.position));
-        var tobeadded = MapPatches.CurrentMap switch
+        var toadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
             1 => MiraSpawns,
@@ -88,8 +88,8 @@ public static class SpawnPatches
             _ => null
         };
 
-        if (tobeadded != null)
-            allLocations.AddRange(tobeadded);
+        if (toadded != null)
+            allLocations.AddRange(toadded);
 
         foreach (var player in AllPlayers())
         {
@@ -99,11 +99,11 @@ public static class SpawnPatches
             player.RpcCustomSnapTo(allLocations.Random());
             player.MyPhysics.ResetMoveState();
 
-            if (IsSubmerged())
-            {
-                ChangeFloor(player.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
-            }
+            if (!IsSubmerged())
+                continue;
+
+            ChangeFloor(player.GetTruePosition().y > -7);
+            CheckOutOfBoundsElevator(CustomPlayer.Local);
         }
     }
 }

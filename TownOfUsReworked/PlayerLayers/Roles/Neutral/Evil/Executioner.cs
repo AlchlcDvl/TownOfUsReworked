@@ -50,7 +50,7 @@ public class Executioner : Evil
     public override bool HasWon => TargetVotedOut;
     public override WinLose EndState => WinLose.ExecutionerWins;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (!TargetPlayer ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");

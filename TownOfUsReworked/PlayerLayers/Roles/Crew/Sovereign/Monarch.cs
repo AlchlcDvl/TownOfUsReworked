@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Monarch : Crew, ISovereign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number KnightingCd = 25;
+    private static Number KnightingCd = 25;
 
     [ToggleOption]
     public static bool RoundOneNoKnighting = false;
 
     [NumberOption(0, 15, 1, zeroIsInf: true)]
-    public static Number KnightCount = 2;
+    private static Number KnightCount = 2;
 
     [NumberOption(1, 10, 1)]
     public static Number KnightVoteCount = 1;
@@ -22,7 +22,7 @@ public class Monarch : Crew, ISovereign
     public static bool KnightButton = true;
 
     public bool RoundOne { get; set; }
-    public CustomButton KnightingButton { get; set; }
+    private CustomButton KnightingButton { get; set; }
     public List<byte> ToBeKnighted { get; } = [];
     public List<byte> Knighted { get; } = [];
 
@@ -33,7 +33,7 @@ public class Monarch : Crew, ISovereign
         + " you cannot be killed\n- You will know when a knight of yours dies";
     public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Sovereign;
@@ -43,7 +43,7 @@ public class Monarch : Crew, ISovereign
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 
-    public void Knight(PlayerControl target)
+    private void Knight(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -59,7 +59,7 @@ public class Monarch : Crew, ISovereign
         KnightingButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();
+    private bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();
 
     public override void ReadRPC(MessageReader reader)
     {
@@ -70,7 +70,7 @@ public class Monarch : Crew, ISovereign
             CustomAchievementManager.UnlockAchievement("HiddenAlliance");
     }
 
-    public bool Usable() => !RoundOne;
+    private bool Usable() => !RoundOne;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

@@ -17,12 +17,12 @@ public class GameTab : BaseTab
         if (GUILayout.Button("Next Player"))
         {
             DebuggerBehaviour.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, true);
-            MCIUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
+            MciUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
         }
         else if (GUILayout.Button("Previous Player"))
         {
             DebuggerBehaviour.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, false);
-            MCIUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
+            MciUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
         }
 
         if (GUILayout.Button("End Game"))
@@ -41,7 +41,7 @@ public class GameTab : BaseTab
 
         if (GUILayout.Button("Fix All Sabotages"))
         {
-            FixExtentions.Fix();
+            Fixes.Fix();
             DefaultOutfitAll();
         }
 
@@ -95,12 +95,12 @@ public class GameTab : BaseTab
             Critical("Location - " + CustomPlayer.LocalCustom.Position);
         }
 
-        if (GUILayout.Button("Flash"))
-        {
-            var r = (byte)URandom.RandomRangeInt(0, 256);
-            var g = (byte)URandom.RandomRangeInt(0, 256);
-            var b = (byte)URandom.RandomRangeInt(0, 256);
-            Flash(new Color32(r, g, b, 255));
-        }
+        if (!GUILayout.Button("Flash"))
+            return;
+
+        var r = (byte)URandom.RandomRangeInt(0, 256);
+        var g = (byte)URandom.RandomRangeInt(0, 256);
+        var b = (byte)URandom.RandomRangeInt(0, 256);
+        Flash(new Color32(r, g, b, 255));
     }
 }

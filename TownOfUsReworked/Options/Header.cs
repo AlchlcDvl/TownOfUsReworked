@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : BaseHeaderOptionAttribute(menu, CustomOptionType.Header, priority)
 {
     private TextMeshPro ButtonText { get; set; }
@@ -38,11 +38,11 @@ public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : BaseHead
             SettingsPatches.OnValueChanged();
         }
 
-        if (ViewSetting)
-        {
-            Button.SelectButton(Value);
-            SettingsPatches.OnValueChangedView();
-        }
+        if (!ViewSetting)
+            return;
+
+        Button.SelectButton(Value);
+        SettingsPatches.OnValueChangedView();
     }
 
     public override void Update() => Collapse.SetActive(GroupMembers.Any(x => x.PartiallyActive()));

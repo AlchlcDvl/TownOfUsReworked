@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public class Snitch : Ability
 {
     [ToggleOption]
-    public static bool SnitchKnows = true;
+    private static bool SnitchKnows = true;
 
     [ToggleOption]
     public static bool SnitchSeesNeutrals = false;

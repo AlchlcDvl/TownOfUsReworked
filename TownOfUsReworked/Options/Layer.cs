@@ -4,21 +4,19 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 {
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
-    public int Max { get; set; } = max;
-    public int Min { get; set; } = min;
-    public LayerEnum Layer { get; } = layer;
-    public UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
-    private bool NoParts { get; set; } = noParts;
-    private string HexCode { get; set; } = hexCode;
-    public HeaderOptionAttribute GroupHeader { get; set; }
+    private int Max { get; } = max;
+    private int Min { get; } = min;
+    private UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
+    private bool NoParts { get; } = noParts;
+    private string HexCode { get; } = hexCode;
     private GameObject Unique { get; set; }
     private GameObject Active1 { get; set; }
     private GameObject Divider { get; set; }
     private GameObject Chance { get; set; }
     private GameObject Count { get; set; }
     private GameObject Cog { get; set; }
-    public SpriteRenderer UniqueCheck { get; set; }
-    public SpriteRenderer ActiveCheck { get; set; }
+    private SpriteRenderer UniqueCheck { get; set; }
+    private SpriteRenderer ActiveCheck { get; set; }
     private GameMode SavedMode { get; set; }
     private PassiveButton Button { get; set; }
     private TextMeshPro CenterTitle { get; set; }
@@ -31,6 +29,9 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     private GameObject RightCross { get; set; }
     private GameObject CenterCheck { get; set; }
     private GameObject CenterCross { get; set; }
+    public LayerEnum Layer { get; } = layer;
+    public HeaderOptionAttribute GroupHeader { get; private set; }
+
     private static Vector3 Left;
     private static Vector3 Right;
     private static Vector3 Diff;
@@ -81,7 +82,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         var unique = Unique.GetComponent<PassiveButton>();
         var active = Active1.GetComponent<PassiveButton>();
 
-        if (!AmongUsClient.Instance.AmHost || (IsInGame() && !TownOfUsReworked.MCIActive))
+        if (!AmongUsClient.Instance.AmHost || (IsInGame() && !TownOfUsReworked.MciActive))
         {
             role.CountMinusBtn.gameObject.SetActive(false);
             role.CountPlusBtn.gameObject.SetActive(false);
@@ -140,11 +141,11 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         SavedMode = GameMode.None;
     }
 
-    public int GetChance() => IsClassic() ? Get().Chance : 0;
+    private int GetChance() => IsClassic() ? Get().Chance : 0;
 
-    public int GetCount() => IsClassic() ? Get().Count : (IsRoleList() ? GetOptions<ListEntryAttribute>().Count(x => x.Get().Equals(Layer) && !x.IsBan) : 1);
+    private int GetCount() => IsClassic() ? Get().Count : (IsRoleList() ? GetOptions<ListEntryAttribute>().Count(x => x.Get().Equals(Layer) && !x.IsBan) : 1);
 
-    public void IncreaseCount()
+    private void IncreaseCount()
     {
         var val = Get();
         var chance = GetChance();
@@ -167,7 +168,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         Set(val);
     }
 
-    public void DecreaseCount()
+    private void DecreaseCount()
     {
         var val = Get();
         var chance = GetChance();
@@ -190,7 +191,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         Set(val);
     }
 
-    public void IncreaseChance()
+    private void IncreaseChance()
     {
         var val = Get();
         var count = GetCount();
@@ -209,7 +210,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         Set(val);
     }
 
-    public void DecreaseChance()
+    private void DecreaseChance()
     {
         var val = Get();
         var count = GetCount();
@@ -245,33 +246,31 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         SavedMode = GameModeSettings.GameMode;
         Divider.SetActive(SavedMode is GameMode.Classic or GameMode.AllAny);
 
-        if (!NoParts)
+        if (NoParts)
+            return;
+
+        Chance.SetActive(SavedMode is GameMode.Classic);
+        Count.SetActive(SavedMode == GameMode.Classic);
+        Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
+        Active1.SetActive(SavedMode == GameMode.AllAny);
+
+        switch (SavedMode)
         {
-            Chance.SetActive(SavedMode is GameMode.Classic);
-            Count.SetActive(SavedMode == GameMode.Classic);
-            Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
-            Active1.SetActive(SavedMode == GameMode.AllAny);
-
-            switch (SavedMode)
+            case GameMode.AllAny:
             {
-                case GameMode.Classic:
-                    Chance.transform.localPosition = Right;
-                    Count.transform.localPosition = Left;
-                    break;
-
-                case GameMode.AllAny:
-                    Unique.transform.localPosition = Right + new Vector3(0.75f, 0f, 0f);
-                    Active1.transform.localPosition = Left + new Vector3(0.75f, 0f, 0f);
-                    break;
-
-                case GameMode.RoleList:
-                    Unique.transform.localPosition = Right + Diff + new Vector3(0.76f, 0f, 0f);
-                    break;
+                Unique.transform.localPosition = Right + new Vector3(0.75f, 0f, 0f);
+                Active1.transform.localPosition = Left + new Vector3(0.75f, 0f, 0f);
+                break;
+            }
+            case GameMode.RoleList:
+            {
+                Unique.transform.localPosition = Right + Diff + new Vector3(0.76f, 0f, 0f);
+                break;
             }
         }
     }
 
-    public void ToggleActive()
+    private void ToggleActive()
     {
         var val = Get();
         val.Active = !val.Active;
@@ -281,7 +280,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         Set(val);
     }
 
-    public void ToggleUnique()
+    private void ToggleUnique()
     {
         var val = Get();
         val.Unique = !val.Unique;
@@ -289,7 +288,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         Set(val);
     }
 
-    public override string Format()
+    protected override string Format()
     {
         var val = Get();
         return GameModeSettings.GameMode switch
@@ -304,15 +303,27 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        Value = new RoleOptionData(0, 0, false, false, Layer);
-        Property?.SetValue(null, Value);
-        Field?.SetValue(null, Value);
+        var value = new RoleOptionData(0, 0, false, false, Layer);
+
+        if (IsField)
+        {
+            Field.SetValue(null, value);
+            Value = Field.GetValue<RoleOptionData>(null);
+        }
+        else if (IsProperty)
+        {
+            Property.SetValue(null, value);
+            Value = Property.GetValue<RoleOptionData>(null);
+        }
+        else
+            Value = value;
+
         GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name.Contains($"{Layer}"));
     }
 
-    public void SetUpOptionsMenu()
+    private void SetUpOptionsMenu()
     {
-        SettingsPatches.SettingsPage = 4;
+        SettingsPatches.SettingsPage = 3;
         SettingsPatches.CachedPage = 1;
         var scrollbar = GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
         SettingsPatches.ScrollerLocation = scrollbar.Inner.transform.localPosition;
@@ -321,7 +332,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         SettingsPatches.OnValueChanged();
     }
 
-    public void Toggle()
+    private void Toggle()
     {
         if (GroupHeader == null)
             return;
@@ -358,37 +369,37 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
         SavedMode = GameModeSettings.GameMode;
 
-        if (!NoParts)
-        {
-            LeftBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-            RightBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-            CenterBox.gameObject.SetActive(SavedMode == GameMode.RoleList);
+        if (NoParts)
+            return;
 
-            CenterTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
-            {
-                GameMode.RoleList => "Unique",
-                _ => ""
-            }));
-            view.chanceTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
-            {
-                GameMode.Classic => "Chance",
-                GameMode.AllAny => "Unique",
-                _ => ""
-            }));
-            LeftTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
-            {
-                GameMode.Classic => "Count",
-                GameMode.AllAny => "Active",
-                _ => ""
-            }));
-        }
+        LeftBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
+        RightBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
+        CenterBox.gameObject.SetActive(SavedMode == GameMode.RoleList);
+
+        CenterTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
+        {
+            GameMode.RoleList => "Unique",
+            _ => ""
+        }));
+        view.chanceTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
+        {
+            GameMode.Classic => "Chance",
+            GameMode.AllAny => "Unique",
+            _ => ""
+        }));
+        LeftTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
+        {
+            GameMode.Classic => "Count",
+            GameMode.AllAny => "Active",
+            _ => ""
+        }));
     }
 
-    public override string SettingNotif() => $"<{HexCode}>{base.SettingNotif()}</color>";
+    protected override string SettingNotif() => $"<{HexCode}>{base.SettingNotif()}</color>";
 
     public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadRoleOptionData(), false);
 
     public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
 
-    public override void ReadValueString(string value) => Set(RoleOptionData.Parse(value), false);
+    protected override void ReadValueString(string value) => Set(RoleOptionData.Parse(value), false);
 }

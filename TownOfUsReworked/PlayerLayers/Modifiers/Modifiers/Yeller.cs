@@ -6,7 +6,7 @@ public class Yeller : Modifier
     public override LayerEnum Type => LayerEnum.Yeller;
     public override Func<string> Description => () => "- Everyone knows where you are";
 
-    public override void Init()
+    protected override void Init()
     {
         if (!Local)
             CustomPlayer.Local.GetRole().YellerArrows.TryAdd(PlayerId, new(CustomPlayer.Local, Player, Color));

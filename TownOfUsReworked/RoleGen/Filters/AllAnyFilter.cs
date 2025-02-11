@@ -15,7 +15,6 @@ public class AllAnyFilter : BaseFilter
 
         var newList = new List<RoleOptionData>();
         spawnList.Shuffle();
-        var pc = GameData.Instance.PlayerCount;
 
         while (newList.Count < count && spawnList.Any())
         {

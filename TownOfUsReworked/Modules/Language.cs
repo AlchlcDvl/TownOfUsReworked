@@ -1,3 +1,4 @@
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace TownOfUsReworked.Modules;
 
 public class Language : Asset
@@ -9,7 +10,11 @@ public class Language : Asset
     public bool IsBlank { get; set; } // I need this here to stop the translator from spamming errors for intentionally blank translations
 
     [JsonPropertyName("ids")]
-    public string[] IDs { get; set; } // For when I want multiple IDs to point to the same thing but I'm too lazy to add their own entries to the json
+    // ReSharper disable once InconsistentNaming
+    public string[] IDs { get; set; } // For when I want multiple IDs to point to the same thing, but I'm too lazy to add their own entries to the JSON
+
+    [JsonIgnore]
+    public Dictionary<string, string> Modules { get; } = [];
 
     public string this[string lang]
     {
@@ -18,12 +23,10 @@ public class Language : Asset
             if (IsBlank)
                 return "";
 
-            var result = Values.FirstOrDefault(x => x.Name == lang)?.Value;
+            if ((!Modules.TryGetValue(lang, out var result) || IsNullEmptyOrWhiteSpace(result)) && lang != "English")
+                result = Modules.GetValueOrDefault("English");
 
-            if (IsNullEmptyOrWhiteSpace(result) && lang != "English")
-                result = Values.FirstOrDefault(x => x.Name == "English")?.Value;
-
-            return result ?? throw new UnsupportedLanguageException($"{lang} unsupported by {ID ?? IDs[0]}");
+            return IsNullEmptyOrWhiteSpace(result) ? throw new($"{lang} unsupported by {ID ?? IDs[0]}") : result;
         }
     }
 
@@ -52,7 +55,7 @@ public class Language : Asset
     // }
 }
 
-public class LangModule
+public struct LangModule
 {
     [JsonPropertyName("name")]
     public string Name { get; set; }

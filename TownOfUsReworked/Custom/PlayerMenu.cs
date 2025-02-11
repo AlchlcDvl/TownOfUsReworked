@@ -2,15 +2,15 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomPlayerMenu : CustomMenu
 {
-    public PlayerSelect Click { get; }
-    public PlayerMultiSelect MultiClick { get; }
-    public PlayerBodyExclusion Exception { get; }
-    public MenuType SelectType { get; }
-    public int MaxSelected { get; }
-    public Dictionary<byte, ShapeshifterPanel> PlayerToPanel { get; } = [];
+    private PlayerSelect Click { get; }
+    private PlayerMultiSelect MultiClick { get; }
+    private PlayerBodyExclusion Exception { get; }
+    private MenuType SelectType { get; }
+    private int MaxSelected { get; }
+    private Dictionary<byte, ShapeshifterPanel> PlayerToPanel { get; } = [];
     public List<byte> Selected { get; } = [];
 
-    public PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
+    private PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 
     private CustomPlayerMenu(PlayerControl owner, MenuType type, PlayerBodyExclusion exception) : base(owner, "Player")
     {
@@ -32,7 +32,7 @@ public class CustomPlayerMenu : CustomMenu
         MaxSelected = 1;
     }
 
-    public void Clicked(PlayerControl player)
+    private void Clicked(PlayerControl player)
     {
         var shouldClose = false;
 
@@ -48,11 +48,11 @@ public class CustomPlayerMenu : CustomMenu
 
         PlayerToPanel.ForEach((x, y) => y.Background.color = Selected.Contains(x) ? UColor.red : UColor.white);
 
-        if (SelectType == MenuType.Single || shouldClose || Selected.Count >= MaxSelected)
-        {
-            Menu.Close();
-            IsActive = false;
-        }
+        if (SelectType != MenuType.Single && !shouldClose && Selected.Count < MaxSelected)
+            return;
+
+        Menu.Close();
+        IsActive = false;
     }
 
     public override ISystem.List<UiElement> CreateMenu(ShapeshifterMinigame __instance)

@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace TownOfUsReworked.Modules;
 
 // Yoinked this lovely piece of code from Daemon at https://github.com/DaemonBeast/Mitochondria/blob/main/Mitochondria.Core/Utilities/Structures/Map.cs albeit with a few changes of my own
@@ -82,9 +80,9 @@ public class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<T1, T2>
 
     public bool Remove(T2 value) => Backward.Remove(value, out var key) && Forward.Remove(key);
 
-    public bool TryGetValue(T1 key, [MaybeNullWhen(false)] out T2 value) => Forward.TryGetValue(key, out value);
+    public bool TryGetValue(T1 key, out T2 value) => Forward.TryGetValue(key, out value);
 
-    public bool TryGetKey(T2 value, [MaybeNullWhen(false)] out T1 key) => Backward.TryGetValue(value, out key);
+    public bool TryGetKey(T2 value, out T1 key) => Backward.TryGetValue(value, out key);
 
     public T2 this[T1 key]
     {

@@ -19,13 +19,13 @@ public class Rivals : Disposition
 
     public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Rivals;
 
-    public override void CheckWin()
+    protected override void CheckWin()
     {
-        if (RivalsWin(Player))
-        {
-            WinState = WinLose.RivalWins;
-            Winner = true;
-            CallRpc(CustomRPC.WinLose, WinLose.RivalWins, this);
-        }
+        if (!RivalsWin(Player))
+            return;
+
+        WinState = WinLose.RivalWins;
+        Winner = true;
+        CallRpc(CustomRPC.WinLose, WinLose.RivalWins, this);
     }
 }

@@ -4,7 +4,7 @@ public abstract class Crew : Role
 {
     public override UColor Color => CustomColorManager.Crew;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Faction = Faction.Crew;

@@ -11,7 +11,7 @@ public static class MeetingPatches
     [HarmonyPatch(nameof(MeetingHud.Confirm))]
     public static void Postfix(MeetingHud __instance, byte suspectStateIdx)
     {
-        if (!IsLocalGame() || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote.Value)
+        if (!IsLocalGame() || !TownOfUsReworked.MciActive || !TownOfUsReworked.SameVote.Value)
             return;
 
         __instance.playerStates.ForEach(x => __instance.CmdCastVote(x.TargetPlayerId, suspectStateIdx));
@@ -64,28 +64,24 @@ public static class MeetingPatches
                 Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                 yield return Wait(2f);
                 var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
-
-                if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Both)
-                    report = $"They were killed by member of the {killerRole.FactionName}, the {killerRole}.";
-                else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
-                    report = $"They were killed by the {killerRole}.";
-                else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
-                    report = $"They were killed by a member of the {killerRole.FactionName}.";
-                else
-                    report = "They were killed by an unknown assailant.";
+                report = GameAnnouncementSettings.KillerReports switch
+                {
+                    RoleFactionReports.Both => $"They were killed by member of the {killerRole.FactionName}, the {killerRole}.",
+                    RoleFactionReports.Role => $"They were killed by the {killerRole}.",
+                    RoleFactionReports.Faction => $"They were killed by a member of the {killerRole.FactionName}.",
+                    _ => "They were killed by an unknown assailant."
+                };
 
                 Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
                 yield return Wait(2f);
                 var role = player.GetRole();
-
-                if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Both)
-                    report = $"They were a member of the {role.FactionName}, the {role}.";
-                else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
-                    report = $"They were the {role}.";
-                else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
-                    report = $"They were a member of the {role.FactionName}.";
-                else
-                    report = $"We could not determine what {player.name} was.";
+                report = GameAnnouncementSettings.RoleFactionReports switch
+                {
+                    RoleFactionReports.Both => $"They were a member of the {role.FactionName}, the {role}.",
+                    RoleFactionReports.Role => $"They were the {role}.",
+                    RoleFactionReports.Faction => $"They were a member of the {role.FactionName}.",
+                    _ => $"We could not determine what {player.name} was."
+                };
 
                 Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
             }
@@ -96,43 +92,49 @@ public static class MeetingPatches
 
             foreach (var playerid in RecentlyKilled)
             {
-                if (playerid != check.PlayerId)
+                if (playerid == check?.PlayerId)
+                    continue;
+
+                var player = PlayerById(playerid);
+                var report = $"{player.name} was found dead last round.";
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
+                yield return Wait(2f);
+                report = "It is unknown where they died.";
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
+                yield return Wait(2f);
+
+                var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
+
+                if (Cleaned.Contains(player.PlayerId))
+                    report = "They were killed by an unknown assailant.";
+                else
                 {
-                    var player = PlayerById(playerid);
-                    var report = $"{player.name} was found dead last round.";
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                    yield return Wait(2f);
-                    report = "It is unknown where they died.";
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                    yield return Wait(2f);
-
-                    var killerRole = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId).GetRole();
-
-                    if (Cleaned.Contains(player.PlayerId))
-                        report = "They were killed by an unknown assailant.";
-                    else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Role)
-                        report = $"They were killed by the {killerRole.Name}.";
-                    else if (GameAnnouncementSettings.KillerReports == RoleFactionReports.Faction)
-                        report = $"They were killed by the {killerRole.FactionName}.";
-                    else
-                        report = "They were killed by an unknown assailant.";
-
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                    yield return Wait(2f);
-                    var role = player.GetRole();
-
-                    if (Cleaned.Contains(player.PlayerId))
-                        report = $"We could not determine what {player.name} was.";
-                    else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Role)
-                        report = $"They were the {role}.";
-                    else if (GameAnnouncementSettings.RoleFactionReports == RoleFactionReports.Faction)
-                        report = $"They were the {role.FactionName}.";
-                    else
-                        report = $"We could not determine what {player.name} was.";
-
-                    Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
-                    yield return Wait(2f);
+                    report = GameAnnouncementSettings.KillerReports switch
+                    {
+                        RoleFactionReports.Role => $"They were killed by the {killerRole.Name}.",
+                        RoleFactionReports.Faction => $"They were killed by the {killerRole.FactionName}.",
+                        _ => "They were killed by an unknown assailant."
+                    };
                 }
+
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
+                yield return Wait(2f);
+                var role = player.GetRole();
+
+                if (Cleaned.Contains(player.PlayerId))
+                    report = $"We could not determine what {player.name} was.";
+                else
+                {
+                    report = GameAnnouncementSettings.RoleFactionReports switch
+                    {
+                        RoleFactionReports.Role => $"They were the {role}.",
+                        RoleFactionReports.Faction => $"They were the {role.FactionName}.",
+                        _ => $"We could not determine what {player.name} was."
+                    };
+                }
+
+                Run("<#6C29ABFF>》 Game Announcement 《</color>", report);
+                yield return Wait(2f);
             }
         }
 
@@ -221,7 +223,7 @@ public static class MeetingPatches
         if (IsCustomHnS() || IsTaskRace())
             return;
 
-        // Deactivate skip Button if skipping on emergency meetings is disabled
+        // Deactivate skip Button if skipping an emergency meeting is disabled
         __instance.SkipVoteButton.gameObject.SetActive(!((Reported == null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping ==
             DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !CustomPlayer.LocalCustom.Dead);
 
@@ -254,23 +256,22 @@ public static class MeetingPatches
 
     private static bool CheckVoted(PlayerVoteArea playerVoteArea)
     {
+        CheckVotedVoid(playerVoteArea);
+        return true;
+    }
+
+    private static void CheckVotedVoid(PlayerVoteArea playerVoteArea)
+    {
         if (playerVoteArea.AmDead || playerVoteArea.DidVote)
-            return true;
+            return;
 
         var playerInfo = GameData.Instance.GetPlayerById(playerVoteArea.TargetPlayerId);
 
-        if (!playerInfo)
-            return true;
+        if (!playerInfo || !playerInfo.IsDead)
+            return;
 
-        var playerControl = playerInfo.Object;
-
-        if (playerInfo.IsDead)
-        {
-            playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
-            playerVoteArea.SetDead(false, true);
-        }
-
-        return true;
+        playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
+        playerVoteArea.SetDead(false, true);
     }
 
     [HarmonyPatch(nameof(MeetingHud.CheckForEndVoting)), HarmonyPrefix]
@@ -278,7 +279,7 @@ public static class MeetingPatches
     {
         if (__instance.playerStates.All(ps => ps.AmDead || (ps.DidVote && CheckVoted(ps))))
         {
-            var self = __instance.CalculateAllVotes(out var tie, out var maxIdx);
+            __instance.CalculateAllVotes(out var tie, out var maxIdx);
             var array = new Il2CppStructArray<MeetingHud.VoterState>(__instance.playerStates.Length);
             var exiled = tie ? null : GameData.Instance.GetPlayerById(maxIdx.Key);
 
@@ -312,30 +313,26 @@ public static class MeetingPatches
 
         foreach (var player in __instance.playerStates)
         {
-            if (deadBodies.Any(x => x.PlayerId == player.TargetPlayerId))
+            if (deadBodies.All(x => x.PlayerId != player.TargetPlayerId))
+                continue;
+
+            player.Megaphone.gameObject.SetActive(true);
+            player.Megaphone.enabled = true;
+            player.Megaphone.transform.localEulerAngles = Vector3.zero;
+            player.Megaphone.transform.localScale = Vector3.one;
+
+            if (player.TargetPlayerId != reportedBody.PlayerId)
             {
-                player.Megaphone.gameObject.SetActive(true);
-                player.Megaphone.enabled = true;
-                player.Megaphone.transform.localEulerAngles = Vector3.zero;
-                player.Megaphone.transform.localScale = Vector3.one;
-
-                if (player.TargetPlayerId != reportedBody.PlayerId)
-                {
-                    player.Megaphone.sprite = GameManager.Instance.DeadBodyPrefab.bodyRenderers[0].sprite;
-                    player.Megaphone.transform.localScale = new(0.3f, 0.3f, 0.3f);
-                    player.Megaphone.transform.localPosition -= new Vector3(0.2f, 0, 0);
-                }
-
-                ReportedBodies.Add(player.TargetPlayerId);
+                player.Megaphone.sprite = GameManager.Instance.DeadBodyPrefab.bodyRenderers[0].sprite;
+                player.Megaphone.transform.localScale = new(0.3f, 0.3f, 0.3f);
+                player.Megaphone.transform.localPosition -= new Vector3(0.2f, 0, 0);
             }
+
+            ReportedBodies.Add(player.TargetPlayerId);
         }
     }
 
-    private static IEnumerator Slide2D(Transform target, Vector3 source, Vector3 dest, float duration)
-    {
-        yield return PerformTimedAction(duration, p => target.position = Vector3.Lerp(source, dest, p));
-        target.position = dest;
-    }
+    private static IEnumerator Slide2D(Transform target, Vector3 source, Vector3 dest, float duration) => PerformTimedAction(duration, p => target.position = Vector3.Lerp(source, dest, p));
 
     private static IEnumerator PerformSwaps()
     {
@@ -424,14 +421,12 @@ public static class MeetingPatches
         }
     }
 
-    private static Dictionary<byte, int> CalculateAllVotes(this MeetingHud __instance, out bool tie, out KeyValuePair<byte, int> max)
+    private static void CalculateAllVotes(this MeetingHud __instance, out bool tie, out KeyValuePair<byte, int> max)
     {
         var dictionary = new Dictionary<byte, int>();
 
-        for (var i = 0; i < __instance.playerStates.Length; i++)
+        foreach (var playerVoteArea in __instance.playerStates)
         {
-            var playerVoteArea = __instance.playerStates[i];
-
             if (!playerVoteArea.DidVote || playerVoteArea.AmDead || playerVoteArea.VotedFor == PlayerVoteArea.MissedVote || playerVoteArea.VotedFor == PlayerVoteArea.DeadVote)
                 continue;
 
@@ -454,13 +449,13 @@ public static class MeetingPatches
 
         foreach (var role in PlayerLayer.GetLayers<Mayor>())
         {
-            if (role.Revealed)
-            {
-                if (dictionary.TryGetValue(VoteAreaByPlayer(role.Player).VotedFor, out var num))
-                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = num + Mayor.MayorVoteCount;
-                else
-                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = 1 + Mayor.MayorVoteCount;
-            }
+            if (!role.Revealed)
+                continue;
+
+            if (dictionary.TryGetValue(VoteAreaByPlayer(role.Player).VotedFor, out var num))
+                dictionary[VoteAreaByPlayer(role.Player).VotedFor] = num + Mayor.MayorVoteCount;
+            else
+                dictionary[VoteAreaByPlayer(role.Player).VotedFor] = 1 + Mayor.MayorVoteCount;
         }
 
         var knighted = new List<byte>();
@@ -469,17 +464,17 @@ public static class MeetingPatches
         {
             foreach (var id in role.Knighted)
             {
-                if (!knighted.Contains(id))
-                {
-                    var area = VoteAreaById(id);
+                if (knighted.Contains(id))
+                    continue;
 
-                    if (dictionary.TryGetValue(area.VotedFor, out var num))
-                        dictionary[area.VotedFor] = num + Monarch.KnightVoteCount;
-                    else
-                        dictionary[area.VotedFor] = 1 + Monarch.KnightVoteCount;
+                var area = VoteAreaById(id);
 
-                    knighted.Add(id);
-                }
+                if (dictionary.TryGetValue(area.VotedFor, out var num))
+                    dictionary[area.VotedFor] = num + Monarch.KnightVoteCount;
+                else
+                    dictionary[area.VotedFor] = 1 + Monarch.KnightVoteCount;
+
+                knighted.Add(id);
             }
         }
 
@@ -504,21 +499,17 @@ public static class MeetingPatches
         {
             foreach (var player in __instance.playerStates)
             {
-                if (!player.DidVote || player.AmDead || player.VotedFor == PlayerVoteArea.MissedVote || player.VotedFor == PlayerVoteArea.DeadVote)
+                if (!player.DidVote || player.AmDead || player.VotedFor == PlayerVoteArea.MissedVote || player.VotedFor == PlayerVoteArea.DeadVote || !PlayerByVoteArea(player).Is<Tiebreaker>())
                     continue;
 
-                if (PlayerByVoteArea(player).Is<Tiebreaker>())
-                {
-                    if (dictionary.TryGetValue(player.VotedFor, out var num))
-                        dictionary[player.VotedFor] = num + 1;
-                    else
-                        dictionary[player.VotedFor] = 1;
-                }
+                if (dictionary.TryGetValue(player.VotedFor, out var num))
+                    dictionary[player.VotedFor] = num + 1;
+                else
+                    dictionary[player.VotedFor] = 1;
             }
         }
 
         dictionary.MaxPair(out tie);
-        return dictionary;
     }
 
     private static KeyValuePair<byte, int> MaxPair(this Dictionary<byte, int> self, out bool tie)

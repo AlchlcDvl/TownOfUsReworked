@@ -34,7 +34,7 @@ public class Cryomaniac : NKilling
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Freeze anyone who can oppose you";

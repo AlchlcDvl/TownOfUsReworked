@@ -1,12 +1,12 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None, bool noParts = false, string colorHex = null, int priority = -1, MultiMenu menu = MultiMenu.Layer) :
     BaseHeaderOptionAttribute(menu, CustomOptionType.Alignment, priority)
 {
-    public RoleListSlot Alignment { get; } = alignment;
+    private RoleListSlot Alignment { get; } = alignment;
     private bool NoParts { get; } = noParts;
-    public BaseHeaderOptionAttribute GroupHeader { get; set; }
+    public HeaderOptionAttribute GroupHeader { get; private set; }
     private TextMeshPro Left { get; set; }
     private TextMeshPro Right { get; set; }
     private TextMeshPro Center { get; set; }
@@ -98,7 +98,7 @@ public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None
     public override void Toggle()
     {
         Value = !Get();
-        (GroupHeader as HeaderOptionAttribute)?.Toggle();
+        GroupHeader?.Toggle();
 
         if (Setting)
         {
@@ -106,11 +106,11 @@ public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None
             SettingsPatches.OnValueChanged();
         }
 
-        if (ViewSetting)
-        {
-            Button.SelectButton(Value);
-            SettingsPatches.OnValueChangedView();
-        }
+        if (!ViewSetting)
+            return;
+
+        Button.SelectButton(Value);
+        SettingsPatches.OnValueChangedView();
     }
 
     public override void Update()
@@ -124,31 +124,31 @@ public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None
 
         SavedMode = GameModeSettings.GameMode;
 
-        if (!NoParts)
-        {
-            Left.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-            Right.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-            Center.gameObject.SetActive(SavedMode == GameMode.RoleList);
-            Single.SetActive(SavedMode is not (GameMode.Classic or GameMode.AllAny));
+        if (NoParts)
+            return;
 
-            Center.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
-            {
-                GameMode.RoleList => "Unique",
-                _ => ""
-            }));
-            Right.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
-            {
-                GameMode.Classic => "Chance",
-                GameMode.AllAny => "Unique",
-                _ => ""
-            }));
-            Left.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
-            {
-                GameMode.Classic => "Count",
-                GameMode.AllAny => "Active",
-                _ => ""
-            }));
-        }
+        Left.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
+        Right.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
+        Center.gameObject.SetActive(SavedMode == GameMode.RoleList);
+        Single.SetActive(SavedMode is not (GameMode.Classic or GameMode.AllAny));
+
+        Center.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
+        {
+            GameMode.RoleList => "Unique",
+            _ => ""
+        }));
+        Right.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
+        {
+            GameMode.Classic => "Chance",
+            GameMode.AllAny => "Unique",
+            _ => ""
+        }));
+        Left.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
+        {
+            GameMode.Classic => "Count",
+            GameMode.AllAny => "Active",
+            _ => ""
+        }));
     }
 
     public override void PostLoadSetup()
@@ -157,9 +157,9 @@ public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None
         GroupHeader = GetOption<HeaderOptionAttribute>($"{Name.Replace("Roles", "")}Settings");
     }
 
-    public void SetUpOptionsMenu()
+    private void SetUpOptionsMenu()
     {
-        SettingsPatches.SettingsPage = 5;
+        SettingsPatches.SettingsPage = 4;
         SettingsPatches.CachedPage = 1;
         var scrollbar = GameSettingMenu.Instance.RoleSettingsTab.scrollBar;
         SettingsPatches.ScrollerLocation = scrollbar.Inner.transform.localPosition;

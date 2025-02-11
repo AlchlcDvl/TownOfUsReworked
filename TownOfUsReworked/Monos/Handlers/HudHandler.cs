@@ -24,32 +24,27 @@ public class HudHandler : MonoBehaviour
         HUD().ReportButton?.ToggleVisible(!CustomPlayer.Local.HasDied() && !CustomPlayer.Local.Is<Coward>() && !CustomPlayer.Local.Is(Faction.GameMode) && !Meeting() &&
             !MapBehaviourPatches.MapActive);
 
-        foreach (var id in UninteractiblePlayers.Keys)
+        foreach (var player in UninteractablePlayers.Keys.Select(id => PlayerById(id)).Where(player => !player.HasDied()))
         {
-            var player = PlayerById(id);
-
-            if (player.HasDied())
+            if (!UninteractablePlayers.TryGetValue(player.PlayerId, out var time) || !UninteractablePlayers2.TryGetValue(player.PlayerId, out var limit) || Time.time - time > limit)
                 continue;
 
-            if (UninteractiblePlayers.TryGetValue(player.PlayerId, out var time) && UninteractiblePlayers2.TryGetValue(player.PlayerId, out var limit) && Time.time - time < limit)
-            {
-                UninteractiblePlayers.Remove(player.PlayerId);
-                UninteractiblePlayers2.Remove(player.PlayerId);
-            }
+            UninteractablePlayers.Remove(player.PlayerId);
+            UninteractablePlayers2.Remove(player.PlayerId);
         }
 
-        if (BetterSabotages.CamouflagedComms)
+        if (!BetterSabotages.CamouflagedComms)
+            return;
+
+        if (Ship().Systems.TryGetValue(SystemTypes.Comms, out var sab) && sab.TryCast<IActivatable>(out var comms) && comms.IsActive)
         {
-            if (Ship().Systems.TryGetValue(SystemTypes.Comms, out var sab) && sab.TryCast<IActivatable>(out var comms) && comms.IsActive)
-            {
-                CommsEnabled = true;
-                Camouflage();
-            }
-            else if (CommsEnabled && !(CamouflagerEnabled || GodfatherEnabled))
-            {
-                CommsEnabled = false;
-                DefaultOutfitAll();
-            }
+            CommsEnabled = true;
+            Camouflage();
+        }
+        else if (CommsEnabled && !(CamouflagerEnabled || GodfatherEnabled))
+        {
+            CommsEnabled = false;
+            DefaultOutfitAll();
         }
     }
 }

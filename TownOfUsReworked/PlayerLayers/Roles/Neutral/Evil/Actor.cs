@@ -34,7 +34,7 @@ public class Actor : Evil
     public override bool HasWon => Guessed;
     public override WinLose EndState => WinLose.ActorWins;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +

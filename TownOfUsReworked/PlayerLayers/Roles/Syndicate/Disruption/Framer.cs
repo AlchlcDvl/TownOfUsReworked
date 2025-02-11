@@ -19,7 +19,7 @@ public class Framer : Syndicate, IFramer
     public override Func<string> Description => () => $"- You can frame a{(HoldsDrive ? $"ll players within a {ChaosDriveFrameRadius}m radius" : " player")}\n- Till you are dead, framed " +
         $"targets will die easily to killing roles and will have the wrong investigative results\n{CommonAbilities}";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Disruption;

@@ -11,12 +11,10 @@ public abstract class PlayerLayer : IPlayerLayer
     public virtual DefenseEnum DefenseVal => DefenseEnum.None;
     public virtual bool Hidden => false;
 
-    public string Name { get; set; }
+    public string Name { get; protected set; }
     public PlayerControl Player { get; set; }
     public bool Winner { get; set; }
-    public bool Ignore { get; set; }
-
-    // public string Short => Modules.Info.AllAllInfo.Find(x => x.Layer == Type)?.Short;
+    protected bool Ignore { get; set; }
 
     public bool Dead => Data?.IsDead ?? true;
     public bool Disconnected => Data?.Disconnected ?? true;
@@ -24,7 +22,7 @@ public abstract class PlayerLayer : IPlayerLayer
     public bool Local => Player?.AmOwner ?? false;
 
     public NetworkedPlayerInfo Data => Player?.Data;
-    public string PlayerName => Player?.name ?? Data?.PlayerName ?? "";
+    public string PlayerName => Player?.name ?? Data?.PlayerName ?? "Playerless";
     public byte PlayerId => Player?.PlayerId ?? 255;
     public int TasksLeft => Data?.Tasks?.Count(x => !x.Complete) ?? -1;
     public int TasksCompleted => Data?.Tasks?.Count(x => x.Complete) ?? -1;
@@ -63,9 +61,9 @@ public abstract class PlayerLayer : IPlayerLayer
         Player = null;
     }
 
-    public virtual void Init() {}
+    protected virtual void Init() {}
 
-    public virtual void Deinit() {}
+    protected virtual void Deinit() {}
 
     public virtual void OnIntroEnd() {}
 
@@ -119,7 +117,7 @@ public abstract class PlayerLayer : IPlayerLayer
 
     public virtual void ClearArrows() {}
 
-    public virtual void CheckWin() {}
+    protected virtual void CheckWin() {}
 
     // public virtual void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
 
@@ -148,17 +146,14 @@ public abstract class PlayerLayer : IPlayerLayer
 
     public static implicit operator bool(PlayerLayer exists) => exists != null && exists.Player;
 
-    public bool Equals(PlayerLayer other) => other.Player == Player && other.LayerType == LayerType && Type == other.Type;
+    private bool Equals(PlayerLayer other) => other.Player == Player && other.LayerType == LayerType && Type == other.Type;
 
     public override bool Equals(object obj)
     {
-        if (obj is null || obj is not PlayerLayer pl)
+        if (obj is not PlayerLayer pl)
             return false;
 
-        if (ReferenceEquals(this, obj))
-            return true;
-
-        return Equals(pl);
+        return ReferenceEquals(this, obj) || Equals(pl);
     }
 
     public override int GetHashCode() => HashCode.Combine(PlayerId, Type, LayerType);

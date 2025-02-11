@@ -2,13 +2,23 @@ namespace TownOfUsReworked.Classes;
 
 public static class ModUpdater
 {
-    private static readonly Dictionary<string, bool> Running = new() { { "Reworked", false }, { "Submerged", false }, { "LevelImpostor", false } };
     public static bool ReworkedUpdate;
     public static bool SubmergedUpdate;
     public static bool CanDownloadSubmerged;
     public static bool CanDownloadLevelImpostor;
-    public static readonly Dictionary<string, string> URLs = [];
+
+    private static readonly Dictionary<string, bool> Running = new() { { "Reworked", false }, { "Submerged", false }, { "LevelImpostor", false } };
+    private static readonly Dictionary<string, string> UrLs = [];
     private static GenericPopup Popup;
+
+    public static IEnumerator CheckForUpdates()
+    {
+        foreach (var type in new[] { "Reworked", "Submerged", "LevelImpostor" })
+            yield return CheckForUpdate(type);
+
+        CanDownloadSubmerged = !SubLoaded && UrLs.ContainsKey("Submerged");
+        CanDownloadLevelImpostor = !LiLoaded && UrLs.ContainsKey("LevelImpostor");
+    }
 
     private static string GetLink(string tag) => tag switch
     {
@@ -18,7 +28,7 @@ public static class ModUpdater
         _ => throw new NotImplementedException(tag)
     };
 
-    public static IEnumerator CheckForUpdate(string updateType)
+    private static IEnumerator CheckForUpdate(string updateType)
     {
         if (Running[updateType])
             yield break;
@@ -28,12 +38,12 @@ public static class ModUpdater
         Message($"Getting update info for {updateType}");
         yield return EndFrame();
 
-        // Checks the github api for tags. Compares current version to the latest tag version on GitHub
+        // Checks the GitHub api for tags. Compares current version to the latest tag version on GitHub
         var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=1");
         yield return www.SendWebRequest();
 
         var isError = www.result != UnityWebRequest.Result.Success;
-        var jsonText = "";
+        string jsonText;
 
         if (ClientOptions.ForceUseLocal)
             jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
@@ -115,7 +125,7 @@ public static class ModUpdater
 
             if (asset.URL.EndsWith(".dll"))
             {
-                URLs[updateType] = asset.URL;
+                UrLs[updateType] = asset.URL;
                 break;
             }
         }
@@ -137,7 +147,7 @@ public static class ModUpdater
         var button = Popup.transform.GetChild(2).gameObject;
         button.SetActive(false);
 
-        if (!URLs.TryGetValue(updateType, out var link))
+        if (!UrLs.TryGetValue(updateType, out var link))
         {
             Failure($"No link found for {updateType}");
             Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Manually");
@@ -156,7 +166,7 @@ public static class ModUpdater
             yield return EndFrame();
         }
 
-        if (www.isNetworkError || www.isHttpError)
+        if (www.result != UnityWebRequest.Result.Success)
         {
             Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.NoSuccess");
             Error(www.error);

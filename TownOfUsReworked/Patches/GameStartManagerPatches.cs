@@ -50,7 +50,7 @@ public static class GameStartManagerPatches
 
     private static void UpdatePrefix(GameStartManager __instance)
     {
-        if (!AmongUsClient.Instance)
+        if (!AmongUsClient.Instance || !GameData.Instance)
             return;
 
         __instance.UpdateMapImage((MapNames)MapSettings.Map);
@@ -70,7 +70,7 @@ public static class GameStartManagerPatches
                 DiscordManager.Instance.HasValidPartyID());
         }
 
-        if (GameData.Instance?.PlayerCount != __instance.LastPlayerCount)
+        if (GameData.Instance.PlayerCount != __instance.LastPlayerCount)
         {
             __instance.LastPlayerCount = GameData.Instance.PlayerCount;
             var arg = "FF00";
@@ -109,7 +109,7 @@ public static class GameStartManagerPatches
 
         if (IsCountDown())
         {
-            if (TownOfUsReworked.MCIActive)
+            if (TownOfUsReworked.MciActive)
                 Seconds = 0;
             else
             {

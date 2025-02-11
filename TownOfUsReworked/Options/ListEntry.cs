@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Options;
 public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOptionAttribute<Enum>(CustomOptionType.Entry, RoleListSlot.Any, RoleListSlot.None)
 {
     public PlayerLayerEnum EntryType { get; } = entryType;
-    public bool IsBan { get; set; }
+    public bool IsBan { get; private set; }
     private string Num { get; set; }
 
     public override void PostLoadSetup()
@@ -35,7 +35,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         Setting.Cast<StringOption>().ValueText.color = Value[0] is LayerEnum layer && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
     }
 
-    public override string Format()
+    protected override string Format()
     {
         var result = TranslationManager.Translate($"List.{Value[0]}");
 
@@ -45,12 +45,12 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         return result;
     }
 
-    public override string SettingNotif() => base.SettingNotif().Replace("%num%", Num);
+    protected override string SettingNotif() => base.SettingNotif().Replace("%num%", Num);
 
-    public override List<Enum> Parse(string value) => [ .. value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(x =>
-        (Enum)(x == "None" ? RoleListSlot.None : (Enum.TryParse<LayerEnum>(x, out var layer) ? layer : Enum.Parse<RoleListSlot>(x)))) ];
+    protected override Enum[] Parse(string value) => [ .. value.TrueSplit(',').Select(x => (Enum)(x == "None" ? RoleListSlot.None : (Enum.TryParse<LayerEnum>(x, out var layer) ? layer :
+        Enum.Parse<RoleListSlot>(x ?? "None")))) ];
 
-    public override void CreateButtons()
+    protected override void CreateButtons()
     {
         if (Buttons.Any())
         {
@@ -63,87 +63,120 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         SettingsPatches.OnValueChanged();
     }
 
+    protected override void TrySetValue(Enum value)
+    {
+        if (IsBan)
+        {
+            base.TrySetValue(value);
+            return;
+        }
+
+        if (value is RoleListSlot.CrewKill && Value.Contains(value))
+        {
+            Value.RemoveAll(x => x is LayerEnum.Veteran or LayerEnum.Bastion or LayerEnum.Vigilante);
+            Value.Add(value);
+        }
+        else
+            base.TrySetValue(value);
+    }
+
     // What the hell is this? What am I even doing man...
     private static IEnumerable<Enum> GetPossibleValues(ListEntryAttribute self)
     {
-        var bans = GetOptions<ListEntryAttribute>().Where(x => x != self && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
+        var bans = GetOptions<ListEntryAttribute>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
         yield return RoleListSlot.None;
-        yield return RoleListSlot.Any;
 
-        if (self.EntryType == PlayerLayerEnum.Role)
+        if (!self.IsBan)
+            yield return RoleListSlot.Any;
+
+        switch (self.EntryType)
         {
-            foreach (var role in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not (LayerEnum.Revealer or LayerEnum.Phantom or LayerEnum.Banshee or LayerEnum.Ghoul or
-                LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Mafioso or LayerEnum.Sidekick or LayerEnum.Betrayer)))
+            case PlayerLayerEnum.Role:
             {
-                if (!bans.Any(x => x.Get().Contains(role)))
-                    yield return role;
-            }
+                foreach (var role in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not (LayerEnum.Revealer or LayerEnum.Phantom or LayerEnum.Banshee or LayerEnum.Ghoul or
+                    LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Mafioso or LayerEnum.Sidekick or LayerEnum.Betrayer)))
+                {
+                    if (!bans.Any(x => x.Get().Contains(role)))
+                        yield return role;
+                }
 
-            foreach (var bucket in GetValuesFromTo(RoleListSlot.CrewSupport, RoleListSlot.NonCrew))
-                yield return bucket;
+                if (self.IsBan)
+                    yield break;
 
-            if (GameModifiers.IlluminatiUnleashed)
-            {
-                foreach (var bucket in GetValuesFromTo(RoleListSlot.IlluminatiKill, RoleListSlot.NonIlluminati))
+                foreach (var bucket in GetValuesFromTo(RoleListSlot.CrewSupport, RoleListSlot.NonCrew))
                     yield return bucket;
 
-                yield return RoleListSlot.NeutralBen;
-                yield return RoleListSlot.NeutralEvil;
-            }
-            else
-            {
-                if (GameModifiers.PandoricaOpens)
+                if (GameModifiers.IlluminatiUnleashed)
                 {
-                    foreach (var bucket in GetValuesFromTo(RoleListSlot.PandoraKill, RoleListSlot.NonPandora))
+                    foreach (var bucket in GetValuesFromTo(RoleListSlot.IlluminatiKill, RoleListSlot.NonIlluminati))
                         yield return bucket;
+
+                    yield return RoleListSlot.NeutralBen;
+                    yield return RoleListSlot.NeutralEvil;
                 }
                 else
                 {
-                    foreach (var bucket in GetValuesFromTo(RoleListSlot.IntruderSupport, RoleListSlot.NonSyndicate))
-                        yield return bucket;
+                    if (GameModifiers.PandoricaOpens)
+                    {
+                        foreach (var bucket in GetValuesFromTo(RoleListSlot.PandoraKill, RoleListSlot.NonPandora))
+                            yield return bucket;
+                    }
+                    else
+                    {
+                        foreach (var bucket in GetValuesFromTo(RoleListSlot.IntruderSupport, RoleListSlot.NonSyndicate))
+                            yield return bucket;
+                    }
+
+                    if (GameModifiers.OrderOfCompliance)
+                    {
+                        foreach (var bucket in GetValuesFromTo(RoleListSlot.ComplianceKill, RoleListSlot.NonCompliance))
+                            yield return bucket;
+
+                        foreach (var bucket in GetValuesFromTo(RoleListSlot.NeutralBen, RoleListSlot.RegularNeutral))
+                            yield return bucket;
+
+                        yield return RoleListSlot.NonCompNeutral;
+                    }
+                    else
+                    {
+                        foreach (var bucket in GetValuesFromTo(RoleListSlot.NeutralKill, RoleListSlot.HarmfulNeutral))
+                            yield return bucket;
+
+                        yield return RoleListSlot.NonNeutral;
+                    }
                 }
 
-                if (GameModifiers.OrderOfCompliance)
+                break;
+            }
+            case PlayerLayerEnum.Disposition:
+            {
+                foreach (var disp in GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor))
                 {
-                    foreach (var bucket in GetValuesFromTo(RoleListSlot.ComplianceKill, RoleListSlot.NonCompliance))
-                        yield return bucket;
-
-                    foreach (var bucket in GetValuesFromTo(RoleListSlot.NeutralBen, RoleListSlot.RegularNeutral))
-                        yield return bucket;
-
-                    yield return RoleListSlot.NonCompNeutral;
+                    if (!bans.Any(x => x.Get().Contains(disp)))
+                        yield return disp;
                 }
-                else
+
+                break;
+            }
+            case PlayerLayerEnum.Modifier:
+            {
+                foreach (var mod in GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller))
                 {
-                    foreach (var bucket in GetValuesFromTo(RoleListSlot.NeutralKill, RoleListSlot.HarmfulNeutral))
-                        yield return bucket;
-
-                    yield return RoleListSlot.NonNeutral;
+                    if (!bans.Any(x => x.Get().Contains(mod)))
+                        yield return mod;
                 }
+
+                break;
             }
-        }
-        else if (self.EntryType == PlayerLayerEnum.Disposition)
-        {
-            foreach (var disp in GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor))
+            case PlayerLayerEnum.Ability:
             {
-                if (!bans.Any(x => x.Get().Contains(disp)))
-                    yield return disp;
-            }
-        }
-        else if (self.EntryType == PlayerLayerEnum.Modifier)
-        {
-            foreach (var mod in GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller))
-            {
-                if (!bans.Any(x => x.Get().Contains(mod)))
-                    yield return mod;
-            }
-        }
-        else if (self.EntryType == PlayerLayerEnum.Ability)
-        {
-            foreach (var ab in GetValuesFromTo(LayerEnum.Bullseye, LayerEnum.Underdog))
-            {
-                if (!bans.Any(x => x.Get().Contains(ab)))
-                    yield return ab;
+                foreach (var ab in GetValuesFromTo(LayerEnum.Bullseye, LayerEnum.Underdog))
+                {
+                    if (!bans.Any(x => x.Get().Contains(ab)))
+                        yield return ab;
+                }
+
+                break;
             }
         }
     }
@@ -151,12 +184,12 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
     public static bool IsAdded(Enum value, ListEntryAttribute entry = null)
     {
         var entries = GetOptions<ListEntryAttribute>().Where(x => !x.IsBan);
-        return entry == null ? entries.Any(x => x.Get().Contains(value)) : entries.Any(x => x != entry && x.Get().Contains(value));
+        return entry == null ? entries.Any(x => x.Get().Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Get().Contains(value));
     }
 
     public static bool IsBanned(Enum value, ListEntryAttribute entry = null)
     {
         var entries = GetOptions<ListEntryAttribute>().Where(x => x.IsBan);
-        return entry == null ? entries.Any(x => x.Get().Contains(value)) : entries.Any(x => x != entry && x.Get().Contains(value));
+        return entry == null ? entries.Any(x => x.Get().Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Get().Contains(value));
     }
 }

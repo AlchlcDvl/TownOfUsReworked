@@ -6,7 +6,7 @@ public static class AssetManager
     public static readonly Dictionary<string, AssetBundle> Bundles = [];
     public static readonly Dictionary<string, string> AssetToBundle = [];
     private static readonly Dictionary<string, List<UObject>> LoadedAssets = [];
-    public static readonly Dictionary<string, List<string>> UnloadedAssets = [];
+    private static readonly Dictionary<string, List<string>> UnloadedAssets = [];
 
     public static AudioClip GetAudio(string path, bool placeholder = true) => Get<AudioClip>(path) ?? (placeholder ? Get<AudioClip>("Placeholder") : null);
 
@@ -26,16 +26,16 @@ public static class AssetManager
     {
         Stop(audio);
 
-        if (Constants.ShouldPlaySfx())
-        {
-            var source = SoundManager.Instance.PlaySound(audio, loop, volume);
+        if (!Constants.ShouldPlaySfx())
+            return;
 
-            if (!float.IsNaN(pitch))
-                source.pitch = pitch;
-        }
+        var source = SoundManager.Instance.PlaySound(audio, loop, volume);
+
+        if (!float.IsNaN(pitch))
+            source.pitch = pitch;
     }
 
-    public static void Stop(AudioClip audio)
+    private static void Stop(AudioClip audio)
     {
         if (Constants.ShouldPlaySfx())
             SoundManager.Instance.StopSound(audio);
@@ -45,31 +45,30 @@ public static class AssetManager
 
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
 
-    public static Texture2D LoadTexture(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceTexture(path) : LoadDiskTexture(path);
+    private static Texture2D LoadTexture(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceTexture(path) : LoadDiskTexture(path);
 
     public static Texture2D LoadDiskTexture(string path) => LoadTexture(File.ReadAllBytes(path), path.SanitisePath());
 
-    public static Texture2D LoadResourceTexture(string path) => LoadTexture(TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully(), path.SanitisePath());
+    private static Texture2D LoadResourceTexture(string path) => LoadTexture(TownOfUsReworked.Core.GetManifestResourceStream(path)!.ReadFully(), path.SanitisePath());
 
-    public static Texture2D LoadTexture(byte[] data, string name)
+    private static Texture2D LoadTexture(byte[] data, string name)
     {
         var texture = EmptyTexture();
 
-        if (texture.LoadImage(data, !GetReadable(name)))
-        {
-            texture.name = name;
-            texture.hideFlags |= HideFlags.DontSaveInEditor;
-            return texture.DontDestroy();
-        }
+        if (!texture.LoadImage(data, !GetReadable(name)))
+            return null;
 
-        return null;
+        texture.name = name;
+        texture.hideFlags |= HideFlags.DontSaveInEditor;
+        return texture.DontDestroy();
+
     }
 
-    public static Sprite LoadSprite(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceSprite(path) : LoadDiskSprite(path);
+    private static Sprite LoadSprite(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceSprite(path) : LoadDiskSprite(path);
 
     public static Sprite LoadDiskSprite(string path) => LoadSprite(LoadDiskTexture(path), path.SanitisePath());
 
-    public static Sprite LoadResourceSprite(string path) => LoadSprite(LoadResourceTexture(path), path.SanitisePath());
+    private static Sprite LoadResourceSprite(string path) => LoadSprite(LoadResourceTexture(path), path.SanitisePath());
 
     public static Sprite LoadSprite(Texture2D tex, string name, float size = float.NaN, SpriteMeshType meshType = SpriteMeshType.Tight)
     {
@@ -83,7 +82,7 @@ public static class AssetManager
 
     public static void SaveText(string fileName, string textToSave, string diskLocation) => SaveText(fileName, textToSave, true, diskLocation);
 
-    public static void SaveText(string fileName, string textToSave, bool overrideText = true, string diskLocation = null)
+    private static void SaveText(string fileName, string textToSave, bool overrideText = true, string diskLocation = null)
     {
         try
         {
@@ -133,21 +132,15 @@ public static class AssetManager
         AddAsset("AppearPoofAnim", RoleManager.Instance.appear_PoofAnim);
     }
 
-    public static float GetSize(string name)
+    private static float GetSize(string name) => name switch
     {
-        if (name is "CurrentSettings" or "Client" or "Plus" or "Minus" or "Wiki")
-            return 180;
-        else if (name == "Phone")
-            return 200;
-        else if (name == "Cursor")
-            return 115;
-        else if (name == "NightVision")
-            return 350;
-        else if (name is "Info" or "GitHub" or "Discord")
-            return 525;
-        else
-            return 100;
-    }
+        "CurrentSettings" or "Client" or "Plus" or "Minus" or "Wiki" => 180,
+        "Phone" => 200,
+        "Cursor" => 115,
+        "NightVision" => 350,
+        "Assets" or "GitHub" or "Discord" => 525,
+        _ => 100
+    };
 
     private static T Get<T>(string name) where T : UObject
     {
@@ -159,31 +152,30 @@ public static class AssetManager
             result = LoadAsset<T>(Bundles[bundle], name);
 
             if (result)
-                return result as T;
+                return (T)result;
         }
 
-        if (UnloadedAssets.TryGetValue(name, out var strings))
-        {
-            var tType = typeof(T);
-            result = null;
+        if (!UnloadedAssets.TryGetValue(name, out var strings))
+            return null;
 
-            if (tType == typeof(Sprite) && strings.TryFinding(x => x.EndsWith(".png"), out var path))
-                result = AddAsset(name, LoadSprite(path));
-            else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".wav"), out path))
-                result = AddAsset(name, LoadAudio(path));
-            else if (tType == typeof(Texture2D) && strings.TryFinding(x => x.EndsWith(".png"), out path))
-                result = AddAsset(name, LoadTexture(path));
-            else
-                return null;
+        var tType = typeof(T);
 
-            strings.Remove(path);
+        if (tType == typeof(Sprite) && strings.TryFinding(x => x.EndsWith(".png"), out var path))
+            result = AddAsset(name, LoadSprite(path));
+        else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".wav"), out path))
+            result = AddAsset(name, LoadAudio(path));
+        else if (tType == typeof(Texture2D) && strings.TryFinding(x => x.EndsWith(".png"), out path))
+            result = AddAsset(name, LoadTexture(path));
+        else
+            return null;
 
-            if (strings.Count == 0)
-                UnloadedAssets.Remove(name);
+        strings.Remove(path);
 
-            if (result)
-                return result as T;
-        }
+        if (strings.Count == 0)
+            UnloadedAssets.Remove(name);
+
+        if (result)
+            return result as T;
 
         // Failure($"{name} does not exist");
         return null;
@@ -206,7 +198,7 @@ public static class AssetManager
         return asset;
     }
 
-    public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.GetRole(roleType)?.IntroSound;
+    private static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.GetRole(roleType)?.IntroSound;
 
     public static UObject AddAsset(string name, UObject obj)
     {
@@ -233,15 +225,15 @@ public static class AssetManager
 
     private static bool GetReadable(string name) => name is "Cursor";
 
-    public static AudioClip LoadAudio(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceAudio(path) : LoadDiskAudio(path);
+    private static AudioClip LoadAudio(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceAudio(path) : LoadDiskAudio(path);
 
-    public static AudioClip LoadResourceAudio(string path) => LoadAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path).ReadFully());
+    private static AudioClip LoadResourceAudio(string path) => LoadAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path)!.ReadFully());
 
-    public static AudioClip LoadDiskAudio(string path) => LoadAudio(path.SanitisePath(), File.ReadAllBytes(path));
+    private static AudioClip LoadDiskAudio(string path) => LoadAudio(path.SanitisePath(), File.ReadAllBytes(path));
 
     // Lord help my soul, got the code from here: https://github.com/deadlyfingers/UnityWav/blob/master/WavUtility.cs
 
-    public static AudioClip LoadAudio(string name, byte[] fileBytes)
+    private static AudioClip LoadAudio(string name, byte[] fileBytes)
     {
         var chunk = BitConverter.ToInt32(fileBytes, 16) + 24;
         var channels = BitConverter.ToUInt16(fileBytes, 22);
@@ -258,19 +250,16 @@ public static class AssetManager
 
         var audioClip = AudioClip.Create(name, data.Length, channels, sampleRate, false);
 
-        if (audioClip.SetData(data, 0))
-        {
-            audioClip.hideFlags |= HideFlags.DontSaveInEditor;
-            return audioClip.DontDestroy();
-        }
+        if (!audioClip.SetData(data, 0))
+            return null;
 
-        return null;
+        audioClip.hideFlags |= HideFlags.DontSaveInEditor;
+        return audioClip.DontDestroy();
     }
 
     private static float[] Convert8BitByteArrayToAudioClipData(byte[] source, int headerOffset)
     {
         var wavSize = BitConverter.ToInt32(source, headerOffset);
-        headerOffset += sizeof(int);
         var data = new float[wavSize];
 
         for (var i = 0; i < wavSize; i++)
@@ -283,7 +272,7 @@ public static class AssetManager
     {
         var wavSize = BitConverter.ToInt32(source, headerOffset);
         headerOffset += sizeof(int);
-        var x = sizeof(short);
+        const int x = sizeof(short);
         var convertedSize = wavSize / x;
         var data = new float[convertedSize];
 
@@ -296,9 +285,9 @@ public static class AssetManager
     private static float[] Convert24BitByteArrayToAudioClipData(byte[] source, int headerOffset)
     {
         var wavSize = BitConverter.ToInt32(source, headerOffset);
-        var intSize = sizeof(int);
+        const int intSize = sizeof(int);
         headerOffset += intSize;
-        var x = 3; // Block size = 3
+        const int x = 3; // Block size = 3
         var convertedSize = wavSize / x;
         var data = new float[convertedSize];
         var block = new byte[intSize]; // Using a 4 byte block for copying 3 bytes, then copy bytes with 1 offset
@@ -312,11 +301,11 @@ public static class AssetManager
         return data;
     }
 
-    private static float[] Convert32BitByteArrayToAudioClipData (byte[] source, int headerOffset)
+    private static float[] Convert32BitByteArrayToAudioClipData(byte[] source, int headerOffset)
     {
         var wavSize = BitConverter.ToInt32(source, headerOffset);
         headerOffset += sizeof(int);
-        var x = sizeof(float); // Block size = 4
+        const int x = sizeof(float); // Block size = 4
         var convertedSize = wavSize / x;
         var data = new float[convertedSize];
 

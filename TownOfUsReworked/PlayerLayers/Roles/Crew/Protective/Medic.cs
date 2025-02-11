@@ -4,17 +4,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Medic : Crew, IShielder
 {
     [MultiSelectOption<ShieldOptions>(ShieldOptions.Nobody, ShieldOptions.Everyone)]
-    public static List<ShieldOptions> ShowShielded = [ ShieldOptions.Medic ];
+    public static MultiSelectValue<ShieldOptions> ShowShielded = ShieldOptions.Medic;
 
     [MultiSelectOption<ShieldOptions>(ShieldOptions.Nobody, ShieldOptions.Everyone)]
-    public static List<ShieldOptions> WhoGetsNotification = [ ShieldOptions.Medic ];
+    public static MultiSelectValue<ShieldOptions> WhoGetsNotification = ShieldOptions.Medic;
 
     [ToggleOption]
     public static bool ShieldBreaks = true;
 
     public PlayerControl ShieldedPlayer { get; set; }
     public bool ShieldBroken { get; set; }
-    public CustomButton ShieldButton { get; set; }
+    private CustomButton ShieldButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medic : FactionColor;
     public override LayerEnum Type => LayerEnum.Medic;
@@ -22,7 +22,7 @@ public class Medic : Crew, IShielder
     public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification.ContainsAny(ShieldOptions.Medic, ShieldOptions.Everyone) ?
         "\n- If your target is attacked, you will be notified of it" : "");
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         ShieldedPlayer = null;
@@ -31,7 +31,7 @@ public class Medic : Crew, IShielder
             (UsableFunc)Usable);
     }
 
-    public void Protect(PlayerControl target)
+    private void Protect(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -44,15 +44,15 @@ public class Medic : Crew, IShielder
         ShieldButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player)
+    private bool Exception(PlayerControl player)
     {
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
-        else
-            return player.TryGetILayer<IRevealer>(out var irev) && irev.Revealed;
+
+        return player.TryGetILayer<IRevealer>(out var irev) && irev.Revealed;
     }
 
-    public bool Usable() => !ShieldBroken;
+    private bool Usable() => !ShieldBroken;
 
     public override void ReadRPC(MessageReader reader) => ShieldedPlayer = reader.ReadPlayer();
 }

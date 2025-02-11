@@ -17,7 +17,7 @@ public class Phantom : Neutral, IGhosty
     public override Func<string> StartText => () => "Peek-A-Boo!";
     public override Func<string> Description => () => "- You end the game upon finishing your objective";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Finish your tasks without getting clicked";

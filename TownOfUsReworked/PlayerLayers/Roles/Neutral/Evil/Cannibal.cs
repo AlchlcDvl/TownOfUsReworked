@@ -33,7 +33,7 @@ public class Cannibal : Evil
     public override bool HasWon => EatWin;
     public override WinLose EndState => WinLose.CannibalWins;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";

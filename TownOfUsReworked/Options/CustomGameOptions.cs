@@ -1,6 +1,10 @@
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable UnassignedField.Global
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 namespace TownOfUsReworked.Options;
 
-// DO NOT OVERRIDE VALUES OF ANY OF THE OPTION PROPERTIES ANY WHERE IN THE CODE OR ELSE THE OPTIONS WILL START TO FUCK OFF
+// DO NOT OVERRIDE VALUES OF THE OPTION PROPERTIES ANYWHERE IN THE CODE, OR ELSE THE OPTIONS WILL START TO FUCK OFF
 
 [HeaderOption(MultiMenu.Main)]
 public static class GameSettings
@@ -32,7 +36,7 @@ public static class GameSettings
     {
         GameMode.TaskRace or GameMode.HideAndSeek => TBMode.Normal,
         _ => TaskBar
-    }; // I want this to actually change according to the game modes
+    }; // I want this to actually change, according to the game modes
 
     [ToggleOption]
     public static bool ConfirmEjects = false;
@@ -120,49 +124,49 @@ public static class GameModeSettings
     public static bool HuntedChat = true;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry1 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry1 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry2 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry2 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry3 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry3 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry4 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry4 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry5 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry5 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry6 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry6 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry7 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry7 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry8 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry8 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry9 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry9 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry10 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry10 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry11 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry11 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry12 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry12 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry13 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry13 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry14 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry14 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleEntry15 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleEntry15 = RoleListSlot.None;
 
     [NumberOption(0, 15, 1)]
     public static Number RevealerCount = 0;
@@ -177,19 +181,19 @@ public static class GameModeSettings
     public static Number BansheeCount = 0;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleBan1 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleBan1 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleBan2 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleBan2 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleBan3 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleBan3 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleBan4 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleBan4 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static List<Enum> RoleBan5 = [ RoleListSlot.None ];
+    public static MultiSelectValue<Enum> RoleBan5 = RoleListSlot.None;
 
     [ToggleOption]
     public static bool BanCrewmate = true;
@@ -472,7 +476,7 @@ public static class SyndicateSettings
     public static Number ChaosDriveMeetingCount = 3;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number CDKillCd = 25;
+    public static Number CdKillCd = 25;
 
     [StringOption<SyndicateVentOptions>]
     public static SyndicateVentOptions SyndicateVent = SyndicateVentOptions.Always;
@@ -926,8 +930,8 @@ public static class Modifiers
     [LayerOption("#1002C5FF", LayerEnum.Shy)]
     public static RoleOptionData Shy;
 
-    [LayerOption("#DCEE85FF", LayerEnum.VIP)]
-    public static RoleOptionData VIP;
+    [LayerOption("#DCEE85FF", LayerEnum.Vip)]
+    public static RoleOptionData Vip;
 
     [LayerOption("#FFA60AFF", LayerEnum.Volatile)]
     public static RoleOptionData Volatile;
@@ -1062,14 +1066,14 @@ public static class Dispositions
 public static class CrewInvestigativeSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxCI = 1;
+    public static Number MaxCi = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class CrewKillingSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxCK = 1;
+    public static Number MaxCk = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1090,7 +1094,7 @@ public static class CrewSovereignSettings
 public static class CrewSupportSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxCS = 1;
+    public static Number MaxCs = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1107,7 +1111,7 @@ public static class NeutralApocalypseSettings
 public static class NeutralBenignSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxNB = 1;
+    public static Number MaxNb = 1;
 
     [ToggleOption]
     public static bool VigilanteKillsBenigns = true;
@@ -1117,7 +1121,7 @@ public static class NeutralBenignSettings
 public static class NeutralEvilSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxNE = 1;
+    public static Number MaxNe = 1;
 
     [ToggleOption]
     public static bool NeutralEvilsEndGame = false;
@@ -1126,27 +1130,27 @@ public static class NeutralEvilSettings
     public static bool VigilanteKillsEvils = true;
 
     [ToggleOption]
-    public static bool NEHasImpVision = true;
+    public static bool NeHaveImpVision = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralHarbingerSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxNH = 1;
+    public static Number MaxNh = 1;
 
     [ToggleOption]
-    public static bool NHHasImpVision = true;
+    public static bool NhHaveImpVision = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralKillingSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxNK = 1;
+    public static Number MaxNk = 1;
 
     [ToggleOption]
-    public static bool NKHasImpVision = true;
+    public static bool NkHaveImpVision = true;
 
     [ToggleOption]
     public static bool KnowEachOther = false;
@@ -1156,17 +1160,17 @@ public static class NeutralKillingSettings
 public static class NeutralNeophyteSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxNN = 1;
+    public static Number MaxNn = 1;
 
     [ToggleOption]
-    public static bool NNHasImpVision = true;
+    public static bool NnHaveImpVision = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class IntruderConcealingSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxIC = 1;
+    public static Number MaxIc = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1180,7 +1184,7 @@ public static class IntruderDeceptionSettings
 public static class IntruderHeadSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxIH = 1;
+    public static Number MaxIh = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1194,7 +1198,7 @@ public static class IntruderKillingSettings
 public static class IntruderSupportSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxIS = 1;
+    public static Number MaxIs = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1215,7 +1219,7 @@ public static class SyndicateKillingSettings
 public static class SyndicatePowerSettings
 {
     [NumberOption(1, 14, 1)]
-    public static Number MaxSP = 1;
+    public static Number MaxSp = 1;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]

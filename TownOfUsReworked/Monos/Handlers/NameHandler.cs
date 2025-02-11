@@ -43,7 +43,7 @@ public class NameHandler : MonoBehaviour
         if (!TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked))
             player = mimicked;
 
-        var name = "";
+        string name;
 
         if (GameModifiers.PlayerNames == Data.PlayerNames.NotVisible)
             name = "";
@@ -61,10 +61,8 @@ public class NameHandler : MonoBehaviour
         else
             name = ColorNames[player.PlayerId];
 
-        var ld = player.CurrentOutfit.ColorId.IsLighter() ? "L" : "D";
-
         if (ClientOptions.LighterDarker)
-            name += $" ({ld})";
+            name += $" ({TranslationManager.Translate($"Shade.{(player.CurrentOutfit.ColorId.IsLighter() ? "L" : "D")}")})";
 
         return (name, color);
     }
@@ -89,22 +87,20 @@ public class NameHandler : MonoBehaviour
             if (distance > Ship()?.CalculateLightRadius(local.Data))
                 return ("", UColor.white);
 
-            var vector = player.transform.position - local.transform.position;
-
-            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !amOwner && !local.HasDied() &&
-                GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, (player.transform.position - local.transform.position).normalized, distance, Constants.ShipAndObjectsMask) &&
+                !amOwner && !local.HasDied() && GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
             {
                 return ("", UColor.clear);
             }
         }
 
-        // if (!amOwner && !deadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked) && mimicked.Data.Role is LayerHandler handler)
-        // {
-        //     player = mimicked;
-        //     playerHandler = handler;
-        // }
+        if (!amOwner && !deadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked) && mimicked.Data.Role is LayerHandler handler)
+        {
+            player = mimicked;
+            playerHandler = handler;
+        }
 
-        var name = "";
+        string name;
         var color = UColor.white;
         var role = playerHandler.CustomRole;
         var disp = playerHandler.CustomDisposition;
@@ -176,7 +172,7 @@ public class NameHandler : MonoBehaviour
                 }
                 case NKilling:
                 {
-                    if (localRole is NKilling && !deadSeeEverything && NeutralKillingSettings.KnowEachOther && ((role.Type == localRole.Type && NeutralSettings.NoSolo == NoSolo.SameNKs) ||
+                    if (localRole is NKilling && NeutralKillingSettings.KnowEachOther && ((role.Type == localRole.Type && NeutralSettings.NoSolo == NoSolo.SameNKs) ||
                         NeutralSettings.NoSolo == NoSolo.AllNKs) && !revealed)
                     {
                         color = role.Color;
@@ -352,7 +348,7 @@ public class NameHandler : MonoBehaviour
                     {
                         name += " <#FFFFFFFF>★</color>";
 
-                        if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.GA))
+                        if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.Ga))
                             name += " <#FFFFFFFF>η</color>";
 
                         if (GuardianAngel.GAKnowsTargetRole && !revealed)
@@ -614,13 +610,13 @@ public class NameHandler : MonoBehaviour
             if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.Protected))
                 name += " <#FFFFFFFF>η</color>";
 
-            if (player.IsBHTarget())
+            if (player.IsBhTarget())
                 name += " <#B51E39FF>Θ</color>";
 
             if (player.IsExeTarget() && Executioner.ExeTargetKnows)
                 name += " <#CCCCCCFF>§</color>";
 
-            if (player.IsGATarget() && GuardianAngel.GATargetKnows)
+            if (player.IsGaTarget() && GuardianAngel.GATargetKnows)
                 name += " <#FFFFFFFF>★</color>";
 
             if (player.IsGuessTarget() && Guesser.GuessTargetKnows)
@@ -653,13 +649,13 @@ public class NameHandler : MonoBehaviour
             if (player.IsCrusaded())
                 name += " <#DF7AE8FF>τ</color>";
 
-            if (player.IsBHTarget())
+            if (player.IsBhTarget())
                 name += " <#B51E39FF>Θ</color>";
 
             if (player.IsExeTarget())
                 name += " <#CCCCCCFF>§</color>";
 
-            if (player.IsGATarget())
+            if (player.IsGaTarget())
                 name += " <#FFFFFFFF>★</color>";
 
             if (player.IsGuessTarget())

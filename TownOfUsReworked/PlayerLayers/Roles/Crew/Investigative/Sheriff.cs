@@ -12,14 +12,14 @@ public class Sheriff : Crew
     [ToggleOption]
     public static bool NeutKillingRed = false;
 
-    public CustomButton InterrogateButton { get; set; }
+    private CustomButton InterrogateButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Sheriff : FactionColor;
     public override LayerEnum Type => LayerEnum.Sheriff;
     public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";
     public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <#8CFFFFFF>Crew</color>";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Investigative;
@@ -27,7 +27,7 @@ public class Sheriff : Crew
             (PlayerBodyExclusion)Exception);
     }
 
-    public void Interrogate(PlayerControl target)
+    private void Interrogate(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -37,7 +37,7 @@ public class Sheriff : Crew
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
+    private bool Exception(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
         GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>()
         && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 }

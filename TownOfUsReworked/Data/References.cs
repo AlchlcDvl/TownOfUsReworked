@@ -9,8 +9,8 @@ public static class References
     public static readonly List<DeadPlayer> KilledPlayers = [];
     public static readonly Dictionary<byte, float> TransitioningSize = []; // Wheeze
     public static readonly Dictionary<byte, float> TransitioningSpeed = []; // Double wheeze
-    public static readonly Dictionary<byte, float> UninteractiblePlayers = [];
-    public static readonly Dictionary<byte, float> UninteractiblePlayers2 = [];
+    public static readonly Dictionary<byte, float> UninteractablePlayers = [];
+    public static readonly Dictionary<byte, float> UninteractablePlayers2 = [];
     public static readonly Dictionary<byte, string> BodyLocations = [];
     public static readonly Dictionary<byte, int> KillCounts = [];
     public static IEnumerable<DeadBody> AllBodies() => UObject.FindObjectsOfType<DeadBody>();
@@ -35,20 +35,42 @@ public static class References
     public static bool Shapeshifted { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
     public static StringNames ReworkedStart { get; set; }
-    public static bool BlockExposed { get; set; }
+    private static bool BlockExposedPriv;
+    public static bool BlockExposed
+    {
+        get => BlockExposedPriv;
+        set
+        {
+            BlockExposedPriv = value;
+            var material = GetMaterial("GlitchedMaterial");
+
+            if (value)
+                CameraEffect.AddEffect(material);
+            else
+                CameraEffect.RemoveEffect(material);
+        }
+    }
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +
         "乂⁂¤∮彡个「」人요〖〗ロ米卄王īl【】·ㅇ°◈◆◇◥◤◢◣《》︵︶☆☀☂☹☺♡♩♪♫♬✓☜☞☟☯☃✿❀÷º¿※⁑∞≠";
     // As much as I hate to do this, people will take advantage so we're better off doing this early
     public static readonly string[] Profanities = [ "nigg", "whore", "negro", "yiff", "rape", "rapist" ];
     public const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
+    public static readonly int Outline = Shader.PropertyToID("_Outline");
+    public static readonly int OutlineColor = Shader.PropertyToID("_OutlineColor");
+    public static readonly int AddColor = Shader.PropertyToID("_AddColor");
+    public static readonly int Mask = Shader.PropertyToID("_Mask");
+    public static readonly int StencilComp = Shader.PropertyToID("_StencilComp");
+    public static readonly int Stencil = Shader.PropertyToID("_Stencil");
+    public static readonly int FaceDilate = Shader.PropertyToID("_FaceDilate");
+    public static readonly int OutlineWidth = Shader.PropertyToID("_OutlineWidth");
     // public static readonly char[] Lowercase = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
     // public static readonly char[] Uppercase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
     public static readonly IEnumerable<Vector2> SkeldSpawns =
     [
-        new(-2.2f, 2.2f), // Cafeteria. botton. top left
-        new(0.7f, 2.2f), // Caffeteria. button. top right
-        new(-2.2f, -0.2f), // Caffeteria. button. bottom left
-        new(0.7f, -0.2f), // Caffeteria. button. bottom right
+        new(-2.2f, 2.2f), // Cafeteria. bottom. top left
+        new(0.7f, 2.2f), // Cafeteria. button. top right
+        new(-2.2f, -0.2f), // Cafeteria. button. bottom left
+        new(0.7f, -0.2f), // Cafeteria. button. bottom right
         new(10f, 3f), // Weapons top
         new(9.5f, -1f), // Weapons bottom
         new(6.5f, -3.5f), // O2
@@ -78,7 +100,7 @@ public static class References
         new(-21.5f, -8), // Reactor bottom
         new(-13, -3), // Security top
         new(-12.6f, -5.6f), // Security bottom
-        new(-17, 2.5f), // Upper engibe top
+        new(-17, 2.5f), // Upper engine top
         new(-17, -1), // Upper engine bottom
         new(-10.5f, 1), // Upper-mad hall
         new(-10.5f, -2), // Medbay top
@@ -130,7 +152,7 @@ public static class References
         new(22.5f, -16.5f), // Office projector
         new(24f, -17f), // Office figure
         new(27f, -16.5f), // Office lifelines
-        new(32.7f, -15.7f), // Lavapool
+        new(32.7f, -15.7f), // Lava pool
         new(31.5f, -12f), // Snowmad below lab
         new(10f, -14f), // Below storage
         new(19f, -11f), // Storage toolrack
@@ -146,20 +168,21 @@ public static class References
         new(2f, -19f), // O2 gas
         new(1f, -24f), // O2 water
         new(7f, -24f), // Under O2
-        new(9f, -20f), // Right outside of O2
+        new(9f, -20f), // Right outside O2
         new(6.9f, -13.8f), // Snowman under elec
         new(11f, -17f), // Comms table
         new(12.7f, -15.5f), // Comms antenna pult
         new(12f, -21.5f), // Weapons window
-        new(15f, -17f), // Between coms-office
+        new(15f, -17f), // Between comms-office
         new(17.5f, -25.7f) // Snowman under office
     ];
+    // ReSharper disable once InconsistentNaming
     public static readonly IEnumerable<Vector2> dlekSSpawns =
     [
-        new(2.2f, 2.2f), // Cafeteria. botton. top left
-        new(-0.7f, 2.2f), // Caffeteria. button. top right
-        new(2.2f, -0.2f), // Caffeteria. button. bottom left
-        new(-0.7f, -0.2f), // Caffeteria. button. bottom right
+        new(2.2f, 2.2f), // Cafeteria. bottom. top left
+        new(-0.7f, 2.2f), // Cafeteria. button. top right
+        new(2.2f, -0.2f), // Cafeteria. button. bottom left
+        new(-0.7f, -0.2f), // Cafeteria. button. bottom right
         new(-10, 3f), // Weapons top
         new(-9, 1f), // Weapons bottom
         new(-6.5f, -3.5f), // O2
@@ -189,7 +212,7 @@ public static class References
         new(21.5f, -8), // Reactor bottom
         new(13, -3), // Security top
         new(12.6f, -5.6f), // Security bottom
-        new(17, 2.5f), // Upper engibe top
+        new(17, 2.5f), // Upper engine top
         new(17, -1), // Upper engine bottom
         new(10.5f, 1), // Upper-mad hall
         new(10.5f, -2), // Medbay top
@@ -297,7 +320,7 @@ public static class References
         { LayerEnum.Indomitable, new(typeof(Indomitable), CustomColorManager.Indomitable, LayerEnum.Indomitable) },
         { LayerEnum.Professional, new(typeof(Professional), CustomColorManager.Professional, LayerEnum.Professional) },
         { LayerEnum.Shy, new(typeof(Shy), CustomColorManager.Shy, LayerEnum.Shy) },
-        { LayerEnum.VIP, new(typeof(VIP), CustomColorManager.VIP, LayerEnum.VIP) },
+        { LayerEnum.Vip, new(typeof(Vip), CustomColorManager.Vip, LayerEnum.Vip) },
         { LayerEnum.Volatile, new(typeof(Volatile), CustomColorManager.Volatile, LayerEnum.Volatile) },
         { LayerEnum.Yeller, new(typeof(Yeller), CustomColorManager.Yeller, LayerEnum.Yeller) },
         { LayerEnum.Allied, new(typeof(Allied), CustomColorManager.Allied, LayerEnum.Allied) },

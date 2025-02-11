@@ -16,23 +16,24 @@ public class Dictator : Crew, IRevealer
     public bool Revealed { get; set; }
     public bool Tribunal { get; set; }
     public PlayerControl ToBeEjected { get; set; }
-    public CustomButton RevealButton { get; set; }
-    public CustomMeeting DictMenu { get; set; }
+    private CustomButton RevealButton { get; set; }
+    public CustomMeeting DictMenu { get; private set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Dictator : FactionColor;
     public override LayerEnum Type => LayerEnum.Dictator;
     public override Func<string> StartText => () => "You Have The Final Say";
     public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Sovereign;
-        RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable);
+        RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable,
+            MaxTribunals);
         DictMenu = new(Player, "DictActive", "DictDisabled", SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 
-    public void Reveal()
+    private void Reveal()
     {
         if (!Revealed && !GetLayers<Dictator>().Any(x => !x.TrulyDead && x.Revealed))
         {
@@ -85,7 +86,7 @@ public class Dictator : Crew, IRevealer
 
     public override void UpdateMeeting(MeetingHud __instance) => DictMenu.Update(__instance);
 
-    public bool Usable() => !RoundOne;
+    private bool Usable() => !RoundOne && !Tribunal;
 
     public override void ReadRPC(MessageReader reader)
     {

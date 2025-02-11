@@ -9,14 +9,14 @@ public class Engineer : Crew
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number FixCd = 5;
 
-    public CustomButton FixButton { get; set; }
+    private CustomButton FixButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Engineer : FactionColor;
     public override LayerEnum Type => LayerEnum.Engineer;
     public override Func<string> StartText => () => "Just Fix It";
     public override Func<string> Description => () => "- You can fix sabotages at any time from anywhere\n- You can vent";
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
@@ -24,11 +24,11 @@ public class Engineer : Crew
             (ConditionFunc)Condition);
     }
 
-    public bool Condition() => Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
+    public static bool Condition() => Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
 
-    public void Fix()
+    private void Fix()
     {
-        FixExtentions.Fix();
-        FixButton.StartCooldown(CooldownType.Reset);
+        Fixes.Fix();
+        FixButton.StartCooldown();
     }
 }

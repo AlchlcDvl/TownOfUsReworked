@@ -10,7 +10,7 @@ public class Escort : Crew, IBlocker
     public static Number EscortDur = 10;
 
     public PlayerControl BlockTarget { get; set; }
-    public CustomButton BlockButton { get; set; }
+    private CustomButton BlockButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Escort : FactionColor;
     public override LayerEnum Type => LayerEnum.Escort;
@@ -19,7 +19,7 @@ public class Escort : Crew, IBlocker
         "to blocks\n- If you attempt to block a <#336EFFFF>Serial Killer</color>, they will be forced to kill you";
     public override bool RoleBlockImmune => true;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
@@ -28,7 +28,7 @@ public class Escort : Crew, IBlocker
             new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect, (EffectStartVoid)BlockStart);
     }
 
-    public void UnBlock()
+    private void UnBlock()
     {
         if (BlockTarget.AmOwner)
             BlockExposed = false;
@@ -36,13 +36,13 @@ public class Escort : Crew, IBlocker
         BlockTarget = null;
     }
 
-    public void BlockStart()
+    private void BlockStart()
     {
         if (BlockTarget.AmOwner)
             CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
     }
 
-    public void Roleblock(PlayerControl target)
+    private void Roleblock(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -58,5 +58,5 @@ public class Escort : Crew, IBlocker
 
     public override void ReadRPC(MessageReader reader) => BlockTarget = reader.ReadPlayer();
 
-    public bool EndEffect() => Dead || (BlockTarget && BlockTarget.HasDied());
+    private bool EndEffect() => Dead || (BlockTarget && BlockTarget.HasDied());
 }

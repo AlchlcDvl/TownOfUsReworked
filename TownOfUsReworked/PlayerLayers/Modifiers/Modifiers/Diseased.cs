@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public class Diseased : Modifier
 {
     [ToggleOption]
-    public static bool DiseasedKnows = true;
+    private static bool DiseasedKnows = true;
 
     [NumberOption(1.5f, 5f, 0.5f, Format.Multiplier)]
     public static Number DiseasedMultiplier = 3;

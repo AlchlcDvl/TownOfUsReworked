@@ -1,3 +1,4 @@
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
 namespace TownOfUsReworked.Classes;
 
 public static class Interactions
@@ -6,14 +7,14 @@ public static class Interactions
     {
         if (target.IsOnAlert())
             return true;
-        else if (target.IsAmbushed() && (!player.Is(Faction.Intruder, Faction.Pandorica) || Ambusher.AmbushMates))
+
+        if (target.IsAmbushed() && (!player.Is(Faction.Intruder, Faction.Pandorica) || Ambusher.AmbushMates))
             return true;
-        else if (target.GetRole() is SerialKiller sk && sk.BloodlustButton.EffectActive && player.GetRole() is Escort or Consort or Glitch && !harmful)
+
+        if (target.GetRole() is SerialKiller sk && sk.BloodlustButton.EffectActive && player.GetRole() is Escort or Consort or Glitch && !harmful)
             return true;
-        else if (target.IsCrusaded() && (!player.Is(Faction.Syndicate, Faction.Pandorica) || Crusader.CrusadeMates))
-            return true;
-        else
-            return false;
+
+        return target.IsCrusaded() && (!player.Is(Faction.Syndicate, Faction.Pandorica) || Crusader.CrusadeMates);
     }
 
     private static void Trigger(PlayerControl player, PlayerControl target, bool harmful, out PlayerControl trapper)

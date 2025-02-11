@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public class Bait : Modifier
 {
     [ToggleOption]
-    public static bool BaitKnows = true;
+    private static bool BaitKnows = true;
 
     [NumberOption(0f, 15f, 0.5f, Format.Time)]
     public static Number BaitMinDelay = 0;

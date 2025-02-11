@@ -22,14 +22,14 @@ public static class TalkingPatches
     {
         var hud = HUD();
         yield return hud.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
-        var TempPosition = hud.shhhEmblem.transform.localPosition;
-        var TempDuration = hud.shhhEmblem.HoldDuration;
+        var tempPosition = hud.shhhEmblem.transform.localPosition;
+        var tempDuration = hud.shhhEmblem.HoldDuration;
         hud.shhhEmblem.transform.localPosition += new Vector3(0f, 0f, 1f);
         hud.shhhEmblem.TextImage.text = status;
         hud.shhhEmblem.HoldDuration = 2.5f;
         yield return hud.ShowEmblem(true);
-        hud.shhhEmblem.transform.localPosition = TempPosition;
-        hud.shhhEmblem.HoldDuration = TempDuration;
+        hud.shhhEmblem.transform.localPosition = tempPosition;
+        hud.shhhEmblem.HoldDuration = tempDuration;
         yield return hud.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         BeingBlackmailed = false;
         BeingSilenced = false;
@@ -48,50 +48,44 @@ public static class TalkingPatches
         {
             foreach (var role in PlayerLayer.GetILayers<IBlackmailer>())
             {
-                if (!role.Target)
+                if (role.Target.HasDied())
                     continue;
 
-                if (!role.Target.HasDied())
-                {
-                    var playerState = VoteAreaByPlayer(role.Target);
-                    playerState.Overlay.gameObject.SetActive(true);
-                    CachedOverlay ??= playerState.Overlay.sprite;
-                    CachedColor ??= playerState.Overlay.color;
-                    playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.Target.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
+                var playerState = VoteAreaByPlayer(role.Target);
+                playerState.Overlay.gameObject.SetActive(true);
+                CachedOverlay ??= playerState.Overlay.sprite;
+                CachedColor ??= playerState.Overlay.color;
+                playerState.Overlay.sprite = GetSprite("Overlay");
+                playerState.Overlay.color = role.Target.IsSilenced() ? CustomColorManager.What : CustomColorManager.Blackmailer;
 
-                    if (!role.ShookAlready)
-                    {
-                        role.ShookAlready = true;
-                        __instance.StartCoroutine(Effects.SwayX(playerState.transform));
-                    }
-                }
+                if (role.ShookAlready)
+                    continue;
+
+                role.ShookAlready = true;
+                __instance.StartCoroutine(Effects.SwayX(playerState.transform));
             }
         }
 
-        if (Silencer.SilenceRevealed)
+        if (!Silencer.SilenceRevealed)
+            return;
+
+        foreach (var role in PlayerLayer.GetILayers<ISilencer>())
         {
-            foreach (var role in PlayerLayer.GetILayers<ISilencer>())
-            {
-                if (!role.Target)
-                    continue;
+            if (role.Target.HasDied())
+                continue;
 
-                if (!role.Target.HasDied())
-                {
-                    var playerState = VoteAreaByPlayer(role.Target);
-                    playerState.Overlay.gameObject.SetActive(true);
-                    CachedOverlay ??= playerState.Overlay.sprite;
-                    CachedColor ??= playerState.Overlay.color;
-                    playerState.Overlay.sprite = GetSprite("Overlay");
-                    playerState.Overlay.color = role.Target.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
+            var playerState = VoteAreaByPlayer(role.Target);
+            playerState.Overlay.gameObject.SetActive(true);
+            CachedOverlay ??= playerState.Overlay.sprite;
+            CachedColor ??= playerState.Overlay.color;
+            playerState.Overlay.sprite = GetSprite("Overlay");
+            playerState.Overlay.color = role.Target.IsBlackmailed() ? CustomColorManager.What : CustomColorManager.Silencer;
 
-                    if (!role.ShookAlready)
-                    {
-                        role.ShookAlready = true;
-                        __instance.StartCoroutine(Effects.SwayX(playerState.transform));
-                    }
-                }
-            }
+            if (role.ShookAlready)
+                continue;
+
+            role.ShookAlready = true;
+            __instance.StartCoroutine(Effects.SwayX(playerState.transform));
         }
     }
 }

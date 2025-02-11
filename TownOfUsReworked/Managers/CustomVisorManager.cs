@@ -20,6 +20,9 @@ public static class CustomVisorManager
         viewData.ClimbFrame = cv.ClimbID != null ? CustomCosmeticsManager.CreateCosmeticSprite(path, CosmeticTypeEnum.Visor) : null;
         viewData.MatchPlayerColor = cv.Adaptive;
 
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
+        preview.PreviewSprite = viewData.IdleFrame;
+
         var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
         visor.name = cv.Name;
         visor.displayOrder = 99;
@@ -29,6 +32,8 @@ public static class CustomVisorManager
         visor.behindHats = !cv.InFront;
         visor.NotInStore = true;
         visor.PreviewCrewmateColor = cv.Adaptive;
+        visor.ViewDataRef = new CustomAddressable<VisorViewData>(viewData, visor.ProductId).Ref;
+        visor.PreviewData = new CustomAddressable<PreviewViewData>(preview, $"{visor.ProductId}_preview").Ref;
 
         cv.Artist ??= "Unknown";
         cv.ViewData = viewData;
@@ -37,23 +42,23 @@ public static class CustomVisorManager
         CustomVisorRegistry[visor.ProductId] = cv;
     }
 
-    public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomVisor> visors)
+    public static IEnumerable<string> GenerateDownloadList(IEnumerable<CustomVisor> visors, HashAlgorithm hasher)
     {
         foreach (var visor in visors)
         {
             if (visor.StreamOnly && !TownOfUsReworked.IsStream)
                 continue;
 
-            if (AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.ID}.png"), visor.MainHash))
+            if (AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.ID}.png"), visor.MainHash, hasher))
                 yield return visor.ID;
 
-            if (visor.FlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.FlipID}.png"), visor.FlipHash))
+            if (visor.FlipID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.FlipID}.png"), visor.FlipHash, hasher))
                 yield return visor.FlipID;
 
-            if (visor.ClimbID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.ClimbID}.png"), visor.ClimbHash))
+            if (visor.ClimbID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.ClimbID}.png"), visor.ClimbHash, hasher))
                 yield return visor.ClimbID;
 
-            if (visor.FloorID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.FloorID}.png"), visor.FloorHash))
+            if (visor.FloorID != null && AssetLoader.ShouldDownload(Path.Combine(TownOfUsReworked.Visors, $"{visor.FloorID}.png"), visor.FloorHash, hasher))
                 yield return visor.FloorID;
         }
     }

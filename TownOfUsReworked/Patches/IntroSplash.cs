@@ -9,18 +9,16 @@ public static class IntroSplash
     {
         public static void Postfix(VersionShower __instance)
         {
-            var gameObject = GameObject.Find("LOGO-AU");
+            if (!GameObject.Find("LOGO-AU") || Intro)
+                return;
 
-            if (gameObject && !Intro)
-            {
-                Intro = UObject.Instantiate(__instance.text, MainMenuPatches.Logo.transform);
-                Intro.transform.localPosition = new(0, -1.5f, 0);
-                Intro.text = $"<size=175%><b><#9FDA81FF>{Splashes.Random(x => !IsNullEmptyOrWhiteSpace(x))}</color></b></size>";
-                Intro.alignment = TextAlignmentOptions.Center;
-                Intro.fontStyle = FontStyles.Bold;
-                Intro.name = "ModIntroText";
-                Intro.font = GetFont("Placeholder");
-            }
+            Intro = UObject.Instantiate(__instance.text, MainMenuPatches.Logo.transform);
+            Intro.transform.localPosition = new(0, -1.5f, 0);
+            Intro.text = $"<size=175%><b><#9FDA81FF>{Splashes.Random(x => !IsNullEmptyOrWhiteSpace(x))}</color></b></size>";
+            Intro.alignment = TextAlignmentOptions.Center;
+            Intro.fontStyle = FontStyles.Bold;
+            Intro.name = "ModIntroText";
+            Intro.font = GetFont("Placeholder");
         }
     }
 

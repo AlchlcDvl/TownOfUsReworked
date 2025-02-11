@@ -5,13 +5,13 @@ public abstract class Evil : Neutral
     public abstract bool HasWon { get; }
     public abstract WinLose EndState { get; }
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Evil;
     }
 
-    public override void CheckWin()
+    protected override void CheckWin()
     {
         if (NeutralEvilSettings.NeutralEvilsEndGame && HasWon)
         {

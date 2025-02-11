@@ -4,7 +4,7 @@ public static class ReworkedDataManager
 {
     public static void Setup()
     {
-        var path = Path.Combine(PlatformPaths.persistentDataPath, "reworkedData");
+        var path = Path.Combine(Application.persistentDataPath, "reworkedData");
 
         if (File.Exists(path))
         {
@@ -15,7 +15,6 @@ public static class ReworkedDataManager
             } catch {}
         }
 
-
         CustomStatsManager.Setup();
         CustomAchievementManager.Setup();
 
@@ -23,7 +22,7 @@ public static class ReworkedDataManager
         StatsManager.Instance.SaveStats(); // Force save the stats to save any new achievements and stats
     }
 
-    public static void DeserializeReworkedData(this BinaryReader reader)
+    private static void DeserializeReworkedData(this BinaryReader reader)
     {
         TranslationManager.PreviousLastID = reader.ReadInt32();
     }

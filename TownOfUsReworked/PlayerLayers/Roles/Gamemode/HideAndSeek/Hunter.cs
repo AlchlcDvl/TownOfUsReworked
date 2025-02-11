@@ -10,7 +10,7 @@ public class Hunter : HideAndSeek
     public float StartingTimer { get; set; }
     public bool Starting => StartingTimer > 0f;
 
-    public override void Init()
+    protected override void Init()
     {
         base.Init();
         Objectives = () => "- Hunt the others down before they finish their tasks";
@@ -72,7 +72,7 @@ public class Hunter : HideAndSeek
             CheckWin();
     }
 
-    public override void CheckWin()
+    protected override void CheckWin()
     {
         if (HunterWins())
         {

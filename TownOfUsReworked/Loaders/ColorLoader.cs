@@ -4,12 +4,10 @@ namespace TownOfUsReworked.Loaders;
 
 public class ColorLoader : AssetLoader<CustomColor>
 {
-    public override string DirectoryInfo => TownOfUsReworked.Colors;
-    public override string Manifest => "Colors";
+    protected override string DirectoryInfo => TownOfUsReworked.Colors;
+    protected override string Manifest => "Colors";
 
-    public static ColorLoader Instance { get; set; }
-
-    public override IEnumerator LoadAssets(CustomColor[] response)
+    protected override IEnumerator LoadAssets(CustomColor[] response)
     {
         var colors = new List<CustomColor>(response);
 
@@ -46,15 +44,15 @@ public class ColorLoader : AssetLoader<CustomColor>
             if (!color.Default)
                 color.StringID = TranslationManager.GetOrAddName($"Colors.{color.Name}");
 
-            AllColors[i] = color;
+            AllColors[color.ColorID] = color;
             time += Time.deltaTime;
 
-            if (time > 1f)
-            {
-                time = 0f;
-                UpdateSplashPatch.SetText($"Loading Colors ({i + 1}/{colors.Count})");
-                yield return EndFrame();
-            }
+            if (time < 1f)
+                continue;
+
+            time = 0f;
+            UpdateSplashPatch.SetText($"Loading Colors ({i + 1}/{colors.Count})");
+            yield return EndFrame();
         }
 
         Palette.ColorNames = colors.Select(x => x.StringID).ToArray();

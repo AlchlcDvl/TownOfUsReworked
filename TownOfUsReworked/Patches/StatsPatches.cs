@@ -8,7 +8,7 @@ public static class StatsPatches
     {
         try
         {
-            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(PlatformPaths.persistentDataPath, "reworkedStats")));
+            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(Application.persistentDataPath, "reworkedStats")));
             writer.SerializeCustomStats();
         }
         catch (Exception ex)
@@ -18,7 +18,7 @@ public static class StatsPatches
 
         try
         {
-            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(PlatformPaths.persistentDataPath, "reworkedAchievements")));
+            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(Application.persistentDataPath, "reworkedAchievements")));
             writer.SerializeCustomAchievements();
         }
         catch (Exception ex)
@@ -28,7 +28,7 @@ public static class StatsPatches
 
         try
         {
-            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(PlatformPaths.persistentDataPath, "reworkedData")));
+            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(Application.persistentDataPath, "reworkedData")));
             writer.SerializeReworkedData();
         }
         catch (Exception ex)
