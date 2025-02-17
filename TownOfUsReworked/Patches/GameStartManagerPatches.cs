@@ -48,7 +48,11 @@ public static class GameStartManagerPatches
         CancelStartButton.activeSprites.GetComponent<SpriteRenderer>().color = UColor.red;
 
         CancelStartButton.activeTextColor = CancelStartButton.inactiveTextColor = UColor.white;
-        CancelStartButton.OverrideOnClickListeners(__instance.ResetStartState);
+        CancelStartButton.OverrideOnClickListeners(() =>
+        {
+            if (__instance.countDownTimer < 4f)
+                __instance.ResetStartState();
+        });
 
         __instance.GameStartText.transform.SetLocalY(2f);
     }

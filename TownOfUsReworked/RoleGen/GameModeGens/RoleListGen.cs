@@ -22,7 +22,7 @@ public class RoleListGen : BaseRoleGen
 
                 while (rateLimit < 10000 && AllRoles.Count == cachedCount)
                 {
-                    if (id is not LayerEnum layer)
+                    if (!id.TryCastToLayer(out var layer))
                     {
                         layer = (LayerEnum)(id switch
                         {
@@ -113,5 +113,5 @@ public class RoleListGen : BaseRoleGen
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
-    private static bool CannotAdd(LayerEnum id) => AllRoles.Any(x => x.ID == id && x.Unique) || ListEntryAttribute.IsBanned(id);
+    private static bool CannotAdd(LayerEnum id) => AllRoles.Any(x => x.ID == id && x.Unique) || ListEntryAttribute.IsBanned(id.CastToSlot());
 }

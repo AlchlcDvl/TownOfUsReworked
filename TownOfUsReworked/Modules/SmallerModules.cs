@@ -57,7 +57,7 @@ public struct RoleOptionData(int chance, int count, bool unique, bool active, La
 
     public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
 
-    public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsRoleList() && ListEntryAttribute.IsAdded(ID))) &&
+    public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsRoleList() && ListEntryAttribute.IsAdded(ID.CastToSlot()))) &&
         ID.IsValid(relatedCount);
 
     public readonly byte[] Serialize() => [ (byte)Chance, (byte)(Chance >> 8), (byte)(Chance >> 16), (byte)(Chance >> 24), (byte)Count, (byte)(Count >> 8), (byte)(Count >> 16), (byte)(Count >>

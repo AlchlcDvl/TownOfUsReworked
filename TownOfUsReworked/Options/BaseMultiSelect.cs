@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T allValue, T noneValue) : OptionAttribute<MultiSelectValue<T>>(type), IMultiSelectOption where T : Enum
+public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T allValue, T noneValue) : OptionAttribute<MultiSelectValue<T>>(type), IMultiSelectOption where T : struct, Enum
 {
     protected ValueMap<ToggleOption, T> Buttons { get; } = [];
     private T NoneValue { get; } = noneValue;
@@ -52,19 +52,24 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
     protected virtual void TrySetValue(T value)
     {
+        Critical($"Adding {value} to {Value}");
+
         if (value.Equals(AllValue))
         {
+            Critical("Here 1");
             var contained = Value.Contains(value);
             Value.Clear();
             Value.Add(contained ? NoneValue : AllValue);
         }
         else if (value.Equals(NoneValue))
         {
+            Critical("Here 2");
             Value.Clear();
             Value.Add(NoneValue);
         }
         else
         {
+            Critical("Here 3");
             if (Value.Contains(value))
                 Value.Remove(value);
             else
@@ -77,6 +82,8 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
             Value.Remove(AllValue);
         }
+
+        Critical($"New value is {Value}");
     }
 
     private void SetValue(T value)
@@ -86,13 +93,11 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
         Buttons.ForEach((x, y) => x.CheckMark.enabled = Value.Contains(y));
     }
 
-    public override void ReadValueRpc(MessageReader reader) => Set(Parse(reader.ReadString()), false);
+    public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadString(), false);
 
-    protected override void ReadValueString(string value) => Set(Parse(value), false);
+    protected override void ReadValueString(string value) => Set(value, false);
 
     public override void WriteValueRpc(MessageWriter writer) => writer.Write(ValueString());
-
-    protected abstract T[] Parse(string value);
 
     protected abstract void CreateButtons();
 }

@@ -166,10 +166,10 @@ public class ChatCommand
         else if (byte.TryParse(args[1], out var id))
         {
             whispered = PlayerById(id);
-            message = string.Join(" ", args[2..]).Trim();
+            message = Join(" ", args[2..]);
         }
         else if (AllPlayers().TryFinding(x => x.name == args[1], out whispered))
-            message = string.Join(" ", args[2..]).Trim();
+            message = Join(" ", args[2..]);
         else if (AllPlayers().TryFinding(x => x.name == args2[1], out whispered))
             message = args2[^1];
 

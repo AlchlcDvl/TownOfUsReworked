@@ -114,6 +114,9 @@ public static class SettingsPatches
             ScrollerLocation = default;
             Overwriting = false;
             SelectedSubOptions = null;
+            RolesButton = null;
+            AlignmentsButton = null;
+            ReturnButton = null;
         }
 
         [HarmonyPatch(nameof(GameSettingMenu.Update))]
@@ -186,25 +189,31 @@ public static class SettingsPatches
 
             var prefabs = new List<MonoBehaviour>();
 
-            RolesButton ??= UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.RoleChancesSettings.transform);
-            RolesButton.OverrideOnClickListeners(AllLayers);
-            RolesButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-            RolesButton.buttonText.alignment = TextAlignmentOptions.Center;
-            RolesButton.buttonText.text = TranslationManager.Translate("View.AllLayers");
-            RolesButton.name = "AllLayers";
-            RolesButton.transform.localPosition = new(0.1117f, 1.626f, -2f);
-            RolesButton.ClickMask = __instance.ButtonClickMask;
-            prefabs.Add(RolesButton);
+            if (!RolesButton)
+            {
+                RolesButton = UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.RoleChancesSettings.transform);
+                RolesButton.OverrideOnClickListeners(AllLayers);
+                RolesButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+                RolesButton.buttonText.alignment = TextAlignmentOptions.Center;
+                RolesButton.buttonText.text = TranslationManager.Translate("View.AllLayers");
+                RolesButton.name = "AllLayers";
+                RolesButton.transform.localPosition = new(0.1117f, 1.626f, -2f);
+                RolesButton.ClickMask = __instance.ButtonClickMask;
+                prefabs.Add(RolesButton);
+            }
 
-            AlignmentsButton ??= UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.RoleChancesSettings.transform);
-            AlignmentsButton.OverrideOnClickListeners(AllAlignments);
-            AlignmentsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-            AlignmentsButton.buttonText.alignment = TextAlignmentOptions.Center;
-            AlignmentsButton.buttonText.text = TranslationManager.Translate("View.AllAlignments");
-            AlignmentsButton.name = "AllAlignments";
-            AlignmentsButton.transform.localPosition = new(3.4727f, 1.626f, -2f);
-            AlignmentsButton.ClickMask = __instance.ButtonClickMask;
-            prefabs.Add(AlignmentsButton);
+            if (!AlignmentsButton)
+            {
+                AlignmentsButton ??= UObject.Instantiate(GameSettingMenu.Instance.GamePresetsButton, __instance.RoleChancesSettings.transform);
+                AlignmentsButton.OverrideOnClickListeners(AllAlignments);
+                AlignmentsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+                AlignmentsButton.buttonText.alignment = TextAlignmentOptions.Center;
+                AlignmentsButton.buttonText.text = TranslationManager.Translate("View.AllAlignments");
+                AlignmentsButton.name = "AllAlignments";
+                AlignmentsButton.transform.localPosition = new(3.4727f, 1.626f, -2f);
+                AlignmentsButton.ClickMask = __instance.ButtonClickMask;
+                prefabs.Add(AlignmentsButton);
+            }
 
             foreach (var mono in prefabs)
             {
@@ -245,15 +254,11 @@ public static class SettingsPatches
         }
     }
 
-    private static IEnumerable<BaseHeaderOptionAttribute> CreateOptions(Transform parent, Collider2D clickMask, ISystem.List<UiElement> uiElements)
+    private static void CreateOptions(Transform parent, Collider2D clickMask, ISystem.List<UiElement> uiElements)
     {
         var type = (MultiMenu)SettingsPage;
-        var filtered = OptionAttribute.SortedOptions.Where(x => x.Menu == type && x.Active() && x.GroupMembers.Any(x => x.PartiallyActive()));
 
-        if (SelectedSubOptions != null)
-            filtered = [ SelectedSubOptions ];
-
-        foreach (var header in filtered)
+        foreach (var header in SelectedSubOptions == null ? OptionAttribute.SortedOptions.Where(x => x.Menu == type) : [ SelectedSubOptions ])
         {
             if (!header.Setting)
             {
@@ -262,7 +267,7 @@ public static class SettingsPatches
                 header.Setting.GetComponentsInChildren<PassiveButton>(true).ForEach(x => x.ClickMask = clickMask);
             }
 
-            foreach (var option in header.GroupMembers.Where(option => !option.Setting))
+            foreach (var option in header.GroupMembers.Where(option => !option.Setting && option.Active()))
             {
                 option.Setting = UObject.Instantiate((MonoBehaviour)(option.Type switch
                 {
@@ -281,9 +286,6 @@ public static class SettingsPatches
                 behaviour.buttons = behaviour.GetComponentsInChildren<PassiveButton>(true).ToArray();
                 behaviour.buttons.ForEach(x => x.ClickMask = clickMask);
             }
-
-            if (header.Setting)
-                yield return header;
         }
 
         parent.GetComponentsInChildren<UiElement>(true).ForEach(uiElements.AddUnique);
@@ -336,12 +338,14 @@ public static class SettingsPatches
         if (ClientSettingsButton)
             ClientSettingsButton.SelectButton(SettingsPage == 2);
 
-        var options = CreateOptions
+        CreateOptions
         (
             SettingsPage is 1 or 3 or 4 ? __instance.RoleSettingsTab.RoleChancesSettings.transform : __instance.GameSettingsTab.settingsContainer,
             SettingsPage is 1 or 3 or 4 ? __instance.RoleSettingsTab.ButtonClickMask : __instance.GameSettingsTab.ButtonClickMask,
             SettingsPage is 1 or 3 or 4 ? __instance.RoleSettingsTab.ControllerSelectable : __instance.GameSettingsTab.ControllerSelectable
         );
+
+        var menu = (MultiMenu)SettingsPage;
 
         switch (SettingsPage)
         {
@@ -353,10 +357,31 @@ public static class SettingsPatches
                 if (SettingsPage == 0)
                     __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
-                foreach (var header in options)
+                foreach (var header in OptionAttribute.SortedOptions)
                 {
-                    header.Setting.gameObject.SetActive(true);
+                    if (!header.Setting)
+                    {
+                        header.GroupMembers?.ForEach(x =>
+                        {
+                            if (x.Setting)
+                                x.Setting.gameObject.SetActive(false);
+                        });
+                        continue;
+                    }
+
+                    var flag = header.Menu == menu && header.Active() && header.GroupMembers.Any(x => x.PartiallyActive());
+                    header.Setting.gameObject.SetActive(flag);
                     header.Update();
+
+                    if (!flag)
+                    {
+                        header.GroupMembers?.ForEach(x =>
+                        {
+                            if (x.Setting)
+                                x.Setting.gameObject.SetActive(false);
+                        });
+                        continue;
+                    }
 
                     header.Setting.transform.localPosition = new(-0.903f, y, -2f);
                     y -= 0.53f;
@@ -398,10 +423,31 @@ public static class SettingsPatches
                 AlignmentsButton.gameObject.SetActive(SettingsPage == 1);
                 __instance.RoleSettingsTab.advancedSettingChildren.Clear();
 
-                foreach (var header in options)
+                foreach (var header in OptionAttribute.SortedOptions)
                 {
-                    header.Setting.gameObject.SetActive(true);
+                    if (!header.Setting)
+                    {
+                        header.GroupMembers?.ForEach(x =>
+                        {
+                            if (x.Setting)
+                                x.Setting.gameObject.SetActive(false);
+                        });
+                        continue;
+                    }
+
+                    var flag = header.Menu == menu && (SelectedSubOptions == null || header == SelectedSubOptions) && header.Active() && header.PartiallyActive();
+                    header.Setting.gameObject.SetActive(flag);
                     header.Update();
+
+                    if (!flag)
+                    {
+                        header.GroupMembers?.ForEach(x =>
+                        {
+                            if (x.Setting)
+                                x.Setting.gameObject.SetActive(false);
+                        });
+                        continue;
+                    }
 
                     var isHeader = header is HeaderOptionAttribute;
 

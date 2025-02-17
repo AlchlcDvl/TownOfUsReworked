@@ -120,7 +120,7 @@ public class Trapper : Crew, ITrapper
         {
             message = "Your trap detected the following roles: ";
             TriggeredRoles.Shuffle();
-            message += string.Join(", ", TriggeredRoles.Select(x => LayerDictionary[x.Type].Name));
+            message += Join(", ", TriggeredRoles.Select(x => LayerDictionary[x.Type].Name));
         }
 
         if (!IsNullEmptyOrWhiteSpace(message))

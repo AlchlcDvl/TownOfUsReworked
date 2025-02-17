@@ -124,49 +124,49 @@ public static class GameModeSettings
     public static bool HuntedChat = true;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry1 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry1 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry2 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry2 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry3 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry3 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry4 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry4 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry5 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry5 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry6 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry6 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry7 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry7 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry8 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry8 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry9 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry9 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry10 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry10 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry11 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry11 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry12 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry12 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry13 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry13 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry14 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry14 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleEntry15 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleEntry15 = RoleListSlot.None;
 
     [NumberOption(0, 15, 1)]
     public static Number RevealerCount = 0;
@@ -181,19 +181,19 @@ public static class GameModeSettings
     public static Number BansheeCount = 0;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleBan1 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleBan1 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleBan2 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleBan2 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleBan3 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleBan3 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleBan4 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleBan4 = RoleListSlot.None;
 
     [ListEntry(PlayerLayerEnum.Role)]
-    public static MultiSelectValue<Enum> RoleBan5 = RoleListSlot.None;
+    public static MultiSelectValue<RoleListSlot> RoleBan5 = RoleListSlot.None;
 
     [ToggleOption]
     public static bool BanCrewmate = true;

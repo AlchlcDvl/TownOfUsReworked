@@ -479,13 +479,28 @@ public static class LayerExtensions
                 SerialKiller sk => SerialKiller.SkVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SkVentOptions == 1) || (!sk.BloodlustButton.EffectActive &&
                     (int)SerialKiller.SkVentOptions == 2),
                 Werewolf ww => Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 2),
-                _ => (playerRole is Murderer && Murderer.MurdVent) || (playerRole is Glitch && Glitch.GlitchVent) || (playerRole is Juggernaut && Juggernaut.JuggVent) || (playerRole is
-                    Pestilence && Pestilence.PestVent) || (playerRole is Jester && Jester.JesterVent) || (playerRole is Plaguebearer && Plaguebearer.PbVent) || (playerRole is Arsonist &&
-                    Arsonist.ArsoVent) || (playerRole is Executioner && Executioner.ExeVent) || (playerRole is Cannibal && Cannibal.CannibalVent) || (playerRole is Dracula &&
-                    Dracula.DracVent) || (playerRole is Survivor && Survivor.SurvVent) || (playerRole is Actor && Actor.ActorVent) || (playerRole is GuardianAngel && GuardianAngel.GaVent) ||
-                    (playerRole is Amnesiac && Amnesiac.AmneVent) || (playerRole is Jackal && Jackal.JackalVent) || (playerRole is BountyHunter && BountyHunter.BhVent) || (playerRole is
-                    Betrayer && Betrayer.BetrayerVent) || (playerRole is Thief && Thief.ThiefVent) || (playerRole is Cryomaniac && Cryomaniac.CryoVent) || (playerRole is Necromancer &&
-                    Necromancer.NecroVent) || (playerRole is Whisperer && Whisperer.WhispVent)
+                Murderer => Murderer.MurdVent,
+                Glitch => Glitch.GlitchVent,
+                Juggernaut => Juggernaut.JuggVent,
+                Pestilence => Pestilence.PestVent,
+                Jester => Jester.JesterVent,
+                Plaguebearer => Plaguebearer.PbVent,
+                Arsonist => Arsonist.ArsoVent,
+                Executioner => Executioner.ExeVent,
+                Cannibal => Cannibal.CannibalVent,
+                Dracula => Dracula.DracVent,
+                Survivor => Survivor.SurvVent,
+                Actor => Actor.ActorVent,
+                GuardianAngel => GuardianAngel.GaVent,
+                Amnesiac => Amnesiac.AmneVent,
+                Jackal => Jackal.JackalVent,
+                BountyHunter => BountyHunter.BhVent,
+                Betrayer => Betrayer.BetrayerVent,
+                Thief => Thief.ThiefVent,
+                Cryomaniac => Cryomaniac.CryoVent,
+                Necromancer => Necromancer.NecroVent,
+                Whisperer => Whisperer.WhispVent,
+                _ => false
             };
         }
 
@@ -580,7 +595,7 @@ public static class LayerExtensions
             objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
             alignment += $"{role.FactionColorString}{role.Faction}({AlignmentColorString}{role.Alignment}</color>)</color>";
             subfaction += $"{role.SubFactionColorString}{role.SubFactionName} {role.SubFactionSymbol}</color>";
-            attdef += $"{string.Join(",", info.Where(x => x.AttackVal > AttackEnum.None).Select(x => x.AttackVal))}</color>/{DefenseColorString}{string.Join(", ",
+            attdef += $"{Join(",", info.Where(x => x.AttackVal > AttackEnum.None).Select(x => x.AttackVal))}</color>/{DefenseColorString}{Join(", ",
                 info.Where(x => x.DefenseVal > DefenseEnum.None).Select(x => x.DefenseVal))}</color>";
         }
         else

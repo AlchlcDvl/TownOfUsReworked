@@ -39,7 +39,7 @@ public class DispositionGen : BaseGen
         var invalid = new List<LayerEnum>();
 
         if (TownOfUsReworked.MciActive && AllDispositions.Any())
-            Message("Dispositions in the game: " + string.Join(" ", AllDispositions.Select(ab => ab.ID)));
+            Message("Dispositions in the game: " + Join(" ", AllDispositions.Select(ab => ab.ID)));
 
         while (playerList.Any() && AllDispositions.Any())
         {
@@ -69,7 +69,7 @@ public class DispositionGen : BaseGen
         }
 
         if (TownOfUsReworked.MciActive && invalid.Any())
-            Message("Invalid Dispositions in the game: " + string.Join(" ", invalid));
+            Message("Invalid Dispositions in the game: " + Join(" ", invalid));
 
         AllDispositions.Clear();
     }

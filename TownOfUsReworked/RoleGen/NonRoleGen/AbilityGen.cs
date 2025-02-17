@@ -39,7 +39,7 @@ public class AbilityGen : BaseGen
         var invalid = new List<LayerEnum>();
 
         if (TownOfUsReworked.MciActive && AllAbilities.Any())
-            Message("Abilities in the game: " + string.Join(" ", AllAbilities.Select(ab => ab.ID)));
+            Message("Abilities in the game: " + Join(" ", AllAbilities.Select(ab => ab.ID)));
 
         while (playerList.Any() && AllAbilities.Any())
         {
@@ -83,7 +83,7 @@ public class AbilityGen : BaseGen
         }
 
         if (TownOfUsReworked.MciActive && invalid.Any())
-            Message("Invalid Abilities in the game: " + string.Join(" ", invalid));
+            Message("Invalid Abilities in the game: " + Join(" ", invalid));
 
         AllAbilities.Clear();
     }

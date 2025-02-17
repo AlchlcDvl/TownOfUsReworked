@@ -283,7 +283,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             {
                 message = "The following roles triggered your bugs: ";
                 BuggedPlayers.Shuffle();
-                message += string.Join(", ", BuggedPlayers.Select(role => LayerDictionary[role].Name));
+                message += Join(", ", BuggedPlayers.Select(role => LayerDictionary[role].Name));
             }
 
             if (!IsNullEmptyOrWhiteSpace(message))
@@ -299,7 +299,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             {
                 message = "Your trap detected the following roles: ";
                 TriggeredRoles.Shuffle();
-                message += string.Join(", ", TriggeredRoles.Select(x => LayerDictionary[x.Type].Name));
+                message += Join(", ", TriggeredRoles.Select(x => LayerDictionary[x.Type].Name));
             }
 
             if (!IsNullEmptyOrWhiteSpace(message))

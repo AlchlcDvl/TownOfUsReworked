@@ -38,7 +38,7 @@ public class ModifierGen : BaseGen
         var invalid = new List<LayerEnum>();
 
         if (TownOfUsReworked.MciActive && AllModifiers.Any())
-            Message("Modifiers in the game: " + string.Join(" ", AllModifiers.Select(ab => ab.ID)));
+            Message("Modifiers in the game: " + Join(" ", AllModifiers.Select(ab => ab.ID)));
 
         while (playerList.Any() && AllModifiers.Any())
         {
@@ -69,7 +69,7 @@ public class ModifierGen : BaseGen
         }
 
         if (TownOfUsReworked.MciActive && invalid.Any())
-            Message("Invalid Modifiers in the game: " + string.Join(" ", invalid));
+            Message("Invalid Modifiers in the game: " + Join(" ", invalid));
 
         AllModifiers.Clear();
     }

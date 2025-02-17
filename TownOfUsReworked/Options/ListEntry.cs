@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOptionAttribute<Enum>(CustomOptionType.Entry, RoleListSlot.Any, RoleListSlot.None)
+public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOptionAttribute<RoleListSlot>(CustomOptionType.Entry, RoleListSlot.Any, RoleListSlot.None)
 {
     public PlayerLayerEnum EntryType { get; } = entryType;
     public bool IsBan { get; private set; }
@@ -17,22 +17,19 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
     public override void Debug()
     {
         base.Debug();
-        Enum.GetValues<LayerEnum>().Where(x => x is not (LayerEnum.Revealer or LayerEnum.Phantom or LayerEnum.Banshee or LayerEnum.Ghoul or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel
-            or LayerEnum.Mafioso or LayerEnum.Sidekick or LayerEnum.Betrayer or LayerEnum.None or LayerEnum.NoneAbility or LayerEnum.NoneDisposition or LayerEnum.NoneModifier or
-            (>= LayerEnum.Hunted and <= LayerEnum.NoneRole) or (>= LayerEnum.Undead and <= LayerEnum.Reanimated))).ForEach(x => TranslationManager.DebugId($"List.{x}"));
         Enum.GetValues<RoleListSlot>().ForEach(x => TranslationManager.DebugId($"List.{x}"));
     }
 
     public override void ViewUpdate()
     {
         base.ViewUpdate();
-        ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.color = Value[0] is LayerEnum layer && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
+        ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.color = Value[0].TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
     }
 
     public override void Update()
     {
         base.Update();
-        Setting.Cast<StringOption>().ValueText.color = Value[0] is LayerEnum layer && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
+        Setting.Cast<StringOption>().ValueText.color = Value[0].TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
     }
 
     protected override string Format()
@@ -47,9 +44,6 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
 
     protected override string SettingNotif() => base.SettingNotif().Replace("%num%", Num);
 
-    protected override Enum[] Parse(string value) => [ .. value.TrueSplit(',').Select(x => (Enum)(x == "None" ? RoleListSlot.None : (Enum.TryParse<LayerEnum>(x, out var layer) ? layer :
-        Enum.Parse<RoleListSlot>(x ?? "None")))) ];
-
     protected override void CreateButtons()
     {
         if (Buttons.Any())
@@ -63,7 +57,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         SettingsPatches.OnValueChanged();
     }
 
-    protected override void TrySetValue(Enum value)
+    protected override void TrySetValue(RoleListSlot value)
     {
         if (IsBan)
         {
@@ -73,7 +67,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
 
         if (value is RoleListSlot.CrewKill && Value.Contains(value))
         {
-            Value.RemoveAll(x => x is LayerEnum.Veteran or LayerEnum.Bastion or LayerEnum.Vigilante);
+            Value.RemoveAll(x => x is RoleListSlot.Veteran or RoleListSlot.Bastion or RoleListSlot.Vigilante);
             Value.Add(value);
         }
         else
@@ -81,7 +75,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
     }
 
     // What the hell is this? What am I even doing man...
-    private static IEnumerable<Enum> GetPossibleValues(ListEntryAttribute self)
+    private static IEnumerable<RoleListSlot> GetPossibleValues(ListEntryAttribute self)
     {
         var bans = GetOptions<ListEntryAttribute>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
         yield return RoleListSlot.None;
@@ -93,8 +87,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         {
             case PlayerLayerEnum.Role:
             {
-                foreach (var role in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not (LayerEnum.Revealer or LayerEnum.Phantom or LayerEnum.Banshee or LayerEnum.Ghoul or
-                    LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Mafioso or LayerEnum.Sidekick or LayerEnum.Betrayer)))
+                foreach (var role in GetValuesFromTo(RoleListSlot.Altruist, RoleListSlot.Warper))
                 {
                     if (!bans.Any(x => x.Get().Contains(role)))
                         yield return role;
@@ -150,7 +143,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
             }
             case PlayerLayerEnum.Disposition:
             {
-                foreach (var disp in GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor))
+                foreach (var disp in GetValuesFromTo(RoleListSlot.Allied, RoleListSlot.Traitor))
                 {
                     if (!bans.Any(x => x.Get().Contains(disp)))
                         yield return disp;
@@ -160,7 +153,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
             }
             case PlayerLayerEnum.Modifier:
             {
-                foreach (var mod in GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller))
+                foreach (var mod in GetValuesFromTo(RoleListSlot.Astral, RoleListSlot.Yeller))
                 {
                     if (!bans.Any(x => x.Get().Contains(mod)))
                         yield return mod;
@@ -170,7 +163,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
             }
             case PlayerLayerEnum.Ability:
             {
-                foreach (var ab in GetValuesFromTo(LayerEnum.Bullseye, LayerEnum.Underdog))
+                foreach (var ab in GetValuesFromTo(RoleListSlot.Bullseye, RoleListSlot.Underdog))
                 {
                     if (!bans.Any(x => x.Get().Contains(ab)))
                         yield return ab;
@@ -181,13 +174,13 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         }
     }
 
-    public static bool IsAdded(Enum value, ListEntryAttribute entry = null)
+    public static bool IsAdded(RoleListSlot value, ListEntryAttribute entry = null)
     {
         var entries = GetOptions<ListEntryAttribute>().Where(x => !x.IsBan);
         return entry == null ? entries.Any(x => x.Get().Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Get().Contains(value));
     }
 
-    public static bool IsBanned(Enum value, ListEntryAttribute entry = null)
+    public static bool IsBanned(RoleListSlot value, ListEntryAttribute entry = null)
     {
         var entries = GetOptions<ListEntryAttribute>().Where(x => x.IsBan);
         return entry == null ? entries.Any(x => x.Get().Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Get().Contains(value));

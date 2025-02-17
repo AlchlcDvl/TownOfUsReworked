@@ -32,7 +32,7 @@ public static class ChatPatches
 
             if (closestCommand != null)
             {
-                var result = string.Join(" ", split[1..]);
+                var result = Join(" ", split[1..]);
                 result = result.Length > 0 ? $"/{first} {result.Trim()} {closestCommand.ConstructParameters(split)}" : $"/{closestCommand.FindAlias(first)} {closestCommand.ConstructParameters(split)}";
                 SuggestionText.text = result;
 

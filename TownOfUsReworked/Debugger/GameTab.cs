@@ -91,7 +91,6 @@ public class GameTab : BaseTab
         {
             Critical(CustomPlayer.Local.name);
             PlayerLayer.LocalLayers().ForEach(x => Critical(x));
-            // PlayerLayer.LocalLayers().ForEach(Critical);
             Critical("Is Dead - " + CustomPlayer.Local.HasDied());
             Critical("Location - " + CustomPlayer.LocalCustom.Position);
         }

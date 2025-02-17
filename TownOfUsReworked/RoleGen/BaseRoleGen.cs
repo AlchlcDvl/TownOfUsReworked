@@ -29,7 +29,7 @@ public abstract class BaseRoleGen : BaseGen
         players.Shuffle();
 
         if (TownOfUsReworked.MciActive && AllRoles.Any())
-            Message("Roles in the game: " + string.Join(" ", AllRoles.Select(ab => ab.ID)));
+            Message("Roles in the game: " + Join(" ", AllRoles.Select(ab => ab.ID)));
 
         while (players.Any() && AllRoles.Any())
             Gen(players.TakeFirst(), AllRoles.TakeFirst().ID, PlayerLayerEnum.Role);

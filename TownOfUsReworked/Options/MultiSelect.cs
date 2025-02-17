@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : BaseMultiSelectOptionAttribute<T>(CustomOptionType.MultiSelect, none, all) where T : struct, Enum
+public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : BaseMultiSelectOptionAttribute<T>(CustomOptionType.MultiSelect, all, none) where T : struct, Enum
 {
     private IEnumerable<T> Values { get; set; }
     private Type InnerType { get; } = typeof(T);
@@ -40,6 +40,4 @@ public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : B
 
         SettingsPatches.OnValueChanged();
     }
-
-    protected override T[] Parse(string value) => [ .. value.TrueSplit(',').Select(Enum.Parse<T>) ];
 }

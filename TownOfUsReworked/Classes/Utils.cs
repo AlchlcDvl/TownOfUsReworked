@@ -1,6 +1,4 @@
-﻿using Il2CppMono.Security.Protocol.Ntlm;
-
-namespace TownOfUsReworked.Classes;
+﻿namespace TownOfUsReworked.Classes;
 
 public static class Utils
 {
@@ -1501,6 +1499,38 @@ public static class Utils
         RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomSounds"), TownOfUsReworked.Sounds);
         RenameFolder(Path.Combine(TownOfUsReworked.Assets, "MiscAssets"), TownOfUsReworked.Bundles);
         RenameFolder(Path.Combine(TownOfUsReworked.Assets, "ModLogs"), TownOfUsReworked.Logs);
+    }
+
+    public static string TrueReplace(this string @string, string former, string latter)
+    {
+        while (@string.Contains(former))
+            @string = @string.Replace(former, latter);
+
+        return @string;
+    }
+
+    public static bool TryCastToLayer(this RoleListSlot slot, out LayerEnum layer) => Enum.TryParse($"{slot}", out layer);
+
+    public static RoleListSlot CastToSlot(this LayerEnum layer) => Enum.Parse<RoleListSlot>($"{layer}");
+
+    public static string Join<T>(char separator, IEnumerable<T> items)
+    {
+        if (!items.Any())
+            return "";
+
+        var result = "";
+        items.ForEach(x => result += $"{separator}{x}");
+        return result[1..];
+    }
+
+    public static string Join<T>(string separator, IEnumerable<T> items)
+    {
+        if (!items.Any())
+            return "";
+
+        var result = "";
+        items.ForEach(x => result += $"{separator}{x}");
+        return result[separator.Length..];
     }
 
     // public static object TryCast(this Il2CppObjectBase self, Type type) => TryCastMethod.MakeGenericMethod(type).Invoke(self, null);

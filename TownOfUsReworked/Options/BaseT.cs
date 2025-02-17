@@ -63,7 +63,7 @@ public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribut
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
         var hud = HUD();
 
-        if (LastChangedSetting == ID && hud.Notifier.activeMessages.Count > 0)
+        if (LastChangedSetting == ID && hud.Notifier.activeMessages.Count > 0 && LastSettingNotif)
             LastSettingNotif.UpdateMessage(changed);
         else
         {

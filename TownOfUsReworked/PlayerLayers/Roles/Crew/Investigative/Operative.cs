@@ -83,7 +83,7 @@ public class Operative : Crew, IBugger
         {
             message = "The following roles triggered your bugs: ";
             BuggedPlayers.Shuffle();
-            message += string.Join(", ", BuggedPlayers.Select(x => LayerDictionary[x].Name));
+            message += Join(", ", BuggedPlayers.Select(x => LayerDictionary[x].Name));
         }
 
         if (!IsNullEmptyOrWhiteSpace(message))

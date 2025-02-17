@@ -36,7 +36,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
             "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ]),
         ([ "EvilsIgnoreNv" ], [ "NightVision" ]),
         ([ "SkeldVentImprovements" , "SkeldReactorTimer", "SkeldO2Timer" ], [ "EnableBetterSkeld" ]),
-        ([ "MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer" ], [ "EnableBetterMiraHQ" ]),
+        ([ "MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer" ], [ "EnableBetterMiraHq" ]),
         ([ "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ], [ "EnableBetterPolus" ]),
         ([ "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer" ], [ "EnableBetterAirship" ]),
         ([ "FungleReactorTimer", "FungleMixupTimer" ], [ "EnableBetterFungle" ]),

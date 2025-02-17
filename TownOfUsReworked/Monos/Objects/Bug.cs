@@ -39,7 +39,7 @@ public class Bug : Range
     {
         var results = Results.Values.ToList();
         results.Shuffle();
-        var result = string.Join(", ", results.Select(x => LayerDictionary[x].Name));
+        var result = Join(", ", results.Select(x => LayerDictionary[x].Name));
 
         if (Operative.PreciseOperativeInfo)
             result = $"Bug {Number}: {result}";
