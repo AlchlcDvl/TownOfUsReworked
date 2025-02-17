@@ -52,24 +52,19 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
     protected virtual void TrySetValue(T value)
     {
-        Critical($"Adding {value} to {Value}");
-
         if (value.Equals(AllValue))
         {
-            Critical("Here 1");
             var contained = Value.Contains(value);
             Value.Clear();
             Value.Add(contained ? NoneValue : AllValue);
         }
         else if (value.Equals(NoneValue))
         {
-            Critical("Here 2");
             Value.Clear();
             Value.Add(NoneValue);
         }
         else
         {
-            Critical("Here 3");
             if (Value.Contains(value))
                 Value.Remove(value);
             else
@@ -82,8 +77,6 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
             Value.Remove(AllValue);
         }
-
-        Critical($"New value is {Value}");
     }
 
     private void SetValue(T value)

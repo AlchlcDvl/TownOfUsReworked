@@ -267,7 +267,7 @@ public static class SettingsPatches
                 header.Setting.GetComponentsInChildren<PassiveButton>(true).ForEach(x => x.ClickMask = clickMask);
             }
 
-            foreach (var option in header.GroupMembers.Where(option => !option.Setting && option.Active()))
+            foreach (var option in header.GroupMembers.Where(option => !option.Setting))
             {
                 option.Setting = UObject.Instantiate((MonoBehaviour)(option.Type switch
                 {
