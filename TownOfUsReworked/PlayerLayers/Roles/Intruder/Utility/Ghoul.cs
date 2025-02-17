@@ -4,9 +4,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Ghoul : Intruder, IGhosty
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number GhoulMarkCd = 25;
+    private static Number GhoulMarkCd = 25;
 
-    public CustomButton MarkButton { get; set; }
+    private CustomButton MarkButton { get; set; }
     public bool Caught { get; set; }
     public bool Faded { get; set; }
     public PlayerControl MarkedPlayer { get; set; }
@@ -27,15 +27,15 @@ public class Ghoul : Intruder, IGhosty
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
-    public void Mark(PlayerControl target)
+    private void Mark(PlayerControl target)
     {
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MarkedPlayer);
         MarkButton.StartCooldown();
     }
 
-    public bool Usable() => !Caught && !MarkedPlayer;
+    private bool Usable() => !Caught && !MarkedPlayer;
 
-    public bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+    private bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
     public override void ReadRPC(MessageReader reader) => MarkedPlayer = reader.ReadPlayer();
 

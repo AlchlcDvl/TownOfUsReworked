@@ -7,43 +7,43 @@ public class GuardianAngel : Neutral
     public static bool GuardianAngelCanPickTargets = false;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ProtectCd = 25;
+    private static Number ProtectCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number ProtectDur = 10;
+    private static Number ProtectDur = 10;
 
     [NumberOption(0, 15, 1, zeroIsInf: true)]
-    public static Number MaxProtects = 5;
+    private static Number MaxProtects = 5;
 
     [MultiSelectOption<ProtectOptions>(ProtectOptions.Nobody, ProtectOptions.Everyone)]
     public static MultiSelectValue<ProtectOptions> ShowProtect = ProtectOptions.Protected;
 
     [ToggleOption]
-    public static bool GATargetKnows = false;
+    public static bool GaTargetKnows = false;
 
     [ToggleOption]
     public static bool ProtectBeyondTheGrave = false;
 
     [ToggleOption]
-    public static bool GAKnowsTargetRole = false;
+    public static bool GaKnowsTargetRole = false;
 
     [ToggleOption]
-    public static bool GAVent = false;
+    public static bool GaVent = false;
 
     [ToggleOption]
-    public static bool GASwitchVent = false;
+    public static bool GaSwitchVent = false;
 
     [ToggleOption]
-    public static bool GAToSurv = true;
+    private static bool GaToSurv = true;
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetAlive => !Disconnected && !TargetPlayer.HasDied();
-    public CustomButton ProtectButton { get; set; }
-    public CustomButton GraveProtectButton { get; set; }
+    private CustomButton ProtectButton { get; set; }
+    public CustomButton GraveProtectButton { get; private set; }
     public int Rounds { get; set; }
-    public CustomButton TargetButton { get; set; }
+    private CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer ? !TargetAlive : Rounds > 2;
-    public bool Protecting { get; set; }
+    public bool Protecting { get; private set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.GuardianAngel : FactionColor;
     public override LayerEnum Type => LayerEnum.GuardianAngel;
@@ -85,15 +85,15 @@ public class GuardianAngel : Neutral
         return team;
     }
 
-    public void SelectTarget(PlayerControl target)
+    private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
     }
 
-    public void TurnSurv() => new Survivor().RoleUpdate(this);
+    private void TurnSurv() => new Survivor().RoleUpdate(this);
 
-    public void HitProtect()
+    private void HitProtect()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ProtectButton);
         ProtectButton.Begin();
@@ -101,7 +101,7 @@ public class GuardianAngel : Neutral
         TrulyDead = GraveProtectButton.Uses <= 0 && Dead;
     }
 
-    public void HitGraveProtect()
+    private void HitGraveProtect()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, GraveProtectButton);
         GraveProtectButton.Begin();
@@ -109,36 +109,36 @@ public class GuardianAngel : Neutral
         TrulyDead = ProtectButton.Uses <= 0 && Dead;
     }
 
-    public void ProtectStart() => Protecting = true;
+    private void ProtectStart() => Protecting = true;
 
-    public void ProtectEnd() => Protecting = false;
+    private void ProtectEnd() => Protecting = false;
 
-    public bool Usable1() => !Failed && TargetPlayer && TargetAlive;
+    private bool Usable1() => !Failed && TargetPlayer && TargetAlive;
 
-    public bool Usable2() => !TargetPlayer;
+    private bool Usable2() => !TargetPlayer;
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (Failed && !Dead && !GAToSurv)
+        if (!Failed || Dead || GaToSurv)
+            return;
+
+        if (GuardianAngelCanPickTargets)
         {
-            if (GuardianAngelCanPickTargets)
-            {
-                TargetPlayer = null;
-                Rounds = 0;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
-            }
-            else
-                Player.RpcSuicide();
+            TargetPlayer = null;
+            Rounds = 0;
+            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
         }
+        else
+            Player.RpcSuicide();
     }
 
     public override void UpdatePlayer()
     {
-        if (Failed && !Dead && GAToSurv)
+        if (Failed && !Dead && GaToSurv)
             TurnSurv();
     }
 
-    public bool EndEffect() => Dead || !TargetAlive;
+    private bool EndEffect() => Dead || !TargetAlive;
 }

@@ -1,12 +1,11 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer, IShaper
+public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer, IShaper, ITimeLord, IDrunkard
 {
     protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Power;
-        SpellCount = 0;
         Framed.Clear();
         StalkerArrows.Clear();
         Spelled.Clear();
@@ -22,7 +21,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
     }
 
     // Rebel Stuff
-    public Syndicate FormerRole { get; set; }
+    public Syndicate FormerRole { get; init; }
 
     public override UColor Color
     {
@@ -30,8 +29,8 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         {
             if (ClientOptions.CustomSynColors)
                 return FormerRole?.Color ?? CustomColorManager.Rebel;
-            else
-                return CustomColorManager.Syndicate;
+
+            return CustomColorManager.Syndicate;
         }
     }
     public override LayerEnum Type => LayerEnum.PromotedRebel;
@@ -101,11 +100,11 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
                 shouldReset = true;
             }
 
-            if (Collider.CollideResetsCooldown && shouldReset)
-            {
-                PositiveButton.StartCooldown();
-                NegativeButton.StartCooldown();
-            }
+            if (!Collider.CollideResetsCooldown || !shouldReset)
+                return;
+
+            PositiveButton.StartCooldown();
+            NegativeButton.StartCooldown();
         }
     }
 
@@ -115,7 +114,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         {
             var wasnull = ConcealButton == null;
             ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(Concealer.ConcealCd),
-                (LabelFunc)ConcLabel, new Duration(Concealer.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal, (UsableFunc)ConcealUsable);
+                (LabelFunc)ConcLabel, new Duration(Concealer.ConcealDur), (EffectVoid)Conceal, (EffectEndVoid)UnConceal, (UsableFunc)ConcealUsable, (EndFunc)ConcealEnd);
 
             if (wasnull && ConfuseMenu == null)
                 ConcealMenu = new(Player, ConcealClick, ConcealException);
@@ -153,10 +152,10 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(Silencer.SilenceCd), (UsableFunc)SilUsable,
                 "SILENCE", (PlayerBodyExclusion)SilenceException);
         }
-        else if (IsTK)
+        else if (IsTk)
         {
             TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(Timekeeper.TimeCd),
-                (LabelFunc)TKLabel, new Duration(Timekeeper.TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)UnControl, (UsableFunc)TKUsable);
+                (LabelFunc)TkLabel, new Duration(Timekeeper.TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart, (EffectEndVoid)Timekeeper.UnControl, (UsableFunc)TkUsable);
         }
         else if (IsBomb)
         {
@@ -360,18 +359,18 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
     public override void OnRevive() => OnRoleSelected();
 
     // Anarchist Stuff
-    public bool IsAnarch => FormerRole is Anarchist;
+    // public bool IsAnarch => FormerRole is Anarchist;
 
     // Concealer Stuff
-    public CustomButton ConcealButton { get; set; }
+    private CustomButton ConcealButton { get; set; }
     public PlayerControl ConcealedPlayer { get; set; }
-    public CustomPlayerMenu ConcealMenu { get; set; }
-    public bool IsConc => FormerRole is Concealer;
+    private CustomPlayerMenu ConcealMenu { get; set; }
+    private bool IsConc => FormerRole is Concealer;
 
-    public bool ConcealException(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !Concealer.ConcealMates && Faction is Faction.Intruder or
+    private bool ConcealException(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !Concealer.ConcealMates && Faction is Faction.Intruder or
         Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !Concealer.ConcealMates);
 
-    public void Conceal()
+    private void Conceal()
     {
         if (HoldsDrive)
             AllPlayers().ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
@@ -379,7 +378,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
     }
 
-    public void UnConceal()
+    private void UnConceal()
     {
         if (HoldsDrive)
             DefaultOutfitAll();
@@ -389,7 +388,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         ConcealedPlayer = null;
     }
 
-    public void ConcealClick(PlayerControl player)
+    private void ConcealClick(PlayerControl player)
     {
         var cooldown = Interact(Player, player);
 
@@ -399,38 +398,38 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             ConcealButton.StartCooldown(cooldown);
     }
 
-    public void HitConceal()
+    private void HitConceal()
     {
-        if (HoldsDrive)
+        if (HoldsDrive || ConcealedPlayer)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton, RebActionsRPC.Conceal);
+            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.ButtonAction, RebActionsRPC.Conceal, ConcealButton);
+
+            if (ConcealedPlayer)
+                writer.Write(ConcealedPlayer.PlayerId);
+
+            writer.CloseRpc();
             ConcealButton.Begin();
         }
-        else if (!ConcealedPlayer)
-            ConcealMenu.Open();
         else
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton, RebActionsRPC.Conceal, ConcealedPlayer);
-            ConcealButton.Begin();
-        }
+            ConcealMenu.Open();
     }
 
-    public bool ConcealUsable() => IsConc;
+    private bool ConcealUsable() => IsConc;
 
-    public string ConcLabel() => ConcealedPlayer || HoldsDrive ? "CONCEAL" : "SET TARGET";
+    private string ConcLabel() => ConcealedPlayer || HoldsDrive ? "CONCEAL" : "SET TARGET";
 
-    public bool ConcealEnd() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead);
+    private bool ConcealEnd() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead);
 
     // Framer Stuff
-    public CustomButton FrameButton { get; set; }
+    private CustomButton FrameButton { get; set; }
     public List<byte> Framed { get; } = [];
-    public CustomButton RadialFrameButton { get; set; }
-    public bool IsFram => FormerRole is Framer;
+    private CustomButton RadialFrameButton { get; set; }
+    private bool IsFram => FormerRole is Framer;
 
-    public bool FrameException(PlayerControl player) => Framed.Contains(player.PlayerId) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool FrameException(PlayerControl player) => Framed.Contains(player.PlayerId) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
-    public void RpcFrame(PlayerControl player)
+    private void RpcFrame(PlayerControl player)
     {
         if (FrameException(player))
             return;
@@ -439,7 +438,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.Frame, player.PlayerId);
     }
 
-    public void Frame(PlayerControl target)
+    private void Frame(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -449,27 +448,27 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         FrameButton.StartCooldown(cooldown);
     }
 
-    public void RadialFrame()
+    private void RadialFrame()
     {
         GetClosestPlayers(Player, Framer.ChaosDriveFrameRadius).ForEach(RpcFrame);
         RadialFrameButton.StartCooldown();
     }
 
-    public bool FrameUsable1() => IsFram && !HoldsDrive;
+    private bool FrameUsable1() => IsFram && !HoldsDrive;
 
-    public bool FrameUsable2() => IsFram && HoldsDrive;
+    private bool FrameUsable2() => IsFram && HoldsDrive;
 
     // Poisoner Stuff
-    public CustomButton PoisonButton { get; set; }
-    public CustomButton GlobalPoisonButton { get; set; }
+    private CustomButton PoisonButton { get; set; }
+    private CustomButton GlobalPoisonButton { get; set; }
     public PlayerControl PoisonedPlayer { get; set; }
-    public CustomPlayerMenu PoisonMenu { get; set; }
-    public bool IsPois => FormerRole is Poisoner;
+    private CustomPlayerMenu PoisonMenu { get; set; }
+    private bool IsPois => FormerRole is Poisoner;
 
-    public bool PoisonException(PlayerControl player) => player == PoisonedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+    private bool PoisonException(PlayerControl player) => player == PoisonedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None);
 
-    public void UnPoison()
+    private void UnPoison()
     {
         if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is<Pestilence>()))
             Player.RpcMurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
@@ -477,7 +476,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         PoisonedPlayer = null;
     }
 
-    public void PoisonClick(PlayerControl player)
+    private void PoisonClick(PlayerControl player)
     {
         var cooldown = Interact(Player, player, astral: true, delayed: true);
 
@@ -487,7 +486,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             GlobalPoisonButton.StartCooldown(cooldown);
     }
 
-    public void HitPoison(PlayerControl target)
+    private void HitPoison(PlayerControl target)
     {
         var cooldown = Interact(Player, target, true, delayed: true);
 
@@ -501,42 +500,42 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             PoisonButton.StartCooldown(cooldown);
     }
 
-    public void HitGlobalPoison()
+    private void HitGlobalPoison()
     {
-        if (!PoisonedPlayer)
-            PoisonMenu.Open();
-        else
+        if (PoisonedPlayer)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, GlobalPoisonButton, RebActionsRPC.Poison, PoisonedPlayer);
             GlobalPoisonButton.Begin();
         }
+        else
+            PoisonMenu.Open();
     }
 
-    public bool PoisonEnd() => PoisonedPlayer.HasDied() || Dead;
+    private bool PoisonEnd() => PoisonedPlayer.HasDied() || Dead;
 
-    public string PoisLabel() => PoisonedPlayer ? "POISON" : "SET TARGET";
+    private string PoisLabel() => PoisonedPlayer ? "POISON" : "SET TARGET";
 
-    public bool PoisUsable1() => !HoldsDrive && IsPois;
+    private bool PoisUsable1() => !HoldsDrive && IsPois;
 
-    public bool PoisUsable2() => HoldsDrive && IsPois;
+    private bool PoisUsable2() => HoldsDrive && IsPois;
 
     // Shapeshifter Stuff
-    public CustomButton ShapeshiftButton { get; set; }
+    private CustomButton ShapeshiftButton { get; set; }
     public PlayerControl ShapeshiftPlayer1 { get; set; }
     public PlayerControl ShapeshiftPlayer2 { get; set; }
-    public CustomPlayerMenu ShapeshiftMenu1 { get; set; }
-    public CustomPlayerMenu ShapeshiftMenu2 { get; set; }
-    public bool IsSS => FormerRole is Shapeshifter;
+    private CustomPlayerMenu ShapeshiftMenu1 { get; set; }
+    private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
+    private bool IsSS => FormerRole is Shapeshifter;
 
-    public bool SSException1(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) &&
+    private bool SSException1(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) &&
         !Shapeshifter.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !Shapeshifter.ShapeshiftMates);
 
-    public bool SSException2(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) &&
+    private bool SSException2(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) &&
         !Shapeshifter.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&  !Shapeshifter.ShapeshiftMates);
 
-    public void Shift() => Shapeshifter.Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
+    private void Shift() => Shapeshifter.Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
 
-    public void UnShapeshift()
+    private void UnShapeshift()
     {
         if (HoldsDrive)
             DefaultOutfitAll();
@@ -550,7 +549,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         ShapeshiftPlayer2 = null;
     }
 
-    public void ShapeshiftClick1(PlayerControl player)
+    private void ShapeshiftClick1(PlayerControl player)
     {
         var cooldown = Interact(Player, player);
 
@@ -560,7 +559,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             ShapeshiftButton.StartCooldown(cooldown);
     }
 
-    public void ShapeshiftClick2(PlayerControl player)
+    private void ShapeshiftClick2(PlayerControl player)
     {
         var cooldown = Interact(Player, player);
 
@@ -570,7 +569,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             ShapeshiftButton.StartCooldown(cooldown);
     }
 
-    public void HitShapeshift()
+    private void HitShapeshift()
     {
         if (HoldsDrive)
         {
@@ -588,27 +587,26 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         }
     }
 
-    public string SSLabel()
+    private string SSLabel()
     {
         if (HoldsDrive)
             return "SHAPESHIFT";
-        else if (!ShapeshiftPlayer1)
+
+        if (!ShapeshiftPlayer1)
             return "FIRST TARGET";
-        else if (!ShapeshiftPlayer2)
-            return "SECOND TARGET";
-        else
-            return "SHAPESHIFT";
+
+        return !ShapeshiftPlayer2 ? "SECOND TARGET" : "SHAPESHIFT";
     }
 
-    public bool SSUsable() => IsSS;
+    private bool SSUsable() => IsSS;
 
     // Bomber Stuff
-    public CustomButton BombButton { get; set; }
-    public CustomButton DetonateButton { get; set; }
+    private CustomButton BombButton { get; set; }
+    private CustomButton DetonateButton { get; set; }
     public List<Bomb> Bombs { get; } = [];
-    public bool IsBomb => FormerRole is Bomber;
+    private bool IsBomb => FormerRole is Bomber;
 
-    public void Place()
+    private void Place()
     {
         Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
         BombButton.StartCooldown();
@@ -620,7 +618,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.DropBomb);
     }
 
-    public void Detonate()
+    private void Detonate()
     {
         Bombs.ForEach(x => x.Detonate());
         Bombs.Clear();
@@ -633,22 +631,22 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         Play("Bomb");
     }
 
-    public bool BombCondition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
+    private bool BombCondition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 
-    public bool BombUsable1() => IsBomb;
+    private bool BombUsable1() => IsBomb;
 
-    public bool BombUsable2() => IsBomb && Bombs.Any();
+    private bool BombUsable2() => IsBomb && Bombs.Any();
 
     // Warper Stuff
-    public CustomButton WarpButton { get; set; }
-    public CustomPlayerMenu WarpMenu { get; set; }
+    private CustomButton WarpButton { get; set; }
+    private CustomPlayerMenu WarpMenu { get; set; }
     public bool Moving { get; set; }
-    public bool IsWarp => FormerRole is Warper;
+    private bool IsWarp => FormerRole is Warper;
 
-    public bool WarpException(PlayerControl player) => (player == Player && !Warper.WarpSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || (!BodyById(player.PlayerId) &&
+    private bool WarpException(PlayerControl player) => (player == Player && !Warper.WarpSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || (!BodyById(player.PlayerId) &&
         player.Data.IsDead) || player.IsMoving();
 
-    public bool WarpClick(PlayerControl player, out bool shouldClose)
+    private bool WarpClick(PlayerControl player, out bool shouldClose)
     {
         shouldClose = false;
 
@@ -659,14 +657,13 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
 
         if (cooldown != CooldownType.Fail)
             return true;
-        else
-            WarpButton.StartCooldown(cooldown);
 
+        WarpButton.StartCooldown(cooldown);
         shouldClose = true;
         return false;
     }
 
-    public void Warp()
+    private void Warp()
     {
         if (HoldsDrive)
         {
@@ -700,34 +697,32 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         }
     }
 
-    public bool WarpUsable() => IsWarp;
+    private bool WarpUsable() => IsWarp;
 
-    public string WarpLabel()
+    private string WarpLabel()
     {
         if (HoldsDrive)
             return "WARP";
-        else
+
+        return WarpMenu.Selected.Count switch
         {
-            return WarpMenu.Selected.Count switch
-            {
-                0 => "FIRST TARGET",
-                1 => "SECOND TARGET",
-                _ =>  "WARP"
-            };
-        }
+            0 => "FIRST TARGET",
+            1 => "SECOND TARGET",
+            _ =>  "WARP"
+        };
     }
 
     // Crusader Stuff
     public PlayerControl CrusadedPlayer { get; set; }
-    public CustomButton CrusadeButton { get; set; }
+    public CustomButton CrusadeButton { get; private set; }
     public bool IsCrus => FormerRole is Crusader;
 
-    public bool CrusadeException(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !Crusader.CrusadeMates && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool CrusadeException(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !Crusader.CrusadeMates && Faction is Faction.Intruder or Faction.Syndicate) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !Crusader.CrusadeMates);
 
-    public void UnCrusade() => CrusadedPlayer = null;
+    private void UnCrusade() => CrusadedPlayer = null;
 
-    public void Crusade(PlayerControl target)
+    private void Crusade(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -741,28 +736,28 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             CrusadeButton.StartCooldown(cooldown);
     }
 
-    public bool CrusUsable() => IsCrus;
+    private bool CrusUsable() => IsCrus;
 
-    public bool CrusadeEnd() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
+    private bool CrusadeEnd() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
 
     // Collider Stuff
-    public CustomButton PositiveButton { get; set; }
-    public CustomButton NegativeButton { get; set; }
-    public CustomButton ChargeButton { get; set; }
+    private CustomButton PositiveButton { get; set; }
+    private CustomButton NegativeButton { get; set; }
+    private CustomButton ChargeButton { get; set; }
     public PlayerControl Positive { get; set; }
     public PlayerControl Negative { get; set; }
     private float Range => Collider.CollideRange + (HoldsDrive ? Collider.CollideRangeIncrease : 0);
-    public bool IsCol => FormerRole is Collider;
+    private bool IsCol => FormerRole is Collider;
 
-    public bool PlusException(PlayerControl player) => player == Negative || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction
+    private bool PlusException(PlayerControl player) => player == Negative || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction
         != SubFaction.None) || Player.IsLinkedTo(player);
 
-    public bool MinusException(PlayerControl player) => player == Positive || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+    private bool MinusException(PlayerControl player) => player == Positive || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
 
-    public void Charge() => ChargeButton.Begin();
+    private void Charge() => ChargeButton.Begin();
 
-    public void SetPositive(PlayerControl target)
+    private void SetPositive(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -775,7 +770,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             NegativeButton.StartCooldown(cooldown);
     }
 
-    public void SetNegative(PlayerControl target)
+    private void SetNegative(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -794,21 +789,20 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         Negative = null;
     }
 
-    public bool ColUsable1() => IsCol;
+    private bool ColUsable1() => IsCol;
 
-    public bool ColUsable2() => IsCol && HoldsDrive;
+    private bool ColUsable2() => IsCol && HoldsDrive;
 
-    public bool ChargeEnd() => Dead;
+    private bool ChargeEnd() => Dead;
 
     // Spellslinger Stuff
-    public CustomButton SpellButton { get; set; }
+    private CustomButton SpellButton { get; set; }
     public List<byte> Spelled { get; } = [];
-    public int SpellCount { get; set; }
-    public bool IsSpell => FormerRole is Spellslinger;
+    private bool IsSpell => FormerRole is Spellslinger;
 
-    public bool SpellException(PlayerControl player) => Spelled.Contains(player.PlayerId);
+    private bool SpellException(PlayerControl player) => Spelled.Contains(player.PlayerId);
 
-    public void Spell(PlayerControl target)
+    private void Spell(PlayerControl target)
     {
         var cooldown = Interact(Player, target, astral: HoldsDrive);
 
@@ -817,11 +811,6 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             Spelled.Add(target.PlayerId);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RebActionsRPC.Spellbind, target.PlayerId);
 
-            if (HoldsDrive)
-                SpellCount = 0;
-            else
-                SpellCount++;
-
             if (AmongUsClient.Instance.AmHost)
                 CheckEndGame.CheckSpellWin(this);
         }
@@ -829,18 +818,18 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         SpellButton.StartCooldown(cooldown);
     }
 
-    public bool SpellUsable() => IsSpell;
+    private bool SpellUsable() => IsSpell;
 
-    public float SpellDifference() => SpellCount * Spellslinger.SpellCdIncrease;
+    private float SpellDifference() => HoldsDrive ? 0 : (Spelled.Count * Spellslinger.SpellCdIncrease);
 
     // Stalker Stuff
-    public Dictionary<byte, PlayerArrow> StalkerArrows { get; } = [];
-    public CustomButton StalkButton { get; set; }
-    public bool IsStalk => FormerRole is Stalker;
+    private Dictionary<byte, PlayerArrow> StalkerArrows { get; } = [];
+    private CustomButton StalkButton { get; set; }
+    private bool IsStalk => FormerRole is Stalker;
 
-    public bool StalkException(PlayerControl player) => StalkerArrows.ContainsKey(player.PlayerId);
+    private bool StalkException(PlayerControl player) => StalkerArrows.ContainsKey(player.PlayerId);
 
-    public void Stalk(PlayerControl target)
+    private void Stalk(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -850,27 +839,26 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         StalkButton.StartCooldown(cooldown);
     }
 
-    public bool StalkUsable() => !HoldsDrive && IsStalk;
+    private bool StalkUsable() => !HoldsDrive && IsStalk;
 
     // Drunkard Stuff
-    public CustomButton ConfuseButton { get; set; }
-    public float Modifier => ConfuseButton.EffectActive ? -1 : 1;
-    public PlayerControl ConfusedPlayer { get; set; }
-    public CustomPlayerMenu ConfuseMenu { get; set; }
-    public bool IsDrunk => FormerRole is Drunkard;
+    public CustomButton ConfuseButton { get; private set; }
+    public PlayerControl ConfusedPlayer { get; private set; }
+    private CustomPlayerMenu ConfuseMenu { get; set; }
+    private bool IsDrunk => FormerRole is Drunkard;
 
-    public bool DrunkException(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
+    private bool DrunkException(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
         !Drunkard.ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !Drunkard.ConfuseImmunity);
 
-    public void StartConfusion()
+    private void StartConfusion()
     {
         if (ConfusedPlayer.AmOwner || HoldsDrive)
             Flash(CustomColorManager.Drunkard);
     }
 
-    public void UnConfuse() => ConfusedPlayer = null;
+    private void UnConfuse() => ConfusedPlayer = null;
 
-    public void ConfuseClick(PlayerControl player)
+    private void ConfuseClick(PlayerControl player)
     {
         var cooldown = Interact(Player, player);
 
@@ -880,67 +868,61 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
             ConfuseButton.StartCooldown(cooldown);
     }
 
-    public void HitConfuse()
+    private void HitConfuse()
     {
-        if (HoldsDrive)
+        if (HoldsDrive || ConfusedPlayer)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfuseButton, RebActionsRPC.Confuse);
+            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.ButtonAction, RebActionsRPC.Confuse, ConfusedPlayer);
+
+            if (ConfusedPlayer)
+                writer.Write(ConfusedPlayer.PlayerId);
+
+            writer.CloseRpc();
             ConfuseButton.Begin();
         }
-        else if (!ConfusedPlayer)
-            ConfuseMenu.Open();
         else
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfuseButton, RebActionsRPC.Confuse, ConfusedPlayer);
-            ConfuseButton.Begin();
-        }
+            ConfuseMenu.Open();
     }
 
-    public string DrunkLabel() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
+    private string DrunkLabel() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
 
-    public bool ConfuseEnd() => (ConfusedPlayer && ConfusedPlayer.HasDied()) || (!HoldsDrive && Dead);
+    private bool ConfuseEnd() => (ConfusedPlayer && ConfusedPlayer.HasDied()) || (!HoldsDrive && Dead);
 
-    public bool DrunkUsable() => IsDrunk;
+    private bool DrunkUsable() => IsDrunk;
 
     // Timekeeper Stuff
-    public CustomButton TimeButton { get; set; }
-    public bool IsTK => FormerRole is Timekeeper;
+    public CustomButton TimeButton { get; private set; }
+    private bool IsTk => FormerRole is Timekeeper;
 
-    public void ControlStart() => Flash(Color, Timekeeper.TimeDur);
+    private void ControlStart() => Flash(Color, Timekeeper.TimeDur);
 
-    public void Control()
+    private void Control()
     {
         if (HoldsDrive)
             AllPlayers().ForEach(x => x.GetRole().Rewinding = true);
     }
 
-    public void UnControl() => AllPlayers().ForEach(x => x.GetRole().Rewinding = false);
-
-    public void TimeControl()
+    private void TimeControl()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, TimeButton);
         TimeButton.Begin();
     }
 
-    public string TKLabel() => HoldsDrive ? "REWIND" : "FREEZE";
+    private string TkLabel() => HoldsDrive ? "REWIND" : "FREEZE";
 
-    public bool TKUsable() => IsTK;
+    private bool TkUsable() => IsTk;
 
     // Silencer Stuff
-    public CustomButton SilenceButton { get; set; }
+    private CustomButton SilenceButton { get; set; }
     public bool ShookAlready { get; set; }
-    public PlayerControl Target { get; set; }
-    public PlayerControl SilencedPlayer
-    {
-        get => Target;
-        set => Target = value;
-    }
+    public PlayerControl Target => SilencedPlayer;
+    public PlayerControl SilencedPlayer { get; set; }
     public bool IsSil => FormerRole is Silencer;
 
-    public bool SilenceException(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !Silencer.SilenceMates) ||
+    private bool SilenceException(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !Silencer.SilenceMates) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !Silencer.SilenceMates);
 
-    public void Silence(PlayerControl target)
+    private void Silence(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -956,5 +938,5 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         SilenceButton.StartCooldown(cooldown);
     }
 
-    public bool SilUsable() => IsSil;
+    private bool SilUsable() => IsSil;
 }

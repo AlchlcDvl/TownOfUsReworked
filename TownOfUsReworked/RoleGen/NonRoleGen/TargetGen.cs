@@ -45,12 +45,7 @@ public class TargetGen : BaseGen
                     Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
             }
 
-            foreach (var lover in lovers)
-            {
-                if (!lover.OtherLover)
-                    NullLayer(lover.Player, PlayerLayerEnum.Disposition);
-            }
-
+            lovers.Where(lover => !lover.OtherLover).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Lovers Set");
         }
 
@@ -79,12 +74,7 @@ public class TargetGen : BaseGen
                     Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
             }
 
-            foreach (var rival in rivals)
-            {
-                if (!rival.OtherRival)
-                    NullLayer(rival.Player, PlayerLayerEnum.Disposition);
-            }
-
+            rivals.Where(rival => !rival.OtherRival).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Rivals Set");
         }
 
@@ -113,12 +103,7 @@ public class TargetGen : BaseGen
                     Message($"Linked = {link.PlayerName} & {other.PlayerName}");
             }
 
-            foreach (var link in linked)
-            {
-                if (!link.OtherLink)
-                    NullLayer(link.Player, PlayerLayerEnum.Disposition);
-            }
-
+            linked.Where(link => !link.OtherLink).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Linked Set");
         }
 
@@ -138,13 +123,13 @@ public class TargetGen : BaseGen
             {
                 exe.TargetPlayer = AllPlayers().Random(x => x != exe.Player && !x.IsLinkedTo(exe.Player) && !x.Is(Alignment.Sovereign));
 
-                if (exe.TargetPlayer)
-                {
-                    CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, exe, exe.TargetPlayer);
+                if (!exe.TargetPlayer)
+                    continue;
 
-                    if (TownOfUsReworked.MciActive)
-                        Message($"Exe Target = {exe.TargetPlayer.name}");
-                }
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, exe, exe.TargetPlayer);
+
+                if (TownOfUsReworked.MciActive)
+                    Message($"Exe Target = {exe.TargetPlayer.name}");
             }
 
             Success("Exe Targets Set");
@@ -157,13 +142,13 @@ public class TargetGen : BaseGen
                 guess.TargetPlayer = AllPlayers().Random(x => x != guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.Evil) && !x.Is(Alignment.Investigative) &&
                     !x.Is<Indomitable>());
 
-                if (guess.TargetPlayer)
-                {
-                    CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, guess, guess.TargetPlayer);
+                if (!guess.TargetPlayer)
+                    continue;
 
-                    if (TownOfUsReworked.MciActive)
-                        Message($"Guess Target = {guess.TargetPlayer.name}");
-                }
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, guess, guess.TargetPlayer);
+
+                if (TownOfUsReworked.MciActive)
+                    Message($"Guess Target = {guess.TargetPlayer.name}");
             }
 
             Success("Guess Targets Set");
@@ -175,13 +160,13 @@ public class TargetGen : BaseGen
             {
                 ga.TargetPlayer = AllPlayers().Random(x => x != ga.Player && !x.IsLinkedTo(ga.Player) && !x.Is(Alignment.Evil));
 
-                if (ga.TargetPlayer)
-                {
-                    CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ga, ga.TargetPlayer);
+                if (!ga.TargetPlayer)
+                    continue;
 
-                    if (TownOfUsReworked.MciActive)
-                        Message($"GA Target = {ga.TargetPlayer.name}");
-                }
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ga, ga.TargetPlayer);
+
+                if (TownOfUsReworked.MciActive)
+                    Message($"GA Target = {ga.TargetPlayer.name}");
             }
 
             Success("GA Target Set");
@@ -193,13 +178,13 @@ public class TargetGen : BaseGen
             {
                 bh.TargetPlayer = AllPlayers().Random(x => x != bh.Player && !bh.Player.IsLinkedTo(x));
 
-                if (bh.TargetPlayer)
-                {
-                    CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, bh, bh.TargetPlayer);
+                if (!bh.TargetPlayer)
+                    continue;
 
-                    if (TownOfUsReworked.MciActive)
-                        Message($"BH Target = {bh.TargetPlayer.name}");
-                }
+                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, bh, bh.TargetPlayer);
+
+                if (TownOfUsReworked.MciActive)
+                    Message($"BH Target = {bh.TargetPlayer.name}");
             }
 
             Success("BH Targets Set");

@@ -48,11 +48,8 @@ public class Coroner : Crew, IExaminer
 
     private void DestroyArrow(byte targetPlayerId)
     {
-        if (!BodyArrows.TryGetValue(targetPlayerId, out var arrow))
-            return;
-
-        arrow.Destroy();
-        BodyArrows.Remove(targetPlayerId);
+        if (BodyArrows.Remove(targetPlayerId, out var arrow))
+            arrow.Destroy();
     }
 
     public override void ClearArrows()

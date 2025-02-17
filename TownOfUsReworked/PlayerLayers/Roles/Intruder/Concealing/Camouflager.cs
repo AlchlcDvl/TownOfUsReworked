@@ -9,7 +9,7 @@ public class Camouflager : Intruder
     [NumberOption(5f, 30f, 1f, Format.Time)]
     public static Number CamouflageDur = 10;
 
-    public CustomButton CamouflageButton { get; set; }
+    private CustomButton CamouflageButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Camouflager : FactionColor;
     public override LayerEnum Type => LayerEnum.Camouflager;
@@ -25,23 +25,19 @@ public class Camouflager : Intruder
             new Cooldown(CamouflageCd), new Duration(CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage);
     }
 
-    public void Camouflage()
+    public static void Camouflage()
     {
         HudHandler.Instance.CamouflagerEnabled = true;
         Utils.Camouflage();
     }
 
-    public void UnCamouflage()
-    {
-        HudHandler.Instance.CamouflagerEnabled = false;
-        DefaultOutfitAll();
-    }
+    public static void UnCamouflage() => HudHandler.Instance.CamouflagerEnabled = false;
 
-    public void HitCamouflage()
+    private void HitCamouflage()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, CamouflageButton);
         CamouflageButton.Begin();
     }
 
-    public bool Condition() => !HudHandler.Instance.IsCamoed;
+    public static bool Condition() => !HudHandler.Instance.IsCamoed;
 }

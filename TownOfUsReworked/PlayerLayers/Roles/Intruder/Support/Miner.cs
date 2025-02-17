@@ -9,7 +9,7 @@ public class Miner : Intruder, IDigger
     [ToggleOption]
     public static bool MinerSpawnOnMira = true;
 
-    public CustomButton MineButton { get; set; }
+    private CustomButton MineButton { get; set; }
     public List<Vent> Vents { get; } = [];
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Miner : FactionColor;
@@ -34,14 +34,14 @@ public class Miner : Intruder, IDigger
         _ => "Mine"
     };
 
-    public void Mine()
+    private void Mine()
     {
         RpcSpawnVent(this);
         MineButton.StartCooldown();
     }
 
-    public bool Condition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
-        Player.moveable && !GetPlayerElevator(Player).IsInElevator && !Vents.Any(x => x.transform.position == Player.transform.position);
+    private bool Condition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
+        Player.moveable && !GetPlayerElevator(Player).IsInElevator && Vents.All(x => x.transform.position != Player.transform.position);
 
     public static string Label() => MapPatches.CurrentMap == 5 ? "PLANT" : "MINE VENT";
 }

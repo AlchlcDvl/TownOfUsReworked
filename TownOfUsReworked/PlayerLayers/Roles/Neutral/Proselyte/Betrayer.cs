@@ -4,12 +4,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Betrayer : Neutral
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number BetrayCd = 25;
+    private static Number BetrayCd = 25;
 
     [ToggleOption]
     public static bool BetrayerVent = true;
 
-    public CustomButton KillButton { get; set; }
+    private CustomButton KillButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Betrayer : FactionColor;
     public override LayerEnum Type => LayerEnum.Betrayer;
@@ -26,8 +26,8 @@ public class Betrayer : Neutral
             (PlayerBodyExclusion)Exception);
     }
 
-    public void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
+    private void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 }

@@ -15,14 +15,10 @@ public class Silencer : Syndicate, ISilencer
     [ToggleOption]
     public static bool SilenceRevealed = true;
 
-    public CustomButton SilenceButton { get; set; }
+    private CustomButton SilenceButton { get; set; }
     public bool ShookAlready { get; set; }
-    public PlayerControl Target { get; set; }
-    public PlayerControl SilencedPlayer
-    {
-        get => Target;
-        set => Target = value;
-    }
+    public PlayerControl Target => SilencedPlayer;
+    public PlayerControl SilencedPlayer { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Silencer : FactionColor;
     public override LayerEnum Type => LayerEnum.Silencer;
@@ -39,7 +35,7 @@ public class Silencer : Syndicate, ISilencer
             (PlayerBodyExclusion)Exception1);
     }
 
-    public void Silence(PlayerControl target)
+    private void Silence(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -55,7 +51,7 @@ public class Silencer : Syndicate, ISilencer
         SilenceButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !SilenceMates) ||
+    private bool Exception1(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !SilenceMates) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !SilenceMates);
 
     public override void ReadRPC(MessageReader reader) => SilencedPlayer = reader.ReadPlayer();

@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Plaguebearer : Harbinger<Pestilence>
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number InfectCd = 25;
+    private static Number InfectCd = 25;
 
     [ToggleOption]
-    public static bool PBVent = false;
+    public static bool PbVent = false;
 
     public List<byte> Infected { get; } = [];
-    public CustomButton InfectButton { get; set; }
+    private CustomButton InfectButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Plaguebearer : FactionColor;
     public override LayerEnum Type => LayerEnum.Plaguebearer;
@@ -48,18 +48,18 @@ public class Plaguebearer : Harbinger<Pestilence>
             changed = true;
         }
 
-        if (changed)
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, id);
-            Infected.Add(id);
-        }
+        if (!changed)
+            return;
+
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, id);
+        Infected.Add(id);
     }
 
-    public void Infect(PlayerControl target) => InfectButton.StartCooldown(Interact(Player, target));
+    private void Infect(PlayerControl target) => InfectButton.StartCooldown(Interact(Player, target));
 
-    public override bool CanTransform() => AllPlayers().Count(x => !x.HasDied()) <= Infected.Count;
+    protected override bool CanTransform() => AllPlayers().Count(x => !x.HasDied()) <= Infected.Count;
 
-    public bool Exception(PlayerControl player) => Infected.Contains(player.PlayerId);
+    private bool Exception(PlayerControl player) => Infected.Contains(player.PlayerId);
 
     public override void ReadRPC(MessageReader reader) => Infected.Add(reader.ReadByte());
 }

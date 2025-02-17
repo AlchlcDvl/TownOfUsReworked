@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Pestilence : Apocalypse
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ObliterateCd = 25;
+    private static Number ObliterateCd = 25;
 
     [NumberOption(2, 10, 1)]
     public static Number MaxStacks = 4;
@@ -18,7 +18,7 @@ public class Pestilence : Apocalypse
     public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> Description => () => "- You can spread a deadly disease to other players";
 
-    public static readonly Dictionary<byte, int> Infected = [];
+    public static readonly Dictionary<byte, uint> Infected = [];
 
     protected override void Init()
     {

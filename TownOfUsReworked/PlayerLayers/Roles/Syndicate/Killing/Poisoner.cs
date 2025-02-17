@@ -9,10 +9,10 @@ public class Poisoner : Syndicate
     [NumberOption(1f, 15f, 1f, Format.Time)]
     public static Number PoisonDur = 5;
 
-    public CustomButton PoisonButton { get; set; }
-    public CustomButton GlobalPoisonButton { get; set; }
+    private CustomButton PoisonButton { get; set; }
+    private CustomButton GlobalPoisonButton { get; set; }
     public PlayerControl PoisonedPlayer { get; set; }
-    public CustomPlayerMenu PoisonMenu { get; set; }
+    private CustomPlayerMenu PoisonMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Poisoner : FactionColor;
     public override LayerEnum Type => LayerEnum.Poisoner;
@@ -32,9 +32,9 @@ public class Poisoner : Syndicate
             new Cooldown(PoisonCd), new Duration(PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);
     }
 
-    public bool EndEffect() => PoisonedPlayer.HasDied() || Dead;
+    private bool EndEffect() => PoisonedPlayer.HasDied() || Dead;
 
-    public void UnPoison()
+    private void UnPoison()
     {
         if (CanAttack(AttackEnum.Basic, PoisonedPlayer.GetDefenseValue(Player)))
             Player.RpcMurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
@@ -42,7 +42,7 @@ public class Poisoner : Syndicate
         PoisonedPlayer = null;
     }
 
-    public void Click(PlayerControl player)
+    private void Click(PlayerControl player)
     {
         var cooldown = Interact(Player, player, astral: true, delayed: true);
 
@@ -52,32 +52,29 @@ public class Poisoner : Syndicate
             GlobalPoisonButton.StartCooldown(cooldown);
     }
 
-    public string Label() => PoisonedPlayer ? "POISON" : "SET TARGET";
+    private string Label() => PoisonedPlayer ? "POISON" : "SET TARGET";
 
-    public bool Usable1() => !HoldsDrive;
+    private bool Usable1() => !HoldsDrive;
 
-    public bool Usable2() => HoldsDrive;
+    private bool Usable2() => HoldsDrive;
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (!HoldsDrive)
+        if (!HoldsDrive || !KeyboardJoystick.player.GetButtonDown("Delete"))
             return;
 
-        if (KeyboardJoystick.player.GetButtonDown("Delete"))
-        {
-            if (PoisonedPlayer && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
-                PoisonedPlayer = null;
+        if (PoisonedPlayer && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
+            PoisonedPlayer = null;
 
-            Message("Removed a target");
-        }
+        Message("Removed a target");
     }
 
-    public bool Exception1(PlayerControl player) => player == PoisonedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+    private bool Exception1(PlayerControl player) => player == PoisonedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None);
 
-    public void HitPoison(PlayerControl target)
+    private void HitPoison(PlayerControl target)
     {
         var cooldown = Interact(Player, target, true, delayed: true);
 
@@ -91,15 +88,15 @@ public class Poisoner : Syndicate
             PoisonButton.StartCooldown(cooldown);
     }
 
-    public void HitGlobalPoison()
+    private void HitGlobalPoison()
     {
-        if (!PoisonedPlayer)
-            PoisonMenu.Open();
-        else
+        if (PoisonedPlayer)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, GlobalPoisonButton, PoisonedPlayer);
             GlobalPoisonButton.Begin();
         }
+        else
+            PoisonMenu.Open();
     }
 
     public override void ReadRPC(MessageReader reader) => PoisonedPlayer = reader.ReadPlayer();

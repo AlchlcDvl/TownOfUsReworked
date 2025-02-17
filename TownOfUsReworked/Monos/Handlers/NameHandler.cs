@@ -209,7 +209,7 @@ public class NameHandler : MonoBehaviour
                         color = revealRole ? role.Color : role.FactionColor;
                         name += revealRole ? $"\n{role}" : $"\n{role.FactionName}";
                     }
-                    else if (godfather.IsBM && godfather.BlackmailedPlayer == player)
+                    else if (godfather.IsBm && godfather.BlackmailedPlayer == player)
                     {
                         name += " <#02A752FF>Φ</color>";
                         color = godfather.Color;
@@ -351,7 +351,7 @@ public class NameHandler : MonoBehaviour
                         if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.Ga))
                             name += " <#FFFFFFFF>η</color>";
 
-                        if (GuardianAngel.GAKnowsTargetRole && !revealed)
+                        if (GuardianAngel.GaKnowsTargetRole && !revealed)
                         {
                             color = role.Color;
                             name += $"\n{role}";
@@ -616,7 +616,7 @@ public class NameHandler : MonoBehaviour
             if (player.IsExeTarget() && Executioner.ExeTargetKnows)
                 name += " <#CCCCCCFF>§</color>";
 
-            if (player.IsGaTarget() && GuardianAngel.GATargetKnows)
+            if (player.IsGaTarget() && GuardianAngel.GaTargetKnows)
                 name += " <#FFFFFFFF>★</color>";
 
             if (player.IsGuessTarget() && Guesser.GuessTargetKnows)

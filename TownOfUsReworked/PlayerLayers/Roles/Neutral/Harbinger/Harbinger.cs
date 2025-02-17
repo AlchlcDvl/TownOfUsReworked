@@ -9,11 +9,11 @@ public abstract class Harbinger : Neutral
     }
 }
 
-public abstract class Harbinger<Apoc> : Harbinger where Apoc : Apocalypse
+public abstract class Harbinger<TApoc> : Harbinger where TApoc : Apocalypse
 {
-    public abstract bool CanTransform();
+    protected abstract bool CanTransform();
 
-    public void TurnApocalypse() => ((Apoc)Activator.CreateInstance(typeof(Apoc))).RoleUpdate(this);
+    private void TurnApocalypse() => ((TApoc)Activator.CreateInstance(typeof(TApoc))).RoleUpdate(this);
 
     public override void UpdatePlayer()
     {

@@ -28,18 +28,18 @@ public class Executioner : Evil
     public static bool ExeCanWinBeyondDeath = false;
 
     [ToggleOption]
-    public static bool ExeToJest = true;
+    private static bool ExeToJest = true;
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetVotedOut { get; set; }
-    public List<byte> ToDoom { get; } = [];
-    public bool HasDoomed { get; set; }
-    public CustomButton DoomButton { get; set; }
-    public bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !NeutralSettings.AvoidNeutralKingmakers;
-    public bool Failed => !TargetVotedOut && TargetPlayer.HasDied();
+    private List<byte> ToDoom { get; } = [];
+    private bool HasDoomed { get; set; }
+    private CustomButton DoomButton { get; set; }
+    private bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !NeutralSettings.AvoidNeutralKingmakers;
+    private bool Failed => !TargetVotedOut && TargetPlayer.HasDied();
     public int Rounds { get; set; }
-    public CustomButton TargetButton { get; set; }
-    public bool TargetFailed => !TargetPlayer && Rounds > 2;
+    private CustomButton TargetButton { get; set; }
+    private bool TargetFailed => !TargetPlayer && Rounds > 2;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Executioner : FactionColor;
     public override LayerEnum Type => LayerEnum.Executioner;
@@ -48,7 +48,7 @@ public class Executioner : Evil
         $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetVotedOut;
-    public override WinLose EndState => WinLose.ExecutionerWins;
+    protected override WinLose EndState => WinLose.ExecutionerWins;
 
     protected override void Init()
     {
@@ -78,7 +78,7 @@ public class Executioner : Evil
         return team;
     }
 
-    public void SelectTarget(PlayerControl target)
+    private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
@@ -102,43 +102,43 @@ public class Executioner : Evil
         }
     }
 
-    public void TurnJest() => new Jester().RoleUpdate(this);
+    private void TurnJest() => new Jester().RoleUpdate(this);
 
-    public void Doom(PlayerControl target)
+    private void Doom(PlayerControl target)
     {
         Player.RpcMurderPlayer(target, DeathReasonEnum.Doomed, false);
         HasDoomed = true;
     }
 
-    public bool Exception1(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player.IsLinkedTo(Player) ||
+    private bool Exception1(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player.IsLinkedTo(Player) ||
         player.Is(Alignment.Apocalypse);
 
-    public bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.Sovereign) || (player.Is(SubFaction) && SubFaction !=
+    private bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.Sovereign) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
-    public bool Usable1() => CanDoom;
+    private bool Usable1() => CanDoom;
 
-    public bool Usable2() => !TargetPlayer;
+    private bool Usable2() => !TargetPlayer;
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if ((TargetFailed || (TargetPlayer && Failed)) && !Dead)
+        if ((!TargetFailed && (!TargetPlayer || !Failed)) || Dead)
+            return;
+
+        if (ExeToJest)
         {
-            if (ExeToJest)
-            {
-                CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
-                TurnJest();
-            }
-            else if (ExecutionerCanPickTargets)
-            {
-                TargetPlayer = null;
-                Rounds = 0;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
-            }
-            else
-                Player.RpcSuicide();
+            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
+            TurnJest();
         }
+        else if (ExecutionerCanPickTargets)
+        {
+            TargetPlayer = null;
+            Rounds = 0;
+            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
+        }
+        else
+            Player.RpcSuicide();
     }
 }

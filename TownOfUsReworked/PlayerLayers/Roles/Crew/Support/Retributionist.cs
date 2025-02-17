@@ -99,11 +99,8 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     {
         if (IsCor)
         {
-            if (BodyArrows.TryGetValue(targetPlayerId, out var arrow))
-            {
+            if (BodyArrows.Remove(targetPlayerId, out var arrow))
                 arrow.Destroy();
-                BodyArrows.Remove(targetPlayerId);
-            }
         }
     }
 

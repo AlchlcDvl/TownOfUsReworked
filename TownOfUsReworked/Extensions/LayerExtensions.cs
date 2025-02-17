@@ -87,12 +87,7 @@ public static class LayerExtensions
         if (IsHnS() || Meeting() || IsCustomHnS() || IsTaskRace() || !IntruderSettings.IntrudersCanSabotage)
             return false;
 
-        var result = player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps);
-
-        if (!player.Data.IsDead)
-            return result;
-        else
-            return result && IntruderSettings.GhostsCanSabotage && !Role.GetRoles(player.GetFaction()).All(x => x.Dead);
+        return player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps) && (!player.Data.IsDead || (IntruderSettings.GhostsCanSabotage && !Role.GetRoles(player.GetFaction()).All(x => x.Dead)));
     }
 
     public static bool HasAliveLover(this PlayerControl player) => player.TryGetLayer<Lovers>(out var lovers) && lovers.LoversAlive;
@@ -135,11 +130,11 @@ public static class LayerExtensions
 
     public static Jackal GetJackal(this PlayerControl player) => PlayerLayer.GetLayers<Jackal>().Find(role => role.Members.Contains(player.PlayerId));
 
-    public static Necromancer GetNecromancer(this PlayerControl player) => PlayerLayer.GetLayers<Necromancer>().Find(role => role.Members.Contains(player.PlayerId));
+    // public static Necromancer GetNecromancer(this PlayerControl player) => PlayerLayer.GetLayers<Necromancer>().Find(role => role.Members.Contains(player.PlayerId));
 
-    public static Dracula GetDracula(this PlayerControl player) => PlayerLayer.GetLayers<Dracula>().Find(role => role.Members.Contains(player.PlayerId));
+    // public static Dracula GetDracula(this PlayerControl player) => PlayerLayer.GetLayers<Dracula>().Find(role => role.Members.Contains(player.PlayerId));
 
-    public static Whisperer GetWhisperer(this PlayerControl player) => PlayerLayer.GetLayers<Whisperer>().Find(role => role.Members.Contains(player.PlayerId));
+    // public static Whisperer GetWhisperer(this PlayerControl player) => PlayerLayer.GetLayers<Whisperer>().Find(role => role.Members.Contains(player.PlayerId));
 
     public static Neophyte GetNeophyte(this PlayerControl player) => PlayerLayer.GetLayers<Neophyte>().Find(role => role.Members.Contains(player.PlayerId));
 
@@ -267,10 +262,7 @@ public static class LayerExtensions
         if (!player.IsPostmortal())
             return true;
 
-        if (player.TryGetILayer<IGhosty>(out var iGhost))
-            return iGhost.Caught;
-
-        return true;
+        return !player.TryGetILayer<IGhosty>(out var iGhost) || iGhost.Caught;
     }
 
     public static bool IsLinkedTo(this PlayerControl player, PlayerControl refPlayer) => player.IsOtherRival(refPlayer) || player.IsOtherLover(refPlayer) || player.IsOtherLink(refPlayer) ||
@@ -282,8 +274,8 @@ public static class LayerExtensions
     {
         if (TransitioningSpeed.TryGetValue(player.PlayerId, out var speed))
             return speed;
-        else
-            return player.IsMimicking(out var mimicked) ? mimicked.GetSpeed() : player.GetSpeed();
+
+        return player.IsMimicking(out var mimicked) ? mimicked.GetSpeed() : player.GetSpeed();
     }
 
     public static float GetSpeed(this PlayerControl player)
@@ -309,15 +301,12 @@ public static class LayerExtensions
         if (DragHandler.Instance.Dragging.ContainsKey(player.PlayerId))
             result *= Janitor.DragModifier;
 
-        if (PlayerLayer.GetLayers<Drunkard>().Any(x => x.ConfuseButton.EffectActive && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))) ||
-            PlayerLayer.GetLayers<PromotedRebel>().Any(x => x.ConfuseButton.EffectActive && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive)) && x.IsDrunk))
-        {
+        if (PlayerLayer.GetILayers<IDrunkard>().Any(x => x.ConfuseButton?.EffectActive == true && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))))
             result *= -1;
-        }
 
-        if (PlayerLayer.GetLayers<Timekeeper>().Any(x => x.TimeButton.EffectActive) || PlayerLayer.GetLayers<PromotedRebel>().Any(x => x.IsTK && x.TimeButton.EffectActive))
+        if (PlayerLayer.GetILayers<ITimeLord>().Any(x => x.TimeButton.EffectActive))
         {
-            if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && !Timekeeper.TimeRewindImmunity))
+            if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && !Timekeeper.TimeFreezeImmunity))
                 result = 0f;
         }
 
@@ -339,8 +328,8 @@ public static class LayerExtensions
     {
         if (TransitioningSize.TryGetValue(player.PlayerId, out var size))
             return size;
-        else
-            return player.IsMimicking(out var mimicked) ? mimicked.GetSize() : player.GetSize();
+
+        return player.IsMimicking(out var mimicked) ? mimicked.GetSize() : player.GetSize();
     }
 
     public static float GetSize(this PlayerControl player)
@@ -350,12 +339,14 @@ public static class LayerExtensions
 
         if (Lobby() || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
-        else if (player.Is<Dwarf>())
+
+        if (player.Is<Dwarf>())
             return Dwarf.DwarfScale;
-        else if (player.Is<Giant>())
+
+        if (player.Is<Giant>())
             return Giant.GiantScale;
-        else
-            return 1f;
+
+        return 1f;
     }
 
     private static bool TryGetShaper(this PlayerControl player, out IShaper shaper) => PlayerLayer.GetILayers<IShaper>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
@@ -367,19 +358,19 @@ public static class LayerExtensions
 
         if (player.HasDied())
             return false;
-        else if (CachedMorphs.TryGetValue(player.PlayerId, out var mimickedId))
+
+        if (CachedMorphs.TryGetValue(player.PlayerId, out var mimickedId))
             return mimicked = PlayerById(mimickedId);
-        else if (mimicked == player)
-        {
-            if (player.TryGetILayer<IMorpher>(out var morph) && morph.MorphedPlayer)
-                mimicked = morph.MorphedPlayer;
-            else if (player.TryGetShaper(out var ss))
-                mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer2 : ss.ShapeshiftPlayer1;
 
-            return mimicked && mimicked != player;
-        }
+        if (mimicked != player)
+            return false;
 
-        return false;
+        if (player.TryGetILayer<IMorpher>(out var morph) && morph.MorphedPlayer)
+            mimicked = morph.MorphedPlayer;
+        else if (player.TryGetShaper(out var ss))
+            mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer2 : ss.ShapeshiftPlayer1;
+
+        return mimicked && mimicked != player;
     }
 
     public static bool CanVent(this PlayerControl player)
@@ -485,15 +476,16 @@ public static class LayerExtensions
         {
             mainflag = playerRole switch
             {
-                SerialKiller sk => SerialKiller.SKVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SKVentOptions == 1) || (!sk.BloodlustButton.EffectActive &&
-                    (int)SerialKiller.SKVentOptions == 2),
+                SerialKiller sk => SerialKiller.SkVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SkVentOptions == 1) || (!sk.BloodlustButton.EffectActive &&
+                    (int)SerialKiller.SkVentOptions == 2),
                 Werewolf ww => Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 2),
                 _ => (playerRole is Murderer && Murderer.MurdVent) || (playerRole is Glitch && Glitch.GlitchVent) || (playerRole is Juggernaut && Juggernaut.JuggVent) || (playerRole is
-                    Pestilence && Pestilence.PestVent) || (playerRole is Jester && Jester.JesterVent) || (playerRole is Plaguebearer && Plaguebearer.PBVent) || (playerRole is Arsonist &&
+                    Pestilence && Pestilence.PestVent) || (playerRole is Jester && Jester.JesterVent) || (playerRole is Plaguebearer && Plaguebearer.PbVent) || (playerRole is Arsonist &&
                     Arsonist.ArsoVent) || (playerRole is Executioner && Executioner.ExeVent) || (playerRole is Cannibal && Cannibal.CannibalVent) || (playerRole is Dracula &&
-                    Dracula.DracVent) || (playerRole is Survivor && Survivor.SurvVent) || (playerRole is Actor && Actor.ActorVent) || (playerRole is GuardianAngel && GuardianAngel.GAVent) ||
-                    (playerRole is Amnesiac && Amnesiac.AmneVent) || (playerRole is Jackal && Jackal.JackalVent) || (playerRole is BountyHunter && BountyHunter.BHVent) || (playerRole is
-                    Betrayer && Betrayer.BetrayerVent)
+                    Dracula.DracVent) || (playerRole is Survivor && Survivor.SurvVent) || (playerRole is Actor && Actor.ActorVent) || (playerRole is GuardianAngel && GuardianAngel.GaVent) ||
+                    (playerRole is Amnesiac && Amnesiac.AmneVent) || (playerRole is Jackal && Jackal.JackalVent) || (playerRole is BountyHunter && BountyHunter.BhVent) || (playerRole is
+                    Betrayer && Betrayer.BetrayerVent) || (playerRole is Thief && Thief.ThiefVent) || (playerRole is Cryomaniac && Cryomaniac.CryoVent) || (playerRole is Necromancer &&
+                    Necromancer.NecroVent) || (playerRole is Whisperer && Whisperer.WhispVent)
             };
         }
 
@@ -510,18 +502,17 @@ public static class LayerExtensions
 
         if (!player || !playerInfo)
             return false;
-        else if (playerInfo.IsDead)
-            return true;
-        else if (disp is Lovers)
-            return Lovers.LoversChat;
-        else if (disp is Rivals)
-            return Rivals.RivalsChat;
-        else if (disp is Linked)
-            return Linked.LinkedChat;
-        else if (player.Is<Hunted>())
-            return GameModeSettings.HuntedChat;
 
-        return false;
+        if (playerInfo.IsDead)
+            return true;
+
+        return disp switch
+        {
+            Lovers => Lovers.LoversChat,
+            Rivals => Rivals.RivalsChat,
+            Linked => Linked.LinkedChat,
+            _ => player.Is<Hunted>() && GameModeSettings.HuntedChat
+        };
     }
 
     public static bool IsBlocked(this PlayerControl player) => PlayerLayer.GetILayers<IBlocker>().Any(x => x.BlockTarget == player) || PlayerLayer.GetLayers<Banshee>().Any(x =>
@@ -551,12 +542,13 @@ public static class LayerExtensions
 
     public static bool IsExcludedNeutral(PlayerControl player)
     {
-        if (player.TryGetLayer<GuardianAngel>(out var ga))
-            return ga.TargetAlive;
-        else if (player.TryGetLayer<Evil>(out var exe))
-            return exe.HasWon;
+        if (!player.TryGetLayer<Role>(out var role))
+            return false;
 
-        return false;
+        if (role is GuardianAngel ga)
+            return ga.TargetAlive;
+
+        return role is Evil { HasWon: true };
     }
 
     public static string RoleCardInfo(this PlayerControl player)
@@ -649,6 +641,14 @@ public static class LayerExtensions
         abilities = abilities == $"{AbilitiesColorString}Abilities:" ? "" : $"\n{abilities}</color>";
         var desc3 = modifier.Description();
 
+        foreach (var layer in info)
+        {
+            var attribute = layer.Attributes();
+
+            if (attribute != "- None")
+                attributes += $"\n{attribute}";
+        }
+
         if (info[1] && !modifier.Hidden && modifier.Type != LayerEnum.NoneModifier && desc3 is not ("" or "- None"))
             attributes += $"\n{modifier.ColorString}{desc3}</color>";
 
@@ -658,7 +658,7 @@ public static class LayerExtensions
         if (player.IsExeTarget() && Executioner.ExeTargetKnows)
             attributes += "\n<#CCCCCCFF>- Someone wants you ejected §</color>";
 
-        if (player.IsGaTarget() && GuardianAngel.GATargetKnows)
+        if (player.IsGaTarget() && GuardianAngel.GaTargetKnows)
             attributes += "\n<#FFFFFFFF>- Someone wants to protect you ★</color>";
 
         if (player.IsBhTarget())
@@ -792,21 +792,14 @@ public static class LayerExtensions
 
     public static bool IsBombed(this Vent vent) => PlayerLayer.GetILayers<IVentBomber>().Any(x => x.BombedIDs.Contains(vent.Id));
 
-    public static PlayerLayerEnum GetLayerType(this LayerEnum layer)
+    public static PlayerLayerEnum GetLayerType(this LayerEnum layer) => layer switch
     {
-        var id = (int)layer;
-
-        if (id < 91)
-            return PlayerLayerEnum.Role;
-        else if (id < 105)
-            return PlayerLayerEnum.Modifier;
-        else if (id < 116)
-            return PlayerLayerEnum.Disposition;
-        else if (id < 133)
-            return PlayerLayerEnum.Ability;
-        else
-            return PlayerLayerEnum.None;
-    }
+        < LayerEnum.NoneRole => PlayerLayerEnum.Role,
+        < LayerEnum.NoneModifier => PlayerLayerEnum.Modifier,
+        < LayerEnum.NoneDisposition => PlayerLayerEnum.Disposition,
+        < LayerEnum.NoneAbility => PlayerLayerEnum.Ability,
+        _ => PlayerLayerEnum.None
+    };
 
     public static AttackEnum GetAttackValue(this PlayerControl player, PlayerControl target = null, AttackEnum? overrideAtt = null)
     {

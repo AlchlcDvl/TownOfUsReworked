@@ -90,7 +90,8 @@ public class GameTab : BaseTab
         if (GUILayout.Button("Log Dump"))
         {
             Critical(CustomPlayer.Local.name);
-            PlayerLayer.LocalLayers().ForEach(Critical);
+            PlayerLayer.LocalLayers().ForEach(x => Critical(x));
+            // PlayerLayer.LocalLayers().ForEach(Critical);
             Critical("Is Dead - " + CustomPlayer.Local.HasDied());
             Critical("Location - " + CustomPlayer.LocalCustom.Position);
         }

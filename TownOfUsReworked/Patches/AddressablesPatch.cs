@@ -4,7 +4,7 @@ using Il2CppInterop.Common;
 using Il2CppInterop.Runtime.Runtime;
 using UnityEngine.AddressableAssets;
 
-namespace TownOfUsReworked.Classes;
+namespace TownOfUsReworked.Patches;
 
 // Yoinked more code from Daemon with some modification
 [HarmonyPatch(typeof(AssetReference), nameof(AssetReference.RuntimeKeyIsValid))]
@@ -41,10 +41,10 @@ public static unsafe class AddressablesPatch
                 : null);
 
         if (IsNullEmptyOrWhiteSpace(assetGuid) || !CustomAddressable.CustomAdressables.TryGetValue(assetGuid!, out var addressable))
-            return Original.Invoke(thisPtr, keyPtr, methodInfoPtr);
+            return Original(thisPtr, keyPtr, methodInfoPtr);
 
         var op = addressable.LoadAsync();
-        return op.IsValid() ? IL2CPP.il2cpp_object_unbox(op.Pointer) : Original.Invoke(thisPtr, keyPtr, methodInfoPtr);
+        return op.IsValid() ? IL2CPP.il2cpp_object_unbox(op.Pointer) : Original(thisPtr, keyPtr, methodInfoPtr);
     }
 
     public static bool Prefix(AssetReference __instance, ref bool __result)

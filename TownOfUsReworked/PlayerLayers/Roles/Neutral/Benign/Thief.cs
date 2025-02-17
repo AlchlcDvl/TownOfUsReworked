@@ -4,20 +4,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Thief : Neutral, IGuesser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number StealCd = 25;
+    private static Number StealCd = 25;
 
     [ToggleOption]
-    public static bool ThiefSteals = false;
+    private static bool ThiefSteals = false;
 
     [ToggleOption]
-    public static bool ThiefCanGuess = false;
+    private static bool ThiefCanGuess = false;
 
     [ToggleOption]
     public static bool ThiefVent = false;
 
-    public CustomButton StealButton { get; set; }
-    public CustomMeeting GuessMenu { get; set; }
-    public CustomRolesMenu GuessingMenu { get; set; }
+    private CustomButton StealButton { get; set; }
+    public CustomMeeting GuessMenu { get; private set; }
+    public CustomRolesMenu GuessingMenu { get; private set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Thief : FactionColor;
     public override LayerEnum Type => LayerEnum.Thief;
@@ -31,8 +31,10 @@ public class Thief : Neutral, IGuesser
         Alignment = Alignment.Benign;
         StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL",
             (PlayerBodyExclusion)Exception);
-        GuessMenu = new(Player, "Guess", Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);
+
+        if (ThiefCanGuess)
+            GuessMenu = new(Player, "Guess", Guess, IsExempt, SetLists);
     }
 
     private void SetLists()
@@ -41,15 +43,7 @@ public class Thief : Neutral, IGuesser
 
         // Adds all the roles that have a non-zero chance of being in the game
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
-        {
-            var cks = new List<LayerEnum>() { LayerEnum.Bastion, LayerEnum.Veteran, LayerEnum.Vigilante };
-
-            foreach (var layer in cks)
-            {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive())
-                    GuessingMenu.Mapping.Add(layer);
-            }
-        }
+            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Bastion, LayerEnum.Veteran, LayerEnum.Vigilante }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
         if (!SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
         {
@@ -81,14 +75,8 @@ public class Thief : Neutral, IGuesser
 
         if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0)
         {
-            var nks = new List<LayerEnum>() { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac,
-                LayerEnum.Werewolf, LayerEnum.BountyHunter, LayerEnum.Plaguebearer };
-
-            foreach (var layer in nks)
-            {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive())
-                    GuessingMenu.Mapping.Add(layer);
-            }
+            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac,
+                LayerEnum.Werewolf, LayerEnum.BountyHunter, LayerEnum.Plaguebearer }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
         }
     }
 
@@ -161,10 +149,10 @@ public class Thief : Neutral, IGuesser
         }
     }
 
-    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 
-    public void Steal(PlayerControl target)
+    private void Steal(PlayerControl target)
     {
         var allowed = true;
 
@@ -287,13 +275,13 @@ public class Thief : Neutral, IGuesser
 
     public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update(__instance);
 
-    public void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
+    private void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Guess, player, guess, guessTarget);
     }
 
-    public void MurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
+    private void MurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
         Spread(Player, guessTarget);
         var guessString = LayerDictionary[guess].Name;
@@ -321,21 +309,11 @@ public class Thief : Neutral, IGuesser
         }
 
         if (Local)
-        {
-            if (Player != player)
-                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guessString}!");
-            else
-                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
-        }
+            Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"You guessed {guessTarget.name} as {guessString}!" : $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else if (Player != player && player.AmOwner)
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessTarget}!");
         else if (DeadSeeEverything())
-        {
-            if (Player != player)
-                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!");
-            else
-                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {player.name} as {guessTarget} and died!");
-        }
+            Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!" : $"{Player.name} incorrectly guessed {player.name} as {guessTarget} and died!");
         else
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
 

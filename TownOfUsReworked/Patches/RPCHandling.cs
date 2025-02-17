@@ -49,12 +49,12 @@ public static class RPCHandling
                 {
                     case MiscRPC.SyncMaxUses:
                     {
-                        reader.ReadButton().MaxUses = reader.ReadInt32();
+                        reader.ReadButton().MaxUses = reader.ReadPackedInt32();
                         return;
                     }
                     case MiscRPC.SyncUses:
                     {
-                        reader.ReadButton().Uses = reader.ReadInt32();
+                        reader.ReadButton().Uses = reader.ReadPackedInt32();
                         return;
                     }
                     case MiscRPC.SetLayer:
@@ -102,7 +102,7 @@ public static class RPCHandling
                     }
                     case MiscRPC.DoorSyncToilet:
                     {
-                        var id2 = reader.ReadInt32();
+                        var id2 = reader.ReadPackedInt32();
                         UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == id2)?.SetDoorway(true);
                         return;
                     }
@@ -364,7 +364,7 @@ public static class RPCHandling
                     }
                     case ActionsRPC.Infect:
                     {
-                        Pestilence.Infected[reader.ReadByte()] = reader.ReadInt32();
+                        Pestilence.Infected[reader.ReadByte()] = reader.ReadPackedUInt32();
                         return;
                     }
                     case ActionsRPC.SetUninteractable:

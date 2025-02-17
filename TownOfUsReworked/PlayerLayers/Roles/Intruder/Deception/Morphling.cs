@@ -18,11 +18,10 @@ public class Morphling : Intruder, IMorpher
     [ToggleOption]
     public static bool MorphlingVent = false;
 
-    public CustomButton MorphButton { get; set; }
-    public CustomButton SampleButton { get; set; }
+    private CustomButton MorphButton { get; set; }
+    private CustomButton SampleButton { get; set; }
     public PlayerControl MorphedPlayer { get; set; }
     public PlayerControl SampledPlayer { get; set; }
-    public bool Morphed => MorphButton.EffectActive;
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Morphling : FactionColor;
     public override LayerEnum Type => LayerEnum.Morphling;
@@ -40,9 +39,9 @@ public class Morphling : Intruder, IMorpher
             new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);
     }
 
-    public void Morph() => Utils.Morph(Player, MorphedPlayer);
+    private void Morph() => Utils.Morph(Player, MorphedPlayer);
 
-    public void UnMorph()
+    private void UnMorph()
     {
         MorphedPlayer = null;
         DefaultOutfit(Player);
@@ -51,14 +50,14 @@ public class Morphling : Intruder, IMorpher
             SampleButton.StartCooldown();
     }
 
-    public void HitMorph()
+    private void HitMorph()
     {
         MorphedPlayer = SampledPlayer;
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, MorphButton, MorphedPlayer);
         MorphButton.Begin();
     }
 
-    public void Sample(PlayerControl target)
+    private void Sample(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -71,11 +70,11 @@ public class Morphling : Intruder, IMorpher
             MorphButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == SampledPlayer;
+    private bool Exception1(PlayerControl player) => player == SampledPlayer;
 
-    public bool Usable() => SampledPlayer;
+    private bool Usable() => SampledPlayer;
 
-    public bool EndEffect() => Dead;
+    private bool EndEffect() => Dead;
 
     public override void ReadRPC(MessageReader reader) => MorphedPlayer = reader.ReadPlayer();
 }

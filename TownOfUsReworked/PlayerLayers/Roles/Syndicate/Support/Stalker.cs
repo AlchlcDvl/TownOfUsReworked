@@ -6,13 +6,13 @@ public class Stalker : Syndicate
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number StalkCd = 25;
 
-    public Dictionary<byte, PlayerArrow> StalkerArrows { get; } = [];
-    public CustomButton StalkButton { get; set; }
+    private Dictionary<byte, PlayerArrow> StalkerArrows { get; } = [];
+    private CustomButton StalkButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Stalker : FactionColor;
     public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
-    public override Func<string> Description => () => $"- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
+    public override Func<string> Description => () => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
         CommonAbilities;
 
     protected override void Init()
@@ -37,7 +37,7 @@ public class Stalker : Syndicate
         ClearArrows();
     }
 
-    public void Stalk(PlayerControl target)
+    private void Stalk(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -47,9 +47,9 @@ public class Stalker : Syndicate
         StalkButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => StalkerArrows.ContainsKey(player.PlayerId);
+    private bool Exception1(PlayerControl player) => StalkerArrows.ContainsKey(player.PlayerId);
 
-    public bool Usable() => !HoldsDrive;
+    private bool Usable() => !HoldsDrive;
 
     public override void OnDriveReceivedLocal()
     {

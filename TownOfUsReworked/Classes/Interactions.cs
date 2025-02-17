@@ -23,37 +23,37 @@ public static class Interactions
         PlayerLayer.GetILayers<ITrapper>().ForEach(x => x.TriggerTrap(target, player, harmful));
     }
 
-    public static void Spread(PlayerControl interacter, PlayerControl target)
+    public static void Spread(PlayerControl interactor, PlayerControl target)
     {
-        PlayerLayer.GetLayers<Plaguebearer>().ForEach(pb => pb.RpcSpreadInfection(target, interacter));
-        PlayerLayer.GetLayers<Arsonist>().ForEach(arso => arso.RpcSpreadDouse(target, interacter));
-        PlayerLayer.GetLayers<Cryomaniac>().ForEach(cryo => cryo.RpcSpreadDouse(target, interacter));
+        PlayerLayer.GetLayers<Plaguebearer>().ForEach(pb => pb.RpcSpreadInfection(target, interactor));
+        PlayerLayer.GetLayers<Arsonist>().ForEach(arso => arso.RpcSpreadDouse(target, interactor));
+        PlayerLayer.GetLayers<Cryomaniac>().ForEach(cryo => cryo.RpcSpreadDouse(target, interactor));
 
         if (!PlayerLayer.GetLayers<Pestilence>().Any())
             return;
 
-        var targetId = target.Is(Alignment.Apocalypse) || target.Is(Alignment.Harbinger) ? interacter.PlayerId : target.PlayerId;
+        var targetId = target.Is(Alignment.Apocalypse) || target.Is(Alignment.Harbinger) ? interactor.PlayerId : target.PlayerId;
 
         if (!Pestilence.Infected.ContainsKey(targetId))
             return;
 
-        if (interacter.Is<Pestilence>())
+        if (interactor.Is<Pestilence>())
             Pestilence.Infected[target.PlayerId] = Pestilence.MaxStacks;
         else if (target.Is<Pestilence>())
-            Pestilence.Infected[interacter.PlayerId] = Pestilence.MaxStacks;
+            Pestilence.Infected[interactor.PlayerId] = Pestilence.MaxStacks;
         else
             Pestilence.Infected[targetId]++;
 
         if (Pestilence.Infected.TryGetValue(target.PlayerId, out var count) && count >= Pestilence.MaxStacks)
-            interacter.RpcMurderPlayer(target, DeathReasonEnum.Infected, false);
-        else if (Pestilence.Infected.TryGetValue(interacter.PlayerId, out count) && count >= Pestilence.MaxStacks)
-            target.RpcMurderPlayer(interacter, DeathReasonEnum.Infected, false);
+            interactor.RpcMurderPlayer(target, DeathReasonEnum.Infected, false);
+        else if (Pestilence.Infected.TryGetValue(interactor.PlayerId, out count) && count >= Pestilence.MaxStacks)
+            target.RpcMurderPlayer(interactor, DeathReasonEnum.Infected, false);
         else
             CallRpc(CustomRPC.Action, ActionsRPC.Infect, targetId, Pestilence.Infected[targetId]);
     }
 
     public static CooldownType Interact(PlayerControl source, PlayerControl target, bool isAttack = false, bool astral = false, bool bypass = false, bool delayed = false, DeathReasonEnum reason
-        = DeathReasonEnum.Killed)
+        = DeathReasonEnum.Killed, bool lunge = true)
     {
         if (!source || !target)
             return CooldownType.Fail;
@@ -76,7 +76,7 @@ public static class Interactions
             if (CanAttack(attack, defense))
             {
                 if (bypass)
-                    source.RpcMurderPlayer(target, reason);
+                    source.RpcMurderPlayer(target, reason, lunge);
                 else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
@@ -93,7 +93,7 @@ public static class Interactions
                         if (source.IsShielded() || source.IsProtected())
                             abilityUsed = false;
                         else
-                            trapper.RpcMurderPlayer(source, false);
+                            trapper.RpcCustomMurderPlayer(source, false);
                     }
                     else if (source.IsShielded() || source.IsProtected())
                     {
@@ -149,7 +149,7 @@ public static class Interactions
                             if (target.IsShielded() || target.IsProtected())
                                 abilityUsed = false;
                             else
-                                trapper.RpcMurderPlayer(target, false);
+                                trapper.RpcCustomMurderPlayer(target, false);
                         }
                         else if (target.IsShielded() || target.IsProtected())
                         {

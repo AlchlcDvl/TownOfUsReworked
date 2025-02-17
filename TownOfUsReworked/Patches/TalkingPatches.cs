@@ -44,7 +44,7 @@ public static class TalkingPatches
         if (__instance.state == MeetingHud.VoteStates.Animating)
             return;
 
-        if (Blackmailer.BMRevealed)
+        if (Blackmailer.BmRevealed)
         {
             foreach (var role in PlayerLayer.GetILayers<IBlackmailer>())
             {

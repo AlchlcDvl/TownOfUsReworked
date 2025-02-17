@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Amnesiac : Neutral
 {
     [ToggleOption]
-    public static bool RememberArrows = false;
+    private static bool RememberArrows = false;
 
     [NumberOption(0f, 15f, 1f, Format.Time)]
-    public static Number RememberArrowDelay = 5;
+    private static Number RememberArrowDelay = 5;
 
     [ToggleOption]
     public static bool AmneVent = false;
@@ -16,10 +16,10 @@ public class Amnesiac : Neutral
     public static bool AmneSwitchVent = false;
 
     [ToggleOption]
-    public static bool AmneToThief = true;
+    private static bool AmneToThief = true;
 
-    public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
-    public CustomButton RememberButton { get; set; }
+    private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
+    private CustomButton RememberButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Amnesiac : FactionColor;
     public override LayerEnum Type => LayerEnum.Amnesiac;
@@ -36,13 +36,10 @@ public class Amnesiac : Neutral
         RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");
     }
 
-    public void DestroyArrow(byte targetPlayerId)
+    private void DestroyArrow(byte targetPlayerId)
     {
-        if (BodyArrows.TryGetValue(targetPlayerId, out var arrow))
-        {
+        if (BodyArrows.Remove(targetPlayerId, out var arrow))
             arrow.Destroy();
-            BodyArrows.Remove(targetPlayerId);
-        }
     }
 
     public override void ClearArrows()
@@ -52,9 +49,9 @@ public class Amnesiac : Neutral
         BodyArrows.Clear();
     }
 
-    public void TurnThief() => new Thief().RoleUpdate(this);
+    private void TurnThief() => new Thief().RoleUpdate(this);
 
-    public void Remember(DeadBody target)
+    private void Remember(DeadBody target)
     {
         var player = PlayerByBody(target);
         Spread(Player, player);
@@ -64,7 +61,7 @@ public class Amnesiac : Neutral
 
     public override void ReadRPC(MessageReader reader) => Remember(reader.ReadPlayer());
 
-    public void Remember(PlayerControl other)
+    private void Remember(PlayerControl other)
     {
         var role = other.GetRole();
         var player = Player;
@@ -98,7 +95,7 @@ public class Amnesiac : Neutral
             Vigilante => new Vigilante(),
 
             // Neutral roles
-            Actor actor => new Actor(),
+            Actor => new Actor(),
             Arsonist => new Arsonist(),
             Betrayer => new Betrayer() { Faction = role.Faction },
             BountyHunter bh => new BountyHunter() { TargetPlayer = bh.TargetPlayer },
@@ -166,21 +163,36 @@ public class Amnesiac : Neutral
 
         newRole.RoleUpdate(this, player, Faction == Faction.Neutral);
 
-        if (role is Neophyte neophyte && newRole is Neophyte neophyte1)
+        switch (role)
         {
-            neophyte1.Members.AddRange(neophyte.Members);
-
-            if (role is Jackal jackal1 && newRole is Jackal jackal2)
+            case Neophyte neophyte when newRole is Neophyte neophyte1:
             {
-                jackal2.Recruit1 = jackal1.Recruit1;
-                jackal2.Recruit2 = jackal1.Recruit2;
-                jackal2.Recruit3 = jackal1.Recruit3;
+                neophyte1.Members.AddRange(neophyte.Members);
+
+                switch (role)
+                {
+                    case Jackal jackal1 when newRole is Jackal jackal2:
+                    {
+                        jackal2.Recruit1 = jackal1.Recruit1;
+                        jackal2.Recruit2 = jackal1.Recruit2;
+                        jackal2.Recruit3 = jackal1.Recruit3;
+                        break;
+                    }
+                    case Whisperer whisperer1 when newRole is Whisperer whisperer2:
+                    {
+                        whisperer2.PlayerConversion.AddRange(whisperer1.PlayerConversion);
+                        break;
+                    }
+                }
+
+                break;
             }
-            else if (role is Whisperer whisperer1 && newRole is Whisperer whisperer2)
-                whisperer2.PlayerConversion.AddRange(whisperer1.PlayerConversion);
+            case Actor act1 when newRole is Actor act2:
+            {
+                act2.PretendRoles.AddRange(act1.PretendRoles);
+                break;
+            }
         }
-        else if (role is Actor act1 && newRole is Actor act2)
-            act2.PretendRoles.AddRange(act1.PretendRoles);
 
         var local = CustomPlayer.Local.GetRole();
 
@@ -201,11 +213,11 @@ public class Amnesiac : Neutral
             }
         }
 
-        if (other.AmOwner)
-        {
-            Flash(Color);
-            ButtonUtils.Reset(player: other);
-        }
+        if (!other.AmOwner)
+            return;
+
+        Flash(Color);
+        ButtonUtils.Reset(player: other);
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -216,12 +228,7 @@ public class Amnesiac : Neutral
             return;
 
         var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= RememberArrowDelay));
-
-        foreach (var bodyArrow in BodyArrows.Keys)
-        {
-            if (!validBodies.Any(x => x.ParentId == bodyArrow))
-                DestroyArrow(bodyArrow);
-        }
+        BodyArrows.Keys.Where(bodyArrow => validBodies.All(x => x.ParentId != bodyArrow)).ForEach(DestroyArrow);
 
         foreach (var body in validBodies)
         {

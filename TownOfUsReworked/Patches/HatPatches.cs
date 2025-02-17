@@ -76,7 +76,7 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.IsLoaded), MethodType.Getter)]
     public static bool Prefix(HatParent __instance, ref bool __result)
     {
-        if (!__instance.Hat && !CustomHatRegistry.ContainsKey(__instance.Hat.ProductId))
+        if (!__instance.Hat || !CustomHatRegistry.ContainsKey(__instance.Hat.ProductId))
             return true;
 
         return !(__result = true);

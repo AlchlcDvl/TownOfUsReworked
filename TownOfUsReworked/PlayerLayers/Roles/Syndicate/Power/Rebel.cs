@@ -6,8 +6,8 @@ public class Rebel : Syndicate
     [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
     public static Number RebPromotionCdDecrease = 0.75f;
 
-    public bool HasDeclared { get; set; }
-    public CustomButton SidekickButton { get; set; }
+    private bool HasDeclared { get; set; }
+    private CustomButton SidekickButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Rebel : FactionColor;
     public override LayerEnum Type => LayerEnum.Rebel;
@@ -24,7 +24,7 @@ public class Rebel : Syndicate
             (UsableFunc)Usable);
     }
 
-    public void Sidekick(PlayerControl target)
+    private void Sidekick(PlayerControl target)
     {
         var allow = true;
 
@@ -48,9 +48,9 @@ public class Rebel : Syndicate
         }.RoleUpdate(formerRole, target);
     }
 
-    public bool Exception1(PlayerControl player) => player.GetRole() is PromotedRebel or Roles.Sidekick or Rebel || !(player.Is<Syndicate>() && player.Is(Faction));
+    private bool Exception1(PlayerControl player) => player.GetRole() is PromotedRebel or Roles.Sidekick or Rebel || !(player.Is<Syndicate>() && player.Is(Faction));
 
     public override void ReadRPC(MessageReader reader) => Sidekick(reader.ReadPlayer());
 
-    public bool Usable() => !HasDeclared;
+    private bool Usable() => !HasDeclared;
 }

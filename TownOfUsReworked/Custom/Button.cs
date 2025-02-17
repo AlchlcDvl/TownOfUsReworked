@@ -610,7 +610,7 @@ public class CustomButton
         return result;
     }
 
-    public bool Usable() => IsUsable() && (!HasUses || UseCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !IsMeeting() && !IsLobby() &&
+    public bool Usable() => IsUsable() && (!HasUses || UseCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() &&
         !NoPlayers() && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled && (!HasUses || Uses -

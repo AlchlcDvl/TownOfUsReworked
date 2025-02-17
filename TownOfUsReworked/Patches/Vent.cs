@@ -50,7 +50,7 @@ public static class VentPatches
             Executioner => Executioner.ExeVent && Executioner.ExeSwitchVent,
             Survivor => Survivor.SurvVent && Survivor.SurvSwitchVent,
             Amnesiac => Amnesiac.AmneVent && Amnesiac.AmneSwitchVent,
-            GuardianAngel => GuardianAngel.GAVent && GuardianAngel.GASwitchVent,
+            GuardianAngel => GuardianAngel.GaVent && GuardianAngel.GaSwitchVent,
             Guesser => Guesser.GuessVent && Guesser.GuessSwitchVent,
             Troll => Troll.TrollVent && Troll.TrollSwitchVent,
             Actor => Actor.ActorVent && Actor.ActSwitchVent,

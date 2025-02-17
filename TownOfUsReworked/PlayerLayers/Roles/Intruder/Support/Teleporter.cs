@@ -10,7 +10,7 @@ public class Teleporter : Intruder, IMover
     public static Number TeleMarkCd = 25;
 
     [NumberOption(1f, 20f, 1f, Format.Time)]
-    public static Number TeleportDur = 5;
+    private static Number TeleportDur = 5;
 
     [ToggleOption]
     public static bool TeleCooldownsLinked = false;
@@ -18,8 +18,8 @@ public class Teleporter : Intruder, IMover
     [ToggleOption]
     public static bool TeleVent = false;
 
-    public CustomButton TeleportButton { get; set; }
-    public CustomButton MarkButton { get; set; }
+    private CustomButton TeleportButton { get; set; }
+    private CustomButton MarkButton { get; set; }
     public Vector2 TeleportPoint { get; set; }
     public bool Moving { get; set; }
 
@@ -39,7 +39,7 @@ public class Teleporter : Intruder, IMover
             (UsableFunc)Usable, (ConditionFunc)Condition2);
     }
 
-    public void Mark()
+    private void Mark()
     {
         TeleportPoint = Player.transform.position;
         MarkButton.StartCooldown();
@@ -48,7 +48,7 @@ public class Teleporter : Intruder, IMover
             TeleportButton.StartCooldown();
     }
 
-    public void Teleport()
+    private void Teleport()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TeleportPoint);
         Coroutines.Start(TeleportPlayer(TeleportPoint, this));
@@ -60,17 +60,17 @@ public class Teleporter : Intruder, IMover
 
     public override void ReadRPC(MessageReader reader) => Coroutines.Start(TeleportPlayer(reader.ReadVector2(), this));
 
-    public bool Condition1() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
+    private bool Condition1() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
         Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != (Vector2)Player.transform.position;
 
-    public bool Usable() => TeleportPoint != Vector2.zero;
+    private bool Usable() => TeleportPoint != Vector2.zero;
 
-    public bool Condition2() => (Vector2)Player.transform.position != TeleportPoint && !Moving;
+    private bool Condition2() => (Vector2)Player.transform.position != TeleportPoint && !Moving;
 
     public static IEnumerator TeleportPlayer(Vector2 point, IMover teleporter)
     {
         var player = teleporter.Player;
-        var playerBody = (DeadBody)null;
+        DeadBody playerBody;
 
         if (player.Data.IsDead)
         {
@@ -98,19 +98,16 @@ public class Teleporter : Intruder, IMover
         AnimatePortal(player, TeleportDur);
         var startTime = Time.time;
 
-        while (true)
+        while (Time.time - startTime <= TeleportDur)
         {
-            if (Time.time - startTime < TeleportDur)
-                yield return EndFrame();
-            else
-                break;
+            yield return EndFrame();
 
-            if (Meeting())
-            {
-                References.Moving.RemoveAll(x => x == player.PlayerId);
-                teleporter.Moving = false;
-                yield break;
-            }
+            if (!Meeting())
+                continue;
+
+            References.Moving.RemoveAll(x => x == player.PlayerId);
+            teleporter.Moving = false;
+            yield break;
         }
 
         if (player.Data.IsDead)

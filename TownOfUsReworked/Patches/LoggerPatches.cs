@@ -5,7 +5,7 @@ using IObject = Il2CppSystem.Object;
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(Logger))]
-public static class RedirectLoggerPatch
+public static class RedirectLoggerPatch1
 {
     private static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("Among Us");
 
@@ -44,4 +44,44 @@ public static class RedirectLoggerPatch
 
     [HarmonyPatch(nameof(Logger.Error)), HarmonyPrefix]
     public static bool ErrorPatch(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Error, message, context);
+}
+
+public static class RedirectLoggerPatch2
+{
+    private static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("UnityLog");
+
+    public static void UnityLog(string msg, string stackTrace, LogType type)
+    {
+        if (!TownOfUsReworked.LogFromUnity.Value)
+            return;
+
+        switch (type)
+        {
+            case LogType.Error:
+            {
+                Error($"Unity Stack Trace:\n{msg}\n{stackTrace}", Log);
+                break;
+            }
+            case LogType.Warning:
+            {
+                Warning($"Unity Stack Trace:\n{msg}\n{stackTrace}", Log);
+                break;
+            }
+            case LogType.Log:
+            {
+                Debug($"Unity Stack Trace:\n{msg}\n{stackTrace}", Log);
+                break;
+            }
+            case LogType.Exception:
+            {
+                Failure($"Unity Exception:\n{msg}\n{stackTrace}", Log);
+                break;
+            }
+            default:
+            {
+                Assert($"Unity Stack Trace:\n{msg}\n{stackTrace}", Log);
+                break;
+            }
+        }
+    }
 }

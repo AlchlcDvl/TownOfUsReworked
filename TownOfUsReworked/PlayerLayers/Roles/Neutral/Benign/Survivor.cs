@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Survivor : Neutral
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number VestCd = 25;
+    private static Number VestCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number VestDur = 10;
+    private static Number VestDur = 10;
 
     [NumberOption(0, 15, 1, zeroIsInf: true)]
-    public static Number MaxVests = 5;
+    private static Number MaxVests = 5;
 
     [ToggleOption]
     public static bool SurvVent = false;
@@ -18,7 +18,7 @@ public class Survivor : Neutral
     [ToggleOption]
     public static bool SurvSwitchVent = false;
 
-    public CustomButton VestButton { get; set; }
+    public CustomButton VestButton { get; private set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Survivor : FactionColor;
     public override LayerEnum Type => LayerEnum.Survivor;
@@ -35,7 +35,7 @@ public class Survivor : Neutral
             MaxVests);
     }
 
-    public void HitVest()
+    private void HitVest()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, VestButton);
         VestButton.Begin();

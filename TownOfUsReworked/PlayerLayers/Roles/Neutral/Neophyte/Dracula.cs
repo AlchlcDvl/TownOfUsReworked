@@ -4,20 +4,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Dracula : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number BiteCd = 25;
+    private static Number BiteCd = 25;
 
     [ToggleOption]
     public static bool DracVent = false;
 
     [NumberOption(1, 14, 1)]
-    public static Number AliveVampCount = 3;
+    private static Number AliveVampCount = 3;
 
     [ToggleOption]
     public static bool UndeadVent = false;
 
-    public CustomButton BiteButton { get; set; }
-    public bool HasConverted { get; set; }
-    public static int AliveCount => AllPlayers().Count(x => !x.HasDied());
+    private static int AliveCount => AllPlayers().Count(x => !x.HasDied());
+
+    private CustomButton BiteButton { get; set; }
+    private bool HasConverted { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : FactionColor;
     public override LayerEnum Type => LayerEnum.Dracula;
@@ -41,7 +42,7 @@ public class Dracula : Neophyte
         HasConverted = false;
     }
 
-    public void Convert(PlayerControl target)
+    private void Convert(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -54,7 +55,7 @@ public class Dracula : Neophyte
         BiteButton.StartCooldown(cooldown);
     }
 
-    public bool Usable() => !HasConverted;
+    private bool Usable() => !HasConverted;
 
-    public bool Exception(PlayerControl player) => Members.Contains(player.PlayerId);
+    private bool Exception(PlayerControl player) => Members.Contains(player.PlayerId);
 }

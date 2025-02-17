@@ -4,26 +4,26 @@
 public class Cryomaniac : NKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number CryoDouseCd = 25;
+    private static Number CryoDouseCd = 25;
 
     [ToggleOption]
-    public static bool CryoFreezeAll = false;
+    private static bool CryoFreezeAll = false;
 
     [ToggleOption]
-    public static bool CryoLastKillerBoost = false;
+    private static bool CryoLastKillerBoost = false;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number VaporiseCd = 25;
+    private static Number VaporiseCd = 25;
 
     [ToggleOption]
     public static bool CryoVent = false;
 
-    public CustomButton FreezeButton { get; set; }
-    public CustomButton DouseButton { get; set; }
-    public CustomButton KillButton { get; set; }
+    private CustomButton FreezeButton { get; set; }
+    private CustomButton DouseButton { get; set; }
+    private CustomButton KillButton { get; set; }
     public List<byte> Doused { get; } = [];
     public bool FreezeUsed { get; set; }
-    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
+    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cryomaniac : FactionColor;
@@ -48,7 +48,6 @@ public class Cryomaniac : NKilling
             KillButton ??= new(this, new SpriteName("CryoKill"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Kill, new Cooldown(VaporiseCd), "VAPORISE", (UsableFunc)Usable,
                 (PlayerBodyExclusion)Exception);
         }
-
     }
 
     public void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
@@ -64,35 +63,29 @@ public class Cryomaniac : NKilling
 
     public override void BeforeMeeting()
     {
-        if (FreezeUsed && Local)
+        if (!FreezeUsed)
+            return;
+
+        foreach (var cryo in GetLayers<Cryomaniac>())
         {
-            foreach (var cryo in GetLayers<Cryomaniac>())
+            if (cryo != this && !CryoFreezeAll)
+                continue;
+
+            foreach (var player2 in from player in cryo.Doused select PlayerById(player) into player2 where !player2.HasDied() && !player2.TryFreezingIgnited() where CanAttack(AttackVal, player2.GetDefenseValue()) select player2)
             {
-                if (cryo != this && !CryoFreezeAll)
-                    continue;
-
-                foreach (var player in cryo.Doused)
-                {
-                    var player2 = PlayerById(player);
-
-                    if (player2.HasDied() || player2.TryFreezingIgnited())
-                        continue;
-
-                    if (CanAttack(AttackVal, player2.GetDefenseValue()))
-                        Player.RpcMurderPlayer(player2, DeathReasonEnum.Frozen, false);
-                }
-
-                cryo.Doused.Clear();
+                Player.RpcMurderPlayer(player2, DeathReasonEnum.Frozen, false);
             }
+
+            cryo.Doused.Clear();
         }
 
         FreezeUsed = false;
     }
 
-    public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
+    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
         Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
-    public void Douse(PlayerControl target)
+    private void Douse(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -102,11 +95,11 @@ public class Cryomaniac : NKilling
         DouseButton.StartCooldown(cooldown);
     }
 
-    public void FreezeUnFreeze() => FreezeUsed = !FreezeUsed;
+    private void FreezeUnFreeze() => FreezeUsed = !FreezeUsed;
 
-    public string Label() => (FreezeUsed ? "UN" : "") + "FREEZE";
+    private string Label() => (FreezeUsed ? "UN" : "") + "FREEZE";
 
-    public bool Usable() => LastKiller;
+    private bool Usable() => LastKiller;
 
     public override void ReadRPC(MessageReader reader)
     {

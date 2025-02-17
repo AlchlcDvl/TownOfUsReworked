@@ -585,7 +585,6 @@ public enum DeathReasonEnum : byte
     Bombed,
     Poisoned,
     Crusaded,
-    Mauled,
     Ambushed,
     Trolled,
     Misfire,
@@ -953,6 +952,7 @@ public enum ReworkedLogLevel : byte
 {
     Critical,
     Success,
+    Assert,
     Failure
 }
 

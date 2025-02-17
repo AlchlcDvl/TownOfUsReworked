@@ -10,13 +10,13 @@ public class Crusader : Syndicate, ICrusader
     public static Number CrusadeDur = 10;
 
     [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number ChaosDriveCrusadeRadius = 1.5f;
+    private static Number ChaosDriveCrusadeRadius = 1.5f;
 
     [ToggleOption]
     public static bool CrusadeMates = false;
 
     public PlayerControl CrusadedPlayer { get; set; }
-    public CustomButton CrusadeButton { get; set; }
+    public CustomButton CrusadeButton { get; private set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Crusader : FactionColor;
     public override LayerEnum Type => LayerEnum.Crusader;
@@ -33,9 +33,9 @@ public class Crusader : Syndicate, ICrusader
             (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
     }
 
-    public void UnCrusade() => CrusadedPlayer = null;
+    private void UnCrusade() => CrusadedPlayer = null;
 
-    public void Crusade(PlayerControl target)
+    private void Crusade(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -70,10 +70,10 @@ public class Crusader : Syndicate, ICrusader
         }
     }
 
-    public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !CrusadeMates && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception1(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !CrusadeMates && Faction is Faction.Intruder or Faction.Syndicate) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !CrusadeMates);
 
-    public bool EndEffect() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
+    private bool EndEffect() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
 
     public override void ReadRPC(MessageReader reader) => CrusadedPlayer = reader.ReadPlayer();
 }

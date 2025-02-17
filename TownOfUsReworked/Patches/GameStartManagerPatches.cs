@@ -1,13 +1,13 @@
 namespace TownOfUsReworked.Patches;
 
+// GameStartManager is a BITCH
 [HarmonyPatch(typeof(GameStartManager))]
 public static class GameStartManagerPatches
 {
-    // The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Patches/GameStartManagerPatch.cs under GPL v3 with some
-    // modifications from me to account for MCI and the horrid vanilla spam in the logs
+    private static PassiveButton CancelStartButton;
 
-    [HarmonyPatch(nameof(GameStartManager.Start))]
-    public static void Postfix(GameStartManager __instance)
+    [HarmonyPatch(nameof(GameStartManager.Start)), HarmonyPostfix]
+    public static void StartPostfix(GameStartManager __instance)
     {
         // Lobby size requirements
         __instance.MinPlayers = 1;
@@ -33,113 +33,49 @@ public static class GameStartManagerPatches
                 NameImage = GetSprite("Random")
             });
         }
+
+        if (CancelStartButton)
+            return;
+
+        CancelStartButton = UObject.Instantiate(__instance.StartButton, __instance.transform);
+        CancelStartButton.name = "CancelButton";
+
+        var cancelLabel = CancelStartButton.buttonText;
+        cancelLabel.GetComponent<TextTranslatorTMP>()?.OnDestroy();
+        cancelLabel.text = "Cancel";
+
+        CancelStartButton.inactiveSprites.GetComponent<SpriteRenderer>().color = UColor.black;
+        CancelStartButton.activeSprites.GetComponent<SpriteRenderer>().color = UColor.red;
+
+        CancelStartButton.activeTextColor = CancelStartButton.inactiveTextColor = UColor.white;
+        CancelStartButton.OverrideOnClickListeners(__instance.ResetStartState);
+
+        __instance.GameStartText.transform.SetLocalY(2f);
     }
 
-    private static int Seconds;
+    [HarmonyPatch(nameof(GameStartManager.Update)), HarmonyPostfix]
+    public static void UpdatePostfix(GameStartManager __instance)
+    {
+        if (IsCountDown() && (TownOfUsReworked.MciActive || Input.GetKeyDown(KeyCode.LeftShift)))
+            __instance.countDownTimer = 0;
+
+        CancelStartButton.gameObject.SetActive(IsCountDown());
+    }
 
     [HarmonyPatch(nameof(GameStartManager.Update))]
-    public static bool Prefix(GameStartManager __instance)
-    {
-        try
-        {
-            UpdatePrefix(__instance);
-        } catch {}
+    public static Exception Finalizer() => null;
 
-        return false;
+    [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.ResetStartState))]
+    public static void Prefix(GameStartManager __instance)
+    {
+        if (IsCountDown())
+            SoundManager.Instance.StopSound(__instance.gameStartSound);
     }
 
-    private static void UpdatePrefix(GameStartManager __instance)
+    [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.SetStartCounter))]
+    public static void Prefix(GameStartManager __instance, sbyte sec)
     {
-        if (!AmongUsClient.Instance || !GameData.Instance)
-            return;
-
-        __instance.UpdateMapImage((MapNames)MapSettings.Map);
-        __instance.CheckSettingsDiffs();
-        __instance.RulesPresetText.text = TranslationController.Instance.GetString(GameOptionsManager.Instance.CurrentGameOptions.GetRulesPresetTitle());
-        __instance.privatePublicPanelText.text = TranslationController.Instance.GetString(GameCode.IntToGameName(AmongUsClient.Instance.GameId) == null ? StringNames.LocalButton :
-            (AmongUsClient.Instance.IsGamePublic ? StringNames.PublicHeader : StringNames.PrivateHeader));
-        __instance.HostPrivateButton.gameObject.SetActive(!AmongUsClient.Instance.IsGamePublic);
-        __instance.HostPublicButton.gameObject.SetActive(AmongUsClient.Instance.IsGamePublic);
-
-        if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !Chat().IsOpenOrOpening)
-            ClipboardHelper.PutClipboardString(GameCode.IntToGameName(AmongUsClient.Instance.GameId));
-
-        if (DiscordManager.InstanceExists)
-        {
-            __instance.ShareOnDiscordButton.gameObject.SetActive(AmongUsClient.Instance.AmHost && IsOnlineGame() && DiscordManager.Instance.CanShareGameOnDiscord() &&
-                DiscordManager.Instance.HasValidPartyID());
-        }
-
-        if (GameData.Instance.PlayerCount != __instance.LastPlayerCount)
-        {
-            __instance.LastPlayerCount = GameData.Instance.PlayerCount;
-            var arg = "FF00";
-
-            if (__instance.LastPlayerCount > __instance.MinPlayers)
-                arg = "00FF";
-            else if (__instance.LastPlayerCount == __instance.MinPlayers)
-                arg = "FFFF";
-
-            __instance.PlayerCounter.text = $"<#{arg}00FF>{__instance.LastPlayerCount}/{GameSettings.LobbySize}</color>";
-            __instance.PlayerCounter.enableWordWrapping = false;
-            __instance.StartButton.SetButtonEnableState(__instance.LastPlayerCount >= __instance.MinPlayers);
-            __instance.StartButtonGlyph?.SetColor(__instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear);
-            __instance.StartButton.ChangeButtonText(TranslationController.Instance.GetString(__instance.LastPlayerCount >= __instance.MinPlayers ? StringNames.StartLabel :
-                StringNames.WaitingForPlayers));
-
-            if (DiscordManager.InstanceExists)
-            {
-                if (AmongUsClient.Instance.AmHost && IsOnlineGame())
-                    DiscordManager.Instance.SetInLobbyHost(__instance.LastPlayerCount, GameSettings.LobbySize, AmongUsClient.Instance.GameId);
-                else
-                    DiscordManager.Instance.SetInLobbyClient(__instance.LastPlayerCount, GameSettings.LobbySize, AmongUsClient.Instance.GameId);
-            }
-        }
-
-        __instance.GameStartText.text = IsCountDown() ? TranslationController.Instance.GetString(StringNames.GameStarting, Seconds) : "";
-        __instance.GameStartTextParent.SetActive(IsCountDown());
-
-        if (__instance.LobbyInfoPane.gameObject.activeSelf && Chat().IsOpenOrOpening)
-            __instance.LobbyInfoPane.DeactivatePane();
-
-        __instance.LobbyInfoPane.gameObject.SetActive(!Chat().IsOpenOrOpening);
-
-        if (!AmongUsClient.Instance.AmHost)
-            return;
-
-        if (IsCountDown())
-        {
-            if (TownOfUsReworked.MciActive)
-                Seconds = 0;
-            else
-            {
-                var num = Mathf.CeilToInt(__instance.countDownTimer);
-                __instance.countDownTimer -= Time.deltaTime;
-                Seconds = Mathf.CeilToInt(__instance.countDownTimer);
-
-                if (Input.GetKeyDown(KeyCode.LeftShift))
-                    __instance.countDownTimer = 0;
-
-                if (Input.GetKeyDown(KeyCode.LeftControl))
-                    __instance.ResetStartState();
-
-                if (!__instance.GameStartTextParent.activeSelf)
-                    SoundManager.Instance.PlaySound(__instance.gameStartSound, false);
-
-                __instance.GameStartTextParent.SetActive(true);
-                __instance.GameStartText.text = TranslationController.Instance.GetString(StringNames.GameStarting, Seconds);
-
-                if (num != Seconds)
-                    CustomPlayer.Local.RpcSetStartCounter(Seconds);
-            }
-
-            if (Seconds <= 0)
-                __instance.FinallyBegin();
-        }
-        else
-        {
-            __instance.GameStartTextParent.SetActive(false);
-            __instance.GameStartText.text = "";
-        }
+        if (sec == -1)
+            SoundManager.Instance.StopSound(__instance.gameStartSound);
     }
 }

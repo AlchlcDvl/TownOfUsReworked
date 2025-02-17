@@ -12,16 +12,9 @@ public static class RPC
         if (TownOfUsReworked.MciActive || !CustomPlayer.Local || AllPlayers().Count() == 1)
             return;
 
-        List<OptionAttribute> options;
-
-        if (setting != null)
-            options = [ setting ];
-        else
-            options = [ .. OptionAttribute.AllOptions ];
-
-        options.RemoveAll(x => x is BaseHeaderOptionAttribute || x.ClientOnly);
+        var options = setting != null ? [ setting ] : OptionAttribute.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOptionAttribute);
         var split = options.Split(70);
-        Info($"Sending {options.Count} options split to {split.Count} sets to {targetClientId}");
+        Info($"Sending {options.Count()} options split to {split.Count} sets to {targetClientId}");
 
         foreach (var list in split)
         {
@@ -116,49 +109,6 @@ public static class RPC
 
     public static Number ReadNumber(this MessageReader reader) => new(reader.ReadSingle());
 
-    // public static PlayerRecord ReadRecord(this MessageReader reader)
-    // {
-    //     var record = new PlayerRecord
-    //     {
-    //         PlayerName = reader.ReadString(),
-    //         ColorId = reader.ReadUInt32(),
-    //         SkinId = reader.ReadString(),
-    //         HatId = reader.ReadString(),
-    //         VisorId = reader.ReadString(),
-    //         IsExeTarget = reader.ReadBoolean(),
-    //         IsGATarget = reader.ReadBoolean(),
-    //         IsBHTarget = reader.ReadBoolean(),
-    //         IsGuessTarget = reader.ReadBoolean(),
-    //         DriveHolder = reader.ReadBoolean(),
-    //         DeathReason = reader.ReadEnum<DeathReasonEnum>(),
-    //         SubFaction = reader.ReadEnum<SubFaction>(),
-    //         CanDoTasks = reader.ReadBoolean()
-    //     };
-    //
-    //     if (record.CanDoTasks)
-    //     {
-    //         record.TasksLeft = reader.ReadUInt32();
-    //         record.TasksDone = reader.ReadUInt32();
-    //     }
-    //
-    //     var count = reader.ReadUInt32();
-    //
-    //     while (count-- > 0)
-    //         record.Layers.Add(reader.ReadEnum<LayerEnum>());
-    //
-    //     count = reader.ReadUInt32();
-    //
-    //     while (count-- > 0)
-    //         record.History.Add(reader.ReadEnum<LayerEnum>());
-    //
-    //     count = reader.ReadUInt32();
-    //
-    //     while (count-- > 0)
-    //         record.Titles.Add(reader.ReadString());
-    //
-    //     return record;
-    // }
-
     public static List<T> ReadEnumList<T>(this MessageReader reader) where T : struct, Enum
     {
         var enums = new List<T>();
@@ -190,83 +140,107 @@ public static class RPC
 
     public static void Write<T>(this MessageWriter writer, T value) where T : struct, Enum => writer.Write((Enum)value);
 
-    // public static void Write(this MessageWriter writer, PlayerRecord record)
-    // {
-    //     writer.Write(record.PlayerName);
-    //     writer.Write(record.ColorId);
-    //     writer.Write(record.SkinId);
-    //     writer.Write(record.HatId);
-    //     writer.Write(record.VisorId);
-    //
-    //     writer.Write(record.IsExeTarget);
-    //     writer.Write(record.IsGATarget);
-    //     writer.Write(record.IsBHTarget);
-    //     writer.Write(record.IsGuessTarget);
-    //     writer.Write(record.DriveHolder);
-    //
-    //     writer.Write(record.DeathReason);
-    //     writer.Write(record.SubFaction);
-    //
-    //     writer.Write(record.CanDoTasks);
-    //
-    //     if (record.CanDoTasks)
-    //     {
-    //         writer.Write(record.TasksLeft);
-    //         writer.Write(record.TasksDone);
-    //     }
-    //
-    //     writer.Write((uint)record.Layers.Count);
-    //     record.Layers.ForEach(x => writer.Write(x));
-    //
-    //     writer.Write((uint)record.History.Count);
-    //     record.History.ForEach(x => writer.Write(x));
-    //
-    //     writer.Write((uint)record.Titles.Count);
-    //     record.Titles.ForEach(writer.Write);
-    // }
-
     private static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index, Enum subRpc = null)
     {
-        if (item is Enum enumVal)
-            writer.Write(enumVal);
-        else if (item is PlayerControl player)
-            writer.Write(player.PlayerId);
-        else if (item is DeadBody body)
-            writer.Write(body.ParentId);
-        else if (item is PlayerVoteArea area)
-            writer.Write(area.TargetPlayerId);
-        else if (item is Vent vent)
-            writer.Write(vent.Id);
-        else if (item is PlayerLayer layer2)
-            writer.Write(layer: layer2);
-        else if (item is bool boolean)
-            writer.Write(boolean);
-        else if (item is Number num)
-            writer.Write(num.Value);
-        else if (item is int integer)
-            writer.Write(integer);
-        else if (item is float @float)
-            writer.Write(@float);
-        else if (item is string text)
-            writer.Write(text);
-        else if (item is byte byt)
-            writer.Write(byt);
-        else if (item is Vector2 vector2)
-            writer.Write(vector2);
-        else if (item is IEnumerable<byte> enumerable)
-            writer.WriteBytesAndSize(enumerable.ToArray());
-        else if (item is CustomButton button)
-            writer.Write(button.ID);
-        else if (item is IEnumerable<PlayerLayer> layers)
+        switch (item)
         {
-            writer.Write((uint)layers.Count());
-            layers.ForEach(x => writer.Write(layer: x));
+            case Enum enumVal:
+            {
+                writer.Write(enumVal);
+                break;
+            }
+            case PlayerControl player:
+            {
+                writer.Write(player.PlayerId);
+                break;
+            }
+            case DeadBody body:
+            {
+                writer.Write(body.ParentId);
+                break;
+            }
+            case PlayerVoteArea area:
+            {
+                writer.Write(area.TargetPlayerId);
+                break;
+            }
+            case Vent vent:
+            {
+                writer.Write(vent.Id);
+                break;
+            }
+            case PlayerLayer layer2:
+            {
+                writer.Write(layer: layer2);
+                break;
+            }
+            case bool boolean:
+            {
+                writer.Write(boolean);
+                break;
+            }
+            case Number num:
+            {
+                writer.Write(num.Value);
+                break;
+            }
+            case int integer:
+            {
+                writer.WritePacked(integer);
+                break;
+            }
+            case uint unsignedInt:
+            {
+                writer.WritePacked(unsignedInt);
+                break;
+            }
+            case float @float:
+            {
+                writer.Write(@float);
+                break;
+            }
+            case string text:
+            {
+                writer.Write(text);
+                break;
+            }
+            case byte byt:
+            {
+                writer.Write(byt);
+                break;
+            }
+            case Vector2 vector2:
+            {
+                writer.Write(vector2);
+                break;
+            }
+            case IEnumerable<byte> enumerable:
+            {
+                writer.WriteBytesAndSize(enumerable.ToArray());
+                break;
+            }
+            case CustomButton button:
+            {
+                writer.Write(button.ID);
+                break;
+            }
+            case IEnumerable<PlayerLayer> layers:
+            {
+                writer.Write((uint)layers.Count());
+                layers.ForEach(x => writer.Write(layer: x));
+                break;
+            }
+            case null:
+            {
+                Failure($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");
+                break;
+            }
+            default:
+            {
+                Failure($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type - {item.GetType().Name}");
+                break;
+            }
         }
-        else if (item is null)
-            Failure($"Data type used in the rpc was null: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}");
-        else
-            Failure($"Unknown data type used in the rpc: index - {index}, rpc - {rpc}, sub rpc - {subRpc?.ToString() ?? "None"}, item - {item}, type -" +
-                $" {item.GetType().Name}");
     }
 
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallOpenRpc(rpc, data)?.CloseRpc();

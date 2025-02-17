@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, Inherited = false)]
 public abstract class OptionAttribute(CustomOptionType type) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];
@@ -69,7 +69,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
             GameMode.HideAndSeek ]),
         ([ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ]),
         ([ "RandomMapSubmerged" ], [ MapEnum.Random, "SubLoaded" ]),
-        ([ "RandomMapLevelImpostor" ], [ MapEnum.Random, "LILoaded" ]),
+        ([ "RandomMapLevelImpostor" ], [ MapEnum.Random, "LiLoaded" ]),
         ([ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
             MapEnum.MiraHq, MapEnum.LevelImpostor ]),
         ([ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
@@ -129,64 +129,36 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         return result;
     }
 
-    public bool Active() => PartiallyActive() && (Header == null || Header.Get());
+    public bool Active() => PartiallyActive() && Header?.Get() != false;
 
-    private bool IsActive(object option)
+    private bool IsActive(object option) => option switch
     {
+        MapEnum map => MapSettings.Map == map,
+        GameMode mode => GameModeSettings.GameMode == mode,
+        VigiOptions vigiOptions => Vigilante.HowDoesVigilanteDie == vigiOptions,
+        NoSolo noSolo => NeutralSettings.NoSolo == noSolo,
+        string id => GetBoolValue(id),
+        _ => true
+    };
+
+    private bool GetBoolValue(string id)
+    {
+        if (id == Name)
+            return true; // To prevent accidental stack overflows, very rudimentary because I've already managed to cause several of them even with this line active
+
+        var invertVal = id.StartsWith("not+");
+        id = id.Replace("not+", "");
         bool result;
 
-        switch (option)
+        if (AllOptions.TryFinding(x => x.Name == id, out var optionatt))
         {
-            case MapEnum map:
-            {
-                result = MapSettings.Map == map;
-                break;
-            }
-            case GameMode mode:
-            {
-                result = GameModeSettings.GameMode == mode;
-                break;
-            }
-            case int num:
-            {
-                result = SettingsPatches.SettingsPage == num;
-                break;
-            }
-            case VigiOptions vigiOptions:
-            {
-                result = Vigilante.HowDoesVigilanteDie == vigiOptions;
-                break;
-            }
-            case NoSolo noSolo:
-            {
-                result = NeutralSettings.NoSolo == noSolo;
-                break;
-            }
-            case string id when id == Name:
-                return true; // To prevent accidental stack overflows, very rudimentary because I've already managed to cause several of them even with this line active
-            case string id:
-            {
-                var invertVal = id.StartsWith("not+");
-                id = id.Replace("not+", "");
+            result = optionatt.PartiallyActive();
 
-                if (AllOptions.TryFinding(x => x.Name == id, out var optionatt))
-                {
-                    result = optionatt.PartiallyActive();
-
-                    if (optionatt is OptionAttribute<bool> boolOpt)
-                        result &= invertVal ? !boolOpt.Get() : boolOpt.Get();
-                }
-                else if (!MapToLoaded.TryGetValue(id, out result))
-                    MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
-
-                break;
-            }
-            default:
-            {
-                result = true;
-                break;
-            }
+            if (optionatt is OptionAttribute<bool> boolOpt)
+                result &= invertVal ? !boolOpt.Get() : boolOpt.Get();
         }
+        else if (!MapToLoaded.TryGetValue(id, out result))
+            MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
 
         return result;
     }

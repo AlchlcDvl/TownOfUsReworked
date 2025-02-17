@@ -21,14 +21,14 @@ public class Janitor : Intruder, IDragger
     [StringOption<JanitorOptions>]
     public static JanitorOptions JanitorVentOptions = JanitorOptions.Never;
 
-    public CustomButton CleanButton { get; set; }
-    public CustomButton DragButton { get; set; }
-    public CustomButton DropButton { get; set; }
+    private CustomButton CleanButton { get; set; }
+    private CustomButton DragButton { get; set; }
+    private CustomButton DropButton { get; set; }
     public DeadBody CurrentlyDragging { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Janitor : FactionColor;
     public override LayerEnum Type => LayerEnum.Janitor;
-    public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Neccessary";
+    public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Necessary";
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
         CommonAbilities;
 
@@ -43,7 +43,7 @@ public class Janitor : Intruder, IDragger
             (UsableFunc)Usable1);
     }
 
-    public void Clean(DeadBody target)
+    private void Clean(DeadBody target)
     {
         Spread(Player, PlayerByBody(target));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
@@ -54,7 +54,7 @@ public class Janitor : Intruder, IDragger
             KillButton.StartCooldown();
     }
 
-    public void Drag(DeadBody target)
+    private void Drag(DeadBody target)
     {
         CurrentlyDragging = target;
         Spread(Player, PlayerByBody(CurrentlyDragging));
@@ -73,11 +73,11 @@ public class Janitor : Intruder, IDragger
         DragButton.StartCooldown();
     }
 
-    public bool Usable1() => !DragHandler.Instance.Dragging.ContainsKey(PlayerId);
+    private bool Usable1() => !DragHandler.Instance.Dragging.ContainsKey(PlayerId);
 
-    public bool Usable2() => DragHandler.Instance.Dragging.ContainsKey(PlayerId);
+    private bool Usable2() => DragHandler.Instance.Dragging.ContainsKey(PlayerId);
 
-    public float Difference() => Last(Faction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
+    private float Difference() => Last(Faction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
     public override void ReadRPC(MessageReader reader)
     {

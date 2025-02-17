@@ -19,28 +19,28 @@ public class Guesser : Evil, IGuesser
     public static bool GuessTargetKnows = false;
 
     [ToggleOption]
-    public static bool MultipleGuesses = true;
+    private static bool MultipleGuesses = true;
 
     [NumberOption(0, 15, 1, zeroIsInf: true)]
-    public static Number MaxGuesses = 5;
+    private static Number MaxGuesses = 5;
 
     [ToggleOption]
-    public static bool GuessToAct = true;
+    private static bool GuessToAct = true;
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetGuessed { get; set; }
-    public int RemainingGuesses { get; set; }
-    public bool FactionHintGiven { get; set; }
-    public bool AlignmentHintGiven { get; set; }
+    private int RemainingGuesses { get; set; }
+    private bool FactionHintGiven { get; set; }
+    private bool AlignmentHintGiven { get; set; }
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private string RoleName { get; set; }
-    public List<string> Letters { get; } = [];
+    private List<string> Letters { get; } = [];
     public int Rounds { get; set; }
-    public CustomButton TargetButton { get; set; }
-    public bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
-    public CustomMeeting GuessMenu { get; set; }
-    public CustomRolesMenu GuessingMenu { get; set; }
+    private CustomButton TargetButton { get; set; }
+    private bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
+    public CustomMeeting GuessMenu { get; private set; }
+    public CustomRolesMenu GuessingMenu { get; private set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Guesser : FactionColor;
     public override LayerEnum Type => LayerEnum.Guesser;
@@ -49,7 +49,7 @@ public class Guesser : Evil, IGuesser
         $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <#00ACC2FF>Actor</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetGuessed;
-    public override WinLose EndState => WinLose.GuesserWins;
+    protected override WinLose EndState => WinLose.GuesserWins;
 
     protected override void Init()
     {
@@ -79,10 +79,10 @@ public class Guesser : Evil, IGuesser
         return team;
     }
 
-    public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.Investigative) || (player.Is(SubFaction) && SubFaction !=
+    private bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.Investigative) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
-    public void SelectTarget(PlayerControl target)
+    private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
@@ -194,29 +194,29 @@ public class Guesser : Evil, IGuesser
         }
     }
 
-    public void TurnAct()
+    private void TurnAct()
     {
         Role role = IsRoleList() ? new Jester() : new Actor();
         role.RoleUpdate(this);
     }
 
-    public bool Usable() => !TargetPlayer;
+    private bool Usable() => !TargetPlayer;
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (Failed && !Dead && !GuessToAct)
+        if (!Failed || Dead || GuessToAct)
+            return;
+
+        if (GuesserCanPickTargets)
         {
-            if (GuesserCanPickTargets)
-            {
-                TargetPlayer = null;
-                Rounds = 0;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
-            }
-            else
-                Player.RpcSuicide();
+            TargetPlayer = null;
+            Rounds = 0;
+            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
         }
+        else
+            Player.RpcSuicide();
     }
 
     public override void UpdatePlayer()
@@ -237,15 +237,8 @@ public class Guesser : Evil, IGuesser
         var targetRole = TargetPlayer.GetRole();
         var something = "";
         var newRoleName = targetRole.Name;
-        var rolechanged = false;
-
-        if (RoleName != newRoleName && !IsNullEmptyOrWhiteSpace(RoleName))
-        {
-            rolechanged = true;
-            RoleName = newRoleName;
-        }
-        else if (RoleName?.Length == 0)
-            RoleName = newRoleName;
+        var rolechanged = RoleName != newRoleName && !IsNullEmptyOrWhiteSpace(RoleName);
+        RoleName = newRoleName;
 
         if (rolechanged)
         {
@@ -257,7 +250,7 @@ public class Guesser : Evil, IGuesser
         }
         else if (!LettersExhausted)
         {
-            var random = URandom.RandomRangeInt(0, RoleName.Length);
+            var random = URandom.RandomRangeInt(0, RoleName!.Length);
             var random2 = URandom.RandomRangeInt(0, RoleName.Length);
             var random3 = URandom.RandomRangeInt(0, RoleName.Length);
 
@@ -308,15 +301,12 @@ public class Guesser : Evil, IGuesser
             {
                 if (LettersGiven <= RoleName.Length - 3)
                 {
-                    Letters.Add($"{RoleName[random]}");
-                    Letters.Add($"{RoleName[random2]}");
-                    Letters.Add($"{RoleName[random3]}");
+                    Letters.Add($"{RoleName[random]}", $"{RoleName[random2]}", $"{RoleName[random3]}");
                     LettersGiven += 3;
                 }
                 else if (LettersGiven == RoleName.Length - 2)
                 {
-                    Letters.Add($"{RoleName[random]}");
-                    Letters.Add($"{RoleName[random2]}");
+                    Letters.Add($"{RoleName[random]}", $"{RoleName[random2]}");
                     LettersGiven += 2;
                 }
                 else if (LettersGiven == RoleName.Length - 1)
@@ -359,13 +349,13 @@ public class Guesser : Evil, IGuesser
 
     public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update(__instance);
 
-    public void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
+    private void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, player, guess, guessTarget);
     }
 
-    public void MurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
+    private void MurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {
         Spread(Player, guessTarget);
         var guessString = LayerDictionary[guess].Name;

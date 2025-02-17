@@ -75,6 +75,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static ConfigEntry<bool> BlockBaseGameLogger { get; private set; }
     public static ConfigEntry<bool> RedirectLogger { get; private set; }
+    public static ConfigEntry<bool> LogFromUnity { get; private set; }
     public static ConfigEntry<bool> DisableTimeout { get; private set; }
     public static ConfigEntry<bool> Persistence { get; private set; }
     public static ConfigEntry<bool> SameVote { get; private set; }

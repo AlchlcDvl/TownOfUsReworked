@@ -43,34 +43,29 @@ public class ModifierGen : BaseGen
         while (playerList.Any() && AllModifiers.Any())
         {
             var id = AllModifiers.TakeFirst().ID;
-            PlayerControl assigned = null;
-
-            if (id == LayerEnum.Bait)
-                assigned = playerList.FirstOrDefault(x => !(x.Is<Vigilante>() || x.Is<Shifter>() || x.Is<Thief>() || x.Is<Altruist>() || x.Is<Troll>()));
-            else if (id == LayerEnum.Diseased)
-                assigned = playerList.FirstOrDefault(x => !(x.Is<Altruist>() || x.Is<Troll>()));
-            else if (id == LayerEnum.Professional)
-                assigned = playerList.FirstOrDefault(x => x.Is<Assassin>());
-            else if (GlobalMod.Contains(id))
-                assigned = playerList.FirstOrDefault();
-            else if (id == LayerEnum.Shy)
+            var assigned = id switch
             {
-                assigned = playerList.FirstOrDefault(x => !((x.Is<Mayor>() && !Mayor.MayorButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Swapper>() && !Swapper.SwapperButton) ||
-                    (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) || (x.Is<Politician>() &&
-                    !Politician.PoliticianButton) ||  x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) || (!Monarch.MonarchButton && x.Is<Monarch>())));
-            }
+                LayerEnum.Bait => playerList.FirstOrDefault(x => !(x.Is<Vigilante>() || x.Is<Shifter>() || x.Is<Thief>() || x.Is<Altruist>() || x.Is<Troll>())),
+                LayerEnum.Diseased => playerList.FirstOrDefault(x => !(x.Is<Altruist>() || x.Is<Troll>())),
+                LayerEnum.Professional => playerList.FirstOrDefault(x => x.Is<Assassin>()),
+                LayerEnum.Shy => playerList.FirstOrDefault(x => !((x.Is<Mayor>() && !Mayor.MayorButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Swapper>() &&
+                    !Swapper.SwapperButton) || (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) ||
+                    (x.Is<Politician>() && !Politician.PoliticianButton) ||  x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) || (!Monarch.MonarchButton &&
+                    x.Is<Monarch>()))),
+                _ => GlobalMod.Contains(id) ? playerList.FirstOrDefault() : null
+            };
 
-            if (assigned)
-            {
-                playerList.Remove(assigned);
-                playerList.Shuffle();
-                AllModifiers.Shuffle();
+            if (!assigned)
+                continue;
 
-                if (!assigned.GetModifier())
-                    Gen(assigned, id, PlayerLayerEnum.Modifier);
-                else
-                    invalid.Add(id);
-            }
+            playerList.Remove(assigned);
+            playerList.Shuffle();
+            AllModifiers.Shuffle();
+
+            if (!assigned.GetModifier())
+                Gen(assigned, id, PlayerLayerEnum.Modifier);
+            else
+                invalid.Add(id);
         }
 
         if (TownOfUsReworked.MciActive && invalid.Any())

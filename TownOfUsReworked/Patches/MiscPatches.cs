@@ -271,17 +271,8 @@ public static class HudPatches
             AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.Last().OwnerId).Id, DisconnectReasons.GameFull);
     }
 
-    [HarmonyPatch(nameof(HudManager.Update))]
-    public static bool Prefix() => CustomPlayer.Local;
-
-    [HarmonyPatch(nameof(HudManager.Start)), HarmonyPrefix]
-    public static bool StartPrefix(HudManager __instance) => __instance.playerListPrompt;
-
-    [HarmonyPatch(nameof(HudManager.Start))]
-    public static void Postfix(HudManager __instance) => ClientHandler.Instance.OnHudStart(__instance);
-
-    [HarmonyPatch(nameof(HudManager.CoShowIntro)), HarmonyPrefix]
-    public static void CoShowIntroPrefix(HudManager __instance) => __instance.GameLoadAnimation.SetActive(false);
+    [HarmonyPatch(nameof(HudManager.CoShowIntro))]
+    public static void Prefix(HudManager __instance) => __instance.GameLoadAnimation.SetActive(false);
 }
 
 [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.FixedUpdate))]
@@ -675,21 +666,9 @@ public static class MedScanMinigamePatch
     }
 }
 
-// Brought this back because the logs are being spammed...again
-// I have a hate-only relationship with this fucked up class
+// I have a hate-only relationship with this fucked-up class
 [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
 public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
 {
-    public static bool Prefix(ModManager __instance)
-    {
-        try
-        {
-            // Try-catch my beloved <3
-            __instance.localCamera ??= HudManager.InstanceExists ? HUD().GetComponentInChildren<Camera>() : Camera.main;
-            __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
-                __instance.localCamera!.nearClipPlane));
-        } catch {}
-
-        return false;
-    }
+    public static Exception Finalizer() => null; // My first use of a finalizer ong
 }

@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Jackal : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number RecruitCd = 25;
+    private static Number RecruitCd = 25;
 
     [ToggleOption]
     public static bool JackalVent = false;
@@ -15,10 +15,10 @@ public class Jackal : Neophyte
     public PlayerControl Recruit1 { get; set; }
     public PlayerControl Recruit2 { get; set; }
     public PlayerControl Recruit3 { get; set; }
-    public CustomButton RecruitButton { get; set; }
-    public CustomButton KillButton { get; set; }
-    public bool RecruitsDead => !Recruit2 || !Recruit1 || (!Recruit3 && Recruit1 && Recruit2 && Recruit1.HasDied() && Recruit2.HasDied());
-    public bool AllRecruitsDead => Recruit1 && Recruit1.HasDied() && Recruit2 && Recruit2.HasDied() && Recruit3 && Recruit3.HasDied();
+    private CustomButton RecruitButton { get; set; }
+    private CustomButton KillButton { get; set; }
+    private bool RecruitsDead => !Recruit2 || !Recruit1 || (!Recruit3 && Recruit1 && Recruit2 && Recruit1.HasDied() && Recruit2.HasDied());
+    private bool AllRecruitsDead => Recruit1 && Recruit1.HasDied() && Recruit2 && Recruit2.HasDied() && Recruit3 && Recruit3.HasDied();
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Jackal : FactionColor;
     public override LayerEnum Type => LayerEnum.Jackal;
@@ -54,7 +54,7 @@ public class Jackal : Neophyte
         return team;
     }
 
-    public void Recruit(PlayerControl target)
+    private void Recruit(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -64,13 +64,13 @@ public class Jackal : Neophyte
         RecruitButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) => Members.Contains(player.PlayerId);
+    private bool Exception(PlayerControl player) => Members.Contains(player.PlayerId);
 
-    public void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
+    private void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    public bool Usable1() => RecruitsDead;
+    private bool Usable1() => RecruitsDead;
 
-    public bool Usable2() => AllRecruitsDead;
+    private bool Usable2() => AllRecruitsDead;
 
     public IEnumerable<PlayerControl> GetOtherRecruits(PlayerControl recruit) => Members.Where(x => x != recruit.PlayerId).Select(x => PlayerById(x));
 }

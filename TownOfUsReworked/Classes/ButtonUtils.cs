@@ -111,7 +111,7 @@ public static class ButtonUtils
         var num = 1f;
 
         if (player.Is<PromotedGodfather>())
-            num *= Godfather.GFPromotionCdDecrease;
+            num *= Godfather.GfPromotionCdDecrease;
         else if (player.Is<PromotedRebel>())
             num *= Rebel.RebPromotionCdDecrease;
 

@@ -4,25 +4,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Whisperer : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number WhisperCd = 25;
+    private static Number WhisperCd = 25;
 
     [ToggleOption]
-    public static bool WhisperCdIncreases = false;
+    private static bool WhisperCdIncreases = false;
 
     [NumberOption(2.5f, 30f, 2.5f, Format.Time)]
-    public static Number WhisperCdIncrease = 5;
+    private static Number WhisperCdIncrease = 5;
 
     [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number WhisperRadius = 1.5f;
+    private static Number WhisperRadius = 1.5f;
 
     [NumberOption(5, 50, 5, Format.Percent)]
-    public static Number WhisperRate = 5;
+    private static Number WhisperRate = 5;
 
     [ToggleOption]
-    public static bool WhisperRateDecreases = false;
+    private static bool WhisperRateDecreases = false;
 
     [NumberOption(5, 50, 5, Format.Percent)]
-    public static Number WhisperRateDecrease = 5;
+    private static Number WhisperRateDecrease = 5;
 
     [ToggleOption]
     public static bool WhispVent = false;
@@ -30,11 +30,11 @@ public class Whisperer : Neophyte
     [ToggleOption]
     public static bool PersuadedVent = false;
 
-    public CustomButton WhisperButton { get; set; }
-    public int WhisperCount { get; set; }
-    public int ConversionCount { get; set; }
+    private CustomButton WhisperButton { get; set; }
+    private int WhisperCount { get; set; }
+    private int ConversionCount { get; set; }
     public Dictionary<byte, byte> PlayerConversion { get; } = [];
-    public int WhisperConversion { get; set; }
+    private int WhisperConversion { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : FactionColor;
     public override LayerEnum Type => LayerEnum.Whisperer;
@@ -56,7 +56,7 @@ public class Whisperer : Neophyte
         Members.ForEach(x => PlayerConversion.Remove(x));
     }
 
-    public void Whisper()
+    private void Whisper()
     {
         var closestPlayers = GetClosestPlayers(Player, WhisperRadius, x => !Members.Contains(x.PlayerId));
 
@@ -72,18 +72,18 @@ public class Whisperer : Neophyte
 
         foreach (var (player, stat) in PlayerConversion)
         {
-            if (stat <= 0)
-            {
-                if (WhisperRateDecreases)
-                    WhisperConversion -= WhisperRateDecrease;
+            if (stat > 0)
+                continue;
 
-                if (WhisperConversion < 2)
-                    WhisperConversion = 2;
+            if (WhisperRateDecreases)
+                WhisperConversion -= WhisperRateDecrease;
 
-                ConversionCount++;
-                RpcConvert(player, PlayerId, SubFaction.Cult);
-                removals.Add(player);
-            }
+            if (WhisperConversion < 2)
+                WhisperConversion = 2;
+
+            ConversionCount++;
+            RpcConvert(player, PlayerId, SubFaction.Cult);
+            removals.Add(player);
         }
 
         WhisperCount++;
@@ -104,7 +104,7 @@ public class Whisperer : Neophyte
         writer.CloseRpc();
     }
 
-    public float Difference() => WhisperCdIncreases ? (WhisperCdIncrease * WhisperCount) : 0;
+    private float Difference() => WhisperCdIncreases ? (WhisperCdIncrease * WhisperCount) : 0;
 
     public override void ReadRPC(MessageReader reader)
     {

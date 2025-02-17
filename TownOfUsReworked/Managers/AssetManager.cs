@@ -61,7 +61,6 @@ public static class AssetManager
         texture.name = name;
         texture.hideFlags |= HideFlags.DontSaveInEditor;
         return texture.DontDestroy();
-
     }
 
     private static Sprite LoadSprite(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceSprite(path) : LoadDiskSprite(path);

@@ -282,6 +282,14 @@ public static class ListExtensions
             action(key, value);
     }
 
+    public static void ForEach<T1, T2>(this (IEnumerable<T1>, IEnumerable<T2>) source, Action<T1, T2> action)
+    {
+        var count = (source.Item1.Count() + source.Item2.Count()) / 2;
+
+        for (var i = 0; i < count; i++)
+            action(source.Item1.ElementAtOrDefault(i), source.Item2.ElementAtOrDefault(i));
+    }
+
     public static bool ContainsAny<T>(this IEnumerable<T> source, params T[] values) => values.Any(source.Contains);
 
     public static IEnumerable<T> GetAll<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(x => x);

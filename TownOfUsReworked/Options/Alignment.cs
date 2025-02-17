@@ -6,6 +6,7 @@ public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None
 {
     private RoleListSlot Alignment { get; } = alignment;
     private bool NoParts { get; } = noParts;
+    private UColor Color { get; } = CustomColorManager.FromHex(colorHex ?? "#FFFFFFFF");
     public HeaderOptionAttribute GroupHeader { get; private set; }
     private TextMeshPro Left { get; set; }
     private TextMeshPro Right { get; set; }
@@ -16,7 +17,6 @@ public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None
     private GameMode SavedMode { get; set; }
     private GameObject Cog { get; set; }
     private Transform PlsMnsBtn { get; set; }
-    private UColor Color { get; } = CustomColorManager.FromHex(colorHex ?? "#FFFFFFFF");
 
     private static Vector3 DefaultPos { get; set; } = Vector3.zero;
 

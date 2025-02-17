@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using Il2CppMono.Security.Protocol.Ntlm;
 
 namespace TownOfUsReworked.Classes;
 
@@ -338,7 +338,7 @@ public static class Utils
 
     public static void RpcSuicide(this PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Suicide) => self.RpcMurderPlayer(self, reason, false);
 
-    public static void RpcMurderPlayer(this PlayerControl killer, PlayerControl target, bool lunge) => killer.RpcMurderPlayer(target, DeathReasonEnum.Killed, lunge);
+    public static void RpcCustomMurderPlayer(this PlayerControl killer, PlayerControl target, bool lunge) => killer.RpcMurderPlayer(target, DeathReasonEnum.Killed, lunge);
 
     public static void RpcMurderPlayer(this PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
@@ -1049,7 +1049,7 @@ public static class Utils
 
     public static T EnsureComponent<T>(this Component component) where T : Component => component?.gameObject?.EnsureComponent<T>();
 
-    private static T EnsureComponent<T>(this GameObject gameObject) where T : Component => gameObject?.GetComponent<T>() ?? gameObject?.AddComponent<T>();
+    private static T EnsureComponent<T>(this GameObject gameObject) where T : Component => gameObject?.TryGetComponent<T>(out var comp) == true ? comp : gameObject?.AddComponent<T>();
 
     public static void CallMeeting(PlayerControl player)
     {
@@ -1482,14 +1482,12 @@ public static class Utils
     private static void RenameFolder(string og, string @new)
     {
         if (!Directory.Exists(og))
-            Warning("Original folder DNE");
-        else if (Directory.Exists(@new))
-        {
-            Warning("New folder already exists");
-            Directory.Delete(og, true);
-        }
-        else
-            FileSystem.RenameDirectory(og, @new.SanitisePath());
+            return;
+
+        var files = Directory.EnumerateFiles(og);
+        var newFiles = files.Select(x => x.Replace(og, @new));
+        (files, newFiles).ForEach(File.Move);
+        Directory.Delete(og);
     }
 
     public static void RenameAssetFolders()

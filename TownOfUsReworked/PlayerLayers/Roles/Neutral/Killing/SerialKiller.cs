@@ -4,19 +4,19 @@
 public class SerialKiller : NKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number BloodlustCd = 25;
+    private static Number BloodlustCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number BloodlustDur = 10;
+    private static Number BloodlustDur = 10;
 
     [NumberOption(0.5f, 15f, 0.5f, Format.Time)]
-    public static Number StabCd = 5;
+    private static Number StabCd = 5;
 
     [StringOption<SkVentOptions>]
-    public static SkVentOptions SKVentOptions = SkVentOptions.Always;
+    public static SkVentOptions SkVentOptions = SkVentOptions.Always;
 
-    public CustomButton BloodlustButton { get; set; }
-    public CustomButton StabButton { get; set; }
+    public CustomButton BloodlustButton { get; private set; }
+    private CustomButton StabButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.SerialKiller : FactionColor;
     public override LayerEnum Type => LayerEnum.SerialKiller;
@@ -37,18 +37,18 @@ public class SerialKiller : NKilling
             (UsableFunc)Usable);
     }
 
-    public void Lust()
+    private void Lust()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BloodlustButton);
         BloodlustButton.Begin();
     }
 
-    public void Stab(PlayerControl target) => StabButton.StartCooldown(Interact(Player, target, true));
+    private void Stab(PlayerControl target) => StabButton.StartCooldown(Interact(Player, target, true));
 
-    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 
-    public bool Usable() => BloodlustButton.EffectActive;
+    private bool Usable() => BloodlustButton.EffectActive;
 
-    public bool EndEffect() => Dead;
+    private bool EndEffect() => Dead;
 }

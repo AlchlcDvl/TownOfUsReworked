@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Drunkard : Syndicate
+public class Drunkard : Syndicate, IDrunkard
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ConfuseCd = 25;
@@ -12,10 +12,9 @@ public class Drunkard : Syndicate
     [ToggleOption]
     public static bool ConfuseImmunity = true;
 
-    public CustomButton ConfuseButton { get; set; }
-    public float Modifier => ConfuseButton.EffectActive ? -1 : 1;
-    public PlayerControl ConfusedPlayer { get; set; }
-    public CustomPlayerMenu ConfuseMenu { get; set; }
+    public CustomButton ConfuseButton { get; private set; }
+    public PlayerControl ConfusedPlayer { get; private set; }
+    private CustomPlayerMenu ConfuseMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Drunkard : FactionColor;
     public override LayerEnum Type => LayerEnum.Drunkard;
@@ -32,15 +31,15 @@ public class Drunkard : Syndicate
             new Duration(ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (EndFunc)EndEffect);
     }
 
-    public void StartConfusion()
+    private void StartConfusion()
     {
         if (ConfusedPlayer.AmOwner || HoldsDrive)
             Flash(CustomColorManager.Drunkard);
     }
 
-    public void UnConfuse() => ConfusedPlayer = null;
+    private void UnConfuse() => ConfusedPlayer = null;
 
-    public void Click(PlayerControl player)
+    private void Click(PlayerControl player)
     {
         var cooldown = Interact(Player, player);
 
@@ -50,43 +49,40 @@ public class Drunkard : Syndicate
             ConfuseButton.StartCooldown(cooldown);
     }
 
-    public void HitConfuse()
+    private void HitConfuse()
     {
-        if (HoldsDrive)
+        if (HoldsDrive || ConfusedPlayer)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfuseButton);
+            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfusedPlayer);
+
+            if (ConfusedPlayer)
+                writer.Write(ConfusedPlayer.PlayerId);
+
+            writer.CloseRpc();
             ConfuseButton.Begin();
         }
-        else if (!ConfusedPlayer)
-            ConfuseMenu.Open();
         else
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfuseButton, ConfusedPlayer);
-            ConfuseButton.Begin();
-        }
+            ConfuseMenu.Open();
     }
 
-    public bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
+    private bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
         ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && ConfuseImmunity);
 
-    public string Label() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
+    private string Label() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
 
-    public bool EndEffect() => (ConfusedPlayer && ConfusedPlayer.HasDied()) || (!HoldsDrive && Dead);
+    private bool EndEffect() => (ConfusedPlayer && ConfusedPlayer.HasDied()) || (!HoldsDrive && Dead);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (HoldsDrive)
+        if (HoldsDrive || !KeyboardJoystick.player.GetButtonDown("Delete"))
             return;
 
-        if (KeyboardJoystick.player.GetButtonDown("Delete"))
-        {
-            if (ConfusedPlayer && !ConfuseButton.EffectActive)
-                ConfusedPlayer = null;
+        if (ConfusedPlayer && !ConfuseButton.EffectActive)
+            ConfusedPlayer = null;
 
-            Message("Removed a target");
-        }
+        Message("Removed a target");
     }
 
     public override void ReadRPC(MessageReader reader)

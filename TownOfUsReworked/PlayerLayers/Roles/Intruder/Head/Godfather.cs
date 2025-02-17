@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Godfather : Intruder
 {
     [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
-    public static Number GFPromotionCdDecrease = 0.75f;
+    public static Number GfPromotionCdDecrease = 0.75f;
 
-    public bool HasDeclared { get; set; }
-    public CustomButton DeclareButton { get; set; }
+    private bool HasDeclared { get; set; }
+    private CustomButton DeclareButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Godfather : FactionColor;
     public override LayerEnum Type => LayerEnum.Godfather;
@@ -47,9 +47,9 @@ public class Godfather : Intruder
         }.RoleUpdate(formerRole, target);
     }
 
-    public bool Exception1(PlayerControl player) => player.GetRole() is PromotedGodfather or Mafioso or Godfather || !(player.Is<Intruder>() && player.Is(Faction));
+    private bool Exception1(PlayerControl player) => player.GetRole() is PromotedGodfather or Mafioso or Godfather || !player.Is<Intruder>() || !player.Is(Faction);
 
-    public bool Usable() => !HasDeclared;
+    private bool Usable() => !HasDeclared;
 
     public override void ReadRPC(MessageReader reader) => Declare(reader.ReadPlayer());
 }

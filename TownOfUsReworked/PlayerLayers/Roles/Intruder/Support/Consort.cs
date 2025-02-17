@@ -74,13 +74,13 @@ public class Consort : Intruder, IBlocker
     {
         base.UpdateHud(__instance);
 
-        if (KeyboardJoystick.player.GetButtonDown("Delete"))
-        {
-            if (BlockTarget && !BlockButton.EffectActive)
-                BlockTarget = null;
+        if (!KeyboardJoystick.player.GetButtonDown("Delete"))
+            return;
 
-            Message("Removed a target");
-        }
+        if (BlockTarget && !BlockButton.EffectActive)
+            BlockTarget = null;
+
+        Message("Removed a target");
     }
 
     public bool EndEffect() => (BlockTarget && BlockTarget.HasDied()) || Dead;

@@ -28,7 +28,7 @@ public class MultiSelectValue<T>(params T[] values) : IList<T>, IList, IReadOnly
 
     public static implicit operator MultiSelectValue<T>(T value) => new(value);
 
-    public static implicit operator MultiSelectValue<T>(T[] values) => new(values);
+    public static implicit operator MultiSelectValue<T>(T[] values) => [ .. values ];
 
     public static implicit operator MultiSelectValue<T>(List<T> values) => [ .. values ];
 
@@ -58,7 +58,7 @@ public class MultiSelectValue<T>(params T[] values) : IList<T>, IList, IReadOnly
 
     public void Clear() => ValueList.Clear();
 
-    public bool Contains(T item) => ValueList.IndexOf(item) >= 0;
+    public bool Contains(T item) => ValueList.Contains(item);
 
     public void CopyTo(T[] array, int arrayIndex) => ValueList.CopyTo(array, arrayIndex);
 

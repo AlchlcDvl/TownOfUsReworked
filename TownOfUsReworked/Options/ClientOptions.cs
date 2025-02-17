@@ -19,7 +19,7 @@ public static class ClientOptions
         {
             if (value != TownOfUsReworked.WhiteNameplates.Value)
             {
-                if (IsMeeting())
+                if (Meeting())
                     AllVoteAreas().ForEach(x => x.Background.sprite = Ship().CosmeticsCache.GetNameplate(value ? "nameplate_NoPlate" : PlayerByVoteArea(x).CurrentOutfit.NamePlateId).Image);
             }
 
@@ -35,7 +35,7 @@ public static class ClientOptions
         {
             if (value != TownOfUsReworked.NoLevels.Value)
             {
-                if (IsMeeting())
+                if (Meeting())
                     AllVoteAreas().ForEach(x => x.transform.GetChild(9).gameObject.SetActive(value));
             }
 

@@ -7,13 +7,13 @@ public class Warper : Syndicate, IMover
     public static Number WarpCd = 25;
 
     [NumberOption(1f, 20f, 1f, Format.Time)]
-    public static Number WarpDur = 5;
+    private static Number WarpDur = 5;
 
     [ToggleOption]
     public static bool WarpSelf = true;
 
-    public CustomButton WarpButton { get; set; }
-    public CustomPlayerMenu WarpMenu { get; set; }
+    private CustomButton WarpButton { get; set; }
+    private CustomPlayerMenu WarpMenu { get; set; }
     public bool Moving { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Warper : FactionColor;
@@ -32,10 +32,9 @@ public class Warper : Syndicate, IMover
 
     public static IEnumerator WarpPlayers(PlayerControl player1, PlayerControl player2, IMover warper)
     {
-        var player1Body = (DeadBody)null;
-        var player2Body = (DeadBody)null;
-        var wasInVent = false;
-        var vent = (Vent)null;
+        DeadBody player1Body = null;
+        DeadBody player2Body = null;
+        Vent vent = null;
 
         if (player1.Data.IsDead)
         {
@@ -69,7 +68,6 @@ public class Warper : Syndicate, IMover
                 yield return EndFrame();
 
             vent = player2.GetClosestVent();
-            wasInVent = true;
         }
 
         warper.Moving = true;
@@ -77,24 +75,21 @@ public class Warper : Syndicate, IMover
         if (player1.AmOwner)
             Flash(warper.Color, WarpDur);
 
-        if (!player1Body && !wasInVent)
+        if (!player1Body)
             AnimatePortal(player1, WarpDur);
 
         var startTime = Time.time;
 
-        while (true)
+        while (Time.time - startTime < WarpDur)
         {
-            if (Time.time - startTime < WarpDur)
-                yield return EndFrame();
-            else
-                break;
+            yield return EndFrame();
 
-            if (Meeting())
-            {
-                References.Moving.RemoveAll(x => x == player1.PlayerId);
-                warper.Moving = false;
-                yield break;
-            }
+            if (!Meeting())
+                continue;
+
+            References.Moving.RemoveAll(x => x == player1.PlayerId);
+            warper.Moving = false;
+            yield break;
         }
 
         if (player1.Data.IsDead)
@@ -125,7 +120,7 @@ public class Warper : Syndicate, IMover
         {
             player1.CustomSnapTo(new(player2.GetTruePosition().x, player2.GetTruePosition().y + 0.3636f));
 
-            if (player1.CanVent() && vent && wasInVent)
+            if (player1.CanVent() && vent)
                 player1.MyPhysics.RpcEnterVent(vent.Id);
         }
         else if (player1Body && !player2Body)
@@ -137,7 +132,7 @@ public class Warper : Syndicate, IMover
         {
             player1.CustomSnapTo(player2Body.TruePosition);
 
-            if (player1.CanVent() && vent && wasInVent)
+            if (player1.CanVent() && vent)
                 player1.MyPhysics.RpcEnterVent(vent.Id);
         }
         else if (player1Body && player2Body)
@@ -150,7 +145,7 @@ public class Warper : Syndicate, IMover
         warper.Moving = false;
     }
 
-    public bool Click(PlayerControl player, out bool shouldClose)
+    private bool Click(PlayerControl player, out bool shouldClose)
     {
         shouldClose = false;
 
@@ -161,14 +156,13 @@ public class Warper : Syndicate, IMover
 
         if (cooldown != CooldownType.Fail)
             return true;
-        else
-            WarpButton.StartCooldown(cooldown);
 
+        WarpButton.StartCooldown(cooldown);
         shouldClose = true;
         return false;
     }
 
-    public bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId) &&
+    private bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId) &&
         player.Data.IsDead);
 
     public static IEnumerator WarpAll(Dictionary<byte, Vector2> coords, IMover warper)
@@ -189,7 +183,7 @@ public class Warper : Syndicate, IMover
         }
     }
 
-    public void Warp()
+    private void Warp()
     {
         if (HoldsDrive)
         {
@@ -253,31 +247,29 @@ public class Warper : Syndicate, IMover
         }
     }
 
-    public string Label()
+    private string Label()
     {
         if (HoldsDrive)
             return "WARP";
-        else
+
+        return WarpMenu.Selected.Count switch
         {
-            return WarpMenu.Selected.Count switch
-            {
-                0 => "FIRST TARGET",
-                1 => "SECOND TARGET",
-                _ =>  "WARP"
-            };
-        }
+            0 => "FIRST TARGET",
+            1 => "SECOND TARGET",
+            _ =>  "WARP"
+        };
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (KeyboardJoystick.player.GetButtonDown("Delete"))
-        {
-            if (!HoldsDrive && !Moving && WarpMenu.Selected.Count > 0)
-                WarpMenu.Selected.TakeLast();
+        if (HoldsDrive || !KeyboardJoystick.player.GetButtonDown("Delete"))
+            return;
 
-            Message("Removed a target");
-        }
+        if (!Moving && WarpMenu.Selected.Count > 0)
+            WarpMenu.Selected.TakeLast();
+
+        Message("Removed a target");
     }
 }

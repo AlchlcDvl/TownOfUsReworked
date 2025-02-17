@@ -6,8 +6,8 @@ public class Hunter : HideAndSeek
     public override Func<string> StartText => () => "Hunt Them All Down";
     public override UColor Color => CustomColorManager.Hunter;
 
-    public CustomButton HuntButton { get; set; }
-    public float StartingTimer { get; set; }
+    private CustomButton HuntButton { get; set; }
+    private float StartingTimer { get; set; }
     public bool Starting => StartingTimer > 0f;
 
     protected override void Init()
@@ -31,11 +31,11 @@ public class Hunter : HideAndSeek
             HuntButton.StartCooldown();
     }
 
-    public bool Exception(PlayerControl player) => player.Is<Hunter>();
+    private bool Exception(PlayerControl player) => player.Is<Hunter>();
 
-    public bool Usable() => !Starting;
+    private bool Usable() => !Starting;
 
-    public void TurnHunter(PlayerControl player)
+    private void TurnHunter(PlayerControl player)
     {
         var newRole = new Hunter();
         newRole.RoleUpdate(player.GetRole());
@@ -48,17 +48,24 @@ public class Hunter : HideAndSeek
 
     public override void OnIntroEnd() => StartingTimer = GameModeSettings.StartTime;
 
-    public void Hunt(PlayerControl target)
+    private void Hunt(PlayerControl target)
     {
-        if (GameModeSettings.HnSMode == HnSMode.Classic)
-            Player.RpcMurderPlayer(target);
-        else if (GameModeSettings.HnSMode == HnSMode.Infection)
+        switch (GameModeSettings.HnSMode)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
-            TurnHunter(target);
+            case HnSMode.Classic:
+            {
+                Player.RpcMurderPlayer(target);
+                break;
+            }
+            case HnSMode.Infection:
+            {
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+                TurnHunter(target);
 
-            if (AmongUsClient.Instance.AmHost)
-                CheckWin();
+                if (AmongUsClient.Instance.AmHost)
+                    CheckWin();
+                break;
+            }
         }
 
         HuntButton.StartCooldown();

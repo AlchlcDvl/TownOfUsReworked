@@ -18,8 +18,8 @@ public class Grenadier : Intruder, IFlasher
     [ToggleOption]
     public static bool GrenadierVent = false;
 
-    public CustomButton FlashButton { get; set; }
-    public IEnumerable<byte> FlashedPlayers { get; set; }
+    private CustomButton FlashButton { get; set; }
+    public IEnumerable<byte> FlashedPlayers { get; private set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Grenadier : FactionColor;
     public override LayerEnum Type => LayerEnum.Grenadier;
@@ -35,10 +35,8 @@ public class Grenadier : Intruder, IFlasher
             "FLASH", new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, new CanClickAgain(false));
     }
 
-    public void Flash()
+    private void Flash()
     {
-        var hud = HUD();
-
         foreach (var id in FlashedPlayers)
         {
             var player = PlayerById(id);
@@ -57,15 +55,15 @@ public class Grenadier : Intruder, IFlasher
     private bool ShouldPlayerBeDimmed(PlayerControl player) => player.HasDied() || (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None)) && !Meeting()) || player == Player || Meeting();
 
-    public void UnFlash() => FlashedPlayers = [];
+    private void UnFlash() => FlashedPlayers = [];
 
-    public void HitFlash()
+    private void HitFlash()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, FlashButton);
         FlashButton.Begin();
     }
 
-    public void StartFlash()
+    private void StartFlash()
     {
         FlashedPlayers = [ .. GetClosestPlayers(Player, FlashRadius, includeDead: true).Select(x => x.PlayerId), PlayerId];
 
@@ -73,5 +71,5 @@ public class Grenadier : Intruder, IFlasher
             TransitionFlash(CustomColorManager.BlindVision, FlashDur, ShouldPlayerBeDimmed(CustomPlayer.Local) ? 0.4f : 1f);
     }
 
-    public bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
+    public static bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
 }

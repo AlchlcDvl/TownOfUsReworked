@@ -4,12 +4,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Banshee : Syndicate, IGhosty
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ScreamCd = 25;
+    private static Number ScreamCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number ScreamDur = 10;
+    private static Number ScreamDur = 10;
 
-    public CustomButton ScreamButton { get; set; }
+    private CustomButton ScreamButton { get; set; }
     public List<byte> Blocked { get; } = [];
     public bool Caught { get; set; }
     public bool Faded { get; set; }
@@ -30,18 +30,13 @@ public class Banshee : Syndicate, IGhosty
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
-    public void UnScream()
+    private void UnScream()
     {
-        foreach (var id in Blocked)
-        {
-            if (PlayerById(id).AmOwner)
-                BlockExposed = false;
-        }
-
+        BlockExposed = false;
         Blocked.Clear();
     }
 
-    public void HitScream()
+    private void HitScream()
     {
         foreach (var player in AllPlayers())
         {
@@ -53,9 +48,9 @@ public class Banshee : Syndicate, IGhosty
         ScreamButton.Begin();
     }
 
-    public bool Usable() => !Caught;
+    private bool Usable() => !Caught;
 
-    public bool EndEffect() => Caught;
+    private bool EndEffect() => Caught;
 
     public override void ReadRPC(MessageReader reader)
     {

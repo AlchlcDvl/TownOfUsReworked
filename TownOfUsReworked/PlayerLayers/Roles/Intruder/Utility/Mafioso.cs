@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Mafioso : Intruder
 {
-    public Role FormerRole { get; set; }
-    public Godfather Godfather { get; set; }
+    public Role FormerRole { get; init; }
+    public Godfather Godfather { get; init; }
     public bool CanPromote => (Godfather.Dead || Godfather.Disconnected) && !Dead;
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Mafioso : FactionColor;
@@ -18,7 +18,7 @@ public class Mafioso : Intruder
         Alignment = Alignment.Utility;
     }
 
-    public void TurnGodfather()
+    private void TurnGodfather()
     {
         var gf = new PromotedGodfather() { FormerRole = FormerRole is PromotedGodfather pgf ? pgf.FormerRole : FormerRole };
         gf.RoleUpdate(this);

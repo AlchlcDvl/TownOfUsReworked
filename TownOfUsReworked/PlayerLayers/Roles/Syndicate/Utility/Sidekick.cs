@@ -2,9 +2,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Sidekick : Syndicate
 {
-    public Syndicate FormerRole { get; set; }
-    public Rebel Rebel { get; set; }
-    public bool CanPromote => (Rebel.Dead || Rebel.Disconnected) && !Dead;
+    public Syndicate FormerRole { get; init; }
+    public Rebel Rebel { get; init; }
+    private bool CanPromote => (Rebel.Dead || Rebel.Disconnected) && !Dead;
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Sidekick : FactionColor;
     public override LayerEnum Type => LayerEnum.Sidekick;
@@ -18,7 +18,7 @@ public class Sidekick : Syndicate
         Alignment = Alignment.Utility;
     }
 
-    public void TurnRebel()
+    private void TurnRebel()
     {
         FormerRole.IsPromoted = true;
         var reb = new PromotedRebel() { FormerRole = FormerRole is PromotedRebel preb ? preb.FormerRole : FormerRole };

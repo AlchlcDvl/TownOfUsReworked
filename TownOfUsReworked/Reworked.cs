@@ -28,6 +28,7 @@ public partial class TownOfUsReworked
 
         BlockBaseGameLogger = Config.Bind("Debugging", "Block Logger", false, "Block base game Logger calls from appearing in the console");
         RedirectLogger = Config.Bind("Debugging", "Redirect Logger", false, "Redirect base game Logger calls into BepInEx logging");
+        LogFromUnity = Config.Bind("Debugging", "Show Unity Logs", false, "Redirect Unity Logger calls into BepInEx logging");
         DisableTimeout = Config.Bind("Debugging", "Disable Timeout", false, "Disable the network disconnection timeout");
         Persistence = Config.Bind("Debugging", "Persistence", false, "Enables whether or not bots will respawn after each test");
         SameVote = Config.Bind("Debugging", "Same Vote", false, "Disables whether or not each vote votes for the same player you do");

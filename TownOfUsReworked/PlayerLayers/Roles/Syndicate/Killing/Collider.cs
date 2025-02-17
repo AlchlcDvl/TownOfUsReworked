@@ -24,9 +24,9 @@ public class Collider : Syndicate
     [ToggleOption]
     public static bool CollideResetsCooldown = false;
 
-    public CustomButton PositiveButton { get; set; }
-    public CustomButton NegativeButton { get; set; }
-    public CustomButton ChargeButton { get; set; }
+    private CustomButton PositiveButton { get; set; }
+    private CustomButton NegativeButton { get; set; }
+    private CustomButton ChargeButton { get; set; }
     public PlayerControl Positive { get; set; }
     public PlayerControl Negative { get; set; }
     private float Range => CollideRange + (HoldsDrive ? CollideRangeIncrease : 0);
@@ -51,9 +51,9 @@ public class Collider : Syndicate
             new Duration(ChargeDur), (EndFunc)EndEffect);
     }
 
-    public void Charge() => ChargeButton.Begin();
+    private void Charge() => ChargeButton.Begin();
 
-    public void ResetCharges()
+    private void ResetCharges()
     {
         Positive = null;
         Negative = null;
@@ -65,7 +65,7 @@ public class Collider : Syndicate
         ResetCharges();
     }
 
-    public void SetPositive(PlayerControl target)
+    private void SetPositive(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -78,7 +78,7 @@ public class Collider : Syndicate
             NegativeButton.StartCooldown(cooldown);
     }
 
-    public void SetNegative(PlayerControl target)
+    private void SetNegative(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -91,13 +91,13 @@ public class Collider : Syndicate
             PositiveButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == Negative || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
+    private bool Exception1(PlayerControl player) => player == Negative || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None) || Player.IsLinkedTo(player);
 
-    public bool Exception2(PlayerControl player) => player == Positive || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
+    private bool Exception2(PlayerControl player) => player == Positive || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None) || Player.IsLinkedTo(player);
 
-    public bool Usable() => HoldsDrive;
+    private bool Usable() => HoldsDrive;
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -144,7 +144,7 @@ public class Collider : Syndicate
         }
     }
 
-    public bool EndEffect() => Dead;
+    private bool EndEffect() => Dead;
 
     public override void BeforeMeeting() => ResetCharges();
 }

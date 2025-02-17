@@ -30,34 +30,34 @@ public abstract class Role : PlayerLayer
         return team;
     }
 
-    /*private static bool PlateformIsUsed;
+    /*private static bool PlatformIsUsed;
     public static bool IsLeft;
     private static bool PlayerIsLeft;
     public CustomButton CallButton { get; set; }*/
 
-    public static bool RoleWins => WinState is WinLose.SerialKillerWins or WinLose.ArsonistWins or WinLose.CryomaniacWins or WinLose.MurdererWins or WinLose.BetrayerWins or
-        WinLose.PhantomWins or WinLose.WerewolfWins or WinLose.ActorWins or WinLose.BountyHunterWins or WinLose.CannibalWins or WinLose.TrollWins or WinLose.ExecutionerWins or
-        WinLose.GuesserWins or WinLose.JesterWins or WinLose.TaskRunnerWins or WinLose.HuntedWin or WinLose.HunterWins;
+    // public static bool RoleWins => WinState is WinLose.SerialKillerWins or WinLose.ArsonistWins or WinLose.CryomaniacWins or WinLose.MurdererWins or WinLose.BetrayerWins or
+    //     WinLose.PhantomWins or WinLose.WerewolfWins or WinLose.ActorWins or WinLose.BountyHunterWins or WinLose.CannibalWins or WinLose.TrollWins or WinLose.ExecutionerWins or
+    //     WinLose.GuesserWins or WinLose.JesterWins or WinLose.TaskRunnerWins or WinLose.HuntedWin or WinLose.HunterWins;
 
-    public static bool FactionWins => WinState is WinLose.CrewWins or WinLose.IntrudersWin or WinLose.SyndicateWins or WinLose.AllNeutralsWin;
+    // public static bool FactionWins => WinState is WinLose.CrewWins or WinLose.IntrudersWin or WinLose.SyndicateWins or WinLose.AllNeutralsWin;
 
-    public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.CultWins or WinLose.UndeadWins;
+    // public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.CultWins or WinLose.UndeadWins;
 
-    public Alignment Alignment { get; set; }
+    public Alignment Alignment { get; protected set; }
     public ChatChannel CurrentChannel { get; set; }
     public LayerEnum LinkedDisposition { get; set; }
 
     public Dictionary<byte, PlayerArrow> AllArrows { get; } = [];
     public Dictionary<byte, PlayerArrow> DeadArrows { get; } = [];
-    public Dictionary<PointInTime, float> Positions { get; } = [];
+    private Dictionary<PointInTime, float> Positions { get; } = [];
     public Dictionary<byte, PlayerArrow> YellerArrows { get; } = [];
 
     public List<LayerEnum> RoleHistory { get; } = [];
 
-    private Faction _faction;
+    private Faction FactionPriv;
     public Faction Faction
     {
-        get => _faction;
+        get => FactionPriv;
         set
         {
             FactionColor = value switch
@@ -84,20 +84,20 @@ public abstract class Role : PlayerLayer
                 Faction.Crew => () => CrewWinCon,
                 _ => Objectives
             };
-            _faction = value;
+            FactionPriv = value;
         }
     }
-    public UColor FactionColor { get; set; }
+    public UColor FactionColor { get; private set; }
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
     public virtual string FactionName => $"{Faction}";
 
-    private SubFaction _subFaction;
+    private SubFaction SubFactionPriv;
     public SubFaction SubFaction
     {
-        get => _subFaction;
+        get => SubFactionPriv;
         set
         {
-            _subFaction = value;
+            SubFactionPriv = value;
             (SubFactionColor, SubFactionSymbol) = value switch
             {
                 SubFaction.Undead => (CustomColorManager.Undead, "γ"),
@@ -108,10 +108,10 @@ public abstract class Role : PlayerLayer
             };
         }
     }
-    public string SubFactionSymbol { get; set; }
-    public UColor SubFactionColor { get; set; }
+    public string SubFactionSymbol { get; private set; }
+    public UColor SubFactionColor { get; private set; }
     public string SubFactionColorString => $"<#{SubFactionColor.ToHtmlStringRGBA()}>";
-    public virtual string SubFactionName => $"{SubFaction}";
+    public string SubFactionName => $"{SubFaction}";
 
     public Func<string> Objectives { get; set; } = () => "- None";
 
@@ -121,11 +121,11 @@ public abstract class Role : PlayerLayer
     public bool Rewinding { get; set; }
 
     public bool Bombed { get; set; }
-    public CustomButton BombKillButton { get; set; }
+    private CustomButton BombKillButton { get; set; }
 
     public bool Requesting { get; set; }
     public PlayerControl Requestor { get; set; }
-    public CustomButton PlaceHitButton { get; set; }
+    private CustomButton PlaceHitButton { get; set; }
     public int BountyTimer { get; set; }
 
     public bool TrulyDead { get; set; }
@@ -133,20 +133,20 @@ public abstract class Role : PlayerLayer
     public bool Diseased { get; set; }
 
     public bool IsRecruit => SubFaction == SubFaction.Cabal;
-    public bool IsResurrected => SubFaction == SubFaction.Reanimated;
-    public bool IsPersuaded => SubFaction == SubFaction.Cult;
-    public bool IsBitten => SubFaction == SubFaction.Undead;
-    public bool IsIntTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Intruder;
-    public bool IsIntAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Intruder;
-    public bool IsIntFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Intruder;
-    public bool IsSynTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Syndicate;
-    public bool IsSynAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Syndicate;
-    public bool IsSynFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Syndicate;
-    public bool IsCrewAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Crew;
+    // public bool IsResurrected => SubFaction == SubFaction.Reanimated;
+    // public bool IsPersuaded => SubFaction == SubFaction.Cult;
+    // public bool IsBitten => SubFaction == SubFaction.Undead;
+    // public bool IsIntTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Intruder;
+    // public bool IsIntAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Intruder;
+    // public bool IsIntFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Intruder;
+    // public bool IsSynTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Syndicate;
+    // public bool IsSynAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Syndicate;
+    // public bool IsSynFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Syndicate;
+    // public bool IsCrewAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Crew;
     public bool IsCrewDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Crew && this is not Crew;
-    public bool IsIntDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Intruder && this is not Intruder;
-    public bool IsSynDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Syndicate && this is not Syndicate;
-    public bool IsNeutDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Neutral && this is not Neutral;
+    private bool IsIntDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Intruder && this is not Intruder;
+    private bool IsSynDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Syndicate && this is not Syndicate;
+    private bool IsNeutDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Neutral && this is not Neutral;
     public bool Faithful => SubFaction == SubFaction.None && LinkedDisposition is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) && !IsCrewDefect && !IsIntDefect && !IsSynDefect
         && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor() && !Ignore;
 
@@ -168,14 +168,14 @@ public abstract class Role : PlayerLayer
                 (ConditionFunc)CallCondition);
         }*/
 
-        if (!IsCustomHnS() && !IsTaskRace())
-        {
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Enforcer).IsActive())
-                BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
+        if (GameModeSettings.GameMode is GameMode.HideAndSeek or GameMode.TaskRace)
+            return;
 
-            if (RoleGenManager.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
-                PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
-        }
+        if (RoleGenManager.GetSpawnItem(LayerEnum.Enforcer).IsActive())
+            BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
+
+        if (RoleGenManager.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
+            PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
     }
 
     public void UpdateButtons()
@@ -211,38 +211,24 @@ public abstract class Role : PlayerLayer
 
     public override void UpdateHud(HudManager __instance)
     {
-        foreach (var id in DeadArrows.Keys)
+        DeadArrows.Keys.Where(id => !PlayerById(id)).ForEach(DestroyArrowD);
+
+        if (!Timekeeper.TkExists || Dead || (Faction is Faction.Syndicate && Timekeeper.TimeRewindImmunity) || Faction == Faction.GameMode)
+            return;
+
+        if (!Rewinding)
         {
-            if (!PlayerById(id))
-                DestroyArrowD(id);
+            Positions.TryAdd(new(Player.transform.position), Time.time);
+            (from pair in Positions let seconds = Time.time - pair.Value where seconds > Timekeeper.TimeDur select pair.Key).ForEach(x => Positions.Remove(x));
         }
-
-        if (Timekeeper.TKExists && !Dead && !(Faction == Faction.Syndicate && Timekeeper.TimeRewindImmunity) && Faction != Faction.GameMode)
+        else if (Positions.Any())
         {
-            if (!Rewinding)
-            {
-                Positions.TryAdd(new(Player.transform.position), Time.time);
-                var toBeRemoved = new List<PointInTime>();
-
-                foreach (var pair in Positions)
-                {
-                    var seconds = Time.time - pair.Value;
-
-                    if (seconds > Timekeeper.TimeDur)
-                        toBeRemoved.Add(pair.Key);
-                }
-
-                toBeRemoved.ForEach(x => Positions.Remove(x));
-            }
-            else if (Positions.Any())
-            {
-                var point = Positions.Keys.Last();
-                Player.RpcCustomSnapTo(point.Position);
-                Positions.Remove(point);
-            }
-            else
-                Positions.Clear();
+            var point = Positions.Keys.Last();
+            Player.RpcCustomSnapTo(point.Position);
+            Positions.Remove(point);
         }
+        else
+            Positions.Clear();
     }
 
     public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
@@ -294,11 +280,11 @@ public abstract class Role : PlayerLayer
         }
     }
 
-    public bool BombUsable() => Bombed;
+    private bool BombUsable() => Bombed;
 
-    public bool RequestUsable() => Requesting;
+    private bool RequestUsable() => Requesting;
 
-    /*private bool CallCondition() => IsLeft == PlayerIsLeft && !PlateformIsUsed && MapPatches.CurrentMap != 4;
+    /*private bool CallCondition() => IsLeft == PlayerIsLeft && !PlatformIsUsed && MapPatches.CurrentMap != 4;
 
     private bool CallUsable()
     {
@@ -326,23 +312,23 @@ public abstract class Role : PlayerLayer
 
     private static void UsePlatform()
     {
-        if (!PlateformIsUsed && LocalRole.CanCall() && LocalRole.CallUsable())
-            UsePlateforRpc();
+        if (!PlatformIsUsed && LocalRole.CanCall() && LocalRole.CallUsable())
+            UsePlatForRpc();
     }
 
-    private static void UsePlateforRpc()
+    private static void UsePlatForRpc()
     {
         SyncPlatform();
         CallRpc(CustomRPC.Misc, MiscRPC.SyncPlatform);
     }
 
-    public static void SyncPlatform() => Coroutines.Start(UsePlatformCoro());
+    public static void SyncPlatform() => Coroutines.Start(CoUsePlatform());
 
-    private static IEnumerator UsePlatformCoro()
+    private static IEnumerator CoUsePlatform()
     {
         IsLeft = !IsLeft;
         var platform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
-        PlateformIsUsed = true;
+        PlatformIsUsed = true;
         platform.IsLeft = IsLeft;
         platform.transform.localPosition = IsLeft ? platform.LeftPosition : platform.RightPosition;
         platform.IsDirty = true;
@@ -354,25 +340,19 @@ public abstract class Role : PlayerLayer
         yield return Effects.Slide3D(platform.transform, sourcePos, targetPos, CustomPlayer.Local.MyPhysics.Speed);
         yield return Effects.Wait(0.1f);
 
-        PlateformIsUsed = false;
+        PlatformIsUsed = false;
     }*/
 
     public void DestroyArrowY(byte targetPlayerId)
     {
-        if (YellerArrows.TryGetValue(targetPlayerId, out var arrow))
-        {
+        if (YellerArrows.Remove(targetPlayerId, out var arrow))
             arrow.Destroy();
-            YellerArrows.Remove(targetPlayerId);
-        }
     }
 
-    public void DestroyArrowD(byte targetPlayerId)
+    private void DestroyArrowD(byte targetPlayerId)
     {
-        if (DeadArrows.TryGetValue(targetPlayerId, out var arrow))
-        {
+        if (DeadArrows.Remove(targetPlayerId, out var arrow))
             arrow.Destroy();
-            DeadArrows.Remove(targetPlayerId);
-        }
     }
 
     public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().ForEach(x => x.Rounds++);
@@ -401,15 +381,15 @@ public abstract class Role : PlayerLayer
 
         foreach (var bh in GetLayers<BountyHunter>())
         {
-            if (!bh.TargetPlayer && bh.TentativeTarget && !bh.Assigned)
-            {
-                bh.TargetPlayer = bh.TentativeTarget;
-                bh.Assigned = true;
+            if (bh.TargetPlayer || !bh.TentativeTarget || bh.Assigned)
+                continue;
 
-                // Ensures only the Bounty Hunter sees this
-                if (bh.Local)
-                    Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
-            }
+            bh.TargetPlayer = bh.TentativeTarget;
+            bh.Assigned = true;
+
+            // Ensures only the Bounty Hunter sees this
+            if (bh.Local)
+                Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
         }
 
         foreach (var dict in GetLayers<Dictator>())
@@ -440,7 +420,7 @@ public abstract class Role : PlayerLayer
         "<#008000FF>Syndicate</color>";
     public const string CrewWinCon = "- Finish all tasks\n- Eject all <#FF0000FF>evildoers</color>";
 
-    public void PlaceHit(PlayerControl target)
+    private void PlaceHit(PlayerControl target)
     {
         target = Requestor.IsLinkedTo(target) ? Player : target;
         Requestor.GetLayer<BountyHunter>().TentativeTarget = target;
@@ -451,16 +431,11 @@ public abstract class Role : PlayerLayer
 
     public static void PublicReveal(PlayerControl player)
     {
-        var role = player.GetRole();
-
-        if (role is Mayor mayor)
-            mayor.Revealed = true;
-        else if (role is Dictator dict)
-            dict.Revealed = true;
-        else
+        if (!player.TryGetILayer<IRevealer>(out var revealer))
             return;
 
-        Flash(role.Color);
+        revealer.Revealed = true;
+        Flash(revealer.Color);
         BreakShield(player, true);
         GetILayers<ITrapper>().ForEach(x => x.Trapped.Remove(player.PlayerId));
     }
@@ -504,7 +479,7 @@ public abstract class Role : PlayerLayer
         }
     }
 
-    public void BombKill(PlayerControl target)
+    private void BombKill(PlayerControl target)
     {
         var success = Interact(Player, target, true) != CooldownType.Fail;
         GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);

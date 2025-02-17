@@ -16,9 +16,9 @@ public class Jester : Evil
     public static bool JestEjectScreen = false;
 
     public bool VotedOut { get; set; }
-    public List<byte> ToHaunt { get; } = [];
-    public bool HasHaunted { get; set; }
-    public CustomButton HauntButton { get; set; }
+    private List<byte> ToHaunt { get; } = [];
+    private bool HasHaunted { get; set; }
+    private CustomButton HauntButton { get; set; }
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !NeutralSettings.AvoidNeutralKingmakers;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Jester : FactionColor;
@@ -27,7 +27,7 @@ public class Jester : Evil
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => VotedOut;
-    public override WinLose EndState => WinLose.JesterWins;
+    protected override WinLose EndState => WinLose.JesterWins;
 
     protected override void Init()
     {
@@ -60,15 +60,15 @@ public class Jester : Evil
         }
     }
 
-    public bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player) ||
+    private bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player) ||
         player.Is(Alignment.Apocalypse);
 
-    public void Haunt(PlayerControl target)
+    private void Haunt(PlayerControl target)
     {
         Player.RpcMurderPlayer(target, DeathReasonEnum.Haunted, false);
         HasHaunted = true;
         TrulyDead = true;
     }
 
-    public bool Usable() => CanHaunt;
+    private bool Usable() => CanHaunt;
 }

@@ -4,29 +4,29 @@
 public class Arsonist : NKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ArsoDouseCd = 25;
+    private static Number ArsoDouseCd = 25;
 
     [NumberOption(5f, 60f, 2.5f, Format.Time)]
-    public static Number IgniteCd = 25;
+    private static Number IgniteCd = 25;
 
     [ToggleOption]
-    public static bool ArsoLastKillerBoost = false;
+    private static bool ArsoLastKillerBoost = false;
 
     [ToggleOption]
-    public static bool ArsoIgniteAll = false;
+    private static bool ArsoIgniteAll = false;
 
     [ToggleOption]
-    public static bool ArsoCooldownsLinked = false;
+    private static bool ArsoCooldownsLinked = false;
 
     [ToggleOption]
-    public static bool IgnitionCremates = false;
+    private static bool IgnitionCremates = false;
 
     [ToggleOption]
     public static bool ArsoVent = false;
 
-    public CustomButton IgniteButton { get; set; }
-    public CustomButton DouseButton { get; set; }
-    public bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
+    private CustomButton IgniteButton { get; set; }
+    private CustomButton DouseButton { get; set; }
+    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && ArsoLastKillerBoost;
     public List<byte> Doused { get; } = [];
 
@@ -49,7 +49,7 @@ public class Arsonist : NKilling
             (UsableFunc)Doused.Any);
     }
 
-    public void Ignite()
+    private void Ignite()
     {
         Play("Ignite");
         var disappear = new List<byte>();
@@ -94,7 +94,7 @@ public class Arsonist : NKilling
             DouseButton.StartCooldown();
     }
 
-    public void Douse(PlayerControl target)
+    private void Douse(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -116,7 +116,7 @@ public class Arsonist : NKilling
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
     }
 
-    public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
+    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
         Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
     public override void ReadRPC(MessageReader reader)

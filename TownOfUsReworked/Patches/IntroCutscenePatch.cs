@@ -56,6 +56,8 @@ public static class ShowRolePatch
         __instance.__4__this.RoleText.color = __instance.__4__this.YouAreText.color = __instance.__4__this.RoleBlurbText.color = __instance.__4__this.BackgroundBar.material.color = role.Color;
         __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
         __instance.__4__this.BackgroundBar.transform.SetLocalZ(-15f);
+        __instance.__4__this.YouAreText.GetComponent<TextTranslatorTMP>()?.Destroy();
+        __instance.__4__this.YouAreText.text = "You Are The";
     }
 }
 

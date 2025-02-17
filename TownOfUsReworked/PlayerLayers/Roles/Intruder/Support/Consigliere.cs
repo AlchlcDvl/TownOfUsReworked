@@ -10,7 +10,7 @@ public class Consigliere : Intruder
     public static ConsigInfo ConsigInfo = ConsigInfo.Role;
 
     public List<byte> Investigated { get; } = [];
-    public CustomButton InvestigateButton { get; set; }
+    private CustomButton InvestigateButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consigliere : FactionColor;
     public override LayerEnum Type => LayerEnum.Consigliere;
@@ -27,7 +27,7 @@ public class Consigliere : Intruder
             (PlayerBodyExclusion)Exception1);
     }
 
-    public void Investigate(PlayerControl target)
+    private void Investigate(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -37,7 +37,7 @@ public class Consigliere : Intruder
         InvestigateButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
+    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None)) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) &&
         Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 }

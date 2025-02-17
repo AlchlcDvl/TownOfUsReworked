@@ -9,25 +9,25 @@ public abstract class Syndicate : Role
     public bool IsPromoted;
 
     public override UColor Color => CustomColorManager.Syndicate;
-    public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.Basic;
+    public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.None;
 
     public static bool SyndicateHasChaosDrive { get; set; }
 
-    private static PlayerControl _driveHolder;
+    private static PlayerControl DriveHolderPriv;
     public static PlayerControl DriveHolder
     {
-        get => _driveHolder;
+        get => DriveHolderPriv;
         set
         {
-            if (_driveHolder && _driveHolder.TryGetLayer<Syndicate>(out var syndicate1))
+            if (DriveHolderPriv && DriveHolderPriv.TryGetLayer<Syndicate>(out var syndicate1))
             {
                 syndicate1.OnDriveLost();
 
-                if (_driveHolder.AmOwner)
+                if (DriveHolderPriv.AmOwner)
                     syndicate1.OnDriveLostLocal();
             }
 
-            _driveHolder = value;
+            DriveHolderPriv = value;
 
             if (!value || !value.TryGetComponent<Syndicate>(out var syndicateRole))
                 return;

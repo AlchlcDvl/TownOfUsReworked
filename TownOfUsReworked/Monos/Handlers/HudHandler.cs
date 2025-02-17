@@ -4,8 +4,7 @@ public class HudHandler : MonoBehaviour
 {
     private bool CommsEnabled;
     public bool CamouflagerEnabled;
-    public bool GodfatherEnabled;
-    public bool IsCamoed => CommsEnabled || CamouflagerEnabled || GodfatherEnabled;
+    public bool IsCamoed => CommsEnabled || CamouflagerEnabled;
 
     public static HudHandler Instance { get; private set; }
 
@@ -41,7 +40,7 @@ public class HudHandler : MonoBehaviour
             CommsEnabled = true;
             Camouflage();
         }
-        else if (CommsEnabled && !(CamouflagerEnabled || GodfatherEnabled))
+        else if (CommsEnabled && !CamouflagerEnabled)
         {
             CommsEnabled = false;
             DefaultOutfitAll();

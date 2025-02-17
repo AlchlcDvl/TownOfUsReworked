@@ -54,17 +54,17 @@ public class ClientHandler : MonoBehaviour
 
     public ClientHandler(IntPtr ptr) : base(ptr) => Instance = this;
 
-    public void OnHudStart(HudManager __instance)
+    public void OnHudStart(HudManager hud)
     {
         if (MinSize == Vector3.zero)
-            MinSize = __instance.transform.localScale;
+            MinSize = hud.transform.localScale;
 
         if (MaxSize == Vector3.zero)
-            MaxSize = __instance.transform.localScale * 4f;
+            MaxSize = hud.transform.localScale * 4f;
 
-        if (!ButtonsParent && __instance.AbilityButton)
+        if (!ButtonsParent && hud.AbilityButton)
         {
-            var obj = __instance.AbilityButton.transform.parent;
+            var obj = hud.AbilityButton.transform.parent;
             ButtonsParent = Instantiate(obj, obj.parent);
             ButtonsParent.name = "BottomLeft";
             ButtonsParent.transform.localPosition = new(-obj.localPosition.x, obj.localPosition.y, obj.localPosition.z);
@@ -80,7 +80,7 @@ public class ClientHandler : MonoBehaviour
 
         if (!WikiRcButton)
         {
-            WikiRcButton = Instantiate(__instance.MapButton, ButtonsParent);
+            WikiRcButton = Instantiate(hud.MapButton, ButtonsParent);
             WikiRcButton.OverrideOnClickListeners(Open);
             WikiRcButton.name = "WikiAndRCButton";
             WikiRcButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("WikiInactive");
@@ -90,7 +90,7 @@ public class ClientHandler : MonoBehaviour
 
         if (!ClientOptionsButton)
         {
-            ClientOptionsButton = Instantiate(__instance.MapButton, ButtonsParent);
+            ClientOptionsButton = Instantiate(hud.MapButton, ButtonsParent);
             ClientOptionsButton.OverrideOnClickListeners(CreateMenu);
             ClientOptionsButton.name = "ClientOptionsButton";
             ClientOptionsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsInactive");
@@ -100,7 +100,7 @@ public class ClientHandler : MonoBehaviour
 
         if (!ZoomButton)
         {
-            ZoomButton = Instantiate(__instance.MapButton, ButtonsParent);
+            ZoomButton = Instantiate(hud.MapButton, ButtonsParent);
             ZoomButton.OverrideOnClickListeners(ClickZoom);
             ZoomButton.name = "ZoomButton";
             ZoomButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("MinusInactive");
@@ -111,32 +111,262 @@ public class ClientHandler : MonoBehaviour
 
     public static void OnLobbyStart()
     {
-        if (Prefab)
-            return;
+        Instance.OnHudStart(HUD());
 
-        Prefab = Instantiate(GameStartManager.Instance.PlayerOptionsMenu, null).DontUnload().DontDestroy();
-        Prefab.SetActive(false);
-        Prefab.name = "ReworkedOptionsMenuPrefab";
-        Pos = GameStartManager.Instance.GameOptionsPosition;
+        if (!Prefab)
+        {
+            Prefab = GameStartManager.Instance.PlayerOptionsMenu;
+            Pos = GameStartManager.Instance.GameOptionsPosition;
+        }
+
+        var menu = Prefab.GetComponent<GameSettingMenu>();
+        var settings = menu.GameSettingsTab;
+        var prefabs = new List<MonoBehaviour>();
+
+        if (!SettingsPatches.NumberPrefab)
+        {
+            // Background = 0, Value Text = 1, Title = 2, - = 3, + = 4, Value Box = 5
+            SettingsPatches.NumberPrefab = Instantiate(settings.numberOptionOrigin).DontDestroy().DontUnload();
+            SettingsPatches.NumberPrefab.name = "NumberPrefab";
+            SettingsPatches.NumberPrefab.transform.GetChild(3).localPosition += new Vector3(0.6f, 0f, 0f);
+            SettingsPatches.NumberPrefab.transform.GetChild(4).localPosition += new Vector3(1.5f, 0f, 0f);
+            SettingsPatches.NumberPrefab.PlusBtn.OverrideOnClickListeners(BlankVoid);
+            SettingsPatches.NumberPrefab.MinusBtn.OverrideOnClickListeners(BlankVoid);
+
+            var background = SettingsPatches.NumberPrefab.transform.GetChild(0);
+            background.localPosition += new Vector3(-0.8f, 0f, 0f);
+            background.localScale += new Vector3(1f, 0f, 0f);
+
+            var title = SettingsPatches.NumberPrefab.TitleText;
+            title.transform.localPosition = new(-2.0466f, 0f, -2.9968f);
+            title.GetComponent<RectTransform>().sizeDelta = new(5.8f, 0.458f);
+
+            var valueBox = SettingsPatches.NumberPrefab.transform.GetChild(5);
+            valueBox.localPosition += new Vector3(1.05f, 0f, 0f);
+            valueBox.localScale += new Vector3(0.2f, 0f, 0f);
+
+            prefabs.Add(SettingsPatches.NumberPrefab);
+        }
+
+        if (!SettingsPatches.StringPrefab)
+        {
+            // Background = 0, Value Text = 1, Title = 2, < = 3, > = 4, Value Box = 5
+            SettingsPatches.StringPrefab = Instantiate(settings.stringOptionOrigin).DontDestroy().DontUnload();
+            SettingsPatches.StringPrefab.name = "StringPrefab";
+            SettingsPatches.StringPrefab.PlusBtn.OverrideOnClickListeners(BlankVoid);
+            SettingsPatches.StringPrefab.MinusBtn.OverrideOnClickListeners(BlankVoid);
+
+            var background = SettingsPatches.StringPrefab.transform.GetChild(0);
+            background.localPosition += new Vector3(-0.8f, 0f, 0f);
+            background.localScale += new Vector3(1f, 0f, 0f);
+
+            var title = SettingsPatches.StringPrefab.TitleText;
+            title.transform.localPosition = new(-2.0466f, 0f, -2.9968f);
+            title.GetComponent<RectTransform>().sizeDelta = new(5.8f, 0.458f);
+            title.fontSize = 2.9f; // Why is it different for string options??
+
+            var minus = SettingsPatches.StringPrefab.MinusBtn;
+            minus.ChangeButtonText("<");
+            minus.transform.localPosition += new Vector3(0.6f, 0f, 0f);
+
+            var plus = SettingsPatches.StringPrefab.PlusBtn;
+            plus.ChangeButtonText(">");
+            plus.transform.localPosition += new Vector3(1.5f, 0f, 0f);
+
+            var valueBox = SettingsPatches.StringPrefab.transform.GetChild(5);
+            valueBox.localPosition += new Vector3(1.05f, 0f, 0f);
+            valueBox.localScale += new Vector3(0.2f, 0f, 0f);
+
+            prefabs.Add(SettingsPatches.StringPrefab);
+        }
+
+        if (!SettingsPatches.TogglePrefab)
+        {
+            // Title = 0, Toggle = 1, Background = 2
+            SettingsPatches.TogglePrefab = Instantiate(settings.checkboxOrigin).DontDestroy().DontUnload();
+            SettingsPatches.TogglePrefab.name = "TogglePrefab";
+            SettingsPatches.TogglePrefab.transform.GetChild(1).localPosition += new Vector3(2.2f, 0f, 0f);
+
+            var title = SettingsPatches.TogglePrefab.TitleText;
+            title.transform.localPosition = new(-2.0466f, 0f, -2.9968f);
+            title.GetComponent<RectTransform>().sizeDelta = new(5.8f, 0.458f);
+
+            var background = SettingsPatches.TogglePrefab.transform.GetChild(2);
+            background.localPosition += new Vector3(-0.8f, 0f, 0f);
+            background.localScale += new Vector3(1f, 0f, 0f);
+
+            prefabs.Add(SettingsPatches.TogglePrefab);
+        }
+
+        if (!SettingsPatches.MultiOptionPrefab)
+        {
+            SettingsPatches.MultiOptionPrefab = Instantiate(SettingsPatches.TogglePrefab, null).DontUnload().DontDestroy();
+            SettingsPatches.MultiOptionPrefab.name = "MultiSelectOptionPrefab";
+
+            var background = SettingsPatches.MultiOptionPrefab.transform.GetChild(2);
+            background.localScale = new(1.75f, 1f, 1f);
+            background.localPosition = new(-1.5232f, -0.0619f, 0f);
+
+            prefabs.Add(SettingsPatches.MultiOptionPrefab);
+        }
+
+        if (!SettingsPatches.MultiSelectPrefab)
+        {
+            // Background = 0, Value Text = 1, Title = 2, < = 3, > = 4, Value Box = 5, Button = 6
+            SettingsPatches.MultiSelectPrefab = Instantiate(SettingsPatches.StringPrefab, null).DontUnload().DontDestroy();
+            SettingsPatches.MultiSelectPrefab.name = "MultiSelectPrefab";
+            SettingsPatches.MultiSelectPrefab.PlusBtn.gameObject.SetActive(false);
+            SettingsPatches.MultiSelectPrefab.MinusBtn.gameObject.SetActive(false);
+
+            var toggle = Instantiate(SettingsPatches.TogglePrefab.GetComponentInChildren<PassiveButton>(), SettingsPatches.MultiSelectPrefab.transform);
+            toggle.name = "Button";
+            toggle.transform.DestroyChildren();
+            toggle.OverrideOnClickListeners(BlankVoid);
+
+            var box = toggle.GetComponent<BoxCollider2D>();
+            var prevColliderSize = box.size;
+            prevColliderSize.x *= 4.97f;
+            box.size = prevColliderSize;
+
+            prefabs.Add(SettingsPatches.MultiSelectPrefab);
+        }
+
+        if (!SettingsPatches.HeaderPrefab)
+        {
+            SettingsPatches.HeaderPrefab = Instantiate(settings.categoryHeaderOrigin).DontDestroy().DontUnload();
+            SettingsPatches.HeaderPrefab.name = "HeaderPrefab";
+            SettingsPatches.HeaderPrefab.transform.localScale = new(0.63f, 0.63f, 0.63f);
+            SettingsPatches.HeaderPrefab.Background.transform.localScale += new Vector3(0.7f, 0f, 0f);
+
+            var newButton = Instantiate(SettingsPatches.StringPrefab.PlusBtn, SettingsPatches.HeaderPrefab.transform);
+            newButton.transform.localScale *= 0.7f;
+            newButton.transform.localPosition = new(3.2f, -0.18f, 0f);
+            newButton.OverrideOnClickListeners(BlankVoid);
+            newButton.name = "Collapse";
+
+            prefabs.Add(SettingsPatches.HeaderPrefab);
+        }
+
+        var roles = menu.RoleSettingsTab;
+
+        if (!SettingsPatches.LayersPrefab)
+        {
+            // Title = 0, Role # = 1, Chance % = 2, Background = 3, Divider = 4, Cog = 5, Unique = 6, Active = 7
+            //            ┗-----------┗----------- Value = 0, - = 1, + = 2, Value Box = 3 ┗-----------┗--------- Checkbox = 0
+            SettingsPatches.LayersPrefab = Instantiate(roles.roleOptionSettingOrigin).DontDestroy().DontUnload();
+            SettingsPatches.LayersPrefab.name = "LayersPrefab";
+            SettingsPatches.LayersPrefab.titleText.alignment = TextAlignmentOptions.Left;
+            SettingsPatches.LayersPrefab.role = null;
+            SettingsPatches.LayersPrefab.transform.GetChild(0).localPosition += new Vector3(-0.1f, 0f, 0f);
+
+            SettingsPatches.LayersPrefab.CountMinusBtn.OverrideOnClickListeners(BlankVoid);
+            SettingsPatches.LayersPrefab.CountPlusBtn.OverrideOnClickListeners(BlankVoid);
+            SettingsPatches.LayersPrefab.ChanceMinusBtn.OverrideOnClickListeners(BlankVoid);
+            SettingsPatches.LayersPrefab.ChancePlusBtn.OverrideOnClickListeners(BlankVoid);
+
+            var label = SettingsPatches.LayersPrefab.transform.GetChild(3);
+            label.localScale += new Vector3(0.001f, 0f, 0f); // WHY THE FUCK IS THE BACKGROUND EVER SO SLIGHTLY SMALLER THAN THE HEADER?!
+            label.localPosition = new(-0.3998f, -0.2953f, 4f);
+
+            var newButton = Instantiate(SettingsPatches.LayersPrefab.CountMinusBtn, SettingsPatches.LayersPrefab.transform);
+            newButton.name = "LayerSubSettingsButton";
+            newButton.transform.localPosition = new(0.4719f, -0.2982f, -2f);
+            newButton.transform.FindChild("Text_TMP").gameObject.Destroy();
+            newButton.transform.FindChild("ButtonSprite").GetComponent<SpriteRenderer>().sprite = GetSprite("Cog");
+            newButton.OverrideOnClickListeners(BlankVoid);
+
+            var check = settings.checkboxOrigin.transform.GetChild(1);
+
+            var unique = Instantiate(check, SettingsPatches.LayersPrefab.transform);
+            unique.name = "Unique";
+            unique.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
+            unique.transform.localScale = new(0.6f, 0.6f, 1f);
+
+            var active = Instantiate(check, SettingsPatches.LayersPrefab.transform);
+            active.name = "Active";
+            active.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
+            active.transform.localScale = new(0.6f, 0.6f, 1f);
+
+            prefabs.Add(SettingsPatches.LayersPrefab);
+        }
+
+        if (!SettingsPatches.AlignmentPrefab)
+        {
+            // Header Label = 0, Header Text = 1, Quota Header = 2, Collapse = 3, Cog = 4
+            //                                    ┗---------------- Dark Label = 0, Left = 1, Left Label = 2, Right Label = 3, Right = 4, Long Label = 5, Center = 6
+            SettingsPatches.AlignmentPrefab = Instantiate(roles.categoryHeaderEditRoleOrigin).DontDestroy().DontUnload();
+            SettingsPatches.AlignmentPrefab.name = "AlignmentPrefab";
+            SettingsPatches.AlignmentPrefab.transform.GetChild(0).gameObject.SetActive(false);
+
+            var quota = SettingsPatches.AlignmentPrefab.transform.GetChild(2);
+
+            var single = Instantiate(quota.GetChild(3), quota);
+            single.localScale += new Vector3(0.5f, 0f, 0f);
+            single.localPosition += new Vector3(-0.956f, 0f, 0f);
+            single.name = "SingleBG";
+
+            var text = quota.GetChild(1);
+            text.GetComponent<TextTranslatorTMP>().Destroy();
+
+            var center = Instantiate(text, quota);
+            center.name = "Center";
+            center.GetComponent<TextTranslatorTMP>().Destroy();
+
+            var newButton = Instantiate(SettingsPatches.LayersPrefab.CountMinusBtn, SettingsPatches.AlignmentPrefab.transform);
+            newButton.name = "Collapse";
+            newButton.transform.localPosition = new(-5.839f, -0.45f, -2f);
+            newButton.GetComponentInChildren<TextMeshPro>().text = "-";
+            newButton.OverrideOnClickListeners(BlankVoid);
+            newButton.transform.localScale *= 0.7f;
+
+            var newButton2 = Instantiate(SettingsPatches.LayersPrefab.transform.GetChild(5), SettingsPatches.AlignmentPrefab.transform);
+            newButton2.name = "SubOptions";
+            newButton2.transform.FindChild("Text_TMP").gameObject.Destroy();
+            newButton2.transform.localPosition = new(-5.239f, -0.45f, -2f);
+            newButton2.transform.localScale *= 0.7f;
+
+            prefabs.Add(SettingsPatches.AlignmentPrefab);
+        }
+
+        foreach (var mono in prefabs)
+        {
+            foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
+            {
+                obj.material.SetInt(PlayerMaterial.MaskLayer, 20);
+                obj.material.SetFloat(StencilComp, 3f);
+                obj.material.SetFloat(Stencil, 20);
+                obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            }
+
+            foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
+            {
+                obj.fontMaterial.SetFloat(StencilComp, 3f);
+                obj.fontMaterial.SetFloat(Stencil, 20);
+            }
+
+            mono.gameObject.SetActive(false);
+        }
     }
 
     public void Update()
     {
+        if (!HudManager.InstanceExists)
+            return;
+
         var hud = HUD();
 
         if (Input.GetKeyDown(KeyCode.Escape) && !ActiveTask() && !MapBehaviourPatches.MapActive)
-            hud.SettingsButton?.GetComponent<PassiveButton>()?.OnClick?.Invoke();
+            hud?.SettingsButton?.GetComponent<PassiveButton>()?.OnClick?.Invoke();
 
-        if (IsHnS() || !CustomPlayer.Local || !ButtonsParent)
+        if (IsHnS() || !CustomPlayer.Local)
             return;
 
         ResetButtonPos();
-        var part2 = hud.MapButton.isActiveAndEnabled && !IntroCutscene.Instance && ActiveTask() is not HauntMenuMinigame && !GameSettingMenu.Instance && !PlayerCustomizationMenu.Instance &&
-            !Meeting();
+        var part2 = !ActiveTask()?.TryCast<HauntMenuMinigame>() && !GameSettingMenu.Instance && !PlayerCustomizationMenu.Instance && !Meeting();
         WikiRcButton.gameObject.SetActive(part2);
         ClientOptionsButton.gameObject.SetActive(part2 && !RoleCardActive);
-        ZoomButton.gameObject.SetActive(CustomPlayer.Local.HasDied() && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && !RoleCardActive);
-        hud.MapButton.gameObject.SetActive(IsInGame());
+        hud!.MapButton.gameObject.SetActive(IsInGame());
+        ZoomButton.gameObject.SetActive(hud.MapButton.isActiveAndEnabled && CustomPlayer.Local.HasDied() && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && !RoleCardActive);
 
         if (PhoneText)
         {
@@ -157,7 +387,7 @@ public class ClientHandler : MonoBehaviour
             return;
 
         var part = !RoleCardActive && !SettingsActive && !Zooming && !MapBehaviourPatches.MapActive && !WikiActive && !IsCustomHnS() && !GameSettingMenu.Instance;
-        hud.TaskPanel?.gameObject?.SetActive(part && !Meeting() && !IsCustomHnS());
+        hud?.TaskPanel?.gameObject?.SetActive(part && !Meeting() && !IsCustomHnS());
         TaskBar?.gameObject?.SetActive(part && GameSettings.TaskBarMode != TBMode.Invisible);
     }
 
@@ -254,7 +484,6 @@ public class ClientHandler : MonoBehaviour
             return;
         }
 
-        SettingsPatches.SettingsPage = 5;
         CustomPlayer.Local.NetTransform.Halt();
         var currentMenu = Instantiate(Prefab, Camera.main!.transform, false);
         currentMenu.transform.localPosition = Pos;

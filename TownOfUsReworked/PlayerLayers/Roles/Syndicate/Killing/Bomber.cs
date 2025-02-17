@@ -30,8 +30,8 @@ public class Bomber : Syndicate
     [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
     public static Number ChaosDriveBombRange = 0.5f;
 
-    public CustomButton BombButton { get; set; }
-    public CustomButton DetonateButton { get; set; }
+    private CustomButton BombButton { get; set; }
+    private CustomButton DetonateButton { get; set; }
     public List<Bomb> Bombs { get; } = [];
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Bomber : FactionColor;
@@ -59,14 +59,14 @@ public class Bomber : Syndicate
 
     public override void BeforeMeeting()
     {
-        if (BombsDetonateOnMeetingStart)
-        {
-            Bombs.ForEach(x => x.Detonate());
-            Bombs.Clear();
-        }
+        if (!BombsDetonateOnMeetingStart)
+            return;
+
+        Bombs.ForEach(x => x.Detonate());
+        Bombs.Clear();
     }
 
-    public void Place()
+    private void Place()
     {
         Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
         BombButton.StartCooldown();
@@ -78,7 +78,7 @@ public class Bomber : Syndicate
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BomberActionsRPC.DropBomb);
     }
 
-    public void Detonate()
+    private void Detonate()
     {
         Bombs.ForEach(x => x.Detonate());
         Bombs.Clear();
@@ -91,7 +91,7 @@ public class Bomber : Syndicate
         Play("Bomb");
     }
 
-    public bool Condition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
+    private bool Condition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 
     public override void ReadRPC(MessageReader reader)
     {

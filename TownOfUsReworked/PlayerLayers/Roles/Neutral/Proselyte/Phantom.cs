@@ -7,7 +7,7 @@ public class Phantom : Neutral, IGhosty
     public static Number PhantomTasksRemaining = 5;
 
     [ToggleOption]
-    public static bool PhantomPlayersAlerted = false;
+    private static bool PhantomPlayersAlerted = false;
 
     public bool Caught { get; set; }
     public bool Faded { get; set; }
@@ -31,11 +31,11 @@ public class Phantom : Neutral, IGhosty
         if (TasksLeft == PhantomTasksRemaining && PhantomPlayersAlerted && !Caught)
             Flash(Color);
 
-        if (AmongUsClient.Instance.AmHost && TasksDone && Faithful)
-        {
-            WinState = WinLose.PhantomWins;
-            CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
-        }
+        if (!AmongUsClient.Instance.AmHost || !TasksDone || !Faithful)
+            return;
+
+        WinState = WinLose.PhantomWins;
+        CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
     }
 
     public override void UpdatePlayer() => (this as IGhosty).UpdateGhost();

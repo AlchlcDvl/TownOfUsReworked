@@ -16,15 +16,16 @@ public class Actor : Evil
     public static bool ActSwitchVent = false;
 
     [NumberOption(1, 5, 1)]
-    public static Number ActorRoleCount = 3;
+    private static Number ActorRoleCount = 3;
+
+    private static bool Failed => !Ability.GetAssassins().Any(x => x.Alive);
 
     public bool Guessed { get; set; }
     public List<Role> PretendRoles { get; } = [];
-    public bool Failed => !Ability.GetAssassins().Any(x => x.Alive);
-    public CustomButton PretendButton { get; set; }
+    private CustomButton PretendButton { get; set; }
     public int Rounds { get; set; }
-    public bool TargetFailed => !Targeted && Rounds > 0;
-    public bool Targeted { get; set; }
+    private bool TargetFailed => !Targeted && Rounds > 0;
+    public bool Targeted { get; private set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Actor : FactionColor;
     public override LayerEnum Type => LayerEnum.Actor;
@@ -32,7 +33,7 @@ public class Actor : Evil
     public override Func<string> Description => () => !Targeted ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you will kill your guesser";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => Guessed;
-    public override WinLose EndState => WinLose.ActorWins;
+    protected override WinLose EndState => WinLose.ActorWins;
 
     protected override void Init()
     {
@@ -57,7 +58,7 @@ public class Actor : Evil
         return text;
     }
 
-    public void PickRole(PlayerControl target)
+    private void PickRole(PlayerControl target)
     {
         FillRoles(target);
         CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, PretendRoles);
@@ -159,7 +160,7 @@ public class Actor : Evil
         newRole.RoleUpdate(this);
     }
 
-    public bool Usable() => !Targeted;
+    private bool Usable() => !Targeted;
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -168,14 +169,14 @@ public class Actor : Evil
         if ((TargetFailed || (Targeted && Failed)) && !Dead)
         {
             var allRoles = GetLayers<Role>();
-            var target = GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not LayerEnum.Phantom or LayerEnum.Revealer or LayerEnum.Banshee or LayerEnum.Ghoul or LayerEnum.Actor or
-                LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Sidekick or LayerEnum.Mafioso or LayerEnum.Betrayer or LayerEnum.Amnesiac && !allRoles.Any(y => y.Type == x))
+            var target = GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not (LayerEnum.Phantom or LayerEnum.Revealer or LayerEnum.Banshee or LayerEnum.Ghoul or LayerEnum.Actor or
+                    LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Sidekick or LayerEnum.Mafioso or LayerEnum.Betrayer or LayerEnum.Amnesiac) && allRoles.All(y => y.Type != x))
                     .Random(LayerEnum.Amnesiac);
 
             if (target == LayerEnum.Amnesiac)
             {
-                var targetList = (TargetFailed ? allRoles : PretendRoles).Where(x => x.Type is not LayerEnum.Phantom or LayerEnum.Revealer or LayerEnum.Banshee or LayerEnum.Ghoul or
-                    LayerEnum.Actor or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Sidekick or LayerEnum.Mafioso);
+                var targetList = (TargetFailed ? allRoles : PretendRoles).Where(x => x.Type is not (LayerEnum.Phantom or LayerEnum.Revealer or LayerEnum.Banshee or LayerEnum.Ghoul or
+                    LayerEnum.Actor or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Sidekick or LayerEnum.Mafioso));
                 target = (targetList.Random(x => x.Dead) ?? targetList.Random())?.Type ?? LayerEnum.Amnesiac;
             }
 

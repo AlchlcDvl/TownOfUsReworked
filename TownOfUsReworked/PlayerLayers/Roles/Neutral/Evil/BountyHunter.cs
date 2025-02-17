@@ -7,36 +7,35 @@ public class BountyHunter : Evil
     public static bool BountyHunterCanPickTargets = false;
 
     [NumberOption(0, 15, 1, zeroIsInf: true)]
-    public static Number BountyHunterGuesses = 5;
+    private static Number BountyHunterGuesses = 5;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number GuessCd = 25;
+    private static Number GuessCd = 25;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number BHHuntCd = 25;
+    private static Number BhHuntCd = 25;
 
     [ToggleOption]
-    public static bool BHVent = false;
+    public static bool BhVent = false;
 
     [ToggleOption]
-    public static bool BHToTroll = true;
+    private static bool BhToTroll = true;
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetKilled { get; set; }
-    public bool ColorHintGiven { get; set; }
-    public bool RoleHintGiven { get; set; }
-    public bool TargetFound { get; set; }
-    public CustomButton GuessButton { get; set; }
-    public CustomButton HuntButton { get; set; }
-    public CustomButton RequestButton { get; set; }
-    public PlayerControl RequestingPlayer { get; set; }
+    private bool ColorHintGiven { get; set; }
+    private bool RoleHintGiven { get; set; }
+    private bool TargetFound { get; set; }
+    private CustomButton GuessButton { get; set; }
+    private CustomButton HuntButton { get; set; }
+    private CustomButton RequestButton { get; set; }
+    private PlayerControl RequestingPlayer { get; set; }
     public PlayerControl TentativeTarget { get; set; }
-    public bool Failed => (!TargetPlayer && Rounds > 2) || (!GuessButton.Usable() && !TargetFound) || (!TargetKilled && TargetPlayer && TargetPlayer.HasDied());
+    private bool Failed => (!TargetPlayer && Rounds > 2) || (!GuessButton.Usable() && !TargetFound) || (!TargetKilled && TargetPlayer && TargetPlayer.HasDied());
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private List<string> Letters { get; } = [];
-    public bool CanHunt => TargetPlayer && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !NeutralSettings.AvoidNeutralKingmakers));
-    public bool CanRequest => RequestingPlayer.HasDied() && !TargetPlayer;
+    private bool CanHunt => TargetPlayer && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !NeutralSettings.AvoidNeutralKingmakers));
     public bool Assigned { get; set; }
     public int Rounds { get; set; }
 
@@ -48,7 +47,7 @@ public class BountyHunter : Evil
         " become a <#678D36FF>Troll</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetKilled;
-    public override WinLose EndState => WinLose.BountyHunterWins;
+    protected override WinLose EndState => WinLose.BountyHunterWins;
 
     protected override void Init()
     {
@@ -57,7 +56,7 @@ public class BountyHunter : Evil
         TargetPlayer = null;
         GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);
-        HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(BHHuntCd), "HUNT", (UsableFunc)Usable2);
+        HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(BhHuntCd), "HUNT", (UsableFunc)Usable2);
         Letters.Clear();
     }
 
@@ -70,10 +69,10 @@ public class BountyHunter : Evil
         }
     }
 
-    public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.GetRole().Requesting || (player.Is(SubFaction) && SubFaction !=
+    private bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.GetRole().Requesting || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
-    public void TurnTroll() => new Troll().RoleUpdate(this);
+    private void TurnTroll() => new Troll().RoleUpdate(this);
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
@@ -175,17 +174,17 @@ public class BountyHunter : Evil
             Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", something);
     }
 
-    public bool Usable1() => TargetPlayer && !CanHunt;
+    private bool Usable1() => TargetPlayer && !CanHunt;
 
-    public bool Usable2() => TargetPlayer && CanHunt;
+    private bool Usable2() => TargetPlayer && CanHunt;
 
-    public bool Usable3() => Requesting;
+    private bool Usable3() => Requesting;
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (Failed && !Dead && !BHToTroll)
+        if (Failed && !Dead && !BhToTroll)
         {
             if (BountyHunterCanPickTargets)
             {
@@ -200,11 +199,11 @@ public class BountyHunter : Evil
 
     public override void UpdatePlayer()
     {
-        if (Failed && !Dead && BHToTroll)
+        if (Failed && !Dead && BhToTroll)
             TurnTroll();
     }
 
-    public void Request(PlayerControl target)
+    private void Request(PlayerControl target)
     {
         RequestingPlayer = target;
         var role = RequestingPlayer.GetRole();
@@ -222,7 +221,7 @@ public class BountyHunter : Evil
         role.Requestor = Player;
     }
 
-    public void Guess(PlayerControl target)
+    private void Guess(PlayerControl target)
     {
         TargetFound = target == TargetPlayer;
         Flash(TargetFound ? UColor.green : UColor.red);
@@ -232,7 +231,7 @@ public class BountyHunter : Evil
             HuntButton.StartCooldown();
     }
 
-    public void Hunt(PlayerControl target)
+    private void Hunt(PlayerControl target)
     {
         if (target != TargetPlayer && !TargetKilled)
         {

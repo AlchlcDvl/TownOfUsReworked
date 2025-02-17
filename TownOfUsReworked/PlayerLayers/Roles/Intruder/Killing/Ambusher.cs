@@ -13,7 +13,7 @@ public class Ambusher : Intruder, IAmbusher
     public static bool AmbushMates = false;
 
     public PlayerControl AmbushedPlayer { get; set; }
-    public CustomButton AmbushButton { get; set; }
+    public CustomButton AmbushButton { get; private set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Ambusher : FactionColor;
     public override LayerEnum Type => LayerEnum.Ambusher;
@@ -29,9 +29,9 @@ public class Ambusher : Intruder, IAmbusher
             new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);
     }
 
-    public void UnAmbush() => AmbushedPlayer = null;
+    private void UnAmbush() => AmbushedPlayer = null;
 
-    public void Ambush(PlayerControl target)
+    private void Ambush(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -45,10 +45,10 @@ public class Ambusher : Intruder, IAmbusher
             AmbushButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) || (!AmbushMates &&
+    private bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) || (!AmbushMates &&
         player.Is(SubFaction) && SubFaction != SubFaction.None);
 
-    public bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
+    private bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 
     public override void ReadRPC(MessageReader reader) => AmbushedPlayer = reader.ReadPlayer();
 }

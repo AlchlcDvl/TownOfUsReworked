@@ -4,10 +4,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Troll : Evil
 {
     [ToggleOption]
-    public static bool CanInteract = true;
+    private static bool CanInteract = true;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number InteractCd = 25;
+    private static Number InteractCd = 25;
 
     [ToggleOption]
     public static bool TrollVent = false;
@@ -16,7 +16,7 @@ public class Troll : Evil
     public static bool TrollSwitchVent = false;
 
     public bool Killed => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
-    public CustomButton InteractButton { get; set; }
+    private CustomButton InteractButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Troll : FactionColor;
     public override LayerEnum Type => LayerEnum.Troll;
@@ -25,7 +25,7 @@ public class Troll : Evil
         + "except spread infection and possibly kill you via touch sensitive roles" : "");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => Killed;
-    public override WinLose EndState => WinLose.TrollWins;
+    protected override WinLose EndState => WinLose.TrollWins;
 
     protected override void Init()
     {
@@ -43,7 +43,7 @@ public class Troll : Evil
             Player.MurderPlayer(killer, DeathReasonEnum.Trolled, false);
     }
 
-    public void Interact(PlayerControl target) => InteractButton.StartCooldown(Interactions.Interact(Player, target));
+    private void Interact(PlayerControl target) => InteractButton.StartCooldown(Interactions.Interact(Player, target));
 
-    public static bool Usable() => CanInteract;
+    private static bool Usable() => CanInteract;
 }

@@ -4,12 +4,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Murderer : NKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number MurderCd = 25;
+    private static Number MurderCd = 25;
 
     [ToggleOption]
     public static bool MurdVent = false;
 
-    public CustomButton MurderButton { get; set; }
+    private CustomButton MurderButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Murderer : FactionColor;
     public override LayerEnum Type => LayerEnum.Murderer;
@@ -26,8 +26,8 @@ public class Murderer : NKilling
             (PlayerBodyExclusion)Exception);
     }
 
-    public void Murder(PlayerControl target) => MurderButton.StartCooldown(Interact(Player, target, true));
+    private void Murder(PlayerControl target) => MurderButton.StartCooldown(Interact(Player, target, true));
 
-    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         Player.IsLinkedTo(player);
 }

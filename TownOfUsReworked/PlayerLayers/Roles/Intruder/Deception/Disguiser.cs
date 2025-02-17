@@ -21,12 +21,11 @@ public class Disguiser : Intruder
     [StringOption<DisguiserTargets>]
     public static DisguiserTargets DisguiseTarget = DisguiserTargets.Everyone;
 
-    public CustomButton DisguiseButton { get; set; }
-    public CustomButton MeasureButton { get; set; }
+    private CustomButton DisguiseButton { get; set; }
+    private CustomButton MeasureButton { get; set; }
     public PlayerControl MeasuredPlayer { get; set; }
     public PlayerControl CopiedPlayer { get; set; }
     public PlayerControl DisguisedPlayer { get; set; }
-    public bool Disguised => DisguiseButton.EffectActive;
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Disguiser : FactionColor;
     public override LayerEnum Type => LayerEnum.Disguiser;
@@ -46,16 +45,16 @@ public class Disguiser : Intruder
         CopiedPlayer = null;
     }
 
-    public void Disguise() => Morph(DisguisedPlayer, CopiedPlayer);
+    private void Disguise() => Morph(DisguisedPlayer, CopiedPlayer);
 
-    public void UnDisguise()
+    private void UnDisguise()
     {
         DefaultOutfit(DisguisedPlayer);
         DisguisedPlayer = null;
         CopiedPlayer = null;
     }
 
-    public void HitDisguise(PlayerControl target)
+    private void HitDisguise(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -73,7 +72,7 @@ public class Disguiser : Intruder
             MeasureButton.StartCooldown(cooldown);
     }
 
-    public void Measure(PlayerControl target)
+    private void Measure(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -86,14 +85,14 @@ public class Disguiser : Intruder
             DisguiseButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => Exception2(player) || (((player.Is(Faction) && DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) && DisguiseTarget
+    private bool Exception1(PlayerControl player) => Exception2(player) || (((player.Is(Faction) && DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) && DisguiseTarget
         == DisguiserTargets.Intruders)) && Faction is Faction.Intruder or Faction.Syndicate);
 
-    public bool Exception2(PlayerControl player) => player == MeasuredPlayer;
+    private bool Exception2(PlayerControl player) => player == MeasuredPlayer;
 
-    public bool Usable() => MeasuredPlayer;
+    private bool Usable() => MeasuredPlayer;
 
-    public bool EndEffect() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead;
+    private bool EndEffect() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead;
 
     public override void ReadRPC(MessageReader reader)
     {

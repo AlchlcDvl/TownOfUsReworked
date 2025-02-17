@@ -13,9 +13,9 @@ public class Enforcer : Intruder
     public static Number EnforceDelay = 5;
 
     [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
-    public static Number EnforceRadius = 1.5f;
+    private static Number EnforceRadius = 1.5f;
 
-    public CustomButton BombButton { get; set; }
+    private CustomButton BombButton { get; set; }
     public PlayerControl BombedPlayer { get; set; }
     public bool BombSuccessful { get; set; }
 
@@ -34,16 +34,16 @@ public class Enforcer : Intruder
             (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(EnforceDelay), (PlayerBodyExclusion)Exception1, new CanClickAgain(false), (EndFunc)EndEffect);
     }
 
-    public void BoomStart()
+    private void BoomStart()
     {
-        if (BombedPlayer.AmOwner && !Dead)
-        {
-            Flash(Color);
-            BombedPlayer.GetRole().Bombed = true;
-        }
+        if (!BombedPlayer.AmOwner || Dead)
+            return;
+
+        Flash(Color);
+        BombedPlayer.GetRole().Bombed = true;
     }
 
-    public void UnBoom()
+    private void UnBoom()
     {
         if (!BombSuccessful)
             Explode(BombedPlayer, Player);
@@ -64,7 +64,7 @@ public class Enforcer : Intruder
         enf.RpcMurderPlayer(centre, DeathReasonEnum.Bombed, false);
     }
 
-    public void Bomb(PlayerControl target)
+    private void Bomb(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -78,10 +78,10 @@ public class Enforcer : Intruder
             BombButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == BombedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction
+    private bool Exception1(PlayerControl player) => player == BombedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction
         != SubFaction.None) || Player.IsLinkedTo(player);
 
-    public bool EndEffect() => (BombedPlayer && BombedPlayer.HasDied()) || Dead || BombSuccessful;
+    private bool EndEffect() => (BombedPlayer && BombedPlayer.HasDied()) || Dead || BombSuccessful;
 
     public override void ReadRPC(MessageReader reader) => BombedPlayer = reader.ReadPlayer();
 }

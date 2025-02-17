@@ -9,6 +9,8 @@ public static class ModCompatibility
         SubLoaded = InitializeSubmerged();
         LiLoaded = InitializeLevelImpostor();
 
+        Application.add_logMessageReceived((Action<string, string, LogType>)RedirectLoggerPatch2.UnityLog);
+
         // TryCastMethod = AccessTools.Method(typeof(Il2CppObjectBase), nameof(Il2CppObjectBase.TryCast));
     }
 

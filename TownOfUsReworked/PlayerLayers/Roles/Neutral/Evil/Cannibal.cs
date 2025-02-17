@@ -4,26 +4,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Cannibal : Evil
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number EatCd = 25;
+    private static Number EatCd = 25;
 
     [NumberOption(1, 5, 1)]
-    public static Number BodiesNeeded = 2;
+    private static Number BodiesNeeded = 2;
 
     [ToggleOption]
-    public static bool EatArrows = false;
+    private static bool EatArrows = false;
 
     [NumberOption(0f, 15f, 1f, Format.Time)]
-    public static Number EatArrowDelay = 5;
+    private static Number EatArrowDelay = 5;
 
     [ToggleOption]
     public static bool CannibalVent = false;
 
-    public CustomButton EatButton { get; set; }
-    public int EatNeed { get; set; }
+    private CustomButton EatButton { get; set; }
+    private int EatNeed { get; set; }
     public bool Eaten { get; set; }
-    public Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
-    public bool EatWin => EatNeed == 0;
-    public bool CanEat => !Eaten || (Eaten && !NeutralSettings.AvoidNeutralKingmakers);
+    private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
+    private bool EatWin => EatNeed == 0;
+    private bool CanEat => !Eaten || (Eaten && !NeutralSettings.AvoidNeutralKingmakers);
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cannibal : FactionColor;
     public override LayerEnum Type => LayerEnum.Cannibal;
@@ -31,7 +31,7 @@ public class Cannibal : Evil
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their "
         + "body" : "");
     public override bool HasWon => EatWin;
-    public override WinLose EndState => WinLose.CannibalWins;
+    protected override WinLose EndState => WinLose.CannibalWins;
 
     protected override void Init()
     {
@@ -42,13 +42,10 @@ public class Cannibal : Evil
         EatButton ??= new(this, new SpriteName("Eat"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Eat, new Cooldown(EatCd), "EAT", (UsableFunc)Usable);
     }
 
-    public void DestroyArrow(byte targetPlayerId)
+    private void DestroyArrow(byte targetPlayerId)
     {
-        if (BodyArrows.TryGetValue(targetPlayerId, out var arrow))
-        {
+        if (BodyArrows.Remove(targetPlayerId, out var arrow))
             arrow.Destroy();
-            BodyArrows.Remove(targetPlayerId);
-        }
     }
 
     public override void ClearArrows()
@@ -58,7 +55,7 @@ public class Cannibal : Evil
         BodyArrows.Clear();
     }
 
-    public bool Usable() => CanEat;
+    private bool Usable() => CanEat;
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -68,12 +65,7 @@ public class Cannibal : Evil
             return;
 
         var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= EatArrowDelay));
-
-        foreach (var bodyArrow in BodyArrows.Keys)
-        {
-            if (!validBodies.Any(x => x.ParentId == bodyArrow))
-                DestroyArrow(bodyArrow);
-        }
+        BodyArrows.Keys.Where(bodyArrow => validBodies.All(x => x.ParentId != bodyArrow)).ForEach(DestroyArrow);
 
         foreach (var body in validBodies)
         {
@@ -82,7 +74,7 @@ public class Cannibal : Evil
         }
     }
 
-    public void Eat(DeadBody target)
+    private void Eat(DeadBody target)
     {
         Spread(Player, PlayerByBody(target));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
@@ -90,10 +82,10 @@ public class Cannibal : Evil
         EatNeed--;
         FadeBody(target);
 
-        if (EatWin && !Eaten)
-        {
-            Eaten = true;
-            CallRpc(CustomRPC.WinLose, WinLose.CannibalWins, this);
-        }
+        if (!EatWin || Eaten)
+            return;
+
+        Eaten = true;
+        CallRpc(CustomRPC.WinLose, WinLose.CannibalWins, this);
     }
 }

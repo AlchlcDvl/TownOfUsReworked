@@ -170,6 +170,9 @@ public static class PlayerControlPatches
         if (__instance.Data.Role is LayerHandler handler)
             handler.UponTaskComplete(idx);
 
+        if (!__instance.AmOwner)
+            return;
+
         var hud = HUD();
 
         if (!hud.TaskPanel)

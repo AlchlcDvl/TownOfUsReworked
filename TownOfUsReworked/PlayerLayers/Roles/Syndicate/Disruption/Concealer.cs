@@ -12,9 +12,9 @@ public class Concealer : Syndicate
     [ToggleOption]
     public static bool ConcealMates = false;
 
-    public CustomButton ConcealButton { get; set; }
+    private CustomButton ConcealButton { get; set; }
     public PlayerControl ConcealedPlayer { get; set; }
-    public CustomPlayerMenu ConcealMenu { get; set; }
+    private CustomPlayerMenu ConcealMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Concealer : FactionColor;
     public override LayerEnum Type => LayerEnum.Concealer;
@@ -28,10 +28,10 @@ public class Concealer : Syndicate
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;
         ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(ConcealCd), (EffectVoid)Conceal,
-            (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal);
+            (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal, (EndFunc)EndEffect);
     }
 
-    public void Conceal()
+    private void Conceal()
     {
         if (HoldsDrive)
             AllPlayers().ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
@@ -39,7 +39,7 @@ public class Concealer : Syndicate
             Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
     }
 
-    public void UnConceal()
+    private void UnConceal()
     {
         if (HoldsDrive)
             DefaultOutfitAll();
@@ -49,7 +49,7 @@ public class Concealer : Syndicate
         ConcealedPlayer = null;
     }
 
-    public void Click(PlayerControl player)
+    private void Click(PlayerControl player)
     {
         var cooldown = Interact(Player, player);
 
@@ -59,44 +59,41 @@ public class Concealer : Syndicate
             ConcealButton.StartCooldown(cooldown);
     }
 
-    public void HitConceal()
+    private void HitConceal()
     {
-        if (HoldsDrive)
+        if (HoldsDrive || ConcealedPlayer)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
+            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
+
+            if (ConcealedPlayer)
+                writer.Write(ConcealedPlayer.PlayerId);
+
+            writer.CloseRpc();
             ConcealButton.Begin();
         }
-        else if (!ConcealedPlayer)
-            ConcealMenu.Open();
         else
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton, ConcealedPlayer);
-            ConcealButton.Begin();
-        }
+            ConcealMenu.Open();
     }
 
-    public bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !ConcealMates && Faction is Faction.Intruder or Faction.Syndicate)
+    private bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !ConcealMates && Faction is Faction.Intruder or Faction.Syndicate)
         || (player.Is(SubFaction) && SubFaction != SubFaction.None && !ConcealMates);
 
-    public string Label() => ConcealedPlayer || HoldsDrive ? "CONCEAL" : "SET TARGET";
+    private string Label() => ConcealedPlayer || HoldsDrive ? "CONCEAL" : "SET TARGET";
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
 
-        if (HoldsDrive)
+        if (HoldsDrive || !KeyboardJoystick.player.GetButtonDown("Delete"))
             return;
 
-        if (KeyboardJoystick.player.GetButtonDown("Delete"))
-        {
-            if (ConcealedPlayer && !ConcealButton.EffectActive)
-                ConcealedPlayer = null;
+        if (ConcealedPlayer && !ConcealButton.EffectActive)
+            ConcealedPlayer = null;
 
-            Message("Removed a target");
-        }
+        Message("Removed a target");
     }
 
-    public bool EndEffect() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead);
+    private bool EndEffect() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead);
 
     public override void ReadRPC(MessageReader reader)
     {

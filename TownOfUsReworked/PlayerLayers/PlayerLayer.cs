@@ -14,7 +14,7 @@ public abstract class PlayerLayer : IPlayerLayer
     public string Name { get; protected set; }
     public PlayerControl Player { get; set; }
     public bool Winner { get; set; }
-    protected bool Ignore { get; set; }
+    protected bool Ignore { get; private set; }
 
     public bool Dead => Data?.IsDead ?? true;
     public bool Disconnected => Data?.Disconnected ?? true;

@@ -12,7 +12,7 @@ public class Wraith : Intruder
     [ToggleOption]
     public static bool WraithVent = false;
 
-    public CustomButton InvisButton { get; set; }
+    private CustomButton InvisButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Wraith : FactionColor;
     public override LayerEnum Type => LayerEnum.Wraith;
@@ -27,15 +27,15 @@ public class Wraith : Intruder
             new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
-    public void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
+    private void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
-    public void UnInvis() => DefaultOutfit(Player);
+    private void UnInvis() => DefaultOutfit(Player);
 
-    public void HitInvis()
+    private void HitInvis()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, InvisButton);
         InvisButton.Begin();
     }
 
-    public bool EndEffect() => Dead;
+    private bool EndEffect() => Dead;
 }

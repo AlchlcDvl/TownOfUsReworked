@@ -67,6 +67,8 @@ public static class VotePatches
         var allNums = new Dictionary<int, int>();
         __instance.TitleText.text = TranslationController.Instance.GetString(StringNames.MeetingVotingResults);
         var amountOfSkippedVoters = 0;
+        var ogValue = TownOfUsReworked.NormalOptions.AnonymousVotes;
+        TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting is AnonVotes.Enabled or AnonVotes.NonPolitician;
 
         for (var i = 0; i < __instance.playerStates.Length; i++)
         {
@@ -93,7 +95,6 @@ public static class VotePatches
             }
         }
 
-        var ogValue = TownOfUsReworked.NormalOptions.AnonymousVotes;
         TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting is AnonVotes.PoliticianOnly or AnonVotes.Enabled;
 
         foreach (var politician in PlayerLayer.GetLayers<Politician>())

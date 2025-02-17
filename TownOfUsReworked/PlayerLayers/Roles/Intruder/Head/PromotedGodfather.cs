@@ -22,7 +22,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     }
 
     // PromotedGodfather Stuff
-    public Role FormerRole { get; set; }
+    public Role FormerRole { get; init; }
 
     public override LayerEnum Type => LayerEnum.PromotedGodfather;
     public override Func<string> StartText => () => "Lead The <#FF1919FF>Intruders</color>";
@@ -35,8 +35,8 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         {
             if (ClientOptions.CustomIntColors)
                 return FormerRole?.Color ?? CustomColorManager.Godfather;
-            else
-                return CustomColorManager.Intruder;
+
+            return CustomColorManager.Intruder;
         }
     }
 
@@ -44,31 +44,31 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     {
         base.UpdateHud(__instance);
 
-        if (KeyboardJoystick.player.GetButtonDown("Delete"))
-        {
-            if (BlockTarget && !BlockButton.EffectActive && IsCons)
-                BlockTarget = null;
+        if (!KeyboardJoystick.player.GetButtonDown("Delete"))
+            return;
 
-            Message("Removed a target");
-        }
+        if (IsCons && BlockTarget && !BlockButton.EffectActive)
+            BlockTarget = null;
+
+        Message("Removed a target");
     }
 
     public void OnRoleSelected()
     {
-        if (IsBM)
+        if (IsBm)
         {
             BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(Blackmailer.BlackmailCd),
-                (PlayerBodyExclusion)BMException, (UsableFunc)BMUsable);
+                (PlayerBodyExclusion)BmException, (UsableFunc)BmUsable);
         }
         else if (IsCamo)
         {
-            CamouflageButton ??= new(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitCamouflage, (ConditionFunc)CamoCondition,
-                "CAMOUFLAGE", new Cooldown(Camouflager.CamouflageCd), new Duration(Camouflager.CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage, (UsableFunc)CamoUsable);
+            CamouflageButton ??= new(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitCamouflage, (ConditionFunc)Camouflager.Condition,
+                "CAMOUFLAGE", new Cooldown(Camouflager.CamouflageCd), new Duration(Camouflager.CamouflageDur), (EffectVoid)Camouflager.Camouflage, (EffectEndVoid)Camouflager.UnCamouflage, (UsableFunc)CamoUsable);
         }
         else if (IsGren)
         {
             FlashButton ??= new(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitFlash, new Cooldown(Grenadier.FlashCd), "FLASH",
-                (EffectVoid)Flash, new Duration(Grenadier.FlashDur), (EffectStartVoid)StartFlash, (EffectEndVoid)UnFlash, (ConditionFunc)GrenCondition, (UsableFunc)GrenUsable,
+                (EffectVoid)Flash, new Duration(Grenadier.FlashDur), (EffectStartVoid)StartFlash, (EffectEndVoid)UnFlash, (ConditionFunc)Grenadier.Condition, (UsableFunc)GrenUsable,
                 new CanClickAgain(false));
         }
         else if (IsJani)
@@ -199,16 +199,16 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     }
 
     // Impostor Stuff
-    public bool IsImp => FormerRole is Impostor;
+    // public bool IsImp => FormerRole is Impostor;
 
     // Blackmailer Stuff
-    public CustomButton BlackmailButton { get; set; }
+    private CustomButton BlackmailButton { get; set; }
     public bool ShookAlready { get; set; }
     public PlayerControl Target => BlackmailedPlayer;
     public PlayerControl BlackmailedPlayer { get; set; }
-    public bool IsBM => FormerRole is Blackmailer;
+    public bool IsBm => FormerRole is Blackmailer;
 
-    public void Blackmail(PlayerControl target)
+    private void Blackmail(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -224,46 +224,30 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         BlackmailButton.StartCooldown(cooldown);
     }
 
-    public bool BMException(PlayerControl player) => player == BlackmailedPlayer || (player.Is(SubFaction) && SubFaction != SubFaction.None && !Blackmailer.BlackmailMates) ||
+    private bool BmException(PlayerControl player) => player == BlackmailedPlayer || (player.Is(SubFaction) && SubFaction != SubFaction.None && !Blackmailer.BlackmailMates) ||
         (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !Blackmailer.BlackmailMates);
 
-    public bool BMUsable() => IsBM;
+    private bool BmUsable() => IsBm;
 
     // Camouflager Stuff
-    public CustomButton CamouflageButton { get; set; }
-    public bool IsCamo => FormerRole is Camouflager;
+    private CustomButton CamouflageButton { get; set; }
+    private bool IsCamo => FormerRole is Camouflager;
 
-    public void Camouflage()
-    {
-        HudHandler.Instance.GodfatherEnabled = true;
-        Utils.Camouflage();
-    }
-
-    public void UnCamouflage()
-    {
-        HudHandler.Instance.GodfatherEnabled = false;
-        DefaultOutfitAll();
-    }
-
-    public void HitCamouflage()
+    private void HitCamouflage()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, CamouflageButton);
         CamouflageButton.Begin();
     }
 
-    public bool CamoUsable() => IsCamo;
-
-    public bool CamoCondition() => !HudHandler.Instance.IsCamoed;
+    private bool CamoUsable() => IsCamo;
 
     // Grenadier Stuff
-    public CustomButton FlashButton { get; set; }
-    public IEnumerable<byte> FlashedPlayers { get; set; }
+    private CustomButton FlashButton { get; set; }
+    public IEnumerable<byte> FlashedPlayers { get; private set; }
     public bool IsGren => FormerRole is Grenadier;
 
-    public void Flash()
+    private void Flash()
     {
-        var hud = HUD();
-
         foreach (var id in FlashedPlayers)
         {
             var player = PlayerById(id);
@@ -282,15 +266,15 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     private bool ShouldPlayerBeDimmed(PlayerControl player) => player.HasDied() || (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None)) && !Meeting()) || player == Player || Meeting();
 
-    public void UnFlash() => FlashedPlayers = [];
+    private void UnFlash() => FlashedPlayers = [];
 
-    public void HitFlash()
+    private void HitFlash()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, FlashButton);
         FlashButton.Begin();
     }
 
-    public void StartFlash()
+    private void StartFlash()
     {
         FlashedPlayers = [ .. GetClosestPlayers(Player, Grenadier.FlashRadius, includeDead: true).Select(x => x.PlayerId), PlayerId];
 
@@ -298,18 +282,16 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             TransitionFlash(CustomColorManager.BlindVision, Grenadier.FlashDur, ShouldPlayerBeDimmed(CustomPlayer.Local) ? 0.4f : 1f);
     }
 
-    public bool GrenCondition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
-
-    public bool GrenUsable() => IsGren;
+    private bool GrenUsable() => IsGren;
 
     // Janitor Stuff
-    public CustomButton CleanButton { get; set; }
-    public CustomButton DragButton { get; set; }
-    public CustomButton DropButton { get; set; }
+    private CustomButton CleanButton { get; set; }
+    private CustomButton DragButton { get; set; }
+    private CustomButton DropButton { get; set; }
     public DeadBody CurrentlyDragging { get; set; }
     public bool IsJani => FormerRole is Janitor;
 
-    public void Clean(DeadBody target)
+    private void Clean(DeadBody target)
     {
         Spread(Player, PlayerByBody(target));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
@@ -320,7 +302,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             KillButton.StartCooldown();
     }
 
-    public void Drag(DeadBody target)
+    private void Drag(DeadBody target)
     {
         CurrentlyDragging = target;
         Spread(Player, PlayerByBody(CurrentlyDragging));
@@ -339,30 +321,30 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         DragButton.StartCooldown();
     }
 
-    public bool JaniUsable1() => !CurrentlyDragging && IsJani;
+    private bool JaniUsable1() => !CurrentlyDragging && IsJani;
 
-    public bool JaniUsable2() => CurrentlyDragging && IsJani;
+    private bool JaniUsable2() => CurrentlyDragging && IsJani;
 
-    public float JaniDifference() => Last(Faction) && Janitor.SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
+    private float JaniDifference() => !Dead && Last(Faction) && Janitor.SoloBoost ? -Underdog.UnderdogCdBonus : 0;
 
     // Disguiser Stuff
-    public CustomButton DisguiseButton { get; set; }
+    private CustomButton DisguiseButton { get; set; }
     public PlayerControl MeasuredPlayer { get; set; }
     public PlayerControl DisguisedPlayer { get; set; }
     public PlayerControl CopiedPlayer { get; set; }
-    public CustomButton MeasureButton { get; set; }
-    public bool IsDisg => FormerRole is Disguiser;
+    private CustomButton MeasureButton { get; set; }
+    private bool IsDisg => FormerRole is Disguiser;
 
-    public void Disguise() => Utils.Morph(DisguisedPlayer, CopiedPlayer);
+    private void Disguise() => Utils.Morph(DisguisedPlayer, CopiedPlayer);
 
-    public void UnDisguise()
+    private void UnDisguise()
     {
         DefaultOutfit(DisguisedPlayer);
         DisguisedPlayer = null;
         CopiedPlayer = null;
     }
 
-    public void HitDisguise(PlayerControl target)
+    private void HitDisguise(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -380,12 +362,12 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             MeasureButton.StartCooldown(cooldown);
     }
 
-    public bool DisgException(PlayerControl player) => MeasureException(player) || (((player.Is(Faction) && Disguiser.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction)
+    private bool DisgException(PlayerControl player) => MeasureException(player) || (((player.Is(Faction) && Disguiser.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction)
         && Disguiser.DisguiseTarget == DisguiserTargets.Intruders)) && Faction is Faction.Intruder or Faction.Syndicate);
 
-    public bool MeasureException(PlayerControl player) => player == MeasuredPlayer;
+    private bool MeasureException(PlayerControl player) => player == MeasuredPlayer;
 
-    public void Measure(PlayerControl target)
+    private void Measure(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -398,22 +380,22 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             DisguiseButton.StartCooldown(cooldown);
     }
 
-    public bool DisgUsable1() => IsDisg;
+    private bool DisgUsable1() => IsDisg;
 
-    public bool DisgUsable2() => IsDisg && MeasuredPlayer;
+    private bool DisgUsable2() => IsDisg && MeasuredPlayer;
 
-    public bool DisgEnd() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead;
+    private bool DisgEnd() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead;
 
     // Morphling Stuff
-    public CustomButton MorphButton { get; set; }
+    private CustomButton MorphButton { get; set; }
     public PlayerControl MorphedPlayer { get; set; }
     public PlayerControl SampledPlayer { get; set; }
-    public CustomButton SampleButton { get; set; }
+    private CustomButton SampleButton { get; set; }
     public bool IsMorph => FormerRole is Morphling;
 
-    public void Morph() => Utils.Morph(Player, MorphedPlayer);
+    private void Morph() => Utils.Morph(Player, MorphedPlayer);
 
-    public void UnMorph()
+    private void UnMorph()
     {
         MorphedPlayer = null;
         DefaultOutfit(Player);
@@ -422,14 +404,14 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             SampleButton.StartCooldown();
     }
 
-    public void HitMorph()
+    private void HitMorph()
     {
         MorphedPlayer = SampledPlayer;
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, MorphButton, MorphedPlayer);
         MorphButton.Begin();
     }
 
-    public void Sample(PlayerControl target)
+    private void Sample(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -442,54 +424,54 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             MorphButton.StartCooldown(cooldown);
     }
 
-    public bool MorphException(PlayerControl player) => player == SampledPlayer;
+    private bool MorphException(PlayerControl player) => player == SampledPlayer;
 
-    public bool MorphUsable1() => IsMorph;
+    private bool MorphUsable1() => IsMorph;
 
-    public bool MorphUsable2() => SampledPlayer && IsMorph;
+    private bool MorphUsable2() => SampledPlayer && IsMorph;
 
-    public bool MorphEnd() => Dead;
+    private bool MorphEnd() => Dead;
 
     // Wraith Stuff
-    public CustomButton InvisButton { get; set; }
+    private CustomButton InvisButton { get; set; }
     public bool IsWraith => FormerRole is Wraith;
 
-    public void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
+    private void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
-    public void UnInvis() => DefaultOutfit(Player);
+    private void UnInvis() => DefaultOutfit(Player);
 
-    public void HitInvis()
+    private void HitInvis()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, InvisButton);
         InvisButton.Begin();
     }
 
-    public bool InvisEnd() => Dead;
+    private bool InvisEnd() => Dead;
 
-    public bool WraithUsable() => IsWraith;
+    private bool WraithUsable() => IsWraith;
 
     // Miner Stuff
-    public CustomButton MineButton { get; set; }
+    private CustomButton MineButton { get; set; }
     public List<Vent> Vents { get; } = [];
-    public bool IsMiner => FormerRole is Miner;
+    private bool IsMiner => FormerRole is Miner;
 
-    public void Mine()
+    private void Mine()
     {
         RpcSpawnVent(this);
         MineButton.StartCooldown();
     }
 
-    public bool MineCondition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5))
-        && Player.moveable && !GetPlayerElevator(Player).IsInElevator && !Vents.Any(x => x.transform.position == Player.transform.position);
+    private bool MineCondition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5))
+        && Player.moveable && !GetPlayerElevator(Player).IsInElevator && Vents.All(x => x.transform.position != Player.transform.position);
 
-    public bool MinerUsable() => IsMiner;
+    private bool MinerUsable() => IsMiner;
 
     // Consigliere Stuff
     public List<byte> Investigated { get; } = [];
-    public CustomButton InvestigateButton { get; set; }
+    private CustomButton InvestigateButton { get; set; }
     public bool IsConsig => FormerRole is Consigliere;
 
-    public void Investigate(PlayerControl target)
+    private void Investigate(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -499,20 +481,20 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         InvestigateButton.StartCooldown(cooldown);
     }
 
-    public bool ConsigException(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
+    private bool ConsigException(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None)) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) &&
         Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 
-    public bool ConsigUsable() => IsConsig;
+    private bool ConsigUsable() => IsConsig;
 
     // Teleporter Stuff
-    public CustomButton TeleportButton { get; set; }
+    private CustomButton TeleportButton { get; set; }
     public Vector2 TeleportPoint { get; set; }
-    public CustomButton MarkButton { get; set; }
+    private CustomButton MarkButton { get; set; }
     public bool Moving { get; set; }
     public bool IsTele => FormerRole is Teleporter;
 
-    public void Mark()
+    private void Mark()
     {
         TeleportPoint = Player.transform.position;
         MarkButton.StartCooldown();
@@ -521,7 +503,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             TeleportButton.StartCooldown();
     }
 
-    public void Teleport()
+    private void Teleport()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GfActionsRPC.Teleport, TeleportPoint);
         Coroutines.Start(Teleporter.TeleportPlayer(TeleportPoint, this));
@@ -531,23 +513,23 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             MarkButton.StartCooldown();
     }
 
-    public bool MarkCondition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5))
+    private bool MarkCondition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5))
         && Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != (Vector2)Player.transform.position;
 
-    public bool TeleUsable1() => IsTele;
+    private bool TeleUsable1() => IsTele;
 
-    public bool TeleUsable2() => IsTele && TeleportPoint != Vector2.zero;
+    private bool TeleUsable2() => IsTele && TeleportPoint != Vector2.zero;
 
-    public bool TeleCondition() => (Vector2)Player.transform.position != TeleportPoint && !Moving;
+    private bool TeleCondition() => (Vector2)Player.transform.position != TeleportPoint && !Moving;
 
     // Ambusher Stuff
     public PlayerControl AmbushedPlayer { get; set; }
-    public CustomButton AmbushButton { get; set; }
+    public CustomButton AmbushButton { get; private set; }
     public bool IsAmb => FormerRole is Ambusher;
 
-    public void UnAmbush() => AmbushedPlayer = null;
+    private void UnAmbush() => AmbushedPlayer = null;
 
-    public void Ambush(PlayerControl target)
+    private void Ambush(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -561,23 +543,23 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             AmbushButton.StartCooldown(cooldown);
     }
 
-    public bool AmbushException(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !Ambusher.AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool AmbushException(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !Ambusher.AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !Ambusher.AmbushMates);
 
-    public bool AmbUsable() => IsAmb;
+    private bool AmbUsable() => IsAmb;
 
-    public bool AmbEnd() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
+    private bool AmbEnd() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 
     // Consort Stuff
-    public CustomButton BlockButton { get; set; }
+    private CustomButton BlockButton { get; set; }
     public PlayerControl BlockTarget { get; set; }
-    public CustomPlayerMenu BlockMenu { get; set; }
-    public bool IsCons => FormerRole is Consort;
+    private CustomPlayerMenu BlockMenu { get; set; }
+    private bool IsCons => FormerRole is Consort;
 
-    public bool ConsException(PlayerControl player) => player == BlockTarget || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool ConsException(PlayerControl player) => player == BlockTarget || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
-    public void UnBlock()
+    private void UnBlock()
     {
         if (BlockTarget.AmOwner)
             BlockExposed = false;
@@ -585,13 +567,13 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         BlockTarget = null;
     }
 
-    public void BlockStart()
+    private void BlockStart()
     {
         if (BlockTarget.AmOwner)
             CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
     }
 
-    public void ConsClick(PlayerControl player)
+    private void ConsClick(PlayerControl player)
     {
         var cooldown = Interact(Player, player);
 
@@ -601,7 +583,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             BlockButton.StartCooldown(cooldown);
     }
 
-    public void Roleblock()
+    private void Roleblock()
     {
         if (!BlockTarget)
             BlockMenu.Open();
@@ -612,31 +594,31 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         }
     }
 
-    public bool ConsUsable() => IsCons;
+    private bool ConsUsable() => IsCons;
 
-    public string ConsLabel() => BlockTarget ? "ROLEBLOCK" : "SET TARGET";
+    private string ConsLabel() => BlockTarget ? "ROLEBLOCK" : "SET TARGET";
 
-    public bool BlockEnd() => (BlockTarget && BlockTarget.HasDied()) || Dead;
+    private bool BlockEnd() => (BlockTarget && BlockTarget.HasDied()) || Dead;
 
     // Enforcer Stuff
-    public CustomButton BombButton { get; set; }
+    private CustomButton BombButton { get; set; }
     public PlayerControl BombedPlayer { get; set; }
     public bool BombSuccessful { get; set; }
-    public bool IsEnf => FormerRole is Enforcer;
+    private bool IsEnf => FormerRole is Enforcer;
 
-    public bool EnfException(PlayerControl player) => player == BombedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+    private bool EnfException(PlayerControl player) => player == BombedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
 
-    public void BoomStart()
+    private void BoomStart()
     {
-        if (BombedPlayer.AmOwner && !Dead)
-        {
-            Utils.Flash(Color);
-            BombedPlayer.GetRole().Bombed = true;
-        }
+        if (!BombedPlayer.AmOwner || Dead)
+            return;
+
+        Utils.Flash(Color);
+        BombedPlayer.GetRole().Bombed = true;
     }
 
-    public void UnBoom()
+    private void UnBoom()
     {
         if (!BombSuccessful)
             Enforcer.Explode(BombedPlayer, Player);
@@ -646,7 +628,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         BombSuccessful = false;
     }
 
-    public void Bomb(PlayerControl target)
+    private void Bomb(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -660,7 +642,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             BombButton.StartCooldown(cooldown);
     }
 
-    public bool EnfUsable() => IsEnf;
+    private bool EnfUsable() => IsEnf;
 
-    public bool BoomEnd() => (BombedPlayer && BombedPlayer.HasDied()) || Dead || BombSuccessful;
+    private bool BoomEnd() => (BombedPlayer && BombedPlayer.HasDied()) || Dead || BombSuccessful;
 }

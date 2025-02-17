@@ -4,9 +4,9 @@ namespace TownOfUsReworked.RoleGen;
 
 public class DispositionGen : BaseGen
 {
-    public static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
-    public static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
-    public static readonly LayerEnum[] NeutralDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
+    private static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
+    private static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
+    private static readonly LayerEnum[] NeutralDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
 
     public override void Clear() => AllDispositions.Clear();
 
@@ -44,32 +44,28 @@ public class DispositionGen : BaseGen
         while (playerList.Any() && AllDispositions.Any())
         {
             var id = AllDispositions.TakeFirst().ID;
-            PlayerControl assigned = null;
-
-            if (LoverRival.Contains(id) && playerList.Count > 1)
-                assigned = playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester or Shifter));
-            else if (CrewDisp.Contains(id))
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Crew));
-            else if (NeutralDisp.Contains(id))
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Neutral));
-            else if (id == LayerEnum.Allied)
-                assigned = playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Neutral));
-            else if (id == LayerEnum.Mafia && playerList.Count > 1)
-                assigned = playerList.FirstOrDefault();
-            else if (id == LayerEnum.Defector && playerList.Count > 1)
-                assigned = playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate));
-
-            if (assigned)
+            var assigned = id switch
             {
-                playerList.Remove(assigned);
-                playerList.Shuffle();
-                AllDispositions.Shuffle();
+                LayerEnum.Mafia when playerList.Count > 1 => playerList.FirstOrDefault(),
+                LayerEnum.Defector => playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate)),
+                LayerEnum.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Neutral)),
+                _ when LoverRival.Contains(id) && playerList.Count > 1 => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester or Shifter)),
+                _ when CrewDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),
+                _ when NeutralDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Neutral)),
+                _ => null
+            };
 
-                if (!assigned.GetDisposition())
-                    Gen(assigned, id, PlayerLayerEnum.Disposition);
-                else
-                    invalid.Add(id);
-            }
+            if (!assigned)
+                continue;
+
+            playerList.Remove(assigned);
+            playerList.Shuffle();
+            AllDispositions.Shuffle();
+
+            if (!assigned.GetDisposition())
+                Gen(assigned, id, PlayerLayerEnum.Disposition);
+            else
+                invalid.Add(id);
         }
 
         if (TownOfUsReworked.MciActive && invalid.Any())

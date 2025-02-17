@@ -22,8 +22,6 @@ public static class GameStates
 
     public static bool IsFreePlay() => AmongUsClient.Instance?.NetworkMode == NetworkModes.FreePlay;
 
-    public static bool IsMeeting() => IsInGame() && Meeting();
-
     public static bool IsAllAny() => GameModeSettings.GameMode == GameMode.AllAny;
 
     public static bool IsClassic() => GameModeSettings.GameMode == GameMode.Classic;
@@ -34,7 +32,7 @@ public static class GameStates
 
     public static bool IsCustomHnS() => GameModeSettings.GameMode == GameMode.HideAndSeek;
 
-    public static bool NoLobby() => !(IsInGame() || IsLobby() || IsEnded() || IsMeeting());
+    public static bool NoLobby() => !(IsInGame() || IsLobby() || IsEnded() || Meeting());
 
     public static bool Last(Faction faction) => AllPlayers().Count(x => x.Is(faction) && !x.HasDied()) == 1;
 

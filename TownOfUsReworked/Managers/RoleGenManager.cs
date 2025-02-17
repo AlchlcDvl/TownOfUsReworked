@@ -189,7 +189,6 @@ public static class RoleGenManager
         if (LayerDictionary.TryGetValue(id, out var dictEntry))
             return (PlayerLayer)Activator.CreateInstance(dictEntry.LayerType);
 
-        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
         return rpc switch
         {
             PlayerLayerEnum.Role => new Roleless(),
@@ -295,7 +294,7 @@ public static class RoleGenManager
             }
 
             Message($"| {"Name".PadCenter(maxName)} | {"Role".PadCenter(maxRole)} | {"Disposition".PadCenter(maxDisp)} | {"Modifier".PadCenter(maxMod)} | {"Ability".PadCenter(maxAb)} |");
-            Message($"| {new string('-', maxName)} | {new string('-', maxRole)} | {new string('-', maxDisp)} | {new string('-', maxMod)} | {new string('-', maxAb)} |");
+            Message($"| {new('-', maxName)} | {new('-', maxRole)} | {new('-', maxDisp)} | {new('-', maxMod)} | {new('-', maxAb)} |");
 
             foreach (var player in allPlayers)
             {
@@ -381,8 +380,6 @@ public static class RoleGenManager
         Convertible = 0;
 
         RecentlyKilled.Clear();
-
-        SettingsPatches.SettingsPage = 0;
 
         Assassin.RemainingKills = Assassin.AssassinKills == 0 ? 10000 : Assassin.AssassinKills;
 

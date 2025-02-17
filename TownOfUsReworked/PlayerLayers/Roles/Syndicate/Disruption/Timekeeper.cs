@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Timekeeper : Syndicate
+public class Timekeeper : Syndicate, ITimeLord
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number TimeCd = 25;
@@ -15,9 +15,9 @@ public class Timekeeper : Syndicate
     [ToggleOption]
     public static bool TimeRewindImmunity = true;
 
-    public static bool TKExists { get; set; }
+    public static bool TkExists { get; private set; }
 
-    public CustomButton TimeButton { get; set; }
+    public CustomButton TimeButton { get; private set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Timekeeper : FactionColor;
     public override LayerEnum Type => LayerEnum.Timekeeper;
@@ -31,30 +31,30 @@ public class Timekeeper : Syndicate
         Alignment = Alignment.Disruption;
         TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
             (EffectEndVoid)UnControl, new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart);
-        TKExists = true;
+        TkExists = true;
     }
 
     protected override void Deinit()
     {
         base.Deinit();
-        TKExists = false;
+        TkExists = false;
     }
 
-    public void ControlStart() => Flash(Color, TimeDur);
+    private void ControlStart() => Flash(Color, TimeDur);
 
-    public void Control()
+    private void Control()
     {
         if (HoldsDrive)
             AllPlayers().ForEach(x => x.GetRole().Rewinding = true);
     }
 
-    public void UnControl() => AllPlayers().ForEach(x => x.GetRole().Rewinding = false);
+    public static void UnControl() => AllPlayers().ForEach(x => x.GetRole().Rewinding = false);
 
-    public void TimeControl()
+    private void TimeControl()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, TimeButton);
         TimeButton.Begin();
     }
 
-    public string Label() => HoldsDrive ? "REWIND" : "FREEZE";
+    private string Label() => HoldsDrive ? "REWIND" : "FREEZE";
 }
