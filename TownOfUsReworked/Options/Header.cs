@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : BaseHeaderOptionAttribute(menu, CustomOptionType.Header, priority)
 {
     private TextMeshPro ButtonText { get; set; }
@@ -28,7 +27,7 @@ public class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : BaseHead
         Button.SelectButton(Value);
     }
 
-    public override void Toggle()
+    public void Toggle()
     {
         Value = !Get();
 

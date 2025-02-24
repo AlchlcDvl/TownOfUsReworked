@@ -50,39 +50,41 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
         return behaviour;
     }
 
-    protected virtual void TrySetValue(T value)
+    protected virtual void TrySetValue(T value, out MultiSelectValue<T> newValue)
     {
+        newValue = Value;
+
         if (value.Equals(AllValue))
         {
-            var contained = Value.Contains(value);
-            Value.Clear();
-            Value.Add(contained ? NoneValue : AllValue);
+            var contained = newValue.Contains(value);
+            newValue.Clear();
+            newValue.Add(contained ? NoneValue : AllValue);
         }
         else if (value.Equals(NoneValue))
         {
-            Value.Clear();
-            Value.Add(NoneValue);
+            newValue.Clear();
+            newValue.Add(NoneValue);
         }
         else
         {
-            if (Value.Contains(value))
-                Value.Remove(value);
+            if (newValue.Contains(value))
+                newValue.Remove(value);
             else
-                Value.Add(value);
+                newValue.Add(value);
 
-            if (Value.Count == 0)
-                Value.Add(NoneValue);
+            if (newValue.Count == 0)
+                newValue.Add(NoneValue);
             else
-                Value.Remove(NoneValue);
+                newValue.Remove(NoneValue);
 
-            Value.Remove(AllValue);
+            newValue.Remove(AllValue);
         }
     }
 
     private void SetValue(T value)
     {
-        TrySetValue(value);
-        Set(Value);
+        TrySetValue(value, out var newValue);
+        Set(newValue);
         Buttons.ForEach((x, y) => x.CheckMark.enabled = Value.Contains(y));
     }
 

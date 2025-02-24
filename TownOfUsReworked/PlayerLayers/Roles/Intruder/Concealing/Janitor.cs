@@ -59,7 +59,7 @@ public class Janitor : Intruder, IDragger
         CurrentlyDragging = target;
         Spread(Player, PlayerByBody(CurrentlyDragging));
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CurrentlyDragging);
-        DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
+        DragHandler.StartDrag(Player, CurrentlyDragging);
     }
 
     public void Drop()
@@ -68,21 +68,21 @@ public class Janitor : Intruder, IDragger
             return;
 
         CallRpc(CustomRPC.Action, ActionsRPC.Drop, Player);
-        DragHandler.Instance.StopDrag(Player);
+        DragHandler.StopDrag(Player);
         CurrentlyDragging = null;
         DragButton.StartCooldown();
     }
 
-    private bool Usable1() => !DragHandler.Instance.Dragging.ContainsKey(PlayerId);
+    private bool Usable1() => !DragHandler.Dragging.ContainsKey(PlayerId);
 
-    private bool Usable2() => DragHandler.Instance.Dragging.ContainsKey(PlayerId);
+    private bool Usable2() => DragHandler.Dragging.ContainsKey(PlayerId);
 
     private float Difference() => Last(Faction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
     public override void ReadRPC(MessageReader reader)
     {
         CurrentlyDragging = reader.ReadBody();
-        DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
+        DragHandler.StartDrag(Player, CurrentlyDragging);
     }
 
     public override void Kill(PlayerControl target)

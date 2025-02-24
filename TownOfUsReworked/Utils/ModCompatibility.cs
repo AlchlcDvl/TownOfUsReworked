@@ -1,4 +1,4 @@
-﻿namespace TownOfUsReworked.Classes;
+﻿namespace TownOfUsReworked.Utils;
 
 public static class ModCompatibility
 {
@@ -21,7 +21,7 @@ public static class ModCompatibility
     public static bool SubLoaded { get; private set; }
     private static BasePlugin SubPlugin { get; set; }
     private static Assembly SubAssembly { get; set; }
-    private static Type[] SubTypes { get; set; }
+    private static Dictionary<string, Type> SubTypes { get; set; }
 
     public static bool IsSubmerged() => SubLoaded && Ship() && Ship().Type == SubmergedMapType && MapPatches.CurrentMap == 6;
 
@@ -61,62 +61,62 @@ public static class ModCompatibility
             Message(SubVersion);
 
             SubAssembly = SubPlugin!.GetType().Assembly;
-            SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly);
+            SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly).ToDictionary(x => x.Name, x => x);
 
-            var submarineStatusType = SubTypes.First(t => t.Name == "SubmarineStatus");
+            var submarineStatusType = SubTypes["SubmarineStatus"];
             SubmergedInstanceField = AccessTools.Field(submarineStatusType, "instance");
             SubmergedElevatorsField = AccessTools.Field(submarineStatusType, "elevators");
 
-            var floorHandlerType = SubTypes.First(t => t.Name == "FloorHandler");
+            var floorHandlerType = SubTypes["FloorHandler"];
             GetFloorHandlerMethod = AccessTools.Method(floorHandlerType, "GetFloorHandler", [ typeof(PlayerControl) ]);
             RpcRequestChangeFloorMethod = AccessTools.Method(floorHandlerType, "RpcRequestChangeFloor");
             RegisterFloorOverrideMethod = AccessTools.Method(floorHandlerType, "RegisterFloorOverride");
 
-            var ventPatchDataType = SubTypes.First(t => t.Name == "VentPatchData");
+            var ventPatchDataType = SubTypes["VentPatchData"];
             InTransitionProperty = AccessTools.Property(ventPatchDataType, "InTransition");
 
-            var customTaskTypesType = SubTypes.First(t => t.Name == "CustomTaskTypes");
+            var customTaskTypesType = SubTypes["CustomTaskTypes"];
             var retrieveOxygenMaskField = AccessTools.Field(customTaskTypesType, "RetrieveOxygenMask");
             var retTaskTypeField = AccessTools.Field(customTaskTypesType, "taskType");
             RetrieveOxygenMask = retTaskTypeField.GetValue<TaskTypes>(retrieveOxygenMaskField.GetValue(null));
 
-            var submarineOxygenSystemType = SubTypes.First(t => t.Name == "SubmarineOxygenSystem");
+            var submarineOxygenSystemType = SubTypes["SubmarineOxygenSystem"];
             SubmarineOxygenSystemInstanceProperty = AccessTools.Property(submarineOxygenSystemType, "Instance");
             RepairDamageMethod = AccessTools.Method(submarineOxygenSystemType, "RepairDamage");
 
-            var submergedExileControllerType = SubTypes.First(t => t.Name == "SubmergedExileController");
+            var submergedExileControllerType = SubTypes["SubmergedExileController"];
             var submergedExileWrapUpMethod = AccessTools.Method(submergedExileControllerType, "WrapUpAndSpawn");
 
-            var submarineElevatorType = SubTypes.First(t => t.Name == "SubmarineElevator");
+            var submarineElevatorType = SubTypes["SubmarineElevator"];
             GetInElevatorMethod = AccessTools.Method(submarineElevatorType, "GetInElevator", [ typeof(PlayerControl) ]);
             GetMovementStageFromTimeMethod = AccessTools.Method(submarineElevatorType, "GetMovementStageFromTime");
             GetSubElevatorSystemField = AccessTools.Field(submarineElevatorType, "system");
 
-            var submarineElevatorSystemType = SubTypes.First(t => t.Name == "SubmarineElevatorSystem");
+            var submarineElevatorSystemType = SubTypes["SubmarineElevatorSystem"];
             UpperDeckIsTargetFloorField = AccessTools.Field(submarineElevatorSystemType, "upperDeckIsTargetFloor");
 
-            SpawnInStateType = SubTypes.First(t => t.Name == "SpawnInState");
+            SpawnInStateType = SubTypes["SpawnInState"];
 
-            var subSpawnSystemType = SubTypes.First(t => t.Name == "SubmarineSpawnInSystem");
+            var subSpawnSystemType = SubTypes["SubmarineSpawnInSystem"];
             var getReadyPlayerAmountMethod = AccessTools.Method(subSpawnSystemType, "GetReadyPlayerAmount");
             CurrentStateField = AccessTools.Field(subSpawnSystemType, "currentState");
 
-            var elevatorConsoleType = SubTypes.First(t => t.Name == "ElevatorConsole");
+            var elevatorConsoleType = SubTypes["ElevatorConsole"];
             var canUseMethod = AccessTools.Method(elevatorConsoleType, "CanUse");
 
-            var submarineSelectSpawnType = SubTypes.First(t => t.Name == "SubmarineSelectSpawn");
+            var submarineSelectSpawnType = SubTypes["SubmarineSelectSpawn"];
             var startMethod = AccessTools.Method(submarineSelectSpawnType, "Start");
 
-            var customPlayerDataType = SubTypes.First(t => t.Name == "CustomPlayerData");
+            var customPlayerDataType = SubTypes["CustomPlayerData"];
             var hasMapGetter = AccessTools.PropertyGetter(customPlayerDataType, "HasMap");
 
             // Why do the following patches even exist in submerged??
-            var lightFlickerPatchesType = SubTypes.First(x => x.Name == "LightFlickerPatches");
+            var lightFlickerPatchesType = SubTypes["LightFlickerPatches"];
             var patch1 = AccessTools.Method(lightFlickerPatchesType, "CantClickDeadBodyPatch");
             var patch2 = AccessTools.Method(lightFlickerPatchesType, "CantClickReportButtonPatch");
             var patch3 = AccessTools.Method(lightFlickerPatchesType, "DontShowReportButtonPatch");
 
-            var showReportButtonDisabledPatchesType = SubTypes.First(x => x.Name == "ShowReportButtonDisabledPatches");
+            var showReportButtonDisabledPatchesType = SubTypes["ShowReportButtonDisabledPatches"];
             var patch4 = AccessTools.Method(showReportButtonDisabledPatchesType, "DontShowReportButtonPatch");
 
             var compatType = typeof(ModCompatibility);
@@ -180,11 +180,11 @@ public static class ModCompatibility
 
         // Fade to clear
         // True is top, false is bottom
-        var topfloortarget = UpperDeckIsTargetFloorField.GetValue<bool>(GetSubElevatorSystemField.GetValue(elevator));
-        var topintendedtarget = player.transform.position.y > -7f;
+        var topFloorTarget = UpperDeckIsTargetFloorField.GetValue<bool>(GetSubElevatorSystemField.GetValue(elevator));
+        var topIntendedTarget = player.transform.position.y > -7f;
 
-        if (topfloortarget != topintendedtarget)
-            ChangeFloor(!topintendedtarget);
+        if (topFloorTarget != topIntendedTarget)
+            ChangeFloor(!topIntendedTarget);
     }
 
     public static (bool IsInElevator, object Elevator) GetPlayerElevator(PlayerControl player)
@@ -239,13 +239,12 @@ public static class ModCompatibility
         __instance.myPlayer.gameObject.layer = 8;
     }
 
-    public static Component AddSubmergedComponent(this GameObject obj, string typeName)
+    public static void AddSubmergedComponent(this GameObject obj, string typeName)
     {
-        if (!IsSubmerged())
-            return obj.AddComponent<MissingBehaviour>();
-
-        var type = SubTypes.Find(x => x.Name == typeName);
-        return type == null ? obj.AddComponent<MissingBehaviour>() : obj.AddComponent(Il2CppType.From(type));
+        if (!IsSubmerged() || !SubTypes.TryGetValue(typeName, out var type) || type == null)
+            obj.AddComponent<MissingBehaviour>();
+        else
+            obj.AddComponent(Il2CppType.From(type));
     }
 
     public static void ChangeFloor(bool toUpper)
@@ -308,7 +307,7 @@ public static class ModCompatibility
     public static bool LiLoaded { get; private set; }
     private static BasePlugin LiPlugin { get; set; }
     private static Assembly LiAssembly { get; set; }
-    private static Type[] LiTypes { get; set; }
+    private static Dictionary<string, Type> LiTypes { get; set; }
 
     // public static bool IsLevelImpostor() => LiLoaded && Ship() && Ship().Type == LiMapType && MapPatches.CurrentMap == 7;
 
@@ -326,9 +325,9 @@ public static class ModCompatibility
             Message(LiVersion);
 
             LiAssembly = LiPlugin!.GetType().Assembly;
-            LiTypes = AccessTools.GetTypesFromAssembly(LiAssembly);
+            LiTypes = AccessTools.GetTypesFromAssembly(LiAssembly).ToDictionary(x => x.Name, x => x);
 
-            var triggerConsoleType = LiTypes.First(x => x.Name == "TriggerConsole");
+            var triggerConsoleType = LiTypes["TriggerConsole"];
             var canUseMethod = AccessTools.Method(triggerConsoleType, "CanUse");
 
             var compatType = typeof(ModCompatibility);
@@ -351,19 +350,5 @@ public static class ModCompatibility
 
     private static readonly string[] Unsupported = [ "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI" ];
 
-    public static bool CheckAbort(out string mod)
-    {
-        mod = "";
-
-        foreach (var unsupp in Unsupported)
-        {
-            if (!File.Exists(Path.Combine(TownOfUsReworked.ModsFolder, $"{unsupp}.dll")))
-                continue;
-
-            mod = unsupp;
-            return true;
-        }
-
-        return false;
-    }
+    public static bool CheckAbort(out string mod) => Unsupported.TryFinding(x => File.Exists(Path.Combine(TownOfUsReworked.ModsFolder, $"{x}.dll")), out mod);
 }

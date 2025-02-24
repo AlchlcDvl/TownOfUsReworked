@@ -184,7 +184,7 @@ public static class LayerExtensions
         return result;
     }
 
-    public static bool IsFaithful(this PlayerControl player) => player.GetRole()?.Faithful ?? false;
+    // public static bool IsFaithful(this PlayerControl player) => player.GetRole()?.Faithful ?? false;
 
     public static bool IsBlackmailed(this PlayerControl player) => PlayerLayer.GetILayers<IBlackmailer>().Any(role => role.BlackmailedPlayer == player);
 
@@ -247,7 +247,7 @@ public static class LayerExtensions
 
     public static bool CrewSided(this PlayerControl player) => player.Is(Faction.Crew) && !player.Is<Crew>();
 
-    public static bool Last(PlayerControl player) => Classes.GameStates.Last(player.GetFaction());
+    public static bool Last(PlayerControl player) => Utils.GameStates.Last(player.GetFaction());
 
     public static bool CanKill(this PlayerControl player)
     {
@@ -282,7 +282,7 @@ public static class LayerExtensions
     {
         var result = 1f;
 
-        if (player.HasDied() || Lobby() || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
+        if (player.HasDied() || Lobby() || (Hud.Instance.IsCamoed && BetterSabotages.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
             return result;
 
         if (IntroCutscene.Instance)
@@ -298,7 +298,7 @@ public static class LayerExtensions
         else if (player.TryGetLayer<Drunk>(out var drunk))
             result *= drunk.Modify;
 
-        if (DragHandler.Instance.Dragging.ContainsKey(player.PlayerId))
+        if (DragHandler.Dragging.ContainsKey(player.PlayerId))
             result *= Janitor.DragModifier;
 
         if (PlayerLayer.GetILayers<IDrunkard>().Any(x => x.ConfuseButton?.EffectActive == true && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))))
@@ -337,7 +337,7 @@ public static class LayerExtensions
         if (Ship()?.Systems?.TryGetValue(SystemTypes.MushroomMixupSabotage, out var sab) == true && sab.TryCast<MushroomMixupSabotageSystem>(out var mixup) && mixup.IsActive)
             return 1f;
 
-        if (Lobby() || (HudHandler.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
+        if (Lobby() || (Hud.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
 
         if (player.Is<Dwarf>())
@@ -397,111 +397,127 @@ public static class LayerExtensions
 
         if (!playerRole)
             mainflag = playerInfo.IsImpostor();
-        else if (playerRole is Hunter)
-            mainflag = GameModeSettings.HunterVent;
-        else if (playerRole is Hunted or Runner) {}
-        else if (player.Is<Mafia>())
-            mainflag = Mafia.MafVent;
-        else if (player.Is<Corrupted>())
-            mainflag = Corrupted.CorruptedVent;
-        else if (playerRole.SubFaction != SubFaction.None && playerRole.Alignment != Alignment.Neophyte)
+        else switch (playerRole)
         {
-            mainflag = playerRole.SubFaction switch
+            case Hunter:
+                mainflag = GameModeSettings.HunterVent;
+                break;
+            case Hunted or Runner:
+                break;
+            default:
             {
-                SubFaction.Undead => Dracula.UndeadVent,
-                SubFaction.Cabal => Jackal.RecruitVent,
-                SubFaction.Reanimated => Necromancer.ResurrectVent,
-                SubFaction.Cult => Whisperer.PersuadedVent,
-                _ => false
-            };
-        }
-        else if (playerRole is Syndicate syn)
-            mainflag = (syn.HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
-        else if (playerRole is Intruder && IntruderSettings.IntrudersVent)
-        {
-            switch (playerRole)
-            {
-                case Janitor jani:
+                if (player.Is<Mafia>())
+                    mainflag = Mafia.MafVent;
+                else if (player.Is<Corrupted>())
+                    mainflag = Corrupted.CorruptedVent;
+                else if (playerRole.SubFaction != SubFaction.None && playerRole.Alignment != Alignment.Neophyte)
                 {
-                    mainflag = (int)Janitor.JanitorVentOptions is 3 || (jani.CurrentlyDragging && (int)Janitor.JanitorVentOptions is 1) || (!jani.CurrentlyDragging &&
-                        (int)Janitor.JanitorVentOptions is 2);
-                    break;
-                }
-                case PromotedGodfather { IsJani: true } gf:
-                {
-                    mainflag = (int)Janitor.JanitorVentOptions is 3 || (gf.CurrentlyDragging && (int)Janitor.JanitorVentOptions is 1) || (!gf.CurrentlyDragging &&
-                        (int)Janitor.JanitorVentOptions is 2);
-                    break;
-                }
-                case PromotedGodfather { IsMorph: true }:
-                {
-                    mainflag = Morphling.MorphlingVent;
-                    break;
-                }
-                case PromotedGodfather { IsWraith: true }:
-                {
-                    mainflag = Wraith.WraithVent;
-                    break;
-                }
-                case PromotedGodfather { IsGren: true }:
-                {
-                    mainflag = Grenadier.GrenadierVent;
-                    break;
-                }
-                case PromotedGodfather { IsTele: true }:
-                {
-                    mainflag = Teleporter.TeleVent;
-                    break;
-                }
-                case PromotedGodfather:
-                {
-                    mainflag = true;
-                    break;
-                }
-                default:
-                {
-                    if ((playerRole is not Morphling || Morphling.MorphlingVent) && (playerRole is not Wraith || Wraith.WraithVent) && (playerRole is not Grenadier || Grenadier.GrenadierVent) &&
-                        (playerRole is not Teleporter || Teleporter.TeleVent))
+                    mainflag = playerRole.SubFaction switch
                     {
-                        mainflag = true;
-                    }
-
-                    break;
+                        SubFaction.Undead => Dracula.UndeadVent,
+                        SubFaction.Cabal => Jackal.RecruitVent,
+                        SubFaction.Reanimated => Necromancer.ResurrectVent,
+                        SubFaction.Cult => Whisperer.PersuadedVent,
+                        _ => false
+                    };
                 }
+                else switch (playerRole)
+                {
+                    case Syndicate syn:
+                        mainflag = (syn.HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
+                        break;
+                    case Intruder when IntruderSettings.IntrudersVent:
+                        switch (playerRole)
+                        {
+                            case Janitor jani:
+                            {
+                                mainflag = (int)Janitor.JanitorVentOptions is 3 || (jani.CurrentlyDragging && (int)Janitor.JanitorVentOptions is 1) || (!jani.CurrentlyDragging &&
+                                    (int)Janitor.JanitorVentOptions is 2);
+                                break;
+                            }
+                            case PromotedGodfather { IsJani: true } gf:
+                            {
+                                mainflag = (int)Janitor.JanitorVentOptions is 3 || (gf.CurrentlyDragging && (int)Janitor.JanitorVentOptions is 1) || (!gf.CurrentlyDragging &&
+                                    (int)Janitor.JanitorVentOptions is 2);
+                                break;
+                            }
+                            case PromotedGodfather { IsMorph: true }:
+                            {
+                                mainflag = Morphling.MorphlingVent;
+                                break;
+                            }
+                            case PromotedGodfather { IsWraith: true }:
+                            {
+                                mainflag = Wraith.WraithVent;
+                                break;
+                            }
+                            case PromotedGodfather { IsGren: true }:
+                            {
+                                mainflag = Grenadier.GrenadierVent;
+                                break;
+                            }
+                            case PromotedGodfather { IsTele: true }:
+                            {
+                                mainflag = Teleporter.TeleVent;
+                                break;
+                            }
+                            case PromotedGodfather:
+                            {
+                                mainflag = true;
+                                break;
+                            }
+                            default:
+                            {
+                                if ((playerRole is not Morphling || Morphling.MorphlingVent) && (playerRole is not Wraith || Wraith.WraithVent) && (playerRole is not Grenadier || Grenadier.GrenadierVent) &&
+                                    (playerRole is not Teleporter || Teleporter.TeleVent))
+                                {
+                                    mainflag = true;
+                                }
+
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                    {
+                        if (player.Is(Faction.Crew) || playerRole is Crew)
+                            mainflag = CrewSettings.CrewVent == CrewVenting.Always || ((CrewSettings.CrewVent == CrewVenting.OnTasksDone || player.Is<Tunneler>()) && playerRole.TasksDone);
+                        else if ((playerRole.Faction is Faction.Neutral || playerRole is Neutral) && NeutralSettings.NeutralsVent)
+                        {
+                            mainflag = playerRole switch
+                            {
+                                SerialKiller sk => SerialKiller.SkVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SkVentOptions == 1) || (!sk.BloodlustButton.EffectActive &&
+                                    (int)SerialKiller.SkVentOptions == 2),
+                                Werewolf ww => Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 2),
+                                Murderer => Murderer.MurdVent,
+                                Glitch => Glitch.GlitchVent,
+                                Juggernaut => Juggernaut.JuggVent,
+                                Pestilence => Pestilence.PestVent,
+                                Jester => Jester.JesterVent,
+                                Plaguebearer => Plaguebearer.PbVent,
+                                Arsonist => Arsonist.ArsoVent,
+                                Executioner => Executioner.ExeVent,
+                                Cannibal => Cannibal.CannibalVent,
+                                Dracula => Dracula.DracVent,
+                                Survivor => Survivor.SurvVent,
+                                Actor => Actor.ActorVent,
+                                GuardianAngel => GuardianAngel.GaVent,
+                                Amnesiac => Amnesiac.AmneVent,
+                                Jackal => Jackal.JackalVent,
+                                BountyHunter => BountyHunter.BhVent,
+                                Betrayer => Betrayer.BetrayerVent,
+                                Thief => Thief.ThiefVent,
+                                Cryomaniac => Cryomaniac.CryoVent,
+                                Necromancer => Necromancer.NecroVent,
+                                Whisperer => Whisperer.WhispVent,
+                                _ => false
+                            };
+                        }
+                        break;
+                    }
+                }
+                break;
             }
-        }
-        else if (player.Is(Faction.Crew) || playerRole is Crew)
-            mainflag = CrewSettings.CrewVent == CrewVenting.Always || ((CrewSettings.CrewVent == CrewVenting.OnTasksDone || player.Is<Tunneler>()) && playerRole.TasksDone);
-        else if ((playerRole.Faction is Faction.Neutral || playerRole is Neutral) && NeutralSettings.NeutralsVent)
-        {
-            mainflag = playerRole switch
-            {
-                SerialKiller sk => SerialKiller.SkVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SkVentOptions == 1) || (!sk.BloodlustButton.EffectActive &&
-                    (int)SerialKiller.SkVentOptions == 2),
-                Werewolf ww => Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 2),
-                Murderer => Murderer.MurdVent,
-                Glitch => Glitch.GlitchVent,
-                Juggernaut => Juggernaut.JuggVent,
-                Pestilence => Pestilence.PestVent,
-                Jester => Jester.JesterVent,
-                Plaguebearer => Plaguebearer.PbVent,
-                Arsonist => Arsonist.ArsoVent,
-                Executioner => Executioner.ExeVent,
-                Cannibal => Cannibal.CannibalVent,
-                Dracula => Dracula.DracVent,
-                Survivor => Survivor.SurvVent,
-                Actor => Actor.ActorVent,
-                GuardianAngel => GuardianAngel.GaVent,
-                Amnesiac => Amnesiac.AmneVent,
-                Jackal => Jackal.JackalVent,
-                BountyHunter => BountyHunter.BhVent,
-                Betrayer => Betrayer.BetrayerVent,
-                Thief => Thief.ThiefVent,
-                Cryomaniac => Cryomaniac.CryoVent,
-                Necromancer => Necromancer.NecroVent,
-                Whisperer => Whisperer.WhispVent,
-                _ => false
-            };
         }
 
         return mainflag;
@@ -656,14 +672,6 @@ public static class LayerExtensions
         abilities = abilities == $"{AbilitiesColorString}Abilities:" ? "" : $"\n{abilities}</color>";
         var desc3 = modifier.Description();
 
-        foreach (var layer in info)
-        {
-            var attribute = layer.Attributes();
-
-            if (attribute != "- None")
-                attributes += $"\n{attribute}";
-        }
-
         if (info[1] && !modifier.Hidden && modifier.Type != LayerEnum.NoneModifier && desc3 is not ("" or "- None"))
             attributes += $"\n{modifier.ColorString}{desc3}</color>";
 
@@ -741,67 +749,23 @@ public static class LayerExtensions
 
     public static bool CanButton(this PlayerControl player, out string name)
     {
-        name = "Shy";
-        var result = !player.Is<Shy>() && player.RemainingEmergencies > 0;
         var role = player.GetRole();
         var ability = player.GetAbility();
-
-        if (role is Mayor)
+        (name, var result) = role switch
         {
-            name = "Mayor";
-            result = Mayor.MayorButton;
-        }
-        else if (role is Jester)
-        {
-            name = "Jester";
-            result = Jester.JesterButton;
-        }
-        else if (role is Actor)
-        {
-            name = "Actor";
-            result = Actor.ActorButton;
-        }
-        else if (role is Executioner)
-        {
-            name = "Executioner";
-            result = Executioner.ExecutionerButton;
-        }
-        else if (role is Guesser)
-        {
-            name = "Guesser";
-            result = Guesser.GuesserButton;
-        }
-        else if (role is Dictator)
-        {
-            name = "Dictator";
-            result = Dictator.DictatorButton;
-        }
-        else if (role is Monarch)
-        {
-            name = "Monarch";
-            result = Monarch.MonarchButton;
-        }
-        else if (player.IsKnighted())
-        {
-            name = "Knight";
-            result = Monarch.KnightButton;
-        }
-        else if (ability is Swapper)
-        {
-            name = "Swapper";
-            result = Swapper.SwapperButton;
-        }
-        else if (ability is Politician)
-        {
-            name = "Politician";
-            result = Politician.PoliticianButton;
-        }
-        else if (IsTaskRace() || IsCustomHnS())
-        {
-            name = "GameMode";
-            result = false;
-        }
-
+            Mayor => ("Mayor", Mayor.MayorButton),
+            Jester => ("Jester", Jester.JesterButton),
+            Actor => ("Actor", Actor.ActorButton),
+            Executioner => ("Executioner", Executioner.ExecutionerButton),
+            Guesser => ("Guesser", Guesser.GuesserButton),
+            Dictator => ("Dictator", Dictator.DictatorButton),
+            Monarch => ("Monarch", Monarch.MonarchButton),
+            _ when player.IsKnighted() => ("Knight", Monarch.KnightButton),
+            _ when ability is Swapper => ("Swapper", Swapper.SwapperButton),
+            _ when ability is Politician => ("Politician", Politician.PoliticianButton),
+            _ when IsTaskRace() || IsCustomHnS() => ("GameMode", false),
+            _ => ("Shy", !player.Is<Shy>() && player.RemainingEmergencies > 0)
+        };
         return result;
     }
 

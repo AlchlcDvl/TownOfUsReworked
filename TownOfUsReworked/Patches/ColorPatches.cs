@@ -68,14 +68,14 @@ public static class PlayerTabPatches
 public static class SetPlayerMaterialPatch1
 {
     [HarmonyPatch(nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
-    public static void Prefix(int colorId, Renderer rend) => ColorHandler.Instance.SetRend(rend, colorId);
+    public static void Prefix(int colorId, Renderer rend) => Colors.Instance.SetRend(rend, colorId);
 
     [HarmonyPatch(nameof(PlayerMaterial.SetColors), typeof(UColor), typeof(Renderer))]
-    public static void Prefix(Renderer rend, UColor color) => ColorHandler.Instance.SetRend(rend, color);
+    public static void Prefix(Renderer rend, UColor color) => Colors.Instance.SetRend(rend, color);
 }
 
 [HarmonyPatch(typeof(RoleEffectAnimation), nameof(RoleEffectAnimation.SetMaterialColor))]
 public static class SetPlayerMaterialPatch2
 {
-    public static void Prefix(RoleEffectAnimation __instance, int colorId) => ColorHandler.Instance.SetRend(__instance.Renderer, colorId);
+    public static void Prefix(RoleEffectAnimation __instance, int colorId) => Colors.Instance.SetRend(__instance.Renderer, colorId);
 }

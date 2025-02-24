@@ -41,13 +41,14 @@ public static class References
         get => BlockExposedPriv;
         set
         {
-            BlockExposedPriv = value;
             var material = GetMaterial("GlitchedMaterial");
 
             if (value)
-                CameraEffect.AddEffect(material);
+                CameraEffectHandler.AddEffect(material);
             else
-                CameraEffect.RemoveEffect(material);
+                CameraEffectHandler.RemoveEffect(material);
+
+            BlockExposedPriv = value;
         }
     }
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +
@@ -67,7 +68,7 @@ public static class References
     // public static readonly char[] Uppercase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
     public static readonly IEnumerable<Vector2> SkeldSpawns =
     [
-        new(-2.2f, 2.2f), // Cafeteria. bottom. top left
+        new(-2.2f, 2.2f), // Cafeteria. Bottom. Top left
         new(0.7f, 2.2f), // Cafeteria. button. top right
         new(-2.2f, -0.2f), // Cafeteria. button. bottom left
         new(0.7f, -0.2f), // Cafeteria. button. bottom right
@@ -148,14 +149,14 @@ public static class References
         new(28f, -21f), // Specimen hall bottom
         new(24f, -20.5f), // Admin tv
         new(22f, -25f), // Admin books
-        new(16.6f, -17.5f), // Office coffe
+        new(16.6f, -17.5f), // Office coffee
         new(22.5f, -16.5f), // Office projector
         new(24f, -17f), // Office figure
         new(27f, -16.5f), // Office lifelines
         new(32.7f, -15.7f), // Lava pool
-        new(31.5f, -12f), // Snowmad below lab
+        new(31.5f, -12f), // Snowman below lab
         new(10f, -14f), // Below storage
-        new(19f, -11f), // Storage toolrack
+        new(19f, -11f), // Storage tool rack
         new(12f, -7f), // Left fuel
         new(5f, -7.5f), // Above elec
         new(10f, -12f), // Elec fence

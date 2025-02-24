@@ -10,26 +10,26 @@
 - Addition: Added dark theme to the chat, which can be toggled in the client settings
 - Addition: Added a player mentioning system, where you can send a differently colored chat message to get a target's attention by adding #player ID or #player name (use brackets if the name has more than one word) to the message
 - Addition: Added the usage of some effect sounds
-- Addition: The role screen will now make use of the background bar to make up for the black space on the screen
+- Addition: The role screen will now use the background bar to make up for the black space on the screen
 - Addition: Added a scroll bar to the player colors menu
 - Addition: You can now overwrite setting presets if you want to
-- Addition: Added new multi select options and modified existing settings to match
-- Addition: Added a button in the lobby as host to cancel the start timer and not start the game
+- Addition: Added new multi-select options and modified existing settings to match
+- Addition: Added a button in the lobby for hosts to cancel the start timer and not start the game
 
 Changes!
-- Recode: Overhauled a lot of the code base in favour of optimisation and avoiding potential issues
-- Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a singular player to eject and have gained ability charges to compensate
+- Recode: Overhauled a lot of the codebase in favour of optimisation and avoiding potential issues
+- Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a single player to eject and have gained ability charges to compensate
 - Rework: Altruist and Necromancer now need to gain mana from bodies (thereby cleaning them) to be able to revive players
 - Change: Actor role change now has a priority system; it will prioritise roles that are not currently in game, followed by those that are dead and lastly any other role
-- Change: Arsonists, when igniting, will remove the coolant off those doused by a Cryomaniac
-- Change: Cryomaniacs, when freezing, will remove the gasoline off those doused by an Arsonist
+- Change: Arsonists, when igniting, will remove the coolant from those doused by a Cryomaniac
+- Change: Cryomaniacs, when freezing, will remove the gasoline from those doused by an Arsonist
 - Change: Player names will no longer appear in your vision until more of their body is exposed to your vision
 - Change: The "Pure Crew" is now a "Pure Player" game modifier, so it's no longer limited to just Crew roles (originally it was a band-aid fix for task completion issues; those were resolved ages ago)
 - Change: The /help command now also provides info on other commands if you specify a command name after it
-- Change: Dictators and Mayors cannot reveal themselves if there is another of the same role revealed, however unrevealed Dictators can still call a tribunal
-- Change: You can no longer report bodies in the dark, your report button will light
+- Change: Dictators and Mayors cannot reveal themselves if there is another of the same role revealed; however, unrevealed Dictators can still call a tribunal
+- Change: You can no longer report bodies in the dark; your report button will only light up if a body is within your current vision
 - Change: Teleporters now also have to go through an animation to teleport to maintain parity
-- Change: Drive holding Warpers will now play an animation for everyone before warping
+- Change: Drive-holding Warpers will now play an animation for everyone before warping
 - Change: Player vision is now more integral to the gameplay
 - Change: Button Barry now only fixes critical sabotages when calling a meeting
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
@@ -44,7 +44,7 @@ Changes!
 - Improvement: Involved the use of hashing algorithms so that assets remain up to date
 - Rename: The Sect subfaction has been renamed to the Cult
 - Removed: Removed the "Lobby Cap" toggle in the testing menu due to it not actually functioning and being too much of a hassle to actually get working
-- Removed: Removed Vampire Hunter as it's too hard of a counter to the Undead (and I couldn't really think of role names for the other sub faction counters)
+- Removed: Removed Vampire Hunter as it's too hard of a counter to the Undead (and I couldn't really think of role names for the other subfaction counters)
 - Removed: Custom and Killing Only as their functionalities have been merged into other modes
 
 Fixes!
@@ -52,7 +52,7 @@ Fixes!
 - Critical: Fixed Lovers, Linked and Rivals not having partners
 - Critical: Fixed Plaguebearer spawning twice
 - Critical: Greatly improved the stutter and FPS issues
-- Critical: Fixed a lot of options not being used like they should
+- Critical: Fixed a lot of options not being used as they should
 - Role: Fixed the Mayor and Dictator buttons not disappearing when they should
 - Role: Fixed the Measure button cooldown not resetting despite the linked cooldown setting
 - Role: Fixed Retributionist-Altruist revives not being networked between players
@@ -78,7 +78,7 @@ Fixes!
 - Visual: Fixed the visibility of options not being correctly altered based on toggle settings
 - Visual: Fixed the texts being misaligned the first time you open settings
 - General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
-- General: Fixed All Any role gen being a bit broken in some aspects
+- General: Fixed All Any role generation being a bit broken in some aspects
 - General: Fixed fake players not spawning in locations correctly on Airship and Submerged
 - General: Fixed some instances of layer assignment breaking
 - General: Fixed venting capabilities being incorrect for some roles and dispositions

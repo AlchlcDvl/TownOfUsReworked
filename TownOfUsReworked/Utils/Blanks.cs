@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Classes;
+namespace TownOfUsReworked.Utils;
 
 public static class Blanks
 {

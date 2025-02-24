@@ -2,11 +2,8 @@ namespace TownOfUsReworked.Monos;
 
 public class ColorHandler : MonoBehaviour
 {
-    public static ColorHandler Instance { get; private set; }
-    public readonly List<(int, Renderer)> IDToRends = [];
-    public readonly List<(UColor, Renderer)> ColorToRends = [];
-
-    public ColorHandler(IntPtr ptr) : base(ptr) => Instance = this;
+    private readonly List<(int, Renderer)> IDToRends = [];
+    private readonly List<(UColor, Renderer)> ColorToRends = [];
 
     public void SetRend(Renderer rend, int id)
     {

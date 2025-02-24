@@ -8,7 +8,7 @@ public class CustomRolesMenu(PlayerControl owner, RoleSelect click) : CustomMenu
 
     public List<LayerEnum> Mapping { get; } = [];
 
-    public void Clicked(ShapeshifterPanel selectedPanel, PlayerControl player, LayerEnum role)
+    private void Clicked(ShapeshifterPanel selectedPanel, PlayerControl player, LayerEnum role)
     {
         Click(selectedPanel, player, role);
         IsActive = false;

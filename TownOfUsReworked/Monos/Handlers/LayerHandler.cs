@@ -106,11 +106,11 @@ public class LayerHandler : RoleBehaviour
 
         foreach (var button in Buttons)
         {
-            if (button.HasUses)
-            {
-                button.UseCount++;
-                button.Max++;
-            }
+            if (!button.HasUses)
+                continue;
+
+            button.UseCount++;
+            button.Max++;
         }
     }
 
@@ -191,6 +191,8 @@ public class LayerHandler : RoleBehaviour
         CanVent = Player.CanVent();
         CanUseKillButton = Player.CanKill();
         AffectedByLightAffectors = !(CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate);
+
+        CustomLayers.ForEach(x => x.Handler = this);
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;

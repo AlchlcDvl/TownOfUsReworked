@@ -1,7 +1,6 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnassignedField.Global
-#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 namespace TownOfUsReworked.Options;
 
 // DO NOT OVERRIDE VALUES OF THE OPTION PROPERTIES ANYWHERE IN THE CODE, OR ELSE THE OPTIONS WILL START TO FUCK OFF
@@ -123,6 +122,34 @@ public static class GameModeSettings
     [ToggleOption]
     public static bool HuntedChat = true;
 
+    [NumberOption(0, 15, 1)]
+    public static Number RevealerCount = 0;
+
+    [NumberOption(0, 15, 1)]
+    public static Number PhantomCount = 0;
+
+    [NumberOption(0, 15, 1)]
+    public static Number GhoulCount = 0;
+
+    [NumberOption(0, 15, 1)]
+    public static Number BansheeCount = 0;
+
+    [ToggleOption]
+    public static bool BanCrewmate = true;
+
+    [ToggleOption]
+    public static bool BanMurderer = true;
+
+    [ToggleOption]
+    public static bool BanImpostor = true;
+
+    [ToggleOption]
+    public static bool BanAnarchist = true;
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class RoleListRoles
+{
     [ListEntry(PlayerLayerEnum.Role)]
     public static MultiSelectValue<RoleListSlot> RoleEntry1 = RoleListSlot.None;
 
@@ -168,18 +195,6 @@ public static class GameModeSettings
     [ListEntry(PlayerLayerEnum.Role)]
     public static MultiSelectValue<RoleListSlot> RoleEntry15 = RoleListSlot.None;
 
-    [NumberOption(0, 15, 1)]
-    public static Number RevealerCount = 0;
-
-    [NumberOption(0, 15, 1)]
-    public static Number PhantomCount = 0;
-
-    [NumberOption(0, 15, 1)]
-    public static Number GhoulCount = 0;
-
-    [NumberOption(0, 15, 1)]
-    public static Number BansheeCount = 0;
-
     [ListEntry(PlayerLayerEnum.Role)]
     public static MultiSelectValue<RoleListSlot> RoleBan1 = RoleListSlot.None;
 
@@ -194,18 +209,198 @@ public static class GameModeSettings
 
     [ListEntry(PlayerLayerEnum.Role)]
     public static MultiSelectValue<RoleListSlot> RoleBan5 = RoleListSlot.None;
+}
 
-    [ToggleOption]
-    public static bool BanCrewmate = true;
+[HeaderOption(MultiMenu.Main)]
+public static class RoleListModifiers
+{
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry1 = RoleListSlot.None;
 
-    [ToggleOption]
-    public static bool BanMurderer = true;
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry2 = RoleListSlot.None;
 
-    [ToggleOption]
-    public static bool BanImpostor = true;
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry3 = RoleListSlot.None;
 
-    [ToggleOption]
-    public static bool BanAnarchist = true;
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry4 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry5 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry6 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry7 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry8 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry9 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry10 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry11 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry12 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry13 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry14 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierEntry15 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierBan1 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierBan2 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierBan3 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierBan4 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Modifier)]
+    public static MultiSelectValue<RoleListSlot> ModifierBan5 = RoleListSlot.None;
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class RoleListAbilities
+{
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry1 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry2 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry3 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry4 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry5 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry6 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry7 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry8 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry9 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry10 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry11 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry12 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry13 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry14 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityEntry15 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityBan1 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityBan2 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityBan3 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityBan4 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Ability)]
+    public static MultiSelectValue<RoleListSlot> AbilityBan5 = RoleListSlot.None;
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class RoleListDispositions
+{
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry1 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry2 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry3 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry4 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry5 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry6 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry7 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry8 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry9 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry10 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry11 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry12 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry13 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry14 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionEntry15 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionBan1 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionBan2 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionBan3 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionBan4 = RoleListSlot.None;
+
+    [ListEntry(PlayerLayerEnum.Disposition)]
+    public static MultiSelectValue<RoleListSlot> DispositionBan5 = RoleListSlot.None;
 }
 
 [HeaderOption(MultiMenu.Main)]

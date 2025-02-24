@@ -13,7 +13,7 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
         UpdateSplashPatch.SetText($"Fetching {Manifest}");
         yield return EndFrame();
 
-        if (!Directory.Exists(DirectoryInfo))
+        if (!IsNullEmptyOrWhiteSpace(DirectoryInfo) && !Directory.Exists(DirectoryInfo))
             Directory.CreateDirectory(DirectoryInfo);
 
         string jsonText;
@@ -79,7 +79,8 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
             if (TownOfUsReworked.IsDev)
             {
                 yield return GenerateHashes(response, hasher);
-                JsonSerializer.Serialize(File.OpenWrite(Path.Combine(TownOfUsReworked.Hashes, $"{Manifest}.json")), response, new JsonSerializerOptions()
+                using var stream = File.OpenWrite(Path.Combine(TownOfUsReworked.Hashes, $"{Manifest}.json"));
+                JsonSerializer.Serialize(stream, response, new JsonSerializerOptions()
                 {
                     WriteIndented = true,
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault

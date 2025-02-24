@@ -27,11 +27,11 @@ public class Camouflager : Intruder
 
     public static void Camouflage()
     {
-        HudHandler.Instance.CamouflagerEnabled = true;
-        Utils.Camouflage();
+        Hud.Instance.CamouflagerEnabled = true;
+        MiscUtils.Camouflage();
     }
 
-    public static void UnCamouflage() => HudHandler.Instance.CamouflagerEnabled = false;
+    public static void UnCamouflage() => Hud.Instance.CamouflagerEnabled = false;
 
     private void HitCamouflage()
     {
@@ -39,5 +39,5 @@ public class Camouflager : Intruder
         CamouflageButton.Begin();
     }
 
-    public static bool Condition() => !HudHandler.Instance.IsCamoed;
+    public static bool Condition() => !Hud.Instance.IsCamoed;
 }

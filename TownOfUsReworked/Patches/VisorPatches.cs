@@ -1,4 +1,3 @@
-using Innersloth.Assets;
 using static TownOfUsReworked.Managers.CustomVisorManager;
 
 namespace TownOfUsReworked.Patches;
@@ -70,28 +69,13 @@ public static class VisorsTabOnEnablePatch
             colorChip.ProductId = visor.ProductId;
             colorChip.Tag = visor;
             __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
-            var colorId = __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
-
-            if (CustomVisorRegistry.TryGetValue(visor.ProductId, out var cv))
-                ColorChipFix(colorChip, cv.ViewData.IdleFrame, colorId);
-            else
-                visor.SetPreview(colorChip.Inner.FrontLayer, colorId);
-
+            visor.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             __instance.ColorChips.Add(colorChip);
             yStart = ypos;
         }
 
         yStart -= 1.5f;
-    }
-
-    private static void ColorChipFix(ColorChip chip, Sprite sprite, int colorId)
-    {
-        chip.Inner.FrontLayer.sprite = sprite;
-        AddressableAssetHandler.AddToGameObject(chip.Inner.FrontLayer.gameObject);
-
-        if (Application.isPlaying)
-            PlayerMaterial.SetColors(colorId, chip.Inner.FrontLayer);
     }
 
     public static bool Prefix(VisorsTab __instance)
@@ -204,7 +188,7 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int)), HarmonyPrefix]
     public static bool SetVisorPrefix(VisorLayer __instance, VisorData data, int color)
     {
-        if (!CustomVisorRegistry.TryGetValue(data.ProductId, out var cv))
+        if (!CustomVisorRegistry.ContainsKey(data.ProductId))
             return true;
 
         __instance.visorData = data;
@@ -226,7 +210,7 @@ public static class VisorPatches
             return true;
         } catch {}
 
-        if (!CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+        if (!CustomVisorRegistry.ContainsKey(__instance.visorData.ProductId))
             return true;
 
         __instance.UpdateMaterial();

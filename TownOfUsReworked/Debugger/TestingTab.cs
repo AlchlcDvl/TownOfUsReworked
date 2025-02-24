@@ -10,6 +10,7 @@ public class TestingTab : BaseTab
         TownOfUsReworked.DisableTimeout.Value = GUILayout.Toggle(TownOfUsReworked.DisableTimeout.Value, "Disable Lobby Timeout");
         TownOfUsReworked.BlockBaseGameLogger.Value = GUILayout.Toggle(TownOfUsReworked.BlockBaseGameLogger.Value, "Block AU Logger");
         TownOfUsReworked.RedirectLogger.Value = GUILayout.Toggle(TownOfUsReworked.RedirectLogger.Value, "Redirect Logger");
+        TownOfUsReworked.LogFromUnity.Value = GUILayout.Toggle(TownOfUsReworked.LogFromUnity.Value, "Log From Unity");
 
         if (CustomPlayer.Local)
             CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Player Collider");
@@ -30,13 +31,13 @@ public class TestingTab : BaseTab
                 if (GUILayout.Button("Remove Last Bot"))
                 {
                     MciUtils.RemovePlayer((byte)MciUtils.Clients.Count);
-                    DebuggerBehaviour.Instance.ControllingFigure = 0;
+                    Debugging.Instance.ControllingFigure = 0;
                 }
 
                 if (GUILayout.Button("Remove All Bots"))
                 {
                     MciUtils.RemoveAllPlayers();
-                    DebuggerBehaviour.Instance.ControllingFigure = 0;
+                    Debugging.Instance.ControllingFigure = 0;
                 }
             }
         }

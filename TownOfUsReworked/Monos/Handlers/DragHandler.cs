@@ -2,14 +2,11 @@ namespace TownOfUsReworked.Monos;
 
 public class DragHandler : MonoBehaviour
 {
-    public static DragHandler Instance { get; private set; }
-    public readonly Dictionary<byte, byte> Dragging = [];
+    public static readonly Dictionary<byte, byte> Dragging = [];
 
-    public DragHandler(IntPtr ptr) : base(ptr) => Instance = this;
+    public static void StartDrag(PlayerControl player, DeadBody body) => Dragging[player.PlayerId] = body.ParentId;
 
-    public void StartDrag(PlayerControl player, DeadBody body) => Dragging[player.PlayerId] = body.ParentId;
-
-    public void StopDrag(PlayerControl player)
+    public static void StopDrag(PlayerControl player)
     {
         var body = BodyById(Dragging[player.PlayerId]);
         var position = player.transform.position;
@@ -22,7 +19,7 @@ public class DragHandler : MonoBehaviour
         Dragging.Remove(player.PlayerId);
     }
 
-    public void StopDrag(byte id) => StopDrag(PlayerById(id));
+    private static void StopDrag(byte id) => StopDrag(PlayerById(id));
 
     public void Update()
     {

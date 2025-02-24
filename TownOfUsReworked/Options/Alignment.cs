@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None, bool noParts = false, string colorHex = null, int priority = -1, MultiMenu menu = MultiMenu.Layer) :
     BaseHeaderOptionAttribute(menu, CustomOptionType.Alignment, priority)
 {
@@ -95,7 +94,7 @@ public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None
         ViewUpdate();
     }
 
-    public override void Toggle()
+    public void Toggle()
     {
         Value = !Get();
         GroupHeader?.Toggle();

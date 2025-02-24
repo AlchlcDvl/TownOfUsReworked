@@ -11,13 +11,6 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         base.PostLoadSetup();
         IsBan = ID.Contains("Ban");
         Num = ID.Replace("CustomOption.", "").Replace("Entry", "").Replace("Ban", "").Replace($"{EntryType}", "");
-        OptionParents2.Add(([ Name ], [ GameMode.RoleList ]));
-    }
-
-    public override void Debug()
-    {
-        base.Debug();
-        Enum.GetValues<RoleListSlot>().ForEach(x => TranslationManager.DebugId($"List.{x}"));
     }
 
     public override void ViewUpdate()
@@ -57,11 +50,13 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
         SettingsPatches.OnValueChanged();
     }
 
-    protected override void TrySetValue(RoleListSlot value)
+    protected override void TrySetValue(RoleListSlot value, out MultiSelectValue<RoleListSlot> newValue)
     {
+        newValue = Value;
+
         if (IsBan)
         {
-            base.TrySetValue(value);
+            base.TrySetValue(value, out newValue);
             return;
         }
 
@@ -71,7 +66,7 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
             Value.Add(value);
         }
         else
-            base.TrySetValue(value);
+            base.TrySetValue(value, out newValue);
     }
 
     // What the hell is this? What am I even doing man...

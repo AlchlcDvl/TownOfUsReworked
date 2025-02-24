@@ -44,8 +44,6 @@ public static class ListExtensions
 
     public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
 
-    public static void Add<T>(this ISystem.List<T> main, params T[] items) => items.ForEach(main.Add);
-
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
 
     public static void AddRange<T>(this ISystem.List<T> main, IEnumerable<T> items) => items.ForEach(main.Add);
@@ -153,16 +151,9 @@ public static class ListExtensions
 
     public static bool TryFinding<T>(this IEnumerable<T> source, Func<T, bool> predicate, out T value)
     {
-        try
-        {
-            value = source.First(predicate);
-            return true;
-        }
-        catch
-        {
-            value = default;
-            return false;
-        }
+        var result = source.TryFindingAll(predicate, out var values);
+        value = values.FirstOrDefault();
+        return result;
     }
 
     public static void AddMany<T>(this List<T> list, T item, int count)
@@ -194,22 +185,7 @@ public static class ListExtensions
         return default;
     }
 
-    public static int RemoveRange<T>(this List<T> list, IEnumerable<T> list2)
-    {
-        var result = 0;
-
-        foreach (var item in list2)
-        {
-            while (list.Remove(item))
-                result++;
-        }
-
-        return result;
-    }
-
     public static bool ContainsAny(this string source, params string[] values) => values.Any(source.Contains);
-
-    public static bool IsAny(this string source, params string[] values) => values.Any(source.Equals);
 
     public static IEnumerable<T> GetRange<T>(this IEnumerable<T> source, int start, int count)
     {
@@ -284,7 +260,13 @@ public static class ListExtensions
 
     public static void ForEach<T1, T2>(this (IEnumerable<T1>, IEnumerable<T2>) source, Action<T1, T2> action)
     {
-        var count = (source.Item1.Count() + source.Item2.Count()) / 2;
+        var c1 = source.Item1.Count();
+        var c2 = source.Item2.Count();
+
+        if (c1 != c2)
+            throw new ArgumentOutOfRangeException(nameof(source), "The elements must be equal in size");
+
+        var count = (c1 + c2) / 2; // Idk why, I just felt like doing this; no, I am not changing it
 
         for (var i = 0; i < count; i++)
             action(source.Item1.ElementAtOrDefault(i), source.Item2.ElementAtOrDefault(i));
@@ -303,6 +285,16 @@ public static class ListExtensions
         }
 
         return default;
+    }
+
+    public static IEnumerable<IEnumerable<T1>> SplitBy<T1, T2>(this IEnumerable<T1> source, Func<T1, T2> predicate) => source.GroupBy(predicate).Select(x => x.ToList());
+
+    public static IEnumerable<(int, T)> Indexed<T>(this IEnumerable<T> source)
+    {
+        var index = 0;
+
+        foreach (var item in source)
+            yield return (index++, item);
     }
 
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
@@ -325,6 +317,23 @@ public static class ListExtensions
 
         return -1;
     }
+
+    public static int RemoveRange<T>(this List<T> list, IEnumerable<T> list2)
+    {
+        var result = 0;
+
+        foreach (var item in list2)
+        {
+            while (list.Remove(item))
+                result++;
+        }
+
+        return result;
+    }
+
+    public static void Add<T>(this ISystem.List<T> main, params T[] items) => items.ForEach(main.Add);
+
+    public static bool IsAny(this string source, params string[] values) => values.Any(source.Equals);
 
     public static void Add<T>(this T[] main, T item)
     {

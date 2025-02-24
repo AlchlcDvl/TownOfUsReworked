@@ -22,8 +22,7 @@ public static unsafe class AddressablesPatch
 
         var methodInfoPtr = (Il2CppMethodInfo*)(IntPtr)Il2CppInteropUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(originalMethodType).GetValue(null)!;
 
-        var methodInfo = UnityVersionHandler.Wrap(methodInfoPtr);
-        var methodPtr = methodInfo.MethodPointer;
+        var methodPtr = UnityVersionHandler.Wrap(methodInfoPtr).MethodPointer;
 
         Info($"Patching Addressables.LoadAssetAsync at 0x{methodPtr:X}");
 
@@ -40,7 +39,7 @@ public static unsafe class AddressablesPatch
                 ? IL2CPP.Il2CppStringToManaged(keyPtr)
                 : null);
 
-        if (IsNullEmptyOrWhiteSpace(assetGuid) || !CustomAddressable.CustomAdressables.TryGetValue(assetGuid!, out var addressable))
+        if (IsNullEmptyOrWhiteSpace(assetGuid) || !CustomAddressable.CustomAddressables.TryGetValue(assetGuid!, out var addressable))
             return Original(thisPtr, keyPtr, methodInfoPtr);
 
         var op = addressable.LoadAsync();
@@ -49,7 +48,7 @@ public static unsafe class AddressablesPatch
 
     public static bool Prefix(AssetReference __instance, ref bool __result)
     {
-        __result = RuntimeKeyIsValidOriginal(__instance) || CustomAddressable.CustomAdressables.ContainsKey(__instance.AssetGUID);
+        __result = RuntimeKeyIsValidOriginal(__instance) || CustomAddressable.CustomAddressables.ContainsKey(__instance.AssetGUID);
         return false;
     }
 

@@ -55,9 +55,9 @@ public static class NameplatesTabOnEnablePatch
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             var chip = colorChip.GetComponent<NameplateChip>();
 
-            // if (CustomNameplateRegistry.TryGetValue(colorChip.ProductId, out var cn))
-            //     chip.image.sprite = cn.ViewData.Image;
-            // else
+            if (CustomNameplateRegistry.TryGetValue(colorChip.ProductId, out var cn))
+                chip.image.sprite = cn.ViewData.Image;
+            else
                 __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(nameplate.ViewDataRef, (Action<NamePlateViewData>)(viewData => chip.image.sprite = viewData?.Image)));
 
             __instance.ColorChips.Add(colorChip);

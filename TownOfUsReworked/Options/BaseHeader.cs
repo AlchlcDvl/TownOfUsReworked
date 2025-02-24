@@ -5,41 +5,50 @@ public abstract class BaseHeaderOptionAttribute(MultiMenu menu, CustomOptionType
 {
     public int Priority { get; } = priority;
     public MultiMenu Menu { get; } = menu;
-    public Type ClassType { get; set; }
     public readonly List<OptionAttribute> GroupMembers = [];
 
     public void SetTypeAndOptions(Type type)
     {
-        ClassType = type;
         Name = type.Name;
         Value = false;
         ID = $"CustomOption.{Name}";
         AllOptions.Add(this);
 
-        foreach (var prop in AccessTools.GetDeclaredProperties(type))
+        foreach (var member in GetOrderedMembers(type))
         {
-            var att = prop.GetCustomAttribute<OptionAttribute>();
+            if (member is not (PropertyInfo or FieldInfo))
+                continue;
+
+            var att = member.GetCustomAttribute<OptionAttribute>();
 
             if (att == null)
                 continue;
 
-            att.SetProperty(prop);
-            GroupMembers.Add(att);
-        }
+            switch (member)
+            {
+                case PropertyInfo property:
+                {
+                    att.SetProperty(property);
+                    break;
+                }
+                case FieldInfo field:
+                {
+                    att.SetField(field);
+                    break;
+                }
+            }
 
-        foreach (var field in AccessTools.GetDeclaredFields(type))
-        {
-            var att = field.GetCustomAttribute<OptionAttribute>();
-
-            if (att == null)
-                continue;
-
-            att.SetField(field);
             GroupMembers.Add(att);
         }
 
         GroupMembers.ForEach(x => x.Header = this);
     }
 
-    public abstract void Toggle();
+    private static IEnumerable<MemberInfo> GetOrderedMembers(Type type)
+    {
+        var members = type.GetMembers(AccessTools.all);
+        var without = members.Where(x => x.GetCustomAttribute<SortedAttribute>() == null);
+        var with = members.Except(without).OrderBy(x => x.GetCustomAttribute<SortedAttribute>()!.Order);
+        return with.Concat(without);
+    }
 }

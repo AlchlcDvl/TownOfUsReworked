@@ -168,6 +168,9 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         CrewRoles.Clear();
         SyndicateRoles.Clear();
         IntruderRoles.Clear();
+
+        while (AllRoles.Count < GameData.Instance.PlayerCount)
+            AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
     public override void PostAssignment()

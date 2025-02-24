@@ -180,6 +180,19 @@ public enum AirshipSpawnType : byte
     Meeting
 }
 
+public enum AirshipSpawnLocation : byte
+{
+    Brig,
+    Engine,
+    MainHall,
+    Kitchen,
+    Records,
+    CargoBay,
+    VaultRoom,
+    Cockpit,
+    Medical
+}
+
 public enum MoveAdmin : byte
 {
     DontMove,

@@ -19,7 +19,7 @@ public static class BetterSabotages
     public static bool OxySlow = true;
 
     [NumberOption(0, 100, 5, Format.Percent)]
-    public static Number ReactorShake = 30;
+    private static Number ReactorShake = 30;
 
     [ToggleOption]
     public static bool CamoHideSize = false;

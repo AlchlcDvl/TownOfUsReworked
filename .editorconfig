@@ -81,6 +81,9 @@ dotnet_naming_symbols.any_async_methods.required_modifiers = async
 dotnet_naming_style.end_in_async.required_suffix = Async
 dotnet_naming_style.end_in_async.capitalization = pascal_case
 
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = none
+
 [*.cs]
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
@@ -132,3 +135,27 @@ csharp_space_between_square_brackets = false
 
 csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = true
+
+# CA2211: Non-constant fields should not be visible
+dotnet_diagnostic.CA2211.severity = none
+
+# RCS1003: Add braces to if-else (when expression spans over multiple lines)
+dotnet_diagnostic.RCS1003.severity = none
+
+# Field is never assigned to, and will always have its default value
+dotnet_diagnostic.CS0649.severity = none
+
+# RCS1129: Remove redundant field initialization
+dotnet_diagnostic.RCS1129.severity = none
+
+# IDE0160: Convert to block scoped namespace
+dotnet_diagnostic.IDE0160.severity = none
+
+# RCS1169: Make field read-only
+dotnet_diagnostic.RCS1169.severity = none
+
+# RCS1037: Remove trailing white-space
+dotnet_diagnostic.RCS1037.severity = warning
+
+# RCS1047: Non-asynchronous method name should not end with 'Async'
+dotnet_diagnostic.RCS1047.severity = none

@@ -9,7 +9,7 @@ public class CustomMeeting
     private string ActiveSprite { get; }
     private string DisabledSprite { get; }
     private MeetingTypes Type { get; }
-    private Vector3 Position { get; set; }
+    private Vector3 Position { get; }
     public Dictionary<byte, bool> Actives { get; }
     private Dictionary<byte, GameObject> Buttons { get; }
     private Dictionary<byte, SpriteRenderer> ButtonSprites { get; }
@@ -108,16 +108,13 @@ public class CustomMeeting
         AllVoteAreas().ForEach(x => GenButton(x, __instance));
     }
 
-    public void Update(MeetingHud __instance)
+    public void Update()
     {
         if (Type != MeetingTypes.Toggle)
             return;
 
-        foreach (var pair in ButtonSprites)
+        foreach (var pair in ButtonSprites.Where(pair => pair.Value))
         {
-            if (!pair.Value)
-                continue;
-
             pair.Value.sprite = GetSprite(Actives[pair.Key] ? ActiveSprite : DisabledSprite);
             pair.Value.color = Actives[pair.Key] ? UColor.green : UColor.white;
         }

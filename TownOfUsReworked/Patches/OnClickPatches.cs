@@ -73,7 +73,8 @@ public static class PlayerControlOnClick
 
                 break;
             }
-            default: return;
+            default:
+                return;
         }
 
         player.CustomDie(DeathReasonEnum.Caught, clicker);

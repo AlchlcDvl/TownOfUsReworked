@@ -5,8 +5,8 @@ public static class AssetManager
     public static readonly List<Sprite> PortalAnimation = [];
     public static readonly Dictionary<string, AssetBundle> Bundles = [];
     public static readonly Dictionary<string, string> AssetToBundle = [];
-    private static readonly Dictionary<string, List<UObject>> LoadedAssets = [];
-    private static readonly Dictionary<string, List<string>> UnloadedAssets = [];
+    private static readonly Dictionary<string, HashSet<UObject>> LoadedAssets = [];
+    private static readonly Dictionary<string, HashSet<string>> UnloadedAssets = [];
 
     public static AudioClip GetAudio(string path, bool placeholder = true) => Get<AudioClip>(path) ?? (placeholder ? Get<AudioClip>("Placeholder") : null);
 
@@ -199,27 +199,27 @@ public static class AssetManager
 
     private static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.GetRole(roleType)?.IntroSound;
 
-    public static UObject AddAsset(string name, UObject obj)
+    public static T AddAsset<T>(string name, T obj) where T : UObject => AddAsset(name, (UObject)obj) as T;
+
+    private static UObject AddAsset(string name, UObject obj)
     {
         if (!obj)
             return null;
 
         if (!LoadedAssets.TryGetValue(name, out var value))
             LoadedAssets[name] = [ obj ];
-        else if (!value.Contains(obj))
+        else
             value.Add(obj);
 
         return obj;
     }
 
-    public static string AddPath(string name, string path)
+    public static void AddPath(string name, string path)
     {
         if (!UnloadedAssets.TryGetValue(name, out var value))
             UnloadedAssets[name] = [ path ];
-        else if (!value.Contains(path))
+        else
             value.Add(path);
-
-        return path;
     }
 
     private static bool GetReadable(string name) => name is "Cursor";
@@ -289,7 +289,7 @@ public static class AssetManager
         const int x = 3; // Block size = 3
         var convertedSize = wavSize / x;
         var data = new float[convertedSize];
-        var block = new byte[intSize]; // Using a 4 byte block for copying 3 bytes, then copy bytes with 1 offset
+        var block = new byte[intSize]; // Using a 4-byte block for copying 3 bytes, then copy bytes with 1 offset
 
         for (var i = 0; i < convertedSize; i++)
         {

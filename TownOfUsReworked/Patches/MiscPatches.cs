@@ -21,10 +21,10 @@ public static class MapBehaviourPatches
     [HarmonyPatch(nameof(MapBehaviour.Show))]
     public static bool Prefix(MapBehaviour __instance, MapOptions opts)
     {
-        if (ClientHandler.Instance.SettingsActive)
+        if (Client.Instance.SettingsActive)
             return false;
 
-        ClientHandler.Instance.CloseMenus(SkipEnum.Map);
+        Client.Instance.CloseMenus(SkipEnum.Map);
 
         if (CustomPlayer.Local.IsBlocked())
             return false;
@@ -127,7 +127,7 @@ public static class DisconnectHandler
         if (player.AmOwner)
         {
             MciUtils.RemoveAllPlayers();
-            DebuggerBehaviour.Instance.ControllingFigure = 0;
+            Debugging.Instance.ControllingFigure = 0;
         }
 
         if (IsLobby())
@@ -327,15 +327,15 @@ public static class LobbyBehaviourPatch
         StopAll();
         DefaultOutfitAll();
         ClientHandler.OnLobbyStart();
-        ClientHandler.Instance.Page = 0;
-        ClientHandler.Instance.Buttons.Clear();
-        ClientHandler.Instance.CloseMenus();
+        Client.Instance.Page = 0;
+        Client.Instance.Buttons.Clear();
+        Client.Instance.CloseMenus();
         FreeplayPatches.PreviouslySelected.Clear();
         var count = MciUtils.Clients.Count;
-        DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MciActive && IsLocalGame();
+        Debugging.Instance.TestWindow.Enabled = TownOfUsReworked.MciActive && IsLocalGame();
         MciUtils.Clients.Clear();
         MciUtils.PlayerClientIDs.Clear();
-        DebuggerBehaviour.Instance.SelectedTab = DebuggerBehaviour.Instance.Tabs[0];
+        Debugging.Instance.SelectedTab = Debugging.Instance.Tabs[0];
 
         if (count > 0 && TownOfUsReworked.Persistence.Value && !IsOnlineGame())
             MciUtils.CreatePlayerInstances(count);

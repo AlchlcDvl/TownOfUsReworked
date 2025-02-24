@@ -16,13 +16,13 @@ public class GameTab : BaseTab
 
         if (GUILayout.Button("Next Player"))
         {
-            DebuggerBehaviour.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, true);
-            MciUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
+            Debugging.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, Debugging.Instance.ControllingFigure, true);
+            MciUtils.SwitchTo(Debugging.Instance.ControllingFigure);
         }
         else if (GUILayout.Button("Previous Player"))
         {
-            DebuggerBehaviour.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, DebuggerBehaviour.Instance.ControllingFigure, false);
-            MciUtils.SwitchTo(DebuggerBehaviour.Instance.ControllingFigure);
+            Debugging.Instance.ControllingFigure = CycleByte(GameData.Instance.PlayerCount - 1, 0, Debugging.Instance.ControllingFigure, false);
+            MciUtils.SwitchTo(Debugging.Instance.ControllingFigure);
         }
 
         if (GUILayout.Button("End Game"))

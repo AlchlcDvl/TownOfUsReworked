@@ -71,7 +71,7 @@ public abstract class Assassin : Ability, IGuesser
         GuessMenu.GenButtons(__instance, RemainingKills > 0);
     }
 
-    public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update(__instance);
+    public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update();
 
     public override void VoteComplete(MeetingHud __instance)
     {

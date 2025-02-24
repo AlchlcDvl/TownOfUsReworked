@@ -28,7 +28,7 @@ public static class AdminPatch
 
             if (sprite)
             {
-                if (HudHandler.Instance.IsCamoed)
+                if (Hud.Instance.IsCamoed)
                     sprite.color = UColor.grey;
 
                 if (isOp)
@@ -37,22 +37,22 @@ public static class AdminPatch
                     PlayerMaterial.SetColors(new UColor(0.8793f, 1, 0, 1), sprite);
             }
 
-            if (text && isOp && DataManager.Settings.Accessibility.ColorBlindMode)
-            {
-                text.gameObject.SetActive(true);
-                text.text = $"{colorMapping[i]}";
+            if (!text || !isOp || !DataManager.Settings.Accessibility.ColorBlindMode)
+                continue;
 
-                // Show first row numbers below player icons
-                // Show second row numbers above player icons
-                // Show all icons on player icons when there are three rows
+            text.gameObject.SetActive(true);
+            text.text = $"{colorMapping[i]}";
 
-                if (useCompactText)
-                    text.transform.localPosition = new(0, 0, -20);
-                else if ((i / area.MaxWidth) == 0)
-                    text.transform.localPosition = new(0, -area.YOffset, -20);
-                else
-                    text.transform.localPosition = new(0, area.YOffset, -20);
-            }
+            // Show first row numbers below player icons
+            // Show second row numbers above player icons
+            // Show all icons on player icons when there are three rows
+
+            if (useCompactText)
+                text.transform.localPosition = new(0, 0, -20);
+            else if ((i / area.MaxWidth) == 0)
+                text.transform.localPosition = new(0, -area.YOffset, -20);
+            else
+                text.transform.localPosition = new(0, area.YOffset, -20);
         }
     }
 

@@ -55,31 +55,33 @@ public static class RedirectLoggerPatch2
         if (!TownOfUsReworked.LogFromUnity.Value)
             return;
 
+        var message = $"Unity Stack Trace:\n{msg}\n{stackTrace}";
+
         switch (type)
         {
             case LogType.Error:
             {
-                Error($"Unity Stack Trace:\n{msg}\n{stackTrace}", Log);
+                Error(message, Log);
                 break;
             }
             case LogType.Warning:
             {
-                Warning($"Unity Stack Trace:\n{msg}\n{stackTrace}", Log);
+                Warning(message, Log);
                 break;
             }
             case LogType.Log:
             {
-                Debug($"Unity Stack Trace:\n{msg}\n{stackTrace}", Log);
+                Debug(message, Log);
                 break;
             }
             case LogType.Exception:
             {
-                Failure($"Unity Exception:\n{msg}\n{stackTrace}", Log);
+                Failure(message, Log);
                 break;
             }
             default:
             {
-                Assert($"Unity Stack Trace:\n{msg}\n{stackTrace}", Log);
+                Assert(message, Log);
                 break;
             }
         }

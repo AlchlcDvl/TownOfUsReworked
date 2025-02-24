@@ -35,7 +35,7 @@ public static class MapPatches
             SetDefaults();
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings();
-            // __instance.ShipLoadingAsyncHandle seems to be having an issue in its setter, I wonder what's up with that
+            // __instance.ShipLoadingAsyncHandle seems to be having an issue when setting its value; I wonder what's up with that
             var async = __instance.ShipPrefabs[CurrentMap].InstantiateAsync();
             yield return async;
             ShipStatus.Instance = async.Result.GetComponent<ShipStatus>();
@@ -158,10 +158,10 @@ public static class MapPatches
 
     public static void AdjustCooldowns(float change)
     {
-        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Name.Contains("Cooldown") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
+        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Name.Contains("Cd") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
         {
             if (option is NumberOptionAttribute number)
-                number.Set(new(number.Value.Value + change));
+                number.Set(new(number.Get() + change));
         }
     }
 

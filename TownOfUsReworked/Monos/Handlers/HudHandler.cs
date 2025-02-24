@@ -6,10 +6,6 @@ public class HudHandler : MonoBehaviour
     public bool CamouflagerEnabled;
     public bool IsCamoed => CommsEnabled || CamouflagerEnabled;
 
-    public static HudHandler Instance { get; private set; }
-
-    public HudHandler(IntPtr ptr) : base(ptr) => Instance = this;
-
     public void Update()
     {
         if (IsLobby() || IsEnded() || NoPlayers() || IsHnS() || !HudManager.InstanceExists || !Ship() || IntroCutscene.Instance)

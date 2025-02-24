@@ -52,5 +52,5 @@ public class Bastion : Crew, IVentBomber
         BombButton.StartCooldown(cooldown);
     }
 
-    public override void ReadRPC(MessageReader reader) => BombedIDs.Add(reader.ReadInt32());
+    public override void ReadRPC(MessageReader reader) => BombedIDs.Add(reader.ReadPackedInt32());
 }

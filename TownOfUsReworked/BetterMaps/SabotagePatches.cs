@@ -5,20 +5,19 @@ public static class ReactorPatch
 {
     public static bool Prefix(ReactorSystemType __instance, PlayerControl player, MessageReader msgReader)
     {
-        var flag = MapPatches.CurrentMap switch
+        if (!(MapPatches.CurrentMap switch
         {
             0 or 3 => BetterSkeld.EnableBetterSkeld,
             1 => BetterMiraHq.EnableBetterMiraHq,
             2 => BetterPolus.EnableBetterPolus,
             5 => BetterFungle.EnableBetterFungle,
             _ => false
-        };
-
-        if (!flag)
+        }))
+        {
             return true;
+        }
 
         var b = msgReader.ReadByte();
-        var num = (byte)(b & 3);
 
         switch (b)
         {
@@ -42,6 +41,8 @@ public static class ReactorPatch
             }
             default:
             {
+                var num = (byte)(b & 3);
+
                 if (b.HasAnyBit(64))
                 {
                     __instance.UserConsolePairs.Add(new(player.PlayerId, num));
@@ -66,18 +67,17 @@ public static class O2Patch
 {
     public static bool Prefix(LifeSuppSystemType __instance, MessageReader msgReader)
     {
-        var flag = MapPatches.CurrentMap switch
+        if (!(MapPatches.CurrentMap switch
         {
             0 or 3 => BetterSkeld.EnableBetterSkeld,
             1 => BetterMiraHq.EnableBetterMiraHq,
             _ => false
-        };
-
-        if (!flag)
+        }))
+        {
             return true;
+        }
 
         var b = msgReader.ReadByte();
-        var num = b & 3;
 
         switch (b)
         {
@@ -100,7 +100,7 @@ public static class O2Patch
             default:
             {
                 if (b.HasAnyBit(64))
-                    __instance.CompletedConsoles.Add(num);
+                    __instance.CompletedConsoles.Add(b & 3);
 
                 break;
             }

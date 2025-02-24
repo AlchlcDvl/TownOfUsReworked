@@ -18,7 +18,7 @@ public class DeadBodyHandler : NameHandler
 
     public void Update()
     {
-        if (HudHandler.Instance.IsCamoed)
+        if (Hud.Instance.IsCamoed)
             CustomColorManager.SetColor(Rend, 39);
         else if (SurveillancePatches.NvActive)
             CustomColorManager.SetColor(Rend, 6);

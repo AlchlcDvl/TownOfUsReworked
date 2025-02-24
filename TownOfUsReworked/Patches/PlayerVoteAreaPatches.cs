@@ -62,7 +62,7 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.SetCosmetics)), HarmonyPostfix]
     public static void SetCosmeticsPostfix(PlayerVoteArea __instance)
     {
-        if (BetterSabotages.CamouflagedMeetings && HudHandler.Instance.IsCamoed)
+        if (BetterSabotages.CamouflagedMeetings && Hud.Instance.IsCamoed)
         {
             __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
             var level = __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>();

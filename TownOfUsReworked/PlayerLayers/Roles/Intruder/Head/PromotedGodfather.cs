@@ -169,7 +169,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             case GfActionsRPC.Drag:
             {
                 CurrentlyDragging = reader.ReadBody();
-                DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
+                DragHandler.StartDrag(Player, CurrentlyDragging);
                 break;
             }
             case GfActionsRPC.Ambush:
@@ -307,7 +307,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         CurrentlyDragging = target;
         Spread(Player, PlayerByBody(CurrentlyDragging));
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GfActionsRPC.Drag, CurrentlyDragging);
-        DragHandler.Instance.StartDrag(Player, CurrentlyDragging);
+        DragHandler.StartDrag(Player, CurrentlyDragging);
     }
 
     public void Drop()
@@ -316,7 +316,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             return;
 
         CallRpc(CustomRPC.Action, ActionsRPC.Drop, Player);
-        DragHandler.Instance.StopDrag(Player);
+        DragHandler.StopDrag(Player);
         CurrentlyDragging = null;
         DragButton.StartCooldown();
     }
@@ -335,7 +335,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     private CustomButton MeasureButton { get; set; }
     private bool IsDisg => FormerRole is Disguiser;
 
-    private void Disguise() => Utils.Morph(DisguisedPlayer, CopiedPlayer);
+    private void Disguise() => MiscUtils.Morph(DisguisedPlayer, CopiedPlayer);
 
     private void UnDisguise()
     {
@@ -393,7 +393,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     private CustomButton SampleButton { get; set; }
     public bool IsMorph => FormerRole is Morphling;
 
-    private void Morph() => Utils.Morph(Player, MorphedPlayer);
+    private void Morph() => MiscUtils.Morph(Player, MorphedPlayer);
 
     private void UnMorph()
     {
@@ -436,7 +436,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
     private CustomButton InvisButton { get; set; }
     public bool IsWraith => FormerRole is Wraith;
 
-    private void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
+    private void Invis() => MiscUtils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
     private void UnInvis() => DefaultOutfit(Player);
 
@@ -614,7 +614,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         if (!BombedPlayer.AmOwner || Dead)
             return;
 
-        Utils.Flash(Color);
+        MiscUtils.Flash(Color);
         BombedPlayer.GetRole().Bombed = true;
     }
 

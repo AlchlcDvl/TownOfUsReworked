@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Classes;
+namespace TownOfUsReworked.Utils;
 
 // Thanks to Town Of Host parts of this code
 public static class GameStates

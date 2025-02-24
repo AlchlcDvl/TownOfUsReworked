@@ -323,22 +323,22 @@ public static class CustomStatsManager
 
         var diff = TranslationManager.LastID - TranslationManager.PreviousLastID; // Accounting for any changes to the translations in the base game
 
-        if (diff != 0)
+        if (diff == 0)
+            return;
+
+        var keys = CustomStats.Keys.ToList();
+        var values = CustomStats.Values.ToList();
+        var count = CustomStats.Count;
+
+        CustomStats.Clear();
+
+        // Remapping stats to ids that have been pushed further up or down the enum
+        for (var i = 0; i < count; i++)
         {
-            var keys = CustomStats.Keys.ToList();
-            var values = CustomStats.Values.ToList();
-            var count = CustomStats.Count;
-
-            CustomStats.Clear();
-
-            // Remapping stats to ids that have been pushed further up or down the enum
-            for (var i = 0; i < count; i++)
-            {
-                if (keys[i] < ReworkedStart)
-                    CustomStats[keys[i]] = values[i];
-                else
-                    CustomStats[keys[i] + diff] = values[i];
-            }
+            if (keys[i] < ReworkedStart)
+                CustomStats[keys[i]] = values[i];
+            else
+                CustomStats[keys[i] + diff] = values[i];
         }
     }
 

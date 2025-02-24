@@ -1,23 +1,47 @@
 namespace TownOfUsReworked.BetterMaps;
 
+/// <summary>
+/// Provides enhanced functionality and customization options for the Polus map.<br></br>
+/// Modifies vent connections, task locations, and sabotage timers.
+/// </summary>
 [HeaderOption(MultiMenu.Main)]
 public static class BetterPolus
 {
+    /// <summary>
+    /// Enables or disables all BetterPolus modifications.
+    /// </summary>
     [ToggleOption]
     public static bool EnableBetterPolus = true;
 
+    /// <summary>
+    /// Enables improved vent connections and positions.
+    /// </summary>
     [ToggleOption]
     private static bool PolusVentImprovements = false;
 
+    /// <summary>
+    /// Controls the Temperature task location.<br></br>
+    /// Options: <c>DontMove</c>, <c>SwappedWithVitals</c>, <c>DeathValley</c>
+    /// </summary>
     [StringOption<TempLocation>]
     private static TempLocation TempLocation = TempLocation.DontMove;
 
+    /// <summary>
+    /// When enabled, swaps Wi-Fi and Chart Course task locations.
+    /// </summary>
     [ToggleOption]
     private static bool WifiChartCourseSwap = false;
 
+    /// <summary>
+    /// Time until seismic sabotage completes.<br></br>
+    /// Default: <c>60</c>s<br></br>
+    /// Range: <c>30</c> to <c>90</c>s<br></br>
+    /// Increment: <c>5</c>s
+    /// </summary>
     [NumberOption(30f, 90f, 5f, Format.Time)]
     public static Number SeismicTimer = 60;
 
+    // New positions for relocated objects
     private static readonly Vector3 DvdScreenNewPos = new(26.635f, -15.92f, 1f);
     private static readonly Vector3 VitalsNewPos = new(31.275f, -6.45f, 1f);
     private static readonly Vector3 WifiNewPos = new(15.975f, 0.084f, 1f);
@@ -26,12 +50,16 @@ public static class BetterPolus
     private static readonly Vector3 TempColdNewPosDv = new(7.772f, -17.103f, -0.017f);
     private static readonly Vector3 SpeciVentPos = new(36.5f, -22f, 0f);
 
+    // Task console references
     private static Console WifiConsole;
     private static Console NavConsole;
+    private static Console TempCold;
 
+    // Vent references
     private static SystemConsole Vitals;
     private static GameObject DvdScreenOffice;
 
+    // Vent references
     private static Vent ElectricBuildingVent;
     private static Vent ElectricalVent;
     private static Vent ScienceBuildingVent;
@@ -41,8 +69,7 @@ public static class BetterPolus
     private static Vent SpeciVent;
     private static Vent BathroomVent;
 
-    private static Console TempCold;
-
+    // Room references
     private static GameObject Comms;
     private static GameObject DropShip;
     private static GameObject Outside;
@@ -50,6 +77,9 @@ public static class BetterPolus
     private static GameObject Specimen;
     private static GameObject Office;
 
+    /// <summary>
+    /// Applies all Polus map modifications if enabled.
+    /// </summary>
     public static void ApplyChanges()
     {
         if (!EnableBetterPolus)
@@ -59,6 +89,9 @@ public static class BetterPolus
         AdjustPolus();
     }
 
+    /// <summary>
+    /// Updates task locations and vent connections based on settings.
+    /// </summary>
     private static void AdjustPolus()
     {
         switch (TempLocation)
@@ -82,6 +115,9 @@ public static class BetterPolus
         AdjustVents();
     }
 
+    /// <summary>
+    /// Finds and caches references to map objects.
+    /// </summary>
     private static void FindPolusObjects()
     {
         FindRooms();
@@ -89,6 +125,9 @@ public static class BetterPolus
         FindObjects();
     }
 
+    /// <summary>
+    /// Locates and initializes all vent objects.
+    /// </summary>
     private static void FindVents()
     {
         var vents = AllVents();
@@ -124,6 +163,9 @@ public static class BetterPolus
         SpeciVent.name = "SpeciVent";
     }
 
+    /// <summary>
+    /// Finds and caches room GameObjects.
+    /// </summary>
     private static void FindRooms()
     {
         var gos = AllGameObjects();
@@ -147,6 +189,9 @@ public static class BetterPolus
             Office = gos.Find(o => o.name == "Office");
     }
 
+    /// <summary>
+    /// Locates task consoles and UI elements.
+    /// </summary>
     private static void FindObjects()
     {
         var consoles = AllConsoles();
@@ -176,6 +221,9 @@ public static class BetterPolus
         DvdScreenOffice.SetActive(false);
     }
 
+    /// <summary>
+    /// Updates vent positions and connections if enabled.
+    /// </summary>
     private static void AdjustVents()
     {
         if (!PolusVentImprovements)
@@ -193,6 +241,9 @@ public static class BetterPolus
         Ship().AllVents = vents.ToArray();
     }
 
+    /// <summary>
+    /// Creates new vent connection paths between rooms.
+    /// </summary>
     private static void ReconnectVents()
     {
         ElectricBuildingVent.Left = ElectricalVent;
@@ -282,14 +333,18 @@ public static class BetterPolus
     {
         public static bool Prefix(NormalPlayerTask __instance, Il2CppSystem.Text.StringBuilder sb)
         {
+            // Skip if BetterPolus is disabled, ship not loaded, wrong map, or not a modified task
+            // IDs: Temperature (42), WiFi (41), Chart Course (3)
             if (!EnableBetterPolus || !Ship() || MapPatches.CurrentMap != 2 || (int)__instance.TaskType is not (42 or 41 or 3))
                 return true;
 
-            var flag = __instance.ShouldYellowText();
+            var flag = __instance.ShouldYellowText(); // Check if the task text should be colored
 
+            // Add color tags based on task completion
             if (flag)
                 sb.Append(__instance.IsComplete ? "<#00DD00FF>" : "<#FFFF00FF>");
 
+            // Determine the correct room name based on task type and settings
             SystemTypes room;
 
             if (__instance.TaskType == TaskTypes.RecordTemperature && __instance.StartAt != SystemTypes.Outside)
@@ -311,25 +366,16 @@ public static class BetterPolus
                 };
             }
 
-            sb.Append(TranslationController.Instance.GetString(room));
-            sb.Append(": ");
-            sb.Append(TranslationController.Instance.GetString(__instance.TaskType));
+            // Build task text with translated room and task names
+            sb.Append($"{TranslationController.Instance.GetString(room)}: {TranslationController.Instance.GetString(__instance.TaskType)}");
 
+            // Add a timer or step counter if needed
             if (__instance is { ShowTaskTimer: true, TimerStarted: NormalPlayerTask.TimerState.Started })
-            {
-                sb.Append(" (");
-                sb.Append(TranslationController.Instance.GetString(StringNames.SecondsAbbv, (int)__instance.TaskTimer));
-                sb.Append(')');
-            }
+                sb.Append($" ({TranslationController.Instance.GetString(StringNames.SecondsAbbv, (int)__instance.TaskTimer)})");
             else if (__instance.ShowTaskStep)
-            {
-                sb.Append(" (");
-                sb.Append(__instance.taskStep);
-                sb.Append('/');
-                sb.Append(__instance.MaxStep);
-                sb.Append(')');
-            }
+                sb.Append($" ({__instance.taskStep}/{__instance.MaxStep})");
 
+            // Close color tag if used
             if (flag)
                 sb.Append("</color>");
 

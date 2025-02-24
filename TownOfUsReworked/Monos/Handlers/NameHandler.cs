@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class NameHandler : MonoBehaviour
+public abstract class NameHandler : MonoBehaviour
 {
     public static readonly Dictionary<byte, string> PlayerNames = [];
     public static readonly Dictionary<byte, string> ColorNames = [];
@@ -49,7 +49,7 @@ public class NameHandler : MonoBehaviour
             name = "";
         else if (!amOwner && !local.HasDied())
         {
-            if (HudHandler.Instance.IsCamoed)
+            if (Hud.Instance.IsCamoed)
                 name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
             else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache))
                 name = ColorNames[cache];
@@ -112,7 +112,7 @@ public class NameHandler : MonoBehaviour
             name = "";
         else if (!playerHandler.Local && !local.HasDied())
         {
-            if (HudHandler.Instance.IsCamoed)
+            if (Hud.Instance.IsCamoed)
                 name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
             else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache))
                 name = PlayerNames[cache];

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Options;
 
 public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribute(type)
 {
-    public T Value { get; protected set; }
+    protected T Value { get; set; }
     protected Type TargetType { get; } = typeof(T);
 
     public static implicit operator T(OptionAttribute<T> opt) => opt.Value;
@@ -57,7 +57,7 @@ public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribut
 
         var stringValue = Format();
 
-        if (!notify || IsNullEmptyOrWhiteSpace(stringValue))
+        if (!HudManager.InstanceExists || !notify || IsNullEmptyOrWhiteSpace(stringValue))
             return;
 
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";

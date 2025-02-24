@@ -19,7 +19,7 @@ public static class VotePatches
         if (pc.AmOwner && TownOfUsReworked.MciActive)
         {
             MciUtils.RemoveAllPlayers();
-            DebuggerBehaviour.Instance.ControllingFigure = 0;
+            Debugging.Instance.ControllingFigure = 0;
         }
 
         CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == pc || !x.Player);

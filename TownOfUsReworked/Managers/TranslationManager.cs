@@ -27,17 +27,13 @@ public static class TranslationManager
         }
         catch
         {
-            // Any error should just return the original id and let client know in the logs
-            if (MissingIds.Contains(id))
-                return $"STRMISS ({id})";
-
-            Fatal(id);
-            MissingIds.Add(id);
+            // Any error should just return the original id and let the client know in the logs
+            DebugId(id);
             return $"STRMISS ({id})";
         }
     }
 
-    // Overrides for the translate method above
+    // Overrides for the translation method above
     public static string Translate(string id, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, null);
 
     // public static string Translate(string id, string language, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, language);
@@ -53,8 +49,7 @@ public static class TranslationManager
         MissingIds.Add(id);
     }
 
-    private static StringNames GetNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string>
-        Value)[] replacements = null)
+    private static StringNames GetNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
         if (LastID == -1)
             LastID = NextID = (int)Enum.GetValues<StringNames>().Last(); // Getting the very last enum value and casting it to int
@@ -101,6 +96,7 @@ public static class TranslationManager
         if (!CustomStringNames.TryGetValue(id, out var value))
             return false;
 
+        // Don't ask me why I did this, I don't know either
         (string Key, Func<string> Value)[] otherReplacements = null;
         var hasOtherReplacements = val != value && ReplacementsMap.TryGetValue(value, out otherReplacements);
         var lang = hasOtherReplacements
@@ -120,8 +116,7 @@ public static class TranslationManager
         return true;
     }
 
-    public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string>
-        Value)[] replacements = null)
+    public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
         if (CustomStringNames.TryGetKey(id, out var value)) // Try to find a custom string name by the given id
             return value;

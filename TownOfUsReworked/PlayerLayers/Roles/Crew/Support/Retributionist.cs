@@ -207,7 +207,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             }
             case RetActionsRPC.Bomb:
             {
-                BombedIDs.Add(reader.ReadInt32());
+                BombedIDs.Add(reader.ReadPackedInt32());
                 break;
             }
             case RetActionsRPC.Place:
@@ -240,7 +240,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
         }
     }
 
-    public override void UpdateMeeting(MeetingHud __instance) => RetMenu.Update(__instance);
+    public override void UpdateMeeting(MeetingHud __instance) => RetMenu.Update();
 
     public override void VoteComplete(MeetingHud __instance)
     {
@@ -721,7 +721,7 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     private CustomButton SwoopButton { get; set; }
     private bool IsCham => RevivedRole is Chameleon;
 
-    private void Invis() => Utils.Invis(Player);
+    private void Invis() => MiscUtils.Invis(Player);
 
     private bool SwoopEnd() => Dead;
 

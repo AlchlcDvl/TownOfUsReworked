@@ -22,7 +22,7 @@ public static class SpawnPatches
 
             KillCounts.Clear();
             MostRecentKiller = null;
-            DebuggerBehaviour.Instance.SelectedTab = DebuggerBehaviour.Instance.Tabs[1];
+            Debugging.Instance.SelectedTab = Debugging.Instance.Tabs[1];
         }
 
         Chat()?.SetVisible(CustomPlayer.Local.CanChat());

@@ -103,7 +103,7 @@ public class Politician : Ability
             }
             case PoliticianActionsRPC.Add:
             {
-                VoteBank -= reader.ReadInt32();
+                VoteBank -= reader.ReadPackedInt32();
                 break;
             }
             default:

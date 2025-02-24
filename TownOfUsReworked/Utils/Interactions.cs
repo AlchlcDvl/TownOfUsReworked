@@ -1,5 +1,5 @@
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
-namespace TownOfUsReworked.Classes;
+namespace TownOfUsReworked.Utils;
 
 public static class Interactions
 {

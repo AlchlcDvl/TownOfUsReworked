@@ -30,26 +30,23 @@ public abstract class AssetLoader
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
-            {
                 Error(www.error);
-                www.downloadHandler.Dispose();
-                www.Dispose();
-                continue;
-            }
-
-            var filePath = Path.Combine(DirectoryInfo, trueName);
-            filePath = filePath.Replace("%20", " ");
-            var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
-
-            while (!persistTask.IsCompleted)
+            else
             {
-                if (persistTask.Exception != null)
-                {
-                    Error(persistTask.Exception);
-                    break;
-                }
+                var filePath = Path.Combine(DirectoryInfo, trueName);
+                filePath = filePath.Replace("%20", " ");
+                var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
 
-                yield return EndFrame();
+                while (!persistTask.IsCompleted)
+                {
+                    if (persistTask.Exception != null)
+                    {
+                        Error(persistTask.Exception);
+                        break;
+                    }
+
+                    yield return EndFrame();
+                }
             }
 
             www.downloadHandler.Dispose();

@@ -1,6 +1,6 @@
 using BepInEx.Logging;
 
-namespace TownOfUsReworked.Classes;
+namespace TownOfUsReworked.Utils;
 
 // Adapted from LevelImpostor
 public static class Logging

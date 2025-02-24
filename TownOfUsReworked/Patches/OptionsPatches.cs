@@ -826,7 +826,7 @@ public static class SettingsPatches
                     __instance.settingsInfo.Add(option.ViewSetting.gameObject);
                     y -= 0.3f;
 
-                    if (!option.Value)
+                    if (!option.Get())
                     {
                         y -= 0.21f;
                         continue;

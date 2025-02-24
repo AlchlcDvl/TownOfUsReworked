@@ -115,8 +115,7 @@ public static class RoleGenManager
 
     public static readonly Enum[][] Alignments = [ CI, CSv, CrP, CU, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, IH, IU, SU ];
 
-    private static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6 ];
-    private static readonly List<byte> CustomSpawns = [ .. Spawns, 7, 8, 9 ];
+    private static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
 
     private static readonly TargetGen Targets = new();
     private static readonly ModifierGen Modifiers = new();
@@ -253,7 +252,7 @@ public static class RoleGenManager
         Convertible = (byte)allPlayers.Count(x => x.Is(SubFaction.None) && x != Pure);
 
         if (MapPatches.CurrentMap == 4)
-            BetterAirship.SpawnPoints.AddRange((BetterAirship.EnableCustomSpawns ? CustomSpawns : Spawns).GetRandomRange(3));
+            BetterAirship.SpawnPoints.AddRange(Spawns.GetRandomRange(3));
 
         if (TownOfUsReworked.MciActive)
         {
@@ -336,8 +335,8 @@ public static class RoleGenManager
     {
         WinState = WinLose.None;
 
-        CameraEffect.Initialize();
-        CameraEffect.ClearEffects();
+        CameraEffectHandler.Initialize();
+        CameraEffectHandler.ClearEffects();
 
         MeetingPatches.MeetingCount = 0;
 
@@ -353,7 +352,7 @@ public static class RoleGenManager
         NameHandler.PlayerNames.Clear();
         NameHandler.ColorNames.Clear();
 
-        DragHandler.Instance.Dragging.Clear();
+        DragHandler.Dragging.Clear();
 
         Monos.Range.AllItems.Clear();
 
@@ -399,7 +398,7 @@ public static class RoleGenManager
 
         Ash.DestroyAll();
 
-        ClientHandler.Instance.CloseMenus();
+        Client.Instance.CloseMenus();
 
         BodyLocations.Clear();
 

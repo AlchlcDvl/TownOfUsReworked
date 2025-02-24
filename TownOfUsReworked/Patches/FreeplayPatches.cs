@@ -70,20 +70,20 @@ public static class FreeplayPatches
     [HarmonyPatch(nameof(TaskAdderGame.PopulateRoot))]
     public static void Postfix(TaskAdderGame __instance, ISystem.Dictionary<SystemTypes, TaskFolder> folders, TaskFolder rootFolder)
     {
-        if (!folders.TryGetValue(LayersType, out var taskFolder))
+        if (folders.TryGetValue(LayersType, out var taskFolder))
+            return;
+
+        taskFolder = folders[LayersType] = CreateFolder(__instance, "_Reworked", rootFolder);
+
+        for (var i = 0; i < 4; i++)
         {
-            taskFolder = folders[LayersType] = CreateFolder(__instance, "_Reworked", rootFolder);
+            var folder = CreateFolder(__instance, $"{(PlayerLayerEnum)i}", taskFolder);
 
-            for (var i = 0; i < 4; i++)
-            {
-                var folder = CreateFolder(__instance, $"{(PlayerLayerEnum)i}", taskFolder);
+            if (folder.FolderName != "Role")
+                continue;
 
-                if (folder.FolderName == "Role")
-                {
-                    for (var j = 0; j < 5; j++)
-                        CreateFolder(__instance, $"{(Faction)j}", folder);
-                }
-            }
+            for (var j = 0; j < 5; j++)
+                CreateFolder(__instance, $"{(Faction)j}", folder);
         }
     }
 

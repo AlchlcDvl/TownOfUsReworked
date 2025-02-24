@@ -63,7 +63,6 @@ public static class HatPatches
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.FrontLayer);
         }
 
-        // ReSharper disable once InvertIf
         if (__instance.matProperties.MaskLayer <= 0)
         {
             PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.BackLayer, __instance.matProperties.IsLocalPlayer);
@@ -122,7 +121,6 @@ public static class HatPatches
             __instance.BackLayer.sprite = asset.MainImage;
         }
 
-        // ReSharper disable once InvertIf
         if (__instance.HideHat())
         {
             __instance.FrontLayer.enabled = false;

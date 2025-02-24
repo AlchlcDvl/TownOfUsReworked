@@ -21,13 +21,9 @@ public class DebuggerBehaviour : MonoBehaviour
 
     public byte ControllingFigure { get; set; }
 
-    public static DebuggerBehaviour Instance { get; private set; }
-
     public DebuggerBehaviour(IntPtr ptr) : base(ptr)
     {
         SelectedTab = Tabs[0];
-
-        Instance = this;
 
         TestWindow = new(new(20, 20, 0, 0), "Reworked Debugger", () =>
         {
@@ -69,13 +65,13 @@ public class DebuggerBehaviour : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            TestWindow.Enabled = !TestWindow.Enabled;
+        if (!Input.GetKeyDown(KeyCode.F1))
+            return;
 
-            if (!TestWindow.Enabled && IsLobby() && IsLocalGame())
-                MciUtils.RemoveAllPlayers();
-        }
+        TestWindow.Enabled = !TestWindow.Enabled;
+
+        if (!TestWindow.Enabled && IsLobby() && IsLocalGame())
+            MciUtils.RemoveAllPlayers();
     }
 
     public void OnGUI() => TestWindow.OnGUI();

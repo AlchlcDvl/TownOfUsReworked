@@ -3,8 +3,7 @@ namespace TownOfUsReworked.Options;
 public class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(CustomOptionType.String) where T : struct, Enum
 {
     private int Index { get; set; }
-    private IEnumerable<T> Ignore { get; } = ignore;
-    private IEnumerable<T> Values { get; set; }
+    private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);
     private int Count { get; set; }
 
     private void Change(bool incrementing)
@@ -42,7 +41,6 @@ public class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(Cu
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        Values = Enum.GetValues<T>().Except(Ignore);
         Index = Values.IndexOf(Value);
         Count = Values.Count() - 1;
     }

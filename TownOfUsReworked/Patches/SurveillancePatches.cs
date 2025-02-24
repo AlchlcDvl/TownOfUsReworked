@@ -123,7 +123,7 @@ public static class SurveillancePatches
 
         NvActive = false;
 
-        if (HudHandler.Instance.IsCamoed)
+        if (Hud.Instance.IsCamoed)
             Camouflage();
         else
             DefaultOutfitAll();

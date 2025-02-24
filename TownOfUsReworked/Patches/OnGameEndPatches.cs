@@ -9,7 +9,7 @@ public static class OnGameEndPatches
     private static readonly Dictionary<string, IEnumerable<PlayerLayer>> Winners = [];
 
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
-    public static class AmongUsClient_OnGameEnd
+    public static class AmongUsClientOnGameEnd
     {
         public static void Postfix()
         {

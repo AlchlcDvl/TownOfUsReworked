@@ -1,3 +1,5 @@
+using static TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.ClientHandler>;
+
 namespace TownOfUsReworked.Monos;
 
 public class ClientHandler : MonoBehaviour
@@ -49,10 +51,6 @@ public class ClientHandler : MonoBehaviour
 
     private static Vector3 MaxSize = Vector3.zero;
     private static Vector3 MinSize = Vector3.zero;
-
-    public static ClientHandler Instance { get; private set; }
-
-    public ClientHandler(IntPtr ptr) : base(ptr) => Instance = this;
 
     public void OnHudStart(HudManager hud)
     {
@@ -202,6 +200,7 @@ public class ClientHandler : MonoBehaviour
         {
             SettingsPatches.MultiOptionPrefab = Instantiate(SettingsPatches.TogglePrefab, null).DontUnload().DontDestroy();
             SettingsPatches.MultiOptionPrefab.name = "MultiSelectOptionPrefab";
+            SettingsPatches.MultiOptionPrefab.TitleText.fontSize = 2f;
 
             var background = SettingsPatches.MultiOptionPrefab.transform.GetChild(2);
             background.localScale = new(1.75f, 1f, 1f);

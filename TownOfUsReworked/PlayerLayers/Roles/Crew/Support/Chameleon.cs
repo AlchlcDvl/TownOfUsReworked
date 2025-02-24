@@ -27,7 +27,7 @@ public class Chameleon : Crew
             MaxSwoops, new Duration(SwoopDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
-    private void Invis() => Utils.Invis(Player);
+    private void Invis() => MiscUtils.Invis(Player);
 
     private void UnInvis() => DefaultOutfit(Player);
 

@@ -45,10 +45,10 @@ public static class CustomColorManager
     public static Color32 Alternate(this Color32 color, byte val = 51) => ((UColor)color).Alternate(val / 255f);
 
     // public static bool IsColorDark(this Color32 color) => color is { r: < 128, g: < 128, b: 128 };
-    //
+
     // public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
     // {
-    //     if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
+    //     if ((Hud.Instance.IsCamoed && camoCondition) || otherCondition)
     //         return UColor.grey.Shadow();
     //     else if (player.IsMimicking(out var mimicked) && morphCondition)
     //         return mimicked.Data.DefaultOutfit.ColorId.GetColor(true);
@@ -58,7 +58,7 @@ public static class CustomColorManager
 
     public static UColor GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
     {
-        if ((HudHandler.Instance.IsCamoed && camoCondition) || otherCondition)
+        if ((Hud.Instance.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey;
 
         if (player.IsMimicking(out var mimicked) && morphCondition)

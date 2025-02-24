@@ -262,12 +262,12 @@ public static class ChatPatches
         Notifs.Add(targetPlayerId, chat);
         Coroutines.Start(PerformTimedAction(2, p =>
         {
-            if (p == 1)
-            {
-                chat.gameObject.SetActive(false);
-                chat.gameObject.Destroy();
-                Notifs.Remove(targetPlayerId);
-            }
+            if (p < 1)
+                return;
+
+            chat.gameObject.SetActive(false);
+            chat.gameObject.Destroy();
+            Notifs.Remove(targetPlayerId);
         }));
     }
 

@@ -8,7 +8,7 @@ public class Footprint : MonoBehaviour
     private SpriteRenderer Sprite { get; set; }
     private float Time2 { get; set; }
 
-    private static bool Grey => Detective.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (HudHandler.Instance.IsCamoed && Detective.AnonymousFootPrint ==
+    private static bool Grey => Detective.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (Hud.Instance.IsCamoed && Detective.AnonymousFootPrint ==
         FootprintVisibility.OnlyWhenCamouflaged);
 
     public void Start()

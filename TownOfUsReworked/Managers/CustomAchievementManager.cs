@@ -26,9 +26,9 @@ public static class CustomAchievementManager
         new("EerieSilence", eog: true), // Blackmail a silenced player OR Silence a blackmailed player
 
         // Hidden
-        new("Pacifist", eog: true, hidden: true), // Win as a killing role without actually killing anyone
-        new("Bloodthirsty", eog: true, hidden: true), // Win as a killing role by killing the most number of players
-        new("HiddenAlliance", eog: true, hidden: true), // Knight an unrevealed Dictator or Mayor as the Monarch OR be knighted as an unrevealed Dictator or Mayor
+        new("Pacifist", hidden: true, eog: true), // Win as a killing role without actually killing anyone
+        new("Bloodthirsty", hidden: true, eog: true), // Win as a killing role by killing the most number of players
+        new("HiddenAlliance", hidden: true, eog: true), // Knight an unrevealed Dictator or Mayor as the Monarch OR be knighted as an unrevealed Dictator or Mayor
     ];
 
     public static readonly List<Achievement> QueuedAchievements = [];

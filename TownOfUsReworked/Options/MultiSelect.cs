@@ -2,15 +2,8 @@ namespace TownOfUsReworked.Options;
 
 public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : BaseMultiSelectOptionAttribute<T>(CustomOptionType.MultiSelect, all, none) where T : struct, Enum
 {
-    private IEnumerable<T> Values { get; set; }
+    private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);
     private Type InnerType { get; } = typeof(T);
-    private IEnumerable<T> Ignore { get; } = ignore;
-
-    public override void PostLoadSetup()
-    {
-        base.PostLoadSetup();
-        Values = Enum.GetValues<T>().Except(Ignore);
-    }
 
     public override void Debug()
     {

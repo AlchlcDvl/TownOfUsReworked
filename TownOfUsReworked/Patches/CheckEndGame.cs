@@ -239,7 +239,10 @@ public static class OverrideTaskEndGame
     [HarmonyPatch(nameof(GameManager.CheckTaskCompletion))]
     public static bool Prefix(ref bool __result)
     {
+        if (IsHnS())
+            return true;
+
         GameData.Instance.RecomputeTaskCounts();
-        return __result = IsHnS();
+        return __result = false;
     }
 }

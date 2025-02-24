@@ -78,7 +78,7 @@ public static class MainMenuPatches
         button.GetComponent<PassiveButton>().OverrideOnClickListeners(() =>
         {
             Coroutines.Start(ModUpdater.DownloadUpdate(downloadType));
-            button.gameObject.SetActive(false);
+            button.SetActive(false);
         });
 
         Coroutines.Start(PerformTimedAction(0.1f, _ =>
@@ -175,7 +175,7 @@ public static class MainMenuPatches
         var achievementsButton = UObject.Instantiate(__instance.accountCTAButton, __instance.accountCTAButton.transform.parent);
         var statsButton = __instance.accountCTAButton.transform.parent.GetChild(__instance.accountCTAButton.transform.GetSiblingIndex() + 1).GetComponent<PassiveButton>();
         var achPos = statsButton.transform.localPosition;
-        achPos.y = achPos.y - Mathf.Abs(__instance.accountCTAButton.transform.localPosition.y - achPos.y);
+        achPos.y -= Mathf.Abs(__instance.accountCTAButton.transform.localPosition.y - achPos.y);
         achievementsButton.transform.localPosition = achPos;
         achievementsButton.name = "AchievementsButton";
         achievementsButton.buttonText.GetComponent<TextTranslatorTMP>().Destroy();

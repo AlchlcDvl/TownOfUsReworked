@@ -27,7 +27,7 @@ public class Wraith : Intruder
             new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
-    private void Invis() => Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
+    private void Invis() => MiscUtils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
     private void UnInvis() => DefaultOutfit(Player);
 

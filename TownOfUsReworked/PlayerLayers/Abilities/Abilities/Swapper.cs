@@ -44,7 +44,7 @@ public class Swapper : Ability
         SwapMenu.GenButtons(__instance);
     }
 
-    public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update(__instance);
+    public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update();
 
     private bool IsExempt(PlayerVoteArea voteArea)
     {

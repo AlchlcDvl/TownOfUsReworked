@@ -347,7 +347,7 @@ public class Guesser : Evil, IGuesser
         GuessingMenu.Open(PlayerByVoteArea(voteArea));
     }
 
-    public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update(__instance);
+    public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update();
 
     private void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
     {

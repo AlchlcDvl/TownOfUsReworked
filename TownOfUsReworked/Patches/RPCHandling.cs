@@ -220,7 +220,7 @@ public static class RPCHandling
                             case Actor actor:
                             {
                                 actor.PretendRoles.Clear();
-                                actor.PretendRoles.AddRange(reader.ReadLayerList<Role>());
+                                actor.PretendRoles.AddRange(reader.ReadLayers<Role>());
                                 break;
                             }
                             case Allied ally:
@@ -409,8 +409,8 @@ public static class RPCHandling
                     case ActionsRPC.Drop:
                     {
                         var dragger = reader.ReadPlayer();
-                        var dragged1 = BodyById(DragHandler.Instance.Dragging[dragger.PlayerId]);
-                        DragHandler.Instance.StopDrag(dragger);
+                        var dragged1 = BodyById(DragHandler.Dragging[dragger.PlayerId]);
+                        DragHandler.StopDrag(dragger);
                         PlayerLayer.GetILayers<IDragger>().Where(x => x.CurrentlyDragging == dragged1).ForEach(x => x.CurrentlyDragging = null);
                         return;
                     }

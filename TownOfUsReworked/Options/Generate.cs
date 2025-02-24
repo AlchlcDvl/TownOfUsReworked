@@ -9,24 +9,20 @@ public static class Generate
         // Do I care enough to do that? Hell no until it becomes a problem
 
         // So, this is AD from a couple of weeks after the above 3 comments
-        // I thought to myself on the toilet, "What if I just used a class for the headers instead of another property?
-        // Then I don't need to add a random getter setter. I don't have to make the string arrays too because I can just get the declared properties and use their names as the array" and then this genius thing was born
+        // I thought to myself on the toilet, What if I just used a class for the headers instead of another property?
+        // Then I don't need to add a random getter setter. I don't have to make the string arrays too because I can just get the declared properties and use their names as the array... and then this genius thing was born
         AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ForEach(y => y.GetCustomAttribute<BaseHeaderOptionAttribute>()?.SetTypeAndOptions(y));
 
-        // Fixing up accidental duped IDs
-        var d = OptionAttribute.AllOptions.Clone();
-        var opts = OptionAttribute.AllOptions.Where(opt => d.Any(x => !Equals(x, opt) && opt.ID == x.ID)).ToList();
-
-        // This ensures that every ID is unique (I hope)
-        foreach (var opt in opts)
+        // Fixing up accidental duped IDs, this ensures that every ID is unique (I hope)
+        foreach (var opts in OptionAttribute.AllOptions.SplitBy(x => x.ID))
         {
-            var index = OptionAttribute.AllOptions.Where(x => x.ID == opt.ID).IndexOf(opt);
-            var toAdd = index == 0 ? "" : $"{index}";
-            opt.ID += toAdd;
-            opt.Name += toAdd;
+            foreach (var (index, opt) in opts.Indexed())
+            {
+                var toAdd = index == 0 ? "" : $"{index}";
+                opt.ID += toAdd;
+                opt.Name += toAdd;
+            }
         }
-
-        opts.Clear();
 
         // Simple enough, I'm too cautious to let something fuck me up while I set the properties
         foreach (var option in OptionAttribute.AllOptions)
@@ -35,7 +31,9 @@ public static class Generate
             option.Debug();
         }
 
-        OptionAttribute.SortedOptions.AddRange(OptionAttribute.GetOptions<BaseHeaderOptionAttribute>().OrderBy(x => x.Priority));
+        Enum.GetValues<RoleListSlot>().ForEach(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
+
+        OptionAttribute.SortedOptions.AddRange(OptionAttribute.GetOptions<BaseHeaderOptionAttribute>().OrderBy(x => x.Priority)); // Sorting for headers
 
         OptionAttribute.SaveSettings("Default");
 

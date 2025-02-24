@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Classes;
+namespace TownOfUsReworked.Utils;
 
 public static class MciUtils
 {
@@ -90,7 +90,7 @@ public static class MciUtils
         if (!TownOfUsReworked.MciActive)
             return;
 
-        DebuggerBehaviour.Instance.ControllingFigure = playerId;
+        Debugging.Instance.ControllingFigure = playerId;
 
         // Setup new player
         var newPlayer = PlayerById(playerId);

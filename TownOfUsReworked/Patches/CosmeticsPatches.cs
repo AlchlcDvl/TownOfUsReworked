@@ -15,10 +15,10 @@ public static class HatManagerPatches
         if (NameplatesLoaded)
             return;
 
-        NameplatesLoaded = true;
         var allPlates = __instance.allNamePlates.ToList();
         allPlates.AddRange(CustomNameplateRegistry.Values.Select(x => x.CosmeticData));
         __instance.allNamePlates = allPlates.ToArray();
+        NameplatesLoaded = true;
     }
 
     private static bool HatsLoaded;
@@ -29,10 +29,10 @@ public static class HatManagerPatches
         if (HatsLoaded)
             return;
 
-        HatsLoaded = true;
         var allHats = __instance.allHats.ToList();
         allHats.AddRange(CustomHatRegistry.Values.Select(x => x.CosmeticData));
         __instance.allHats = allHats.ToArray();
+        HatsLoaded = true;
     }
 
     private static bool VisorsLoaded;
@@ -43,10 +43,10 @@ public static class HatManagerPatches
         if (VisorsLoaded)
             return;
 
-        VisorsLoaded = true;
         var allVisors = __instance.allVisors.ToList();
         allVisors.AddRange(CustomVisorRegistry.Values.Select(x => x.CosmeticData));
         __instance.allVisors = allVisors.ToArray();
+        VisorsLoaded = true;
     }
 }
 

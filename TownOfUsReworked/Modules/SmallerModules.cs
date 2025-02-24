@@ -60,11 +60,9 @@ public struct RoleOptionData(int chance, int count, bool unique, bool active, La
     public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsRoleList() && ListEntryAttribute.IsAdded(ID.CastToSlot()))) &&
         ID.IsValid(relatedCount);
 
-    public readonly byte[] Serialize() => [ (byte)Chance, (byte)(Chance >> 8), (byte)(Chance >> 16), (byte)(Chance >> 24), (byte)Count, (byte)(Count >> 8), (byte)(Count >> 16), (byte)(Count >>
-        24), (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
+    public readonly byte[] Serialize() => [ .. BitConverter.GetBytes(Chance), .. BitConverter.GetBytes(Count), (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
 
-    public static RoleOptionData Deserialize(byte[] data) => new(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), BitConverter.ToBoolean(data, 8), BitConverter.ToBoolean(data, 9),
-        (LayerEnum)data[^1]);
+    public static RoleOptionData Deserialize(byte[] data) => new(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), data[8] != 0, data[9] != 0, (LayerEnum)data[^1]);
 }
 
 public record LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)
@@ -79,4 +77,10 @@ public class Achievement(string name, bool unlocked = false, bool hidden = false
     public bool EndOfGame { get; } = eog;
     public string Icon { get; } = icon;
     public bool Unlocked { get; set; } = unlocked;
+}
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class SortedAttribute(int order) : Attribute
+{
+    public int Order { get; } = order;
 }

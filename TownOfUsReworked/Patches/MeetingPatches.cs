@@ -26,7 +26,7 @@ public static class MeetingPatches
     public static void StartPostfix(MeetingHud __instance)
     {
         __instance.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
-        ClientHandler.Instance.CloseMenus();
+        Client.Instance.CloseMenus();
         CustomPlayer.Local.DisableButtons();
         Ash.DestroyAll();
         MeetingCount++;
@@ -301,13 +301,9 @@ public static class MeetingPatches
     }
 
     // Thanks twix
-    public static readonly List<byte> ReportedBodies = [];
-
     [HarmonyPatch(nameof(MeetingHud.CoIntro))]
     public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
     {
-        ReportedBodies.Clear();
-
         if (!GameModifiers.IndicateReportedBodies)
             return;
 
@@ -321,14 +317,12 @@ public static class MeetingPatches
             player.Megaphone.transform.localEulerAngles = Vector3.zero;
             player.Megaphone.transform.localScale = Vector3.one;
 
-            if (player.TargetPlayerId != reportedBody.PlayerId)
-            {
-                player.Megaphone.sprite = GameManager.Instance.DeadBodyPrefab.bodyRenderers[0].sprite;
-                player.Megaphone.transform.localScale = new(0.3f, 0.3f, 0.3f);
-                player.Megaphone.transform.localPosition -= new Vector3(0.2f, 0, 0);
-            }
+            if (player.TargetPlayerId == reportedBody.PlayerId)
+                continue;
 
-            ReportedBodies.Add(player.TargetPlayerId);
+            player.Megaphone.sprite = GameManager.Instance.DeadBodyPrefab.bodyRenderers[0].sprite;
+            player.Megaphone.transform.localScale = new(0.3f, 0.3f, 0.3f);
+            player.Megaphone.transform.localPosition -= new Vector3(0.2f, 0, 0);
         }
     }
 
@@ -337,7 +331,7 @@ public static class MeetingPatches
     private static IEnumerator PerformSwaps()
     {
         var swappers = PlayerLayer.GetLayers<Swapper>().Where(x => x.Alive && !PlayerByVoteArea(x.Swap1).HasDied() && !PlayerByVoteArea(x.Swap2).HasDied());
-        var duration = 1f / (swappers.Count() + 1);
+        var duration = 1.5f / (swappers.Count() + 1);
 
         foreach (var role in swappers)
         {

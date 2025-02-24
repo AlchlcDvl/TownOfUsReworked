@@ -84,7 +84,7 @@ public class Dictator : Crew, IRevealer
         return player.HasDied() || player.AmOwner || Dead || !Revealed;
     }
 
-    public override void UpdateMeeting(MeetingHud __instance) => DictMenu.Update(__instance);
+    public override void UpdateMeeting(MeetingHud __instance) => DictMenu.Update();
 
     private bool Usable() => !RoundOne && !Tribunal;
 

@@ -1,6 +1,6 @@
-﻿namespace TownOfUsReworked.Classes;
+﻿namespace TownOfUsReworked.Utils;
 
-public static class Utils
+public static class MiscUtils
 {
     public static bool HasDied(this PlayerControl player) => !player || !player.Data || player.Data.IsDead || player.Data.Disconnected;
 
@@ -50,9 +50,9 @@ public static class Utils
 
     public static CustomPlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl) => (CustomPlayerOutfitType)playerControl.CurrentOutfitType;
 
-    public static void Morph(PlayerControl player, PlayerControl morphTarget) => Coroutines.Start(MorphCoro(player, morphTarget));
+    public static void Morph(PlayerControl player, PlayerControl morphTarget) => Coroutines.Start(CoMorph(player, morphTarget));
 
-    private static IEnumerator MorphCoro(PlayerControl player, PlayerControl morphTarget)
+    private static IEnumerator CoMorph(PlayerControl player, PlayerControl morphTarget)
     {
         if ((int)player.GetCustomOutfitType() is 3 or 4 or 5 or 6 or 7)
             yield break;
@@ -61,13 +61,16 @@ public static class Utils
             morphTarget = PlayerById(morphId);
 
         CachedMorphs.TryAdd(player.PlayerId, morphTarget.PlayerId);
+        var playerSpeed = player.GetSize();
+        var morphSpeed = morphTarget.GetSpeed();
+        var playerSize = player.GetSize();
+        var morphSize = morphTarget.GetSize();
 
         Coroutines.Start(PerformTimedAction(1, p =>
         {
-            var color = UColor.Lerp(player.Data.DefaultOutfit.ColorId.GetColor(false), morphTarget.Data.DefaultOutfit.ColorId.GetColor(false), p);
-            PlayerMaterial.SetColors(color, player.MyRend());
-            TransitioningSize[player.PlayerId] = Mathf.Lerp(player.GetSize(), morphTarget.GetSize(), p);
-            TransitioningSpeed[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), morphTarget.GetSpeed(), p);
+            PlayerMaterial.SetColors(UColor.Lerp(player.Data.DefaultOutfit.ColorId.GetColor(false), morphTarget.Data.DefaultOutfit.ColorId.GetColor(false), p), player.MyRend());
+            TransitioningSize[player.PlayerId] = Mathf.Lerp(playerSize, morphSize, p);
+            TransitioningSpeed[player.PlayerId] = Mathf.Lerp(playerSpeed, morphSpeed, p);
 
             if (p < 1)
                 return;
@@ -79,27 +82,23 @@ public static class Utils
         yield return PerformTimedAction(0.5f, p =>
         {
             player.SetHatAndVisorAlpha(1 - p);
-            var color = player.cosmetics.skin.layer.color;
-            player.cosmetics.skin.layer.color = new(color.r, color.g, color.b, 1 - p);
+            player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(1 - p);
         });
 
         yield return PerformTimedAction(0.5f, p =>
         {
             player.SetHatAndVisorAlpha(p);
-            var color = player.cosmetics.skin.layer.color;
-            player.cosmetics.skin.layer.color = new(color.r, color.g, color.b, p);
+            player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(p);
         });
 
         player.SetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
     }
 
-    public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(DefaultOutfitCoro(player));
+    public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(CoDefaultOutfit(player));
 
-    private static IEnumerator DefaultOutfitCoro(PlayerControl player)
+    private static IEnumerator CoDefaultOutfit(PlayerControl player)
     {
-        var outfit = player.GetCustomOutfitType();
-
-        switch (outfit)
+        switch (player.GetCustomOutfitType())
         {
             case CustomPlayerOutfitType.Invis:
             {
@@ -113,8 +112,8 @@ public static class Utils
 
                     var text = player.NameText();
                     text.color = new(text.color.a, text.color.a, text.color.a, p);
-                    var cbtext = player.ColorBlindText();
-                    cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, p);
+                    var cbText = player.ColorBlindText();
+                    cbText.color = new(cbText.color.a, cbText.color.a, cbText.color.a, p);
                 });
                 break;
             }
@@ -182,7 +181,7 @@ public static class Utils
             }
         }
 
-        if (!HudHandler.Instance.IsCamoed && player.GetCustomOutfitType() != CustomPlayerOutfitType.Default)
+        if (!Hud.Instance.IsCamoed && player.GetCustomOutfitType() != CustomPlayerOutfitType.Default)
             player.SetOutfit(CustomPlayerOutfitType.Default);
 
         Shapeshifted = false;
@@ -196,19 +195,22 @@ public static class Utils
             return;
 
         player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
+        var speed = player.GetSpeed();
+        var size = player.GetSize();
+        var rend = player.MyRend();
         Coroutines.Start(PerformTimedAction(1, p =>
         {
             var color = UColor.Lerp(player.Data.DefaultOutfit.ColorId.GetColor(false), UColor.grey, p);
-            PlayerMaterial.SetColors(color, player.MyRend());
+            PlayerMaterial.SetColors(color, rend);
             player.SetHatAndVisorAlpha(1 - p);
             var color2 = player.cosmetics.skin.layer.color;
             player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
 
             if (BetterSabotages.CamoHideSize)
-                TransitioningSize[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), 1f, p);
+                TransitioningSize[player.PlayerId] = Mathf.Lerp(size, 1f, p);
 
             if (BetterSabotages.CamoHideSpeed)
-                TransitioningSpeed[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), 1f, p);
+                TransitioningSpeed[player.PlayerId] = Mathf.Lerp(speed, 1f, p);
 
             if (p < 1)
                 return;
@@ -229,13 +231,13 @@ public static class Utils
         {
             player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(1, ca, p));
 
-            if (!player.AmOwner)
-            {
-                var text = player.NameText();
-                text.color = new(text.color.r, text.color.g, text.color.b, 1 - p);
-                var cbtext = player.ColorBlindText();
-                cbtext.color = new(cbtext.color.r, cbtext.color.g, cbtext.color.b, 1 - p);
-            }
+            if (player.AmOwner)
+                return;
+
+            var text = player.NameText();
+            text.color = new(text.color.r, text.color.g, text.color.b, 1 - p);
+            var cbText = player.ColorBlindText();
+            cbText.color = new(cbText.color.r, cbText.color.g, cbText.color.b, 1 - p);
         }));
     }
 
@@ -371,6 +373,7 @@ public static class Utils
     public static void MarkMeetingDead(PlayerControl target, PlayerControl killer)
     {
         Play("Kill");
+        var voteArea = VoteAreaByPlayer(target);
 
         if (target.AmOwner)
         {
@@ -399,28 +402,7 @@ public static class Utils
                 assassin.GuessMenu.HideButtons();
             }
         }
-
-        target.CustomDie(DeathReasonEnum.Guessed, killer);
-        var voteArea = VoteAreaByPlayer(target);
-        voteArea.AmDead = true;
-        voteArea.Overlay.gameObject.SetActive(true);
-        voteArea.Overlay.color = UColor.white;
-        voteArea.XMark.gameObject.SetActive(true);
-        voteArea.XMark.transform.localScale = Vector3.one;
-
-        if (TalkingPatches.CachedOverlay)
-        {
-            foreach (var role in PlayerLayer.GetILayers<IIntimidator>())
-            {
-                if (target == role.Target)
-                {
-                    voteArea.Overlay.sprite = TalkingPatches.CachedOverlay;
-                    voteArea.Overlay.color = TalkingPatches.CachedColor ?? UColor.white;
-                }
-            }
-        }
-
-        if (!CustomPlayer.LocalCustom.Dead)
+        else if (!CustomPlayer.LocalCustom.Dead)
         {
             if (CustomPlayer.Local.TryGetILayer<IGuesser>(out var assassin))
             {
@@ -455,28 +437,47 @@ public static class Utils
             }
         }
 
+        target.CustomDie(DeathReasonEnum.Guessed, killer);
+        voteArea.AmDead = true;
+        voteArea.Overlay.gameObject.SetActive(true);
+        voteArea.Overlay.color = UColor.white;
+        voteArea.XMark.gameObject.SetActive(true);
+        voteArea.XMark.transform.localScale = Vector3.one;
+
+        if (TalkingPatches.CachedOverlay)
+        {
+            foreach (var role in PlayerLayer.GetILayers<IIntimidator>())
+            {
+                if (target == role.Target)
+                {
+                    voteArea.Overlay.sprite = TalkingPatches.CachedOverlay;
+                    voteArea.Overlay.color = TalkingPatches.CachedColor ?? UColor.white;
+                }
+            }
+        }
+
         foreach (var area in AllVoteAreas())
         {
             if (area.VotedFor == target.PlayerId || area.TargetPlayerId == target.PlayerId)
                 area.UnsetVote();
         }
 
-        if (AmongUsClient.Instance.AmHost)
-        {
-            foreach (var pol in PlayerLayer.GetLayers<Politician>())
-            {
-                if (pol.Player == target)
-                    pol.ExtraVotes.Clear();
-                else
-                {
-                    var votesRegained = pol.ExtraVotes.RemoveAll(x => x == target.PlayerId);
-                    pol.VoteBank += votesRegained;
-                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, pol, PoliticianActionsRPC.Add, votesRegained);
-                }
-            }
+        if (!AmongUsClient.Instance.AmHost)
+            return;
 
-            Meeting().CheckForEndVoting();
+        foreach (var pol in PlayerLayer.GetLayers<Politician>())
+        {
+            if (pol.Player == target)
+                pol.ExtraVotes.Clear();
+            else
+            {
+                var votesRegained = pol.ExtraVotes.RemoveAll(x => x == target.PlayerId);
+                pol.VoteBank += votesRegained;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, pol, PoliticianActionsRPC.Add, votesRegained);
+            }
         }
+
+        Meeting().CheckForEndVoting();
     }
 
     public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
@@ -651,7 +652,7 @@ public static class Utils
         SetFullScreenHUD();
     }
 
-    public static void TransitionFlash(Color32 color, float duration = 2f, float a = 1f, float transitionDur = 0.5f) => Coroutines.Start(CoTransitionFlash(color, duration, a, transitionDur));
+    // public static void TransitionFlash(Color32 color, float duration = 2f, float a = 1f, float transitionDur = 0.5f) => Coroutines.Start(CoTransitionFlash(color, duration, a, transitionDur));
 
     public static void TransitionFlash(UColor color, float duration = 2f, float a = 1f, float transitionDur = 0.5f) => Coroutines.Start(CoTransitionFlash(color, duration, a, transitionDur));
 
@@ -919,28 +920,32 @@ public static class Utils
     {
         foreach (var task in player.myTasks)
         {
-            if (task.TryCast<NormalPlayerTask>(out var normalPlayerTask))
+            if (!task.TryCast<NormalPlayerTask>(out var normalPlayerTask))
+                continue;
+
+            var updateArrow = normalPlayerTask.taskStep > 0;
+            normalPlayerTask.taskStep = 0;
+            normalPlayerTask.Initialize();
+
+            if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
+                UObject.FindObjectsOfType<TowelTaskConsole>().ForEach(x => x.Image.color = UColor.white);
+
+            normalPlayerTask.taskStep = 0;
+
+            switch (normalPlayerTask.TaskType)
             {
-                var updateArrow = normalPlayerTask.taskStep > 0;
-                normalPlayerTask.taskStep = 0;
-                normalPlayerTask.Initialize();
-
-                if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
-                    UObject.FindObjectsOfType<TowelTaskConsole>().ForEach(x => x.Image.color = UColor.white);
-
-                normalPlayerTask.taskStep = 0;
-
-                if (normalPlayerTask.TaskType == TaskTypes.UploadData)
+                case TaskTypes.UploadData:
+                case TaskTypes.EmptyGarbage or TaskTypes.EmptyChute when (MapPatches.CurrentMap is 0 or 3 or 4 or 7):
+                {
                     normalPlayerTask.taskStep = 1;
-
-                if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (MapPatches.CurrentMap is 0 or 3 or 4 or 7))
-                    normalPlayerTask.taskStep = 1;
-
-                if (updateArrow)
-                    normalPlayerTask.UpdateArrowAndLocation();
-
-                player.Data.FindTaskById(task.Id).Complete = false;
+                    break;
+                }
             }
+
+            if (updateArrow)
+                normalPlayerTask.UpdateArrowAndLocation();
+
+            player.Data.FindTaskById(task.Id).Complete = false;
         }
     }
 
@@ -950,11 +955,9 @@ public static class Utils
         currentVal += value;
 
         if (currentVal > max)
-            currentVal = min;
-        else if (currentVal < min)
-            currentVal = max;
+            return min;
 
-        return currentVal;
+        return currentVal < min ? max : currentVal;
     }
 
     public static int CycleInt(int max, int min, int currentVal, bool increment, int change = 1) => (int)CycleFloat(max, min, currentVal, increment, change);
@@ -997,6 +1000,7 @@ public static class Utils
             if (!overflow && word.Length > width)
             {
                 string word1;
+
                 for (var index = 0; index < word.Length; index += word1.Length)
                 {
                     word1 = word[index..Mathf.Min(width, word.Length - index)];
@@ -1092,11 +1096,11 @@ public static class Utils
         return path.TrueSplit('.')[^1];
     }
 
-    public static string[] TrueSplit(this string @string, string separator) => @string.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    // public static string[] TrueSplit(this string @string, string separator) => @string.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
     public static string[] TrueSplit(this string @string, char separator) => @string.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-    public static string[] TrueSplit(this string @string, params string[] separators) => @string.Split(separators, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    // public static string[] TrueSplit(this string @string, params string[] separators) => @string.Split(separators, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
     public static string[] TrueSplit(this string @string, params char[] separators) => @string.Split(separators, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
@@ -1241,16 +1245,16 @@ public static class Utils
 
     public static IEnumerable<T> GetAllComponents<T>(this Transform self) where T : Component
     {
-        var result = new List<T>();
         var comp = self.GetComponent<T>();
 
         if (comp)
-            result.Add(comp);
+            yield return comp;
 
         for (var i = 0; i < self.childCount; i++)
-            result.AddRange(self.GetChild(i).GetAllComponents<T>());
-
-        return result;
+        {
+            foreach (var comp2 in self.GetChild(i).GetAllComponents<T>())
+                yield return comp2;
+        }
     }
 
     public static IEnumerable<T> GetValuesFromTo<T>(T start, T end, Func<T, bool> predicate = null, bool startInclusive = true, bool endInclusive = true) where T : struct, Enum
@@ -1433,7 +1437,7 @@ public static class Utils
         return new string(padChar, left) + text + new string(padChar, right);
     }
 
-    public static bool IsAny<T>(this T item, params T[] items) where T : UObject => items.Any(x => x == item);
+    public static bool IsAny<T>(this T item, params T[] items) => items.Contains(item);
 
     public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) != null;
 
@@ -1513,15 +1517,7 @@ public static class Utils
 
     public static RoleListSlot CastToSlot(this LayerEnum layer) => Enum.Parse<RoleListSlot>($"{layer}");
 
-    public static string Join<T>(char separator, IEnumerable<T> items)
-    {
-        if (!items.Any())
-            return "";
-
-        var result = "";
-        items.ForEach(x => result += $"{separator}{x}");
-        return result[1..];
-    }
+    public static string Join<T>(char separator, IEnumerable<T> items) => Join($"{separator}", items);
 
     public static string Join<T>(string separator, IEnumerable<T> items)
     {

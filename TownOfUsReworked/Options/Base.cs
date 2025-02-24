@@ -5,6 +5,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];
     public static readonly List<BaseHeaderOptionAttribute> SortedOptions = [];
+
     public string ID { get; set; }
     public MonoBehaviour Setting { get; set; }
     public MonoBehaviour ViewSetting { get; set; }
@@ -15,7 +16,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     protected FieldInfo Field { get; private set; }
     protected bool IsProperty => Property != null;
     protected bool IsField => Field != null;
-    public string Name { get; set; } // Not actually the setting text, just the property/class name :]
+    public string Name { get; set; } // Not actually the setting text, just the member name :]
     public KeyValuePair<byte, byte> RpcId { get; private set; }
 
     protected static string LastChangedSetting = "";
@@ -82,7 +83,8 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         ([ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Vanilla, GameMode.RoleList ]),
         ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny ]),
         ([ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ]),
-        ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist" ], [ GameMode.RoleList ]),
+        ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleListRoles", "RoleListModifiers",
+            "RoleListDispositions", "RoleListAbilities" ], [ GameMode.RoleList ]),
         ([ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.RoleList, GameMode.AllAny ]),
         ([ "NoSolo" ], [ NoSolo.SameNKs ])
     ];

@@ -65,11 +65,19 @@ public static class PerformSabotage
 
         var blocked = LocalNotBlocked();
 
-        if (!blocked)
-            BlockExposed = true;
-
-        if (blocked && !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled())
-            HUD().ToggleMapVisible(new() { Mode = MapOptions.Modes.Sabotage });
+        switch (blocked)
+        {
+            case false:
+            {
+                BlockExposed = true;
+                break;
+            }
+            case true when !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled():
+            {
+                HUD().ToggleMapVisible(new() { Mode = MapOptions.Modes.Sabotage });
+                break;
+            }
+        }
 
         return false;
     }

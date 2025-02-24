@@ -31,7 +31,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<DebuggerBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<MissingBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<CustomKillAnimationPlayer>();
-        ClassInjector.RegisterTypeInIl2Cpp<CameraEffect>();
+        ClassInjector.RegisterTypeInIl2Cpp<CameraEffectHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<Range>();
         ClassInjector.RegisterTypeInIl2Cpp<Bug>();
         ClassInjector.RegisterTypeInIl2Cpp<Bomb>();
@@ -43,12 +43,12 @@ public static class AllMonos
         if (ComponentsAdded)
             return;
 
-        TownOfUsReworked.ModInstance.AddComponent<DebuggerBehaviour>();
+        Debugging.AddInstance();
 
-        TownOfUsReworked.ModInstance.AddComponent<HudHandler>();
-        TownOfUsReworked.ModInstance.AddComponent<ClientHandler>();
-        TownOfUsReworked.ModInstance.AddComponent<DragHandler>();
-        TownOfUsReworked.ModInstance.AddComponent<ColorHandler>();
+        Hud.AddInstance();
+        Client.AddInstance();
+        Drags.AddInstance();
+        Colors.AddInstance();
 
         LayerHandler.Crewmate = RoleManager.Instance.GetRole(RoleTypes.Crewmate);
         LayerHandler.Impostor = RoleManager.Instance.GetRole(RoleTypes.Impostor);

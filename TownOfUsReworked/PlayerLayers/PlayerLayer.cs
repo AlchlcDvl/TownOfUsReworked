@@ -6,12 +6,12 @@ public abstract class PlayerLayer : IPlayerLayer
     public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
     public virtual LayerEnum Type => LayerEnum.None;
     public virtual Func<string> Description => () => "- None";
-    public virtual Func<string> Attributes => () => "- None";
     public virtual AttackEnum AttackVal => AttackEnum.None;
     public virtual DefenseEnum DefenseVal => DefenseEnum.None;
     public virtual bool Hidden => false;
 
     public string Name { get; protected set; }
+    public LayerHandler Handler { get; set; }
     public PlayerControl Player { get; set; }
     public bool Winner { get; set; }
     protected bool Ignore { get; private set; }
