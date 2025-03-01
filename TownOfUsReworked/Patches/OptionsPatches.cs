@@ -276,7 +276,7 @@ public static class SettingsPatches
                     CustomOptionType.Layer => LayersPrefab,
                     CustomOptionType.Toggle => TogglePrefab,
                     CustomOptionType.Entry or CustomOptionType.MultiSelect => MultiSelectPrefab,
-                    _ => throw new NotImplementedException($"There's no prefab for {option.Type}"),
+                    _ => throw new ArgumentOutOfRangeException($"There's no prefab for {option.Type}"),
                 }), parent);
                 option.OptionCreated();
 

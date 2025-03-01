@@ -35,6 +35,12 @@ public class Grenadier : Intruder, IFlasher
             "FLASH", new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, new CanClickAgain(false));
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (FlashedPlayers.Contains(player.PlayerId) && GrenadierIndicators)
+            name += " <#85AA5BFF>ㅇ</color>";
+    }
+
     private void Flash()
     {
         foreach (var id in FlashedPlayers)

@@ -38,5 +38,9 @@ public class Phantom : Neutral, IGhosty
         CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
     }
 
-    public override void UpdatePlayer() => (this as IGhosty).UpdateGhost();
+    public override void UpdatePlayer()
+    {
+        base.UpdatePlayer();
+        (this as IGhosty).UpdateGhost();
+    }
 }

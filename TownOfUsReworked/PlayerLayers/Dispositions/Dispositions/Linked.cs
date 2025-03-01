@@ -17,4 +17,21 @@ public class Linked : Disposition
     public override Func<string> Description => () => $"- Help {OtherLink.name} win";
 
     public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Linked;
+
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (OtherLink != player)
+            return;
+
+        name += $" {ColoredSymbol}";
+
+        if (!LinkedRoles || revealed)
+            return;
+
+        var role = handler.CustomRole;
+        color = role.Color;
+        name += $"\n{role}";
+        revealed = true;
+        removeFromConsig = true;
+    }
 }

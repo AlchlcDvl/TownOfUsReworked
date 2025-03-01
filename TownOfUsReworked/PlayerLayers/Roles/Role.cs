@@ -49,7 +49,7 @@ public abstract class Role : PlayerLayer
 
     public Dictionary<byte, PlayerArrow> AllArrows { get; } = [];
     public Dictionary<byte, PlayerArrow> DeadArrows { get; } = [];
-    private Dictionary<PointInTime, float> Positions { get; } = [];
+    private Dictionary<float, PointInTime> Positions { get; } = [];
     public Dictionary<byte, PlayerArrow> YellerArrows { get; } = [];
 
     public List<LayerEnum> RoleHistory { get; } = [];
@@ -209,23 +209,23 @@ public abstract class Role : PlayerLayer
 
     public override void OnIntroEnd() => UpdateButtons();
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        DeadArrows.Keys.Where(id => !PlayerById(id)).ForEach(DestroyArrowD);
+    public override void UpdateHud(HudManager __instance) => DeadArrows.Keys.Where(id => !PlayerById(id)).ForEach(DestroyArrowD);
 
+    public override void UpdatePlayer()
+    {
         if (!Timekeeper.TkExists || Dead || (Faction is Faction.Syndicate && Timekeeper.TimeRewindImmunity) || Faction == Faction.GameMode)
             return;
 
         if (!Rewinding)
         {
-            Positions.TryAdd(new(Player.transform.position), Time.time);
-            (from pair in Positions let seconds = Time.time - pair.Value where seconds > Timekeeper.TimeDur select pair.Key).ForEach(x => Positions.Remove(x));
+            Positions.TryAdd(Time.time, new(Player.transform.position));
+            (from pair in Positions let seconds = Time.time - pair.Key where seconds > Timekeeper.TimeDur select pair.Key).ForEach(x => Positions.Remove(x));
         }
         else if (Positions.Any())
         {
-            var point = Positions.Keys.Last();
-            Player.RpcCustomSnapTo(point.Position);
-            Positions.Remove(point);
+            var point = Positions.Last();
+            Player.CustomSnapTo(point.Value.Position);
+            Positions.Remove(point.Key);
         }
         else
             Positions.Clear();
@@ -261,16 +261,12 @@ public abstract class Role : PlayerLayer
                 _ => WinLose.None,
             };
 
-            if (NeutralSettings.NoSolo == NoSolo.SameNKs)
+            foreach (var role2 in GetLayers<Neutral>().Where(x => x.Type == Type))
             {
-                foreach (var role2 in GetLayers<Neutral>().Where(x => x.Type == Type))
-                {
-                    if (!role2.Disconnected && role2.Faithful)
-                        role2.Winner = true;
-                }
+                if (!role2.Disconnected && role2.Faithful)
+                    role2.Winner = true;
             }
 
-            Winner = true;
             CallRpc(CustomRPC.WinLose, WinState, this);
         }
         else if (Type == LayerEnum.Betrayer && Faction == Faction.Neutral && BetrayerWins())
@@ -283,6 +279,12 @@ public abstract class Role : PlayerLayer
     private bool BombUsable() => Bombed;
 
     private bool RequestUsable() => Requesting;
+
+    public virtual void Reset(bool meeting, bool start)
+    {
+        if (Requesting && !start)
+            BountyTimer++;
+    }
 
     /*private bool CallCondition() => IsLeft == PlayerIsLeft && !PlatformIsUsed && MapPatches.CurrentMap != 4;
 
@@ -435,6 +437,7 @@ public abstract class Role : PlayerLayer
             return;
 
         revealer.Revealed = true;
+        revealer.OnReveal();
         Flash(revealer.Color);
         BreakShield(player, true);
         GetILayers<ITrapper>().ForEach(x => x.Trapped.Remove(player.PlayerId));

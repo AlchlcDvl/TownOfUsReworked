@@ -31,20 +31,20 @@ public delegate string LabelFunc();
 
 public delegate string SpriteFunc();
 
-public record PostDeath(bool Value);
+public record struct PostDeath(bool Value);
 
-public record CanClickAgain(bool Value);
+public record struct CanClickAgain(bool Value);
 
-// public record Manual(bool Value);
+// public record struct Manual(bool Value);
 
-public record SpriteName(string Value);
+public record struct SpriteName(string Value);
 
-public record Cooldown(float Value);
+public record struct Cooldown(float Value);
 
-public record Duration(float Value);
+public record struct Duration(float Value);
 
-public record Delay(float Value);
+public record struct Delay(float Value);
 
-public record OtherDelay(float Value);
+public record struct OtherDelay(float Value);
 
-public record UsesDecrement(int Value);
+public record struct UsesDecrement(int Value);

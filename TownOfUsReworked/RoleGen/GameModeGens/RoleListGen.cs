@@ -4,8 +4,6 @@ namespace TownOfUsReworked.RoleGen;
 
 public class RoleListGen : BaseRoleGen
 {
-    public override bool AllowNonRoles => false;
-
     public override void InitList()
     {
         SetPostmortals.Phantoms = GameModeSettings.PhantomCount;
@@ -17,6 +15,9 @@ public class RoleListGen : BaseRoleGen
         {
             foreach (var id in entry.Get())
             {
+                if (id == RoleListSlot.None)
+                    break;
+
                 var rateLimit = 0;
                 var cachedCount = AllRoles.Count;
 
@@ -52,7 +53,7 @@ public class RoleListGen : BaseRoleGen
                             RoleListSlot.IntruderUtil => IU.Random(),
                             RoleListSlot.IntruderHead => IH.Random(),
                             RoleListSlot.RandomIntruder => RoleGenManager.Intruders.Random().Random(),
-                            RoleListSlot.RegularIntruder => RegNeutral.Random().Random(),
+                            RoleListSlot.RegularIntruder => RegIntruders.Random().Random(),
                             RoleListSlot.PowerIntruder => PowerIntruders.Random().Random(),
                             RoleListSlot.NonIntruder => NonIntruders.Random().Random().Random(),
                             RoleListSlot.SyndicateKill => SyK.Random(),
@@ -95,7 +96,7 @@ public class RoleListGen : BaseRoleGen
                         });
                     }
 
-                    if (CannotAdd(layer))
+                    if (CannotAdd(layer, AllRoles))
                         rateLimit++;
                     else
                         AllRoles.Add(GetSpawnItem(layer));
@@ -113,5 +114,5 @@ public class RoleListGen : BaseRoleGen
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
-    private static bool CannotAdd(LayerEnum id) => AllRoles.Any(x => x.ID == id && x.Unique) || ListEntryAttribute.IsBanned(id.CastToSlot());
+    public static bool CannotAdd(LayerEnum id, List<RoleOptionData> list) => list.Any(x => x.ID == id && x.Unique) || ListEntryAttribute.IsBanned(id.CastToSlot());
 }

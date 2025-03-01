@@ -105,7 +105,8 @@ public static class UpdateSplashPatch
         Message("Pre-setting mod data");
 
         ReactorCredits.Register<TownOfUsReworked>(x => x is ReactorCredits.Location.MainMenu);
-        NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
+        NormalGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 250).ToArray();
+        HideNSeekGameOptionsV08.MinPlayers = Enumerable.Repeat(1, 250).ToArray();
         ReworkedStart = TranslationManager.GetOrAddName("Translation.ReworkedStart");
         AllMonos.RegisterMonos();
 

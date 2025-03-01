@@ -29,6 +29,12 @@ public class Plaguebearer : Harbinger<Pestilence>
             (PlayerBodyExclusion)Exception);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (Infected.Contains(player.PlayerId))
+            name += " <#CFFE61FF>ρ</color>";
+    }
+
     public void RpcSpreadInfection(PlayerControl source, PlayerControl target)
     {
         if (Infected.Contains(source.PlayerId) == Infected.Contains(target.PlayerId))

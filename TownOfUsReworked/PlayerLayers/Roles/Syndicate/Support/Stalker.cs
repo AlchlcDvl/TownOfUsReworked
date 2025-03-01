@@ -51,7 +51,7 @@ public class Stalker : Syndicate
 
     private bool Usable() => !HoldsDrive;
 
-    public override void OnDriveReceivedLocal()
+    protected override void OnDriveReceivedLocal()
     {
         foreach (var player in AllPlayers())
         {

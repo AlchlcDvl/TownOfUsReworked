@@ -15,16 +15,16 @@ public static class BetterAirship
     private static bool EnableBetterAirship = true;
 
     /// <summary>
-    /// Controls how players spawn on the Airship map.<br></br>
+    /// Controls how players spawn on the Airship map.<br/>
     /// Options: <c>Normal</c>, <c>Meeting</c>, <c>Fixed</c>, <c>RandomSynchronized</c>, <c>Random</c>, <c>Custom</c>
     /// </summary>
     [StringOption<AirshipSpawnType>]
     [Sorted(1)]
-    private static AirshipSpawnType SpawnType = AirshipSpawnType.Normal;
+    public static AirshipSpawnType SpawnType = AirshipSpawnType.Normal;
 
     private static AirshipSpawnLocation Location1Priv = AirshipSpawnLocation.Engine;
     /// <summary>
-    /// Sets the first location when selecting the custom spawn type.<br></br>
+    /// Sets the first location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
     /// </summary>
     [StringOption<AirshipSpawnLocation>]
@@ -51,7 +51,7 @@ public static class BetterAirship
 
     private static AirshipSpawnLocation Location2Priv = AirshipSpawnLocation.Kitchen;
     /// <summary>
-    /// Sets the second location when selecting the custom spawn type.<br></br>
+    /// Sets the second location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
     /// </summary>
     [StringOption<AirshipSpawnLocation>]
@@ -78,7 +78,7 @@ public static class BetterAirship
 
     private static AirshipSpawnLocation Location3Priv = AirshipSpawnLocation.VaultRoom;
     /// <summary>
-    /// Sets the third location when selecting the custom spawn type.<br></br>
+    /// Sets the third location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
     /// </summary>
     [StringOption<AirshipSpawnLocation>]
@@ -122,43 +122,49 @@ public static class BetterAirship
     private static bool MoveDivert = false;
 
     /// <summary>
-    /// Controls the Admin table location.<br></br>
+    /// Controls the Admin table location.<br/>
     /// Options: <c>DontMove</c>, <c>Cockpit</c>, <c>MainHall</c>
     /// </summary>
     [StringOption<MoveAdmin>]
     private static MoveAdmin MoveAdmin = MoveAdmin.DontMove;
 
     /// <summary>
-    /// Controls the Electrical panel location.<br></br>
+    /// Controls the Electrical panel location.<br/>
     /// Options: <c>DontMove</c>, <c>Vault</c>, <c>Electrical</c>
     /// </summary>
     [StringOption<MoveElectrical>]
     private static MoveElectrical MoveElectrical = MoveElectrical.DontMove;
 
     /// <summary>
-    /// Minimum time required for door swipe animations.<br></br>
-    /// Default: <c>0.4</c>s<br></br>
-    /// Range: <c>0</c> to <c>10</c>s<br></br>
-    /// Increment: <c>0.1</c>s
+    /// Minimum time required for door swipe animations.
     /// </summary>
+    /// <remarks>
+    /// Default: <c>0.4</c>s<br/>
+    /// Range: <c>0</c> to <c>10</c>s<br/>
+    /// Increment: <c>0.1</c>s
+    /// </remarks>
     [NumberOption(0f, 10f, 0.1f, Format.Time)]
     public static Number MinDoorSwipeTime = 0.4f;
 
     /// <summary>
-    /// Time until crash code resets during sabotage.<br></br>
-    /// Default: <c>10</c>s<br></br>
-    /// Range: <c>1</c> to <c>20</c>s<br></br>
-    /// Increment: <c>1</c>s
+    /// Time until crash code resets during sabotage.
     /// </summary>
+    /// <remarks>
+    /// Default: <c>10</c>s<br/>
+    /// Range: <c>1</c> to <c>20</c>s<br/>
+    /// Increment: <c>1</c>s
+    /// </remarks>
     [NumberOption(30f, 100f, 5f, Format.Time)]
     private static Number CrashTimer = 90;
 
     /// <summary>
     /// Time until crash code resets during sabotage.
-    /// Default: <c>10</c> seconds<br></br>
-    /// Range: <c>1</c> to <c>20</c> seconds<br></br>
-    /// Increment: <c>1</c> seconds
     /// </summary>
+    /// <remarks>
+    /// Default: <c>10</c> seconds<br/>
+    /// Range: <c>1</c> to <c>20</c> seconds<br/>
+    /// Increment: <c>1</c> seconds
+    /// </remarks>
     [NumberOption(1f, 20f, 1f, Format.Time)]
     private static Number CrashCodeResetTimer = 10;
 
@@ -211,9 +217,9 @@ public static class BetterAirship
             {
                 var electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
 
-                switch ((int)MoveElectrical)
+                switch (MoveElectrical)
                 {
-                    case 1:
+                    case MoveElectrical.Vault:
                     {
                         electrical.transform.position = new(-8.818f, 13.184f, 0f);
                         electrical.transform.localScale = new(0.909f, 0.818f, 1);
@@ -225,7 +231,7 @@ public static class BetterAirship
                         supportElectrical.transform.localScale = new(1, 1, 1);
                         break;
                     }
-                    case 2:
+                    case MoveElectrical.Electrical:
                     {
                         electrical.transform.position = new(19.339f, -3.665f, 0f);
                         break;
@@ -251,7 +257,7 @@ public static class BetterAirship
     }
 
     /// <summary>
-    /// Manages custom spawn behavior and locations for players.<br></br>
+    /// Manages custom spawn behavior and locations for players.<br/>
     /// Adds additional spawn points and implements different spawn modes.
     /// </summary>
     [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
@@ -324,9 +330,9 @@ public static class BetterAirship
         /// <param name="playerId">The ID of the player to reposition</param>
         /// <returns>A Vector3 position where the player should spawn during meetings</returns>
         /// <remarks>
-        /// Positions are calculated in a grid pattern:<br></br>
-        /// - Players are arranged in two rows<br></br>
-        /// - X position is calculated based on total player count<br></br>
+        /// Positions are calculated in a grid pattern:<br/>
+        /// - Players are arranged in two rows<br/>
+        /// - X position is calculated based on total player count<br/>
         /// - Y position alternates between 16.0 and 14.4 based on odd/even player IDs
         /// </remarks>
         private static Vector3 GetMeetingPosition(byte playerId)

@@ -16,18 +16,19 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
     public override void ViewUpdate()
     {
         base.ViewUpdate();
-        ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.color = Value[0].TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
+        ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.color = Value.First().TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color :
+            UColor.white;
     }
 
     public override void Update()
     {
         base.Update();
-        Setting.Cast<StringOption>().ValueText.color = Value[0].TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
+        Setting.Cast<StringOption>().ValueText.color = Value.First().TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
     }
 
     protected override string Format()
     {
-        var result = TranslationManager.Translate($"List.{Value[0]}");
+        var result = TranslationManager.Translate($"List.{Value.First()}");
 
         if (Value.Count > 1)
             result += $" + {Value.Count - 1}";
@@ -60,10 +61,86 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
             return;
         }
 
-        if (value is RoleListSlot.CrewKill && Value.Contains(value))
+        // Getting rid of potential duplicates
+        if (value == RoleListSlot.CrewKill)
         {
-            Value.RemoveAll(x => x is RoleListSlot.Veteran or RoleListSlot.Bastion or RoleListSlot.Vigilante);
-            Value.Add(value);
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewSupport)
+        {
+            newValue.RemoveRange(RoleListSlot.Retributionist, RoleListSlot.Escort, RoleListSlot.Chameleon, RoleListSlot.Engineer, RoleListSlot.Shifter, RoleListSlot.Transporter);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewInvest)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
+        }
+        else if (value == RoleListSlot.CrewKill)
+        {
+            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
+            newValue.Add(value);
         }
         else
             base.TrySetValue(value, out newValue);

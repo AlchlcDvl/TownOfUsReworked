@@ -17,6 +17,8 @@ public abstract class Harbinger<TApoc> : Harbinger where TApoc : Apocalypse
 
     public override void UpdatePlayer()
     {
+        base.UpdatePlayer();
+
         if ((CanTransform() || NeutralApocalypseSettings.DirectSpawn) && !Dead)
             TurnApocalypse();
     }

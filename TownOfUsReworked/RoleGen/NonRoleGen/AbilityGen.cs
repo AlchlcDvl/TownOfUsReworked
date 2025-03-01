@@ -12,6 +12,42 @@ public class AbilityGen : BaseGen
 
     public override void InitList()
     {
+        if (IsRoleList())
+            InitRlList();
+        else
+            InitRegList();
+    }
+
+    private static void InitRlList()
+    {
+        var abilities = GetValuesFromTo(LayerEnum.Bullseye, LayerEnum.Underdog);
+
+        foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Ability))
+        {
+            foreach (var id in entry.Get())
+            {
+                if (id == RoleListSlot.None)
+                    break;
+
+                var rateLimit = 0;
+                var cachedCount = AllAbilities.Count;
+
+                while (rateLimit < 10000 && AllAbilities.Count == cachedCount)
+                {
+                    if (!id.TryCastToLayer(out var layer))
+                        layer = abilities.Random();
+
+                    if (RoleListGen.CannotAdd(layer, AllAbilities))
+                        rateLimit++;
+                    else
+                        AllAbilities.Add(GetSpawnItem(layer));
+                }
+            }
+        }
+    }
+
+    private static void InitRegList()
+    {
         foreach (var spawn in GetValuesFromToAndMorph(LayerEnum.Bullseye, LayerEnum.Underdog, GetSpawnItem))
         {
             if (spawn.IsActive())
@@ -57,9 +93,9 @@ public class AbilityGen : BaseGen
                     !NeutralHarbingerSettings.NhHaveImpVision))))),
                 LayerEnum.Underdog => playerList.FirstOrDefault(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Pandorica or Faction.Compliance),
                 LayerEnum.Tunneler => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),
-                LayerEnum.Mayor => playerList.FirstOrDefault(x => !((x.Is<Mayor>() && !Mayor.MayorButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Actor>() && !Actor.ActorButton) ||
-                    (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton && x.Is<Monarch>()) ||
-                    (!Dictator.DictatorButton && x.Is<Dictator>()))),
+                LayerEnum.ButtonBarry => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && (!Mayor.MayorButton || !Democrat.DemocratButton)) || (x.Is<Jester>() && !Jester.JesterButton) ||
+                    (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton &&
+                    x.Is<Monarch>()) || (x.Is<Dictator>() && !Dictator.DictatorButton))),
                 LayerEnum.Politician => playerList.FirstOrDefault(x => !(x.Is(Alignment.Evil) || x.Is(Alignment.Benign) || x.Is(Alignment.Neophyte))),
                 LayerEnum.Ruthless => playerList.FirstOrDefault(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.Is(Alignment.Neophyte) || x.Is<Corrupted>() ||
                     (x.Is(Faction.Neutral, Alignment.Killing) && !x.Is<Juggernaut>()) || x.Is(Faction.Crew, Alignment.Killing)),

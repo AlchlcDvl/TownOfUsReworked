@@ -11,7 +11,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (Crew == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante))
+        foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante, x => x is not LayerEnum.Mayor))
         {
             var spawn = GetSpawnItem(layer);
 

@@ -86,7 +86,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleListRoles", "RoleListModifiers",
             "RoleListDispositions", "RoleListAbilities" ], [ GameMode.RoleList ]),
         ([ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.RoleList, GameMode.AllAny ]),
-        ([ "NoSolo" ], [ NoSolo.SameNKs ])
+        ([ "Location1", "Location2", "Location3" ], [ AirshipSpawnType.Fixed ])
     ];
     public BaseHeaderOptionAttribute Header { get; set; }
     private static readonly Dictionary<string, bool> MapToLoaded = [];
@@ -138,8 +138,8 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         MapEnum map => MapSettings.Map == map,
         GameMode mode => GameModeSettings.GameMode == mode,
         VigiOptions vigiOptions => Vigilante.HowDoesVigilanteDie == vigiOptions,
-        NoSolo noSolo => NeutralSettings.NoSolo == noSolo,
         string id => GetBoolValue(id),
+        AirshipSpawnType spawnType => BetterAirship.SpawnType == spawnType,
         _ => true
     };
 

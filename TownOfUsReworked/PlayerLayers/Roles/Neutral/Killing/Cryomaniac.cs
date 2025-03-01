@@ -50,7 +50,13 @@ public class Cryomaniac : NKilling
         }
     }
 
-    public void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (Doused.Contains(player.PlayerId))
+            name += " <#642DEAFF>λ</color>";
+    }
+
+    private void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
     public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
     {

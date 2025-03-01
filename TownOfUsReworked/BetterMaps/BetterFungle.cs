@@ -13,20 +13,24 @@ public static class BetterFungle
     public static bool EnableBetterFungle = true;
 
     /// <summary>
-    /// Time until the reactor meltdown occurs during sabotage.<br></br>
-    /// Default: <c>60</c>s<br></br>
-    /// Range: <c>30</c> to <c>90</c>s<br></br>
-    /// Increment: <c>5</c>s
+    /// Time until the reactor meltdown occurs during sabotage.
     /// </summary>
+    /// <remarks>
+    /// Default: <c>60</c>s<br/>
+    /// Range: <c>30</c> to <c>90</c>s<br/>
+    /// Increment: <c>5</c>s
+    /// </remarks>
     [NumberOption(30f, 90f, 5f, Format.Time)]
     public static Number FungleReactorTimer = 60;
 
     /// <summary>
-    /// Duration of the Mushroom Mixup effect when triggered.<br></br>
-    /// Default: <c>8</c>s<br></br>
-    /// Range: <c>4</c> to <c>20</c>s<br></br>
-    /// Increment: <c>1</c>s
+    /// Duration of the Mushroom Mixup effect when triggered.
     /// </summary>
+    /// <remarks>
+    /// Default: <c>8</c>s<br/>
+    /// Range: <c>4</c> to <c>20</c>s<br/>
+    /// Increment: <c>1</c>s
+    /// </remarks>
     [NumberOption(4f, 20f, 1f, Format.Time)]
     private static Number FungleMixupTimer = 8;
 

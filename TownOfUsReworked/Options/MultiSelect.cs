@@ -13,7 +13,7 @@ public class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : B
 
     protected override string Format()
     {
-        var result = TranslationManager.Translate($"CustomOption.{InnerType.Name}.{Value[0]}");
+        var result = TranslationManager.Translate($"CustomOption.{InnerType.Name}.{Value.First()}");
 
         if (Value.Count > 1)
             result += $" + {Value.Count - 1}";

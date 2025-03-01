@@ -45,38 +45,6 @@ public static class OnGameEndPatches
                     AllPlayers().ForEach(x => Winners[x.name] = x.GetLayers());
                     break;
                 }
-                case WinLose.AllNeutralsWin:
-                {
-                    foreach (var role2 in Role.GetRoles(Faction.Neutral))
-                    {
-                        if (!role2.Disconnected && role2.Faithful)
-                            Winners[role2.PlayerName] = role2.Player.GetLayers();
-                    }
-
-                    foreach (var defect in PlayerLayer.GetLayers<Defector>())
-                    {
-                        if (!defect.Disconnected && defect.Side == Faction.Neutral)
-                            Winners[defect.PlayerName] = defect.Player.GetLayers();
-                    }
-
-                    break;
-                }
-                case WinLose.AllNKsWin:
-                {
-                    foreach (var role2 in PlayerLayer.GetLayers<Role>().Where(x => x.Faction == Faction.Neutral && x.Alignment == Alignment.Killing))
-                    {
-                        if (!role2.Disconnected && role2.Faithful)
-                            Winners[role2.PlayerName] = role2.Player.GetLayers();
-                    }
-
-                    foreach (var defect in PlayerLayer.GetLayers<Defector>())
-                    {
-                        if (!defect.Disconnected && defect.Side == Faction.Neutral)
-                            Winners[defect.PlayerName] = defect.Player.GetLayers();
-                    }
-
-                    break;
-                }
                 case WinLose.CrewWins:
                 {
                     foreach (var role2 in Role.GetRoles(Faction.Crew))
@@ -589,12 +557,10 @@ public static class OnGameEndPatches
                     WinLose.CrewWins => ("The Crew Wins", "CrewWin", CustomColorManager.Crew),
                     WinLose.IntrudersWin => ("Intruders Win", "IntruderWin", CustomColorManager.Intruder),
                     WinLose.SyndicateWins => ("Syndicate Wins", "IntruderWin", CustomColorManager.Syndicate),
-                    WinLose.AllNeutralsWin => ("Neutrals Win", "IntruderWin", CustomColorManager.Neutral),
                     WinLose.UndeadWins => ("The Undead Win", "IntruderWin", CustomColorManager.Undead),
                     WinLose.CabalWins => ("The Cabal Wins", "IntruderWin", CustomColorManager.Cabal),
                     WinLose.ReanimatedWins => ("The Reanimated Win", "IntruderWin", CustomColorManager.Reanimated),
                     WinLose.CultWins => ("The Cult Wins", "IntruderWin", CustomColorManager.Cult),
-                    WinLose.AllNKsWin => ("Neutral Killers Win", "IntruderWin", CustomColorManager.Intruder),
                     WinLose.ApocalypseWins => ("The Apocalypse Is Neigh", "IntruderWin", CustomColorManager.Apocalypse),
                     WinLose.ArsonistWins => ("Arsonist Wins", "IntruderWin", CustomColorManager.Arsonist),
                     WinLose.CryomaniacWins => ("Cryomaniac Wins", "IntruderWin", CustomColorManager.Cryomaniac),
@@ -613,6 +579,9 @@ public static class OnGameEndPatches
                     WinLose.TaskRunnerWins => ("Tasks Completed", "IntruderWin", CustomColorManager.TaskRace),
                     WinLose.HunterWins => ("Hunters Win", "IntruderWin", CustomColorManager.Hunter),
                     WinLose.HuntedWin => ("The Hunted Win", "IntruderWin", CustomColorManager.Hunted),
+                    WinLose.PandoricaWins => ("The Pandorica Wins", "IntruderWin", CustomColorManager.Hunted),
+                    WinLose.IlluminatiWins => ("The Illuminati Wins", "IntruderWin", CustomColorManager.Hunted),
+                    WinLose.ComplianceWins => ("The Compliance Wins", "IntruderWin", CustomColorManager.Hunted),
                     WinLose.EveryoneWins => ("Everyone Wins", "Stalemate", CustomColorManager.Stalemate),
                     _ => ("Stalemate", "Stalemate", CustomColorManager.Stalemate)
                 };

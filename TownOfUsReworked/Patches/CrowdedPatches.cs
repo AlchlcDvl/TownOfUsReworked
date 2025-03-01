@@ -18,9 +18,8 @@ public static class CrowdedPatches
         var firstButtonButton = firstButtonRenderer.GetComponent<PassiveButton>();
         firstButtonButton.OverrideOnClickListeners(() =>
         {
-            for (var i = 1; i < 11; i++)
+            foreach (var playerButton in __instance.MaxPlayerButtons)
             {
-                var playerButton = __instance.MaxPlayerButtons[i];
                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                 var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name) - 3);
                 tmp.text = $"{newValue}";
@@ -38,11 +37,10 @@ public static class CrowdedPatches
         var lastButtonButton = lastButtonRenderer.GetComponent<PassiveButton>();
         lastButtonButton.OverrideOnClickListeners(() =>
         {
-            for (var i = 1; i < 11; i++)
+            foreach (var playerButton in __instance.MaxPlayerButtons)
             {
-                var playerButton = __instance.MaxPlayerButtons[i];
                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
-                var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 113);
+                var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 236);
                 tmp.text = $"{newValue}";
             }
 
@@ -51,9 +49,9 @@ public static class CrowdedPatches
 
         lastButtonRenderer.Destroy();
 
-        for (var i = 1; i < 11; i++)
+        foreach (var button in __instance.MaxPlayerButtons)
         {
-            var playerButton = __instance.MaxPlayerButtons[i].GetComponent<PassiveButton>();
+            var playerButton = button.GetComponent<PassiveButton>();
             var text = playerButton.GetComponentInChildren<TextMeshPro>();
             playerButton.OverrideOnClickListeners(() => __instance.SetMaxPlayersButtons(byte.Parse(text.text)));
         }
@@ -81,6 +79,9 @@ public static class CrowdedPatches
     [HarmonyPatch(nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
     public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)
     {
+        if (__instance.mode != SettingsMode.Host)
+            return true;
+
         __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
         __instance.MaxPlayerButtons.ToArray().Skip(1).ForEach(x =>
         {
@@ -92,4 +93,56 @@ public static class CrowdedPatches
 
     [HarmonyPatch(nameof(CreateOptionsPicker.UpdateImpostorsButtons))]
     public static bool Prefix() => false;
+
+    [HarmonyPatch(nameof(CreateOptionsPicker.Refresh))]
+    public static bool Prefix(CreateOptionsPicker __instance)
+    {
+        var options = __instance.GetTargetOptions();
+        __instance.UpdateMaxPlayersButtons(options);
+        __instance.UpdateImpostorsButtons(options.NumImpostors);
+        __instance.UpdateLanguageButton((uint)options.Keywords);
+        __instance.MapMenu.UpdateMapButtons(options.MapId);
+        __instance.GameModeText.text = TranslationController.Instance.GetString(GameModesHelpers.ModeToName[GameOptionsManager.Instance.CurrentGameOptions.GameMode]);
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(InnerNetServer), nameof(InnerNetServer.HandleNewGameJoin))]
+public static class InnerNetSerer_HandleNewGameJoin
+{
+    public static bool Prefix(InnerNetServer __instance, InnerNetServer.Player client)
+    {
+        if (__instance.Clients.Count < 15)
+            return true;
+
+        __instance.Clients.Add(client);
+        client.LimboState = LimboStates.PreSpawn;
+
+        if (__instance.HostId == -1)
+        {
+            __instance.HostId = __instance.Clients.ToArray()[0].Id;
+
+            if (__instance.HostId == client.Id)
+                client.LimboState = LimboStates.NotLimbo;
+        }
+
+        var writer = MessageWriter.Get(SendOption.Reliable);
+
+        try
+        {
+            __instance.WriteJoinedMessage(client, writer, true);
+            client.Connection.Send(writer);
+            __instance.BroadcastJoinMessage(client, writer);
+        }
+        catch (Exception exception)
+        {
+            Error($"InnerNetServer::HandleNewGameJoin MessageWriter 2 Exception: {exception}");
+        }
+        finally
+        {
+            writer.Recycle();
+        }
+
+        return false;
+    }
 }

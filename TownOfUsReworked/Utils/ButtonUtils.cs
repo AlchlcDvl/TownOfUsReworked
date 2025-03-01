@@ -72,7 +72,7 @@ public static class ButtonUtils
         button.SetCooldownFill(ceil % 2 == 0 ? 1f : 0f);
     }
 
-    public static void DestroyButtons(this PlayerControl player) => player.GetButtons().ForEach(x => x.Destroy());
+    // public static void DestroyButtons(this PlayerControl player) => player.GetButtons().ForEach(x => x.Destroy());
 
     public static bool CannotUse(this PlayerControl player) => player.onLadder || player.inVent || player.inMovingPlat || player.isKilling;
 
@@ -91,12 +91,10 @@ public static class ButtonUtils
         if (!player.Is<Underdog>())
             return 0f;
 
-        if (Underdog.UnderdogIncreasedCd && !Last(player))
-            return Underdog.UnderdogCdBonus;
-        else if (Last(player))
+        if (Last(player))
             return -Underdog.UnderdogCdBonus;
-        else
-            return 0f;
+
+        return Underdog.UnderdogIncreasedCd ? Underdog.UnderdogCdBonus : 0f;
     }
 
     private static float GetDifference(this PlayerControl player)
@@ -137,9 +135,6 @@ public static class ButtonUtils
         var dead = DeadSeeEverything();
         player.GetButtons().ForEach(x => x.StartCooldown(cooldown));
 
-        if (role.Requesting && !start)
-            role.BountyTimer++;
-
         switch (role)
         {
             case Escort esc:
@@ -169,9 +164,9 @@ public static class ButtonUtils
 
                 break;
             }
-            case Mayor mayor:
+            case Democrat demo:
             {
-                mayor.RoundOne = start && Mayor.RoundOneNoMayorReveal;
+                demo.RoundOne = start && Democrat.RoundOneNoCampaigning;
                 break;
             }
             case Monarch mon:

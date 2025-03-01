@@ -448,11 +448,11 @@ public static class MiscUtils
         {
             foreach (var role in PlayerLayer.GetILayers<IIntimidator>())
             {
-                if (target == role.Target)
-                {
-                    voteArea.Overlay.sprite = TalkingPatches.CachedOverlay;
-                    voteArea.Overlay.color = TalkingPatches.CachedColor ?? UColor.white;
-                }
+                if (target != role.Target)
+                    continue;
+
+                voteArea.Overlay.sprite = TalkingPatches.CachedOverlay;
+                voteArea.Overlay.color = TalkingPatches.CachedColor ?? UColor.white;
             }
         }
 
@@ -532,7 +532,9 @@ public static class MiscUtils
         }
     }
 
-    public static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
+    private static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
+
+    public static bool IsInRange(this byte num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
 
     public static string GetRandomisedName()
     {
@@ -687,8 +689,8 @@ public static class MiscUtils
             2 => ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>().IsActive,
             4 => ship.Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>().IsActive,
             5 => ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>().IsActive,
-            6 => SubLoaded && HasTask(RetrieveOxygenMask),
-            7 => LiLoaded && ((ship.Systems.TryGetValue(SystemTypes.Reactor, out var system1) && system1.Cast<ReactorSystemType>().IsActive) ||
+            6 when SubLoaded => HasTask(RetrieveOxygenMask),
+            7 when LiLoaded => ((ship.Systems.TryGetValue(SystemTypes.Reactor, out var system1) && system1.Cast<ReactorSystemType>().IsActive) ||
                 (ship.Systems.TryGetValue(SystemTypes.Laboratory, out system1) && system1.Cast<ReactorSystemType>().IsActive) || (ship.Systems.TryGetValue(SystemTypes.Laboratory, out
                     system1) && system1.Cast<LifeSuppSystemType>().IsActive)),
             _ => false
@@ -1505,17 +1507,19 @@ public static class MiscUtils
         RenameFolder(Path.Combine(TownOfUsReworked.Assets, "ModLogs"), TownOfUsReworked.Logs);
     }
 
-    public static string TrueReplace(this string @string, string former, string latter)
-    {
-        while (@string.Contains(former))
-            @string = @string.Replace(former, latter);
-
-        return @string;
-    }
+    // public static string TrueReplace(this string @string, string former, string latter)
+    // {
+    //     while (@string.Contains(former))
+    //         @string = @string.Replace(former, latter);
+    //
+    //     return @string;
+    // }
 
     public static bool TryCastToLayer(this RoleListSlot slot, out LayerEnum layer) => Enum.TryParse($"{slot}", out layer);
 
     public static RoleListSlot CastToSlot(this LayerEnum layer) => Enum.Parse<RoleListSlot>($"{layer}");
+
+    public static string Join(char separator, params object[] values) => Join<object>(separator, values);
 
     public static string Join<T>(char separator, IEnumerable<T> items) => Join($"{separator}", items);
 

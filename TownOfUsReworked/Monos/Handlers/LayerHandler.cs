@@ -104,11 +104,8 @@ public class LayerHandler : RoleBehaviour
         if (!CustomRole.TasksDone)
             return;
 
-        foreach (var button in Buttons)
+        foreach (var button in Buttons.Where(x => x.HasUses))
         {
-            if (!button.HasUses)
-                continue;
-
             button.UseCount++;
             button.Max++;
         }
@@ -148,6 +145,7 @@ public class LayerHandler : RoleBehaviour
 
     public void ResetButtons() => Buttons = Player.GetButtonsFromList();
 
+    [HideFromIl2Cpp]
     public void SetUpLayers()
     {
         CustomRole = Player.GetRoleFromList();
@@ -192,7 +190,7 @@ public class LayerHandler : RoleBehaviour
         CanUseKillButton = Player.CanKill();
         AffectedByLightAffectors = !(CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate);
 
-        CustomLayers.ForEach(x => x.Handler = this);
+        // CustomLayers.ForEach(x => x.Handler = this);
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;

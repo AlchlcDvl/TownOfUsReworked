@@ -27,6 +27,8 @@ public class Mystic : Crew
 
     public override void UpdatePlayer()
     {
+        base.UpdatePlayer();
+
         if (ConvertedDead && !Dead)
             TurnSeer();
     }

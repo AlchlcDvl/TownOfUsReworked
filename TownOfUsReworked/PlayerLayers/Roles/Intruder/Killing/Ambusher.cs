@@ -29,6 +29,12 @@ public class Ambusher : Intruder, IAmbusher
             new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (AmbushedPlayer == player)
+            name += " <#2BD29CFF>人</color>";
+    }
+
     private void UnAmbush() => AmbushedPlayer = null;
 
     private void Ambush(PlayerControl target)

@@ -46,6 +46,17 @@ public class Coroner : Crew, IExaminer
             (UsableFunc)ReferenceBodies.Any);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (!Reported.Contains(player.PlayerId) || revealed || !meeting)
+            return;
+
+        var role = handler.CustomRole;
+        color = role.Color;
+        name += $"\n{(CoronerReportRole ? role : role.Faction)}";
+        revealed = true;
+    }
+
     private void DestroyArrow(byte targetPlayerId)
     {
         if (BodyArrows.Remove(targetPlayerId, out var arrow))

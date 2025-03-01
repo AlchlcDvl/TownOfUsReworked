@@ -100,22 +100,22 @@ public static class LayerExtensions
         if (!player.GetRole())
             return !player.Data.IsImpostor();
 
-        var crewflag = player.Is(Faction.Crew);
-        var neutralflag = player.Is(Faction.Neutral);
-        var factionflag = player.Is(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati);
+        var crewFlag = player.Is(Faction.Crew);
+        var neutralFlag = player.Is(Faction.Neutral);
+        var factionFlag = player.Is(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati);
 
-        var phantomflag = player.Is<Phantom>();
+        var phantomFlag = player.Is<Phantom>();
 
-        var sideflag = player.NotOnTheSameSide();
-        var taskmasterflag = player.Is<Taskmaster>();
-        var defectflag = player.IsCrewDefect();
+        var sideFlag = player.NotOnTheSameSide();
+        var taskmasterFlag = player.Is<Taskmaster>();
+        var defectFlag = player.IsCrewDefect();
 
-        var gmflag = player.Is<Runner>() || player.Is<Hunted>();
+        var gmFlag = player.Is<Runner>() || player.Is<Hunted>();
 
-        var flag1 = crewflag && !sideflag;
-        var flag2 = neutralflag && (taskmasterflag || phantomflag);
-        var flag3 = factionflag && (taskmasterflag || defectflag);
-        return flag1 || flag2 || flag3 || gmflag;
+        var flag1 = crewFlag && !sideFlag;
+        var flag2 = neutralFlag && (taskmasterFlag || phantomFlag);
+        var flag3 = factionFlag && (taskmasterFlag || defectFlag);
+        return flag1 || flag2 || flag3 || gmFlag;
     }
 
     public static bool IsMoving(this PlayerControl player) => Moving.Contains(player.PlayerId);
@@ -197,6 +197,8 @@ public static class LayerExtensions
     public static bool IsVesting(this PlayerControl player) => PlayerLayer.GetLayers<Survivor>().Any(role => role.VestButton.EffectActive && player == role.Player);
 
     public static bool IsMarked(this PlayerControl player) => PlayerLayer.GetLayers<Ghoul>().Any(role => player == role.MarkedPlayer);
+
+    public static bool IsCampaigned(this PlayerControl player) => PlayerLayer.GetLayers<Democrat>().Any(role => role.Campaigned.Contains(player.PlayerId));
 
     public static bool IsAmbushed(this PlayerControl player) => PlayerLayer.GetILayers<IAmbusher>().Any(role => player == role.AmbushedPlayer && role.AmbushButton.EffectActive);
 
@@ -400,8 +402,10 @@ public static class LayerExtensions
         else switch (playerRole)
         {
             case Hunter:
+            {
                 mainflag = GameModeSettings.HunterVent;
                 break;
+            }
             case Hunted or Runner:
                 break;
             default:
@@ -424,9 +428,12 @@ public static class LayerExtensions
                 else switch (playerRole)
                 {
                     case Syndicate syn:
+                    {
                         mainflag = (syn.HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
                         break;
+                    }
                     case Intruder when IntruderSettings.IntrudersVent:
+                    {
                         switch (playerRole)
                         {
                             case Janitor jani:
@@ -477,7 +484,9 @@ public static class LayerExtensions
                                 break;
                             }
                         }
+
                         break;
+                    }
                     default:
                     {
                         if (player.Is(Faction.Crew) || playerRole is Crew)
@@ -486,8 +495,8 @@ public static class LayerExtensions
                         {
                             mainflag = playerRole switch
                             {
-                                SerialKiller sk => SerialKiller.SkVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SkVentOptions == 1) || (!sk.BloodlustButton.EffectActive &&
-                                    (int)SerialKiller.SkVentOptions == 2),
+                                SerialKiller sk => SerialKiller.SkVentOptions == 0 || (sk.BloodlustButton.EffectActive && (int)SerialKiller.SkVentOptions == 1) ||
+                                    (!sk.BloodlustButton.EffectActive && (int)SerialKiller.SkVentOptions == 2),
                                 Werewolf ww => Werewolf.WerewolfVent == 0 || (ww.CanMaul && (int)Werewolf.WerewolfVent == 1) || (!ww.CanMaul && (int)Werewolf.WerewolfVent == 2),
                                 Murderer => Murderer.MurdVent,
                                 Glitch => Glitch.GlitchVent,
@@ -513,9 +522,11 @@ public static class LayerExtensions
                                 _ => false
                             };
                         }
+
                         break;
                     }
                 }
+
                 break;
             }
         }
@@ -760,11 +771,13 @@ public static class LayerExtensions
             Guesser => ("Guesser", Guesser.GuesserButton),
             Dictator => ("Dictator", Dictator.DictatorButton),
             Monarch => ("Monarch", Monarch.MonarchButton),
+            Democrat => ("Democrat", Democrat.DemocratButton),
             _ when player.IsKnighted() => ("Knight", Monarch.KnightButton),
             _ when ability is Swapper => ("Swapper", Swapper.SwapperButton),
             _ when ability is Politician => ("Politician", Politician.PoliticianButton),
             _ when IsTaskRace() || IsCustomHnS() => ("GameMode", false),
-            _ => ("Shy", !player.Is<Shy>() && player.RemainingEmergencies > 0)
+            _ when player.Is<Shy>() => ("Shy", false),
+            _ => ("", player.RemainingEmergencies > 0)
         };
         return result;
     }

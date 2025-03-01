@@ -334,6 +334,7 @@ public enum LayerEnum : byte
     Chameleon,
     Coroner,
     Crewmate,
+    Democrat,
     Detective,
     Dictator,
     Engineer,
@@ -352,7 +353,6 @@ public enum LayerEnum : byte
     Tracker,
     Transporter,
     Trapper,
-    Trickster,
     Veteran,
     Vigilante,
 
@@ -494,6 +494,7 @@ public enum RoleListSlot : byte
     Chameleon,
     Coroner,
     Crewmate,
+    Democrat,
     Detective,
     Dictator,
     Engineer,
@@ -511,7 +512,6 @@ public enum RoleListSlot : byte
     Tracker,
     Transporter,
     Trapper,
-    Trickster,
     Veteran,
     Vigilante,
 
@@ -757,14 +757,12 @@ public enum WinLose : byte
     CrewWins,
     IntrudersWin,
     SyndicateWins,
-    AllNeutralsWin,
 
     UndeadWins,
     CabalWins,
     CultWins,
     ReanimatedWins,
 
-    AllNKsWin,
     ApocalypseWins,
 
     ArsonistWins,
@@ -932,14 +930,6 @@ public enum ProtectOptions : byte
     Protected,
     Ga,
     Everyone
-}
-
-public enum NoSolo : byte
-{
-    Never,
-    SameNKs,
-    AllNKs,
-    AllNeutrals
 }
 
 public enum SkVentOptions : byte

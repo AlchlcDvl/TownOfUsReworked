@@ -63,6 +63,12 @@ public class Guesser : Evil, IGuesser
         GuessingMenu = new(Player, GuessPlayer);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (player == TargetPlayer)
+            name += " <#EEE5BEFF>π</color>";
+    }
+
     public override void PostAssignment()
     {
         if (GuesserCanPickTargets || !TargetPlayer)
@@ -221,6 +227,8 @@ public class Guesser : Evil, IGuesser
 
     public override void UpdatePlayer()
     {
+        base.UpdatePlayer();
+
         if (Failed && !Dead && GuessToAct)
             TurnAct();
     }

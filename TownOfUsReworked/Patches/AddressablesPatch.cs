@@ -8,15 +8,15 @@ namespace TownOfUsReworked.Patches;
 
 // Yoinked more code from Daemon with some modification
 [HarmonyPatch(typeof(AssetReference), nameof(AssetReference.RuntimeKeyIsValid))]
-public static unsafe class AddressablesPatch
+public static class AddressablesPatch
 {
     // I'm not sure if the methodInfoPtr is actually a method info pointer; it just seems really funky
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate IntPtr LoadAssetAsyncDel(IntPtr thisPtr, IntPtr keyPtr, Il2CppMethodInfo* methodInfoPtr);
+    private unsafe delegate IntPtr LoadAssetAsyncDel(IntPtr thisPtr, IntPtr keyPtr, Il2CppMethodInfo* methodInfoPtr);
 
     private static LoadAssetAsyncDel Original;
 
-    public static void Initialize()
+    public unsafe static void Initialize()
     {
         var originalMethodType = AccessTools.Method(typeof(Addressables), nameof(Addressables.LoadAssetAsync), [ typeof(UObject) ]).MakeGenericMethod(typeof(UObject));
 
@@ -29,7 +29,7 @@ public static unsafe class AddressablesPatch
         INativeDetour.CreateAndApply(methodPtr, DetourMethod, out Original);
     }
 
-    private static IntPtr DetourMethod(IntPtr thisPtr, IntPtr keyPtr, Il2CppMethodInfo* methodInfoPtr)
+    private unsafe static IntPtr DetourMethod(IntPtr thisPtr, IntPtr keyPtr, Il2CppMethodInfo* methodInfoPtr)
     {
         var keyClassPtr = IL2CPP.il2cpp_object_get_class(keyPtr);
 

@@ -40,6 +40,25 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         }
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (IsConsig && Investigated.Contains(player.PlayerId) && !revealed)
+        {
+            revealed = true;
+            var revealRole = Consigliere.ConsigInfo == ConsigInfo.Role;
+            var role = handler.CustomRole;
+            removeFromConsig = role.SubFaction == SubFaction && role.SubFaction != SubFaction.None && revealRole;
+            color = revealRole ? role.Color : role.FactionColor;
+            name += revealRole ? $"\n{role}" : $"\n{role.FactionName}";
+        }
+        else if (IsBm && BlackmailedPlayer == player)
+            name += " <#02A752FF>Φ</color>";
+        else if (IsAmb && AmbushedPlayer == player)
+            name += " <#2BD29CFF>人</color>";
+        else if (IsGren && FlashedPlayers.Contains(player.PlayerId) && Grenadier.GrenadierIndicators)
+            name += " <#85AA5BFF>ㅇ</color>";
+    }
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
@@ -190,7 +209,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
         }
     }
 
-    public override void Kill(PlayerControl target)
+    protected override void Kill(PlayerControl target)
     {
         base.Kill(target);
 

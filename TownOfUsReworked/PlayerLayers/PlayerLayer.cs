@@ -11,7 +11,7 @@ public abstract class PlayerLayer : IPlayerLayer
     public virtual bool Hidden => false;
 
     public string Name { get; protected set; }
-    public LayerHandler Handler { get; set; }
+    // public LayerHandler Handler { get; set; }
     public PlayerControl Player { get; set; }
     public bool Winner { get; set; }
     protected bool Ignore { get; private set; }
@@ -119,9 +119,9 @@ public abstract class PlayerLayer : IPlayerLayer
 
     protected virtual void CheckWin() {}
 
-    // public virtual void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
+    public virtual void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
 
-    // public virtual void UpdatePlayerName(LayerHandler playerHandler, bool deadSeeEverything, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
+    public virtual void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
 
     public void GameEnd()
     {

@@ -41,4 +41,21 @@ public class Lovers : Disposition
         OtherLover.GetDisposition().Winner = true;
         CallRpc(CustomRPC.WinLose, WinLose.LoveWins, this);
     }
+
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (OtherLover != player)
+            return;
+
+        name += $" {ColoredSymbol}";
+
+        if (!LoversRoles || revealed)
+            return;
+
+        var role = handler.CustomRole;
+        color = role.Color;
+        name += $"\n{role}";
+        revealed = true;
+        removeFromConsig = true;
+    }
 }

@@ -70,16 +70,11 @@ public static class CheckEndGame
         Func<PlayerControl, bool> factionCheck = faction switch
         {
             Faction.Syndicate or Faction.Crew or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica => x => x.Is(faction),
-            _ => NeutralSettings.NoSolo switch
+            _ => hexer.LinkedDisposition switch
             {
-                NoSolo.AllNeutrals => x => x.Is(faction),
-                NoSolo.AllNKs => x => x.Is(Alignment.Killing),
-                _ => hexer.LinkedDisposition switch
-                {
-                    LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
-                    LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
-                    _ => x => x == hexer.Player
-                }
+                LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
+                LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
+                _ => x => x == hexer.Player
             }
         };
 
@@ -89,16 +84,11 @@ public static class CheckEndGame
             {
                 Faction.Crew => WinLose.CrewWins,
                 Faction.Intruder => WinLose.IntrudersWin,
-                Faction.Neutral => NeutralSettings.NoSolo switch
+                Faction.Neutral => hexer.LinkedDisposition switch
                 {
-                    NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
-                    NoSolo.AllNKs => WinLose.AllNKsWin,
-                    _ => hexer.LinkedDisposition switch
-                    {
-                        LayerEnum.Mafia => WinLose.MafiaWins,
-                        LayerEnum.Lovers => WinLose.LoveWins,
-                        _ => WinLose.DefectorWins
-                    }
+                    LayerEnum.Mafia => WinLose.MafiaWins,
+                    LayerEnum.Lovers => WinLose.LoveWins,
+                    _ => WinLose.DefectorWins
                 },
                 Faction.Syndicate => WinLose.SyndicateWins,
                 _ => WinLose.NobodyWins
@@ -118,10 +108,6 @@ public static class CheckEndGame
             WinState = WinLose.CrewWins;
         else if (ApocWins())
             WinState = WinLose.ApocalypseWins;
-        else if (AllNeutralsWin())
-            WinState = WinLose.AllNeutralsWin;
-        else if (AllNKsWin())
-            WinState = WinLose.AllNKsWin;
         else
             return;
 
@@ -153,7 +139,6 @@ public static class CheckEndGame
         {
             var player1 = players.First();
             var player2 = players.Last();
-            var nosolo = NeutralSettings.NoSolo == NoSolo.Never;
             var nobuttons1 = player1.RemainingEmergencies == 0;
             var nobuttons2 = player2.RemainingEmergencies == 0;
             var nobuttons = nobuttons1 && nobuttons2;
@@ -166,10 +151,9 @@ public static class CheckEndGame
             var rival1 = player1.Is<Rivals>();
             var rival2 = player2.Is<Rivals>();
             var rivals = rival1 && rival2;
-            var cryo = player1.Is<Cryomaniac>() && player2.Is<Cryomaniac>();
 
             // NK vs. NK when neither can kill each other and Neutrals don't win together
-            if ((cryo && nosolo && nobuttons && neitherknighted) || rivals || (cantkill && nobuttons))
+            if ((nobuttons && neitherknighted) || rivals || (cantkill && nobuttons))
                 PerformStalemate();
         }
         else if (!players.Any())

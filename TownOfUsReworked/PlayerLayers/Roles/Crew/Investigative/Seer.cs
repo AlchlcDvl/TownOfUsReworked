@@ -38,6 +38,8 @@ public class Seer : Crew
 
     public override void UpdatePlayer()
     {
+        base.UpdatePlayer();
+
         if (ChangedDead && !Dead)
             TurnSheriff();
     }

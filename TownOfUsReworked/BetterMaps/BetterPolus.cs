@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.BetterMaps;
 
 /// <summary>
-/// Provides enhanced functionality and customization options for the Polus map.<br></br>
+/// Provides enhanced functionality and customization options for the Polus map.<br/>
 /// Modifies vent connections, task locations, and sabotage timers.
 /// </summary>
 [HeaderOption(MultiMenu.Main)]
@@ -20,7 +20,7 @@ public static class BetterPolus
     private static bool PolusVentImprovements = false;
 
     /// <summary>
-    /// Controls the Temperature task location.<br></br>
+    /// Controls the Temperature task location.<br/>
     /// Options: <c>DontMove</c>, <c>SwappedWithVitals</c>, <c>DeathValley</c>
     /// </summary>
     [StringOption<TempLocation>]
@@ -33,11 +33,13 @@ public static class BetterPolus
     private static bool WifiChartCourseSwap = false;
 
     /// <summary>
-    /// Time until seismic sabotage completes.<br></br>
-    /// Default: <c>60</c>s<br></br>
-    /// Range: <c>30</c> to <c>90</c>s<br></br>
-    /// Increment: <c>5</c>s
+    /// Time until seismic sabotage completes.
     /// </summary>
+    /// <remarks>
+    /// Default: <c>60</c>s<br/>
+    /// Range: <c>30</c> to <c>90</c>s<br/>
+    /// Increment: <c>5</c>s
+    /// </remarks>
     [NumberOption(30f, 90f, 5f, Format.Time)]
     public static Number SeismicTimer = 60;
 

@@ -30,6 +30,12 @@ public class Framer : Syndicate, IFramer
             (UsableFunc)Usable2);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (Framed.Contains(player.PlayerId))
+            name += " <#00FFFFFF>ς</color>";
+    }
+
     private void RpcFrame(PlayerControl player)
     {
         if (Exception1(player))

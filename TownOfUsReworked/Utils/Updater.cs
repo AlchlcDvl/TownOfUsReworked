@@ -25,7 +25,7 @@ public static class ModUpdater
         "Reworked" => "AlchlcDvl/TownOfUsReworked",
         "Submerged" => "SubmergedAmongUs/Submerged",
         "LevelImpostor" => "DigiWorm0/LevelImposter",
-        _ => throw new NotImplementedException(tag)
+        _ => throw new ArgumentOutOfRangeException(tag)
     };
 
     private static IEnumerator CheckForUpdate(string updateType)
@@ -38,7 +38,7 @@ public static class ModUpdater
         Message($"Getting update info for {updateType}");
         yield return EndFrame();
 
-        // Checks the GitHub api for tags. Compares current version to the latest tag version on GitHub
+        // Checks the GitHub api for tags. Compares the current version to the latest tag version on GitHub
         var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=1");
         yield return www.SendWebRequest();
 
@@ -107,27 +107,31 @@ public static class ModUpdater
             yield break; // Something went wrong part 3
         }
 
-        // Check Reworked version
-        if (updateType == "Reworked")
+        switch (updateType)
         {
-            var version = Version.Parse(data.Tag.Replace("v", ""));
-            var diff = TownOfUsReworked.ModVer.CompareTo(version);
-            ReworkedUpdate = diff < 0 || (diff == 0 && TownOfUsReworked.IsDev);
+            // Check the Reworked version
+            case "Reworked":
+            {
+                var version = Version.Parse(data.Tag.Replace("v", ""));
+                var diff = TownOfUsReworked.ModVer.CompareTo(version);
+                ReworkedUpdate = diff < 0 || (diff == 0 && TownOfUsReworked.IsDev);
+                break;
+            }
+            // Accounts for a broken version + checks the Submerged version
+            case "Submerged" when SubLoaded:
+            {
+                SubmergedUpdate = SubVersion == null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(data.Tag.Replace("v", ""))) < 0;
+                break;
+            }
         }
-        // Accounts for broken version + checks Submerged version
-        else if (updateType == "Submerged" && SubLoaded)
-            SubmergedUpdate = SubVersion == null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(data.Tag.Replace("v", ""))) < 0;
 
         foreach (var asset in data.Assets)
         {
-            if (asset.URL == null || (data.Description.Contains("[NoUpdate]") && ReworkedUpdate))
+            if (asset.URL == null || (data.Description.Contains("[NoUpdate]") && ReworkedUpdate) || !asset.URL.EndsWith(".dll"))
                 continue;
 
-            if (asset.URL.EndsWith(".dll"))
-            {
-                UrLs[updateType] = asset.URL;
-                break;
-            }
+            UrLs[updateType] = asset.URL;
+            break;
         }
 
         yield return EndFrame();
@@ -166,45 +170,42 @@ public static class ModUpdater
             yield return EndFrame();
         }
 
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.NoSuccess");
+        var hasError = www.result != UnityWebRequest.Result.Success;
+
+        if (hasError)
             Error(www.error);
-            www.downloadHandler.Dispose();
-            www.Dispose();
-            yield break;
-        }
-
-        Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Copying", ("%mod%", updateType));
-        var filePath = Path.Combine(TownOfUsReworked.ModsFolder, $"{updateType}.dll");
-
-        if (File.Exists(filePath + ".old"))
-            File.Delete(filePath + ".old");
-
-        if (File.Exists(filePath))
-            File.Move(filePath, filePath + ".old");
-
-        var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
-        var hasError = false;
-        Exception error = null;
-
-        while (!persistTask.IsCompleted)
+        else
         {
-            if (persistTask.Exception != null)
+            Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Copying", ("%mod%", updateType));
+            var filePath = Path.Combine(TownOfUsReworked.ModsFolder, $"{updateType}.dll");
+
+            if (File.Exists(filePath + ".old"))
+                File.Delete(filePath + ".old");
+
+            if (File.Exists(filePath))
+                File.Move(filePath, filePath + ".old");
+
+            var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
+            Exception error = null;
+
+            while (!persistTask.IsCompleted)
             {
-                hasError = true;
-                error = persistTask.Exception;
-                break;
+                if (persistTask.Exception != null)
+                {
+                    hasError = true;
+                    error = persistTask.Exception;
+                    break;
+                }
+
+                yield return EndFrame();
             }
 
-            yield return EndFrame();
+            if (hasError)
+                Error(error);
         }
 
         www.downloadHandler.Dispose();
         www.Dispose();
-
-        if (hasError)
-            Error(error);
 
         Popup.TextAreaTMP.text = hasError ? TranslationManager.Translate("Updates.Mod.NoSuccess") : TranslationManager.Translate("Updates.Mod.Success", ("%mod%", updateType));
         button.SetActive(true);

@@ -39,20 +39,20 @@ public class DownloadableAsset : Asset
 }
 
 [Serializable]
-public struct RoleOptionData(int chance, int count, bool unique, bool active, LayerEnum layer)
+public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer)
 {
-    public int Chance { get; set; } = chance;
-    public int Count { get; set; } = count;
+    public byte Chance { get; set; } = chance;
+    public byte Count { get; set; } = count;
     public bool Unique { get; set; } = unique;
     public bool Active { get; set; } = active;
     public LayerEnum ID { get; set; } = layer;
 
-    public override readonly string ToString() => $"{Chance},{Count},{Unique},{Active},{ID}";
+    public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
 
     public static RoleOptionData Parse(string input)
     {
         var parts = input.TrueSplit(',');
-        return new(int.Parse(parts[0]), int.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
+        return new(byte.Parse(parts[0]), byte.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
     }
 
     public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
@@ -60,9 +60,16 @@ public struct RoleOptionData(int chance, int count, bool unique, bool active, La
     public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsRoleList() && ListEntryAttribute.IsAdded(ID.CastToSlot()))) &&
         ID.IsValid(relatedCount);
 
-    public readonly byte[] Serialize() => [ .. BitConverter.GetBytes(Chance), .. BitConverter.GetBytes(Count), (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
+    public readonly void Serialize(MessageWriter writer)
+    {
+        writer.Write(Chance);
+        writer.Write(Count);
+        writer.Write(Unique);
+        writer.Write(Active);
+        writer.Write(ID);
+    }
 
-    public static RoleOptionData Deserialize(byte[] data) => new(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), data[8] != 0, data[9] != 0, (LayerEnum)data[^1]);
+    public static RoleOptionData Deserialize(MessageReader reader) => new(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean(), reader.ReadBoolean(), reader.ReadEnum<LayerEnum>());
 }
 
 public record LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)
@@ -73,9 +80,9 @@ public record LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer
 public class Achievement(string name, bool unlocked = false, bool hidden = false, bool eog = false, string icon = "Placeholder")
 {
     public string Name { get; } = name;
+    public string Icon { get; } = icon;
     public bool Hidden { get; } = hidden;
     public bool EndOfGame { get; } = eog;
-    public string Icon { get; } = icon;
     public bool Unlocked { get; set; } = unlocked;
 }
 

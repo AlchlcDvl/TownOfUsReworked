@@ -27,6 +27,12 @@ public class Spellslinger : Syndicate, IHexer
             (PlayerBodyExclusion)Exception1);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (Spelled.Contains(player.PlayerId))
+            name += " <#0028F5FF>ø</color>";
+    }
+
     private void Spell(PlayerControl target)
     {
         var cooldown = Interact(Player, target, astral: HoldsDrive);

@@ -125,7 +125,7 @@ public static class MainMenuPatches
         ghObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.GitHubLink));
         ghObj.transform.localPosition = pos;
         ghObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = ghObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("GitHub");
-        ghObj.transform.GetChild(3).gameObject.Destroy();
+        ghObj.transform.GetChild(3).gameObject.SetActive(false);
         ghObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
         ghObj.buttonText.text = "GitHub Repo";
         __instance.mainButtons.Add(ghObj);

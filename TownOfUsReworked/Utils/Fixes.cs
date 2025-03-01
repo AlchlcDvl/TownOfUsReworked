@@ -41,6 +41,12 @@ public static class Fixes
         mixup.secondsForAutoHeal = 0.1f;
     }
 
+    public static void Fix()
+    {
+        FixCritSabotages();
+        FixNonCritSabotages();
+    }
+
     public static void FixCritSabotages()
     {
         var ship = Ship();
@@ -97,11 +103,8 @@ public static class Fixes
 
                 break;
             }
-            case 6:
+            case 6 when SubLoaded:
             {
-                if (!SubLoaded)
-                    break;
-
                 if (ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Reactor);
 
@@ -110,11 +113,8 @@ public static class Fixes
 
                 break;
             }
-            case 7:
+            case 7 when LiLoaded:
             {
-                if (!LiLoaded)
-                    break;
-
                 if (ship.Systems[SystemTypes.LifeSupp].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixOxygen();
 
@@ -129,7 +129,7 @@ public static class Fixes
         }
     }
 
-    public static void Fix()
+    private static void FixNonCritSabotages()
     {
         var ship = Ship();
 
@@ -146,12 +146,6 @@ public static class Fixes
                 if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixMiraComms();
 
-                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Reactor);
-
-                if (ship.Systems[SystemTypes.LifeSupp].TryCast(out activatable) && activatable.IsActive)
-                    FixOxygen();
-
                 if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
                     FixLights(lights);
 
@@ -161,9 +155,6 @@ public static class Fixes
             {
                 if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
-
-                if (ship.Systems[SystemTypes.Laboratory].TryCast(out activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Laboratory);
 
                 if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
                     FixLights(lights);
@@ -175,12 +166,6 @@ public static class Fixes
                 if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
 
-                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Reactor);
-
-                if (ship.Systems[SystemTypes.LifeSupp].TryCast(out activatable) && activatable.IsActive)
-                    FixOxygen();
-
                 if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
                     FixLights(lights);
 
@@ -190,9 +175,6 @@ public static class Fixes
             {
                 if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
-
-                if (ship.Systems[SystemTypes.HeliSabotage].TryCast(out activatable) && activatable.IsActive)
-                    FixHeli();
 
                 if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
                     FixLights(lights);
@@ -204,49 +186,25 @@ public static class Fixes
                 if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
 
-                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Reactor);
-
                 if (ship.Systems[SystemTypes.MushroomMixupSabotage].TryCast<MushroomMixupSabotageSystem>(out var mixup) && mixup.IsActive)
                     FixMixup(mixup);
 
                 break;
             }
-            case 6:
+            case 6 when SubLoaded:
             {
-                if (!SubLoaded)
-                    break;
-
                 if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
-
-                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Reactor);
 
                 if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
                     FixLights(lights);
 
-                if (HasTask(RetrieveOxygenMask))
-                    FixSubOxygen();
-
                 break;
             }
-            case 7:
+            case 7 when LiLoaded:
             {
-                if (!LiLoaded)
-                    break;
-
                 if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
                     FixComms();
-
-                if (ship.Systems[SystemTypes.LifeSupp].TryCast(out activatable) && activatable.IsActive)
-                    FixOxygen();
-
-                if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Reactor);
-
-                if (ship.Systems[SystemTypes.Laboratory].TryCast(out activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Laboratory);
 
                 if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
                     FixLights(lights);

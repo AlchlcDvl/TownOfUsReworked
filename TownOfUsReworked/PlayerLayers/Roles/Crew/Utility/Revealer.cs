@@ -66,5 +66,9 @@ public class Revealer : Crew, IGhosty
         }
     }
 
-    public override void UpdatePlayer() => (this as IGhosty).UpdateGhost();
+    public override void UpdatePlayer()
+    {
+        base.UpdatePlayer();
+        (this as IGhosty).UpdateGhost();
+    }
 }

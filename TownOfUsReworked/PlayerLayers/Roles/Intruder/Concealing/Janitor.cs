@@ -85,7 +85,7 @@ public class Janitor : Intruder, IDragger
         DragHandler.StartDrag(Player, CurrentlyDragging);
     }
 
-    public override void Kill(PlayerControl target)
+    protected override void Kill(PlayerControl target)
     {
         base.Kill(target);
 

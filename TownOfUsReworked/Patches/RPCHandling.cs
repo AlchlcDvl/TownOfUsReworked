@@ -471,16 +471,11 @@ public static class RPCHandling
                     {
                         var nkRole = reader.ReadLayer<Role>();
 
-                        if (NeutralSettings.NoSolo == NoSolo.SameNKs)
+                        foreach (var role in PlayerLayer.GetLayers<Neutral>().Where(x => x.Type == nkRole.Type))
                         {
-                            foreach (var role in PlayerLayer.GetLayers<Neutral>().Where(x => x.Type == nkRole.Type))
-                            {
-                                if (!role.Disconnected && role.Faithful)
-                                    role.Winner = true;
-                            }
+                            if (!role.Disconnected && role.Faithful)
+                                role.Winner = true;
                         }
-                        else
-                            nkRole.Winner = true;
 
                         return;
                     }

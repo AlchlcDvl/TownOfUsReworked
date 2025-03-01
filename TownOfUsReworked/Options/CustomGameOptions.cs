@@ -70,7 +70,7 @@ public static class GameSettings
     [NumberOption(0, 2000, 50, zeroIsInf: true)]
     public static Number ChatCharacterLimit = 200;
 
-    [NumberOption(2, 127, 1)]
+    [NumberOption(2, 250, 1)]
     public static Number LobbySize = 15;
 }
 
@@ -614,9 +614,6 @@ public static class NeutralSettings
     [NumberOption(0, 14, 1)]
     public static Number NeutralMin = 0;
 
-    [StringOption<NoSolo>]
-    public static NoSolo NoSolo = NoSolo.Never;
-
     [ToggleOption]
     public static bool AvoidNeutralKingmakers = false;
 
@@ -745,18 +742,18 @@ public static class CrewProtectiveRoles
 
     [LayerOption("#BE1C8CFF", LayerEnum.Trapper)]
     public static RoleOptionData Trapper;
-
-    [LayerOption("#1A3270FF", LayerEnum.Trickster)]
-    public static RoleOptionData Trickster;
 }
 
 [AlignmentOption(RoleListSlot.CrewSov)]
 public static class CrewSovereignRoles
 {
+    [LayerOption("#1A3270FF", LayerEnum.Democrat)]
+    public static RoleOptionData Democrat;
+
     [LayerOption("#00CB97FF", LayerEnum.Dictator)]
     public static RoleOptionData Dictator;
 
-    [LayerOption("#704FA8FF", LayerEnum.Mayor)]
+    [LayerOption("#704FA8FF", LayerEnum.Mayor, true)]
     public static RoleOptionData Mayor;
 
     [LayerOption("#FF004EFF", LayerEnum.Monarch)]

@@ -27,6 +27,8 @@ public class Mafioso : Intruder
 
     public override void UpdatePlayer()
     {
+        base.UpdatePlayer();
+
         if (CanPromote)
             TurnGodfather();
     }

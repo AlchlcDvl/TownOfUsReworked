@@ -35,6 +35,12 @@ public class Silencer : Syndicate, ISilencer
             (PlayerBodyExclusion)Exception1);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (SilencedPlayer == player)
+            name += " <#AAB43EFF>乂</color>";
+    }
+
     private void Silence(PlayerControl target)
     {
         var cooldown = Interact(Player, target);

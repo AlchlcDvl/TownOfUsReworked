@@ -39,8 +39,8 @@ public static class RoleGenManager
     public static byte Convertible;
 
     public static readonly Enum[] CI = [ LayerEnum.Mystic, LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Medium, LayerEnum.Coroner, LayerEnum.Operative, LayerEnum.Seer, LayerEnum.Detective ];
-    public static readonly Enum[] CSv = [ LayerEnum.Mayor, LayerEnum.Dictator, LayerEnum.Monarch ];
-    public static readonly Enum[] CrP = [ LayerEnum.Altruist, LayerEnum.Medic, LayerEnum.Trapper, LayerEnum.Trickster ];
+    public static readonly Enum[] CSv = [ LayerEnum.Mayor, LayerEnum.Dictator, LayerEnum.Monarch, LayerEnum.Democrat ];
+    public static readonly Enum[] CrP = [ LayerEnum.Altruist, LayerEnum.Medic, LayerEnum.Trapper ];
     public static readonly Enum[] CU = [ LayerEnum.Crewmate ];
     public static readonly Enum[] CK = [ LayerEnum.Vigilante, LayerEnum.Veteran, LayerEnum.Bastion ];
     public static readonly Enum[] CS = [ LayerEnum.Engineer, LayerEnum.Transporter, LayerEnum.Escort, LayerEnum.Shifter, LayerEnum.Chameleon, LayerEnum.Retributionist ];
@@ -115,7 +115,7 @@ public static class RoleGenManager
 
     public static readonly Enum[][] Alignments = [ CI, CSv, CrP, CU, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, IH, IU, SU ];
 
-    private static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+    private static readonly List<byte> Spawns = [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ];
 
     private static readonly TargetGen Targets = new();
     private static readonly ModifierGen Modifiers = new();
@@ -194,7 +194,7 @@ public static class RoleGenManager
             PlayerLayerEnum.Modifier => new Modifierless(),
             PlayerLayerEnum.Disposition => new Dispositionless(),
             PlayerLayerEnum.Ability => new Abilityless(),
-            _ => throw new NotImplementedException($"{id}:{rpc}")
+            _ => throw new ArgumentOutOfRangeException($"{id}:{rpc}")
         };
     }
 

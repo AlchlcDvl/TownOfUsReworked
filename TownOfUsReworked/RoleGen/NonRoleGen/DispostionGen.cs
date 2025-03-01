@@ -12,6 +12,42 @@ public class DispositionGen : BaseGen
 
     public override void InitList()
     {
+        if (IsRoleList())
+            InitRlList();
+        else
+            InitRegList();
+    }
+
+    private static void InitRlList()
+    {
+        var abilities = GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor);
+
+        foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Disposition))
+        {
+            foreach (var id in entry.Get())
+            {
+                if (id == RoleListSlot.None)
+                    break;
+
+                var rateLimit = 0;
+                var cachedCount = AllDispositions.Count;
+
+                while (rateLimit < 10000 && AllDispositions.Count == cachedCount)
+                {
+                    if (!id.TryCastToLayer(out var layer))
+                        layer = abilities.Random();
+
+                    if (RoleListGen.CannotAdd(layer, AllDispositions))
+                        rateLimit++;
+                    else
+                        AllDispositions.Add(GetSpawnItem(layer));
+                }
+            }
+        }
+    }
+
+    private static void InitRegList()
+    {
         foreach (var spawn in GetValuesFromToAndMorph(LayerEnum.Allied, LayerEnum.Traitor, GetSpawnItem))
         {
             if (spawn.IsActive())

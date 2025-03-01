@@ -29,4 +29,21 @@ public class Mafia : Disposition
         Winner = true;
         CallRpc(CustomRPC.WinLose, WinLose.MafiaWins);
     }
+
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (handler.CustomDisposition is not Mafia)
+            return;
+
+        name += $" {ColoredSymbol}";
+
+        if (!MafiaRoles || revealed)
+            return;
+
+        var role = handler.CustomRole;
+        color = role.Color;
+        name += $"\n{role}";
+        revealed = true;
+        removeFromConsig = true;
+    }
 }

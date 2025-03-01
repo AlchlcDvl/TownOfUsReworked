@@ -115,4 +115,12 @@ public class Whisperer : Neophyte
 
         Members.ForEach(x => PlayerConversion.Remove(x));
     }
+
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        base.UpdatePlayerName(handler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
+
+        if (PlayerConversion.TryGetValue(player.PlayerId, out var value))
+            name += $" <#2D6AA5FF>{value}%</color>";
+    }
 }

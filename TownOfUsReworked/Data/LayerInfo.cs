@@ -11,6 +11,7 @@ public static class AllInfo
         new(LayerEnum.Chameleon, Alignment.Support, Faction.Crew),
         new(LayerEnum.Coroner, Alignment.Investigative, Faction.Crew),
         new(LayerEnum.Crewmate, Alignment.Utility, Faction.Crew),
+        new(LayerEnum.Democrat, Alignment.Sovereign, Faction.Crew),
         new(LayerEnum.Detective, Alignment.Investigative, Faction.Crew),
         new(LayerEnum.Dictator, Alignment.Sovereign, Faction.Crew),
         new(LayerEnum.Engineer, Alignment.Support, Faction.Crew),
@@ -29,7 +30,6 @@ public static class AllInfo
         new(LayerEnum.Tracker, Alignment.Investigative, Faction.Crew),
         new(LayerEnum.Transporter, Alignment.Support, Faction.Crew),
         new(LayerEnum.Trapper, Alignment.Protective, Faction.Crew),
-        new(LayerEnum.Trickster, Alignment.Protective, Faction.Crew),
         new(LayerEnum.Veteran, Alignment.Killing, Faction.Crew),
         new(LayerEnum.Vigilante, Alignment.Killing, Faction.Crew, true),
 
@@ -253,6 +253,7 @@ public static class AllInfo
         new("Blackmailed", "Φ", CustomColorManager.Blackmailer),
         new("Silenced", "乂", CustomColorManager.Silencer),
         new("Flashed", "ㅇ", CustomColorManager.Grenadier),
+        new("Campaigned", "°", CustomColorManager.Democrat),
         new("Driven", "Δ", CustomColorManager.Syndicate),
         new("Friend", "ξ", CustomColorManager.Faction),
         new("Marked", "χ", CustomColorManager.Ghoul),

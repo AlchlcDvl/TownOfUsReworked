@@ -7,43 +7,31 @@ public class Mayor : Crew, IRevealer
     public static Number MayorVoteCount = 2;
 
     [ToggleOption]
-    public static bool RoundOneNoMayorReveal = false;
-
-    [ToggleOption]
     public static bool MayorButton = true;
 
-    public bool RoundOne { get; set; }
-    private CustomButton RevealButton { get; set; }
-    public bool Revealed { get; set; }
+    // This is cursed
+    public bool Revealed
+    {
+        get => true;
+        set {}
+    }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mayor : FactionColor;
     public override LayerEnum Type => LayerEnum.Mayor;
-    public override Func<string> StartText => () => "Reveal Yourself To Commit Voter Fraud";
-    public override Func<string> Description => () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {MayorVoteCount + 1} times but you cannot be protected";
+    public override Func<string> StartText => () => "Commit Voter Fraud!";
+    public override Func<string> Description => () => $"-Your votes count {MayorVoteCount + 1} times but you cannot be protected";
 
     protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Sovereign;
-        RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable);
     }
 
-    private void Reveal()
+    public override void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
-        PublicReveal(Player);
+        revealed = true;
+        name += $"\n{Name}";
+        color = Color;
+        removeFromConsig = true;
     }
-
-    private bool Usable() => !RoundOne && !Revealed && !GetLayers<Mayor>().Any(x => !x.TrulyDead && x.Revealed);
-
-    // public override void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
-    // {
-    //     if (Revealed)
-    //     {
-    //         revealed = true;
-    //         name += $"\n{Name}";
-    //         color = Color;
-    //         removeFromConsig = true;
-    //     }
-    // }
 }

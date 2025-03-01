@@ -10,16 +10,16 @@ public class Snitch : Ability
     public static bool SnitchSeesNeutrals = false;
 
     [ToggleOption]
-    public static bool SnitchSeesCrew = false;
+    private static bool SnitchSeesCrew = false;
 
     [ToggleOption]
-    public static bool SnitchSeesRoles = false;
+    private static bool SnitchSeesRoles = false;
 
     [NumberOption(1, 5, 1)]
     public static Number SnitchTasksRemaining = 1;
 
     [ToggleOption]
-    public static bool SnitchSeesTargetsInMeeting = true;
+    private static bool SnitchSeesTargetsInMeeting = true;
 
     [ToggleOption]
     public static bool SnitchSeesTraitor = true;
@@ -58,6 +58,41 @@ public class Snitch : Ability
             {
                 Flash(UColor.red);
             }
+        }
+    }
+
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (!TasksDone || (meeting && !SnitchSeesTargetsInMeeting))
+            return;
+
+        var role = handler.CustomRole;
+
+        if (SnitchSeesRoles)
+        {
+            if (role.Faction is not (Faction.Syndicate or Faction.Intruder) && (role.Faction != Faction.Neutral || !SnitchSeesNeutrals) && (role.Faction != Faction.Crew || !SnitchSeesCrew))
+                return;
+
+            color = role.Color;
+            name += $"\n{role.Name}";
+            revealed = true;
+        }
+        else if (role.Faction is Faction.Syndicate or Faction.Intruder || (role.Faction == Faction.Neutral && SnitchSeesNeutrals) || (role.Faction == Faction.Crew && SnitchSeesCrew))
+        {
+            var disp = handler.CustomDisposition;
+
+            if (!(disp is Traitor && SnitchSeesTraitor) && !(disp is Fanatic && SnitchSeesFanatic))
+            {
+                color = role.FactionColor;
+                name += $"\n{role.FactionName}";
+            }
+            else
+            {
+                color = CustomColorManager.Crew;
+                name += "\nCrew";
+            }
+
+            revealed = true;
         }
     }
 }

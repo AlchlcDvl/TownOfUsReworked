@@ -134,7 +134,7 @@ public static class CustomColorManager
     public static readonly UColor Monarch = FromHex("#FF004EFF");
     public static readonly UColor Dictator = FromHex("#00CB97FF");
     public static readonly UColor Trapper = FromHex("#BE1C8CFF");
-    public static readonly UColor Trickster = FromHex("#1A3270FF");
+    public static readonly UColor Democrat = FromHex("#1A3270FF");
 
     // Neutral Colors
     public static readonly UColor Jester = FromHex("#F7B3DAFF");
@@ -251,7 +251,7 @@ public static class CustomColorManager
     public static readonly UColor Status = FromHex("#9B59B6FF");
     public static readonly UColor Objectives = FromHex("#B148E2FF");
     public static readonly UColor Attributes = FromHex("#EC1C45FF");
-    public static readonly UColor Abilities =FromHex("#206694FF");
+    public static readonly UColor Abilities = FromHex("#206694FF");
     public static readonly UColor What = FromHex("#6697FFFF");
     public static readonly UColor FirstShield = FromHex("#C2185BFF");
     public static readonly UColor AcceptedTeal = FromHex("#2CEAC6FF");
@@ -267,5 +267,5 @@ public static class CustomColorManager
     // #B34D99 #FFC34F #A9A9A9 #8BFDFD #06E00C
 
     // Symbol Storage
-    // ⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 王 ī l · ° ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
+    // ⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 王 ī l · ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
 }

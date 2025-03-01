@@ -199,6 +199,8 @@ public class BountyHunter : Evil
 
     public override void UpdatePlayer()
     {
+        base.UpdatePlayer();
+
         if (Failed && !Dead && BhToTroll)
             TurnTroll();
     }

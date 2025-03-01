@@ -28,4 +28,21 @@ public class Rivals : Disposition
         Winner = true;
         CallRpc(CustomRPC.WinLose, WinLose.RivalWins, this);
     }
+
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (OtherRival != player)
+            return;
+
+        name += $" {ColoredSymbol}";
+
+        if (!RivalsRoles || revealed)
+            return;
+
+        var role = handler.CustomRole;
+        color = role.Color;
+        name += $"\n{role}";
+        revealed = true;
+        removeFromConsig = true;
+    }
 }

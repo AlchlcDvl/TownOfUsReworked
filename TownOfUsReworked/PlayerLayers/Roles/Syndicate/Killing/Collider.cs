@@ -51,6 +51,15 @@ public class Collider : Syndicate
             new Duration(ChargeDur), (EndFunc)EndEffect);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (Positive == player)
+            name += " <#B345FFFF>+</color>";
+
+        if (Negative == player)
+            name += " <#B345FFFF>-</color>";
+    }
+
     private void Charge() => ChargeButton.Begin();
 
     private void ResetCharges()

@@ -5,13 +5,13 @@ public abstract class NameHandler : MonoBehaviour
     public static readonly Dictionary<byte, string> PlayerNames = [];
     public static readonly Dictionary<byte, string> ColorNames = [];
 
-    public PlayerControl Player { get; set; }
-    public Vector3 Size { get; set; }
+    protected PlayerControl Player { get; set; }
+    protected Vector3 Size { get; set; }
 
     [HideFromIl2Cpp]
-    public CustomPlayer Custom { get; set; }
+    protected CustomPlayer Custom { get; set; }
 
-    public static (string, UColor) UpdateColorblind(PlayerControl player)
+    protected static (string, UColor) UpdateColorblind(PlayerControl player)
     {
         if (!DataManager.Settings.Accessibility.ColorBlindMode)
             return ("", UColor.clear);
@@ -67,7 +67,7 @@ public abstract class NameHandler : MonoBehaviour
         return (name, color);
     }
 
-    public static (string, UColor) UpdateGameName(LayerHandler playerHandler, LayerHandler localHandler, out bool revealed)
+    protected static (string, UColor) UpdateGameName(LayerHandler playerHandler, LayerHandler localHandler, out bool revealed)
     {
         revealed = false;
         var player = playerHandler.Player;
@@ -141,317 +141,8 @@ public abstract class NameHandler : MonoBehaviour
 
         if (!deadSeeEverything && !amOwner)
         {
-            // role.UpdateSelfName(ref name, ref color, ref revealed, ref removeFromConsig);
-            // localRole.UpdatePlayerName(playerHandler, ref name, ref color, ref revealed, ref removeFromConsig);
-
-            switch (role)
-            {
-                case Mayor mayor:
-                {
-                    if (mayor.Revealed)
-                    {
-                        revealed = true;
-                        name += $"\n{mayor.Name}";
-                        color = mayor.Color;
-                        removeFromConsig = true;
-                    }
-
-                    break;
-                }
-                case Dictator dict:
-                {
-                    if (dict.Revealed)
-                    {
-                        revealed = true;
-                        name += $"\n{dict.Name}";
-                        color = dict.Color;
-                        removeFromConsig = true;
-                    }
-
-                    break;
-                }
-                case NKilling:
-                {
-                    if (localRole is NKilling && NeutralKillingSettings.KnowEachOther && ((role.Type == localRole.Type && NeutralSettings.NoSolo == NoSolo.SameNKs) ||
-                        NeutralSettings.NoSolo == NoSolo.AllNKs) && !revealed)
-                    {
-                        color = role.Color;
-                        name += $"\n{role}";
-                        revealed = true;
-                    }
-
-                    break;
-                }
-            }
-
-            switch (localRole)
-            {
-                case Consigliere consigliere:
-                {
-                    if (consigliere.Investigated.Contains(player.PlayerId) && !revealed)
-                    {
-                        revealed = true;
-                        var revealRole = Consigliere.ConsigInfo == ConsigInfo.Role;
-                        removeFromConsig = role.SubFaction == consigliere.SubFaction && role.SubFaction != SubFaction.None && revealRole;
-                        color = revealRole ? role.Color : role.FactionColor;
-                        name += revealRole ? $"\n{role}" : $"\n{role.FactionName}";
-                    }
-
-                    break;
-                }
-                case PromotedGodfather godfather:
-                {
-                    if (godfather.IsConsig && godfather.Investigated.Contains(player.PlayerId) && !revealed)
-                    {
-                        revealed = true;
-                        var revealRole = Consigliere.ConsigInfo == ConsigInfo.Role;
-                        removeFromConsig = role.SubFaction == godfather.SubFaction && role.SubFaction != SubFaction.None && revealRole;
-                        color = revealRole ? role.Color : role.FactionColor;
-                        name += revealRole ? $"\n{role}" : $"\n{role.FactionName}";
-                    }
-                    else if (godfather.IsBm && godfather.BlackmailedPlayer == player)
-                    {
-                        name += " <#02A752FF>Φ</color>";
-                        color = godfather.Color;
-                    }
-                    else if (godfather.IsAmb && godfather.AmbushedPlayer == player)
-                    {
-                        name += " <#2BD29CFF>人</color>";
-                        color = godfather.Color;
-                    }
-                    if (godfather.FlashedPlayers.Contains(player.PlayerId) && Grenadier.GrenadierIndicators)
-                    {
-                        name += " <#85AA5BFF>ㅇ</color>";
-                        color = godfather.Color;
-                    }
-
-                    break;
-                }
-                case PromotedRebel rebel:
-                {
-                    if (rebel.IsSil && rebel.SilencedPlayer == player)
-                    {
-                        name += " <#AAB43EFF>乂</color>";
-                        color = rebel.Color;
-                    }
-                    else if (rebel.IsCrus && rebel.CrusadedPlayer == player)
-                    {
-                        name += " <#DF7AE8FF>τ</color>";
-                        color = rebel.Color;
-                    }
-
-                    break;
-                }
-                case Medic medic:
-                {
-                    if (medic.ShieldedPlayer && medic.ShieldedPlayer == player && Medic.ShowShielded.Contains(ShieldOptions.Medic))
-                        name += " <#006600FF>✚</color>";
-
-                    break;
-                }
-                case Trapper trapper:
-                {
-                    if (trapper.Trapped.Contains(player.PlayerId))
-                        name += " <#BE1C8CFF>∮</color>";
-
-                    break;
-                }
-                case Retributionist ret:
-                {
-                    if (ret.ShieldedPlayer && ret.ShieldedPlayer == player && Medic.ShowShielded.Contains(ShieldOptions.Medic))
-                    {
-                        name += " <#006600FF>✚</color>";
-                        color = ret.Color;
-                    }
-
-                    if (ret.Trapped.Contains(player.PlayerId))
-                    {
-                        name += " <#BE1C8CFF>∮</color>";
-                        color = ret.Color;
-                    }
-
-                    if (ret.Reported.Contains(player.PlayerId) && !revealed && meeting)
-                    {
-                        color = role.Color;
-                        name += $"\n{role}";
-                        revealed = true;
-                    }
-
-                    break;
-                }
-                case Arsonist arsonist:
-                {
-                    if (arsonist.Doused.Contains(player.PlayerId))
-                        name += " <#EE7600FF>Ξ</color>";
-
-                    break;
-                }
-                case Plaguebearer plaguebearer:
-                {
-                    if (plaguebearer.Infected.Contains(player.PlayerId) && !amOwner)
-                        name += " <#CFFE61FF>ρ</color>";
-
-                    break;
-                }
-                case Cryomaniac cryomaniac:
-                {
-                    if (cryomaniac.Doused.Contains(player.PlayerId))
-                        name += " <#642DEAFF>λ</color>";
-
-                    break;
-                }
-                case Framer framer:
-                {
-                    if (framer.Framed.Contains(player.PlayerId))
-                        name += " <#00FFFFFF>ς</color>";
-
-                    break;
-                }
-                case Spellslinger spellslinger:
-                {
-                    if (spellslinger.Spelled.Contains(player.PlayerId))
-                        name += " <#0028F5FF>ø</color>";
-
-                    break;
-                }
-                case Executioner executioner:
-                {
-                    if (player == executioner.TargetPlayer)
-                    {
-                        name += " <#CCCCCCFF>§</color>";
-
-                        if (Executioner.ExeKnowsTargetRole && !revealed)
-                        {
-                            color = role.Color;
-                            name += $"\n{role}";
-                            revealed = true;
-                        }
-                        else
-                            color = executioner.Color;
-                    }
-
-                    break;
-                }
-                case Guesser guesser:
-                {
-                    if (player == guesser.TargetPlayer)
-                    {
-                        color = guesser.Color;
-                        name += " <#EEE5BEFF>π</color>";
-                    }
-
-                    break;
-                }
-                case GuardianAngel guardianAngel:
-                {
-                    if (player == guardianAngel.TargetPlayer)
-                    {
-                        name += " <#FFFFFFFF>★</color>";
-
-                        if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.Ga))
-                            name += " <#FFFFFFFF>η</color>";
-
-                        if (GuardianAngel.GaKnowsTargetRole && !revealed)
-                        {
-                            color = role.Color;
-                            name += $"\n{role}";
-                            revealed = true;
-                        }
-                        else
-                            color = guardianAngel.Color;
-                    }
-
-                    break;
-                }
-                case Neophyte neophyte:
-                {
-                    if (neophyte.Members.Contains(player.PlayerId) && !amOwner)
-                    {
-                        name += $" <#{neophyte.SubFactionColor.ToHtmlStringRGBA()}>{neophyte.SubFactionSymbol}</color>";
-
-                        if (GameModifiers.FactionSeeRoles && !revealed)
-                        {
-                            color = role.Color;
-                            name += $"\n{role}";
-                            revealed = true;
-                        }
-                        else
-                            color = neophyte.SubFactionColor;
-                    }
-                    else if (neophyte is Whisperer whisperer && whisperer.PlayerConversion.TryGetValue(player.PlayerId, out var value))
-                        name += $" {value}%";
-
-                    break;
-                }
-                case Grenadier grenadier:
-                {
-                    if (grenadier.FlashedPlayers.Contains(player.PlayerId) && Grenadier.GrenadierIndicators)
-                    {
-                        name += " <#85AA5BFF>ㅇ</color>";
-                        color = grenadier.Color;
-                    }
-
-                    break;
-                }
-                case Blackmailer blackmailer:
-                {
-                    if (blackmailer.BlackmailedPlayer == player)
-                    {
-                        name += " <#02A752FF>Φ</color>";
-                        color = blackmailer.Color;
-                    }
-
-                    break;
-                }
-                case Silencer silencer:
-                {
-                    if (silencer.SilencedPlayer == player)
-                    {
-                        name += " <#AAB43EFF>乂</color>";
-                        color = silencer.Color;
-                    }
-
-                    break;
-                }
-                case Ambusher ambusher:
-                {
-                    if (ambusher.AmbushedPlayer == player)
-                    {
-                        name += " <#2BD29CFF>人</color>";
-                        color = ambusher.Color;
-                    }
-
-                    break;
-                }
-                case Crusader crusader:
-                {
-                    if (crusader.CrusadedPlayer == player)
-                    {
-                        name += " <#DF7AE8FF>τ</color>";
-                        color = crusader.Color;
-                    }
-
-                    break;
-                }
-                case Hunter or Hunted or Runner:
-                {
-                    name += $"\n{role}";
-                    color = role.Color;
-                    revealed = true;
-                    break;
-                }
-                case Coroner coroner:
-                {
-                    if (coroner.Reported.Contains(player.PlayerId) && !revealed && meeting)
-                    {
-                        color = role.Color;
-                        name += $"\n{(Coroner.CoronerReportRole ? role : role.Faction)}";
-                        revealed = true;
-                    }
-
-                    break;
-                }
-            }
+            role.UpdateSelfName(ref name, ref color, ref revealed, ref removeFromConsig);
+            localRole.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
 
             if (localRole.IsConverted())
             {
@@ -473,77 +164,7 @@ public abstract class NameHandler : MonoBehaviour
                     name += $" {value}%";
             }
 
-            switch (localDisp)
-            {
-                case Lovers lover:
-                {
-                    if (lover.OtherLover == player)
-                    {
-                        name += $" {lover.ColoredSymbol}";
-
-                        if (Lovers.LoversRoles && !revealed)
-                        {
-                            color = role.Color;
-                            name += $"\n{role}";
-                            revealed = true;
-                            removeFromConsig = true;
-                        }
-                    }
-
-                    break;
-                }
-                case Rivals rival:
-                {
-                    if (rival.OtherRival == player)
-                    {
-                        name += $" {rival.ColoredSymbol}";
-
-                        if (Rivals.RivalsRoles && !revealed)
-                        {
-                            color = role.Color;
-                            name += $"\n{role}";
-                            revealed = true;
-                            removeFromConsig = true;
-                        }
-                    }
-
-                    break;
-                }
-                case Linked linked:
-                {
-                    if (linked.OtherLink == player)
-                    {
-                        name += $" {linked.ColoredSymbol}";
-
-                        if (Linked.LinkedRoles && !revealed)
-                        {
-                            color = role.Color;
-                            name += $"\n{role}";
-                            revealed = true;
-                            removeFromConsig = true;
-                        }
-                    }
-
-                    break;
-                }
-                case Mafia:
-                {
-                    if (disp is Mafia)
-                    {
-                        name += $" {localDisp.ColoredSymbol}";
-
-                        if (Linked.LinkedRoles && !revealed)
-                        {
-                            color = role.Color;
-                            name += $"\n{role}";
-                            revealed = true;
-                            removeFromConsig = true;
-                        }
-                    }
-
-                    break;
-                }
-            }
+            localDisp.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
 
             if ((localRole.Faction is Faction.Syndicate or Faction.Intruder || (localRole.Faction == Faction.Neutral && Snitch.SnitchSeesNeutrals)) && playerHandler.CustomAbility is Snitch
                 snitch && (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining))
@@ -571,35 +192,7 @@ public abstract class NameHandler : MonoBehaviour
                     name += $" {role.FactionColorString}ξ</color>";
             }
 
-            if (localHandler.CustomAbility is Snitch && !deadSeeEverything && localRole.TasksDone)
-            {
-                if (Snitch.SnitchSeesRoles)
-                {
-                    if (role.Faction is Faction.Syndicate or Faction.Intruder || (role.Faction == Faction.Neutral && Snitch.SnitchSeesNeutrals) || (role.Faction == Faction.Crew &&
-                        Snitch.SnitchSeesCrew))
-                    {
-                        color = role.Color;
-                        name += $"\n{role.Name}";
-                        revealed = true;
-                    }
-                }
-                if (role.Faction is Faction.Syndicate or Faction.Intruder || (role.Faction == Faction.Neutral && Snitch.SnitchSeesNeutrals) || (role.Faction == Faction.Crew &&
-                    Snitch.SnitchSeesCrew))
-                {
-                    if (!(disp is Traitor && Snitch.SnitchSeesTraitor) && !(disp is Fanatic && Snitch.SnitchSeesFanatic))
-                    {
-                        color = role.FactionColor;
-                        name += $"\n{role.FactionName}";
-                    }
-                    else
-                    {
-                        color = CustomColorManager.Crew;
-                        name += "\nCrew";
-                    }
-
-                    revealed = true;
-                }
-            }
+            localHandler.CustomAbility.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
         }
 
         if (amOwner && !deadSeeEverything)
@@ -676,6 +269,9 @@ public abstract class NameHandler : MonoBehaviour
             if (player.IsSpellbound())
                 name += " <#0028F5FF>ø</color>";
 
+            if (player.IsCampaigned())
+                name += " <#1A3270FF>°</color>";
+
             if (role.IsConverted())
                 name += $" <#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
         }
@@ -743,10 +339,19 @@ public abstract class NameHandler : MonoBehaviour
 
         if (removeFromConsig)
         {
-            if (localRole is Consigliere consigliere)
-                consigliere.Investigated.Remove(player.PlayerId);
-            else if (localRole is PromotedGodfather godfather)
-                godfather.Investigated.Remove(player.PlayerId);
+            switch (localRole)
+            {
+                case Consigliere consigliere:
+                {
+                    consigliere.Investigated.Remove(player.PlayerId);
+                    break;
+                }
+                case PromotedGodfather godfather:
+                {
+                    godfather.Investigated.Remove(player.PlayerId);
+                    break;
+                }
+            }
         }
 
         return (name, color);

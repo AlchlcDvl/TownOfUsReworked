@@ -239,6 +239,8 @@ public class Amnesiac : Neutral
 
     public override void UpdatePlayer()
     {
+        base.UpdatePlayer();
+
         if (AmneToThief && AllPlayers().Count(x => !x.HasDied()) <= 4 && !Dead)
             TurnThief();
     }

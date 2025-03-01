@@ -138,9 +138,9 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0 && !(Player.Is(Faction.Neutral) && NeutralSettings.NoSolo == NoSolo.AllNeutrals))
+        if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0 && !Player.Is(Faction.Neutral))
         {
-            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac, LayerEnum.Werewolf }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() && (!Player.Is(layer) || NeutralSettings.NoSolo == NoSolo.Never)));
+            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac, LayerEnum.Werewolf }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() && !Player.Is(layer)));
 
             if (RoleGenManager.GetSpawnItem(LayerEnum.Plaguebearer).IsActive() && !Player.Is(Alignment.Harbinger) && !Player.Is(Alignment.Apocalypse))
             {

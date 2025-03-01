@@ -42,6 +42,12 @@ public class Trapper : Crew, ITrapper
         TrapsMade = TrapButton.UseCount = 0;
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (Trapped.Contains(player.PlayerId))
+            name += " <#BE1C8CFF>∮</color>";
+    }
+
     private void StartBuilding()
     {
         BuildButton.Begin();

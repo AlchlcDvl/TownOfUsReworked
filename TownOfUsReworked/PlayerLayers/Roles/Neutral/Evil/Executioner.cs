@@ -62,6 +62,22 @@ public class Executioner : Evil
         Rounds = 0;
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (player != TargetPlayer)
+            return;
+
+        name += " <#CCCCCCFF>§</color>";
+
+        if (!ExeKnowsTargetRole || revealed)
+            return;
+
+        var role = handler.CustomRole;
+        color = role.Color;
+        name += $"\n{role}";
+        revealed = true;
+    }
+
     public override void PostAssignment()
     {
         if (ExecutionerCanPickTargets || !TargetPlayer)

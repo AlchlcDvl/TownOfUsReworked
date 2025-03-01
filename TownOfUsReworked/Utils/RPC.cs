@@ -11,7 +11,7 @@ public static class RPC
     private const byte CustomRPCCallID = 254;
 
     /// <summary>
-    /// Sends mod settings to other players.<br></br>
+    /// Sends mod settings to other players.<br/>
     /// Default behavior sends all non-client options to all players.
     /// </summary>
     /// <param name="setting">Specific setting to sync, or <c>null</c> for all settings</param>
@@ -22,7 +22,7 @@ public static class RPC
         if (save)
             OptionAttribute.SaveSettings("LastUsed");
 
-        if (TownOfUsReworked.MciActive || !CustomPlayer.Local || AllPlayers().Count() <= 1)
+        if (TownOfUsReworked.MciActive || !CustomPlayer.Local || GameData.Instance.PlayerCount <= 1)
             return;
 
         var options = setting != null ? [ setting ] : OptionAttribute.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOptionAttribute);
@@ -127,11 +127,11 @@ public static class RPC
     }
 
     /// <summary>
-    /// Reads and casts a player layer to specified type.
+    /// Reads and casts a player layer to a specified type.
     /// </summary>
     /// <param name="reader">Network message containing settings data</param>
     /// <typeparam name="T">Type to cast layer to</typeparam>
-    /// <returns>PlayerLayer</c> as specified type</returns>
+    /// <returns><c>PlayerLayer</c> as specified type</returns>
     public static T ReadLayer<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayer() as T;
 
     /// <summary>
@@ -155,7 +155,7 @@ public static class RPC
     }
 
     /// <summary>
-    /// Reads and casts multiple player layers to specified type.
+    /// Reads and casts multiple player layers to a specified type.
     /// </summary>
     /// <param name="reader">Network message containing settings data</param>
     /// <typeparam name="T">Type to cast layers to</typeparam>
@@ -167,14 +167,14 @@ public static class RPC
     /// </summary>
     /// <param name="reader">Network message containing settings data</param>
     /// <returns>Deserialized <c>RoleOptionData</c></returns>
-    public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Deserialize(reader.ReadBytesAndSize());
+    public static RoleOptionData ReadRoleOptionData(this MessageReader reader) => RoleOptionData.Deserialize(reader);
 
     /// <summary>
     /// Reads and converts enum value from a network message.
     /// </summary>
     /// <param name="reader">Network message containing settings data</param>
     /// <typeparam name="T">Enum type to convert to</typeparam>
-    /// <returns>Read value as specified enum type</returns>
+    /// <returns>Read value as a specified enum type</returns>
     public static T ReadEnum<T>(this MessageReader reader) where T : struct, Enum
     {
         if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
@@ -202,10 +202,10 @@ public static class RPC
     /// <summary>
     /// Writes role option data to network message.
     /// </summary>
-    public static void Write(this MessageWriter writer, RoleOptionData data) => writer.WriteBytesAndSize(data.Serialize());
+    public static void Write(this MessageWriter writer, RoleOptionData data) => data.Serialize(writer);
 
     /// <summary>
-    /// Writes enum value to network message based on underlying type.
+    /// Writes enum value to the network message based on its underlying type.
     /// </summary>
     private static void Write(this MessageWriter writer, Enum enumVal)
     {
@@ -224,8 +224,7 @@ public static class RPC
     public static void Write<T>(this MessageWriter writer, T value) where T : struct, Enum => writer.Write((Enum)value);
 
     /// <summary>
-    /// Writes various data types to network message.<br></br>
-    /// Handles players, bodies, vents, layers, primitives and collections.
+    /// Writes various data types to the network message.
     /// </summary>
     private static void Write(this MessageWriter writer, object item, CustomRPC rpc, int index, Enum subRpc = null)
     {
@@ -331,23 +330,23 @@ public static class RPC
     }
 
     /// <summary>
-    /// Sends RPC message to all players.
+    /// Sends an RPC message to all players.
     /// </summary>
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallOpenRpc(rpc, data)?.CloseRpc();
 
     /// <summary>
-    /// Creates RPC message writer for all players.
+    /// Creates an RPC message writer for all players.
     /// </summary>
     /// <returns>MessageWriter for chaining additional data</returns>
     public static MessageWriter CallOpenRpc(CustomRPC rpc, params object[] data) => CallTargetedOpenRpc(-1, rpc, data);
 
     /// <summary>
-    /// Sends RPC message to specific player.
+    /// Sends an RPC message to a specific player.
     /// </summary>
     public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data) => CallTargetedOpenRpc(targetClientId, rpc, data)?.CloseRpc();
 
     /// <summary>
-    /// Creates RPC message writer for specific player.
+    /// Creates an RPC message writer for a specific player.
     /// </summary>
     /// <returns>MessageWriter for chaining additional data</returns>
     private static MessageWriter CallTargetedOpenRpc(int targetClientId, CustomRPC rpc, params object[] data)
@@ -360,10 +359,6 @@ public static class RPC
 
         if (data.Length > 0)
         {
-            // Just to be safe
-            if (data[0] is object[] array)
-                data = array;
-
             Enum @enum = null;
 
             if (data[0] is Enum)

@@ -55,4 +55,10 @@ public class Medic : Crew, IShielder
     private bool Usable() => !ShieldBroken;
 
     public override void ReadRPC(MessageReader reader) => ShieldedPlayer = reader.ReadPlayer();
+
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (ShieldedPlayer == player && ShowShielded.Contains(ShieldOptions.Medic))
+            name += " <#006600FF>✚</color>";
+    }
 }

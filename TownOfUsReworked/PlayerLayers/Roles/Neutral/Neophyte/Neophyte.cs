@@ -17,4 +17,22 @@ public abstract class Neophyte : Neutral
         base.Deinit();
         Members.Clear();
     }
+
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (Members.Contains(player.PlayerId))
+        {
+            name += $" <#{SubFactionColor.ToHtmlStringRGBA()}>{SubFactionSymbol}</color>";
+
+            if (GameModifiers.FactionSeeRoles && !revealed)
+            {
+                var role = handler.CustomRole;
+                color = role.Color;
+                name += $"\n{role}";
+                revealed = true;
+            }
+            else
+                color = SubFactionColor;
+        }
+    }
 }

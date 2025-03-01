@@ -49,6 +49,12 @@ public class Arsonist : NKilling
             (UsableFunc)Doused.Any);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (Doused.Contains(player.PlayerId))
+            name += " <#EE7600FF>Ξ</color>";
+    }
+
     private void Ignite()
     {
         Play("Ignite");

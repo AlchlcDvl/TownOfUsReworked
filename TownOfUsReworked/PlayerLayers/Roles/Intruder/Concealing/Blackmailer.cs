@@ -35,6 +35,12 @@ public class Blackmailer : Intruder, IBlackmailer
             (PlayerBodyExclusion)Exception1);
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (BlackmailedPlayer == player)
+            name += " <#02A752FF>Φ</color>";
+    }
+
     private void Blackmail(PlayerControl target)
     {
         var cooldown = Interact(Player, target);

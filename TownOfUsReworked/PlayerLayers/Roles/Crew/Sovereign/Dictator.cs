@@ -10,7 +10,7 @@ public class Dictator : Crew, IRevealer
     public static bool DictatorButton = true;
 
     [NumberOption(0, 10, 1, zeroIsInf: true)]
-    public static Number MaxTribunals = 2;
+    private static Number MaxTribunals = 2;
 
     public bool RoundOne { get; set; }
     public bool Revealed { get; set; }
@@ -113,14 +113,14 @@ public class Dictator : Crew, IRevealer
         }
     }
 
-    // public override void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
-    // {
-    //     if (Revealed)
-    //     {
-    //         revealed = true;
-    //         name += $"\n{Name}";
-    //         color = Color;
-    //         removeFromConsig = true;
-    //     }
-    // }
+    public override void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (!Revealed)
+            return;
+
+        revealed = true;
+        name += $"\n{Name}";
+        color = Color;
+        removeFromConsig = true;
+    }
 }

@@ -108,6 +108,22 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         }
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (IsSil && SilencedPlayer == player)
+            name += " <#AAB43EFF>乂</color>";
+        else if (IsCrus && CrusadedPlayer == player)
+            name += " <#DF7AE8FF>τ</color>";
+        else if (IsCol)
+        {
+            if (Positive == player)
+                name += " <#B345FFFF>+</color>";
+
+            if (Negative == player)
+                name += " <#B345FFFF>-</color>";
+        }
+    }
+
     public void OnRoleSelected()
     {
         if (IsConc)
@@ -344,7 +360,7 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         }
     }
 
-    public override void OnDriveReceivedLocal()
+    protected override void OnDriveReceivedLocal()
     {
         if (IsStalk)
         {

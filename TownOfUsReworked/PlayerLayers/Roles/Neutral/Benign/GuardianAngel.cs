@@ -69,6 +69,25 @@ public class GuardianAngel : Neutral
         Rounds = 0;
     }
 
+    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
+    {
+        if (player != TargetPlayer)
+            return;
+
+        name += " <#FFFFFFFF>★</color>";
+
+        if (player.IsProtected() && ShowProtect.Contains(ProtectOptions.Ga))
+            name += " <#FFFFFFFF>η</color>";
+
+        if (!GaKnowsTargetRole || revealed)
+            return;
+
+        var role = handler.CustomRole;
+        color = role.Color;
+        name += $"\n{role}";
+        revealed = true;
+    }
+
     public override void PostAssignment()
     {
         if (GuardianAngelCanPickTargets || !TargetPlayer)
@@ -136,6 +155,8 @@ public class GuardianAngel : Neutral
 
     public override void UpdatePlayer()
     {
+        base.UpdatePlayer();
+
         if (Failed && !Dead && GaToSurv)
             TurnSurv();
     }

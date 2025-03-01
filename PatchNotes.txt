@@ -1,5 +1,5 @@
 ﻿New!
-- New Role: Trickster [Crew (Protective)]*
+- New Role: Democrat [Crew (Sovereign)]
 - New Factions: Pandorica, Compliance, Illuminati
 - New Special Game Modifiers: Pandora's Box*, Order of Compliance*, Illuminati Unleashed*
 - Mega Addition: The mod now has its own custom stats and achievements
@@ -17,7 +17,8 @@
 - Addition: Added a button in the lobby for hosts to cancel the start timer and not start the game
 
 Changes!
-- Recode: Overhauled a lot of the codebase in favour of optimisation and avoiding potential issues
+- Overhaul: Mayor is now a second stage role for the new Democrat role
+- Recode: Overhauled and refactored a lot of the codebase in favour of optimisation and avoiding potential issues
 - Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a single player to eject and have gained ability charges to compensate
 - Rework: Altruist and Necromancer now need to gain mana from bodies (thereby cleaning them) to be able to revive players
 - Change: Actor role change now has a priority system; it will prioritise roles that are not currently in game, followed by those that are dead and lastly any other role
@@ -32,6 +33,8 @@ Changes!
 - Change: Drive-holding Warpers will now play an animation for everyone before warping
 - Change: Player vision is now more integral to the gameplay
 - Change: Button Barry now only fixes critical sabotages when calling a meeting
+- Change: Actor and Betrayer (via Traitor or Fanatic turning) can now spawn in role-list mode
+- Change: Role List slots can now have multiple entries to allow the creation of custom buckets
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Nerf: Engineer can no longer vent (you now need the Tunneler ability to do so as a crewmate)*
 - Improvement: Improved the mod's loaders

@@ -58,16 +58,6 @@ public class Defector : Disposition
             return;
 
         if (Side == Faction.Neutral)
-        {
-            WinState = NeutralSettings.NoSolo switch
-            {
-                NoSolo.AllNKs => WinLose.AllNKsWin,
-                NoSolo.AllNeutrals => WinLose.AllNeutralsWin,
-                _ => WinLose.None
-            };
-        }
-
-        if (WinState == WinLose.None)
             WinState = WinLose.DefectorWins;
 
         CallRpc(CustomRPC.WinLose, WinState, this);

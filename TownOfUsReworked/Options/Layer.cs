@@ -1,11 +1,12 @@
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace TownOfUsReworked.Options;
 
-public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false, int min = 1, int max = 15) : OptionAttribute<RoleOptionData>(CustomOptionType.Layer)
+public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false, byte min = 1, byte max = 15) : OptionAttribute<RoleOptionData>(CustomOptionType.Layer)
 {
-    private int CachedCount { get; set; }
-    private int CachedChance { get; set; }
-    private int Max { get; } = max;
-    private int Min { get; } = min;
+    private byte CachedCount { get; set; }
+    private byte CachedChance { get; set; }
+    private byte Max { get; } = max;
+    private byte Min { get; } = min;
     private UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
     private bool NoParts { get; } = noParts;
     private string HexCode { get; } = hexCode;
@@ -62,7 +63,6 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
         if (Diff == default)
             Diff = (Left - Right) / 2;
-
 
         Cog = role.transform.GetChild(5).gameObject;
         Cog.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);
@@ -141,19 +141,18 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         SavedMode = GameMode.None;
     }
 
-    private int GetChance() => IsClassic() ? Get().Chance : 0;
+    private byte GetChance() => IsClassic() ? Get().Chance : (byte)0;
 
-    private int GetCount() => IsClassic() ? Get().Count : (IsRoleList() ? GetOptions<ListEntryAttribute>().Count(x => x.Get().Equals(Layer) && !x.IsBan) : 1);
+    private byte GetCount() => IsClassic() ? Get().Count : (IsRoleList() ? (byte)GetOptions<ListEntryAttribute>().Count(x => x.Get().Equals(Layer) && !x.IsBan) : (byte)1);
 
     private void IncreaseCount()
     {
-        var val = Get();
         var chance = GetChance();
         var max = IsClassic() ? Max : Min;
-        var count = CycleInt(max, 0, GetCount(), true);
+        var count = CycleByte(max, 0, GetCount(), true);
 
         if (chance == 0 && count > 0)
-            chance = CachedChance == 0 ? 5 : CachedChance;
+            chance = CachedChance == 0 ? (byte)5 : CachedChance;
         else if (count == 0 && chance > 0)
         {
             CachedChance = chance;
@@ -163,6 +162,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         if (count.IsInRange(0, Min))
             count = Min;
 
+        var val = Get();
         val.Count = count;
         val.Chance = chance;
         Set(val);
@@ -170,13 +170,12 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
     private void DecreaseCount()
     {
-        var val = Get();
         var chance = GetChance();
         var max = IsClassic() ? Max : Min;
-        var count = CycleInt(max, 0, GetCount(), false);
+        var count = CycleByte(max, 0, GetCount(), false);
 
         if (chance == 0 && count > 0)
-            chance = CachedChance == 0 ? 5 : CachedChance;
+            chance = CachedChance == 0 ? (byte)5 : CachedChance;
         else if (count == 0 && chance > 0)
         {
             CachedChance = chance;
@@ -186,6 +185,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         if (count.IsInRange(0, Min))
             count = 0;
 
+        var val = Get();
         val.Count = count;
         val.Chance = chance;
         Set(val);
@@ -193,9 +193,8 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
     private void IncreaseChance()
     {
-        var val = Get();
         var count = GetCount();
-        var chance = CycleInt(100, 0, GetChance(), true, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
+        var chance = CycleByte(100, 0, GetChance(), true, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
 
         if (chance == 0 && count > 0)
         {
@@ -205,6 +204,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsClassic() ? Min : CachedCount;
 
+        var val = Get();
         val.Count = count;
         val.Chance = chance;
         Set(val);
@@ -212,9 +212,8 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
 
     private void DecreaseChance()
     {
-        var val = Get();
         var count = GetCount();
-        var chance = CycleInt(100, 0, GetChance(), false, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
+        var chance = CycleByte(100, 0, GetChance(), false, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
 
         if (chance == 0 && count > 0)
         {
@@ -224,6 +223,7 @@ public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts 
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsClassic() ? Min : CachedCount;
 
+        var val = Get();
         val.Count = count;
         val.Chance = chance;
         Set(val);

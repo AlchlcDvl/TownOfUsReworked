@@ -16,11 +16,11 @@
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
         <Description>Town Of Us but better! (hopefully)</Description>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
-        <Platforms>Android;$(Platforms)</Platforms>
+        <Platforms>Android;AnyCPU</Platforms>
         <Configurations>Debug;Release</Configurations>
         <Optimize>true</Optimize>
-        <DefineConstants Condition="'$(Platform)' == 'AnyCPU'">PC;$(DefineConstants)</DefineConstants>
-        <DefineConstants Condition="'$(Platform)' == 'Android'">ANDROID;$(DefineConstants)</DefineConstants>
+        <DefineConstants Condition="'$(Platform)' == 'AnyCPU'">PC</DefineConstants>
+        <DefineConstants Condition="'$(Platform)' == 'Android'">ANDROID</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>

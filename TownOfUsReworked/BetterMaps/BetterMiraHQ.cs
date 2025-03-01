@@ -19,20 +19,24 @@ public static class BetterMiraHq
     private static bool MiraHqVentImprovements = false;
 
     /// <summary>
-    /// Time until reactor meltdown occurs during sabotage.<br></br>
-    /// Default: <c>60</c>s<br></br>
-    /// Range: <c>30</c> to <c>90</c>s<br></br>
-    /// Increment: <c>5</c>s
+    /// Time until reactor meltdown occurs during sabotage.
     /// </summary>
+    /// <remarks>
+    /// Default: <c>60</c>s<br/>
+    /// Range: <c>30</c> to <c>90</c>s<br/>
+    /// Increment: <c>5</c>s
+    /// </remarks>
     [NumberOption(30f, 90f, 5f, Format.Time)]
     public static Number MiraReactorTimer = 60;
 
     /// <summary>
-    /// Time until oxygen depletion occurs during sabotage.<br></br>
-    /// Default: <c>60</c>s<br></br>
-    /// Range: <c>30</c> to <c>90</c>s<br></br>
-    /// Increment: <c>5</c>s
+    /// Time until oxygen depletion occurs during sabotage.
     /// </summary>
+    /// <remarks>
+    /// Default: <c>60</c>s<br/>
+    /// Range: <c>30</c> to <c>90</c>s<br/>
+    /// Increment: <c>5</c>s
+    /// </remarks>
     [NumberOption(30f, 90f, 5f, Format.Time)]
     public static Number MiraO2Timer = 60;
 
@@ -78,7 +82,7 @@ public static class BetterMiraHq
     }
 
     /// <summary>
-    /// Locates and caches references to all vents.<br></br>
+    /// Locates and caches references to all vents.<br/>
     /// Creates new Communications vent if not present.
     /// </summary>
     private static void FindVents()

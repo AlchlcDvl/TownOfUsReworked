@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Intruder : Role
 {
-    public CustomButton KillButton { get; set; }
-    public string CommonAbilities => "<#FF1919FF>- You can kill players</color>" + (IntruderSettings.IntrudersCanSabotage || (Dead && IntruderSettings.GhostsCanSabotage) ? ("\n- You can " +
+    protected CustomButton KillButton { get; private set; }
+    protected string CommonAbilities => "<#FF1919FF>- You can kill players</color>" + (IntruderSettings.IntrudersCanSabotage || (Dead && IntruderSettings.GhostsCanSabotage) ? ("\n- You can " +
         "call sabotages to distract the <#8CFFFFFF>Crew</color>") : "");
 
     public override UColor Color => CustomColorManager.Intruder;
@@ -25,8 +25,8 @@ public abstract class Intruder : Role
         return team;
     }
 
-    public virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
+    protected virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    public bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 }

@@ -244,7 +244,7 @@ public static class References
         { LayerEnum.Tracker, new(typeof(Tracker), CustomColorManager.Tracker, LayerEnum.Tracker) },
         { LayerEnum.Transporter, new(typeof(Transporter), CustomColorManager.Transporter, LayerEnum.Transporter) },
         { LayerEnum.Trapper, new(typeof(Trapper), CustomColorManager.Trapper, LayerEnum.Trapper) },
-        { LayerEnum.Trickster, new(typeof(Trickster), CustomColorManager.Trickster, LayerEnum.Trickster) },
+        { LayerEnum.Democrat, new(typeof(Democrat), CustomColorManager.Democrat, LayerEnum.Democrat) },
         { LayerEnum.Veteran, new(typeof(Veteran), CustomColorManager.Veteran, LayerEnum.Veteran) },
         { LayerEnum.Vigilante, new(typeof(Vigilante), CustomColorManager.Vigilante, LayerEnum.Vigilante) },
         { LayerEnum.Actor, new(typeof(Actor), CustomColorManager.Actor, LayerEnum.Actor) },

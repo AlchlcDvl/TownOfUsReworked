@@ -105,6 +105,8 @@ public static class Blocked
 
         if (CustomPlayer.Local.Data?.Role is LayerHandler handler)
             handler.UpdateHud(__instance);
+        else
+            return;
 
         if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
         {
@@ -216,9 +218,9 @@ public static class Blocked
 
         __instance.ImpostorVentButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.ToggleVisible((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
-        var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: Mathf.Min(GameSettings.ReportDistance, Ship().CalculateLightRadius(CustomPlayer.Local.Data)));
+        var closestDead = handler.CustomModifier is Shy ? null : CustomPlayer.Local.GetClosestBody(maxDistance: Mathf.Min(GameSettings.ReportDistance, Ship().CalculateLightRadius(CustomPlayer.Local.Data)));
 
-        if (!closestDead || CustomPlayer.Local.CannotUse())
+        if (!closestDead || CustomPlayer.Local.CannotUse() || BlockExposed)
             __instance.ReportButton.SetDisabled();
         else
             __instance.ReportButton.SetEnabled();

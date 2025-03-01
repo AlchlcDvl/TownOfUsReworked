@@ -114,7 +114,7 @@ public static class PlayerDataPatch
 [HarmonyPatch(typeof(SecurityLogger), nameof(SecurityLogger.Awake))]
 public static class SecurityLoggerPatch
 {
-    public static void Postfix(SecurityLogger __instance) => __instance.Timers = new float[127];
+    public static void Postfix(SecurityLogger __instance) => __instance.Timers = new(250);
 }
 
 [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
